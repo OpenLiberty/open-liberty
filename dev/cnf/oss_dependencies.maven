@@ -19,7 +19,6 @@ com.ibm.ws.componenttest:mantis-nls-standalone:2.5.0
 com.ibm.ws.componenttest:provider.api:1.0.0
 com.ibm.ws.componenttest:public.api:1.0.0
 com.ibm.ws.org.objenesis:objenesis:1.0
-com.icegreen:greenmail:1.5.5
 com.netflix.archaius:archaius2-api:2.1.10
 com.netflix.archaius:archaius2-core:2.1.10
 com.nimbusds:nimbus-jose-jwt:4.23
@@ -27,7 +26,7 @@ com.openpojo:openpojo:0.8.4
 com.sun.faces:jsf-api:2.2.14
 com.sun.faces:jsf-impl:2.2.14
 com.sun.mail:javax.mail:1.5.0
-com.sun.mail:javax.mail:1.6.0
+com.sun.mail:javax.mail:1.5.0
 com.sun.org.apache.xml.internal:resolver:20050927
 com.sun.xml.bind:jaxb-core:2.2.10
 com.sun.xml.bind:jaxb-impl:2.2.10
@@ -62,7 +61,7 @@ javax.jms:javax.jms-api:2.0
 javax.json:javax.json-api:1.1
 javax.json.bind:javax.json.bind-api:1.0
 javax.mail:javax.mail-api:1.5.0
-javax.mail:javax.mail-api:1.6.0
+javax.persistence:javax.persistence-api:2.2
 javax.resource:javax.resource-api:1.7
 javax.security.auth.message:javax.security.auth.message-api:1.1
 javax.security.enterprise:javax.security.enterprise-api:1.0-b11
