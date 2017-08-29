@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.json.spi.JsonProvider;
+
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -33,6 +35,11 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  *******************************************************************************/
 @Component(immediate = true, property = { "service.vendor=IBM" }, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class JaxRsProviderFactory implements JaxRsProviderFactoryService {
+    
+    // referencing the JsonProvider OSGI service reference ensures that the implementation
+    // service is available when ProviderFactory sets up the out-of-the-box providers
+    @Reference
+    private JsonProvider jsonpProvider;
 
     private static JaxRsProviderFactory serviceInstance = null;
 
