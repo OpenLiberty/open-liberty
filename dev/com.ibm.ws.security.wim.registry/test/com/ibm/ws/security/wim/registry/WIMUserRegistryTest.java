@@ -27,8 +27,6 @@ import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
@@ -37,6 +35,8 @@ import com.ibm.ws.security.wim.ConfigManager;
 import com.ibm.ws.security.wim.CoreSetup;
 import com.ibm.ws.security.wim.VMMService;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
+
+import test.common.SharedOutputManager;
 
 public class WIMUserRegistryTest {
 
@@ -507,7 +507,7 @@ public class WIMUserRegistryTest {
             UR = newWIMUR(urProps);
 
             // assertEquals("CN Mismatched", "user1", UR.getUserSecurityName("uid=user1,o=defaultWIMFileBasedRealm"));
-            assertEquals("CN Mismatched", "user1", UR.getUserSecurityName("uid=user1,o=defaultWIMFileBasedRealm"));
+            assertEquals("CN Mismatched", "uid=user1,o=defaultWIMFileBasedRealm", UR.getUserSecurityName("uid=user1,o=defaultWIMFileBasedRealm"));
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             assertEquals("Call completed successfully", true, false + " with " + errorMessage);
