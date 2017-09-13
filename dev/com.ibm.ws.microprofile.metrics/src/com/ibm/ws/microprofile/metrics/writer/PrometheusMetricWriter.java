@@ -24,6 +24,7 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Timer;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -64,6 +65,7 @@ public class PrometheusMetricWriter implements OutputWriter {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore({ EmptyRegistryException.class, NoSuchRegistryException.class })
     public void write() throws IOException {
         StringBuilder builder = new StringBuilder();
         for (String registryName : Constants.REGISTRY_NAMES_LIST) {
