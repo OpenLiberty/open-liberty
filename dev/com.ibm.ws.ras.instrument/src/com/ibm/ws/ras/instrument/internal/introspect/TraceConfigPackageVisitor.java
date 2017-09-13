@@ -28,11 +28,11 @@ public class TraceConfigPackageVisitor extends ClassVisitor {
     protected TraceOptionsAnnotationVisitor traceOptionsAnnotationVisitor;
 
     public TraceConfigPackageVisitor() {
-        super(Opcodes.ASM4);
+        super(Opcodes.ASM5);
     }
 
     public TraceConfigPackageVisitor(ClassVisitor visitor) {
-        super(Opcodes.ASM4, visitor);
+        super(Opcodes.ASM5, visitor);
     }
 
     @Override

@@ -50,7 +50,7 @@ public class WebSphereTrTracingMethodAdapter extends AbstractRasMethodAdapter<Ab
                         Type.getMethodDescriptor(Type.VOID_TYPE, new Type[] {
                                                                              TRACE_COMPONENT_TYPE,
                                                                              Type.getType(String.class),
-                                                                             Type.getType(Object.class) }));
+                                                                             Type.getType(Object.class) }), false);
 
         visitLabel(skipTraceLabel);
         return true;
@@ -81,7 +81,7 @@ public class WebSphereTrTracingMethodAdapter extends AbstractRasMethodAdapter<Ab
                             Type.getMethodDescriptor(Type.VOID_TYPE, new Type[] {
                                                                                  TRACE_COMPONENT_TYPE,
                                                                                  Type.getType(String.class),
-                                                                                 Type.getType(Object.class) }));
+                                                                                 Type.getType(Object.class) }), false);
         } else {
             visitGetTraceObjectField();
             visitLoadMethodName();
@@ -91,7 +91,7 @@ public class WebSphereTrTracingMethodAdapter extends AbstractRasMethodAdapter<Ab
                             "exit",
                             Type.getMethodDescriptor(Type.VOID_TYPE, new Type[] {
                                                                                  TRACE_COMPONENT_TYPE,
-                                                                                 Type.getType(String.class) }));
+                                                                                 Type.getType(String.class) }), false);
         }
 
         visitLabel(skipTraceLabel);
@@ -122,7 +122,7 @@ public class WebSphereTrTracingMethodAdapter extends AbstractRasMethodAdapter<Ab
                         Type.getMethodDescriptor(Type.VOID_TYPE, new Type[] {
                                                                              TRACE_COMPONENT_TYPE,
                                                                              Type.getType(String.class),
-                                                                             Type.getType(Object.class) }));
+                                                                             Type.getType(Object.class) }), false);
 
         visitLabel(skipTraceLabel);
         return true;
@@ -156,7 +156,7 @@ public class WebSphereTrTracingMethodAdapter extends AbstractRasMethodAdapter<Ab
                         Type.getMethodDescriptor(Type.VOID_TYPE, new Type[] {
                                                                              TRACE_COMPONENT_TYPE,
                                                                              Type.getType(String.class),
-                                                                             Type.getType(Object.class) }));
+                                                                             Type.getType(Object.class) }), false);
 
         visitLabel(skipTraceLabel);
         return true;
@@ -192,20 +192,20 @@ public class WebSphereTrTracingMethodAdapter extends AbstractRasMethodAdapter<Ab
                         Type.getMethodDescriptor(TRACE_COMPONENT_TYPE, new Type[] {
                                                                                    Type.getType(Class.class),
                                                                                    Type.getType(String.class),
-                                                                                   Type.getType(String.class) }));
+                                                                                   Type.getType(String.class) }), false);
 
         visitSetTraceObjectField();
     }
 
     private void visitInvokeTraceGuardMethod(String guardMethodName, Label skipTraceLabel) {
-        visitMethodInsn(INVOKESTATIC, TRACE_COMPONENT_TYPE.getInternalName(), "isAnyTracingEnabled", "()Z");
+        visitMethodInsn(INVOKESTATIC, TRACE_COMPONENT_TYPE.getInternalName(), "isAnyTracingEnabled", "()Z", false);
         visitJumpInsn(IFEQ, skipTraceLabel);
 
         visitGetTraceObjectField();
         visitJumpInsn(IFNULL, skipTraceLabel);
 
         visitGetTraceObjectField();
-        visitMethodInsn(INVOKEVIRTUAL, TRACE_COMPONENT_TYPE.getInternalName(), guardMethodName, "()Z");
+        visitMethodInsn(INVOKEVIRTUAL, TRACE_COMPONENT_TYPE.getInternalName(), guardMethodName, "()Z", false);
         visitJumpInsn(IFEQ, skipTraceLabel);
     }
 }
