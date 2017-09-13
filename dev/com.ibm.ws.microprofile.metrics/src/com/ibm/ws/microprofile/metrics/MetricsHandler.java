@@ -124,22 +124,20 @@ public class MetricsHandler implements RESTHandler {
             accept = Constants.ACCEPT_HEADER_TEXT;
         }
 
-        Pattern p = Pattern.compile(accept.replace("*", ".*"));
-
         if (Constants.METHOD_GET.equals(method)) {
-            if (p.matcher(Constants.ACCEPT_HEADER_TEXT).matches()) {
+            if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
                 return new PrometheusMetricWriter(writer);
-            } else if (p.matcher(Constants.ACCEPT_HEADER_JSON).matches()) {
+            } else if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
                 return new JSONMetricWriter(writer);
             } else {
                 Tr.event(tc, "The Accept header is invalid.");
                 return new PrometheusMetricWriter(writer);
             }
         } else if (Constants.METHOD_OPTIONS.equals(method)) {
-            if (p.matcher(Constants.ACCEPT_HEADER_TEXT).matches()) {
+            if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
                 throw new HTTPNotAcceptableException();
             }
-            if (p.matcher(Constants.ACCEPT_HEADER_JSON).matches()) {
+            if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
                 return new JSONMetadataWriter(writer);
             } else {
                 throw new HTTPNotAcceptableException();
