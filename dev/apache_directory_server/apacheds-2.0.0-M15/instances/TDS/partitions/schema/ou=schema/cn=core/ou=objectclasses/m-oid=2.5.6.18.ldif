@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=2.5.6.18,ou=objectClasses,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 2.5.6.18
+m-name: userSecurityInformation
+m-description: RFC2256: a user security information
+m-obsolete: FALSE
+m-supobjectclass: top
+entryUUID: 609b87d1-94c3-4ef8-86e3-7a99c2a6d09e
+m-may: supportedAlgorithms
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919065345.068000Z#000000#000#000000
+entryParentId: ac5601d1-10d2-4835-811d-55bb5203ca74
+createTimestamp: 20130919065351.522Z

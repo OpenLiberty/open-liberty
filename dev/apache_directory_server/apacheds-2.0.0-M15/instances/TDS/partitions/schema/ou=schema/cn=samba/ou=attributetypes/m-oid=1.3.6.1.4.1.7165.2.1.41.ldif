@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.41,ou=attributeTypes,cn=samba,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: caseIgnoreMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.7165.2.1.41
+m-name: sambaShareName
+m-description: Share Name
+m-obsolete: FALSE
+entryUUID: efc356ad-2bd7-4dd4-841c-e7794089cb0b
+entryCSN: 20130919065345.577000Z#000001#000#000000
+entryParentId: ad480692-fbdc-43ac-a835-b4dd7e42d307
+createTimestamp: 20130919065351.352Z

@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.14,ou=attributeTypes,cn=apachemeta,ou=schema
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.14
+m-name: m-syntax
+m-description: The syntax OID for attributeTypes and matchingRules
+m-syntax: 1.3.6.1.4.1.18060.0.4.0.0.2
+m-equality: nameOrNumericIdMatch
+m-usage: USER_APPLICATIONS
+m-singlevalue: TRUE
+m-collective: FALSE
+m-obsolete: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

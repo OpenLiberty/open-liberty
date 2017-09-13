@@ -1,0 +1,8 @@
+version: 1
+dn: m-oid=1.3.6.1.1.16.2,ou=comparators,cn=apache,ou=schema
+m-oid: 1.3.6.1.1.16.2
+m-fqcn: org.apache.directory.api.ldap.model.schema.comparators.UuidComparator
+objectclass: metaComparator
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system

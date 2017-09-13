@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.305,ou=attributeTypes,cn=adsconfig,ou=schema
+m-ordering: caseExactOrderingMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.305
+m-description: The service principal, used by GSSAPI
+m-substr: caseExactSubstringsMatch
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-name: ads-saslPrincipal
+creatorsname: uid=admin,ou=system
+m-equality: caseExactMatch
+m-length: 0

@@ -1,0 +1,22 @@
+version: 1
+dn: m-oid=2.5.4.46,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreMatch
+m-ordering: caseIgnoreOrderingMatch
+m-substr: caseIgnoreSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.46
+m-name: dnQualifier
+m-description: RFC2256: DN qualifier
+m-obsolete: FALSE
+entryUUID: 1772843e-4ce9-4fb7-89ae-61f18d1dcc16
+entryCSN: 20130919065345.053000Z#000000#000#000000
+entryParentId: 3738e923-39ad-428e-8f85-8e5ec1c49c21
+createTimestamp: 20130919065351.992Z

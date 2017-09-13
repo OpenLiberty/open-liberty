@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.5.4.20,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: telephoneNumberMatch
+m-substr: telephoneNumberSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.50
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.20
+m-name: telephoneNumber
+m-description: RFC2256: Telephone Number
+m-obsolete: FALSE
+entryUUID: 6b769d64-d4ed-4032-a339-3a50f867fade
+entryCSN: 20130919065345.041000Z#000001#000#000000
+entryParentId: 3738e923-39ad-428e-8f85-8e5ec1c49c21
+createTimestamp: 20130919065354.019Z

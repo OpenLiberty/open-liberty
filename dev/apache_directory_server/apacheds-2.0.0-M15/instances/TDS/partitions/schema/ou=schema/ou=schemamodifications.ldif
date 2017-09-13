@@ -1,0 +1,15 @@
+version: 1
+dn: ou=schemaModifications,ou=schema
+modifytimestamp: 20090818022733Z
+creatorsname: uid=admin,ou=system
+objectclass: schemaModificationAttributes
+objectclass: top
+modifiersname: uid=admin,ou=system
+schemamodifytimestamp: 20090818022733Z
+schemamodifiersname: uid=admin,ou=system
+subschemasubentryname: cn=schema
+ou: schemaModifications
+entryUUID: 817827c5-651e-4708-a5c8-e3230c5d41e5
+entrycsn: 20090818052733.272000Z#000000#000#000000
+entryParentId: 3456708f-5a09-4e37-8bcb-59f59172fa8c
+createtimestamp: 20090818022733Z

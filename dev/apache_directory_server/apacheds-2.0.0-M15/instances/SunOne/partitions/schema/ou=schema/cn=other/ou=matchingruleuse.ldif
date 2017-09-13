@@ -1,0 +1,6 @@
+version: 1
+dn: ou=matchingRuleUse,cn=other,ou=schema
+ou: matchingruleuse
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.67,ou=attributeTypes,cn=samba,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: integerMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.7165.2.1.67
+m-name: sambaRefuseMachinePwdChange
+m-description: Allow Machine Password changes (default: 0 => off)
+m-obsolete: FALSE
+entryUUID: 7dbc7748-c839-477f-827d-69a5f53caa04
+entryCSN: 20130919081859.187000Z#000001#000#000000
+entryParentId: e8bc977c-2b64-4188-b869-b5e0fb8f3cc7
+createTimestamp: 20130919081910.597Z

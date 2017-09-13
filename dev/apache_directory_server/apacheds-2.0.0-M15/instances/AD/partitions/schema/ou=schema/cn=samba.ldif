@@ -1,0 +1,15 @@
+version: 1
+dn: cn=samba,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaSchema
+objectclass: top
+cn: samba
+m-disabled: TRUE
+entryUUID: fd2e307a-e85c-4e63-9bae-02c7e4d3b943
+m-dependencies: system
+m-dependencies: core
+m-dependencies: inetorgperson
+m-dependencies: nis
+entryCSN: 20130919081858.051000Z#000001#000#000000
+entryParentId: 529257cc-a63e-4ee3-827f-354e24136008
+createTimestamp: 20130919081910.968Z

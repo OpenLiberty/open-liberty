@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.2,ou=objectClasses,cn=apachedns,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.18060.0.4.2.3.2
+m-name: apacheDnsAddressRecord
+m-description: An address A record
+m-obsolete: FALSE
+m-supobjectclass: apacheDnsAbstractRecord
+m-must: apacheDnsIpAddress
+entryUUID: e9e7c33a-3dba-4037-b9aa-f23b5b35d0dd
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.418000Z#000001#000#000000
+entryParentId: 4a0ef78b-970f-47c3-a6fe-0c428cee99b4
+createTimestamp: 20130919081911.431Z

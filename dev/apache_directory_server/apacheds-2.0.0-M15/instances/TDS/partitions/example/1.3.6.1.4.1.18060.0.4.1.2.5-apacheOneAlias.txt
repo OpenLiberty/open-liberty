@@ -1,0 +1,8 @@
+ATTRIBUTE_TYPE ( 1.3.6.1.4.1.18060.0.4.1.2.5
+ NAME 'apacheOneAlias'
+ DESC Index attribute used to track single level aliases
+ EQUALITY uuidMatch
+ SYNTAX 1.3.6.1.1.16.1
+ NO-USER-MODIFICATION
+ USAGE dSAOperation
+ )

@@ -1,0 +1,10 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.700,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.700
+m-name: ads-ntpServer
+m-description: The NtpServer ObjectClass
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-server
+creatorsname: uid=admin,ou=system

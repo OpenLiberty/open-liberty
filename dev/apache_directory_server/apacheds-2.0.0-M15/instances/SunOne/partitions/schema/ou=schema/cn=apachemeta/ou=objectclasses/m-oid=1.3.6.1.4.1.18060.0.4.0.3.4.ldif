@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.4,ou=objectClasses,cn=apachemeta,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.4
+m-name: metaSyntax
+m-description: meta definition of the Syntax object
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: metaTop
+m-typeobjectclass: STRUCTURAL
+m-may: x-not-human-readable
+m-may: m-obsolete
+creatorsname: uid=admin,ou=system

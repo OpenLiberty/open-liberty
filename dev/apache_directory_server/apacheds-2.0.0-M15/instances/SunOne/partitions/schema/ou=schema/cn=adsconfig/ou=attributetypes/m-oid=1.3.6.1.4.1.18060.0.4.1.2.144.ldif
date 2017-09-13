@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.144,ou=attributeTypes,cn=adsconfig,ou=schema
+m-name: ads-journalId
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.144
+m-description: The Journal ID
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-equality: caseExactMatch
+m-ordering: caseExactOrderingMatch
+m-substr: caseExactSubstringsMatch
+m-supattributetype: name
+m-singlevalue: TRUE
+m-length: 0
+creatorsname: uid=admin,ou=system

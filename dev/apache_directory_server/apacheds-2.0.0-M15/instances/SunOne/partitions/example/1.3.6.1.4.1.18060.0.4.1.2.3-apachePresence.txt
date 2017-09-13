@@ -1,0 +1,9 @@
+ATTRIBUTE_TYPE ( 1.3.6.1.4.1.18060.0.4.1.2.3
+ NAME 'apachePresence'
+ DESC Index attribute used to track the existence of attributes
+ EQUALITY caseIgnoreMatch
+ SUBSTR caseIgnoreSubstringsMatch
+ SYNTAX 1.3.6.1.4.1.1466.115.121.1.15
+ NO-USER-MODIFICATION
+ USAGE dSAOperation
+ )

@@ -1,0 +1,38 @@
+<server description="new server">
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>scim-1.0</feature>
+        <feature>testfileadapter-1.0</feature>
+	</featureManager>
+
+	<fileRegistry adapterClassName="fileadapterclass1" >
+	   	 <baseEntry name="o=defaultWIMFileBasedRealm" baseDN="o=defaultWIMFileBasedRealm"/>   
+   	</fileRegistry>
+	
+	<ldapRegistry id="TDS_LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.4.name}" port="${ldap.server.4.port}" ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m"
+		loginProperty="cn" >
+		<ldapEntityType name="PersonAccount">
+			<objectClass>inetOrgPerson</objectClass>
+			<rdnProperty name="cn" objectClass="inetOrgPerson"/>
+		</ldapEntityType>
+		<ldapEntityType name="Group">
+			<objectClass>groupofnames</objectClass>
+			<rdnProperty name="cn" objectClass="groupofnames"/>
+		</ldapEntityType>
+		<failoverServers name="failoverLdapServers">
+      		<server host="${ldap.server.8.name}" port="${ldap.server.8.port}"/>
+       </failoverServers>
+	</ldapRegistry>
+
+	<ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" />
+	<keyStore id="defaultKeyStore" password="Liberty"/>
+	
+	<administrator-role>
+		<user>vmmLibertyUser</user>
+	</administrator-role>
+</server>

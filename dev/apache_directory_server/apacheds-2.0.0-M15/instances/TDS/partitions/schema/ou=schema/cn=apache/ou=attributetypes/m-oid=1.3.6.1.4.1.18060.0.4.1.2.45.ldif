@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.45,ou=attributeTypes,cn=apache,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: generalizedTimeMatch
+m-ordering: generalizedTimeOrderingMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DSA_OPERATION
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.45
+m-name: changeTime
+m-description: represents the time when the change event occurred
+m-obsolete: FALSE
+entryUUID: abeacef5-e091-44b4-9106-c5122f4b31ba
+entryCSN: 20130919065344.783000Z#000001#000#000000
+entryParentId: 82e8e6b4-db49-43a8-bdcd-8eaf3e877f30
+createTimestamp: 20130919065353.486Z

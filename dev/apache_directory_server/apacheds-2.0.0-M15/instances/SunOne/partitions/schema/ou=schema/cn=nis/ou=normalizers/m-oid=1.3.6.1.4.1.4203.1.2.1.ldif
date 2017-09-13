@@ -1,0 +1,8 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.4203.1.2.1,ou=normalizers,cn=nis,ou=schema
+m-oid: 1.3.6.1.4.1.4203.1.2.1
+m-fqcn: org.apache.directory.api.ldap.model.schema.normalizers.CachingDeepTrimNormalizer
+objectclass: metaNormalizer
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system

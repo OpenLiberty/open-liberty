@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.17,ou=attributeTypes,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113719.1.203.4.17
+m-name: dhcpSubclassesDN
+m-description: The distinguished name(s) of subclass(es).
+m-obsolete: FALSE
+entryUUID: 1d5bbe1f-d979-48b9-b515-7e926bd05f23
+entryCSN: 20130919065345.230000Z#000000#000#000000
+entryParentId: 920d556c-6037-40c6-8766-5417ea615dab
+createTimestamp: 20130919065352.762Z

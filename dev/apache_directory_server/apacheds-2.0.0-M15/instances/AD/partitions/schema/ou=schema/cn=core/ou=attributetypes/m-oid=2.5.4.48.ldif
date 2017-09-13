@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.5.4.48,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: protocolInformationMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.42
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.48
+m-name: protocolInformation
+m-description: RFC2256: protocol information
+m-obsolete: FALSE
+entryUUID: b4fc95a7-5e90-4d82-851b-1c141cc6e166
+entryCSN: 20130919081858.585000Z#000001#000#000000
+entryParentId: 380762cf-db05-48e1-a596-4becaad7489a
+createTimestamp: 20130919081911.063Z

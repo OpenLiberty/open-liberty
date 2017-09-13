@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.4.1.7,ou=attributeTypes,cn=java,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 1.3.6.1.4.1.42.2.27.4.1.7
+m-obsolete: FALSE
+m-description: URL(s) specifying the location of class definition
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-usage: USER_APPLICATIONS
+m-name: javaCodebase
+creatorsname: uid=admin,ou=system
+m-equality: caseExactIA5Match

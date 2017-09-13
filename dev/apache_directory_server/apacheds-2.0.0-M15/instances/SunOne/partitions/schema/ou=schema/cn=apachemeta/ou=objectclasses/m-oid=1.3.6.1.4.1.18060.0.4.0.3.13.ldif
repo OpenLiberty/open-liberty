@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.13,ou=objectClasses,cn=apachemeta,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.13
+m-name: metaComparator
+m-description: meta definition of a Comparator object
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: metaTop
+m-typeobjectclass: STRUCTURAL
+m-must: m-fqcn
+m-may: m-bytecode
+creatorsname: uid=admin,ou=system

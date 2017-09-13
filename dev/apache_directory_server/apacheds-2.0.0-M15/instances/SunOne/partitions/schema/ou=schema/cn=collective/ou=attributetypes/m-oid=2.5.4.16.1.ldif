@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=2.5.4.16.1,ou=attributeTypes,cn=collective,ou=schema
+m-singlevalue: FALSE
+m-obsolete: FALSE
+m-usage: USER_APPLICATIONS
+creatorsname: uid=admin,ou=system
+m-collective: TRUE
+m-oid: 2.5.4.16.1
+m-supattributetype: postalAddress
+m-substr: caseIgnoreListSubstringsMatch
+m-nousermodification: FALSE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.41
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-name: c-PostalAddress
+m-equality: caseIgnoreListMatch

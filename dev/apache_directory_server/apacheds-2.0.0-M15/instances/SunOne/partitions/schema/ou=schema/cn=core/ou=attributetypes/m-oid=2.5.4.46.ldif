@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=2.5.4.46,ou=attributeTypes,cn=core,ou=schema
+m-singlevalue: FALSE
+m-obsolete: FALSE
+m-description: RFC2256: DN qualifier
+m-usage: USER_APPLICATIONS
+creatorsname: uid=admin,ou=system
+m-ordering: caseIgnoreOrderingMatch
+m-collective: FALSE
+m-oid: 2.5.4.46
+m-substr: caseIgnoreSubstringsMatch
+m-nousermodification: FALSE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-name: dnQualifier
+m-equality: caseIgnoreMatch

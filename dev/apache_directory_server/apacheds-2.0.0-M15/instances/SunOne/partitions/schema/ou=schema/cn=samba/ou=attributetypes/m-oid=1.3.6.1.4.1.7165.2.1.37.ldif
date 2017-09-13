@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.37,ou=attributeTypes,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.2.1.37
+m-name: sambaHomePath
+m-description: Home directory UNC path
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-equality: caseIgnoreMatch
+m-singlevalue: FALSE
+m-usage: USER_APPLICATIONS
+m-collective: FALSE
+m-obsolete: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

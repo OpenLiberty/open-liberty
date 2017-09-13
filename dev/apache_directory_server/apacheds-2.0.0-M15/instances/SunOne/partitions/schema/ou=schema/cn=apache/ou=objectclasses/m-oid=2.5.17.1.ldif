@@ -1,0 +1,11 @@
+version: 1
+dn: m-oid=2.5.17.1,ou=objectClasses,cn=apache,ou=schema
+m-must: prescriptiveACI
+m-oid: 2.5.17.1
+m-obsolete: FALSE
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: accessControlSubentry
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system

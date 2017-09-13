@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.101.120.111,ou=objectClasses,cn=system,ou=schema
+m-oid: 1.3.6.1.4.1.1466.101.120.111
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2252: extensible object
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: extensibleObject
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,6 @@
+version: 1
+dn: ou=objectClasses,cn=apache,ou=schema
+ou: objectclasses
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

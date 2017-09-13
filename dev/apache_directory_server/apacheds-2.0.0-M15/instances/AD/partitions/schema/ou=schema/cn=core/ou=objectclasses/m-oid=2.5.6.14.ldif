@@ -1,0 +1,24 @@
+version: 1
+dn: m-oid=2.5.6.14,ou=objectClasses,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 2.5.6.14
+m-name: device
+m-description: RFC2256: a device
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: cn
+entryUUID: 147c4be1-64df-463a-8c76-3c4aaeec11c7
+m-may: serialNumber
+m-may: seeAlso
+m-may: owner
+m-may: ou
+m-may: o
+m-may: l
+m-may: description
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.598000Z#000001#000#000000
+entryParentId: 0472417b-d9d5-4773-adb4-bd63258ecb89
+createTimestamp: 20130919081910.319Z

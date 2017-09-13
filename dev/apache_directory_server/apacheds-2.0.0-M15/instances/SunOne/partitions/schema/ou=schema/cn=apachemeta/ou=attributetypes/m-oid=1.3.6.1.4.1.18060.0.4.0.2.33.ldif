@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.33,ou=attributeTypes,cn=apachemeta,ou=schema
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.33
+m-name: m-bytecode
+m-description: The Java bytecode for a code based schema entity
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.5
+m-usage: USER_APPLICATIONS
+m-singlevalue: TRUE
+m-collective: FALSE
+m-obsolete: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

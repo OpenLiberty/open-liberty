@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=2.5.17.2,ou=objectClasses,cn=system,ou=schema
+m-oid: 2.5.17.2
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: collectiveAttributeSubentry
+m-obsolete: FALSE
+entryUUID: 9e0f44e1-8ad1-4f9f-8dc4-2d517ee5c08a
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919081859.322000Z#000001#000#000000
+entryParentId: e4b78239-b11d-4577-894c-9e41af5f96f1
+createTimestamp: 20130919081911.556Z

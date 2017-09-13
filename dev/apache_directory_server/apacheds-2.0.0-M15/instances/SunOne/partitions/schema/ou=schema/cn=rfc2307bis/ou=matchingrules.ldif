@@ -1,0 +1,6 @@
+version: 1
+dn: ou=matchingRules,cn=rfc2307bis,ou=schema
+ou: matchingrules
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

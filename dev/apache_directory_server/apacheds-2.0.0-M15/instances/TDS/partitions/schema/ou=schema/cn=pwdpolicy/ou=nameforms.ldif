@@ -1,0 +1,10 @@
+version: 1
+dn: ou=nameForms,cn=pwdpolicy,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 96e197a7-d681-41b1-aa36-5abcf5078572
+entryCSN: 20130919065345.494000Z#000002#000#000000
+entryParentId: 64825709-9b70-4170-8617-f13ddfe8a990
+ou: nameforms
+createTimestamp: 20130919065352.265Z

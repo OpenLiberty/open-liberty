@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.5.4.32,ou=attributeTypes,cn=core,ou=schema
+m-supattributetype: distinguishedName
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.32
+m-name: owner
+m-description: RFC2256: owner (of the object)
+m-obsolete: FALSE
+entryUUID: 3948f1c8-e995-47de-a6c4-41e44eede80f
+entryCSN: 20130919065345.047000Z#000001#000#000000
+entryParentId: 3738e923-39ad-428e-8f85-8e5ec1c49c21
+createTimestamp: 20130919065351.808Z
