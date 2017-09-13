@@ -134,9 +134,6 @@ public class MetricsHandler implements RESTHandler {
                 return new PrometheusMetricWriter(writer);
             }
         } else if (Constants.METHOD_OPTIONS.equals(method)) {
-            if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
-                throw new HTTPNotAcceptableException();
-            }
             if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
                 return new JSONMetadataWriter(writer);
             } else {
