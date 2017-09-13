@@ -7,5 +7,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.beanValidationCore-1.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=com.ibm.ws.jaxrs.2.0.beanvalidation
-kind=noship
-edition=full
+kind=beta
+edition=core
