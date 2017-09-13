@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -150,10 +149,10 @@ public class MetricsHandler implements RESTHandler {
         if (accept == null) {
             accept = Constants.ACCEPT_HEADER_TEXT;
         }
-        Pattern p = Pattern.compile(accept.replace("*", ".*"));
-        if (p.matcher(Constants.ACCEPT_HEADER_TEXT).matches()) {
+
+        if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
             response.setContentType(Constants.TEXTCONTENTTYPE);
-        } else if (p.matcher(Constants.ACCEPT_HEADER_JSON).matches()) {
+        } else if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
             response.setContentType(Constants.JSONCONTENTTYPE);
         } else {
             response.setContentType(Constants.TEXTCONTENTTYPE);
