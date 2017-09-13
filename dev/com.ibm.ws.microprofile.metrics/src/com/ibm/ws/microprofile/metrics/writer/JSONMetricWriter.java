@@ -23,6 +23,7 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -42,7 +43,7 @@ public class JSONMetricWriter implements OutputWriter {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws EmptyRegistryException
      */
     @Override
@@ -58,6 +59,7 @@ public class JSONMetricWriter implements OutputWriter {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore({ EmptyRegistryException.class, NoSuchRegistryException.class })
     public void write() throws IOException {
         JSONObject payload = new JSONObject();
         for (String registryName : Constants.REGISTRY_NAMES_LIST) {
