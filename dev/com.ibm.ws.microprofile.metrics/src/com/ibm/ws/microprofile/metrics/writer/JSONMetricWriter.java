@@ -23,6 +23,8 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
@@ -80,6 +82,8 @@ public class JSONMetricWriter implements OutputWriter {
         return getJsonFromMetricMap(Util.getMetricsAsMap(registryName, metricName));
     }
 
+    private static final TraceComponent tc = Tr.register(JSONMetricWriter.class);
+
     private JSONObject getJsonFromMetricMap(Map<String, Metric> metricMap) {
         JSONObject jsonObject = new JSONObject();
         for (Entry<String, Metric> entry : metricMap.entrySet()) {
@@ -96,7 +100,7 @@ public class JSONMetricWriter implements OutputWriter {
             } else if (Meter.class.isInstance(metric)) {
                 jsonObject.put(metricName, getJsonFromMap(Util.getMeterNumbers((Meter) metric)));
             } else {
-                throw new RuntimeException("Unsupported Metric Type");
+                Tr.event(tc, "Metric type " + metricName + " is invalid.");
             }
         }
         return jsonObject;

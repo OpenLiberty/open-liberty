@@ -25,8 +25,6 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.MetricType;
 import org.eclipse.microprofile.metrics.MetricUnits;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.metrics.impl.CounterImpl;
 import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
@@ -63,8 +61,6 @@ public class BaseMetrics {
             }
         }
     }
-
-    private static final TraceComponent tc = Tr.register(BaseMetrics.class);
 
     public void createBaseMetrics() {
         MetricRegistry registry = SharedMetricRegistries.getOrCreate(BASE);

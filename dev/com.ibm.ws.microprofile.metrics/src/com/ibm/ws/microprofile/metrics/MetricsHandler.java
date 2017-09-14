@@ -69,8 +69,10 @@ public class MetricsHandler implements RESTHandler {
     public void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
 
         Locale locale = null;
+        String regName = null;
         try {
             locale = request.getLocale();
+            regName = request.getPathVariable(Constants.SUB);
             setInitialContentType(request, response);
         } catch (Exception e) {
             response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Tr.formatMessage(tc, locale, "internal.error.CWMMC0007E", e));
@@ -99,7 +101,7 @@ public class MetricsHandler implements RESTHandler {
                 outputWriter.write();
             }
         } catch (EmptyRegistryException e) {
-            Tr.event(tc, "The registry is empty");
+            Tr.event(tc, "The " + regName + " registry is empty");
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (NoSuchRegistryException e) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND, Tr.formatMessage(tc, locale, "registryNotFound.error.CWMMC0004E", e));
