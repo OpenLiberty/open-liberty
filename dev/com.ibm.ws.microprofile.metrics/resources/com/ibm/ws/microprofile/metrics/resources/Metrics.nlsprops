@@ -64,6 +64,51 @@ internal.error.CWMMC0007E=CWMMC0007E: An internal error occurred.
 internal.error.CWMMC0007E.explanation=The application server experienced an internal error.
 internal.error.CWMMC0007E.useraction=Gather a set of traces and open a new issue against your application server.
 
+#Memory usedHeap message
+memory.usedHeap.description.CWMMC0008E=Displays the amount of used heap memory in bytes.
+
+#Memory committedHeap message
+memory.committedHeap.description.CWMMC0009E=Displays the amount of memory in bytes that is committed for the Java virtual machine to use. This amount of memory is guaranteed for the Java virtual machine to use.
+
+#Memory maxHeap message
+memory.maxHeap.description.CWMMC0010E=Displays the maximum amount of heap memory in bytes that can be used for memory management. This attribute displays -1 if the maximum heap memory size is undefined. This amount of memory is not guaranteed to be available for memory management if it is greater than the amount of committed memory. The Java virtual machine may fail to allocate memory even if the amount of used memory does not exceed this maximum size.
+
+#Jvm uptime message
+jvm.uptime.description.CWMMC0011E=Displays the start time of the Java virtual machine in milliseconds. This attribute displays the approximate time when the Java virtual machine started.
+
+#Thread count message
+thread.count.description.CWMMC0012E=Displays the current number of live threads including both daemon and non-daemon threads.
+
+#Thread daemon count message
+thread.daemon.count.description.CWMMC0013E=Displays the current number of live daemon threads.
+
+#Thread max count message
+thread.max.count.description.CWMMC0014E=Displays the peak live thread count since the Java virtual machine started or peak was reset. This includes daemon and non-daemon threads.
+
+#Classloader currentLoadedClass count message
+classloader.currentLoadedClass.count.description.CWMMC0015E=Displays the number of classes that are currently loaded in the Java virtual machine.
+
+#Classloader totalLoadedClass count message
+classloader.totalLoadedClass.count.description.CWMMC0016E=Displays the total number of classes that have been loaded since the Java virtual machine has started execution.
+
+#Classloader totalUnloadedClass count message
+classloader.totalUnloadedClass.count.description.CWMMC0017E=Displays the total number of classes unloaded since the Java virtual machine has started execution.
+
+#Cpu availableProcessors message
+cpu.availableProcessors.description.CWMMC0018E=Displays the number of processors available to the Java virtual machine. This value may change during a particular invocation of the virtual machine.
+
+#Cpu systemLoadAverage message
+cpu.systemLoadAverage.description.CWMMC0019E=Displays the system load average for the last minute. The system load average is the sum of the number of runnable entities queued to the available processors and the number of runnable entities running on the available processors averaged over a period of time. The way in which the load average is calculated is operating system specific but is typically a damped time-dependent average. If the load average is not available, a negative value is displayed. This attribute is designed to provide a hint about the system load and may be queried frequently. The load average may be unavailable on some platform where it is expensive to implement this method.
+
+#Cpu processCpuLoad message
+cpu.processCpuLoad.description.CWMMC0020E=Displays the 'recent cpu usage' for the Java Virtual Machine process.
+
+#Garbage collection count message
+garbageCollectionCount.description.CWMMC0021E=Displays the total number of collections that have occurred. This attribute lists -1 if the collection count is undefined for this collector.
+
+#Garbage collection time message
+garbageCollectionTime.description.CWMMC0022E=Displays the approximate accumulated collection elapsed time in milliseconds. This attribute displays -1 if the collection elapsed time is undefined for this collector. The Java virtual machine implementation may use a high resolution timer to measure the elapsed time. This attribute may display the same value even if the collection count has been incremented if the collection elapsed time is very short.
+
 #-----------------------------------------------------------------------------------------------------------------------------
 # Emergency Metrics error message
 #-----------------------------------------------------------------------------------------------------------------------------

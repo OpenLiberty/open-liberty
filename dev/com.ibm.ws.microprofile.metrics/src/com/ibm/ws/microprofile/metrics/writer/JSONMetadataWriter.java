@@ -12,13 +12,17 @@ package com.ibm.ws.microprofile.metrics.writer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import org.eclipse.microprofile.metrics.Metadata;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.metrics.BaseMetrics;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -31,9 +35,11 @@ import com.ibm.ws.microprofile.metrics.helper.Util;
 public class JSONMetadataWriter implements OutputWriter {
 
     private final Writer writer;
+    private final Locale locale;
 
-    public JSONMetadataWriter(Writer writer) {
+    public JSONMetadataWriter(Writer writer, Locale locale) {
         this.writer = writer;
+        this.locale = locale;
     }
 
     /** {@inheritDoc} */
@@ -83,12 +89,14 @@ public class JSONMetadataWriter implements OutputWriter {
         return jsonObject;
     }
 
+    private static final TraceComponent tc = Tr.register(BaseMetrics.class);
+
     private JSONObject getJsonFromObject(Metadata metadata) {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("name", metadata.getName());
             jsonObject.put("displayName", metadata.getDisplayName());
-            jsonObject.put("description", metadata.getDescription());
+            jsonObject.put("description", Tr.formatMessage(tc, locale, metadata.getDescription()));
             jsonObject.put("type", metadata.getType());
             jsonObject.put("unit", metadata.getUnit());
             jsonObject.put("tags", getJsonFromMap(metadata.getTags()));
