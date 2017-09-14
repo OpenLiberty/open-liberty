@@ -95,6 +95,8 @@ public class PrometheusMetricWriter implements OutputWriter {
 
     private static final TraceComponent tc = Tr.register(BaseMetrics.class);
 
+    private static final TraceComponent tc2 = Tr.register(PrometheusMetricWriter.class);
+
     private void writeMetricMapAsPrometheus(StringBuilder builder, String registryName, Map<String, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
         for (Entry<String, Metric> entry : metricMap.entrySet()) {
             String metricNamePrometheus = registryName + ":" + entry.getKey();
@@ -226,7 +228,7 @@ public class PrometheusMetricWriter implements OutputWriter {
             } else if (Meter.class.isInstance(metric)) {
                 PrometheusBuilder.buildMeter(builder, metricNamePrometheus, (Meter) metric, description, tags);
             } else {
-                throw new RuntimeException("Unsupported Metric Type");
+                Tr.event(tc2, "Metric type " + entryName + " is invalid.");
             }
         }
     }
