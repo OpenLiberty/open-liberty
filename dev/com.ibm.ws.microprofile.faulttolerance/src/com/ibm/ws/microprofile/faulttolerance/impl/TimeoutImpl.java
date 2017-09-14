@@ -238,9 +238,18 @@ public class TimeoutImpl {
         lock.readLock().lock();
         try {
             if (this.timedout) {
+                // Note: this clears the interrupted flag if it was set
+                // Assumption is that the interruption was caused by the Timeout
+                boolean wasInterrupted = Thread.interrupted();
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "{0}: Throwing timeout exception", getDescriptor());
+                    if (wasInterrupted) {
+                        Tr.debug(tc, "{0}: Throwing timeout exception", getDescriptor());
+                    } else {
+                        Tr.debug(tc, "{0}: Throwing timeout exception and clearing interrupted flag", getDescriptor());
+                    }
                 }
+
                 throw new TimeoutException(Tr.formatMessage(tc, "timeout.occurred.CWMFT0000E"));
             }
             long now = System.nanoTime();
