@@ -70,47 +70,47 @@ public class BaseMetrics {
         MetricRegistry registry = SharedMetricRegistries.getOrCreate(BASE);
         //MEMORY METRICS
         registry.register("memory.usedHeap", new BMGauge<Number>(BaseMetricConstants.MEMORY_OBJECT_TYPE, "HeapMemoryUsage", "used"),
-                          new Metadata("memory.usedHeap", "Used Heap Memory", "memory.usedHeap.description.CWMMC0008E", MetricType.GAUGE, MetricUnits.BYTES));
+                          new Metadata("memory.usedHeap", "Used Heap Memory", "memory.usedHeap.description", MetricType.GAUGE, MetricUnits.BYTES));
 
         registry.register("memory.committedHeap", new BMGauge<Number>(BaseMetricConstants.MEMORY_OBJECT_TYPE, "HeapMemoryUsage", "committed"),
-                          new Metadata("memory.committedHeap", "Committed Heap Memory", "memory.committedHeap.description.CWMMC0009E", MetricType.GAUGE, MetricUnits.BYTES));
+                          new Metadata("memory.committedHeap", "Committed Heap Memory", "memory.committedHeap.description", MetricType.GAUGE, MetricUnits.BYTES));
 
         registry.register("memory.maxHeap", new BMGauge<Number>(BaseMetricConstants.MEMORY_OBJECT_TYPE, "HeapMemoryUsage", "max"),
-                          new Metadata("memory.maxHeap", "Max Heap Memory", "memory.maxHeap.description.CWMMC0010E", MetricType.GAUGE, MetricUnits.BYTES));
+                          new Metadata("memory.maxHeap", "Max Heap Memory", "memory.maxHeap.description", MetricType.GAUGE, MetricUnits.BYTES));
 
         //JVM METRICS
         registry.register("jvm.uptime", new BMGauge<Number>(BaseMetricConstants.RUNTIME_OBJECT_TYPE, "Uptime"),
-                          new Metadata("jvm.uptime", "JVM Uptime", "jvm.uptime.description.CWMMC0011E", MetricType.GAUGE, MetricUnits.MILLISECONDS));
+                          new Metadata("jvm.uptime", "JVM Uptime", "jvm.uptime.description", MetricType.GAUGE, MetricUnits.MILLISECONDS));
 
         //THREAD JVM -
         registry.register("thread.count", new BMCounter(BaseMetricConstants.THREAD_OBJECT_TYPE, "ThreadCount"),
-                          new Metadata("thread.count", "Thread Count", "thread.count.description.CWMMC0012E", MetricType.COUNTER, MetricUnits.NONE));
+                          new Metadata("thread.count", "Thread Count", "thread.count.description", MetricType.COUNTER, MetricUnits.NONE));
 
         registry.register("thread.daemon.count", new BMCounter(BaseMetricConstants.THREAD_OBJECT_TYPE, "DaemonThreadCount"),
-                          new Metadata("thread.daemon.count", "Daemon Thread Count", "thread.daemon.count.description.CWMMC0013E", MetricType.COUNTER, MetricUnits.NONE));
+                          new Metadata("thread.daemon.count", "Daemon Thread Count", "thread.daemon.count.description", MetricType.COUNTER, MetricUnits.NONE));
 
         registry.register("thread.max.count", new BMCounter(BaseMetricConstants.THREAD_OBJECT_TYPE, "PeakThreadCount"),
-                          new Metadata("thread.max.count", "Peak Thread Count", "thread.max.count.description.CWMMC0014E", MetricType.COUNTER, MetricUnits.NONE));
+                          new Metadata("thread.max.count", "Peak Thread Count", "thread.max.count.description", MetricType.COUNTER, MetricUnits.NONE));
 
         //CLASSLOADING METRICS
         registry.register("classloader.currentLoadedClass.count", new BMCounter(BaseMetricConstants.CLASSLOADING_OBJECT_TYPE, "LoadedClassCount"),
-                          new Metadata("classloader.currentLoadedClass.count", "Current Loaded Class Count", "classloader.currentLoadedClass.count.description.CWMMC0015E", MetricType.COUNTER, MetricUnits.NONE));
+                          new Metadata("classloader.currentLoadedClass.count", "Current Loaded Class Count", "classloader.currentLoadedClass.count.description", MetricType.COUNTER, MetricUnits.NONE));
 
         registry.register("classloader.totalLoadedClass.count", new BMCounter(BaseMetricConstants.CLASSLOADING_OBJECT_TYPE, "TotalLoadedClassCount"),
-                          new Metadata("classloader.totalLoadedClass.count", "Total Loaded Class Count", "classloader.totalLoadedClass.count.description.CWMMC0016E", MetricType.COUNTER, MetricUnits.NONE));
+                          new Metadata("classloader.totalLoadedClass.count", "Total Loaded Class Count", "classloader.totalLoadedClass.count.description", MetricType.COUNTER, MetricUnits.NONE));
 
         registry.register("classloader.totalUnloadedClass.count", new BMCounter(BaseMetricConstants.CLASSLOADING_OBJECT_TYPE, "UnloadedClassCount"),
-                          new Metadata("classloader.totalUnloadedClass.count", "Total Unloaded Class Count", "classloader.totalUnloadedClass.count.description.CWMMC0017E", MetricType.COUNTER, MetricUnits.NONE));
+                          new Metadata("classloader.totalUnloadedClass.count", "Total Unloaded Class Count", "classloader.totalUnloadedClass.count.description", MetricType.COUNTER, MetricUnits.NONE));
 
         //OPERATING SYSTEM
         registry.register("cpu.availableProcessors", new BMGauge<Number>(BaseMetricConstants.OS_OBJECT_TYPE, "AvailableProcessors"),
-                          new Metadata("cpu.availableProcessors", "Available Processors", "cpu.availableProcessors.description.CWMMC0018E", MetricType.GAUGE, MetricUnits.NONE));
+                          new Metadata("cpu.availableProcessors", "Available Processors", "cpu.availableProcessors.description", MetricType.GAUGE, MetricUnits.NONE));
 
         registry.register("cpu.systemLoadAverage", new BMGauge<Number>(BaseMetricConstants.OS_OBJECT_TYPE, "SystemLoadAverage"),
-                          new Metadata("cpu.systemLoadAverage", "System Load Average", "cpu.systemLoadAverage.description.CWMMC0019E", MetricType.GAUGE, MetricUnits.NONE));
+                          new Metadata("cpu.systemLoadAverage", "System Load Average", "cpu.systemLoadAverage.description", MetricType.GAUGE, MetricUnits.NONE));
 
         registry.register("cpu.processCpuLoad", new BMGauge<Number>(BaseMetricConstants.OS_OBJECT_TYPE, "ProcessCpuLoad"),
-                          new Metadata("cpu.processCpuLoad", "Process CPU Load", "cpu.processCpuLoad.description.CWMMC0020E", MetricType.GAUGE, MetricUnits.PERCENT));
+                          new Metadata("cpu.processCpuLoad", "Process CPU Load", "cpu.processCpuLoad.description", MetricType.GAUGE, MetricUnits.PERCENT));
 
         //GARBAGE COLLECTOR METRICS
         for (String gcName : gcObjectNames) {
@@ -120,12 +120,12 @@ public class BaseMetrics {
             //gc.%s.count
             String nameToRegister = "gc." + gcNameNoSpace + ".count";
             registry.register(nameToRegister, new BMCounter(BaseMetricConstants.GC_OBJECT_TYPE_NAME + gcName, "CollectionCount"),
-                              new Metadata(nameToRegister, "Garbage Collection Count", "garbageCollectionCount.description.CWMMC0021E", MetricType.COUNTER, MetricUnits.NONE));
+                              new Metadata(nameToRegister, "Garbage Collection Count", "garbageCollectionCount.description", MetricType.COUNTER, MetricUnits.NONE));
 
             //gc.%s.time
             nameToRegister = "gc." + gcNameNoSpace + ".time";
             registry.register(nameToRegister, new BMGauge<Number>(BaseMetricConstants.GC_OBJECT_TYPE_NAME + gcName, "CollectionTime"),
-                              new Metadata(nameToRegister, "Garbage Collection Time", "garbageCollectionTime.description.CWMMC0022E", MetricType.GAUGE, MetricUnits.MILLISECONDS));
+                              new Metadata(nameToRegister, "Garbage Collection Time", "garbageCollectionTime.description", MetricType.GAUGE, MetricUnits.MILLISECONDS));
         }
 
     }
