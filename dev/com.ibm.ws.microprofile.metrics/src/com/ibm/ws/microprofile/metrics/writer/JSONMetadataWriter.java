@@ -22,7 +22,6 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.metrics.BaseMetrics;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -33,6 +32,8 @@ import com.ibm.ws.microprofile.metrics.helper.Util;
  *
  */
 public class JSONMetadataWriter implements OutputWriter {
+
+    private static final TraceComponent tc = Tr.register(JSONMetadataWriter.class);
 
     private final Writer writer;
     private final Locale locale;
@@ -88,8 +89,6 @@ public class JSONMetadataWriter implements OutputWriter {
         }
         return jsonObject;
     }
-
-    private static final TraceComponent tc = Tr.register(BaseMetrics.class);
 
     private JSONObject getJsonFromObject(Metadata metadata) {
         JSONObject jsonObject = new JSONObject();
