@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.metrics.writer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,7 +25,10 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Timer;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.metrics.BaseMetrics;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -38,9 +42,11 @@ import com.ibm.ws.microprofile.metrics.helper.Util;
 public class PrometheusMetricWriter implements OutputWriter {
 
     private final Writer writer;
+    private final Locale locale;
 
-    public PrometheusMetricWriter(Writer writer) {
+    public PrometheusMetricWriter(Writer writer, Locale locale) {
         this.writer = writer;
+        this.locale = locale;
     }
 
     /**
@@ -87,6 +93,8 @@ public class PrometheusMetricWriter implements OutputWriter {
         writeMetricMapAsPrometheus(builder, registryName, Util.getMetricsAsMap(registryName, metricName), Util.getMetricsMetadataAsMap(registryName));
     }
 
+    private static final TraceComponent tc = Tr.register(BaseMetrics.class);
+
     private void writeMetricMapAsPrometheus(StringBuilder builder, String registryName, Map<String, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
         for (Entry<String, Metric> entry : metricMap.entrySet()) {
             String metricNamePrometheus = registryName + ":" + entry.getKey();
@@ -95,7 +103,7 @@ public class PrometheusMetricWriter implements OutputWriter {
 
             //description
             Metadata metricMetaData = metricMetadataMap.get(entryName);
-            String description = metricMetaData.getDescription();
+            String description = Tr.formatMessage(tc, locale, metricMetaData.getDescription());
 
             String tags = metricMetaData.getTagsAsString();
 

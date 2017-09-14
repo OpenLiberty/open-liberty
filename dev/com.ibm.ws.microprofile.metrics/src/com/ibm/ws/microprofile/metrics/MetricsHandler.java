@@ -77,7 +77,7 @@ public class MetricsHandler implements RESTHandler {
         }
 
         try {
-            OutputWriter outputWriter = getOutputWriter(request, response);
+            OutputWriter outputWriter = getOutputWriter(request, response, locale);
             String attribute = request.getPathVariable(Constants.ATTRIBUTE);
             String sub = request.getPathVariable(Constants.SUB);
 
@@ -114,7 +114,7 @@ public class MetricsHandler implements RESTHandler {
         }
     }
 
-    private OutputWriter getOutputWriter(RESTRequest request, RESTResponse response) throws IOException, HTTPNotAcceptableException, HTTPMethodNotAllowedException {
+    private OutputWriter getOutputWriter(RESTRequest request, RESTResponse response, Locale locale) throws IOException, HTTPNotAcceptableException, HTTPMethodNotAllowedException {
         String method = request.getMethod();
         String accept = request.getHeader(Constants.ACCEPT_HEADER);
         Writer writer = response.getWriter();
@@ -125,16 +125,16 @@ public class MetricsHandler implements RESTHandler {
 
         if (Constants.METHOD_GET.equals(method)) {
             if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
-                return new PrometheusMetricWriter(writer);
+                return new PrometheusMetricWriter(writer, locale);
             } else if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
                 return new JSONMetricWriter(writer);
             } else {
                 Tr.event(tc, "The Accept header is invalid.");
-                return new PrometheusMetricWriter(writer);
+                return new PrometheusMetricWriter(writer, locale);
             }
         } else if (Constants.METHOD_OPTIONS.equals(method)) {
             if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
-                return new JSONMetadataWriter(writer);
+                return new JSONMetadataWriter(writer, locale);
             } else {
                 throw new HTTPNotAcceptableException();
             }
