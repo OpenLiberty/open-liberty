@@ -20,14 +20,27 @@ import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Sampling;
 import org.eclipse.microprofile.metrics.Timer;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.metrics.Constants;
+import com.ibm.ws.microprofile.metrics.MetricsHandler;
+
 /**
  *
  */
 public class PrometheusBuilder {
+
+    private static final TraceComponent tc = Tr.register(MetricsHandler.class);
+
     private static final String QUANTILE = "quantile";
 
     public static void buildGauge(StringBuilder builder, String name, Gauge<?> gauge, String description, Double conversionFactor, String tags, String appendUnit) {
         double gaugeVal = 0;
+        // Skip non number values
+        if (!Number.class.isInstance(gauge.getValue())) {
+            Tr.event(tc, "Skipping Prometheus output for Gauge: " + name + " of type " + gauge.getValue().getClass());
+            return;
+        }
         Number gaugeValNumber = (Number) gauge.getValue();
         if (!(Double.isNaN(conversionFactor))) {
             gaugeVal = gaugeValNumber.doubleValue() * conversionFactor;
@@ -46,50 +59,20 @@ public class PrometheusBuilder {
 
     public static void buildTimer(StringBuilder builder, String name, Timer timer, String description, String tags) {
         buildMetered(builder, name, timer, description, tags);
+        double conversionFactor = Constants.NANOSECONDCONVERSION;
         // Build Histogram
-        buildSampling(builder, name, timer, description, tags);
+        buildSampling(builder, name, timer, description, conversionFactor, tags, Constants.APPENDEDSECONDS);
     }
 
     public static void buildHistogram(StringBuilder builder, String name, Histogram histogram, String description, Double conversionFactor, String tags,
                                       String appendUnit) {
-        buildCounting(builder, name, histogram, description, tags);
         // Build Histogram
         buildSampling(builder, name, histogram, description, conversionFactor, tags, appendUnit);
     }
 
     public static void buildMeter(StringBuilder builder, String name, Meter meter, String description, String tags) {
+        buildCounting(builder, name, meter, description, tags);
         buildMetered(builder, name, meter, description, tags);
-    }
-
-    /**
-     * Builds the Prometheus summary information
-     *
-     * @param builder
-     * @param name
-     * @param sampling
-     */
-    private static void buildSampling(StringBuilder builder, String name, Sampling sampling, String description, String tags) {
-        String lineName = name + "_mean";
-        getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, sampling.getSnapshot().getMean());
-        lineName = name + "_max";
-        getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, sampling.getSnapshot().getMax());
-        lineName = name + "_min";
-        getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, sampling.getSnapshot().getMin());
-        lineName = name + "_stddev";
-        getPromTypeLine(builder, lineName, "gauge");
-        getPromValueLine(builder, lineName, sampling.getSnapshot().getStdDev());
-
-        getPromTypeLine(builder, name, "summary");
-
-        getPromValueLine(builder, name, sampling.getSnapshot().getMedian(), tags, new Tag(QUANTILE, "0.5"), null);
-        getPromValueLine(builder, name, sampling.getSnapshot().get75thPercentile(), tags, new Tag(QUANTILE, "0.75"), null);
-        getPromValueLine(builder, name, sampling.getSnapshot().get95thPercentile(), tags, new Tag(QUANTILE, "0.95"), null);
-        getPromValueLine(builder, name, sampling.getSnapshot().get98thPercentile(), tags, new Tag(QUANTILE, "0.98"), null);
-        getPromValueLine(builder, name, sampling.getSnapshot().get99thPercentile(), tags, new Tag(QUANTILE, "0.99"), null);
-        getPromValueLine(builder, name, sampling.getSnapshot().get999thPercentile(), tags, new Tag(QUANTILE, "0.999"), null);
     }
 
     private static void buildSampling(StringBuilder builder, String name, Sampling sampling, String description, Double conversionFactor, String tags,
@@ -132,8 +115,11 @@ public class PrometheusBuilder {
         getPromTypeLine(builder, lineName, "gauge", appendUnit);
         getPromValueLine(builder, lineName, stdDevVal, tags, appendUnit);
 
-        getPromTypeLine(builder, name, "summary");
-
+        getPromTypeLine(builder, name, "summary", appendUnit);
+        getPromHelpLine(builder, name, description, appendUnit);
+        if (Counting.class.isInstance(sampling)) {
+            getPromValueLine(builder, name, ((Counting) sampling).getCount(), tags, appendUnit == null ? "_count" : appendUnit + "_count");
+        }
         getPromValueLine(builder, name, medianVal, tags, new Tag(QUANTILE, "0.5"), appendUnit);
         getPromValueLine(builder, name, percentile75th, tags, new Tag(QUANTILE, "0.75"), appendUnit);
         getPromValueLine(builder, name, percentile95th, tags, new Tag(QUANTILE, "0.95"), appendUnit);
@@ -143,9 +129,9 @@ public class PrometheusBuilder {
     }
 
     private static void buildCounting(StringBuilder builder, String name, Counting counting, String description, String tags) {
-        String lineName = name + "_count";
+        String lineName = name + "_total";
         getPromTypeLine(builder, lineName, "counter");
-        getPromHelpLine(builder, name, description);
+        getPromHelpLine(builder, lineName, description);
         getPromValueLine(builder, lineName, counting.getCount(), tags);
     }
 
@@ -157,8 +143,6 @@ public class PrometheusBuilder {
      * @param metered
      */
     private static void buildMetered(StringBuilder builder, String name, Metered metered, String description, String tags) {
-        buildCounting(builder, name, metered, description, tags);
-
         String lineName = name + "_rate_" + MetricUnits.PER_SECOND.toString();
         getPromTypeLine(builder, lineName, "gauge");
         getPromValueLine(builder, lineName, metered.getMeanRate(), tags);
@@ -174,10 +158,6 @@ public class PrometheusBuilder {
         lineName = name + "_fifteen_min_rate_" + MetricUnits.PER_SECOND.toString();
         getPromTypeLine(builder, lineName, "gauge");
         getPromValueLine(builder, lineName, metered.getFifteenMinuteRate(), tags);
-    }
-
-    private static void getPromValueLine(StringBuilder builder, String name, Number value) {
-        getPromValueLine(builder, name, value, null, null);
     }
 
     private static void getPromValueLine(StringBuilder builder, String name, Number value, String tags) {
@@ -217,7 +197,7 @@ public class PrometheusBuilder {
 
     private static void getPromHelpLine(StringBuilder builder, String name, String description, String appendUnit) {
         String metricName = getPrometheusMetricName(name);
-        if (description != null) {
+        if (description != null && !description.isEmpty()) {
             builder.append("# HELP ").append(metricName);
 
             if (appendUnit != null) {
@@ -246,13 +226,10 @@ public class PrometheusBuilder {
      */
     private static String getPrometheusMetricName(String name) {
 
-        String out = name.replace('-', '_').replace('.', '_').replace(' ', '_');
-
-        // convert camelCase to snake_case
-        out = out.replaceAll("(.)(\\p{Upper})", "$1_$2").toLowerCase();
-
-        out = out.replace("__", "_");
-        out = out.replace(":_", ":");
+        String out = name.replaceAll("(?<!^|:)(\\p{Upper})(?=\\p{Lower})", "_$1");
+        out = out.replaceAll("(?<=\\p{Lower})(\\p{Upper})", "_$1").toLowerCase();
+        out = out.replaceAll("[-_.\\s]+", "_");
+        out = out.replaceAll("^_*(.*?)_*$", "$1");
 
         return out;
     }
