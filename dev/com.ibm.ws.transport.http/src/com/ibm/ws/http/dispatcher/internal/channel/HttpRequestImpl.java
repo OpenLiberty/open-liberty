@@ -14,11 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
+import com.ibm.wsspi.http.channel.HttpTrailers;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import com.ibm.wsspi.http.ee8.Http2PushException;
@@ -212,4 +215,47 @@ public class HttpRequestImpl implements Http2Request {
 
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.http.HttpRequest#getTrailers()
+     */
+    @Override
+    public List<String> getTrailerNames() {
+        HttpTrailers trailers = message.getTrailers();
+        if (trailers != null)
+            return trailers.getAllHeaderNames();
+        else
+            return null;
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.http.HttpRequest#getTrailer(java.lang.String)
+     */
+    @Override
+    public String getTrailer(String name) {
+        HttpTrailers trailers = message.getTrailers();
+        if (trailers != null)
+            return trailers.getHeader(name).asString();
+        else
+            return null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.http.HttpRequest#isTrailersReady()
+     */
+    @Override
+    public boolean isTrailersReady() {
+        if (!message.isChunkedEncodingSet()
+            || !message.containsHeader(HttpHeaderKeys.HDR_TRAILER)
+            || ((HttpBaseMessageImpl) message).getTrailersImpl() != null
+            || (message.getVersionValue().getMajor() <= 1 && message.getVersionValue().getMinor() < 1))
+            return true;
+        return false;
+    }
 }

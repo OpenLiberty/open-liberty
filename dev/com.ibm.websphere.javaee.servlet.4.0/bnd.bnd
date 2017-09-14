@@ -1,0 +1,29 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.servlet.4.0; singleton:=true
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Export-Package: \
+    javax.servlet;thread-context=true;version="2.8.0";uses:="javax.servlet.annotation,javax.servlet.descriptor",\
+    javax.servlet.annotation;thread-context=true;version="2.8.0";uses:="javax.servlet",\
+    javax.servlet.descriptor;thread-context=true;version="2.8.0",\
+    javax.servlet.http;thread-context=true;version="2.8.0";uses:="javax.servlet",\
+    javax.servlet.resources;thread-context=true;version="2.8.0"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	com.ibm.ws.internal.prereq.java:java.ibmjgssprovider;strategy=exact;version=1.8.0,\
+    lib/com.ibm.ws.javaee.servlet.4.0.jar;version=file,\
+    lib/com.ibm.ws.javax.servlet.resources_4.0.jar;version=file,\
+    com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+    

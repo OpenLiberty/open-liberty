@@ -1,0 +1,70 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: WAS WebContainer
+Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.4.0
+Bundle-Description: WAS WebContainer 8.1 with Servlet 4.0 support
+WLP-ServerName: IBM WebSphere Application Server
+WLP-ServerVersion: ${liberty.beta.version}
+
+
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: !*.internal.*, \
+    com.ibm.websphere.servlet40*, \
+    com.ibm.ws.webcontainer40.facade*,\
+    com.ibm.ws.webcontainer40.osgi.container.config*, \
+    com.ibm.ws.webcontainer40.osgi.osgi*, \
+    com.ibm.ws.webcontainer40.osgi.request*, \
+    com.ibm.ws.webcontainer40.osgi.response*, \
+    com.ibm.ws.webcontainer40.osgi.srt*, \
+    com.ibm.ws.webcontainer40.osgi.webapp*, \
+    com.ibm.ws.webcontainer40.servlet*, \
+    com.ibm.ws.webcontainer40.srt*, \
+    com.ibm.ws.webcontainer40.srt.http*, \
+    com.ibm.wsspi.webcontainer40.util*
+
+Private-Package: \
+    com.ibm.ws.webcontainer40.resources, \
+	com.ibm.wsspi.webcontainer40*
+	
+Import-Package: \
+    javax.servlet; version="[2.6,3)", \
+    javax.servlet.http; version="[2.6,3)", \
+    javax.servlet.resources; version="[2.6,3)", \
+    com.ibm.ws.webcontainer.resources, \
+    *
+
+ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+ instrument.disabled: true
+
+-buildpath: \
+    com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+    com.ibm.ws.webcontainer;version=latest,\
+    com.ibm.ws.logging.core;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.org.apache.commons.fileupload.1.2.1;version=latest,\
+	com.ibm.ws.session;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest
+	
+	
+

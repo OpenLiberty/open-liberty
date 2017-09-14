@@ -52,6 +52,8 @@ import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.HttpRequest;
 import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.SSLContext;
+import com.ibm.wsspi.http.ee8.Http2PushBuilder;
+import com.ibm.wsspi.http.ee8.Http2PushException;
 
 /**
  * Test session related apis.
@@ -202,6 +204,44 @@ public class SessionTest {
         @Override
         public int getVirtualPort() {
             return 0;
+        }
+
+        @Override
+        public void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException {
+            return;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see com.ibm.wsspi.http.HttpRequest#getTrailerNames()
+         */
+        @Override
+        public List<String> getTrailerNames() {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see com.ibm.wsspi.http.HttpRequest#getTrailer(java.lang.String)
+         */
+        @Override
+        public String getTrailer(String name) {
+            // TODO Auto-generated method stub
+            return null;
+        }
+
+        /*
+         * (non-Javadoc)
+         * 
+         * @see com.ibm.wsspi.http.HttpRequest#isTrailersReady()
+         */
+        @Override
+        public boolean isTrailersReady() {
+            // TODO Auto-generated method stub
+            return false;
         }
     }
 
@@ -659,7 +699,7 @@ public class SessionTest {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see javax.servlet.ServletContext#getVirtualServerName()
          */
         @Override

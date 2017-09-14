@@ -6,7 +6,7 @@ IBM-License-Agreement: wlp/lafiles/LA
 IBM-ProductID: com.ibm.websphere.appserver
 IBM-SPI-Package: com.ibm.wsspi.wab.configure
 Subsystem-Content: com.ibm.websphere.appserver.spi.wab.configure_1.0-javadoc.zip; type=file; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.wab.configure_1.0-javadoc.zip",
- com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0"; type="osgi.subsystem.feature",
  com.ibm.websphere.appserver.spi.wab.configure; location:="dev/spi/ibm/,lib/"; type=jar; version="[1.0.0,1.0.200)",
  com.ibm.ws.app.manager.wab; start-phase:=CONTAINER_LATE; version="[1.0.0,1.0.200)",
  com.ibm.ws.eba.wab.integrator; version="[1.0.0,1.0.200)"

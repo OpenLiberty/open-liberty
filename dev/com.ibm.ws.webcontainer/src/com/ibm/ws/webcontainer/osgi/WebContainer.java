@@ -75,6 +75,7 @@ import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContextPool;
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppFactory;
+import com.ibm.ws.webcontainer.servlet.CacheServletWrapperFactory;
 import com.ibm.ws.webcontainer.util.OneTimeUseArrayList;
 import com.ibm.ws.webcontainer.util.VirtualHostContextRootMapper;
 import com.ibm.wsspi.adaptable.module.adapters.AdapterFactoryService;
@@ -95,6 +96,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.servlet.ITransferContextService;
 import com.ibm.wsspi.webcontainer.util.FFDCWrapper;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
+import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 
 /**
  * @author asisin
@@ -224,6 +226,8 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private static boolean serverStopping = false;
     private int modulesStarting=0;
     
+    // Servlet 4.0
+    private URIMatcherFactory uriMatcherFactory;
     
     
     /**
@@ -1475,6 +1479,34 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         return asyncContextFactory;
     }
 
+    // Servlet 4.0
+    @Reference(cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
+    protected void setURIMatcherFactory(URIMatcherFactory factory) {
+        uriMatcherFactory = factory;
+    }
+    
+    // Servlet 4.0
+    protected void unsetURIMatcherFactory(URIMatcherFactory factory){
+        // no-op intended here to avoid uriMatcherFactory being null when switching service implementations
+    }
+    
+    // Serlvet 4.0
+    @Override
+    public URIMatcherFactory getURIMatcherFactory() {
+        return uriMatcherFactory;
+    }
+    
+    // Servlet 4.0
+    @Reference(cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
+    protected void setCacheServletWrapperFactory(CacheServletWrapperFactory factory) {
+        cacheServletWrapperFactory = factory;
+    }
+    
+    // Servlet 4.0
+    protected void unsetCacheServletWrapperFactory(CacheServletWrapperFactory factory) {
+        // no-op intended here to avoid cacheServletWrapperFactory being null when switching service implementations
+    }
+
     
     @Reference(service=ServletVersion.class, cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
     protected synchronized void setVersion(ServiceReference<ServletVersion> reference) {
@@ -1492,6 +1524,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     public static final int SPEC_LEVEL_UNLOADED = -1;
     public static final int SPEC_LEVEL_30 = 30;
     public static final int SPEC_LEVEL_31 = 31;
+    public static final int SPEC_LEVEL_40 = 40;
     private static final int DEFAULT_SPEC_LEVEL = 30;
     
     private static int loadedContainerSpecLevel = SPEC_LEVEL_UNLOADED;

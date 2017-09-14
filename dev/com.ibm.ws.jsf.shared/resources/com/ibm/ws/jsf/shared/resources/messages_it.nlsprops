@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Sun RI 1.2 JSF Implementation rilevato per l''applicazione web {0} ma \u00e8 anche registrato un MyFaces StartupServletContextListener.
+jsf.warn.myfaces.listener.for.ri.app.explanation=\u00c8 stato trovato un listener che non corrisponde all'implementazione JSF che \u00e8 in uso.
+jsf.warn.myfaces.listener.for.ri.app.useraction=Rimuovere StartupServletContextListener o utilizzare l'implementazione JSF corrispondente.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: Sun RI 1.2 JSF Implementation rilevata, ma impossibile inizializzarla.  JSF potrebbe non essere stato inizializzato correttamente per l''applicazione web {0}.
+jsf.warn.ri.impl.not.initialized.explanation=L'implementazione JSF potrebbe non essere stata inizializzata correttamente.
+jsf.warn.ri.impl.not.initialized.useraction=Esaminare i file di log per determinare la causa dell'errore.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: L''implementazione JSF MyFaces \u00e8 selezionata per {0} ma \u00e8 registrato anche un Sun RI ConfigureListener.
+jsf.warn.ri.listener.for.myfaces.app.explanation=\u00c8 stato trovato un SunRI ConfigureListener che non corrisponde all'implementazione JSF in uso.
+jsf.warn.ri.listener.for.myfaces.app.useraction=Rimuovere ConfigureListener o utilizzare l'implementazione JSF corrispondente.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: WebSphere MyFaces JSF Implementation rilevata, ma impossibile inizializzarla per webapp {0}.
+jsf.warn.myfaces.not.initialized.explanation=L'implementazione JSF potrebbe non essere stata inizializzata correttamente.
+jsf.warn.myfaces.not.initialized.useraction=Esaminare i file di log per determinare la causa dell'errore.
+
+jsf.warn.exception.during.listener=JSFG0855W: Eccezione rilevata durante il tentativo di registrare il listener del ciclo di vita JSF {0}.  JSF potrebbe non essere stato inizializzato correttamente per l''applicazione web {1}.
+jsf.warn.exception.during.listener.explanation=Si \u00e8 verificata un'eccezione durante la registrazione del listener.
+jsf.warn.exception.during.listener.useraction=Esaminare i file di log per determinare la causa dell'eccezione.

@@ -1,0 +1,45 @@
+-include= ~../cnf/resources/bnd/bundle.props, \
+          ~../cnf/resources/bnd/app-resources.bnd
+bVersion=1.0
+
+Bundle-Name: WAS JSF 2.2/2.3 Shared
+Bundle-SymbolicName: com.ibm.ws.jsf.shared
+Bundle-Description: WAS JSF 2.2/2.3 Shared, version ${bVersion}
+WLP-ServerName: IBM WebSphere Application Server
+WLP-ServerVersion: ${liberty.beta.version}
+
+Service-Component: 
+
+Export-Package: !com.ibm.ws.jsf.shared.resources, \
+com.ibm.ws.jsf.shared.*
+
+Import-Package: javax.faces.*;version="[1.0,2.4)", \
+ *
+
+Private-Package: \
+ com.ibm.ws.jsf.shared.resources
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
+instrument.ffdc: false
+instrument.classesExcludes: \
+    com/ibm/ws/jsf/shared/resources/*.class
+
+-buildpath: \
+    org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
+    com.ibm.websphere.javaee.jsf.2.2;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.jsp;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

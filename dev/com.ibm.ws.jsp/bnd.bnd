@@ -78,9 +78,9 @@ Import-Package: \
    org.apache.xml.*;resolution:=optional, \
    org.apache.xpath.*;resolution:=optional, \
    javax.el;version=2.2, \
-   javax.servlet;version=2.6, \
-   javax.servlet.http;version=2.6, \
-   javax.servlet.resources;version=2.6, \
+   javax.servlet;version="[2.6.0,3.0.0)", \
+   javax.servlet.http;version="[2.6.0,3.0.0)", \
+   javax.servlet.resources;version="[2.6.0,3.0.0)", \
    javax.servlet.jsp;version="2.2", \
    javax.servlet.jsp.el;version=2.2, \
    javax.servlet.jsp.resources;version=2.2, \

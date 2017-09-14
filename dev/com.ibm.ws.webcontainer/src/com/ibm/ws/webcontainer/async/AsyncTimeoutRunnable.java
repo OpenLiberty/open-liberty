@@ -13,6 +13,7 @@ package com.ibm.ws.webcontainer.async;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.async.ListenerHelper.CheckDispatching;
 import com.ibm.ws.webcontainer.async.ListenerHelper.ExecuteNextRunnable;
 import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;
@@ -31,6 +32,7 @@ public class AsyncTimeoutRunnable implements Runnable {
                 }
 		this.asyncContext = asyncContext;
                 this.asyncServletReentrantLock = asyncContext.getErrorHandlingLock();
+                
                 requestDataOnTimedOutThread = new SRTServletRequestThreadData();
                 requestDataOnTimedOutThread.init(SRTServletRequestThreadData.getInstance());
 	}

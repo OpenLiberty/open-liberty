@@ -35,9 +35,9 @@ Import-Package: \
    org.apache.xml.*;resolution:=optional, \
    org.apache.xpath.*;resolution:=optional, \
    javax.el;version=3.0, \
-   javax.servlet;version=2.7, \
-   javax.servlet.http;version=2.7, \
-   javax.servlet.resources;version=2.7, \
+   javax.servlet;version="[2.7.0,3.0.0)", \
+   javax.servlet.http;version="[2.7.0,3.0.0)", \
+   javax.servlet.resources;version="[2.7.0,3.0.0)", \
    javax.servlet.jsp;version="2.3", \
    javax.servlet.jsp.el;version=2.3, \
    javax.servlet.jsp.jstl*;version=1.2, \
@@ -85,6 +85,7 @@ instrument.classesIncludes: com/ibm/ws/jsp23/**/*.class
 instrument.classesExcludes: org/apache/**/*.class
 
 -buildpath: \
+	${javac.bootclasspath.java7}, \
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.ws.jsp;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\

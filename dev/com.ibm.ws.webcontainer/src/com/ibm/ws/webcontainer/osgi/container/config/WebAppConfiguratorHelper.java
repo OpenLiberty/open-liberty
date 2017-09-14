@@ -289,7 +289,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         //     : com.ibm.ws.webcontainer.osgi.WebContainer.SPEC_LEVEL_30);
     }
     
-    private static final class ConfigurationWriter {
+    protected static final class ConfigurationWriter {
         private final WebAppConfiguration config;
         private final ResourceRefConfigFactory resourceRefConfigFactory;
 
@@ -540,6 +540,32 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
             this.config.setDenyUncoveredHttpMethods(denyUncoveredHttpMethods);
             
         }
+        
+        public void setDefaultContextRootUsed(boolean isDefaultContextRootUsed) {
+            config.setDefaultContextRootUsed(isDefaultContextRootUsed);
+        }
+        
+        public void setDefaultContextPath(String defaultContextPath) {
+            String methodName = "setDefaultContextPath";
+            boolean isDefaultContextRootUsed = config.isDefaultContextRootUsed();
+            
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, methodName + ": defaultContextPath --> " + defaultContextPath + "; isDefaultContextRootUsed --> " + isDefaultContextRootUsed);
+            }
+            
+            /** If the default context root is being used, then use the default-context-path element instead */
+            if(isDefaultContextRootUsed) {
+                config.setContextRoot(defaultContextPath);
+            }
+        }
+        
+        public void setRequestEncoding(String encoding){
+            config.setModuleRequestEncoding(encoding);
+        }
+        
+        public void setResponseEncoding(String encoding) {
+            config.setModuleResponseEncoding(encoding);
+        }
     }
     
     private static final class MappingIndexPair<T, N> {
@@ -560,7 +586,7 @@ public class WebAppConfiguratorHelper implements ServletConfiguratorHelper {
         }
     }
 
-    private final ConfigurationWriter webAppConfiguration;
+    protected final ConfigurationWriter webAppConfiguration;
     
     protected interface DeferredAction {
         boolean isAllServletAction();

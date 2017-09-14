@@ -1486,10 +1486,6 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         return authType;
     }
 
-    /**
-     * This method was created in VisualAge.
-     * @return java.lang.String
-     */
     public String getCharacterEncoding()
     {
         if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE){
@@ -1517,13 +1513,10 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
             catch (UnsupportedEncodingException e)
             {
                 logger.logp(Level.INFO, CLASS_NAME,"getCharacterEncoding", "Unable to set request character encoding based upon request header ", e);
-
             }
-
         }
 
         return _encoding;
-
     }
 
     public static String getEncodingFromContentType(String type,int index) {
@@ -4257,6 +4250,8 @@ public class SRTServletRequest implements HttpServletRequest, IExtendedRequest, 
         }
     }
     
-    //MultiRead End
+    protected String getSrtHelperCharEncoding() {
+        return _srtRequestHelper._characterEncoding;
+    }
 
 }

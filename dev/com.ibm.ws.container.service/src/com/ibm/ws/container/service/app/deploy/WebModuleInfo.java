@@ -16,8 +16,15 @@ package com.ibm.ws.container.service.app.deploy;
 public interface WebModuleInfo extends ModuleInfo {
     /**
      * Returns the context root for a web module
-     * 
+     *
      * @return
      */
     String getContextRoot();
+
+    /**
+     * Returns true if the default context root is being used, otherwise returns false
+     *
+     * @return
+     */
+    boolean isDefaultContextRootUsed();
 }

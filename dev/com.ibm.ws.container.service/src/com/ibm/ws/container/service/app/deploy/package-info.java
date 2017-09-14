@@ -8,10 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/** @version 2.0 */
-@org.osgi.annotation.versioning.Version("2.0")
+/** @version 2.1 */
+@org.osgi.annotation.versioning.Version("2.1")
 @TraceOptions(traceGroup = "container.service", messageBundle = "com.ibm.ws.container.service.resources.Messages")
 package com.ibm.ws.container.service.app.deploy;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-

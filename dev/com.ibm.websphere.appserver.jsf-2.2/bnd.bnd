@@ -24,6 +24,7 @@ publish.feature.resources: **
 	com.ibm.ws.org.apache.commons.beanutils;version=latest, \
 	com.ibm.ws.org.apache.commons.collections;version=latest, \
 	com.ibm.ws.jsf.2.2;version=latest, \
+	com.ibm.ws.jsf.shared;version=latest, \
 	com.ibm.ws.org.apache.commons.discovery;version=latest, \
 	com.ibm.ws.org.apache.commons.codec.1.3;version=latest, \
 	com.ibm.ws.org.apache.commons.logging;version=latest, \

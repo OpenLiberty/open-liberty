@@ -31,6 +31,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TruncatableThrowable;
 import com.ibm.websphere.servlet.response.IResponse;
 import com.ibm.ws.ffdc.FFDCFilter;
@@ -901,6 +902,10 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
      * @param cookie The cookie to add.
      */
     public void addCookie(Cookie cookie) {
+        
+        //
+        // Note: this method is overwritten in servlet 4.0
+        //
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.logp(Level.FINE, CLASS_NAME,"addCookie", "Adding cookie --> " + cookie.getName(),"["+this+"]");
         }
@@ -1043,13 +1048,21 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             logger.entering(CLASS_NAME,"setDefaultResponseEncoding","["+this+"]");
         }
 
-        // check auto encoding
         IExtendedRequest extReq = getRequest();
+        WebApp webApp = null;
         boolean useAuto = false;
-        if (extReq!=null){
-            WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext) extReq.getWebAppDispatcherContext();
-            WebApp webApp = dispatchContext.getWebApp();
-            if (webApp!=null&&webApp.getConfiguration().isAutoResponseEncoding() == true) {
+        if (extReq != null) {
+            webApp = ((WebAppDispatcherContext) extReq.getWebAppDispatcherContext()).getWebApp();
+        }
+        
+        // check auto encoding
+        if (webApp != null){
+            //WebAppDispatcherContext dispatchContext = (WebAppDispatcherContext) extReq.getWebAppDispatcherContext();
+            //WebApp webApp = dispatchContext.getWebApp();
+            if (webApp.getConfiguration().isAutoResponseEncoding() == true) {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) { 
+                    logger.logp(Level.FINE, CLASS_NAME,"setDefaultResponseEncoding", "auto response encoding is true");
+                }
                 useAuto = true;
                 // it's on...set a default content type and attempt to determine response locale and encoding
 
@@ -1081,7 +1094,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
                      * Check the DD locale-endoding mappings to see if there is a specified mapping
                      * @since Servlet 2.4
                      */
-                    _encoding = dispatchContext.getWebApp().getConfiguration().getLocaleEncoding(_locale);
+                    _encoding = webApp.getConfiguration().getLocaleEncoding(_locale);
 
                     if (_encoding == null) {
                         _encoding = EncodingUtils.getEncodingFromLocale(_locale);
@@ -1109,7 +1122,8 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         if (!useAuto) {
             // it's off...use defaults
             _locale = _defaultLocale;
-            _encoding = _defaultEncoding;
+            _encoding = getSpecLevelEncoding(_defaultEncoding,webApp);
+                        
             //begin PK27527  DEFAULT CONTENT-TYPE SETTING ON WEBSPHERE V6.0.X IS "TEXT/PLAN"
             // set the default content type based on whether we are V4=text/html or V5=text/html;charset=defaultEncoding
             if (contentTypeCompatibility!=null){
@@ -1136,6 +1150,10 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {  //306998.15
             logger.exiting(CLASS_NAME,"setDefaultResponseEncoding", "_locale: " + _locale.toString()+", _encoding: " + _encoding);
         }
+    }
+    
+    protected String getSpecLevelEncoding(String encoding, WebApp webApp) {
+        return encoding;
     }
 
     public void reset() {
@@ -1773,7 +1791,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     }
 
     // Do not sync for performance reasons.  It is ok to print this warning more than once, just trying to limit it for the most part.
-    private boolean logWarningActionNow(IServletWrapper w) {
+    protected boolean logWarningActionNow(IServletWrapper w) {
         if (w instanceof IServletWrapperInternal) {
             boolean firstTime = ((IServletWrapperInternal) w).hitWarningStatus();
             return firstTime;
@@ -1786,7 +1804,7 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
         
     }
     
-    private void logAlreadyCommittedWarning(Throwable t, String methodName) {
+    protected void logAlreadyCommittedWarning(Throwable t, String methodName) {
         String userStackTrace = null;
         TruncatableThrowable tt = new TruncatableThrowable(t);
         StringBuilder sb = new StringBuilder();

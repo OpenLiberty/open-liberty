@@ -77,12 +77,17 @@ final class FacesConfigDDParser extends DDParser {
                 version = 21;
                 return new FacesConfigType(getDeploymentDescriptorPath());
             }
-        }
-        else if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
-            //  don't want to allow a faces-config.xml with version="2.2 if the jsf-2.2 feature is not enabled 
+        } else if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+            //  don't want to allow a faces-config.xml with version="2.2" if the jsf-2.2 feature is not enabled
             if ((this.FacesBundleLoadedVersion >= 22) && "2.2".equals(vers)) {
                 // javaee 7 only
                 version = 22;
+                return new FacesConfigType(getDeploymentDescriptorPath());
+            }
+            //  don't want to allow a faces-config.xml with version="2.3" if the jsf-2.3 feature is not enabled
+            if ((this.FacesBundleLoadedVersion >= 23) && "2.3".equals(vers)) {
+                // javaee 8 only
+                version = 23;
                 return new FacesConfigType(getDeploymentDescriptorPath());
             }
         }

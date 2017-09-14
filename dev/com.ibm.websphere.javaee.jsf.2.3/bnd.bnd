@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+Bundle-Name: WS_J2EE_jsf
+Bundle-SymbolicName: com.ibm.websphere.javaee.jsf.2.3; singleton:=true
+Bundle-Description: WS_J2EE_jsf, version 2.3
+
+javac.source: 1.8
+javac.target: 1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Export-Package: javax.faces.*; version=2.3.0
+
+DynamicImport-Package: com.ibm.ws.jsf.spi, \
+                com.ibm.ws.managedobject, \
+                org.apache.myfaces.cdi.dependent, \
+                org.apache.myfaces.spi
+  
+Include-Resource: \
+	@lib/myfaces-api-2.3.0-beta.jar!/javax/faces, \
+	@lib/myfaces-api-2.3.0-beta.jar!/META-INF/**
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	lib/myfaces-api-2.3.0-beta.jar;version=file, \
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	lib/myfaces-builder-annotations-1.0.9.jar;version=file,\
+	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.websphere.javaee.jstl.1.2;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest, \
+	com.ibm.websphere.javaee.websocket.1.1;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

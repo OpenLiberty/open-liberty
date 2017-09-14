@@ -32,7 +32,7 @@ Service-Component: com.ibm.ws.jsf.2.2; \
    provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
    serializationService=com.ibm.ws.serialization.SerializationService; \
    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService;\
-   cdiJSFInitializerService=com.ibm.ws.jsf.cdi.CDIJSFInitializer; \
+   cdiJSFInitializerService=com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer; \
    greedy:="cdiJSFInitializerService"; \
    optional:="cdiJSFInitializerService"; \
    properties:="service.vendor=IBM", \
@@ -45,7 +45,7 @@ com.ibm.ws.myfaces.initializer; \
      provide:=javax.servlet.ServletContainerInitializer; \
      properties:="service.vendor=IBM,service.ranking:Integer=101", \
 com.ibm.ws.jsf.2.2.injection.class.list.collaborator; \
-   implementation:=com.ibm.ws.jsf.util.JSFInjectionClassListCollaborator ; \
+   implementation:=com.ibm.ws.jsf.shared.util.JSFInjectionClassListCollaborator ; \
    provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
    immediate:=true; \
    properties:="service.vendor=IBM", \
@@ -55,7 +55,7 @@ ${bSymbolicName}_${bVersion}.ResourceProvider; \
     configuration-policy:=ignore; \
     properties:="resources=${app-resources}", \
 com.ibm.ws.jsf.2.2.cdiextension; \
-   implementation:=com.ibm.ws.jsf.ext.CdiExtension; \
+   implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
    provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
    properties:="service.vendor=IBM,\
                 bean.defining.annotations=javax.faces.flow.FlowScoped;javax.faces.view.ViewScoped,\
@@ -70,8 +70,11 @@ com.ibm.ws.jsf.22.dd; \
 # org.apache.myfaces.buildtools package is javax.j2ee.jsf-2.2/lib/myfaces-builder-annotations-1.0.9.jar
 Export-Package: !org.apache.myfaces.buildtools.*, \
 org.apache.myfaces.*;version="1.0.16", \
-!com.ibm.ws.jsf.resources, \
-com.ibm.ws.jsf.*, \
+com.ibm.ws.jsf.cdi, \
+com.ibm.ws.jsf.config.*, \
+com.ibm.ws.jsf.ext, \
+com.ibm.ws.jsf.spi.*, \
+com.ibm.ws.jsf.extprocessor, \
 org.apache.myfaces.application;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.application.viewstate;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.cdi.view;thread-context=true;mandatory:="thread-context", \
@@ -111,9 +114,6 @@ org.apache.myfaces.view.facelets.tag.jstl.fn;thread-context=true;mandatory:="thr
 org.apache.myfaces.view.facelets.tag.ui;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.view.facelets.util;thread-context=true;mandatory:="thread-context", \
 org.apache.myfaces.webapp;thread-context=true;mandatory:="thread-context"
-
-Private-Package: \
- com.ibm.ws.jsf.resources
 
 # Import everything we need except for the below exclusions that will not be needed at runtime.
 Import-Package: !com.google.inject, \
@@ -157,6 +157,7 @@ instrument.classesExcludes: \
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.jsf.shared;version=latest,\
 	com.ibm.ws.jsp;version=latest,\
 	com.ibm.ws.org.apache.commons.collections.3.2.1;version=latest,\
 	com.ibm.ws.beanvalidation.core;version=latest,\

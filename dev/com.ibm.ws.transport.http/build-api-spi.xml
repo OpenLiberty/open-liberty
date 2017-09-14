@@ -21,7 +21,7 @@
   <property name="spibndfile" value="${basedir}/build/spi.bnd"/>  
   <property name="spi.ibm.symbolic.suffix" value="httptransport"/>
   <property name="spi.ibm.bundleName" value="WebSphere HTTP Transport SPI"/>
-  <property name="spi.ibm.version" value="1.1"/>  
+  <property name="spi.ibm.version" value="1.2"/>  
   <property name="feature.name" value="com.ibm.websphere.appserver.httptransport-1.0"/> 
     
   <import file="../ant_build/public_imports/apibnd_imports.xml"/>

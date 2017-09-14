@@ -3517,6 +3517,11 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
      * @see javax.servlet.ServletContext#getAttribute(String)
      */
     public Object getAttribute(String name) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))
+        {
+            logger.logp(Level.FINE, CLASS_NAME, "getAttribute", "name->" + name);
+        }
+
         return this.attributes.get(name);
     }
 
@@ -3603,12 +3608,20 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         // WebAppDispatcherContext dispatchContext = createDispatchContext();
         // RequestDispatcher ward = new WebAppRequestDispatcher(this, w,
         // dispatchContext);
-        RequestDispatcher ward = new WebAppRequestDispatcher(this, w);
+        RequestDispatcher ward = getRequestDispatcher(this, w);
         // end PK07351 6021Request dispatcher could not be reused as it was in
         // V5. WAS.webcontainer
 
         return ward;
     }
+    
+    /**
+     *  Method added for override by WebApp40 
+     */  
+    protected RequestDispatcher getRequestDispatcher(WebApp webApp, RequestProcessor p) {
+        return new WebAppRequestDispatcher(webApp, p);
+    }
+
 
     public WebModuleMetaData getModuleMetaData() {
         return this.config.getMetaData();
@@ -3657,7 +3670,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
              * 
              * return new WebAppRequestDispatcher(this, path, dispatchContext);
              */
-            return new WebAppRequestDispatcher(this, path);
+            return getRequestDispatcher(this, path);
             // end PK07351 6021Request dispatcher could not be reused as it was
             // in V5. WAS.webcontainer
 
@@ -3665,6 +3678,13 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             return null;
     }
 
+    /**
+     *  Method added for override by WebApp40 
+     */  
+    protected RequestDispatcher getRequestDispatcher(WebApp app, String path) {
+        return new WebAppRequestDispatcher(app, path);
+    }
+    
     /**
      * @see javax.servlet.ServletContext#getServlet(String)
      * @deprecated
@@ -3738,7 +3758,6 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     public void setAttribute(String name, Object value) {
         // TODO: check is WebAppBean stuff is needed
         // or add BeanContextChild elements..
-
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
             logger.logp(Level.FINE, CLASS_NAME, "setAttribute", "name [{0}], value [{1}]", new Object[] { name, value });
         }
@@ -6234,8 +6253,8 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
     @Override
     public boolean setInitParameter(String name, String value) throws IllegalStateException, IllegalArgumentException {
-         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE) == true)
-         {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE) == true)
+        {
             logger.logp(Level.FINE, CLASS_NAME, "setInitParameter", "name->" + name + "value->" + value);
             logger.logp(Level.FINE, CLASS_NAME, "setInitParameter", "initialized->" + initialized + "withinContextInitOfProgAddListener->" + withinContextInitOfProgAddListener);
         }
