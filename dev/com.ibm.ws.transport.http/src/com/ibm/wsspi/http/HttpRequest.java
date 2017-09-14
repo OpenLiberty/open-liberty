@@ -12,6 +12,9 @@ package com.ibm.wsspi.http;
 
 import java.util.List;
 
+import com.ibm.wsspi.http.ee8.Http2PushBuilder;
+import com.ibm.wsspi.http.ee8.Http2PushException;
+
 /**
  * Representation of an HTTP request message provided by the dispatcher to any
  * HTTP container.
@@ -146,4 +149,37 @@ public interface HttpRequest {
      * @return HttpInputStream
      */
     HttpInputStream getBody();
+
+    /**
+     * Initiate a Push request
+     *
+     * @return
+     */
+    void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException;
+
+    /*
+     * Access the list of names for all trailer headers in the request
+     *
+     * @return List<String>
+     */
+    List<String> getTrailerNames();
+
+    /*
+     * Access the value of a trailer header.
+     *
+     * @return String
+     */
+    String getTrailer(String name);
+
+    /*
+     * Returns true if trailers are not expected or ready to read.
+     * Trailers are not expected if:
+     * message is not chunked;
+     * trailer header is not present;
+     * HTTP version is 1.0 or earlier.
+     *
+     * @return boolean
+     */
+    boolean isTrailersReady();
+
 }

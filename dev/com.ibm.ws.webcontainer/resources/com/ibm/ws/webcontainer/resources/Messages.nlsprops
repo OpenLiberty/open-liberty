@@ -16,7 +16,7 @@
 # cmvc_en_version_level=1.4,0,04/02/09,12:44:41
 #
 #CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
-#COMPONENTPREFIX SRVE
+#COMPONENTPREFIX SRVE CWWWC
 #COMPONENTNAMEFOR SRVE Servlet Engine
 #ISMESSAGEFILE TRUE
 #NLS_MESSAGEFORMAT_VAR
@@ -1571,3 +1571,12 @@ resource.does.not.support.async.useraction=Either update the specified filter or
 uncaught.exception.during.AsyncListener.onComplete=SRVE8504W: The following uncaught exception was thrown by the AsyncListener: [{0}] during onComplete: [{1}]
 uncaught.exception.during.AsyncListener.onComplete.explanation=The AsyncListener that is referenced in the error message threw an Exception. The Exception is an application error.
 uncaught.exception.during.AsyncListener.onComplete.useraction=Verify the AsyncListener source code and the server logs for the root cause of the application error.
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+#name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
+#name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
+#name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.

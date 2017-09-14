@@ -64,7 +64,7 @@ Subsystem-Category: JavaEE7Application
  bin/pluginUtility; ibm.executable:=true; ibm.file.encoding:=ebcdic, \
  bin/pluginUtility.bat, \
  dev/api/ibm/schema/ibm-common-bnd_1_2.xsd, \
- dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.servlet_2.0-javadoc.zip, \
+ dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.servlet_2.1-javadoc.zip, \
  dev/api/ibm/schema/ibm-web-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-application-ext_1_0.xsd, \
  dev/api/ibm/schema/ibm-web-ext_1_0.xsd, \

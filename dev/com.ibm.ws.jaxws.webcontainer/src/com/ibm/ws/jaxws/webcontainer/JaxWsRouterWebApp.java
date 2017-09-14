@@ -38,12 +38,15 @@ import com.ibm.ws.javaee.dd.common.wsclient.ServiceRef;
 import com.ibm.ws.javaee.dd.jsp.JSPConfig;
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
+import com.ibm.ws.javaee.dd.web.common.DefaultContextPath;
 import com.ibm.ws.javaee.dd.web.common.ErrorPage;
 import com.ibm.ws.javaee.dd.web.common.Filter;
 import com.ibm.ws.javaee.dd.web.common.FilterMapping;
 import com.ibm.ws.javaee.dd.web.common.LocaleEncodingMappingList;
 import com.ibm.ws.javaee.dd.web.common.LoginConfig;
 import com.ibm.ws.javaee.dd.web.common.MimeMapping;
+import com.ibm.ws.javaee.dd.web.common.RequestEncoding;
+import com.ibm.ws.javaee.dd.web.common.ResponseEncoding;
 import com.ibm.ws.javaee.dd.web.common.SecurityConstraint;
 import com.ibm.ws.javaee.dd.web.common.Servlet;
 import com.ibm.ws.javaee.dd.web.common.ServletMapping;
@@ -289,6 +292,21 @@ public class JaxWsRouterWebApp implements WebApp {
 
     @Override
     public AbsoluteOrdering getAbsoluteOrdering() {
+        return null;
+    }
+
+    @Override
+    public DefaultContextPath getDefaultContextPath() {
+        return null;
+    }
+
+    @Override
+    public RequestEncoding getRequestEncoding() {
+        return null;
+    }
+
+    @Override
+    public ResponseEncoding getResponseEncoding() {
         return null;
     }
 }

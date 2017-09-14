@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Se ha detectado la implementaci\u00f3n JSF 1.2 RI de Sun para la aplicaci\u00f3n web {0}, pero tambi\u00e9n se ha registrado un elemento StartupServletContextListener de MyFaces.
+jsf.warn.myfaces.listener.for.ri.app.explanation=Se ha encontrado un escucha que no coincide con la implementaci\u00f3n JSF que se est\u00e1 utilizando.
+jsf.warn.myfaces.listener.for.ri.app.useraction=Elimine el elemento StartupServletContextListener o utilice la implementaci\u00f3n JSF correspondiente.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: Se ha detectado una implementaci\u00f3n JSF 1.2 RI de Sun, pero no se ha podido inicializar.  Es posible que JSF no se haya inicializado correctamente para la aplicaci\u00f3n Web {0}.
+jsf.warn.ri.impl.not.initialized.explanation=Es posible que la implementaci\u00f3n JSF no se haya inicializado correctamente.
+jsf.warn.ri.impl.not.initialized.useraction=Examine los archivos de registro para determinar la causa de la anomal\u00eda.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: La implementaci\u00f3n JSF MyFaces se ha seleccionado para {0}, pero tambi\u00e9n se ha registrado un elemento ConfigureListener RI de Sun.
+jsf.warn.ri.listener.for.myfaces.app.explanation=Se ha encontrado un elemento ConfigureListener RI de Sun que no coincide con la implementaci\u00f3n de JSF que se est\u00e1 utilizando.
+jsf.warn.ri.listener.for.myfaces.app.useraction=Elimine el elemento ConfigureListener o utilice la implementaci\u00f3n JSF correspondiente.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: Se ha detectado una implementaci\u00f3n JSF MyFaces de WebSphere pero no se ha podido inicializar para la aplicaci\u00f3n Web {0}.
+jsf.warn.myfaces.not.initialized.explanation=Es posible que la implementaci\u00f3n JSF no se haya inicializado correctamente.
+jsf.warn.myfaces.not.initialized.useraction=Examine los archivos de registro para determinar la causa de la anomal\u00eda.
+
+jsf.warn.exception.during.listener=JSFG0855W: Se ha detectado una excepci\u00f3n al intentar registrar el escucha de ciclo de vida JSF {0}. Es posible que JSF no se haya inicializado correctamente para la aplicaci\u00f3n Web {1}.
+jsf.warn.exception.during.listener.explanation=Se produce una excepci\u00f3n al registrar el escucha.
+jsf.warn.exception.during.listener.useraction=Examine los archivos de registro para determinar la causa de la excepci\u00f3n.

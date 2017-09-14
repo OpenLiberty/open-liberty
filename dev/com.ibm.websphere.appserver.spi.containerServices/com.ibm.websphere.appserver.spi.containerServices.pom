@@ -25,5 +25,5 @@
   <artifactId>com.ibm.websphere.appserver.spi.containerServices</artifactId>
   <version>${bFullVersion}</version>
   <name>WebSphere Container Services SPI</name>
-  <description>WebSphere Container Services SPI, version 2.0</description>
+  <description>WebSphere Container Services SPI, version 2.1</description>
 </project>

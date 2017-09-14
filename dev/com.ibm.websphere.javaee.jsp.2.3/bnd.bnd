@@ -21,7 +21,7 @@ Export-Package: \
 
 Import-Package: !javax.servlet.jsp.*, \
   javax.el; version="3.0.0", \
-  javax.servlet.*; version="2.7.0", \
+  javax.servlet.*; version="[2.7.0,3.0.0)", \
   javax.xml.parsers; resolution:=optional, \
   org.apache.taglibs.standard.resources; resolution:=optional, \
   org.apache.taglibs.standard.tag.common.fmt; resolution:=optional, \
@@ -33,5 +33,6 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
+	${javac.bootclasspath.java6}, \
 	com.ibm.ws.javax.j2ee:servlet.jsp.resources;version=2.3, \
     javax.servlet.jsp-api;version=2.3.2.b01

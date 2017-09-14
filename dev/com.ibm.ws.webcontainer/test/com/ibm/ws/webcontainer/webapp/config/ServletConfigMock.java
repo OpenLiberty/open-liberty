@@ -36,6 +36,8 @@ import com.ibm.ws.javaee.dd.webext.WebExt;
 import com.ibm.ws.javaee.version.ServletVersion;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
 import com.ibm.ws.webcontainer.osgi.container.config.WebAppConfigurator;
+import com.ibm.ws.webcontainer.osgi.container.config.WebAppConfiguratorHelperFactory;
+//import com.ibm.ws.webcontainer.osgi.container.config.internal.WebAppConfiguratorFactoryImpl;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
@@ -198,6 +200,12 @@ public class ServletConfigMock {
         //With the above object structure, we pass in a mock container with a LIVE nonpersistent cache.
         //The cache is a simple in-memory set of hashmaps used for storing data. 
         WebAppConfigurator configurator = new WebAppConfigurator(moduleContainer, memoryCache, null);
+
+        // Configure the factory to be used.
+        // Servlet 4 TODO: We need to figure out how to mock the Factory so we can run this test
+        // or we can move this and the tests that use it to the 3.0 factories project
+        //WebAppConfiguratorHelperFactory factory = new WebAppConfiguratorFactoryImpl();
+        //configurator.configureWebAppHelperFactory(factory, null);
 
         //Actually do the configuration. The mocking above should boil this down to two steps:
         //configureFromWebApp

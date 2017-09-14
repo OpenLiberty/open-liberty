@@ -8,7 +8,7 @@ visibility = protected
  com.ibm.ws.eba.wab.integrator
 
 -features= \
- com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1"
+ com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1,4.0"
 
 -jars= \
  com.ibm.websphere.appserver.spi.wab.configure; location:=dev/spi/ibm/

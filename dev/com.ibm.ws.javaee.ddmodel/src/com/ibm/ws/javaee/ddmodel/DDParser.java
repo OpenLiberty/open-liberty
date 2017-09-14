@@ -840,7 +840,7 @@ public abstract class DDParser {
         return Tr.formatMessage(tc, "unexpected.attribute", ddEntryPath, getLineNumber(), currentElementLocalName, attrLocal);
     }
 
-    private String unexpectedContent() {
+    public String unexpectedContent() {
         return Tr.formatMessage(tc, "unexpected.content", ddEntryPath, getLineNumber(), currentElementLocalName);
     }
 
