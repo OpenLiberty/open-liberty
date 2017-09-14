@@ -116,7 +116,7 @@ public class HealthCheckServiceImpl implements HealthCheckService {
                     Tr.debug(tc, "In performHealthCheck(): hcResponses = " + hcResponses);
 
                 if (!hcResponses.isEmpty())
-                    hcHttpResponseBuilder.addResponse(hcResponses);
+                    hcHttpResponseBuilder.addResponses(hcResponses);
             }
         }
 

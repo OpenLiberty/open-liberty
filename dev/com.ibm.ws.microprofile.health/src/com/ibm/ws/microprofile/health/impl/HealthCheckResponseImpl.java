@@ -22,8 +22,10 @@
 
 package com.ibm.ws.microprofile.health.impl;
 
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.eclipse.microprofile.health.HealthCheckResponse;
 import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
@@ -50,9 +52,10 @@ public class HealthCheckResponseImpl extends HealthCheckResponse {
 
     @Override
     public String getName() {
-        if (this.name != null)
-            return this.name;
-        return null;
+        if (this.name == null || this.name.length() == 0)
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "Name is null"));
+        else
+            return name;
     }
 
     @Override
@@ -65,6 +68,17 @@ public class HealthCheckResponseImpl extends HealthCheckResponse {
 
     @Override
     public Optional<Map<String, Object>> getData() {
+        if (data.isPresent()) {
+            Set<String> keys = data.get().keySet();
+            Iterator<String> keysIter = keys.iterator();
+            while (keysIter.hasNext()) {
+                String key = keysIter.next();
+                if (key == null || key.length() == 0) {
+                    throw new IllegalArgumentException(Tr.formatMessage(tc, "Key is null"));
+                }
+            }
+        }
+
         return data;
     }
 
@@ -74,9 +88,9 @@ public class HealthCheckResponseImpl extends HealthCheckResponse {
         if (sName != null && sName.length() > 0) {
             builder = HealthCheckResponse.named(sName);
             builder.name(sName);
-        }
+        } else
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "Name is null"));
         return builder;
-
     }
 
     @Override
