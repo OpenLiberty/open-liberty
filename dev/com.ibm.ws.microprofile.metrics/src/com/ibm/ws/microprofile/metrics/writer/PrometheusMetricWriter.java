@@ -28,7 +28,6 @@ import org.eclipse.microprofile.metrics.Timer;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.microprofile.metrics.BaseMetrics;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -40,6 +39,8 @@ import com.ibm.ws.microprofile.metrics.helper.Util;
  *
  */
 public class PrometheusMetricWriter implements OutputWriter {
+
+    private static final TraceComponent tc = Tr.register(PrometheusMetricWriter.class);
 
     private final Writer writer;
     private final Locale locale;
@@ -93,10 +94,6 @@ public class PrometheusMetricWriter implements OutputWriter {
         writeMetricMapAsPrometheus(builder, registryName, Util.getMetricsAsMap(registryName, metricName), Util.getMetricsMetadataAsMap(registryName));
     }
 
-    private static final TraceComponent tc = Tr.register(BaseMetrics.class);
-
-    private static final TraceComponent tc2 = Tr.register(PrometheusMetricWriter.class);
-
     private void writeMetricMapAsPrometheus(StringBuilder builder, String registryName, Map<String, Metric> metricMap, Map<String, Metadata> metricMetadataMap) {
         for (Entry<String, Metric> entry : metricMap.entrySet()) {
             String metricNamePrometheus = registryName + ":" + entry.getKey();
@@ -105,7 +102,14 @@ public class PrometheusMetricWriter implements OutputWriter {
 
             //description
             Metadata metricMetaData = metricMetadataMap.get(entryName);
-            String description = Tr.formatMessage(tc, locale, metricMetaData.getDescription());
+
+            String description = "";
+
+            if (metricMetaData.getDescription() == null || metricMetaData.getDescription().isEmpty()) {
+
+            } else {
+                description = Tr.formatMessage(tc, locale, metricMetaData.getDescription());
+            }
 
             String tags = metricMetaData.getTagsAsString();
 
@@ -228,7 +232,7 @@ public class PrometheusMetricWriter implements OutputWriter {
             } else if (Meter.class.isInstance(metric)) {
                 PrometheusBuilder.buildMeter(builder, metricNamePrometheus, (Meter) metric, description, tags);
             } else {
-                Tr.event(tc2, "Metric type " + entryName + " is invalid.");
+                Tr.event(tc, "Metric type '" + metric.getClass() + " for " + entryName + " is invalid.");
             }
         }
     }

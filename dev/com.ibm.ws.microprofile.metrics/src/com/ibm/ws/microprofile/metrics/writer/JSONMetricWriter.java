@@ -100,7 +100,7 @@ public class JSONMetricWriter implements OutputWriter {
             } else if (Meter.class.isInstance(metric)) {
                 jsonObject.put(metricName, getJsonFromMap(Util.getMeterNumbers((Meter) metric)));
             } else {
-                Tr.event(tc, "Metric type " + metricName + " is invalid.");
+                Tr.event(tc, "Metric type '" + metric.getClass() + " for " + metricName + " is invalid.");
             }
         }
         return jsonObject;

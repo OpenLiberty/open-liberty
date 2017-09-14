@@ -24,45 +24,40 @@
 # Messages used by Metrics Impl -  range is 0000-4999, plus 9999 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
-#A timeout occurred. 
-timeout.occurred.CWMMC0000E=CWMMC0000E: A timeout occurred.
-timeout.occurred.CWMMC0000E.explanation=An operation took too long to complete for the configured timeout.
-timeout.occurred.CWMMC0000E.useraction=Increase the maximum duration of the timeout or ensure that the operation completes faster. 
-
 #Accept Header not acceptable.
-notAcceptable.error.CWMMC0001E=CWMMC0001E: The accept header format is incorrect.
-notAcceptable.error.CWMMC0001E.explanation=The accept header uses an unsupported format.
-notAcceptable.error.CWMMC0001E.useraction=Use appropriate headers.
+notAcceptable.info.CWMMC0000I=CWMMC0000I: The accept header format {0} is incorrect.
+notAcceptable.info.CWMMC0000I.explanation=The accept header uses an unsupported format.
+notAcceptable.info.CWMMC0000I.useraction=Use appropriate headers.
 
 #Method Not Allowed
-requestType.error.CWMMC0002E=CWMMC0002E: The method request type must be GET or OPTIONS.
-requestType.error.CWMMC0002E.explanation=The request type is not supported. The type must be GET or OPTIONS.
-requestType.error.CWMMC0002E.useraction=Make GET or OPTIONS requests.
+requestType.info.CWMMC0001I=CWMMC0001I: The method request type must be GET or OPTIONS.
+requestType.info.CWMMC0001I.explanation=The request type is not supported. The type must be GET or OPTIONS.
+requestType.info.CWMMC0001I.useraction=Make GET or OPTIONS requests.
 
 #Metric was not found.
-metricNotFound.error.CWMMC0003E=CWMMC0003E: The metric name was not found.
-metricNotFound.error.CWMMC0003E.explanation=The metric does not exist.
-metricNotFound.error.CWMMC0003E.useraction=Enter the correct metric name.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: The metric name {0} was not found.
+metricNotFound.info.CWMMC0002I.explanation=The metric does not exist.
+metricNotFound.info.CWMMC0002I.useraction=Enter the correct metric name.
 
 #Registry was not found.
-registryNotFound.error.CWMMC0004E=CWMMC0004E: The registry was not found.
-registryNotFound.error.CWMMC0004E.explanation=The registry does not exist.
-registryNotFound.error.CWMMC0004E.useraction=Enter the correct registry name.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: The registry {0} was not found.
+registryNotFound.info.CWMMC0003I.explanation=The registry does not exist.
+registryNotFound.info.CWMMC0003I.useraction=Enter the correct registry name.
 
 #Registry is empty.
-emptyRegistry.error.CWMMC0005E=CWMMC0005E: The registry has no content.
-emptyRegistry.error.CWMMC0005E.explanation=The registry is empty.
-emptyRegistry.error.CWMMC0005E.useraction=Populate the registry with metrics.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: The registry {0} has no content.
+emptyRegistry.info.CWMMC0004I.explanation=The registry is empty.
+emptyRegistry.info.CWMMC0004I.useraction=Populate the registry with metrics.
 
 #An internal error occurred. The exception is {0}.
-internal.error.CWMMC0006E=CWMMC0006E: An internal error occurred: {0}
-internal.error.CWMMC0006E.explanation=The application server experienced an internal error.
-internal.error.CWMMC0006E.useraction=Gather a set of traces and open a new issue against your application server.
+internal.error.CWMMC0005E=CWMMC0005E: An internal error occurred: {0}
+internal.error.CWMMC0005E.explanation=The application server experienced an internal error.
+internal.error.CWMMC0005E.useraction=Gather a set of traces and open a new issue against your application server.
 
 #Generic error for internal failures. 
-internal.error.CWMMC0007E=CWMMC0007E: An internal error occurred.
-internal.error.CWMMC0007E.explanation=The application server experienced an internal error.
-internal.error.CWMMC0007E.useraction=Gather a set of traces and open a new issue against your application server.
+internal.error.CWMMC0006E=CWMMC0006E: An internal error occurred.
+internal.error.CWMMC0006E.explanation=The application server experienced an internal error.
+internal.error.CWMMC0006E.useraction=Gather a set of traces and open a new issue against your application server.
 
 #Memory usedHeap message
 memory.usedHeap.description=Displays the amount of used heap memory in bytes.

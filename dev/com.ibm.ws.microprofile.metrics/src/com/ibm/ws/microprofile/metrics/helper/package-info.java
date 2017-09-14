@@ -13,6 +13,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.resources.Metrics")
-package com.ibm.ws.microprofile.metrics.impl;
+package com.ibm.ws.microprofile.metrics.helper;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
