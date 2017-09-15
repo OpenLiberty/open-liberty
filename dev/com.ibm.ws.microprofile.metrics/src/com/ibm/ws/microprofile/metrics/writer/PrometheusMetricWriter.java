@@ -120,7 +120,12 @@ public class PrometheusMetricWriter implements OutputWriter {
             double conversionFactor = 0;
             String appendUnit = null;
 
-            if (unit.equals(MetricUnits.NANOSECONDS)) {
+            if (unit == null || unit.trim().isEmpty() || unit.equals(MetricUnits.NONE)) {
+
+                conversionFactor = Double.NaN;
+                appendUnit = null;
+
+            } else if (unit.equals(MetricUnits.NANOSECONDS)) {
 
                 conversionFactor = Constants.NANOSECONDCONVERSION;
                 appendUnit = Constants.APPENDEDSECONDS;
@@ -205,11 +210,6 @@ public class PrometheusMetricWriter implements OutputWriter {
                 conversionFactor = Constants.GIBIBITCONVERSION;
                 appendUnit = Constants.APPENDEDBYTES;
 
-            } else if (unit.equals(MetricUnits.NONE)) {
-
-                conversionFactor = Double.NaN;
-                appendUnit = null;
-
             } else if (unit.equals(MetricUnits.MILLISECONDS)) {
 
                 conversionFactor = Constants.MILLISECONDCONVERSION;
@@ -218,7 +218,7 @@ public class PrometheusMetricWriter implements OutputWriter {
             } else {
 
                 conversionFactor = Double.NaN;
-                appendUnit = unit;
+                appendUnit = "_" + unit;
             }
 
             if (Counter.class.isInstance(metric)) {
