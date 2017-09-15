@@ -57,10 +57,10 @@ public class HealthCheckResponseImpl extends HealthCheckResponse {
 
     @Override
     public State getState() {
-        if (state != null)
-            return state;
+        if (state == null || (state != State.UP && state != State.DOWN))
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "State is null"));
         else
-            return State.UP; //default
+            return state;
     }
 
     @Override
