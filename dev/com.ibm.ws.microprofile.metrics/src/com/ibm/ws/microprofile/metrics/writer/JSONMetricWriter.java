@@ -84,6 +84,7 @@ public class JSONMetricWriter implements OutputWriter {
 
     private static final TraceComponent tc = Tr.register(JSONMetricWriter.class);
 
+    @FFDCIgnore({ IllegalStateException.class })
     private JSONObject getJsonFromMetricMap(Map<String, Metric> metricMap) {
         JSONObject jsonObject = new JSONObject();
         for (Entry<String, Metric> entry : metricMap.entrySet()) {
@@ -92,7 +93,11 @@ public class JSONMetricWriter implements OutputWriter {
             if (Counter.class.isInstance(metric)) {
                 jsonObject.put(metricName, ((Counter) metric).getCount());
             } else if (Gauge.class.isInstance(metric)) {
-                jsonObject.put(metricName, ((Gauge) metric).getValue());
+                try {
+                    jsonObject.put(metricName, ((Gauge) metric).getValue());
+                } catch (IllegalStateException e) {
+                    // The forwarding gauge is likely unloaded. A warning has already been emitted
+                }
             } else if (Timer.class.isInstance(metric)) {
                 jsonObject.put(metricName, getJsonFromMap(Util.getTimerNumbers((Timer) metric)));
             } else if (Histogram.class.isInstance(metric)) {

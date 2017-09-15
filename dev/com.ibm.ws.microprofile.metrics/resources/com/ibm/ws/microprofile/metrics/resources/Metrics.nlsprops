@@ -21,7 +21,7 @@
 #
 
 #-----------------------------------------------------------------------------------------------------------------------------
-# Messages used by Metrics Impl -  range is 0000-4999, plus 9999 for the emergency message
+# Messages used by Metrics Impl -  range is 0000-2999, plus 9999 for the emergency message
 #-----------------------------------------------------------------------------------------------------------------------------
 
 #Accept Header not acceptable.

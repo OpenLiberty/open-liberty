@@ -24,6 +24,9 @@ Export-Package: \
     io.astefanutti.metrics.cdi,\
     com.ibm.ws.microprofile.metrics.cdi.producer
 
+Private-Package: \
+    com.ibm.ws.microprofile.metrics.cdi.resources
+
 Include-Resource: \
     META-INF=resources/META-INF
 
