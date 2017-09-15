@@ -1,0 +1,4 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: a.b
+Bundle-Version: 1.0.1.v1
+IBM-Interim-Fixes: PQ1234

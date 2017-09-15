@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+    localization="OSGI-INF/l10n/metatype-mbeans">
+
+    <OCD name="%generatePluginConfig.name" description="%generatePluginConfig.desc" id="com.ibm.ws.generatePluginConfig" ibm:alias="pluginConfiguration" ibmui:localization="OSGI-INF/l10n/metatype-mbeans">
+        <AD name="%plugin.install.root.name" description="%plugin.install.root.desc"
+            id="pluginInstallRoot" required="false" type="String" default="/opt/IBM/WebSphere/Plugins" />
+        <AD name="%plugin.webserver.name.name" description="%plugin.webserver.name.desc"
+            id="webserverName" required="false" type="String" default="webserver1" />    
+        <AD name="%plugin.webserver.port.name" description="%plugin.webserver.port.desc"
+            id="webserverPort" required="false" type="Integer" default="80"  min="-1" max="65535" />   
+        <AD name="%plugin.webserver.secure.port.name" description="%plugin.webserver.secure.port.desc"
+            id="webserverSecurePort" required="false" type="Integer" default="443"  min="-1" max="65535" /> 
+        <AD name="%plugin.ssl.keyring.location.name" description="%plugin.ssl.keyring.location.desc"
+            id="sslKeyringLocation" required="false" type="String" default="${pluginInstallRoot}/config/${webserverName}/plugin-key.kdb" />        
+        <AD name="%plugin.ssl.stashfile.location.name" description="%plugin.ssl.stashfile.location.desc"
+            id="sslStashfileLocation" required="false" type="String" default="${pluginInstallRoot}/config/${webserverName}/plugin-key.sth" />  
+        <AD name="%plugin.ssl.certlabel.name" description="%plugin.ssl.certlabel.desc"
+            id="sslCertlabel" required="false" type="String"/> 
+        <AD name="%plugin.ipv6.preferred.name" description="%plugin.ipv6.preferred.desc"
+            id="ipv6Preferred" required="false" type="Boolean" default="false" />
+        <!-- Description must be changed before this is made public: change from multiple cardinality to one. -->
+        <AD name="%plugin.http.endpoint.name" description="%plugin.http.endpoint.desc"
+            ibm:reference="com.ibm.ws.http" ibm:type="pid"
+            id="httpEndpointRef" required="false" type="String" default="defaultHttpEndpoint" />
+        <AD name="%plugin.connectTimeout.name" description="%plugin.connectTimeout.desc"
+            id="connectTimeout" required="false" type="String" ibm:type="duration(s)" default="5s" />
+        <AD name="%plugin.serverIOTimeout.name" description="%plugin.serverIOTimeout.desc" 
+            id="serverIOTimeout" required="false" type="String" ibm:type="duration(s)" default="900s" />
+        <AD name="%plugin.wsServerIOTimeout.name" description="%plugin.wsServerIOTimeout.desc" 
+            id="wsServerIOTimeout" required="false" type="String" ibm:type="duration(s)" />
+        <AD name="%plugin.wsServerIdleTimeout.name" description="%plugin.wsServerIdleTimeout.desc" 
+            id="wsServerIdleTimeout" required="false" type="String" ibm:type="duration(s)" />
+        <AD name="%plugin.extendedHandshake.name" description="%plugin.extendedHandshake.desc"
+            id="extendedHandshake" required="false" type="Boolean" default="false" />
+        <AD name="%plugin.waitForContinue.name" description="%plugin.waitForContinue.desc" 
+            id="waitForContinue" required="false" type="Boolean" default="false" />
+        <AD name="%plugin.logFileName.name" description="%plugin.logFileName.desc" 
+            id="logFileName" required="false" type="String" ibm:type="location(file)"/>     
+        <AD name="%plugin.logDirLocation.name" description="%plugin.logDirLocation.desc" 
+            id="logDirLocation" required="false" type="String" ibm:type="location(dir)" default="${pluginInstallRoot}/logs/${webserverName}"/> 
+        <AD name="%plugin.serverIOTimeoutRetry.name" description="%plugin.serverIOTimeoutRetry.desc" 
+            id="serverIOTimeoutRetry" required="false" type="Integer" default="-1"  min="-1" max="65535" />
+        <AD id="extraConfigProperties" name="%addProperties.name" description="%addProperties.desc"
+        type="String" ibm:type="pid" ibm:reference="com.ibm.ws.generatePluginConfig.properties"
+        required="false"
+        ibm:flat="true"/>
+        <AD name="%plugin.loadBalanceWeight.name" description="%plugin.loadBalanceWeight.desc" 
+            id="loadBalanceWeight" required="false" type="Integer" default="20" />
+        <AD name="%plugin.serverRole.name" description="%plugin.serverRole.desc" 
+            id="serverRole" required="false" type="String" default="PRIMARY" >
+            <Option label="%plugin.serverRole.primary.label" value="PRIMARY"/>
+            <Option label="%plugin.serverRole.backup.label" value="BACKUP"/>
+        </AD>
+        <AD name="%plugin.ESIEnable.name" description="%plugin.ESIEnable.desc" 
+        	id="ESIEnable" required="false" type="Boolean" default="true" />
+        <AD name="%plugin.ESIMaxCacheSize.name" description="%plugin.ESIMaxCacheSize.desc" 
+        	id="ESIMaxCacheSize" required="false" type="Integer" default="1024" />
+        <AD name="%plugin.ESIInvalidationMonitor.name" description="%plugin.ESIInvalidationMonitor.desc" 
+        	id="ESIInvalidationMonitor" required="false" type="Boolean" default="false" />
+        <AD name="%plugin.ESIEnableToPassCookies.name" description="%plugin.ESIEnableToPassCookies.desc" 
+        	id="ESIEnableToPassCookies" required="false" type="Boolean" default="false" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.generatePluginConfig">
+        <Object ocdref="com.ibm.ws.generatePluginConfig" />
+    </Designate>
+    
+    <Designate factoryPid="com.ibm.ws.generatePluginConfig.properties">
+    <Object ocdref="com.ibm.ws.generatePluginConfig.properties"/>
+  </Designate>
+
+  <OCD id="com.ibm.ws.generatePluginConfig.properties" name="%addProperties.name" description="%addProperties.desc"
+       ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype-mbeans">
+    <AD id="config.parentPID" name="internal" description="internal"
+        type="String"/>
+  </OCD>
+  
+</metatype:MetaData>

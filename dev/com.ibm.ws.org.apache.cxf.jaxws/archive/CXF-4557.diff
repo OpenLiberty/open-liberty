@@ -1,0 +1,782 @@
+Index: api/src/main/java/org/apache/cxf/configuration/jsse/TLSClientParametersConfig.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/configuration/jsse/TLSClientParametersConfig.java	(revision 1399503)
++++ api/src/main/java/org/apache/cxf/configuration/jsse/TLSClientParametersConfig.java	(working copy)
+@@ -155,6 +155,8 @@
+             throw e;
+         } catch (Exception e) {
+             throw new RuntimeException(e);
++        } finally {
++            StaxUtils.close(data);
+         }
+     }
+     
+Index: api/src/main/java/org/apache/cxf/configuration/spring/AbstractBeanDefinitionParser.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/configuration/spring/AbstractBeanDefinitionParser.java	(revision 1399503)
++++ api/src/main/java/org/apache/cxf/configuration/spring/AbstractBeanDefinitionParser.java	(working copy)
+@@ -335,9 +335,10 @@
+                                             String propertyName, 
+                                             Class<?> c) {
+         try {
++            XMLStreamWriter xmlWriter = null;
+             try {
+                 StringWriter writer = new StringWriter();
+-                XMLStreamWriter xmlWriter = StaxUtils.createXMLStreamWriter(writer);
++                xmlWriter = StaxUtils.createXMLStreamWriter(writer);
+                 StaxUtils.copy(data, xmlWriter);
+                 xmlWriter.flush();
+     
+@@ -363,6 +364,8 @@
+                 if (obj != null) {
+                     bean.addPropertyValue(propertyName, obj);
+                 }
++            } finally {
++                StaxUtils.close(xmlWriter);
+             }
+         } catch (JAXBException e) {
+             throw new RuntimeException("Could not parse configuration.", e);
+@@ -402,6 +405,8 @@
+             xmlWriter.flush();
+         } catch (XMLStreamException e) {
+             throw new RuntimeException(e);
++        } finally {
++            StaxUtils.close(xmlWriter);
+         }
+ 
+         BeanDefinitionBuilder jaxbbean 
+@@ -431,6 +436,8 @@
+             throw e;
+         } catch (Exception e) {
+             throw new RuntimeException(e);
++        } finally {
++            StaxUtils.close(data);
+         }
+     }
+     
+Index: api/src/main/java/org/apache/cxf/configuration/spring/JAXBBeanFactory.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/configuration/spring/JAXBBeanFactory.java	(revision 1399503)
++++ api/src/main/java/org/apache/cxf/configuration/spring/JAXBBeanFactory.java	(working copy)
+@@ -60,6 +60,8 @@
+             return obj;
+         } catch (JAXBException e) {
+             throw new RuntimeException(e);
++        } finally {
++            StaxUtils.close(data);
+         }
+     }
+ 
+Index: api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java	(revision 1399503)
++++ api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java	(working copy)
+@@ -449,6 +449,7 @@
+             } catch (XMLStreamException ex) {
+                 //ignore
+             }
++            StaxUtils.close(writer);
+         }
+     }
+     public static void copy(Source source, XMLStreamWriter writer) throws XMLStreamException {
+@@ -1548,17 +1549,47 @@
+ 
+     public static String toString(Document doc) throws XMLStreamException {
+         StringWriter sw = new StringWriter(1024);
+-        XMLStreamWriter writer = createXMLStreamWriter(sw);
+-        copy(doc, writer);
+-        writer.flush();
++        XMLStreamWriter writer = null;
++        try {
++            writer = createXMLStreamWriter(sw);
++            copy(doc, writer);
++            writer.flush();
++        } finally {
++            StaxUtils.close(writer);
++        }
+         return sw.toString();
+     }
+     public static String toString(Element el) throws XMLStreamException {
+         StringWriter sw = new StringWriter(1024);
+-        XMLStreamWriter writer = createXMLStreamWriter(sw);
+-        copy(el, writer);
+-        writer.flush();
++        XMLStreamWriter writer = null;
++        try {
++            writer = createXMLStreamWriter(sw);
++            copy(el, writer);
++            writer.flush();
++        } finally {
++            StaxUtils.close(writer);
++        }        
+         return sw.toString();
+     }
+ 
+
+ }
+Index: api/src/main/java/org/apache/cxf/wsdl/EndpointReferenceUtils.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/wsdl/EndpointReferenceUtils.java	(revision 1399503)
++++ api/src/main/java/org/apache/cxf/wsdl/EndpointReferenceUtils.java	(working copy)
+@@ -637,6 +637,7 @@
+             Map<String, byte[]> schemaSourcesMap = new LinkedHashMap<String, byte[]>();
+             Map<String, Source> schemaSourcesMap2 = new LinkedHashMap<String, Source>();
+ 
++            XMLStreamWriter writer = null;
+             try {
+                 for (SchemaInfo si : serviceInfo.getSchemas()) {
+                     Element el = si.getElement();
+@@ -653,7 +654,7 @@
+                     DOMSource ds = new DOMSource(el, baseURI);   
+                     schemaSourcesMap2.put(si.getSystemId() + ":" + si.getNamespaceURI(), ds);
+                     LoadingByteArrayOutputStream out = new LoadingByteArrayOutputStream();
+-                    XMLStreamWriter writer = StaxUtils.createXMLStreamWriter(out);
++                    writer = StaxUtils.createXMLStreamWriter(out);
+                     StaxUtils.copy(el, writer);
+                     writer.flush();
+                     schemaSourcesMap.put(si.getSystemId() + ":" + si.getNamespaceURI(), out.toByteArray());
+@@ -710,6 +711,7 @@
+                         unsetReadonly(nd);
+                     }
+                 }
++                StaxUtils.close(writer);
+             }
+             serviceInfo.setProperty(Schema.class.getName(), schema);
+         }
+Index: api/src/main/java/org/apache/cxf/wsdl/JAXBExtensionHelper.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/wsdl/JAXBExtensionHelper.java	(revision 1399503)
++++ api/src/main/java/org/apache/cxf/wsdl/JAXBExtensionHelper.java	(working copy)
+@@ -277,6 +277,7 @@
+     public ExtensibilityElement unmarshall(@SuppressWarnings("rawtypes") Class parent, 
+                                            QName qname, Element element, Definition wsdl,
+                                            ExtensionRegistry registry) throws WSDLException {
++        XMLStreamReader reader = null;
+         try {
+             Unmarshaller u = getContext().createUnmarshaller();
+         
+@@ -284,7 +285,7 @@
+             if (namespace == null) {
+                 o = u.unmarshal(element);
+             } else {
+-                XMLStreamReader reader = StaxUtils.createXMLStreamReader(element);
++                reader = StaxUtils.createXMLStreamReader(element);
+                 reader = new MappingReaderDelegate(reader);
+                 o = u.unmarshal(reader);
+             }
+@@ -302,6 +303,8 @@
+             throw new WSDLException(WSDLException.PARSER_ERROR,
+                                     "Error reading element " + qname,
+                                     ex);
++        } finally {
++            StaxUtils.close(reader);
+         }
+     }
+     
+Index: rt/bindings/coloc/src/main/java/org/apache/cxf/binding/coloc/ColocUtil.java
+===================================================================
+--- rt/bindings/coloc/src/main/java/org/apache/cxf/binding/coloc/ColocUtil.java	(revision 1399503)
++++ rt/bindings/coloc/src/main/java/org/apache/cxf/binding/coloc/ColocUtil.java	(working copy)
+@@ -259,7 +259,14 @@
+         DataReader<XMLStreamReader> reader =
+             message.getExchange().getService().getDataBinding().createReader(XMLStreamReader.class);
+         MessagePartInfo mpi = getMessageInfo(message).getMessagePart(0);
+-        Object wrappedObject = reader.read(mpi, StaxUtils.createXMLStreamReader(source));
++        XMLStreamReader streamReader = null;
++        Object wrappedObject = null;
++        try {
++            streamReader = StaxUtils.createXMLStreamReader(source);
++            wrappedObject = reader.read(mpi, streamReader);
++        } finally {
++            StaxUtils.close(streamReader);
++        }
+         MessageContentsList parameters = new MessageContentsList();
+         parameters.put(mpi, wrappedObject);
+ 
+Index: rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java
+===================================================================
+--- rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java	(revision 1399503)
++++ rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java	(working copy)
+@@ -126,13 +126,14 @@
+             return;
+         }
+         XMLStreamReader xmlReader = message.getContent(XMLStreamReader.class);
+-
++        boolean closeNeeded = false;
+         if (xmlReader == null) {
+             InputStream in = message.getContent(InputStream.class);
+             if (in == null) {
+                 throw new RuntimeException("Can't find input stream in message");
+             }
+             xmlReader = StaxUtils.createXMLStreamReader(in);
++            closeNeeded = true;
+         }
+ 
+         try {
+@@ -240,6 +241,10 @@
+             }
+         } catch (XMLStreamException e) {
+             throw new SoapFault(new Message("XML_STREAM_EXC", LOG), e, message.getVersion().getSender());
++        } finally {
++            if (closeNeeded) {
++                StaxUtils.close(xmlReader);
++            }
+         }
+     }
+ }
+Index: rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelIdParser.java
+===================================================================
+--- rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelIdParser.java	(revision 1399503)
++++ rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelIdParser.java	(working copy)
+@@ -58,6 +58,8 @@
+             }
+         } catch (XMLStreamException e) {
+             e.printStackTrace();
++        } finally {
++            StaxUtils.close(streamReader);
+         }
+         
+         return 0;
+Index: rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelService.java
+===================================================================
+--- rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelService.java	(revision 1399503)
++++ rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelService.java	(working copy)
+@@ -37,8 +37,9 @@
+     }
+     
+     public static void service(IoSession session, SoapTcpMessage message) {
++        XMLStreamReader xmlReader = null;
+         try {
+-            XMLStreamReader xmlReader
++            xmlReader
+                 = StaxUtils.createXMLStreamReader(message.getContentAsStream(), "UTF-8");
+             while (xmlReader.hasNext()) {
+                 xmlReader.next();
+@@ -77,6 +78,8 @@
+             }
+         } catch (XMLStreamException e) {
+             e.printStackTrace();
++        } finally {
++            StaxUtils.close(xmlReader);
+         }
+     }
+     
+Index: rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/SoapTcpUtils.java
+===================================================================
+--- rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/SoapTcpUtils.java	(revision 1399503)
++++ rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/SoapTcpUtils.java	(working copy)
+@@ -168,6 +168,8 @@
+                 }
+             } catch (XMLStreamException e) {
+                 e.printStackTrace();
++            } finally {
++                StaxUtils.close(xmlReader);
+             }
+         }
+         return false;
+Index: rt/databinding/aegis/src/main/generated/org/apache/cxf/aegis/util/jdom/StaxBuilder.java
+===================================================================
+--- rt/databinding/aegis/src/main/generated/org/apache/cxf/aegis/util/jdom/StaxBuilder.java	(revision 1399503)
++++ rt/databinding/aegis/src/main/generated/org/apache/cxf/aegis/util/jdom/StaxBuilder.java	(working copy)
+@@ -184,12 +184,26 @@
+ 
+     public Document build(InputStream is) throws XMLStreamException {
+         isReadingMidStream = false;
+-        return buildInternal(StaxUtils.createXMLStreamReader(is));
++        XMLStreamReader reader = null;
++        try {
++            reader = StaxUtils.createXMLStreamReader(is);
++            Document doc = buildInternal(reader);
++			return doc;
++        } finally {
++            StaxUtils.close(reader);
++        }        
+     }
+ 
+     public Document build(Reader reader) throws XMLStreamException {
+         isReadingMidStream = false;
+-        return buildInternal(StaxUtils.createXMLStreamReader(reader));
++        XMLStreamReader streamReader = null;
++        try {
++            streamReader = StaxUtils.createXMLStreamReader(reader);
++            Document doc = buildInternal(streamReader);
++			return doc;
++        } finally {
++            StaxUtils.close(streamReader);
++        }        
+     }
+     
+     private Document buildInternal(XMLStreamReader r) throws XMLStreamException {
+Index: rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java
+===================================================================
+--- rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java	(revision 1399503)
++++ rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java	(working copy)
+@@ -398,6 +398,8 @@
+             writer.flush();
+         } catch (Exception e) {
+             throw new Fault(new Message("MARSHAL_ERROR", LOG, e.getMessage()), e);
++        } finally {
++            StaxUtils.close(writer);
+         }
+     }
+ 
+Index: rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/interceptor/JAXRSOutInterceptor.java
+===================================================================
+--- rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/interceptor/JAXRSOutInterceptor.java	(revision 1399503)
++++ rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/interceptor/JAXRSOutInterceptor.java	(working copy)
+@@ -350,9 +350,14 @@
+         if (writer instanceof CachingXmlEventWriter) {
+             CachingXmlEventWriter cache = (CachingXmlEventWriter)writer;
+             if (cache.getEvents().size() != 0) {
+-                XMLStreamWriter origWriter = StaxUtils.createXMLStreamWriter(osOriginal);
+-                for (XMLEvent event : cache.getEvents()) {
+-                    StaxUtils.writeEvent(event, origWriter);
++                XMLStreamWriter origWriter = null;
++                try {
++                    origWriter = StaxUtils.createXMLStreamWriter(osOriginal);
++                    for (XMLEvent event : cache.getEvents()) {
++                        StaxUtils.writeEvent(event, origWriter);
++                    }
++                } finally {
++                    StaxUtils.close(origWriter);
+                 }
+             }
+             m.setContent(XMLStreamWriter.class, null);
+Index: rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/DataBindingProvider.java
+===================================================================
+--- rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/DataBindingProvider.java	(revision 1399503)
++++ rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/DataBindingProvider.java	(working copy)
+@@ -65,13 +65,16 @@
+     public T readFrom(Class<T> clazz, Type genericType, Annotation[] annotations, MediaType type, 
+                       MultivaluedMap<String, String> headers, InputStream is)
+         throws IOException {
++        XMLStreamReader reader = null;
+         try {
+-            XMLStreamReader reader = createReader(clazz, genericType, is);
++            reader = createReader(clazz, genericType, is);
+             DataReader<XMLStreamReader> dataReader = binding.createReader(XMLStreamReader.class);
+             Object o = dataReader.read(null, reader, clazz);
+             return o == null ? null : clazz.cast(o);
+         } catch (Exception ex) {
+             throw new WebApplicationException(ex);
++        } finally {
++            StaxUtils.close(reader);
+         }
+     }
+ 
+@@ -94,11 +97,14 @@
+     public void writeTo(T o, Class<?> clazz, Type genericType, Annotation[] annotations, 
+                         MediaType type, MultivaluedMap<String, Object> headers, OutputStream os)
+         throws IOException {
++        XMLStreamWriter writer = null;
+         try {
+-            XMLStreamWriter writer = createWriter(clazz, genericType, os);
++            writer = createWriter(clazz, genericType, os);
+             writeToWriter(writer, o);
+         } catch (Exception ex) {
+             throw new WebApplicationException(ex);
++        } finally {
++            StaxUtils.close(writer);
+         }
+     }
+     
+Index: rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/JAXBElementProvider.java
+===================================================================
+--- rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/JAXBElementProvider.java	(revision 1399503)
++++ rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/JAXBElementProvider.java	(working copy)
+@@ -158,6 +158,7 @@
+             }
+         }
+         
++        XMLStreamReader reader = null;
+         try {
+             
+             boolean isCollection = InjectionUtils.isSupportedCollectionOrArray(type);
+@@ -170,7 +171,7 @@
+             if (JAXBElement.class.isAssignableFrom(type) 
+                 || !isCollection && (unmarshalAsJaxbElement  
+                 || jaxbElementClassMap != null && jaxbElementClassMap.containsKey(theType.getName()))) {
+-                XMLStreamReader reader = getStreamReader(is, type, mt);
++                reader = getStreamReader(is, type, mt);
+                 reader = TransformUtils.createNewReaderIfNeeded(reader, is);
+                 if (JAXBElement.class.isAssignableFrom(type) && type == theType) {
+                     response = unmarshaller.unmarshal(reader);
+@@ -200,6 +201,8 @@
+         } catch (Exception e) {
+             LOG.warning(getStackTrace(e));
+             throw new WebApplicationException(e, Response.status(400).build());        
++        } finally {
++            StaxUtils.close(reader);
+         }
+         // unreachable
+         return null;
+@@ -209,7 +212,13 @@
+         throws JAXBException {
+         XMLStreamReader reader = getStreamReader(is, type, mt);
+         if (reader != null) {
+-            return unmarshalFromReader(unmarshaller, reader, mt);
++            try {
++                return unmarshalFromReader(unmarshaller, reader, mt);
++            } catch (JAXBException e) {
++                throw e;
++            } finally {
++                StaxUtils.close(reader);
++            }
+         }
+         return unmarshalFromInputStream(unmarshaller, is, mt);
+     }
+@@ -246,15 +255,21 @@
+     protected Object unmarshalFromInputStream(Unmarshaller unmarshaller, InputStream is, MediaType mt) 
+         throws JAXBException {
+         // Try to create the read before unmarshalling the stream
+-        if (is == null) {
+-            Reader reader = getStreamHandlerFromCurrentMessage(Reader.class);
+-            if (reader == null) {
+-                LOG.severe("No InputStream, Reader, or XMStreamReader is available");
+-                throw new WebApplicationException(500);
++        XMLStreamReader xmlReader = null;
++        try {
++            if (is == null) {
++                Reader reader = getStreamHandlerFromCurrentMessage(Reader.class);
++                if (reader == null) {
++                    LOG.severe("No InputStream, Reader, or XMStreamReader is available");
++                    throw new WebApplicationException(500);
++                }
++                xmlReader = StaxUtils.createXMLStreamReader(reader);
++            } else {
++                xmlReader = StaxUtils.createXMLStreamReader(is);
+             }
+-            return unmarshaller.unmarshal(StaxUtils.createXMLStreamReader(reader));
+-        } else {
+-            return unmarshaller.unmarshal(StaxUtils.createXMLStreamReader(is));
++            return unmarshaller.unmarshal(xmlReader);
++        } finally {
++            StaxUtils.close(xmlReader);
+         }
+     }
+ 
+Index: rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/SourceProvider.java
+===================================================================
+--- rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/SourceProvider.java	(revision 1399503)
++++ rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/SourceProvider.java	(working copy)
+@@ -174,6 +174,7 @@
+             }
+             try {
+                 writer.flush();
++                writer.close();
+             } catch (XMLStreamException e) {
+                 //ignore
+             }
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/DispatchImpl.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/DispatchImpl.java	(revision 1399503)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/DispatchImpl.java	(working copy)
+@@ -344,14 +344,16 @@
+             if (findDispatchOp && !payloadOPMap.isEmpty()) {
+                 String payloadElementName = null;              
+                 if (obj instanceof javax.xml.transform.Source) {
++                    XMLStreamReader reader = null;
+                     try {
+-                        XMLStreamReader reader = StaxUtils
+-                            .createXMLStreamReader((javax.xml.transform.Source)obj);
++                        reader = StaxUtils.createXMLStreamReader((javax.xml.transform.Source)obj);
+                         Document document = StaxUtils.read(reader);
+                         createdSource = new StaxSource(StaxUtils.createXMLStreamReader(document));
+                         payloadElementName = getPayloadElementName(document.getDocumentElement());
+                     } catch (Exception e) {                        
+                         // ignore, we are trying to get the operation name
++                    } finally {
++                        StaxUtils.close(reader);
+                     }
+                 }
+                 if (obj instanceof SOAPMessage) {
+@@ -477,6 +479,7 @@
+         DataWriter<XMLStreamWriter> dbwriter = dataBinding.createWriter(XMLStreamWriter.class);
+         StringWriter stringWriter = new StringWriter();
+         XMLStreamWriter resultWriter = StaxUtils.createXMLStreamWriter(stringWriter);
++        DepthXMLStreamReader reader = null;
+         try {
+             dbwriter.write(object, resultWriter);
+             resultWriter.flush();
+@@ -484,7 +487,7 @@
+                 ByteArrayInputStream binput = new ByteArrayInputStream(stringWriter.getBuffer().toString()
+                     .getBytes());
+                 XMLStreamReader xmlreader = StaxUtils.createXMLStreamReader(binput);
+-                DepthXMLStreamReader reader = new DepthXMLStreamReader(xmlreader);
++                reader = new DepthXMLStreamReader(xmlreader);
+ 
+                 StaxUtils.skipToStartOfElement(reader);
+ 
+@@ -493,6 +496,9 @@
+             }
+         } catch (XMLStreamException e) {
+             // ignore
++        } finally {
++            StaxUtils.close(reader);
++            StaxUtils.close(resultWriter);
+         }
+         return null;
+     }
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/SwAOutInterceptor.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/SwAOutInterceptor.java	(revision 1399503)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/SwAOutInterceptor.java	(working copy)
+@@ -243,13 +243,16 @@
+             }
+         } else {
+             ByteArrayOutputStream bwriter = new ByteArrayOutputStream();
+-            XMLStreamWriter writer = StaxUtils.createXMLStreamWriter(bwriter);
++            XMLStreamWriter writer = null;
+             try {
++                writer = StaxUtils.createXMLStreamWriter(bwriter);
+                 StaxUtils.copy(o, writer);
+                 writer.flush();
+                 ds = new ByteDataSource(bwriter.toByteArray(), ct);
+             } catch (XMLStreamException e1) {
+                 throw new Fault(e1);
++            } finally {
++                StaxUtils.close(writer);
+             }
+         }
+         return ds;
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/spi/ProviderImpl.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/spi/ProviderImpl.java	(revision 1399503)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/spi/ProviderImpl.java	(working copy)
+@@ -31,6 +31,7 @@
+ import javax.xml.bind.Unmarshaller;
+ import javax.xml.namespace.QName;
+ import javax.xml.parsers.ParserConfigurationException;
++import javax.xml.stream.XMLStreamReader;
+ import javax.xml.transform.Source;
+ import javax.xml.transform.dom.DOMResult;
+ import javax.xml.ws.Endpoint;
+@@ -374,12 +375,16 @@
+     }
+ 
+     public EndpointReference readEndpointReference(Source eprInfoset) {
++        XMLStreamReader reader = null;
+         try {
+             Unmarshaller unmarshaller = getJAXBContext().createUnmarshaller();
+-            return (EndpointReference)unmarshaller.unmarshal(StaxUtils.createXMLStreamReader(eprInfoset));
++            reader = StaxUtils.createXMLStreamReader(eprInfoset);
++            return (EndpointReference)unmarshaller.unmarshal(reader);
+         } catch (JAXBException e) {
+             throw new WebServiceException(new Message("ERROR_UNMARSHAL_ENDPOINTREFERENCE", LOG).toString(),
+                                           e);
++        } finally {
++            StaxUtils.close(reader);
+         }
+     }
+ 
+Index: rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetInterceptor.java
+===================================================================
+--- rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetInterceptor.java	(revision 1399503)
++++ rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetInterceptor.java	(working copy)
+@@ -78,6 +78,8 @@
+             throw new WSDLQueryException(new org.apache.cxf.common.i18n.Message("COULD_NOT_PROVIDE_WSDL",
+                                                                                 LOG,
+                                                                                 base), e);
++        } finally {
++            StaxUtils.close(writer);
+         }
+     }
+ 
+Index: rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/aegis/AegisElementProvider.java
+===================================================================
+--- rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/aegis/AegisElementProvider.java	(revision 1399503)
++++ rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/aegis/AegisElementProvider.java	(working copy)
+@@ -64,11 +64,14 @@
+         AegisType typeToRead = context.getTypeMapping().getType(genericType);
+         
+         AegisReader<XMLStreamReader> aegisReader = context.createXMLStreamReader();
++        XMLStreamReader xmlStreamReader = null;
+         try {
+-            XMLStreamReader xmlStreamReader = createStreamReader(typeToRead, is);
++            xmlStreamReader = createStreamReader(typeToRead, is);
+             return type.cast(aegisReader.read(xmlStreamReader, typeToRead));
+         } catch (Exception e) {
+             throw new WebApplicationException(e);
++        } finally {
++            StaxUtils.close(xmlStreamReader);
+         }
+     }
+ 
+Index: rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/json/JSONProvider.java
+===================================================================
+--- rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/json/JSONProvider.java	(revision 1399503)
++++ rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/json/JSONProvider.java	(working copy)
+@@ -211,11 +211,13 @@
+             }
+         }
+         
++        XMLStreamReader reader = null;
+         try {
+             InputStream realStream = getInputStream(type, genericType, is);
+             if (Document.class.isAssignableFrom(type)) {
+                 W3CDOMStreamWriter writer = new W3CDOMStreamWriter();
+-                copyReaderToWriter(createReader(type, realStream, false), writer);
++                reader = createReader(type, realStream, false);
++                copyReaderToWriter(reader, writer);
+                 return type.cast(writer.getDocument());
+             }
+             boolean isCollection = InjectionUtils.isSupportedCollectionOrArray(type);
+@@ -257,6 +259,8 @@
+             throw e;
+         } catch (Exception e) {
+             throw new WebApplicationException(e, Response.status(400).build());
++        } finally {
++            StaxUtils.close(reader);
+         }
+         // unreachable
+         return null;
+@@ -350,11 +354,12 @@
+             }
+             throw new IOException(sb.toString());
+         }
++        XMLStreamWriter writer = null;
+         try {
+             
+             String enc = HttpUtils.getSetEncoding(m, headers, "UTF-8");
+             if (Document.class.isAssignableFrom(cls)) {
+-                XMLStreamWriter writer = createWriter(obj, cls, genericType, enc, os, false);
++                writer = createWriter(obj, cls, genericType, enc, os, false);
+                 copyReaderToWriter(StaxUtils.createXMLStreamReader((Document)obj), writer);
+                 return;
+             }
+@@ -377,6 +382,8 @@
+             handleXMLStreamException(e, false);
+         } catch (Exception e) {
+             throw new WebApplicationException(e);
++        } finally {
++            StaxUtils.close(writer);
+         }
+     }
+ 
+Index: rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/xmlbeans/XMLBeanStreamSerializer.java
+===================================================================
+--- rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/xmlbeans/XMLBeanStreamSerializer.java	(revision 1399503)
++++ rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/xmlbeans/XMLBeanStreamSerializer.java	(working copy)
+@@ -51,7 +51,7 @@
+     public void serialize(XmlObject xObj, XMLStreamWriter writer) throws IOException, XMLStreamException {
+ 
+         File tmpFile = null;
+-
++        XMLStreamReader rdr = null;
+         try {
+ 
+             // create tmp file
+@@ -61,7 +61,7 @@
+             xObj.save(tmpFile);
+ 
+             InputStream tmpIn = new FileInputStream(tmpFile);
+-            XMLStreamReader rdr = StaxUtils.createXMLStreamReader(tmpIn);
++            rdr = StaxUtils.createXMLStreamReader(tmpIn);
+ 
+             while (rdr.hasNext()) {
+ 
+@@ -124,6 +124,7 @@
+ 
+                 tmpFile.delete();
+             }
++            StaxUtils.close(rdr);
+         }
+     }
+ }
+Index: rt/ws/policy/src/main/java/org/apache/cxf/ws/policy/PolicyAnnotationListener.java
+===================================================================
+--- rt/ws/policy/src/main/java/org/apache/cxf/ws/policy/PolicyAnnotationListener.java	(revision 1399503)
++++ rt/ws/policy/src/main/java/org/apache/cxf/ws/policy/PolicyAnnotationListener.java	(working copy)
+@@ -27,6 +27,7 @@
+ 
+ import javax.wsdl.extensions.UnknownExtensibilityElement;
+ import javax.xml.stream.XMLStreamException;
++import javax.xml.stream.XMLStreamReader;
+ 
+ import org.w3c.dom.Attr;
+ import org.w3c.dom.Document;
+@@ -340,9 +341,11 @@
+         if (p.includeInWSDL()) {
+             ExtendedURIResolver resolver = new ExtendedURIResolver();
+             InputSource src = resolver.resolve(uri, "classpath:");
++            XMLStreamReader reader = null;
+             if (src != null) {
+                 try {
+-                    Document doc = StaxUtils.read(StaxUtils.createXMLStreamReader(src));
++                    reader = StaxUtils.createXMLStreamReader(src);
++                    Document doc = StaxUtils.read(reader);
+                     if (service.getDescription() == null && cls != null) {
+                         service.setDescription(new DescriptionInfo());
+                         service.getDescription().setBaseURI(cls.getResource("/").toString());
+@@ -380,6 +383,8 @@
+                     uri = "#" + uri;
+                 } catch (XMLStreamException e) {
+                     //ignore
++                } finally {
++                    StaxUtils.close(reader);
+                 }
+             }
+         }
+Index: tools/validator/src/main/java/org/apache/cxf/tools/validator/internal/Stax2DOM.java
+===================================================================
+--- tools/validator/src/main/java/org/apache/cxf/tools/validator/internal/Stax2DOM.java	(revision 1399503)
++++ tools/validator/src/main/java/org/apache/cxf/tools/validator/internal/Stax2DOM.java	(working copy)
+@@ -56,13 +56,16 @@
+ 
+     public Document getDocument(URL url) throws ToolException {
+         InputStream input = null;
++        XMLStreamReader reader = null;
+         try {
+             input = url.openStream();
+             StreamSource src = new StreamSource(input, url.toExternalForm());
+-            return StaxUtils.read(StaxUtils.createXMLStreamReader(src), true);
++            reader = StaxUtils.createXMLStreamReader(src);
++            return StaxUtils.read(reader, true);
+         } catch (Exception e) {
+             throw new ToolException(e);
+         } finally {
++            StaxUtils.close(reader);
+             if (input != null) {
+                 try {
+                     input.close();
+Index: tools/wsdlto/frontend/jaxws/src/main/java/org/apache/cxf/tools/wsdlto/frontend/jaxws/customization/CustomizationParser.java
+===================================================================
+--- tools/wsdlto/frontend/jaxws/src/main/java/org/apache/cxf/tools/wsdlto/frontend/jaxws/customization/CustomizationParser.java	(revision 1399503)
++++ tools/wsdlto/frontend/jaxws/src/main/java/org/apache/cxf/tools/wsdlto/frontend/jaxws/customization/CustomizationParser.java	(working copy)
+@@ -154,13 +154,15 @@
+             return null;
+         }
+         
++        XMLStreamReader reader = null;
+         try {
+-            XMLStreamReader reader = StaxUtils.createXMLStreamReader(uri, ins);
++            reader = StaxUtils.createXMLStreamReader(uri, ins);
+             doc = StaxUtils.read(reader, true);
+         } catch (Exception e) {
+             Message msg = new Message("CAN_NOT_READ_AS_ELEMENT", LOG, new Object[] {uri});
+             throw new ToolException(msg, e);
+         } finally {
++            StaxUtils.close(reader);
+             try {
+                 ins.close();
+             } catch (IOException ex) {
+@@ -478,14 +480,17 @@
+     private void addBinding(String bindingFile) throws XMLStreamException {
+ 
+         Element root = null;
++        XMLStreamReader xmlReader = null;
+         try {
+             URIResolver resolver = new URIResolver(bindingFile);
+-            XMLStreamReader reader = StaxUtils.createXMLStreamReader(resolver.getURI().toString(), 
++            xmlReader = StaxUtils.createXMLStreamReader(resolver.getURI().toString(), 
+                                                                      resolver.getInputStream());
+-            root = StaxUtils.read(reader, true).getDocumentElement();
++            root = StaxUtils.read(xmlReader, true).getDocumentElement();
+         } catch (Exception e1) {
+             Message msg = new Message("CAN_NOT_READ_AS_ELEMENT", LOG, new Object[] {bindingFile});
+             throw new ToolException(msg, e1);
++        } finally {
++            StaxUtils.close(xmlReader);
+         }
+         XMLStreamReader reader = StaxUtils.createXMLStreamReader(root);
+         StaxUtils.toNextTag(reader);

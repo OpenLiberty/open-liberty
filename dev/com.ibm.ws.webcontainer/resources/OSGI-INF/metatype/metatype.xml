@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+  
+    <OCD description="%web.container.app.desc" name="%web.container.app.name" id="com.ibm.ws.webcontainer" ibm:alias="webContainer">   
+
+        <!-- custom properties introduced in WAS v6.0-->
+
+        <AD id="listeners"
+            name="%listeners.name" 
+            description="%listeners.desc" 
+            required="false" type="String" default="" />
+
+        <AD id="decodeUrlAsUtf8"
+            name="%decodeUrlAsUtf8.name" 
+            description="%decodeUrlAsUtf8.desc" 
+            required="false" type="Boolean" default="true" />
+
+        <AD id="fileServingEnabled"
+            name="%fileServingEnabled.name" 
+            description="%fileServingEnabled.desc" 
+            required="false" type="Boolean" default="true" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="disallowAllFileServing" 
+            name="%disallowAllFileServing.name" 
+            description="%disallowAllFileServing.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <AD id="directoryBrowsingEnabled"
+            name="%directoryBrowsingEnabled.name" 
+            description="%directoryBrowsingEnabled.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <AD id="serveServletsByClassnameEnabled"
+            name="%serveServletsByClassNameEnabled.name" 
+            description="%serveServletsByClassNameEnabled.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="disallowServeServletsByClassName"
+            name="%disallowServeServletsByClassName.name" 
+            description="%disallowServeServletsByClassName.desc" 
+            required="false" type="Boolean" default="true" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="doNotServeByClassName"
+            name="%doNotServeByClassName.name" 
+            description="%doNotServeByClassName.desc" 
+            required="false" type="String" default="" />
+
+        <!-- Internal/hidden by PM97514 -->
+        <AD id="trustHostHeaderPort"
+            name="internal" 
+            description="internal" 
+            required="false" type="Boolean" default="false" />
+
+        <!-- Internal/hidden by PM97514 -->
+        <AD id="trusted"
+            name="internal" 
+            description="internal" 
+            required="false" type="Boolean" default="true" />
+
+        <!-- com.ibm.ws.webcontainer. Internal/hidden PM97514 -->
+        <AD id="extractHostHeaderPort"
+            name="internal" 
+            description="internal" 
+            required="false" type="Boolean" default="false" />
+
+        <AD id="httpsIndicatorHeader"
+            name="%httpsIndicatorHeader.name" 
+            description="%httpsIndicatorHeader.desc" 
+            required="false" type="String" default="" />
+
+        <AD id="exposeWebInfOnDispatch"
+            name="%exposeWebInfOnDispatch.name" 
+            description="%exposeWebInfOnDispatch.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="decodeUrlPlusSign"
+            name="%decodeUrlPlusSign.name" 
+            description="%decodeUrlPlusSign.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="channelWriteType"
+            name="%channelWriteType.name" 
+            description="%channelWriteType.desc" 
+            required="false" type="String" default="async" />
+
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="suppressHtmlRecursiveErrorOutput"
+            name="%suppressHtmlRecursiveErrorOutput.name" 
+            description="%suppressHtmlRecursiveErrorOutput.desc" 
+            required="false" type="Boolean" default="false" />
+
+		<!--com.ibm.ws.webcontainer.-->
+        <AD id="fileWrapperEvents"
+            name="%fileWrapperEvents.name" 
+            description="%fileWrapperEvents.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="defaultTraceRequestBehavior"
+            name="%defaultTraceRequestBehavior.name" 
+            description="%defaultTraceRequestBehavior.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="defaultHeadRequestBehavior"
+            name="%defaultHeadRequestBehavior.name" 
+            description="%defaultHeadRequestBehavior.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="tolerateSymbolicLinks"
+            name="%tolerateSymbolicLinks.name" 
+            description="%tolerateSymbolicLinks.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="symbolicLinksCacheSize"
+            name="%symbolicLinksCacheSize.name" 
+            description="%symbolicLinksCacheSize.desc" 
+            required="false" type="Integer" default="1000" />
+
+        <!-- custom properties introduced in WAS v6.1 -->
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="enableErrorExceptionTypeFirst"
+            name="%enableErrorExceptionTypeFirst.name" 
+            description="%enableErrorExceptionTypeFirst.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="enableMultiReadOfPostData"
+            name="internal" 
+            description="internal use only" 
+            required="false" type="Boolean" default="false" />
+
+        <!-- custom properties introduced in WAS v7 -->
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="copyAttributesKeySet"
+            name="%copyAttributesKeySet.name" 
+            description="%copyAttributesKeySet.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="dispatcherRethrowsEr"
+            description="%dispatcherRethrowsEr.desc" 
+            name="%dispatcherRethrowsEr.name"
+            required="false" type="Boolean" default="true" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="ignoreSessiononStaticFileRequest"
+            name="%ignoreSessionOnStaticFileRequest.name"
+            description="%ignoreSessionOnStaticFileRequest.desc"
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="invokeFilterInitAtStartup"
+            name="%invokeFilterInitAtStartup.name" 
+            description="%invokeFilterInitAtStartup.desc" 
+            required="false" type="Boolean" default="true" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="enableJspMappingOverride"
+            name="%enableJspMappingOverride.name" 
+            description="%enableJspMappingOverride.desc" 
+            required="false" type="Boolean" default="false" />
+
+		<!--com.ibm.ws.jsp.-->
+		<!--************************************JSP ATTRIBUTE********************************-->
+        <AD id="enableDefaultIsElIgnoredInTag"
+            name="%enableDefaultIsElIgnoredInTag.name" 
+            description="%enableDefaultIsElIgnoredInTag.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="parseUtf8PostData"
+            name="%parseUtf8PostData.name" 
+            description="%parseUtf8PostData.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!-- custom properties introduced in WAS v8 -->
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="logServletContainerInitializerClassLoadingErrors"
+            name="%logServletContainerInitializerClassLoadingErrors.name" 
+            description="%logServletContainerInitializerClassLoadingErrors.desc" 
+            required="false" type="Boolean" default="false" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="allowIncludeSendError"
+            name="%allowIncludeSendError.name" 
+            description="%allowIncludeSendError.desc" 
+            required="false" type="Boolean" default="false" />
+
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="skipMetaInfResourcesProcessing"
+            name="%skipMetaInfResourcesProcessing.name" 
+            description="%skipMetaInfResourcesProcessing.desc" 
+            required="false" type="Boolean" default="false" />
+
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="metaInfResourcesCacheSize"
+            name="%metaInfResourcesCacheSize.name" 
+            description="%metaInfResourcesCacheSize.desc" 
+            required="false" type="Integer" default="20" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="xPoweredBy"
+            name="%xPoweredBy.name" 
+            description="%xPoweredBy.desc" 
+            required="false" type="String"/>
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="disableXPoweredBy"
+            name="%disableXPoweredBy.name" 
+            description="%disableXPoweredBy.desc" 
+            required="false" type="Boolean" default="false" />
+            
+        <AD id="deferServletLoad"
+            name="%deferServletLoad.name" 
+            description="%deferServletLoad.desc" 
+            required="false" type="Boolean" default="true" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="asyncMaxSizeTaskPool"
+            name="%asyncMaxSizeTaskPool.name" 
+            description="%asyncMaxSizeTaskPool.desc" 
+            required="false" type="Integer" default="5000" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="asyncPurgeInterval"
+            name="%asyncPurgeInterval.name" 
+            description="%asyncPurgeInterval.desc" 
+            required="false" type="Integer" default="30000" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="asyncTimeoutDefault"
+            name="%asyncTimeoutDefault.name" 
+            description="%asyncTimeoutDefault.desc" 
+            required="false" type="Integer" default="30000" />
+
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="asyncTimerThreads"
+            name="%asyncTimerThreads.name" 
+            description="%asyncTimerThreads.desc" 
+            required="false" type="Integer" default="2" />
+            
+      	<AD id="setContentLengthOnClose"
+            name="%setContentLengthOnClose.name" 
+            description="%setContentLengthOnClose.desc" 
+            required="false" type="Boolean" default="true" />
+            
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="emptyServletMappings"
+            name="%emptyServletMappings.name" 
+            description="%emptyServletMappings.desc" 
+            required="false" type="Boolean" default="false" />
+            
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="deferServletRequestListenerDestroyOnError"
+            name="%deferServletRequestListenerDestroyOnError.name" 
+            description="%deferServletRequestListenerDestroyOnError.desc" 
+            required="false" type="Boolean" default="false" />
+
+		<!--com.ibm.ws.jsp.-->
+        <AD id="allowExpressionFactoryPerApp"
+            name="%allowExpressionFactoryPerApp.name" 
+            description="%allowExpressionFactoryPerApp.desc" 
+            required="false" type="Boolean" default="false" />
+            
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="ignoreSemiColonOnRedirectToWelcomePage"
+            name="%ignoreSemiColonOnRedirectToWelcomePage.name" 
+            description="%ignoreSemiColonOnRedirectToWelcomePage.desc" 
+            required="false" type="Boolean" default="false" />
+          
+        <!--com.ibm.ws.webcontainer.-->
+        <AD id="useSemiColonAsDelimiterInURI"
+            name="%useSemiColonAsDelimiterInURI.name" 
+            description="%useSemiColonAsDelimiterInURI.desc" 
+            required="false" type="Boolean" default="false" />  
+            
+        <AD name="internal" description="internal use only"
+            id="extensionFactory" required="true" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.wsspi.webcontainer.extension.ExtensionFactory" default="*" ibm:final="true"/> 
+
+        <AD id="ExtensionFactory.cardinality.minimum" description="internal use only" name="internal" 
+            type="String" required="true" default="${count(extensionFactory)}"/>
+    </OCD>
+  
+    <Designate pid="com.ibm.ws.webcontainer">
+        <Object ocdref="com.ibm.ws.webcontainer"/>
+    </Designate>
+    
+    <OCD description="internal use only" name="internal" 
+         id="com.ibm.wsspi.webcontainer.extension.ExtensionFactory">
+         <AD id="type" description="internal use only" name="internal" type="String" required="true"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.wsspi.webcontainer.extension.ExtensionFactory">
+        <Object ocdref="com.ibm.wsspi.webcontainer.extension.ExtensionFactory"/>
+    </Designate>
+    
+</metatype:MetaData>
+

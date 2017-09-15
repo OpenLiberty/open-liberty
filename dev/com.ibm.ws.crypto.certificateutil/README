@@ -1,0 +1,33 @@
+# Some notes about keytool
+# 
+# Observed return codes:
+# 0 - success
+# 1 - error
+
+# To create a new self-signed certificate:
+$ keytool -genkey -keystore myKS -storepass WebAS0 -keypass WebAS0 -validity 365 -dname "CN=glorchO,O=ibm,C=us" -alias default
+
+# To view the contents of the created keystore:
+$ keytool -list -v -keystore myKS -storepass WebAS0
+
+Keystore type: jks
+Keystore provider: IBMJCE
+
+Your keystore contains 1 entry
+
+Alias name: default
+Creation date: Dec 15, 2011
+Entry type: keyEntry
+Certificate chain length: 1
+Certificate[1]:
+Owner: CN=glorchO, O=ibm, C=us
+Issuer: CN=glorchO, O=ibm, C=us
+Serial number: 4eea4f7c
+Valid from: 12/15/11 1:50 PM until: 12/14/12 1:50 PM
+Certificate fingerprints:
+         MD5:  89:67:AA:1C:24:84:3D:8A:E3:68:45:FA:3A:95:AF:65
+         SHA1: 17:F8:C5:8B:B1:B5:F3:4E:D1:E1:88:B2:2A:E5:C0:AE:DC:0F:E4:D2
+
+
+*******************************************
+*******************************************

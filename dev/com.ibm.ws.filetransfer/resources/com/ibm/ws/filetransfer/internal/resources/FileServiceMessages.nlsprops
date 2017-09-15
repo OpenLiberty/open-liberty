@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.filetransfer/resources/com/ibm/ws/filetransfer/resources/FileServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere File Transfer
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7900 - CWWKX7950
+
+#-----  FileService MBean
+
+ACCESS_DENIED_ERROR=CWWKX7900E: Access denied to the {0} path.
+ACCESS_DENIED_ERROR.explanation=An attempt was made to access a path that is outside the configured read/write region.
+ACCESS_DENIED_ERROR.useraction=Ensure the requested path is within configured read/write region.
+
+PATH_ERROR=CWWKX7901E: The {0} file system path is not valid.
+PATH_ERROR.explanation=The specified file system path cannot be resolved.
+PATH_ERROR.useraction=Provide a valid file system path.
+
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING=CWWKX7902W: Archive creation through the File Transfer MBean was denied for source path {0}.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.explanation=An attempt was made to read information from a path that is outside the configured read region.
+ARCHIVE_CREATE_SOURCE_DENIED_WARNING.useraction=This message is for information purposes only. No action is needed.
+
+ARCHIVE_CREATE_TARGET_DENIED_WARNING=CWWKX7903W: Archive creation through the File Transfer MBean was denied for target path {0}.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.explanation=An attempt was made to write information to a path that is outside the configured write region.
+ARCHIVE_CREATE_TARGET_DENIED_WARNING.useraction=This message is for information purposes only. No action is needed.
+
+ARCHIVE_CREATE_SUCCESS_INFO=CWWKX7904I: Archive {1} was successfully created from {0}.
+ARCHIVE_CREATE_SUCCESS_INFO.explanation=The archive was successfully created.
+ARCHIVE_CREATE_SUCCESS_INFO.useraction=This message is for information purposes only. No action is needed.
+
+ARCHIVE_CREATE_FAILURE_WARNING=CWWKX7905W: Archive {1} could not be created from {0}.
+ARCHIVE_CREATE_FAILURE_WARNING.explanation=The archive creation request failed.
+ARCHIVE_CREATE_FAILURE_WARNING.useraction=This message is for information purposes only. No action is needed.
+
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING=CWWKX7906W: Archive expansion was denied for source path {0}.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.explanation=An attempt was made to read information from a path that is outside the configured read region.
+ARCHIVE_EXPAND_SOURCE_DENIED_WARNING.useraction=This message is for information purposes only. No action is needed.
+
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING=CWWKX7907W: Archive expansion was denied for target path {0}.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.explanation=An attempt was made to write information to a path that is outside the configured write region.
+ARCHIVE_EXPAND_TARGET_DENIED_WARNING.useraction=This message is for information purposes only. No action is needed.
+
+ARCHIVE_EXPAND_SUCCESS_INFO=CWWKX7908I: Archive {0} was successfully expanded to {1}.
+ARCHIVE_EXPAND_SUCCESS_INFO.explanation=The archive was successfully expanded.
+ARCHIVE_EXPAND_SUCCESS_INFO.useraction=This message is for information purposes only. No action is needed.
+
+ARCHIVE_EXPAND_FAILURE_WARNING=CWWKX7909W: Archive {0} could not be expanded to {1}.
+ARCHIVE_EXPAND_FAILURE_WARNING.explanation=The archive expand request failed.
+ARCHIVE_EXPAND_FAILURE_WARNING.useraction=This message is for information purposes only. No action is needed.
+
+UNSUPPORTED_MBEAN_OPERATION_ERROR=CWWKX7910W: Operation ''{0}'' is only avaible when this MBean is accessed through IBM''s JMX REST Connector.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.explanation=Access to the specified MBean operation is only available when accessed through IBM's JMX REST Connector.
+UNSUPPORTED_MBEAN_OPERATION_ERROR.useraction=Access this MBean through IBM's JMX REST Connector.
+
+OSGI_SERVICE_ERROR=CWWKX7911E: OSGi service {0} is not available.
+OSGI_SERVICE_ERROR.explanation=You have received this internal server error because the specified service is not available.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the "clean" option.
+
+ATTRIBUTE_UPDATED=CWWKX7912I: The FileServiceMXBean attribute {0} was successfully updated.
+ATTRIBUTE_UPDATED.explanation=The specified attribute from FileServiceMXBean was updated successfully.
+ATTRIBUTE_UPDATED.useraction=No action is required.

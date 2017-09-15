@@ -1,0 +1,356 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!--
+    ** WARNING: This file was automatically generated. Do not edit it directly,
+    **          or you will lose your changes.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="1.0"
+           xml:lang="en"
+           elementFormDefault="qualified"
+           targetNamespace="http://java.sun.com/jsf/facelets">
+
+
+
+    <xs:annotation>
+        <xs:documentation>JSF UI Facelets Tag Library.</xs:documentation>
+        <xs:documentation>display-name: JSF UI Facelets Tag Library.</xs:documentation>
+        <xs:documentation>short-name: ui</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="repeat">
+        <xs:annotation>
+          <xs:documentation><![CDATA[]]></xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+          <xs:attribute name="offset" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="size" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="step" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="var" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="varStatus" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="rendered" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A boolean value that indicates whether this component should be rendered. Default value: true.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="debug">
+        <xs:annotation>
+          <xs:documentation><![CDATA[The debug tag will capture the component tree and variables when it is encoded, 
+storing the data for retrieval later. You may launch the debug window at any time 
+from your browser by pressing 'CTRL' + 'SHIFT' + 'D' (by default).
+
+The debug tag doesn't need to be used with the facelet.DEVELOPMENT parameter.
+The best place to put this tag is in your site's main template where it can be 
+enabled/disabled across your whole application. 
+
+If your application uses multiple windows, you might want to assign different 
+hot keys to each one.]]></xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>     
+          <xs:attribute name="hotkey" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The hot key to use in combination with 'CTRL' + 'SHIFT' to launch the debug window. 
+By default, when the debug tag is used, you may launch the debug window with 
+'CTRL' + 'SHIFT' + 'D'. This value cannot be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="rendered" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[A boolean value that indicates whether this component should be rendered. Default value: true.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="component">
+        <xs:annotation>
+              <xs:documentation><![CDATA[The component tag and the composition tag behave exactly the same, except the component
+tag will insert a new UIComponent instance into the tree as the root of all the child 
+components/fragments it has.
+<p>
+The component class used for this tag is 
+org.apache.myfaces.view.facelets.tag.ui.ComponentRef and the 
+real java class that contains this description is not used on runtime.
+</p><p></p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.ComponentRefHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="fragment">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Just like composition has decorate as a non-trimming version of the same behavior,
+component has fragment. This allows you to logically insert a UIComponent into the 
+tree and possibly bind this fragment to a JavaBean property or Map for management. 
+The fragment tag was also added to Facelets to get around some of the optimizations 
+used in handling text within your document. If you are using components such as 
+&lt;f:panelGrid/&gt;, which renders its children, you may want more control over the 
+building process that Facelets does and using a fragment tag will help guarantee 
+parent/child relationships for you.
+
+<p>
+The component class used for this tag is 
+org.apache.myfaces.view.facelets.tag.ui.ComponentRef and the 
+real java class that contains this description is not used on runtime.
+</p><p></p>]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.ComponentRefHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="id" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Get a string which uniquely identifies this UIComponent within the scope of the nearest ancestor NamingContainer
+component. The id is not necessarily unique across all components in the current view.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: true]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="binding" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Identifies a backing bean property (of type UIComponent or appropriate subclass) to bind " + "to this component instance. This value must be an EL expression.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: javax.faces.component.UIComponent]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="composition">
+        <xs:annotation>
+              <xs:documentation><![CDATA[TODO: REFACTOR - This class could easily use a common parent with DecoratorHandler]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.CompositionHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="template" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The resolvable URI of the template to use. The content within the composition tag will 
+be used in populating the template specified.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="decorate">
+        <xs:annotation>
+              <xs:documentation><![CDATA[The decorate tag acts the same as a composition tag, but it will not trim 
+everything outside of it. This is useful in cases where you have a list of 
+items in a document, which you would like to be decorated or framed.
+ 
+The sum of it all is that you can take any element in the document and decorate 
+it with some external logic as provided by the template.
+
+TODO: REFACTOR - This class could easily use a common parent with CompositionHandler]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.DecorateHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="template" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[The resolvable URI of the template to use. The content within the decorate tag 
+will be used in populating the template specified.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="define">
+        <xs:annotation>
+              <xs:documentation><![CDATA[The define tag can be used within tags that allow templating. 
+This includes composition and decorate tags.]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.DefineHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The literal name for this definition. This name will match up with 
+a &lt;ui:insert/&gt; tag in a target template.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="include">
+        <xs:annotation>
+              <xs:documentation><![CDATA[The include tag can point at any Facelet which might use the composition tag,
+component tag, or simply be straight XHTML/XML. It should be noted that the 
+src path does allow relative path names, but they will always be resolved 
+against the original Facelet requested. 
+
+The include tag can be used in conjunction with multiple &lt;ui:param/&gt; 
+tags to pass EL expressions/values to the target page.]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.IncludeHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="src" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[A literal or EL expression that specifies the target Facelet that you 
+would like to include into your document.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="insert">
+        <xs:annotation>
+              <xs:documentation><![CDATA[The insert tag is used within your templates to declare spots of replicable data.]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.InsertHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The optional name attribute matches the associated &lt;ui:define/&gt; 
+tag in this template's client. If no name is specified, it's expected 
+that the whole template client will be inserted.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="param">
+        <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.ui.ParamHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="name" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The name of the variable to pass to the included Facelet.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The literal or EL expression value to assign to the named variable.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

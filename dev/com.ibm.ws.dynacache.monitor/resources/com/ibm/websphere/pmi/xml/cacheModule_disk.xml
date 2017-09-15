@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!DOCTYPE Stats SYSTEM "stats.dtd">
+<Stats type="com.ibm.websphere.pmi.xml.cacheModule_disk">
+    <description>cacheModule.desc</description>
+    <resourceBundle>com.ibm.ws.pmi.properties.PMIText</resourceBundle>
+    <CountStatistic ID="4" name="cacheModule.objectsOnDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.objectsOnDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="5" name="cacheModule.hitsOnDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.hitsOnDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="6" name="cacheModule.explicitInvalidationFromDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.explicitInvalidationFromDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="7" name="cacheModule.timeoutInvalidationsFromDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.timeoutInvalidationsFromDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="8" name="cacheModule.pendingRemovalFromDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.pendingRemovalFromDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="9" name="cacheModule.dependencyIdsOnDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.dependencyIdsOnDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="10" name="cacheModule.dependencyIdsBufferedForDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.dependencyIdsBufferedForDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="11" name="cacheModule.dependencyIdsOffloadedToDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.dependencyIdsOffloadedToDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="12" name="cacheModule.dependencyIdBasedInvalidationsFromDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.dependencyIdBasedInvalidationsFromDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="13" name="cacheModule.templatesOnDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.templatesOnDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="14" name="cacheModule.templatesBufferedForDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.templatesBufferedForDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="15" name="cacheModule.templatesOffloadedToDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.templatesOffloadedToDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="16" name="cacheModule.templateBasedInvalidationsFromDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.templateBasedInvalidationsFromDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="17" name="cacheModule.garbageCollectorInvalidationsFromDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.garbageCollectorInvalidationsFromDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+    <CountStatistic ID="18" name="cacheModule.overflowInvalidationsFromDisk">
+        <level>low</level>
+        <unit>unit.none</unit>                
+        <description>cacheModule.overflowInvalidationsFromDisk.desc</description>                
+        <aggregatable>false</aggregatable>
+        <statisticSet>basic</statisticSet>             
+    </CountStatistic>
+</Stats>

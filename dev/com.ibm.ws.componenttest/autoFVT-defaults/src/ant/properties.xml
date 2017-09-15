@@ -1,0 +1,60 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!--
+Reasons that we're NOT using <FE>/ws/imports/std_dirs.xml and <FE>/ws/imports/std_props.xml:
+1) Need to define a directory structure that makes it easy to store not just Java source, but also: Ant, Jython, JACL, 
+2) Need to define a directory structure that makes it easy to build not just JARs, but also WARs and EARs
+-->
+<project name="standard.properties">
+
+    <dirname property="dir.src.ant"          file="${ant.file.standard.properties}"/>
+    <dirname property="dir.src"              file="${dir.src.ant}"/>
+    <dirname property="dir.component.root"   file="${dir.src}"/>
+    <dirname property="dir.code"             file="${dir.component.root}"/>
+    <dirname property="dir.ws"               file="${dir.code}"/>
+    <property    name="dir.imports"          location="${dir.ws}/imports"/>
+    <property    name="dir.src.ears"         location="${dir.src}/ears"/>
+    <property    name="dir.src.jars"         location="${dir.src}/jars"/>
+    <property    name="dir.src.java"         location="${dir.src}/java"/>
+<!--    
+    Specified in each build.xml that uses this
+    <property    name="dir.src.jsps"         location="${dir.src}/jsps"/> -->
+    <property    name="dir.src.staticFiles"  location="${dir.src}/staticFiles"/>
+    <property    name="dir.src.tlds"         location="${dir.src}/tlds"/>
+    <property    name="dir.src.tags"         location="${dir.src}/tags"/>
+    <property    name="dir.src.golden.files" location="${dir.src}/goldenFiles"/>
+    <property    name="dir.src.jython"       location="${dir.src}/jython"/>
+    <property    name="dir.src.wars"         location="${dir.src}/wars"/>
+    <property    name="dir.build"            location="${dir.component.root}/build"/>
+    <property    name="dir.build.classes"    location="${dir.build}/classes"/>
+    <property    name="dir.build.ears"       location="${dir.build}/ears"/>
+    <property    name="dir.build.jars"       location="${dir.build}/lib"/>
+    <property    name="dir.build.javadoc"    location="${dir.build}/javadoc"/>
+    <property    name="dir.build.lib"        location="${dir.build}/lib"/>
+    <property    name="dir.build.tmp"        location="${dir.build}/tmp"/>
+    <property    name="build.tmp.dir"        location="${dir.build}/tmp"/>
+    <property    name="dir.build.wars"       location="${dir.build}/wars"/>
+    <property    name="dir.doc"              location="${dir.component.root}/doc"/>
+    <property    name="dir.log"              location="${dir.component.root}/results"/>
+    <property    name="dir.log.xml"          location="${dir.log}/junit"/>
+    <property    name="dir.log.coverage"     location="${dir.log}/coverage"/>
+    <property    name="dir.log.html"         location="${dir.log}/junit.html"/>
+    <property    name="dir.log.javacores"    location="${dir.log}/javacores"/>
+    <property    name="dir.log.was"          location="${dir.log}/websphereLogs"/>
+    <property    name="dir.log.tmp"          location="${dir.log}/tmp"/>
+    <property    name="dir.lib"              location="${dir.component.root}/lib"/>
+    <property    name="zip.backup"           value="backup.zip"/>
+    <property    name="zip.autoFVT"          value="autoFVT.zip"/>
+    <property    name="javadoc.overview"     location="${dir.doc}/overview.html"/>
+	
+	<!-- May need these properties for binary prereqs -->
+	<property file="${user.home}/user.build.properties"/>
+</project>

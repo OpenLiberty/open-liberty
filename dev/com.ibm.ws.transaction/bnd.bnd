@@ -1,0 +1,132 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Transaction
+Bundle-SymbolicName: com.ibm.ws.transaction
+Bundle-Description: Transaction support, version ${bVersion}
+
+WS-TraceGroup: Transaction
+
+Service-Component: com.ibm.ws.transaction; \
+	  provide:='com.ibm.tx.config.ConfigurationProvider'; \
+      implementation:=com.ibm.ws.transaction.services.JTMConfigurationProvider; \
+      locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
+      dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
+      transactionSettingsProvider=com.ibm.tx.jta.embeddable.TransactionSettingsProvider ;\
+      optional:='dataSourceFactory,transactionSettingsProvider';\
+      dynamic:='dataSourceFactory,transactionSettingsProvider';\
+      configuration-policy:=require;\
+      properties:='service.vendor=IBM,dataSourceFactory.target=(id=unbound)', \
+   TransactionManager; \
+      implementation:=com.ibm.ws.transaction.services.TransactionManagerService; \
+      provide:='javax.transaction.TransactionManager,com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager,com.ibm.ws.Transaction.UOWCurrent'; \
+      immediate:=true; \
+      tmService=com.ibm.tx.util.TMService ;\
+      uOWEventListener=com.ibm.wsspi.tx.UOWEventListener ;\
+      optional:='uOWEventListener' ;\
+      dynamic:='uOWEventListener', \
+   LocalTransactionCurrent; \
+      implementation:=com.ibm.ws.transaction.services.LocalTransactionCurrentService; \
+      provide:='com.ibm.ws.LocalTransaction.LocalTransactionCurrent'; \
+      uOWEventListener=com.ibm.wsspi.tx.UOWEventListener ;\
+      optional:='uOWEventListener' ;\
+      dynamic:='uOWEventListener', \
+   TransactionJavaColonHelper; \
+      implementation:=com.ibm.ws.transaction.services.TransactionJavaColonHelper; \
+      provide:='com.ibm.ws.container.service.naming.JavaColonNamingHelper,com.ibm.ws.transaction.services.TransactionJavaColonHelper'; \
+      userTransactionDecorator=com.ibm.tx.jta.embeddable.UserTransactionDecorator?;\
+      userTransaction=javax.transaction.UserTransaction, \
+   WebAppTransactionCollaborator; \
+     implementation:=com.ibm.ws.transaction.services.WebAppTransactionCollaboratorImpl; \
+     provide:='com.ibm.wsspi.webcontainer.collaborator.IWebAppTransactionCollaborator'; \
+     ltCurrent=com.ibm.ws.LocalTransaction.LocalTransactionCurrent; \
+	 tranMgr=com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager; \
+	 userTran=com.ibm.ws.tx.embeddable.EmbeddableWebSphereUserTransaction; \
+	 uowCallback=com.ibm.ws.uow.UOWScopeCallback; \
+  	 properties:="service.vendor=IBM"
+
+Import-Package: \
+    !com.ibm.wsspi.webcontainer.collaborator, \
+ 	javax.transaction; version=1.1.0, \
+ 	javax.transaction.xa; version=1.1.0, \
+ 	javax.servlet; resolution:=optional, \
+ 	javax.servlet.http; resolution:=optional, \
+ 	com.ibm.ws.recoverylog.spi, \
+ 	*
+
+# Allow use of the collaborator package even if the webcontainer bundle turns up 
+# after this bundle is resolved. 
+DynamicImport-Package:    com.ibm.wsspi.webcontainer.collaborator
+
+Include-Resource: \
+	OSGI-INF=resources/OSGI-INF
+	
+
+ 
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+ 	com.ibm.ws.transaction.services;provide:=true
+ 	
+-dsannotations: \
+ com.ibm.ws.transaction.services.UOWManagerService,\
+ com.ibm.ws.transaction.services.UOWManagerObjectFactoryInfo,\
+ com.ibm.ws.transaction.services.UserTransactionService,\
+ com.ibm.ws.transaction.services.TransactionSynchronizationRegistryObjectFactoryInfo,\
+ com.ibm.ws.transaction.services.TransactionSynchronizationRegistryObjectFactory,\
+ com.ibm.ws.transaction.services.TransactionObjectFactory,\
+ com.ibm.ws.transaction.services.TransactionObjectFactoryInfo,\
+ com.ibm.ws.transaction.services.LTCUOWCallbackService,\
+ com.ibm.ws.transaction.services.TransactionInflowManagerService,\
+ com.ibm.ws.transaction.services.RemoteTransactionControllerService,\
+ com.ibm.ws.transaction.services.TransactionSynchronizationRegistryService
+
+instrument.classesExcludes: com/ibm/ws/transaction/services/TransactionMessages*.class
+
+-buildpath: \
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.tx.util;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.tx.jta.extensions;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.logging,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.transaction.cdi;version=latest, \
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.webcontainer;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	cglib:cglib-nodep;version=2.1.0.3, \
+	org.jmock:jmock-legacy;version=2.5.0, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.recoverylog;version=latest

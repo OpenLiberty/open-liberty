@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2008  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>HttpService Documentation</title>
+</head>
+<body>
+<!-- VERY important note:  Use ONLY flat text editors (such as
+Notepad or Wordpad) to edit this file. Do NOT edit this page
+with MS Word or other editors that are not flat text editors.
+-->
+
+<h1 id="event">Event Engine Developer Documentation</h1>
+
+<h2 id="event_overview">Concept of Event Engine</h2>
+<p>The event engine's purpose in life is provide a central service that will 
+give us a control point for the Events that run in the WebSphere runtime. 
+This is important, because the events provide a mechanism for passing data 
+between components in a scalable way.</p>
+<p>Events can be fired synchronously or asynchronously. If they are fired
+synchronously, the event is handled on the current thread. Otherwise,
+the event will run on a separate thread and the call to the event engine
+will return before event execution has completed.</p>
+
+<h2 id="event_flow">Flow of the Event Engine</h2>
+<p>Events flow through the Event Engine in the following manner:
+<ul><li>An Event object is created by calling EventEngine.createEvent().</li>
+<li>The Event is passed into either a postEvent (asynchronous) or a sendEvent 
+(synchronous) method on the EventEngine.</li>
+<li>The TopicData associated with the Topic used on the Event is obtained from the
+TopicBasedCache.</li>
+<li>The Handlers associated with the Topic are then pulled from the TopicData and 
+passed to the dispatcher to be further filtered.</li>
+<li>handleEvent(Event) is called on each matching handler.</li>
+</ul></p>
+
+<!-- div class="config">
+Insert configuration or remove if you don't use this section.
+</div -->
+
+<!-- center>
+Any extra images for the doc goes under images directory<br />
+<img src="images/liberty.jpg" />
+</center -->
+<p />
+
+<a href="http://www.w3.org" class="externalURL">World Wide Web Consortium</a>
+
+</body>
+</html>

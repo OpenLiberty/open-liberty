@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.0
+
+Bundle-Name: WebSphere JAX-RS 20 Engine API
+Bundle-Description: WebSphere JAX-RS 20 Engine API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.jaxrs20
+
+Import-Package: com.ibm.websphere.jaxrs.providers.json4j, \
+		com.ibm.websphere.jaxrs20.multipart, \
+		javax.ws.rs, \
+		javax.ws.rs.client, \
+		javax.ws.rs.container, \
+		javax.ws.rs.core, \
+		javax.ws.rs.ext, \
+		javax.ws.rs.sse;resolution:=optional			
+
+Export-Package: com.ibm.websphere.jaxrs.providers.json4j,com.ibm.websphere.jaxrs20.multipart
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.jaxrs20/pom.xml=com.ibm.websphere.appserver.api.jaxrs20.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+	com.ibm.ws.jaxrs.2.0.common;version=latest, \
+	com.ibm.ws.jaxrs.2.x.config;version=latest

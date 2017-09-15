@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://bean.common.annuity.acme.wssvt.ibm.com/jaxbjpa/" xmlns:tns="http://bean.common.annuity.acme.wssvt.ibm.com/jaxbjpa/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://jaxws.client.common.annuity.acme.wssvt.ibm.com/ejb3impl/">
+
+  <xs:import namespace="http://jaxws.client.common.annuity.acme.wssvt.ibm.com/ejb3impl/" schemaLocation="AnnuityMgmtSvcEJB30JAXWSImpl_schema1.xsd"/>
+
+  <xs:element name="address" type="tns:Address"/>
+
+  <xs:element name="annuity" type="tns:Annuity"/>
+
+  <xs:element name="annuityHolder" type="tns:AnnuityHolder"/>
+
+  <xs:element name="annuityPersistebleObject" type="tns:AnnuityPersistebleObject"/>
+
+  <xs:element name="annuityValueObject" type="tns:AnnuityValueObject"/>
+
+  <xs:element name="contact" type="tns:Contact"/>
+
+  <xs:element name="equityAnnuity" type="tns:EquityAnnuity"/>
+
+  <xs:element name="fixedAnnuity" type="tns:FixedAnnuity"/>
+
+  <xs:element name="payor" type="tns:Payor"/>
+
+  <xs:element name="payout" type="tns:Payout"/>
+
+  <xs:element name="payoutValueObject" type="tns:PayoutValueObject"/>
+
+  <xs:element name="person" type="tns:Person"/>
+
+  <xs:element name="rider" type="tns:Rider"/>
+
+  <xs:element name="stringParameterizable" type="tns:StringParameterizable"/>
+
+  <xs:complexType name="Contact">
+    <xs:complexContent>
+      <xs:extension base="tns:AnnuityPersistebleObject">
+        <xs:sequence>
+          <xs:element name="theAddress" type="tns:Address" minOccurs="0"/>
+          <xs:element name="email" type="xs:string" minOccurs="0"/>
+          <xs:element name="phone" type="xs:string" minOccurs="0"/>
+          <xs:element name="contactType" type="ns1:contactType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AnnuityPersistebleObject">
+    <xs:sequence>
+      <xs:element name="id" type="xs:string" minOccurs="0"/>
+      <xs:element name="lastUpdateDate" type="xs:dateTime" minOccurs="0"/>
+      <xs:element name="config" type="tns:StringParameterizable" minOccurs="0"/>
+      <xs:element name="version" type="xs:int"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Address">
+    <xs:sequence>
+      <xs:element name="line1" type="xs:string" minOccurs="0"/>
+      <xs:element name="line2" type="xs:string" minOccurs="0"/>
+      <xs:element name="city" type="xs:string" minOccurs="0"/>
+      <xs:element name="state" type="xs:string" minOccurs="0"/>
+      <xs:element name="zipCode" type="xs:string" minOccurs="0"/>
+      <xs:element name="country" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="StringParameterizable">
+    <xs:sequence>
+      <xs:element name="params">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="entry" minOccurs="0" maxOccurs="unbounded">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="key" minOccurs="0" type="xs:string"/>
+                  <xs:element name="value" minOccurs="0" type="xs:string"/>
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Payor">
+    <xs:complexContent>
+      <xs:extension base="tns:AnnuityPersistebleObject">
+        <xs:sequence>
+          <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="PayoutValueObject">
+    <xs:sequence>
+      <xs:element name="payout" type="tns:Payout" minOccurs="0"/>
+      <xs:element name="annuityVO" type="tns:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="Payout">
+    <xs:complexContent>
+      <xs:extension base="tns:AnnuityPersistebleObject">
+        <xs:sequence>
+          <xs:element name="taxableAmount" type="xs:decimal" minOccurs="0"/>
+          <xs:element name="startDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="endDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="annuity" type="tns:Annuity" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Annuity">
+    <xs:complexContent>
+      <xs:extension base="tns:AnnuityPersistebleObject">
+        <xs:sequence>
+          <xs:element name="lastPaidAmt" type="xs:double" minOccurs="0"/>
+          <xs:element name="AccountNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="amount" type="xs:double" minOccurs="0"/>
+          <xs:element name="annuityHolderId" type="xs:string" minOccurs="0"/>
+          <xs:element name="payouts" type="tns:Payout" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="riders" type="tns:Rider" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="payors" type="tns:Payor" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Rider">
+    <xs:complexContent>
+      <xs:extension base="tns:AnnuityPersistebleObject">
+        <xs:sequence>
+          <xs:element name="rule" type="xs:string" minOccurs="0"/>
+          <xs:element name="effectiveDate" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="type" type="ns1:riderType" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AnnuityValueObject">
+    <xs:sequence>
+      <xs:element name="annuityType" type="ns1:annuityType" minOccurs="0"/>
+      <xs:element name="basic" type="tns:Annuity" minOccurs="0"/>
+      <xs:element name="fixed" type="tns:FixedAnnuity" minOccurs="0"/>
+      <xs:element name="equity" type="tns:EquityAnnuity" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="FixedAnnuity">
+    <xs:complexContent>
+      <xs:extension base="tns:Annuity">
+        <xs:sequence>
+          <xs:element name="rate" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="EquityAnnuity">
+    <xs:complexContent>
+      <xs:extension base="tns:Annuity">
+        <xs:sequence>
+          <xs:element name="fundNames" type="xs:string" minOccurs="0"/>
+          <xs:element name="indexRate" type="xs:double" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="AnnuityHolder">
+    <xs:complexContent>
+      <xs:extension base="tns:Person">
+        <xs:sequence>
+          <xs:element name="category" type="ns1:annuityHolderCategory" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Person">
+    <xs:complexContent>
+      <xs:extension base="tns:AnnuityPersistebleObject">
+        <xs:sequence>
+          <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+          <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+          <xs:element name="governmentId" type="xs:string" minOccurs="0"/>
+          <xs:element name="dateOfBirth" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="timeOfBirth" type="xs:dateTime" minOccurs="0"/>
+          <xs:element name="picture" type="xs:byte" minOccurs="0" maxOccurs="unbounded"/>
+          <xs:element name="contact" type="tns:Contact" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+</xs:schema>

@@ -1,0 +1,107 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: publish/files/data/anno_tests/secfvt_servlet30.ear.unpacked/Servlet30DynConflict.war.unpacked/WEB-INF/lib/Servlet30DynConflict.jar
+Class-Source: Servlet30DynConflict.war.unpacked
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.ws.secfvt.utils.ServletMethodHelper
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict4
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.annotation.security.RunAs
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict8
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict1
+  ClassSource: publish/files/data/anno_tests/secfvt_servlet30.ear.unpacked/Servlet30DynConflict.war.unpacked/WEB-INF/lib/Servlet30DynConflict.jar
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict7
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.listener.ServletRegistrationContextListener1
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.ServletContextListener
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict6
+  ClassSource: publish/files/data/anno_tests/secfvt_servlet30.ear.unpacked/Servlet30DynConflict.war.unpacked/WEB-INF/lib/Servlet30DynConflict.jar
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict2
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict9
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict3
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynConflict5
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.annotation.security.RunAs
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Excluded: java.lang.Object
+  ClassSource: Servlet30DynConflict.war.unpacked
+Class-Excluded: javax.servlet.ServletContextListener
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.util.EventListener
+Class-Excluded: javax.servlet.ServletConfig
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.http.HttpServlet
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: javax.servlet.GenericServlet
+  Interface: java.io.Serializable
+Class-Excluded: javax.servlet.annotation.WebServlet
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.util.EventListener
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.GenericServlet
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.Servlet
+  Interface: javax.servlet.ServletConfig
+  Interface: java.io.Serializable
+Class-Excluded: java.io.Serializable
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.annotation.ServletSecurity
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.servlet.Servlet
+  ClassSource: Servlet30DynConflict.war.unpacked
+  Superclass: java.lang.Object
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+Class-Unresolved: javax.annotation.security.RunAs
+# ============================================================

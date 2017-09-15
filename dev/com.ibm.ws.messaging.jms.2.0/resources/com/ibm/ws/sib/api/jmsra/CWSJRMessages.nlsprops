@@ -1,0 +1,642 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 284561          10-Aug-05 pnickoll Added extra data to the exception thrown when validating an activation spec
+# 320291                  04-Nov-05 ajw          Problem in message 1181
+# 344741                  08-Feb-06 ajw          Removed msgs CWSJR1115 and CWSJR1116
+# 342029                  09-Feb-06 ajw          Removed unused msgs
+# 352462          04-Jul-06 matrober SVT:CWSJR1067E has a misspelling
+# 387921          04-Sep-06 pnickoll Fixed misspellings and incorrect message ID
+# SIB0048c.ra.6   22-Jan-07 vaughton Tidy up policing of xa connections msgs
+# 446227          18-Jun-07 pnickoll merge updated from UT
+# 468221          19-Sep-07 pnickoll Changed 1072 so that it uses {0} instead of {1}
+# 99986           13-Jun-13 Chetan   Correcting nls message
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.api.jmsra.CWSJRMessages.nlsprops
+#
+# SIB.api.jmsra component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJR0001=CWSJR0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes: TODO: CONFIRM THIS RANGE DOESN'T OVERLAP THE JMS API TEAMS RANGE
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSJR1000-CWSJR1500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSJR1001-CWSJR1020   com.ibm.ws.sib.api.jmsra.impl.JmsJcaResourceAdapterImpl
+#   CWSJR1021-CWSJR1040   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionFactoryImpl
+#   CWSJR1041-CWSJR1060   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedQueueConnectionFactoryImpl / JmsJcaManagedTopicConnectionFactoryImpl
+#   CWSJR1061-CWSJR1080   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionFactoryImpl
+#   CWSJR1081-CWSJR1100   com.ibm.ws.sib.api.jmsra.impl.JmsJcaConnectionImpl
+#   CWSJR1101-CWSJR1120   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnection
+#   CWSJR1121-CWSJR1160   com.ibm.ws.sib.api.jmsra.impl.JmsJcaSessionImpl
+#   CWSJR1161-CWSJR1180   com.ibm.ws.sib.api.jmsra.JmsJcaReferenceUtils
+#   CWSJR1181-CWSJR1200   com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl
+#   CWSJR1201-CWSJR1220   com.ibm.ws.sib.api.jmsra.impl.JmsJcaDispatcher
+#   CWSJR1221-CWSJR1240   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointActivation
+#   CWSJR1241-CWSJR1260   com.ibm.ws.sib.api.jmsra.impl.JmsJcaTransactionalDispatcher
+#   CWSJR1441-CWSJR1460   com.ibm.ws.sib.api.jmsra.JmsJcaFactory
+#   CWSJR1461-CWSJR1480   com.ibm.ws.sib.api.jmsra.impl.JmsJcaManagedConnectionSynchronizationProvider
+#   CWSJR1481-CWSJR1500   com.ibm.ws.sib.api.jmsra.impl.JmsJcaEndpointInvokerImpl
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.61,0,07/01/24,10:58:20
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jmsra/CWSJRMessages.nlsprops
+#COMPONENTPREFIX CWSJR
+#COMPONENTNAMEFOR CWSJR SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#
+# JmsJcaResourceAdapterImpl
+# -------------------------------------------------------------------------------------------------
+
+#
+# JmsJcaManagedConnectionFactoryImpl
+#
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1021=CWSJR1021E: An internal exception was created. The exception {0} in method {1}.
+EXCEPTION_RECEIVED_CWSJR1021.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1021.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1022=CWSJR1022E: An unexpected exception has occurred during the call to the method {0}. An unexpected type of ConnectionRequest object, {2}, was received instead of {1}.
+EXCEPTION_RECEIVED_CWSJR1022.explanation=An internal exception was created. The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1022.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+SICORECONNECTION_ERROR_CWSJR1023=CWSJR1023E: An internal error has occurred. A valid SICoreConnectionFactory cannot be retrieved during a call to the method {0}.
+SICORECONNECTION_ERROR_CWSJR1023.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1023.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+JMS_CONNECTION_FAIL_CWSJR1024=CWSJR1024E: An internal error has occurred. During the call to the method {0} an unexpected object of type, {2}, was received instead of {1}.
+JMS_CONNECTION_FAIL_CWSJR1024.explanation=An internal exception was created. The JmsFactoryFactory.getInstance() method did not receive a correct JMSRAFactoryFactory type as expected.
+JMS_CONNECTION_FAIL_CWSJR1024.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1025=CWSJR1025E: The prefix {0} is longer than twelve characters.
+DESTINATION_PREFIX_LONG_CWSJR1025.explanation=The prefix for temporary destination names cannot be longer than twelve characters.
+DESTINATION_PREFIX_LONG_CWSJR1025.useraction=Specify a prefix that is twelve characters or less.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1026=CWSJR1026E: An internal error has occurred. The exception {0} was received in method {1}.
+EXCEPTION_RECEIVED_CWSJR1026.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1026.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1027=CWSJR1027E: An internal error has occurred. The exception {0} was received in method {1}.
+EXCEPTION_RECEIVED_CWSJR1027.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1027.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1028=CWSJR1028E: An internal error has occurred. The exception {0} was received in method {1}.
+EXCEPTION_RECEIVED_CWSJR1028.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1028.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the prefix that was trying to be set
+DESTINATION_PREFIX_LONG_CWSJR1029=CWSJR1029E: The prefix {0} is longer than twelve characters.
+DESTINATION_PREFIX_LONG_CWSJR1029.explanation=The prefix for temporary destination names cannot be longer than twelve characters.
+DESTINATION_PREFIX_LONG_CWSJR1029.useraction=Specify a prefix that is twelve characters or less.
+
+#
+# JmsJcaConnectionFactoryImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} the type of object we were expecting
+# {2} the type of object we received
+EXCEPTION_RECEIVED_CWSJR1061=CWSJR1061E: An internal error occurred in method {0}. A valid connection was not created; the object {2} was received instead of {1}.
+EXCEPTION_RECEIVED_CWSJR1061.explanation=CMSG0001
+EXCEPTION_RECEIVED_CWSJR1061.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1064=CWSJR1064E: An internal error has occurred. The exception {0} was received in method {1}.
+EXCEPTION_RECEIVED_CWSJR1064.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1064.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1065=CWSJR1065E: An internal error has occurred. The exception {0} was received in method {1}.
+EXCEPTION_RECEIVED_CWSJR1065.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1065.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+SICORECONNECTION_ERROR_CWSJR1066=CWSJR1066E: A valid SICoreConnectionFactory cannot be retrieved during a call to the method {0}.
+SICORECONNECTION_ERROR_CWSJR1066.explanation=CMSG0001
+SICORECONNECTION_ERROR_CWSJR1066.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the JCA exception
+CONNECTION_ERROR_RETRY_CWSJR1067=CWSJR1067E: The following JCA Connection error has occurred when trying to get the connection. The retrieving of the connection will be retried. The exception is {0}.
+CONNECTION_ERROR_RETRY_CWSJR1067.explanation=An exception was created while obtaining a connection. The system will purge the connection, then attempt to obtain another one.
+CONNECTION_ERROR_RETRY_CWSJR1067.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1068=CWSJR1068E: It was not possible to authenticate using the supplied authentication alias, {0}.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use container-managed authentication, but the associated authentication data was not valid.
+CONTAINER_AUTHENTICATION_EXCEPTION_1068.useraction=Ensure that the authentication alias associated with this resource reference contains valid credentials for the bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1069=CWSJR1069E: The supplied user name, {0}, failed to be authenticated.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use application-managed authentication, but the associated component authentication alias data was not valid.
+APPLICATION_AUTHENTICATION_EXCEPTION_1069.useraction=Ensure that the component authentication alias contains valid credentials for the bus.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1070=CWSJR1070E: It was not possible to authenticate because no authentication alias was specified.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use container-managed authentication, but an authentication alias was not associated with the resource reference.
+CONTAINER_AUTHORIZATION_EXCEPTION_1070.useraction=Ensure that an authentication alias is associated with this resource reference.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1071=CWSJR1071E: It was not possible to authenticate because no credentials were supplied.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use application-managed authentication, but no component authentication alias data was specified.
+APPLICATION_AUTHORIZATION_EXCEPTION_1071.useraction=Ensure that an authentication alias is associated with this resource reference.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1072=CWSJR1072E: The supplied user name, {0}, could not be authenticated.
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use application-managed authentication, but the application supplied credentials that are not valid. 
+APPLICATION_AUTHENTICATION_EXCEPTION_1072.useraction=Ensure that the correct credentials are supplied when creating a connection.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The authentication alias name
+CONTAINER_AUTHENTICATION_EXCEPTION_1073=CWSJR1073E: It was not possible to authenticate using the supplied authentication alias, {0}.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use container-managed authentication, but the associated authentication data was not valid.
+CONTAINER_AUTHENTICATION_EXCEPTION_1073.useraction=Ensure that the authentication alias associated with this resource reference contains valid credentials for the bus.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The user name
+APPLICATION_AUTHENTICATION_EXCEPTION_1074=CWSJR1074E: The supplied user name, {0}, failed to be authenticated.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use application-managed authentication, but the associated component authentication alias data was not valid.
+APPLICATION_AUTHENTICATION_EXCEPTION_1074.useraction=Ensure that the component authentication alias contains valid credentials for the bus.
+
+# -------------------------------------------------------------------------------------------------
+CONTAINER_AUTHORIZATION_EXCEPTION_1075=CWSJR1075E: It was not possible to authenticate because no authentication alias was specified.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use container-managed authentication, but an authentication alias was not associated with the resource reference.
+CONTAINER_AUTHORIZATION_EXCEPTION_1075.useraction=Ensure that an authentication alias is associated with this resource reference.
+
+# -------------------------------------------------------------------------------------------------
+APPLICATION_AUTHORIZATION_EXCEPTION_1076=CWSJR1076E: It was not possible to authenticate because no credentials were supplied.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.explanation=An application used a resource reference to look up a connection factory. The resource reference was configured to use application-managed authentication, but no component authentication alias data was specified.
+APPLICATION_AUTHORIZATION_EXCEPTION_1076.useraction=Ensure that an authentication alias is associated with this resource reference.
+# -------------------------------------------------------------------------------------------------
+AUTHENTICATION_EXCEPTION_1077=CWSJR1077E: The authentication for the supplied user name was not successful.
+AUTHENTICATION_EXCEPTION_1077.explanation=Authentication failed using the supplied details because the user name or the password is incorrect.
+AUTHENTICATION_EXCEPTION_1077.useraction=See the linked error message for more information.Check that the user name and password are correct, and have been defined to the system.
+
+#
+# JmsJcaConnectionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the number of sessions found
+EXCEPTION_RECEIVED_CWSJR1082=CWSJR1082E: An internal error has occurred during the call to the method {0}. Exactly one session was expected but {1} sessions were found.
+EXCEPTION_RECEIVED_CWSJR1082.explanation=The set of sessions in the connection has more than one session when there should only be one.
+EXCEPTION_RECEIVED_CWSJR1082.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1083=CWSJR1083E: An internal error has occurred during the call to the method {0}. A {1} object was found when a {2} object was expected.
+EXCEPTION_RECEIVED_CWSJR1083.explanation=An object found in the set of sessions was not of the type required.
+EXCEPTION_RECEIVED_CWSJR1083.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was found
+# {2} is the object type that was expected
+EXCEPTION_RECEIVED_CWSJR1084=CWSJR1084E: An internal error has occurred during the call to the method {0}. A {1} object was found when a {2} object was expected.
+EXCEPTION_RECEIVED_CWSJR1084.explanation=An object found in the set of sessions was not of the type required.
+EXCEPTION_RECEIVED_CWSJR1084.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1085=CWSJR1085E: An internal error has occurred. A call was made to the method {0} after the connection was closed.
+ILLEGAL_STATE_CWSJR1085.explanation=The method cannot be called after the connection is closed.
+ILLEGAL_STATE_CWSJR1085.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+ILLEGAL_STATE_CWSJR1086=CWSJR1086E: An internal error has occurred. A call was made to the method {0} after the connection was closed.
+ILLEGAL_STATE_CWSJR1086.explanation=The method cannot be called after the connection is closed.
+ILLEGAL_STATE_CWSJR1086.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnection
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+EXCEPTION_RECEIVED_CWSJR1101=CWSJR1101E: An internal error has occurred during the call to the method {0}. The connection failed because a {2} object was found when a {1} object was expected.
+EXCEPTION_RECEIVED_CWSJR1101.explanation=The request information is not of the correct type.
+EXCEPTION_RECEIVED_CWSJR1101.useraction=CMSG0002
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+EXCEPTION_RECEIVED_CWSJR1102=CWSJR1102E: An internal error has occurred. The exception {0} was thrown.
+EXCEPTION_RECEIVED_CWSJR1102.explanation=The call to the lazyEnlist method on the connection manager was not successful.
+EXCEPTION_RECEIVED_CWSJR1102.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+# {1} The username that was used in the objects constructor
+# {2} The username passed to the method
+AUTHENTICATION_ERROR_CWSJR1103=CWSJR1103E: The credentials ({2}) passed to the method {0} did not match those passed to the constructor ({1}).
+AUTHENTICATION_ERROR_CWSJR1103.explanation=The supplied credentials did not pass the authentication check.
+AUTHENTICATION_ERROR_CWSJR1103.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+# {1} is the object type that was expected
+# {2} is the object type that was found
+INVALID_SESSION_CWSJR1104=CWSJR1104E: An internal error has occurred during the call to the method {0}. A {2} object was received instead of a {1} object.
+INVALID_SESSION_CWSJR1104.explanation=An object of the wrong type was received.
+INVALID_SESSION_CWSJR1104.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_SESSION_CWSJR1105=CWSJR1105E: An internal error has occurred. An attempt was made to start a local transaction when such a transaction already existed.
+INVALID_SESSION_CWSJR1105.explanation=It is not possible to start a local transaction if one already exists.
+INVALID_SESSION_CWSJR1105.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1106=CWSJR1106E: An internal error has occurred during the call to the method {0}. A required SICoreConnection object was not found.
+EXCEPTION_RECEIVED_CWSJR1106.explanation=A SICoreConnection object is required but cannot be found.
+EXCEPTION_RECEIVED_CWSJR1106.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the error occurred
+EXCEPTION_RECEIVED_CWSJR1107=CWSJR1107E: An internal error has occurred during the call to the method {0}. A required SICoreConnection object was not found.
+EXCEPTION_RECEIVED_CWSJR1107.explanation=A SICoreConnection object is required but cannot be found.
+EXCEPTION_RECEIVED_CWSJR1107.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is a connection property name, eg targetType
+# {1} is the required connection property value
+ME_NAME_REQUIRED_CWSJR1108=CWSJR1108E: A specific messaging engine must be specified to use JMS resources within a transaction. The connection property {0} must be set to {1}.
+ME_NAME_REQUIRED_CWSJR1108.explanation=To permit recovery of transactions, a connection factory must target a specific messaging engine in the bus.
+ME_NAME_REQUIRED_CWSJR1108.useraction=Change the connection factory property 'Target' value to the string value of the name of the target messaging engine, 'Target type' to the pull down value 'Messaging engine name' and 'Target significance' to the pull down value of 'Required'.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1110=CWSJR1110E: An internal error has occurred. Exception: {0} in method {1}
+EXCEPTION_RECEIVED_CWSJR1110.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1110.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1111=CWSJR1111E: An internal error has occurred. Exception: {0} in method {1}
+EXCEPTION_RECEIVED_CWSJR1111.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1111.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1112=CWSJR1112E: An internal error has occurred. Exception: {0} in method {1}
+EXCEPTION_RECEIVED_CWSJR1112.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1112.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1113=CWSJR1113E: An internal error has occurred. Exception: {0} in method {1}
+EXCEPTION_RECEIVED_CWSJR1113.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1113.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception that was received
+# {1} is the name of the method that received it.
+EXCEPTION_RECEIVED_CWSJR1114=CWSJR1114E: An internal error has occurred. Exception: {0} in method {1}
+EXCEPTION_RECEIVED_CWSJR1114.explanation=The included exception information can be used for diagnosis.
+EXCEPTION_RECEIVED_CWSJR1114.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The method that is called.
+AUTHENTICATION_ERROR_CWSJR1117=CWSJR1117E: An internal error has occurred. The credentials passed to the method {0} did not match those passed to the constructor.
+AUTHENTICATION_ERROR_CWSJR1117.explanation=The supplied credentials did not pass the authentication check.
+AUTHENTICATION_ERROR_CWSJR1117.useraction=CMSG0002
+
+#
+# JmsJcaSessionImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the linked exception
+EXCEPTION_RECEIVED_CWSJR1121=CWSJR1121E: An internal error has occurred. During the call to the method {0} the exception {1} was thrown.
+EXCEPTION_RECEIVED_CWSJR1121.explanation=An unexpected exception was created when the session tried to re-associate itself with a connection manager.
+EXCEPTION_RECEIVED_CWSJR1121.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+# {1} is the object we received
+# {2} is the object type we expected.
+EXCEPTION_RECEIVED_CWSJR1122=CWSJR1122E: An internal error has occurred. During the call to the method {0} we expected to receive a {2} but received a {1}
+EXCEPTION_RECEIVED_CWSJR1122.explanation=The connection manager is not lazy enlisted.
+EXCEPTION_RECEIVED_CWSJR1122.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1123=CWSJR1123E: An internal error has occurred. A call was made to {0} after the session closed.
+ILLEGAL_STATE_CWSJR1123.explanation=The method cannot be called after the session is closed.
+ILLEGAL_STATE_CWSJR1123.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1124=CWSJR1124E: An internal error has occurred. A call was made to {0} after the session was invalidated.
+ILLEGAL_STATE_CWSJR1124.explanation=The method call is not allowed when the session is no longer valid.
+ILLEGAL_STATE_CWSJR1124.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that threw the exception
+ILLEGAL_STATE_CWSJR1125=CWSJR1125E: An internal error has occurred. A call was made to {0} but there is no local transaction.
+ILLEGAL_STATE_CWSJR1125.explanation=The method call is not allowed if there is no local transaction.
+ILLEGAL_STATE_CWSJR1125.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+EXCEPTION_RECEIVED_CWSJR1126=CWSJR1126E: An internal error has occurred. The call to the {0} method  is not allowed because the environment is not managed. 
+EXCEPTION_RECEIVED_CWSJR1126.explanation=The call is not allowed in an unmanaged environment.
+EXCEPTION_RECEIVED_CWSJR1126.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1130=CWSJR1130E: An internal error has occurred. A call was made to {0} after the session closed.
+ILLEGAL_STATE_CWSJR1130.explanation=The method cannot be called after the session is closed.
+ILLEGAL_STATE_CWSJR1130.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1131=CWSJR1131E: An internal error has occurred. A call was made to {0} after the session closed.
+ILLEGAL_STATE_CWSJR1131.explanation=The method cannot be called after the session is closed.
+ILLEGAL_STATE_CWSJR1131.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1132=CWSJR1132E: An internal error has occurred. A call was made to {0} after the session closed.
+ILLEGAL_STATE_CWSJR1132.explanation=The method cannot be called after the session is closed.
+ILLEGAL_STATE_CWSJR1132.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1133=CWSJR1133E: An internal error has occurred. A call was made to {0} after the session closed.
+ILLEGAL_STATE_CWSJR1133.explanation=The method cannot be called after the session is closed.
+ILLEGAL_STATE_CWSJR1133.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1134=CWSJR1134E: An internal error has occurred. A call was made to {0} after the session was invalidated.
+ILLEGAL_STATE_CWSJR1134.explanation=The method call is not allowed when the session is no longer valid.
+ILLEGAL_STATE_CWSJR1134.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1135=CWSJR1135E: An internal error has occurred. A call was made to {0} after the session was invalidated.
+ILLEGAL_STATE_CWSJR1135.explanation=The method call is not allowed when the session is no longer valid.
+ILLEGAL_STATE_CWSJR1135.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1136=CWSJR1136E: An internal error has occurred. A call was made to {0} after the session was invalidated.
+ILLEGAL_STATE_CWSJR1136.explanation=The method call is not allowed when the session is no longer valid.
+ILLEGAL_STATE_CWSJR1136.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1137=CWSJR1137E: An internal error has occurred. A call was made to {0} after the session was invalidated.
+ILLEGAL_STATE_CWSJR1137.explanation=The method call is not allowed when the session is no longer valid.
+ILLEGAL_STATE_CWSJR1137.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1138=CWSJR1138E: An internal error has occurred. An unexpected exception has occurred. A call was made to {0} but there is no local transaction.
+ILLEGAL_STATE_CWSJR1138.explanation=The method call is not allowed if a global transaction is active.
+ILLEGAL_STATE_CWSJR1138.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1139=CWSJR1139E: An internal error has occurred. An unexpected exception has occurred. A call was made to {0} but there is no local transaction.
+ILLEGAL_STATE_CWSJR1139.explanation=The method call is not allowed if there is no local transaction.
+ILLEGAL_STATE_CWSJR1139.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1140=CWSJR1140E: An internal error has occurred. An unexpected exception has occurred. A call was made to {0} but there is no local transaction.
+ILLEGAL_STATE_CWSJR1140.explanation=The method call is not allowed if a global transaction is active.
+ILLEGAL_STATE_CWSJR1140.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1141=CWSJR1141E: An internal error has occurred. An unexpected exception has occurred. A call was made to {0} but there is no local transaction.
+ILLEGAL_STATE_CWSJR1141.explanation=The method call is not allowed if there is no local transaction.
+ILLEGAL_STATE_CWSJR1141.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method where the internal error occurred
+ILLEGAL_STATE_CWSJR1142=CWSJR1142E: An internal error has occurred. An unexpected exception has occurred. A call was made to {0} but there is no local transaction.
+ILLEGAL_STATE_CWSJR1142.explanation=The method call is not allowed if there is no local transaction.
+ILLEGAL_STATE_CWSJR1142.useraction=CMSG0002
+
+#
+# JmsJcaReferenceUtils
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+# {1} is the class where the error occurred
+EXCEPTION_RECEIVED_CWSJR1161=CWSJR1161E: An internal error has occurred during initialization of the {1} class. Exception: {0}.
+EXCEPTION_RECEIVED_CWSJR1161.explanation=The JmsJcaReferenceUtils class did not initialize.
+EXCEPTION_RECEIVED_CWSJR1161.useraction=CMSG0002
+
+#
+# JmsJcaActivationSpecImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is the value of the target significance
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179=CWSJR1179E: The following target significance field on a JMS activation specification is invalid [{2}]. The values [{0}] or [{1}] are expected.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.explanation=During validation of the properties configured on a JMS activation specification, the target significance property was found not to be valid.
+INVALID_PROPERTY_TARGET_SIGNIFICANCE_CWSJR1179.useraction=Correct the value of the target significance property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the target type
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180=CWSJR1180E: The following target type field on a JMS activation specification is invalid [{3}]. The values [{0}], [{1}] or [{2}] are expected.
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.explanation=During validation of the properties configured on a JMS activation specification, the target type was found not to be valid.
+INVALID_PROPERTY_TARGET_TYPE_CWSJR1180.useraction=Correct the value of the target type property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is a list of invalid properties
+INVALID_PROPERTIES_CWSJR1181=CWSJR1181E: The JMS activation specification has invalid values - the reason(s) for failing to validate the JMS activation specification are: {0}
+INVALID_PROPERTIES_CWSJR1181.explanation=During validation of the properties configured on a JMS activation specification, one or more properties were found that are not valid.
+INVALID_PROPERTIES_CWSJR1181.useraction=Correct the values of the properties on the JMS activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1182=CWSJR1182E: An internal error.  The following exception was thrown while attempting to obtain a utility class: {0}
+EXCEPTION_RECEIVED_CWSJR1182.explanation=During endpoint activation the JMS resource adapter was attempting to obtain a utility class and an unexpected exception was received.
+EXCEPTION_RECEIVED_CWSJR1182.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_CLIENTID_CWSJR1183=CWSJR1183E: The client ID field on a JMS Activation specification must be set
+INVALID_PROPERTY_CLIENTID_CWSJR1183.explanation=During validation of the properties configured on a JMS activation specification, the client ID was found not to be valid.
+INVALID_PROPERTY_CLIENTID_CWSJR1183.useraction=Correct the value of the client ID property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+EXCEPTION_RECEIVED_CWSJR1185=CWSJR1185E: An internal error has occurred during the validation of a JMS activation specification: {0}.
+EXCEPTION_RECEIVED_CWSJR1185.explanation=During the validation of a JMS activation specification an unexpected exception was received.
+EXCEPTION_RECEIVED_CWSJR1185.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+WLM_CLASSIFIER_REG_CWSJR1186=CWSJR1186E: An internal error has occurred during the registration of the WLM classifier for the JMS resource adapter: {0}.
+WLM_CLASSIFIER_REG_CWSJR1186.explanation=During the registration of the WLM classifier for the JMS resource adapter with the handler registry, an unexpected exception was received.
+WLM_CLASSIFIER_REG_CWSJR1186.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_BUSNAME_CWSJR1187=CWSJR1187E: The bus name on a JMS activation specification must be given a value
+INVALID_PROPERTY_BUSNAME_CWSJR1187.explanation=During validation of the properties configured on a JMS activation specification, the bus name was found not to be valid.
+INVALID_PROPERTY_BUSNAME_CWSJR1187.useraction=Correct the value of the bus name property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DESTINATION_CWSJR1188=CWSJR1188E: The destination on a JMS activation specification must be given a value
+INVALID_PROPERTY_DESTINATION_CWSJR1188.explanation=During validation of the properties configured on a JMS activation specification, the destination was found not to be valid.
+INVALID_PROPERTY_DESTINATION_CWSJR1188.useraction=Correct the value of the destination property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the destination type
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189=CWSJR1189E: The following destination type on a JMS activation specification is invalid [{2}]. The values [{0}] or [{1}] are expected.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.explanation=During validation of the properties configured on a JMS activation specification, the destination type was found not to be valid.
+INVALID_PROPERTY_DESTINATION_TYPE_CWSJR1189.useraction=Correct the value of the destination type property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the acknowledge mode
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190=CWSJR1190E: The following acknowledge mode on a JMS activation specification is invalid [{2}]. The values [{0}] or [{1}] are expected.
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.explanation=During validation of the properties configured on a JMS activation specification, the acknowledge mode was found not to be valid.
+INVALID_PROPERTY_ACKNOWLEDGE_MODE_CWSJR1190.useraction=Correct the value of the acknowledge mode property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the read ahead
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191=CWSJR1191E: The following read ahead value on a JMS activation specification is invalid [{3}]. The values [{0}], [{1}] or [{2}] are expected.
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.explanation=During validation of the properties configured on a JMS activation specification, the read ahead value was found not to be valid.
+INVALID_PROPERTY_READ_AHEAD_CWSJR1191.useraction=Correct the value of the read ahead property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the queue class expected
+# {1} is the queue class we were passed
+INVALID_PROPERTY_QUEUE_CWSJR1192=CWSJR1192E: JMS activation specs using a destination type of queue must have a destination of type [{0}] but the destination passed was of type [{1}]
+INVALID_PROPERTY_QUEUE_CWSJR1192.explanation=During validation of the properties configured on a JMS activation specification, the destination was found not to be valid.
+INVALID_PROPERTY_QUEUE_CWSJR1192.useraction=Correct the value of the destination property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the topic class expected
+# {1} is the topic class we were passed
+INVALID_PROPERTY_TOPIC_CWSJR1193=CWSJR1193E: JMS activation specs using a destination type of topic must have a destination of type [{0}] but the destination passed was of type [{1}]
+INVALID_PROPERTY_TOPIC_CWSJR1193.explanation=During validation of the properties configured on a JMS activation specification, the destination was found not to be valid.
+INVALID_PROPERTY_TOPIC_CWSJR1193.useraction=Correct the value of the destination property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is the other allowed value
+# {2} is the value of the subscription durability
+INVALID_PROPERTY_SUBDUR_CWSJR1194=CWSJR1194E: The following subscription durability on a JMS activation specification is invalid [{2}]. The values [{0}] or [{1}] are expected.
+INVALID_PROPERTY_SUBDUR_CWSJR1194.explanation=During validation of the properties configured on a JMS activation specification, the subscription durability was found not to be valid.
+INVALID_PROPERTY_SUBDUR_CWSJR1194.useraction=Correct the value of the subscription durability property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195=CWSJR1195E: The durable subscription home on a JMS activation specification must have a value when using durable subscriptions.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.explanation=During validation of the properties configured on a JMS activation specification, the durable subscription home was found not to be valid.
+INVALID_PROPERTY_DURSUBHOME_CWSJR1195.useraction=Correct the value of the durable subscription home property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SUBNAME_CWSJR1196=CWSJR1196E: The subscription name on a JMS activation specification must have a value when using durable subscriptions
+INVALID_PROPERTY_SUBNAME_CWSJR1196.explanation=During validation of the properties configured on a JMS activation specification, the subscription name was found not to be valid.
+INVALID_PROPERTY_SUBNAME_CWSJR1196.useraction=Correct the value of the subscription name property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+# {0} is the one of the values allowed
+# {1} is another allowed value
+# {2} is another allowed value
+# {3} is the value of the subscription durability
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197=CWSJR1197E: The following share durable subscription field on a JMS activation specification is invalid [{3}]. The values [{0}], [{1}] or [{2}] are expected.
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.explanation=During validation of the properties configured on a JMS activation specification, the share durable subscription property was found not to be valid.
+INVALID_PROPERTY_SHARE_DURSUB_CWSJR1197.useraction=Correct the value of the share durable subscription property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXCONC_CWSJR1198=CWSJR1198E: The maximum concurrency on a JMS activation specification must be given a postive value
+INVALID_PROPERTY_MAXCONC_CWSJR1198.explanation=During validation of the properties configured on a JMS activation specification, the maximum concurrency value was found not to be valid.
+INVALID_PROPERTY_MAXCONC_CWSJR1198.useraction=Correct the value of the maximum concurrency property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_MAXBATCH_CWSJR1199=CWSJR1199E: The maximum batch size on a JMS activation specification must be given a postive value
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.explanation=During validation of the properties configured on a JMS activation specification, the maximum batch size was found not to be valid.
+INVALID_PROPERTY_MAXBATCH_CWSJR1199.useraction=Correct the value of the maximum batch size property on the activation specification, then restart the server.
+# -------------------------------------------------------------------------------------------------
+INVALID_PROPERTY_SHARECMP_CWSJR1200=CWSJR1200E: The share data source with CMP field on a JMS activation specification must be set
+INVALID_PROPERTY_SHARECMP_CWSJR1200.explanation=During validation of the properties configured on a JMS activation specification, the share data source with CMP was found not to be valid.
+INVALID_PROPERTY_SHARECMP_CWSJR1200.useraction=Correct the value of the share data source with CMP property on the activation specification, then restart the server.
+
+#
+# JmsJcaFactory
+#
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the exception thrown
+EXCEPTION_DURING_INIT_CWSJR1441=CWSJR1441E: An internal error has occurred. Creation of the JmsJcaFactory object failed with exception: {0}.
+EXCEPTION_DURING_INIT_CWSJR1441.explanation=A problem occurred while creating the JmsJcaFactory object. See the accompanying error messages for further information.
+EXCEPTION_DURING_INIT_CWSJR1441.useraction=CMSG0002
+
+#
+# JmsJcaManagedConnectionSynchronizationProvider
+#
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461=CWSJR1461E: An internal error has occurred.  Creation of an SIUncoordinatedTransaction failed with exception: {0}
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.explanation=The service integration technologies JMS resource adapter was attempting to create an SIUncoordinatedTransaction to register in a transaction as a Synchronization when an exception was received.
+CREATE_UNCOORDINATED_TRANSACTION_CWSJR1461.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+NOT_SUPPORTED_EXCEPTION_CWSJR1462=CWSJR1462E: The connection to the messaging engine does not support the container-managed persistence sharing optimization.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.explanation=The connection the service integration technologies JMS resource adapter has obtained does not support the container-managed persistence optimization because it is to a remote messaging engine.
+NOT_SUPPORTED_EXCEPTION_CWSJR1462.useraction=Ensure that there is a local messaging engine available to which the resource adapter can connect, or disable the sharing optimization on the connection factory definition using the administrative console.
+# -------------------------------------------------------------------------------------------------
+# {0} the managed connection
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463=CWSJR1463E: An internal error has occurred.  The managed connection {0} is already registered as a synchronization in a transaction.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.explanation=A call to getSynchronization has occurred when the managed connection is already registered as a synchronization in a transaction.
+ACTIVE_SYNCHRONIZATION_EXCEPTION_CWSJR1463.useraction=CMSG0002
+
+#
+# JmsJcaEndpointInvokerImpl
+#
+# -------------------------------------------------------------------------------------------------
+# {0} The exception that was thrown
+UTILITY_CLASS_CWSJR1481=CWSJR1481E: An internal error.  The following exception was thrown while attempting to obtain a utility class: {0}.
+UTILITY_CLASS_CWSJR1481.explanation=During endpoint activation the JMS resource adapter was attempting to obtain a utility class and an unexpected exception was received.
+UTILITY_CLASS_CWSJR1481.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the message endpoint
+# {1} the expected interface
+UNEXPECTED_ENDPOINT_CWSJR1482=CWSJR1482E: An internal error occurred. The message endpoint {0} does not implement the expected interface {1}.
+UNEXPECTED_ENDPOINT_CWSJR1482.explanation=The message endpoint factory has returned a message endpoint that does not implement the MessageListener interface as expected.
+UNEXPECTED_ENDPOINT_CWSJR1482.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} the exception thrown
+ON_MESSAGE_CWSJR1483=CWSJR1483E: An internal error occurred. The exception {0} was thrown while attempting to obtain an instance of the onMessage method.
+ON_MESSAGE_CWSJR1483.explanation=An exception was created during the attempt to obtain an instance of the onMessage method.
+ON_MESSAGE_CWSJR1483.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJR9999=CWSJR9999E: {0}
+TEMPORARY_CWSJR9999.explanation=If the message does not give sufficient information, see the accompanying error messages for further information.
+TEMPORARY_CWSJR9999.useraction=See the accompanying error messages for further information.

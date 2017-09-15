@@ -1,0 +1,134 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session-3.0/resources/com/ibm/ws/session/resources/WASSessionCore.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+SessionContext.createWhenStop=SESN0006E: There was an attempt to create a session while the application server was stopping.
+SessionContext.createWhenStop.explanation=This error occurs when a session request is received while the server is stopping.
+SessionContext.createWhenStop.useraction=Restart the server.
+# -------------------------------------------------------------------------------------------------
+SessionContext.accessWhenStop=SESN0007E: There was an attempt to access a session while the application server was stopping. 
+SessionContext.accessWhenStop.explanation=This error occurs when a session request is received while the server is stopping.
+SessionContext.accessWhenStop.useraction=Restart the server.
+# -------------------------------------------------------------------------------------------------
+SessionContext.unauthAccessError=SESN0008E: A user authenticated as {0} has attempted to access a session owned by {1}.
+SessionContext.unauthAccessError.explanation=The Session Security Integration feature has detected an attempt to access a session by an unauthorized user.
+SessionContext.unauthAccessError.useraction=No action is required.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr1=SESN0012E: A null key was entered. The HttpSession.putValue or HttpSession.setAttribute method was called from a servlet or JSP with a null key.
+SessionData.putValErr1.explanation=The HttpSession.putValue or HttpSession.setAttribute method cannot be called with a null key.
+SessionData.putValErr1.useraction=Modify the servlet or JSP to pass a non-null key.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr2=SESN0013E: A null value was entered for key {0}. The HttpSession.putValue method was called from a servlet or JSP with a null value.
+SessionData.putValErr2.explanation=The HttpSession.putValue method cannot be called with a null value.
+SessionData.putValErr2.useraction=Modify the servlet or JSP to pass a non-null value.
+# -------------------------------------------------------------------------------------------------
+SessionContext.responseAlreadyCommitted=SESN0066E: The response is already committed to the client. The session cookie cannot be set.
+SessionContext.responseAlreadyCommitted.explanation=The response is already committed to client so the session cookie cannot be sent to client.
+SessionContext.responseAlreadyCommitted.useraction=Modify the application to access the HTTP session before writing anything to the response.
+# -------------------------------------------------------------------------------------------------
+SessionContext.maxSessionIdLengthExceeded=SESN0116W: Session identifier {0} has exceeded the maximum length limit of {1}.
+SessionContext.maxSessionIdLengthExceeded.explanation=The value specified for the SessionIdentifierMaxLength property has been exceeded.
+SessionContext.maxSessionIdLengthExceeded.useraction=Only set this property if absolutely necessary. If this property is required, set it to the largest value that your installation can tolerate. If still experiencing this problem, it is likely due to repeated failovers. Investigate and fix the root cause of the failovers.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionsEnabled=SESN0117I: Global sessions are enabled for Web modules running with the Web container-level session management configuration.
+SessionContextRegistry.globalSessionsEnabled.explanation=This message is for informational purposes only.
+SessionContextRegistry.globalSessionsEnabled.useraction=If global sessions are not required, disable them by setting the Servlet21SessionCompatibility property to false.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionTBWWarning=SESN0118W: The time-based write feature is enabled with global sessions.  Accessing a global session from more than one server or cluster might result in loss of session data integrity.
+SessionContextRegistry.globalSessionTBWWarning.explanation=If the time-based write feature is enabled with global sessions, and all the web modules that access the global session are not in the same server or cluster, session data integrity can be lost.
+SessionContextRegistry.globalSessionTBWWarning.useraction=Disable the time-based write feature if web modules that access a global session are split across servers or clusters.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionM2MWarning=SESN0119W: Memory-to-memory replication is enabled with global sessions.  Accessing a global session from more than one server or cluster might result in loss of session data integrity.
+SessionContextRegistry.globalSessionM2MWarning.explanation=If memory-to-memory replication is enabled with global sessions, and all the web modules that access the global session are not in the same server or cluster, session data integrity can be lost.
+SessionContextRegistry.globalSessionM2MWarning.useraction=Disable memory-to-memory replication if web modules that access a global session are split across servers or clusters.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.SessionNotGlobalForWebApp=SESN0120I: Web module {0} will not participate in global sessions because the web container-level session management configuration has been overridden.
+SessionContextRegistry.SessionNotGlobalForWebApp.explanation=The specified web module will not participate in global sessions because the web container-level session management configuration has been overridden either at the enterprise application or web module level.
+SessionContextRegistry.SessionNotGlobalForWebApp.useraction=If you want the web module to participate in global sessions, disable the session management configuration that is specified at the enterprise application or web module level, then restart the server.
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnRetrieve=SESN0121E: Session crossover was detected in web application {0}.  Session {1} was retrieved when session {2} was expected.
+SessionContext.CrossoverOnRetrieve.explanation=A call to the request.getSession method returned a session other than the requested session.
+SessionContext.CrossoverOnRetrieve.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReference=SESN0122E: Session crossover was detected in web application {0}.  Session {1} was referenced by method {2} when session {3} was expected.
+SessionContext.CrossoverOnReference.explanation=An application referenced a session other than the session associated with the request.
+SessionContext.CrossoverOnReference.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReturn=SESN0123E: Session crossover was detected in web application {0}.  Session {1} was returned to the client when session {2} was expected.
+SessionContext.CrossoverOnReturn.explanation=A cookie or URL was returned to the client containing a session ID that is not associated with the request.
+SessionContext.CrossoverOnReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.DebugCrossoverEnabled=SESN0124W: Session crossover detection is enabled.
+SessionContext.DebugCrossoverEnabled.explanation=Checks for session crossover are being initiated.
+SessionContext.DebugCrossoverEnabled.useraction=For better performance, you can disable these checks by setting the web container custom property DebugSessionCrossover to false.
+# -------------------------------------------------------------------------------------------------
+SessionContext.propertyFound=SESN0169I: The session manager found custom property {0} with value {1}.
+SessionContext.propertyFound.explanation=The session manager uses the specified property and value to control behavior.
+SessionContext.propertyFound.useraction=Verify that the specified property and value will result in the desired behavior.
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidPropertyFound=SESN0170W: The session manager found custom property {0} with a non-numeric value of {1} so it will be ignored.
+SessionContext.invalidPropertyFound.explanation=The session manager expected the specified property to contain a numeric value.
+SessionContext.invalidPropertyFound.useraction=Modify the specified property value to make it a valid number.
+# -------------------------------------------------------------------------------------------------
+SessionContext.valueOutOfRange=SESN0171W: The session manager found custom property {0} with out-of-range value {1} so it will use {2}.
+SessionContext.valueOutOfRange.explanation=The session manager expected the specified property to have a value within a certain range.  The session manager instead uses the closest valid value.
+SessionContext.valueOutOfRange.useraction=Correct the specified property value to make it within the documented range.
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+SessionIdGeneratorImpl.UsingDefaultSecureRandom=SESN0172I: The session manager is using the Java default SecureRandom implementation for session ID generation.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.explanation=This message is for informational purposes only.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.useraction=No action is required.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.existingContext=SESN0175I: An existing session context will be used for application key {0}
+SessionContextRegistry.existingContext.explanation=This message is for informational purposes only.
+SessionContextRegistry.existingContext.useraction=No action is required.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.newContext=SESN0176I: A new session context will be created for application key {0}
+SessionContextRegistry.newContext.explanation=This message is for informational purposes only.
+SessionContextRegistry.newContext.useraction=No action is required.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.serverLevelConfigOnly=SESN0194W: The session manager found custom property {0} with value {1}. The session manager cannot override the server-level configuration with value {2}.  The property will be ignored.
+SessionProperties.serverLevelConfigOnly.explanation=The custom property can only be set at server level.
+SessionProperties.serverLevelConfigOnly.useraction=Remove the custom property from the application or module-level configuration.  Change the server-level configuration if applicable.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.propertyFoundButAlreadySet=SESN0195I: The session manager found custom property {0} with value {1}. This custom property can only be set at server level. Because it is the same as the server-level configuration property, it will be used.
+SessionProperties.propertyFoundButAlreadySet.explanation=This message is for informational purposes only.
+SessionProperties.propertyFoundButAlreadySet.useraction=No action is required.
+# -------------------------------------------------------------------------------------------------
+Store.createSessionIdAlreadyExists=SESN0196W: The ID generator generated an ID that already exists.
+Store.createSessionIdAlreadyExists.explanation=The ID generator generated an ID that already exists. It therefore generates another ID.
+Store.createSessionIdAlreadyExists.useraction=No action is required.
+# ---------------------------------------NEW 8.5---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.noPersistence=SESN8501I: The session manager did not find a persistent storage location; HttpSession objects will be stored in the local application server's memory.
+SessionMgrComponentImpl.noPersistence.explanation=You can use a persistent storage location when the user's session data must be maintained across a server restart, or when the user's session data is too valuable to lose through an unexpected server failure. When no persistent storage location is detected, HttpSession objects will strictly be stored in the local application server's memory. By default, no persistent storage location is available; it must be configured by the server administrator.
+SessionMgrComponentImpl.noPersistence.useraction=No action is required. If you intended to configure a persistent storage location, review the server logs and server configuration for errors.
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.persistenceMode=SESN8502I: The session manager found a persistent storage location; it will use session persistence mode={0}
+SessionMgrComponentImpl.persistenceMode.explanation=You can use a persistent storage location when the user's session data must be maintained across a server restart, or when the user's session data is too valuable to lose through an unexpected server failure. When a persistent storage location is detected, HttpSession objects will be stored in the local application server's memory, and also persisted to the storage location. By default, no persistent storage location is available; it must be configured by the server administrator.
+SessionMgrComponentImpl.persistenceMode.useraction=No action is required. If you did not intend to configure a persistent storage location, update your server configuration by removing all references to the storage location, and remove the feature required for the storage location from the Feature Manager.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=Exception is: 
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=Session Object is: {0}
+CommonMessage.sessionid=Sessionid is: {0}
+CommonMessage.miscData=Miscellaneous data: {0}
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidCloneSeparator=SESN0800W: Property CloneSeparator should be exactly one char and it cannot be space. The current value of CloneSeparator specified is "{0}"
+SessionContext.invalidCloneSeparator.explanation=The property CloneSeparator should be exactly one char and it cannot be space.
+SessionContext.invalidCloneSeparator.useraction=Modify the CloneSeparator custom property.

@@ -1,0 +1,39 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+import org.apache.tools.ant.filters.ReplaceTokens
+
+task assembleBootstrap(type: Copy) {
+	def javaHome = System.properties.('java.home').replace("\\", "\\\\").replace(":", "\\:")
+    from "${projectDir}/autoFVT-templates/bootstrapping.properties"
+    into "${projectDir}/autoFVT-defaults/"
+    filter(ReplaceTokens, tokens: [JAVA_HOME: javaHome])
+}
+
+task assembleBinaryDependencies() {
+	doLast {
+		// Copy maven dependencies of this project into a directory that can be included by the junit
+		// task of every FAT bucket, effectively making all of fattest.simplicty's dependencies transitive
+	    sourceSets.main.runtimeClasspath.each {
+			def path = it.getAbsolutePath()
+	    	if(path.contains(".m2") && !(file("${buildDir}/lib/" + it.getName()).exists())) {
+	    		copy {
+	    			from path
+	    			into "${buildDir}/lib/"
+	    		}
+	    	}
+	    }		
+	}
+}
+
+assemble {
+	dependsOn assembleBootstrap
+	dependsOn assembleBinaryDependencies
+}

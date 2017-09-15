@@ -1,0 +1,9 @@
+*.jar
+*.log*
+defaultServer
+dist
+ffdc
+workarea
+/coverage.ec
+/lib
+/reports

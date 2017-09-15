@@ -1,0 +1,8 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: featureJavaEight-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.featureJavaEight-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: bundleJavaEight;  version="[1,2)",
+  com.ibm.websphere.appserver.featureJavaNine-1.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

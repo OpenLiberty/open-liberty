@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <version maxVersion="${myMaxVersion}" minVersion="${maxVersion}" version="${minVersion}"/>
+
+    <variable name="myMaxVersion" value="99${lastDigit}"/>
+    <variable name="lastDigit" value="9"/>
+    
+    <serverInfo maxVersion="${minVersion}.9" minVersion="1.0" single="${array}" versionFile="${shared.resource.dir}/version.info">
+
+        <supportedVersions>${minVersion}</supportedVersions>
+        <supportedVersions>${maxVersion}</supportedVersions>
+        <supportedVersions>${minVersion} - ${maxVersion}</supportedVersions>
+        <supportedVersions>${jdkVersion}</supportedVersions>
+        <supportedVersions>${myMaxVersion}</supportedVersions>
+
+        <array>v1</array>
+        <array>v2</array>
+        <array>v3,v4</array>
+        <array>v\5</array>
+    </serverInfo>
+
+<ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#"><ds:SignedInfo><ds:CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"/><ds:SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/><ds:Reference URI=""><ds:Transforms><ds:Transform Algorithm="http://www.w3.org/2000/09/xmldsig#enveloped-signature"/><ds:Transform Algorithm="http://www.w3.org/TR/1999/REC-xslt-19991116"><xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+<xsl:output encoding="UTF-8"/>
+<xsl:strip-space elements="*"/>
+<xsl:template match="@*|node()">
+  <xsl:copy>
+    <xsl:apply-templates select="@*|node()"/>
+  </xsl:copy>
+</xsl:template>
+<xsl:template match="variable"/>
+</xsl:stylesheet></ds:Transform></ds:Transforms><ds:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/><ds:DigestValue>5FUDKaf7vzcTb2J4Gf//7IzVvaw=</ds:DigestValue></ds:Reference></ds:SignedInfo><ds:SignatureValue>EYcQKXmUizv7d73kbl0irgIoOzS/p+JkCxS/+o32n4IE0ZRKCf/5kJQf3SUCaZPKZW0kV/oMN1kkJ8HLjFWtPRkUwPVxjkC9/JqwayfKu5Ne2upRtTV6rOdixfzXKDcnxTaTbdnp0ZQEeRz968mQw8QnClbtDHK/Spe83YjnCTCQt1q8Dvk6A/+NCrEVgly3lq2L5LjFIrRINRb+2jeGHuE5DQMxi9m2Njk7mv+OYeH91aBinN5J2KykftB3fj1mtM1Aij8kj2F4oMqtrLMckFgpZS2FCAj2qF/Y0w2AZcr0mkAbZmU9e7Y7wxXBES5O7dgewzsBNKFK0cjKW72uqQ==</ds:SignatureValue><ds:KeyInfo><ds:X509Data><ds:X509SubjectName>CN=z/OSMF,OU=Systems &amp; Technology Group,O=IBM,L=Poughkeepsie,ST=New York,C=US</ds:X509SubjectName></ds:X509Data></ds:KeyInfo></ds:Signature></server>

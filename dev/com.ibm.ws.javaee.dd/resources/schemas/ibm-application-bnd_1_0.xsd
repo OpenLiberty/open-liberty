@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+	targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified"
+	version="1.0">
+
+	<!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+				Licensed Materials - Property of IBM
+
+				"Restricted Materials of IBM"
+
+				Copyright IBM Corp. 2010 All Rights Reserved.
+
+				US Government Users Restricted Rights - Use, duplication or
+				disclosure restricted by GSA ADP Schedule Contract with
+				IBM Corp.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+	<xsd:element name="application-bnd" type="application-bndType">
+		<xsd:annotation>
+			<xsd:documentation>
+
+				The root of the ibm-application-bnd deployment descriptor.
+
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="application-bndType">
+		<xsd:choice minOccurs="0" maxOccurs="unbounded" >
+			<xsd:element name="security-role" type="security-roleType"/>
+			<xsd:element name="profile" type="profileType"/>
+		</xsd:choice>
+		<xsd:attribute name="version" type="xsd:string" fixed="1.0" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="security-roleType">
+		<xsd:sequence>
+			<!-- Users, groups and special-subjects are part of the RoleAssignment for this security-role -->
+			<xsd:element name="user" type="userType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="group" type="groupType" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="special-subject" type="special-subjectType" minOccurs="0" maxOccurs="unbounded" />
+
+			<!-- Run-as defines the RunAsBinding for this security-role -->
+			<xsd:element name="run-as" type="run-asType" minOccurs="0" maxOccurs="1" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="subjectType">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+
+		<!-- Access-id is for use by WebSphere, and should not be set by users -->
+		<xsd:attribute name="access-id" type="xsd:string" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="userType">
+		<xsd:complexContent>
+			<xsd:extension base="subjectType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="groupType">
+		<xsd:complexContent>
+			<xsd:extension base="subjectType" />
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="special-subjectType">
+		<xsd:attribute name="type" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="EVERYONE" />
+					<xsd:enumeration value="ALL_AUTHENTICATED_USERS" />
+					<xsd:enumeration value="ALL_AUTHENTICATED_IN_TRUSTED_REALMS" />
+
+					<!-- SERVER should not be used, it is for backward compatibility only -->
+					<xsd:enumeration value="SERVER" />
+
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="run-asType">
+		<xsd:attribute name="userid" type="xsd:string" use="required" />
+		<xsd:attribute name="password" type="xsd:string" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="profileType">
+		<xsd:sequence>
+			<xsd:element name="client-profile" type="client-profileType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="client-profileType">
+		<xsd:attribute name="name" type="xsd:string" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+</xsd:schema>

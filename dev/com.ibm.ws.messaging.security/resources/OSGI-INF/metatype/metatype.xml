@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2012, 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <!-- messagingSecurity tag start-->
+    <OCD id="com.ibm.ws.messaging.security" name="%messagingSecurity" description="%messagingSecurity.desc">
+        <AD id="role" name="%role" description="%role.desc" required="true" ibm:reference="com.ibm.ws.messaging.security.role" cardinality="2147483647" ibm:type="pid" type="String"/>
+    </OCD>
+    <Designate pid="com.ibm.ws.messaging.security">
+        <Object ocdref="com.ibm.ws.messaging.security"/>
+    </Designate>
+    <!-- messagingSecurity tag end-->
+
+    <!-- Role tag start-->
+    <OCD id="com.ibm.ws.messaging.security.role" name="%role" description="%role.desc" >
+    	<AD id="name" name="%role.name" description="%role.name.desc" required="true" type="String"/>
+        <AD id="queuePermission" name="%queuePermission" required="false" description="%queuePermission.desc" ibm:reference="com.ibm.ws.messaging.security.queuePermission" cardinality="2147483647" ibm:type="pid" type="String"/>
+        <AD id="tempDestinationPermission" name="%tempDestinationPermission" required="false" description="%tempDestinationPermission.desc" ibm:reference="com.ibm.ws.messaging.security.tempDestinationPermission" cardinality="2147483647" ibm:type="pid" type="String"/>
+        <AD id="topicPermission" name="%topicPermission" required="false" description="%topicPermission.desc" ibm:reference="com.ibm.ws.messaging.security.topicPermission" cardinality="2147483647" ibm:type="pid" type="String"/>
+        <AD id="user" name="%user" required="false" description="%user.desc" ibm:reference="com.ibm.ws.messaging.security.user" cardinality="2147483647" ibm:type="pid" type="String"/>
+        <AD id="group" name="%group" required="false" description="%group.desc" ibm:reference="com.ibm.ws.messaging.security.group" cardinality="2147483647" ibm:type="pid" type="String"/>
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.messaging.security.role">
+        <Object ocdref="com.ibm.ws.messaging.security.role"/>
+    </Designate>
+    <!-- Role tag end-->
+    
+    <!-- Queue Permission tag start -->
+    <OCD id="com.ibm.ws.messaging.security.queuePermission" name="%queuePermission" description="%queuePermission.desc">
+        <!-- queue is a nested element inside messagingEngine, so tooling cannot help find the valid queue ids -->
+    	<AD id="queueRef" name="%queueRef.name" type="String" description="%queueRef.desc" required="true"/>
+        <AD id="action" name="%action.name" description="%action.desc" required="true" type="String" cardinality="4">
+           <Option value="SEND" label="%send"/>
+           <Option value="RECEIVE" label="%receive"/>
+           <Option value="BROWSE" label="%browse"/>
+           <Option value="ALL" label="%all"/>
+        </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.messaging.security.queuePermission">
+        <Object ocdref="com.ibm.ws.messaging.security.queuePermission"/>
+    </Designate>
+    <!-- Queue Permission tag end -->
+    
+    <!-- Temporary Queue Permission tag start -->
+    <OCD id="com.ibm.ws.messaging.security.tempDestinationPermission" name="%tempDestinationPermission" description="%tempDestinationPermission.desc">
+    	<AD id="prefix" name="%prefix.name" description="%prefix.desc" required="true" type="String"/>
+        <AD id="action" name="%action.name" description="%action.desc" required="true" type="String" cardinality="4">
+           <Option value="SEND" label="%send"/>
+           <Option value="RECEIVE" label="%receive"/>
+           <Option value="CREATE" label="%create"/>
+           <Option value="ALL" label="%all"/>
+        </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.messaging.security.tempDestinationPermission">
+        <Object ocdref="com.ibm.ws.messaging.security.tempDestinationPermission"/>
+    </Designate>
+    <!-- Temporary Queue Permission tag end -->
+    
+    <!-- Topic Permission tag start -->
+    <OCD id="com.ibm.ws.messaging.security.topicPermission" name="%topicPermission" description="%topicPermission.desc">
+    	<AD id="topicName" name="%topicName.name" type="String" description="%topicName.desc" required="false"/>
+        <!-- topicSpace is a nested element inside messagingEngine, so tooling cannot help find the valid topicSpace ids -->
+    	<AD id="topicSpaceRef" name="%topicSpaceRef.name" type="String" description="%topicSpaceRef.desc" required="false" default="Default.Topic.Space"/>
+        <AD id="action" name="%action.name" description="%action.desc" required="true" type="String" cardinality="3">
+           <Option value="SEND" label="%send"/>
+           <Option value="RECEIVE" label="%receive"/>
+           <Option value="ALL" label="%all"/>
+        </AD>
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.messaging.security.topicPermission">
+        <Object ocdref="com.ibm.ws.messaging.security.topicPermission"/>
+    </Designate>
+    <!-- Topic Permission tag end -->
+    
+    <!-- User tag start -->
+    <OCD id="com.ibm.ws.messaging.security.user" name="%user" description="%user.desc">
+        <AD id="name" name="%user.name" description="%user.name.desc" required="true" type="String"/>
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.messaging.security.user">
+        <Object ocdref="com.ibm.ws.messaging.security.user"/>
+    </Designate>
+    <!-- User tag end -->
+    
+    <!-- Group tag start -->
+    <OCD id="com.ibm.ws.messaging.security.group" name="%group" description="%group.desc">
+        <AD id="name" name="%group.name" description="%group.name.desc" required="true" type="String"/>
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.messaging.security.group">
+        <Object ocdref="com.ibm.ws.messaging.security.group"/>
+    </Designate>
+    <!-- Group tag end -->  
+      
+</metatype:MetaData>

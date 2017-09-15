@@ -1,0 +1,56 @@
+Index: LogicalMessageImpl.java
+===================================================================
+--- LogicalMessageImpl.java	(revision 1392576)
++++ LogicalMessageImpl.java	(revision 1392577)
+@@ -44,6 +44,8 @@
+ import org.w3c.dom.Element;
+ import org.w3c.dom.Node;
+ 
++import com.ibm.wsdl.util.xml.DOMUtils;
++
+ import org.apache.cxf.binding.soap.SoapMessage;
+ import org.apache.cxf.binding.soap.saaj.SAAJFactoryResolver;
+ import org.apache.cxf.binding.soap.saaj.SAAJUtils;
+@@ -52,8 +54,10 @@
+ import org.apache.cxf.interceptor.Fault;
+ import org.apache.cxf.io.CachedOutputStream;
+ import org.apache.cxf.message.Message;
++import org.apache.cxf.message.MessageUtils;
+ import org.apache.cxf.message.XMLMessage;
+ import org.apache.cxf.staxutils.StaxUtils;
++import org.apache.cxf.staxutils.W3CDOMStreamReader;
+ import org.apache.cxf.staxutils.W3CDOMStreamWriter;
+ 
+ 
+@@ -184,11 +188,29 @@
+         return source;
+     }
+ 
+-    public void setPayload(Source s) {       
++    public void setPayload(Source s) {
+         Message message = msgContext.getWrappedMessage();
+         Service.Mode mode = (Service.Mode)msgContext.getWrappedMessage()
+             .getContextualProperty(Service.Mode.class.getName());
+-        if (mode != null) {
++        SOAPMessage m = message.getContent(SOAPMessage.class);
++        if (m != null && !MessageUtils.isOutbound(message)) {
++            try {
++                SAAJUtils.getBody(m).removeContents();
++                W3CDOMStreamWriter writer = new W3CDOMStreamWriter(SAAJUtils.getBody(m));
++                StaxUtils.copy(s, writer);
++                writer.flush();
++                writer.close();
++                if (mode  == Service.Mode.MESSAGE) {
++                    s = new DOMSource(m.getSOAPPart());
++                } else {
++                    s = new DOMSource(SAAJUtils.getBody(m).getFirstChild());
++                }
++                W3CDOMStreamReader r = new W3CDOMStreamReader(DOMUtils.getFirstChildElement(SAAJUtils.getBody(m)));
++                message.setContent(XMLStreamReader.class, r);
++            } catch (Exception e) {
++                throw new Fault(e);
++            }
++        } else if (mode != null) {
+             if (message instanceof SoapMessage) {
+                 if (mode == Service.Mode.MESSAGE) {
+                     try {

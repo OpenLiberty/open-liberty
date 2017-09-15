@@ -1,0 +1,3 @@
+Bundle-ManifestVersion: 2
+Bundle-SymbolicName: a.b; singleton:=true
+Bundle-Version: 1.0

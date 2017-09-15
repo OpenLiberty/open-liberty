@@ -1,0 +1,5 @@
+-include= ~bundle.props
+-nouses=true
+-failok=true
+Class-Path: ../../../lib/com.ibm.ws.kernel.cmdline_1.0.${libertyBundleMicroVersion}.jar
+Main-Class: com.ibm.ws.kernel.boot.cmdline.Main

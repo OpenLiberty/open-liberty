@@ -1,0 +1,41 @@
+Bundle-Vendor: IBM
+
+Bundle-Copyright: Copyright (c) 1999, ${copyrightBuildYear} IBM Corporation and others. \
+All rights reserved. This program and the accompanying materials \
+are made available under the terms of the Eclipse Public License v1.0 \
+which accompanies this distribution, and is available at \
+http://www.eclipse.org/legal/epl-v10.html.
+
+# No ~ on the generated.build.id include.. we want the included file to replace
+# the value in this one but we do need a leading - as the file may not be there.
+# Similarly, the copyright.properties file might not exist
+-include= -../generated.build.id, -liberty-release.props
+
+# Default bFullVersion is major.minor.release-micro, but this can be overridden
+# in specific bnd files if required
+bFullVersion=${version;==;${bVersion}}.${libertyBundleMicroVersion}
+
+# This sets the version to the major.minor.micro of the provided bundle version,
+# and uses the RTC buildLabel for the qualifier. The "generated.build.id" file
+# (included above) will predefine the Build-Identifier header.
+Build-Identifier: SNAPSHOT-${now}
+Bundle-Version: ${bFullVersion}.${version.qualifier}${if;${is.release};;-SNAPSHOT}
+
+-donotcopy      = (CVS|.svn|.+.bak|nlsbuild|~.+|.+~|.jazzignore)
+-removeheaders  = Include-Resource, Ignore-Package, TODAY, DSTAMP, TSTAMP, Bnd-LastModified
+-provider-policy :    ${range;[==,=+)}
+-consumer-policy :    ${range;[==,+)}
+
+# Require a 1.6 JDK (at least): see section 3.4.1 of OSGi 4.3 core spec
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.6))"
+
+defaultPackageImport= !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+Import-Package: ${defaultPackageImport}
+
+#tell bnd to use our Externals plugin
+-plugin: com.ibm.ws.build.bnd.plugins.ExternalPackageProcessor, com.ibm.ws.build.bnd.plugins.BundleManifestValidator
+
+#require explicitly specifying all ds and metatype annotated classes.
+-dsannotations:
+-metatypeannotations:

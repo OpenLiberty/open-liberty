@@ -1,0 +1,4184 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationFactoryImpl"/>
+    <Method name="createAndLogNewApplication" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationFactoryImpl"/>
+    <Method name="createAndLogNewApplication" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lorg/apache/myfaces/config/RuntimeConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="addBehavior" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="addComponent" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="addConverter" signature="(Ljava/lang/Class;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="addConverter" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="addValidator" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setActionListener" signature="(Ljavax/faces/event/ActionListener;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setDefaultLocale" signature="(Ljava/util/Locale;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setMessageBundle" signature="(Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setNavigationHandler" signature="(Ljavax/faces/application/NavigationHandler;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setPropertyResolver" signature="(Ljavax/faces/el/PropertyResolver;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setSupportedLocales" signature="(Ljava/util/Collection;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setVariableResolver" signature="(Ljavax/faces/el/VariableResolver;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="setViewHandler" signature="(Ljavax/faces/application/ViewHandler;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl"/>
+    <Method name="handleNavigation" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl"/>
+    <Method name="handleNavigation" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="getComponentStateToSave" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="getTreeStructureToSave" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="restoreView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/String;)Ljavax/faces/component/UIViewRoot;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="writeState" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="getComponentStateToSave" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="getTreeStructureToSave" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="restoreView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/String;)Ljavax/faces/component/UIViewRoot;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="saveView" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.StateManagerImpl"/>
+    <Method name="writeState" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ViewHandlerImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ViewHandlerImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="deserializeView" signature="(Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="restoreSerializedView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="saveSerializedView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="serializeView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="deserializeView" signature="(Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="restoreSerializedView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="saveSerializedView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ServerSideStateCacheImpl"/>
+    <Method name="serializeView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.DefaultFacesConfigurationProvider"/>
+    <Method name="getStandardFacesConfig" signature="(Ljavax/faces/context/ExternalContext;)Lorg/apache/myfaces/config/element/FacesConfig;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configureRuntimeConfig" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="handleSerialFactory" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configureRuntimeConfig" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="getDefaultSourcClassForSystemEvent" signature="(Ljava/lang/Class;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="handleSerialFactory" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="update" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.LogMetaInfUtils"/>
+    <Method name="logArtifact" signature="(Ljava/lang/String;Ljava/util/Map;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.LogMetaInfUtils"/>
+    <Method name="logMetaInf" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.LogMetaInfUtils"/>
+    <Method name="logArtifact" signature="(Ljava/lang/String;Ljava/util/Map;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.LogMetaInfUtils"/>
+    <Method name="logMetaInf" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="webClasses" signature="(Ljavax/faces/context/ExternalContext;Ljava/lang/String;Ljava/util/List;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultLifecycleProviderFactory"/>
+    <Method name="resolveFallbackLifecycleProvider" signature="()Lorg/apache/myfaces/config/annotation/LifecycleProvider;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.LifecycleImpl"/>
+    <Method name="executePhase" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/lifecycle/PhaseExecutor;Lorg/apache/myfaces/lifecycle/PhaseListenerManager;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.LifecycleImpl"/>
+    <Method name="executePhase" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/lifecycle/PhaseExecutor;Lorg/apache/myfaces/lifecycle/PhaseListenerManager;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.LifecycleImpl"/>
+    <Method name="render" signature="(Ljavax/faces/context/FacesContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.RestoreViewExecutor"/>
+    <Method name="execute" signature="(Ljavax/faces/context/FacesContext;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.RenderKitFactoryImpl"/>
+    <Method name="addRenderKit" signature="(Ljava/lang/String;Ljavax/faces/render/RenderKit;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.RenderKitFactoryImpl"/>
+    <Method name="addRenderKit" signature="(Ljava/lang/String;Ljavax/faces/render/RenderKit;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlCompositeComponentRenderer"/>
+    <Method name="encodeChildren" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlFormatRenderer"/>
+    <Method name="getOutputFormatText" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlRenderKitImpl"/>
+    <Method name="addRenderer" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlRenderKitImpl"/>
+    <Method name="addRenderer" signature="(Ljava/lang/String;Ljava/lang/String;Ljavax/faces/render/Renderer;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlRenderKitImpl"/>
+    <Method name="addRenderer" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlRenderKitImpl"/>
+    <Method name="addRenderer" signature="(Ljava/lang/String;Ljava/lang/String;Ljavax/faces/render/Renderer;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlScriptRenderer"/>
+    <Method name="encodeEnd" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlStylesheetRenderer"/>
+    <Method name="encodeEnd" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.application.DefaultViewHandlerSupport"/>
+    <Method name="calculateActionURL" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.RendererUtils"/>
+    <Method name="findUISelectManyConverter" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UISelectMany;Z)Ljavax/faces/convert/Converter;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.RendererUtils"/>
+    <Method name="getBooleanValue" signature="(Ljava/lang/String;Ljava/lang/Object;Z)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.RendererUtils"/>
+    <Method name="getClientId" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.RendererUtils"/>
+    <Method name="getStringFromSubmittedValueOrLocalValueReturnNull" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.RendererUtils"/>
+    <Method name="getStringValue" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit._SharedRendererUtils"/>
+    <Method name="log" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/Exception;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlMessageRendererBase"/>
+    <Method name="renderMessage" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;ZZ)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlMessagesRendererBase"/>
+    <Method name="renderMessages" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;ZZ)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils"/>
+    <Method name="renderDisplayValueOnlyAttributes" signature="(Ljavax/faces/component/UIComponent;Ljavax/faces/context/ResponseWriter;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl"/>
+    <Method name="endElement" signature="(Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlResponseWriterImpl"/>
+    <Method name="endElement" signature="(Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlTextRendererBase"/>
+    <Method name="renderOutput" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlTextRendererBase"/>
+    <Method name="renderValue" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljavax/faces/context/ResponseWriter;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlTextRendererBase"/>
+    <Method name="renderOutput" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlTextRendererBase"/>
+    <Method name="renderValue" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljavax/faces/context/ResponseWriter;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.util.OutcomeTargetUtils"/>
+    <Method name="getOutcomeTargetHref" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIOutcomeTarget;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="getResource" signature="(Ljava/lang/String;)Lorg/apache/myfaces/shared/resource/ResourceHandlerCache$ResourceValue;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="getResource" signature="(Ljava/lang/String;Ljava/lang/String;)Lorg/apache/myfaces/shared/resource/ResourceHandlerCache$ResourceValue;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="getResource" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/apache/myfaces/shared/resource/ResourceHandlerCache$ResourceValue;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="getViewResource" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lorg/apache/myfaces/shared/resource/ResourceHandlerCache$ResourceValue;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="putResource" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/apache/myfaces/shared/resource/ResourceMeta;Lorg/apache/myfaces/shared/resource/ResourceLoader;Lorg/apache/myfaces/shared/resource/ResourceCachedInfo;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="putResource" signature="(Ljava/lang/String;Lorg/apache/myfaces/shared/resource/ResourceMeta;Lorg/apache/myfaces/shared/resource/ResourceLoader;Lorg/apache/myfaces/shared/resource/ResourceCachedInfo;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="putViewResource" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/apache/myfaces/shared/resource/ResourceMeta;Lorg/apache/myfaces/shared/resource/ResourceLoader;Lorg/apache/myfaces/shared/resource/ResourceCachedInfo;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ClassLoaderUtils"/>
+    <Method name="getServices" signature="(Ljava/lang/String;)Ljava/util/List;"/>
+    <Field name="_LOG"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ExternalContextUtils"/>
+    <Method name="getContextName" signature="(Ljavax/faces/context/ExternalContext;)Ljava/lang/String;"/>
+    <Field name="_LOG"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ExternalContextUtils"/>
+    <Method name="getServerInfo" signature="(Ljavax/faces/context/ExternalContext;)Ljava/lang/String;"/>
+    <Field name="_LOG"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.LocaleUtils"/>
+    <Method name="toLocale" signature="(Ljava/lang/String;)Ljava/util/Locale;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="addMessage" signature="(Ljava/lang/String;Ljavax/faces/application/FacesMessage$Severity;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;Ljavax/faces/context/FacesContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="addMessage" signature="(Ljavax/faces/application/FacesMessage$Severity;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;Ljavax/faces/context/FacesContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="addMessage" signature="(Ljava/lang/String;Ljavax/faces/application/FacesMessage$Severity;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;Ljavax/faces/context/FacesContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="addMessage" signature="(Ljavax/faces/application/FacesMessage$Severity;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;Ljavax/faces/context/FacesContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="decrypt" signature="([BLjavax/faces/context/ExternalContext;)[B"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="encrypt" signature="([BLjavax/faces/context/ExternalContext;)[B"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findAlgorithm" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findAlgorithmParams" signature="(Ljavax/faces/context/ExternalContext;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findMacAlgorithm" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="initSecret" signature="(Ljavax/servlet/ServletContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="reconstruct" signature="(Ljava/lang/String;Ljavax/faces/context/ExternalContext;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="decrypt" signature="([BLjavax/faces/context/ExternalContext;)[B"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="encrypt" signature="([BLjavax/faces/context/ExternalContext;)[B"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findAlgorithm" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findAlgorithmParams" signature="(Ljavax/faces/context/ExternalContext;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findMacAlgorithm" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="initSecret" signature="(Ljavax/servlet/ServletContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="reconstruct" signature="(Ljava/lang/String;Ljavax/faces/context/ExternalContext;)Ljava/lang/Object;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.TagUtils"/>
+    <Method name="parseISODate" signature="(Ljava/lang/String;)Ljava/util/Date;"/>
+    <Field name="LOG"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.view.JspViewDeclarationLanguageBase"/>
+    <Method name="renderView" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.webapp.webxml.WebXmlParser"/>
+    <Method name="parse" signature="()Lorg/apache/myfaces/shared/webapp/webxml/WebXml;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared_impl.webapp.webxml.WebXmlParser"/>
+    <Method name="parse" signature="()Lorg/apache/myfaces/shared_impl/webapp/webxml/WebXml;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.DefaultInjectionProviderFactory"/>
+    <Method name="resolveFallbackInjectionProvider" signature="(Ljavax/faces/context/ExternalContext;)Lorg/apache/myfaces/spi/InjectionProvider;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.SetPropertyActionListenerTag"/>
+    <Method name="doStartTag" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.SetPropertyActionListenerTag"/>
+    <Method name="doStartTag" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.ViewTag"/>
+    <Method name="doAfterBody" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.ViewTag"/>
+    <Method name="doEndTag" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.ViewTag"/>
+    <Method name="doStartTag" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.ViewTag"/>
+    <Method name="doAfterBody" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.ViewTag"/>
+    <Method name="doEndTag" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.ViewTag"/>
+    <Method name="doStartTag" signature="()I"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="traceView" signature="(Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="traceView" signature="(Ljava/lang/String;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="traceView" signature="(Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="traceView" signature="(Ljava/lang/String;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.ExternalSpecifications"/>
+    <Method name="isCDIAvailable" signature="(Ljavax/faces/context/ExternalContext;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Method name="initialize" signature="(Ljavax/faces/context/FacesContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Method name="buildView" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Method name="initialize" signature="(Ljavax/faces/context/FacesContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Method name="renderView" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Method name="retargetAttachedObjects" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/util/List;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Method name="retargetMethodExpressions" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="finishUnit" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="pushNamespace" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="startUnit" signature="(Lorg/apache/myfaces/view/facelets/compiler/CompilationUnit;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="determineQName" signature="(Ljavax/faces/view/facelets/Tag;)[Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="finishUnit" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="pushNamespace" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="pushTag" signature="(Ljavax/faces/view/facelets/Tag;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.CompilationManager"/>
+    <Method name="startUnit" signature="(Lorg/apache/myfaces/view/facelets/compiler/CompilationUnit;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.AttachedObjectTargetHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.AttributeHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.ClientBehaviorHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.CompositeComponentRule"/>
+    <Method name="warnAttr" signature="(Ljavax/faces/view/facelets/TagAttribute;Ljava/lang/Class;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.CompositeComponentRule"/>
+    <Method name="warnAttr" signature="(Ljavax/faces/view/facelets/TagAttribute;Ljava/lang/Class;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.ExtensionHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.FacetHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.ImplementationHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.InsertChildrenHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.InsertFacetHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.InterfaceHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.RenderFacetHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentRule"/>
+    <Method name="warnAttr" signature="(Ljavax/faces/view/facelets/TagAttribute;Ljava/lang/Class;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentRule"/>
+    <Method name="warnAttr" signature="(Ljavax/faces/view/facelets/TagAttribute;Ljava/lang/Class;Ljava/lang/String;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentTagHandlerDelegate"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentTagHandlerDelegate"/>
+    <Method name="shouldAddDefaultValidator" signature="(Ljavax/faces/view/facelets/FaceletContext;Lorg/apache/myfaces/view/facelets/FaceletCompositionContext;Ljavax/faces/component/EditableValueHolder;Ljava/lang/String;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentTagHandlerDelegate"/>
+    <Method name="shouldAddEnclosingValidator" signature="(Ljavax/faces/component/EditableValueHolder;Ljava/lang/String;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Resource"/>
+    <Method name="getResourceUrl" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/net/URL;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Resource"/>
+    <Method name="getResourceUrl" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/net/URL;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.jsp.JspViewDeclarationLanguage"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.jsp.JspViewDeclarationLanguage"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.AbstractFacesInitializer"/>
+    <Method name="initFaces" signature="(Ljavax/servlet/ServletContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.AbstractFacesInitializer"/>
+    <Method name="destroyFaces" signature="(Ljavax/servlet/ServletContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.AbstractFacesInitializer"/>
+    <Method name="getUserDefinedExpressionFactory" signature="(Ljavax/faces/context/ExternalContext;)Ljavax/el/ExpressionFactory;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.AbstractFacesInitializer"/>
+    <Method name="initFaces" signature="(Ljavax/servlet/ServletContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.AbstractFacesInitializer"/>
+    <Method name="loadExpressionFactory" signature="(Ljava/lang/String;)Ljavax/el/ExpressionFactory;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.Jsp20FacesInitializer"/>
+    <Method name="initContainerIntegration" signature="(Ljavax/servlet/ServletContext;Ljavax/faces/context/ExternalContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.Jsp20FacesInitializer"/>
+    <Method name="initContainerIntegration" signature="(Ljavax/servlet/ServletContext;Ljavax/faces/context/ExternalContext;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.MyFacesServlet"/>
+    <Method name="init" signature="(Ljavax/servlet/ServletConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.MyFacesServlet"/>
+    <Method name="service" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.MyFacesServlet"/>
+    <Method name="init" signature="(Ljavax/servlet/ServletConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.MyFacesServlet"/>
+    <Method name="service" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.StartupServletContextListener"/>
+    <Method name="dispatchInitializationEvent" signature="(Ljavax/servlet/ServletContextEvent;I)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.StartupServletContextListener"/>
+    <Method name="loadFacesInitPluginsJDK5" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WebSphereLifecycleProviderFactory"/>
+    <Method name="release" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WebSphereLifecycleProviderFactory"/>
+    <Method name="release" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.resource.LibertyFaceletConfigResourceProvider"/>
+    <Method name="getFaceletTagLibConfigResourcesHelper" signature="(Lcom/ibm/wsspi/adaptable/module/Container;Ljava/util/Collection;)Ljava/util/Collection;"/>
+    <Field name="logger"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.resource.LibertyFaceletConfigResourceProvider"/>
+    <Method name="getFaceletTagLibConfigResourcesHelper" signature="(Lcom/ibm/wsspi/adaptable/module/Container;Ljava/util/Collection;)Ljava/util/Collection;"/>
+    <Field name="logger"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.resource.WASFacesConfigResourceProvider"/>
+    <Method name="getMetaInfConfigurationResources" signature="(Ljavax/faces/context/ExternalContext;)Ljava/util/Collection;"/>
+    <Field name="logger"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.resource.WASFacesConfigResourceProvider"/>
+    <Method name="getMetaInfConfigurationResources" signature="(Ljavax/faces/context/ExternalContext;)Ljava/util/Collection;"/>
+    <Field name="logger"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="registerListener" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Ljava/lang/String;Ljava/lang/ClassLoader;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.util.JspURIMatcher"/>
+    <Method name="put" signature="(Ljava/lang/String;Ljava/lang/Object;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.util.JspURIMatcher"/>
+    <Method name="put" signature="(Ljava/lang/String;Ljava/lang/Object;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.util.WSFacesUtil"/>
+    <Method name="removeExtraPathInfo" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.util.WSFacesUtil"/>
+    <Method name="removeExtraPathInfo" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider"/>
+    <Method name="getBaseUrls" signature="()Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WebSphereAnnotationLifecycleProvider"/>
+    <Method name="&lt;init&gt;" signature="(Ljavax/naming/Context;)V"/>
+    <Local name="context"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Bug pattern="DMI_BLOCKING_METHODS_ON_URL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages"/>
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_cs"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_de"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_es"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_fr"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_hu"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_it"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_ja"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_ko"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_pl"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_pt_BR"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_ro"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_ru"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_zh"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.resources.messages_zh_TW"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.util.FacesMessages"/>
+    <Field name="bundle"/>
+    <Bug pattern="MS_SHOULD_BE_REFACTORED_TO_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.util.WSFacesUtil"/>
+    <Method name="getClassLoader" signature="(Ljava/lang/Object;)Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="getProjectStage" signature="()Ljavax/faces/application/ProjectStage;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="internalCreateConverter" signature="(Ljava/lang/Class;)Ljavax/faces/convert/Converter;"/>
+    <Local name="converterClass"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl"/>
+    <Method name="internalCreateConverter" signature="(Ljava/lang/Class;)Ljavax/faces/convert/Converter;"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl$SystemListenerEntry"/>
+    <Field name="_lstSystemEventListener"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ApplicationImpl$SystemListenerEntry"/>
+    <Field name="_sourceClassMap"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.DefaultResourceHandlerSupport"/>
+    <Method name="getContractResourceLoaders" signature="()[Lorg/apache/myfaces/shared/resource/ContractResourceLoader;"/>
+    <Field name="_contractResourceLoaders"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.DefaultResourceHandlerSupport"/>
+    <Method name="getResourceLoaders" signature="()[Lorg/apache/myfaces/shared/resource/ResourceLoader;"/>
+    <Field name="_resourceLoaders"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.DefaultResourceHandlerSupport"/>
+    <Method name="getViewResourceLoaders" signature="()[Lorg/apache/myfaces/shared/resource/ResourceLoader;"/>
+    <Field name="_viewResourceLoaders"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl"/>
+    <Method name="getOutcomeNavigationCase" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/String;)Ljavax/faces/application/NavigationCase;"/>
+    <Bug pattern="ICAST_IDIV_CAST_TO_DOUBLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl"/>
+    <Method name="applyFlowTransition" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/application/NavigationHandlerImpl$NavigationContext;)V"/>
+    <Local name="navigationContext"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl$KeyComparator"/>
+    <Method name="compare" signature="(Lorg/apache/myfaces/application/_WildcardPattern;Lorg/apache/myfaces/application/_WildcardPattern;)I"/>
+    <Bug pattern="RV_NEGATING_RESULT_OF_COMPARETO"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.NavigationHandlerImpl$KeyComparator"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ResourceHandlerImpl"/>
+    <Method name="deriveResourceMeta" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ContractResourceLoader;Ljava/lang/String;Ljava/lang/String;)Lorg/apache/myfaces/shared/resource/ResourceMeta;"/>
+    <Local name="resourceName"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ResourceHandlerImpl"/>
+    <Method name="deriveResourceMeta" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceLoader;Ljava/lang/String;)Lorg/apache/myfaces/shared/resource/ResourceMeta;"/>
+    <Local name="resourceName"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.ResourceHandlerImpl"/>
+    <Method name="handleResourceRequest" signature="(Ljavax/faces/context/FacesContext;)V"/>
+    <Local name="resourceBasePath"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.jsp.ServletViewResponseWrapper"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="NP_TOSTRING_COULD_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ClientSideStateCacheImpl"/>
+    <Method name="encodeSerializedState" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.ClientSideStateCacheImpl"/>
+    <Method name="restoreSerializedView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.SerializedViewCollection"/>
+    <Field name="_lastWindowKeys"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.application.viewstate.SessionIdGenerator"/>
+    <Method name="createSecureRandom" signature="()Ljava/security/SecureRandom;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.dependent.DependentBeanEntry"/>
+    <Field name="bean"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.dependent.DependentInstanceEntry"/>
+    <Field name="creationalContext"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.util.BeanProvider"/>
+    <Method name="getContextualReference" signature="(Ljava/lang/Class;Ljavax/enterprise/inject/spi/BeanManager;Ljavax/enterprise/inject/spi/Bean;)Ljava/lang/Object;"/>
+    <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.util.CDIExternalArtifactResolver"/>
+    <Method name="isManagedConvertersEnabled" signature="()Z"/>
+    <Field name="managedConvertersEnabled"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.util.CDIExternalArtifactResolver"/>
+    <Method name="isManagedValidatorsEnabled" signature="()Z"/>
+    <Field name="managedValidatorsEnabled"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.util.ContextualInstanceInfo"/>
+    <Field name="creationalContext"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.util.ContextualStorage"/>
+    <Field name="beanManager"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.view.ViewScopeBeanHolder"/>
+    <Method name="destroyBeansOnPreDestroy" signature="()V"/>
+    <Local name="facesContext"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.view.ViewScopeBeanHolder"/>
+    <Field name="applicationContextBean"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.cdi.view.ViewScopeContextualStorage"/>
+    <Field name="beanManager"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.DefaultFacesConfigurationMerger"/>
+    <Method name="applySortingAlgorithm" signature="(Ljava/util/List;)Ljava/util/List;"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigValidator"/>
+    <Method name="validateNavRule" signature="(Lorg/apache/myfaces/config/element/NavigationRule;Ljava/util/List;Ljavax/faces/context/ExternalContext;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="getResourceLastModified" signature="(Ljava/net/URL;)J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configure" signature="()V"/>
+    <Field name="lastUpdate"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="update" signature="()V"/>
+    <Field name="lastUpdate"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configure" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="update" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.AnnotationConfigurator"/>
+    <Method name="createFacesConfig" signature="(Ljava/util/Map;)Lorg/apache/myfaces/config/impl/digester/elements/FacesConfigImpl;"/>
+    <Local name="value"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.AnnotationConfigurator"/>
+    <Method name="createFacesConfig" signature="(Ljava/util/Map;)Lorg/apache/myfaces/config/impl/digester/elements/FacesConfigImpl;"/>
+    <Local name="value"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="_getAlternativeJarFile" signature="(Ljava/net/URL;)Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="getGAEAnnotatedMetaInfClasses" signature="(Ljavax/faces/context/ExternalContext;Ljava/lang/String;)Ljava/util/Collection;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="packageClasses" signature="(Ljavax/faces/context/ExternalContext;Ljava/lang/String;)Ljava/util/List;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="getAnnotatedMetaInfClasses" signature="(Ljavax/faces/context/ExternalContext;Ljava/util/Set;)Ljava/util/Collection;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="getBaseUrls" signature="()Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="getBaseUrls" signature="()Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="getBaseUrls" signature="(Ljavax/faces/context/ExternalContext;)Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.DefaultAnnotationProvider"/>
+    <Method name="getBaseUrls" signature="(Ljavax/faces/context/ExternalContext;)Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider"/>
+    <Method name="invokeAnnotatedMethod" signature="(Ljava/lang/reflect/Method;Ljava/lang/Object;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider"/>
+    <Method name="getDeclaredMethodBeansMap" signature="()Ljava/util/Map;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.NoInjectionAnnotationLifecycleProvider"/>
+    <Method name="postConstruct" signature="(Ljava/lang/Object;)V"/>
+    <Local name="methods"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.ResourceAnnotationLifecycleProvider"/>
+    <Method name="lookupFieldResource" signature="(Ljavax/naming/Context;Ljava/lang/Object;Ljava/lang/reflect/Field;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.ResourceAnnotationLifecycleProvider"/>
+    <Method name="lookupMethodResource" signature="(Ljavax/naming/Context;Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation.ResourceAnnotationLifecycleProvider"/>
+    <Method name="getDeclaredFieldBeansMap" signature="()Ljava/util/Map;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation._ClassByteCodeAnnotationFilter"/>
+    <Method name="couldContainAnnotationsOnClassDef" signature="(Ljava/io/DataInput;Ljava/util/Set;)Z"/>
+    <Local name="minorVersion"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation._PackageInfo"/>
+    <Method name="listFilesRecursive" signature="(Ljava/util/List;Ljava/io/File;Ljava/lang/ClassLoader;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.annotation._PackageInfo$1"/>
+    <Method name="accept" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.impl.FacesConfigEntityResolver"/>
+    <Method name="resolveEntity" signature="(Ljava/lang/String;Ljava/lang/String;)Lorg/xml/sax/InputSource;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.impl.FacesConfigEntityResolver"/>
+    <Method name="resolveEntity" signature="(Ljava/lang/String;Ljava/lang/String;)Lorg/xml/sax/InputSource;"/>
+    <Local name="jarEntry"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.impl.digester.elements.FacesConfigImpl"/>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.impl.digester.elements.ManagedPropertyImpl"/>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.util.GAEUtils"/>
+    <Method name="searchInWebLib" signature="(Ljavax/faces/context/ExternalContext;Ljava/lang/ClassLoader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Ljava/util/Collection;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.util.JarUtils"/>
+    <Method name="_getAlternativeJarFile" signature="(Ljava/net/URL;)Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.util.Vertex"/>
+    <Method name="compareTo" signature="(Lorg/apache/myfaces/config/util/Vertex;)I"/>
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.context.FacesContextFactoryImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.context.PartialResponseWriterImpl$StackEntry"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.context.RequestViewMetadata"/>
+    <Field name="addedResources"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.context.RequestViewMetadata"/>
+    <Field name="initialAddedResources"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.context.servlet.PartialViewContextImpl$PhaseAwareVisitCallback"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.CompositeELResolver"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.convert.ValueBindingToValueExpression"/>
+    <Field name="_valueBinding"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.unified.CustomFirstELResolverComparator"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.unified.OpenWebBeansELResolverComparator"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.unified.ResolverBuilderBase"/>
+    <Method name="addFromRuntimeConfig" signature="(Ljava/util/List;)V"/>
+    <Local name="facesContext"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver$CompositeComponentAttributesMapWrapper"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.unified.resolver.CompositeComponentELResolver$CompositeComponentAttributesMapWrapper"/>
+    <Method name="putAll" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.el.unified.resolver.ResourceBundleResolver"/>
+    <Method name="setValue" signature="(Ljavax/el/ELContext;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.flow.NavigationCaseImpl"/>
+    <Method name="getCondition" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.flow.cdi.ClientWindowFacesFlowLRUMap"/>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.flow.cdi.FlowScopeBeanHolder"/>
+    <Method name="destroyBeansOnPreDestroy" signature="()V"/>
+    <Local name="facesContext"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.flow.cdi.FlowScopeBeanHolder"/>
+    <Field name="applicationContextBean"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.CODIClientSideWindow"/>
+    <Method name="addParameters" signature="(Ljavax/faces/context/ExternalContext;Ljava/lang/String;ZZZ)Ljava/lang/String;"/>
+    <Local name="existingParameters"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.CODIClientSideWindow"/>
+    <Method name="addParameters" signature="(Ljavax/faces/context/ExternalContext;Ljava/lang/String;ZZZ)Ljava/lang/String;"/>
+    <Local name="urlContainsWindowId"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.CODIClientSideWindow"/>
+    <Method name="convertStreamToString" signature="(Ljava/io/InputStream;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.CODIClientSideWindow"/>
+    <Method name="sendWindowHandlerHtml" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.DefaultRestoreViewSupport"/>
+    <Method name="deriveViewId" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Local name="viewId"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.RenderResponseExecutor"/>
+    <Method name="execute" signature="(Ljavax/faces/context/FacesContext;)Z"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.lifecycle.RestoreViewExecutor"/>
+    <Method name="execute" signature="(Ljavax/faces/context/FacesContext;)Z"/>
+    <Local name="viewRoot"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.ErrorPageWriter"/>
+    <Method name="_splitTemplate" signature="(Ljava/lang/String;)[Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.ErrorPageWriter"/>
+    <Method name="_writeAttributes" signature="(Ljava/io/Writer;Ljavax/faces/component/UIComponent;Z)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.ErrorPageWriter"/>
+    <Method name="_initCauseIfAvailable" signature="(Ljava/lang/Throwable;Ljava/lang/Throwable;)Z"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+  
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.ErrorPageWriter"/>
+    <Method name="_initCausePerReflection"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.ErrorPageWriter$ExtendedComponentTreeVisitCallback"/>
+    <Method name="visit" signature="(Ljavax/faces/component/visit/VisitContext;Ljavax/faces/component/UIComponent;)Ljavax/faces/component/visit/VisitResult;"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.ErrorPageWriter$ExtendedComponentTreeVisitCallback"/>
+    <Method name="visit" signature="(Ljavax/faces/component/visit/VisitContext;Ljavax/faces/component/UIComponent;)Ljavax/faces/component/visit/VisitResult;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.ErrorPageWriter$ExtendedComponentTreeVisitCallback"/>
+    <Method name="visit" signature="(Ljavax/faces/component/visit/VisitContext;Ljavax/faces/component/UIComponent;)Ljavax/faces/component/visit/VisitResult;"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlScriptRenderer"/>
+    <Method name="encodeEnd" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.renderkit.html.HtmlStylesheetRenderer"/>
+    <Method name="encodeEnd" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="getResourceInputStream" signature="(Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljavax/faces/application/Resource;)Ljava/io/InputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="createOrGetTempFile" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;)Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="deleteDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="deleteDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="deleteDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="initialize" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="initialize" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheContractResourceLoader"/>
+    <Method name="initialize" signature="()V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="getResourceInputStream" signature="(Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljavax/faces/application/Resource;)Ljava/io/InputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="createOrGetTempFile" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;)Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="deleteDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="deleteDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="deleteDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="initialize" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="initialize" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="isValidCreateTemporalFiles" signature="(Ljavax/faces/context/FacesContext;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="isValidCreateTemporalFiles" signature="(Ljavax/faces/context/FacesContext;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="createTemporalFileVersion" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/shared/resource/ResourceMeta;Ljava/io/File;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="initialize" signature="()V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.resource.TempDirFileCacheResourceLoader"/>
+    <Method name="isValidCreateTemporalFiles" signature="(Ljavax/faces/context/FacesContext;)Z"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.application.DefaultViewHandlerSupport"/>
+    <Method name="calculateActionURL" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Local name="mapping"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.application.DefaultViewHandlerSupport"/>
+    <Method name="calculateAndCheckViewId" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Local name="viewId"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.ContentTypeUtils"/>
+    <Field name="AJAX_XHTML_ALLOWED_CONTENT_TYPES"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.ContentTypeUtils"/>
+    <Field name="HTML_ALLOWED_CONTENT_TYPES"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.ContentTypeUtils"/>
+    <Field name="XHTML_ALLOWED_CONTENT_TYPES"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.RendererUtils"/>
+    <Method name="loadResourceFile" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.RendererUtils"/>
+    <Method name="isDefaultAttributeValue" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="FE_FLOATING_POINT_EQUALITY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="LABEL_PASSTHROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="LABEL_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="ANCHOR_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="ANCHOR_PASSTHROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="ANCHOR_PASSTHROUGH_ATTRIBUTES_WITHOUT_STYLE_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="BODY_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="BODY_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="BODY_PASSTHROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="BODY_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="BUTTON_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="BUTTON_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_EVENT_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="EVENT_HANDLER_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="FORM_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="FORM_PASSTHROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="FORM_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="IMG_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="IMG_PASSTHROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="IMG_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="INPUT_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="INPUT_FILE_UPLOAD_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="LABEL_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="LABEL_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="MESSAGE_PASSTHROUGH_ATTRIBUTES_WITHOUT_TITLE_STYLE_AND_STYLE_CLASS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="SELECT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="SELECT_TABLE_PASSTHROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="TABLE_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="TABLE_PASSTHROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="TABLE_PASSTHROUGH_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="TEXTAREA_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="TEXTAREA_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="UL_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="UNIVERSAL_ATTRIBUTES"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HTML"/>
+    <Field name="UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE_AND_TITLE"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlGroupRendererBase"/>
+    <Method name="encodeEnd" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Local name="behaviors"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlRadioRendererBase"/>
+    <Method name="renderGroupOrItemRadio" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljavax/faces/model/SelectItem;Ljava/lang/Object;Ljavax/faces/convert/Converter;ZLjava/lang/Integer;)I"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils"/>
+    <Method name="buildBehaviorChain" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/lang/String;Ljava/lang/String;Ljava/util/Collection;Ljava/lang/String;Ljava/util/Collection;Ljava/util/Map;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Local name="externalContext"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils"/>
+    <Method name="getSupportedContentTypes" signature="()[Ljava/lang/String;"/>
+    <Field name="SUPPORTED_CONTENT_TYPES"/>
+    <Bug pattern="MS_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlRendererUtils"/>
+    <Method name="renderDisplayValueOnlyForSelects" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Z)V"/>
+    <Local name="selectItemList"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.HtmlTableRendererBase"/>
+    <Method name="renderFacet" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/context/ResponseWriter;Ljavax/faces/component/UIComponent;Z)V"/>
+    <Local name="elemName"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.JavascriptContext"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.util.HTMLEncoder"/>
+    <Method name="encodeURIAtributte" signature="(Ljava/io/Writer;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Local name="app"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.util.JavascriptUtils"/>
+    <Method name="encodeString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.renderkit.html.util.SelectItemsUtils"/>
+    <Method name="renderSelectOptions" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljavax/faces/convert/Converter;Ljava/util/Set;Ljava/util/List;)V"/>
+    <Local name="selectItemInfo"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.BaseResourceHandlerSupport"/>
+    <Method name="calculateResourceBasePath" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/String;"/>
+    <Local name="mapping"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.BaseResourceHandlerSupport"/>
+    <Method name="getMapping" signature="()Ljava/lang/String;"/>
+    <Local name="mapping"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.BaseResourceHandlerSupport"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceImpl"/>
+    <Method name="getResponseHeaders" signature="()Ljava/util/Map;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceLoader$VersionComparator"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceLoaderUtils"/>
+    <Method name="getResourceLastModified" signature="(Ljava/net/URL;)J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.BiLevelCacheMap"/>
+    <Method name="merge" signature="(Ljava/util/Map;)V"/>
+    <Field name="_cacheL1"/>
+    <Bug pattern="ML_SYNC_ON_FIELD_TO_GUARD_CHANGING_THAT_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.BiLevelCacheMap"/>
+    <Method name="remove" signature="(Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Field name="_cacheL1"/>
+    <Bug pattern="ML_SYNC_ON_FIELD_TO_GUARD_CHANGING_THAT_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ClassLoaderUtils"/>
+    <Method name="getContextClassLoader" signature="()Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ClassLoaderUtils"/>
+    <Method name="getServices" signature="(Ljava/lang/String;)Ljava/util/List;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ClassLoaderUtils"/>
+    <Method name="getServices" signature="(Ljava/lang/String;)Ljava/util/List;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ClassUtils"/>
+    <Method name="classForName" signature="(Ljava/lang/String;)Ljava/lang/Class;"/>
+    <Local name="plugins"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ClassUtils"/>
+    <Field name="classLoadingExtensions"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache"/>
+    <Method name="&lt;init&gt;" signature="(IIIIZZLorg/apache/myfaces/shared/util/ConcurrentLRUCache$EvictionListener;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache"/>
+    <Method name="put" signature="(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache"/>
+    <Method name="&lt;init&gt;" signature="(II)V"/>
+    <Bug pattern="ICAST_IDIV_CAST_TO_DOUBLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache"/>
+    <Method name="&lt;init&gt;" signature="(IIIIZZLorg/apache/myfaces/shared/util/ConcurrentLRUCache$EvictionListener;)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache"/>
+    <Method name="put" signature="(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache$CleanupThread"/>
+    <Field name="stop"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache$CleanupThread"/>
+    <Method name="wakeThread" signature="()V"/>
+    <Bug pattern="NN_NAKED_NOTIFY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ConcurrentLRUCache$Stats"/>
+    <Field name="evictionCounter"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ExternalContextUtils"/>
+    <Method name="getHttpServletResponse" signature="(Ljava/lang/Object;)Ljavax/servlet/http/HttpServletResponse;"/>
+    <Local name="response"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="getMessage" signature="(Ljava/lang/String;Ljavax/faces/context/FacesContext;Ljava/lang/String;[Ljava/lang/Object;)Ljavax/faces/application/FacesMessage;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="getMessage" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;[Ljava/lang/Object;)Ljavax/faces/application/FacesMessage;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="getMessage" signature="(Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljavax/faces/application/FacesMessage;"/>
+    <Local name="bundle"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="getMessageFromBundle" signature="(Ljava/lang/String;Ljavax/faces/context/FacesContext;Ljava/util/Locale;Ljava/lang/String;[Ljava/lang/Object;)Ljavax/faces/application/FacesMessage;"/>
+    <Local name="bundle"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="getMessageFromBundle" signature="(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)Ljavax/faces/application/FacesMessage;"/>
+    <Local name="context"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="getMessage" signature="(Ljava/lang/String;Ljavax/faces/context/FacesContext;Ljava/lang/String;[Ljava/lang/Object;)Ljavax/faces/application/FacesMessage;"/>
+    <Local name="message"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.MessageUtils"/>
+    <Method name="getMessage" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;[Ljava/lang/Object;)Ljavax/faces/application/FacesMessage;"/>
+    <Local name="message"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ParametrizableFacesMessage"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/util/Locale;)V"/>
+    <Field name="_args"/>
+    <Local name="args"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ParametrizableFacesMessage"/>
+    <Method name="&lt;init&gt;" signature="(Ljavax/faces/application/FacesMessage$Severity;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/util/Locale;)V"/>
+    <Field name="_args"/>
+    <Local name="args"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.ServletSpecifications"/>
+    <Method name="isServlet30Available" signature="()Z"/>
+    <Local name="m"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="getMacSecret" signature="(Ljavax/faces/context/ExternalContext;)Ljavax/crypto/SecretKey;"/>
+    <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="getSecret" signature="(Ljavax/faces/context/ExternalContext;)Ljavax/crypto/SecretKey;"/>
+    <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findMacSecret" signature="(Ljava/lang/String;Ljava/lang/String;)[B"/>
+    <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findSecret" signature="(Ljava/lang/String;Ljava/lang/String;)[B"/>
+    <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findInitializationVector" signature="(Ljavax/faces/context/ExternalContext;)[B"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findMacSecret" signature="(Ljava/lang/String;Ljava/lang/String;)[B"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="findSecret" signature="(Ljava/lang/String;Ljava/lang/String;)[B"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StateUtils"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StreamCharBuffer$StreamCharBufferSubChunkReader"/>
+    <Field name="parent"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StringCharArrayAccessor"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StringCharArrayAccessor"/>
+    <Method name="createString" signature="([C)Ljava/lang/String;"/>
+    <Bug pattern="DM_STRING_VOID_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StringCharArrayAccessor"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StringCharArrayAccessor"/>
+    <Method name="handleError" signature="(Ljava/lang/Exception;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StringCharArrayAccessor"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.StringCharArrayAccessor"/>
+    <Method name="handleError" signature="(Ljava/lang/Exception;)V"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.SubKeyMap$Entry"/>
+    <Method name="hashCode" signature="()I"/>
+    <Local name="key"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="ANCHOR_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="BODY_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="BODY_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="BUTTON_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_EVENT_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONFOCUS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_EVENT_ATTRIBUTES_WITHOUT_ONSELECT_AND_ONCHANGE"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONCLICK"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_ONFOCUS_AND_ONCLICK"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_FIELD_PASSTROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_STYLE_AND_EVENTS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONCLICK_WITHOUT_STYLE"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="COMMON_PASSTROUGH_ATTRIBUTES_WITHOUT_STYLE"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="EVENT_HANDLER_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONCLICK"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="EVENT_HANDLER_ATTRIBUTES_WITHOUT_ONMOUSEOVER_AND_ONMOUSEOUT"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="FORM_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="IMG_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="INPUT_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="INPUT_FILE_UPLOAD_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="INPUT_PASSTHROUGH_ATTRIBUTES_WITHOUT_DISABLED_AND_EVENTS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="LABEL_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="LABEL_ATTRIBUTES_WITHOUT_EVENTS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="TABLE_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="TEXTAREA_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="UL_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="UNIVERSAL_ATTRIBUTES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.renderkit.HTML"/>
+    <Field name="UNIVERSAL_ATTRIBUTES_WITHOUT_STYLE"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.util.servlet.SourceCodeServlet"/>
+    <Method name="doGet" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.view.JspViewDeclarationLanguageBase"/>
+    <Method name="getResponseSwitch" signature="(Ljava/lang/Object;)Lorg/apache/myfaces/shared/view/ResponseSwitch;"/>
+    <Local name="response"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.webapp.webxml.WebXml"/>
+    <Method name="init" signature="(Ljavax/faces/context/ExternalContext;)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared.webapp.webxml.WebXml"/>
+    <Method name="isOld" signature="(Ljavax/faces/context/ExternalContext;)Z"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared_impl.util.serial.SerialFactory"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared_impl.webapp.webxml.WebXml"/>
+    <Method name="init" signature="(Ljavax/faces/context/ExternalContext;)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.shared_impl.webapp.webxml.WebXml"/>
+    <Method name="isOld" signature="(Ljavax/faces/context/ExternalContext;)Z"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.AnnotationProvider"/>
+    <Method name="getBaseUrls" signature="()Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.AnnotationProvider"/>
+    <Method name="getBaseUrls" signature="(Ljavax/faces/context/ExternalContext;)Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.AnnotationProviderWrapper"/>
+    <Method name="getBaseUrls" signature="()Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.AnnotationProviderWrapper"/>
+    <Method name="getBaseUrls" signature="(Ljavax/faces/context/ExternalContext;)Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.FactoryFinderProviderFactory"/>
+    <Method name="setInstance" signature="(Lorg/apache/myfaces/spi/FactoryFinderProviderFactory;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.ServiceProviderFinder"/>
+    <Field name="KNOWN_SERVICES"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider"/>
+    <Method name="&lt;init&gt;" signature="(Ljavax/faces/context/ExternalContext;)V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.CDIAnnotationDelegateInjectionProvider"/>
+    <Method name="&lt;init&gt;" signature="(Ljavax/faces/context/ExternalContext;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.DefaultServiceProviderFinder"/>
+    <Method name="getURLs" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.DefaultServiceProviderFinder"/>
+    <Method name="getServiceProviderList" signature="(Ljava/lang/String;)Ljava/util/List;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider"/>
+    <Method name="invokeAnnotatedMethod" signature="(Ljava/lang/reflect/Method;Ljava/lang/Object;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider"/>
+    <Method name="getDeclaredMethodBeansMap" signature="()Ljava/util/Map;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.NoInjectionAnnotationInjectionProvider"/>
+    <Method name="postConstruct" signature="(Ljava/lang/Object;Ljava/lang/Object;)V"/>
+    <Local name="methods"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.ResourceAnnotationInjectionProvider"/>
+    <Method name="lookupFieldResource" signature="(Ljavax/naming/Context;Ljava/lang/Object;Ljava/lang/reflect/Field;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.ResourceAnnotationInjectionProvider"/>
+    <Method name="lookupMethodResource" signature="(Ljavax/naming/Context;Ljava/lang/Object;Ljava/lang/reflect/Method;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.spi.impl.ResourceAnnotationInjectionProvider"/>
+    <Method name="getDeclaredFieldBeansMap" signature="()Ljava/util/Map;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.LoadBundleTag"/>
+    <Method name="doStartTag" signature="()I"/>
+    <Local name="basename"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.taglib.core.LoadBundleTag$BundleMap"/>
+    <Method name="containsKey" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="componentAsString" signature="(Ljavax/faces/component/UIComponent;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="componentAsString" signature="(Ljavax/faces/component/UIComponent;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="traceView" signature="(Ljava/lang/String;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.DebugUtils"/>
+    <Method name="traceView" signature="(Ljava/lang/String;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.ExternalSpecifications"/>
+    <Method name="isUnifiedELAvailable" signature="()Z"/>
+    <Field name="unifiedELAvailable"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.ExternalSpecifications"/>
+    <Method name="isBeanValidationAvailable" signature="()Z"/>
+    <Field name="beanValidationAvailable"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.ExternalSpecifications"/>
+    <Method name="isCDIAvailable" signature="(Ljavax/faces/context/ExternalContext;)Z"/>
+    <Field name="cdiAvailable"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.util.ExternalSpecifications"/>
+    <Method name="isEL3Available" signature="()Z"/>
+    <Field name="el3Available"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy"/>
+    <Method name="restoreView" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;Ljava/lang/String;)Ljavax/faces/component/UIViewRoot;"/>
+    <Local name="state"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.DefaultFaceletsStateManagementStrategy$AddComponentCallback"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/Object;)V"/>
+    <Field name="addedState"/>
+    <Local name="addedState"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Field name="PARAMS_REFRESH_PERIOD"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletViewDeclarationLanguage"/>
+    <Method name="buildView" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletsVDLUtils$KeyComparator"/>
+    <Method name="compare" signature="(Ljava/lang/String;Ljava/lang/String;)I"/>
+    <Bug pattern="RV_NEGATING_RESULT_OF_COMPARETO"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.FaceletsVDLUtils$KeyComparator"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="disposeView" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIViewRoot;)V"/>
+    <Local name="state"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="clearTransientAndNonFaceletComponents" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Local name="child"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="clearTransientAndNonFaceletComponents" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Local name="fc"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="clearTransientAndNonFaceletComponentsForDynamicView" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIViewRoot;Lorg/apache/myfaces/view/facelets/pool/ViewStructureMetadata;)V"/>
+    <Local name="child"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="initialize" signature="(Ljavax/faces/context/FacesContext;)V"/>
+    <Local name="elMode"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="clearComponentResourceContainer" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/util/List;)V"/>
+    <Local name="child"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="clearTransientAndRemoveNonResetableComponents" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/view/facelets/ViewPoolProcessor$ClearPartialTreeContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Local name="child"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="clearTransientAndRemoveNonResetableComponents" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/view/facelets/ViewPoolProcessor$ClearPartialTreeContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Local name="fc"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.ViewPoolProcessor"/>
+    <Method name="clearTransientAndRemoveNonResetableComponents" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/view/facelets/ViewPoolProcessor$ClearPartialTreeContext;Ljavax/faces/component/UIViewRoot;Lorg/apache/myfaces/view/facelets/pool/ViewStructureMetadata;)V"/>
+    <Local name="child"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.SAXCompiler"/>
+    <Method name="getXmlDecl" signature="(Ljava/io/InputStream;Lorg/apache/myfaces/view/facelets/compiler/CompilationManager;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.SAXCompiler"/>
+    <Method name="writeXmlDecl" signature="(Ljava/io/InputStream;Lorg/apache/myfaces/view/facelets/compiler/CompilationManager;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.SAXCompiler"/>
+    <Method name="doCompileComponent" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/util/Map;)Ljavax/faces/view/facelets/FaceletHandler;"/>
+    <Local name="stringValue"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.TagLibraryConfig"/>
+    <Method name="create" signature="(Ljavax/faces/context/FacesContext;Lorg/apache/myfaces/config/element/facelets/FaceletTagLibrary;)Lorg/apache/myfaces/view/facelets/tag/TagLibrary;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.TagLibraryConfigUnmarshallerImpl$LibraryHandler"/>
+    <Method name="endElement" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.compiler.TextUnit"/>
+    <Method name="compressSpaces" signature="(Ljava/util/List;I)I"/>
+    <Local name="ins"/>
+    <Bug pattern="BC_IMPOSSIBLE_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.component.JsfElementRenderer"/>
+    <Method name="encodeBegin" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Local name="behaviors"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ContextAwareELException"/>
+    <Field name="_delegate"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ContextAwareException"/>
+    <Field name="_delegate"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ContextAwareMethodNotFoundException"/>
+    <Field name="_delegate"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ContextAwarePropertyNotFoundException"/>
+    <Field name="_delegate"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ContextAwarePropertyNotWritableException"/>
+    <Field name="_delegate"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.DefaultContextAwareELException"/>
+    <Bug pattern="NM_CLASS_NOT_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.DefaultFunctionMapper$Function"/>
+    <Method name="getMethod" signature="()Ljava/lang/reflect/Method;"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ELText"/>
+    <Method name="parse" signature="(Ljavax/el/ExpressionFactory;Ljavax/el/ELContext;Ljava/lang/String;)Lorg/apache/myfaces/view/facelets/el/ELText;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ELText"/>
+    <Method name="parseAsArray" signature="(Ljavax/el/ExpressionFactory;Ljavax/el/ELContext;Ljava/lang/String;)[Lorg/apache/myfaces/view/facelets/el/ELText;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ELText$LiteralValueExpression"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="EQ_ALWAYS_FALSE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.el.ResourceELUtils"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.CacheELFaceletCacheImpl"/>
+    <Method name="needsToBeRefreshed" signature="(Lorg/apache/myfaces/view/facelets/impl/DefaultFacelet;)Z"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFacelet"/>
+    <Method name="&lt;init&gt;" signature="(Lorg/apache/myfaces/view/facelets/impl/DefaultFaceletFactory;Ljavax/el/ExpressionFactory;Ljava/net/URL;Ljava/lang/String;Ljava/lang/String;Ljavax/faces/view/facelets/FaceletHandler;)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFacelet"/>
+    <Method name="&lt;init&gt;" signature="(Lorg/apache/myfaces/view/facelets/impl/DefaultFaceletFactory;Ljavax/el/ExpressionFactory;Ljava/net/URL;Ljava/lang/String;Ljava/lang/String;Ljavax/faces/view/facelets/FaceletHandler;Z)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFacelet"/>
+    <Method name="markApplied" signature="(Ljavax/faces/component/UIComponent;)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletContext"/>
+    <Method name="initPrefix" signature="()V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletContext"/>
+    <Method name="initPrefix" signature="()V"/>
+    <Bug pattern="RV_ABSOLUTE_VALUE_OF_HASHCODE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletContext$CompositeComponentTemplateManager"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="EQ_UNUSUAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory"/>
+    <Method name="resolveURL" signature="(Ljavax/faces/context/FacesContext;Ljava/net/URL;Ljava/lang/String;)Ljava/net/URL;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory"/>
+    <Method name="&lt;init&gt;" signature="(Lorg/apache/myfaces/view/facelets/compiler/Compiler;Ljavax/faces/view/facelets/ResourceResolver;J)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory"/>
+    <Method name="getCompositeComponentMetadataFacelet" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljavax/faces/view/facelets/Facelet;"/>
+    <Local name="url"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory"/>
+    <Method name="getFacelet" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljavax/faces/view/facelets/Facelet;"/>
+    <Local name="url"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory"/>
+    <Method name="getViewMetadataFacelet" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljavax/faces/view/facelets/Facelet;"/>
+    <Local name="url"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.DefaultFaceletFactory"/>
+    <Method name="needsToBeRefreshed" signature="(Lorg/apache/myfaces/view/facelets/impl/DefaultFacelet;)Z"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.FaceletCacheImpl"/>
+    <Method name="needsToBeRefreshed" signature="(Lorg/apache/myfaces/view/facelets/impl/DefaultFacelet;)Z"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.FaceletCompositionContextImpl"/>
+    <Method name="removeComponentForDeletion" signature="(Ljavax/faces/component/UIComponent;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.SectionUniqueIdCounter"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;[Ljava/lang/String;)V"/>
+    <Field name="_uniqueIdsCache"/>
+    <Local name="cache"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.TemplateContextImpl"/>
+    <Method name="includeDefinition" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/view/facelets/Facelet;Ljavax/faces/component/UIComponent;Ljava/lang/String;)Z"/>
+    <Local name="owner"/>
+    <Bug pattern="EC_UNRELATED_TYPES"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.TemplateContextImpl$TemplateClientKnownParameterMap"/>
+    <Method name="getAttribute" signature="(Ljava/lang/String;)Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.impl.TemplateContextImpl$TemplateManagerImpl"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="EQ_UNUSUAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.pool.impl.MetadataViewKeyImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/util/Locale;[Ljava/lang/String;)V"/>
+    <Field name="contracts"/>
+    <Local name="contracts"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.pool.impl.ViewPoolEntryHolder"/>
+    <Field name="count"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.CompositeFaceletHandler"/>
+    <Method name="getHandlers" signature="()[Ljavax/faces/view/facelets/FaceletHandler;"/>
+    <Field name="children"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.CompositeFaceletHandler"/>
+    <Method name="&lt;init&gt;" signature="([Ljavax/faces/view/facelets/FaceletHandler;)V"/>
+    <Field name="children"/>
+    <Local name="children"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.CompositeTagDecorator"/>
+    <Method name="&lt;init&gt;" signature="([Ljavax/faces/view/facelets/TagDecorator;)V"/>
+    <Field name="decorators"/>
+    <Local name="decorators"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.CompositeTagLibrary"/>
+    <Method name="&lt;init&gt;" signature="([Lorg/apache/myfaces/view/facelets/tag/TagLibrary;)V"/>
+    <Field name="libraries"/>
+    <Local name="libraries"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.LegacyUserTagHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;Ljava/lang/String;)Z"/>
+    <Local name="actx"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.MetaRulesetImpl"/>
+    <Method name="createMetaData" signature="(Ljava/lang/ClassLoader;Ljava/util/Map;)Ljava/util/Map;"/>
+    <Field name="metadata"/>
+    <Local name="metadata"/>
+    <Bug pattern="IP_PARAMETER_IS_DEAD_BUT_OVERWRITTEN"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.MetaRulesetImpl"/>
+    <Method name="getMetaData" signature="()Ljava/util/Map;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.MetadataImpl"/>
+    <Method name="&lt;init&gt;" signature="([Ljavax/faces/view/facelets/Metadata;)V"/>
+    <Field name="_mappers"/>
+    <Local name="mappers"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.MethodRule"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/Class;[Ljava/lang/Class;)V"/>
+    <Field name="params"/>
+    <Local name="params"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.MethodRule$MethodExpressionMetadata"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.TagAttributesImpl"/>
+    <Method name="getAll" signature="()[Ljavax/faces/view/facelets/TagAttribute;"/>
+    <Field name="_attributes"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.TagAttributesImpl"/>
+    <Method name="getNamespaces" signature="()[Ljava/lang/String;"/>
+    <Field name="_namespaces"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.TagAttributesImpl"/>
+    <Method name="&lt;init&gt;" signature="([Ljavax/faces/view/facelets/TagAttribute;)V"/>
+    <Field name="_attributes"/>
+    <Local name="attrs"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.CompositeComponentBeanInfo"/>
+    <Method name="getPropertyDescriptors" signature="()[Ljava/beans/PropertyDescriptor;"/>
+    <Field name="_propertyDescriptorsArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.CompositeComponentRule$LiteralAttributeMetadata"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.composite.CompositeComponentRule$TypedLiteralAttributeMetadata"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ActionSourceRule"/>
+    <Field name="ACTION_LISTENER_SIG"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentRule$LiteralAttributeMetadata"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentSupport"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.ComponentTagHandlerDelegate"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Local name="parent"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.core.AjaxHandler"/>
+    <Field name="AJAX_BEHAVIOR_LISTENER_SIG"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.core.AttributeHandler"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.core.FacetHandler"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jsf.core.SetPropertyActionListenerHandler$SetPropertyListener"/>
+    <Method name="processAction" signature="(Ljavax/faces/event/ActionEvent;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jstl.core.ForEachHandler"/>
+    <Method name="removeVarAndVarStatus" signature="(Lorg/apache/myfaces/view/facelets/PageContext;Ljava/lang/String;Ljavax/el/ValueExpression;Ljava/lang/String;Ljavax/el/ValueExpression;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jstl.core.ForEachHandler$ArrayIterator"/>
+    <Method name="next" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="IT_NO_SUCH_ELEMENT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jstl.core.IterationStatusExpression"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jstl.core.LegacyForEachHandler$ArrayIterator"/>
+    <Method name="next" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="IT_NO_SUCH_ELEMENT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jstl.core.LegacySetHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="value"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jstl.core.SetHandler"/>
+    <Method name="apply" signature="(Ljavax/faces/view/facelets/FaceletContext;Ljavax/faces/component/UIComponent;)V"/>
+    <Field name="value"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.jstl.fn.JstlFunction"/>
+    <Method name="escapeXml" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.tag.ui.UIDebug"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_getAlternativeJarFile" signature="(Ljava/net/URL;)Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchFromURL" signature="(Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/net/URL;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchDir" signature="(Ljava/util/Set;Ljava/io/File;Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchDir" signature="(Ljava/util/Set;Ljava/io/File;Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchDir" signature="(Ljava/util/Set;Ljava/io/File;Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchDir" signature="(Ljava/util/Set;Ljava/io/File;Ljava/lang/String;)Z"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchFromURL" signature="(Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/net/URL;)V"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchJar" signature="(Ljava/lang/ClassLoader;Ljava/util/Set;Ljava/util/jar/JarFile;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchResource" signature="(Ljava/util/Set;Ljava/lang/ClassLoader;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Classpath"/>
+    <Method name="_searchFromURL" signature="(Ljava/util/Set;Ljava/lang/String;Ljava/lang/String;Ljava/net/URL;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.ReflectionUtil"/>
+    <Field name="PRIMITIVES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.ReflectionUtil"/>
+    <Field name="PRIMITIVE_NAMES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.util.Resource"/>
+    <Method name="getUrlForResourceAsStream" signature="(Ljavax/faces/context/ExternalContext;Ljava/lang/String;)Ljava/net/URL;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.impl.DefaultViewScopeHandler"/>
+    <Method name="generateViewScopeId" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/String;"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.jsp.JspViewDeclarationLanguage"/>
+    <Field name="FACELETS_ONLY_F_TAGS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.view.jsp.JspViewDeclarationLanguage"/>
+    <Field name="FACELETS_ONLY_H_TAGS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.AbstractFacesInitializer"/>
+    <Method name="destroyFaces" signature="(Ljavax/servlet/ServletContext;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.Jsp20FacesInitializer$ErrorExpressionFactory"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.ManagedBeanDestroyerListener"/>
+    <Method name="sessionDestroyed" signature="(Ljavax/servlet/http/HttpSessionEvent;)V"/>
+    <Local name="facesContext"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.webapp.StartupServletContextListener"/>
+    <Method name="loadFacesInitPluginsJDK6" signature="()Z"/>
+    <Local name="pluginEntries"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="org.apache.myfaces.config.impl.digester.elements.ContractMappingImpl"/>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
+  </Match>
+  
+   <Match>
+    <Class name="org.apache.myfaces.shared.resource.ResourceHandlerCache"/>
+    <Method name="libraryExists" signature="(Ljava/lang/String;)Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+  
+  <Match>
+    <Class name="org.apache.myfaces.cdi.view.ViewScopeBeanHolder"/>
+    <Method name="destroyBeans" signature="(Ljava/lang/String;)V"/>
+    <Local name="facesContext"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+  
+  <Match>
+    <Class name="org.apache.myfaces.view.facelets.component.UIRepeat"/>
+    <Method name="saveState" signature="(Ljavax/faces/context/FacesContext;)V"/>
+    <Bug pattern="RC_REF_COMPARISON_BAD_PRACTICE"/>
+  </Match>
+
+</FindBugsFilter>

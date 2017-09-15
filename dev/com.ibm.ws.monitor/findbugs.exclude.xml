@@ -1,0 +1,1513 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+    <Match>
+    <Class name="com.ibm.ws.monitors.helper.JvmStats"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.websphere.monitor.meters.StatisticsMeter$ThreadStats"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PerfModules"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PerfModules"/>
+    <Field name="moduleIDs"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PerfModules"/>
+    <Field name="moduleIDs40"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PerfModules"/>
+    <Field name="moduleIDs50"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiDataInfo"/>
+    <Method name="addDependency" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiDataInfo"/>
+    <Method name="copy" signature="()Lcom/ibm/websphere/pmi/PmiDataInfo;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="listMyLevelData" signature="(I)[Lcom/ibm/websphere/pmi/PmiDataInfo;"/>
+    <Bug pattern="BC_IMPOSSIBLE_DOWNCAST_OF_TOARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="addData" signature="(Lcom/ibm/websphere/pmi/PmiDataInfo;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="copy" signature="()Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="getDataInfo" signature="(I)Lcom/ibm/websphere/pmi/PmiDataInfo;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="listStatisticsBySet" signature="(Ljava/lang/String;)[I"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="listStatisticsWithDependents" signature="()[I"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="removeData" signature="(Lcom/ibm/websphere/pmi/PmiDataInfo;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="copy" signature="()Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.PmiModuleConfig"/>
+    <Method name="listStatisticsWithDependents" signature="()[I"/>
+    <Field name="dependList"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="_enableAllInModule" signature="(Lcom/ibm/websphere/pmi/PmiModuleConfig;Z)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="createData" signature="(Lcom/ibm/websphere/pmi/PmiModuleConfig;I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="createNameDataTable" signature="()V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="disableData" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="enableData" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="initializeFG" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="isEnabled" signature="(I)Z"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="listData" signature="(I)Lcom/ibm/websphere/pmi/server/SpdData;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="listData" signature="([I)[Lcom/ibm/websphere/pmi/server/SpdData;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="putToTable" signature="(Lcom/ibm/websphere/pmi/server/SpdData;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="removeFromTable" signature="(Lcom/ibm/websphere/pmi/server/SpdData;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="setFineGrainedInstrumentation" signature="([I[I)Z"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="setStatisticEnabled" signature="(IZZ)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="updateData" signature="(IID)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="updateEnabledByLevel" signature="()V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="getEnabled" signature="()[I"/>
+    <Field name="enabled"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="getEnabledSync" signature="()[I"/>
+    <Field name="enabledSync"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="setFineGrainedInstrumentation" signature="([I[I)Z"/>
+    <Field name="enabled"/>
+    <Local name="enabled"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="setFineGrainedInstrumentation" signature="([I[I)Z"/>
+    <Field name="enabledSync"/>
+    <Local name="enableWithSync"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Field name="currentLevel"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Field name="dataTable"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Field name="enabled"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Field name="DECREMENT"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Field name="INCREMENT"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Field name="SET"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="_findMBean" signature="()V"/>
+    <Local name="msd"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.server.PmiAbstractModule"/>
+    <Method name="getInstrumentationLevel" signature="()I"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.MBeanLevelSpec"/>
+    <Method name="getEnabled" signature="()[I"/>
+    <Field name="enable"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.MBeanLevelSpec"/>
+    <Method name="&lt;init&gt;" signature="(Ljavax/management/ObjectName;[I)V"/>
+    <Field name="enable"/>
+    <Local name="enable"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.MBeanLevelSpec"/>
+    <Method name="setEnabled" signature="([I)V"/>
+    <Field name="enable"/>
+    <Local name="enabled"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.MBeanStatDescriptor"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="NP_TOSTRING_COULD_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatDescriptor"/>
+    <Method name="getPath" signature="()[Ljava/lang/String;"/>
+    <Field name="subPath"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatDescriptor"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/String;)V"/>
+    <Field name="subPath"/>
+    <Local name="path"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatDescriptor"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/String;I)V"/>
+    <Field name="subPath"/>
+    <Local name="path"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatDescriptor"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="NP_TOSTRING_COULD_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatLevelSpec"/>
+    <Method name="getEnabled" signature="()[I"/>
+    <Field name="enable"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatLevelSpec"/>
+    <Method name="getPath" signature="()[Ljava/lang/String;"/>
+    <Field name="path"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatLevelSpec"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/String;[I)V"/>
+    <Field name="enable"/>
+    <Local name="enable"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatLevelSpec"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/String;[I)V"/>
+    <Field name="path"/>
+    <Local name="path"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatLevelSpec"/>
+    <Method name="setEnabled" signature="([I)V"/>
+    <Field name="enable"/>
+    <Local name="enabled"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatLevelSpec"/>
+    <Method name="setPath" signature="([Ljava/lang/String;)V"/>
+    <Field name="path"/>
+    <Local name="path"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.pmi.stat.StatLevelSpec"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="NP_TOSTRING_COULD_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringProxyActivator"/>
+    <Method name="createBootProxyJar" signature="()Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringProxyActivator"/>
+    <Method name="createBootProxyJar" signature="()Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringProxyActivator"/>
+    <Method name="getBootProxyJarIfCurrent" signature="()Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringProxyActivator"/>
+    <Method name="createBootProxyJar" signature="()Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringProxyActivator"/>
+    <Method name="createBootProxyJar" signature="()Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringProxyActivator"/>
+    <Method name="getBootProxyJarIfCurrent" signature="()Ljava/util/jar/JarFile;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringProxyActivator"/>
+    <Method name="createBootProxyJar" signature="()Ljava/util/jar/JarFile;"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.ProbeListener"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/monitor/MonitorManager;Lcom/ibm/ws/monitor/internal/ListenerConfiguration;Ljava/lang/Object;Ljava/lang/reflect/Method;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.ProbeManagerImpl"/>
+    <Field name="instrumentation"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.ProbeManagerImpl"/>
+    <Field name="shuttingDown"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.ProbeManagerImpl"/>
+    <Field name="transformer"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.ProbeManagerImpl"/>
+    <Field name="moduleInstanceToBundleMap"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ClassAvailableTransformer"/>
+    <Method name="transformCandidate" signature="([B)[B"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ClassAvailableTransformer"/>
+    <Method name="transformCandidate" signature="([B)[B"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ClassAvailableTransformer"/>
+    <Method name="transformCandidate" signature="([B)[B"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ProbeClassFileTransformer"/>
+    <Method name="dumpClass" signature="(Ljava/io/StringWriter;[B)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ProbeClassFileTransformer"/>
+    <Method name="transformWithProbes" signature="(Ljava/lang/Class;[B)[B"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ProbeInjectionClassAdapter"/>
+    <Method name="visitEnd" signature="()V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ProbeMethodAdapter"/>
+    <Method name="getTargetField" signature="(Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)Ljava/lang/reflect/Field;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.bci.ProbeMethodCallMethodAdapter"/>
+    <Method name="getMatchesByMethodName" signature="(Ljava/util/Map;)Ljava/util/Set;"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.boot.templates.ClassAvailableProxy"/>
+    <Method name="classAvailable" signature="(Ljava/lang/Class;)V"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.boot.templates.ProbeProxy"/>
+    <Method name="fireProbe" signature="(JLjava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="appendInstrumentationLevel" signature="([Lcom/ibm/websphere/pmi/stat/StatLevelSpec;Ljava/lang/Boolean;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="appendInstrumentationLevel" signature="([Lcom/ibm/websphere/pmi/stat/StatLevelSpec;Ljava/lang/Boolean;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="appendInstrumentationLevel" signature="([Lcom/ibm/websphere/pmi/stat/StatLevelSpec;Ljava/lang/Boolean;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="getInstrumentationLevel" signature="(Lcom/ibm/websphere/pmi/stat/StatDescriptor;Ljava/lang/Boolean;)[Lcom/ibm/websphere/pmi/stat/StatLevelSpec;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="getInstrumentationLevel" signature="(Lcom/ibm/websphere/pmi/stat/StatDescriptor;Ljava/lang/Boolean;)[Lcom/ibm/websphere/pmi/stat/StatLevelSpec;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="getInstrumentationLevel" signature="(Lcom/ibm/websphere/pmi/stat/StatDescriptor;Ljava/lang/Boolean;)[Lcom/ibm/websphere/pmi/stat/StatLevelSpec;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="getStatsArray" signature="([Lcom/ibm/websphere/pmi/stat/StatDescriptor;Ljava/lang/Boolean;)[Lcom/ibm/websphere/pmi/stat/WSStats;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="getStatsArray" signature="([Lcom/ibm/websphere/pmi/stat/StatDescriptor;Ljava/lang/Boolean;)[Lcom/ibm/websphere/pmi/stat/WSStats;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="getStatsArray" signature="([Lcom/ibm/websphere/pmi/stat/StatDescriptor;Ljava/lang/Boolean;)[Lcom/ibm/websphere/pmi/stat/WSStats;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="queryALLStatsArray" signature="()Ljava/lang/String;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="queryALLStatsArray" signature="()Ljava/lang/String;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="setInstrumentationLevel" signature="([Lcom/ibm/websphere/pmi/stat/StatLevelSpec;Ljava/lang/Boolean;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="setInstrumentationLevel" signature="([Lcom/ibm/websphere/pmi/stat/StatLevelSpec;Ljava/lang/Boolean;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="setInstrumentationLevel" signature="([Lcom/ibm/websphere/pmi/stat/StatLevelSpec;Ljava/lang/Boolean;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.PmiCollaborator"/>
+    <Method name="setStatisticSet" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.factory.StatsFactoryUtil"/>
+    <Method name="checkDataIDUniqueness" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;Lcom/ibm/websphere/pmi/PmiModuleConfig;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.factory.StatsGroupImpl"/>
+    <Method name="getStatisticIDBySet" signature="(Ljava/lang/String;)[I"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.factory.StatsGroupImpl"/>
+    <Method name="getPath" signature="()[Ljava/lang/String;"/>
+    <Field name="_path"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.factory.StatsInstanceImpl"/>
+    <Method name="getPath" signature="()[Ljava/lang/String;"/>
+    <Field name="_path"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.jvm.JVMMonitors"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Local name="itr"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.jvm.JVMMonitors"/>
+    <Field name="jvmMonInstance"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.DataDescriptor"/>
+    <Method name="getDataIds" signature="()[I"/>
+    <Field name="dataIds"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.DataDescriptor"/>
+    <Method name="getPath" signature="()[Ljava/lang/String;"/>
+    <Field name="dataPath"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.DataDescriptor"/>
+    <Method name="init" signature="([Ljava/lang/String;[I)V"/>
+    <Field name="dataPath"/>
+    <Local name="path"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.DataDescriptor"/>
+    <Method name="init" signature="([Ljava/lang/String;[I)V"/>
+    <Field name="dataPath"/>
+    <Local name="path"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.DataDescriptor"/>
+    <Field name="SUBMODULE_INDEX"/>
+    <Bug pattern="SS_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleAggregate"/>
+    <Method name="add" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleAggregate"/>
+    <Method name="remove" signature="(Lcom/ibm/websphere/pmi/server/SpdData;)Z"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleAggregate"/>
+    <Method name="remove" signature="([Lcom/ibm/websphere/pmi/server/SpdData;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleAggregate"/>
+    <Method name="getPath" signature="()[Ljava/lang/String;"/>
+    <Field name="path"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleAggregate"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/String;Ljava/lang/String;I)V"/>
+    <Field name="path"/>
+    <Local name="path"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleAggregate"/>
+    <Method name="add" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;)V"/>
+    <Local name="aggregateData"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.monitors.ThreadPoolMonitor"/>
+    <Field name="ob_ref"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleAggregate"/>
+    <Field name="defaultLevel"/>
+    <Bug pattern="SS_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Local name="uid"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Local name="loadFromClassPathOnly"/>
+    <Bug pattern="IP_PARAMETER_IS_DEAD_BUT_OVERWRITTEN"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="OBL_UNSATISFIED_OBLIGATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleConfigParser"/>
+    <Method name="loadDescriptor" signature="(Ljava/lang/String;ZZ)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleItem"/>
+    <Method name="add" signature="([Ljava/lang/String;I)Lcom/ibm/ws/pmi/server/ModuleItem;"/>
+    <Local name="aggregate"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/util/Locale;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/util/Locale;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/util/Locale;Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/util/Locale;Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/util/Locale;ZZ)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/util/Locale;ZZ)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="getString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="getString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="getString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.NLS"/>
+    <Method name="getString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PMIServiceState"/>
+    <Method name="setStatisticSet" signature="(Ljava/lang/String;)V"/>
+    <Field name="iStatisticSet"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PerfLevelDescriptor"/>
+    <Method name="getPath" signature="()[Ljava/lang/String;"/>
+    <Field name="path"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PerfLevelDescriptor"/>
+    <Method name="getShortPath" signature="()[Ljava/lang/String;"/>
+    <Field name="path"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PerfLevelDescriptor"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/String;I)V"/>
+    <Field name="path"/>
+    <Local name="path"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="getConfigs" signature="(Ljava/util/Locale;)[Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Local name="allConfigs"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="getInstrumentationLevel" signature="(Lcom/ibm/ws/pmi/server/DataDescriptor;Z)[Lcom/ibm/ws/pmi/server/PerfLevelDescriptor;"/>
+    <Local name="path"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Field name="nodeName"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Field name="serverName"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="printPMITree" signature="(Lcom/ibm/ws/pmi/server/ModuleItem;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="isSameNodeAndServer" signature="(Ljavax/management/ObjectName;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="registerModule" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;)Lcom/ibm/ws/pmi/server/ModuleItem;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="setMBeanToModuleMap" signature="(Lcom/ibm/ws/pmi/server/ModuleItem;Lcom/ibm/websphere/pmi/stat/MBeanStatDescriptor;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="setMBeanToModuleMap" signature="(Lcom/ibm/ws/pmi/server/ModuleItem;Lcom/ibm/websphere/pmi/stat/MBeanStatDescriptor;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="registerModule" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;)Lcom/ibm/ws/pmi/server/ModuleItem;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="unregisterModule" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;)V"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="printPMITree" signature="(Lcom/ibm/ws/pmi/server/ModuleItem;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="printPMITree" signature="(Lcom/ibm/ws/pmi/server/ModuleItem;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="printPMITree" signature="(Lcom/ibm/ws/pmi/server/ModuleItem;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="printpath" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="registerModule" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;)Lcom/ibm/ws/pmi/server/ModuleItem;"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="init" signature="()V"/>
+    <Bug pattern="TR_SPACES_IN_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiRegistry"/>
+    <Method name="registerModule" signature="(Lcom/ibm/websphere/pmi/server/PmiModule;)Lcom/ibm/ws/pmi/server/ModuleItem;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Field name="SHORT_LEVEL_FG_STRING"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Field name="SHORT_LEVEL_HIGH_STRING"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Field name="SHORT_LEVEL_LOW_STRING"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Field name="SHORT_LEVEL_MAX_STRING"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Field name="SHORT_LEVEL_MEDIUM_STRING"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Field name="SHORT_LEVEL_NONE_STRING"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Method name="getPerfLevelSpecsFromString" signature="(Ljava/lang/String;Z)[Lcom/ibm/ws/pmi/server/PerfLevelDescriptor;"/>
+    <Local name="lvl"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Method name="getSpecFromString" signature="(Ljava/lang/String;)Lcom/ibm/ws/pmi/server/PerfLevelDescriptor;"/>
+    <Local name="pathNlevel"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Method name="getSpecFromString" signature="(Ljava/lang/String;)Lcom/ibm/ws/pmi/server/PerfLevelDescriptor;"/>
+    <Local name="path"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdDoubleExternal"/>
+    <Method name="getStatistic" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Field name="proxy"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdDoubleExternal"/>
+    <Field name="proxy"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdDoubleExternal"/>
+    <Method name="getStatistic" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdLoadExternal"/>
+    <Field name="proxy"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdLongExternal"/>
+    <Method name="getStatistic" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Field name="proxy"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdLongExternal"/>
+    <Field name="proxy"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdLongExternal"/>
+    <Method name="combine" signature="(Lcom/ibm/websphere/pmi/server/SpdLong;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdLongExternal"/>
+    <Method name="getStatistic" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatExternal"/>
+    <Field name="proxy"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatExternal"/>
+    <Method name="combine" signature="(Lcom/ibm/websphere/pmi/server/SpdStat;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatisticAggregate"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/pmi/PmiDataInfo;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatisticAggregate"/>
+    <Method name="_getAggregate" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatisticExternal"/>
+    <Field name="proxy"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatisticExternal"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/pmi/PmiDataInfo;Lcom/ibm/wsspi/pmi/factory/StatisticActions;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatisticExternal"/>
+    <Method name="getStatistic" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticAggregateImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/pmi/PmiDataInfo;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticExternalImpl"/>
+    <Method name="getStatistic" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Field name="proxy"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticExternalImpl"/>
+    <Field name="proxy"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticExternalImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/pmi/PmiDataInfo;Lcom/ibm/wsspi/pmi/factory/StatisticActions;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticExternalImpl"/>
+    <Method name="getStatistic" signature="()Lcom/ibm/ws/pmi/stat/StatisticImpl;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticImpl"/>
+    <Method name="&lt;init&gt;" signature="(ILjava/lang/String;Ljava/lang/String;Ljava/lang/String;JJ)V"/>
+    <Field name="startTime"/>
+    <Local name="startTime"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsConfigHelper"/>
+    <Method name="_getStatsConfig" signature="(Ljava/lang/String;ZLjava/util/Locale;)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsConfigHelper"/>
+    <Method name="getConfig" signature="(Ljava/util/Locale;Ljava/lang/String;)Lcom/ibm/websphere/pmi/PmiModuleConfig;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsConfigHelper"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Field name="dataMembers"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Field name="subCollections"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Method name="bindTextForJ2EECall" signature="()V"/>
+    <Local name="cfg"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Method name="bindTextForWSCall" signature="()V"/>
+    <Local name="cfg"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Bug pattern="RS_READOBJECT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Method name="getData" signature="(I)Lcom/ibm/ws/pmi/wire/WpdData;"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Method name="getSubcollection" signature="(Ljava/lang/String;)Lcom/ibm/ws/pmi/wire/WpdCollection;"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatsImpl"/>
+    <Method name="getTime" signature="()J"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.wire.WpdCollectionImpl"/>
+    <Method name="toString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.wire.WpdCollectionImpl"/>
+    <Method name="toXML" signature="()Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.wire.WpdDouble"/>
+    <Method name="combine" signature="(Lcom/ibm/ws/pmi/wire/WpdData;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.wire.WpdInt"/>
+    <Method name="combine" signature="(Lcom/ibm/ws/pmi/wire/WpdData;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.wire.WpdLoad"/>
+    <Method name="combine" signature="(Lcom/ibm/ws/pmi/wire/WpdData;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.wire.WpdLong"/>
+    <Method name="combine" signature="(Lcom/ibm/ws/pmi/wire/WpdData;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.pmi.wire.WpdStat"/>
+    <Method name="combine" signature="(Lcom/ibm/ws/pmi/wire/WpdData;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.pmi.factory.StatsFactory"/>
+    <Method name="getStatsGroup" signature="([Ljava/lang/String;)Lcom/ibm/wsspi/pmi/factory/StatsGroup;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.pmi.factory.StatsFactory"/>
+    <Method name="getStatsInstance" signature="([Ljava/lang/String;)Lcom/ibm/wsspi/pmi/factory/StatsInstance;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.LibertyMonitorMBean"/>
+    <Method name="getAttributeFields" signature="(Ljava/lang/Object;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.jmx.LibertyMonitorMBean"/>
+    <Method name="getPublishedFields" signature="(Ljava/lang/Object;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.monitor.internal.MonitoringFrameworkExtender"/>
+    <Method name="processMeters" signature="(Ljava/lang/Object;J)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <!-- The following classes deliberately use the same name as their superclass or interface, in order to expose
+       MBean interfaces in public packages. -->
+  <Match>
+    <Or>
+      <Class name="com.ibm.websphere.monitor.meters.Counter"/>
+      <Class name="com.ibm.websphere.monitor.jmx.Counter"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.websphere.monitor.meters.CounterReading"/>
+      <Class name="com.ibm.websphere.monitor.jmx.CounterReading"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.websphere.monitor.meters.StatisticsMeter"/>
+      <Class name="com.ibm.websphere.monitor.jmx.StatisticsMeter"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.websphere.monitor.meters.StatisticsReading"/>
+      <Class name="com.ibm.websphere.monitor.jmx.StatisticsReading"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.websphere.monitor.meters.JvmMXBean"/>
+      <Class name="com.ibm.websphere.monitor.jmx.JvmMXBean"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.websphere.monitor.meters.ThreadPoolMXBean"/>
+      <Class name="com.ibm.websphere.monitor.jmx.ThreadPoolMXBean"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+    <!-- match generated nls classes: return mutable type -->
+    <Match> 
+      <Class name="~.*\.properties\..*" />
+      <Method name="getContents"/>
+      <Bug code="EI" />
+    </Match>
+    
+    <!-- Hmm, this isn't an ideal case, but to preserve compatability with tWAS code -->
+    <Match>
+      <Class name="com.ibm.ws.pmi.server.NLS"/>
+      <Method name="&lt;init&gt;"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.pmi.server.NLS"/>
+      <Method name="getString"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+
+  <!-- Pre-existing calls to System.currentTimeMillis (not sure if these are actually ok or not - it looks like the values are just passed to Date anyway -->
+  <Match>
+    <Class name="~com\.ibm\.websphere\.monitor\.meters\.(Counter|Gauge|Statistics)Reading"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.data.SpdStatisticAggregate"/>
+    <Method name="getStatistic"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.ModuleItem"/>
+    <Method name="getStats"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.server.PmiUtil"/>
+    <Method name="currentTime"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.AverageStatisticImpl"/>
+    <Method name="add"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="~com\.ibm\.ws\.pmi\.stat.(Count|Double)StatisticImpl"/>
+    <Method name="~(in|de)crement"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.CountStatisticImpl"/>
+    <Method name="setCount"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.DoubleStatisticImpl"/>
+    <Method name="setDouble"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.RangeStatisticImpl"/>
+    <Method name="~(cleanup|set(WaterMark)?|updateIntegral)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticAggregateImpl"/>
+    <Method name="getStatistic"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticImpl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+   <Match>
+    <Class name="com.ibm.ws.pmi.stat.StatisticImpl"/>
+    <Method name="reset"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <!-- False positive - but I'm not surprised findbugs was confused -->
+  <Match>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+    <Class name="com.ibm.websphere.monitor.meters.MeterCollection"/>
+    <Method name="put"/>
+  </Match>
+</FindBugsFilter>

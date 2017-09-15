@@ -1,0 +1,40 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.persistence.2.0; singleton:=true
+Bundle-Activator: com.ibm.ws.javaee.persistence.internal.HybridPersistenceActivator
+# Bundle-Activator: org.apache.geronimo.specs.jpa.PersistenceActivator
+
+Import-Package: \
+  org.osgi.framework;version="[1.6,2)", \
+  org.osgi.util.tracker;version="[1.5,2)", \
+  javax.sql; resolution:=optional
+
+# the jaxb feature will bring geronimo.osgi.registry to liberty, and the jpa api bundle
+# tracks the ProviderRegistry service, so we need dynamicly import the package.
+DynamicImport-Package: \
+  org.apache.geronimo.osgi.registry.api
+
+Export-Package: javax.persistence.*; jpa=2.0
+
+Private-Package: com.ibm.ws.javaee.persistence.internal, \
+   org.apache.geronimo.osgi.locator, \
+   org.apache.geronimo.specs.jpa
+
+Include-Resource: \
+   @${repo;com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec;1.1}!/META-INF/NOTICE
+
+
+Copyright: Licensed Materials - Property of IBM 5724-J08, 5724-I63, 57\
+24-H88, 5724-H89, 5655-W65, 5733-W70 Copyright IBM Corp. 1998, 2011 A\
+ll Rights Reserved. US Government Users Restricted Rights - Use, dupl\
+ication or disclosure restricted by GSA ADP Schedule Contract with IB\
+M Corp.
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	com.ibm.ws.org.apache.geronimo.specs:geronimo-jpa_2.0_spec;version=1.1,\
+	com.ibm.websphere.org.osgi.core

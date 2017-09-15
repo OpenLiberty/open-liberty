@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: Invalid authentication layer mechanism(s) specified in the client security {0}. Valid values are GSSUP or LTPA or GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=The client security authentication layer mechanism(s) specified is/are not supported.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Ensure that the client security authentication layer mechanism specified is either GSSUP or LTPA or GSSUP, LTPA.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: The authentication layer mechanism(s) specified in the client security is null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=The client security authentication layer mechanism(s) specified is null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Ensure that the client security authentication layer mechanism specified is either GSSUP or LTPA or GSSUP, LTPA.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: Invalid authentication layer mechanism(s) specified in the server security policy {0}. Valid values are GSSUP or LTPA or GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=The server security policy authentication layer mechanism(s) specified is/are not supported.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=Ensure that the server security policy authentication layer mechanism specified is either GSSUP or LTPA or GSSUP, LTPA.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: The authentication layer mechanism(s) specified in the client security is null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=The client security authentication layer mechanism(s) specified is null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Ensure that the client security authentication layer mechanism specified is either GSSUP or LTPA or GSSUP, LTPA.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: The SSL configuration {0} in the inbound CSIv2 transport layer does not correspond to an SSL configuration in the IIOP endpoint.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=The inbound CSIv2 transport layer uses an SSL configuration, but the IIOP endpoint does not use the same SSL configuration.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=Ensure that the SSL configuration in the inbound CSIv2 transport layer in the server.xml file is one of the SSL configurations the IIOP endpoint uses.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: The IIOP endpoint does not have an SSL configuration and the inbound CSIv2 transport layer requires the {0} SSL configuration to be used in the IIOP endpoint.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=The IIOP endpoint does not have at least one iiopsOptions element with an SSL configuration that the inbound CSIv2 transport layer can refer to.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Ensure that the IIOP endpoint has at least one iiopsOptions element with the same SSL configuration that the inbound CSIv2 transport layer uses.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: The client cannot create the ITTDistinguishedName identity assertion token for distinguished name {0}. The exception message is: {1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=The subject for the user being asserted does not contain a valid Distinguished Name and the identity assertion cannot be performed. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Review the exception message, ensure that the user registry configured in the server.xml file supports Distinguished Names, and authenticate the user again.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: The client cannot create the ITTX509CertChain identity assertion token. The exception message is: {0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=The subject for the user being asserted does not contain a valid certificate and the identity assertion cannot be performed. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Review the exception message and ensure that the key store, SSL, and server policy transport layer is configured in the server.xml file and authenticate the user again.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: The client certificate chain is not available to continue with Identity Assertion.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=The subject for the user being asserted does not contain a valid certificate and the identity assertion cannot be performed. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Ensure that the key store, SSL, and server policy transport layer is configured in the server.xml file and authenticate the user again.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: The orb element with the {0} id attribute requires a user registry but no user registry became available within {1} seconds.   As a result, no application will start. Ensure that you have configured an appropriate user registry in the server.xml file.
+NO_USER_REGISTRY.explanation=No application has started because a secured Object Request Broker (ORB) on a server requires a user registry, but no user registry was found. After an appropriate user registry has been configured, applications will start.
+NO_USER_REGISTRY.useraction=Ensure that you have configured a user registry appropriate for your environment.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: The CSIv2 Authentication Layer is disabled because the value for establishTrustInClient is {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=When establishTrustInClient is set to Never, the CSIv2 Authentication Layer is disabled.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=To enable the CSIv2 Authentication Layer, set the value of establishTrustInClient to Supported or Required.
+
+

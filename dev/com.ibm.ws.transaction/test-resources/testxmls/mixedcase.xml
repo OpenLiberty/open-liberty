@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+   <web-app id="WebApp">
+      <display-name>JDBC Servlet 4</display-name>
+      <servlet>
+         <servlet-name>JDBC Servlet 4</servlet-name>
+         <display-name>JDBC Servlet 4</display-name>
+         <servlet-class>com.ibm.ws.connector.test.servlet.JDBCServlet4</servlet-class>
+      </servlet>
+      <servlet-mapping>
+         <servlet-name>JDBC Servlet 4</servlet-name>
+         <url-pattern>/*</url-pattern>
+      </servlet-mapping>
+      <resource-ref id="ResourceRef_1">
+		<res-ref-name>jdbc/DataSource1</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>CONTAINER</res-auth>
+		<res-sharing-scope>SHAREABLE</res-sharing-scope>
+	</resource-ref>
+	<resource-ref id="ResourceRef_2">
+		<res-ref-name>jdbc/DataSource2</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>APPLICATION</res-auth>
+		<res-sharing-scope>UNSHAREABLE</res-sharing-scope>
+	</resource-ref>
+	<resource-ref id="ResourceRef_3">
+		<res-ref-name>jdbc/DataSource3</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>SERVLET</res-auth>
+		<res-sharing-scope>Unshareable</res-sharing-scope>
+	</resource-ref>
+	<resource-ref id="ResourceRef_4">
+		<res-ref-name>jdbc/DataSource4</res-ref-name>
+		<res-type>javax.sql.DataSource</res-type>
+		<res-auth>Servlet</res-auth>
+		<res-sharing-scope>DONTLIKETOSHARE</res-sharing-scope>
+	</resource-ref>
+  </web-app>

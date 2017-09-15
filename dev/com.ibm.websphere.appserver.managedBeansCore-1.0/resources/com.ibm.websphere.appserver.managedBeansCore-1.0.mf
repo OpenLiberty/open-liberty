@@ -1,0 +1,26 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: com.ibm.ejs.container; type=internal,
+ javax.interceptor; type=spec
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+Subsystem-Content: com.ibm.websphere.appserver.injection-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jndi-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.containerServices-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.classloading-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.anno-1.0; type="osgi.subsystem.feature",
+ com.ibm.ws.jaxrpc.stub; version="[1.1.0,1.1.200)",
+ com.ibm.ws.managedobject; version="[1.0.0,1.0.200)",
+ com.ibm.ws.ejbcontainer; version="[1.0.0,1.0.200)",
+ com.ibm.ws.javaee.dd.ejb; version="[1.1.0,1.1.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.managedBeansCore-1.0
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.managedBeansCore-1.0; visibility:=private; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

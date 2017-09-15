@@ -1,0 +1,48 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME=CWWKExxxxI: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.threading/resources/com/ibm/ws/threading/internal/resources/ThreadingMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 1200 - 1299 com.ibm.ws.threading.internal.resources.ThreadingMessages
+# -------------------------------------------------------------------------------------------------
+
+# {0} size of the pool when a deadlock was first detected
+# {1} current size of the pool
+unbreakableExecutorHang=CWWKE1200W:  All threads in the Liberty default executor appear to be hung.  Liberty automatically increased the number of threads from {0} to {1}.  However, all threads still appear to be hung.
+unbreakableExecutorHang.explanation=An error occurred which caused an executor to  hang and the Liberty run time added a significant number of threads in an attempt to end the hang condition.  However, the executor remains in an unresponsive state.  
+unbreakableExecutorHang.useraction=Determine if there is a bottleneck, such as a locked database table, that might prevent threads from resolving in the server.  If no such bottleneck exists and the server legitimately requires additional threads, adjust the coreThreads attribute of the executor configuration element.
+
+CWWKE1201.queue.full.abort=CWWKE1201E: A task cannot be submitted to executor {0} because the task queue with maxQueueSize of {1} remains at capacity after waiting {2} nanoseconds.
+CWWKE1201.queue.full.abort.explanation=The maxQueueSize attribute controls how many task submissions can queue up. The maxWaitForEnqueue attribute controls how long to wait for a queue position to become available, but this interval can be shortened by the remaining timeout if you use the timed invokeAll or invokeAny methods to submit tasks. The queueFullAction attribute determines what action to take after the interval elapses and no queue position becomes available. To avoid exceeding maximum concurrency or to honor the specified timeout, the invokeAll and invokeAny methods can override the queueFullAction and abort the task submission when it cannot be queued.
+CWWKE1201.queue.full.abort.useraction=No action is necessary if the application handles RejectedExecutionException. Otherwise, take any combination of the following actions: increase maxQueueSize, increase maxWaitForEnqueue, use a different queueFullAction, or increase the timeout that is supplied to invokeAll or invokeAny methods.
+
+CWWKE1202.submit.after.shutdown=CWWKE1202E: A task cannot be submitted because the executor {0} has been shut down.
+CWWKE1202.submit.after.shutdown.explanation=Task submissions are not permitted after the executor service has been requested to shut down.
+CWWKE1202.submit.after.shutdown.useraction=Only submit tasks on an executor service instance which has not been requested to shut down.
+
+CWWKE1203.config.update.after.shutdown=CWWKE1203E: Configuration update to {0} is not permitted because the executor {1} has been shut down.
+CWWKE1203.config.update.after.shutdown.explanation=It is not possible to update configuration after the executor service has been requested to shut down.
+CWWKE1203.config.update.after.shutdown.useraction=Only update configuration of an executor service instance which has not been requested to shut down.

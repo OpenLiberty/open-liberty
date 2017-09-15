@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF Runtime HTTP Transport
+Bundle-Description: Apache CXF Runtime HTTP Transport, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf-rt-transports-http.2.6.2
+Bundle-Activator: org.apache.cxf.transport.http.osgi.HTTPTransportActivator
+
+Export-Package: \
+ META-INF.cxf.osgi;version=2.6.2, \
+ org.apache.cxf.*;version=2.6.2
+
+Import-Package: \
+ org.apache.cxf.ws.policy.*;resolution:=optional;version="[2.6.2,2.6.3)", \
+ org.apache.neethi;resolution:=optional, \
+ javax.servlet.*;resolution:=optional;version="[0.0,4)", \
+ javax.xml.bind.*;version="[2.2,3)", \
+ !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+ !org.apache.aries.*;version="[0.3,2)", \
+ !org.osgi.service.blueprint.*, \
+ org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+ *
+ 
+DynamicImport-Package: com.ctc.wstx.*
+
+Include-Resource:\
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/cxf/**, \
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/schemas/**, \
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.handlers, \
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.schemas, \
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/DEPENDENCIES, \
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/LICENSE, \
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/NOTICE, \
+ @${repo;org.apache.cxf.cxf-rt-transports-http;2.6.2.ibm-s20170216-1739;EXACT}!/org/apache/cxf/**
+ 
+# does not exist
+# META-INF/cxf=resources/cxf-rt-transports-http-2.6.2/META-INF/cxf
+ 
+ 
+ 
+# Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
+# As we have no plan to support that, will add these things back with NLS support in the future 
+# @lib/cxf-rt-transports-http-2.6.2.jar!/OSGI-INF/**, \

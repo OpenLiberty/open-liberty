@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	localization="OSGI-INF/l10n/fileset">
+
+  <OCD name="%fileset.service.name" description="%fileset.service.desc"
+       id="com.ibm.ws.kernel.metatype.helper.fileset"
+       ibm:alias="fileset">
+    
+    <AD name="%fileset.attr.dir.name" description="%fileset.attr.dir.desc"  
+        id="dir" 
+        required="true" 
+        type="String"
+        ibm:type="location(dir)"
+        default="${server.config.dir}"
+    />
+    
+    <AD name="%fileset.attr.casesensitive.name" description="%fileset.attr.casesensitive.desc"  
+        id="caseSensitive" 
+        required="false" 
+        type="Boolean"
+        default="true"
+    />
+    
+    <AD name="%fileset.attr.includes.name" description="%fileset.attr.includes.desc"  
+        id="includes" 
+        required="false" 
+        type="String"
+        default="*"
+    />
+        
+    <AD name="%fileset.attr.excludes.name" description="%fileset.attr.excludes.desc"  
+        id="excludes" 
+        required="false" 
+        type="String"
+        default=""
+    />
+
+    <AD name="%fileset.attr.scan.name" description="%fileset.attr.scan.desc"  
+        id="scanInterval" 
+        required="false" 
+        type="String"
+        ibm:type="duration"
+        default="0"
+    />
+    
+    <AD  
+        id="Listener.target" 
+        name="internal"
+        required="true" 
+        type="String"
+        default="(fileset=${service.pid})"
+        ibm:final="true"
+    />
+
+  </OCD>
+  
+  <Designate factoryPid="com.ibm.ws.kernel.metatype.helper.fileset">
+      <Object ocdref="com.ibm.ws.kernel.metatype.helper.fileset"/>
+  </Designate>
+  
+</metatype:MetaData>

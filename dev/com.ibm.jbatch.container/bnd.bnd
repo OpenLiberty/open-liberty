@@ -1,0 +1,132 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Java Batch RI core runtime implementation
+Bundle-SymbolicName: com.ibm.jbatch.container
+Bundle-Description:  Java Batch RI core runtime implementation
+
+# java batch is part of EE7 and therefore requires java 1.7
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
+
+WS-TraceGroup: wsbatch
+
+#######################################################################
+# Please be careful and circulate the idea in a design discussion
+# before exporting any new packages here.
+#
+# Though we've forked the open source RI in this project, we still are
+# responsible for maintaining it.   Changes to and dependencies we make upon
+# the internals in com.ibm.jbatch.container from other parts of the WAS project
+# should be kept in some part of our minds as we work in open source.
+#######################################################################
+Export-Package:\
+ com.ibm.jbatch.container.navigator;provide:=true,\
+ com.ibm.jbatch.container.execution.impl;provide:=true,\
+ com.ibm.jbatch.container.exception;provide:=true,\
+ com.ibm.jbatch.container.cdi;provide:=true,\
+ com.ibm.jbatch.container.instance;provide:=true,\
+ com.ibm.jbatch.container.persistence.jpa;provide:=true,\
+ com.ibm.jbatch.container.services;provide:=true,\
+ com.ibm.jbatch.spi.services;provide:=true,\
+ com.ibm.jbatch.container.callback,\
+ com.ibm.jbatch.container.ws,\
+ com.ibm.jbatch.container.ws.events,\
+ com.ibm.jbatch.container.ws.smf,\
+ com.ibm.jbatch.jsl.model.*
+ 
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF,\
+  OSGI-INF/metatype=resources/OSGI-INF/metatype,\
+  OSGI-INF/l10n=resources/OSGI-INF/l10n,\
+  com/ibm/jbatch/container/jsl/jobXML_1_0.xsd=src/com/ibm/jbatch/container/jsl/jobXML_1_0.xsd,\
+  xsd=resources/xsd
+
+-dsannotations: com.ibm.jbatch.container.api.impl.JobOperatorImpl,\
+ com.ibm.jbatch.container.api.impl.JobOperatorImplSuspendTran,\
+ com.ibm.jbatch.container.impl.BatchKernelImpl,\
+ com.ibm.jbatch.container.services.impl.BatchSecurityHelperImpl,\
+ com.ibm.jbatch.container.services.impl.BatchTransactionServiceImpl,\
+ com.ibm.jbatch.container.services.impl.CDIBatchArtifactFactoryImpl,\
+ com.ibm.jbatch.container.services.impl.ContextBasedThreadPoolServiceImpl,\
+ com.ibm.jbatch.container.services.impl.DelegatingBatchArtifactFactoryImpl,\
+ com.ibm.jbatch.container.services.impl.DelegatingJobXMLLoaderServiceImpl,\
+ com.ibm.jbatch.container.services.impl.JPAPersistenceManagerImpl,\
+ com.ibm.jbatch.container.services.impl.MemoryPersistenceManagerImpl,\
+ com.ibm.jbatch.container.services.impl.TranSynchronization,\
+ com.ibm.jbatch.container.servicesmanager.ServicesManagerImpl,\
+ com.ibm.jbatch.container.ws.impl.WSJobOperatorImpl,\
+ com.ibm.jbatch.container.ws.impl.WSJobRepositoryImpl,\
+ com.ibm.jbatch.container.ws.impl.BatchLocationServiceImpl
+
+##
+# Using '*' below causes problems with our two separate src dirs
+##
+Import-Package: com.ibm.jbatch.spi,\
+    javax.persistence;version="[2.1,3)";consumer="persistenceService",\
+	javax.transaction;resolution:=optional,\
+	javax.enterprise.inject.spi;resolution:=optional,\
+	javax.enterprise.inject;resolution:=optional,\
+	javax.inject;resolution:=optional,\
+	javax.batch.*,\
+	org.xml.sax,\
+	*
+Private-Package: com.ibm.jbatch.container.*,\
+	com.ibm.jbatch.container.modelresolver.impl
+
+instrument.classesExcludes: com/ibm/jbatch/container/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.jbatch.jsl.model;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.batch.1.0;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.jbatch.spi;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+	com.ibm.ws.persistence;version=latest,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.ws.security.credentials;version=latest,\
+	com.ibm.ws.context;version=latest,\
+	com.ibm.websphere.appserver.spi.threading;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.0;version=latest,\
+	com.ibm.websphere.appserver.api.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.thirdparty.eclipselink;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.jmock:jmock-legacy;version=2.5.0, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	cglib:cglib-nodep;version=2.1.0.3, \
+	org.mockito:mockito-all;version=1.9.5, \
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.logging;version=latest,\
+	javax.activation:activation;version=1.1,\
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
+	com.sun.xml.bind:jaxb-core;version=2.2.10,\
+	com.sun.xml.bind:jaxb-impl;version=2.2.10

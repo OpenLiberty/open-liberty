@@ -1,0 +1,218 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.war/resources/com/ibm/ws/app/manager/war/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ Application Csar
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+# Reserving message prefixes CWWKZ0101 to CWWKZ0200
+
+# Now unused, but preserved for the Infocenter:
+#   error.file.copy.failed
+#   error.ear.extraction.exception
+#   error.ear.extraction.failed
+#   error.dir.creation.failed
+#   error.bundle.context.unavailable
+#{0} is source file name 
+#{1} is destination file name 
+#{2} is application name
+error.file.copy.failed=CWWKZ0101E: The file {0} could not be copied to location {1} during the start of the {2} application. 
+error.file.copy.failed.explanation=Before the application is started, the application file is copied to a new location. The file copy operation did not succeed, so the application was not started.
+error.file.copy.failed.useraction=Examine the source and destination file locations to see if the problem can be resolved.
+
+#{0} is ear file name
+#{1} is extract destination
+#{2} is exception message
+error.ear.extraction.exception=CWWKZ0102E: The ear file {0} could not be extracted to location {1}. The exception message was: {2}
+error.ear.extraction.exception.explanation=The server could not start the application, because the ear file could not be extracted.
+error.ear.extraction.exception.useraction=Read the exception message for information.  Additional details might be available in the exception log.
+
+#{0} is ear file name
+#{1} is extract destination
+error.ear.extraction.failed=CWWKZ0103E: The ear file {0} could not be extracted to location {1}. 
+error.ear.extraction.failed.explanation=The server could not start the application, because the ear file could not be extracted.
+error.ear.extraction.failed.useraction=Examine the ear file to ensure it is a valid archive.
+
+#{0} is directory name
+#{1} is application name
+error.dir.creation.failed=CWWKZ0104E: The directory {0} could not be created during the start of the {1} application.
+error.dir.creation.failed.explanation=Before the application is started, a directory is created. The directory create operation did not succeed, so the application was not started.
+error.dir.creation.failed.useraction=Examine the directory location to see if the problem can be resolved.
+
+#{0} is application name
+error.bundle.context.unavailable=CWWKZ0105E: The bundle context was not available to start the {0} application.
+error.bundle.context.unavailable.explanation=The server could not start the application.  This might be an internal error.
+error.bundle.context.unavailable.useraction=Examine the message and exception logs for related errors.
+
+# Leaving these (for now); there are catch points which seem
+# to have uses for them.
+#   error.not.installed
+#   error.cache.adapt
+
+#{0} is the application name
+error.not.installed=CWWKZ0106E: Could not start web application {0}.
+error.not.installed.explanation=An earlier error prevented the application from being installed.
+error.not.installed.useraction=Check the location in the application configuration.
+
+# RESERVED: CWWKZ0107E is used by com.ibm.ws.app.manager.module
+error.cache.adapt=CWWKZ0107E: An internal error occurred. Unable to adapt cache for web module {0}.
+error.cache.adapt.explanation=CMSG0001
+error.cache.adapt.useraction=CMSG0002
+
+# RESERVED: CWWKZ0108E is used by com.ibm.ws.app.manager.module
+
+# Added by task 73569:
+#
+# The codes for modules types are current (WAR, EJB).  These are untranslated text values
+# used to indicate the type of the module which is being processed.  The type corresponds to
+# the archive, not to the presence of function within the module.
+
+#{0} is the application name
+#{1} is the library relative path
+#{2} is the exception message
+error.application.library.container=CWWKZ0111E: Application {0} encountered a error when accessing application library {1}: {2}
+error.application.library.container.explanation=An internal error occurred when accessing the contents of the library.  That library will not available for use.
+error.application.library.container.useraction=Review the contents of the application to ensure that an archive is present for the library.
+
+#{0} is the application name
+#{1} is the exception message
+error.application.libraries=CWWKZ0112E: Application {0} encountered an error when listing application libraries: {1}
+error.application.libraries.explanation=An error occurred while listing application libraries.  The list of application libraries will be incomplete.
+error.application.libraries.useraction=See the exception information for additional details.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=CWWKZ0113E: Application {0} encountered a parse error when processing application descriptor {1}: {2}
+error.application.parse.descriptor.explanation=An error occurred while parsing the application descriptor.  No modules will be available for the application.
+error.application.parse.descriptor.useraction=See the exception information for additional details.  Review the contents of the application descriptor to ensure that the contents are valid as XML data.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.container=CWWKZ0114E: Application {0} encountered an error when accessing the contents of module {1} of type {2}: {3}
+error.module.container.explanation=An internal error occurred when accessing the contents of the module.  The module will not be made available for use.
+error.module.container.useraction=See the exception information for additional details.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.container.null=CWWKZ0115E: Application {0} obtained a null value when accessing the contents of candidate module {1} of type {2}
+error.module.container.null.explanation=An internal error occurred when accessing the contents of a module.  The application may be missing an archive for the module.  The module will not be made available for use.
+error.module.container.null.useraction=Review the contents of the application to ensure that an archive is present for the module.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.create=CWWKZ0116E: Application {0} failed to finish creation of module {1} of type {2}: {3}
+error.module.create.explanation=An internal error occurred while finishing creation of a module.  The module will not be made available for use.
+error.module.create.useraction=See the exception information for additional details.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+error.module.locate.failed=CWWKZ0117E: Application {0} failed to locate module {1} of type {2}
+error.module.locate.failed.explanation=No archive is available for a module listed in the application descriptor.  The module will not be made available for use.
+error.module.locate.failed.useraction=See the exception information for additional details.  Review the contents of the application to ensure that an archive is present for the module.
+
+#{0} is the application name
+#{1} is the descriptor relative path
+#{2} is the module relative path
+#{3} is a code for the module type (WAR, EJB)
+#{4} is the exception message
+error.module.parse.descriptor=CWWKZ0118E: Application {0} encountered a parse error when processing descriptor {1} of module {2} of type {3}: {4}
+error.module.parse.descriptor.explanation=An error occurred while parsing the module deployment descriptor.  The module will not be made available for use.
+error.module.parse.descriptor.useraction=See the exception information for additional details.  Review the contents of the application descriptor to ensure that the contents are valid as XML data.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.class.source=CWWKZ0120E: Application {0} failed to access classes for module {1} of type {2}: {3}
+error.module.class.source.explanation=An internal error occurred while attempting to scan a JAR file for EJB annotations.  The JAR will not be available as an EJB JAR.
+error.module.class.source.useraction=See the exception information for additional details.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is a code for the module type (WAR, EJB)
+#{3} is the exception message
+error.module.annotation.targets=CWWKZ0121E: Application {0} failed to access annotations for module {1} of type {2}: {3}
+error.module.annotation.targets.explanation=An internal error occurred while attempting to scan a JAR file for EJB annotations.  The JAR will not be available as an EJB JAR.
+error.module.annotation.targets.useraction=See the exception information for additional details.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.uri.duplicate=CWWKZ0122W: Application {0} declares multiple modules with URI {1} in META-INF/application.xml.
+error.module.uri.duplicate.explanation=Multiple modules point to the same archive.  Only one module will be made available for use.
+error.module.uri.duplicate.useraction=Review the contents of the application descriptor to ensure that each module points to a unique archive.
+
+#{0} is the application name
+#{1} is the module relative path
+#{2} is the exception message
+error.module.manifest.read.failed=CWWKZ0123E: Application {0} failed to read the META-INF/MANIFEST.MF file for the {1} module. Exception: {2}
+error.module.manifest.read.failed.explanation=While trying to determine if the module is an EJB or an application client module, an error occurred trying to read the META-INF/MANIFEST.MF file. This module will not be treated as an application client module.
+error.module.manifest.read.failed.useraction=See the exception information for additional details. Review the contents of the application to ensure that the META-INF/MANIFEST.MF path is a file and not a directory, and ensure that the MANIFEST.MF file is valid.
+
+#{0} is the application name
+error.no.modules=CWWKZ0124E: Application {0} does not contain any modules.
+error.no.modules.explanation=The application does not declare any modules in the application.xml file, and the application does not contain any module archives.
+error.no.modules.useraction=Add a module archive to the application, and restart the application.
+
+#{0} is the application name
+#{1} is the module relative path
+error.module.manifest.read.no.mainclass=CWWKZ0125E: Application {0} does not contain the Main-Class attribute in the META-INF/MANIFEST.MF file of the {1} module.
+error.module.manifest.read.no.mainclass.explanation=The META-INF/MANIFEST.MF file in the module either does not exist or does not contain the Main-Class attribute. This module will not be treated as an application client module.
+error.module.manifest.read.no.mainclass.useraction=Make sure that the META-INF/MANIFEST.MF file for the application contains the Main-Class attribute.
+
+#{0} is the context root specified in server.xml on the application element
+#{1} is the name of the application where context-root is specified
+warning.context.root.not.used=CWWKZ0126W:  The {0} context root value that is specified on the {1} application has no effect.
+warning.context.root.not.used.explanation=The context-root property is not valid for an enterprise application. The value will not be used for any web modules contained within the enterprise application.
+warning.context.root.not.used.useraction=Remove the context-root property from the application element in the server configuration.
+
+error.module.no.defaultclient=CWWKZ0127E: There are multiple client modules in the application. Provide the default client module name.
+error.module.no.defaultclient.explanation=If there are multiple client modules packaged in the application, provide the client module name to run.
+error.module.no.defaultclient.useraction=Specify the client module to run by providing its name using defaultClientModule attribute in <enterpriseApplication/>.
+
+error.module.dup.client=CWWKZ0128E: There are multiple client modules with the same name {0}.
+error.module.dup.client.explanation=There are multiple client modules and some of them are using the same name.
+error.module.dup.client.useraction=Provide unique names for the client modules in the application.
+
+error.module.client.notfound=CWWKZ0129E: Cannot find the client module {0} in the application.
+error.module.client.notfound.explanation=The specified client module does not exist in the application.
+error.module.client.notfound.useraction=Make sure the client module exists in the application.
+
+#{0} is the application name
+error.client.not.installed=CWWKZ0130E: Could not start application client {0}.
+error.client.not.installed.explanation=An earlier error prevented the application from being installed.
+error.client.not.installed.useraction=Check the location in the application configuration.
+
+#{0} is the application name, {1} is the exception (likely disk space, write permissions, file lock, or some other IO issue.) 
+warning.could.not.expand.application=CWWKZ0131W: Could not expand the application {0} because of the exception {1}.
+warning.could.not.expand.application.explanation=The application could not be expanded to a temporary directory. The application will continue to run but behavior of certain methods that access application files may be affected. 
+warning.could.not.expand.application.useraction=Attempt to resolve the issue in the exception message and either restart the server or update the application. 

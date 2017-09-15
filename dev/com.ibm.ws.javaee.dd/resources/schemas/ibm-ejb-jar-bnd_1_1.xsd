@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:bnd="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified"
+        version="1.1">
+
+        <!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+				Licensed Materials - Property of IBM
+
+				"Restricted Materials of IBM"
+
+				Copyright IBM Corp. 2010 All Rights Reserved.
+
+				US Government Users Restricted Rights - Use, duplication or
+				disclosure restricted by GSA ADP Schedule Contract with
+				IBM Corp.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+        <xsd:include schemaLocation="ibm-common-bnd_1_1.xsd" />
+
+        <!-- ******************************************************* -->
+
+        <xsd:element name="ejb-jar-bnd" type="ejb-jar-bndType">
+                <xsd:annotation>
+                        <xsd:documentation>
+
+                                The root of the ibm-ejb-jar-bnd deployment descriptor.
+
+                        </xsd:documentation>
+                </xsd:annotation>
+
+                <xsd:unique name="unique-ejb-name">
+                	<xsd:selector xpath="bnd:session | bnd:message-driven" />
+                	<xsd:field xpath="@name" />
+                </xsd:unique>
+
+                <xsd:unique name="unique-interceptor-class">
+                	<xsd:selector xpath="bnd:interceptor" />
+                	<xsd:field xpath="@class" />
+                </xsd:unique>
+
+                <xsd:unique name="unique-message-destination-name">
+                	<xsd:selector xpath="bnd:message-destination" />
+                	<xsd:field xpath="@name" />
+                </xsd:unique>
+        </xsd:element>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="ejb-jar-bndType">
+			<xsd:annotation>
+				<xsd:documentation>
+					<![CDATA[
+	The ejb binding descriptor defines binding information for the EJB module
+	which contains it.  It consists of zero or more bindings for beans
+	contained within the module.
+					]]>
+				</xsd:documentation>
+			</xsd:annotation>
+
+                <xsd:sequence>
+                        <xsd:choice minOccurs="0" maxOccurs="unbounded">
+                                <xsd:element name="session" type="sessionType">
+					                <xsd:unique name="unique-session-interface-class">
+                						<xsd:selector xpath="bnd:interface" />
+                						<xsd:field xpath="@class" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-session-ejb-ref-name">
+                						<xsd:selector xpath="bnd:ejb-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-session-resource-ref-name">
+                						<xsd:selector xpath="bnd:resource-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-session-resource-env-ref-name">
+                						<xsd:selector xpath="bnd:resource-env-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-session-message-destination-ref-name">
+                						<xsd:selector xpath="bnd:message-destination-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+                                </xsd:element>
+
+                                <xsd:element name="message-driven" type="message-drivenType">
+					                <xsd:unique name="unique-message-driven-ejb-ref-name">
+                						<xsd:selector xpath="bnd:ejb-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-message-driven-resource-ref-name">
+                						<xsd:selector xpath="bnd:resource-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-message-driven-resource-env-ref-name">
+                						<xsd:selector xpath="bnd:resource-env-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-message-driven-message-destination-ref-name">
+                						<xsd:selector xpath="bnd:message-destination-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+                                </xsd:element>
+
+                                <xsd:element name="interceptor" type="interceptorType">
+					                <xsd:unique name="unique-interceptor-ejb-ref-name">
+                						<xsd:selector xpath="bnd:ejb-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-interceptor-resource-ref-name">
+                						<xsd:selector xpath="bnd:resource-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-interceptor-resource-env-ref-name">
+                						<xsd:selector xpath="bnd:resource-env-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+					                <xsd:unique name="unique-interceptor-message-destination-ref-name">
+                						<xsd:selector xpath="bnd:message-destination-ref" />
+                						<xsd:field xpath="@name" />
+                					</xsd:unique>
+                                </xsd:element>
+
+                                <xsd:element name="message-destination" type="message-destinationType" />
+                                <xsd:element name="data-source" type="data-sourceType" minOccurs="0" maxOccurs="unbounded"/>
+                                <xsd:element name="env-entry" type="env-entryType" minOccurs="0" maxOccurs="unbounded"/>
+                        </xsd:choice>
+                </xsd:sequence>
+                <xsd:attribute name="version" type="xsd:string" fixed="1.1" use="required" />
+                <xsd:attribute name="id" type="xsd:ID"/>
+        </xsd:complexType>
+
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="sessionType">
+        	<xsd:annotation>
+        		<xsd:documentation>
+					<![CDATA[
+	Specifies the binding information for a session bean.  The name attribute
+	identifies the bean to which the binding information applies. 
+	
+	The interface element allows the specification of a unique binding (jndi)
+	name for zero or more business interfaces of the bean.
+	
+	The simple-binding-name is an optional binding name that may be used when only
+	one binding name is needed -- when the bean has zero or one local homes, zero
+	or one remote homes and zero or one business interfaces.  This binding name
+	then applies to all three interfaces (if they exist).
+	
+	The remote-home-binding-name allows a unique binding name to be specified for
+	the remote home interface.
+	
+	The local-home-binding-name allows a unique binding name to be specified for
+	the local home interface.
+	
+	Bindings may also be specified for ejb-refs, ejb-local-ref, resource-refs,
+	resource-env-refs and message-destination-refs.  See the ibm-common-bnd XSD
+	for more details.
+					]]>
+					
+        		</xsd:documentation>
+        	</xsd:annotation>
+                <xsd:sequence>
+                        <xsd:element name="interface" type="interfaceType" minOccurs="0" maxOccurs="unbounded" />
+                        <xsd:group ref="ref-bindingsGroup"/>
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:ID"/>
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+                <xsd:attribute name="simple-binding-name" type="xsd:string" use="optional" />
+                <xsd:attribute name="component-id" type="xsd:string" use="optional" />
+                <xsd:attribute name="remote-home-binding-name" type="xsd:string" use="optional" />
+                <xsd:attribute name="local-home-binding-name" type="xsd:string" use="optional" />
+
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="message-drivenType">
+        <xsd:annotation>
+        	<xsd:documentation>
+				<![CDATA[
+	Specifies the binding information for a message driven bean.  The name
+	attribute identifies the bean to which the binding information applies. 
+
+	The bean can either be bound to a listener port, or to a JCA adapter.
+	
+	Bindings may also be specified for ejb-refs, resource-refs, resource-env-refs
+	and message-destination-refs.  See the ibm-common-bnd XSD for more details.
+	
+				]]>
+        	</xsd:documentation>
+        </xsd:annotation>
+                <xsd:sequence>
+                        <xsd:choice>
+                                <xsd:element name="listener-port" type="listener-portType"/>
+                                <xsd:element name="jca-adapter" type="jca-adapterType"/>
+                        </xsd:choice>
+                        <xsd:group ref="ref-bindingsGroup"/>
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:ID"/>
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="interfaceType">
+        	<xsd:annotation>
+        		<xsd:documentation>
+	Specifies the binding for a session bean business interface.  The class
+	attribute specifies the fully qualified name of the business interface.
+	If no value is specified for the class, this will suggest a no-interface view.
+	The binding-name attribute specifies the binding (jndi) name to be
+	associated with the business interface.
+        		</xsd:documentation>
+        	</xsd:annotation>
+                <xsd:attribute name="id" type="xsd:ID"/>
+                <xsd:attribute name="binding-name" type="xsd:string" use="required" />
+                <xsd:attribute name="class" type="xsd:string" use="required" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="listener-portType">
+        	<xsd:annotation>
+        		<xsd:documentation>
+	Specifies the name of the listener port for a message driven bean.
+        		</xsd:documentation>
+        	</xsd:annotation>
+                <xsd:attribute name="id" type="xsd:ID"/>
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+        <xsd:complexType name="jca-adapterType">
+        	<xsd:annotation>
+        		<xsd:documentation>
+	Specifies the binding for a JCA adapter for a message driven bean.  The
+	required information is the binding (jndi) name for the activation
+	specification, the authentication alias for the activation specification,
+	and the binding name for the destination.
+        		</xsd:documentation>
+        	</xsd:annotation>
+                <xsd:attribute name="id" type="xsd:ID"/>
+                <xsd:attribute name="activation-spec-binding-name" type="xsd:string" use="required" />
+                <xsd:attribute name="activation-spec-auth-alias" type="xsd:string" />
+                <xsd:attribute name="destination-binding-name" type="xsd:string"/>
+        </xsd:complexType>
+
+</xsd:schema>

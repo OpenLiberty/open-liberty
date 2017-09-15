@@ -1,0 +1,2 @@
+The models here are not annotated and generated like all of our other models. I have no idea what the history behind this is, but at this point there
+is a lot of behavior embedded in the implementation that doesn't fit the generation framework. 

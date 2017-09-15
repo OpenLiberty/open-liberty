@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="test.build.common">
+
+	<import file="build-properties.xml" />
+  
+  <!-- TODO This cross-project import is pretty ugly, but it's the price of common scripts. 
+  Hopefully we can consolidate enough it's no longer required. -->
+  <import file="../ant_build/public_imports/standard_imports.xml" />
+
+	<target name="init-tasks" unless="inited-tasks">
+		<property name="inited-tasks" value="true" />
+        <path id="ws-tasks">
+          <!-- jars in this project before those in ant_build/lib -->
+          <fileset dir="../test_build/lib/" includes="*.jar"/>
+        </path> 
+		<taskdef resource="com/ibm/ws/ant/taskdef.properties" classpathref="ws-tasks" loaderref="ws_ldr"/>
+	</target>
+
+  <target name="init-test-tasks" unless="inited-test-tasks"> 
+    <property name="inited-test-tasks" value="true" />
+    <path id="test-buildtasks">
+      <!-- jars in this project before those in ant_build/lib -->
+      <fileset dir="../ant_build/lib/" includes="infra.buildtasks*.jar,jackson*.jar" />
+    </path>
+  	<taskdef resource="com/ibm/aries/componenttest/buildtasks/buildtasks.properties" classpathref="test-buildtasks" loaderref="test-buildtasks_ldr" />
+  </target>
+
+	<target name="post-compile">
+		<!-- SO the class's would of be compiled but now we must ensure the @Runwith tag is added -->			
+		<annotationStripper todir="${classes.dir}" verbose="true">
+    		<fileset dir="${classes.dir}" includes="**/*Test*"/>
+    		<annotation name="~org\.junit\.runner\.RunWith"/>
+ 		</annotationStripper>
+ 		
+ 		<path id="junitPath">
+			<fileset dir="${imports.dir}/../../lib/" includes="junit.jar" />
+ 			<fileset dir="../fattest.simplicity/build/lib/" includes="fattest.simplicity.jar" />
+		</path>
+
+		<annotationAdder todir="${classes.dir}" verbose="true" classpathref="junitPath">
+  			<fileset dir="${classes.dir}" includes="**/*Test*"/>
+    		<annotation name="org.junit.runner.RunWith" value="Lcomponenttest/custom/junit/runner/FATRunner;" />
+   		</annotationAdder>
+				
+		<if if="minimum.java.level.for.test.execution">			
+
+			<iff>
+				<isset property="feature.requiring.minimum.java.level"/>
+					<then>
+						<annotationAdder todir="${classes.dir}" verbose="true" classpathref="junitPath">
+							<fileset dir="${classes.dir}" includes="**/*Test*"/>
+							<annotation name="componenttest.annotation.FeatureRequiresMinimumJavaLevel" javaLevel="${minimum.java.level.for.test.execution}" feature="${feature.requiring.minimum.java.level}"/>
+						</annotationAdder>
+					</then>
+					<else>
+						<annotationAdder todir="${classes.dir}" verbose="true" classpathref="junitPath">
+							<fileset dir="${classes.dir}" includes="**/*Test*"/>
+							<annotation name="componenttest.annotation.MinimumJavaLevel" javaLevel="${minimum.java.level.for.test.execution}" />
+						</annotationAdder>
+					</else>
+			</iff>
+		</if>
+		
+	  </target>
+
+	<!-- This isn't a bundle so needs slightly different packaging (no bnd, no manifest) -->
+	<!-- This section changed so as not to unzip class files from the autoFVT/lib dir.  
+	     This was leading to errors when re-running a component buildandrun -->
+	<target name="package">
+		<mkdir dir="${lib.dir}" />
+		<jar destfile="${lib.dir}/${ant.project.name}.jar">
+		    <fileset dir="${classes.dir}" includes="**/*.class" />
+		</jar>
+	</target>
+	
+	<!-- empty implementation, overridden in component test project build-test.xml -->
+	<target name="addAutoInstallApplications">
+	</target>
+	
+
+	<property name="required.lib.dir" value="${basedir}/build/required-libs" />
+
+	<!-- empty implementation, overridden in component test project build-test.xml -->
+	<target name="addRequiredLibraries">
+	</target>
+
+    <!-- These are not user defined bundles, but are test bundles inserted into wlp/lib-->
+    <property name="required.bundles.dir" value="${basedir}/build/required-bundles" />
+
+    <!-- empty implementation, overridden in component test project build-test.xml -->
+    <target name="addRequiredBundles">
+    </target>
+
+	<property name="required.files.dir" value="${basedir}/build/required-files" />
+	
+	<!-- empty implementation, overridden in component test project build-test.xml
+	     Use this target to add any required files to the autoFVT.zip
+	     Note any files under publish/files are already published and do not need
+	     to be added here. -->
+	<target name="addRequiredFiles">
+	</target>
+	
+	
+	<target name="installVerificationResources">
+        <dirset id="serverlist.dir" dir="${bucket.publish.dir}/servers" erroronmissingdir="false">
+            <!-- Top level folders only -->
+            <include name="*" />
+        </dirset>
+
+        <!-- copy exemptServersList to each server directory -->
+        <foreach param="server.dir" in="serverlist.dir">
+            <copy todir="${server.dir}">
+	           <fileset dir="../ant_build/resources/configuration" includes="exemptServersList.txt"/>
+               <fileset dir="../ant_build/resources/configuration" includes="java2SecurityExemptServersList.txt"/>
+            </copy>      
+        </foreach>
+	           	
+	    <dirset id="clientlist.dir" dir="${bucket.publish.dir}/clients" erroronmissingdir="false">
+	        <!-- Top level folders only -->
+	        <include name="*" />
+	    </dirset>
+
+	    <!-- copy exemptClientsList to each client directory -->
+	    <foreach param="client.dir" in="clientlist.dir">
+	         <copy todir="${client.dir}">
+	               <fileset dir="../ant_build/resources/configuration" includes="exemptClientsList.txt"/>
+	               <fileset dir="../ant_build/resources/configuration" includes="java2SecurityExemptClientsList.txt"/>
+	         </copy>      
+	     </foreach>
+	           	
+	           	
+	</target>
+	
+
+  	
+	<!--Clean target-->	
+	<macrodef name="deleteDropins">
+		<attribute name="fileset"/>
+		<sequential>
+			<foreach param="jazzignore.file" in="@{fileset}">
+				<local name="server.path" /> 
+				<local name="delete.dropins" /> 
+				<local name="delete.apps" /> 
+				<property name="server.path" location="${jazzignore.file}/.."/>				
+				<loadfile srcfile="${jazzignore.file}" property="delete.dropins" failonerror="false">
+					<filterchain>
+						<containsregex pattern="\t*\s*\{dropins\}\s*\\*"/>
+					</filterchain>
+				</loadfile>
+				<if if="delete.dropins">
+					<delete dir="${server.path}/dropins"/> 
+				</if>
+				<loadfile srcfile="${jazzignore.file}" property="delete.apps" failonerror="false">
+					<filterchain>
+						<containsregex pattern="\t*\s*\{apps\}\s*\\*"/>
+					</filterchain>
+				</loadfile>
+				<if if="delete.apps">
+					<delete dir="${server.path}/apps"/> 
+				</if>		
+				<fileset dir="${bucket.publish.dir}" includes="servers/*"/>
+			</foreach>
+		</sequential>
+	</macrodef>
+	
+	<target name="clean">
+		<delete dir="${build.dir}" />
+		<delete dir="${basedir}/autoFVT" />
+	  <!-- Clean up folders we used to use, as well
+	       (These can get removed again after a while) -->
+	    <delete dir="${basedir}/artifacts" failonerror="false"/>
+	    <delete dir="${basedir}/work" failonerror="false"/>
+	    <delete dir="${basedir}/../test_build/artifacts" failonerror="false"/>
+	    <delete dir="${basedir}/../test_build/work" failonerror="false"/>
+		<available file="${bucket.publish.dir}/servers" type="dir" property="publish.servers.available"/>
+		<if if="publish.servers.available">
+			<available file=".jazzignore" property="jazzignore.available">
+				<filepath>
+					<fileset dir="${bucket.publish.dir}/servers" includes="**/.jazzignore"/>
+				</filepath>
+			</available>
+		</if>
+		<if if="jazzignore.available">	
+			<fileset id ="jazzignoreFileset" dir="${bucket.publish.dir}/servers" includes="**/.jazzignore"/>
+			<deleteDropins fileset="jazzignoreFileset"/>					
+		</if>
+	</target>
+
+  <!-- If your tests create their own custom elements, then you will need to override this
+       target in your build-test.xml and either do the validation yourself or just no-op to
+       avoid failing a check for an element that only exists in your test bucket. -->
+  <target name="validate-server-xmls">
+    <property name="validate.server.xsd" location="${liberty.dir}/usr/servers/fatServer.xsd"/>
+    <mkdir dir="${liberty.dir}/usr/servers" />
+  	<delete file="${validate.server.xsd}"/>
+        <echo>Generating ${validate.server.xsd}</echo>
+        <java jar="${liberty.dir}/bin/tools/ws-schemagen.jar" fork="true" failonerror="true">
+          <arg value="--outputVersion=2"/>
+          <arg value="${validate.server.xsd}"/>
+        </java>
+
+    <!-- Define an empty validate.server.xmls if not set by the bucket. -->
+    <iff>
+      <not>
+        <isreference refid="validate.server.xmls"/>
+      </not>
+      <then>
+        <patternset id="validate.server.xmls"/>
+      </then>
+    </iff>
+
+    <fileset id="validate.server.xmls.files" dir="${bucket.publish.dir}" erroronmissingdir="false">
+      <include name="servers/*/server.xml"/>
+      <patternset refid="validate.server.xmls"/>
+    </fileset>
+
+    <iff>
+      <resourcecount refid="validate.server.xmls.files" when="gt" count="0"/>
+      <then>
+        <resourcecount property="validate.server.xmls.files.count" refid="validate.server.xmls.files"/>
+        <echo>Validating ${validate.server.xmls.files.count} server.xml against ${validate.server.xsd}</echo>
+
+        <condition property="validate.server.xmls.rethrow" value="false" else="true">
+          <istrue value="${is.running.automated.build}"/>
+        </condition>
+
+        <mkdir dir="${basedir}/build"/>
+        <property name="validate.server.xmls.log" value="${basedir}/build/validate.server.xmls.log"/>
+
+        <try rethrow="${validate.server.xmls.rethrow}">
+          <sequential>
+            <record name="${validate.server.xmls.log}" action="start"/>
+            <schemavalidate nonamespacefile="${validate.server.xsd}" failonerror="true">
+              <fileset refid="validate.server.xmls.files"/>
+            </schemavalidate>
+            <record name="${validate.server.xmls.log}" action="stop"/>
+          </sequential>
+          <catch>
+            <record name="${validate.server.xmls.log}" action="stop"/>
+            <iff>
+              <istrue value="${is.running.automated.build}"/>
+              <then>
+                <loadfile property="validate.server.xmls.error" srcfile="${validate.server.xmls.log}"/>
+                <publishAsJunitFailure claimedTestClassName="${ant.project.name} server.xml XSD validation error"
+                                       claimedTestCaseName="${ant.project.name} server.xml XSD validation error"
+                                       summary="XSD validation of a server.xml failed.  Create a validate.server.xmls patternset if this file should be excluded."
+                                       failureText="${validate.server.xmls.error}"
+                                       tempFile="${basedir}/build/validate.server.xmls.xml"
+                                       encoding="ISO-8859-1"/>
+              </then>
+              <else>
+              	<echo level="error"/>
+              	<echo level="error">The FAT server.xml appears to contain an unsupported configuration - it can not be validated against the current schema.</echo>
+                <echo level="error"/>
+                <echo level="error">The cached schema file used to validate test servers is here:</echo>
+                <echo level="error">${validate.server.xsd}</echo>
+                <echo level="error"/>
+              	<echo level="error">Take one of two actions. Either:</echo>
+                <echo level="error">1. Correct the server.xml - look for typos or other errors in the configuration</echo>
+                <echo level="error">2. If the configuration should not be validated against the schema, define a pattern set to exclude the file:</echo>
+              	<echo level="error" message="&lt;patternset id=&quot;validate.server.xmls&quot;&gt;" />
+              	<echo level="error" message="&#x0009;&lt;exclude name=&quot;**/servers/serverName/server.xml&quot;/&gt;" />
+              	<echo level="error" message="&lt;/patternset&gt;" />
+              	<echo level="error"/>
+                <echo level="error">For more information about test server.xml validation:</echo>
+                <echo level="error">http://was.pok.ibm.com/xwiki/bin/view/Liberty/Test-FAT#HserverxmlXSDvalidation</echo>
+              </else>
+            </iff>
+          </catch>
+        </try>
+      </then>
+    </iff>
+  </target>
+  <target name="setflag.packageThisFATSource">
+		<echo>Additions for SLE delivery: work item 194657 (Package Web Sockets and other FATs for 9003 - automation)</echo>
+
+		<!-- For debugging only, normally preset -->
+		<property name="LibertyFATSource.zip" value="./build/LibertyFATSource.zip" />
+
+		<property name="delivery.set" value="" />
+		<!-- default "" means include all with ./delivery.sets -->
+		<iff>
+			<and>
+				<!-- This is a little ugly because the file names are hard coded, but we do not want to include 
+				     FAT projects if they are already included for BVT or Unit Tests -->
+				<not><available file="${basedir}/build-unittest.xml" /></not>
+				<not><available file="${basedir}/build-bvt.xml" /></not>
+				<available file="${basedir}/delivery.sets" />
+				<resourcecontains resource="${basedir}/delivery.sets" substring="${delivery.set}" casesensitive="true" />
+			</and>
+			<then>
+				<echo>... Flag: deliver ${basedir} for ${LibertyFATSource.zip}</echo>
+				<touch file="${basedir}/build/packageThisFATSource" mkdirs="true" />
+				<!-- Set flag, picked up in liberty-fat.xml -->
+			</then>
+			<else>
+				<echo>... Flag: SKIP ${basedir} for ${LibertyBVTSource.zip}</echo>
+				<delete file="${basedir}/build/packageThisFATSource" quiet="true" />
+				<!-- Clear flag, picked up in liberty-fat.xml -->
+			</else>
+		</iff>
+  </target>
+</project>

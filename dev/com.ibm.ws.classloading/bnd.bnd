@@ -1,0 +1,67 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.1
+
+Bundle-Name: WAS Class Loading Service
+Bundle-SymbolicName: com.ibm.ws.classloading
+Bundle-Description: WAS OSGi Gateway Class Loading Service
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+  com.ibm.ws.classloading;provide:=true, \
+  com.ibm.ws.classloading.serializable,\
+  com.ibm.wsspi.classloading;provide:=true, \
+  com.ibm.wsspi.library;provide:=true
+
+ Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+# catch any packages not explicitly exported and make sure they are private
+Private-Package: \
+  com.ibm.ws.classloading.*, \
+  com.ibm.ws.library*
+
+-dsannotations: \
+  com.ibm.ws.classloading.internal.ApplicationClassloadingServiceFactory,\
+  com.ibm.ws.classloading.internal.ApplicationClassloadingServiceImpl,\
+  com.ibm.ws.classloading.internal.ClassLoadingButlerAdapter,\
+  com.ibm.ws.classloading.internal.ClassLoadingServiceImpl,\
+  com.ibm.ws.classloading.internal.NativeLibraryAdapter,\
+  com.ibm.ws.classloading.internal.util.ClassRedefiner,\
+  com.ibm.ws.library.internal.SharedLibraryFactory
+
+instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.artifact.url;version=latest,\
+	com.ibm.ws.kernel.security.thread,\
+	com.ibm.ws.kernel.metatype.helper,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.org.eclipse.equinox.region,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.feature,\
+	com.ibm.ws.logging,\
+	com.ibm.ws.dynamic.bundle;version=latest,\
+	com.ibm.ws.kernel.equinox.module,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

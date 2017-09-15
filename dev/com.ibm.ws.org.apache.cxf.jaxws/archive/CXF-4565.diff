@@ -1,0 +1,23 @@
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handler/HandlerChainInvoker.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handler/HandlerChainInvoker.java	(revision 1383800)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handler/HandlerChainInvoker.java	(working copy)
+@@ -278,8 +278,16 @@
+ 
+         //The fault is raised from previous handlers, in this case, we only invoke handleFault
+         //if the fault is a ProtocolException
+-        if (fault != null && !(fault instanceof ProtocolException)) {
+-            return true;
++        if (fault != null) {
++            if (!(fault instanceof ProtocolException)) {
++                return true;
++            } else if (!responseExpected && !messageDirectionReversed) {
++                // According to jsr224 9.3.2.1,
++                // If throw ProtocolException or a subclass:
++                // No response, normal message processing stops, close is called on each previously invoked handler
++                // in the chain, the exception is dispatched (see section 9.1.2.3).
++                return true;
++            }
+         }
+ 
+         if (LOG.isLoggable(Level.FINE)) {

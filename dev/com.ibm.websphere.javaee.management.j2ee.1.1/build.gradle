@@ -1,0 +1,25 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+task rmic(type: Exec, dependsOn: compileJava) {
+	String rmicClasspath = compileJava.destinationDir
+    sourceSets.main.compileClasspath.each {
+      rmicClasspath += System.properties['path.separator'] + it
+    }  
+    println "-d " + compileJava.destinationDir
+    println "-cp " + rmicClasspath
+	executable "rmic"
+	args "-iiop",  "-d", compileJava.destinationDir, "-classpath", rmicClasspath, "javax.management.j2ee.Management", "javax.management.j2ee.ManagementHome"
+}
+
+jar {
+    dependsOn rmic
+}

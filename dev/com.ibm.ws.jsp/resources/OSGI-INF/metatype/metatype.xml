@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+  
+    <OCD description="%jsp.desc" name="%jsp.name" id="com.ibm.ws.jsp.2.2" ibm:alias="jspEngine">
+        <AD description="%disableJspRuntimeCompilation" name="%disableJspRuntimeCompilation.name"
+            id="disableJspRuntimeCompilation" required="false" type="Boolean" default="false"/>
+        <AD description="%extendedDocumentRoot" name="%extendedDocumentRoot.name"
+            id="extendedDocumentRoot" required="false" type="String" default="" /> 
+        <AD description="%jdkSourceLevel" name="%jdkSourceLevel.name"
+            id="jdkSourceLevel" required="false" type="String">
+            <Option label="13" value="13"/>
+            <Option label="14" value="14"/>
+            <Option label="15" value="15"/>
+            <Option label="16" value="16"/>
+            <Option label="17" value="17"/>
+            <Option label="18" value="18"/>
+        </AD> 
+        <AD description="%keepGenerated" name="%keepGenerated.name"
+            id="keepGenerated" required="false" type="Boolean" default="false"/>
+        <AD description="%useInMemory" name="%useInMemory.name"
+            id="useInMemory" required="false" type="Boolean" default="false" />
+        <AD description="%recompileJspOnRestart" name="%recompileJspOnRestart.name"
+            id="recompileJspOnRestart" required="false" type="Boolean" default="false"/>
+        <AD description="%useImplicitTagLibs" name="%useImplicitTagLibs.name"
+            id="useImplicitTagLibs" required="false" type="Boolean" default="true" />
+        <AD description="%disableResourceInjection" name="%disableResourceInjection.name"
+            id="disableResourceInjection" required="false" type="Boolean" default="false" />
+        <AD description="%prepareJSPs" name="%prepareJSPs.name"
+            id="prepareJSPs" required="false" type="Integer"/> <!--null default-->
+        <AD description="%scratchdir" name="%scratchdir.name"
+            id="scratchdir" required="false" type="String"/> <!--null default-->
+        <AD description="%useJDKCompiler" name="%useJDKCompiler.name"
+            id="useJDKCompiler" required="false" type="Boolean"/> <!--null default-->
+        <!--  needs translation post-8559 -->
+        <AD id="osgiAppsCanProvideJSTL" name="internal" description="internal use only"
+            type="Boolean" default="false"/>
+            
+    </OCD>
+  
+    <Designate pid="com.ibm.ws.jsp.2.2">
+        <Object ocdref="com.ibm.ws.jsp.2.2"/>
+    </Designate>
+    
+</metatype:MetaData>

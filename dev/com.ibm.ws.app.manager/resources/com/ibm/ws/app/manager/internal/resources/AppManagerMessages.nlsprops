@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager/resources/com/ibm/ws/app/manager/internal/resources/AppManagerMessages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ App Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: app manager
+#0051-0099: app manager monitor and update monitor
+#0101-0200: Project: com.ibm.ws.app.manager.war
+#0301-0400: Project: com.ibm.ws.app.manager.eba
+# -------------------------------------------------------------------------------------------------
+
+#{0} is application name
+APPLICATION_START_SUCCESSFUL=CWWKZ0001I: Application {0} started in {1} seconds.
+APPLICATION_START_SUCCESSFUL.explanation=The server has started the application successfully.
+APPLICATION_START_SUCCESSFUL.useraction=No action is required.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_START_FAILED=CWWKZ0002E: An exception occurred while starting the application {0}. The exception message was: {1}
+APPLICATION_START_FAILED.explanation=The server could not start the application.
+APPLICATION_START_FAILED.useraction=Read the exception message for information.
+
+#{0} is application name
+APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: The application {0} updated in {1} seconds.
+APPLICATION_UPDATE_SUCCESSFUL.explanation=The server has updated the application successfully.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=No action is required.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_UPDATE_FAILED=CWWKZ0004E: An exception occurred while starting the application {0}. The exception message was: {1}
+APPLICATION_UPDATE_FAILED.explanation=The server could not update the application.
+APPLICATION_UPDATE_FAILED.useraction=Read the exception message for further information.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+NO_APPLICATION_HANDLER=CWWKZ0005E: The server is not configured to handle the resource at location {0}.
+NO_APPLICATION_HANDLER.explanation=The server is not currently configured with all the required features for resources of this type, so the resource could not be started.
+NO_APPLICATION_HANDLER.useraction=Modify the server configuration to include all the features that are required to support this type of resource.
+
+#{0) is directory path
+#{1} is the application name
+CANNOT_CREATE_DIRECTORY=CWWKZ0006E: The server could not create a download location at {0} for the {1} application.
+CANNOT_CREATE_DIRECTORY.explanation=When trying to download an application to install, the server could not create the download directory.
+CANNOT_CREATE_DIRECTORY.useraction=Ensure that there is enough disk space for the download.
+
+#{0} is url
+#{1} is error message
+DOWNLOAD_EXCEPTION_ENCOUNTERED=CWWKZ0007W: An exception occurred while downloading the file from {0}. The exception message was: {1}
+DOWNLOAD_EXCEPTION_ENCOUNTERED.explanation=The server could not download the application.
+DOWNLOAD_EXCEPTION_ENCOUNTERED.useraction=If you intended the server to download the application, check that the file is available for download.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
+LOCATION_SERVICE_NOT_FOUND=CWWKZ0008E: An internal error has occurred. The system could not get the location service that is required to resolve file locations.
+LOCATION_SERVICE_NOT_FOUND.explanation=CMSG0001
+LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_STOPPED=CWWKZ0009I: The application {0} has stopped successfully.
+APPLICATION_STOPPED.explanation=The server has stopped the application successfully.
+APPLICATION_STOPPED.useraction=No action is required.
+
+#{0} is application name
+#{1} is excaption message
+APPLICATION_STOP_FAILED=CWWKZ0010E: An exception occurred while stopping the application {0}. The exception message was: {1}
+APPLICATION_STOP_FAILED.explanation=The server could not stop the application.
+APPLICATION_STOP_FAILED.useraction=Ensure that the application is in a state where it can be stopped.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#{0} is file name
+#{1} is exception message
+FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: An exception occurred while searching for the file {0}. The exception message was: {1}
+FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
+FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_NOT_STARTED=CWWKZ0012I: The application {0} was not started.
+APPLICATION_NOT_STARTED.explanation=The application could not be started because of earlier errors. 
+APPLICATION_NOT_STARTED.useraction=Check the application configuration and check the logs for errors during the application start.
+
+#{0} the application name
+DUPLICATE_APPLICATION_NAME=CWWKZ0013E: It is not possible to start two applications called {0}.
+DUPLICATE_APPLICATION_NAME.explanation=The application name must be unique.  This might be because two applications have been configured to have the same name, or a single application has been deployed both by configuration in the server.xml file and by putting the application in the dropins directory.
+DUPLICATE_APPLICATION_NAME.useraction=If two applications have the same name, remove or rename one of the applications. If a single application has been deployed in two different ways, change the configuration so that only one deployment method is used.
+
+#{0} the application name
+#{1} the application location that cannot be found
+APPLICATION_NOT_FOUND=CWWKZ0014W: The application {0} could not be started as it could not be found at location {1}.
+APPLICATION_NOT_FOUND.explanation=When trying to start the application, the server could not find the application at the specified location (or relative locations if it was a relative path).
+APPLICATION_NOT_FOUND.useraction=Check that the location defined is correct for the application.
+
+APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: An application has been configured with no location or name.
+APPLICATION_NO_LOCATION_NO_NAME.explanation=An application has been configured without specifying a location or a name.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Update the configuration to add a location.
+
+APPLICATION_NO_LOCATION=CWWKZ0016E: The application {0} has not been configured with a location.
+APPLICATION_NO_LOCATION.explanation=An application has been configured without specifying a location.
+APPLICATION_NO_LOCATION.useraction=Update the configuration to add a location.
+
+APPLICATION_NO_TYPE=CWWKZ0017E: It was not possible to infer the application type for application {0} from the location {1}.
+APPLICATION_NO_TYPE.explanation=An application was configured without specifying a type. The type could not be determined from the location.
+APPLICATION_NO_TYPE.useraction=Update the configuration to add a type.
+
+STARTING_APPLICATION=CWWKZ0018I: Starting application {0}.
+STARTING_APPLICATION.explanation=The application is being started.
+STARTING_APPLICATION.useraction=No action is required.
+
+PARTIAL_START=CWWKZ0019I: Application {0} partly started in {1} seconds. The server will continue to start the application in the background.
+PARTIAL_START.explanation=The whole application could not start. This might happen with an ear containing two wars where only one war will start.
+PARTIAL_START.useraction=Resolve the problem with the part of the application that could not start and redeploy the application.
+
+#{0} is application name
+APPLICATION_NOT_UPDATED=CWWKZ0020I: Application {0} not updated.
+APPLICATION_NOT_UPDATED.explanation=The application could not be started because of earlier errors. 
+APPLICATION_NOT_UPDATED.useraction=Check the application configuration and check the logs for errors during the application start.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+APPLICATION_AT_LOCATION_NOT_VALID=CWWKZ0021E: The server is not configured to handle the resource at location {0}.
+APPLICATION_AT_LOCATION_NOT_VALID.explanation=The server is not currently configured with all the required features for resources of this type, so the resource could not be started.
+APPLICATION_AT_LOCATION_NOT_VALID.useraction=Modify the server configuration to include all the features that are required to support this type of resource.
+
+APPLICATION_SLOW_STARTUP=CWWKZ0022W: Application {0} has not started in {1} seconds.
+APPLICATION_SLOW_STARTUP.explanation=The application did not start in the expected time. This could be because the server is overloaded or the application is large. If the application is starting as part of server startup, the server startup will finish without waiting for the application to start.
+APPLICATION_SLOW_STARTUP.useraction=If the application takes a long time to start then no action is required; otherwise check the server logs to see if other messages indicate a cause.
+
+#{0} is application name
+MONITOR_APP_STOP_FAIL=CWWKZ0053E: An exception occurred while trying to stop the {0} application automatically.
+MONITOR_APP_STOP_FAIL.explanation=The application monitor could not find the application running on the server.
+MONITOR_APP_STOP_FAIL.useraction=No action is required.
+
+#{0} is application name
+INVALID_FILE_NAME=CWWKZ0054E: The application monitoring service could not find a suitable name for the {0} application.
+INVALID_FILE_NAME.explanation=The application monitoring service uses the file name, without the extension, to generate the application name. The application monitoring service could not determine an application name after the extension was removed from the file name.
+INVALID_FILE_NAME.useraction=Ensure that the file name for the application does not start with a period (.) and has a name before the file extension.
+
+#{0} is application name
+UNABLE_TO_DETERMINE_APPLICATION_TYPE=CWWKZ0055E: The application monitoring service could not determine the type of the {0} application.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.explanation=The application monitoring service could not determine the type of the application from either its file extension or parent directory.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Ensure that the file for the application either has an file extension that identifies the application type, or is under a directory whose name identifies the application type.
+
+#{0} is application name
+MONITOR_APP_START_FAIL=CWWKZ0056E: An exception occurred while trying to automatically start the {0} application.
+MONITOR_APP_START_FAIL.explanation=The application monitor could not start the application.
+MONITOR_APP_START_FAIL.useraction=No action is required.
+
+#{0} is file name
+#{1} is line number
+#{2} is the line which is broken
+MONITOR_INVALID_CACHE_FILE_ENTRY=CWWKZ0057E: When reading the cached list of started applications from the application monitor ({0}), line number {1} was not valid. The line was: {2}.
+MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=The application monitor could not read the list of all started applications.
+MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Start the server with a cold start.
+
+#{0} is the start time in seconds
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitoring {0} for applications. 
+APPLICATION_MONITOR_STARTED.explanation=The server is monitoring a directory for applications to be deployed.
+APPLICATION_MONITOR_STARTED.useraction=No action is required.
+
+#{0} is application name
+#{1} is application location
+INVALID_DELETE_OF_APPLICATION=CWWKZ0059E: The {0} application installed from {1} has been deleted while it is still configured.
+INVALID_DELETE_OF_APPLICATION.explanation=An application that is currently configured in the server.xml file has been deleted.
+INVALID_DELETE_OF_APPLICATION.useraction=If the deletion was intentional, remove the application configuration from the server.xml file.
+
+#{0} is the location of the directory we should have removed, but couldn't.
+MONITOR_DIR_CLEANUP_FAIL=CWWKZ0060E: The server could not clean up the old monitored directory at {0}.
+MONITOR_DIR_CLEANUP_FAIL.explanation=The old directory could not be removed even though it is no longer in use.
+MONITOR_DIR_CLEANUP_FAIL.useraction=If the old directory is no longer needed, remove it. If it is still needed no action is required.
+
+#{0} is application name
+APPLICATION_MONITORING_FAIL=CWWKZ0060W: Unable to monitor the {0} application.
+APPLICATION_MONITORING_FAIL.explanation=An application was installed but monitoring was not started on it so if a file is updated within the application the change will not be detected by the server. 
+APPLICATION_MONITORING_FAIL.useraction=When updating files in this application the application will need to be uninstalled and re-installed into the server.
+
+APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Application {0} at location {1} is inside the monitored directory {2}. The application element will be ignored.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=An application element in the server configuration has defined the location of the application to be inside the directory that is monitored for applications. As a result the application element will be ignored, and the application will be started using the contents of the monitored directory if the application is present in that the monitored directory.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Either correct the application element or change the location of the monitored directory.
+
+APPLICATION_UPDATED=CWWKZ0062I: The {0} application has been updated, but not restarted.
+APPLICATION_UPDATED.explanation=A minor change has occurred in the specified application, and the change has been deemed minor enough that there is no need to restart the application.
+APPLICATION_UPDATED.useraction=No action is required.

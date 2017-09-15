@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="internal use only" name="internal" 
+         id="com.ibm.ws.transport.iiop.spi.SubsystemFactory">
+
+<!--         <AD name="internal" description="internal use only"
+            id="id" required="true" type="String" default="subsystemFactory"/>
+ -->
+        <AD name="internal" description="internal use only"
+         id="type" required="true" type="String" default=""/>
+
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.transport.iiop.spi.SubsystemFactory">
+        <Object ocdref="com.ibm.ws.transport.iiop.spi.SubsystemFactory"/>
+    </Designate>
+   
+    <OCD description="%orbWrapper.desc" name="%orbWrapper.name" 
+         id="com.ibm.ws.transport.iiop.internal.ORBWrapper" ibm:alias="orb">
+
+        <AD name="internal" description="internal use only"
+            id="ComponentFactory.target" required="true" type="String"
+            ibm:final="true" default="(component.factory=com.ibm.ws.transport.iiop.internal.ORBWrapperInternal)" />
+
+        <AD name="%orbWrapper.nameService" description="%orbWrapper.nameService.desc"
+            id="nameService" required="false" type="String" default="corbaname::localhost:2809" />
+            
+        <AD id="iiopEndpoint" name="%orbWrapper.iiopEndpoint" description="%orbWrapper.iiopEndpoint.desc" cardinality="100"
+            required="false" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl" default="defaultIiopEndpoint"/>
+            
+        <AD id="IiopEndpoint.target" name="internal" description="internal use only"
+            required="false" type="String" default="${servicePidOrFilter(iiopEndpoint)}"/>
+
+       <AD name="internal" description="internal use only"
+            id="clientPolicy" required="false" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.AbstractClientPolicy" ibm:flat="true"/>
+
+        <AD name="internal" description="internal use only"
+            id="serverPolicy" required="false" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.AbstractServerPolicy" ibm:flat="true"/>
+
+<!--  since we only have one at the moment, just hardcode the type rather than introducing an abstract type and extensions that don't work yet -->              
+         <AD name="internal" description="internal use only"
+            id="adapterActivator" required="true" type="String" cardinality="1"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.internal.NamingServiceAdapterActivator" default="defaultNamingServiceAdapterActivator"/>
+
+        <AD name="internal" description="internal use only"
+            id="AdapterActivatorOp.target" required="false" type="String"
+            ibm:final="true" default="(service.pid=${adapterActivator})" />
+
+         <AD id="AdapterActivatorOp.cardinality.minimum" name="internal"  description="internal use only" 
+              type="String" required="true" default="${count(adapterActivator)}"/>
+
+         <AD name="internal" description="internal use only"
+            id="subsystemFactory" required="true" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.spi.SubsystemFactory" default="*" ibm:final="true"/> 
+
+         <AD id="SubsystemFactory.cardinality.minimum" name="internal"  description="internal use only" 
+              type="String" required="true" default="${count(subsystemFactory)}"/>
+
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.transport.iiop.internal.ORBWrapper">
+        <Object ocdref="com.ibm.ws.transport.iiop.internal.ORBWrapper"/>
+    </Designate>
+    
+    <OCD description="internal use only" name="internal" 
+         id="com.ibm.ws.transport.iiop.AbstractClientPolicy">
+
+         <AD name="internal" description="internal use only"
+            id="id" required="false" type="String"/>
+            
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.transport.iiop.AbstractClientPolicy">
+        <Object ocdref="com.ibm.ws.transport.iiop.AbstractClientPolicy"/>
+    </Designate>
+    
+    
+    
+</metatype:MetaData>

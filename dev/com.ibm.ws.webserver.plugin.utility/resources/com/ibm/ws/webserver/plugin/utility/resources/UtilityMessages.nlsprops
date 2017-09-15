@@ -1,0 +1,180 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webserver.plugin.utility/resources/com/ibm/ws/webserver/plugin/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+error=Error: {0}
+error.inputConsoleNotAvailable=Input console is not available.
+error.missingIO=Error, missing I/O device: {0}.
+
+serverNotFound=Specified server {0} could not be found at location {1}
+jmx.local.connector.file.notfound=Could not find the JMX local connector address file at {0}
+jmx.local.connector.file.invalid=Could not read the JMX local connector address file at {0}
+
+#------------------------------------------------------------------------------
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Too many arguments.
+insufficientArgs=Insufficient arguments.
+missingServerName=The target for the task was not specified.
+invalidArg=Invalid argument {0}.
+missingArg=Missing argument {0}.
+missingValue=Missing value for argument {0}.
+
+#------------------------------------------------------------------------------
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Usage: {0} action [options]
+task.unknown=Unknown task: {0}
+
+common.encodeError=\
+\nUnable to encode the password for argument: {0}
+
+common.hostError=\
+\nThe specified host name does not appear to be valid: {0}\
+\nVerify the host name is correct and the system has the network connection.
+
+common.portError=\
+\nThe specified port {0} could not be reached. Verify if the port is correct.
+
+common.connectionError=\
+\nUnable to complete the operation.\
+\nError: {0}
+
+#------------------------------------------------------------------------------
+# Messages for get and generate operations
+#------------------------------------------------------------------------------
+
+generateWebServerPluginTask.abort=\
+\nStopping...
+
+generateWebServerPluginTask.cleanupFail=\
+\nError cleaning up the generated files. Unable to delete {0}\
+\nRemove the file manually, check the file permissions, and try again.
+
+generateWebServerPluginTask.complete.collective=\
+\nThe generation of the webserver plugin configuration file was successful for the target collective controller.
+
+generateWebServerPluginTask.fail.collective=\
+\nThe generation of the webserver plugin configuration file failed for the target collective controller.\
+\nAnalyze the logs of the target collective controller to diagnose the problem.
+
+generateWebServerPluginTask.start.server.local=\
+\nThe local target server {0} will be used to generate the webserver plugin configuration file.
+
+generateWebServerPluginTask.start.server.remote=\
+\nThe remote target server {0} will be used to generate the webserver plugin configuration file.
+
+generateWebServerPluginTask.complete.server=\
+\nThe generation of the webserver plugin configuration file was successful for the target server.
+
+generateWebServerPluginTask.fail.server=\
+\nThe generation of the webserver plugin configuration file failed for the target server.\
+\nAnalyze the logs of the target server to diagnose the problem.
+
+generateWebServerPluginTask.notEnabled=\
+\nCollective controller feature is not enabled. Enable the feature and try the\
+\ncommand again.
+
+generateWebServerPluginTask.start.server=\
+\nStarting the server {0} as it is currently not running.
+
+generateWebServerPluginTask.stop.server=\
+\nStopping the server {0} as its initial status was stopped.
+
+generateWebServerPluginTask.server.started=\
+\nServer {0} started successfully.
+
+generateWebServerPluginTask.server.not.started=\
+\nServer {0} could not be started.
+
+generateWebServerPluginTask.server.plugin=\
+Generating the plugin configuration file from the WebSphere Liberty server.
+
+generateWebServerPluginTask.target.directory.not.exists=\
+\nThe directory specified for the --targetPath: {0} does not exist.
+
+generateWebServerPluginTask.server.plugin.generated=\
+\nPlugin file is generated at the location {0} on the server.
+
+generateWebServerPluginTask.complete.next.step=\
+\nCopy the plugin configuration file to the directory specified in the\
+\nWebSpherePluginConfig directive in the IBM HTTP Server httpd.conf file.
+
+#------------------------------------------------------------------------------
+# Messages for merge operation
+#------------------------------------------------------------------------------
+
+MergePluginFilesTask.merging.plugin.dir=\
+\nMerging the plugin files with the pattern *plugin-cfg*.xml from the directory {0}. 
+
+MergePluginFilesTask.merging.plugin.list=\
+\nMerging the provided list of plugin files.
+
+MergePluginFilesTask.merging.plugin.file.not.exists=\
+\nThe file {0} does not exist. Check whether the file exists and is a valid\n\
+plugin configuration file.
+
+MergePluginFilesTask.merging.plugin.file.is.directory=\
+\nThe file {0} is a directory. Directories and normal files cannot be\n\
+mixed while merging.
+
+MergePluginFilesTask.merging.plugin.targetdir.not.exists=\
+\nThe directory {0}, where the merged configuration file should be generated\n\
+does not exist.
+
+MergePluginFilesTask.merging.plugin.source.dir.not.exists=\
+\nThe source directory {0} does not exist.
+
+MergePluginFilesTask.merging.plugin.source.file.not.directory=\
+\nThe source {0} is not a directory.
+
+MergePluginFilesTask.merging.plugin.source.file.selected=\
+\nThe file {0} is selected for the merging. 
+
+MergePluginFilesTask.merging.plugin.target.file.generating=\
+\nGenerating the merged configuration file at {0}.
+
+MergePluginFilesTask.merging.plugin.target.file.generated=\
+\nGenerated the merged configuration file successfully.
+
+MergePluginFilesTask.merging.plugin.insufficent.number.of.source.files=\
+\nProvide at least two plug-in configuration files to do the merge.
+
+#------------------------------------------------------------------------------
+# Messages for pluginUtility generate option 
+#------------------------------------------------------------------------------
+# reading in a password
+#-----------------------------------------
+password.enterText=Enter {0}:
+password.reenterText=Re-enter {0}:
+password.readError=Error reading in password.
+password.entriesDidNotMatch=Passwords did not match.
+
+#-----------------------------------------
+# reading in a user 
+#-----------------------------------------
+user.enterText=Enter {0}:
+user.readError=Error reading in user.
+
+#----------------------------------------- 
+# Missing Argument Messages 
+#-----------------------------------------
+invalidPortArg=Invalid value provided for [port]={0} in argument for {1}, a numeric value is required.
+missingUsernameValue=Missing value for [user] in argument for {0}.
+missingPasswordValue=Missing value for [password] in argument for {0}.
+missingHostValue=Missing value for [host] in argument for {0}.
+missingPortValue=Missing value for [port] in argument for {0}.
+missingHostorPortValue=Missing value for [host or port] in argument for {0}.
+
+#------------------------------------------------------------------------------

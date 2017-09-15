@@ -1,0 +1,20 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <!-- For minimum configuration, a user must specify a keystore + password
+         The default keystore has id "defaultKeyStore".
+         Create a default repository (defaultSSLConfig) that uses that
+         keystore (unless it is redefined by the user to use something else). -->
+         
+    <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" />
+
+</server>

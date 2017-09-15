@@ -1,0 +1,404 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+    <!-- match generated nls classes: return mutable type -->
+    <Match> 
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+      <Bug code="EI" />
+    </Match>   
+   
+    
+     <Match>
+      <Class name="~.*\.*Message.*" />
+      <Bug code="EI" />
+    </Match>
+    
+     <Match>
+      <Class name="org.apache.cxf.version.version" />
+      <Bug code="EI,Nm" />
+    </Match>
+        
+    <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.staxutils.StaxUtils"/>     
+     <Method name="createXMLStreamReader"/>     
+    </Match>
+    
+    <Match>
+     <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+     <Class name="org.apache.cxf.staxutils.StaxUtils"/>
+     <Or>
+        <Method name="returnXMLInputFactory"/>
+        <Method name="returnXMLOutputFactory"/>
+     </Or>
+    </Match>
+
+    <Match>
+     <Bug pattern="NP_NULL_ON_SOME_PATH,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+     <Class name="org.apache.cxf.staxutils.StaxUtils"/>
+     <Method name="printXmlFragment"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="org.apache.cxf.staxutils.StaxUtils"/>
+     <Or>
+        <Method name="addLocation"/>
+        <Method name="copy"/>
+        <Method name="isWoodstox"/>
+        <Method name="read"/>
+        <Method name="setProperty"/>
+        <Method name="writeNode"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION"/>
+     <Class name="org.apache.cxf.staxutils.StaxUtils"/>    
+     <Method name="createXMLStreamReader"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DM_STRING_CTOR"/>
+     <Class name="org.apache.cxf.staxutils.StaxUtils"/>
+     <Or>
+        <Method name="createXMLStreamReader"/>
+        <Method name="read"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DM_STRING_CTOR"/>
+     <Class name="org.apache.cxf.wsdl11.WSDLManagerImpl"/>
+     <Method name="loadDefinition"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+     <Class name="org.apache.cxf.wsdl11.WSDLManagerImpl"/>
+     <Method name="getDefinition"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+     <Class name="org.apache.cxf.jaxws.handler.logical.LogicalHandlerOutInterceptor$LogicalHandlerOutEndingInterceptor"/>
+    </Match>	
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, DE_MIGHT_IGNORE, NP_NULL_ON_SOME_PATH"/>
+     <Class name="org.apache.cxf.jaxws.interceptors.SwAOutInterceptor"/>
+     <Method name="callSWARefMethod"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, DE_MIGHT_IGNORE, THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+     <Class name="org.apache.cxf.jaxws.spi.ProviderImpl"/>
+     <Or>
+      <Method name="createW3CEndpointReference"/>
+      <Method name="convertToInternal"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, NP_LOAD_OF_KNOWN_NULL_VALUE, BC_VACUOUS_INSTANCEOF, DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, NP_NULL_ON_SOME_PATH, DJV_DO_INSIDE_DO_PRIVILEGED, "/>
+     <Class name="org.apache.cxf.jaxb.JAXBEncoderDecoder"/>
+     <Or>
+      <Method name="findExtraNamespaces"/>
+      <Method name="unmarshallException"/>
+      <Method name="marshallNullElement"/>
+      <Method name="unmarshallArray"/>
+      <Method name="marshallException"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.wsdl.EndpointReferenceUtils"/>
+     <Method name="createSchema"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.wsdl.EndpointReferenceUtils$SchemaLSResourceResolver"/>
+     <Method name="resolveResource" />
+    </Match>
+    
+    <Match>
+     <Bug pattern="EI_EXPOSE_REP, EI_EXPOSE_REP2"/>
+     <Class name="org.apache.cxf.configuration.jsse.TLSClientParametersConfig$TLSClientParametersTypeInternal"/>
+     <Or>
+      <Method name="getKeyManagersRef"/>
+      <Method name="getTrustManagersRef"/>
+      <Method name="setKeyManagersRef"/>
+      <Method name="setTrustManagersRef"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+     <Class name="org.apache.cxf.configuration.jsse.TLSClientParametersConfig"/>
+     <Method name="createTLSClientParameters" />
+    </Match>
+    
+    <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="org.apache.cxf.wsdl.JAXBExtensionHelper$1"/>
+     <Method name="getPrefixes"/>     
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION"/>
+     <Class name="org.apache.cxf.jaxws.DispatchImpl"/>
+     <Method name="invoke"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+     <Class name="org.apache.cxf.jaxws.interceptors.MessageModeOutInterceptor$MessageModeOutInterceptorInternal"/>
+     <Method name="handleMessage"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.attachment.AttachmentUtil"/>
+     <Or>
+	     <Method name="getAttachmentDataSource"/>
+     </Or>
+    </Match>
+    <Match>
+     <Bug pattern="	DJV_DO_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.attachment.AttachmentUtil"/>
+     <Or>
+	     <Method name="createMtomAttachmentFromDH"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.attachment.AttachmentUtil"/>
+     <Or>
+	     <Method name="getAttachmentDataSource"/>
+     </Or>
+    </Match>
+    <Match>
+     <Bug pattern="	DJV_DO_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.attachment.AttachmentUtil"/>
+     <Or>
+	     <Method name="createMtomAttachmentFromDH"/>
+     </Or>
+    </Match>
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, DE_MIGHT_IGNORE"/>
+     <Class name="org.apache.cxf.jaxb.JAXBContextInitializer"/>    
+     <Method name="isMethodAccepted"/>
+    </Match>
+    <Match>
+     <Bug pattern=" THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+     <Class name="org.apache.cxf.staxutils.W3CDOMStreamReader"/>
+     <Or>
+         <Method name="toString"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE, EI_EXPOSE_REP, EI_EXPOSE_REP2, DM_NUMBER_CTOR"/>
+     <Class name="org.apache.cxf.jaxb.JAXBDataBinding"/>
+     <Or>
+      <Method name="initialize"/>
+      <Method name="getExtraClass"/>
+      <Method name="getSupportedReaderFormats"/>
+      <Method name="getSupportedWriterFormats"/>
+      <Method name="setExtraClass"/>
+      <Method name="createWriter"/>
+     </Or>     
+    </Match>
+    
+    <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE, NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+     <Class name="org.apache.cxf.jaxb.io.DataWriterImpl"/>
+     <Or>
+      <Method name="createMarshaller"/>
+      <Method name="write"/>
+     </Or>          
+    </Match>
+        
+    <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.frontend.WSDLGetUtils"/>
+     <Or>
+      <Method name="rewriteAddressProtocolHostPort"/>
+      <Method name="updateSchemaImports"/>
+      <Method name="updateDefinition"/>
+     </Or>          
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION"/>
+     <Class name="org.apache.cxf.frontend.WSDLGetUtils"/>
+     <Or>
+      <Method name="rewriteAddressProtocolHostPort"/>
+     </Or>          
+    </Match>
+    
+     <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, BC_UNCONFIRMED_CAST, NP_BOOLEAN_RETURN_NULL"/>
+     <Class name="org.apache.cxf.jaxws.support.JaxWsServiceConfiguration"/>
+     <Or>
+      <Method name="setServiceFactory"/>
+      <Method name="isWrapped"/>
+      <Method name="isWrapperPartQualified"/>
+      <Method name="getWithReflection"/>
+     </Or>
+    </Match>
+    
+     <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, DE_MIGHT_IGNORE, DJV_DO_INSIDE_DO_PRIVILEGED, DM_STRING_CTOR, RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+     <Class name="org.apache.cxf.service.factory.ReflectionServiceFactoryBean"/>
+     <Or>
+      <Method name="setOldMethodDispatcherProperty"/>
+      <Method name="getWsdlURL"/>
+      <Method name="setWsdlURL"/>
+      <Method name="createMessageParts"/>
+      <Method name="setOldMethodDispatcherProperty"/>
+     </Or>
+    </Match>
+    
+     <Match>
+     <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+     <Class name="org.apache.cxf.wsdl11.PartialWSDLProcessor"/>
+     <Or>
+      <Method name="isBindingExisted"/>
+      <Method name="isPortTypeExisted"/>
+     </Or>
+    </Match>
+    
+     <Match>
+     <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.wsdl11.SOAPBindingUtil"/>
+     <Or>
+      <Method name="getProxy"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="NP_NULL_PARAM_DEREF, WMI_WRONG_MAP_ITERATOR"/>
+     <Class name="org.apache.cxf.wsdl11.WSDLServiceFactory"/>
+     <Or>
+      <Method name="create"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION"/>
+     <Class name="org.apache.cxf.jaxws.interceptors.WebFaultOutInterceptor"/>
+     <Or>
+      <Method name="createFaultInfoBean"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION, SE_BAD_FIELD, SE_BAD_FIELD_STORE, DE_MIGHT_IGNORE, THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+     <Class name="org.apache.cxf.jaxws.support.JaxWsEndpointImpl"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="org.apache.cxf.helpers.ServiceUtils"/>
+     <Or>
+      <Method name="makePackageName"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+     <Class name="org.apache.cxf.wsdl11.ServiceWSDLBuilder"/>
+     <Or>
+      <Method name="addDocumentation"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+     <Class name="org.apache.cxf.wsdl11.ServiceWSDLBuilder"/>
+     <Or>
+      <Method name="addExtensibilityAttributes"/>
+     </Or>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED,DM_STRING_CTOR,SIC_INNER_SHOULD_BE_STATIC,IS2_INCONSISTENT_SYNC,SIC_INNER_SHOULD_BE_STATIC"/>
+     <Class name="org.apache.cxf.jaxws.EndpointImpl"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+     <Class name="org.apache.cxf.jaxws.EndpointImpl$DoubleAddInterceptorList"/>
+    </Match>
+
+    <Match>
+     <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED,DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED,EC_UNRELATED_TYPES,IS2_INCONSISTENT_SYNC"/>
+     <Class name="org.apache.cxf.transport.http.HTTPConduit"/>
+    </Match>
+
+    <Match>
+     <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+     <Class name="org.apache.cxf.transport.http.HTTPConduit$InterposedMessageObserver"/>
+    </Match>
+
+    <Match>
+     <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+     <Class name="org.apache.cxf.transport.http.HTTPConduit$WrappedOutputStream"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="DE_MIGHT_IGNORE"/>
+     <Class name="org.apache.cxf.common.jaxb.JAXBContextCache"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="OS_OPEN_STREAM"/>
+     <Class name="org.apache.cxf.common.jaxb.JAXBContextCache"/>
+    </Match>
+    
+    <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION"/>
+     <Class name="org.apache.cxf.common.jaxb.JAXBContextCache"/>
+    </Match>
+    
+    <Match>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    
+    <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+      <Class name="org.apache.cxf.jaxws.interceptors.MessageModeOutInterceptor"/>
+      <Method name="doSoap"/>
+    </Match>
+    <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+      <Class name="org.apache.cxf.jaxws.spi.ProviderImpl"/>
+      <Method name="&lt;clinit&gt;"/>
+    </Match>
+    <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+      <Class name="org.apache.cxf.staxutils.W3CDOMStreamReader"/>
+      <Method name="getName"/>
+    </Match>
+      
+</FindBugsFilter>

@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.servlet.3.1; singleton:=true
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+Export-Package: \
+    javax.servlet;thread-context=true;version="2.7.0";uses:="javax.servlet.annotation,javax.servlet.descriptor",\
+    javax.servlet.annotation;thread-context=true;version="2.7.0";uses:="javax.servlet",\
+    javax.servlet.descriptor;thread-context=true;version="2.7.0",\
+    javax.servlet.http;thread-context=true;version="2.7.0";uses:="javax.servlet",\
+    javax.servlet.resources;thread-context=true;version="2.7.0"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	com.ibm.ws.javaee.servlet.3.1;version=1.0.10.201509101149,\
+	com.ibm.ws.javax.j2ee:servlet.resources;version=3.1
+	

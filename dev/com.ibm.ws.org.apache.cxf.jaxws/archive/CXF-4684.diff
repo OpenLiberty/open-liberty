@@ -1,0 +1,37 @@
+Index: branches/2.5.x-fixes/api/src/main/java/org/apache/cxf/interceptor/Fault.java
+===================================================================
+diff -u -N -r1227740 -r1425500
+--- branches/2.5.x-fixes/api/src/main/java/org/apache/cxf/interceptor/Fault.java	(.../Fault.java)	(revision 1227740)
++++ branches/2.5.x-fixes/api/src/main/java/org/apache/cxf/interceptor/Fault.java	(.../Fault.java)	(revision 1425500)
+@@ -84,7 +84,7 @@
+         if (super.getMessage() != null) {
+             message = super.getMessage();
+         } else {
+-            message = t == null ? null : t.getMessage();
++            message = getMessage(t);
+         }
+         code = FAULT_CODE_SERVER;
+     }
+@@ -106,7 +106,7 @@
+         if (super.getMessage() != null) {
+             message = super.getMessage();
+         } else {
+-            message = t == null ? null : t.getMessage();
++            message = getMessage(t);
+         }
+         code = fc;
+     }    
+@@ -184,4 +184,13 @@
+     public void setStatusCode(int statusCode) {
+         this.statusCode = statusCode;
+     }
++
++    /**
++     * Extracts the effective message value from the specified exception object
++     * @param t
++     * @return
++     */
++    private static String getMessage(Throwable t) {
++        return t == null ? null : t.getMessage() != null ? t.getMessage() : t.toString();
++    }
+ }

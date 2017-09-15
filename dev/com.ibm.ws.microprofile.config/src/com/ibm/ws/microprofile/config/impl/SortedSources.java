@@ -1,0 +1,78 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.microprofile.config.impl;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import org.eclipse.microprofile.config.spi.ConfigSource;
+
+public class SortedSources implements Iterable<ConfigSource> {
+
+    private SortedSet<ConfigSource> sources;
+
+    public SortedSources() {
+        sources = new TreeSet<ConfigSource>(ConfigSourceComparator.INSTANCE);
+    }
+
+    public SortedSources(SortedSet<ConfigSource> initialSources) {
+        this();
+        sources.addAll(initialSources);
+    }
+
+    public SortedSources unmodifiable() {
+        sources = Collections.unmodifiableSortedSet(sources);
+        return this;
+    }
+
+    /**
+     * @param toAdd
+     */
+    public void addAll(Collection<ConfigSource> toAdd) {
+        sources.addAll(toAdd);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Iterator<ConfigSource> iterator() {
+        return sources.iterator();
+    }
+
+    /**
+     * @return
+     */
+    public int size() {
+        return sources.size();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder("Config Sources: ");
+        for (ConfigSource source : this) {
+            builder.append("\n\t");
+            builder.append(source.getOrdinal());
+            builder.append(" = ");
+            builder.append(source.getName());
+        }
+        return builder.toString();
+    }
+
+    /**
+     * CURRENTLY ONLY USED BY UNIT TEST
+     */
+    public void add(ConfigSource source) {
+        sources.add(source);
+    }
+
+}

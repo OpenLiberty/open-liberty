@@ -1,0 +1,32 @@
+<server>
+    <featureManager>
+      <feature>componenttest-1.0</feature>
+      <feature>jdbc-4.2</feature>
+      <feature>jndi-1.0</feature>
+      <feature>servlet-3.1</feature>
+    </featureManager>
+    
+
+    <include location="../fatTestPorts.xml"/>
+
+    <application location="derbyApp.war"/>
+
+    <application location="otherApp.war"/>
+
+    <dataSource id="DefaultDataSource" ibm.internal.nonship.function="true">
+      <jdbcDriver javax.sql.DataSource="jdbc.driver.proxy.ProxyDataSource" libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO remove libraryRef -->
+      <properties databaseName="memory:ds1"/>
+    </dataSource>
+
+    <dataSource id="DerbyDataSource" jndiName="jdbc/derby" ibm.internal.nonship.function="true">
+      <jdbcDriver libraryRef="ibm.internal.simulate.no.library.do.not.ship" ibm.internal.nonship.function="true"/> <!-- TODO eventually remove jdbcDriver completely -->
+      <properties.derby.embedded databaseName="memory:ds1" createDatabase="create"/>
+    </dataSource>
+
+    <library id="ibm.internal.simulate.no.library.do.not.ship"/>
+
+    <!-- permissions for Derby -->
+    <javaPermission className="java.util.PropertyPermission" name="user.dir" actions="read"/>
+
+    <variable name="onError" value="FAIL"/>
+</server>

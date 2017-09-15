@@ -1,0 +1,558 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.collective.utility/resources/com/ibm/ws/collective/utility/resources/UtilityMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+
+# Generic messages
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+error=Error: {0}
+error.inputConsoleNotAvailable=Input console is not available.
+error.missingIO=Error, missing I/O device: {0}.
+name=name
+days=days
+serverNotFound=Specified server {0} was not found at location {1}
+userDirNotFound=Specified userDir {0} was not found
+installDirNotFound=Installation directory {0} was not found
+
+# Generic messages for task argument validation
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+tooManyArgs=Too many arguments.
+insufficientArgs=Insufficient arguments.
+missingServerName=The target for the task was not specified.
+invalidArg=Invalid argument {0}.
+missingArg=Missing argument {0}.
+missingValue=Missing value for argument {0}.
+missingPasswordArg=You either must specify {0} or specify the remaining password arguments {1}
+
+
+# Messages for FileUtility
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+fileUtility.failedDirCreate=Failed to create directory {0}
+fileUtility.deleteSuccess=Successfully deleted {0}
+fileUtility.deleteFailure=Failed to delete {0}
+
+
+# Messages for HelpTask
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+usage=Usage: {0} action target [options]
+task.unknown=Unknown task: {0}
+
+
+# Messages for reading in a password
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+password.enterText=Enter password {0}:
+password.reenterText=Re-enter password {0}:
+password.readError=Error reading in password.
+password.entriesDidNotMatch=Passwords did not match.
+
+
+# Messages common to collective utility tasks
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+common.encodeError=\
+\nUnable to encode the password for argument: {0}
+
+common.hostError=\
+\nThe specified host name does not appear to be valid: {0}\
+\nConfirm the host name is correct and the system has a network connection.
+
+common.portError=\
+\nThe specified port {0} could not be reached. Confirm the port is correct.
+
+common.connectionError=\
+\nUnable to complete the MBean operation.\
+\nError: {0}
+
+common.compatibilityError=\
+\nUnable to access the MBean operation as it is not defined on the controller. The controller is likely a lower version than the member.\
+\nError: {0}
+
+common.renameFailed=\
+\nUnable to rename {0} to {1}
+
+common.regenerateKey=\
+Default HTTPS keystore file exists at {0}.\n\
+This certificate will be regenerated and the original preserved.\n
+
+common.regenerateTrust=\
+Default HTTPS truststore file exists at {0}.\n\
+This certificate will be regenerated and the original preserved.\n
+
+common.validityTooShort=\
+\nSpecified validity {0} is too short. Minimum validity is 365 days.
+
+common.invalidDN=\
+\nThe specified DN for {0} is invalid: {1}
+
+common.invalidEndpoint=\
+The target endpoint for the {0} replica is not in the required format.\n\
+The target is the replication port of the replica and must be in the\n\
+host:port format.
+
+common.updateServerXML=\
+Add the following lines to the server.xml to enable:\n
+
+
+# Messages for establishing SSL trust
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+sslTrust.autoAccept=\
+Auto-accepting the certificate chain for target server.\n\
+Certificate subject DN: {0}
+
+sslTrust.genDigestError=\
+Unable to generate {0} digest. Error: {1}
+
+sslTrust.noDefaultTrust=\
+SSL trust has not been established with the target server.
+
+sslTrust.certInfo=\
+Certificate chain information:
+
+sslTrust.cert=\
+Certificate {0}
+
+sslTrust.certSubjectDN=\
+  Subject DN: {0}
+
+sslTrust.certIssueDN=\
+  Issuer DN: {0}
+
+sslTrust.certSerial=\
+  Serial Number: {0}
+
+sslTrust.certExpires=\
+  Expires: {0}
+
+sslTrust.certSHADigest=\
+  SHA-1 digest: {0}
+
+sslTrust.certMD5Digest=\
+  MD5 digest: {0}
+
+sslTrust.promptToAcceptTrust=\
+Do you want to accept the above certificate chain? (y/n) 
+# Note to translator this value must be the same as the translation for y in the sslTrust.promptToAcceptTrust brackets.
+yes.response.short=y
+yes.response.full=yes
+
+
+
+sslTrust.rejectTrust=\
+User has rejected the request to trust the certificate chain.
+
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+hostAuthInfo.bothCredentialsSet=\
+Both {0} and {1} are set. Please choose one.\n\
+Only one means of authentication should be specified.
+
+hostAuthInfo.sshKeyPasswordWithoutKey=\
+SSH private key password specified without corresponding private key.
+
+hostAuthInfo.useSudoFalseWithSudoOptions=\
+useSudo set to false, but other sudo options are set.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+encoding.aesRequiresKey=\
+The aes encoding requires a key. Please specify one using the --key.
+
+encoding.xorDoesNotSupportKey=\
+The xor encoding does not support a key. Please do not specify --key.
+
+encoding.unsupportedEncoding=\
+Unsupported encoding value {0}.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+ssh.invalidSSHKeyPair=\
+\nThe specified SSH key pair was not valid.\n\
+Error: {0}
+
+ssh.couldNotCreateSSHKeys=\
+\nUnable to create the default SSH keys for host authentication.\n\
+Error: {0}
+
+ssh.couldNotReadSSHKeys=\
+\nUnable to read (or write) the SSH keys.\n\
+Error: {0}
+
+ssh.updateAuthorizedKeys=\
+Updating authorized keys with new public key...
+
+ssh.cannotUpdateAuthorizedKeys=\
+\nUnable to update authorized keys file for user: {0}\n\
+Checked for authorized keys file in user home: {1}\n\
+Please update the authorized keys file with the following public key:\n\
+{2}\n\
+Error: {3}
+
+
+# Messages for creation of a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+create.start=\
+Creating required certificates to establish a collective...\n\
+This may take a while.
+
+create.abort=\
+\nAborting set up of collective controller server.
+
+create.errGetHostName=\
+\nUnable to determine the host name. Defaulting to {0}.\n\
+Cause: {1}\n\
+To explicitly set the host name, use the --hostName option.
+
+create.errorAlreadyHasResources=\
+\nThe server's resources/collective directory already exists.\n\
+To recreate the collective, please remove the entire directory.\n\
+To extend an existing collective, use the replicate task.
+
+create.configLocationInDefaults=\
+\nThe location specified by the --createConfigFile option is in the\n\
+server configDropins/defaults directory. This is not a valid\n\
+location for the generated collective configuration because all\n\
+controllers share the location. Specify a different location.
+
+create.genCertControllerRoot=\
+Successfully generated the controller root certificate.
+
+create.genCertMemberRoot=\
+Successfully generated the member root certificate.
+
+create.genCertServerIdentity=\
+Successfully generated the server identity certificate.
+
+create.genCertHTTPS=\
+Successfully generated the HTTPS certificate.
+
+create.failedKSSave=\nUnable to save keystore {0}
+
+create.cleanupFail=\
+\nError cleaning up generated files. Unable to delete {0}\
+\nPlease remove the directory manually, check file permissions,\
+\n and try again.
+
+create.successful=\
+Successfully set up collective controller configuration for {0}.\n
+
+create.configureSecurity=\
+Please ensure administrative security is configured for the server.\n\
+An administrative user is required to join members to the collective.
+
+create.certUtil.NotAvailable=\
+Requested operation not available with this edition of WebSphere.
+
+# Messages for joining a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+join.start=\
+Joining the collective with target controller {0}:{1}...\n\
+This may take a while.
+
+join.abort=\
+\nAborting join collective.
+
+join.errorAlreadyHasResources=\
+The resources/collective directory already exists for this server.\n\
+The server may already be a member.\n\
+To re-join the collective run the remove task or manually delete the\n\
+resources/collective directory and try again.
+
+join.writeKeystoreFail=\
+\nError writing the required keystore to disk {0}
+
+join.cleanupFail=\
+\nError cleaning up generated files. Unable to delete {0}\
+\nPlease remove the directory manually, check file permissions,\
+\nand try again.
+
+join.mbeanComplete=\
+Successfully completed MBean request to the controller.
+
+join.registeredAlready=\
+The specified server {0} already appears to be a member.\n\
+To re-join the collective run the remove task and try again.
+
+join.successful=\
+Successfully joined the collective for server {0}.\n
+
+join.useHostCredentialsButOtherCtedentialsAreSet=\
+If useHostCredentials is set, do not provide other host credentials.
+
+deployAdminMetadata.mbeanComplete=\
+Successfully completed AdminMetadataManagerMBean request to the controller.
+
+deployAdminMetadata.start=\
+Deploying administrative metadata to the collective respository...\n\
+This may take a while.
+
+allocateDeployVariables.mbeanComplete=\
+Successfully completed CollectiveRepositoryMBean request to the controller.
+
+allocateDeployVariables.start=\
+Allocating deployment variables in the collective repository...\n\
+This may take a while.
+
+AllocatedDeployVars=The allocated deployment variable:
+deployVarsNotFound=The undefined deployment variable: {0}
+deployVarsAreAllocated=Deployment variables were allocated and deployVariables.xml was created in the server /configDropins/overrides directory.
+
+# Messages for generating a collective key
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+genKey.start=\
+Generating keystore with target controller {0}:{1}...\n\
+
+genKey.abort=\
+\nAborting genKey.
+
+genKey.writeKeystoreFail=\
+\nError writing the required keystore to disk {0}
+
+genKey.cleanupFail=\
+\nError cleaning up generated files. Unable to delete {0}\
+\nPlease remove the file manually, check file permissions,\
+\nand try again.
+
+genKey.mbeanComplete=\
+Successfully completed MBean request to the controller.
+
+genKey.generatedKeystore=\
+Successfully generated keystore {0}.
+
+
+# Messages for replicating a controller 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+replicate.start=\
+Replicating the target collective controller {0}:{1}...\n\
+This may take a while.
+
+replicate.abort=\
+\nAborting replicate controller.
+
+replicate.errorAlreadyHasResources=\
+The resources/collective directory already exists for this server.\n\
+The server may already be a controller.\n\
+To replicate the controller run the remove task or manually delete the\n\
+resources/collective directory and try again.
+
+replicate.writeKeystoreFail=\
+\nError writing the required keystore to disk {0}
+
+replicate.writeFileFail=\
+\nError writing the required file to disk {0}
+
+replicate.cleanupFail=\
+\nError cleaning up generated files. Unable to delete {0}\
+\nPlease remove the directory manually, check file permissions,\
+\nand try again.
+
+replicate.mbeanComplete=\
+Successfully completed MBean request to the controller.
+
+replicate.registeredAlready=\
+The specified server {0} already appears to be a member.\n\
+To replicate the controller run the remove task and try again.
+
+replicate.success=\
+Successfully replicated the controller as server {0}.\n
+
+
+replicate.configureSecurity=\
+Please ensure administrative security is configured for the new server\n\
+exactly as the current collective controller. Also set the password for\n\
+the collectiveRootKeys to the correct password.\n\
+
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+remove.attemptUnregister=\
+Attempting to unregister the server from the collective...\n\
+Host: {0}\n\
+User Dir: {1}\n\
+Server Name: {2}
+
+remove.unregisteredAlready=\
+Server {0} is not registered.\n\
+It might be registered under another host name.
+
+remove.unregisterFailed=\
+Server {0} could not be unregistered due to an error.
+
+remove.unregisterSuccess=\
+Server {0} successfully unregistered.
+
+remove.attemptResourceDelete=\
+Attempting to remove resources for the collective from the server...
+
+remove.noFilesRemoved=No collective resources were removed.
+remove.noResources=No collective resources were found.
+
+remove.manuallyRemove=\
+Some of the files under {0} could not be removed.\n\
+You will need to remove them manually.
+
+remove.filesSuccess=\
+The resources for collective membership were successfully removed.
+
+remove.updateXML=\n\
+Please update the server.xml and remove any of the following elements:
+
+removeAllAdminMetadata.mbeanComplete=\
+Successfully completed AdminMetadataManagerMBean request to the controller.
+
+removeAllAdminMetadata.start=\
+Removing all administrative metadata from the collective repository...\n\
+This may take a while.
+
+remove.removeAllAdminMetadataFailed=\
+Administrative metadata with resource type {0} and identity {1} cannot be removed from the collective repository due to an error.
+
+getAdminMetadata.mbeanComplete=\
+Successfully completed AdminMetadataManagerMBean request to the controller.
+
+releaseDeployVariables.start=\
+Releasing all deployment variables from the collective repository...\n\
+This may take a while.
+
+releaseDeployVariables.mbeanComplete=\
+Successfully completed CollectiveRepositoryMBean request to the controller.
+
+remove.releaseDeployVariablesFailed=\
+Deployment variables {0} on host name {1} cannot be removed from the collective repository due to an error.
+
+# Messages for registering a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+registerHost.abort=\
+\nAborting registerHost.
+
+registerHost.attemptRegister=\
+Registering the host to the collective...
+
+registerHost.registeredAlready=\
+Host {0} is already registered.
+
+registerHost.registerFailed=\
+Host {0} could not be registered due to an error.
+
+registerHost.registerSuccess=\
+Host {0} successfully registered.
+
+
+# Messages for updating a host to the collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+updateHost.abort=\
+\nAborting updateHost.
+
+updateHost.attemptRegister=\
+Updating the authentication information for the host...
+
+updateHost.notRegistered=\
+Host {0} is not registered.
+updateHost.updateFailed=\
+Host {0} could not be updated due to an error.
+updateHost.updateSuccess=\
+Host {0} authentication information successfully updated.
+
+
+# Messages for leaving a collective
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unregisterHost.attemptUnregister=\
+Unregistering the host from the collective...
+
+unregisterHost.unregisteredAlready=\
+Host {0} is not registered.
+
+unregisterHost.unregisterFailed=\
+Host {0} could not be unregistered due to an error.
+
+unregisterHost.unregisterSuccess=\
+Host {0} successfully unregistered.
+
+
+# Messages for adding a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+addReplica.attempt=\
+Adding the endpoint to the replica set...
+
+addReplica.alreadyAdded=\
+Replica endpoint {0} is already part of the replica set.
+
+addReplica.invalidEndpoint=\
+Replica endpoint {0} can not be added to the replica set.\n\
+Confirm the replica endpoint is correct and that the replica is running.
+
+addReplica.error=\
+The replica endpoint {0} could not be added due to an error.
+
+addReplica.success=\
+Successfully added replica endpoint {0} to the replica set.
+
+
+# Messages for removing a replica endpoint
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+removeReplica.attemptUnregister=\
+Attempting to remove the endpoint from the replica set...
+
+removeReplica.alreadyRemoved=\
+Replica endpoint {0} is not part of the replica set or the resulting set of the operation is not valid.
+
+removeReplica.error=\
+The replica endpoint {0} could not be removed due to an error.
+
+removeReplica.success=\
+Successfully removed replica endpoint {0} from the replica set.
+
+# Message for setting a host/server into maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+setMaintenanceMode.connectionError=\
+Could not set maintenance mode due to an error connecting to the target machine {0}.
+
+setMaintenanceMode.error=\
+Could not set maintenance mode for {0} due to an error.
+
+setMaintenanceMode.success=\
+Successfully set maintenance mode for {0}.
+
+setMaintenanceMode.alt=\
+An alternate server must be started. Maintenance mode will be set for {0} when the alternate server is started.
+
+setMaintenanceMode.noAltServer=\
+Could not set maintenance mode for {0} because an alternate server is not available.
+
+# Message for taking a host/server out of maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+unsetMaintenanceMode.error=\
+Could not unset maintenance mode for {0} due to an error.
+
+unsetMaintenanceMode.success=\
+Successfully unset maintenance mode for {0}.
+
+unsetMaintenanceMode.connectionError=\
+Could not unset maintenance mode due to an error connecting to the target machine {0}.
+
+# Message for displaying if a host/server is in maintenance mode
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+getMaintenanceMode.connectionError=\
+Could not get maintenance mode due to an error connecting to the target machine {0}.
+
+getMaintenanceMode.inMM=\
+{0} is in maintenance mode.
+
+getMaintenanceMode.notInMM=\
+{0} is not in maintenance mode.
+
+getMaintenanceMode.alt=\
+An alternate server must be started. Maintenance mode will be set for {0} when the alternate server is started.
+
+getMaintenanceMode.error=\
+Could not get maintenance mode for {0} due to an error.

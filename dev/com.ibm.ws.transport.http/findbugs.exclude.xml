@@ -1,0 +1,1401 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+  <Match>
+    <Class name="com.ibm.wsspi.http.HttpCookie"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.dispatcher.http.internal.HttpChannelProvider"/>
+    <Method name="setChfwBundle" signature="(Lcom/ibm/websphere/channelfw/osgi/CHFWBundle;)V"/>
+    <Field name="chfw"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.dispatcher.http.internal.HttpDispatcher"/>
+    <Method name="unsetExecutorService" signature="(Lorg/osgi/framework/ServiceReference;)V"/>
+    <Bug pattern="EC_UNRELATED_TYPES_USING_POINTER_EQUALITY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.dispatcher.http.internal.HttpLocalFormat$CachedTime"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherFactory"/>
+    <Method name="getDeviceInterface" signature="()[Ljava/lang/Class;"/>
+    <Field name="devSide"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.internal.EncodingUtilsImpl"/>
+    <Method name="isCharsetSupported"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpEndpointImpl$6"/>
+    <Method name="run"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>  
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain$1"/>
+    <Or>
+    <Method name="addAliases" />
+    <Method name="addInetAddressAlias" />
+    <Method name="tryDetermineHostName" />
+    </Or>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain"/>
+    <Method name="update"/>
+    <Or>
+    <Local name="tcpChannel"/>
+    <Local name="httpDispatcher"/>
+    </Or>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain"/>
+    <Method name="stop"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>    
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain$ActiveConfiguration"/>
+    <Method name="getActivePort"/>
+    <Local name="ce"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain$StopWait"/>
+    <Method name="notifyStopped"/>
+    <Bug pattern="NN_NAKED_NOTIFY"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain$StopWait"/>
+    <Method name="waitForStop"/>
+    <Local name="ie"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>  
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain"/>
+    <Method name="stop"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>  
+  <Match>
+    <Class name="com.ibm.ws.http.internal.HttpChain$ActiveConfiguration"/>
+    <Method name="validateActivePort"/>
+    <Local name="ce"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>  
+  <Match>
+    <Class name="com.ibm.ws.http.internal.VirtualHostImpl"/>
+    <Method name="getHostName"/>
+    <Or>
+    	<Local name="port"/>
+    	<Local name="nfe"/>
+    </Or>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.http.dispatcher.internal.channel.HttpResponseImpl"/>
+    <Method name="setVersion"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.dispatcher.http.internal.channel.HttpDispatcherFactory"/>
+    <Field name="globalBufferSize"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.MimeEntry"/>
+    <Bug code="EI, EI2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.VirtualHost"/>
+    <Bug code="EI, EI2"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.genericbnf.internal.BNFHeadersImpl"/>
+    <Method name="marshallReuseHeaders" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.genericbnf.internal.BNFHeadersImpl"/>
+    <Method name="scribbleWhiteSpace" signature="(Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;II)V"/>
+    <Field name="whitespace"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.genericbnf.internal.GenericMessageImpl"/>
+    <Method name="parseLine" signature="(Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.genericbnf.internal.GenericUtils"/>
+    <Method name="putByteArray" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;[BIILcom/ibm/ws/genericbnf/internal/BNFHeadersImpl;)[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.genericbnf.internal.GenericUtils"/>
+    <Method name="asByteArray" signature="(I)[B"/>
+    <Field name="ZERO_BYTEARRAY"/>
+    <Bug pattern="MS_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.genericbnf.internal.HeaderElement"/>
+    <Method name="asBytes" signature="()[B"/>
+    <Field name="bValue"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.CallbackIDs"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Field name="NUM_IDS"/>
+    <Bug pattern="SI_INSTANCE_BEFORE_FINALS_ASSIGNED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="setConnection" signature="([Lcom/ibm/wsspi/http/channel/values/ConnectionValues;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="setContentEncoding" signature="([Lcom/ibm/wsspi/http/channel/values/ContentEncodingValues;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="setTransferEncoding" signature="([Lcom/ibm/wsspi/http/channel/values/TransferEncodingValues;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl$TokenDelimiter"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpBaseMessageImpl$privCharsetLookup"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpChannelConfig"/>
+    <Method name="getServerHeaderValue" signature="()[B"/>
+    <Field name="baServerHeaderValue"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpChannelConfig"/>
+    <Field name="accessLogger"/>
+    <Bug code="DJV"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpChannelFactory"/>
+    <Method name="getDeviceInterface" signature="()[Ljava/lang/Class;"/>
+    <Field name="devInterfaces"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpRequestMessageImpl"/>
+    <Method name="getQueryStringAsByteArray" signature="()[B"/>
+    <Field name="myQueryBytes"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpRequestMessageImpl"/>
+    <Method name="getRequestURIAsByteArray" signature="()[B"/>
+    <Field name="myURIBytes"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpRequestMessageImpl"/>
+    <Method name="setQueryString" signature="([B)V"/>
+    <Field name="myQueryBytes"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpRequestMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpRequestMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpResponseMessageImpl"/>
+    <Method name="getReasonPhraseBytes" signature="()[B"/>
+    <Field name="myReasonBytes"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpResponseMessageImpl"/>
+    <Method name="setReasonPhrase" signature="([B)V"/>
+    <Field name="myReasonBytes"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpResponseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpResponseMessageImpl"/>
+    <Method name="debug" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpServiceContextImpl"/>
+    <Method name="loadErrorBody" signature="(Lcom/ibm/wsspi/http/channel/error/HttpError;Lcom/ibm/wsspi/http/channel/HttpRequestMessage;Lcom/ibm/wsspi/http/channel/HttpResponseMessage;)[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpServiceContextImpl"/>
+    <Method name="readRawChunk" signature="(Lcom/ibm/ws/http/channel/internal/HttpBaseMessageImpl;Z)Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpServiceContextImpl"/>
+    <Method name="formatBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/ws/http/channel/internal/HttpBaseMessageImpl;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.HttpServiceContextImpl"/>
+    <Field name="CHUNK_TRAILER_DATA"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpIgnoreBodyCallback"/>
+    <Method name="error" signature="(Lcom/ibm/wsspi/channelfw/VirtualConnection;Ljava/lang/Throwable;)V"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundChannelFactory$HttpOutboundDefinition"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundLink"/>
+    <Method name="error" signature="(Lcom/ibm/wsspi/channelfw/VirtualConnection;Ljava/lang/Throwable;)V"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundLink"/>
+    <Field name="bIsActive"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRawRequestBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="finishRawResponseMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="finishRawResponseMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="finishRawResponseMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRawRequestBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRawRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRawRequestBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRawRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="getRequestBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="isCompressionAllowed" signature="()Z"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="sendRawResponseBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="sendRawResponseBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="sendRawResponseBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="sendResponseHeaders" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="sendResponseHeaders" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundChannel"/>
+    <Method name="getApplicationAddress" signature="()[Ljava/lang/Class;"/>
+    <Field name="appAddrInterfaces"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getRawResponseBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="resetWriteBuffers" signature="()Z"/>
+    <Field name="positionList"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="resetWriteBuffers" signature="()Z"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseReadSync" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseReadSync" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseReadSync" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseReadSync" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseReadSync" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseReadSync" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRawRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRawRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRawRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRawRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="finishRequestMessage" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getRawResponseBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getRawResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getRawResponseBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getRawResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="()Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffer" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="getResponseBodyBuffers" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRawRequestBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRawRequestBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRawRequestBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRequestBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRequestBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRequestBody" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRequestHeaders" signature="()V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRequestHeaders" signature="()V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="sendRequestHeaders" signature="(Lcom/ibm/wsspi/channelfw/InterChannelCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.outbound.HttpOutboundServiceContextImpl"/>
+    <Method name="startResponseRead" signature="()Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="~com\.ibm\.ws\.http\.channel\.internal\.resources\.httpchannelmessages.*"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.resources.httpchannelmessages"/>
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread"/>
+    <Method name="setFilename" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread"/>
+    <Method name="createFileOutputStream" signature="()Ljava/io/FileOutputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread"/>
+    <Method name="start" signature="()Z"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread"/>
+    <Method name="start" signature="()Z"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="rotate" signature="()V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="addBackup" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="addBackup" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="isOverFileLimit" signature="(I)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="addBackup" signature="()V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOffThread$WorkerThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="rotate" signature="()V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="addBackup" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="addBackup" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="isOverFileLimit" signature="(I)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="addBackup" signature="()V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.LoggerOnThread"/>
+    <Method name="renameFile" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.genericbnf.BNFHeaders"/>
+    <Field name="EOL"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.genericbnf.BNFHeaders"/>
+    <Field name="KEY_VALUE_SEPARATOR"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.genericbnf.GenericKeys"/>
+    <Method name="getByteArray" signature="()[B"/>
+    <Field name="byteArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.genericbnf.HeaderKeys"/>
+    <Method name="getMarshalledByteArray" signature="(Z)[B"/>
+    <Field name="marshalledBytes"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.HttpChannelUtils"/>
+    <Method name="asByteArray" signature="(I)[B"/>
+    <Field name="ZERO_BYTEARRAY"/>
+    <Bug pattern="MS_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.DeflateOutputHandler"/>
+    <Method name="compress" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)Ljava/util/List;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.DeflateOutputHandler"/>
+    <Method name="finish" signature="()Ljava/util/List;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.GzipInputHandler"/>
+    <Method name="parseTrailer" signature="([BILjava/util/List;)I"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.GzipInputHandler"/>
+    <Method name="parseTrailer" signature="([BILjava/util/List;)I"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.GzipInputHandler"/>
+    <Method name="parseTrailer" signature="([BILjava/util/List;)I"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.GzipInputHandler"/>
+    <Method name="parseTrailer" signature="([BILjava/util/List;)I"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.GzipOutputHandler"/>
+    <Method name="compress" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)Ljava/util/List;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.compression.GzipOutputHandler"/>
+    <Method name="finish" signature="()Ljava/util/List;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.ConnectionValues"/>
+    <Method name="compareTo" signature="(Lcom/ibm/wsspi/http/channel/values/ConnectionValues;)I"/>
+    <Bug pattern="CO_SELF_NO_OBJECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.ContentEncodingValues"/>
+    <Method name="compareTo" signature="(Lcom/ibm/wsspi/http/channel/values/ContentEncodingValues;)I"/>
+    <Bug pattern="CO_SELF_NO_OBJECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.ExpectValues"/>
+    <Method name="compareTo" signature="(Lcom/ibm/wsspi/http/channel/values/ExpectValues;)I"/>
+    <Bug pattern="CO_SELF_NO_OBJECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.StatusCodes"/>
+    <Method name="getDefaultPhraseBytes" signature="()[B"/>
+    <Field name="myPhraseBytes"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.StatusCodes"/>
+    <Method name="getStatusWithPhrase" signature="()[B"/>
+    <Field name="bytesWithPhrase"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.TransferEncodingValues"/>
+    <Method name="compareTo" signature="(Lcom/ibm/wsspi/http/channel/values/TransferEncodingValues;)I"/>
+    <Bug pattern="CO_SELF_NO_OBJECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.VersionValues$VersionValuesMatcher"/>
+    <Method name="match" signature="([BIIZ)Lcom/ibm/wsspi/http/channel/values/VersionValues;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.channel.values.VersionValues$VersionValuesMatcher"/>
+    <Field name="list"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.http.logging.LogFile"/>
+    <Field name="CRLF"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  
+  <!--  System.currentTimeMillis used to get wall clock time -->
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.values.AccessLogStartTime"/>
+    <Method name="getStartTime"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.http.channel.internal.values.AccessLogCurrentTime"/>
+    <Method name="set"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.http.logging.internal.AccessLogger"/>
+    <Method name="toAccessLogRecordData"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <!-- Pre-existing problems (i.e. before we started using findbugs 2.0.2 -->
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="~com\.ibm\.wsspi\.http\.channel\.values\..*"/>
+    <Method name="find"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.genericbnf.internal.Normalizer"/>
+    <Method name="normalize"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl"/>
+    <Method name="isCompressionAllowed"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink"/>
+    <Method name="sendResponse"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.wsspi.genericbnf.GenericKeys"/>
+    <Method name="getName"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.wsspi.http.channel.values.VersionValues$VersionValuesMatcher"/>
+    <Method name="match"/>
+  </Match>
+  <Match>
+     <Bug pattern="EI_EXPOSE_REP2"/>
+    <Class name="com.ibm.wsspi.http.ee7.HttpInputStreamEE7Extended"/>
+    <Field name="postData"/>
+  </Match>
+  
+  <!-- Hmm, looks like this is a false positive -->
+  <Match>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+    <Class name="com.ibm.ws.http.channel.internal.HttpRequestMessageImpl"/>
+    <Method name="setScheme"/>
+  </Match>
+  <!-- I'm happy with the implementation here -->
+  <Match>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    <Class name="com.ibm.ws.http.channel.internal.CallbackIDs"/>
+    <Method name="&lt;init&gt;"/>
+    <Field name="NUM_IDS"/>
+  </Match>
+    <Match>
+    <Class name="com.ibm.wsspi.http.ee7.HttpOutputStreamEE7"/>
+    <Method name="writeRemainingToBuffers"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>    
+  </Match>
+</FindBugsFilter>

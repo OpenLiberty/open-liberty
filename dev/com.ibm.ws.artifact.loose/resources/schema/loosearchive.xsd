@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Licensed Materials - Property of IBM
+
+  "Restricted Materials of IBM"
+
+  Copyright IBM Corp. 2011 All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or
+  disclosure restricted by GSA ADP Schedule Contract with
+  IBM Corp.
+-->
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="http://www.ibm.com/websphere/appserver/loosearchive/v1"
+    xmlns:tns="http://www.ibm.com/websphere/appserver/loosearchive/v1"
+    elementFormDefault="qualified">
+
+    <complexType name="tFSEntry">
+        <attributeGroup ref="tns:commonAttributes"></attributeGroup>
+        <attribute name="sourceOnDisk" type="string" use="required"></attribute>
+    </complexType>
+
+    <element name="archive" type="tns:tVirtualArchive"></element>
+
+    <complexType name="tVirtualArchive">
+        <choice minOccurs="0" maxOccurs="unbounded">
+            <element name="dir" type="tns:tFSEntry" maxOccurs="unbounded"
+                minOccurs="0"></element>
+            <element name="file" type="tns:tFSEntry" maxOccurs="unbounded"
+                minOccurs="0"></element>
+            <element name="archive" type="tns:tEmbeddedVirtualArchive"
+                minOccurs="0" maxOccurs="unbounded"></element>
+        </choice>
+    </complexType>
+
+    <complexType name="tEmbeddedVirtualArchive">
+        <complexContent>
+            <extension base="tns:tVirtualArchive">
+        <attributeGroup ref="tns:commonAttributes"></attributeGroup>
+            </extension>
+        </complexContent>
+    </complexType>
+
+
+    <attributeGroup name="commonAttributes">
+        <attribute name="targetInArchive" type="string" use="required"/>
+    </attributeGroup>
+</schema>

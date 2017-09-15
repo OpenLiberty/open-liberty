@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Overlay FS
+Bundle-SymbolicName: com.ibm.ws.artifact.overlay
+Bundle-Description: Overlay FS Implementation; version=${bVersion}
+
+WS-TraceGroup: archive.overlay
+
+Export-Package: com.ibm.wsspi.artifact.overlay;provide:=true
+
+Private-Package: com.ibm.ws.artifact.overlay.internal
+
+Service-Component: \
+  com.ibm.ws.artifact.overlay.internal.service;\
+    implementation:=com.ibm.ws.artifact.overlay.internal.OverlayContainerFactoryImpl;\
+    provide:=com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;\
+    configuration-policy:=ignore;\
+    containerFactory='com.ibm.wsspi.artifact.factory.ArtifactContainerFactory(&(category=DIR)(category=JAR))';\
+    properties:="service.vendor=IBM"
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.artifact;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

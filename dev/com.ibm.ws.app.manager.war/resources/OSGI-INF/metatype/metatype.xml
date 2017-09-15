@@ -1,0 +1,35 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="%webapp.desc" name="%webapp.name" id="com.ibm.ws.app.manager.webappcfg" ibm:alias="webApplication" ibm:extends="com.ibm.ws.app.manager" ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter">
+        <AD id="type" name="internal" description="internal" type="String" default="war" ibm:final="true"/>
+        <AD id="contextRoot" name="%webapp.contextRoot.name" description="%webapp.contextRoot.desc" type="String" required="false" ibm:rename="context-root"/>
+<!--        <AD id="classloader" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.classloader" required="false" name="%classloader.name" description="%classloader.desc" />
+        <AD id="application-bnd" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.javaee.dd.appbnd" required="false" name="%appBnd.name" description="%appBnd.desc" />-->
+      </OCD>  
+    <Designate factoryPid="com.ibm.ws.app.manager.webappcfg">
+        <Object ocdref="com.ibm.ws.app.manager.webappcfg"/>
+    </Designate>
+
+    <OCD description="%earapp.desc" name="%earapp.name" id="com.ibm.ws.app.manager.earappcfg" ibm:alias="enterpriseApplication" ibm:extends="com.ibm.ws.app.manager">
+        <AD id="type" name="internal" description="internal" type="String" default="ear" ibm:final="true"/>
+        <AD id="context-root" name="internal" description="internal" ibm:final="true" required="false" type="String"/>
+        <AD id="defaultClientModule" name="%earapp.defaultClientModule.name" description="%earapp.defaultClientModule.desc" type="String" required="false"/>
+<!--        <AD id="classloader" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.classloading.classloader" required="false" name="%classloader.name" description="%classloader.desc" />
+        <AD id="application-bnd" type="String" ibm:type="pid" ibm:reference="com.ibm.ws.javaee.dd.appbnd" required="false" name="%appBnd.name" description="%appBnd.desc" />-->
+      </OCD>  
+    <Designate factoryPid="com.ibm.ws.app.manager.earappcfg">
+        <Object ocdref="com.ibm.ws.app.manager.earappcfg"/>
+    </Designate>
+</metatype:MetaData>

@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Webcontainer Admin Security Collaborator
+Bundle-Description: Webcontainer Admin Security Collaborator, version=${bVersion}
+Bundle-SymbolicName: com.ibm.ws.webcontainer.security.admin
+
+Private-Package: \
+  com.ibm.ws.webcontainer.security.admin.internal.*
+
+Service-Component: \
+  com.ibm.ws.webcontainer.security.admin.internal.WebAdminSecurityCollaboratorImpl; \
+    implementation:=com.ibm.ws.webcontainer.security.admin.internal.WebAdminSecurityCollaboratorImpl; \
+    provide:='com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator'; \
+    activate:=activate; \
+    deactivate:=deactivate; \
+    modified:='modified'; \
+    configuration-policy:=optional; \
+    immediate:=true; \
+    securityService='com.ibm.ws.security.SecurityService(Authentication=*)'; \
+    taiService=com.ibm.ws.security.authentication.tai.TAIService; \
+    interceptorService='com.ibm.wsspi.security.tai.TrustAssociationInterceptor(id=*)'; \
+	webAuthenticator=com.ibm.ws.webcontainer.security.WebAuthenticator; \
+    locationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
+    authenticatorFactory=com.ibm.ws.webcontainer.security.WebAuthenticatorFactory; \
+    unauthenticatedSubjectService=com.ibm.ws.security.authentication.UnauthenticatedSubjectService; \
+    multiple:='interceptorService,webAuthenticator'; \
+    greedy:='interceptorService,webAuthenticator,authenticatorFactory'; \
+    optional:='taiService,interceptorService,webAuthenticator'; \
+    dynamic:='taiService,interceptorService,webAuthenticator,authenticatorFactory'; \
+    properties:="service.vendor=IBM,com.ibm.ws.security.type=com.ibm.ws.management"
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.ws.management.security;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.security.authentication.tai;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

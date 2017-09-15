@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- persistentExecutor -->
+
+ <Designate factoryPid="com.ibm.ws.concurrent.persistent.executor">
+  <Object ocdref="com.ibm.ws.concurrent.persistent.executor"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.concurrent.persistent.executor" ibm:alias="persistentExecutor" name="%executor" description="%executor.desc">
+  <AD id="contextServiceRef"                 type="String"  default="DefaultContextService" ibm:type="pid" ibm:reference="com.ibm.ws.context.service" name="%contextService" description="%contextService.desc" required="false"/>  
+  <AD id="ContextService.target"             type="String"  default="(|(service.pid=${contextServiceRef})(&amp;(service.pid=com.ibm.ws.context.manager)(|(service.pid&gt;=${contextServiceRef})(default.for&lt;=${contextServiceRef}))))" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="enableTaskExecution"               type="Boolean" default="true" name="%enableTaskExecution" description="%enableTaskExecution.desc"/>
+  <AD id="initialPollDelay"                  type="String"  default="0" ibm:type="duration" name="%initialPollDelay" description="%initialPollDelay.desc"/>
+  <AD id="jndiName"                          type="String"  required="false" ibm:unique="jndiName" name="internal" description="internal use only"/>
+  <AD id="pollInterval"                      type="String"  default="-1" ibm:type="duration" name="%pollInterval" description="%pollInterval.desc"/>
+  <AD id="pollSize"                          type="Integer" required="false" min="1" name="%pollSize" description="%pollSize.desc"/>
+  <AD id="retryInterval"                     type="String"  default="1m" ibm:type="duration" name="%retryInterval" description="%retryInterval.desc"/>
+  <AD id="retryLimit"                        type="Short"   default="10" min="-1" max="10000" name="%retryLimit" description="%retryLimit.desc"/>
+  <AD id="service.ranking"                   type="Integer" default="-4000" name="internal" description="internal use only"/>
+  <AD id="taskStoreRef"                      type="String"  default="defaultDatabaseStore" ibm:type="pid" ibm:reference="com.ibm.ws.persistence.databaseStore" name="%taskStore" description="%taskStore.desc"/>
+  <AD id="TaskStore.target"                  type="String"  default="(service.pid=${taskStoreRef})" ibm:final="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Explanation of crazy ContextService.target filter:
+   Matches service.pid of contextServiceRef if valid.
+   Matches com.ibm.ws.context.manager if contextServiceRef does not expand to anything (because "com.ibm.ws.context.manager" is after "${contextServiceRef}").
+   Matches com.ibm.ws.context.manager if contextServiceRef points to contextService_X (not a valid instance) because the concurrent-* feature is not enabled (because "contextService" is before "contextService_X").
+   For each instance, it should always be the case that one and only one of the above will match.
+ -->
+
+</metatype:MetaData>

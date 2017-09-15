@@ -1,0 +1,34 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!-- NOTE: This is a generated file. Do not edit it directly. -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+localization="OSGI-INF/l10n/metatype">
+
+<OCD id="com.ibm.ws.javaee.dd.commonext.Method" name="%methodmetatype.name" description="%methodmetatype.desc">
+    <AD id="name" description="%MethodMetatype.name.desc" name="%MethodMetatype.name.name" type="String" required="false" cardinality="0"/>
+    <AD id="params" description="%MethodMetatype.params.desc" name="%MethodMetatype.params.name" type="String" required="false" cardinality="0"/>
+    <AD id="type" description="%MethodMetatype.type.desc" name="%MethodMetatype.type.name" type="String" required="false" cardinality="0">
+        <Option label="LOCAL_HOME" value="LOCAL_HOME"/>
+        <Option label="REMOTE" value="REMOTE"/>
+        <Option label="UNSPECIFIED" value="UNSPECIFIED"/>
+        <Option label="SERVICE_ENDPOINT" value="SERVICE_ENDPOINT"/>
+        <Option label="LOCAL" value="LOCAL"/>
+        <Option label="HOME" value="HOME"/>
+    </AD>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.javaee.dd.commonext.Method">
+     <Object ocdref="com.ibm.ws.javaee.dd.commonext.Method"/>
+</Designate>
+
+</metatype:MetaData>

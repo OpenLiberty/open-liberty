@@ -1,0 +1,79 @@
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/EndpointImpl.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/EndpointImpl.java	(revision 1383265)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/EndpointImpl.java	(working copy)
+@@ -31,6 +31,7 @@
+ import java.util.concurrent.Executor;
+ import java.util.logging.Logger;
+ 
++import javax.wsdl.Definition;
+ import javax.xml.namespace.QName;
+ import javax.xml.transform.Source;
+ import javax.xml.ws.Binding;
+@@ -43,8 +44,6 @@
+ import javax.xml.ws.wsaddressing.W3CEndpointReference;
+ import javax.xml.ws.wsaddressing.W3CEndpointReferenceBuilder;
+ 
+-import org.w3c.dom.Element;
+-
+ import org.apache.cxf.Bus;
+ import org.apache.cxf.BusFactory;
+ import org.apache.cxf.binding.BindingConfiguration;
+@@ -60,6 +59,7 @@
+ import org.apache.cxf.endpoint.Server;
+ import org.apache.cxf.endpoint.ServerImpl;
+ import org.apache.cxf.feature.AbstractFeature;
++import org.apache.cxf.frontend.WSDLGetUtils;
+ import org.apache.cxf.interceptor.Interceptor;
+ import org.apache.cxf.interceptor.InterceptorProvider;
+ import org.apache.cxf.jaxws.support.JaxWsEndpointImpl;
+@@ -69,6 +69,9 @@
+ import org.apache.cxf.service.Service;
+ import org.apache.cxf.service.invoker.Invoker;
+ import org.apache.cxf.service.model.EndpointInfo;
++import org.apache.cxf.wsdl.WSDLManager;
++import org.apache.cxf.wsdl11.WSDLServiceBuilder;
++import org.w3c.dom.Element;
+ 
+ public class EndpointImpl extends javax.xml.ws.Endpoint 
+     implements InterceptorProvider, Configurable {
+@@ -333,8 +336,15 @@
+                     endpointInfo.setAddress(addr);
+                 }
+                 if (publishedEndpointUrl != null) {
+-                    // TODO is there a good place to put this key-string as a constant?
+-                    endpointInfo.setProperty("publishedEndpointUrl", publishedEndpointUrl);
++                    endpointInfo.setProperty(WSDLGetUtils.PUBLISHED_ENDPOINT_URL, publishedEndpointUrl);
++                    //early update the publishedEndpointUrl so that endpoints in the same app sharing the same wsdl
++                    //do not require all of them to be queried for wsdl before the wsdl is finally fully updated
++                    Definition def = endpointInfo.getService().getProperty(WSDLServiceBuilder.WSDL_DEFINITION,
++                            Definition.class);
++                    if (def == null) {
++                        def = bus.getExtension(WSDLManager.class).getDefinition(wsdlLocation);
++                    }
++                    new WSDLGetUtils().updateWSDLPublishedEndpointAddress(def, endpointInfo);
+                 }
+ 
+                 if (null != properties) {
+Index: rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetUtils.java
+===================================================================
+--- rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetUtils.java	(revision 1383265)
++++ rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetUtils.java	(working copy)
+@@ -437,6 +437,17 @@
+         }
+     }    
+ 
++    public void updateWSDLPublishedEndpointAddress(Definition def, EndpointInfo endpointInfo) {
++        synchronized (def) {
++            //writing a def is not threadsafe.  Sync on it to make sure
++            //we don't get any ConcurrentModificationExceptions
++            if (endpointInfo.getProperty(PUBLISHED_ENDPOINT_URL) != null) {
++                String epurl = String.valueOf(endpointInfo.getProperty(PUBLISHED_ENDPOINT_URL));
++                updatePublishedEndpointUrl(epurl, def, endpointInfo.getName());
++            }
++        }
++    }
++    
+     protected void updatePublishedEndpointUrl(String publishingUrl, Definition def, QName name) {
+         Collection<Service> services = CastUtils.cast(def.getAllServices().values());
+         for (Service service : services) {

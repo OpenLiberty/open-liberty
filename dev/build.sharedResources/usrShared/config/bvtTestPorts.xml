@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+      <feature>fileinstall-1.0</feature>
+      <feature>timedexit-1.0</feature>
+    </featureManager>
+
+    <!-- the default dropin bundles scan is now 1s -->
+    <fileInstall dropin.bundles.enabled="true" scan.interval="1"/>
+
+    <!-- turn on application scanning for bvt tests that include this file -->
+    <!-- the bvts wait for applications to start so we'll poll for them more slowly
+    than we poll for dropped in bundles, to make sure the dropin bundles are started
+    before the apps that need them -->
+    <applicationMonitor enable="true" pollingRate="4s"/>
+            
+    <!--  
+        use non-default ports as defaults are already in use on build machine
+        allow reuse of 'busy' ports for fast server recycling on linux (where ports remain 
+        blocked for up to 2 mins after server stops)
+    -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}"/>
+
+     <wasJmsEndpoint wasJmsPort="${bvt.prop.jms}" wasJmsSSLPort="${bvt.prop.jms.ssl}" />
+    
+    <!-- use the shared/common keystore pwd: Liberty, expires 1/4/2099 -->
+    <!-- keystore is in build.sharedResources and is copied into wlp image before tests are run -->
+    <!-- keyStore id="defaultKeyStore" password="Liberty" type="jks" location="${shared.resource.dir}/security/key.jks" /-->
+
+</server>

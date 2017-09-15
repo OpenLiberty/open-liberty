@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2009  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Threading</title>
+</head>
+<body>
+
+<h1>Threading Services</h1>
+<p>One of the goals of the Liberty core is to have excellent scaling
+characteristics in multi-core environments.  Given the current industry
+trends, it is clear that single thread performance gains have been minor
+compared with past improvements.  It is also clear that the number of
+hardware threads supported on newer machines has been increasing rapidly.
+</p>
+<p>
+While in the past we would have expected single thread performance to roughly
+double every 18 months, now we expect the number of hardware threads to
+roughly double every 18 months.  With that in mind, Liberty must provide
+easy to use services that allow users to schedule multiple tasks for
+parallel execution.
+</p>
+
+<h2>Work Execution Services Provided by Liberty</h2>
+<p>
+In order to prevent the proliferation of code to manage threads, Liberty has
+provided a reference to a <code>java.util.concurrent.ExecutorService</code>
+implementation in the OSGi Service Registry.  The implementation of the
+employs a work stealing scheduler and automatic tuning that attempts to 
+provide optimal throughput based on the runtime environment and current load.
+</p>
+<p>
+Since the executor is exposed in the service registry, users can acquire the
+service reference using any of the supported OSGi mechanisms.  One of the
+simplest ways to do this is to use OSGi Declarative Services to define a
+component that has a reference to a
+<code>java.util.concurrent.ExecutorService</code>.
+</p>
+<div class="codeSample">
+&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name='executor.user.component'&gt;
+  &lt;implementation class='com.example.threading.ExecutorServiceUser'/&gt;
+  &lt;reference name='executorServiceReference'
+             interface='java.util.concurrent.ExecutorService'
+             bind='setExecutorService'
+             unbind='unsetExecutorService' /&gt;
+&lt;/scr:component&gt;
+</div>
+
+<h2>Using the Executor Service</h2>
+<p>
+The <code>ExecutorService</code> interface defined by Java allows users to
+request execution of multiple tasks in various ways.  The most basic of these
+is submission of an object that implements the <code>Callable</code> interface.
+</p>
+<p>
+A <code>Callable</code> is an object that declares a <code>call</code> method
+that performs some action and returns a result.  When a <code>Callable</code>
+is submitted to an executor, the executor returns a handle to the scheduled
+work known as a <code>Future</code>.  The <code>Future</code> instance can then
+be used to check the status of the work and get the result.
+<div class="codeSample">
+...
+ExecutorService executor = ... ;
+MyCallable&lt;Result&gt; callable = new MyCallable&lt;Result&gt;(...);
+Future&lt;Result&gt; future = executor.submit(callable);
+...
+// Do something else while the callable runs
+...
+// Wait up to 1 second for the callable to complete
+Result callableResult = future.get(1, TimeUnit.SECONDS);
+...
+</div>
+
+Please see the java <code>ExecutorService</code> documentation for additional
+examples.
+</p>
+
+<h2>Configuration</h2>
+<p>
+There is currently no configuration required for the threading services.
+</p>
+
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+  <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+  <!-- match generated nls classes: return mutable type -->
+  <Match> 
+    <Bug pattern="EI_EXPOSE_REP" />
+    <Class name="~.*\.resources\..*" />
+    <Method name="getContents"/>
+  </Match>
+
+  <!-- Bad practice Warnings -->
+  <Match>
+    <Class name="com.ibm.ws.transport.iiop.asn1.util.Dump"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.transport.iiop.security.util.Util"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory"/>
+    </Or>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.asn1.util.ASN1Dump"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory"/>
+      <Class name="com.ibm.ws.transport.iiop.security.ServerSecurityInterceptor"/>
+    </Or>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.transport.iiop.security.util.Util"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.transport.iiop.asn1.x509.X509Name"/>
+    <Bug pattern="NM_FIELD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.transport.iiop.security.config.ssl.yoko.ORBInitializer"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.security.ClientSecurityInterceptor"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.css.CSSCompoundSecMechConfig"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.ssl.yoko.ORBInitializer"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.ssl.yoko.ServiceContextInterceptor"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.ssl.yoko.SocketFactory$2"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.tss.TSSCompoundSecMechConfig"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.tss.TSSSSLTransportConfig"/>
+      <Class name="com.ibm.ws.transport.iiop.security.IORSecurityInterceptor"/>
+      <Class name="com.ibm.ws.transport.iiop.security.SecurityInitializer"/>
+      <Class name="com.ibm.ws.transport.iiop.security.ServerSecurityInterceptor"/>
+      <Class name="com.ibm.ws.transport.iiop.security.util.Util"/>
+    </Or>
+    <Bug code="TR" />
+  </Match>
+
+  <!-- Internationalization Warnings -->
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.asn1.util.ASN1Dump"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.tss.TSSSECIOPTransportConfig"/>
+      <Class name="com.ibm.ws.transport.iiop.security.ServerSecurityInterceptor"/>
+      <Class name="com.ibm.ws.transport.iiop.security.util.Util"/>
+    </Or>
+    <Bug code="Dm"/>
+  </Match>
+
+  <!-- Malicious code vulnerability Warnings -->
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.asn1.ASN1OctetString"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.BERConstructedOctetString"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERApplicationSpecific"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERBitString"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERUniversalString"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERUnknownTag"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.AuthorityInformationAccess"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.DigestInfo"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.TBSCertList"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.css.CSSGSSUPMechConfigDynamic"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.css.CSSGSSUPMechConfigStatic"/>
+      <Class name="com.ibm.ws.transport.iiop.security.FinalContextToken"/>
+    </Or>
+    <Bug code="EI" />
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.asn1.ASN1OctetString"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERApplicationSpecific"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERBitString"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DEREnumerated"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERInteger"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERUniversalString"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERUnknownTag"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.DigestInfo"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.X509Name"/>
+    </Or>
+    <Bug code="EI2" />
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.transport.iiop.asn1.x509.X509Name"/>
+    <Bug code="MS" />
+  </Match>
+
+  <!-- Dodgy code Warnings -->
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.asn1.DERInputStream"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.tss.TSSGSSUPMechConfig"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.tss.TSSSSLTransportConfig"/>
+      <Class name="com.ibm.ws.transport.iiop.security.IORSecurityInterceptor"/>
+      <Class name="com.ibm.ws.transport.iiop.security.ServerSecurityInterceptor"/>
+      <Class name="com.ibm.ws.transport.iiop.security.util.Util"/>
+    </Or>
+    <Bug code="DLS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.transport.iiop.asn1.ASN1OctetString"/>
+    <Bug code="Eq" />
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.security.config.css.CSSSASITTPrincipalNameDynamic"/>
+      <Class name="com.ibm.ws.transport.iiop.security.config.tss.TSSGSSUPMechConfig"/>
+    </Or>
+    <Bug code="RCN" />
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.DistributionPoint"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.NameConstraints"/>
+      <Class name="com.ibm.ws.transport.iiop.asn1.x509.TBSCertificateStructure"/>
+    </Or>
+    <Bug code="SF" />
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.security.csiv2.util.LocationUtils"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
+  </Match>
+
+</FindBugsFilter>

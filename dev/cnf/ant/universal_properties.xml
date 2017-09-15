@@ -1,0 +1,220 @@
+<!-- This file is suitable for importing by both the build_liberty* scripts
+and standard_properties. Properties which are required by both the top-level 
+build_liberty* tasks and project-level build scripts should be defined here. -->
+
+<project name="universal_properties">
+	<dirname property="imports.dir" file="${ant.file.universal_properties}" />
+
+	<property name="install.name" value="wlp" />
+	<property name="liberty.image.dir" location="${basedir}/../build.image" />
+	<property name="liberty.dir" location="${liberty.image.dir}/${install.name}" />
+	<property name="liberty.image.output.upload.dir" location="${liberty.image.dir}/output/upload/externals/installables" />
+	<property name="liberty.shared.dir" value="${liberty.dir}/usr/shared" />
+	<property name="liberty.lib.dir" location="${liberty.dir}/lib" />
+	<property name="build.tmp.dir" value="${liberty.image.dir}/build/tmp" />
+
+	<!-- This looks like a version, but it is just a stream identifier for chkpii and findbugs and it should not be changed. -->
+	<property name="liberty.stream.identifier" value="9.0.0.0" />
+
+	<property name="fe.gsa.server" value="${gsa.server}" />
+	<!-- Default to using our parent's label if we have one -->
+	<condition property="fe.gsa.basedir" value="${gsa.base.dir}/${parentBuildServerLabel}/fe" else="${gsa.base.dir}/${buildServerLabel}/fe">
+		<isset property="parentBuildServerLabel" />
+	</condition>
+
+	<property name="fe.path" value="/linux/zipper/externals/installables/" />
+	<tstamp>
+		<format property="fe.build.increment" pattern="ss" />
+	</tstamp>
+	<property name="fe.suffix" value="${fe.build.increment}.linux" />
+
+	<!-- One central property to name the remote GSA server, to make it easy to override (perhaps with the IP address if DNS acts up). -->
+	<property name="remote.gsa.server" value="ausgsa.ibm.com" />
+
+	<!-- Upload properties used by the FE Upload Build -->
+	<property name="final.fe.gsa.server" value="${remote.gsa.server}" />
+	<property name="final.fe.gsa.basedir" value="/projects/l/liberty.build/liberty/WASX.LIBERTY/daily/" />
+
+	<property name="dhe.download.xml.file.name" value="wdt855.download.xml" />
+
+	<property name="fat.bootstrap.path" value="${basedir}/../fattest.simplicity/autoFVT-defaults" />
+	<property name="fat.bootstrap.name" value="bootstrapping.properties" />
+	
+	<import file="${basedir}/../ant_build/public_imports/internal_imports/jdbc_driver_properties.xml" optional="true"/>
+
+	<!-- Assume we handle BVT sync-ness the same as FATs, but use a separate property to allow overrides -->
+	<property name="run.bvt.async" value="${run.fat.async}" />
+	<!-- Experimental support for running unittests asycn, does not currently work.-->
+	<property name="run.unittest.async" value="false" />
+
+	<property name="build.toolkit.xml.file" location="${server.path}/../../buildtoolkit/BuildToolkitTaskDefs.xml" />
+	<condition property="is.running.rtc.build">
+		<isset property="buildResultUUID" />
+	</condition>
+
+	<!-- Default to run FAT tests once only -->
+	<property name="fat.run.count" value="1" />
+
+	<!-- How many parallel builds to launch for async tests -->
+	<!-- Default to running one child build only -->
+	<property name="async.thread.count" value="1" />
+	<condition property="is.running.asyncs.multithreaded">
+		<not>
+			<equals arg1="${async.thread.count}" arg2="1" />
+		</not>
+	</condition>
+
+	<!-- Default to split z/OS FAT across machines -->
+	<property name="async.thread.count.for.zOS" value="7" />
+
+	<!-- There are two properties that control how much gets build in the Liberty image:
+       * build.license.zip - indicates that we should build all the different licensed versions of the product (i.e. ilae, ipla etc.)
+       * create.im.repo - indicates the same as build.license.zip but also that we should then build the IM repo as well
+      as create.im.repo should do everything that build.license.zip does and more default build.license.zip to the value of create.im.repo
+      if build.license.zip has not been explicitly set in the build properties. -->
+	<property name="build.license.zip" value="${create.im.repo}" />
+
+	<condition property="unix.mac.environment">
+		<or>
+			<os family="unix" />
+			<os family="mac" />
+		</or>
+	</condition>
+
+	<condition property="unix.shell" value="${env.WLP_CYGWIN_HOME}/bin/sh">
+		<isset property="env.WLP_CYGWIN_HOME" />
+	</condition>
+	<condition property="unix.shell" value="/bin/sh">
+		<isset property="unix.mac.environment" />
+	</condition>
+
+	<condition property="msoft.environment">
+		<or>
+			<os family="windows" />
+			<os family="dos" />
+		</or>
+	</condition>
+
+	<condition property="msoft32.environment">
+		<or>
+			<os family="windows" arch="x86" />
+			<os family="dos" arch="x86" />
+		</or>
+	</condition>
+
+	<condition property="msoft64.environment">
+		<or>
+			<os family="windows" arch="x64" />
+			<os family="windows" arch="amd64" />
+			<os family="windows" arch="x86_64" />
+			<os family="dos" arch="x64" />
+		</or>
+	</condition>
+
+	<condition property="i.environment">
+		<or>
+			<os family="OS/400" />
+			<os family="os/400" />
+		</or>
+	</condition>
+
+	<condition property="mac.environment">
+		<os family="mac" />
+	</condition>
+
+	<condition property="hp.environment">
+		<or>
+			<os name="HP-UX" />
+			<os name="hp-ux" />
+		</or>
+	</condition>
+
+	<condition property="aix.environment">
+		<os name="AIX" />
+	</condition>
+
+	<condition property="linuxppc64.environment">
+		<os name="Linux" arch="ppc64" />
+	</condition>
+
+	<condition property="linuxppc.environment">
+		<os name="Linux" arch="ppc" />
+	</condition>
+
+	<condition property="linuxppc64le.environment">
+		<os name="Linux" arch="ppc64le" />
+	</condition>
+
+	<condition property="linuxs390.environment">
+		<os name="Linux" arch="s390" />
+	</condition>
+
+	<condition property="linuxs390x.environment">
+		<os name="Linux" arch="s390x" />
+	</condition>
+
+	<condition property="linux64.environment">
+		<os name="Linux" arch="x64" />
+	</condition>
+
+	<condition property="solarissparc.environment">
+		<os name="SunOS" arch="sparc" />
+	</condition>
+
+	<condition property="solarisx86.environment">
+		<os name="SunOS" arch="x86" />
+	</condition>
+
+	<condition property="zos.environment">
+		<os family="z/OS" />
+	</condition>
+
+	<condition property="allow.missing.features">
+		<and>
+			<istrue value="${allow.load.profiles}" />
+			<not>
+				<equals arg1="" arg2="${team.scm.componentLoadRules}" />
+			</not>
+		</and>
+	</condition>
+
+	<property name="unittest.prop.allow.missing.features" value="${allow.missing.features}" />
+
+	<condition property="require.all.content" value="true" else="false">
+		<isfalse value="${unittest.prop.allow.missing.features}" />
+	</condition>
+
+	<tstamp>
+		<format property="copyrightBuildYear" pattern="yyyy" />
+	</tstamp>
+
+	<!-- make sure a label is present for both top-level and project-level builds: 
+           used to generate the Bundle-Version header -->
+	<tstamp>
+		<format property="buildLabelTStamp" pattern="yyyyMMddHHmm" />
+	</tstamp>
+	<condition property="buildLabel" value="${local.build.label.override}${buildLabelTStamp}" else="${buildLabelTStamp}">
+		<isset property="local.build.label.override" />
+	</condition>
+
+	<property name="buildServerLabel" value="${buildLabel}-LOCAL" />
+
+	<!-- The temporary file dropped on the file system by an IM install -->
+	<property name="IM.install.properties.file" value="${basedir}/../image/output/IM.installed" />
+
+	<!-- Allow 3hrs for ftp-ing to complete -->
+    <property name="ftp.timeout" value="10800000" />
+
+	<!-- SOE server and port to report "soft errors" to during testing.
+		 Initial use case: LibertyServer log-scraping delays reported through SOEHttpPostUtil
+		 
+		 Test server: "http://ltestw40.hursley.ibm.com:9080"
+    	 Production server: "http://howler.hursley.ibm.com:9080"
+		 -->
+	<property name="soe.softfailure.report.server" value="http://howler.hursley.ibm.com:9080" />
+
+	<!-- URL pointing to the location on DHE where our repository content is hosted -->
+	<property name="dhe.repo.base.url" value="https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp" />
+
+</project>
+

@@ -1,0 +1,76 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+## An extra include is needed to the app-resources.bnd
+## so that this bnd file can use the app-resources header
+-include= ~../cnf/resources/bnd/bundle.props, \
+          ~../cnf/resources/bnd/app-resources.bnd
+
+bVersion=1.5
+bSymbolicName=com.ibm.ws.javamail
+
+Bundle-Name: JavaMail 1.5 API
+Bundle-SymbolicName: com.ibm.ws.javamail
+Bundle-Description: JavaMail 1.5 API; This feature allows applications to utilize the JavaMail 1.5 API. 
+
+WS-TraceGroup: Mail
+
+## Resources that were moved from the original javax.mail.jar to
+## the new feature jar, included the mailcap file which is needed
+## for the app-resources header
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF, \
+  @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/mailcap, \
+  @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/gfprobe-provider.xml, \
+  @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/javamail.charset.map, \
+  @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/javamail.default.address.map, \
+  @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/javamail.default.providers
+
+## The only file that is used by the app-resources is the
+## mailcap file, this is because it is used by JAF to assess
+## what type of content the Message classes uses with its DataHandler
+## I originally included the other files, but commented them out for now
+## as I'm not entirely sure they are needed for the feature to work properly
+app-resources= \
+  META-INF/mailcap 
+
+Private-Package: \
+com.ibm.ws.javamail.internal.injection, \
+com.ibm.ws.javamail.internal, \
+com.ibm.ws.javamail.resources, \
+com.ibm.ws.config.xml.internal.nester
+
+Import-Package: \
+  !*.internal.*, \
+  *
+
+Export-Package: \
+  com.ibm.ws.javamail.j2ee
+
+-dsannotations=com.ibm.ws.javamail.internal.MailSessionService, \
+  com.ibm.ws.javamail.internal.injection.MailSessionDefinitionInjectionProcessorProvider, \
+  com.ibm.ws.javamail.internal.injection.MailSessionResourceFactoryBuilder
+
+instrument.classesExcludes: com/ibm/ws/javamail/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.mail.1.5;version=latest,\
+	com.ibm.ws.com.sun.mail.javax.mail.1.5;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.injection.core;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.resource;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

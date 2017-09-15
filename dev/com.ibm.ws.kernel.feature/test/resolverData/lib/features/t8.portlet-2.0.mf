@@ -1,0 +1,6 @@
+Subsystem-SymbolicName: t8.portlet-2.0; visibility:=public; singleton:=true
+Subsystem-Version: 1.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: 
+ t8.jsp-1.0; type="osgi.subsystem.feature",
+ t8.servlet-1.0; type="osgi.subsystem.feature"; ibm.tolerates:=2.0

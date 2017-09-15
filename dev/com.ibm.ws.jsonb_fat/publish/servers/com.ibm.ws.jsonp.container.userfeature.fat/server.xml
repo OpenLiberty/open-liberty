@@ -1,0 +1,35 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>componenttest-1.0</feature>
+      <feature>jsonpContainer-1.1</feature>
+      <feature>jsonbContainer-1.0</feature>
+      <feature>usr:testFeatureUsingJsonp-1.1</feature>
+    </featureManager>
+
+	<include location="../fatTestPorts.xml"/>
+
+    <library id="json-p-johnzon">
+      <fileset dir="${shared.resource.dir}/johnzon" includes="johnzon-core-*.jar"/>
+<!--       <fileset dir="${shared.resource.dir}/refImpls" includes="org.glassfish.jsonp-1.1.jar"/> -->
+    </library>
+
+    <bell libraryRef="json-p-johnzon"/>
+    
+    <library id="json-b-yasson">
+      <fileset dir="${shared.resource.dir}/refImpls" includes="yasson-*.jar"/>
+    </library>
+
+    <bell libraryRef="json-b-yasson"/>
+
+    <variable name="onError" value="FAIL"/>
+</server>

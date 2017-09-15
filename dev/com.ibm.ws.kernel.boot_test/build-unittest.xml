@@ -1,0 +1,80 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.kernel.boot_test" default="unittest">
+
+  <property name="unittest.disable.logging.instrument" value="true"/>  
+
+  <import file="../ant_build/public_imports/standard_imports.xml" />
+  <import file="../ant_build/public_imports/unittest_imports.xml" />
+  <import file="../ant_build/public_imports/internal_imports/wlpbnd.xml"/>
+
+  <target name="unittestPackage">
+    
+    <!-- Copy test data into build dir.. -->
+	<copy todir="build/unittest/test data">
+		<fileset dir="unittest/test data" />
+	</copy>
+
+    <!-- Create the distribution directory -->
+    <mkdir dir="build/unittest/test data/lib" />
+    
+    <pathconvert property="pcp" refid="unittest.class.path" />
+    <echo>Project classpath: ${pcp}</echo>
+    
+    <property name="bnd.target" value="build/unittest/test data/lib/" />
+    <property name="unittest.kernel.boot.version" value="1.0.4"/>
+    <!-- get the kernel boot jar file name -->
+    <fileset id="unittest.kernel.boot.jar" dir="../build.image/wlp/lib" includes="com.ibm.ws.kernel.boot_*.jar"/>
+    <!-- use pathconvert to get the kernel boot jar file name in a property for use in simple.bnd -->
+    <pathconvert property="unittest.kernel.boot.jar.name" refid="unittest.kernel.boot.jar" setonempty="false"/> 
+    <!-- need a special classpath for simple.bnd because it needs to package the same
+    resources as the kernel boot jar -->
+    <path id="unittest.simple.1.cp">
+      <path refid="unittest.class.path"/>
+      <pathelement location="${unittest.kernel.boot.jar.name}"/>
+    </path>
+	<!--  <bnd> apparently tolerates absent files on classpath string, but not on classpathref. So: -->
+	<!-- It also has problems with comma as delimiter, despite claims -->
+    <wlpbnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         classpathref="unittest.simple.1.cp"
+         files="simple.bnd" />
+    <bnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         files="simple.nofactory.bnd" />
+    <bnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         classpath="${pcp}"
+         files="simple2.bnd" />
+    <bnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         files="simple3.bnd" />
+    <bnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         files="simple4.bnd" />
+    <bnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         files="simple5.bnd" />
+  	<bnd eclipse="false"
+         failok="false"
+         exceptions="true"
+         files="launch.bnd" />
+
+    <touch file="build/unittest/test data/lib/fake.jar" />
+    <!-- This is not supposed to be a real jar: just a file -->
+  </target>
+</project>

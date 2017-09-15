@@ -1,0 +1,33 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2017.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: It is not possible to determine the type of claim to be injected. The type of the injection point is {0}.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=The injection point that is annotated with the Claim qualifier does not have a valid type.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=Ensure that the injection point has a valid type for the claim you want to inject.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: The {0} injection point dependency is not resolved, which results in error {1}.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=An injected claim did not resolve.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=Check the server message and first-failure data capture (FFDC) logs to determine the cause.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: The Claim qualifier for injection point {0} has inconsistent values for both the value and standard elements. The value element has {1} while the standard element has {2}.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=The injection point annotated with the Claim qualifier has conflicting elements.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Ensure that the injection point has a valid Claim qualifier for the claim you want to inject.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: The claim cannot be injected into the {0} injection point for the ApplicationScoped or SessionScoped scopes.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=The injection point annotated with the Claim qualifier for a raw type must belong to a class annotated with the RequestScoped scope annotation.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Ensure that the injection point is a member of a class in the RequestScoped scope for the claim you want to inject.

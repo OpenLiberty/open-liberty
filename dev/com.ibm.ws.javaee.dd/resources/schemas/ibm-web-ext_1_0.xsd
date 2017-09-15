@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified"
+        version="1.0">
+
+        <!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+				Licensed Materials - Property of IBM
+
+				"Restricted Materials of IBM"
+
+				Copyright IBM Corp. 2010 All Rights Reserved.
+
+				US Government Users Restricted Rights - Use, duplication or
+				disclosure restricted by GSA ADP Schedule Contract with
+				IBM Corp.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+        <xsd:include schemaLocation="ibm-common-ext_1_0.xsd" />
+
+        <!-- ******************************************************* -->
+
+        <xsd:element name="web-ext" type="web-extType">
+                <xsd:annotation>
+                        <xsd:documentation>
+
+                                The root of the application-client-ext deployment descriptor.
+
+                        </xsd:documentation>
+                </xsd:annotation>
+        </xsd:element>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="web-extType">
+                <xsd:sequence>
+                        <xsd:element name="servlet" type="servlet-extensionType" minOccurs="0" maxOccurs="unbounded" />
+
+                        <xsd:element name="default-error-page" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="uri" type="xsd:string" use="required"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="file-serving-attribute" type="attributeType" minOccurs="0" maxOccurs="unbounded" />
+                        <xsd:element name="invoker-attribute" type="attributeType" minOccurs="0" maxOccurs="unbounded" />
+                        <xsd:element name="jsp-attribute" type="attributeType" minOccurs="0" maxOccurs="unbounded" />
+                        <xsd:element name="mime-filter" type="mime-filterType" minOccurs="0" maxOccurs="unbounded" />
+
+                        <xsd:element name="reload-interval" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:integer" use="required"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="context-root" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="uri" type="xsd:string" use="required"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="resource-ref" type="resource-refType" minOccurs="0" maxOccurs="unbounded" />
+
+                        <xsd:element name="servlet-cache-config" minOccurs="0" type="servlet-cache-configType" maxOccurs="unbounded"/>
+
+                        <xsd:element name="autoload-filters" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="auto-encode-requests" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="auto-encode-responses" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="enable-directory-browsing" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="enable-file-serving" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="pre-compile-jsps" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="enable-reloading" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="enable-serving-servlets-by-class-name" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                </xsd:sequence>
+
+                <xsd:attribute name="version" type="xsd:string" fixed="1.0" use="required" />
+                <xsd:attribute name="id" type="xsd:ID" />
+
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="servlet-extensionType">
+                <xsd:sequence>
+                        <xsd:element name="local-transaction" type="local-transactionType" minOccurs="0" maxOccurs="1" />
+                        <xsd:element name="global-transaction" type="global-transactionType" minOccurs="0" maxOccurs="1" />
+                        <xsd:element name="web-global-transaction" type="web-global-transactionType" minOccurs="0" maxOccurs="1" />
+                        <xsd:element name="markup-language" type="markup-languageType" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="web-global-transactionType">
+                <!-- If true, execute using Web Services Atomic Transaction on incoming requests -->
+                <xsd:attribute name="execute-using-wsat" type="xsd:boolean" use="required" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="markup-languageType">
+                <xsd:sequence>
+                        <xsd:element name="page" type="pageType" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+                <xsd:attribute name="mime-type" type="xsd:string" use="required" />
+
+                <!-- Value should be the name of the error page -->
+                <xsd:attribute name="error-page" type="xsd:string"/>
+
+                <!-- Value should be the name of the default page -->
+                <xsd:attribute name="default-page" type="xsd:string"/>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="pageType">
+                <xsd:attribute name="name" type="xsd:string" use="required" />
+                <xsd:attribute name="uri" type="xsd:string" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="attributeType">
+                <xsd:attribute name="name" type="xsd:string"  use="required"/>
+                <xsd:attribute name="value" type="xsd:string"  use="required"/>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="mime-filterType">
+                <xsd:attribute name="target" type="xsd:string"  use="required"/>
+                <xsd:attribute name="mime-type" type="xsd:string"  use="required"/>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="servlet-cache-configType">
+                <xsd:sequence>
+                        <xsd:element name="servlet" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                        <xsd:attribute name="name" type="xsd:string" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="timeout" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:integer" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="priority" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:integer" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="invalidate-only" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="external-cache-group" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                        <xsd:attribute name="name" type="xsd:string" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="id-generator" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="class" type="xsd:string" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="metadata-generator" minOccurs="0">
+                                <xsd:complexType>
+                                        <xsd:attribute name="class" type="xsd:string" use="required" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="id-generation-properties" type="id-generation-propertiesType" minOccurs="0"/>
+
+                </xsd:sequence>
+                <xsd:attribute name="properties-group-name" type="xsd:string"  use="required"/>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="id-generation-propertiesType">
+                <xsd:sequence>
+                        <xsd:element name="cache-variable" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                        <xsd:attribute name="type">
+                                                <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="REQUEST_PARAMETER" />
+                                                                <xsd:enumeration value="REQUEST_ATTRIBUTE" />
+                                                                <xsd:enumeration value="SESSION_PARAMETER" />
+                                                                <xsd:enumeration value="COOKIE" />
+                                                        </xsd:restriction>
+                                                </xsd:simpleType>
+                                        </xsd:attribute>
+
+                                        <xsd:attribute name="identifier" type="xsd:string"/>
+                                        <xsd:attribute name="method" type="xsd:string"/>
+                                        <xsd:attribute name="required" type="xsd:boolean"/>
+                                        <xsd:attribute name="data-id" type="xsd:string"/>
+                                        <xsd:attribute name="invalidate" type="xsd:string"/>
+                                </xsd:complexType>
+                        </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="use-uri" type="xsd:boolean" />
+                <xsd:attribute name="alternate-name" type="xsd:string" />
+                <xsd:attribute name="use-path-infos" type="xsd:boolean" />
+        </xsd:complexType>
+
+</xsd:schema>

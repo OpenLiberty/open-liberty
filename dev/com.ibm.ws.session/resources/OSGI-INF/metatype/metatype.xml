@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+  
+    <OCD name="%session.config" 
+         description="%session.config.desc" 
+         id="com.ibm.ws.session" 
+         ibm:alias="httpSession"
+         ibmui:extraProperties="true" 
+         ibmui:localization="OSGI-INF/l10n/metatype">
+            
+        <AD id="maxInMemorySessionCount" 
+            name="%max.in.memory.session.count" 
+            description="%max.in.memory.session.count.desc" 
+            required="false" type="Integer" default="1000" />
+            
+        <AD id="allowOverflow" 
+            name="%allow.overflow" 
+            description="%allow.overflow.desc" 
+            required="false" type="Boolean" default="true" />
+            
+        <!-- ibmui:group=session.tracking.mechanism -->
+        <AD id="sslTrackingEnabled" 
+            name="%SSL.tracking.enabled" 
+            description="%SSL.tracking.enabled.desc" 
+            ibmui:group="session.tracking.mechanism"
+            required="false" type="Boolean" default="false" />   
+            
+        <AD id="cookiesEnabled" 
+            name="%cookies.enabled" 
+            description="%cookies.enabled.desc" 
+            ibmui:group="session.tracking.mechanism"
+            required="false" type="Boolean" default="true" /> 
+            
+        <AD id="urlRewritingEnabled" 
+            name="%URL.rewriting.enable" 
+            description="%URL.rewriting.enable.desc" 
+            ibmui:group="session.tracking.mechanism"
+            required="false" type="Boolean" default="false" />  
+            
+        <!-- ibmui:group=invalidation -->
+        <AD id="invalidationTimeout" 
+            name="%invalidation.timeout" 
+            description="%invalidation.timeout.desc" 
+            ibmui:group="invalidation"
+            required="false" type="String" ibm:type="duration(s)" default="30m" />
+            
+        <AD id="reaperPollInterval" 
+            name="%reaper.poll.interval" 
+            description="%reaper.poll.interval.desc" 
+            ibmui:group="invalidation"
+            required="false" type="String" ibm:type="duration(s)" default="-1"/>
+            
+        <AD id="forceInvalidationMultiple" 
+            name="%force.invalidation.multiple" 
+            description="%force.invalidation.multiple.desc" 
+            ibmui:group="invalidation"
+            required="false" type="Integer" default="3"/>
+            
+        <!-- ibmui:group=cookies -->
+        <AD id="cookieName" 
+            name="%cookie.name" 
+            description="%cookie.name.desc" 
+            ibmui:group="cookies"
+            required="false" type="String" default="JSESSIONID" />   
+            
+        <AD id="cookieDomain" 
+            name="%cookie.domain" 
+            description="%cookie.domain.desc" 
+            ibmui:group="cookies"
+            required="false" type="String" default=""/>
+            
+        <AD id="cookieMaxAge" 
+            name="%cookie.max.age" 
+            description="%cookie.max.age.desc" 
+            ibmui:group="cookies"
+            required="false" type="String" ibm:type="duration(s)" default="-1"/>
+            
+        <AD id="cookiePath" 
+            name="%cookie.path" 
+            description="%cookie.path.desc" 
+            ibmui:group="cookies"
+            required="false" type="String" default="/"/>
+            
+        <AD id="useContextRootAsCookiePath" 
+            name="%use.context.root.as.cookie.path" 
+            description="%use.context.root.as.cookie.path.desc" 
+            ibmui:group="cookies"
+            required="false" type="Boolean" default="false" />
+            
+        <AD id="cookieSecure" 
+            name="%cookie.secure" 
+            description="%cookie.secure.desc" 
+            ibmui:group="cookies"
+            required="false" type="Boolean" default="false" /> 
+            
+        <AD id="cookieHttpOnly" 
+            name="%cookie.http.only" 
+            description="%cookie.http.only.desc" 
+            ibmui:group="cookies"
+            required="false" type="Boolean" default="true" /> 
+            
+        <!-- ibmui:group=url.rewriting -->
+        <AD id="rewriteId" 
+            name="%rewrite.id" 
+            description="%rewrite.id.desc" 
+            ibmui:group="url.rewriting"
+            required="false" type="String" default="jsessionid"/>
+            
+        <AD id="protocolSwitchRewritingEnabled" 
+            name="%protocol.switch.rewriting.enabled" 
+            description="%protocol.switch.rewriting.enabled.desc" 
+            ibmui:group="url.rewriting"
+            required="false" type="Boolean" default="false" /> 
+            
+        <AD id="alwaysEncodeUrl" 
+            name="%always.encode.url" 
+            description="%always.encode.url.desc" 
+            ibmui:group="url.rewriting"
+            required="false" type="Boolean" default="false"/>  
+            
+        <!-- ibmui:group=security -->
+        <AD id="securityIntegrationEnabled" 
+            name="%security.integration.enabled" 
+            description="%security.integration.enabled.desc"
+            ibmui:group="security" 
+            required="false" type="Boolean" default="true" />
+            
+        <AD id="securityUserIgnoreCase" 
+            name="%security.user.ignore.case" 
+            description="%security.user.ignore.case.desc" 
+            ibmui:group="security" 
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="invalidateOnUnauthorizedSessionRequestException" 
+            name="%invalidate.on.unauthorized.session.request.exception" 
+            description="%invalidate.on.unauthorized.session.request.exception.desc" 
+            ibmui:group="security" 
+            required="false" type="Boolean" default="false"/>
+            
+        <!-- ibmui:group=failover -->
+        <AD id="sessionPersistenceMode" 
+            name="internal" 
+            description="internal use only" 
+            required="false" type="String" default="NONE" ibm:final="true" />
+            
+        <AD id="cloneId" 
+            name="%clone.id" 
+            description="%clone.id.desc" 
+            ibmui:group="failover" 
+            required="false" type="String"/>
+            
+        <AD id="cloneSeparator" 
+            name="%clone.separator" 
+            description="%clone.separator.desc" 
+            ibmui:group="failover" 
+            required="false" type="String" default=":"/>
+            
+        <!-- ibmui:group=advanced -->
+        <AD id="idLength" 
+            name="%id.length" 
+            description="%id.length.desc" 
+            ibmui:group="advanced" 
+            required="false" type="Integer" default="23"/>
+            
+        <AD id="idReuse" 
+            name="%id.reuse" 
+            description="%id.reuse.desc" 
+            ibmui:group="advanced" 
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="noAdditionalInfo" 
+            name="%no.additional.info" 
+            description="%no.additional.info.desc" 
+            ibmui:group="advanced" 
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="debugCrossover" 
+            name="%debug.crossover" 
+            description="%debug.crossover.desc" 
+            ibmui:group="advanced" 
+            required="false" type="Boolean" default="false"/>
+    </OCD>
+  
+    <Designate pid="com.ibm.ws.session">
+        <Object ocdref="com.ibm.ws.session"/>
+    </Designate>
+    
+</metatype:MetaData>

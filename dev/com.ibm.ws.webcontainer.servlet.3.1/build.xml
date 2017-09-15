@@ -1,0 +1,31 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.webcontainer.servlet.3.1" default="build">
+    <property name="build.with.java.level" value="1.7"/>
+    <import file="../ant_build/public_imports/standard_imports.xml"/>
+    
+    <!-- exclude modified WAS classes from instrumentation -->
+    <!-- also exclude classes that may trace buffers and-or other sensitive user information -->
+    <target name="post-compile">
+        <property name="instrument.ffdc" value="true" />
+        <instrument.trace ffdc="${instrument.ffdc}">
+            <fileset dir="${classes.dir}">
+                <include name="**/*.class" />
+                <exclude name="**/com/ibm/ws/webcontainer31/**" />
+                <exclude name="**/com/ibm/wsspi/webcontainer31/**" />
+                <include name="**/com/ibm/ws/webcontainer31/osgi/**/*.class" />
+                <exclude name="**/com/ibm/ws/webcontainer31/osgi/response/WCOutputStream31.class" />
+                <exclude name="**/com/ibm/ws/webcontainer31/osgi/request/IRequest31Impl.class" />
+                <exclude name="**/com/ibm/ws/webcontainer31/osgi/webapp/WebApp31.class" />
+            </fileset>
+        </instrument.trace>
+    </target>
+</project>

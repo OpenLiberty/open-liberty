@@ -1,0 +1,29 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.kernel.boot.ws-server" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+  
+  <target name="publishExtra" if="publish.image.dir">
+    <echo>Publishing ws-server.jar to ${publish.image.dir}/${image.write.bin.tools.dir}</echo>
+    <copy todir="${publish.image.dir}/${image.write.bin.tools.dir}" file="${lib.dir}/ws-server.jar" />
+  </target>
+
+  <target name="post-compile">
+    <!-- bin/tools/ws-server.jar -->
+    <jar jarfile="${lib.dir}/ws-server.jar">
+      <manifest>
+        <attribute name="Main-Class" value="com.ibm.ws.kernel.boot.cmdline.EnvCheck"/>
+        <attribute name="Class-Path" value="../../lib/com.ibm.ws.kernel.boot_1.0.${micro.version}.jar"/>
+      </manifest>
+    </jar>
+  </target>
+  
+</project>

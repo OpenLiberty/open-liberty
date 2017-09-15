@@ -1,0 +1,82 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Monitor Project
+Bundle-SymbolicName: com.ibm.ws.monitor
+Bundle-Description: Monitoring framework; version=${bVersion}
+Export-Package: com.ibm.websphere.monitor.*;version=1.1.0, \
+	com.ibm.wsspi.pmi.*;version=1.1.0, \
+	com.ibm.websphere.pmi.*;version=1.1.0, \
+	com.ibm.ws.pmi.*;version=1.1.0, \
+	com.ibm.ws.pmi.factory.*;version=1.1.0 \
+
+	
+Private-Package: com.ibm.ws.monitor.internal*, \
+	com.ibm.ws.monitors.*
+
+Import-Package: \
+    !*.internal.*,*
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF,   \
+    com/ibm/ws/monitors/JVMMonitorStats.xml=resources/JVMMonitorStats.xml, \
+    com/ibm/ws/monitors/threadPoolModule.xml=resources/threadPoolModule.xml, \
+    com/ibm/websphere/pmi/xml/stats.dtd=resources/stats.dtd
+
+Service-Component=com.ibm.ws.monitor.internal.ProbeManagerImpl; \
+        implementation:="com.ibm.ws.monitor.internal.ProbeManagerImpl"; \
+        provide:="com.ibm.websphere.monitor.MonitorManager"; \
+        instrumentation=java.lang.instrument.Instrumentation; \
+        properties:="service.vendor=IBM"; \
+        version:=1.1, \
+    com.ibm.ws.monitor.internal.MonitoringFrameworkExtender; \
+        implementation:="com.ibm.ws.monitor.internal.MonitoringFrameworkExtender"; \
+        configuration-policy:=optional; \
+        monitorManager=com.ibm.websphere.monitor.MonitorManager; \
+        packageAdmin=org.osgi.service.packageadmin.PackageAdmin; \
+        immediate:=true; \
+        modified:='modified'; \
+        version:=1.1, \
+    com.ibm.websphere.pmi.deserialization; \
+        implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
+        provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
+        properties:='packages=com.ibm.websphere.pmi|com.ibm.websphere.pmi.stat|com.ibm.websphere.pmi.server'
+        
+WS-TraceGroup: Monitor
+
+Liberty-Monitoring-Components: \
+			com.ibm.ws.monitors.JVM, \
+			com.ibm.ws.monitors.ThreadPoolMonitor
+
+instrument.ffdc: false
+instrument.classesExcludes: \
+    com/ibm/ws/pmi/properties/*.class, \
+    com/ibm/ws/monitor/internal/boot/templates/**
+
+-buildpath: \
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.org.objectweb.asm;version=latest,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.container.service;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \

@@ -1,0 +1,60 @@
+
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config schema strings
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/SchemaData.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKG1001 - CWWKG1020
+
+config.internal.metatype.includeType.documentation=Specify a configuration resource to include in the server's configuration.
+config.internal.metatype.includeType.label=Include
+config.internal.metatype.includeType.attribute.optional.documentation=Allow the included resource to be skipped if it cannot be found.
+config.internal.metatype.includeType.attribute.optional.label=Resource is optional
+config.internal.metatype.includeType.attribute.location.documentation=Specifies the resource location. This can be a file path or a URI for a remote resource.
+config.internal.metatype.includeType.attribute.location.label=Location
+config.internal.metatype.includeType.attribute.onConflict.documentation=Specifies the behavior that is used to merge elements when conflicts are found.
+config.internal.metatype.includeType.attribute.onConflict.label=On conflict
+
+config.internal.metatype.variableDefinitionType.documentation=Declare a new variable by specifying the name and value for the variable.
+config.internal.metatype.variableDefinitionType.label=Variable Declaration
+config.internal.metatype.variableDefinitionType.name.documentation=The name of the variable.
+config.internal.metatype.variableDefinitionType.name.label=Name
+config.internal.metatype.variableDefinitionType.value.documentation=The value to be assigned to the variable.
+config.internal.metatype.variableDefinitionType.value.label=Value
+
+config.internal.metatype.duration.desc=Specify a positive integer followed by a unit of time, which can be hours (h), minutes (m), seconds (s), or milliseconds (ms). For example, specify 500 milliseconds as 500ms. You can include multiple values in a single entry. For example, 1s500ms is equivalent to 1.5 seconds.
+config.internal.metatype.duration-s.desc=Specify a positive integer followed by a unit of time, which can be hours (h), minutes (m), or seconds (s). For example, specify 30 seconds as 30s. You can include multiple values in a single entry. For example, 1m30s is equivalent to 90 seconds.
+config.internal.metatype.duration-m.desc=Specify a positive integer followed by a unit of time, which can be hours (h) or minutes (m). For example, specify 30 minutes as 30m. You can include multiple values in a single entry. For example, 1h30m is equivalent to 90 minutes.
+config.internal.metatype.duration-h.desc=Specify a positive integer followed by the unit of time, which can be hours (h). For example, specify 12 hours as 12h.
+
+config.internal.metatype.pid.reference.type=Configuration ID of type {0} (string).
+config.internal.metatype.pid.reference.list.type=List of configuration IDs of type {0} (comma-separated string).
+config.internal.metatype.pid.reference.nested.type=Element of type {0}.
+
+config.internal.metatype.type.desc=PID is {0}.
+config.internal.metatype.type.child.desc=PID is {0}, and it is the child of complex type <q>{1}</q>.
+
+config.internal.metatype.id.documentation=A unique configuration ID.
+config.internal.metatype.id.label=ID
+
+config.internal.metatype.onConflictType.merge.label=Conflicting elements will be merged together.
+config.internal.metatype.onConflictType.replace.label=When elements conflict, the element from the included file will replace the conflicting element.
+config.internal.metatype.onConflictType.ignore.label=Conflicting elements in the included file will be ignored.
+config.internal.metatype.onConflictType.break.label=Elements that conflict will cause configuration errors.
+
+OSGI_SERVICE_ERROR=CWWKG1001E: OSGi service {0} is not available.  Try to restart the server with the --clean option.
+OSGI_SERVICE_ERROR.explanation=The specified service is not available, causing this internal server error.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the --clean option.

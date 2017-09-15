@@ -1,0 +1,408 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!-- match generated nls classes: return mutable type -->
+  <Match> 
+    <Class name="~.*\.resources\..*" />
+    <Method name="getContents"/>
+    <Bug code="EI" />
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification"/>
+    </Or>
+    <Method name="logState"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <!-- There are calls to gather debug info during processing that are output at the end. We
+       don't want to gather data if trace is enabled so we protect the gathering API calls. This means
+       we need to ignore warning for the data gathering calls. -->
+  <Match>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer"/>
+      <Or>
+        <Method name="openResourceStream"/>
+        <Method name="scanClasses"/>
+        <Method name="endTimings"/>
+      </Or>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <!-- There are calls to gather debug info during processing that are output at the end. We
+       don't want to gather data if trace is enabled so we protect the gathering API calls. This means
+       we need to ignore warning for the data gathering calls. -->
+  <Match>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer"/>
+      <Or>
+        <Method name="endTimings"/>
+      </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl"/>
+    <Or>
+      <Method name="logCounts"/>
+      <Method name="scanClass"/>
+    </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+  
+   
+  <Match>
+    <Class name="com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet"/>
+    <Method name="add"/>
+    <Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ"/>
+  </Match>
+    
+  <Match>
+    <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate"/>
+    <Method name="openResourceStream"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate"/>
+    <Or>
+      <Method name="log"/>
+      <Method name="log_failedLookups"/>
+      <Method name="log_firstSuccesses"/>
+      <Method name="log_globalResults"/>
+      <Method name="log_lookupCounts"/>
+      <Method name="openResourceStream"/>
+    </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_ClassLoader"/>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer"/>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory"/>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar"/>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedSimple"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container_WAR"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct_EJB"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct_WAR"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct_Bundle"/>
+      <Class name="com.ibm.ws.anno.info.internal.DelayedClassInfo"/>
+      <Class name="com.ibm.ws.anno.info.internal.AnnotationInfoCache"/>
+      <Class name="com.ibm.ws.anno.info.internal.AnnotationInfoCacheBucket"/>
+      <Class name="com.ibm.ws.anno.info.internal.AnnotationInfoImpl"/>
+      <Class name="com.ibm.ws.anno.info.internal.FieldInfoImpl"/>
+      <Class name="com.ibm.ws.anno.info.internal.InfoImpl"/>
+      <Class name="com.ibm.ws.anno.util.internal.UtilImpl_InternMap"/>
+      <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Scanner"/>
+      <Class name="com.ibm.ws.anno.info.internal.PrimitiveClassInfo"/>
+    </Or>
+    <Method name="log"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.MethodInfoImpl"/>
+    <Method name="log"/>
+    <Or>
+      <Bug pattern="TR_MISSING_GUARD"/>
+      <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+    </Or>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.anno.info.internal.InfoStoreImpl"/>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification"/>
+      <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Specification"/>
+      <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets"/>
+      <Class name="com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap"/>
+      <Class name="com.ibm.ws.anno.util.internal.UtilImpl_InternMap"/>
+      <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Scanner"/>
+    </Or>
+    <Method name="logState"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct"/>
+    </Or>
+    <Method name="logCommon"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container_WAR"/>
+      <Class name="com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Direct_WAR"/>
+    </Or>
+    <Method name="logLocations"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.ClassInfoCache"/>
+    <Or>
+      <Method name="addAsFirst"/>
+      <Method name="getDelayableClassInfo"/>
+      <Method name="getNonDelayedClassInfo"/>
+      <Method name="makeFirst"/>
+      <Method name="removeAsDelayable"/>
+      <Method name="resolveClassInfo"/>
+      <Method name="log"/>
+      <Method name="log_packages"/>
+      <Method name="log_classes"/>
+      <Method name="log_annotatedClasses"/>
+      <Method name="log_internMaps"/>
+      <Method name="log_javaClasses"/>
+      <Method name="log_delayedClasses"/>
+      <Method name="log_primitiveClasses"/>
+      <Method name="logLinks"/>
+    </Or>
+    <Or>
+      <Bug pattern="TR_MISSING_GUARD"/>
+      <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+    </Or>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.DelayedClassInfo"/>
+    <Or>
+      <Method name="setClassInfo"/>
+      <Method name="getClassInfo"/>
+    </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+ 
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.InfoImpl"/>
+    <Method name="logAnnotations"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.InfoStoreImpl"/>
+    <Or>
+      <Method name="&lt;init&gt;"/>
+      <Method name="log"/>
+      <Method name="scanClass"/>
+      <Method name="scanNewClass"/>
+    </Or>  
+    <Bug pattern="TR_MISSING_GUARD"/>
+
+  </Match>   
+  
+
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.NonDelayedClassInfo"/>
+    <Or>
+      <Method name="acquireInheritedAnnotations"/>
+      <Method name="log"/>
+    </Or>
+    <Or>
+      <Bug pattern="TR_MISSING_GUARD"/>
+      <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+    </Or>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets"/>
+    <Or>
+      <Method name="log"/>
+      <Method name="logInterfaceNames"/>
+      <Method name="logScannedClasses"/>
+      <Method name="logScannedPackages"/>
+      <Method name="logSuperclassNames"/>
+      <Method name="logUnresolvedClasses"/>
+      <Method name="logUnresolvedPackages"/>
+      <Method name="logClassClassSources"/>
+      <Method name="logClassSources"/>
+      <Method name="logPackageClassSources"/>
+      <Method name="scanClass"/>
+    </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+ 
+  <Match>
+    <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_PolicyData"/>
+    <Method name="log"/> 
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap"/>
+    <Or>
+      <Method name="log"/>
+      <Method name="logHeldMap"/>
+      <Method name="logHolderMap"/>
+      <Method name="logInternMaps"/>
+    </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+    
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.InfoVisitor"/>
+    <Or>
+      <Method name="visit"/>
+      <Method name="visitClass"/>
+      <Method name="visitPackage"/>
+      <Method name="visitEndClass"/>
+      <Method name="visitEndField"/>
+      <Method name="visitEndMethod"/>
+      <Method name="visitEndPackage"/>
+    </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.PackageInfoImpl"/>
+    <Method name="log"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.MethodInfoImpl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.NonDelayedClassInfo"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.resources.internal.AnnoMessages"/>
+    <Method name="getContents"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match type="EI_EXPOSE_REP">
+    <Class name="com.ibm.ws.anno.info.internal.DelayedClassInfo"/>
+    <Or>
+        <Method name="interfaceNames"/>
+        <Method name="getLogParms"/>
+    </Or>
+  </Match>
+    
+  <Match>
+    <Or>
+      <And>
+        <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate"/>
+        <Method name="closeResourceStream"/>
+      </And>
+      
+      <And>
+        <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_ClassLoader"/>
+        <Method name="closeResourceStream"/>
+      </And>
+      
+      <And>
+        <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer"/>
+          <Or>
+            <Method name="closeResourceStream"/>
+            <Method name="close"/>
+          </Or>
+      </And>
+      
+      <And>
+        <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory"/>
+        <Method name="closeResourceStream"/>
+      </And>
+      
+      <And>
+        <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar"/>
+        <Method name="closeResourceStream"/>
+      </And>
+      
+      <And>
+        <Class name="com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedSimple"/>
+        <Method name="closeResourceStream"/>
+      </And>
+      
+      <And>
+        <Class name="com.ibm.ws.anno.info.internal.ClassInfoCache"/>
+        <Method name="resolveClassInfo"/>
+      </And>
+      
+      <And>
+        <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets"/>
+        <Method name="scanClass"/>
+      </And>
+      
+    </Or>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.ClassInfoCache"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Or>
+      <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+    </Or>
+  </Match>
+  
+  <!-- The unlucky winner of the "can we cause false positives in the new 'MessageFormat.format being passed no inserts' detector?" prize -->
+  <Match>
+    <Class name="com.ibm.ws.anno.info.internal.DelayedClassInfo"/>
+    <Method name="log"/>
+    <Bug pattern="MESSAGE_FORMAT_CALLED_WITH_NO_INSERTS"/>
+  </Match> 
+  
+  <Match>
+    <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets"/>
+    <Method name="isInstanceOf"/>
+    <Bug code="ES"/>
+  </Match>
+  
+  <!-- Valid case of computing a message key-->
+  <Match>
+    <Class name="com.ibm.ws.anno.util.internal.UtilImpl_InternMap"/>
+    <Method name="intern"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+  
+  <!-- Pre-existing calls to System.currentTimeMillis -->
+  <Match>
+    <Class name="~com\.ibm\.ws\.anno\.(classsource\.internal\.ClassSourceImpl_Mapped(Container|Simple)|info\.internal\.ActivityTimer)"/>
+    <Method name="getTime"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Scanner"/>
+    <Method name="~scan(Referenced|Direct)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <!--  Filter CWWKC0031W because of message text changes -->
+  <Match>
+    <Class name="com.ibm.ws.anno.resources.internal.AnnoMessages"/>
+    <Field name="CWWKC0031W"/>
+  </Match>
+  
+  <!-- Using == is sort of the point of this class! -->
+  <Match>
+    <Class name="com.ibm.ws.anno.util.internal.UtilImpl_IdentityStringSet"/>
+    <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ"/>
+  </Match>
+  
+</FindBugsFilter>

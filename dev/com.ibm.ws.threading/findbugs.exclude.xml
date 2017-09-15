@@ -1,0 +1,158 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+   
+   <!--  All classes in com.ibm.ws.threading can be assumed to have privilege -->
+   <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED"/>
+   </Match>
+
+   <!--  As threading IS the component responsible for starting threads, so it's allowed to do so! -->
+   <Match>
+     <Bug pattern="THREAD_START_CALLED"/>
+     <Class name="com.ibm.ws.threading.internal.ThreadPoolExecutorImpl"/>
+     <Method name="createWorker"/>
+   </Match>
+
+   <!--  Declarative Services provides some implicit synchronization on the activate/modified/deactivate methods,
+         as well as some guarantees about how bind / unbind will be driven, making explicit synchronization of 
+         those methods unnecessary -->
+   <Match>
+     <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+     <Class name="com.ibm.ws.threading.internal.ExecutorServiceImpl"/>
+   </Match>
+
+   <Match>
+     <Bug pattern="SYSTEM_OUT_USED"/>
+     <Class name="com.ibm.ws.threading.internal.WorkStageManagerImpl$StatisticsTask"/>
+     <Method name="run"/>
+   </Match>
+
+   <Match>
+     <Bug pattern="NN_NAKED_NOTIFY"/>
+     <Class name="com.ibm.ws.threading.internal.NonCancelableResultFuture"/>
+   </Match>
+
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.threading.internal.FutureMonitorImpl$FutureMonitorInfo"/>
+     <Method name="notifyListener"/>
+   </Match>
+
+   <!-- Caught throwable -->
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.threading.internal.IntervalTask"/>
+     <Method name="run"/>
+   </Match>
+   
+   <!-- Pre-existing calls to System.currentTimeMillis -->
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.BoundedBuffer"/>
+     <Method name="offer"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.BoundedBuffer"/>
+     <Method name="poll"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.BoundedBuffer"/>
+     <Method name="put"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.DeferrableScheduledExecutorImpl"/>
+     <Method name="roundUpDelay"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.NonCancelableResultFuture"/>
+     <Method name="get"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.ThreadPoolController"/>
+     <Method name="evaluateInterval"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.ThreadPoolController"/>
+     <Method name="resetStatistics"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.WorkRequestImpl"/>
+     <Method name="&lt;clinit&gt;"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.statistics.QueueStatistics"/>
+     <Method name="&lt;init&gt;"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.threading.statistics.ThreadPoolStatistics"/>
+     <Method name="&lt;init&gt;"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   
+   <!-- I could be mistaken, but I think instances of the affected classes are only used by one thread at a time -->
+   <Match>
+     <Class name="~com\.ibm\.ws\.threading\.internal\.Steal(All|Half|One)Deque"/>
+     <Method name="~.*Bottom.*"/>
+     <Field name="bottom"/>
+     <Bug pattern="VO_VOLATILE_INCREMENT"/>
+   </Match>
+
+   <!-- This call to learn the trace level is used to determine whether to enable the creation
+        of diagnostic threads at server startup. -->
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.ThreadFactoryImpl"/>
+     <Method name="&lt;clinit&gt;"/>
+     <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+   </Match>
+   
+   <!-- match generated nls classes: return mutable type -->
+   <Match> 
+     <Class name="~.*\.resources\..*" />
+     <Method name="getContents"/>
+     <Bug code="EI" />
+   </Match>
+   
+   <!-- Return value from Java API not needed -->
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.BoundedBuffer$GetQueueLock"/>
+     <Method name="await"/>
+     <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+   </Match>
+   
+   <!-- Await method parent code is in a loop -->
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.BoundedBuffer$GetQueueLock"/>
+     <Method name="await"/>
+     <Bug pattern="WA_AWAIT_NOT_IN_LOOP"/>
+   </Match>
+   
+   <!-- This seems harmless, especialy since this BoundedBuffer implementation has been successfully in tWAS production for years -->
+   <Match>
+     <Class name="com.ibm.ws.threading.internal.BoundedBuffer"/>
+     <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+   </Match>   
+   
+</FindBugsFilter>

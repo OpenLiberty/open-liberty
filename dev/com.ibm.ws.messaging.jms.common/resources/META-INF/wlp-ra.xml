@@ -1,0 +1,178 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!-- wlp-ra.ml WebSphere Liberty Extension to the ra.xml -->
+<connector xmlns="http://websphere.ibm.com/xml/ns/javaee">
+  <display-name>WebSphere Application Server JMS Resource Adapter</display-name>
+  <resourceadapter name="internal" description="internal use only">
+    <!-- Outbound additional information, starting with the Connection Factory -->
+    <outbound-resourceadapter>
+      <connection-definition connectionfactory-interface="javax.jms.ConnectionFactory" nlsKey="jms.cf.properties.wasJms.connectionfactory">
+        <config-property  config-property-name="nonPersistentMapping" nlsKey="[common] jms.common.nonPersistentMapping">
+          <option value="BestEffortNonPersistent"/>
+          <option value="ExpressNonPersistent"/>
+          <option value="ReliableNonPersistent"/>
+        </config-property>
+        <config-property  config-property-name="persistentMapping" nlsKey="[common] jms.common.persistentMapping">
+          <option value="ReliablePersistent"/>
+          <option value="AssuredPersistent"/>
+        </config-property>
+        <config-property  config-property-name="readAhead" nlsKey="[common] jms.common.readAhead" default="Default">
+          <option value="Default"/>
+          <option value="AlwaysOn"/>
+          <option value="AlwaysOff"/>
+        </config-property>
+        <config-property config-property-name="busName" nlsKey="[common] jms.common.busName"  default="defaultBus"/>
+        <config-property config-property-name="temporaryTopicNamePrefix" nlsKey="[common] jms.common.temporaryTopicNamePrefix" default="temp"/>
+        <config-property config-property-name="temporaryQueueNamePrefix" nlsKey="[common] jms.common.temporaryQueueNamePrefix" default="temp"/>
+        <config-property config-property-name="shareDurableSubscription" nlsKey="jms.common.shareDurableSubscription" type="String"/>
+        <config-property config-property-name="clientID" nlsKey="[common] jms.common.clientID" default="clientID"/>
+        <config-property config-property-name="userName" nlsKey="[common] jms.common.userName"/>
+        <config-property config-property-name="password" nlsKey="[common] jms.common.password" type="password"/>
+        <config-property config-property-name="remoteServerAddress" nlsKey="[common] jms.common.remoteServerAddress" default=""/> 
+        <config-property config-property-name="durableSubscriptionHome" nlsKey="[common] jms.common.durableSubscriptionHome" type="String" default="defaultME"/>
+        <config-property config-property-name="targetTransportChain" nlsKey="[common] jms.common.targetTransportChain"/>
+      </connection-definition>
+    
+     <!--- Queue Connection Factory -->
+      <connection-definition connectionfactory-interface="javax.jms.QueueConnectionFactory" nlsKey="jms.qcf.properties.wasJms.QueueConnectionFactory">
+        <config-property  config-property-name="nonPersistentMapping" nlsKey="[common] jms.common.nonPersistentMapping">
+          <option value="BestEffortNonPersistent"/>
+          <option value="ExpressNonPersistent"/>
+          <option value="ReliableNonPersistent"/>
+        </config-property>
+        <config-property  config-property-name="persistentMapping" nlsKey="[common] jms.common.persistentMapping">
+          <option value="ReliablePersistent"/>
+          <option value="AssuredPersistent"/>
+        </config-property>
+        <config-property  config-property-name="readAhead" nlsKey="[common] jms.common.readAhead">
+          <option value="Default"/>
+          <option value="AlwaysOn"/>
+          <option value="AlwaysOff"/>
+        </config-property>
+        <config-property config-property-name="busName" nlsKey="[common] jms.common.busName" default="defaultBus"/>
+        <config-property config-property-name="temporaryQueueNamePrefix" nlsKey="[common] jms.common.temporaryQueueNamePrefix" default="temp"/>
+        <config-property config-property-name="userName" nlsKey="[common] jms.common.userName"/>
+        <config-property config-property-name="password" nlsKey="[common] jms.common.password" type="password"/>
+        <config-property config-property-name="remoteServerAddress" nlsKey="[common] jms.common.remoteServerAddress"/>
+        <config-property config-property-name="targetTransportChain" nlsKey="[common] jms.common.targetTransportChain"/>
+      </connection-definition>   
+    
+      <!-- Topic Connection Factory -->
+      <connection-definition connectionfactory-interface="javax.jms.TopicConnectionFactory" nlsKey="jms.tcf.properties.wasJms.TopicConnectionFactory">
+        <config-property  config-property-name="nonPersistentMapping" nlsKey="[common] jms.common.nonPersistentMapping">
+          <option value="BestEffortNonPersistent"/>
+          <option value="ExpressNonPersistent"/>
+          <option value="ReliableNonPersistent"/>
+        </config-property>
+        <config-property  config-property-name="persistentMapping" nlsKey="[common] jms.common.persistentMapping">
+          <option value="ReliablePersistent"/>
+          <option value="AssuredPersistent"/>
+        </config-property>
+        <config-property  config-property-name="readAhead" nlsKey="[common] jms.common.readAhead">
+          <option value="Default"/>
+          <option value="AlwaysOn"/>
+          <option value="AlwaysOff"/>
+        </config-property>
+        <config-property config-property-name="busName" nlsKey="[common] jms.common.busName" default="defaultBus"/>
+        <config-property config-property-name="temporaryTopicNamePrefix" nlsKey="[common] jms.common.temporaryTopicNamePrefix" default="temp"/>
+        <config-property config-property-name="shareDurableSubscription" nlsKey="jms.common.shareDurableSubscription" type="String"/>
+        <config-property config-property-name="clientID" nlsKey="[common] jms.common.clientID" default="clientID"/>
+        <config-property config-property-name="userName" nlsKey="[common] jms.common.userName"/>
+        <config-property config-property-name="password" nlsKey="[common] jms.common.password" type="password"/>
+        <config-property config-property-name="remoteServerAddress" nlsKey="[common] jms.common.remoteServerAddress"/>
+        <config-property config-property-name="durableSubscriptionHome" nlsKey="[common] jms.common.durableSubscriptionHome" type="String" default="defaultME"/>
+        <config-property config-property-name="targetTransportChain" nlsKey="[common] jms.common.targetTransportChain"/>
+      </connection-definition>   
+    </outbound-resourceadapter>
+    
+    <!-- Inbound additional information - note that current RA is JCA 1.5, thereby the ra.xml contains only required properties, hence all need to specified here with action=add.-->
+    <inbound-resourceadapter>
+      <messageadapter>
+        <messagelistener messagelistener-type="javax.jms.MessageListener" nlsKey="jms.as.properties">
+          <activationspec activationspec-class="com.ibm.ws.sib.api.jmsra.impl.JmsJcaActivationSpecImpl">
+            <config-property action="add" config-property-name="connectionFactoryLookup" nlsKey="[common] jms.as.connectionFactoryLookup" type="String"/>
+            <config-property action="add" config-property-name="destinationLookup" nlsKey="[common] jms.as.destinationLookup" type="String"/>
+            <config-property action="add" config-property-name="busName" nlsKey="[common] jms.common.busName" type="String" default="defaultBus"/>
+            <config-property action="add" config-property-name="destination" nlsKey="[common] jms.as.destinationref" type="String"/>
+            <config-property action="add" config-property-name="messageSelector" nlsKey="jms.as.messageSelector" type="String"/>
+            <config-property action="add" config-property-name="clientId" nlsKey="[common] jms.common.clientID" type="String"/>
+            <config-property action="add" config-property-name="subscriptionName" nlsKey="jms.as.subscriptionName" type="String"/>
+            <config-property action="add" config-property-name="shareDurableSubscription" nlsKey="jms.common.shareDurableSubscription" type="String"/>
+            <config-property action="add" config-property-name="userName" nlsKey="[common] jms.common.userName" type="String"/>
+            <config-property action="add" config-property-name="password" nlsKey="[common] jms.common.password" type="password"/>
+            <config-property action="add" config-property-name="remoteServerAddress" nlsKey="[common] jms.common.remoteServerAddress" type="String"/>
+            <config-property action="add" config-property-name="targetTransportChain" nlsKey="[common] jms.common.targetTransportChain" default="InboundBasicMessaging" type="String">
+	  		  <option value="InboundBasicMessaging"/>
+    		  <option value="InboundSecureMessaging"/>
+    		</config-property>
+            <config-property action="add" config-property-name="maxBatchSize" nlsKey="jms.as.maxBatchSize" type="Integer" min="1" max="2147483647"/> 
+            <config-property action="add" config-property-name="maxConcurrency" nlsKey="jms.as.maxConcurrency" type="Integer" min="1" default="5" max="2147483647"/>
+            <config-property action="add" config-property-name="retryInterval" nlsKey="jms.as.retryInterval" type="duration(s)" default="30s" min="1"/> 
+            <config-property action="add" config-property-name="destinationType" nlsKey="jms.as.destinationType" default="javax.jms.Queue" type="String">
+              <option value="javax.jms.Queue"/>
+              <option value="javax.jms.Topic"/>
+            </config-property>
+            <config-property action="add" config-property-name="subscriptionDurability" nlsKey="jms.as.subscriptionDurability" default="NonDurable" type="String">
+              <option value="NonDurable"/>
+              <option value="NonDurableShared"/>
+              <option value="Durable"/>
+              <option value="DurableShared"/>
+            </config-property>
+            <config-property action="add" config-property-name="readAhead" nlsKey="[common] jms.common.readAhead" default="Default" type="String">
+              <option value="Default"/>
+              <option value="AlwaysOn"/>
+              <option value="AlwaysOff"/>
+            </config-property>
+            <config-property action="add" config-property-name="acknowledgeMode" nlsKey="jms.as.acknowledgeMode" default="Auto-acknowledge" type="String">
+              <option value="Auto-acknowledge"/>
+    		  <option value="Dups-ok-acknowledge"/>
+            </config-property>
+          </activationspec>
+        </messagelistener>
+      </messageadapter>
+    </inbound-resourceadapter>
+    
+    <!-- Administerd Objects - Queue  -->
+    <adminobject adminobject-interface="javax.jms.Queue" adminobject-class="com.ibm.ws.sib.api.jms.impl.JmsQueueImpl" nlsKey="properties.wasJms.Queue">
+      <config-property config-property-name="deliveryMode" nlsKey="[common] jms.common.deliverymode" default="Application">
+        <option value="Application"/>
+        <option value="Persistent"/>
+        <option value="NonPersistent"/>
+      </config-property>
+      <config-property config-property-name="readAhead" nlsKey="[common] jms.common.readAhead" default="AsConnection">
+        <option value="AsConnection"/>
+        <option value="AlwaysOn"/>
+        <option value="AlwaysOff"/>
+      </config-property>  
+      <config-property config-property-name="queueName" nlsKey="queue.QueueName" default="Default.Queue"/>
+      <config-property config-property-name="timeToLive" nlsKey="[common] jms.common.timetolive" type="duration(s)" min="0" default="0s"/> 
+      <config-property config-property-name="priority" nlsKey="[common] jms.common.priority" min="0" max="9" type="Integer"/> 
+    </adminobject> 
+    
+    <!-- Administerd Objects - Topic -->    
+    <adminobject adminobject-interface="javax.jms.Topic" adminobject-class="com.ibm.ws.sib.api.jms.impl.JmsTopicImpl" nlsKey="properties.wasJms.Topic">
+      <config-property config-property-name="deliveryMode" nlsKey="[common] jms.common.deliverymode" default="Application">
+        <option value="Application"/>
+        <option value="Persistent"/>
+        <option value="NonPersistent"/>
+      </config-property>
+      <config-property config-property-name="readAhead" nlsKey="[common] jms.common.readAhead" default="AsConnection">
+        <option value="AsConnection"/>
+        <option value="AlwaysOn"/>
+        <option value="AlwaysOff"/>
+      </config-property>
+      <config-property config-property-name="topicSpace" nlsKey="topic.TopicSpace" default="Default.Topic.Space"/>
+      <config-property config-property-name="topicName" nlsKey="topic.TopicName" default="Default.Topic"/>
+      <config-property config-property-name="timeToLive" nlsKey="[common] jms.common.timetolive" type="duration(s)" min="0" default="0s"/> 
+      <config-property config-property-name="priority" nlsKey="[common] jms.common.priority" min="0" max="9" type="Integer"/> 
+    </adminobject> 
+  </resourceadapter>
+</connector>

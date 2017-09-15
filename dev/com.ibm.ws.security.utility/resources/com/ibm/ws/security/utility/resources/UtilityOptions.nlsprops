@@ -1,0 +1,220 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.utility/resources/com/ibm/ws/security/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_ALL
+
+global.description=Description:
+global.actions=Actions:
+global.options=Options:
+global.usage=Usage:
+global.required=Required:
+global.options.statement=\
+\tUse help [actionName] for detailed option information of each action.
+
+
+
+# -------- GENERAL OPTIONS -----------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+#Note to translator, please make sure that the the length of the line should
+# not exceed 80 characters. Therefore the \n (CRLF) needs to be placed at or
+# before 72th characters if the line starts with \t.
+# And this statement is applied after the sentences are translated.
+# So please feel free to place \n character at or before 72th characters if
+# the translated sentence is longer than the original sentence.
+
+help.desc=\
+\tPrint help information for the specified action.
+#Note to translator the word "help" should not be translated
+help.usage.options=\
+\t{0} help [actionName]
+
+# -------- ENCODE OPTIONS ------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+encode.desc=\
+\tEncode the provided text.
+#Note to translator the word "encode" should not be translated
+encode.usage.options=\
+\t{0} encode [options]
+encode.option-key.text=\
+\ \ \ \ textToEncode
+encode.option-desc.text=\
+\tIf no arguments are specified, the tool will enter the interactive\n\
+\tmode; otherwise, the provided text will be encoded.\n\
+\tText with spaces must be fully quoted if specified as an argument.
+encode.option-key.encoding=\
+\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-desc.encoding=\
+\tSpecify how to encode the password. Supported encodings are xor, aes,\n\
+\tand hash. The default encoding is xor. {2}
+encode.option-key.key=\
+\ \ \ \ --key=[key]
+encode.option-desc.key=\
+\tSpecify a key to be used when encoding using AES. This string will be\n\
+\thashed to produce an encryption key which will be used to encrypt and\n\
+\tdecrypt the password. The key can be provided to the server by\n\
+\tdefining the variable wlp.password.encryption.key whose value is the\n\
+\tkey. If this option is not provided a default key shall be used.
+encode.option-key.notrim=\
+\ \ \ \ --notrim
+encode.option-desc.notrim=\
+\tSpecify whether space characters are removed from the beginning and\n\
+\tend of the specified text. If this option is specified, the provided\n\
+\ttext will be encoded as it is.\n\
+\tIf this option is not specified, space characters from the beginning\n\
+\tand end of the specified text will be removed. 
+encode.option-key.listCustom=\
+\ \ \ \ --listCustom
+encode.option-desc.listCustom=\
+\tDisplay the information of the custom password encryption in\n\
+\tJavaScript Object Notation (JSON) format.\n\
+\tThe information consists of:\n\
+\tname : the custom password encryption algorithm name\n\
+\tfeaturename : the feature name\n\
+\tdescription : the description of the custom password encryption
+
+
+
+# -------- CREATE SSL CERTIFICATE OPTIONS --------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+sslCert.desc=\
+\tCreate a default SSL certificate for use by the server or\n\
+\tclient configuration. 
+#Note to translator the word "createSSLCertificate" should not be translated
+sslCert.usage.options=\
+\t{0} createSSLCertificate '{--server servername |--client clientname'}\n\
+\t--password password [options]
+sslCert.required-key.server=\
+\ \ \ \ --server=name
+sslCert.required-desc.server=\
+\tServer for which to create the certificate.  This argument can not\n\
+\tused if the --client argument is used.
+sslCert.required-key.client=\
+\ \ \ \ --client=name
+sslCert.required-desc.client=\
+\tClient for which to create the certificate.  This argument can not\n\
+\tbe used if the --server argument is used.
+sslCert.required-key.password=\
+\ \ \ \ --password[=pwd]
+sslCert.required-desc.password=\
+\tKeystore password, minimum {1} characters.\n\
+\tIf no value is defined you will be prompted.
+sslCert.option-key.validity=\
+\ \ \ \ --validity=days
+sslCert.option-desc.validity=\
+\tNumber of days the certificate is valid. Default validity period is\n\
+\t{2}. Minimum validity period is {3}.
+sslCert.option-key.subject=\
+\ \ \ \ --subject=DN
+sslCert.option-desc.subject=\
+\tDN for the certificate subject and issuer. Default DN is based on\n\
+\thost name.
+sslCert.option.addon=\
+The certificate will be created with alias {4}.\n\
+The key algorithm is {5} and signature algorithm is {6}.\n\
+For more control over certificate creation, use keytool directly.
+sslCert.option-key.password.encoding=\
+\ \ \ \ --passwordEncoding=[xor|aes]
+sslCert.option-desc.password.encoding=\
+\tSpecify how to encode the keystore password. Supported encodings are\n\
+\txor and aes. The default encoding is xor.\n\
+\tUse securityUtility encode --listCustom command to see if any\n\
+\tadditional custom encryptions are supported.
+sslCert.option-key.password.key=\
+\ \ \ \ --passwordKey=[key]
+sslCert.option-desc.password.key=\
+\tSpecify a key to be used when encoding the keystore password using\n\
+\tAES. This string will be hashed to produce an encryption key which\n\
+\twill be used to encrypt and decrypt the password. The key can be\n\
+\tprovided to the server by defining the variable\n\
+\twlp.password.encryption.key whose value is the key. If this option is\n\
+\tnot provided a default key shall be used.
+
+sslCert.option-key.createConfigFile=\
+\ \ \ \ --createConfigFile=file
+sslCert.option-desc.createConfigFile=\
+\tOptional. The code snippet will be written to the file specified \n\
+\tinstead of the console screen. The file can then be included in \n\
+\tthe server.xml configuration using the provided code snippet.
+
+sslCert.option-key.keySize=\
+\ \ \ \ --keySize=size
+sslCert.option-desc.keySize=\
+\tSize of the certificate key.  The default key size is {7}.
+
+sslCert.option-key.sigAlg=\
+\ \ \ \ --sigAlg=signature algorithm
+sslCert.option-desc.sigAlg=\
+\tSignature algorithm of the certificate.\n\
+\tThe default signature algorithm is {8}.
+
+
+# -------- CREATE LTPA KEYS OPTIONS --------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descriptions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+# Note to translator: the words 'LTPA' and 'ltpa.keys' should not be translated 
+createLTPAKeys.desc=\
+\tCreate a set of LTPA keys for use by the server, or that can be shared\n\
+\twith multiple servers. If no server or file is specified, a ltpa.keys\n\
+\tfile will be created in the current working directory.
+#Note to translator the word "createLTPAKeys" should not be translated
+createLTPAKeys.usage.options=\
+\t{0} createLTPAKeys --password[=pwd] [options]
+createLTPAKeys.required-key.password=\
+\ \ \ \ --password[=pwd]
+createLTPAKeys.required-desc.password=\
+\tLTPA keys password. If no value is defined you will be prompted.
+createLTPAKeys.option-key.server=\
+\ \ \ \ --server=name
+createLTPAKeys.option-desc.server=\
+\tServer for which to create the LTPA keys.\n\
+\tThis argument can not used if the --file argument is used.
+createLTPAKeys.option-key.file=\
+\ \ \ \ --file=name
+createLTPAKeys.option-desc.file=\
+\tThe file in which to write the LTPA keys.\n\
+\tThis argument can not be used if the --server argument is used.
+createLTPAKeys.option-key.password.encoding=\
+\ \ \ \ --passwordEncoding=[xor|aes]
+createLTPAKeys.option-desc.password.encoding=\
+\tSpecify how to encode the LTPA keys password in the server.xml.\n\
+\tSupported encodings are xor and aes. The default encoding is xor.\n\
+\tUse securityUtility encode --listCustom command to see if any\n\
+\tadditional custom encryptions are supported.
+createLTPAKeys.option-key.password.key=\
+\ \ \ \ --passwordKey=[key]
+createLTPAKeys.option-desc.password.key=\
+\tSpecify a key to be used when encoding the LTPA keys password using\n\
+\tAES. This string will be hashed to produce an encryption key which\n\
+\twill be used to encrypt and decrypt the password. The key can be\n\
+\tprovided to the server by defining the variable\n\
+\twlp.password.encryption.key whose value is the key. If this option is\n\
+\tnot provided a default key shall be used.

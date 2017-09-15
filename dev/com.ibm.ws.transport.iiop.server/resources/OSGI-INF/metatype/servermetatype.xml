@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/servermetatype">
+
+    <OCD id="com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl" ibm:alias="iiopEndpoint" description="%iiopEndpointImpl.desc" name="%iiopEndpointImpl.name">
+ 
+        <AD name="%iiopEndpointImpl.host" description="%iiopEndpointImpl.host.desc"
+            id="host" required="false" type="String" default="localhost" ibm:variable="defaultHostName"/>
+
+        <AD name="%iiopEndpointImpl.iiopPort" description="%iiopEndpointImpl.iiopPort.desc"
+            id="iiopPort" required="false" type="Integer"/>
+
+        <AD name="%iiopEndpointImpl.tcpOptions" description="%iiopEndpointImpl.tcpOptions.desc"
+            id="tcpOptionsRef" required="false" type="String"
+            ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid" default="defaultTCPOptions"/>
+
+        <AD name="internal" description="internal use only"
+            id="tcpOptions.target" required="false" type="String"
+            ibm:final="true" default="(service.pid=${tcpOptionsRef})" />
+
+        <AD name="%iiopEndpointImpl.iiopsOptions" description="%iiopEndpointImpl.iiopsOptions.desc"
+            id="iiopsOptions" required="false" type="String" cardinality="1000"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.security.IiopsOptions" ibm:flat="true"/>
+
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl">
+        <Object ocdref="com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl"/>
+    </Designate>
+    
+    <OCD description="%iiopServerPolicies.desc" name="%iiopServerPolicies.name" 
+         id="com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl" ibm:alias="iiopServerPolicies">
+
+        <AD name="internal" description="internal use only"
+            id="serverPolicy" required="false" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.AbstractServerPolicy" ibm:flat="true"/>
+
+         <AD name="internal" description="internal use only"
+            id="subsystemFactory" required="true" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.spi.SubsystemFactory" default="*" ibm:final="true"/> 
+
+         <AD id="SubsystemFactory.cardinality.minimum" name="internal"  description="internal use only" 
+              type="String" required="true" default="${count(subsystemFactory)}"/>
+
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl">
+        <Object ocdref="com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl"/>
+    </Designate>
+
+     <OCD id="com.ibm.ws.transport.iiop.AbstractServerPolicy" description="internal use only" name="internal"  >
+         <AD id="id" name="internal" description="internal use only" required="false" type="String"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.transport.iiop.AbstractServerPolicy">
+        <Object ocdref="com.ibm.ws.transport.iiop.AbstractServerPolicy"/>
+    </Designate>
+        
+    <OCD id="com.ibm.ws.transport.iiop.internal.NamingServiceAdapterActivator" description="internal use only" name="internal" ibm:alias="namingServiceAdapterActivator" >
+            
+        <AD name="internal" description="internal use only"
+            id="serverPolicies" required="false" type="String"
+            ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.internal.ServerPolicySourceImpl"/>
+
+        <AD name="internal" description="internal use only"
+            id="ServerPolicySource.target" required="true" type="String"
+            ibm:final="true" default="(service.pid=${serverPolicies})" />
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.transport.iiop.internal.NamingServiceAdapterActivator">
+        <Object ocdref="com.ibm.ws.transport.iiop.internal.NamingServiceAdapterActivator"/>
+    </Designate>
+    
+</metatype:MetaData>

@@ -1,0 +1,42 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.jsf.2.2" default="build">
+    
+    <!-- FFDC not required for this library -->
+    <property name="instrument.ffdc" value="false" />
+  
+    <import file="../ant_build/public_imports/standard_imports.xml"/>   
+    
+    <property name="apijar.dir" value="${build.dir}/tmp/apijar"/>
+      
+    <target name="post-compile">        
+        <!-- Copy over the api jar so we can consume META-INF/resources and META-INF/internal-resources -->
+        <!-- Note: omit micro-version from name when we copy as we have to hard-reference this in a .bnd -->
+        <mkdir dir="${apijar.dir}"/>
+        <copy file="${basedir}/../com.ibm.websphere.javaee.jsf.2.2/build/dev/api/spec/com.ibm.websphere.javaee.jsf.2.2_1.0.${micro.version}.jar"
+            tofile="${apijar.dir}/com.ibm.websphere.javaee.jsf.2.2_1.0.jar"/>
+    	
+        <instrument.trace>
+            <fileset dir="${build.dir}/">
+                <include name="**/*.class" />
+                <!-- If instrumentation on the Apache code is required, just comment
+                out the below line in your build -->
+                <exclude name="**/org/**" />
+            </fileset>
+        </instrument.trace>
+    </target>
+    
+    <!-- devBuild is clean build with no findbugs -->
+    <target name="devBuild"
+        description="clean build with no findbugs"
+        depends="clean, pre-build, compile, post-compile, globalize, package, publish, chkpii, validateMetatype, validateFeatures" />
+    
+</project>

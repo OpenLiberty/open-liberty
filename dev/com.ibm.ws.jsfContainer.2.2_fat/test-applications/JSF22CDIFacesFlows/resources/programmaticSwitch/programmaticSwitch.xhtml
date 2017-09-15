@@ -1,0 +1,31 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+    <!-- This is a simple JSF facelet; it utilizes EL to check if we're currently in a flow.
+          If we are in a flow, the currentFlow value should be true.
+          The flowScope value is checked to determine if that data is being passed around the flow correctly;
+          the flowScope value can be modified via the text input on this page and the "Submit Value" button.
+          The back button causes us to exit the flow.
+
+          The primary purpose of this flow is to test the functionality of flow switches.
+          The switch used here is defined in com.ibm.ws.jsf.fat.beans.ProgrammaticSwitch
+          (Entering 'next' in the input field will allow navigation to the second page of the flow)
+    -->
+    <h:head>
+        <title>JSF 2.2 Faces Flows Test Page</title>
+    </h:head>
+    <h:body>
+        Declarative Switch Page 1<br/>
+        In flow ? #{null != facesContext.application.flowHandler.currentFlow}<br/>
+        Flow Id: #{empty facesContext.application.flowHandler.currentFlow.id ? "no flow ID" : facesContext.application.flowHandler.currentFlow.id}<br/>
+        Current flowscope value: #{empty flowScope.testValue ? "no flowscope value" : flowScope.testValue}
+        <h:form prependId="false" id="form">
+            Value: <h:inputText id="inputValue" value="#{flowScope.testValue}" />
+            <!-- Note the switch-id action here, which calls the switch we have set up in the ProgrammaticSwitch bean -->
+            <h:commandButton id="button1" value="Go to page 2" action="switch-id"/>
+            <h:commandButton id="button2" value="Back (exit flow)" action="goIndex"/>
+        </h:form>
+    </h:body>
+</html>

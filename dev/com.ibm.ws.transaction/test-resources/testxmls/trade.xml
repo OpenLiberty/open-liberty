@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<web-app id="WebApp_1" version="2.4"
+	xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
+
+      <display-name>TradeWeb</display-name>
+      <filter id="Filter_1">
+         <display-name>OrdersAlertFilter</display-name>
+         <filter-name>OrdersAlertFilter</filter-name>
+         <filter-class>com.ibm.websphere.samples.trade.web.OrdersAlertFilter</filter-class>
+      </filter>
+      <filter-mapping id="FilterMapping_1">
+         <filter-name>OrdersAlertFilter</filter-name>
+         <servlet-name>TradeAppServlet</servlet-name>
+      </filter-mapping>
+      <listener id="Listener_1">
+         <listener-class>com.ibm.websphere.samples.trade.web.TradeWebContextListener</listener-class>
+      </listener>
+      <servlet id="Servlet_1">
+         <display-name>TradeAppServlet</display-name>
+         <servlet-name>TradeAppServlet</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.TradeAppServlet</servlet-class>
+         <load-on-startup>1</load-on-startup>         
+      </servlet>
+      <servlet id="Servlet_2">
+         <display-name>register</display-name>
+         <servlet-name>register</servlet-name>
+         <jsp-file>/register.jsp</jsp-file>
+      </servlet>
+      <servlet id="Servlet_3">
+         <display-name>TestServlet</display-name>
+         <servlet-name>TestServlet</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.TestServlet</servlet-class>
+      </servlet>
+      <servlet id="Servlet_4">
+         <display-name>welcome</display-name>
+         <servlet-name>welcome</servlet-name>
+         <jsp-file>/welcome.jsp</jsp-file>
+      </servlet>
+      <servlet id="Servlet_5">
+         <display-name>order</display-name>
+         <servlet-name>order</servlet-name>
+         <jsp-file>/order.jsp</jsp-file>
+      </servlet>
+      <servlet id="Servlet_6">
+         <display-name>tradehome</display-name>
+         <servlet-name>tradehome</servlet-name>
+         <jsp-file>/tradehome.jsp</jsp-file>
+      </servlet>
+      <servlet id="Servlet_7">
+         <display-name>TradeConfigServlet</display-name>
+         <servlet-name>TradeConfigServlet</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.TradeConfigServlet</servlet-class>
+      </servlet>
+      <servlet id="Servlet_8">
+         <display-name>TradeScenarioServlet</display-name>
+         <servlet-name>TradeScenarioServlet</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.TradeScenarioServlet</servlet-class>
+         <init-param id="InitParam_1">
+            <description>Sets the default RuntimeMode. Legal values
+                include EJB and Direct</description>
+            <param-name>runTimeMode</param-name>
+            <param-value>EJB</param-value>
+         </init-param>
+         <init-param id="InitParam_2">
+            <description>Sets the default Order Processing Mode. Legal
+                values include Synchronous, Asynchronous_1-Phase and Asynchronous_2-Phase</description>
+            <param-name>orderProcessingMode</param-name>
+            <param-value>Synchronous</param-value>            
+         </init-param>         
+         <init-param id="InitParam_3">
+            <description>Sets the protocol the web application
+                communicates with the server side services when driving
+                with TradeScenarioServlet. Legal values incude Standard and WebServices.</description>
+            <param-name>accessMode</param-name>
+            <param-value>Standard</param-value>
+         </init-param>        
+        <!-- Commented out as this will only work if IHS is installed, unless the default is changed to port 9080
+         <init-param id="InitParam_4">
+            <description>Sets the WebServices endpoint when using
+                WebServices accessMode when driving with TradeScenarioServlet.</description>
+            <param-name>webServicesEndpoint</param-name>
+            <param-value>http://localhost/trade/services/TradeWSServices?wsdl</param-value>
+         </init-param>        
+        -->
+         <init-param id="InitParam_5">
+            <description>Sets the default workloadMix used with
+                TradeScenario servlet. Legal values include Standard and High-Volume</description>
+            <param-name>workloadMix</param-name>
+            <param-value>Standard</param-value>
+         </init-param>
+         <init-param id="InitParam_6">
+            <description>Sets the default WebInterface. Legal values
+                include JSP and JSP-images</description>
+            <param-name>WebInterface</param-name>
+            <param-value>JSP</param-value>
+         </init-param>
+         <init-param id="InitParam_7">
+            <description>Sets the population of Trade users when driving
+                with TradeScenarioServlet.</description>
+            <param-name>maxUsers</param-name>
+            <param-value>500</param-value>
+         </init-param>
+         <init-param id="InitParam_8">
+            <description>Sets the population of Stock quotes used when
+                driving with TradeScenarioServlet.</description>
+            <param-name>maxQuotes</param-name>
+            <param-value>1000</param-value>
+         </init-param>        
+         <init-param id="InitParam_9">
+            <description>Sets the number of iterations on web/ejb
+                primitives.</description>
+            <param-name>primIterations</param-name>
+            <param-value>1</param-value>
+         </init-param>
+         <init-param id="InitParam_10">
+            <description>Sets the data caching type</description>
+            <param-name>CachingType</param-name>
+            <param-value>2</param-value>
+         </init-param>
+         <init-param id="InitParam_11">
+            <description>Enables or disables the long run mode</description>
+            <param-name>LongRun</param-name>
+            <param-value>true</param-value>
+         </init-param>
+         <load-on-startup>1</load-on-startup>
+      </servlet>
+      <servlet id="Servlet_9">
+         <display-name>PingServlet</display-name>
+         <servlet-name>PingServlet</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet</servlet-class>
+      </servlet>
+      <servlet id="Servlet_10">
+         <display-name>PingServletWriter</display-name>
+         <servlet-name>PingServletWriter</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServletWriter</servlet-class>
+      </servlet>
+      <servlet id="Servlet_11">
+         <display-name>PingServlet2Servlet</display-name>
+         <servlet-name>PingServlet2Servlet</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Servlet</servlet-class>
+      </servlet>
+      <servlet id="Servlet_12">
+         <display-name>PingServlet2ServletRcv</display-name>
+         <servlet-name>PingServlet2ServletRcv</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2ServletRcv</servlet-class>
+      </servlet>
+      <servlet id="Servlet_13">
+         <display-name>PingServlet2Jsp</display-name>
+         <servlet-name>PingServlet2Jsp</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Jsp</servlet-class>
+      </servlet>
+      <servlet id="Servlet_14">
+         <display-name>PingSession1</display-name>
+         <servlet-name>PingSession1</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingSession1</servlet-class>
+      </servlet>
+      <servlet id="Servlet_15">
+         <display-name>PingSession2</display-name>
+         <servlet-name>PingSession2</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingSession2</servlet-class>
+      </servlet>
+      <servlet id="Servlet_16">
+         <display-name>PingSession3</display-name>
+         <servlet-name>PingSession3</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingSession3</servlet-class>
+      </servlet>
+      <servlet id="Servlet_17">
+         <display-name>PingJDBCRead</display-name>
+         <servlet-name>PingJDBCRead</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingJDBCRead</servlet-class>
+      </servlet>
+      <servlet id="Servlet_18">
+         <display-name>PingJDBCWrite</display-name>
+         <servlet-name>PingJDBCWrite</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingJDBCWrite</servlet-class>
+      </servlet>
+      <servlet id="Servlet_19">
+         <display-name>PingServlet2Session</display-name>
+         <servlet-name>PingServlet2Session</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Session</servlet-class>
+      </servlet>
+      <servlet id="Servlet_20">
+         <display-name>PingServlet2EntityLocal</display-name>
+         <servlet-name>PingServlet2EntityLocal</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2EntityLocal</servlet-class>
+      </servlet>
+      <servlet id="Servlet_29">
+         <display-name>PingServlet2EntityRemote</display-name>
+         <servlet-name>PingServlet2EntityRemote</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2EntityRemote</servlet-class>
+      </servlet>      
+      <servlet id="Servlet_21">
+         <display-name>PingServlet2Session2Entity</display-name>
+         <servlet-name>PingServlet2Session2Entity</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Session2Entity</servlet-class>
+      </servlet>
+      <servlet id="Servlet_22">
+         <display-name>PingServlet2Session2EntityCollection</display-name>
+         <servlet-name>PingServlet2Session2EntityCollection</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Session2EntityCollection</servlet-class>
+      </servlet>
+      <servlet id="Servlet_23">
+         <display-name>PingServlet2Session2CMROne2One</display-name>
+         <servlet-name>PingServlet2Session2CMROne2One</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Session2CMROne2One</servlet-class>
+      </servlet>
+      <servlet id="Servlet_24">
+         <display-name>PingServlet2Session2CMROne2Many</display-name>
+         <servlet-name>PingServlet2Session2CMROne2Many</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Session2CMROne2Many</servlet-class>
+      </servlet>
+      <servlet id="Servlet_25">
+         <display-name>PingServlet2MDBQueue</display-name>
+         <servlet-name>PingServlet2MDBQueue</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2MDBQueue</servlet-class>
+      </servlet>     
+      <servlet id="Servlet_26">
+         <display-name>PingServlet2MDBTopic</display-name>
+         <servlet-name>PingServlet2MDBTopic</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2MDBTopic</servlet-class>
+      </servlet>     
+      <servlet id="Servlet_27">
+         <display-name>PingServlet2JNDI</display-name>
+         <servlet-name>PingServlet2JNDI</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2JNDI</servlet-class>
+      </servlet>           
+      <servlet id="Servlet_28">
+         <display-name>PingServlet2TwoPhase</display-name>
+         <servlet-name>PingServlet2TwoPhase</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2TwoPhase</servlet-class>
+      </servlet>  
+      <servlet id="Servlet_31">
+         <display-name>PingServlet2Include</display-name>
+         <servlet-name>PingServlet2Include</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2Include</servlet-class>
+      </servlet>
+      <servlet id="Servlet_32">
+         <display-name>PingServlet2IncludeRcv</display-name>
+         <servlet-name>PingServlet2IncludeRcv</servlet-name>
+         <servlet-class>com.ibm.websphere.samples.trade.web.prims.PingServlet2IncludeRcv</servlet-class>
+      </servlet>                  
+      <servlet-mapping id="ServletMapping_1">
+         <servlet-name>TradeAppServlet</servlet-name>
+         <url-pattern>/app</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_2">
+         <servlet-name>TestServlet</servlet-name>
+         <url-pattern>/TestServlet</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_3">
+         <servlet-name>TradeConfigServlet</servlet-name>
+         <url-pattern>/config</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_4">
+         <servlet-name>TradeScenarioServlet</servlet-name>
+         <url-pattern>/scenario</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_5">
+         <servlet-name>PingServlet</servlet-name>
+         <url-pattern>/servlet/PingServlet</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_6">
+         <servlet-name>PingServletWriter</servlet-name>
+         <url-pattern>/servlet/PingServletWriter</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_7">
+         <servlet-name>PingServlet2Servlet</servlet-name>
+         <url-pattern>/servlet/PingServlet2Servlet</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_8">
+         <servlet-name>PingServlet2ServletRcv</servlet-name>
+         <url-pattern>/servlet/PingServlet2ServletRcv</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_9">
+         <servlet-name>PingServlet2Jsp</servlet-name>
+         <url-pattern>/servlet/PingServlet2Jsp</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_10">
+         <servlet-name>PingSession1</servlet-name>
+         <url-pattern>/servlet/PingSession1</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_11">
+         <servlet-name>PingSession2</servlet-name>
+         <url-pattern>/servlet/PingSession2</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_12">
+         <servlet-name>PingSession3</servlet-name>
+         <url-pattern>/servlet/PingSession3</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_13">
+         <servlet-name>PingJDBCRead</servlet-name>
+         <url-pattern>/servlet/PingJDBCRead</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_14">
+         <servlet-name>PingJDBCWrite</servlet-name>
+         <url-pattern>/servlet/PingJDBCWrite</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_15">
+         <servlet-name>PingServlet2Session</servlet-name>
+         <url-pattern>/servlet/PingServlet2Session</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_16">
+         <servlet-name>PingServlet2EntityLocal</servlet-name>
+         <url-pattern>/servlet/PingServlet2EntityLocal</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_25">
+         <servlet-name>PingServlet2EntityRemote</servlet-name>
+         <url-pattern>/servlet/PingServlet2EntityRemote</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_17">
+         <servlet-name>PingServlet2Session2Entity</servlet-name>
+         <url-pattern>/servlet/PingServlet2Session2Entity</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_18">
+         <servlet-name>PingServlet2Session2EntityCollection</servlet-name>
+         <url-pattern>/servlet/PingServlet2Session2EntityCollection</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_19">
+         <servlet-name>PingServlet2Session2CMROne2One</servlet-name>
+         <url-pattern>/servlet/PingServlet2Session2CMROne2One</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_20">
+         <servlet-name>PingServlet2Session2CMROne2Many</servlet-name>
+         <url-pattern>/servlet/PingServlet2Session2CMROne2Many</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_21">
+         <servlet-name>PingServlet2MDBQueue</servlet-name>
+         <url-pattern>/servlet/PingServlet2MDBQueue</url-pattern>
+      </servlet-mapping>
+      <servlet-mapping id="ServletMapping_22">
+         <servlet-name>PingServlet2MDBTopic</servlet-name>
+         <url-pattern>/servlet/PingServlet2MDBTopic</url-pattern>
+      </servlet-mapping>      
+      <servlet-mapping id="ServletMapping_23">
+         <servlet-name>PingServlet2JNDI</servlet-name>
+         <url-pattern>/servlet/PingServlet2JNDI</url-pattern>
+      </servlet-mapping>           
+      <servlet-mapping id="ServletMapping_24">
+         <servlet-name>PingServlet2TwoPhase</servlet-name>
+         <url-pattern>/servlet/PingServlet2TwoPhase</url-pattern>
+      </servlet-mapping>                 
+      <servlet-mapping id="ServletMapping_26">
+         <servlet-name>PingServlet2Include</servlet-name>
+         <url-pattern>/servlet/PingServlet2Include</url-pattern>
+      </servlet-mapping>                 
+      <session-config id="SessionConfig_1">
+         <session-timeout>30</session-timeout>
+      </session-config>
+      <welcome-file-list id="WelcomeFileList_1">
+         <welcome-file>index.html</welcome-file>
+      </welcome-file-list>
+      <error-page id="ExceptionTypeErrorPage_1">
+         <exception-type>java.lang.Exception</exception-type>
+         <location>/error.jsp</location>
+      </error-page>
+      <error-page id="ErrorCodeErrorPage_1">
+         <error-code>500</error-code>
+         <location>/error.jsp</location>
+      </error-page>
+      <resource-ref id="ResourceRef_1">
+         <res-ref-name>jdbc/TradeDataSource</res-ref-name>
+         <res-type>javax.sql.DataSource</res-type>
+         <res-auth>Container</res-auth>
+         <res-sharing-scope>Shareable</res-sharing-scope>
+      </resource-ref>
+</web-app>

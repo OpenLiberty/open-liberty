@@ -1,0 +1,160 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include ${workspace}/gradle.properties, ${workspace}/generated.properties
+
+# Maven repository credentials
+-connection-settings: ${if;${artifactory.download.token};server;-dummy};id=https://${artifactory.download.server};username=${artifactory.download.user};password=${artifactory.download.token}, \
+    ${if;${artifactory.upload.token};server;-dummy};id=https://${artifactory.upload.server};username=${artifactory.upload.user};password=${artifactory.upload.token}, -bnd
+
+# Logging for repository connection when debugging
+#-connection-log: ${.}/connection-log.txt
+
+-plugin.1.Local: \
+    aQute.bnd.repository.maven.provider.MavenBndRepository; \
+        name = Local; \
+        noupdateOnRelease = true; \
+        local = ${build}/local
+
+-plugin.2.Release: \
+    aQute.bnd.repository.maven.provider.MavenBndRepository; \
+        name = Release; \
+        noupdateOnRelease = true; \
+        local = ${build}/${maven.release.name}
+
+-plugin.3.RemotePublic = ${fetch.oss.repository}
+
+-plugin.4.RemoteIBM = ${fetch.oss.ibm.repository}
+
+-plugin.5.RemoteIBMJava = ${fetch.ibm.java.repository}
+
+-plugin.6.RemotePublish = ${push.ibm.repository}
+
+# TODO: Disabled while testing whether this works correctly.
+# Remove -SNAPSHOT for releases
+#-snapshot: ${if;${is.release};;SNAPSHOT}
+
+# Don't upload sources or javadoc unless bundle overrides
+-maven-release: ${if;${is.remote.publishing};remote;local}, sources;path=NONE, javadoc;path=NONE
+
+bin: ${if;${driver;gradle};build/classes/java/main;bin}
+testbin: ${if;${driver;gradle};build/classes/java/test;bin_test}
+target-dir: ${if;${driver;gradle};build/libs;generated}
+
+javac.source: 1.7
+javac.target: 1.7
+javac.debug: true
+javac.encoding: UTF-8
+-sources: false
+
+-pedantic: true
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=error
+
+-releaserepo: ${if;${is.remote.publishing};RemotePublish;Release}
+-baselinerepo: Release
+-buildrepo: Local
+-groupid: ${if;${test.project};test;dev}
+-pom: 
+#-dsannotations-options: version;minimum=1.2
+
+buildEngineName: defaultEngine
+
+# This is the version of JUnit that will be used at build time and run time
+junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
+
+# This is the version of Mockito that will be used at build time and run time
+mockito: org.mockito.mockito-core;version="[1.9,2)",\
+  org.objenesis;version="[2.1,3)"
+
+-pluginpath: \
+    ${workspace}/cnf/lib/wlp-bndPlugins.jar,\
+    ${workspace}/cnf/lib/org.apache.aries.util-1.2.0.jar
+
+test.project: false
+
+instrument.disabled: ${if;${test.project};true;false}
+instrument.classesIncludes: **/*.class
+instrument.classesExcludes: 
+instrument.ffdc: true
+instrument.taskInjection: false
+
+-buildpath.instrument: ${if;${instrument.disabled};;com.ibm.ws.ras.instrument\\;version=latest}
+
+-buildpath.bootclasspath: ${javac.bootclasspath.${javac.source}}
+
+-buildpath.testjars: ${if;${test.project};\
+    ${workspace}/build.sharedResources/lib/junit/old/junit.jar\\;version=file,\
+    ${workspace}/build.sharedResources/lib/ws-junit/ws-junit.jar\\;version=file}
+    
+# If project contains '_fat' then add FAT infrastrucutre elements to buildpath    
+-buildpath.fattestjars: ${if;${matches;${project};.*_fat.*};\
+    org.jboss.shrinkwrap:shrinkwrap-api\\;version=1.2.3,\
+    fattest.simplicity\\;version=latest,\
+    com.ibm.ws.componenttest:public.api\\;version=1.0.0,\
+    com.ibm.ws.componenttest\\;version=latest}
+
+javac.bootclasspath.1.4: ${ibmjdklib.bootclasspath}
+javac.bootclasspath.1.6: ${ibmjdklib.bootclasspath}
+javac.bootclasspath.1.7: ${ibmjdklib.bootclasspath}
+javac.bootclasspath.1.8: ${ibmjdklib.bootclasspath}
+	
+javac.bootclasspath.java6:
+javac.bootclasspath.java7:
+javac.bootclasspath.java8:
+
+ibmjdklib.bootclasspath: \
+    ${java.home}/jre/lib/ibmcertpathfw.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/ibmjcefw.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/ibmjgssfw.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/ibmjgssprovider.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/ibmjssefw.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/ibmorbapi.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/ibmpkcs.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/math.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/rt.jar;version=file;boot=true, \
+    ${java.home}/jre/bin/default/jclSC180/vm.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/xml.jar;version=file;boot=true, \
+    ${java.home}/jre/lib/xmldsigfw.jar;version=file;boot=true
+
+internaljavac.bootclasspath.1.4: \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.6.0;boot=true
+
+internaljavac.bootclasspath.1.6: \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.6.0;boot=true
+
+internaljavac.bootclasspath.1.7: \
+    com.ibm.ws.internal.prereq.java:java.ibmcertpathfw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjcefw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssfw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssprovider;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjssefw;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmorbapi;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmpkcs;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.jlm;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.math;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.vm;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xml;strategy=exact;version=1.7.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xmldsigfw;strategy=exact;version=1.7.0;boot=true
+
+internaljavac.bootclasspath.1.8: \
+    com.ibm.ws.internal.prereq.java:java.ibmcertpathfw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjcefw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssfw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjgssprovider;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmjssefw;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmorbapi;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.ibmpkcs;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.jlm;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.math;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.rt;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.vm;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xml;strategy=exact;version=1.8.0;boot=true, \
+    com.ibm.ws.internal.prereq.java:java.xmldsigfw;strategy=exact;version=1.8.0;boot=true

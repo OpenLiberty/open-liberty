@@ -1,0 +1,10 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName:ufeatureG-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.ufeatureG-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: ubundle7;  version="[1,2)"
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ufeatureD-1.0))",
+ osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ufeatureE-1.0))"
+IBM-Install-Policy: when-satisfied
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

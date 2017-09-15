@@ -1,0 +1,337 @@
+###############################################################################
+# Copyright (c) 1997, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Instructions to translation will precede the line to which it applies
+#
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# Example: MSG_DESCRIPTIVE_NAME_J2CA0001=J2CA0001I: This is a message.
+#
+# The prefix for this component is:
+#     J2CA (J2C Connection Manager)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# :Begin: WebSphere Quality Validation Information :Begin:
+# :End: WebSphere Quality Validation Information :End:
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/j2c/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Java Platform, Enterprise Edition Connector Architecture Server Implementation
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+NULL_MANAGED_CONNECTION_J2CA0015=J2CA0015E: The Connection Pool Manager could not allocate a Managed Connection from resource {0}.
+NULL_MANAGED_CONNECTION_J2CA0015.explanation=The pool manager could not allocate a managed connection. This might be due to the properties associated with the pool manager (such as, maximum connections were exceeded). A NULL managed connection was returned by the pool manager.
+NULL_MANAGED_CONNECTION_J2CA0015.useraction=CMSG0002
+
+# --------------------------------
+XA_OP_NOT_SUPPORTED_J2CA0016=J2CA0016E: A two phase XA operation, {0}, was invoked within transaction ID {1}. This Resource Adapter from pool {2} does not support two phase processing.
+XA_OP_NOT_SUPPORTED_J2CA0016.explanation=This indicates that an attempt was made to use the connection within the context of an XA transaction along with other XA capable resources. This is not a valid operation for this resource adapter.
+XA_OP_NOT_SUPPORTED_J2CA0016.useraction=Modify the logic to separate the resource usage into separate transactions.
+
+# --------------------------------                    
+FAILED_MANAGED_CONNECTION_J2CA0020=J2CA0020E: The Connection Pool Manager could not allocate a Managed Connection: {0}.
+FAILED_MANAGED_CONNECTION_J2CA0020.explanation=The pool manager created an exception when attempting to allocate a managed connection. The exception text might provide additional information for determining the problem.
+FAILED_MANAGED_CONNECTION_J2CA0020.useraction=If there are no user controlled indications, the message might be due to an internal error in the connection manager processing. Collect diagnostic data and visit the IBM support site for more information.
+
+# --------------------------------
+FAILED_CONNECTION_J2CA0021=J2CA0021E: An exception occurred while trying to get a Connection from the Managed Connection resource {1} : {0}.
+FAILED_CONNECTION_J2CA0021.explanation=The resource adapter created an exception when attempting to call the getConnection()     method. The exception text might provide additional information for determining the problem.
+FAILED_CONNECTION_J2CA0021.useraction=If there are no user controlled indications, the message might be due to an internal error in connection manager processing. Collect diagnostic data and visit the IBM support site for more information.
+
+# --------------------------------
+FAILED_CONNECTION_RELEASE_J2CA0022=J2CA0022I: An exception occurred while trying to cleanup and release the Managed Connection from resource {1} for a failed getConnection from the Managed Connection {0}. This second error was absorbed and the original error re-thrown.
+FAILED_CONNECTION_RELEASE_J2CA0022.explanation=There was a problem attempting to clean records from a failed getConnection attempt. This message is informational and should be combined with other related messages for proper problem determination.
+FAILED_CONNECTION_RELEASE_J2CA0022.useraction=Examine the other related messages for explanations and user responses.
+
+# --------------------------------
+XA_OPERATION_NOT_SUPPORTED_J2CA0023=J2CA0023E: A two phase XA operation, {0}, was invoked. This Resource Adapter from DataSource {1} does not support two phase processing.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.explanation=There was an attempt made to invoke an XA operation on a resource adapter that only supports local transactions. A local transaction resource adapter might have been included within the context of an XA transaction, along with other XA capable resources.
+XA_OPERATION_NOT_SUPPORTED_J2CA0023.useraction=Modify the business logic to separate the resource usage into separate transactions.
+
+# --------------------------------
+XA_END_EXCP_J2CA0024=J2CA0024E: Method {0}, within transaction branch ID {1} of resource pool {4}, caught {2} and threw a {3}.
+XA_END_EXCP_J2CA0024.explanation=There was a problem processing the given method. The interface defines specific exceptions that can be created, so the exception that was caught was mapped to the exception that was created. The processing within the method did not complete successfully.
+XA_END_EXCP_J2CA0024.useraction=Check that the business logic of the application is properly catching the exception that was created and that it contains the necessary recovery logic. Also check the log files for earlier errors that caused the exception.
+
+# --------------------------------
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026=J2CA0026E: Method {0} caught {1} while trying to register the Resource Adapter with the Synchronization Manager for the current transaction, and threw a {2}.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.explanation=There was a problem processing the given method. The interface defines specific exceptions that can be created, so the exception that was caught was mapped to the exception that was created. The processing within the method did not complete successfully.
+REGISTER_WITH_SYNCHRONIZATION_EXCP_J2CA0026.useraction=Check that the business logic of the application is properly catching the exception that was created and contains the necessary recovery logic. Also check the log files for earlier errors that caused the exception.
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027=J2CA0027E: An exception occurred while invoking {0} on an XA Resource Adapter from DataSource {3}, within transaction ID {1} : {2}.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.explanation=There was a problem processing the given method. The processing within the method did not complete successfully.
+XA_RESOURCE_ADAPTER_OPERATION_ID_EXCP_J2CA0027.useraction=Check that the business logic of the application is properly catching the exception that was created and that it contains the necessary recovery logic. Also check the log files for earlier errors that caused the exception
+
+# --------------------------------
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028=J2CA0028E: An exception occurred while invoking {0} on an XA Resource Adapter from DataSource {2} : {1}.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.explanation=There was a problem processing the given method. The processing within the method did not complete successfully.
+XA_RESOURCE_ADAPTER_OPERATION_EXCP_J2CA0028.useraction=Check that the business logic of the application is properly catching the exception that was created and that it contains the necessary recovery logic. Also check the log files for earlier errors that caused the exception.
+
+# --------------------------------
+ENLIST_RESOURCE_EXCP_J2CA0030=J2CA0030E: Method {0} caught {1} while trying to enlist resources from DataSource {3} with the Transaction Manager for the current transaction, and threw a {2}.
+ENLIST_RESOURCE_EXCP_J2CA0030.explanation=There was a problem processing the given method. The interface defines specific exceptions that can be created, so the exception that was caught was mapped to the exception that was created. The processing within the method did not complete successfully.
+ENLIST_RESOURCE_EXCP_J2CA0030.useraction=Check that the business logic of the application is properly catching the exception that was created and that it contains the necessary recovery logic. Also check the log files for earlier errors that caused the exception.
+
+# --------------------------------
+DELIST_RESOURCE_EXCP_J2CA0031=J2CA0031I: Method {0} caught {1} while trying to delist resources from DataSource {3} from the Transaction Manager for the current transaction and threw {2}
+DELIST_RESOURCE_EXCP_J2CA0031.explanation=There was a problem attempting to delist resources from the transaction manager. This message is for informational purposes.
+DELIST_RESOURCE_EXCP_J2CA0031.useraction=If this message occurs on a regular basis, collect diagnostic information and visit the IBM support site for more information.
+
+# --------------------------------
+UNEXPECTED_CONNECTION_EVENT_J2CA0034=J2CA0034E: An unexpected event was received from the Resource Adapter for resource {2}. Expected ConnectionEvent type {0} and received ConnectionEvent type {1}.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.explanation=This is most likely an error with the specific resource adapter.
+UNEXPECTED_CONNECTION_EVENT_J2CA0034.useraction=Contact the resource adapter supplier.
+
+# --------------------------------
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040=J2CA0040E: No valid transaction context was found on the thread for method {0} with coordinator {1} using resources from DataSource {2}.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.explanation=There was an internal error in the connection manager processing. A valid transaction context is required for the given operation, but it was not found.
+NO_VALID_TRANSACTION_CONTEXT_J2CA0040.useraction=CMSG0002
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045=J2CA0045E: Connection not available while invoking method {0} for resource {1}.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.explanation=A connection wait timeout has occurred. A ConnectionWaitTimeoutException was created.
+POOL_MANAGER_EXCP_CCF2_0001_J2CA0045.useraction=Reconfigure the connection pool. Increase the maximum number of connections or increase the connection wait time to avoid this error.
+
+# --------------------------------
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046=J2CA0046E: Method {0} caught an exception during creation of the ManagedConnection for resource {3}, throwing {2}. Original exception: {1}
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.explanation=An error occurred during creation of a ManagedConnection. Usually this can be resolved by looking at the error messages from the resource adapter.
+POOL_MANAGER_EXCP_CCF2_0002_J2CA0046.useraction=CMSG0002
+
+# --------------------------------
+HANDLE_NOT_CLOSED_J2CA0055=J2CA0055W: Connection handle not closed at end of the unit of work scope. Handles will be closed by the Connection Manager.
+HANDLE_NOT_CLOSED_J2CA0055.explanation=Either an activity session, transaction, or local transaction work scope is ending and connection handles are not closed. Support for caching handles outside of the current unit of work scope is not supported for this configuration or release.
+HANDLE_NOT_CLOSED_J2CA0055.useraction=Inspect your application and ensure that the connection handles are closed before the associated unit of work ends.
+
+# --------------------------------
+RA_CONNECTION_ERROR_J2CA0056=J2CA0056I: The Connection Manager received a fatal connection error from the Resource Adapter for resource {1}. The exception is: {0}
+RA_CONNECTION_ERROR_J2CA0056.explanation=The connection manager has been notified by the resource adapter that an error has occurred on the connection. This informational message is logged so that the user can see the exception that was returned.
+RA_CONNECTION_ERROR_J2CA0056.useraction=The connection manager will remove the failing connection or all the connections from the pool, depending on the configuration. This is normal behavior. If this error appears unexpected, investigate the exception to determine the possible source of the problem.
+
+# --------------------------------
+NULL_TRAN_WRAPPER_J2CA0057=J2CA0057E: The interactionPending method was unable to find a transaction wrapper class.
+NULL_TRAN_WRAPPER_J2CA0057.explanation=This is a WebSphere internal error.
+NULL_TRAN_WRAPPER_J2CA0057.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058=J2CA0058E: The ConnectionManager was unable to associate Connection {0} with ManagedConnection {1} for resource {3}. Received exception: {2}
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.explanation=This is most likely an application error. An example: A cached connection is enlisted in a transaction, then the connection is closed. Before the transaction completes another request it is sent to the same EJB that originally opened the connection. The cached handle is still associated with the original transaction and cannot be re-associated until that transaction commits.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0058.useraction=Inspect the application and ensure that the transaction is committed as soon as possible after connections are closed.
+
+# --------------------------------
+FAILED_DOPRIVILEGED_J2CA0060=J2CA0060E: PrivilegedActionException calling doPrivileged: {0}
+FAILED_DOPRIVILEGED_J2CA0060.explanation=This is a security runtime error.
+FAILED_DOPRIVILEGED_J2CA0060.useraction=CMSG0002
+
+# ---------------------------------
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067=J2CA0067W: Invalid {0} setting of {1}. Defaulting to {2} instead.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.explanation=An internal error occurred. Using the default value.
+INVALID_OR_UNEXPECTED_SETTING_J2CA0067.useraction=This is only a warning. If an error occurs later it may help in diagnosing the problem. Otherwise This can be ignored.
+
+# ---------------------------------
+DELIST_FAILED_J2CA0073=J2CA0073E: Unable to delist connection from resource {2} from transaction in method {0} due to exception. Initiating destruction of connection. Exception is: {1}
+DELIST_FAILED_J2CA0073.explanation=An internal error was received and the connection manager was not able to delist a connection from the transaction in which it was involved. The connection manager will attempt to destroy the connection.
+DELIST_FAILED_J2CA0073.useraction=CMSG0002
+
+# ---------------------------------
+ENLIST_FAILED_J2CA0074=J2CA0074E: Unable to enlist connection from resource {2} with current transaction in method {0} due to exception. Initiating destruction of connection. Exception is: {1}
+ENLIST_FAILED_J2CA0074.explanation=An internal error was received and the connection manager was unable to enlist a connection with the current transaction. The connection manager will attempt to destroy the connection.
+ENLIST_FAILED_J2CA0074.useraction=CMSG0002
+
+# ---------------------------------
+MISSING_TRANSACTION_CONTEXT_J2CA0075=J2CA0075W: An active transaction should be present while processing method {0}.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.explanation=Normal connection management processing requires the presence of a transaction in order to run the current method.
+MISSING_TRANSACTION_CONTEXT_J2CA0075.useraction=Start any transactions that are required to successfully use the connection.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077=J2CA0077E: An exception was caught while trying to obtain a javax.resource.cci.LocalTransaction from a ManagedConnection for resource {1}. The exception is: {0}
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.explanation=The connection manager was unable to obtain a LocalTransaction from the resource adapter. This indicates a problem with the resource adapter.
+FAILED_TO_OBTAIN_LOCALTRAN_J2CA0077.useraction=Look for error messages from the resource adapter to identify the problem.
+
+# ---------------------------------
+FAILED_TO_OBTAIN_XAResource_J2CA0078=J2CA0078E: An exception was caught while trying to obtain a javax.transaction.xa.XAResource from a ManagedConnection on DataSource {1}. The exception is: {0}
+FAILED_TO_OBTAIN_XAResource_J2CA0078.explanation=The connection manager was unable to obtain a XAResource from the resource adapter. This indicates a problem with the resource adapter.
+FAILED_TO_OBTAIN_XAResource_J2CA0078.useraction=Look for error messages from the resource adapter to identify the problem.
+
+# ---------------------------------
+ILLEGAL_STATE_EXCEPTION_J2CA0079=J2CA0079E: Method {0} has detected an internal illegal state and is throwing an IllegalStateException. The exception is: {1}
+ILLEGAL_STATE_EXCEPTION_J2CA0079.explanation=The connection manager has detected an internal error.
+ILLEGAL_STATE_EXCEPTION_J2CA0079.useraction=CMSG0002
+
+# ---------------------------------
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080=J2CA0080E: Method {0} has detected an internal illegal argument and is throwing an IllegalArgumentException. The exception is: {1}
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.explanation=The connection manager has detected an internal error.
+ILLEGAL_ARGUMENT_EXCEPTION_J2CA0080.useraction=CMSG0002
+
+# ---------------------------------
+MCERROR_J2CA0081=J2CA0081E: Method {0} failed while trying to execute method {1} on ManagedConnection {2} from resource {4}. Caught exception: {3}
+MCERROR_J2CA0081.explanation=The connection manager caught an exception while trying to perform an operation on a ManagedConnection.
+MCERROR_J2CA0081.useraction=Since the ManagedConnection is part of the resource adapter, look for messages from the resource adapter to further isolate the problem.
+
+# --------------------------------
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086=J2CA0086I: Multiple open connection handles cannot share a physical connection to {1} within a local transaction containment boundary, so a different physical connection will be used for each connection handle. In this situation, it is important to ensure that no transactional work remains in progress after connection handle close because if additional sharable connection handles are later requested within the local transaction containment boundary, the physical connection to which they associate will be unpredictable.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.explanation=Multiple open connection handles can only share a single physical connection within the scope of a global transaction. When multiple connection handles are open within a local transaction containment boundary, each handle uses a different physical connection. Having multiple shareable connection handles open at the same time within a local transaction containment boundary can increase the requirement on the connection pool for maximum number of connections and can greatly increase the complexity of connection handle usage with respect to local transactions for applications that follow this pattern.
+ATTEMPT_TO_SHARE_LTC_CONNECTION_J2CA0086.useraction=Ensure the connection pool is sized so that each thread can require multiple physical connections, and review the application code to verify that this usage pattern is desired and that the expected sharing scope is specified.
+
+# --------------------------------
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087=J2CA0087E: The transaction manager was unable to enlist resource {0} from DataSource {1}.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.explanation=This message indicates a problem enlisting in a transaction. The resource might have already been enrolled in a transaction or the transaction might not have been in the correct state.
+BAD_RETURN_VALUE_FROM_ENLIST_J2CA0087.useraction=Check that the business logic of the application is properly catching the exception created and that it contains the necessary recovery logic. Check log files for previous errors (specifically transaction errors) that might have caused the exception.
+
+# --------------------------------
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088=J2CA0088W: The ManagedConnection that is being destroyed from resource {1} is in an invalid state {0}. Processing will continue.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.explanation=An internal error has occurred.
+ATTEMPT_TO_DESTORY_CONNECTION_IN_USE_J2CA0088.useraction=CMSG0002
+                     
+# ---------------------------------
+INTERUPTED_EXCEPTION_J2CA0091=J2CA0091E: An InterruptedException occurred on the Garbage Collector thread.
+INTERUPTED_EXCEPTION_J2CA0091.explanation=An InterruptedException occurred on the thread for the garbage collector. J2C processing will continue, but unused and aged connections will not be collected.
+INTERUPTED_EXCEPTION_J2CA0091.useraction=CMSG0002
+
+# 0096 deleted
+
+# --------------------------------
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098=J2CA0098E: A ClassCastException occurred attempting to cast event.getSource to ManagedConnection: {0}
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.explanation=The source of the event fired on the listener was not of type ManagedConnection
+GET_SOURCE_CLASS_CAST_EXCP_J2CA0098.useraction=CMSG0002
+
+# --------------------------------
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103=J2CA0103I: Duplicate connector property not added. {0}
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.explanation=An attempt was made to add a duplicate connector property. The property was not added.
+DUPLICATE_USERNAME_PASSWORD_CONNECTOR_PROPERTY_J2CA0103.useraction=A custom property of a connection factory or data source specified a user name or password, but a component-managed authentication alias was also specified. The alias takes precedence over the custom properties. This error might also be the result of a hand-modified resources.xml document.
+
+# ---------------------------------
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127=J2CA0127I: A ConnectionWaitTimeout of 0 has been specified for {0}. The request will wait until a connection can be obtained.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.explanation=A ConnectionWaitTimeout of 0 indicates an infinite wait time. This thread will sleep until a connection is freed.
+INFINITE_CONNECTION_WAIT_TIMEOUT_J2CA0127.useraction=There is no user action required.
+
+# --------------------------------
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148=J2CA0148W: A null ConnectionHandle was found in the CONNECTION_CLOSED ConnectionEvent {0}
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.explanation=A CONNECTION_CLOSED ConnectionEvent is required by the Java EE Connector Architecture to contain a valid connection handle associated with the ManagedConnection instance.
+CONNECTION_CLOSED_NULL_HANDLE_J2CA0148.useraction=The resource adapter must use ConnectionEvent.setConnectionHandle() to supply the connection handle in the CONNECTION_CLOSED ConnectionEvent.
+
+# ---------------------------------
+SET_ONCE_PROP_ALREADY_SET_J2CA0159=J2CA0159E: Internal error. An attempt has been made to change a set once property that has already been set. The property name is {0}
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.explanation=CMSG0001
+SET_ONCE_PROP_ALREADY_SET_J2CA0159.useraction=CMSG0002
+
+# 0165 deleted
+
+# 0166 deleted
+
+# 0167 deleted
+
+# --------------------------------
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169=J2CA0169E: Unable to change the property {0} on DataSource or ConnectionFactory {1}.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.explanation=The connection manager was unable to make the requested change to the configuration variable at this time.
+UNABLE_TO_CHANGE_PROPERTY_J2CA0169.useraction=Attempt to change the configuration variable again.
+
+# 0200 deleted
+
+# ---------------------------------
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207=J2CA0207W: A resource adapter artifact has property {0} whose value {2} is incompatible with its type {1}.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.explanation=A connection factory, activation spec or admin object has a resource property which is not valid.  The value will remain unset.
+INCOMPATIBLE_PROPERTY_TYPE_J2CA0207.useraction=Correct the resource property so the value is consistent with its data type.
+
+# ---------------------------------
+NO_RA_EXCEPTION_J2CA0216=J2CA0216I: The Connection Manager received a fatal connection error from the Resource Adapter for resource {0}. Information may be available in previous messages or exceptions.
+NO_RA_EXCEPTION_J2CA0216.explanation=The connection manager has been notified by the resource adapter that an unrecoverable error has occurred on the connection. No exception was received from the resource adapter. 
+NO_RA_EXCEPTION_J2CA0216.useraction=The connection manager will remove the failing connection, or all the connections (depending on configuration) from the pool. This is normal behavior. If this causes adverse effects, it may be necessary to contact the resource adapter supplier.
+
+# 0226 deleted
+
+# ---------------------------------
+# {0} Configured feature that is ignored.
+# {1} Name of the resource on which the feature is configured. 
+IGNORE_FEATURE_J2CA0240=J2CA0240I: Ignored unimplemented feature {0} for resource {1}.
+IGNORE_FEATURE_J2CA0240.explanation=The feature is not implemented by the application server.
+IGNORE_FEATURE_J2CA0240.useraction=No user action is required.
+
+# ---------------------------------
+# {0}    The field that is missing during de-serialization
+# {1}    The classname of the object with the missing field
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278=J2CA0278W: Could not de-serialize field {0} in class {1}; default value will be used
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.explanation=During de-serialization of an object, an expected field was not found. This is most likely due to an object that is being de-serialized by a version of the class that is different than the one that serialized the object.
+DESERIALIZATION_FIELD_NOT_FOUND_J2CA0278.useraction=This warning indicates a potential problem, but no user action is necessary unless further errors occur.
+
+# --------------------------------
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285=J2CA0285W: Method {0} caught an exception during validating managed connections for resource {3}, throwing {2}. Original exception: {1}
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.explanation=A call to the method getInvalidConnections() returned a resource exception.
+ATTEMPT_TO_VALIDATE_MC_CONNECTIONS_J2CA0285.useraction=Visit the support web site for the provider of the resource adapter.
+
+# 0286 deleted
+                                            
+# ---------------------------------
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292=J2CA0292E: The ManagedConnection from resource {0} could not be enlisted with the current transaction.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.explanation=An internal error occurred while processing the lazyEnlist() method.
+FAILED_TO_ASSOCIATE_CONNECTION_J2CA0292.useraction=CMSG0002
+
+# --------------------------------
+FAILED_TO_ENLIST_CONNECTION_J2CA0293=J2CA0293E: The Connection Manager lazyEnlist() method requires a non-null ManagedConnection parameter for resource {0}.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.explanation=This most likely indicates an error with the implementation of the resource adapter. The resource adapter called the lazyEnlist() method with a null value for the ManagedConnection.
+FAILED_TO_ENLIST_CONNECTION_J2CA0293.useraction=Visit the support web site for the provider of the resource adapter. The resource adapter code has passed a null value to the lazyEnlist() method. See section 7.14.2 of the JCA 1.5 specification for more information on the Lazy Transaction Enlistment optimization.
+
+# --------------------------------
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295=J2CA0295E: The Connection Manager has detected an attempt to start a Local Transaction within a Global (User) Transaction. Check the application code for correctness.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.explanation=This most likely indicates an error in the application. The application should not start local transactions when it is operating in a global transaction.
+ILLEGAL_USE_OF_LOCAL_TRANSACTION_J2CA0295.useraction=Examine the application code to determine where a local transaction is started inside a global transaction. Search the FFDC directory for this message to find a stack trace that may include the line numbers of the code in question - this can help to narrow the search. If the line numbers are not found, if the code has been JIT compiled or it is otherwise obfuscated for example, you might want to instrument the code with System.out.println() statements to help find the problem area. If the problem cannot be found visit the IBM support web site.
+                                   
+# ---------------------------------
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308=J2CA0308W: Duplicate connector property not added. {0}.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.explanation=An attempt was made to add a duplicate connector property. The property was not added.
+DUPLICATE_CONNECTOR_PROPERTY_J2CA0308.useraction=A custom property of a connection factory or data source was specified, but the property already existed. This could be a symptom of a hand-modified resources.xml document.
+
+# 0680 deleted
+
+# 0681 deleted
+
+# 0682 deleted
+
+# 0683 deleted
+
+# 0687 deleted
+
+# 0689 deleted
+
+# ---------------------------------
+POOL_MANAGER_NOT_FOUND_J2CA0695=J2CA0695E: Unable to find primary pool manager during failover processing for a resource with a JNDI name of {0}.
+POOL_MANAGER_NOT_FOUND_J2CA0695.explanation=An internal error occurred during failover processing.
+POOL_MANAGER_NOT_FOUND_J2CA0695.useraction=CMSG0002
+
+# ---------------------------------
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002=J2CA1002E: Invalid MCWrapper {0} from the free pool for resource {1}.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.explanation=The attempt to reserve an MCWrapper failed.
+FREEPOOL_GETFREECONNECTION_ERROR_J2CA1002.useraction=CMSG0002
+
+# ---------------------------------
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003=J2CA1003E: Failed to remove MCWrapper {0} from the shared pool.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.explanation=The attempt to remove an MCWrapper failed, causing a potential problem in the shared pool.
+SHAREDPOOL_REMOVESHAREDCONNECTION_ERROR_J2CA1003.useraction=CMSG0002
+
+# ---------------------------------
+# End of File
+#
+# ---------------------------------

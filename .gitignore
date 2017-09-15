@@ -1,0 +1,20 @@
+# Ignore build folders at the root of each project
+/*/*/build/
+
+# Ignore bin folders at the root of each project
+/*/*/bin/
+
+# Ignore generated folders at the root of each project
+/*/*/generated/
+
+# Ignore all autoFVT folders at the root of each project
+/*/*/autoFVT/
+
+# Ignore some jazz metadata
+.jazz5/
+
+# Ignore class files (as some extra sanity) - they should never be under source control
+*.class
+
+# Ignore .DS_Store which occurs on zip extract on mac
+.DS_Store

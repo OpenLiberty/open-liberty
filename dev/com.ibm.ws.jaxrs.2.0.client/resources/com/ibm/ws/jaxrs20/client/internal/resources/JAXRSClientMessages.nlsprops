@@ -1,0 +1,50 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs20.client/resources/com/ibm/ws/jaxrs20/client/internal/resources/JAXRSClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS20 Client Code
+#RANGE 0700 - 0799
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# JAXRS 2.0 Client Configuration Message ------------------------
+error.jaxrs.client.configuration.timeout.valueinvalid=CWWKW0700E: The timeout value {0} that you specified in the property {1} on the JAX-RS Client side is invalid. The value is set to default {2}. {3} 
+error.jaxrs.client.configuration.timeout.valueinvalid.explanation=The type of the timeout value must be long or int.  
+error.jaxrs.client.configuration.timeout.valueinvalid.useraction=Set the type of the value to long or int.
+
+error.jaxrs.client.configuration.proxy.portinvalid=CWWKW0701E: The proxy server port value {0} that you specified in the property {1} on the JAX-RS Client side is invalid. The value is set to default {2}. {3}
+error.jaxrs.client.configuration.proxy.portinvalid.explanation=The type of the proxy server port value must be int.  
+error.jaxrs.client.configuration.proxy.portinvalid.useraction=Set the type of the value to int.
+
+error.jaxrs.client.configuration.proxy.typeinvalid=CWWKW0702E: The proxy server type value {0} that you specified in the property {1} on the JAX-RS Client side is invalid. The value is set to default {2}. {3}
+error.jaxrs.client.configuration.proxy.typeinvalid.explanation=The value of the proxy server type must be HTTP or SOCKS.  
+error.jaxrs.client.configuration.proxy.typeinvalid.useraction=Set the value to HTTP or SOCKS.
+
+#{0} is the ssl ref id configured in server.xml
+error.jaxrs.client.ssl.invalidsslconfig=CWWKW0703E: The SSL socket factory cannot be created because the SSL reference id {0} does not exist in the server.xml file.
+error.jaxrs.client.ssl.invalidsslconfig.explanation= A valid reference id is required to generate an SSL socket factory. There is no SSL configuration with id {0} in the server.xml file.  
+error.jaxrs.client.ssl.invalidsslconfig.useraction= Set a valid SSL reference id in the server.xml file.
+
+no_saml_found_in_subject=CWWKW0704W: The required SAML token is missing from the subject.
+no_saml_found_in_subject.explanation=There was an error extracting the SAML token from the subject or a SAML element was not found in the current subject.
+no_saml_found_in_subject.useraction=If you create the run-as subject, make sure that the SAML token is added to the subject. Otherwise ensure that your server configuration supports adding the SAML token to the subject by checking the includeTokenInSubject attribute in your SAML configuration.
+
+failed_to_extract_saml_token_from_subject=CWWKW0705W: An exception occurred while attempting to use the SAML PropagationHelper API. The exception was: [{0}]
+failed_to_extract_saml_token_from_subject.explanation=An exception occurred while invoking the PropagationHelper API to retrieve the SAML token from the subject.
+failed_to_extract_saml_token_from_subject.useraction=Ensure that the server.xml has the samlWeb-2.0 feature specified. Also, check the server logs for additional information regarding the exception. 
+
+failed_run_as_subject=CWWKW0706E: An exception occurred while attempting to get the RunAsSubject. The exception was: [{0}].
+failed_run_as_subject.explanation=An exception occurred while getting the RunAsSubject.
+failed_run_as_subject.useraction=Make sure the server is configured and started properly.

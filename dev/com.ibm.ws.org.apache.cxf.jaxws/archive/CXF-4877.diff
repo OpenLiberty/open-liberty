@@ -1,0 +1,258 @@
+Index: branches/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/wsdl11/ServiceWSDLBuilder.java
+===================================================================
+diff -u -N -r1348210 -r1453567
+--- branches/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/wsdl11/ServiceWSDLBuilder.java	(.../ServiceWSDLBuilder.java)	(revision 1348210)
++++ branches/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/wsdl11/ServiceWSDLBuilder.java	(.../ServiceWSDLBuilder.java)	(revision 1453567)
+@@ -99,7 +99,6 @@
+ public class ServiceWSDLBuilder {
+ 
+     private final Map<String, String> ns2prefix;
+-    private Definition definition;
+     private final List<ServiceInfo> services;
+     private boolean useSchemaImports;
+     private String baseFileName;
+@@ -168,6 +167,7 @@
+      * @throws WSDLException
+      */
+     public Definition build(Map<String, SchemaInfo> imports) throws WSDLException {
++        Definition definition = null;
+         try {
+             definition = services.get(0).getProperty(WSDLServiceBuilder.WSDL_DEFINITION, Definition.class);
+         } catch (ClassCastException e) {
+@@ -177,11 +177,12 @@
+             ServiceInfo si = services.get(0);
+             definition = newDefinition(si.getName(), si.getTargetNamespace());
+             addNamespace(WSDLConstants.CONVENTIONAL_TNS_PREFIX, si.getTargetNamespace(), definition);
+-            addExtensibilityElements(definition, getWSDL11Extensors(si.getDescription()));
++            addExtensibilityElements(definition, definition, getWSDL11Extensors(si.getDescription()));
+ 
+             Collection<PortType> portTypes = new HashSet<PortType>();
+             for (ServiceInfo service : services) {
+                 Definition portTypeDef = definition;
++                Definition orig = definition;
+                 if (!isSameTNS(service)) {
+                     portTypeDef = newDefinition(service.getInterface().getName(),
+                                                 service.getInterface().getName().getNamespaceURI());
+@@ -192,6 +193,7 @@
+                     wsdlImport.setLocationURI(service.getInterface().getName().getLocalPart() + ".wsdl");
+                     definition.addImport(wsdlImport);
+                     addNamespace(getPrefix(tns), tns, definition);
++                    definition = portTypeDef;
+                 }
+                 portTypes.add(buildPortType(service.getInterface(), portTypeDef));
+                 
+@@ -203,11 +205,12 @@
+                                 imports, portTypeDef);
+                     }
+                 }
++                definition = orig;
+             }
+             
+             for (ServiceInfo service : services) {
+-                buildBinding(service.getBindings(), portTypes);
+-                buildService(service);
++                buildBinding(definition, service.getBindings(), portTypes);
++                buildService(service, definition);
+             }
+         }
+         return definition;
+@@ -254,30 +257,32 @@
+         el.setTextContent(text);
+         wsdlel.setDocumentationElement(el);
+     }
+-    protected void addExtensibilityElements(ElementExtensible elementExtensible, 
+-        List<ExtensibilityElement> extensibilityElements) {
++    protected void addExtensibilityElements(Definition def,
++                                            ElementExtensible elementExtensible, 
++                                            List<ExtensibilityElement> extensibilityElements) {
+         if (extensibilityElements != null) {
+             for (ExtensibilityElement element : extensibilityElements) {
+                 if (element instanceof UnknownExtensibilityElement) {
+                     UnknownExtensibilityElement uee = (UnknownExtensibilityElement)element;
+                     String pfx = uee.getElement().getPrefix();
+-                    addNamespace(pfx, element.getElementType().getNamespaceURI());
++                    addNamespace(pfx, element.getElementType().getNamespaceURI(), def);
+                 } else {
+                     QName qn = element.getElementType();
+-                    addNamespace(qn.getNamespaceURI());
++                    addNamespace(qn.getNamespaceURI(), def);
+                 }
+                 elementExtensible.addExtensibilityElement(element);
+             }
+         }
+     }
+     
+-    private void addExtensibilityAttributes(AttributeExtensible attributeExtensible, 
++    private void addExtensibilityAttributes(Definition def,
++                                            AttributeExtensible attributeExtensible, 
+                                             Map<QName, Object> attributes) {
+         if (attributes == null) {
+             return;
+         }
+         for (QName qname : attributes.keySet()) {
+-            addNamespace(qname.getNamespaceURI());
++            addNamespace(qname.getNamespaceURI(), def);
+             attributeExtensible.setExtensionAttribute(qname, attributes.get(qname));
+         }
+     }
+@@ -469,7 +474,9 @@
+         schema.addImport(imp);
+     }
+     
+-    protected void buildBinding(Collection<BindingInfo> bindingInfos, Collection<PortType> portTypes) {
++    protected void buildBinding(Definition definition,
++                                Collection<BindingInfo> bindingInfos,
++                                Collection<PortType> portTypes) {
+         Binding binding = null;
+         for (BindingInfo bindingInfo : bindingInfos) {
+             binding = definition.createBinding();
+@@ -483,10 +490,10 @@
+             }
+             binding.setQName(bindingInfo.getName());
+             if (!bindingInfo.getName().getNamespaceURI().equals(definition.getTargetNamespace())) {
+-                addNamespace(bindingInfo.getName().getNamespaceURI());
++                addNamespace(bindingInfo.getName().getNamespaceURI(), definition);
+             }
+             buildBindingOperation(definition, binding, bindingInfo.getOperations());
+-            addExtensibilityElements(binding, getWSDL11Extensors(bindingInfo));
++            addExtensibilityElements(definition, binding, getWSDL11Extensors(bindingInfo));
+             definition.addBinding(binding);
+         }
+     }
+@@ -508,8 +515,8 @@
+             buildBindingInput(def, bindingOperation, bindingOperationInfo.getInput());
+             buildBindingOutput(def, bindingOperation, bindingOperationInfo.getOutput());
+             buildBindingFault(def, bindingOperation, bindingOperationInfo.getFaults());
+-            addExtensibilityAttributes(bindingOperation, bindingOperationInfo.getExtensionAttributes());
+-            addExtensibilityElements(bindingOperation, getWSDL11Extensors(bindingOperationInfo));
++            addExtensibilityAttributes(def, bindingOperation, bindingOperationInfo.getExtensionAttributes());
++            addExtensibilityElements(def, bindingOperation, getWSDL11Extensors(bindingOperationInfo));
+             binding.addBindingOperation(bindingOperation);
+         }
+     }
+@@ -523,8 +530,8 @@
+             addDocumentation(bindingFault, bindingFaultInfo.getDocumentation());
+             bindingFault.setName(bindingFaultInfo.getFaultInfo().getFaultName().getLocalPart());
+             bindingOperation.addBindingFault(bindingFault);
+-            addExtensibilityAttributes(bindingFault, bindingFaultInfo.getExtensionAttributes());
+-            addExtensibilityElements(bindingFault, getWSDL11Extensors(bindingFaultInfo));
++            addExtensibilityAttributes(def, bindingFault, bindingFaultInfo.getExtensionAttributes());
++            addExtensibilityElements(def, bindingFault, getWSDL11Extensors(bindingFaultInfo));
+         }
+         
+     }
+@@ -537,8 +544,8 @@
+             addDocumentation(bindingInput, bindingMessageInfo.getDocumentation());
+             bindingInput.setName(bindingMessageInfo.getMessageInfo().getName().getLocalPart());
+             bindingOperation.setBindingInput(bindingInput);
+-            addExtensibilityAttributes(bindingInput, bindingMessageInfo.getExtensionAttributes());
+-            addExtensibilityElements(bindingInput, getWSDL11Extensors(bindingMessageInfo));
++            addExtensibilityAttributes(def, bindingInput, bindingMessageInfo.getExtensionAttributes());
++            addExtensibilityElements(def, bindingInput, getWSDL11Extensors(bindingMessageInfo));
+         }
+     }
+     
+@@ -550,12 +557,12 @@
+             addDocumentation(bindingOutput, bindingMessageInfo.getDocumentation());
+             bindingOutput.setName(bindingMessageInfo.getMessageInfo().getName().getLocalPart());
+             bindingOperation.setBindingOutput(bindingOutput);
+-            addExtensibilityAttributes(bindingOutput, bindingMessageInfo.getExtensionAttributes());
+-            addExtensibilityElements(bindingOutput, getWSDL11Extensors(bindingMessageInfo));
++            addExtensibilityAttributes(def, bindingOutput, bindingMessageInfo.getExtensionAttributes());
++            addExtensibilityElements(def, bindingOutput, getWSDL11Extensors(bindingMessageInfo));
+         }
+     }
+ 
+-    protected void buildService(ServiceInfo serviceInfo) {
++    protected void buildService(ServiceInfo serviceInfo, Definition definition) {
+         
+         Map<QName, MessageInfo> messages = serviceInfo.getMessages();
+         for (Map.Entry<QName, MessageInfo> mie : messages.entrySet()) {
+@@ -594,17 +601,17 @@
+         Service serv = definition.createService();
+         addDocumentation(serv, serviceInfo.getDocumentation());
+         serv.setQName(serviceInfo.getName());
+-        addNamespace(serviceInfo.getName().getNamespaceURI());
+-        addExtensibilityElements(serv, getWSDL11Extensors(serviceInfo));
++        addNamespace(serviceInfo.getName().getNamespaceURI(), definition);
++        addExtensibilityElements(definition, serv, getWSDL11Extensors(serviceInfo));
+         definition.addService(serv);
+ 
+         for (EndpointInfo ei : serviceInfo.getEndpoints()) {
+-            addNamespace(ei.getTransportId());
++            addNamespace(ei.getTransportId(), definition);
+             Port port = definition.createPort();
+             addDocumentation(port, ei.getDocumentation());
+             port.setName(ei.getName().getLocalPart());
+             port.setBinding(definition.getBinding(ei.getBinding().getName()));
+-            addExtensibilityElements(port, getWSDL11Extensors(ei));
++            addExtensibilityElements(definition, port, getWSDL11Extensors(ei));
+             serv.addPort(port);
+         }
+     }
+@@ -622,8 +629,8 @@
+             portType.setQName(intf.getName());
+             addDocumentation(portType, intf.getDocumentation());
+             addNamespace(intf.getName().getNamespaceURI(), def);
+-            addExtensibilityElements(portType, getWSDL11Extensors(intf));
+-            addExtensibilityAttributes(portType, intf.getExtensionAttributes());
++            addExtensibilityElements(def, portType, getWSDL11Extensors(intf));
++            addExtensibilityAttributes(def, portType, intf.getExtensionAttributes());
+             portType.setUndefined(false);
+             buildPortTypeOperation(portType, intf.getOperations(), def);
+         }
+@@ -636,14 +643,6 @@
+         addNamespace(getPrefix(namespaceURI), namespaceURI, def);
+     }
+ 
+-    protected void addNamespace(String namespaceURI) {
+-        addNamespace(getPrefix(namespaceURI), namespaceURI);
+-    }
+-
+-    protected void addNamespace(String prefix, String namespaceURI) {
+-        addNamespace(prefix, namespaceURI, definition);
+-    }
+-
+     protected void addNamespace(String prefix, String namespaceURI, Definition def) {
+         ns2prefix.put(namespaceURI, prefix);
+         def.addNamespace(prefix, namespaceURI);
+@@ -685,14 +684,14 @@
+                 if (operationInfo.isOneWay()) {
+                     operation.setStyle(OperationType.ONE_WAY);
+                 }
+-                addExtensibilityElements(operation, getWSDL11Extensors(operationInfo));
++                addExtensibilityElements(def, operation, getWSDL11Extensors(operationInfo));
+                 Input input = def.createInput();
+                 addDocumentation(input, operationInfo.getInput().getDocumentation());
+                 input.setName(operationInfo.getInputName());
+                 Message message = def.createMessage();
+                 buildMessage(message, operationInfo.getInput(), def);
+-                this.addExtensibilityAttributes(input, getInputExtensionAttributes(operationInfo));
+-                this.addExtensibilityElements(input, getWSDL11Extensors(operationInfo.getInput()));
++                this.addExtensibilityAttributes(def, input, getInputExtensionAttributes(operationInfo));
++                this.addExtensibilityElements(def, input, getWSDL11Extensors(operationInfo.getInput()));
+                 input.setMessage(message);
+                 operation.setInput(input);
+                 operation.setParameterOrdering(operationInfo.getParameterOrdering());
+@@ -703,8 +702,8 @@
+                     output.setName(operationInfo.getOutputName());
+                     message = def.createMessage();
+                     buildMessage(message, operationInfo.getOutput(), def);
+-                    this.addExtensibilityAttributes(output, getOutputExtensionAttributes(operationInfo));
+-                    this.addExtensibilityElements(output, getWSDL11Extensors(operationInfo.getOutput()));
++                    this.addExtensibilityAttributes(def, output, getOutputExtensionAttributes(operationInfo));
++                    this.addExtensibilityElements(def, output, getWSDL11Extensors(operationInfo.getOutput()));
+                     output.setMessage(message);
+                     operation.setOutput(output);
+                 }
+@@ -717,8 +716,8 @@
+                     fault.setName(faultInfo.getFaultName().getLocalPart());
+                     message = def.createMessage();
+                     buildMessage(message, faultInfo, def);
+-                    this.addExtensibilityAttributes(fault, faultInfo.getExtensionAttributes());
+-                    this.addExtensibilityElements(fault, getWSDL11Extensors(faultInfo));
++                    this.addExtensibilityAttributes(def, fault, faultInfo.getExtensionAttributes());
++                    this.addExtensibilityElements(def, fault, getWSDL11Extensors(faultInfo));
+                     fault.setMessage(message);
+                     operation.addFault(fault);
+                 }

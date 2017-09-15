@@ -1,0 +1,5 @@
+/dist
+/bundles
+/lib
+/*.log*
+/coverage.ec

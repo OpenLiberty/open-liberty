@@ -1,0 +1,36 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: com.ibm.websphere.jmx.connector.rest; type=ibm-api,
+ com.ibm.ws.jmx.connector.client.rest; type=ibm-api,
+ com.ibm.websphere.filetransfer; type=ibm-api
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: restConnector-2.0
+Subsystem-Content: restConnector.jar; type=file; location:="clients/restConnector.jar"; version="[1.0.0,1.0.200)",
+ restConnector.py; type=file; location:="clients/jython/restConnector.py",
+ com.ibm.websphere.appserver.api.restConnector_1.3-javadoc.zip; type=file; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.restConnector_1.3-javadoc.zip",
+ README; type=file; location:="clients/jython/README",
+ com.ibm.websphere.appserver.spi.restHandler_2.0-javadoc.zip; type=file; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.restHandler_2.0-javadoc.zip",
+ com.ibm.websphere.appserver.restHandler-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.spi.restHandler; location:="dev/spi/ibm/,lib/"; type=jar; version="[2.0.0,2.0.200)",
+ com.ibm.websphere.appserver.api.restConnector; location:="dev/api/ibm/,lib/"; type=jar; version="[1.3.0,1.3.200)",
+ com.ibm.ws.filetransfer.routing.archiveExpander; version="[1.0.0,1.0.200)",
+ com.ibm.ws.jmx.connector.server.rest; version="[1.1.0,1.1.200)",
+ com.ibm.ws.jmx.connector.client.rest; version="[1.0.0,1.0.200)",
+ com.ibm.ws.filetransfer; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.filetransfer; version="[1.0.0,1.0.200)",
+ com.ibm.ws.jmx.request; version="[1.0.0,1.0.200)",
+ com.ibm.json4j; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.restConnector-2.0
+Subsystem-ManifestVersion: 1
+Subsystem-Name: Admin REST Connector 2.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.restConnector-2.0; visibility:=public; singleton:=true
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

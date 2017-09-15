@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- Connection Manager -->
+
+ <Designate factoryPid="com.ibm.ws.jca.connectionManager">
+  <Object ocdref="com.ibm.ws.jca.connectionManager" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.connectionManager" name="%connectionManager" description="%connectionManager.desc" ibm:alias="connectionManager" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="agedTimeout"                        name="%agedTimeout"  description="%agedTimeout.desc"  required="false" type="String"  ibm:type="duration(s)" default="-1" min="-1"/>
+  <AD id="connectionTimeout"                  name="%connTimeout"  description="%connTimeout.desc"  required="false" type="String"  ibm:type="duration(s)" default="30s" min="-1"/>
+  <AD id="maxIdleTime"                        name="%maxIdleTime"  description="%maxIdleTime.desc"  required="false" type="String"  ibm:type="duration(s)" default="30m" min="-1"/>
+  <AD id="maxPoolSize"                        name="%maxPoolSize"  description="%maxPoolSize.desc"  required="false" type="Integer" default="50" min="0"/>
+  <AD id="minPoolSize"                        name="%minPoolSize"  description="%minPoolSize.desc"  required="false" type="Integer" min="0"/>
+  <AD id="purgePolicy"                        name="%purgePolicy"  description="%purgePolicy.desc"  required="false" type="String"  default="EntirePool">
+   <Option value="EntirePool"                 label="%purgePolicy.EntirePool.desc"/>
+   <Option value="FailingConnectionOnly"      label="%purgePolicy.FailingConnectionOnly.desc"/>
+   <Option value="ValidateAllConnections"     label="%purgePolicy.ValidateAllConnections.desc"/>
+  </AD>
+  <AD id="reapTime"                           name="%reapTime"     description="%reapTime.desc"     required="false" type="String" ibm:type="duration(s)" default="3m" min="-1"/>
+  <!-- Advanced properties for connectionManager -->
+  <AD id="maxConnectionsPerThread"            name="%maxConPerThd" description="%maxConPerThd.desc" ibmui:group="Advanced" required="false" type="Integer" min="0"/>
+  <AD id="numConnectionsPerThreadLocal"       name="%numConPerThd" description="%numConPerThd.desc" ibmui:group="Advanced" required="false" type="Integer" min="0"/>
+  <AD id="enableSharingForDirectLookups"      name="%enableSharing" description="%enableSharing.desc" ibmui:group="Advanced" required="false" type="Boolean" default="true"/>
+ </OCD>
+
+</metatype:MetaData>

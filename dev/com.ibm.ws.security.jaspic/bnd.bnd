@@ -1,0 +1,68 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS Security JASPI
+Bundle-Description: WAS Security JASPI 1.1, version=${bVersion}
+Bundle-SymbolicName: com.ibm.ws.security.jaspic.1.1
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+WS-TraceGroup: \
+  JASPI
+
+Export-Package: \
+  com.ibm.wsspi.security.jaspi, \
+  com.ibm.ws.security.jaspi;thread-context=true, \
+  com.ibm.ws.security.jaspi.client
+
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+ 
+Private-Package: \
+  com.ibm.ws.security.jaspi.internal.resources
+
+-dsannotations: \
+com.ibm.ws.security.jaspi.JaspiServiceImpl, \
+com.ibm.ws.security.jaspi.JaspiServletContainerInitializer
+
+-dsannotations-inherit: true
+
+instrument.classesExcludes: com/ibm/ws/security/jaspi/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
+	com.ibm.websphere.security;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.security;version=latest,\
+	com.ibm.ws.security.authentication;version=latest,\
+	com.ibm.ws.webcontainer.security;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.security.token;version=latest,\
+	com.ibm.ws.webcontainer;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.jmock:jmock-legacy;version=2.5.0, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	cglib:cglib-nodep;version=2.1.0.3, \
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.container.service;version=latest, \
+	com.ibm.ws.security.registry;version=latest

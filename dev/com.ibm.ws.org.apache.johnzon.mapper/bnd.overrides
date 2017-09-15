@@ -1,0 +1,22 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.johnzon.mapper.1.1
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+DynamicImport-Package: \
+  org.apache.johnzon.core;version="[1.1,2)"
+
+Import-Package: \
+  javax.json;version="[1.1,2)",\
+  javax.json.spi;version="[1.1,2)",\
+  javax.json.stream;version="[1.1,2)",\
+  javax.xml.bind
+
+Export-Package: \
+  org.apache.johnzon.mapper;version="1.1.0",\
+  org.apache.johnzon.mapper.access;version="1.1.0",\
+  org.apache.johnzon.mapper.converter;version="1.1.0",\
+  org.apache.johnzon.mapper.internal;version="1.1.0",\
+  org.apache.johnzon.mapper.reflection;version="1.1.0"

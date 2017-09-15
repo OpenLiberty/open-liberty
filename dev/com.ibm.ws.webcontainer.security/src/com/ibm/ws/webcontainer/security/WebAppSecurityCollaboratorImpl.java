@@ -1,0 +1,1512 @@
+/*******************************************************************************
+ * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.webcontainer.security;
+
+import java.io.IOException;
+import java.security.AccessController;
+import java.security.Principal;
+import java.security.PrivilegedAction;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.security.auth.Subject;
+import javax.security.auth.login.CredentialExpiredException;
+import javax.servlet.DispatcherType;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+
+import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.websphere.security.audit.AuditConstants;
+import com.ibm.websphere.security.audit.AuditEvent;
+import com.ibm.websphere.security.audit.context.AuditManager;
+import com.ibm.websphere.security.audit.context.AuditThreadContext;
+import com.ibm.websphere.security.auth.CredentialDestroyedException;
+import com.ibm.websphere.security.cred.WSCredential;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.audit.Audit;
+import com.ibm.ws.security.authentication.AuthenticationService;
+import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
+import com.ibm.ws.security.authentication.principals.WSPrincipal;
+import com.ibm.ws.security.authentication.tai.TAIService;
+import com.ibm.ws.security.authentication.utility.SubjectHelper;
+import com.ibm.ws.security.authorization.AuthorizationService;
+import com.ibm.ws.security.authorization.jacc.JaccService;
+import com.ibm.ws.security.collaborator.CollaboratorUtils;
+import com.ibm.ws.security.context.SubjectManager;
+import com.ibm.ws.security.registry.RegistryException;
+import com.ibm.ws.security.registry.UserRegistry;
+import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.webcontainer.security.internal.BasicAuthAuthenticator;
+import com.ibm.ws.webcontainer.security.internal.DenyReply;
+import com.ibm.ws.webcontainer.security.internal.FormLoginExtensionProcessor;
+import com.ibm.ws.webcontainer.security.internal.FormLogoutExtensionProcessor;
+import com.ibm.ws.webcontainer.security.internal.HTTPSRedirectHandler;
+import com.ibm.ws.webcontainer.security.internal.PermitReply;
+import com.ibm.ws.webcontainer.security.internal.ReturnReply;
+import com.ibm.ws.webcontainer.security.internal.SRTServletRequestUtils;
+import com.ibm.ws.webcontainer.security.internal.URLHandler;
+import com.ibm.ws.webcontainer.security.internal.WebReply;
+import com.ibm.ws.webcontainer.security.internal.WebSecurityCollaboratorException;
+import com.ibm.ws.webcontainer.security.internal.WebSecurityHelperImpl;
+import com.ibm.ws.webcontainer.security.jacc.WebAppJaccAuthorizationHelper;
+import com.ibm.ws.webcontainer.security.metadata.FormLoginConfiguration;
+import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
+import com.ibm.ws.webcontainer.security.metadata.MatchResponse;
+import com.ibm.ws.webcontainer.security.metadata.SecurityConstraint;
+import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
+import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.ws.webcontainer.security.metadata.WebResourceCollection;
+import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
+import com.ibm.wsspi.security.tai.TrustAssociationInterceptor;
+import com.ibm.wsspi.webcontainer.RequestProcessor;
+import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
+import com.ibm.wsspi.webcontainer.extension.ExtensionProcessor;
+import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
+import com.ibm.wsspi.webcontainer.security.SecurityViolationException;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
+import com.ibm.wsspi.webcontainer.servlet.IServletContext;
+import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
+
+public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborator, WebAppAuthorizationHelper {
+    private static final TraceComponent tc = Tr.register(WebAppSecurityCollaboratorImpl.class);
+
+    static final String KEY_ID = "id";
+    static final String KEY_SERVICE_ID = "service.id";
+    static final String KEY_COMPONENT_NAME = "component.name";
+    public static final String KEY_SECURITY_SERVICE = "securityService";
+    public static final String KEY_TAI_SERVICE = "taiService";
+    public static final String KEY_INTERCEPTOR_SERVICE = "interceptorService";
+    static final String KEY_JACC_SERVICE = "jaccService";
+    static final String JASPI_SERVICE_COMPONENT_NAME = "com.ibm.ws.security.jaspi";
+    public static final String KEY_WEB_AUTHENTICATOR = "webAuthenticator";
+    public static final String KEY_UNPROTECTED_RESOURCE_SERVICE = "unprotectedResourceService";
+    static final String DELEGATION_USERS_LIST = "DELEGATION_USERS_LIST";
+    protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef = new ConcurrentServiceReferenceMap<String, WebAuthenticator>(KEY_WEB_AUTHENTICATOR);
+    protected final ConcurrentServiceReferenceMap<String, UnprotectedResourceService> unprotectedResourceServiceRef = new ConcurrentServiceReferenceMap<String, UnprotectedResourceService>(KEY_UNPROTECTED_RESOURCE_SERVICE);
+
+    protected final AtomicServiceReference<TAIService> taiServiceRef = new AtomicServiceReference<TAIService>(KEY_TAI_SERVICE);
+    protected final ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor> interceptorServiceRef = new ConcurrentServiceReferenceMap<String, TrustAssociationInterceptor>(KEY_INTERCEPTOR_SERVICE);
+    protected final AtomicServiceReference<SecurityService> securityServiceRef = new AtomicServiceReference<SecurityService>(KEY_SECURITY_SERVICE);
+    protected final AtomicServiceReference<JaccService> jaccServiceRef = new AtomicServiceReference<JaccService>(KEY_JACC_SERVICE);
+
+    private static final String KEY_LOCATION_ADMIN = "locationAdmin";
+    protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef = new AtomicServiceReference<WsLocationAdmin>(KEY_LOCATION_ADMIN);
+    private static final WebReply PERMIT_REPLY = new PermitReply();
+    private static final WebReply DENY_AUTHZ_FAILED = new DenyReply("AuthorizationFailed");
+    private static final String AUTH_TYPE = "AUTH_TYPE";
+
+    // '**' will represent the Servlet 3.1 defined all authenticated Security constraint
+    private static final String ALL_AUTHENTICATED_ROLE = "**";
+
+    // '_starstar_' will represent if ** was specified as a defined role
+    private static final String STARSTAR_ROLE = "_starstar_";
+
+    private static WebAppSecurityConfig globalConfig = null;
+    protected final Map<String, Object> currentProps = new HashMap<String, Object>();
+    protected volatile WebAuthenticatorFactory authenticatorFactory = null;
+    protected volatile WebAppSecurityConfig webAppSecConfig = null;
+    protected volatile AuthenticateApi authenticateApi = null;
+    protected volatile PostParameterHelper postParameterHelper = null;
+    protected CollaboratorUtils collabUtils;
+
+    protected SubjectHelper subjectHelper;
+    protected SubjectManager subjectManager;
+    protected HTTPSRedirectHandler httpsRedirectHandler;
+
+    protected AuditManager auditManager;
+    public HashMap<String, Object> extraAuditData = new HashMap<String, Object>();
+
+    protected WebAuthenticatorProxy authenticatorProxy;
+    protected WebProviderAuthenticatorProxy providerAuthenticatorProxy;
+
+    private UnauthenticatedSubjectService unauthenticatedSubjectService;
+    private WebAppAuthorizationHelper wasch = this;
+
+    private boolean isJaspiEnabled = false;
+    private Subject savedSubject = null;
+    private boolean byPassedAuthRequest = false;
+    private boolean isActive = false;
+
+    private static ThreadLocal<AuditThreadContext> threadLocal = new ThreadLocal<AuditThreadContext>();
+
+    /**
+     * Zero length constructor required by DS.
+     */
+    public WebAppSecurityCollaboratorImpl() {
+        this(new SubjectHelper(), new SubjectManager(), new HTTPSRedirectHandler());
+        this.auditManager = new AuditManager();
+    }
+
+    /**
+     * This constructor allows for control over the collaborator objects
+     * is intended for use by the unit tests. The runtime will use the
+     * default constructor as it is required by DS.
+     */
+    public WebAppSecurityCollaboratorImpl(SubjectHelper subjectHelper,
+                                          SubjectManager subjectManager,
+                                          HTTPSRedirectHandler httpsRedirectHandler) {
+        this.subjectHelper = subjectHelper;
+        this.subjectManager = subjectManager;
+        this.httpsRedirectHandler = httpsRedirectHandler;
+        this.collabUtils = new CollaboratorUtils(subjectManager);
+    }
+
+    /**
+     * Unit test constructor. <b>DO NOT INVOKE FROM PRODUCTION CODE.</b>
+     * <p>
+     * (This overall logic needs to get cleaned up so we don't need this in the future).
+     */
+    public WebAppSecurityCollaboratorImpl(SubjectHelper subjectHelper,
+                                          SubjectManager subjectManager,
+                                          HTTPSRedirectHandler httpsRedirectHandler,
+                                          WebAppSecurityConfig webAppSecConfig) {
+        this.subjectHelper = subjectHelper;
+        this.subjectManager = subjectManager;
+        this.httpsRedirectHandler = httpsRedirectHandler;
+        this.webAppSecConfig = webAppSecConfig;
+        WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
+    }
+
+    public void setSecurityService(ServiceReference<SecurityService> reference) {
+        securityServiceRef.setReference(reference);
+    }
+
+    public void unsetSecurityService(ServiceReference<SecurityService> reference) {
+        securityServiceRef.unsetReference(reference);
+    }
+
+    public void setTaiService(ServiceReference<TAIService> reference) {
+        taiServiceRef.setReference(reference);
+    }
+
+    public void unsetTaiService(ServiceReference<TAIService> reference) {
+        taiServiceRef.unsetReference(reference);
+    }
+
+    public synchronized void setInterceptorService(ServiceReference<TrustAssociationInterceptor> ref) {
+        String id = getComponentId(ref);
+        interceptorServiceRef.putReference(id, ref);
+    }
+
+    public synchronized void unsetInterceptorService(ServiceReference<TrustAssociationInterceptor> ref) {
+        String id = getComponentId(ref);
+        interceptorServiceRef.removeReference(id, ref);
+    }
+
+    public void setWebAuthenticator(ServiceReference<WebAuthenticator> ref) {
+        String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
+        webAuthenticatorRef.putReference(cn, ref);
+        if (cn.equals(JASPI_SERVICE_COMPONENT_NAME)) {
+            isJaspiEnabled = true;
+        }
+    }
+
+    public void unsetWebAuthenticator(ServiceReference<WebAuthenticator> ref) {
+        String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
+        webAuthenticatorRef.removeReference(cn, ref);
+        if (cn.equals(JASPI_SERVICE_COMPONENT_NAME)) {
+            isJaspiEnabled = false;
+        }
+    }
+
+    public void setUnprotectedResourceService(ServiceReference<UnprotectedResourceService> ref) {
+        unprotectedResourceServiceRef.putReference(getServiceId(ref), ref);
+    }
+
+    public void unsetUnprotectedResourceService(ServiceReference<UnprotectedResourceService> ref) {
+        unprotectedResourceServiceRef.removeReference(getServiceId(ref), ref);
+    }
+
+    String getServiceId(ServiceReference<UnprotectedResourceService> ref) {
+        long lId = (Long) ref.getProperty(KEY_SERVICE_ID);
+        return "urs_" + lId;
+    }
+
+    public void setUnauthenticatedSubjectService(UnauthenticatedSubjectService srv) {
+        this.unauthenticatedSubjectService = srv;
+    }
+
+    protected void unsetUnauthenticatedSubjectService(UnauthenticatedSubjectService srv) {
+        if (this.unauthenticatedSubjectService == srv) {
+            this.unauthenticatedSubjectService = null;
+        }
+    }
+
+    protected void setLocationAdmin(ServiceReference<WsLocationAdmin> ref) {
+        locationAdminRef.setReference(ref);
+    }
+
+    protected void unsetLocationAdmin(ServiceReference<WsLocationAdmin> ref) {
+        locationAdminRef.unsetReference(ref);
+    }
+
+    public void setAuthenticatorFactory(WebAuthenticatorFactory authenticatorFactory) {
+        this.authenticatorFactory = authenticatorFactory;
+        if (!FrameworkState.isStopping() && isActive && webAppSecConfig != null) {
+            activateComponents();
+        }
+    }
+
+    public void unsetAuthenticatorFactory(WebAuthenticatorFactory authenticatorFactory) {
+        if (this.authenticatorFactory == authenticatorFactory) {
+            this.authenticatorFactory = null;
+        }
+    }
+
+    protected void setJaccService(ServiceReference<JaccService> ref) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "enabling JACC service");
+        }
+        jaccServiceRef.setReference(ref);
+        wasch = new WebAppJaccAuthorizationHelper(jaccServiceRef);
+    }
+
+    protected void unsetJaccService(ServiceReference<JaccService> ref) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "disabling JACC service");
+        }
+        jaccServiceRef.unsetReference(ref);
+        wasch = this;
+    }
+
+    protected void activate(ComponentContext cc, Map<String, Object> props) {
+        isActive = true;
+        locationAdminRef.activate(cc);
+        securityServiceRef.activate(cc);
+        interceptorServiceRef.activate(cc);
+        taiServiceRef.activate(cc);
+        jaccServiceRef.activate(cc);
+        webAuthenticatorRef.activate(cc);
+        unprotectedResourceServiceRef.activate(cc);
+        currentProps.clear();
+        if (props != null) {
+            currentProps.putAll(props);
+        }
+        activateComponents();
+    }
+
+    protected void activateComponents() {
+        webAppSecConfig = authenticatorFactory.createWebAppSecurityConfigImpl(currentProps, locationAdminRef, securityServiceRef);
+        updateComponents();
+    }
+
+    protected void updateComponents() {
+        WebSecurityHelperImpl.setWebAppSecurityConfig(webAppSecConfig);
+        SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
+        authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+        postParameterHelper = new PostParameterHelper(webAppSecConfig);
+        providerAuthenticatorProxy = authenticatorFactory.createWebProviderAuthenticatorProxy(securityServiceRef, taiServiceRef, interceptorServiceRef, webAppSecConfig,
+                                                                                              webAuthenticatorRef);
+        authenticatorProxy = authenticatorFactory.createWebAuthenticatorProxy(webAppSecConfig, postParameterHelper, securityServiceRef, providerAuthenticatorProxy);
+    }
+
+    protected void modified(Map<String, Object> newProperties) {
+        WebAppSecurityConfig newWebAppSecConfig = authenticatorFactory.createWebAppSecurityConfigImpl(newProperties, locationAdminRef, securityServiceRef);
+        // Capture the properties that were changed for our audit record
+        String deltaString = newWebAppSecConfig.getChangedProperties(webAppSecConfig);
+        currentProps.clear();
+        if (newProperties != null) {
+            currentProps.putAll(newProperties);
+        }
+        webAppSecConfig = newWebAppSecConfig;
+        updateComponents();
+        Tr.audit(tc, "WEB_APP_SECURITY_CONFIGURATION_UPDATED", deltaString);
+    }
+
+    protected void deactivate(ComponentContext cc) {
+        isActive = false;
+        locationAdminRef.deactivate(cc);
+        securityServiceRef.deactivate(cc);
+        taiServiceRef.deactivate(cc);
+        interceptorServiceRef.deactivate(cc);
+        jaccServiceRef.deactivate(cc);
+        webAuthenticatorRef.deactivate(cc);
+        unprotectedResourceServiceRef.deactivate(cc);
+        WebSecurityHelperImpl.setWebAppSecurityConfig(null);
+    }
+
+    @Override
+    public ExtensionProcessor getFormLoginExtensionProcessor(IServletContext webapp) {
+        try {
+            SecurityService securityService = securityServiceRef.getService();
+            UserRegistryService userRegistryService = securityService.getUserRegistryService();
+            UserRegistry userRegistry = null;
+
+            if (userRegistryService.isUserRegistryConfigured())
+                userRegistry = userRegistryService.getUserRegistry();
+
+            return new FormLoginExtensionProcessor(webAppSecConfig, securityService.getAuthenticationService(), userRegistry, webapp, providerAuthenticatorProxy, webAuthenticatorRef);
+        } catch (RegistryException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "RegistryException while trying to create FormLoginExtensionProcessor", e);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public ExtensionProcessor getFormLogoutExtensionProcessor(IServletContext webapp) {
+        return new FormLogoutExtensionProcessor(webapp, webAppSecConfig, getAuthenticateApi());
+    }
+
+    /**
+     * public java.security.Principal getUserPrincipal()
+     * Returns a java.security.Principal object containing the name of the current authenticated user. If the user has not been authenticated, the method returns null.
+     * Returns:
+     * a java.security.Principal containing the name of the user making this request; null if the user has not been authenticated{@inheritDoc}
+     *
+     * Look at the Subject on the thread only.
+     * We will extract, from the set of Principals, our WSPrincipal type.
+     */
+    @Override
+    public Principal getUserPrincipal() {
+        return collabUtils.getCallerPrincipal(false, null, true, isJaspiEnabled);
+    }
+
+    /**
+     * Handle exceptions raised from <code>preInvoke</code> while
+     * performing a servlet dispatch.
+     */
+    @Override
+    public void handleException(HttpServletRequest req, HttpServletResponse rsp, Throwable wse) throws ServletException, IOException, ClassCastException {
+        WebReply reply = ((WebSecurityCollaboratorException) (wse)).getWebReply();
+        int sc = reply.getStatusCode();
+
+        // Throw an exception if an error
+        if (sc == HttpServletResponse.SC_INTERNAL_SERVER_ERROR) {
+            String method = null;
+            if (req != null) {
+                method = req.getMethod();
+            }
+            String url = getRequestURL(req);
+
+            final ServletException ex = new ServletException(TraceNLS.getFormattedMessage(
+                                                                                          this.getClass(),
+                                                                                          TraceConstants.MESSAGE_BUNDLE,
+                                                                                          "SEC_WEB_INTERNAL_SERVER_ERROR",
+                                                                                          new Object[] { method, url },
+                                                                                          "CWWKS9115E: The server encountered an unexpected condition which prevented it from fulfilling the request of method {0} for URL {1}. Review the server logs for more information."), wse);
+            throw ex;
+        }
+        reply.writeResponse(rsp);
+    }
+
+    /**
+     * {@inheritDoc} If the role is null or the call is unauthenticated,
+     * return false. Otherwise, check if the authenticated subject is in
+     * the requested role.
+     */
+    @Override
+    public boolean isUserInRole(String role, IExtendedRequest req) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isUserInRole role = " + role);
+        }
+
+        if (role == null)
+            return false;
+        Subject subject = subjectManager.getCallerSubject();
+        if (subject == null) {
+            return false;
+        }
+
+        return wasch.isUserInRole(role, req, subject);
+
+    }
+
+    /**
+     * Restore the security context to what it looked like before the servlet
+     * dispatch. This method is always called if <code>preInovke</code> was
+     * called.
+     *
+     * @param secObject the cookie returned from preInvoke. This
+     *            may be null if <code>preInvoke</code> exited with an
+     *            exception or if no work was done.
+     */
+    @Override
+    public void postInvoke(Object secObject) throws ServletException {
+        if (secObject != null) {
+            WebSecurityContext webSecurityContext = (WebSecurityContext) secObject;
+            if (webSecurityContext.getJaspiAuthContext() != null &&
+                webAuthenticatorRef != null) {
+                WebAuthenticator jaspiService = webAuthenticatorRef.getService("com.ibm.ws.security.jaspi");
+                if (jaspiService != null) {
+                    try {
+                        ((JaspiService) jaspiService).postInvoke(webSecurityContext);
+                    } catch (Exception e) {
+                        throw new ServletException(e);
+                    }
+                }
+            }
+            Subject invokedSubject = webSecurityContext.getInvokedSubject();
+            Subject receivedSubject = webSecurityContext.getReceivedSubject();
+
+            subjectManager.setCallerSubject(receivedSubject);
+            subjectManager.setInvocationSubject(invokedSubject);
+
+            try {
+                resetSyncToOSThread(webSecurityContext);
+            } catch (ThreadIdentityException e) {
+                throw new ServletException(e);
+            }
+        }
+    }
+
+    /**
+     * This preInvoke is called for every request and when processing
+     * AsyncErrorHandling. It is also called (passing in false for
+     * <code>enforceSecurity</code>) for static files to check whether
+     * the user has access to the file on the zOS file system.
+     * <p>
+     * preInvoke also handles runAs delegation.
+     * <p> {@inheritDoc}
+     */
+    @Override
+    public Object preInvoke(HttpServletRequest req, HttpServletResponse resp, String servletName, boolean enforceSecurity) throws SecurityViolationException, IOException {
+        Subject invokedSubject = subjectManager.getInvocationSubject();
+        Subject receivedSubject = subjectManager.getCallerSubject();
+
+        WebSecurityContext webSecurityContext = new WebSecurityContext(invokedSubject, receivedSubject);
+        setUnauthenticatedSubjectIfNeeded(invokedSubject, receivedSubject);
+
+        if (enforceSecurity) {
+            // Authentication and authorization are not required
+            // for servlet init or destroy and, per spec, should
+            // not be done for forward or include paths.
+            if (req != null) {
+                performSecurityChecks(req, resp, receivedSubject, webSecurityContext);
+            }
+
+            extraAuditData.put("HTTP_SERVLET_REQUEST", req);
+            //auditManager.setHttpServletRequest(req);
+            performDelegation(servletName);
+
+            syncToOSThread(webSecurityContext);
+        }
+
+        return webSecurityContext;
+    }
+
+    /**
+     * Sync the invocation Subject's identity to the thread, if request by the application.
+     *
+     * @param WebSecurityContext The security context object for this application invocation.
+     *            MUST NOT BE NULL.
+     * @throws SecurityViolationException
+     */
+    private void syncToOSThread(WebSecurityContext webSecurityContext) throws SecurityViolationException {
+        try {
+            Object token = ThreadIdentityManager.setAppThreadIdentity(subjectManager.getInvocationSubject());
+            webSecurityContext.setSyncToOSThreadToken(token);
+        } catch (ThreadIdentityException tie) {
+            SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(tie.getMessage(), DENY_AUTHZ_FAILED, webSecurityContext));
+            throw secVE;
+        }
+    }
+
+    /**
+     * Remove the invocation Subject's identity from the thread, if it was previously sync'ed.
+     *
+     * @param WebSecurityContext The security context object for this application invocation.
+     *            MUST NOT BE NULL.
+     * @throws ThreadIdentityException
+     */
+    private void resetSyncToOSThread(WebSecurityContext webSecurityContext) throws ThreadIdentityException {
+        Object token = webSecurityContext.getSyncToOSThreadToken();
+        if (token != null) {
+            ThreadIdentityManager.resetChecked(token);
+        }
+    }
+
+    private void performSecurityChecks(HttpServletRequest req, HttpServletResponse resp, Subject receivedSubject,
+                                       WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
+        String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
+        SecurityMetadata securityMetadata = getSecurityMetadata();
+
+        savedSubject = receivedSubject;
+
+        MatchResponse matchResponse = getMatchResponse(req);
+        WebRequest webRequest = new WebRequestImpl(req, resp, getApplicationName(), webSecurityContext, securityMetadata, matchResponse, webAppSecConfig);
+        if (webRequest.getRequiredRoles() != null) {
+            ArrayList<String> rolesList = new ArrayList<String>();
+            for (String role : webRequest.getRequiredRoles()) {
+                rolesList.add(role);
+            }
+        }
+
+        WebReply webReply = null;
+
+        /**
+         * JASPI spec requires that we check JASPI for every request, protected or
+         * unprotected, SSO token or no SSO token, etc. which means we can't do our
+         * normal processing.
+         */
+        if (isJaspiEnabled &&
+            ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
+//            FilterThreadContext filterThreadContext = new FilterThreadContext(this, receivedSubject, uriName, webRequest, webSecurityContext);
+//            filterThreadLocal.set(filterThreadContext);
+//            webReply = PERMIT_REPLY; // TODO: Create new FILTER_REPLY type.
+
+            webReply = handleJaspi(receivedSubject, uriName, webRequest, webSecurityContext);
+//            performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
+//            webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
+//            if (webReply == null) {
+//                AuthenticationResult authResult = authenticateRequest(webRequest);
+//                webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
+//            }
+        }
+
+        /**
+         * If JASPI is not enabled or no JASPI provider handled the request
+         * we do our normal processing
+         */
+        if (webReply == null) {
+            performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
+            optionallyAuthenticateUnprotectedResource(webRequest);
+
+            webReply = determineWebReply(receivedSubject, uriName, webRequest);
+
+        }
+        validateWebReply(webSecurityContext, webReply);
+
+        if (webReply.getStatusCode() == HttpServletResponse.SC_OK && byPassedAuthRequest) {
+            AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_SUCCESS);
+            Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+        }
+
+        webReply.writeResponse(resp);
+    }
+
+    /**
+     * @param webRequest
+     * @return
+     */
+    private WebReply handleJaspi(Subject receivedSubject,
+                                 String uriName,
+                                 WebRequest webRequest,
+                                 WebSecurityContext webSecurityContext) throws SecurityViolationException, IOException {
+        performPrecludedAccessTests(webRequest, webSecurityContext, uriName);
+        WebReply webReply = unprotectedSpecialURI(webRequest, uriName, webRequest.getHttpServletRequest().getMethod());
+        if (webReply == null) {
+            AuthenticationResult authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
+            authResult.setAuditCredType(AuditEvent.CRED_TYPE_JASPIC);
+            if (receivedSubject != null && receivedSubject.getPrincipals() != null) {
+                authResult.setAuditCredValue(receivedSubject.getPrincipals().iterator().next().getName());
+            }
+            if (authResult.getStatus() == AuthResult.RETURN) {
+                //
+                // AuthResult.RETURN means return to the user agent with the response as is.
+                // Do not invoke the target servlet. Do not set anything in the response as
+                // the response may be committed.
+                //
+
+                webReply = new ReturnReply(webRequest.getHttpServletResponse().getStatus(), authResult.getReason());
+                SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
+                throw secVE;
+            } else if (authResult.getStatus() != AuthResult.CONTINUE) {
+                webReply = determineWebReply(receivedSubject, uriName, webRequest, authResult);
+            }
+        }
+        return webReply;
+    }
+
+    /**
+     * Access precluded explicitly specified in the security constraints or
+     * by the usage of the com.ibm.ws.webcontainer.security.checkdefaultmethod attribute.
+     * This attribute is set by the web container in ServletWrapper.startRequest() with the
+     * intent of blocking hackers from crafting an HTTP HEAD method to bypass security constraints.
+     * See PK83258 for full details.
+     * This method also checks for uncovered HTTP methods
+     */
+    @FFDCIgnore(SecurityViolationException.class)
+    private void performPrecludedAccessTests(WebRequest webRequest, WebSecurityContext webSecurityContext, String uriName) throws SecurityViolationException {
+        WebReply webReply = null;
+
+        webReply = wasch.checkPrecludedAccess(webRequest, uriName);
+        if (webReply != null) {
+            try {
+                validateWebReply(webSecurityContext, webReply);
+            } catch (SecurityViolationException secVE) {
+                AuthenticationResult authResult = new AuthenticationResult(AuthResult.FAILURE, savedSubject, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_FAILURE);
+                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+                throw secVE;
+            }
+
+        }
+    }
+
+    private void validateWebReply(WebSecurityContext webSecurityContext, WebReply webReply) throws SecurityViolationException {
+        if (webReply.getStatusCode() != HttpServletResponse.SC_OK) {
+            SecurityViolationException secVE = convertWebSecurityException(new WebSecurityCollaboratorException(webReply.message, webReply, webSecurityContext));
+            throw secVE;
+        }
+    }
+
+    /**
+     * Authenticate the request if the following conditions are met:
+     * 1. Persist cred is enabled (a.k.a. use authentication data for unprotected resource)
+     * 2. We have authentication data
+     * 3. The resource is unprotected (if its protected, will authenticate after this)
+     *
+     * @param webRequest
+     */
+    public void optionallyAuthenticateUnprotectedResource(WebRequest webRequest) {
+        if (webAppSecConfig.isUseAuthenticationDataForUnprotectedResourceEnabled() &&
+            (unprotectedResource(webRequest) == PERMIT_REPLY) &&
+            needToAuthenticateSubject(webRequest)) {
+            webRequest.disableFormLoginRedirect();
+            setAuthenticatedSubjectIfNeeded(webRequest);
+        }
+    }
+
+    protected boolean needToAuthenticateSubject(WebRequest webRequest) {
+        Boolean result = authenticatorFactory.needToAuthenticateSubject(webRequest);
+        if (result != null) {
+            return result.booleanValue();
+        }
+        if (webRequest.hasAuthenticationData())
+            return true;
+        return isUnprotectedResourceAuthenRequired(webRequest);
+    }
+
+    private WebReply unprotectedResource(WebRequest webRequest) {
+        WebReply webReply = null;
+        // per the spec: if there are no required roles, then we simply permit the
+        // request without even authenticating the user.
+        List<String> requiredRoles = webRequest.getRequiredRoles();
+        if (requiredRoles.isEmpty()) {
+            webRequest.setUnprotectedURI(true);
+            return PERMIT_REPLY;
+        }
+
+        SecurityService securityService = securityServiceRef.getService();
+        AuthorizationService authzService = securityService.getAuthorizationService();
+        if (authzService == null) {
+            // If we can not get the authorization service, fail securely
+            return new DenyReply("An internal error occured. Unable to perform authorization check.");
+        } else {
+            boolean everyoneAllowed = authzService.isEveryoneGranted(webRequest.getApplicationName(), requiredRoles);
+            // per the spec: if there are required roles but at least one of them has been granted to "Everyone"
+            // then the resource is considered unprotected so permit without even authenticating the user
+            if (everyoneAllowed) {
+                webRequest.setUnprotectedURI(true);
+                return PERMIT_REPLY;
+            }
+        }
+        return webReply;
+    }
+
+    public void setAuthenticatedSubjectIfNeeded(WebRequest webRequest) {
+        AuthenticationResult authResult = authenticateRequest(webRequest);
+        if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
+            SubjectManager subjectManager = new SubjectManager();
+            subjectManager.setCallerSubject(authResult.getSubject());
+        }
+    }
+
+    private void performDelegation(String servletName) {
+
+        Subject delegationSubject = subjectManager.getCallerSubject();
+        if (delegationSubject != null && delegationSubject.getPublicCredentials(WSCredential.class) != null
+            && delegationSubject.getPublicCredentials(WSCredential.class).iterator() != null &&
+            delegationSubject.getPublicCredentials(WSCredential.class).iterator().hasNext()) {
+            WSCredential credential = delegationSubject.getPublicCredentials(WSCredential.class).iterator().next();
+            try {
+                extraAuditData.put("REALM", credential.getRealmName());
+            } catch (CredentialExpiredException e) {
+            } catch (CredentialDestroyedException e) {
+            }
+        }
+        ArrayList<String> delUsers = new ArrayList<String>();
+        if (delegationSubject != null) {
+            String buff = delegationSubject.toString();
+            if (buff != null) {
+                int a = buff.indexOf("accessId");
+                if (a != -1) {
+                    buff = buff.substring(a + 9);
+                    a = buff.indexOf(",");
+                    if (a != -1) {
+                        buff = buff.substring(0, a);
+                        delUsers.add(buff);
+                    }
+                }
+
+            }
+        }
+        SecurityMetadata secMetadata = getSecurityMetadata();
+        if (secMetadata != null) {
+            String roleName = secMetadata.getRunAsRoleForServlet(servletName);
+            String invalidUser = "";
+            if (roleName != null) {
+                extraAuditData.put("RUN_AS_ROLE", roleName);
+
+                try {
+                    SecurityService securityService = securityServiceRef.getService();
+                    AuthenticationService authService = securityService.getAuthenticationService();
+                    delegationSubject = authService.delegate(roleName, getApplicationName());
+                    if (delegationSubject != null) {
+                        String buff = delegationSubject.toString();
+                        if (buff != null) {
+                            int a = buff.indexOf("accessId");
+                            if (a != -1) {
+                                buff = buff.substring(a + 9);
+                                a = buff.indexOf(",");
+                                if (a != -1) {
+                                    buff = buff.substring(0, a);
+                                    delUsers.add(buff);
+                                }
+                            }
+
+                        }
+                    } else {
+                        invalidUser = authService.getInvalidDelegationUser();
+                        delUsers.add(invalidUser);
+                    }
+
+                    extraAuditData.put("DELEGATION_USERS_LIST", delUsers);
+                    //auditManager.setDelegatedUsers(delUsers);
+                    //Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, auditManager, AuditConstants.SUCCESS, Integer.valueOf(200));
+                    if (delegationSubject != null) {
+                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.SUCCESS, Integer.valueOf(200));
+                    } else {
+                        Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
+
+                    }
+
+                } catch (IllegalArgumentException e) {
+                    if (delegationSubject != null) {
+                        String buff = delegationSubject.toString();
+                        if (buff != null) {
+                            int a = buff.indexOf("accessId");
+                            if (a != -1) {
+                                buff = buff.substring(a + 9);
+                                a = buff.indexOf(",");
+                                if (a != -1) {
+                                    buff = buff.substring(0, a);
+                                    delUsers.add(buff);
+                                }
+                            }
+
+                        }
+                    } else {
+                        SecurityService securityService = securityServiceRef.getService();
+                        AuthenticationService authService = securityService.getAuthenticationService();
+                        invalidUser = authService.getInvalidDelegationUser();
+                        delUsers.add(invalidUser);
+                        extraAuditData.put(DELEGATION_USERS_LIST, delUsers);
+                    }
+
+                    //Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, auditManager, AuditConstants.FAILURE, Integer.valueOf(401));
+                    Audit.audit(Audit.EventID.SECURITY_AUTHN_DELEGATION_01, extraAuditData, AuditConstants.FAILURE, Integer.valueOf(401));
+
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exception performing delegation.", e);
+                    }
+                }
+            }
+        }
+        if (delegationSubject != null) {
+            subjectManager.setInvocationSubject(delegationSubject);
+        }
+    }
+
+    /**
+     * This method does:
+     * 1. pre-authentication checks
+     * 2. Authentication
+     * 3. Authorization
+     *
+     * @param receivedSubject
+     * @param uriName
+     * @param webRequest
+     * @return Non-null WebReply
+     */
+    public WebReply determineWebReply(Subject receivedSubject, String uriName, WebRequest webRequest) {
+        byPassedAuthRequest = false;
+
+        WebReply webReply = performInitialChecks(webRequest, uriName);
+        if (webReply != null) {
+            byPassedAuthRequest = true;
+            String realm = collabUtils.getUserRegistryRealm(securityServiceRef);
+
+            if (webReply instanceof PermitReply) {
+                AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, AuditEvent.CRED_TYPE_BASIC, realm, AuditEvent.OUTCOME_SUCCESS);
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
+                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+
+            } else {
+                AuthenticationResult authResult = new AuthenticationResult(AuthResult.FAILURE, receivedSubject, AuditEvent.CRED_TYPE_BASIC, realm, AuditEvent.OUTCOME_FAILURE);
+                Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
+                Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+            }
+
+            return webReply;
+        }
+        AuthenticationResult authResult = authenticateRequest(webRequest);
+        return determineWebReply(receivedSubject, uriName, webRequest, authResult);
+    }
+
+    /**
+     *
+     * @param receivedSubject
+     * @param uriName
+     * @param webRequest
+     * @param authResult
+     * @return
+     */
+    private WebReply determineWebReply(Subject receivedSubject,
+                                       String uriName,
+                                       WebRequest webRequest,
+                                       AuthenticationResult authResult) {
+        WebReply reply = null;
+        if (authResult != null && authResult.getStatus() != AuthResult.SUCCESS) {
+            String realm = authResult.realm;
+            if (realm == null) {
+                realm = collabUtils.getUserRegistryRealm(securityServiceRef);
+            }
+            reply = createReplyForAuthnFailure(authResult, realm);
+            authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
+            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(reply.getStatusCode()));
+            return reply;
+        }
+        boolean isAuthorized = false;
+
+        if (authResult != null) {
+            authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
+            subjectManager.setCallerSubject(authResult.getSubject());
+            Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(HttpServletResponse.SC_OK));
+            isAuthorized = wasch.authorize(authResult, webRequest, uriName);
+        }
+        // For audit set reply now but leave Subject on thread
+        reply = isAuthorized ? new PermitReply() : DENY_AUTHZ_FAILED;
+
+        auditManager.setWebRequest(webRequest);
+        auditManager.setRealm(authResult.getTargetRealm());
+
+        Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(reply.getStatusCode()));
+        // now update current thread context
+        if (isAuthorized) {
+            // at this point set invocation subject = caller subject.
+            // delegation may change the invocation subject later
+            subjectManager.setInvocationSubject(authResult.getSubject());
+        } else {
+            // if authorization failure, put the caller subject back to the original one.
+            subjectManager.setCallerSubject(receivedSubject);
+        }
+        return reply;
+    }
+
+    /**
+     * This preInvoke is called during init & during destroy of a Servlet class object.
+     * It will call the other preInvoke to ensure delegation occurs. {@inheritDoc}
+     */
+    @Override
+    public Object preInvoke(String servletName) throws SecurityViolationException, IOException {
+        // preInvoke will ensure delegation is done when run-as is specified
+        return preInvoke(null, null, servletName, true);
+    }
+
+    /**
+     * This preInvoke is called at the start of every request in
+     * WebContainer.handleRequest to null out the thread. {@inheritDoc}
+     */
+    @Override
+    public Object preInvoke() throws SecurityViolationException {
+        Subject invokedSubject = subjectManager.getInvocationSubject();
+        Subject receivedSubject = subjectManager.getCallerSubject();
+
+        subjectManager.clearSubjects();
+
+        return null;
+    }
+
+    @Override
+    public boolean authenticate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        Subject callerSubject = subjectManager.getCallerSubject();
+        if (!subjectHelper.isUnauthenticated(callerSubject)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "The underlying login mechanism has committed");
+            return true;
+        }
+
+        WebReply webReply = PERMIT_REPLY;
+        boolean result = true;
+        WebRequest webRequest = new WebRequestImpl(req, resp, getSecurityMetadata(), webAppSecConfig);
+        //WebRequest webRequest = new WebRequestImpl(req, resp, getApplicationName(), webSecurityContext, securityMetadata, matchResponse, webAppSecConfig);
+        AuthenticationResult authResult = null;
+        if (isJaspiEnabled &&
+            ((JaspiService) webAuthenticatorRef.getService("com.ibm.ws.security.jaspi")).isAnyProviderRegistered(webRequest)) {
+            authResult = providerAuthenticatorProxy.handleJaspi(webRequest, null);
+        }
+        if (authResult == null || authResult.getStatus() == AuthResult.CONTINUE) {
+            authResult = authenticateRequest(webRequest);
+        }
+        if (authResult.getStatus() == AuthResult.SUCCESS) {
+            getAuthenticateApi().postProgrammaticAuthenticate(req, resp, authResult);
+        } else {
+            String realm = authResult.realm;
+            if (realm == null) {
+                realm = collabUtils.getUserRegistryRealm(securityServiceRef);
+            }
+            webReply = createReplyForAuthnFailure(authResult, realm);
+            result = false;
+        }
+        authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
+        webReply.writeResponse(resp);
+        Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
+        return result;
+    }
+
+    @Override
+    public List<String> getURIsInSecurityConstraints(String appName, String contextRoot, String vHost, List<String> urlPatternsInAnnotation) {
+        SecurityMetadata ddMetaData = getSecurityMetadata();
+        //need to return null if there are no conflicts, not an empty list
+        List<String> urlPatternConflicts = null;
+        for (String urlPatternFromAnno : urlPatternsInAnnotation) {
+            SecurityConstraintCollection securityConstraintCollection = ddMetaData.getSecurityConstraintCollection();
+            if (securityConstraintCollection != null) {
+                List<SecurityConstraint> securityConstraints = securityConstraintCollection.getSecurityConstraints();
+                for (SecurityConstraint securityConstraint : securityConstraints) {
+                    for (WebResourceCollection webResourceColl : securityConstraint.getWebResourceCollections()) {
+                        List<String> urlPatternsInDD = webResourceColl.getUrlPatterns();
+                        if (urlPatternsInDD.contains(urlPatternFromAnno)) {
+                            if (urlPatternConflicts == null) {
+                                urlPatternConflicts = new ArrayList<String>();
+                            }
+                            urlPatternConflicts.add(urlPatternFromAnno);
+                        }
+                    }
+                }
+            }
+        }
+        return urlPatternConflicts;
+    }
+
+    @Override
+    public void login(HttpServletRequest req, HttpServletResponse resp, String username, @Sensitive String password) throws ServletException {
+        BasicAuthAuthenticator basicAuthAuthenticator = getBasicAuthAuthenticator();
+        if (basicAuthAuthenticator == null) {
+            String url = getRequestURL(req);
+            throw new ServletException(TraceNLS.getFormattedMessage(
+                                                                    this.getClass(),
+                                                                    TraceConstants.MESSAGE_BUNDLE,
+                                                                    "SEC_WEB_NULL_AUTHENTICATOR",
+                                                                    new Object[] { url, username },
+                                                                    "CWWKS9116E: Login to the URL {0} failed for user {1} due to an internal error. Review the server logs for more information."));
+
+        }
+        getAuthenticateApi().login(req, resp, username, password, webAppSecConfig, basicAuthAuthenticator);
+        String authType = getSecurityMetadata().getLoginConfiguration().getAuthenticationMethod();
+        SRTServletRequestUtils.setPrivateAttribute(req, AUTH_TYPE, authType);
+    }
+
+    @Override
+    public void logout(HttpServletRequest res, HttpServletResponse resp) throws ServletException {
+        getAuthenticateApi().logoutServlet30(res, resp, webAppSecConfig);
+    }
+
+    private SecurityViolationException convertWebSecurityException(WebSecurityCollaboratorException e) {
+        int sc = HttpServletResponse.SC_FORBIDDEN;
+        WebReply wr = e.getWebReply();
+        if (wr != null) {
+            sc = wr.getStatusCode();
+        }
+        SecurityViolationException secVE = new SecurityViolationException(e.getMessage(), sc);
+        secVE.initCause(e);
+        secVE.setWebSecurityContext(e.getWebSecurityContext());
+        return secVE;
+    }
+
+    /**
+     * If invoked and received cred are null, then set the unauthenticated subject.
+     *
+     * @param invokedSubject
+     * @param receivedSubject
+     * @return {@code true} if the unauthenticated subject was set, {@code false} otherwise.
+     */
+    private boolean setUnauthenticatedSubjectIfNeeded(Subject invokedSubject, Subject receivedSubject) {
+        if ((invokedSubject == null) && (receivedSubject == null)) {
+            // create the unauthenticated subject and set as the invocation subject
+            SubjectManager sm = new SubjectManager();
+            sm.setInvocationSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * The main method called by the preInvoke. The return value of this method tells
+     * us if access to the requested resource is allowed or not.
+     * Delegates to the authenticator proxy to handle the authentication.
+     *
+     * @param webRequest
+     * @return AuthenticationResult
+     */
+    public AuthenticationResult authenticateRequest(WebRequest webRequest) {
+        WebAuthenticator authenticator = getWebAuthenticatorProxy();
+        return authenticator.authenticate(webRequest);
+    }
+
+    protected WebAuthenticatorProxy getWebAuthenticatorProxy() {
+        return authenticatorProxy;
+    }
+
+    /**
+     * Create an instance of BasicAuthAuthenticator.
+     *
+     * @return A BasicAuthAuthenticator or {@code null} if the it could not be created.
+     */
+    public BasicAuthAuthenticator getBasicAuthAuthenticator() {
+        WebAuthenticatorProxy authenticatorProxy = getWebAuthenticatorProxy();
+        return authenticatorProxy.getBasicAuthAuthenticator();
+    }
+
+    public WebReply createReplyForAuthnFailure(AuthenticationResult authResult, String realm) {
+        return getAuthenticateApi().createReplyForAuthnFailure(authResult, realm);
+    }
+
+    /**
+     * Call the authorization service to determine if the subject is authorized to the given roles
+     *
+     * @param authResult the authentication result, containing the subject, user name and realm
+     * @param appName the name of the application, used to look up the correct authorization table
+     * @param uriName the uri being accessed
+     * @param previousCaller the previous caller, used to restore the previous state if authorization fails
+     * @param requiredRoles the roles required to access the resource
+     * @return true if the subject is authorized, otherwise false
+     */
+    public boolean authorize(AuthenticationResult authResult, String appName, String uriName, Subject previousCaller, List<String> requiredRoles) {
+        // Set the authorized subject on the thread
+        subjectManager.setCallerSubject(authResult.getSubject());
+        boolean isAuthorized = authorize(authResult, appName, uriName, requiredRoles);
+        if (isAuthorized) {
+            // at this point set invocation subject = caller subject.
+            // delegation may change the invocation subject later
+            subjectManager.setInvocationSubject(authResult.getSubject());
+        } else {
+            subjectManager.setCallerSubject(previousCaller);
+        }
+        return isAuthorized;
+    }
+
+    private boolean authorize(AuthenticationResult authResult, String appName, String uriName, List<String> requiredRoles) {
+
+        SecurityService securityService = securityServiceRef.getService();
+        if (securityService == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Authorization failed due to null securityService object. Known to occur when a request comes during server shutdown.");
+            }
+            return false;
+        }
+        AuthorizationService authzService = securityService.getAuthorizationService();
+        if (authzService == null) {
+            // If we can not get the authorization service, fail securely
+            return false;
+        } else {
+            boolean isAuthorized = authzService.isAuthorized(appName, requiredRoles, authResult.getSubject());
+            if (!isAuthorized) {
+                String authUserName = authResult.getUserName();
+                String authRealm = authResult.getRealm();
+                if (authRealm != null && authUserName != null) {
+                    Tr.audit(tc, "SEC_AUTHZ_FAILED", authUserName.concat(":").concat(authRealm), appName, uriName, requiredRoles);
+                } else {
+                    // We have a subject if we got this far, use it to determine the name
+                    authUserName = authResult.getSubject().getPrincipals(WSPrincipal.class).iterator().next().getName();
+                    Tr.audit(tc, "SEC_AUTHZ_FAILED", authUserName, appName, uriName, requiredRoles);
+                }
+            }
+            return isAuthorized;
+        }
+    }
+
+    /**
+     * Perform the preliminary checks to see if we should proceed to authentication
+     * and authorization.
+     *
+     * TODO: add authn/autz auditing for each of these cases
+     *
+     * These checks are, in order:
+     * <ol>
+     * <li>when uriName is null or empty, then return Deny</li>
+     * <li>if the challenge typs is DIGEST, then return Deny</li>
+     * <li>if the required roles is specified but empty, then return Deny</li>
+     * <li>if SSL is required but the request is not HTTPS, then return Redirect</li>
+     * <li>if the method is TRACE and there are no required roles, then return Deny</li>
+     * <li>if the security constraints in the dd are invalid, then return Deny</li>
+     * <li>if there are no required roles, then return Permit</li>
+     * <li>if Everyone is allowed, then return Permit</li>
+     * </ol>
+     *
+     * @param req the servlet request
+     * @param uriName the uri name of the request
+     * @return a WebReply if the request should be returned without authenticating/authorizing, otherwise null
+     */
+    public WebReply performInitialChecks(WebRequest webRequest, String uriName) {
+        WebReply webReply = null;
+        HttpServletRequest req = webRequest.getHttpServletRequest();
+        String methodName = req.getMethod();
+
+        if (uriName == null || uriName.length() == 0) {
+            return new DenyReply("Invalid URI passed to Security Collaborator.");
+        }
+
+        if (unsupportedAuthMech() == true) {
+            return new DenyReply("Authentication Failed : DIGEST not supported");
+        }
+
+        if (wasch.isSSLRequired(webRequest, uriName)) {
+            return httpsRedirectHandler.getHTTPSRedirectWebReply(req);
+        }
+
+        webReply = unprotectedSpecialURI(webRequest, uriName, methodName);
+        if (webReply != null) {
+            return webReply;
+        }
+
+        webReply = unprotectedResource(webRequest);
+        if (webReply == PERMIT_REPLY) {
+            if (shouldWePerformTAIForUnProtectedURI(webRequest))
+                return null;
+            else
+                return webReply;
+        }
+
+        return null;
+    }
+
+    private boolean shouldWePerformTAIForUnProtectedURI(WebRequest webRequest) {
+        if (taiServiceRef.getService() != null) {
+            return taiServiceRef.getService().isInvokeForUnprotectedURI();
+        } else
+            return false;
+    }
+
+    /**
+     * @return true when challenge type is DIGEST, otherwise false.
+     */
+    public boolean unsupportedAuthMech() {
+        boolean result = false;
+        SecurityMetadata sm = getSecurityMetadata();
+        if (sm != null) {
+            LoginConfiguration lc = sm.getLoginConfiguration();
+            if (lc != null) {
+                String authType = lc.getAuthenticationMethod();
+                if (HttpServletRequest.DIGEST_AUTH.equalsIgnoreCase(authType)) {
+                    result = true;
+                }
+            }
+        }
+        return result;
+    }
+
+    private MatchResponse getMatchResponse(HttpServletRequest req) throws SecurityViolationException {
+
+        MatchResponse matchResponse = MatchResponse.NO_MATCH_RESPONSE;
+        if (req != null) {
+            String method = req.getMethod();
+            String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
+
+            SecurityMetadata securityMetadata = getSecurityMetadata();
+            SecurityConstraintCollection collection = securityMetadata.getSecurityConstraintCollection();
+            if (null != collection) {
+                matchResponse = collection.getMatchResponse(uriName, method);
+            }
+            if (MatchResponse.CUSTOM_NO_MATCH_RESPONSE.equals(matchResponse)) {
+                String url = getRequestURL(req);
+                throw new SecurityViolationException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                                  TraceConstants.MESSAGE_BUNDLE,
+                                                                                  "SEC_WEB_ILLEGAL_REQUEST",
+                                                                                  new Object[] { method, url },
+                                                                                  "CWWKS9117E: The method {0} is not allowed to process for URL {1}. If this error is unexpected, ensure that the application allows the methods that the client is requesting."), HttpServletResponse.SC_FORBIDDEN);
+            }
+        }
+        return matchResponse;
+    }
+
+    protected String getApplicationName() {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        return wmmd.getConfiguration().getApplicationName();
+    }
+
+    protected String getModuleName() {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        return wmmd.getConfiguration().getModuleName();
+    }
+
+    public SecurityMetadata getSecurityMetadata() {
+        SecurityMetadata secMetadata = null;
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
+        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        return secMetadata;
+    }
+
+    protected void setSecurityMetadata(SecurityMetadata secMetadata) {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        wmmd.setSecurityMetaData(secMetadata);
+    }
+
+    /**
+     * Determines if the authentication method is valid for a FORM login flow.
+     * The valid contitions are:
+     * 1. The authentication method is FORM
+     * 2. The authentication method is CLIENT_CERT and allowFailOverToFormLogin=true
+     *
+     * @param authenticationMethod
+     * @return {@code true} if the authentication method is valid for FORM login
+     */
+    private boolean isValidAuthMethodForFormLogin(String authenticationMethod) {
+        return LoginConfiguration.FORM.equals(authenticationMethod) ||
+               (LoginConfiguration.CLIENT_CERT.equals(authenticationMethod) && webAppSecConfig.getAllowFailOverToFormLogin());
+    }
+
+    /**
+     * Determines if the URI requested is "special" and should always be treated
+     * as unprotected, such as the form login page.
+     *
+     * @param webRequest
+     * @param uriName
+     * @param methodName
+     * @return Non-null WebReply if the URI is not special, or a PERMIT_REPLY if it is.
+     */
+    private WebReply unprotectedSpecialURI(WebRequest webRequest, String uriName, String methodName) {
+        LoginConfiguration loginConfig = webRequest.getLoginConfig();
+        if (loginConfig == null)
+            return null;
+
+        String authenticationMethod = loginConfig.getAuthenticationMethod();
+        FormLoginConfiguration formLoginConfig = loginConfig.getFormLoginConfiguration();
+        if (formLoginConfig == null || authenticationMethod == null)
+            return null;
+
+        String loginPage = formLoginConfig.getLoginPage();
+        String errorPage = formLoginConfig.getErrorPage();
+
+        // We check to see if we are either a FORM or CLIENT_CERT auth method.
+        // These are the only valid auth methods supported (CLIENT_CERT can
+        // fail over to FORM).
+        if (isValidAuthMethodForFormLogin(authenticationMethod) && loginPage != null && errorPage != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, " We have a custom login or error page request, web app login URL:[" + loginPage
+                             + "], errorPage URL:[" + errorPage + "], and the requested URI:[" + uriName + "]");
+            }
+            if (loginPage.equals(uriName) || errorPage.equals(uriName)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "authorize, login or error page[" + uriName + "]  requested, permit: ", PERMIT_REPLY);
+                return PERMIT_REPLY;
+            } else if ((uriName != null && uriName.equals("/j_security_check")) &&
+                       (methodName != null && methodName.equals("POST"))) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "authorize, login or error page[" + uriName + "]  requested, permit: ", PERMIT_REPLY);
+                return PERMIT_REPLY;
+            }
+        } else {
+            if (webRequest.getHttpServletRequest().getDispatcherType().equals(DispatcherType.ERROR)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "authorize, error page[" + uriName + "]  requested, permit: ", PERMIT_REPLY);
+                return PERMIT_REPLY;
+            }
+        }
+        return null;
+    }
+
+    protected String getRequestURL(HttpServletRequest req) {
+        String url = null;
+        if (req != null) {
+            StringBuffer buf = req.getRequestURL();
+            String query = req.getQueryString();
+            if (query != null && query.length() > 0) {
+                buf.append("?").append(query);
+            }
+            url = buf.toString();
+        }
+        return url;
+    }
+
+    public static void setGlobalWebAppSecurityConfig(WebAppSecurityConfig config) {
+        globalConfig = config;
+    }
+
+    public static WebAppSecurityConfig getGlobalWebAppSecurityConfig() {
+        return globalConfig;
+    }
+
+    protected AuthenticateApi getAuthenticateApi() {
+        if (authenticateApi == null) {
+            SSOCookieHelper ssoCookieHelper = webAppSecConfig.createSSOCookieHelper();
+            authenticateApi = authenticatorFactory.createAuthenticateApi(ssoCookieHelper, securityServiceRef, collabUtils, webAuthenticatorRef, unprotectedResourceServiceRef);
+        }
+        return authenticateApi;
+    }
+
+    /**
+     * Check to see if running under servlet spec 3.1
+     *
+     * @return true if using servlet spec 3.1 and false otherwise
+     */
+    private boolean isServletSpec31() {
+        if (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= 31)
+            return true;
+
+        return false;
+    }
+
+    protected WebAppConfig getWebAppConfig() {
+        WebAppConfig wac = null;
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd instanceof WebComponentMetaData) { // Only get the header for web modules, i.e. not for EJB
+            WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+            wac = wmmd.getConfiguration();
+            if (!(wac instanceof com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration)) {
+                wac = null;
+            }
+        }
+        return wac;
+    }
+
+    @Override
+    public boolean isUserInRole(String role, IExtendedRequest req, Subject subject) {
+        RequestProcessor reqProc = req.getWebAppDispatcherContext().getCurrentServletReference();
+        String realRole = null;
+        if (reqProc != null) {
+            String servletName = reqProc.getName();
+            realRole = getSecurityMetadata().getSecurityRoleReferenced(servletName, role);
+        } else {
+            // PM98409 - when servlet reference is not available, use provided role name as real role
+            realRole = role;
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isUserInRole realRole = " + realRole);
+        }
+
+        /*
+         * Servlet 3.1 defines a role name called "**" that means all authenticated, unless
+         * "**" is already a defined role. If "**" is a defined role it will be returned by
+         * getSecurityRoleReferenced and set to realRole. So if realRole is "**" change it
+         * to "_starstar_" to be checked later as in isGranted.
+         */
+        if (realRole != null && realRole.equals(ALL_AUTHENTICATED_ROLE)) {
+            realRole = STARSTAR_ROLE;
+        }
+
+        /*
+         * So there is no role defined return false if the role name is not "**" otherwise
+         * set realRole to "**" so it can proceed with authorization checking.
+         */
+        if (realRole == null) {
+            if (role.equals(ALL_AUTHENTICATED_ROLE) && isServletSpec31()) {
+                realRole = ALL_AUTHENTICATED_ROLE;
+            } else {
+                return false;
+            }
+        }
+
+        final Subject finalSubject = subject;
+        final List<String> roles = new ArrayList<String>();
+        roles.add(realRole);
+        final SecurityService securityService = securityServiceRef.getService();
+        boolean inRole = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+
+            @Override
+            public Boolean run() {
+                AuthorizationService authzService = securityService.getAuthorizationService();
+                if (authzService == null) {
+                    // If we can not get the authorization service, fail securely
+                    return false;
+                } else {
+                    return authzService.isAuthorized(getApplicationName(), roles, finalSubject);
+                }
+            }
+        });
+        return inRole;
+    }
+
+    @Override
+    public boolean authorize(AuthenticationResult authResult, WebRequest webRequest, String uriName) {
+        return authorize(authResult, webRequest.getApplicationName(), uriName, webRequest.getRequiredRoles());
+    }
+
+    @Override
+    public boolean isSSLRequired(WebRequest webRequest, String uriName) {
+        return httpsRedirectHandler.shouldRedirectToHttps(webRequest);
+    }
+
+    /**
+     * Access precluded explicitly specified in the security constraints or
+     * by the usage of the com.ibm.ws.webcontainer.security.checkdefaultmethod attribute.
+     * This attribute is set by the web container in ServletWrapper.startRequest() with the
+     * intent of blocking hackers from crafting an HTTP HEAD method to bypass security constraints.
+     * See PK83258 for full details.
+     * This method also checks for uncovered HTTP methods
+     */
+    @Override
+    public WebReply checkPrecludedAccess(WebRequest webRequest, String uriName) {
+        WebReply webReply = null;
+        if (webRequest.isAccessPrecluded()) {
+            webReply = new DenyReply("Access is precluded because security constraints are specified, but the required roles are empty.");
+        } else if (MatchResponse.DENY_MATCH_RESPONSE.equals(webRequest.getMatchResponse())) {
+            webReply = new DenyReply("Http uncovered method found, denying reply.");
+        } else {
+            HttpServletRequest req = webRequest.getHttpServletRequest();
+            List<String> requiredRoles = webRequest.getRequiredRoles();
+
+            String defaultMethod = (String) req.getAttribute("com.ibm.ws.webcontainer.security.checkdefaultmethod");
+            if (defaultMethod == "TRACE" && requiredRoles.isEmpty()) {
+                webReply = new DenyReply("Illegal request. Default implementation of TRACE not allowed.");
+            }
+        }
+        return webReply;
+    }
+
+    protected boolean isUnprotectedResourceAuthenRequired(WebRequest webRequest) {
+        HttpServletRequest request = webRequest.getHttpServletRequest();
+        Set<String> serviceIds = unprotectedResourceServiceRef.keySet();
+        for (String serviceId : serviceIds) {
+            UnprotectedResourceService service = unprotectedResourceServiceRef.getService(serviceId);
+            if (service.isAuthenticationRequired(request))
+                return true;
+        }
+        return false;
+    }
+
+    private String getComponentId(ServiceReference<TrustAssociationInterceptor> ref) {
+        String id = (String) ref.getProperty(KEY_ID);
+        if (id == null) {
+            id = (String) ref.getProperty("component.name");
+            if (id == null) {
+                id = (String) ref.getProperty("component.id");
+            }
+        }
+        return id;
+    }
+}

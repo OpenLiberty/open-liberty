@@ -1,0 +1,59 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/FileTransferClientMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management File Transfer Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX7951 - CWWKX7999
+
+filetransfer.client.init=CWWKX7951I: A new file transfer client has connected with connection identifier {0}.
+filetransfer.client.init.explanation=A new file transfer client has connected with the specified connection identifier.
+filetransfer.client.init.useraction=This is an informational message, and no action is required.
+
+filetransfer.client.error=CWWKX7952E: A client-side error message "{0}" has occurred for connection {1}.
+filetransfer.client.error.explanation=The client-side of the JMX REST connector encountered an error, and the specified message was generated.
+filetransfer.client.error.useraction=Use the generated error message to identify, and correct the issue that caused this error, and rerun the operation.
+
+filetransfer.server.error=CWWKX7953E: Server-side error message "{0}" has occurred for connection {1}.
+filetransfer.server.error.explanation=The server-side of the JMX REST connector encountered an error, and generated the specified message.
+filetransfer.server.error.useraction=Use the generated error message to identify, and correct the issue that caused this error, and rerun the operation.
+
+filetransfer.client.bad.credentials=CWWKX7954E: The specified user name or password are not authorized. The server responded with code {0} and message "{1}" for connection {2}.
+filetransfer.client.bad.credentials.explanation=The credentials provided when obtaining the connection are incorrect. The user may not exist, may not have authority to access the server, or the password may be incorrect.
+filetransfer.client.bad.credentials.useraction=Correct the user name or password, then obtain a new connection.
+
+filetransfer.response.code.error=CWWKX7955E: The file transfer client received response code {0} with message "{1}" for connection {2}.
+filetransfer.response.code.error.explanation=The file transfer client received an unexpected response code from the server.
+filetransfer.response.code.error.useraction=Use the client response code to identify, and resolve the cause of this issue, and rerun the operation.
+
+filetransfer.download.file=CWWKX7956I: The request to download file {0} has been successful and its contents have been written into file {1} using connection {2}.
+filetransfer.download.file.explanation=The download request of the specified file was successful.
+filetransfer.download.file.useraction=This is an informational message, and no action is required.
+
+filetransfer.unsupported.operation=CWWKX7957E: The operation {0} is not supported by the file transfer client for connection {1}.
+filetransfer.unsupported.operation.explanation=The specified operation is not supported by the file transfer client.
+filetransfer.unsupported.operation.useraction=Request an operation that is supported by the file transfer client.
+
+filetransfer.upload.file=CWWKX7958I: The request to upload file {0} has been successful and its contents have been written into file {1} using connection {2}.
+filetransfer.upload.file.explanation=The upload request of the specified file was successful.
+filetransfer.upload.file.useraction=This is an informational message, and no action is required.
+
+filetransfer.delete.file=CWWKX7959I: The request to delete file {0} has been successful using connection {1}.
+filetransfer.delete.file.explanation=The delete request of the specified file was successful.
+filetransfer.delete.file.useraction=This is an informational message, and no action is required.
+
+filetransfer.delete.all=CWWKX7960I: The request to delete all files and folders from collection {0} succeeded using connection {1}.
+filetransfer.delete.all.explanation=The delete request of the specified collection was successful.
+filetransfer.delete.all.useraction=This is an informational message, and no action is required.

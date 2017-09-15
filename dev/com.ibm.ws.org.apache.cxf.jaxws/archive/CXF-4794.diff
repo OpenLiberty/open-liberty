@@ -1,0 +1,173 @@
+/cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Messages.properties
+=======================================================================
+--- cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Messages.properties	2013/01/30 15:48:07	1440484
++++ cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Messages.properties	2013/01/30 15:48:24	1440485
+@@ -28,6 +28,7 @@
+ ATTACHMENT_IO=Attachment IO Exception: {0}
+ INVALID_VERSION="{0}", the namespace on the "{1}" element, is not a valid SOAP version.
+ INVALID_11_VERSION=A SOAP 1.2 message is not valid when sent to a SOAP 1.1 only endpoint.
++INVALID_FAULT=Invalid SOAP fault content
+ NO_NAMESPACE=No namespace on "{0}" element. You must send a SOAP request.
+ BP_2211_RPCLIT_CANNOT_BE_NULL=Cannot write part {0}. RPC/Literal parts cannot be null. (WS-I BP R2211)
+ UNKNOWN_RPC_LIT_PART=Found element {0} but could not find matching RPC/Literal part
+
+/cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java
+=======================================================================
+--- cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java	2013/01/30 15:48:07	1440484
++++ cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java	2013/01/30 15:48:24	1440485
+@@ -144,10 +144,9 @@
+                 SoapVersion soapVersion = readVersion(xmlReader, message);
+                 if (soapVersion == Soap12.getInstance()
+                     && version == Soap11.getInstance()) {
+-                    throw new SoapFault(new Message("INVALID_11_VERSION", LOG, 
+-                                                    Soap12.getInstance().getNamespace(),
+-                                                    xmlReader.getLocalName()),
+-                                        Soap11.getInstance().getVersionMismatch());                    
++                    message.setVersion(version);
++                    throw new SoapFault(new Message("INVALID_11_VERSION", LOG),
++                                        version.getVersionMismatch());                    
+                 }
+ 
+                 XMLStreamReader filteredReader = new PartialXMLStreamReader(xmlReader, message.getVersion()
+
+/cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultInInterceptor.java
+=======================================================================
+--- cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultInInterceptor.java	2013/01/30 15:48:07	1440484
++++ cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultInInterceptor.java	2013/01/30 15:48:24	1440485
+@@ -19,21 +19,26 @@
+ 
+ package org.apache.cxf.binding.soap.interceptor;
+ 
++import java.util.logging.Logger;
++
+ import javax.xml.namespace.QName;
+ import javax.xml.stream.XMLStreamException;
+ import javax.xml.stream.XMLStreamReader;
+ 
+ import org.w3c.dom.Element;
+ 
++import org.apache.cxf.binding.soap.Soap11;
+ import org.apache.cxf.binding.soap.SoapFault;
+ import org.apache.cxf.binding.soap.SoapMessage;
++import org.apache.cxf.common.i18n.Message;
++import org.apache.cxf.common.logging.LogUtils;
+ import org.apache.cxf.interceptor.ClientFaultConverter;
+ import org.apache.cxf.interceptor.Fault;
+ import org.apache.cxf.phase.Phase;
+ import org.apache.cxf.staxutils.StaxUtils;
+ 
+ public class Soap11FaultInInterceptor extends AbstractSoapInterceptor {
+-
++    private static final Logger LOG = LogUtils.getL7dLogger(Soap11FaultInInterceptor.class);
+     
+     public Soap11FaultInInterceptor() {
+         super(Phase.UNMARSHAL);
+@@ -71,7 +76,11 @@
+                                 e,
+                                 message.getVersion().getSender());
+         }
+-
++        // if the fault's content is invalid and fautlCode is not found, blame the receiver
++        if (faultCode == null) {
++            faultCode = Soap11.getInstance().getReceiver();
++            exMessage = new Message("INVALID_FAULT", LOG).toString();
++        }
+         SoapFault fault = new SoapFault(exMessage, faultCode);
+         fault.setDetail(detail);
+         fault.setRole(role);
+
+/cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultOutInterceptor.java
+=======================================================================
+--- cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultOutInterceptor.java	2013/01/30 15:48:07	1440484
++++ cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultOutInterceptor.java	2013/01/30 15:48:24	1440485
+@@ -28,8 +28,10 @@
+ import org.w3c.dom.Element;
+ import org.w3c.dom.Node;
+ 
++import org.apache.cxf.binding.soap.Soap11;
+ import org.apache.cxf.binding.soap.SoapFault;
+ import org.apache.cxf.binding.soap.SoapMessage;
++import org.apache.cxf.binding.soap.interceptor.Soap12FaultOutInterceptor.Soap12FaultOutInterceptorInternal;
+ import org.apache.cxf.common.logging.LogUtils;
+ import org.apache.cxf.interceptor.Fault;
+ import org.apache.cxf.phase.Phase;
+@@ -44,7 +46,11 @@
+     public void handleMessage(SoapMessage message) throws Fault {
+         Fault f = (Fault) message.getContent(Exception.class);
+         message.put(org.apache.cxf.message.Message.RESPONSE_CODE, f.getStatusCode());
+-        message.getInterceptorChain().add(Soap11FaultOutInterceptorInternal.INSTANCE);
++        if (message.getVersion() == Soap11.getInstance()) {
++            message.getInterceptorChain().add(Soap11FaultOutInterceptorInternal.INSTANCE);
++        } else {
++            message.getInterceptorChain().add(Soap12FaultOutInterceptorInternal.INSTANCE);            
++        }
+     }
+     
+     static class Soap11FaultOutInterceptorInternal extends AbstractSoapInterceptor {
+     
+/cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultInInterceptor.java
+=======================================================================
+--- cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultInInterceptor.java	2013/01/30 15:48:07	1440484
++++ cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultInInterceptor.java	2013/01/30 15:48:24	1440485
+@@ -21,6 +21,7 @@
+ 
+ import java.util.HashMap;
+ import java.util.Map;
++import java.util.logging.Logger;
+ 
+ import javax.xml.namespace.QName;
+ import javax.xml.stream.XMLStreamException;
+@@ -34,6 +35,8 @@
+ import org.apache.cxf.binding.soap.Soap12;
+ import org.apache.cxf.binding.soap.SoapFault;
+ import org.apache.cxf.binding.soap.SoapMessage;
++import org.apache.cxf.common.i18n.Message;
++import org.apache.cxf.common.logging.LogUtils;
+ import org.apache.cxf.helpers.XMLUtils;
+ import org.apache.cxf.helpers.XPathUtils;
+ import org.apache.cxf.interceptor.ClientFaultConverter;
+@@ -44,6 +47,7 @@
+ import org.apache.cxf.staxutils.W3CDOMStreamReader;
+ 
+ public class Soap12FaultInInterceptor extends AbstractSoapInterceptor {
++    private static final Logger LOG = LogUtils.getL7dLogger(Soap12FaultInInterceptor.class);
+     
+     public Soap12FaultInInterceptor() {
+         super(Phase.UNMARSHAL);
+@@ -129,7 +133,12 @@
+                                 e,
+                                 message.getVersion().getSender());
+         }
+-
++        // if the fault's content is invalid and fautlCode is not found, blame the receiver
++        if (faultCode == null) {
++            faultCode = Soap12.getInstance().getReceiver();
++            exMessage = new Message("INVALID_FAULT", LOG).toString();
++        }
++        
+         SoapFault fault = new SoapFault(exMessage, faultCode);
+         fault.setSubCode(subCode);
+         fault.setDetail(detail);
+
+/cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java
+=======================================================================
+--- cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java	2013/01/30 15:48:07	1440484
++++ cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java	2013/01/30 15:48:24	1440485
+@@ -28,6 +28,7 @@
+ import org.w3c.dom.Element;
+ import org.w3c.dom.Node;
+ 
++import org.apache.cxf.binding.soap.Soap11;
+ import org.apache.cxf.binding.soap.SoapFault;
+ import org.apache.cxf.binding.soap.SoapMessage;
+ import org.apache.cxf.binding.soap.interceptor.Soap11FaultOutInterceptor.Soap11FaultOutInterceptorInternal;
+@@ -46,7 +47,7 @@
+     public void handleMessage(SoapMessage message) throws Fault {
+         Fault f = (Fault) message.getContent(Exception.class);
+         message.put(org.apache.cxf.message.Message.RESPONSE_CODE, f.getStatusCode());
+-        if (message.getVersion().getVersion() == 1.1) {
++        if (message.getVersion() == Soap11.getInstance()) {
+             message.getInterceptorChain().add(Soap11FaultOutInterceptorInternal.INSTANCE);
+         } else {
+             message.getInterceptorChain().add(Soap12FaultOutInterceptorInternal.INSTANCE);
+              

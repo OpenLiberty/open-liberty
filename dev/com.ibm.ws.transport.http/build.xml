@@ -1,0 +1,51 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.transport.http" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+
+  <!-- Target invoked before anything else. Pull the index.html file -->
+  <!-- out of the welcome folder and update the version so it can be -->
+  <!-- picked up when new content appears. The bnd step will sort    -->
+  <!-- out getting the right copy of the file into the bundle.       -->
+  <target name="pre-build">
+    <mkdir dir="${build.dir}/versionInjected/resources/OSGI-INF/welcome/" />
+    <copy overwrite="true" todir="${build.dir}/versionInjected/resources/OSGI-INF/welcome/">
+      <fileset file="${basedir}/resources/OSGI-INF/welcome/index.html"/>
+        <filterset begintoken="$${" endtoken="}">
+          <filter token="libertyWelcomePageProductVersion" value="${liberty.welcome.page.product.version}"/>
+          <filter token="libertyLatestVersionUrl" value="${liberty.latest.version.url}"/>
+          <filter token="libertyWelcomePageProductName" value="${liberty.welcome.page.product.name}"/>
+          <filter token="libertyInfocenterLink" value="${liberty.infocenter.link}"/>
+          <filter token="libertyWelcomePageJsEnhancementsUrl" value="${liberty.welcome.page.js.enhancements.url}"/>
+          <filter token="libertyWelcomePageCssEnhancementsUrl" value="${liberty.welcome.page.css.enhancements.url}"/>
+        </filterset>
+    </copy>
+  </target>
+
+  <!-- exclude modified WAS classes from instrumentation -->
+  <target name="post-compile">
+    <property name="instrument.ffdc" value="true" />
+    <instrument.trace ffdc="${instrument.ffdc}">
+      <fileset dir="${classes.dir}">
+        <include name="**/*.class" />
+        <exclude name="**/com/ibm/ws/genericbnf/**" />
+        <exclude name="**/com/ibm/ws/http/channel/internal/**" />
+        <exclude name="**/com/ibm/ws/http/logging/internal/**" />
+        <exclude name="**/com/ibm/wsspi/genericbnf/**" />
+        <exclude name="**/com/ibm/wsspi/http/channel/**" />
+        <exclude name="**/com/ibm/wsspi/http/logging/**" />
+        <exclude name="**/com/ibm/wsspi/http/HttpOutputStream.class"/>
+        <exclude name="**/com/ibm/wsspi/http/HttpInputStream.class"/>
+      </fileset>
+    </instrument.trace>
+  </target>
+
+</project>

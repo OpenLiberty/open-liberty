@@ -1,0 +1,283 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="delivery_validation">
+    <import file="pass-back.xml" />
+
+    <property name="allow.intermittent.failures" value="true" />
+    <!-- Whether we should revert to the last green build, rather than just the previous build -->
+    <property name="marvin.revert.all.the.way.back.to.green" value="true" />
+    <!-- Whether we count a build where Marvin accounted for all the redness and approved it as 'green' -->
+    <property name="marvin.count.known.failures.as.green" value="true" />
+
+    <condition property="allowed.intermittent.message" value=", or did not fail consistently" else="">
+        <istrue value="${allow.intermittent.failures}" />
+    </condition>
+    <!-- The sort of defects that bother us, either persistent (if we allow intermittents) or all -->
+    <condition property="defect.nature" value="persistent " else="">
+        <istrue value="${allow.intermittent.failures}" />
+    </condition>
+    <property name="marvin.json.file.name" value="marvinJSONData.txt" />
+    <property name="marvin.report.file.name" value="defectreport.txt" />
+    <property name="mod.file.basename" value="MOD_" />
+    
+    <!--  If we wanted to, we could do some fancy things to identify recent changes at the beginning 
+          of a build and then create a workspace using the <createWorkspace> task, baseline it on the 
+          last good continuous build, and then include only the changesets delivered in this delivery 
+          in the sandbox. We could then spawn a build using the sandbox workspace, and use that as the basis 
+          of our validation. At the end we clean up using the <deleteWorkspace> task. 
+          It has the disadvantage of being slightly slower and tying up a build engine to wait.
+          The main disadvantage is also the main advantage - we don't see any unvalidated changesets, so they won't
+          break our build for us, but we also can't depend on them. 
+          For the moment, with the one stream solution, I've concluded that the possibility of bad gaps is worse than 
+          the benefit of isolation. -->
+    <!-- This either does the full validation and reversions or, a dry run or does the validation for predelivery builds. -->
+    <target name="analyseBuildOnDemand">
+        <sequential>
+            <startActivity label="Analysing provided build" autoComplete="true" />
+            <property name="mod.json.file.path" value ="${build.tmp.dir}/${mod.file.basename}${marvin.json.file.name}" />
+            <property name="mod.report.file.path" value="${build.tmp.dir}/${mod.file.basename}${marvin.report.file.name}" />
+            <analyseBuild repositoryAddress="${repositoryAddress}"
+                                         userId="${userId}"
+                                         passwordFile="${passwordFile}"
+                                         accessToken="${rosie.ghe.access.token}"
+                                         onDemand="${enable.analisis.on.demand}"
+                                         overrideAnalysis="${build.analysis.override}"
+                                         buildUUID="${build.requested.uuid}"
+                                         buildUUIDProvided="${build.provided.uuid}"
+                                         jsonFileName="${marvin.json.file.name}"
+                                         onDemandBaseName="${mod.file.basename}"
+                                         filePath="${mod.report.file.path}"
+                                         jsonfilePath="${mod.json.file.path}"
+                                         allowIntermittentFailures="${allow.intermittent.failures}"
+                                         threshold="95" />
+            <removeLogContributions fileNames="${mod.file.basename}${marvin.json.file.name},${mod.file.basename}${marvin.report.file.name}"
+                                    repositoryAddress="${repositoryAddress}"
+                                    userId="${userId}"
+                                    passwordFile="${passwordFile}"
+                                    targetBuildUUID="${build.requested.uuid}" />
+            <publishLog filePath="${mod.report.file.path}"
+                        label="Marvin's onDemand report on defects which may have occurred in this build"
+                        targetParentUUID="${build.requested.uuid}" />
+            <publishLog filePath="${mod.json.file.path}"
+                        label="Marvin's onDemand JSON data on build"
+                        targetParentUUID="${build.requested.uuid}" />
+        </sequential>
+    </target>
+    
+    <target name="statusChecksGHE">
+       <sequential>
+           <startActivity label="Create status checks for Open Libety EBC builds linked to pull requests and commits"/>
+           <createStatusChecksForOpenLibertyBuilds 
+               repositoryAddress="${repositoryAddress}"
+               userId="${userId}"
+               passwordFile="${passwordFile}"
+               accessToken="${rosie.ghe.access.token}" />
+       </sequential>
+    </target>
+    
+    <target name="checkBuildResults">
+        <condition property="isPersonalBuild" value="true" else="false">
+            <isset property="personalBuild" />
+        </condition>
+
+        <startActivity label="Checking Build Results" autoComplete="true" />
+
+        <waitForTeamBuild repositoryAddress="${repositoryAddress}"
+                          userId="${userId}"
+                          passwordFile="${passwordFile}"
+                          buildResultUUID="${buildResultUUID}"
+                          verbose="true"
+                          interval="1"
+                          timeout="5"
+                          buildStatusProperty="delivery.build.status"
+                          statestowaitfor="IN_PROGRESS" />
+        <echo message="The build status is ${delivery.build.status}" />
+
+        <property name="buildUrl"
+                  value="&lt;a href=&quot;https://wasrtc.hursley.ibm.com:9443/jazz/resource/itemOid/com.ibm.team.build.BuildResult/${buildResultUUID}&quot;&gt;${buildDefinitionId} ${buildLabel}&lt;/a&gt;" />
+
+        <testResults2String repositoryAddress="${repositoryAddress}"
+                            userId="${userId}"
+                            passwordFile="${passwordFile}"
+                            buildUUID="${buildResultUUID}"
+                            testResults="testStats"
+                            testNames="testNames"
+                            totalIssues="totalIssues" />
+
+        <!-- It's a fairly straightforward step from identifying defects which occurred in this 
+             build to associating those defects with this build and tagging the build triaged_marvin
+             (for later triage validation by a human build monitor) -->
+        <property name="fileDetails" value="${build.tmp.dir}/details.txt" />
+        
+        <echo file="${build.tmp.dir}/defectreport.txt">Report for ${buildLabel}</echo>
+        <echo file="${fileDetails}"></echo>
+        <analyseBuild repositoryAddress="${repositoryAddress}"
+                             userId="${userId}"
+                             passwordFile="${passwordFile}"
+                             accessToken="${rosie.ghe.access.token}"
+                             buildUUID="${buildResultUUID}"
+                             matchingWorkItemNamesProp="matching.work.item.names"
+                             intermittentSuiteNamesProp="unmatched.but.intermittent.suites"
+                             allFailuresAccountedForProp="all.failures.accounted.for"
+                             testSuitesDetailsProp="test.suites.details"
+                             logsDetailsProp="logs.details"
+                             activitiesDetailsProp="activities.details"
+                             filePath="${build.tmp.dir}/${marvin.report.file.name}"
+                             jsonfilePath="${build.tmp.dir}/${marvin.json.file.name}"
+                             allowIntermittentFailures="${allow.intermittent.failures}"
+                             threshold="95" />
+        <echo message="Were all test failures matched by existing defects, or intermittent? ${all.failures.accounted.for}" />
+        <antcall target="save-to-pass-back" />
+        
+        <publishLog filePath="${build.tmp.dir}/${marvin.report.file.name}" label="Marvin's report on defects which may have occurred in this build" />
+        
+        <publishLog filePath="${build.tmp.dir}/${marvin.json.file.name}" label="Marvin's JSON data on build" />
+        
+        <!-- If there were no failing tests, but this build is bad, that's bad. -->
+        <condition property="have.test.failures" value="true">
+            <and>
+                <isset property="testNames" />
+                <length string="${testNames}" trim="true" length="0" when="greater" />
+            </and>
+        </condition>
+        
+        <!-- Format a message saying which suites failed, using the right was/were, and only we were told what tests failed -->
+        <iff iff="have.test.failures">
+            <then>
+                <condition property="failingSuitesMessage" value="The failing test suites were: ${testNames}." else="The failing test suite was ${testNames}.">
+                    <contains string="${testNames}" substring="," />
+                </condition>
+                <property name="shortFailingSuitesMessage" value="(failures in ${testNames} tests)" />
+            </then>
+            <else>
+                <property name="failingSuitesMessage" value="No tests failed but the build was red." />
+                <property name="shortFailingSuitesMessage" value="(build failure)" />
+            </else>
+        </iff>
+        
+        <iff>
+            <or>
+                <istrue value="${enable.delivery.validation}" />
+                <istrue value="${enable.predelivery.checking}" />
+                <istrue value="${isPersonalBuild}" />
+                <istrue value="${happyMarvin}" />
+            </or>
+            <then>
+                <actOnValidationInfo />
+            </then>
+        </iff>
+    </target>
+    
+    <!-- Finds changesets delivered, reverts them if build is bad, and comments on them to say
+         if they were reverted or not. -->
+    <macrodef name="actOnValidationInfo">
+      <sequential>
+          <startActivity label="Identifying changesets delivered in this build or delivered since last processed build" autoComplete="true" />
+          
+          <getNewChangesInThisBuild buildResultUUID="${buildResultUUID}"
+                                    property="changesets"
+                                    workItemUUIDsProperty="workitem.uuids"
+                                    workItemNamesProperty="workitem.names"
+                                    countProperty="changesetsCount"
+                                    repositoryAddress="${repositoryAddress}"
+                                    userId="${userId}"
+                                    passwordFile="${passwordFile}"
+                                    revertToLastGreenBuild="${marvin.revert.all.the.way.back.to.green}"
+                                    countKnownFailuresAsGreen="${marvin.count.known.failures.as.green}"
+                                    workspaceUUID="${team.scm.workspaceUUID}" />
+          
+          <echo message="Results from gathering new changes - Work Item UUIDs: ${workitem.uuids}" />
+          <echo message="Results from gathering new changes - Work Item Names: ${workitem.names}" />
+          <echo message="Results from gathering new changes - Changeset Count: ${changesetsCount}" />
+          <echo message="Results from gathering new changes - Changeset UUIDs: ${changesets}" />
+          
+          <startActivity label="Checking up changesets ...." autoComplete="true" />
+          
+          <condition property="dryRunComment"
+                     value="&lt;br/&gt;(In case this message causes panic, don't worry! The validation build was only a dry run, and nothing has actually been reverted.)"
+                     else="">
+              <isset property="personalBuild" />
+          </condition>
+          
+          <iff>
+              <isset property="personalBuild" />
+              <then>
+                  <!-- This assumes that the requester is always building against their
+                       own workspace. This might not be true for instance if someone did
+                       a personal build of a stream. Check the RTC server isn't backing 
+                       up before trying to use it. -->
+                  <checkRtcUp />
+                  <getWorkspaceOwner workspaceUUID="${team.scm.workspaceUUID}"
+                                     repositoryAddress="${repositoryAddress}"
+                                     userId="${userId}"
+                                     passwordFile="${passwordFile}"
+                                     propertyName="email.address" />
+              </then>
+              <else>
+                  <property name="email.address" value="liberty-infrastructure@mailman.hursley.ibm.com" />
+              </else>
+          </iff>
+          
+          <!-- RevertChangesets class, contains all logic for revert, mail, review, change state of work items, and comment on them
+          it doesn't handle anymore, just stream manipulation.
+          This is part of java code consolidation. -->
+          <echo message="Sending - ${changesetsCount} Changesets for analysis..." />
+          <revertChangesets buildResultUUID="${buildResultUUID}"
+                            workspaceUUID="${team.scm.workspaceUUID}"
+                            projectArea="WS"
+                            dryRun="${isPersonalBuild}"
+                            happyMarvin="${happyMarvin}"
+                            predeliveryCheck="${enable.predelivery.checking}"
+                            deliveryCheck="${enable.delivery.validation}"
+                            repositoryAddress="${repositoryAddress}"
+                            userId="${userId}"
+                            passwordFile="${passwordFile}"
+                            revertToLastGreenBuild="${marvin.revert.all.the.way.back.to.green}"
+                            countKnownFailuresAsGreen="${marvin.count.known.failures.as.green}"
+                            role="Delivery Approver"
+                            teamArea="Development"
+                            emailAddress="${email.address}"
+                            buildUrl="${buildUrl}"
+                            testStats="${testStats}"
+                            testSuitesInfo="${test.suites.details}"
+                            logsInfo="${logs.details}"
+                            activitiesInfo="${activities.details}"
+                            failingSuitesMessage="${failingSuitesMessage}"
+                            isGreenBuild="${all.failures.accounted.for}"
+                            streamName="${buildDefinitionId}" />
+          
+          <iff>
+              <istrue value="${all.failures.accounted.for}" />
+              <then>
+                  <echo file="${build.tmp.dir}/marvin_completed_happy.txt">All failures accounted for in ${buildLabel}</echo>
+                  <publishLog filePath="${build.tmp.dir}/marvin_completed_happy.txt"
+                          label="Marvin's confirmation he ran and accounted for all failures" />
+              </then>
+          </iff>
+      </sequential>
+    </macrodef>
+    
+    <macrodef name="getBuildStatus">
+        <sequential>
+            <!-- waitForTeamBuild will overwrite the current build.status value -->
+            <waitForTeamBuild repositoryAddress="${repositoryAddress}"
+                              userId="${userId}"
+                              passwordFile="${passwordFile}"
+                              buildResultUUID="${buildResultUUID}"
+                              verbose="true"
+                              interval="1"
+                              timeout="5"
+                              buildStatusProperty="final.build.status"
+                              statestowaitfor="IN_PROGRESS" />
+        </sequential>
+    </macrodef>
+
+</project>

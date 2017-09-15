@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Plugin Runtime
+Bundle-SymbolicName: com.ibm.ws.webserver.plugin.runtime
+Bundle-Description: Bundle for runtime changes supporting automatic plugin-cfg.xml generation; version=${bVersion}
+
+WS-TraceGroup: PluginRuntime
+
+-dsannotations: com.ibm.ws.webserver.plugin.runtime.listeners.GeneratePluginConfigListener, \
+ com.ibm.ws.webserver.plugin.runtime.collaborators.GenPluginConfigCollaborator, \
+ com.ibm.ws.webserver.plugin.runtime.requester.PluginConfigRequesterImpl
+
+Export-Package: com.ibm.ws.webserver.plugin.runtime.collaborators, \
+ com.ibm.ws.webserver.plugin.runtime.listeners, \
+ com.ibm.ws.webserver.plugin.runtime.requester
+
+Private-Package: com.ibm.ws.plugin.runtime.resources
+
+instrument.classesExcludes: com/ibm/ws/plugin/runtime/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.wsspi.org.osgi.core;version=latest,\
+	com.ibm.websphere.appserver.spi.containerServices;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.runtime.update;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.threading;version=latest,\
+	com.ibm.ws.session;version=latest,\
+	com.ibm.ws.webserver.plugin.runtime.interfaces;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

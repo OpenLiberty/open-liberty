@@ -1,0 +1,18 @@
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+
+Bundle-Name: Apache Commons BeanUtils
+Bundle-SymbolicName: com.ibm.ws.org.apache.commons.beanutils.1.8.3
+Bundle-Description: Apache Commons BeanUtils; version=1.8.3
+
+Private-Package:
+
+# Make the resolution of org.apache.commons.collections optional to avoid breaking existing features.
+Import-Package: \
+  org.apache.commons.collections.*;resolution:=optional, \
+  *
+
+Export-Package: \
+  !org.apache.commons.collections.*, \
+  org.apache.commons.beanutils.*

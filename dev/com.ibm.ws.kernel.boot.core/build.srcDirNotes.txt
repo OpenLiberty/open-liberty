@@ -1,0 +1,8 @@
+*Most* of the time, the classes in this src dir do not have access to OSGi
+packages or resources.
+
+Some packages will, because they are invoked as part of command line utilities
+which place those classes on the delegated classpath.. 
+
+Some classes in this directory are packaged in the cmdline bundle for 
+use by utilities (com.ibm.ws.kernel.boot.cmdline)

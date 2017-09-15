@@ -1,0 +1,75 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion= 2.0
+
+Bundle-Name: JMS Client for WebSphere Embedded Messaging
+
+Bundle-SymbolicName: com.ibm.ws.messaging.jms.2.0
+
+Bundle-Description: JMS 2.0 Client for WebSphere Embedded Messaging; version=${bVersion}
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Include-Resource: \
+  OSGI-INF/wlp=resources/OSGI-INF/wlp
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+Export-Package: com.ibm.websphere.sib.api.jms,\
+  com.ibm.ws.sib.api.jms.impl;thread-context=true
+
+Import-Package: \
+  com.ibm.ws.ejbcontainer.mdb;resolution:=optional,\
+  !*.internal.*,\
+  *
+
+Private-Package: \
+  com.ibm.ws.sib.api.jms,\
+  com.ibm.ws.sib.api.jms.impl.ute,\
+  com.ibm.ws.sib.api.jms.ute,\
+  com.ibm.ws.sib.api.jmsra,\
+  com.ibm.ws.sib.api.jmsra.impl,\
+  com.ibm.ws.sib.ra.inbound.impl,\
+  com.ibm.wsspi.jms
+
+DynamicImport-Package: \
+  com.ibm.ws.ejbcontainer.mdb
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.jca;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.ws.messaging.common;version=latest,\
+	com.ibm.ws.messaging.jms.common;version=latest,\
+	com.ibm.ws.messaging.comms.client;version=latest,\
+	com.ibm.ws.messaging.utils;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.javaee.jms.2.0;version=latest,\
+	com.ibm.ws.ejbcontainer.mdb;version=latest,\
+	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -1,0 +1,53 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO 
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKO1000 - CWWKO1099
+
+HANDLER_NOT_FOUND_ERROR=CWWKO1000E: There are no registered handlers that match the requested URL {0}.
+HANDLER_NOT_FOUND_ERROR.explanation=An attempt was made to access a URL that did not match any of the registered handlers.
+HANDLER_NOT_FOUND_ERROR.useraction=Correct the URL to match a registered handler.
+
+OSGI_SERVICE_ERROR=CWWKO1001E: OSGi service {0} is not available.
+OSGI_SERVICE_ERROR.explanation=This internal server error is thrown because the specified service is not available.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the clean option.
+ 
+SSL_CONTEXT_NOT_AVAILABLE=CWWKO1002E: Encountered the following exception while resolving a collective member''s SSL context: {0}
+SSL_CONTEXT_NOT_AVAILABLE.explanation=An SSL context could not be created with the member's SSL certificate.
+SSL_CONTEXT_NOT_AVAILABLE.useraction=Check the collective's SSL configuration, including the controller and target member.
+
+MISSING_PARAMETER=CWWKO1003E: A required parameter, {0}, is missing from the https request.
+MISSING_PARAMETER.explanation=The specified required parameter is missing from the request. 
+MISSING_PARAMETER.useraction=Include the specified parameter in the request and retry the request.
+
+MISSING_HEADER=CWWKO1004E: A required header, {0}, is missing from the https request.
+MISSING_HEADER.explanation=The specified required header is missing from the request. 
+MISSING_HEADER.useraction=Include the specified header in the request and retry the request.
+
+INVALID_INPUT_VALUE=CWWKO1005E: The input field with name {0} contains an incorrect value.
+INVALID_INPUT_VALUE.explanation=The request contains an input field with an incorrect value. The input field does not match any records in the system. 
+INVALID_INPUT_VALUE.useraction=Correct the value of the input field and retry the request.
+
+UNSUPPORTED_MEDIA_TYPE=CWWKO1006E: The MIME type of the request, {0}, is not supported. 
+UNSUPPORTED_MEDIA_TYPE.explanation=The server is unable to consume the MIME type of the request. The MIME type does not match any of the expected MIME types. 
+UNSUPPORTED_MEDIA_TYPE.useraction=Correct the value of the content type and send the request again.
+

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<!--
+  ** This XSD contains only the programatic elements required for an implementation.
+  ** For the XSD from Sun that includes documentation and other copyrighted information
+  ** please refer to the latest XSD at :
+  ** http://java.sun.com/xml/ns/javaee/javaee_5.xsd
+-->
+
+<xsd:schema targetNamespace="http://java.sun.com/xml/ns/javaee"
+            xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            elementFormDefault="qualified"
+            attributeFormDefault="unqualified"
+            version="5">
+
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace"
+                schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
+    <!-- 
+    ** TODO: Note we only have here the necessary elements to make 
+    ** ConfigFilesXmlValidationUtils to work correctly (elements referenced by
+    ** faces-config.xml or facelets-taglib.xml). It could be good to extend
+    ** this xsd to include all elements.
+    -->
+    <xsd:complexType name="string">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:token">
+                <xsd:attribute name="id" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="fully-qualified-classType">
+        <xsd:simpleContent>
+            <xsd:restriction base="javaee:string"/>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="java-identifierType">
+        <xsd:simpleContent>
+            <xsd:restriction base="javaee:string">
+                <xsd:pattern value="($|_|\p{L})(\p{L}|\p{Nd}|_|$)*"/>
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:group name="descriptionGroup">
+        <xsd:sequence>
+            <xsd:element name="description" type="javaee:descriptionType"
+                         minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="display-name" type="javaee:display-nameType"
+                         minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="icon" type="javaee:iconType"
+                         minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+    </xsd:group>
+    <xsd:complexType name="descriptionType">
+        <xsd:simpleContent>
+            <xsd:extension base="javaee:xsdStringType">
+                <xsd:attribute ref="xml:lang"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdStringType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:string">
+                <xsd:attribute name="id" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>    
+    <xsd:complexType name="display-nameType">
+        <xsd:simpleContent>
+            <xsd:extension base="javaee:string">
+                <xsd:attribute ref="xml:lang"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="iconType">
+        <xsd:sequence>
+            <xsd:element name="small-icon" type="javaee:pathType" minOccurs="0"/>
+            <xsd:element name="large-icon" type="javaee:pathType" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute ref="xml:lang"/>
+        <xsd:attribute name="id" type="xsd:ID"/>
+    </xsd:complexType>
+    <xsd:complexType name="pathType">
+        <xsd:simpleContent>
+            <xsd:restriction base="javaee:string"/>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="java-typeType">
+        <xsd:simpleContent>
+            <xsd:restriction base="javaee:string">
+                <xsd:pattern value="[^\p{Z}]*"/>
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="xsdNMTOKENType">
+        <xsd:simpleContent>
+            <xsd:extension base="xsd:NMTOKEN">
+                <xsd:attribute name="id" type="xsd:ID"/>
+            </xsd:extension>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    <xsd:complexType name="generic-booleanType">
+        <xsd:simpleContent>
+            <xsd:restriction base="javaee:string">
+                <xsd:enumeration value="true"/>
+                <xsd:enumeration value="false"/>
+                <xsd:enumeration value="yes"/>
+                <xsd:enumeration value="no"/>
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+</xsd:schema>
+

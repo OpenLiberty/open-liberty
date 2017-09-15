@@ -1,0 +1,710 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+  <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+  <Match>
+    <Class name="com.ibm.ejs.container.SessionBeanO"/>
+    <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JITUtils"/>
+      <Class name="com.ibm.ws.metadata.ejb.ByteCodeMetaData"/>
+      <Class name="com.ibm.ws.metadata.ejb.ByteCodeMetaData$1"/>
+    </Or>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.metadata.ejb.AutomaticTimerBean$DateHelper"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.ContainerProperties"/>
+      <Class name="com.ibm.ejs.container.EJBMetaDataImpl"/>
+      <Class name="com.ibm.ejs.container.EJSWrapperCommon"/>
+      <Class name="com.ibm.ejs.container.EntityHandle"/>
+      <Class name="com.ibm.ejs.container.EntityHomeHandle"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanReaper"/>
+      <Class name="com.ibm.ejs.container.util.DeploymentUtil"/>
+      <Class name="com.ibm.ejs.csi.EJBApplicationMetaData"/>
+      <Class name="com.ibm.ejs.csi.FileBeanStore"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.ClassDefiner"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JITUtils"/>
+      <Class name="com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression"/>
+      <Class name="com.ibm.ws.ejbcontainer.util.PoolManagerImpl"/>
+      <Class name="com.ibm.ws.metadata.ejb.CheckEJBAppConfigHelper"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+      <Class name="com.ibm.wsspi.ejbcontainer.JITDeploy"/>
+    </Or>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanMetaData"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.interceptors.InvocationContextImpl"/>
+    </Or>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.WrapperManager"/>
+      <Class name="com.ibm.ejs.container.activator.SingletonActivationStrategy"/>
+      <Class name="com.ibm.ejs.util.cache.Cache"/>
+    </Or>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanId"/>
+      <Class name="com.ibm.ejs.container.PersistentTimerHandle"/>
+      <Class name="com.ibm.ejs.container.PersistentTimerTaskHandler"/>
+      <Class name="com.ibm.ejs.container.TimerNpHandleImpl"/>
+      <Class name="com.ibm.ejs.container.WrapperId"/>
+    </Or>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.ExternalizedBeanId"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.EJSWrapper"/>
+    <Bug pattern="EC_UNRELATED_CLASS_AND_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanOCallDispatchToken"/>
+      <Class name="com.ibm.ejs.container.ContainerConfig"/>
+      <Class name="com.ibm.ejs.container.EJBMethodInfoImpl"/>
+      <Class name="com.ibm.ejs.container.EJSDeployedSupport"/>
+      <Class name="com.ibm.ejs.container.ManagedBeanO"/>
+      <Class name="com.ibm.ejs.container.MessageDrivenBeanO"/>
+      <Class name="com.ibm.ejs.container.SessionBeanO"/>
+      <Class name="com.ibm.ejs.container.WrapperProxyState"/>
+      <Class name="~com\.ibm\.ejs\.container\.container.*"/>
+      <Class name="com.ibm.ejs.container.interceptors.InvocationContextImpl"/>
+      <Class name="com.ibm.ws.ejbcontainer.facade.EJBConfiguration"/>
+    </Or>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.AsyncMethodWrapper"/>
+      <Class name="com.ibm.ejs.container.BeanOCallDispatchToken"/>
+      <Class name="com.ibm.ejs.container.ContainerConfig"/>
+      <Class name="com.ibm.ejs.container.EJBMethodInfoImpl"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.interceptors.InterceptorMetaData"/>
+      <Class name="com.ibm.ejs.container.interceptors.InvocationContextImpl"/>
+      <Class name="com.ibm.ejs.container.util.NameUtil"/>
+      <Class name="com.ibm.ws.ejbcontainer.facade.EJBConfiguration"/>
+    </Or>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.metadata.ejb.TimerMethodData"/>
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.WrapperId"/>
+      <Class name="com.ibm.ejs.container.util.ByteArray"/>
+    </Or>
+    <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.util.NameUtil"/>
+    <Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.BeanMetaData"/>
+    <Bug pattern="ICAST_INTEGER_MULTIPLY_CAST_TO_LONG"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.CMStatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.EJSHome"/>
+      <Class name="com.ibm.ejs.container.SessionBeanO"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanReaper"/>
+      <Class name="com.ibm.ejs.container.TimerNpImpl"/>
+      <Class name="com.ibm.ejs.container.lock.Lock"/>
+      <Class name="com.ibm.ejs.csi.EJBApplicationMetaData"/>
+      <Class name="com.ibm.ejs.util.cache.Cache"/>
+    </Or>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.SessionBeanO"/>
+    <Bug pattern="LI_LAZY_INIT_STATIC"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanMetaData"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+    </Or>
+    <Bug pattern="MS_CANNOT_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanMetaData"/>
+      <Class name="com.ibm.ejs.container.LifecycleInterceptorWrapper"/>
+      <Class name="com.ibm.ejs.container.util.MethodAttribUtils"/>
+    </Or>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.MessageDrivenBeanO"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.StatelessBeanO"/>
+      <Class name="com.ibm.ejs.container.activator.Activator"/>
+      <Class name="com.ibm.ejs.container.lock.LockManager"/>
+    </Or>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BusinessExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.LocalExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.RemoteExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.lock.LockStrategy"/>
+    </Or>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.container"/>
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.util.ExceptionUtil"/>
+    </Or>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.util.ByteArray"/>
+      <Class name="com.ibm.ejs.util.ByteArray"/>
+      <Class name="com.ibm.ejs.util.cache.IllegalOperationException"/>
+      <Class name="com.ibm.websphere.csi.IllegalOperationException"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.SingletonBeanO"/>
+      <Class name="com.ibm.ejs.container.util.SerializableByteArray"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+    </Or>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JITUtils"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.csi.StatefulSessionKeyImpl"/>
+    <Bug pattern="NP_TOSTRING_COULD_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.util.MethodAttribUtils"/>
+    <Bug pattern="NS_NON_SHORT_CIRCUIT"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.passivator.StatefulPassivator"/>
+      <Class name="com.ibm.ejs.util.cache.BackgroundLruEvictionStrategy"/>
+      <Class name="com.ibm.ejs.util.cache.SweepLruEvictionStrategy"/>
+    </Or>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.ContainerTx"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.ManagedBeanO"/>
+      <Class name="com.ibm.ejs.container.MessageDrivenBeanO"/>
+      <Class name="com.ibm.ejs.container.SingletonBeanO"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.StatelessBeanO"/>
+      <Class name="com.ibm.ejs.container.UserTransactionWrapper"/>
+      <Class name="com.ibm.ejs.csi.TranStrategy"/>
+    </Or>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.ManagedBeanO"/>
+      <Class name="com.ibm.ejs.container.MessageDrivenBeanO"/>
+    </Or>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BusinessExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.ExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.LocalExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.RemoteExceptionMappingStrategy"/>
+      <Class name="com.ibm.ws.metadata.ejb.InterceptorMetaDataFactory"/>
+    </Or>
+    <Bug pattern="RC_REF_COMPARISON_BAD_PRACTICE_BOOLEAN"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.EJSWrapperCommon"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.csi.FileBeanStore$WSFileOutputStream"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JITUtils$1"/>
+    </Or>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.EJSWrapperCommon"/>
+      <Class name="com.ibm.ejs.util.cache.CacheElementEnumerator"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+    </Or>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.EJBMetaDataImpl"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.ejbcontainer.jitdeploy.HashSorter"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.MessageDrivenBeanO"/>
+    <Bug pattern="SE_NO_SUITABLE_CONSTRUCTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.ejbcontainer.internal.EJBReferenceImpl"/>
+    <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.BeanMetaData"/>
+    <Bug pattern="SF_DEAD_STORE_DUE_TO_SWITCH_FALLTHROUGH"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanId"/>
+      <Class name="com.ibm.ejs.container.BeanMetaData"/>
+    </Or>
+    <Bug pattern="SF_SWITCH_FALLTHROUGH"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanMetaData"/>
+      <Class name="com.ibm.ejs.container.util.MethodAttribUtils"/>
+      <Class name="com.ibm.ejs.container.util.NameUtil"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+    </Or>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator$MethodDataWrapper"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.HybridUserTransactionObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.ClassDefiner"/>
+    </Or>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanO"/>
+      <Class name="com.ibm.ejs.container.PersistentTimer"/>
+      <Class name="com.ibm.ejs.container.TimeoutElement"/>
+      <Class name="com.ibm.ejs.container.TimerNpImpl"/>
+      <Class name="com.ibm.ejs.container.activator.StatefulASActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.activator.StatefulSessionActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.activator.TimeoutKey"/>
+      <Class name="com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime"/>
+      <Class name="com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.util.BuzzHash"/>
+      <Class name="com.ibm.ejs.container.util.NameUtil"/>
+      <Class name="com.ibm.ws.metadata.ejb.WCCMMetaDataUtil"/>
+    </Or>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.metadata.ejb.CheckEJBAppConfigHelper"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TEBeanLifeCycleInfo"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TEBeanMetaDataInfo"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TEEJBInvocationInfo"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TETxLifeCycleInfo"/>
+    </Or>
+    <Bug pattern="TR_BAD_RESOURCE_BUNDLE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanO"/>
+      <Class name="com.ibm.ws.ejbcontainer.util.ScheduleExpressionParserException"/>
+    </Or>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BMStatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.BeanId"/>
+      <Class name="com.ibm.ejs.container.BeanIdCache"/>
+      <Class name="com.ibm.ejs.container.BeanMetaData"/>
+      <Class name="com.ibm.ejs.container.BeanO"/>
+      <Class name="com.ibm.ejs.container.CMStatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.ContainerProperties"/>
+      <Class name="com.ibm.ejs.container.ContainerTx"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.EJSHome"/>
+      <Class name="com.ibm.ejs.container.EJSWrapperCommon"/>
+      <Class name="com.ibm.ejs.container.HomeOfHomes"/>
+      <Class name="com.ibm.ejs.container.LocalExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.UserActivitySessionWrapper"/>
+      <Class name="com.ibm.ejs.container.UserTransactionWrapper"/>
+      <Class name="com.ibm.ejs.container.util.MethodAttribUtils"/>
+      <Class name="com.ibm.ejs.csi.AS_BeanManaged"/>
+      <Class name="com.ibm.ejs.csi.AS_Mandatory"/>
+      <Class name="com.ibm.ejs.csi.AS_Never"/>
+      <Class name="com.ibm.ejs.csi.AS_NotSupported"/>
+      <Class name="com.ibm.ejs.csi.AS_Required"/>
+      <Class name="com.ibm.ejs.csi.AS_RequiresNew"/>
+      <Class name="com.ibm.ejs.csi.AS_Supports"/>
+      <Class name="com.ibm.ejs.csi.BeanManaged"/>
+      <Class name="com.ibm.ejs.csi.BeanManaged$InactivityAlarm"/>
+      <Class name="com.ibm.ejs.csi.ContainerExtensionFactoryBaseImpl"/>
+      <Class name="com.ibm.ejs.csi.Mandatory"/>
+      <Class name="com.ibm.ejs.csi.Never"/>
+      <Class name="com.ibm.ejs.csi.NotSupported"/>
+      <Class name="com.ibm.ejs.csi.Required"/>
+      <Class name="com.ibm.ejs.csi.RequiresNew"/>
+      <Class name="com.ibm.ejs.csi.Supports"/>
+      <Class name="com.ibm.ejs.csi.TranStrategy"/>
+      <Class name="com.ibm.ejs.csi.TransactionControlImpl"/>
+      <Class name="com.ibm.ejs.csi.UOWControlImpl"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.EJBHomeImpl"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.EJBWrapper"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.EJBWrapperProxy"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JITUtils"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JIT_Stub"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JIT_Tie"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.WSEJBProxy"/>
+      <Class name="com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime"/>
+      <Class name="com.ibm.ws.metadata.ejb.CheckEJBAppConfigHelper"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+      <Class name="com.ibm.ws.metadata.ejb.InterceptorMetaDataFactory"/>
+      <Class name="com.ibm.ws.metadata.ejb.InterceptorMetaDataHelper"/>
+      <Class name="com.ibm.ws.metadata.ejb.WCCMMetaDataUtil"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TEBeanLifeCycleInfo"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TEBeanMetaDataInfo"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TEEJBInvocationInfo"/>
+      <Class name="com.ibm.ws.traceinfo.ejbcontainer.TETxLifeCycleInfo"/>
+    </Or>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.EJSHome"/>
+      <Class name="com.ibm.ejs.container.EJSWrapperCommon"/>
+      <Class name="com.ibm.ejs.container.ServerAsyncResult"/>
+      <Class name="com.ibm.ejs.container.TimerNpImpl"/>
+      <Class name="com.ibm.ws.ejb.injection.processor.EJBInjectionBinding"/>
+      <Class name="com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime$1"/>
+    </Or>
+    <Bug pattern="TR_MISSING_ENTRY_TRACE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BeanO"/>
+      <Class name="com.ibm.ejs.container.BeanOFactory"/>
+      <Class name="com.ibm.ejs.container.BusinessExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.EJSHome"/>
+      <Class name="com.ibm.ejs.container.ExternalizedBeanId"/>
+      <Class name="com.ibm.ejs.container.ManagedBeanHome"/>
+      <Class name="com.ibm.ejs.container.ManagedBeanO"/>
+      <Class name="com.ibm.ejs.container.MessageDrivenBeanO"/>
+      <Class name="com.ibm.ejs.container.PersistentTimerTaskHandler"/>
+      <Class name="com.ibm.ejs.container.RemoteExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.SingletonBeanO"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.StatelessBeanO"/>
+      <Class name="com.ibm.ejs.container.TimedObjectWrapper"/>
+      <Class name="com.ibm.ejs.container.TimerNpImpl"/>
+      <Class name="com.ibm.ejs.container.TimerNpRunnable"/>
+      <Class name="com.ibm.ejs.container.WSEJBWrapper"/>
+      <Class name="com.ibm.ejs.container.activator.SingletonActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.activator.StatefulSessionActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.interceptors.InterceptorProxy"/>
+      <Class name="com.ibm.ejs.container.interceptors.InvocationContextImpl"/>
+      <Class name="com.ibm.ejs.container.lock.LockManager"/>
+      <Class name="com.ibm.ejs.container.passivator.StatefulPassivator"/>
+      <Class name="com.ibm.ejs.csi.EJBApplicationMetaData"/>
+      <Class name="com.ibm.ejs.util.cache.Cache"/>
+      <Class name="com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime"/>
+      <Class name="com.ibm.ws.ejbcontainer.util.PoolManagerImpl"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+    </Or>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.ContainerAS"/>
+      <Class name="com.ibm.ejs.container.ContainerTx"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.EJSHome"/>
+      <Class name="com.ibm.ejs.container.EJSWrapperCommon"/>
+      <Class name="com.ibm.ejs.container.HomeOfHomes"/>
+      <Class name="com.ibm.ejs.container.LocalExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.MessageDrivenBeanO"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanReaper"/>
+      <Class name="com.ibm.ejs.container.UserActivitySessionWrapper"/>
+      <Class name="com.ibm.ejs.container.UserActivitySessionWrapperFactory"/>
+      <Class name="com.ibm.ejs.container.UserTransactionWrapper"/>
+      <Class name="com.ibm.ejs.container.activator.StatefulASActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.lock.LockManager"/>
+      <Class name="com.ibm.ejs.container.util.EJBSerializerImpl"/>
+      <Class name="com.ibm.ejs.container.util.MethodAttribUtils"/>
+      <Class name="com.ibm.ejs.container.util.SerializableByteArray"/>
+      <Class name="com.ibm.ejs.csi.AS_BeanManaged"/>
+      <Class name="com.ibm.ejs.csi.AS_Mandatory"/>
+      <Class name="com.ibm.ejs.csi.AS_Never"/>
+      <Class name="com.ibm.ejs.csi.AS_NotSupported"/>
+      <Class name="com.ibm.ejs.csi.AS_Required"/>
+      <Class name="com.ibm.ejs.csi.AS_RequiresNew"/>
+      <Class name="com.ibm.ejs.csi.AS_Supports"/>
+      <Class name="com.ibm.ejs.csi.BeanManaged"/>
+      <Class name="com.ibm.ejs.csi.BeanManaged$InactivityAlarm"/>
+      <Class name="com.ibm.ejs.csi.ContainerExtensionFactoryBaseImpl"/>
+      <Class name="com.ibm.ejs.csi.Mandatory"/>
+      <Class name="com.ibm.ejs.csi.Never"/>
+      <Class name="com.ibm.ejs.csi.NotSupported"/>
+      <Class name="com.ibm.ejs.csi.Required"/>
+      <Class name="com.ibm.ejs.csi.RequiresNew"/>
+      <Class name="com.ibm.ejs.csi.Supports"/>
+      <Class name="com.ibm.ejs.csi.UOWControlImpl"/>
+      <Class name="com.ibm.ejs.util.cache.BackgroundLruEvictionStrategy"/>
+      <Class name="com.ibm.ejs.util.cache.SweepLruEvictionStrategy"/>
+      <Class name="com.ibm.ws.ejb.injection.processor.EJBInjectionBinding"/>
+      <Class name="com.ibm.ws.ejbcontainer.diagnostics.TrDumpWriter"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime"/>
+      <Class name="com.ibm.ws.ejbcontainer.util.PoolManagerImpl"/>
+      <Class name="com.ibm.ws.ejbcontainer.util.ScheduleExpressionParser"/>
+      <Class name="com.ibm.ws.metadata.ejb.ByteCodeMetaData"/>
+      <Class name="com.ibm.ws.metadata.ejb.ByteCodeMetaData$BridgeMethodMetaData"/>
+      <Class name="com.ibm.ws.metadata.ejb.ByteCodeMetaData$MethodMetaData"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBInterceptorBinding"/>
+      <Class name="com.ibm.ws.util.MessageDestinationObjectFactory"/>
+    </Or>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.metadata.ejb.AppConfigChecker"/>
+    <Bug pattern="TR_NULL_RESOURCE_BUNDLE"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BMStatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.CMStatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.EJSHome"/>
+      <Class name="com.ibm.ejs.container.LocalExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.PersistentTimerTaskHandler"/>
+      <Class name="com.ibm.ejs.container.RemoteExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.UserTransactionWrapper"/>
+      <Class name="com.ibm.ejs.container.WrapperProxyState"/>
+      <Class name="com.ibm.ejs.container.activator.SingletonActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.activator.StatefulSessionActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.interceptors.InterceptorProxy"/>
+      <Class name="com.ibm.ejs.container.util.MethodAttribUtils"/>
+      <Class name="com.ibm.ejs.csi.EJBApplicationMetaData"/>
+      <Class name="com.ibm.ejs.csi.Required"/>
+      <Class name="com.ibm.ejs.csi.RequiresNew"/>
+      <Class name="com.ibm.ws.ejb.injection.processor.EJBInjectionBinding"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.JITDeploy"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+    </Or>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.BusinessExceptionMappingStrategy"/>
+      <Class name="com.ibm.ejs.container.EJBMethodInfoStack"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ws.metadata.ejb.TimerMethodData"/>
+    </Or>
+    <Bug pattern="TR_WRONG_CLASS_NAME"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.AsyncMethodWrapper"/>
+      <Class name="com.ibm.ejs.container.BMStatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.BeanMetaData"/>
+      <Class name="com.ibm.ejs.container.BeanO"/>
+      <Class name="com.ibm.ejs.container.CMStatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.ContainerAS"/>
+      <Class name="com.ibm.ejs.container.ContainerTx"/>
+      <Class name="com.ibm.ejs.container.EJSContainer"/>
+      <Class name="com.ibm.ejs.container.EJSHome"/>
+      <Class name="com.ibm.ejs.container.EntityHandle"/>
+      <Class name="com.ibm.ejs.container.EntityHomeHandle"/>
+      <Class name="com.ibm.ejs.container.ManagedBeanO"/>
+      <Class name="com.ibm.ejs.container.ManagedBeanOBase"/>
+      <Class name="com.ibm.ejs.container.PersistentTimer"/>
+      <Class name="com.ibm.ejs.container.ServerAsyncResult"/>
+      <Class name="com.ibm.ejs.container.StatefulBeanO"/>
+      <Class name="com.ibm.ejs.container.StatelessBeanO"/>
+      <Class name="com.ibm.ejs.container.TimerNpImpl"/>
+      <Class name="com.ibm.ejs.container.TimerNpRunnable"/>
+      <Class name="com.ibm.ejs.container.UnspecifiedContextHelper"/>
+      <Class name="com.ibm.ejs.container.UserActivitySessionWrapperFactory"/>
+      <Class name="com.ibm.ejs.container.UserTransactionWrapper"/>
+      <Class name="com.ibm.ejs.container.WrapperProxyState"/>
+      <Class name="com.ibm.ejs.container.activator.StatefulASActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.activator.StatefulSessionActivationStrategy"/>
+      <Class name="com.ibm.ejs.container.passivator.StatefulPassivator"/>
+      <Class name="com.ibm.ejs.container.util.MethodAttribUtils"/>
+      <Class name="com.ibm.ejs.csi.AS_Required"/>
+      <Class name="com.ibm.ejs.csi.EJBApplicationMetaData"/>
+      <Class name="com.ibm.ejs.csi.FileBeanStore"/>
+      <Class name="com.ibm.ejs.csi.TranStrategy"/>
+      <Class name="com.ibm.ejs.csi.TransactionControlImpl"/>
+      <Class name="com.ibm.ejs.util.cache.Cache"/>
+      <Class name="com.ibm.ws.ejb.injection.processor.EJBProcessor"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.EJBContextObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.EJBLinkObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.HybridUserActivitySessionObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.HybridUserTransactionObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.injection.factory.TimerServiceObjectFactory"/>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.EJBHomeImpl"/>
+      <Class name="com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime$1"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+      <Class name="com.ibm.ws.metadata.ejb.InterceptorMetaDataFactory"/>
+    </Or>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ejs.container.HomeRecord"/>
+      <Class name="com.ibm.ejs.container.WSEJBProxy"/>
+      <Class name="com.ibm.ws.ejb.injection.annotation.EJBImpl"/>
+    </Or>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.EJSRemoteWrapper"/>
+    <Bug pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.container.lock.Lock"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <Match>
+    <Or>
+      <Class name="com.ibm.ws.ejbcontainer.jitdeploy.RMItoIDL"/>
+      <Class name="com.ibm.ws.metadata.ejb.EJBMDOrchestrator"/>
+    </Or>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+</FindBugsFilter>

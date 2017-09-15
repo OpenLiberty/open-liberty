@@ -1,0 +1,1293 @@
+#!/bin/sh
+###############################################################################
+# WebSphere Application Server liberty launch script
+#
+# Copyright IBM Corp. 2011, 2017
+# The source code for this program is not published or other-
+# wise divested of its trade secrets, irrespective of what has
+# been deposited with the U.S. Copyright Office.
+# 
+# ----------------------------------------------------------------------------
+#
+# To customize the use of this script (for example with /etc/init.d system 
+# service managers), use the following environment variables:
+#
+# JAVA_HOME  - The java executable is found in ${JAVA_HOME}/bin
+#
+# JVM_ARGS   - A list of JVM command line options,
+#              e.g. system properties or -X parameters
+#              The value will be expanded by the shell (use quotes for spaces)
+#
+# LOG_DIR    - The log file directory
+#              The default value is ${WLP_OUTPUT_DIR}/serverName/logs
+#
+# LOG_FILE   - The log file name
+#              This log file is only used if the server is run in the
+#              background via the start action. 
+#              The default value is console.log
+#
+# PID_DIR    - The directory that should be used for server pid file(s).
+#              The default value is ${WLP_OUTPUT_DIR}/.pid
+#
+# PID_FILE   - The file that should be used for the server pid file.
+#              The default value is ${PID_DIR}/serverName.pid
+#
+# WLP_USER_DIR - The user/custom configuration directory used to store
+#              shared and server-specific configuration. 
+#              See README.TXT for details about shared resource locations.
+#              A server's configuration is at ${WLP_USER_DIR}/servers/serverName
+#              The default value is the usr directory in the install directory.
+#
+# WLP_OUTPUT_DIR - The directory containing output files for defined servers.
+#              This directory must have both read and write permissions for
+#              the user or users that start servers.
+#              By default, a server's output logs and workarea are stored
+#              in the ${WLP_USER_DIR}/servers/serverName directory
+#              (alongside configuration and applications).
+#              If this variable is set, the output logs and workarea 
+#              would be stored in ${WLP_OUTPUT_DIR}/serverName.
+#
+# WLP_DEBUG_ADDRESS - The port to use when running the server in debug mode.
+#              The default value is 7777.
+#
+# WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
+#                   to be used.
+#
+# WLP_ZOS_PROCEDURE - The name of the STC procedure to be used to start the 
+#                     server in a z/OS environment.
+#
+###############################################################################
+
+SERVER_UNKNOWN_STATUS=5
+
+##
+## Determine the platform and absolute path of the installation directory.
+##
+case $OSTYPE in
+  cygwin)
+    uname=CYGWIN_NT
+
+    # Determine the installation directory without forking if possible.  Use
+    # eval to hide ${var//find/replace}, ${var%suffix}, and ${var:first:length}
+    # syntaxes from shells that can't parse them.
+    eval '
+      # cd to the install directory.
+      savePWD=$PWD
+      script=${0//\\/\/}
+      unset CDPATH; cd "${script%/*}"/..
+
+      # Convert the install (current working) directory to a Windows path.
+      case $PWD in
+        /cygdrive/?/*)
+          # Use ${var:first:length} to avoid forking for cygpath.
+          WLP_INSTALL_DIR=${PWD:10:1}:${PWD:11}
+          ;;
+        *)
+          WLP_INSTALL_DIR=`cygpath -ma .`
+      esac
+
+      cd "$savePWD"
+    '
+    ;;
+
+  *)
+    uname=`uname`
+
+    case $uname in
+      CYGWIN_*)
+        WLP_INSTALL_DIR=`cygpath -ma "${0}"/../..`
+        ;;
+
+      *)
+        dirname=`dirname "$0"`
+        WLP_INSTALL_DIR=`unset CDPATH; cd "$dirname/.." && pwd`
+    esac
+esac
+
+##
+## Platform specific setup
+##
+PS_P='ps -p'
+UMASK_O='umask o='
+tryShellExtensions=true
+os400lib=false
+shareclassesCacheDirPerm=true
+defaultFileEncoding=
+newline='
+'
+nativeEBCDIC=false
+
+case ${uname} in
+  CYGWIN_*)
+    # java.exe is a non-Cygwin process, so we need to pass -W.
+    PS_P='ps -W -p'
+    shareclassesCacheDirPerm=false
+    ;;
+
+  OS/390)
+    defaultFileEncoding=iso8859-1
+    nativeEBCDIC=true         # Auto-convert server.env/jvm.options from ASCII-to-EBCDIC, if necessary.
+    _BPXK_WLM_PROPAGATE=NO    # Prevent WLM enclave propagation to spawned processes
+    _EDC_PTHREAD_YIELD=-2     # Disable sleeps inside of pthread_yield
+    JAVA_PROPAGATE=NO         # Prevent WLM enclave propagation to new threads
+    export _BPXK_WLM_PROPAGATE _EDC_PTHREAD_YIELD JAVA_PROPAGATE
+
+    WLP_NLS_PATH="${WLP_INSTALL_DIR}/lib/native/zos/s390x/nls/%N.cat"
+    if [ ${NLSPATH} ]
+    then          
+      NLSPATH="${WLP_NLS_PATH}:${NLSPATH}" 
+    else
+      NLSPATH="${WLP_NLS_PATH}"
+    fi
+    ;;
+
+  OS400)
+    # Avoid issues with qsh.
+    tryShellExtensions=false
+    # os400lib gets unset later if we cannot find WAS_PRODUCT_LIB and WAS_SHARED_LIB
+    os400lib=true
+    # on os400 use 'umask -S o=', not 'umask o='
+    UMASK_O='umask -S o='
+    ;;
+esac
+
+##
+## safeEcho: Portable echo that can handle backslashes and leading dashes.
+safeEcho()
+{
+  cat <<EOF
+$*
+EOF
+}
+
+# Define escapeForEval functions using ${var//find/replace} and ${var#suffix}
+# if possible since those constructs are significantly faster than safeEcho+sed
+# since they avoid forks.  Use eval (to hide the syntax from shells that don't
+# support them) in a subshell (to avoid exiting the shell process on error) to
+# test if the shell has support.
+if ${tryShellExtensions} && (eval 'true ${1//b/c} ${1#*=}') 2> /dev/null; then
+  # The shell has support.  Define the functions using eval, again to hide the
+  # syntax from shells that don't support it.
+  eval "
+    escapeForEval()
+    {
+      escapeForEvalResult=\\'\${1//\\'/\\'\\\"\\'\\\"\\'}\\'
+    }
+
+    extractValueAndEscapeForEval()
+    {
+      escapeForEval \"\${1#*=}\"
+    }
+
+    substitutePrefixVar()
+    {
+      case \$1 in
+      @\$2@*) substitutePrefixVarResult=\$3\${1#@\$2@};;
+      *) substitutePrefixVarResult=\$1
+      esac
+    }
+  "
+else
+  ##
+  ## escapeForEval: Escape the first parameter to be safe for use in eval,
+  ##                and set escapeForEvalResult with the result.
+  ##
+  escapeForEval() 
+  {
+    escapeForEvalResult=\'`safeEcho "$1" | sed s/\'/\'\"\'\"\'/g`\'
+  }
+
+  ##
+  ## extractValueAndEscapeForEval: Extract the value of a var=value string,
+  ##                               and set escapeForEvalResult with the result.
+  ##
+  extractValueAndEscapeForEval()
+  {
+    escapeForEvalResult=\'`safeEcho "$1" | sed -e 's/[^=]*=//' -e s/\'/\'\"\'\"\'/g`\'
+  }
+
+  ##
+  ## substitutePrefixVar: If $1 has a prefix @$2@, set substitutePrefixVarResult
+  ##                      to $1 with the prefix replaced by $3.  Otherwise, set
+  ##                      to $1.
+  substitutePrefixVar()
+  {
+    case $1 in
+    @$2@*) substitutePrefixVarResult=$3`safeEcho "$1" | sed -e "s/^@$2@//"`;;
+    *) substitutePrefixVarResult=$1
+    esac
+  }
+fi
+
+##
+## Quote ${WLP_INSTALL_DIR} for eval.
+##
+escapeForEval "${WLP_INSTALL_DIR}"
+WLP_INSTALL_DIR_QUOTED=${escapeForEvalResult}
+READ_ETC=1
+
+##
+## Consume script parameters: 
+##   action is required/positional, 
+##   serverName is optional, --options following
+##
+if [ $# -lt 1 ]
+then
+  ACTION=help:usage
+else
+  ACTION=$1
+  shift #consume
+  if [ $# -ge 1 ]
+  then
+    # Only use if it isn't something that looks like an option
+    case $1 in
+    -*);;
+    *)
+      SERVER_NAME=$1
+      shift #consume
+    esac
+  fi
+fi
+
+##
+## Set server name and directory
+##
+if [ -z "$SERVER_NAME" ]
+then
+  SERVER_NAME=defaultServer
+fi
+
+
+##
+## Set JAVA_AGENT_QUOTED if WLP_SKIP_BOOTSTRAP_AGENT is unset.
+##
+JAVA_AGENT_QUOTED=-javaagent:${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-javaagent.jar
+if [ -n "${WLP_SKIP_BOOTSTRAP_AGENT}" ]; then
+  JAVA_AGENT_QUOTED=
+fi
+
+##
+## createServer: Function to launch server create
+##
+createServer()
+{
+  javaCmd '' "${SERVER_NAME}" --create "$@"
+  rc=$?
+
+  if [ $rc = 0 ]; then
+    rmIfExist "${X_PID_FILE}"
+
+    if $os400lib; then
+      # If production on IBM i, authorize QEJBSVR to the server folder
+      chgautOS400 "${WLP_USER_DIR}/servers/${SERVER_NAME}" "*RX"
+      chgautOS400 "${WLP_OUTPUT_DIR}" "*RWX"
+      if [ -d "${WLP_USER_DIR}/servers/${SERVER_NAME}/apps" ]; then
+         chgautOS400 "${WLP_USER_DIR}/servers/${SERVER_NAME}/apps" "*RWX"
+      fi
+      
+    fi
+  fi
+
+  return $rc
+}
+
+##
+## chgautOS400: Change authorization of directory or file $1 to $2 for QEJBSVR.
+##              This should only be called if $os400lib is true
+##
+chgautOS400()
+{
+  system "CHGAUT OBJ('$1') USER(QEJBSVR) DTAAUT($2) OBJAUT(*ALL) SUBTREE(*ALL)"
+}
+
+##
+## mkdirs: Create a directory and all parent directories, if necessary.
+##
+mkdirs()
+{
+  if [ ! -d "$1" ]; then
+    mkdir -p "$1"
+    if $os400lib; then
+      chgautOS400 "$1" "*RWX"
+    fi
+  fi
+}
+
+##
+## rmIfExist: Remove files if they exist.
+##
+rmIfExist()
+{
+  for file
+  do
+    # [ is a builtin command for most shells, so a fork is not required.
+    if [ -f "${file}" ]; then
+      # If any file exists, pass all files so we only fork once.
+      rm -f "$@"
+      return
+    fi
+  done
+}
+
+##
+## touchIfNotExist: Create an empty file.
+##
+touchIfNotExist()
+{
+  if [ ! -f "$1" ]; then
+    # true is a builtin command for most shells, so a fork is not required.
+    true > "$1"
+    if $os400lib; then
+      chgautOS400 "$1" "*RWX"
+    fi
+  fi
+}
+
+##
+## serverStatus: Check for a running server process.  If the first argument is
+##               true, avoid using the launcher to verify the status if possible,
+##               and don't output messages even if the launcher is used.
+##               The second argument is the --status variant.
+##               If success is returned, then ${PID} will be set if available.
+serverStatus()
+{
+  if [ -f "${SERVER_OUTPUT_DIR}/workarea/.sLock" ]; then
+    if [ ! -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand" ]; then
+      # Workarea exists, .sCommand doesn't.  Server is not running.
+      rmIfExist "${X_PID_FILE}"
+      return 1
+    fi
+
+    # Read the PID file to set ${PID} if possible.  Remove it if stale.
+    # Otherwise, assume the server is started if we're avoiding the launcher.
+    if serverPIDStatus && $1; then
+      return 0
+    fi
+
+    # The workarea suggests a started server.  Either the script started a
+    # server process that ended before removing .sCommand, or the server was
+    # started without using the script (so the PID file was never created).
+    # In either case, verify the status using the launcher.
+    if $1; then
+      javaCmd '' "${SERVER_NAME}" $2 > /dev/null
+    else
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" $2
+    fi
+    rc=$?
+
+    if [ $rc = 1 ]; then
+      # The launcher verified the server is not running.  Remove the indicator
+      # files to avoid checking again on subsequent script invocations.
+      rm -f "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
+    fi
+
+    return $rc
+  fi
+
+  if serverPIDStatus; then
+    if $1; then
+      return 0
+    fi
+
+    # PID file suggests a started server with a removed workspace.  Verify
+    # using the launcher.
+    javaCmd '' "${SERVER_NAME}" --pid-file="${X_PID_FILE}" --pid="${PID}" $2
+    return $?
+  fi
+
+  # Neither workarea nor PID file suggest a started server.
+  return 1
+}
+
+##
+## serverPIDStatus: Check the PID file for a running server process.  ${PID}
+##                  will be set to the PID if running or to empty if not.
+serverPIDStatus()
+{
+  if [ -f "${X_PID_FILE}" ]; then
+    PID=`cat "${X_PID_FILE}"`
+    if $PS_P "$PID" > /dev/null 2>&1; then
+      return 0
+    fi
+
+    rm "${X_PID_FILE}"
+  fi
+
+  PID=
+  return 1
+}
+
+##
+## checkServer: Check for created/existing server.  If it does not, issue an
+##              error message if the first argument is true, and then exit the
+##              script regardless.
+checkServer()
+{
+  if [ -d "${SERVER_CONFIG_DIR}" ] || [ "defaultServer" = "${SERVER_NAME}" ]
+  then
+    return 0
+  fi
+
+  if $1
+  then
+    javaCmd '' --message:info.serverNotExist "${SERVER_NAME}"
+    rc=$?
+    if [ $rc = 0 ]
+    then
+      rc=1
+    fi
+  else
+    rc=1
+  fi
+
+  return $rc
+}
+
+##
+## installEnv: Set variables for a non-server or nonexistent server command.
+installEnv()
+{
+  readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
+  installEnvDefaults
+  serverEnvDefaults
+}
+
+##
+## installEnvDefaults: Set variable defaults for a non-server or nonexistent
+##                     server command.
+installEnvDefaults()
+{
+  readServerEnv "${WLP_INSTALL_DIR}/java/java.env"
+  readServerEnv "${WLP_INSTALL_DIR}/etc/default.env"
+
+  if [ -z "${WLP_USER_DIR}" ]
+  then
+    if [ -z "${WLP_DEFAULT_USER_DIR}" ]
+    then
+      WLP_DEFAULT_USER_DIR=${WLP_INSTALL_DIR}/usr
+    fi
+    WLP_USER_DIR=${WLP_DEFAULT_USER_DIR}
+  fi
+
+  if [ -z "${WLP_OUTPUT_DIR}" ]
+  then
+    if [ -z "${WLP_DEFAULT_OUTPUT_DIR}" ]
+    then
+      WLP_DEFAULT_OUTPUT_DIR=${WLP_USER_DIR}/servers
+    fi
+    WLP_OUTPUT_DIR=${WLP_DEFAULT_OUTPUT_DIR}
+  fi
+
+  SERVER_CONFIG_DIR=${WLP_USER_DIR}/servers/${SERVER_NAME}
+
+  if $os400lib
+  then
+    if [ -z "${WAS_PRODUCT_LIB}" ] || [ -z "${WAS_SHARED_LIB}" ]
+    then 
+      os400lib=false
+    fi
+  fi  
+  
+  export WLP_USER_DIR
+  export WLP_OUTPUT_DIR
+}
+
+##
+## serverEnvDefaults: Set defaults for server variables.
+serverEnvDefaults()
+{
+  SERVER_OUTPUT_DIR=${WLP_OUTPUT_DIR}/${SERVER_NAME}
+
+  # Unset set/tested variables to prevent collisions with nested process invocations
+  if [ -z "$LOG_DIR" ]
+  then
+    X_LOG_DIR=${SERVER_OUTPUT_DIR}/logs
+  else
+    X_LOG_DIR=${LOG_DIR}
+    unset LOG_DIR
+  fi
+  export X_LOG_DIR
+
+  if [ -z "$LOG_FILE" ]
+  then
+    X_LOG_FILE=console.log
+  else
+    X_LOG_FILE=${LOG_FILE}
+    unset LOG_FILE
+  fi
+  export X_LOG_FILE
+  
+  if [ -z "$PID_DIR" ]; then
+    X_PID_DIR=${WLP_OUTPUT_DIR}/.pid
+  else
+    X_PID_DIR=${PID_DIR}
+    unset PID_DIR
+  fi
+
+  if [ -z "$PID_FILE" ]; then
+    X_PID_FILE=${X_PID_DIR}/${SERVER_NAME}.pid
+  else
+    X_PID_FILE=${PID_FILE}
+    X_PID_DIR=`dirname "${X_PID_FILE}"`
+    unset PID_FILE
+  fi
+  
+  if [ -z "${JAVA_HOME}" ]
+  then
+    if [ -z "${JRE_HOME}" ]
+    then
+      if [ -z "${WLP_DEFAULT_JAVA_HOME}" ]
+      then
+        # Use whatever java is on the path
+        JAVA_CMD=java
+      else
+        substitutePrefixVar "${WLP_DEFAULT_JAVA_HOME}" WLP_INSTALL_DIR "${WLP_INSTALL_DIR}"
+        JAVA_HOME=${substitutePrefixVarResult}
+        JAVA_CMD=${JAVA_HOME}/bin/java
+        WLP_SKIP_MAXPERMSIZE=${WLP_DEFAULT_SKIP_MAXPERMSIZE}
+      fi
+    else
+      JAVA_HOME=${JRE_HOME}
+      JAVA_CMD=${JRE_HOME}/bin/java
+    fi
+  else
+    if [ -f "${JAVA_HOME}/jre/bin/java" ]
+    then
+        JAVA_CMD=${JAVA_HOME}/jre/bin/java
+    else
+        JAVA_CMD=${JAVA_HOME}/bin/java
+    fi
+  fi
+
+  # Command-line parsing of -Xshareclasses does not allow "," in cacheDir.
+  case ${WLP_OUTPUT_DIR} in
+  *,*)
+    SERVER_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
+    ;;
+
+  *)
+    if $shareclassesCacheDirPerm
+    then
+      ibmVersionProperties=
+      if [ -z "${JAVA_HOME}" ]
+      then
+        javaBinDir=`type java 2> /dev/null | sed -e 's,[^/]*,,' -e 's,/java[^/]*$,,'`
+        if [ -n "${javaBinDir}" ]
+        then
+          if [ -f "${javaBinDir}/../lib/version.properties" ]
+          then
+            ibmVersionProperties=${javaBinDir}/../lib/version.properties
+          elif [ -f "${javaBinDir}/../jre/lib/version.properties" ]
+          then
+            ibmVersionProperties=${javaBinDir}/../jre/lib/version.properties
+          fi
+        fi
+      elif [ -f "${JAVA_HOME}/lib/version.properties" ]
+      then
+        ibmVersionProperties=${JAVA_HOME}/lib/version.properties
+      elif [ -f "${JAVA_HOME}/jre/lib/version.properties" ]
+      then
+        ibmVersionProperties=${JAVA_HOME}/jre/lib/version.properties
+      fi
+
+      SERVER_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
+      if [ -n "${ibmVersionProperties}" ] && ibmSdkVersion=`grep '^sdk\.version=' "${ibmVersionProperties}"`
+      then
+        # The IBM SDK version scheme is (arch)(version#)[sr#][fp#]-(date)
+        # We only want to set -Xshareclasses if we can set the cacheDirPerm option,
+        # but it is only available on IBM 1.6 SR10 and 1.6 (2.6 VM) SR1 and later.
+        # The version.properties file was added in IBM 1.6, so accept any other
+        # version for forwards compatibility.
+        case $ibmSdkVersion in
+        sdk.version=*60fp*);;
+        sdk.version=*60ifix*);;
+        sdk.version=*60sr[1-9]-*);;
+        sdk.version=*60sr[1-9]fp*);;
+        sdk.version=*60sr[1-9]ifix*);;
+        sdk.version=*60_26-*);;
+        sdk.version=*60_26fp*);;
+        sdk.version=*60_26ifix*);;
+        sdk.version=*)
+          SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\",cacheDirPerm=1000 -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
+        esac
+      fi
+    else
+      SERVER_IBM_JAVA_OPTIONS="-Xshareclasses:name=liberty-%u,nonfatal,cacheDir=\"${WLP_OUTPUT_DIR}/.classCache\" -XX:ShareClassesEnableBCI -Xscmx60m -Xscmaxaot8m ${IBM_JAVA_OPTIONS}"
+    fi
+  esac
+
+  # Add -Xquickstart -Xnoaot for client JVMs only.  AOT is ineffective if JVMs
+  # have conflicting options, and it's more important that the server JVMs be
+  # able to use AOT.
+  IBM_JAVA_OPTIONS="-Xquickstart -Xnoaot ${SERVER_IBM_JAVA_OPTIONS}"
+  export IBM_JAVA_OPTIONS
+
+  # Set a default file encoding if needed
+  if [ -n "$defaultFileEncoding" ]; then
+    if ! expr "${JVM_OPTIONS_QUOTED} ${JVM_ARGS} ${IBM_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
+      JVM_ARGS="${JVM_ARGS} -Dfile.encoding=$defaultFileEncoding"
+    fi
+  fi
+  
+  serverUmask
+}
+
+##
+## serverEnv: Set variables for an existing server.
+serverEnv()
+{
+  readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
+  installEnvDefaults
+
+  readServerEnv "${WLP_USER_DIR}/shared/server.env"
+  readServerEnv "${SERVER_CONFIG_DIR}/server.env"
+  serverEnvDefaults
+}
+
+##
+## serverEnvAndJVMOptions: Read server.env files and set environment variables.
+##                         Read jvm.options file into ${JVM_OPTIONS_QUOTED}
+serverEnvAndJVMOptions()
+{
+  serverEnv
+
+  # Avoids HeadlessException on all platforms and Liberty JVMs appearing as applications and stealing focus on Mac.
+  JVM_OPTIONS_QUOTED=-Djava.awt.headless=true
+  SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
+
+  # Add -XX:MaxPermSize unless WLP_SKIP_MAXPERMSIZE is set.
+  if [ -z "${WLP_SKIP_MAXPERMSIZE}" ]; then
+    SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} -XX:MaxPermSize=256m"
+  fi
+
+  rc=0
+  
+  
+  # The order of merging the jvm.option files sets the precedence. 
+  # Once a given jvm option is set, it will be overridden if a duplicate
+  # is seen later. They will both be written in to the options parameter
+  # but the last one written will take precedence.  If none are read
+  # the script will try to read the jvm.options in etc
+   
+  TEMP_SAVED_OPTIONS=$SERVER_JVM_OPTIONS_QUOTED
+  mergeJVMOptions "${WLP_INSTALL_DIR}/usr/shared/jvm.options"
+  if [ $rc -ne 0 ]; then
+    return $rc
+  fi
+  mergeJVMOptions "${SERVER_CONFIG_DIR}/configDropins/defaults/jvm.options"
+  if [ $rc -ne 0 ]; then
+    return $rc
+  fi
+  mergeJVMOptions "${SERVER_CONFIG_DIR}/jvm.options"
+  if [ $rc -ne 0 ]; then
+    return $rc
+  fi
+  mergeJVMOptions "${SERVER_CONFIG_DIR}/configDropins/overrides/jvm.options"
+  if [ $rc -ne 0 ]; then
+    return $rc
+  fi
+  
+  # If none of the four files above are seen we will check for an options
+  # file in the etc folder.
+  if [ $READ_ETC -eq 1 ]; then
+    SERVER_JVM_OPTIONS_QUOTED=$TEMP_SAVED_OPTIONS
+    mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
+  fi
+  
+  # If we are running on Java 9, apply Liberty's built-in java 9 options
+  if [ -f "${JAVA_HOME}/lib/modules" ]; then
+    mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+  fi
+  
+  return $rc
+}
+
+
+mergeJVMOptions()
+{
+    jvmOptions=$1
+     
+    if [ -f "$jvmOptions" ]; then
+      READ_ETC=0
+      saveIFS=$IFS
+      IFS=$newline
+      
+      for option in `readNativeFile "$jvmOptions" '[#-]' | tr -d '\r'`; do
+        if [ -n "$option" ]; then
+          case $option in
+          \#*);;
+          *)
+            escapeForEval "${option}"
+            SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '${option}'"
+            ;;
+          esac
+        fi
+      done
+      IFS=$saveIFS
+    fi
+   
+}
+
+##
+## readServerEnv: Read server.env file and export environment variables.
+readServerEnv()
+{
+  if [ -f "$1" ]; then
+    saveIFS=$IFS
+    IFS=$newline
+    for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
+      case $line in
+      \#*);;
+      *=*)
+        # Only accept alphanumeric variable names to avoid eval complexities.
+        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then 
+           case $var in
+	   *=*)
+               SERVER_ENV_SETUP_FAILURE="${var} ${SERVER_ENV_SETUP_FAILURE}" ;;
+           *)
+              extractValueAndEscapeForEval "${line}"
+              eval "${var}=${escapeForEvalResult}; export ${var}" ;;
+	   esac
+        fi
+      esac
+    done
+    IFS=$saveIFS
+  fi
+}
+
+##
+## Detects the code page of the file and converts to EBCDIC,
+## if necessary, before cat'ing.
+##
+## Only applicable if running in a native EBCDIC environment (z/OS).
+##
+## $1 the file name
+## $2 pattern denoting the expected first char of file
+readNativeFile() {
+  if ${nativeEBCDIC}; then
+    # ASCII 'm' overlaps with EBCDIC '_', so strip it out before detecting the codepage.
+    # Note: cat used here to handle ASCII-tagged files.
+    filecontents=`cat "$1" | iconv -f ISO8859-1 -t IBM-1047 | tr -d 'm\r\n'`
+    case $filecontents in
+      $2*) iconv -f ISO8859-1 -t IBM-1047 "$1" ;;  # ASCII file.
+      *) cat "$1"                # EBCDIC file or ASCII-tagged file.
+    esac
+  else
+    cat "$1"
+  fi
+}
+
+##
+## serverWorkingDirectory: Change the working directory to ${SERVER_OUTPUT_DIR}
+serverWorkingDirectory()
+{
+  # Change the working directory to ${SERVER_OUTPUT_DIR}.
+  mkdirs "${SERVER_OUTPUT_DIR}"
+  cd "${SERVER_OUTPUT_DIR}"
+}
+
+## set the umask value to remove all permissions for the Other category
+## but leave existing values for User and Group unaltered
+##
+## If the WLP_SKIP_UMASK variable is set then do not set umask
+serverUmask()
+{
+  if [ -z "${WLP_SKIP_UMASK}" ]; then
+    $UMASK_O
+  fi
+}
+
+##
+## javaCmd: Execute a java-based command.  Arguments are:
+##
+##   backgroundLogFile
+##     Non-empty path for output log if the process should be created in the
+##     background; empty otherwise.  Directory must exist.
+##
+##   "$@"
+##     All remaining arguments to be passed to the command
+##
+## The following variables must be set:
+##   ${JAVA_CMD} - the java command
+##   ${JAVA_DEBUG} - JVM options to enable debug, or empty
+##   ${JAVA_AGENT_QUOTED} - The -javaagent argument quoted for eval
+##   ${JVM_OPTIONS_QUOTED} - jvm.options quoted for eval
+##   ${WLP_INSTALL_DIR_QUOTED} - ${WLP_INSTALL_DIR} quoted for eval
+javaCmd()
+{
+  JAVA_CMD_LOG=$1
+  shift
+
+  # Set all the parameters for the java command.  We use eval so that each line
+  # in jvm.options is treated as a distinct argument.
+  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar "'"$@"'
+  ARGS="$@"
+
+  # Do not add extra logic after the commands without preserving $?
+  if [ -n "${JAVA_CMD_LOG}" ]; then
+    rmIfExist "${JAVA_CMD_LOG}"
+    "${JAVA_CMD}" "$@" >> "${JAVA_CMD_LOG}" 2>&1 &
+  elif [ $ACTION = "run" ] || [ $ACTION = "debug" ] ; then
+    exec "${JAVA_CMD}" "$@"
+  else
+    "${JAVA_CMD}" "$@"
+  fi
+}
+
+##
+## Issue a translated warning message. The java command will use the same options as javaCmd, 
+## but will ignore debug settings and will not exit after running the command when 'run'
+## or 'debug' is used
+##
+##     "$@"
+##       All arguments passed to the java command
+##
+issueMessage()
+{
+  # Set all the parameters for the java command.  We use eval so that each line
+  # in jvm.options is treated as a distinct argument.
+  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar "'"$@"'
+  ARGS="$@"
+
+  "${JAVA_CMD}" "$@"
+}
+
+
+
+##
+## serverCmdOS400: Launch a server process using the OS400 native launcher.
+##
+##   backgroundLogFile
+##     Non-empty path for output log if the process should be created in the
+##     background; empty otherwise.  Directory must exist.
+##
+##   "$@"
+##     All remaining arguments to be passed to the command
+##
+## The following variables must be set:
+##   ${JAVA_CMD} - the java command
+##   ${JAVA_DEBUG} - JVM options to enable debug, or empty
+##   ${JAVA_AGENT_QUOTED} - The -javaagent argument quoted for eval
+##   ${JVM_OPTIONS_QUOTED} - jvm.options quoted for eval
+##   ${WLP_INSTALL_DIR_QUOTED} - ${WLP_INSTALL_DIR} quoted for eval
+serverCmdOS400()
+{
+  SERVER_CMD_OS400_BACKGROUND_LOG=$1
+  shift
+
+  eval "set -- -jvmargs ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar "'"$@"'
+
+  export JAVA_HOME
+
+  if [ -n "${SERVER_CMD_OS400_BACKGROUND_LOG}" ]
+  then
+    "/QSYS.LIB/${WAS_PRODUCT_LIB}.LIB/QWLPSTRSVR.PGM" \
+      -pgm "${WAS_PRODUCT_LIB}/QWLPSTRSVR" \
+      -server "${SERVER_NAME}" \
+      -sharedlib "${WAS_SHARED_LIB}" \
+      -pidfile "${X_PID_FILE}" \
+      -background \
+      -logdir  "${X_LOG_DIR}"  \
+      -serveroutputdir "${SERVER_OUTPUT_DIR}" \
+      -serverlog "${SERVER_CMD_OS400_BACKGROUND_LOG}" \
+      "$@"
+  else
+    "/QSYS.LIB/${WAS_PRODUCT_LIB}.LIB/QWLPSTRSVR.PGM" \
+      -logdir  "${X_LOG_DIR}"  \
+      -serveroutputdir "${SERVER_OUTPUT_DIR}" \
+      "$@"
+  fi      
+}
+
+##
+## serverCmd: Launch a server process.
+##
+##   backgroundLogFile
+##     Non-empty path for output log if the process should be created in the
+##     background; empty otherwise.  Directory must exist.
+##
+## PID will be set if the process is launched in the background and the return
+## code is 0.
+##
+serverCmd()
+{
+
+   ## If one or more variables in server.env contains non-alphanumeric characters 
+   ## SERVER_ENV_SETUP_FAILURE will contain the invalid entries. We have to
+   ## temporarily set ACTION to 'start' so that the process will not exit after
+   ## the error message when ACTION is 'run' or 'debug'
+   if [ -n "${SERVER_ENV_SETUP_FAILURE}" ];
+   then
+	for i in ${SERVER_ENV_SETUP_FAILURE}; do
+            issueMessage --message:warning.variable.invalid "$i"
+	done
+   fi
+  
+  SERVER_CMD_BACKGROUND_LOG=$1
+  shift
+
+  ## On OS400, we need to create the defaultServer first from this script
+  ## to get all the permissions correct. If we allow the server start
+  ## to inline the server create from the java process, we won't get
+  ## the correct permissions
+  if $os400lib && [ ! -d "${SERVER_CONFIG_DIR}" ] && [ "defaultServer" = "${SERVER_NAME}" ]
+  then
+    # Create the server or exit the script
+    createServer || exit $?
+  fi
+
+  SAVE_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
+  JVM_OPTIONS_QUOTED=${SERVER_JVM_OPTIONS_QUOTED}
+  SAVE_IBM_JAVA_OPTIONS=${IBM_JAVA_OPTIONS}
+  IBM_JAVA_OPTIONS=${SERVER_IBM_JAVA_OPTIONS}
+
+  if $os400lib; then
+    serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
+    rc=$?
+
+    JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+    IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+
+    if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
+      PID=`cat "${X_PID_FILE}"`
+
+      # Verify/wait for the process to start
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
+      rc=$?
+    fi
+    
+  elif [ "${uname}" = OS/390 ] && [ -n "${WLP_ZOS_PROCEDURE}" ]; then 
+    # Start the STC procedure
+    "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" "${WLP_ZOS_PROCEDURE}" "${SERVER_NAME}" "${X_PID_FILE}" "$@"
+    rc=$?
+
+    JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+    IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+    
+    if [ $rc = 0 ]; then
+      # Verify/wait for the process to start
+      PID=`cat "${X_PID_FILE}"`
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
+      rc=$?
+    
+    elif [ $rc = 1 ]; then
+      #PID file not created
+      javaCmd '' --message:error.zosProcStart.create.pidfile "${SERVER_NAME}" "${WLP_ZOS_PROCEDURE}"
+      rc=$?
+      if [ $rc = 0 ]; then
+         rc=22
+      fi
+    
+    elif [ $rc = 2 ]; then
+      #Command has exceeded the max allowable length for MGCRE
+      javaCmd '' --message:error.zosProcStart.start.length "${WLP_ZOS_PROCEDURE}"
+      rc=$?
+      if [ $rc = 0 ]; then
+         rc=22
+      fi
+    
+    else
+      #Problem issuing MGCRE
+      javaCmd '' --message:error.zosProcStart.mvs.start "${WLP_ZOS_PROCEDURE}" "$rc"
+      rc=$?
+      if [ $rc = 0 ]; then
+         rc=22
+      fi
+    fi
+  
+  else
+    X_CMD="${JAVA_CMD} ${ARGS}"
+    export X_CMD
+
+    javaCmd "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
+    rc=$?
+      
+    PID=$!
+
+    JVM_OPTIONS_QUOTED=${SAVE_JVM_OPTIONS_QUOTED}
+    IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
+
+    if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
+      # Verify/wait for the process to start
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
+      rc=$?
+
+      # write the pid file if return is OK or UNKNOWN
+      if [ $rc = 0 -o $rc = $SERVER_UNKNOWN_STATUS ]; then
+        safeEcho "${PID}" > "${X_PID_FILE}"
+      fi
+    fi
+    
+  fi
+
+  return $rc
+}
+
+JAVA_DEBUG=
+JVM_OPTIONS_QUOTED=
+INVOKED="$0"
+export INVOKED
+
+case "$ACTION" in
+
+  # Start the server in the foreground
+  run | debug)
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
+
+    if checkServer true
+    then
+      if [ "${ACTION}" = "debug" ]
+      then
+        if [ -z "${WLP_DEBUG_ADDRESS}" ]
+        then
+          WLP_DEBUG_ADDRESS=7777
+        fi
+        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${WLP_DEBUG_ADDRESS}"
+      fi
+
+      serverWorkingDirectory
+
+      # WLP_JAR_CYGWIN is used only in support of java -jar startup of a Liberty server.
+      # When WLP_JAR_CYGWIN=true (or synonym) is specied, the PID of the launching 
+      # process (i.e. parent of server process) is determined and stored in the PID file
+      # for use by the java -jar shutdown hook to ensure termination of the launching 
+      # process. This is necessary because the launching process does not terminate on
+      # its own under cygwin and if left behind holds file locks that prevent cleanup
+      # of the java -jar extraction directory. 
+      if [ "$WLP_JAR_CYGWIN" = "true" -o "$WLP_JAR_CYGWIN" = "1" -o "$WLP_JAR_CYGWIN" = "TRUE" -o "$WLP_JAR_CYGWIN" = "True" ]
+      then 
+	      serverCmd '' "$@" &
+	      PID=$!
+	      mkdirs "${X_PID_DIR}"
+	      # find parent PID and store it 
+	      SPID=`ps -ef | while read l; do grep $PID | awk -v PID=$PID '{ if ( $3 == PID ) print $2 }'; done`
+	      safeEcho "${SPID}" > "${X_PID_FILE}"
+	      wait "${PID}" # wait because this 
+	      rc=$?
+      else
+	      serverCmd '' "$@"
+	      rc=$?
+      fi
+      exit $rc
+    else
+      exit 2
+    fi
+  ;;
+   
+  # Start the server in the background
+  start)    
+    if serverEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
+
+    if checkServer true
+    then
+      # We can't start the server in the background if it is already running.
+      serverStatus false --status:starting
+      rc=$?
+      case $rc in
+      "0" )
+        rc=1
+        ;;
+      "1" )
+        serverWorkingDirectory
+
+        mkdirs "${X_LOG_DIR}"
+        if [ -f "${X_LOG_DIR}/${X_LOG_FILE}" ] && [ ! -w "${X_LOG_DIR}/${X_LOG_FILE}" ]
+        then
+          javaCmd '' --message:error.fileNotFound "${X_LOG_DIR}/${X_LOG_FILE}"
+          rc=$?
+          if [ $rc = 0 ]; then
+            rc=22
+          fi
+          exit $rc
+        fi
+
+        mkdirs "${X_PID_DIR}"
+        rmIfExist "${X_PID_FILE}"
+
+        mkdirs "${SERVER_OUTPUT_DIR}/workarea"
+        touchIfNotExist "${SERVER_OUTPUT_DIR}/workarea/.sLock"
+        rmIfExist "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
+
+        # Start the target server with the provided arguments
+        serverCmd "${X_LOG_DIR}/${X_LOG_FILE}" "$@"
+        rc=$?
+        if [ $rc = 1 ]; then
+          # The launcher failed (due to bad JVM arguments, for example).
+          # Translate to a better error code.
+          rc=22
+        fi
+        ;;
+      esac
+      exit $rc
+    else
+      exit 2
+    fi    
+  ;;
+
+  create)
+    installEnv
+    createServer "$@"
+    exit $rc
+  ;;
+  
+  # Stop the server. 
+  stop)
+    serverEnv
+    if checkServer true
+    then
+      PID=
+      if [ -f "${X_PID_FILE}" ]; then
+        PID=`cat "${X_PID_FILE}"`
+      fi
+
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --stop "$@"
+      rc=$?
+
+      case "$rc" in
+        "0" )
+          rm -f "${X_PID_FILE}"
+          ;;
+
+        "1" )
+          rmIfExist "${X_PID_FILE}" "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
+          ;;
+      esac
+      exit $rc
+    else
+      exit 2
+    fi
+  ;;
+  
+  # Check if server is running
+  status)
+    serverEnv
+    if checkServer true
+    then
+      serverPIDStatus
+      mkdirs "${X_LOG_DIR}"
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status
+      rc=$?
+
+      if [ $rc = 1 ]; then
+        rmIfExist "${X_PID_FILE}" "${SERVER_OUTPUT_DIR}/workarea/.sCommand"
+      fi
+      exit $rc
+    else
+      exit 2
+    fi
+  ;;
+
+  status:fast)
+    serverEnv
+    if checkServer false
+    then
+      serverStatus true --status
+      exit $?
+    else
+      exit 2
+    fi
+  ;;
+
+  # Package up the runtime and target server configuration
+  package)
+    serverEnv
+    # Check to see if the server exists
+    if checkServer true
+    then
+      serverPIDStatus
+      javaCmd '' "${SERVER_NAME}" --pid="${PID}" --package "$@" 
+      exit $?
+    else
+      exit 2
+    fi    
+  ;;
+  
+
+  # dump the server's configs/logs/status to a zip file
+  dump)
+    serverEnv
+    # Check to see if the server exists
+    if checkServer true
+    then
+      javaCmd '' "${SERVER_NAME}" --dump "$@" 
+      exit $?
+    else
+      exit 2
+    fi    
+  ;;
+
+  # dump JVM status
+  javadump)
+    serverEnv
+    if checkServer true
+    then
+      javaCmd '' "${SERVER_NAME}" --javadump "$@"
+      exit $?
+    else
+      exit 2
+    fi
+  ;;
+  
+  # pause the server
+  pause)
+    serverEnv
+    # Check to see if the server exists
+    if checkServer true
+    then
+      javaCmd '' "${SERVER_NAME}" --pause "$@" 
+      exit $?
+    else
+      exit 2
+    fi    
+  ;;
+
+  # resume the server
+  resume)
+    serverEnv
+    # Check to see if the server exists
+    if checkServer true
+    then
+      javaCmd '' "${SERVER_NAME}" --resume "$@" 
+      exit $?
+    else
+      exit 2
+    fi    
+  ;;
+  
+  version)
+    installEnv
+    javaCmd '' --version
+  ;;  
+  
+  list)
+    installEnv
+    javaCmd '' --list
+  ;;  
+  
+  help)
+    installEnv
+    javaCmd '' --help
+  ;;  
+
+  help:usage)
+    installEnv
+    javaCmd '' --help:usage
+  ;;
+  
+  *)
+    installEnv
+    javaCmd '' --help:actions:${ACTION}
+  ;;
+esac
+
+exit 0

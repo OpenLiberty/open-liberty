@@ -1,0 +1,165 @@
+<xsd:schema
+        targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified"
+        attributeFormDefault="unqualified"
+        version="1.0">
+
+        <!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+				Licensed Materials - Property of IBM
+
+				"Restricted Materials of IBM"
+
+				Copyright IBM Corp. 2010 All Rights Reserved.
+
+				US Government Users Restricted Rights - Use, duplication or
+				disclosure restricted by GSA ADP Schedule Contract with
+				IBM Corp.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+        <xsd:include schemaLocation="ibm-common-ext_1_0.xsd" />
+        <xsd:include schemaLocation="ibm-common-ext-pme_1_0.xsd" />
+
+        <!-- ******************************************************* -->
+
+        <xsd:element name="web-ext-pme" type="web-ext-pmeType">
+                <xsd:annotation>
+                        <xsd:documentation>
+
+                                The root of the ibm-web-ext-pme deployment descriptor.
+
+                        </xsd:documentation>
+                </xsd:annotation>
+        </xsd:element>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="web-ext-pmeType">
+                <xsd:sequence>
+                        <xsd:element name="app-profiles" type="app-profileType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="internationalization" type="internationalizationType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="activity-sessions" type="activity-sessionType" minOccurs="0" maxOccurs="1"/>
+                        <xsd:element name="compensation" type="compensationType" minOccurs="0" maxOccurs="1"/>
+                </xsd:sequence>
+                <xsd:attribute name="version" type="xsd:string" fixed="1.0" use="required" />
+                <xsd:attribute name="id" type="xsd:ID"/>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="app-profileType">
+                <xsd:sequence>
+                        <xsd:element name="servlet-component-extension" type="servlet-component-extensionType" minOccurs="0" maxOccurs="unbounded"/>
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:ID"/>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="servlet-component-extensionType">
+                <xsd:complexContent>
+                        <xsd:extension base="component-extensionType">
+                                <!-- In the model, the servlet name is mapped to the appropriate servlet extension -->
+                                <xsd:attribute name="servlet" type="xsd:string" use="required"/>
+                        </xsd:extension>
+                </xsd:complexContent>
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="internationalizationType">
+                <xsd:sequence>
+
+                        <xsd:element name="application" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                        <xsd:sequence>
+                                                <xsd:element name="servlet" type="nameType" minOccurs="0" maxOccurs="unbounded" />
+                                        </xsd:sequence>
+                                        <xsd:attribute name="id" type="xsd:ID" />
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:choice  minOccurs="0" maxOccurs="unbounded">
+                                <xsd:element name="run-as-caller">
+                                        <xsd:complexType>
+                                                <xsd:sequence>
+                                                        <xsd:element name="servlet" type="nameType" minOccurs="0" maxOccurs="unbounded" />
+                                                </xsd:sequence>
+                                                <xsd:attribute name="id" type="xsd:ID" />
+                                        </xsd:complexType>
+                                </xsd:element>
+
+                                <xsd:element name="run-as-server" minOccurs="0" maxOccurs="unbounded">
+                                        <xsd:complexType>
+                                                <xsd:sequence>
+                                                        <xsd:element name="servlet" type="nameType" minOccurs="0" maxOccurs="unbounded" />
+                                                </xsd:sequence>
+                                                <xsd:attribute name="id" type="xsd:ID" />
+                                        </xsd:complexType>
+                                </xsd:element>
+
+                                <xsd:element name="run-as-specified" minOccurs="0" maxOccurs="unbounded">
+                                        <xsd:complexType>
+                                                <xsd:complexContent>
+                                                        <xsd:extension base="i18n-run-as-specifiedType">
+                                                                <xsd:sequence>
+                                                                        <xsd:element name="servlet" type="nameType" minOccurs="0" maxOccurs="unbounded" />
+                                                                </xsd:sequence>
+                                                        </xsd:extension>
+                                                </xsd:complexContent>
+                                        </xsd:complexType>
+                                </xsd:element>
+                        </xsd:choice>
+
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="activity-sessionType">
+                <xsd:sequence>
+                        <xsd:element name="servlet" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                        <xsd:attribute name="name" type="xsd:string" use="required"/>
+
+                                        <xsd:attribute name="type" use="required">
+                                                <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="APPLICATION"/>
+                                                                <xsd:enumeration value="CONTAINER"/>
+                                                                <xsd:enumeration value="NONE"/>
+                                                        </xsd:restriction>
+                                                </xsd:simpleType>
+                                        </xsd:attribute>
+
+                                        <xsd:attribute name="id" type="xsd:ID" />
+                                </xsd:complexType>
+                        </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="compensationType">
+                <xsd:sequence>
+                        <xsd:element name="servlet" minOccurs="0" maxOccurs="unbounded">
+                                <xsd:complexType>
+                                        <xsd:attribute name="name" type="xsd:string" use="required"/>
+                                        <xsd:attribute name="type" type="compensation-attributeType" use="required" />
+                                        <xsd:attribute name="id" type="xsd:ID" />
+                                </xsd:complexType>
+                        </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+</xsd:schema>

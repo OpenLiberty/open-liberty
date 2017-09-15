@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Embedded transactions
+Bundle-SymbolicName: com.ibm.ws.tx.embeddable
+Bundle-Description: Embeddable transaction support, version ${bVersion}
+
+# all packages have packageinfo files (package-info.java with @version javadoc)
+DynamicImport-Package: *
+Export-Package: \
+ com.ibm.tx.jta.embeddable,\
+ com.ibm.tx.jta.embeddable.config,\
+ com.ibm.tx.jta.embeddable.impl,\
+ com.ibm.tx.ltc.embeddable.impl,\
+ com.ibm.websphere.uow,\
+ com.ibm.ws.tx.embeddable,\
+ com.ibm.tx.remote,\
+ com.ibm.ws.tx.jta.embeddable,\
+ com.ibm.ws.tx.rrs, \
+ com.ibm.ws.tx.util.logging, \
+ com.ibm.ws.uow.embeddable,\
+ com.ibm.ws.uow.embeddable.jndi,\
+ com.ibm.wsspi.uow
+
+WS-TraceGroup: Transaction
+
+Service-Component: \
+  TMService; \
+    implementation:=com.ibm.tx.jta.embeddable.impl.EmbeddableTMHelper; \
+    provide:='com.ibm.tx.util.TMService,com.ibm.ws.uow.UOWScopeCallbackAgent'; \
+    configurationProvider//shutdown=com.ibm.tx.config.ConfigurationProvider
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.tx.util;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.recoverylog;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.ws.container.service;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

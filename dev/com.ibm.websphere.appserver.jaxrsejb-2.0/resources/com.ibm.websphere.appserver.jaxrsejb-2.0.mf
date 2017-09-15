@@ -1,0 +1,21 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-App-ForceRestart: uninstall,
+ install
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-Install-Policy: when-satisfied
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jaxrs-2.0))",
+ osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ejbLiteCore-1.0))"
+Subsystem-Content: com.ibm.ws.jaxrs.2.0.ejb; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.jaxrsejb-2.0
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.jaxrsejb-2.0; visibility:=private; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

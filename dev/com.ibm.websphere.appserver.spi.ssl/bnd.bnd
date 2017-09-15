@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.2
+
+Bundle-Name: WebSphere SSL SPI
+Bundle-Description: WebSphere SSL SPI, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.spi.ssl
+
+Import-Package: com.ibm.wsspi.ssl
+
+Export-Package: com.ibm.wsspi.ssl
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.ssl/pom.xml=com.ibm.websphere.appserver.spi.ssl.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.ssl

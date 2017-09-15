@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- Activation Spec -->
+
+ <Designate factoryPid="com.ibm.ws.jca.activationSpec">
+  <Object ocdref="com.ibm.ws.jca.activationSpec" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.activationSpec" ibm:alias="activationSpec" ibm:extends="com.ibm.ws.jca.activationSpec.supertype" ibm:supportExtensions="true" ibm:any="1" name="%activationSpec" description="%activationSpec.desc" ibm:action="generateSchema">
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.activationSpec.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Activation Spec Properties -->
+
+ <Designate factoryPid="com.ibm.ws.jca.activationSpec.properties">
+  <Object ocdref="com.ibm.ws.jca.activationSpec.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.activationSpec.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Admin Object -->
+
+ <Designate factoryPid="com.ibm.ws.jca.adminObject">
+  <Object ocdref="com.ibm.ws.jca.adminObject" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.adminObject" ibm:alias="adminObject" ibm:extends="com.ibm.ws.jca.adminObject.supertype" ibm:supportExtensions="true" ibm:any="1" name="%adminObject" description="%adminObject.desc" ibm:action="generateSchema">
+  <AD id="creates.objectClass"                type="String"  required="false" ibm:copyOf="properties.0.creates.objectClass" cardinality="1000" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.adminObject.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Admin Object Properties -->
+
+ <Designate factoryPid="com.ibm.ws.jca.adminObject.properties">
+  <Object ocdref="com.ibm.ws.jca.adminObject.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.adminObject.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Connection Factory -->
+
+ <Designate factoryPid="com.ibm.ws.jca.connectionFactory">
+  <Object ocdref="com.ibm.ws.jca.connectionFactory" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.connectionFactory" ibm:alias="connectionFactory" ibm:extends="com.ibm.ws.jca.connectionFactory.supertype" ibm:supportExtensions="true" ibm:any="1" name="%connectionFactory" description="%connectionFactory.desc" ibm:action="generateSchema">
+  <AD id="creates.objectClass"                type="String"  required="false" ibm:copyOf="properties.0.creates.objectClass" cardinality="1000" name="internal" description="internal use only"/>
+  <AD id="properties"                      type="String"  required="false" cardinality="1" ibm:type="pid" ibm:reference="com.ibm.ws.jca.connectionFactory.properties" ibm:flat="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Connection Factory Properties -->
+
+ <Designate factoryPid="com.ibm.ws.jca.connectionFactory.properties">
+  <Object ocdref="com.ibm.ws.jca.connectionFactory.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.connectionFactory.properties" name="internal" description="internal use only" ibm:supportExtensions="true" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Customization of generated config elements (supertype) -->
+ 
+ <Designate factoryPid="com.ibm.ws.jca.customize">
+  <Object ocdref="com.ibm.ws.jca.customize"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.customize" ibm:supportExtensions="true" name="internal" description="internal use only">
+  <AD id="implementation"                     type="String"  required="false" name="%impl" description="%impl.desc"/>
+  <AD id="interface"                          type="String"  required="false" name="%interface" description="%interface.desc"/>
+  <AD id="suffix"                             type="String"  required="false" name="%suffix" description="%suffix.desc"/>
+ </OCD>
+
+ <!-- Customization of generated config elements for resource adapters embedded in apps -->
+
+ <Designate factoryPid="com.ibm.ws.jca.embeddedResourceAdapter.customize">
+  <Object ocdref="com.ibm.ws.jca.embeddedResourceAdapter.customize"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.embeddedResourceAdapter.customize" ibm:childAlias="customize" ibm:extends="com.ibm.ws.jca.customize" ibm:parentPid="com.ibm.ws.jca.embeddedResourceAdapter" name="%customize" description="%customize.desc">
+  <AD id=".internal"                          type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Customization of generated config elements for standalone resource adapters -->
+
+ <Designate factoryPid="com.ibm.ws.jca.resourceAdapter.customize">
+  <Object ocdref="com.ibm.ws.jca.resourceAdapter.customize"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.resourceAdapter.customize" ibm:childAlias="customize" ibm:extends="com.ibm.ws.jca.customize" ibm:parentPid="com.ibm.ws.jca.resourceAdapter" name="%customize" description="%customize.desc">
+  <AD id=".internal"                          type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Embedded (in an app) Resource Adapter -->
+ <Designate factoryPid="com.ibm.ws.jca.embeddedResourceAdapter">
+  <Object ocdref="com.ibm.ws.jca.embeddedResourceAdapter" />
+ </Designate>
+ <OCD id="com.ibm.ws.jca.embeddedResourceAdapter" ibm:childAlias="resourceAdapter" ibm:any="1" ibm:parentPid="com.ibm.ws.app.manager" ibm:supportHiddenExtensions="true" name="%resourceAdapter" description="%resourceAdapter.embedded.desc" ibm:action="generateSchema">
+  <AD id="alias"                              type="String"  default="${id}" name="%alias" description="%alias.desc"/>
+  <AD id="autoStart"                          type="Boolean" required="false" name="%autoStart" description="%autoStart.desc"/>
+  <AD id="contextServiceRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.context.service" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
+  <AD id="customize"                          type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.jca.customize" ibm:flat="true" cardinality="2147483647" name="internal" description="internal use only"/>
+  <AD id="id"                                 type="String"  required="true" name="%moduleName" description="%moduleName.desc"/>
+  <AD id="maxWaitForResources"                type="String"  default="20s" ibm:type="duration(ms)" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Resource Adapter -->
+
+ <Designate factoryPid="com.ibm.ws.jca.resourceAdapter">
+  <Object ocdref="com.ibm.ws.jca.resourceAdapter" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.resourceAdapter" ibm:alias="resourceAdapter" ibm:any="1" ibm:extends="com.ibm.ws.jca.resourceAdapter.supertype" ibm:supportHiddenExtensions="true" name="%resourceAdapter" description="%resourceAdapter.desc" ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, com.ibm.ws.javaee.dd.appbnd, suppressUncoveredHttpMethodWarning" ibm:action="generateSchema">
+  <AD id="location" name="%location" description="%location.desc" type="String" required="true" ibm:type="location"/>
+  <AD id="autoStart"                          type="Boolean" required="false" name="%autoStart" description="%autoStart.desc"/>
+  <AD id="contextServiceRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.context.service" cardinality="1" name="internal" description="internal use only"/>
+  <AD id="customize"                          type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.jca.customize" ibm:flat="true" cardinality="2147483647" name="internal" description="internal use only"/>
+  <AD id="maxWaitForResources"                type="String"  default="20s" ibm:type="duration(ms)" name="internal" description="internal use only"/>
+ </OCD>
+
+</metatype:MetaData>

@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: The {2} element is missing the required {3} attribute in the {0} deployment descriptor on line {1}.
+required.attribute.missing.explanation=A required attribute is missing from the specified element.
+required.attribute.missing.useraction=Correct the deployment descriptor by adding the missing attribute.
+
+invalid.root.element=CWWKC2252E: Invalid root local name {2} in the {0} deployment descriptor on line {1}.
+invalid.root.element.explanation=The root element is incorrect.
+invalid.root.element.useraction=Validate the xml file to make sure the root element is correct.
+
+root.element.not.found=CWWKC2253E: Unable to locate the root element of the {0} deployment descriptor on line {1}.
+root.element.not.found.explanation=The root element was missing from the deployment descriptor.
+root.element.not.found.useraction=Correct the deployment descriptor.
+
+end.element.not.found=CWWKC2254E: The end element tag of the {2} element was not found in the {0} deployment descriptor on line {1}.
+end.element.not.found.explanation=The deployment descriptor doesn't appear to be proper xml.
+end.element.not.found.useraction=Correct the deployment descriptor.
+
+incorrect.id.attr.namespace=CWWKC2255E: The namespace of the id attribute of element {2} was {3} when it should have been {4} in the {0} deployment descriptor on line {1}.
+incorrect.id.attr.namespace.explanation=The namespace of the elements and attributes in the deployment descriptor were not consistent.
+incorrect.id.attr.namespace.useraction=Correct the deployment descriptor.
+
+unexpected.attribute=CWWKC2256E: Unexpected attribute {3} encountered parsing element {2} in the {0} deployment descriptor on line {1}.
+unexpected.attribute.explanation=An attribute not defined to be in the deployment descriptor was encountered.
+unexpected.attribute.useraction=Correct the deployment descriptor.
+
+unexpected.content=CWWKC2257E: Unexpected content encountered in element {2} in the {0} deployment descriptor on line {1}.
+unexpected.content.explanation=Text content not defined to be in the deployment descriptor was encountered.
+unexpected.content.useraction=Correct the deployment descriptor.
+
+incorrect.child.element.namespace=CWWKC2258E: The namespace of child element {3} of parent element {2} was {4} not {5} in the {0} deployment descriptor on line {1}.
+incorrect.child.element.namespace.explanation=The namespace of the elements and attributes in the deployment descriptor were not consistent.
+incorrect.child.element.namespace.useraction=Correct the deployment descriptor.
+
+unexpected.child.element=CWWKC2259E: Unexpected child element {3} of parent element {2} encountered in the {0} deployment descriptor on line {1}.
+unexpected.child.element.explanation=An element not defined to be in the deployment descriptor was encountered.
+unexpected.child.element.useraction=Correct the deployment descriptor.
+
+invalid.href.prefix=CWWKC2260E: The href attribute value of the {2} element does not start with {3} in the {0} deployment descriptor on line {1}.
+invalid.href.prefix.explanation=An href attribute must start with the correct path to the descriptor being referenced.
+invalid.href.prefix.useraction=Correct the deployment descriptor.
+
+unknown.deployment.descriptor.version=CWWKC2261E: An error occurred while trying to determine the version of the {0} deployment descriptor.
+unknown.deployment.descriptor.version.explanation=The version or the namespace were invalid or not specified in the root element of the deployment descriptor.
+unknown.deployment.descriptor.version.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: The server is unable to process the {3} version and the {2} namespace in the {0} deployment descriptor on line {1}.
+invalid.deployment.descriptor.namespace.explanation=Either the specified version and namespace are not valid, or the server configuration does not have a feature that can process the version and namespace.
+invalid.deployment.descriptor.namespace.useraction=Verify and correct the version or namespace in the root element of the deployment descriptor, or verify and correct the features in the server configuration.
+
+invalid.deployment.descriptor.version=CWWKC2263E: The version {2} attribute specified in the {0} deployment descriptor on line {1} is not valid.
+invalid.deployment.descriptor.version.explanation=An invalid version was specified in the root element of the deployment descriptor.
+invalid.deployment.descriptor.version.useraction=Verify and correct the version number in the root element of the deployment descriptor.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: An error occurred while trying to determine the namespace of the {0} deployment descriptor on line {1}.
+missing.deployment.descriptor.namespace.explanation=An invalid namespace was specified in the root element of the deployment descriptor.
+missing.deployment.descriptor.namespace.useraction=Verify and correct the namespace in the root element of the deployment descriptor.
+
+missing.deployment.descriptor.version=CWWKC2265E: An error occurred while trying to determine the version of the {0} deployment descriptor on line {1}.
+missing.deployment.descriptor.version.explanation=The version was not specified in the root element of the deployment descriptor.
+missing.deployment.descriptor.version.useraction=Verify and correct the version in the root element of the deployment descriptor.
+
+at.most.one.occurrence=CWWKC2266E: There should be at most one {3} child element of the {2} parent element in the {0} deployment descriptor on line {1}.
+at.most.one.occurrence.explanation=Some elements in the deployment descriptor are only permitted to appear once if present.
+at.most.one.occurrence.useraction=Correct the deployment descriptor.
+
+required.method.element.missing=CWWKC2267E: The {2} element must have a least one {3} child element defined in the {0} deployment descriptor on line {1}.
+required.method.element.missing.explanation=A required child element is missing from the specified parent element. 
+required.method.element.missing.useraction=Correct the deployment descriptor by adding the required child element.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: When a mode attribute of the <run-as-mode> element is set to SPECIFIED_IDENTITY in the {0} deployment descriptor on line {1}, the <specified-identity> child element must be defined.
+runasmode.missing.specifiedID.element.explanation=The <specified-identity> child element is missing for the <run-as-mode> element which has the mode set to SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Correct the deployment descriptor by adding the required child element or change the mode.
+
+found.duplicate.ejbname=CWWKC2269E: The name attribute for all <session> and <message-driven> bean elements must be unique. Found duplicate name {1} in the {0} deployment descriptor.
+found.duplicate.ejbname.explanation=All session and message-driven bean names must be unique.  The specified bean name is used more than once.
+found.duplicate.ejbname.useraction=Correct the deployment descriptor by renaming any duplicate enterprise bean names.
+
+found.duplicate.attribute.value=CWWKC2270E: The {2} attribute for all {1} elements must be unique. Found duplicate name {3} in the {0} deployment descriptor.
+found.duplicate.attribute.value.explanation=The value of the specified attribute must be unique across all elements of the same type. 
+found.duplicate.attribute.value.useraction=Correct the deployment descriptor by renaming any duplicate attribute values.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A validation.xml file was found for the {0} module. However, that validation.xml file is not configured for validation; therefore this XML file is ignored.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=The BeanValidationService cannot create a ValidatorFactory because of an error parsing the validation.xml file with the validation-configuration-1.0.xsd schema file. This error may indicate that the validation.xml file is not intended for use by the Bean Validation run-time; therefore, this XML file is ignored.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=If the validation.xml file is not for creating a ValidatorFactory instance, then ignore the message. However if the validation.xml file is intended to create a ValidatorFactory instance, then a problem exists.  Enable Bean Validation run-time trace in the application server, stop the application, restart the application, and examine the trace output file for a trace event such as: Unexpected exception when trying to unmarshall the validation.xml file. Examine the exception stack trace for debugging assistance.
+
+xml.error=CWWKC2272E: An error occurred while parsing the {0} deployment descriptor on line {1}. The error message was: {2}
+xml.error.explanation=An error occurred while parsing the XML deployment descriptor. Refer to the error message for further explanation.
+xml.error.useraction=Correct the deployment descriptor to remove the error.
+
+invalid.enum.value=CWWKC2273E: The {2} value in the {0} deployment descriptor on line {1} is not valid. The valid values are: {3}
+invalid.enum.value.explanation=The deployment descriptor specifies a value that is not valid.
+invalid.enum.value.useraction=Correct the deployment descriptor to use one of the expected values.
+
+invalid.int.value=CWWKC2274E: The {2} value in the {0} deployment descriptor on line {1} is not a valid integer number.
+invalid.int.value.explanation=The deployment descriptor specifies a value that is not a number in the range -2147483648 to 2147483647.
+invalid.int.value.useraction=Correct the deployment descriptor to use a valid integer number.
+
+invalid.long.value=CWWKC2275E: The {2} value in the {0} deployment descriptor on line {1} is not a valid long number.
+invalid.long.value.explanation=The deployment descriptor specifies a value that is not a number in the range -9223372036854775808 to 9223372036854775807.
+invalid.long.value.useraction=Correct the deployment descriptor to use a valid long number.
+
+module.name.not.specified=CWWKC2276E: The {0} element must specify a module name attribute.
+module.name.not.specified.explanation=The binding and extension configuration for EJB and web modules must contain a moduleName attribute that specifies the module to which the configuration applies. 
+module.name.not.specified.useraction=Add a moduleName attribute to the web-bnd, web-ext, ejb-bnd, or ejb-ext element. 
+
+module.name.invalid=CWWKC2277E: One or more module names on the {1} element are invalid. The invalid module name or names are {0}.
+module.name.invalid.explanation=The binding and extension configuration for web modules must specify a valid moduleName attribute. At least one configuration has specified an invalid module name. The module name must be the name of the archive file that contains the web or EJB application.
+module.name.invalid.useraction=Correct the moduleName attribute in the binding or extension configuration. 

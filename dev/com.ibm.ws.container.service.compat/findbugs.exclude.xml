@@ -1,0 +1,673 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+
+  <Match>
+    <Class name="com.ibm.ejs.util.ByteArray"/>
+    <Method name="getBytes" signature="()[B"/>
+    <Field name="data"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.ByteArray"/>
+    <Method name="&lt;init&gt;" signature="([B)V"/>
+    <Field name="data"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Method name="dump" signature="(Ljava/lang/Object;ZLjava/lang/String;)Ljava/lang/String;"/>
+    <Local name="inherited"/>
+    <Bug pattern="IL_INFINITE_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Field name="noParameters"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Method name="Assert" signature="(Z)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Method name="Exception" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Method name="Warning" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Method name="identity" signature="(Ljava/lang/Object;)Ljava/lang/String;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Method name="Warning" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util"/>
+    <Method name="println" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util$Executor"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.util.Util$Fatal"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.jtc.adapter.DefaultPlatformAdapter"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.jtc.adapter.DefaultPlatformAdapter$StartPrivilegedThread"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.jtc.adapter.PlatformAdapterAccessor"/>
+    <Method name="getInstance"/>
+    <Bug pattern="DC_DOUBLECHECK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.jtc.adapter.PlatformAdapterAccessor"/>
+    <Method name="getInstance" signature="()Lcom/ibm/jtc/adapter/IPlatformAdapter;"/>
+    <Bug pattern="TR_SPACES_IN_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.exception.WsRuntimeFwExceptionUtil"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_WRONG_CLASS_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.metadata.MetaDataSlotImpl$Key"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime"/>
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_cs"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_de"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_es"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_fr"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_hu"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_it"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_ja"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_ko"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_pl"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_pt_BR"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_ro"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_ru"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_zh"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.runtime.runtime_zh_TW"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ArrayEnumeration"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/Object;)V"/>
+    <Field name="_array"/>
+    <Local name="array"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.BoundedBuffer"/>
+    <Field name="buffer"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.BoundedBuffer"/>
+    <Field name="putIndex"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.BoundedBuffer"/>
+    <Method name="getQueueIndex" signature="([Ljava/lang/Object;Ljava/util/concurrent/atomic/AtomicInteger;Z)I"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.BoundedBuffer$GetQueueLock"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseNode"/>
+    <Method name="print" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseNode"/>
+    <Method name="getTarget" signature="(Ljava/lang/String;)Ljava/lang/Object;"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Local name="t"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="print" signature="()V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ANONYMOUS_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="add" signature="(Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="get" signature="(I)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="get" signature="(Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="remove" signature="(Ljava/lang/Object;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ClauseTable"/>
+    <Method name="print" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.FileSystem"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ReflectionThreadContextAccessorImpl"/>
+    <Method name="getContextClassLoader" signature="(Ljava/lang/Thread;)Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ReflectionThreadContextAccessorImpl"/>
+    <Method name="setContextClassLoader" signature="(Ljava/lang/Thread;Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ReflectionThreadContextAccessorImpl"/>
+    <Method name="getContextClassLoaderForUnprivileged" signature="(Ljava/lang/Thread;)Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ReflectionThreadContextAccessorImpl"/>
+    <Method name="pushContextClassLoaderForUnprivileged" signature="(Ljava/lang/ClassLoader;)Ljava/lang/Object;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ReflectionThreadContextAccessorImpl"/>
+    <Method name="setContextClassLoaderForUnprivileged" signature="(Ljava/lang/Thread;Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ThreadContextAccessorImpl"/>
+    <Method name="getContextClassLoader" signature="(Ljava/lang/Thread;)Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ThreadContextAccessorImpl"/>
+    <Method name="pushContextClassLoader" signature="(Ljava/lang/ClassLoader;)Ljava/lang/Object;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ThreadContextAccessorImpl"/>
+    <Method name="setContextClassLoader" signature="(Ljava/lang/Thread;Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadContextAccessor$ThreadContextAccessorImpl"/>
+    <Method name="setContextClassLoaderForUnprivileged" signature="(Ljava/lang/Thread;Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Method name="addThread" signature="(Ljava/lang/Runnable;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Method name="addThread" signature="(Ljava/lang/Runnable;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Method name="interruptAll" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="activeThreads"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="growasneeded"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="maximumPoolSize_"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="minimumPoolSize_"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="poolSize_"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="requestBuffer"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="requestBufferExpansionLimit_"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="requestBufferInitialCapacity_"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Field name="shutdown_"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Method name="addThread" signature="(Ljava/lang/Runnable;)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Method name="executeOnDaemon" signature="(Ljava/lang/Runnable;)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool$Worker"/>
+    <Field name="threadNumber"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool$WorkerThread"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.UUID"/>
+    <Method name="getIPAddress"/>
+    <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.util.UUID"/>
+    <Method name="getPID"/>
+    <Bug pattern="DMI_RANDOM_USED_ONLY_ONCE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.util.UUID"/>
+    <Method name="getIPAddress"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.util.UUID"/>
+    <Method name="clone"/>
+    <Bug pattern="CN_IDIOM_NO_SUPER_CALL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.UUID"/>
+    <Method name="toByteArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  
+ <Match>
+    <Class name="com.ibm.ws.util.UUID"/>
+    <Bug pattern="SWL_SLEEP_WITH_LOCK_HELD"/>
+  </Match>
+  
+ <Match>
+    <Class name="com.ibm.ws.util.VirtualHostMapper"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.util.WSUtil"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.util.URIMatcher"/>
+    <Method name="put" signature="(Ljava/lang/String;Ljava/lang/Object;)V"/>
+    <Local name="currentNode"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.jtc.adapter.DefaultPlatformAdapter"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_BAD_RESOURCE_BUNDLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.jtc.adapter.PlatformAdapterAccessor"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_BAD_RESOURCE_BUNDLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.io.WSByteArrayOutputStream"/>
+    <Field name="head"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.io.WSByteArrayOutputStream"/>
+    <Field name="isClosed"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_BAD_RESOURCE_BUNDLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.Base64"/>
+    <Method name="decode" signature="(Ljava/lang/String;II)[B"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.Base64"/>
+    <Method name="encode" signature="([BII)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.Base64"/>
+    <Method name="encode" signature="([BIILjava/io/OutputStream;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.Base64"/>
+    <Method name="encode" signature="([BIILjava/io/Writer;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.Base64"/>
+    <Method name="decode" signature="([CII)[B"/>
+    <Bug pattern="TR_MISSING_ENTRY_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.Buffer"/>
+    <Method name="getBuffer" signature="()[B"/>
+    <Field name="buf"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.Buffer"/>
+    <Field name="SIZE"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.CharBuffer"/>
+    <Method name="getValue" signature="()[C"/>
+    <Field name="value"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.ThreadPool"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_BAD_RESOURCE_BUNDLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.util.WSThreadLocal"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_BAD_RESOURCE_BUNDLE"/>
+  </Match>
+
+  <!--  Existing calls to System.currentTimeMillis -->
+  <Match>
+    <Class name="com.ibm.ws.util.BoundedBuffer"/>
+    <Method name="~(offer|poll|put)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="~com\.ibm\.ws\.util\.ThreadPool.*"/>
+    <Method name="~(awaitTerminationAfterShutdown|checkAllThreads|(disable|enable)HungThreadDetection)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <!--  Remaining call to System.currentTimeMillis in UUID - this last one is hard to remove -->
+  <Match>
+    <Class name="com.ibm.ws.util.UUID"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <!-- Although findbugs is right (at time of writing this), I'm relucant to delete the field
+       just yet... -->
+  <Match>
+    <Class name="com.ibm.ejs.util.dopriv.SetContextClassLoaderPrivileged"/>
+    <Field name="wasChanged"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+</FindBugsFilter>

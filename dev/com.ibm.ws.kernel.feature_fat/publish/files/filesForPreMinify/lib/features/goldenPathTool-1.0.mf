@@ -1,0 +1,16 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: goldenPathTool-1.0
+Subsystem-SymbolicName: test.icons.goldenPathTool-1.0; visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Description: This is the description text for a feature where the file specified in the the icon header has a good path
+Subsystem-Vendor: IBM
+Subsystem-Icon: OSGI-INF/toolicon.png
+Subsystem-Content: test.icons.goldenPathTool-1.0; version="[1,1.0.100)"
+IBM-Screenshots: 
+IBM-Feature-Version: 2
+IBM-AppliesTo: com.ibm.websphere.appserver; productVersion=2014.2.0.0; productInstallType=Archive; productEdition="DEVELOPERS,ND,zOS,NOSHIP"
+Subsystem-License: http://www.ibm.com/licenses/L-JTHS-9A6KF2
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-License-Information: wlp/lafiles/LI
+IBM-InstallTo: core

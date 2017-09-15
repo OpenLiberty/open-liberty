@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2014 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+ <!-- Activation Spec -->
+
+ <Designate factoryPid="com.ibm.ws.jca.activationSpec.supertype">
+  <Object ocdref="com.ibm.ws.jca.activationSpec.supertype" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.activationSpec.supertype" ibm:supportExtensions="true" ibm:any="1" name="internal" description="internal use only">
+  <AD id="authDataRef"                        type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config" cardinality="1" name="%authData" description="%authData.desc"/>
+  <AD id="authData.target"                    type="String"  default="(service.pid=${authDataRef})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="authData.cardinality.minimum"       type="String"  default="${count(authDataRef)}" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="bootstrapContext.target"            type="String"  default="(id=${properties.0.resourceAdapterConfig.id})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="destination.target"                 type="String"  default="(service.pid=${properties.0.destinationRef})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="maxEndpoints"                       type="Integer" required="false" name="%maxEndpoints" description="%maxEndpoints.desc" min="0" default="500"/>
+ </OCD>
+
+ <!-- Admin Object -->
+
+ <Designate factoryPid="com.ibm.ws.jca.adminObject.supertype">
+  <Object ocdref="com.ibm.ws.jca.adminObject.supertype" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.adminObject.supertype" ibm:supportExtensions="true" ibm:any="1" name="internal" description="internal use only">
+  <AD id="bootstrapContext.target"            type="String"  default="(id=${properties.0.resourceAdapterConfig.id})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="jndiName"                           type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+ </OCD>
+
+ <!-- Connection Factory -->
+
+ <Designate factoryPid="com.ibm.ws.jca.connectionFactory.supertype">
+  <Object ocdref="com.ibm.ws.jca.connectionFactory.supertype" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.connectionFactory.supertype" ibm:supportExtensions="true" ibm:any="1" name="internal" description="internal use only" ibm:objectClass="com.ibm.wsspi.resource.ResourceFactory">
+  <AD id="bootstrapContext.target"               type="String"  default="(id=${properties.0.resourceAdapterConfig.id})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="connectionManagerRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.jca.connectionManager" cardinality="1" name="%conMgrRef" description="%conMgrRef.desc"/>
+  <AD id="connectionManager.target"              type="String"  default="(service.pid=${connectionManagerRef})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="connectionManager.cardinality.minimum" type="String"  default="${count(connectionManagerRef)}" ibm:final="true" name="internal" description="internal use only"/>  
+  <AD id="containerAuthDataRef"                  type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config" cardinality="1" name="%cntrAuth" description="%cntrAuth.desc"/>
+  <AD id="containerAuthData.target"              type="String"  default="(service.pid=${containerAuthDataRef})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="containerAuthData.cardinality.minimum" type="String"  default="${count(containerAuthDataRef)}" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
+  <AD id="recoveryAuthDataRef"                   type="String"  required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.jca.internal.authdata.config" cardinality="1" name="%recoveryAuth" description="%recoveryAuth.desc"/>
+  <AD id="recoveryAuthData.target"               type="String"  default="(service.pid=${recoveryAuthDataRef})" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="recoveryAuthData.cardinality.minimum"  type="String"  default="${count(recoveryAuthDataRef)}" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="sslConfig.target"                      type="String"  default="(id=${properties.0.sslSocketFactory})" ibm:final="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Resource Adapter in a Bundle -->
+
+ <Designate factoryPid="com.ibm.ws.jca.bundleResourceAdapter">
+ 
+  <Object ocdref="com.ibm.ws.jca.bundleResourceAdapter" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.bundleResourceAdapter" ibm:alias="bundleResourceAdapter" ibm:supportExtensions="true" name="internal" description="internal use only">
+  <AD id="location"                           type="String"  name="internal" description="internal use only" />
+  <AD id="resourceAdapterBundleService.target" type="String"  default="(type=${id})" ibm:final="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Resource Adapter supertype -->
+
+ <Designate factoryPid="com.ibm.ws.jca.resourceAdapter.supertype">
+  <Object ocdref="com.ibm.ws.jca.resourceAdapter.supertype" />
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.resourceAdapter.supertype" ibm:extends="com.ibm.ws.app.manager" 
+	 ibm:supportHiddenExtensions="true" name="internal" 
+	 description="internal use only" 
+	 ibm:excludeChildren="com.ibm.ws.jca.embeddedResourceAdapter, 	 	
+	 	com.ibm.ws.javaee.dd.appbnd.ApplicationBnd,
+	 	com.ibm.ws.javaee.dd.appext.ApplicationExt,
+	 	com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd,
+	 	com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd,
+	 	suppressUncoveredHttpMethodWarning, 
+	 	com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd, 
+	 	com.ibm.ws.javaee.dd.ejbbnd.EJBJarBnd, 
+	 	com.ibm.ws.javaee.dd.ejbext.EJBJarExt,
+	 	com.ibm.ws.javaee.dd.webbnd.WebBnd,
+	 	com.ibm.ws.javaee.dd.webext.WebExt">
+  <AD id="type" name="internal" description="internal use only" default="rar" type="String" ibm:final="true" />
+  <AD id="context-root" name="internal" description="internal use only" type="String" ibm:final="true" default="/"/>
+  <AD id="name"                               type="String"  required="false" ibm:copyOf="id" ibm:final="true" name="internal" description="internal use only"/>
+ </OCD>
+
+ <!-- Resource Adapter Properties (generic supertype) -->
+
+ <Designate factoryPid="com.ibm.ws.jca.resourceAdapter.properties">
+  <Object ocdref="com.ibm.ws.jca.resourceAdapter.properties"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.jca.resourceAdapter.properties" ibm:supportExtensions="true" name="internal" description="internal use only">
+  <AD id="config.parentPID"                   type="String"  required="false" name="internal" description="internal use only"/>
+ </OCD>
+
+</metatype:MetaData>

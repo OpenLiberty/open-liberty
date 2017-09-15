@@ -1,0 +1,49 @@
+-include= ~../cnf/resources/bnd/rejar.props, \
+          ~../cnf/resources/bnd/app-resources.bnd
+bVersion=1.0
+bSymbolicName=com.ibm.ws.org.apache.bval.1.1.0
+
+Bundle-Name: Apache Bean Validation
+Bundle-SymbolicName: com.ibm.ws.org.apache.bval.1.1.0
+Bundle-Description: Apache Bean Validation 1.1; version=1.1.0
+
+# Provide these as resources to applications
+app-resources= \
+  META-INF/services/javax.validation.spi.ValidationProvider | \
+  META-INF/validation-mapping-1.0.xsd | \
+  META-INF/validation-configuration-1.0.xsd | \
+  META-INF/validation-mapping-1.1.xsd | \
+  META-INF/validation-configuration-1.1.xsd
+
+Export-Package: \
+  org.apache.bval.*;version=1.1;thread-context=true
+
+# org.apache.bval.xml is for Legacy Agimatec XML support and is optional to use the xstream
+# module from apache bval. We don't use it so we optionally resolve it.
+Import-Package: \
+  !javax.persistence, \
+  org.apache.bval.xml;resolution:=optional, \
+  !javax.xml.bind.*, \
+  *
+
+# Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
+# those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
+# bundle will be always used due to JAXB 2.2 API is not resolved. Similarly, do the same
+# with persistence because the open source optionally uses jpa if it is there for a customized
+# TraversableRevolver implementation.
+DynamicImport-Package: \
+ javax.persistence, \
+ javax.xml.bind, \
+ javax.xml.bind.annotation, \
+ javax.xml.bind.annotation.adapters, \
+ javax.xml.bind.attachment, \
+ javax.xml.bind.helpers, \
+ javax.xml.bind.util
+ 
+Include-Resource: \
+  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/LICENSE, \
+  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/LICENSE.txt, \
+  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/org.apache.bval.revision.properties, \
+  @${repo;com.ibm.ws.org.apache.bval:org.apache.bval.bundle;1.1.2}!/META-INF/*.xsd, \
+  META-INF/services=resources/META-INF/services
+

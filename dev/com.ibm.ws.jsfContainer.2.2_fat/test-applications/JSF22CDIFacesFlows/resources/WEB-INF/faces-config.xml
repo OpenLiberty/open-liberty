@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<faces-config version="2.2"
+              xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+      <!-- A flow definition for the simpleFacesConfig flow.
+          We have a start node and two views explicitly defined, as well as two return nodes. -->
+      <flow-definition id="simpleFacesConfig">
+        <start-node>simpleFacesConfig</start-node>
+        <view id="simpleFacesConfig">
+          <vdl-document>/simpleFacesConfig/simpleFacesConfig.xhtml</vdl-document>
+        </view>
+        <view id="simpleFacesConfig2">
+          <vdl-document>/simpleFacesConfig/simpleFacesConfig2.xhtml</vdl-document>
+        </view>
+        <flow-return id="goIndexFacesConfig">
+            <from-outcome>/JSF22Flows_index</from-outcome>
+        </flow-return>
+        <flow-return id="goReturnFacesConfig">
+            <from-outcome>/JSF22Flows_return</from-outcome>
+        </flow-return>
+      </flow-definition>
+</faces-config>

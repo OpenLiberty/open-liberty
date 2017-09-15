@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  localization="OSGI-INF/l10n/metatype">
+
+<!-- Delete this comment: 
+     For each component in your configuration (in the bnd file): 
+     * If config is required, add configuration-policy:=require
+     * If config is not required, add configuration-policy:=ignore
+     * If config may or may not be used, use configuration-policy:=optional
+     
+     If no components in the bundle use config (all are ignore), delete the metatype.xml file
+     entirely.
+      -->
+
+    <OCD name="%example" description="%example.desc" id="build.example.project">
+        <AD name="%config.alias" id="config.alias" description="%config.alias.desc" required="false" type="String" default="example" />
+        
+        <AD name="%someProperty" description="%someProperty.desc"
+            id="someProperty" required="false" type="String" default="String value" />
+    </OCD>
+
+    <Designate pid="build.example.project">
+        <Object ocdref="build.example.project" />
+    </Designate>
+  
+</metatype:MetaData>

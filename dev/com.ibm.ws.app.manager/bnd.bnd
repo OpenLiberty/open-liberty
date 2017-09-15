@@ -1,0 +1,57 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+bVersion=1.1
+
+Bundle-Name: WebSphere Application Manager
+Bundle-SymbolicName: com.ibm.ws.app.manager
+Bundle-Description: WebSphere Application Manager, version ${bVersion}
+
+Private-Package: com.ibm.ws.app.manager.internal*
+
+-dsannotations: com.ibm.ws.app.manager.internal.monitor.ApplicationMonitor,\
+ com.ibm.ws.app.manager.internal.monitor.DropinMonitor,\
+ com.ibm.ws.app.manager.internal.monitor.AppMonitorConfigurator,\
+ com.ibm.ws.app.manager.internal.ApplicationConfigurator,\
+ com.ibm.ws.app.manager.ApplicationManager
+
+Include-Resource: OSGI-INF/metatype=resources/OSGI-INF/metatype,OSGI-INF=resources/OSGI-INF
+Export-Package: com.ibm.websphere.application,\
+ com.ibm.wsspi.application,\
+ com.ibm.wsspi.application.handler,\
+ com.ibm.ws.app.manager
+
+instrument.classesExcludes: com/ibm/ws/app/manager/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.threading,\
+	com.ibm.ws.runtime.update,\
+	com.ibm.ws.kernel.filemonitor,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.classloading;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file

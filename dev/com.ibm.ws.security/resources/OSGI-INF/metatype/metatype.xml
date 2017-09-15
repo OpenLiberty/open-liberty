@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.service" name="internal" description="%security.service.desc"
+         ibm:alias="security">
+        <AD id="systemDomain" name="%systemDomain" description="%systemDomain.desc"
+            required="true" type="String" />
+        <AD id="defaultAppDomain" name="%defaultAppDomain" description="%defaultAppDomain.desc"
+            required="false" type="String" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.service">
+        <Object ocdref="com.ibm.ws.security.service" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.security.config" name="internal" description="%security.config.desc"
+         ibm:alias="securityConfiguration">
+        <AD id="authenticationRef" name="%authenticationRef" description="%authenticationRef.desc"
+            required="true" type="String" />
+        <AD id="authorizationRef" name="%authorizationRef" description="%authorizationRef.desc"
+            required="true" type="String" />
+        <AD id="userRegistryRef" name="%userRegistryRef" description="%userRegistryRef.desc"
+            required="true" type="String" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.config">
+        <Object ocdref="com.ibm.ws.security.config" />
+    </Designate>
+    
+</metatype:MetaData>

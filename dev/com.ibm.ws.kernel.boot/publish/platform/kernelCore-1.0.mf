@@ -1,0 +1,64 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.kernelCore-1.0; visibility:=private
+Subsystem-Version: 1.0.0
+Subsystem-Content: org.eclipse.osgi; version="[3.10,3.12)"; type="boot.jar",
+ com.ibm.ws.cds.3.0.1; version="[1.0.0,1.0.100)"; type="boot.jar",
+ com.ibm.ws.kernel.equinox.module; version="[1.0.0,1.0.100)"; type="boot.jar",
+ com.ibm.ws.org.objectweb.asm; version="[1,1.0.100)"; start-phase:="BOOTSTRAP",
+ com.ibm.ws.kernel.service; version="[1.3,1.3.100)"; start-phase:="BOOTSTRAP",
+ com.ibm.ws.kernel.service.location; version="[1.1,1.1.100)"; start-phase:="BOOTSTRAP",
+ com.ibm.ws.org.eclipse.equinox.metatype; version="[1.0,1.0.100)"; start-phase:="BOOTSTRAP",
+ com.ibm.ws.org.eclipse.equinox.coordinator; version="[1.0,1.0.100)"; start-phase:="KERNEL_CONFIG",
+ com.ibm.ws.org.eclipse.equinox.region; version="[1.0,1.0.100)",
+ com.ibm.ws.config; version="[1,1.0.100)"; start-phase:="KERNEL_CONFIG",
+ com.ibm.ws.config.ext; version="[1,1.0.100)"; start-phase:="KERNEL_CONFIG",
+ com.ibm.ws.kernel.metatype.helper; version="[1,1.0.100)"; start-phase:="KERNEL_CONFIG",
+ com.ibm.ws.org.apache.felix.scr; version="[1.0,1.0.100)"; start-phase:="KERNEL_CONFIG",
+ com.ibm.ws.crypto.passwordutil; version="[1,1.0.100)"; start-phase:="KERNEL_CONFIG",
+ com.ibm.ws.event; version="[1,1.0.100)"; start-phase:="KERNEL",
+ com.ibm.ws.threading; version="[1,2.0.100)"; start-phase:="KERNEL",
+ com.ibm.ws.runtime.update; version="[1,1.0.100)"; start-phase:="KERNEL",
+ com.ibm.ws.kernel.filemonitor; version="[1,1.0.100)"; start-phase:="KERNEL",
+ com.ibm.ws.diagnostics; version="[1,1.0.100)"; start-phase:="KERNEL",
+ com.ibm.ws.org.apache.aries.util; version="[1,1.0.100)"; start-phase:="KERNEL",
+ com.ibm.ws.jmx; version="[1.0,1.0.100)"; start-phase:="KERNEL_LATE",
+ com.ibm.ws.org.apache.aries.jmx.core.whiteboard; version="[1.0,1.0.100)"; start-phase:="KERNEL_LATE",
+ com.ibm.ws.org.apache.aries.jmx.api; version="[1.0,1.0.100)"; start-phase:="KERNEL_LATE",
+ com.ibm.ws.kernel.feature; version="[1,1.0.100)"; start-phase:="FEATURE_PREPARE"
+WebSphere-SystemBundleProvider: true
+IBM-API-Package: com.ibm.websphere.config.mbeans; type="ibm-api",
+ com.ibm.websphere.logging; type="ibm-api",
+ com.ibm.websphere.logging.hpel; type="ibm-api"
+IBM-SPI-Package: com.ibm.websphere.crypto,
+ com.ibm.wsspi.config,
+ com.ibm.wsspi.kernel.filemonitor,
+ com.ibm.wsspi.kernel.service.location,
+ com.ibm.wsspi.kernel.service.utils,
+ com.ibm.wsspi.security.crypto,
+ com.ibm.wsspi.threading,
+ org.osgi.service.cm; type="spec",
+ org.osgi.service.component; type="spec",
+ org.osgi.service.coordinator; type="spec",
+ org.osgi.service.event; type="spec",
+ org.osgi.service.log; type="spec",
+ org.osgi.service.metatype; type="spec",
+ org.eclipse.osgi.framework.console; type="third-party",
+ org.eclipse.osgi.framework.eventmgr; type="third-party",
+ org.eclipse.osgi.framework.log; type="third-party",
+ org.eclipse.osgi.service.datalocation; type="third-party",
+ org.eclipse.osgi.service.debug; type="third-party",
+ org.eclipse.osgi.service.environment; type="third-party",
+ org.eclipse.osgi.service.localization; type="third-party",
+ org.eclipse.osgi.service.resolver; type="third-party",
+ org.eclipse.osgi.service.runnable; type="third-party",
+ org.eclipse.osgi.service.security; type="third-party",
+ org.eclipse.osgi.service.urlconversion; type="third-party",
+ org.eclipse.osgi.signedcontent; type="third-party",
+ org.eclipse.osgi.storagemanager; type="third-party",
+ org.eclipse.osgi.util; type="third-party",
+ org.eclipse.equinox.log; type="third-party"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+Subsystem-Name: Liberty Kernel
+Subsystem-Description: %description
+Subsystem-Localization: OSGI-INF/l10n/subsystem

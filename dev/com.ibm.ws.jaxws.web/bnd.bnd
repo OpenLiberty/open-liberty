@@ -1,0 +1,87 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+Bundle-Name: JAX-WS Web
+Bundle-SymbolicName: com.ibm.ws.jaxws.web
+Bundle-Description: IBM JAX-WS Web support; version=${bVersion}
+
+-dsannotations: com.ibm.ws.jaxws.web.WebXMLEndpointInfoConfigurator
+
+Service-Component: \
+  com.ibm.ws.jaxws.web.class.list.collaborator; \
+     implementation:=com.ibm.ws.jaxws.web.JaxWsInjectionClassListCollaborator ; \
+     provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
+     immediate:=true; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.web.jaxws.module.info.builder; \
+     implementation:=com.ibm.ws.jaxws.web.WebJaxWsModuleInfoBuilder; \
+     provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder'; \
+     endpointInfoBuilder=com.ibm.ws.jaxws.metadata.builder.EndpointInfoBuilder; \
+     jaxWsModuleInfoBuilderExtension=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension*; \
+     dynamic:='endpointInfoBuilder'; \
+     optional:='endpointInfoBuilder'; \
+     configuration-policy:=optional; \
+     activate:=activate; \
+     deactivate:=deactivate; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.web.jaxwsServletEndpointConfigurator; \
+     implementation:=com.ibm.ws.jaxws.web.JaxWsServletEndpointConfigurator; \
+     provide:='com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfigurator'; \
+     properties:="service.vendor=IBM", \
+
+Export-Package: \
+    com.ibm.ws.jaxws.web
+
+Import-Package: \
+   com.ibm.wsspi.adaptable.module.adapters, \
+   com.ibm.wsspi.webcontainer.collaborator, \
+   com.ibm.ws.container.service.metadata, \
+   javax.xml.bind.*;version="[2.2,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
+   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   *
+
+Private-Package:\
+   com.ibm.ws.jaxws.web.*
+
+instrument.classesExcludes: com/ibm/ws/jaxws/web/internal/resources/*.class
+
+-buildpath.bootclasspath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
+	${javac.bootclasspath.${javac.source}}
+
+-buildpath: \
+    org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.webcontainer;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

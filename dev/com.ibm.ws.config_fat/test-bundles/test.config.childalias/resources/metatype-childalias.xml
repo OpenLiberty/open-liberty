@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0">
+
+	<!-- Parent 1, has child test.config.childalias.child.1 that uses childAlias -->
+
+	<OCD name="test.config.childalias.parent.1" id="test.config.childalias.parent.1"
+		ibm:supportExtensions="true" ibm:alias="testCAParent1">
+		<AD id="testAttribute1" type="String" description="test attribute 1" />
+	</OCD>
+
+	<Designate factoryPid="test.config.childalias.parent.1">
+		<Object ocdref="test.config.childalias.parent.1" />
+	</Designate>
+
+
+	<!-- Child 1, uses childAlias of testCAChild (same as test.config.childalias.child.2) -->
+	<OCD name="test.config.childalias.child.1" id="test.config.childalias.child.1"
+		ibm:parentPid="test.config.childalias.parent.1" ibm:childAlias="testCAChild">
+		<AD id="testAttribute1" name="Attribute 1" description="Attribute 1"
+			type="String" default="Attribute 1" />
+		<AD id="defaultAttribute" name="Default Attribute" description="Default Attribute"
+			type="String" default="defaultValue"/>
+	</OCD>
+
+	<Designate factoryPid="test.config.childalias.child.1">
+		<Object ocdref="test.config.childalias.child.1" />
+	</Designate>
+	
+<!-- 	Parent 2, has child test.config.childalias.child.2 that uses ibm:childAlias -->
+
+	<OCD name="test.config.childalias.parent.2" id="test.config.childalias.parent.2"
+		ibm:supportExtensions="true" ibm:alias="testCAParent2">
+		<AD id="testAttribute1" type="String" description="test attribute 1" />
+	</OCD>
+
+	<Designate factoryPid="test.config.childalias.parent.2">
+		<Object ocdref="test.config.childalias.parent.2" />
+	</Designate>
+	
+	<!-- Child 2, uses childAlias of testCAChild (same as test.config.childalias.child.1)-->
+	<OCD name="test.config.childalias.child.2" id="test.config.childalias.child.2"
+		ibm:parentPid="test.config.childalias.parent.2" ibm:childAlias="testCAChild">
+		<AD id="color" name="Color" description="Defaults to blue"
+			type="String" default="blue" />
+		<AD id="shape" name="Shape" description="Defaults to square"
+			type="String" default="square"/>
+	</OCD>
+
+	<Designate factoryPid="test.config.childalias.child.2">
+		<Object ocdref="test.config.childalias.child.2" />
+	</Designate>
+	
+
+	
+	
+	
+	
+	<!-- Parent 3, singleton that has child test.config.childalias.child.3 that uses childAlias -->
+
+	<OCD name="test.config.childalias.parent.3" id="test.config.childalias.parent.3"
+		ibm:supportExtensions="true" ibm:alias="testCAParent3">
+		<AD id="testAttribute3" type="String" description="test attribute 1" />
+	</OCD>
+
+	<Designate pid="test.config.childalias.parent.3">
+		<Object ocdref="test.config.childalias.parent.3" />
+	</Designate>
+
+
+	<!-- Child 3, uses childAlias of testCAChild  -->
+	<OCD name="test.config.childalias.child.3" id="test.config.childalias.child.3"
+		ibm:parentPid="test.config.childalias.parent.3" ibm:childAlias="testCAChild">
+		<AD id="testAttribute3" name="Attribute 3" description="Attribute 3"
+			type="String" default="Attribute 3" />
+		<AD id="defaultAttribute" name="Default Attribute" description="Default Attribute"
+			type="String" default="coconut"/>
+	</OCD>
+
+	<Designate pid="test.config.childalias.child.3">
+		<Object ocdref="test.config.childalias.child.3" />
+	</Designate>
+	
+<!-- 	Parent 4, singleton that has child test.config.childalias.child.4 that uses ibm:childAlias -->
+
+	<OCD name="test.config.childalias.parent.4" id="test.config.childalias.parent.4"
+		ibm:supportExtensions="true" ibm:alias="testCAParent4">
+		<AD id="testAttribute1" type="String" description="test attribute 1" />
+	</OCD>
+
+	<Designate pid="test.config.childalias.parent.4">
+		<Object ocdref="test.config.childalias.parent.4" />
+	</Designate>
+	
+	<!-- Child 4, singleton, uses childAlias of testCAChild -->
+	<OCD name="test.config.childalias.child.4" id="test.config.childalias.child.4"
+		ibm:parentPid="test.config.childalias.parent.4" ibm:childAlias="testCAChild">
+		<AD id="country" name="Country" description="Defaults to mexico"
+			type="String" default="mexico" />
+		<AD id="state" name="State" description="Defaults to washington"
+			type="String" default="washington"/>
+	</OCD>
+
+	<Designate pid="test.config.childalias.child.4">
+		<Object ocdref="test.config.childalias.child.4" />
+	</Designate>
+	
+		
+<!-- Top level element that uses an alias of testCAChild -->
+	<OCD name="test.config.childalias.toplevel" id="test.config.childalias.toplevel"
+	ibm:alias="testCAChild">
+		<AD id="location" type="String" default="topLevel" description="defaults to topLevel" name="topLevel"/>
+	</OCD>
+	
+	<Designate factoryPid="test.config.childalias.toplevel">
+		<Object ocdref="test.config.childalias.toplevel"/>
+	</Designate>
+	
+	
+	<OCD name="com.ibm.ws.canvas" id="com.ibm.ws.canvas" ibm:alias="canvas">
+		<AD required="false" id="item" type="String" name="item" description="item" ibm:type="pid" ibm:reference="com.ibm.ws.shape"/>
+		<AD required="false" id="item2" type="String" name="item2" description="item2" ibm:type="pid" ibm:reference="com.ibm.ws.shape"/>
+	</OCD>
+	
+	<OCD name="com.ibm.ws.shape" id="com.ibm.ws.shape" ibm:alias="shape">
+		<AD id="shapeProperty" type="String" description="shape" name="shapeProperty"/>
+	</OCD>
+	
+	<OCD name="com.ibm.ws.circle" id="com.ibm.ws.circle" ibm:alias="circle" ibm:extends="com.ibm.ws.shape">
+		<AD id="circleProp" type="String" description="circle prop" name="circleProp"/>
+	</OCD>
+	
+	<OCD name="com.ibm.ws.square" id="com.ibm.ws.square" ibm:alias="square" ibm:extends="com.ibm.ws.shape">
+		<AD id="squareProp" type="String" description="square prop" name="squareProp"/>
+	</OCD>
+	
+	<Designate factoryPid="com.ibm.ws.canvas">
+		<Object ocdref="com.ibm.ws.canvas"/>
+	</Designate>
+	
+	<Designate factoryPid="com.ibm.ws.shape">
+		<Object ocdref="com.ibm.ws.shape"/>
+	</Designate>
+	
+	<Designate factoryPid="com.ibm.ws.circle">
+		<Object ocdref="com.ibm.ws.circle"/>
+	</Designate>
+	
+	<Designate factoryPid="com.ibm.ws.square">
+		<Object ocdref="com.ibm.ws.square"/>
+	</Designate>
+</metatype:MetaData>

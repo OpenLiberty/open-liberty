@@ -1,0 +1,83 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.javaee.dd-api" default="buildApiSpi"> 
+  <!-- DO NOT CHANGE THE DEFAULT TASK FROM 'buildApiSpi'
+       Top level builds use this task explicity.  Changing the
+       default will create an incompatibility between a default
+       project build and a top level build. -->
+
+  <!-- Disable IBM-API processing. -->
+  <property name="noibmapi" value="true"/>
+
+  <!-- IBM-SPI required properties. -->
+  <property name="spibndfile" value="${basedir}/build/spi.bnd"/> 
+  <property name="spi.ibm.bundleName" value="WebSphere Bindings and Extensions SPI"/>
+  <property name="spi.ibm.symbolic.suffix" value="javaeedd"/>
+  <property name="spi.ibm.version" value="1.1"/>
+  <property name="feature.name" value="com.ibm.websphere.appserver.javaeedd-1.0"/>
+
+  <!-- Many cases (EJB, MBEAN) seem to be missing. -->
+
+  <property name="spi.ibm.packages.exceptions"
+            value="com.ibm.ws.javaee.dd.common,
+                   com.ibm.ws.javaee.dd.appbnd,
+                   com.ibm.ws.javaee.dd.permissions,
+                   com.ibm.ws.javaee.dd.web.common,
+                   com.ibm.ws.javaee.dd.commonbnd,
+                   com.ibm.ws.javaee.dd.commonext,
+                   com.ibm.ws.javaee.dd.jsp,
+                   com.ibm.ws.javaee.dd.web,
+                   com.ibm.ws.javaee.dd.webbnd,
+                   com.ibm.ws.javaee.dd.webext"/>
+
+  <!-- Taking only schemas for supported features: application, ejb, managed-bean, web. -->
+  <!-- Taking common, as it is used by reference by the supported features. -->
+  <!-- Taking all versions to enable backwards compatibility. --> 
+
+  <!-- Ignore PME schema.  Liberty has no use for these. -->
+  <!-- Ignore the Managed beans extensions schema.  This are not currently in use in either TWAS or Liberty. -->
+  <fileset id="api.ibm.schema.fileset" dir="resources/schemas">
+    <include name="ibm-application-bnd_1_0.xsd"/>
+    <include name="ibm-application-bnd_1_1.xsd"/>
+    <include name="ibm-application-bnd_1_2.xsd"/>
+    <include name="ibm-application-ext_1_0.xsd"/>
+    <include name="ibm-application-ext_1_1.xsd"/>
+    <!-- <include name="ibm-application-ext-pme_1_0.xsd"/> -->
+
+    <include name="ibm-ejb-jar-bnd_1_0.xsd"/>
+    <include name="ibm-ejb-jar-bnd_1_1.xsd"/>
+    <include name="ibm-ejb-jar-bnd_1_2.xsd"/>
+    <include name="ibm-ejb-jar-ext_1_0.xsd"/>
+    <include name="ibm-ejb-jar-ext_1_1.xsd"/>
+    <!-- <include name="ibm-ejb-jar-ext-pme_1_0.xsd"/> -->
+
+    <include name="ibm-managed-bean-bnd_1_0.xsd"/>
+    <include name="ibm-managed-bean-bnd_1_1.xsd"/>
+    <!-- <include name="ibm-managed-bean-ext_1_0.xsd"/> -->
+
+    <include name="ibm-web-bnd_1_0.xsd"/>
+    <include name="ibm-web-bnd_1_1.xsd"/>
+    <include name="ibm-web-bnd_1_2.xsd"/>
+    <include name="ibm-web-ext_1_0.xsd"/>
+    <include name="ibm-web-ext_1_1.xsd"/>
+    <!-- <include name="ibm-web-ext-pme_1_0.xsd"/> -->
+
+    <include name="ibm-common-bnd_1_0.xsd"/>
+    <include name="ibm-common-bnd_1_1.xsd"/>
+    <include name="ibm-common-bnd_1_2.xsd"/>
+    <include name="ibm-common-ext_1_0.xsd"/>
+    <include name="ibm-common-ext_1_1.xsd"/>
+    <!-- <include name="ibm-common-ext-pme_1_0.xsd"/> -->
+  </fileset>
+
+  <import file="../ant_build/public_imports/apibnd_imports.xml"/>
+
+</project>

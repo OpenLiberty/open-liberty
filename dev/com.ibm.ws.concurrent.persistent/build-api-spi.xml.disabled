@@ -1,0 +1,22 @@
+<project name="com.ibm.ws.concurrent.persistent-api" default="buildApiSpi"> 
+  <!-- DO NOT CHANGE THE DEFAULT TASK FROM 'buildApiSpi'
+       Top level builds use this task explicity.  Changing the
+       default will create an incompatibility between a default
+       project build and a top level build. -->
+    
+  <!-- IBM-API required properties. -->
+
+  <property name="bundleName" value="WebSphere Persistent Executor API"/>
+  <property name="api.ibm.symbolic.suffix" value="concurrent.persistent"/>
+	<property name="api.ibm.version" value="1.0"/> 
+  <property name="feature.file" value="${basedir}/publish/features/persistentExecutor-1.0.mf"/>
+                 
+  <import file="../ant_build/public_imports/apibnd_imports.xml"/>
+
+  <!--
+  Add to persistentExecutor.mf:
+Subsystem-Content: com.ibm.websphere.appserver.api.concurrent.persistent; version="[1,1.0.100)"; location:="dev/api/ibm/"; type="jar",
+ com.ibm.websphere.appserver.api.concurrent.persistent_1.0-javadoc.zip; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.concurrent.persistent_1.0-javadoc.zip"; type="file"  
+  -->
+</project>
+

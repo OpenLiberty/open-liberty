@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2008  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Liberty Threading Conceptual Design</title>
+</head>
+<body>
+
+<h1>Conceptual Design of Threading Package</h1>
+
+<p>
+There are basically three efforts that have influenced the Liberty
+threading package.  The overall concept is that the execution framework we
+deliver should be able to support a pipelined execution strategy, a fork/join
+programming model, and employ work-stealing within the scheduler.
+</p>
+
+<h2>Intel Threading Building Blocks</h2>
+
+<p>
+Intel TBB is a C++ template library that provides a set of concurrent
+containers, a task scheduler, and infrastructure to support the creation of
+scalable, parallel applications. 
+</p>
+<p>
+The scheduler implemented by TBB employs a work stealing model on top of
+a managed thread pool.  The thread pool is generally sized such that there
+is one thread per hardware thread and is expected to run largely compute-bound
+work.
+</p>
+<p>
+TBB has first class support for pipline execution models as well as a fork/join
+decomposition model.  TBB also provides direct access to the scheduler to
+implement custom policies.
+</p>
+<p>
+For more information see the
+<a href="http://www.threadingbuildingblocks.org/" class="externalURL">Intel Threading Building Blocks</a>
+web site.
+</p>
+
+<h2>Staged Event Driven Architecture</h2>
+
+<p>
+<a href="http://www.eecs.harvard.edu/~mdw/proj/seda/" class="externalURL">
+The Staged Event Driven Architecture</a> (SEDA) describes a server
+architecture where the flow of work through a system as a pipeline of
+<em>work stages</em> connected by queues.  Each stage hosts an event handler
+that processes a stream of similar events.
+</p>
+<p>
+Within a stage, a controller works to throttle the amount of work coming in
+to avoid overloading the system.  Another controller attempts to adjust the
+execution characteristics of the stage to provide optimal throughput for the
+stage.
+</p>
+<p>
+While not fully implemented, the threading package is structured such that
+all work stages (backed by a shared or dedicated <code>ExecutorService</code>)
+can be controlled and monitored.  The characteristics of the stages will be
+adjusted at runtime in an attempt to provide the best overall throughput for
+the system.
+</p>
+<p>
+The Liberty Event Engine is capable of associating event topics with a named
+work stage.  The idea is that mapping mainline event topics to stages will
+allow us to implement a SEDA-style architecture if we choose to.  If, instead
+of a SEDA-style implementation we prefer to process all events on the thread
+that fires them, we can map events to a single stage.  If we're looking for
+mostly single threaded behavior but with load balancing, we can use work stealing
+to process independent events when the system has free cycles.
+</p>
+
+<h2>JSR 166y</h2>
+<p>
+The <code>java.util.concurrent</code> packages introduced with Java 5
+have generated follow on efforts known as JSR 166x, JSR 166y, and JSR 166z.
+</p>
+<p>
+JSR 166y, planned for Java 7, introduces implementations that support
+fork-join style parallel programming.  This style of programming works to
+decompose the processing of a data set into smaller chunks that can be
+scheduled to run in parallel.  By implementing a work-stealing style
+<code>ExecutorService</code> in Liberty, it should be possible to either
+reuse our implementation or replace it with what comes out with the JDK.
+</p>
+<p>
+For more information, please see the
+<a href="http://artisans-serverintellect-com.si-eioswww6.com/default.asp?W9" class="externalURL">
+JSR 166y</a> web site.
+</p>
+
+</body>
+</html>

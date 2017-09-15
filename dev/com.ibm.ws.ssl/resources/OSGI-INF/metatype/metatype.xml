@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="%keystore.config.desc" name="%keystore.config" 
+         id="com.ibm.ws.ssl.keystore" ibm:alias="keyStore">
+         
+        <AD id="password" name="%password" description="%password.desc" 
+            required="false" type="String" ibm:type="password" />
+
+        <AD id="location" name="%location" description="%location.desc" ibm:type="location"
+            required="false" type="String" default="${server.output.dir}/resources/security/key.jks" />
+
+        <AD id="type" name="%type" description="%type.desc" 
+            required="false" type="String" default="jks"/>
+            
+        <AD id="valid" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="Boolean" default="true"  />           
+
+        <AD id="genKeyHostName" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            ibm:variable="defaultHostName" default="localhost" />
+            
+        <AD id="fileBased" name="%keystore.fileBased" description="%keystore.fileBased.desc"
+            required="false" type="Boolean" default="true" />            
+
+        <AD id="readOnly" name="%keystore.readOnly" description="%keystore.readOnly.desc"
+            required="false" type="Boolean" default="false" />            
+            
+        <AD id="pollingRate" name="%keystore.pollingRate" description="%keystore.pollingRate.desc"
+            required="false" type="String" ibm:type="duration" default="500ms" /> 
+            
+        <AD id="updateTrigger" name="%keystore.trigger.name" description="%keystore.trigger.desc" type="String" required="false" default="mbean">
+            <Option label="%keystore.trigger.timed" value="polled"/>
+            <Option label="%keystore.trigger.external" value="mbean"/>
+            <Option label="%keystore.trigger.disabled" value="disabled"/>
+        </AD>
+        
+        <AD id="keyEntry" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.keystore.config.keyEntry"
+            required="false" type="String" cardinality="2147483647" />
+                       
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.ssl.keystore">
+        <Object ocdref="com.ibm.ws.ssl.keystore"/>
+    </Designate>
+    
+	<OCD id="com.ibm.ws.ssl.keystore.keyEntry.metatype" name="%keyEntry.alias" description="%keyEntry.alias.desc">
+    	<AD id="name" name="%keyEntry.name" description="%keyEntry.name.desc"
+            required="true" type="String" />
+        <AD id="keyPassword" name="%keyEntry.password" description="%keyEntry.password.desc"
+            required="true" type="String" ibm:type="password"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.ssl.keystore.config.keyEntry">
+        <Object ocdref="com.ibm.ws.ssl.keystore.keyEntry.metatype" />
+    </Designate>
+    
+
+    <OCD description="%repertoire.config.desc" name="%repertoire.config" 
+         id="com.ibm.ws.ssl.repertoire" ibm:alias="ssl">
+
+        <AD id="keyStoreRef" name="%keystore" description="%keystore.desc" 
+            required="true" type="String" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+
+        <AD id="KeyStore.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(id=${keyStoreRef})" />
+
+        <AD id="trustStoreRef" name="%truststore" description="%truststore.desc" 
+            required="false" type="String" default="${keyStoreRef}" ibmui:uiReference="com.ibm.ws.ssl.keystore" />
+            
+        <AD id="TrustStore.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(id=${trustStoreRef})" />
+
+        <AD id="sslProtocol" name="%repertoire.sslProtocol" description="%repertoire.sslProtocol.desc" 
+            required="false" type="String" />
+            
+        <AD id="clientAuthentication" name="%repertoire.clientAuthentication" description="%repertoire.clientAuthentication.desc" 
+            required="false" type="Boolean" default="false" />
+            
+        <AD id="clientAuthenticationSupported" name="%repertoire.clientAuthenticationSupported" description="%repertoire.clientAuthenticationSupported.desc" 
+            required="false" type="Boolean" default="false" />
+            
+        <AD id="securityLevel" name="%repertoire.securityLevel" description="%repertoire.securityLevel.desc" 
+            required="false" type="String" default="HIGH" >
+            <Option label="%repertiore.HIGH" value="HIGH"/>
+            <Option label="%repertoire.MEDIUM" value="MEDIUM"/>
+            <Option label="%repertoire.LOW" value="LOW"/>
+            <Option label="%repertoire.CUSTOM" value="CUSTOM"/>
+        </AD> 
+            
+        <AD id="clientKeyAlias" name="%repertoire.clientKeyAlias" description="%repertoire.clientKeyAlias.desc" 
+            required="false" type="String" />
+            
+        <AD id="serverKeyAlias" name="%repertoire.serverKeyAlias" description="%repertoire.serverKeyAlias.desc" 
+            required="false" type="String" />
+            
+        <AD id="enabledCiphers" name="%repertoire.enabledCiphers" description="%repertoire.enabledCiphers.desc" 
+            required="false" type="String" />
+           
+        <AD id="outboundConnection" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.ssl.repertoire.config.outboundConnection"
+            required="false" type="String" cardinality="2147483647" />    
+            
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.ssl.repertoire">
+        <Object ocdref="com.ibm.ws.ssl.repertoire"/>
+    </Designate>
+    
+    <OCD id="com.ibm.ws.ssl.repertoire.outboundConnection.metatype" name="%outboundConnection" description="%outboundConnection.desc">
+    	<AD id="host" name="%remoteHost" description="%remoteHost.desc"
+            required="true" type="String" />
+        <AD id="port" name="%remotePort" description="%remotePort.desc"
+            required="false" type="Integer" /> 
+        <AD id="clientCertificate" name="%clientCertificate" description="%clientCertificate.desc"
+            required="false" type="String" /> 
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.ssl.repertoire.config.outboundConnection">
+        <Object ocdref="com.ibm.ws.ssl.repertoire.outboundConnection.metatype" />
+    </Designate>
+    
+    <OCD description="%ssl.default.desc" name="%ssl.default" 
+         id="com.ibm.ws.ssl.default" ibm:alias="sslDefault">
+
+        <AD id="sslRef" name="%default.sslRef" description="%default.sslRef.desc" 
+            required="false" type="String" default="defaultSSLConfig" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+
+        <AD id="outboundSSLRef" name="%default.outboundSSLRef" description="%default.outboundSSLRef.desc" 
+            required="false" type="String" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+            
+    </OCD>
+
+    <Designate pid="com.ibm.ws.ssl.default">
+        <Object ocdref="com.ibm.ws.ssl.default"/>
+    </Designate>
+
+</metatype:MetaData>

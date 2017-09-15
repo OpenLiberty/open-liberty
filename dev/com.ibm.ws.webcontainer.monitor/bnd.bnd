@@ -1,0 +1,51 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Webcontainer Monitor
+Bundle-SymbolicName: com.ibm.ws.webcontainer.monitor
+Bundle-Description: Webcontainer Monitor; version=${bVersion}
+
+Import-Package: \
+    com.ibm.wsspi.webcontainer.util.*, \
+    com.ibm.ws.webcontainer.webapp, \
+    javax.servlet; version="[2.6,3)", \
+    !*.internal.*,*
+
+Private-Package: \
+	com.ibm.ws.webcontainer.monitor, \
+	com.ibm.websphere.webcontainer
+
+Include-Resource: \
+    com/ibm/ws/webcontainer/pmi/servletStats.xml=resources/com/ibm/ws/webcontainer/pmi/servletStats.xml
+    com/ibm/ws/webcontainer/pmi/webAppModuleStats.xml=resources/com/ibm/ws/webcontainer/pmi/webAppModuleStats.xml
+
+
+DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
+ com.ibm.websphere.monitor.annotation;version="1.0.0", \
+ com.ibm.websphere.monitor.jmx;version="1.0.0", \
+ com.ibm.ws.pmi.server;version="[1.1,2)", \
+ com.ibm.ws.pmi.stat;version="[1.1,2)", \
+ com.ibm.websphere.pmi;version="[1.1,2)", \
+ com.ibm.wsspi.pmi.factory;version="[1.1,2)", \
+ com.ibm.wsspi.pmi.stat;version="[1.1,2)" 
+ 
+Liberty-Monitoring-Components: com.ibm.ws.webcontainer.monitor.WebContainerMonitor
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.monitor;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.container.service;version=latest

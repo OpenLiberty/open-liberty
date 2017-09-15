@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+  
+    <OCD id="com.ibm.ws.event" name="internal" description="%event.service.desc" ibm:alias="event">   
+        <AD id="reentrant.handler.default" name="%reentrant.handler.name" description="%reentrant.handler.desc"
+            required="false" type="Boolean" default="true" /> 
+                 
+        <!-- <AD id="stage.topics.HTTP_Transport" name="%stage.topics.HTTP_Transport.name" description="%stage.topics.HTTP_Transport.desc"
+            required="false" type="String" cardinality="200"
+            default="com/ibm/websphere/http/request/ARRIVED" /> -->
+                 
+        <!-- <AD id="stage.topics.POJO" name="%stage.topics.POJO.name" description="%stage.topics.POJO.desc"
+            required="false" type="String" cardinality="200"
+            default="com/ibm/ws/iiop/POJO/*" /> -->
+        
+        <!-- <AD id="stage.topics.TCP_Channel" name="%stage.topics.TCP_Channel.name" description="%stage.topics.TCP_Channel.desc"
+            required="false" type="String" cardinality="200"
+            default="com/ibm/websphere/tcp/*" /> -->
+        
+        <AD id="stage.topics.OSGi_Events" name="%stage.topics.OSGi_Events.name" description="%stage.topics.OSGi_Events.desc"
+            required="false" type="String" cardinality="200"
+            default="org/osgi/*" />
+    </OCD>
+  
+    <Designate pid="com.ibm.ws.event">
+        <Object ocdref="com.ibm.ws.event"/>
+    </Designate>
+    
+</metatype:MetaData>

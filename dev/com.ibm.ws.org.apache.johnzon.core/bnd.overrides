@@ -1,0 +1,28 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.johnzon.core.1.1
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Import-Package: \
+  javax.json;version="[1.1,2)",\
+  javax.json.spi;version="[1.1,2)",\
+  javax.json.stream;version="[1.1,2)",\
+  com.ibm.wsspi.classloading
+  
+Export-Package: \
+  org.apache.johnzon.core;version="1.1.0";thread-context=true
+
+Service-Component:\
+  com.ibm.ws.org.johnzon.core.JsonProviderImpl;\
+    implementation:=org.apache.johnzon.core.JsonProviderImpl;\
+    provide:=javax.json.spi.JsonProvider;\
+    configuration-policy:=ignore;\
+    properties:='implementation.class=org.apache.johnzon.core.JsonProviderImpl',\
+  com.ibm.ws.org.apache.johnzon.core.ResourceProvider;\
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider;\
+    provide:=com.ibm.wsspi.classloading.ResourceProvider;\
+    configuration-policy:=ignore;\
+    properties:='resources=META-INF/services/javax.json.spi.JsonProvider'
+

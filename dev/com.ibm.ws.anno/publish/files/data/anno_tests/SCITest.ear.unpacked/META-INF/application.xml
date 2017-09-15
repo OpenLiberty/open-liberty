@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<application id="Application_ID" version="1.4" xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/application_1_4.xsd">
+
+  <display-name>ServletContainerInitializerTestEAR</display-name>
+	
+  <module id="SCIAbsolute">
+    <web>
+      <web-uri>SCIAbsolute.war</web-uri>
+      <context-root>SCIAbsolute</context-root>
+    </web>
+  </module>
+
+  <module id="SCIAbsoluteNoOthers">
+    <web>
+      <web-uri>SCIAbsoluteNoOthers.war</web-uri>
+      <context-root>SCIAbsoluteNoOthers</context-root>
+    </web>
+  </module>
+
+  <module id="SCINoOrder">
+    <web>
+      <web-uri>SCINoOrder.war</web-uri>
+      <context-root>SCINoOrder</context-root>
+    </web>
+  </module>
+
+  <module id="SCIRelative">
+    <web>
+      <web-uri>SCIRelative.war</web-uri>
+      <context-root>SCIRelative</context-root>
+    </web>
+  </module>
+
+  <module id="SCIRelativeNoOthers">
+    <web>
+      <web-uri>SCIRelativeNoOthers.war</web-uri>
+      <context-root>SCIRelativeNoOthers</context-root>
+    </web>
+  </module>
+
+</application>              

@@ -1,0 +1,194 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+task initialize {
+    doLast {
+        println "Gradle Initialized"
+    }
+}
+
+import org.apache.tools.ant.filters.ReplaceTokens
+import org.apache.tools.ant.DirectoryScanner
+
+DirectoryScanner.removeDefaultExclude("**/.gitignore")
+DirectoryScanner.removeDefaultExclude("**/.gitattributes")
+
+/**
+ * Writes two ivy.xml files:
+ *  ivy.xml grabs specific versions so that local devs can switch which branches are consumed from, and
+ *  ivy-latest.xml grabs latest.integration so most recent versions are downloaded.
+ */
+task createIvyXml {
+    doLast {
+        String depsList = ""
+        String depsListLatest = ""
+        fileTree(dir: "${rootDir}", include: '*').visit { element ->
+            if (element.isDirectory()) {
+                String relativePath = "$element.relativePath"
+                def bndProject = bndWorkspace.getProject(relativePath)
+                if (bndProject != null && !bndProject.isNoBundles()) {
+                    String artifact = ""
+                    for (String bsn : bndProject.getBsns()) {
+                        def org = ""
+                        def name = ""
+                        if ('true'.equals(bndProject.get('test.project', 'false'))) {
+                            (org, name) = ['test', bsn]
+                        } else {
+                            (org, name) = ['dev', bsn]
+                        }
+                        depsList = depsList + '        <dependency org="' + org + '" name="' + name + '" rev="' + bndProject.getVersion(bsn) + '"/>\n'
+                        depsListLatest = depsListLatest + '        <dependency org="' + org + '" name="' + name + '" rev="latest.integration"/>\n'
+                    }
+                }
+            }
+        }
+        File ivyXml = new File("${buildDir}/ivy.xml")
+        ivyXml.createNewFile()
+        ivyXml.text = """<ivy-module version="2.0">
+  <info organisation="dev" module="prereq.published"/>
+  <dependencies>
+$depsList  </dependencies>
+</ivy-module>
+"""
+        File ivyXmlLatest = new File("${buildDir}/ivy-latest.xml")
+        ivyXmlLatest.createNewFile()
+        ivyXmlLatest.text = """<ivy-module version="2.0">
+  <info organisation="dev" module="prereq.published"/>
+  <dependencies>
+$depsListLatest  </dependencies>
+</ivy-module>
+"""
+    }
+}
+
+task createGeneratedReplacementProjects {
+    doLast {
+        File templateDir = new File(projectDir, 'gradle/projects.for.ivy.ant')
+        fileTree(dir: "${rootDir}", include: '*').visit { element ->
+            if (element.isDirectory()) {
+                String relativePath = "$element.relativePath"
+                def bndProject = bndWorkspace.getProject(relativePath)
+                if (bndProject == null) {
+                    return
+                }
+                def excludeProjects = ["com.ibm.ws.org.apache.ant"]
+                if ('true'.equals(bndProject.get('test.project', 'false')) || excludeProjects.contains(relativePath)) {
+                    return
+                }
+
+                List bsns = bndProject.getBsns()
+                int bsnCount = bndProject.isNoBundles() ? 0 : bndProject.getBsns().size()
+                if (bsnCount == 0) {
+                    if (!relativePath.equals('com.ibm.ws.org.apache.cxf.jaxrs')) {
+                        return
+                    }
+                    File targetDir = new File(buildDir, 'replacements/' + relativePath)
+                    targetDir.mkdirs()
+                    copy {
+                        from templateDir
+                        into targetDir
+                        include '*.template'
+                        rename { String fileName ->
+                            fileName.replace('.template', '')
+                        }
+                        filter(ReplaceTokens, tokens: [PROJECT_NAME: relativePath, MAVEN_ARTIFACT: ''])
+                    }
+                    targetDir = new File(buildDir, 'replacements/' + relativePath + '/lib')
+                    targetDir.mkdirs()
+                    copy {
+                        from "${rootDir}/com.ibm.ws.org.apache.cxf.jaxrs/lib"
+                        into targetDir
+                        include 'cxf*.jar'
+                    }
+                    String classpathEntries = ""
+                    fileTree(dir: "${rootDir}/com.ibm.ws.org.apache.cxf.jaxrs/lib", include: 'cxf*.jar').visit { jarfile ->
+                        classpathEntries = '	<classpathentry exported="true" kind="lib" path="lib/' + jarfile.relativePath + '"/>\n' + classpathEntries
+                    }
+                    File classpathFile = new File(buildDir, "replacements/${relativePath}/.classpath")
+                    classpathFile.delete()
+                    classpathFile.createNewFile()
+                    classpathFile.text = """<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+$classpathEntries</classpath>
+"""
+                } else {
+                    String firstBsn = bndProject.getBsns()[0]
+                    String artifact = firstBsn + '-' + bndProject.getVersion(firstBsn) + '.jar'
+                    //println "projectName=" + relativePath + ", artifact=" + artifact
+                    File targetDir = new File(buildDir, 'replacements/' + relativePath)
+                    targetDir.mkdirs()
+                    copy {
+                        from templateDir
+                        into targetDir
+                        include '*.template'
+                        rename { String fileName ->
+                            fileName.replace('.template', '')
+                        }
+                        filter(ReplaceTokens, tokens: [PROJECT_NAME: relativePath, MAVEN_ARTIFACT: artifact])
+                    }
+                    if (relativePath.equals('com.ibm.ws.logging')) {
+                        String classpathEntries = '	<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>\n' +
+                                                  '	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/com.ibm.ws.kernel.boot"/>\n'
+                        File classpathFile = new File(buildDir, "replacements/${relativePath}/.classpath")
+                        classpathFile.delete()
+                        classpathFile.createNewFile()
+                        classpathFile.text = """<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+$classpathEntries</classpath>
+"""
+                    }
+                    if (bndProject.getBsns().size() > 1) {
+                        String classpathEntries = ""
+                        //println bndProject.getBsns()
+                        for (String bsn : bndProject.getBsns()) {
+                            artifact = bsn + '-' + bndProject.getVersion(bsn) + '.jar'
+                            classpathEntries = '	<classpathentry exported="true" kind="lib" path="/prereq.published/lib/' + artifact + '"/>\n' + classpathEntries
+                        }
+                        File classpathFile = new File(buildDir, "replacements/${relativePath}/.classpath")
+                        classpathFile.delete()
+                        classpathFile.createNewFile()
+                        classpathFile.text = """<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+$classpathEntries</classpath>
+"""
+                    }
+                    if (relativePath.equals('com.ibm.ws.org.codehaus.jackson')) {
+                        targetDir = new File(buildDir, 'replacements/' + relativePath + '/lib')
+                        targetDir.mkdirs()
+                        copy {
+                            from "${rootDir}/com.ibm.ws.org.codehaus.jackson/lib"
+                            into targetDir
+                            include 'jackson*.jar'
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+task zipIvyBootstrap(type: Zip) {
+    dependsOn createIvyXml
+    dependsOn createGeneratedReplacementProjects
+    baseName 'ivy-bootstrap'
+    into 'prereq.published', {from "${buildDir}/ivy.xml", "${buildDir}/ivy-latest.xml"}
+    from "${buildDir}/replacements"
+}
+
+publishing {
+  publications {
+    maven(MavenPublication) {
+      artifactId 'ivy-bootstrap'
+      version project.version
+      artifact zipIvyBootstrap
+    }
+  }
+}

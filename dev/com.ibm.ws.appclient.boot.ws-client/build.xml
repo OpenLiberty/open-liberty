@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.appclient.boot.ws-client" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+
+  <target name="publishExtra" if="publish.image.dir">
+    <echo>Publishing ws-client.jar to ${publish.image.dir}/${image.write.bin.tools.dir}</echo>
+    <copy todir="${publish.image.dir}/${image.write.bin.tools.dir}" file="${lib.dir}/ws-client.jar" />
+  </target>
+
+  <target name="post-compile">
+    <fileset id="appclient.boot.fileset" dir="../build.image/wlp/lib">
+        <include name="com.ibm.ws.appclient.boot_*.jar" />
+    </fileset>
+    <fileset id="kernel.boot.fileset" dir="../build.image/wlp/lib">
+        <include name="com.ibm.ws.kernel.boot_*.jar" />
+    </fileset>
+
+    <basename property="appclient.boot.jar" file="${toString:appclient.boot.fileset}" />
+    <basename property="kernel.boot.jar" file="${toString:kernel.boot.fileset}" />
+
+    <!-- bin/tools/ws-client.jar -->
+    <jar jarfile="${lib.dir}/ws-client.jar">
+      <manifest>
+        <attribute name="Main-Class" value="com.ibm.ws.appclient.boot.cmdline.ClientEnvCheck"/>
+        <attribute name="Class-Path" value="../../lib/${appclient.boot.jar} ../../lib/${kernel.boot.jar}"/>
+      </manifest>
+    </jar>
+  </target>
+
+</project>

@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.org.apache.felix.scr" default="build">
+  <import file="../ant_build/public_imports/rejar_imports.xml"/>
+
+  <!-- Every time an update is made to the felix scr bundle, the name should change.
+       The qualifier must represent the svn revision used when the bundle was generated,
+       and may be appended as well with the patch. -->
+  <!-- Change of DS spec version may required updating the cmpn jar we compile against. This is done in the org.osgi-6.0 project -->
+  
+  <property name="original.jar.name" value="org.apache.felix.scr"/>
+  <property name="original.jar.version" value=""/>
+  <property name="bundle.version" value="1.0"/> 
+  <target name="package">
+    <rejar version="1.0"
+           src.jar="lib/org.apache.felix.scr-2.*.jar">
+
+      <extra-headers>
+        <attribute name="IBM-Default-Config"
+                   value="OSGI-INF/wlp/defaultInstances.xml" />
+      </extra-headers>
+      <extra-filesets>
+        <fileset dir="resources">
+          <include name="**/*.xml" />
+        </fileset>
+      </extra-filesets>
+    </rejar>
+
+  </target>
+    
+</project>

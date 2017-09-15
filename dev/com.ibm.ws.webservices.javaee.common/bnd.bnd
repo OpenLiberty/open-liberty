@@ -1,0 +1,44 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.webservices.javaee.common
+Bundle-Name: common support (JSR109) for WebServices
+Bundle-Description: common support (JSR109) for WebServices, version ${bVersion}
+
+-dsannotations: com.ibm.ws.webservices.javaee.common.internal.WebservicesXMLEndpointInfoConfigurator
+
+Private-Package: \
+ com.ibm.ws.webservices.javaee.common.internal, \
+ com.ibm.ws.webservices.javaee.common.internal.resources
+
+Import-Package: \
+ javax.xml.ws.*;version="[2.2,3)", \
+ *
+
+instrument.classesExcludes: com/ibm/ws/webservices/javaee/common/internal/resources/*.class
+
+-buildpath.bootclasspath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
+	${javac.bootclasspath.${javac.source}}
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.anno;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.ddmodel.ws;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

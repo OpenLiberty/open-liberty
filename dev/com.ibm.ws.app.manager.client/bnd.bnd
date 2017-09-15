@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+ -include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere Application Client Support
+Bundle-SymbolicName: com.ibm.ws.app.manager.client
+Bundle-Description: WebSphere Application Client Support, version ${bVersion}
+
+Import-Package: \
+    com.ibm.ws.app.manager.module.internal, \
+    *
+
+Export-Package: \
+    com.ibm.ws.app.manager.client.*
+
+-dsannotations-inherit: true
+-dsannotations: com.ibm.ws.app.manager.client.internal.ClientModuleHandlerImpl
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.threading;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

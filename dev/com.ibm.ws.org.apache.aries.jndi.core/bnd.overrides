@@ -1,0 +1,13 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.1
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.aries.jndi.core
+
+Private-Package: \
+    org.apache.aries.jndi, \
+    org.apache.aries.jndi.nls, \
+    org.apache.aries.jndi.startup, \
+    org.apache.aries.jndi.tracker
+
+-includeresource: \
+    @${repo;org.apache.aries.jndi:org.apache.aries.jndi.core;1.0.2}!/!META-INF/maven/*|org/*

@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.2
+
+Bundle-Name: WebSphere Artifact SPI
+Bundle-Description: WebSphere Artifact SPI, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.spi.artifact
+
+Import-Package: com.ibm.ws.adaptable.module.structure,com.ibm.wsspi.adaptable.module,com.ibm.wsspi.adaptable.module.adapters,com.ibm.wsspi.artifact,com.ibm.wsspi.artifact.equinox.module,com.ibm.wsspi.artifact.factory,com.ibm.wsspi.artifact.factory.contributor,com.ibm.wsspi.artifact.overlay
+
+Export-Package: com.ibm.ws.adaptable.module.structure,com.ibm.wsspi.adaptable.module,com.ibm.wsspi.adaptable.module.adapters,com.ibm.wsspi.artifact,com.ibm.wsspi.artifact.equinox.module,com.ibm.wsspi.artifact.factory,com.ibm.wsspi.artifact.factory.contributor,com.ibm.wsspi.artifact.overlay
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.spi/com.ibm.websphere.appserver.spi.artifact/pom.xml=com.ibm.websphere.appserver.spi.artifact.pom}
+
+publish.wlp.jar.suffix: dev/spi/ibm
+
+-buildpath: \
+	com.ibm.ws.adaptable.module;version=latest, \
+	com.ibm.ws.artifact;version=latest, \
+	com.ibm.ws.artifact.equinox.module;version=latest, \
+	com.ibm.ws.artifact.overlay;version=latest

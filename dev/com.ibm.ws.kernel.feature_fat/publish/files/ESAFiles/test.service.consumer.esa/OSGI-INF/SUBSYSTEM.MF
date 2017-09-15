@@ -1,0 +1,6 @@
+Manifest-Version: 2.0
+Subsystem-ManifestVersion: 1.0
+Subsystem-SymbolicName: test.service.consumer.esa
+Subsystem-Version: 1.0.0
+Subsystem-Content: test.service.consumer
+Subsystem-Type: osgi.subsystem.application

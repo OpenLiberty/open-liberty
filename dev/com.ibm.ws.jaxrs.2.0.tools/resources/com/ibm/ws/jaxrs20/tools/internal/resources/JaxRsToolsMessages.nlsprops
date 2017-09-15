@@ -1,0 +1,25 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.tools/resources/com/ibm/ws/jaxrs20/tools/internal/resources/JaxRsToolsMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS 2.0 Tools Code
+#RANGE 0900-9999
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+error.badVersion=CWWKW0900E: The correct Java version is not running. The runtime environment requires Java 7 or higher.
+error.badVersion.explanation=Either an unsupported Java version is running, or the JAVA_HOME system variable is set to point to an older version of Java.
+error.badVersion.useraction= Upgrade the Java version to Java 7, or adjust the JAVA_HOME system variable to point to Java 7.

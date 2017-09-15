@@ -1,0 +1,22 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-Install-Policy: when-satisfied
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ejbRemote-3.2))",
+ osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.appSecurity-2.0))"
+Subsystem-Content: com.ibm.websphere.appserver.security-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.ws.security.csiv2.common; version="[1.0.0,1.0.200)",
+ com.ibm.ws.security.csiv2; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.csiv2-1.0
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.csiv2-1.0; visibility:=private; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

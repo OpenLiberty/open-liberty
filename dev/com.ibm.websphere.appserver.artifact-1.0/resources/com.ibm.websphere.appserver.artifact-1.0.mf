@@ -1,0 +1,37 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-Process-Types: server,
+ client
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-SPI-Package: com.ibm.wsspi.adaptable.module,
+ com.ibm.ws.adaptable.module.structure,
+ com.ibm.wsspi.adaptable.module.adapters,
+ com.ibm.wsspi.artifact,
+ com.ibm.wsspi.artifact.factory,
+ com.ibm.wsspi.artifact.factory.contributor,
+ com.ibm.wsspi.artifact.overlay,
+ com.ibm.wsspi.artifact.equinox.module
+Subsystem-Content: com.ibm.websphere.appserver.spi.artifact_1.2-javadoc.zip; type=file; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.artifact_1.2-javadoc.zip",
+ com.ibm.websphere.appserver.spi.artifact; location:="dev/spi/ibm/,lib/"; type=jar; version="[1.2.0,1.2.200)",
+ com.ibm.ws.artifact; start-phase:=CONTAINER_EARLY; version="[1.0.0,1.0.200)",
+ com.ibm.ws.artifact.loose; version="[1.0.0,1.0.200)",
+ com.ibm.ws.adaptable.module; version="[1.0.0,1.0.200)",
+ com.ibm.ws.artifact.url; start-phase:=CONTAINER_EARLY; version="[1.0.0,1.0.200)",
+ com.ibm.ws.classloading.configuration; version="[1.0.0,1.0.200)",
+ com.ibm.ws.artifact.zip; version="[1.0.0,1.0.200)",
+ com.ibm.ws.artifact.overlay; version="[1.0.0,1.0.200)",
+ com.ibm.ws.artifact.bundle; version="[1.0.0,1.0.200)",
+ com.ibm.ws.artifact.equinox.module; version="[1.0.0,1.0.200)",
+ com.ibm.ws.artifact.file; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.artifact-1.0
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.artifact-1.0; visibility:=private; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

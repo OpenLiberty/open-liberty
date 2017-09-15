@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.websphere.javaee.management.j2ee.1.1" default="build">
+	
+	<property name="spec.name" value="management.j2ee"/>
+	<property name="spec.marketing.version" value="1.1"/>
+    <property name="spec.javadoc.name" value="javax.management.j2ee-api-1.1-javadoc.jar"/>
+	<property name="bundle.version" value="1.0"/>
+	
+	<import file="../ant_build/public_imports/spec_imports.xml"/>
+		
+	<target name="package" depends="spec.package"/>
+    <target name="publishToImage" depends="spec.publishToImage" />
+
+	<target name="post-compile">
+      <condition property="rmic.target" value="${java.home}/bin/rmic" else="${java.home}/../bin/rmic">
+        <istrue value="${is.java9}"/>
+      </condition>
+      
+      <chmod file="${rmic.target}" perm="a+rx"/>
+<!--   		<rmic classname="javax.management.j2ee.Management" compiler="forking" base="${classes.dir}" classpathref="project.class.path" iiop="true"/> -->
+<!--   		<rmic classname="javax.management.j2ee.ManagementHome" compiler="forking" base="${classes.dir}" classpathref="project.class.path" iiop="true"/> -->
+      <property name="project.class.path.prop" refid="project.class.path"/>
+      <exec executable="${rmic.target}" dir="${basedir}" resolveexecutable="true" failonerror="true">
+        <arg value="-iiop"/>
+        <arg value="-d"/>
+        <arg value="${classes.dir}"/>
+        <arg value="-classpath"/>
+        <arg value="${project.class.path.prop}${path.separator}${basedir}/build/classes/"/>
+        <arg value="javax.management.j2ee.Management"/>
+        <arg value="javax.management.j2ee.ManagementHome"/>
+      </exec>
+    </target>	
+    
+</project>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map id="threading_toc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="http://docs.oasis-open.org/dita/v1.0.1/schema/map.xsd">
+
+    <topicref format="html" href="threading_user.html" id="threadingUserDoc" navtitle="Threading Services User Documentation" />
+
+</map>
+<?Pub *0000007040?>

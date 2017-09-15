@@ -1,0 +1,273 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.IRequest"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.IResponse"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainer"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Field name="_bbOut"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Field name="_out"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Field name="_writer"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Field name="outputMethodListener"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.CollectionEnumerationHybrid"/>
+    <Field name="iterator"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Bug pattern="SE_NO_SUITABLE_CONSTRUCTOR"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Method name="getWriter"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.util.BufferedServletOutputStream31"/>
+    <Method name="print" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+  <Method name="getCookies" signature="()[Ljavax/servlet/http/Cookie;"/>
+  <Field name="_cookies"/>
+  <Bug pattern="EI_EXPOSE_REP"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+  <Method name="getHeaderTable" signature="()[Ljava/util/Vector;"/>
+  <Field name="headerTable"/>
+  <Bug pattern="EI_EXPOSE_REP"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+  <Method name="getOutputBuffer" signature="()[B"/>
+  <Field name="_outputBuffer"/>
+  <Bug pattern="EI_EXPOSE_REP"/>
+</Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Field name="_isFinished"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Field name="_outputBuffer"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredHeader"/>
+    <Method name="getDateHeader" signature="(Ljava/lang/String;)J"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredHeader"/>
+    <Method name="getHeader" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredHeader"/>
+    <Method name="getIntHeader" signature="(Ljava/lang/String;)I"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.websphere.servlet31.response.StoredResponse31"/>
+    <Method name="transferResponse" signature="(Ljavax/servlet/http/HttpServletResponse;)V"/>
+    <Local name="i"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.util.BufferedServletOutputStream31"/>
+    <Method name="addObserver" signature="(Lcom/ibm/wsspi/webcontainer/util/IOutputStreamObserver;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainer"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/webcontainer/WebContainer;)V"/>
+    <Field name="webcontainer"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer31.servlet.GenericServletWrapper"/>
+    <Field name="servletConfig"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.srt.SRTInputStream31"/>
+    <Field name="contentLength"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.srt.SRTServletRequest31"/>
+    <Method name="upgrade"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.util.UpgradeOutputByteBufferUtil"/>
+    <Method name="writeRemainingToBuffers"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <!-- derefencing variables via trace... it's ok if they are null - really... -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.srt.HttpServletCallback"/>
+    <Method name="complete"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.srt.HttpServletCallback"/>
+    <Method name="error"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+    <!-- match generated nls classes: return mutable type -->
+  <Match> 
+    <Class name="~.*\.resources\..*" />
+    <Method name="getContents"/>
+    <Bug code="EI" />
+  </Match>
+    <Match>
+    <Class name="com.ibm.ws.webcontainer31.srt.SRTUpgradeOutputStream31"/>
+    <Method name="~print(ln)?"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.osgi.response.WCOutputStream31"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>    
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.osgi.response.WCOutputStream31"/>
+    <Method name="~print(ln)?"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>    
+  </Match> 
+   <Match>
+    <Class name="com.ibm.ws.webcontainer31.osgi.response.WCOutputStream31"/>
+    <Method name="print_NonBlocking"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>    
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.osgi.response.WCOutputStream31"/>
+    <Method name="println_NonBlocking"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+     <Match>
+    <Class name="com.ibm.ws.webcontainer31.util.UpgradeOutputByteBufferUtil"/>
+    <Method name="print_NonBlocking"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>    
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.util.UpgradeOutputByteBufferUtil"/>
+    <Method name="println_NonBlocking"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+    
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.osgi.webapp.WebApp31"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+    <Method name="~commonAddListener()?"/>
+  </Match>
+  
+  <!-- No need to print the exception in this case -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.osgi.webapp.WebApp31"/>
+    <Method name="commonAddListener" signature="(Ljava/lang/String;Ljava/util/EventListener;Ljava/lang/Class;)V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <!-- These don't need to be final -->
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer31.WCCustomProperties31"/>
+    <Field name="UPGRADE_READ_TIMEOUT"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer31.WCCustomProperties31"/>
+    <Field name="UPGRADE_WRITE_TIMEOUT"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer31.WCCustomProperties31"/>
+    <Bug pattern="MS_CANNOT_BE_FINAL"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer31.srt.SRTUpgradeInputStream31"/>
+    <Method name="close" signature="()Ljava/lang/Void;"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.webcontainer31.async.AsyncContext31Impl"/>
+    <Field name="readListenerRunning"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+</FindBugsFilter>

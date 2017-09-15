@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Basic registry sample configuration">
+
+    <!-- NOTE: This file is for reference only. -->
+
+    <!-- Enable appSecurity-2.0 feature for application security -->
+    <!-- Enable servlet-3.0 feature for web applications -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.0</feature>
+    </featureManager>
+
+    <!-- Sample configuration for BasicRegistry.
+         This sample defines 3 users: admin, user1 and user2
+         And defines 3 groups: memberLess (an empty group), admin and users
+         The password value can be plaintext, or the xor encoded value of the password
+         NOTE: users or groups with duplicate names are not supported. 
+      -->
+<!--
+    <basicRegistry id="basic" realm="SampleBasicRealm">
+        <user name="admin" password="password123" />
+        <user name="user1" password="password123" />
+        <user name="user2" password="{xor}Lz4sLCgwLTtubWw=" />
+        <group name="memberlessGroup" />
+        <group name="adminGroup">
+            <member name="admin"/>
+        </group>
+        <group name="users">
+            <member name="user1"/>
+            <member name="user2"/>
+        </group>
+    </basicRegistry>
+-->
+</server>

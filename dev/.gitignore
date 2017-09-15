@@ -1,0 +1,11 @@
+/.gradle/
+/.gradle-wrapper/
+/gradlew
+/gradlew.bat
+/*/bin/
+/*/bin_test/
+/*/generated/
+*findbugs.checksums.properties
+*chkpii.checksums.properties
+generated.properties
+/build.pii.package/

@@ -1,0 +1,53 @@
+
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+﻿<?xml version="1.0" encoding="UTF-8"?>
+   <web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+      <display-name>Servlet 30 Annotation Test Application for Conflict so only web.xml is used </display-name>
+      <servlet id="Servlet_1">
+      	<description></description>
+		    <display-name>Servlet30Ann1</display-name>
+		    <servlet-name>Servlet30Ann1</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30Ann1</servlet-class>
+      </servlet>
+      <servlet-mapping id="ServletMapping_1">
+         <servlet-name>Servlet30Ann1</servlet-name>
+         <url-pattern>/Servlet30Ann1</url-pattern>
+      </servlet-mapping>
+      <servlet id="Servlet_2">
+      	<description></description>
+		    <display-name>Servlet30Ann2</display-name>
+		    <servlet-name>Servlet30Ann2</servlet-name>
+		    <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30Ann2</servlet-class>
+      </servlet>
+      <servlet-mapping id="ServletMapping_2">
+         <servlet-name>Servlet30Ann2</servlet-name>
+         <url-pattern>/Servlet30Ann2</url-pattern>
+      </servlet-mapping>
+
+      <security-constraint>
+         <display-name>SecurityConstraint_01</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_01</web-resource-name>
+           <url-pattern>/Servlet30Ann1</url-pattern>
+         </web-resource-collection>
+      </security-constraint>
+
+      <security-constraint>
+         <display-name>SecurityConstraint_02</display-name>
+         <web-resource-collection>
+           <web-resource-name>WebResourceCollection_02</web-resource-name>
+           <url-pattern>/Servlet30Ann2</url-pattern>
+	   <http-method>POST</http-method> 
+         </web-resource-collection>
+      </security-constraint>
+
+   </web-app>

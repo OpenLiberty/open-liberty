@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: test.featureprovisioner-1.0;visibility:=public
+Subsystem-Version: 1.0.0
+Subsystem-Content: test.feature.provisioner; version="[1,1.0.100)",
+ com.ibm.wsspi.appserver.webBundle-1.0; type="osgi.subsystem.feature"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

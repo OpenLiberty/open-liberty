@@ -1,0 +1,104 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="SSL sample configuration">
+
+    <!-- NOTE: This file is for reference only. -->
+
+    <!-- 'ssl-1.0' feature enables support for SSL functionality, which can
+         be configured as per the examples below.
+         
+         Note that the servlet-3.0 feature must also be included to enable
+         hosting of servlets over the https protocol.
+         
+         SSL redirection is handled via the web.xml:
+         <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+         -->
+    <featureManager>
+        <feature>ssl-1.0</feature>
+    </featureManager>
+
+    <!-- The minimal SSL configuration requires a <keyStore> element,
+          with id="defaultKeyStore", which defines a password.
+          The password must be at least 6 characters, which can be encoded.
+          
+          This will look for a JKS keystore named
+          ${server.output.dir}/resources/security/key.jks and will create
+          it if it does not exist with a self-signed certificate.
+          
+          By default, the self-signed certificate has a validity of 365 days,
+          the subject DN is set to the system host name, and the signature
+          algorithm is SHA1withRSA with a key algorithm of RSA. -->
+    <keyStore id="defaultKeyStore" password="123456" />
+
+    
+    <!-- If the location is not given an absolute path, then it is assumed
+         to be under the ${server.config.dir}/resources/security/ directory,
+         OR the ${server.output.dir}/resources/security/ directory. -->
+        <keyStore id="defaultKeyStore"
+              location="myKey.jks"
+              type="JKS"
+              password="123456" />
+
+
+    <!-- You can also define the type and location of the keystore to create
+         for the defaultKeyStore. Note that the only supported keystore type
+         to automatically create is JKS.
+         
+         Note that autogeneration of the certificate only happens if the
+         keystore location is under the ${server.output.dir}. -->
+    <keyStore id="defaultKeyStore"
+              location="${server.output.dir}/alternateKey.jks"
+              type="JKS"
+              password="123456" />
+
+
+    <!-- The default <ssl> has the id "defaultSSLConfig". You can change the
+         keystore and truststore referenced by this element as per below. -->
+    <ssl id="defaultSSLConfig" keyStoreRef="MyKeyStore" trustStoreRef="MyTrustStore"/>
+    <keyStore id="MyKeyStore"
+              location="${server.config.dir}/MyServerKeyFile.jks"
+              type="JKS" password="123456" />
+    <keyStore id="MyTrustStore"
+              location="${server.config.dir}/MyServerTrustFile.jks"
+              type="JKS" password="123456" />
+
+
+    <!-- A full SSL configuration can also be specified, but no automatic
+         certificate generation is provided for this configuration.
+         
+         The <ssl> element defines the keystore and truststore to use.
+         The default <ssl> element is:
+         <ssl id="defaultSSLConfig" keyStoreRef="defaultKeyStore" />
+         
+         The <sslDefault> element defines which ssl configuration to use
+         for the default SSL configuration, such as for https.
+         The default <sslDefault> element is:
+         <sslDefault sslRef="defaultSSLConfig" />
+         -->
+    <sslDefault sslRef="AlternateSSLConfig" />
+
+    <!-- The trustStoreRef attribute is optional and if not defined, the
+         trustStoreRef will use the keystore referenced by keyStoreRef. -->
+    <ssl id="MySSLConfig" keyStoreRef="MyKeyStore" />
+    <keyStore id="MyKeyStore"
+              location="${server.config.dir}/MyServerKeyFile.jks"
+              type="JKS" password="123456" />
+
+    <ssl id="AlternateSSLConfig"
+         keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" />
+    <keyStore id="AlternateKeyStore"
+              location="${server.config.dir}/AlternateServerKeyFile.jks"
+              type="JKS" password="123456" />
+    <keyStore id="AlternateTrustStore"
+              location="${server.config.dir}/AlternateServerTrustFile.jks"
+              type="JKS" password="123456" />
+
+</server>

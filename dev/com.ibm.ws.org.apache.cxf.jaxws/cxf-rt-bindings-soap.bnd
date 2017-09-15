@@ -1,0 +1,48 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Apache CXF Runtime SOAP Binding
+Bundle-Description: Apache CXF Runtime SOAP Binding, version 2.6.2
+Bundle-SymbolicName: com.ibm.ws.org.apache.cxf-rt-bindings-soap.2.6.2
+
+Export-Package: \
+  org.apache.cxf.*;version=2.6.2
+
+Import-Package: \
+ javax.xml.bind.*;version="[2.2,3)", \
+ org.apache.mina.*;resolution:=optional, \
+ javax.xml.soap;resolution:=optional, \
+ javax.activation;resolution:=optional, \
+ !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+ !org.apache.aries.*;version="[0.3,2)", \
+ !org.osgi.service.blueprint.*, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+ *
+ 
+Include-Resource:\
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/cxf/**, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.handlers, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/spring.schemas, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/wsdl.plugin.xml, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/schemas/**, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/DEPENDENCIES, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/LICENSE, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/META-INF/NOTICE, \
+ @${repo;org.apache.cxf.cxf-rt-bindings-soap;2.6.2.ibm-s20170216-1739;EXACT}!/org/apache/cxf/**
+ 
+# Remove the resources (blueprint/metadata configuration files) in the OSGI-INF directory
+# As we have no plan to support that, will add these things back with NLS support in the future 
+#  @lib/cxf-rt-bindings-soap-2.6.2.jar!/OSGI-INF/blueprint/**, \

@@ -1,0 +1,7 @@
+analyseLocally=false
+eclipse.preferences.version=1
+extraProperties=
+lastAnalysisDate=1366911191199
+projectKey=Liberty-8.5.5\:com.ibm.websphere.filetransfer
+serverUrl=http\://szeged.hursley.ibm.com\:8080/sonar
+version=2

@@ -1,0 +1,99 @@
+Index: src/main/java/org/apache/cxf/jaxb/JAXBContextInitializer.java
+===================================================================
+--- src/main/java/org/apache/cxf/jaxb/JAXBContextInitializer.java	(revision 1410210)
++++ src/main/java/org/apache/cxf/jaxb/JAXBContextInitializer.java	(working copy)
+@@ -375,7 +375,8 @@
+         // We only accept non static property getters which are not marked @XmlTransient
+         if (Modifier.isStatic(method.getModifiers()) 
+             || method.isAnnotationPresent(XmlTransient.class)
+-            || !Modifier.isPublic(method.getModifiers())) {
++                || !Modifier.isPublic(method.getModifiers())
++                || "getClass".equals(method.getName())) {
+             return false;
+         }
+ 
+@@ -404,12 +405,12 @@
+         } catch (Exception e) {
+             //getter, but no setter
+         }
+-        if (setter == null 
+-            || setter.isAnnotationPresent(XmlTransient.class)
++        if (setter != null) {
++            if (setter.isAnnotationPresent(XmlTransient.class)
+             || !Modifier.isPublic(setter.getModifiers())) {
+             return false;
+         }
+-
++        }
+         if (accessType == XmlAccessType.NONE
+             || accessType == XmlAccessType.FIELD) {
+             return checkJaxbAnnotation(method.getAnnotations());
+@@ -420,6 +421,7 @@
+ 
+     /**
+      * Checks if there are JAXB annotations among the annotations of the class member.
++     * 
+      * @param annotations the array of annotations from the class member
+      * @return true if JAXB annotations are present, false otherwise
+      */
+Index: src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java
+===================================================================
+--- src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java	(revision 1410210)
++++ src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java	(working copy)
+@@ -398,6 +398,8 @@
+             writer.flush();
+         } catch (Exception e) {
+             throw new Fault(new Message("MARSHAL_ERROR", LOG, e.getMessage()), e);
++        } finally {
++            StaxUtils.close(writer);
+         }
+     }
+ 
+@@ -514,15 +516,15 @@
+                         m = cls.getMethod("is" + s);
+                     }
+                     Type type = m.getGenericReturnType();
+-                    Method m2 = cls.getMethod("set" + s, m.getReturnType());
++                    Object o = null;
+                     if (JAXBSchemaInitializer.isArray(type)) {
+                         Class<?> compType = JAXBSchemaInitializer
+-                            .getArrayComponentType(type);
++                                        .getArrayComponentType(type);
+                         List<Object> ret = unmarshallArray(u, reader,
+                                                            q,
+                                                            compType,
+                                                            createList(type));
+-                        Object o = ret;
++                        o = ret;
+                         if (!isList(type)) {
+                             if (compType.isPrimitive()) {
+                                 o = java.lang.reflect.Array.newInstance(compType, ret.size());
+@@ -530,14 +532,24 @@
+                                     Array.set(o, x, ret.get(x));
+                                 }
+                             } else {
+-                                o = ret.toArray((Object[])Array.newInstance(compType, ret.size()));
++                                o = ret.toArray((Object[]) Array.newInstance(compType, ret.size()));
+                             }
+                         }
++                    } else {
++                        o = getElementValue(u.unmarshal(reader, m.getReturnType()));
++                    }
+ 
++                    try {
++                        Method m2 = cls.getMethod("set" + s, m.getReturnType());
++
+                         m2.invoke(obj, o);
+-                    } else {
+-                        Object o = getElementValue(u.unmarshal(reader, m.getReturnType()));
+-                        m2.invoke(obj, o);
++
++                    } catch (NoSuchMethodException mex) {
++                        Field f = ReflectionUtil.getDeclaredField(cls, q.getLocalPart());
++                        if (f != null) {
++                            ReflectionUtil.setAccessible(f);
++                            f.set(obj, o);
++                        }
+                     }
+                 }
+             }

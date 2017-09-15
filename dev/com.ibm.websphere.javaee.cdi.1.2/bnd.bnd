@@ -1,0 +1,52 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.2
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.cdi.1.2; singleton:=true
+
+Export-Package: javax.decorator; version=1.1, \
+ javax.enterprise; version=1.1, \
+ javax.enterprise.context; version=1.1, \
+ javax.enterprise.context.spi; version=1.1, \
+ javax.enterprise.event; version=1.1, \
+ javax.enterprise.inject; version=1.1, \
+ javax.enterprise.inject.deployment; version=1.1, \
+ javax.enterprise.inject.spi; version=1.1, \
+ javax.enterprise.inject.stereotype; version=1.1, \
+ javax.enterprise.util; version=1.1, \
+ javax.inject; version=1, \
+
+Import-Package:  javax.el; version="[3.0.0,4.0.0)", \
+ javax.decorator;version="1.1", \
+ javax.enterprise.context;version="1.1", \
+ javax.enterprise.context.spi;version="1.1", \
+ javax.enterprise.event;version="1.1", \
+ javax.enterprise.inject;version="1.1", \
+ javax.enterprise.inject.spi;version="1.1", \
+ javax.enterprise.util;version="1.1", \
+ javax.inject;version=1, \
+ javax.interceptor;version="1.2"
+
+Include-Resource: \
+  @${repo;javax.enterprise:cdi-api;1.2}!/beans_1_0.xsd, \
+  @${repo;javax.enterprise:cdi-api;1.2}!/beans_1_1.xsd
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	javax.inject:javax.inject;version=1,\
+	javax.enterprise:cdi-api;version=1.2
+	

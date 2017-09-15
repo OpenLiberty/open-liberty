@@ -1,0 +1,24 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.websphere.jsonsupport" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+	<!-- this post compile makes sure JSONP implementation not included
+	to ensure Java 6 compatibility -->
+	<target name="post-compile">
+		<delete>
+			<fileset dir="${classes.dir}">
+				<include name="com/ibm/ws/jsonsupport/internal/JSONImpl*.class"/>
+				<include name="com/ibm/ws/jsonsupport/internal/JsonMapper*.class"/>
+				<include name="com/ibm/ws/jsonsupport/internal/JavaMapper*.class"/>
+			</fileset>
+		</delete>
+	</target>
+</project>

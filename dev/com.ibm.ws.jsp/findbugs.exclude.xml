@@ -1,0 +1,2959 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.configuration.JspConfiguration"/>
+    <Method name="getExpressionFactory" signature="()Ljavax/el/ExpressionFactory;"/>
+    <Bug pattern="DC_DOUBLECHECK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.configuration.JspConfiguration"/>
+    <Field name="expressionFactory"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ELValidator"/>
+    <Method name="validateRuntimeExpressions" signature="(Lorg/w3c/dom/Element;[Ljava/lang/String;Ljava/lang/Class;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/ws/jsp/translator/visitor/validator/ValidateResult;Lcom/ibm/wsspi/jsp/context/JspCoreContext;Ljava/util/HashMap;)V"/>
+    <Local name="validRuntimeAttrs"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ELValidator"/>
+    <Method name="getELExpressions" signature="(Ljava/lang/String;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Z)[Ljava/lang/String;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.configuration.JspConfiguration"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.configuration.JspConfiguration"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.configuration.JspConfiguration"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Ljava/lang/String;Ljava/lang/String;ZZZZZZLjava/lang/String;Ljava/lang/String;ZZLjava/lang/String;Ljava/lang/String;Z)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.configuration.JspConfiguration"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.configuration.JspConfiguration"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.context.InMemoryJspTranslationContext"/>
+    <Method name="getRealPath" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.resource.InMemoryJspResources"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/wsspi/jsp/context/JspCoreContext;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationEnvironment;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.resource.InMemoryJspResources"/>
+    <Method name="isOutdated" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.resource.InMemoryJspResources"/>
+    <Method name="sync" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.resource.InMemoryTagFileResources"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Ljavax/servlet/jsp/tagext/TagFileInfo;Lcom/ibm/wsspi/jsp/context/JspCoreContext;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationEnvironment;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.resource.InMemoryTagFileResources"/>
+    <Method name="isOutdated" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.resource.InMemoryTagFileResources"/>
+    <Method name="sync" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.resource.InMemoryTagFileResources"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Ljavax/servlet/jsp/tagext/TagFileInfo;Lcom/ibm/wsspi/jsp/context/JspCoreContext;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationEnvironment;)V"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.webcontainerext.AbstractInMemoryJSPExtensionServletWrapper"/>
+    <Method name="createClassLoader" signature="()V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.webcontainerext.AbstractInMemoryJSPExtensionServletWrapper"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.webcontainerext.AbstractInMemoryJSPExtensionServletWrapper"/>
+    <Method name="createPermissionCollection" signature="()Ljava/security/PermissionCollection;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.webcontainerext.AbstractInMemoryJSPExtensionServletWrapper"/>
+    <Method name="createClassLoader" signature="()V"/>
+    <Bug pattern="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.webcontainerext.AbstractInMemoryJSPExtensionServletWrapper"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/net/URL;Ljava/lang/String;Ljava/net/URLStreamHandler;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspURLConnection"/>
+    <Method name="getInputStream" signature="()Ljava/io/InputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspURLStreamHandler"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="loadImplicitTldFromJar" signature="(Lcom/ibm/ws/jsp/taglib/config/GlobalTagLibConfig;Lcom/ibm/ws/jsp/taglib/TldParser;)Z"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="getGlobalTagLibMapForWebApp" signature="(Lcom/ibm/wsspi/jsp/context/JspCoreContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;)Ljava/util/Map;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="loadImplicitTldFromJar" signature="(Lcom/ibm/ws/jsp/taglib/config/GlobalTagLibConfig;Lcom/ibm/ws/jsp/taglib/TldParser;)Z"/>
+    <Bug pattern="NP_ALWAYS_NULL_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="OBL_UNSATISFIED_OBLIGATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Field name="configManager"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Field name="inputSourceFactory"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Field name="loader"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Field name="inputSourceFactory"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadLooseLibTagFiles" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadSerializedTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/wsspi/jsp/resource/JspInputSource;)Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadTaglibTldFromJar" signature="(Ljava/lang/String;)Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadTldsFromJar" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="serializeTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadLooseLibTagFiles" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadLooseLibTagFiles" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadSerializedTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/wsspi/jsp/resource/JspInputSource;)Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadSerializedTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/wsspi/jsp/resource/JspInputSource;)Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="serializeTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;)V"/>
+    <Bug pattern="DMI_NONSERIALIZABLE_OBJECT_WRITTEN"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Ljava/util/Map;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadLooseLibTagFiles" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Ljava/util/Map;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadLooseLibTagFiles" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadSerializedTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/wsspi/jsp/resource/JspInputSource;)Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadTldsFromJar" signature="(Ljava/net/URL;Ljava/lang/String;Ljava/util/List;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadTldsFromContainerRecursive"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Field name="configManager"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Field name="ctxt"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Field name="jspOptions"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Field name="tldParser"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadSerializedTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/wsspi/jsp/resource/JspInputSource;)Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Ljava/util/Map;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Ljava/util/Map;Ljava/util/Map;Ljava/util/Map;)V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  
+  <!-- PI12939 start -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="deleteClassFiles" signature="([Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <!-- PI12939 end -->
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadWebXmlMap" signature="(Ljava/util/Map;)Ljava/util/List;"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="reloadTld" signature="(Ljava/lang/String;J)V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryInfoImpl"/>
+    <Method name="getTagLibraryValidator" signature="()Ljavax/servlet/jsp/tagext/TagLibraryValidator;"/>
+    <Bug pattern="NP_ALWAYS_NULL_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryInfoImpl"/>
+    <Method name="getTagLibraryValidator" signature="()Ljavax/servlet/jsp/tagext/TagLibraryValidator;"/>
+    <Bug pattern="NP_ALWAYS_NULL_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TldParser"/>
+    <Field name="elementTypes"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TldParser"/>
+    <Field name="logLevel"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TldParser"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TldParser"/>
+    <Method name="warning" signature="(Lorg/xml/sax/SAXParseException;)V"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TldParser"/>
+    <Method name="logParseErrorMessage" signature="(Ljava/lang/Exception;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TldParser"/>
+    <Method name="warning" signature="(Lorg/xml/sax/SAXParseException;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TldParser"/>
+    <Method name="resolveEntity" signature="(Ljava/lang/String;Ljava/lang/String;)Lorg/xml/sax/InputSource;"/>
+    <Bug pattern="UI_INHERITANCE_UNSAFE_GETRESOURCE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getManifestURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="_internalCompileApp" signature="(Z)I"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="createClassLoader" signature="(Ljava/lang/String;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Ljava/lang/String;Ljava/util/logging/Logger;ZLjava/io/File;Ljava/io/File;)Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="createFilesList" signature="(Ljava/io/File;Ljava/util/List;Lcom/ibm/ws/jsp/JspOptions;)I"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="createNewFilesList" signature="(Ljava/io/File;Ljava/util/List;Lcom/ibm/ws/jsp/JspOptions;)I"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getManifestURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getManifestURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="_internalCompileApp" signature="(Z)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="_internalCompileApp" signature="(Z)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="checkForWebxml" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getLibURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getLibURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getLibURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getLibURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getManifestClassPaths" signature="(Ljava/util/jar/Manifest;Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getManifestURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getManifestURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getServerURLs" signature="(Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getServerURLs" signature="(Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getServerURLs" signature="(Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getServerURLs" signature="(Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getWebAppURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getWebAppURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getWebAppURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="getWebAppURLs" signature="(Ljava/lang/String;Ljava/util/List;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="removeClassfiles" signature="([Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="removeClassfiles" signature="([Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="removeClassfiles" signature="([Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="removeClassfiles" signature="([Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="translateDir" signature="(Lcom/ibm/ws/jsp/tools/AbstractJspModC$JspDirectory;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;Z)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="translateDir" signature="(Lcom/ibm/ws/jsp/tools/AbstractJspModC$JspDirectory;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;Z)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="translateDir" signature="(Lcom/ibm/ws/jsp/tools/AbstractJspModC$JspDirectory;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;Z)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="translateDir" signature="(Lcom/ibm/ws/jsp/tools/AbstractJspModC$JspDirectory;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;Z)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="_internalCompileApp" signature="(Z)I"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="createClassLoader" signature="(Ljava/lang/String;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Ljava/lang/String;Ljava/util/logging/Logger;ZLjava/io/File;Ljava/io/File;)Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="setGlobalTagLibConfigs" signature="([Lcom/ibm/ws/jsp/taglib/config/GlobalTagLibConfig;)V"/>
+    <Field name="tagLibConfigArray"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="setSharedLibraryJarList" signature="([Ljava/lang/String;)V"/>
+    <Field name="sharedLibraryJarList"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="createNewFilesList" signature="(Ljava/io/File;Ljava/util/List;Lcom/ibm/ws/jsp/JspOptions;)I"/>
+    <Bug pattern="NP_CLOSING_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="translateDir" signature="(Lcom/ibm/ws/jsp/tools/AbstractJspModC$JspDirectory;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfigurationManager;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;Z)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="usage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.FileBasedJspContext"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Lcom/ibm/ws/jsp/JspOptions;Ljava/lang/String;Ljava/lang/String;Ljava/lang/ClassLoader;Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;Z)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.FileBasedJspContext"/>
+    <Method name="getRealPath" signature="(Ljava/lang/String;Z)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.FileBasedJspContext"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.FileBasedJspContext"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.FileBasedJspContext"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.FileBasedJspContext"/>
+    <Method name="getRealPath" signature="(Ljava/lang/String;Z)Ljava/lang/String;"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspDocumentConverter"/>
+    <Method name="insertInclude" signature="(Lorg/w3c/dom/Document;Lorg/w3c/dom/Node;Ljava/lang/String;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspDocumentConverter"/>
+    <Method name="printElements" signature="(Lorg/w3c/dom/Element;I)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspDocumentParser"/>
+    <Method name="insertInclude" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspDocumentParser"/>
+    <Method name="createJspTextElement" signature="(Lorg/w3c/dom/Node;Ljava/lang/StringBuffer;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspDocumentParser"/>
+    <Method name="insertInclude" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspPageParser"/>
+    <Method name="insertInclude" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspPageParser"/>
+    <Method name="insertInclude" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspPageParser"/>
+    <Method name="processHtmlCommment" signature="()V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspPageParser"/>
+    <Method name="processTemplateText" signature="()V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspPageParser"/>
+    <Method name="processActionAttributes" signature="(Lorg/w3c/dom/Element;)Z"/>
+    <Bug pattern="SF_SWITCH_FALLTHROUGH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspPageParser"/>
+    <Method name="processDirective" signature="()V"/>
+    <Bug pattern="SF_SWITCH_FALLTHROUGH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isOutdated" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isOutdated" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isOutdated" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isTagFileOutdated" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isTagFileOutdated" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isTagFileOutdated" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="sync" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/lang/String;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="sync" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/lang/String;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="sync" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/lang/String;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="sync" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/lang/String;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="sync" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/lang/String;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="sync" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;Ljava/lang/String;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="syncGeneratedSource" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="syncGeneratedSource" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="syncGeneratedSource" signature="(Ljava/io/File;Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="syncTagFile" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="syncTagFile" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="syncTagFile" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="syncTagFile" signature="(Ljava/io/File;Ljava/io/File;Ljava/io/File;ZZ)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.TagFileResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Ljavax/servlet/jsp/tagext/TagFileInfo;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.TagFileResourcesImpl"/>
+    <Method name="sync" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.TagFileResourcesImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Ljavax/servlet/jsp/tagext/TagFileInfo;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Method name="generateDependencyList" signature="(Lcom/ibm/ws/jsp/translator/visitor/generator/JavaCodeWriter;Lcom/ibm/ws/jsp/translator/visitor/validator/ValidateResult;Lcom/ibm/wsspi/jsp/context/JspCoreContext;Z)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Method name="createMethodExpression" signature="(Ljava/lang/StringBuffer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/Class;Ljavax/servlet/jsp/tagext/TagAttributeInfo;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Method name="createValueExpression" signature="(Ljava/lang/StringBuffer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/Class;Ljavax/servlet/jsp/tagext/TagAttributeInfo;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Method name="nextTemporaryVariableName" signature="(Ljava/util/Map;)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Field name="JSP_FILE_TYPE"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Field name="TAG_FILE_TYPE"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Field name="classfileVersion"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Method name="toJavaSourceType" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GeneratorUtils"/>
+    <Field name="fullClassfileInformation"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="visitCustomTagEnd" signature="(Lorg/w3c/dom/Element;)V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="validateCustomTagAttribute" signature="(Lorg/w3c/dom/Element;Ljava/util/Hashtable;ZZLjava/lang/String;Ljavax/servlet/jsp/tagext/TagAttributeInfo;Ljava/lang/String;ZLjava/lang/String;)Z"/>
+    <Bug pattern="DLS_DEAD_STORE_OF_CLASS_LITERAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="getTagInfo" signature="(Lorg/w3c/dom/Element;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)Lcom/ibm/ws/jsp/translator/visitor/validator/ValidateVisitor$ValidateTagInfo;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="validateCustomTagAttributeValues" signature="(Lorg/w3c/dom/Element;[Ljavax/servlet/jsp/tagext/TagAttributeInfo;ZLcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;)Lcom/ibm/ws/jsp/translator/visitor/validator/ValidateVisitor$CustomTagInstance;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="visitCustomTagStart" signature="(Lorg/w3c/dom/Element;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="visitJspELTextStart" signature="(Lorg/w3c/dom/Element;Ljava/lang/String;Ljava/lang/Class;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="visitJspRootStart" signature="(Lorg/w3c/dom/Element;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="setScriptingVars" signature="([Ljavax/servlet/jsp/tagext/TagVariableInfo;[Ljavax/servlet/jsp/tagext/VariableInfo;Ljavax/servlet/jsp/tagext/TagData;II)Ljava/util/Vector;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Field name="ATTR_STANDARD_ACTIONS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Field name="BODY_STANDARD_ACTIONS"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/translator/visitor/configuration/JspVisitorUsage;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/wsspi/jsp/context/JspCoreContext;Ljava/util/HashMap;Lcom/ibm/ws/jsp/translator/visitor/JspVisitorInputMap;)V"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="getAttributeValue" signature="(Lorg/w3c/dom/Element;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/translator/visitor/configuration/JspVisitorUsage;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/wsspi/jsp/context/JspCoreContext;Ljava/util/HashMap;Lcom/ibm/ws/jsp/translator/visitor/JspVisitorInputMap;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;Lcom/ibm/ws/jsp/taglib/GlobalTagLibraryCache;Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="_handleCaseSensitivityCheck" signature="(Ljava/lang/String;Z)Ljava/lang/Boolean;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="isAvailable" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;Lcom/ibm/ws/jsp/taglib/GlobalTagLibraryCache;Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;)V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="_handleCaseSensitivityCheck" signature="(Ljava/lang/String;Z)Ljava/lang/Boolean;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Field name="syncObjects"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;Lcom/ibm/ws/jsp/taglib/GlobalTagLibraryCache;Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="createClassLoader" signature="()V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="_checkForTranslation" signature="(Ljavax/servlet/http/HttpServletRequest;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="_checkForTranslation" signature="(Ljavax/servlet/http/HttpServletRequest;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="isAvailable" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="isDependentOutdated" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="isDependentOutdated" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="_checkForTranslation" signature="(Ljavax/servlet/http/HttpServletRequest;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="createClassLoader" signature="()V"/>
+    <Bug pattern="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Field name="classloaderCreated"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Field name="jspResources"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Field name="dispatcherRethrowSERROR"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="translateJsp" signature="()Z"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="_checkForTranslation" signature="(Ljavax/servlet/http/HttpServletRequest;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="_checkForTranslation" signature="(Ljavax/servlet/http/HttpServletRequest;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="translateJsp" signature="()Z"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="isDependentOutdated" signature="()Z"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionContext"/>
+    <Method name="getRealPath" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="createConfig" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="createJspClassloaderContext" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;)Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="createJspClassloaderContext" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;)Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="createJspClassloaderContext" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;)Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JspDependent"/>
+    <Method name="getTimestamp" signature="()J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JspDependent"/>
+    <Method name="isOutdated" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/wsspi/jsp/context/JspCoreContext;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Field name="classFile"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Field name="container"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Field name="keepGeneratedclassfiles"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Field name="keepgenerated"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Field name="sourceFileTimestamp"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Field name="webinfClassRelativeUrl"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.TagFileResourcesImpl"/>
+    <Method name="isOutdated" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.TagFileResourcesImpl"/>
+    <Method name="isOutdated" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.TagFileResourcesImpl"/>
+    <Method name="syncGeneratedSource" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+    <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="loadTldFromJarInputStream" signature="(Lcom/ibm/ws/jsp/taglib/config/GlobalTagLibConfig;Lcom/ibm/ws/jsp/taglib/TldParser;)V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="loadSerializedTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/wsspi/jsp/resource/JspInputSource;)Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Method name="serializeTld" signature="(Lcom/ibm/wsspi/jsp/resource/JspInputSource;Lcom/ibm/ws/jsp/taglib/TagLibraryInfoImpl;)V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="createJspClassloaderContext" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;)Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="createJspClassloaderContext" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/jsp/configuration/JspXmlExtConfig;)Lcom/ibm/wsspi/jsp/context/JspClassloaderContext;"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.webxml.DefaultJspExtConfig"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.webxml.DefaultJspExtConfig"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="createConfig"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="populateOptions" signature="(Ljava/util/Properties;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="populateOptions" signature="(Ljava/util/Properties;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="populateOptions" signature="(Ljava/util/Properties;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="populateOptions" signature="(Ljava/util/Properties;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="populateOptions" signature="(Ljava/util/Properties;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Bug pattern="DM_STRING_VOID_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/util/Properties;)V"/>
+    <Bug pattern="DM_STRING_VOID_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Field name="ALLOWJSPOUTPUTELEMENTMISMATCH"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Field name="ALLOWTAGLIBPREFIXREDEFINITION"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Field name="ALLOWTAGLIBPREFIXUSEBEFOREDEFINITION"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Field name="ALLOWUNMATCHEDENDTAG"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryCache"/>
+    <Field name="container"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.FileBasedJspContext"/>
+    <Method name="getRealTimeStamp" signature="(Ljava/lang/String;)J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.jsp.webxml.WebXmlParser"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/File;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webxml.WebXmlParser"/>
+    <Method name="endElement" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webxml.WebXmlParser"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/File;)V"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webxml.WebXmlParser"/>
+    <Method name="resolveEntity" signature="(Ljava/lang/String;Ljava/lang/String;)Lorg/xml/sax/InputSource;"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+  
+  <!-- This false positive is not one that can be easily detected (basically the hasNext call ends up after the trace call) -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/ClassLoader;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+   <!-- Preexisting problem - will ignore this one -->
+   <Match>
+     <Class name="com.ibm.ws.jsp.Constants"/>
+     <Field name="STANDARD_JSP_EXTENSIONS"/>
+     <Bug pattern="MS_MUTABLE_ARRAY"/>
+   </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="translateJsp" signature="(Lcom/ibm/wsspi/jsp/resource/translation/JspResources;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;ZLjava/util/List;)Lcom/ibm/ws/jsp/translator/utils/JspTranslationResult;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="translateJsp" signature="(Lcom/ibm/wsspi/jsp/resource/translation/JspResources;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;ZLjava/util/List;)Lcom/ibm/ws/jsp/translator/utils/JspTranslationResult;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="translateJsp" signature="(Lcom/ibm/wsspi/jsp/resource/translation/JspResources;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;ZLjava/util/List;)Lcom/ibm/ws/jsp/translator/utils/JspTranslationResult;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="translateJsp" signature="(Lcom/ibm/wsspi/jsp/resource/translation/JspResources;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;ZLjava/util/List;)Lcom/ibm/ws/jsp/translator/utils/JspTranslationResult;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="translateJsp" signature="(Lcom/ibm/wsspi/jsp/resource/translation/JspResources;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;ZLjava/util/List;)Lcom/ibm/ws/jsp/translator/utils/JspTranslationResult;"/>
+    <Local name="tli"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="translateJsp" signature="(Lcom/ibm/wsspi/jsp/resource/translation/JspResources;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Lcom/ibm/ws/jsp/JspOptions;Lcom/ibm/ws/jsp/taglib/TagLibraryCache;ZLjava/util/List;)Lcom/ibm/ws/jsp/translator/utils/JspTranslationResult;"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="printElements" signature="(Lorg/w3c/dom/Element;I)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="printTagFileFiles" signature="(Ljava/util/List;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspTranslatorUtil"/>
+    <Method name="printAllElements" signature="(Ljava/util/HashMap;)V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.ParsedTagElement"/>
+    <Field name="tagVariables"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.ParsedTagElement"/>
+    <Field name="tagAttributes"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionFactory"/>
+    <Field name="globalTagLibraryCache"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="getTempDirectory"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspCompilerRequestor"/>
+    <Method name="createErrorMsg" signature="(Lcom/ibm/wsspi/jsp/compiler/JspLineId;I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspCompilerRequestor"/>
+    <Method name="acceptResult" signature="(Lorg/eclipse/jdt/internal/compiler/CompilationResult;)V"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="getClassFileBytes" signature="(Ljava/lang/String;)[B"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/inmemory/compiler/InMemoryJDTCompiler;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Field name="dependencyResources"/>
+    <Local name="dependencyResources"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([C[[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="isPackage" signature="([[C[C)Z"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilationUnit"/>
+    <Method name="getContents" signature="()[C"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilerRequestor"/>
+    <Method name="acceptResult" signature="(Lorg/eclipse/jdt/internal/compiler/CompilationResult;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilerRequestor"/>
+    <Method name="createErrorMsg" signature="(Lcom/ibm/wsspi/jsp/compiler/JspLineId;I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilerRequestor"/>
+    <Method name="acceptResult" signature="(Lorg/eclipse/jdt/internal/compiler/CompilationResult;)V"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="getClassFileBytes" signature="(Ljava/lang/String;)[B"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="isPackage" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/translator/compiler/JDTCompiler;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Field name="dependencyResources"/>
+    <Local name="dependencyResources"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([C[[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="isPackage" signature="([[C[C)Z"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="runCompile" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="createErrorMsg" signature="(Lcom/ibm/wsspi/jsp/compiler/JspLineId;I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="runCompile" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)I"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="isJavaVersionAtLeast17"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.StandardJspCompiler"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <!-- Certain parts of the JSP code are permitted to make calls to the liberty methods to be avoided -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceContainerImpl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceContainerImpl"/>
+    <Method name="getInputStream"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Method name="sync"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isOutdated"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isTagFileOutdated"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JspDependent"/>
+    <Method name="getTimestamp"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JspDependent"/>
+    <Method name="isOutdated"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+
+  
+  <!-- Certain parts of the JSP code are permitted to make calls to the liberty methods to be avoided -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceContainerImpl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceContainerImpl"/>
+    <Method name="getInputStream"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.JspResourcesContainerImpl"/>
+    <Method name="sync"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isOutdated"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Method name="isTagFileOutdated"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JspDependent"/>
+    <Method name="getTimestamp"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JspDependent"/>
+    <Method name="isOutdated"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspCompilerRequestor"/>
+    <Method name="createErrorMsg" signature="(Lcom/ibm/wsspi/jsp/compiler/JspLineId;I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspCompilerRequestor"/>
+    <Method name="acceptResult" signature="(Lorg/eclipse/jdt/internal/compiler/CompilationResult;)V"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="getClassFileBytes" signature="(Ljava/lang/String;)[B"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/inmemory/compiler/InMemoryJDTCompiler;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Field name="dependencyResources"/>
+    <Local name="dependencyResources"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([C[[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Method name="isPackage" signature="([[C[C)Z"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilationUnit"/>
+    <Method name="getContents" signature="()[C"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilerRequestor"/>
+    <Method name="acceptResult" signature="(Lorg/eclipse/jdt/internal/compiler/CompilationResult;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilerRequestor"/>
+    <Method name="createErrorMsg" signature="(Lcom/ibm/wsspi/jsp/compiler/JspLineId;I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspCompilerRequestor"/>
+    <Method name="acceptResult" signature="(Lorg/eclipse/jdt/internal/compiler/CompilationResult;)V"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="getClassFileBytes" signature="(Ljava/lang/String;)[B"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="isPackage" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/jsp/translator/compiler/JDTCompiler;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;[Lcom/ibm/wsspi/jsp/resource/translation/JspResources;)V"/>
+    <Field name="dependencyResources"/>
+    <Local name="dependencyResources"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([C[[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="findType" signature="([[C)Lorg/eclipse/jdt/internal/compiler/env/NameEnvironmentAnswer;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+    <Method name="isPackage" signature="([[C[C)Z"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="compile" signature="(Ljava/lang/String;Ljava/util/Collection;Ljava/util/List;)Lcom/ibm/wsspi/jsp/compiler/JspCompilerResult;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="runCompile" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="createErrorMsg" signature="(Lcom/ibm/wsspi/jsp/compiler/JspLineId;I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="runCompile" signature="(Ljava/lang/String;Ljava/util/List;Ljava/lang/String;)I"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Method name="isJavaVersionAtLeast17"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.StandardJspCompiler"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+  <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+  <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+  <Class name="com.ibm.ws.jsp.translator.compiler.JDTCompiler$JspNameEnvironment"/>
+  <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+  <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceContainerImpl"/>
+  <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SC_START_IN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionProcessor$PreTouchThreadStarter"/>
+    <Method name="run"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Method name="run"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Method name="getJsp"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Method name="getJsp"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Method name="getJsp"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Method name="run"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Field name="_counter"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Field name="shouldClassload"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Method name="run"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper$PrepareJspHelperThread"/>
+    <Method name="run"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.XMLEncodingDetector"/>
+    <Method name="getEncoding" signature="(Ljava/io/InputStream;)[Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.XMLEncodingDetector"/>
+    <Method name="getEncodingName" signature="([BI)[Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.XMLEncodingDetector"/>
+    <Method name="load" signature="(IZ)Z"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.XMLEncodingDetector"/>
+    <Method name="createInitialReader" signature="()V"/>
+    <Bug pattern="SR_NOT_CHECKED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspHelper"/>
+    <Method name="getJsp" signature="()Ljava/io/File;"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ELValidator"/>
+    <Method name="validateElFunction" signature="(Lorg/w3c/dom/Element;Ljava/lang/String;Lcom/ibm/ws/jsp/translator/visitor/validator/ValidateResult;Ljava/lang/ClassLoader;Lcom/ibm/ws/jsp/configuration/JspConfiguration;Ljava/util/HashMap;)V"/>
+    <Bug pattern="RpC_REPEATED_CONDITIONAL_TEST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor$CustomTagInstance"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateVisitor$ValidateTagInfo"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <!--  Pre-existing usage -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.AbstractJSPExtensionServletWrapper"/>
+    <Method name="_checkForTranslation"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <!--unchanged files, findbugs just found these when an import was removed from another file-->
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceImpl"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+  
+  <!--unchanged files, findbugs just found these when an import was removed from another file-->
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.resource.ResourceUtil"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+  
+  <!-- Caller of the method is, presumably, required to pass a valid 'type' -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspPageParser"/>
+    <Method name="processScriptingElement"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+
+  <!-- These are protected or public fields, so leave 'em alone -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceContainerImpl"/>
+    <Field name="~(absoluteURL|contextURL|document)"/>
+    <Bug pattern="UWF_NULL_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.inputsource.JspInputSourceImpl"/>
+    <Field name="document"/>
+    <Bug pattern="UWF_NULL_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="~com\.ibm\.ws\.jsp\.inputsource\.JspInputSource(Container)?Impl"/>
+    <Field name="urlStreamHandler"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspOptions"/>
+    <Field name="syncToThread"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+ 
+  <!-- The parse method closes the file -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.GlobalTagLibraryCache"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE"/>
+  </Match>
+  
+  <!-- Yes, we assume that the files are in the native platform encoding -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.jsx.tags.CallTag"/>
+    <Method name="doEndTag"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.AbstractJspModC"/>
+    <Method name="~create(New)?FilesList"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JikesJspCompiler"/>
+    <Method name="runCompile"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.ws.PrepareJspServletResponseImpl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <!-- reasonable as documentation -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory"/>
+    <Method name="getTempDirectory"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+ 
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.BaseTagGenerator"/>
+    <Method name="createJspId" signature="(Lcom/ibm/ws/jsp/translator/visitor/JspVisitorInputMap;)Ljava/lang/String;"/>
+    <Bug pattern="RV_ABSOLUTE_VALUE_OF_HASHCODE"/>
+  </Match>  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.BaseTagGenerator"/>
+    <Method name="convertString" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/String;"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.BaseTagGenerator"/>
+    <Method name="convertString" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Z)Ljava/lang/String;"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.BaseTagGenerator"/>
+    <Method name="getScriptingVars" signature="(I)Ljava/util/Vector;"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor"/>
+    <Method name="generateImportSection"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor"/>
+    <Method name="generateInitSection"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor"/>
+    <Method name="generateInitSection"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor"/>
+    <Method name="visit"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GenerateTagFileVisitor"/>
+    <Method name="visit"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.tagfilescan.TagFileScanVisitor"/>
+    <Field name="tei"/>
+    <Bug pattern="UWF_NULL_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.Constants"/>
+    <Field name="STANDARD_IMPORTS"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+  <!-- PM94792 start -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.TextGenerator"/>
+    <Method name="addExisitingString" signature="(Ljava/lang/String;I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.TextGenerator"/>
+    <Method name="startGeneration" signature="(ILcom/ibm/ws/jsp/translator/visitor/generator/JavaCodeWriter;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+  <!-- PM94792 end -->
+  <!-- 142209 start -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.inmemory.compiler.InMemoryJDTCompiler$JspNameEnvironment"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+  <!-- 142209 end -->
+  <!-- PI09596 start -->
+  <!-- match generated nls classes: return mutable type -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.resources.messages"/>
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+  </Match>
+  <Match> 
+    <Class name="~.*\.resources\..*" />
+    <Method name="getContents"/>
+    <Bug code="EI" />
+  </Match>
+  <!-- PI09596 end -->
+  <!-- PI24001 start -->
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Method name="removeAttribute" signature="(Ljava/lang/String;I)V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Method name="main"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Method name="main"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Method name="main"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Bug pattern="UUF_UNUSED_FIELD"/>
+  </Match>
+  <!-- PM94792 end -->
+  <!-- PI31922 start -->
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspApplicationContextImpl"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspApplicationContextImpl"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+  <!-- PI31922 end -->
+  <!-- 
+       Findbugs complains about needing a doPrivileged block... however such 
+       block is present and executed only if we find a security manager 
+  -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.utils.JspFileObject"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.utils.JspFileObject"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.utils.JspFileManager$WebModuleClassLoaderPackageFinder"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.utils.JspFileManager$WebModuleClassLoaderPackageFinder"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <!-- This method will not return null in this case. Findbugs is being too generic.  -->
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.utils.JspFileManager$WebModuleClassLoaderPackageFinder"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.JSPStrBufferImpl"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.TagFileId"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="HE_EQUALS_USE_HASHCODE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.bean.BeanRepository"/>
+    <Method name="ClassFound" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.JspFileUtils"/>
+    <Method name="removeFixedPackageFiles" signature="(Ljava/lang/String;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Ljava/lang/String;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.JspFileUtils"/>
+    <Method name="removeVersion4Files" signature="(Ljava/io/File;Ljava/lang/String;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspContextWrapper"/>
+    <Method name="include" signature="(Ljava/lang/String;Z)V"/>
+    <Bug pattern="IL_INFINITE_RECURSIVE_LOOP"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.ASCIIReader"/>
+    <Method name="read" signature="([CII)I"/>
+    <Bug pattern="INT_BAD_COMPARISON_WITH_SIGNED_BYTE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagLibraryInfoProxy"/>
+    <Method name="loadTld" signature="()V"/>
+    <Local name="tldInputSource"/>
+    <Bug pattern="NP_ALWAYS_NULL_EXCEPTION"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.JspId"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;)V"/>
+    <Field name="filePath"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.Jsp2Dom"/>
+    <Method name="detectXMLEncoding" signature="()V"/>
+    <Local name="ret"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+<Match>
+    <Class name="com.ibm.ws.jsp.translator.document.Jsp2Dom"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.runtime.HttpJspBase"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspApplicationContextImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="logger"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspApplicationContextImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="logger"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspContextWrapper"/>
+    <Method name="include" signature="(Ljava/lang/String;Z)V"/>
+    <Bug pattern="IL_INFINITE_RECURSIVE_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspContextWrapper"/>
+    <Method name="copyTagToPageScope" signature="(I)V"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="convert" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="createTypedArray" signature="(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;Z)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(Ljava/lang/Object;)Ljava/lang/String;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(Z)Ljava/lang/String;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="URLEncode" signature="(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="decode" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="convert" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="createTypedArray" signature="(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;B)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;C)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;J)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;S)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(B)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(C)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(J)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(S)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="createTypedArray" signature="(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="escapeQueryString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PerThreadTagHandlerPool"/>
+    <Field name="MAX_SIZE"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.TagHandlerPool"/>
+    <Field name="OPTION_MAXSIZE"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.TagHandlerPool"/>
+    <Field name="OPTION_TAGPOOL"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.TagHandlerPool"/>
+    <Method name="getTagHandlerPool" signature="(Ljavax/servlet/ServletConfig;)Lorg/apache/jasper/runtime/TagHandlerPool;"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+ 
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFactoryImpl$PrivilegedGetPageContext"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFactoryImpl$PrivilegedReleasePageContext"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFragmentHelper"/>
+    <Field name="discriminator"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFragmentHelper"/>
+    <Field name="pageContext"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Method name="removeAttribute" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.FunctionSignature"/>
+    <Method name="getParameterTypes" signature="()[Ljava/lang/Class;"/>
+    <Field name="parameterTypes"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  <Match>
+    <Class name="org.apache.jasper.compiler.ELNode$Function"/>
+    <Method name="getParameters" signature="()[Ljava/lang/String;"/>
+    <Field name="parameters"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.compiler.ELNode$Function"/>
+    <Method name="setParameters" signature="([Ljava/lang/String;)V"/>
+    <Field name="parameters"/>
+    <Local name="parameters"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspCoreException"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;[Ljava/lang/Object;)V"/>
+    <Field name="args"/>
+    <Local name="args"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspCoreException"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/Throwable;)V"/>
+    <Field name="args"/>
+    <Local name="args"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspCoreException"/>
+    <Field name="bundleNLS"/>
+    <Bug pattern="MS_SHOULD_BE_REFACTORED_TO_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.JspCoreException"/>
+    <Method name="getMessage" signature="()Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagFileTagInfo"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljavax/servlet/jsp/tagext/TagLibraryInfo;Ljavax/servlet/jsp/tagext/TagExtraInfo;[Ljavax/servlet/jsp/tagext/TagAttributeInfo;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljavax/servlet/jsp/tagext/TagVariableInfo;Ljava/lang/String;)V"/>
+    <Field name="attributeInfo"/>
+    <Local name="attributeInfo"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagFileTagInfo"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljavax/servlet/jsp/tagext/TagLibraryInfo;Ljavax/servlet/jsp/tagext/TagExtraInfo;[Ljavax/servlet/jsp/tagext/TagAttributeInfo;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[Ljavax/servlet/jsp/tagext/TagVariableInfo;Ljava/lang/String;)V"/>
+    <Field name="tvi"/>
+    <Local name="tvi"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.PageTranslationTimeGenerator"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/String;)V"/>
+    <Field name="translationTimeAttrs"/>
+    <Local name="translationTimeAttrs"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.lite.JSPLiteExtProcessor"/>
+    <Field name="syncObjects"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.ImplicitTldParser"/>
+    <Field name="logLevel"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.ImplicitTldParser"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.compiler.JspCompilerFactoryImpl"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.NameMangler"/>
+    <Field name="keywords"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.NameMangler"/>
+    <Field name="keywordsSlash"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.tsx.tag.RepeatTag"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.utils.SmapGenerator"/>
+    <Field name="doEmbedded"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.taglib.TagClassInfo"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.optimizedtag.impl.JSTLForEachIteratorSupport$2"/>
+    <Method name="next" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.validator.ValidateJspVisitor"/>
+    <Method name="visitPageDirectiveStart" signature="(Lorg/w3c/dom/Element;)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.tsx.tag.GetPropertyTag"/>
+    <Method name="doStartTag" signature="()I"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.wsspi.jsp.compiler.JspLineId"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.webcontainerext.JSPErrorReport"/>
+    <Method name="getMessageAsHTML" signature="()Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.Jsp2Dom"/>
+    <Field name="parentIsXml"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.JspFileUtils"/>
+    <Method name="removeFixedPackageFiles" signature="(Ljava/lang/String;Lcom/ibm/wsspi/jsp/context/translation/JspTranslationContext;Ljava/lang/String;)V"/>
+    <Bug pattern="DMI_USELESS_SUBSTRING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsp.tools.JspFileUtils"/>
+    <Method name="removeVersion4Files" signature="(Ljava/io/File;Ljava/lang/String;)V"/>
+    <Bug pattern="DMI_USELESS_SUBSTRING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.compiler.ELParser"/>
+    <Method name="isELReserved" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="IM_AVERAGE_COMPUTATION_COULD_OVERFLOW"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.document.JspEncodingScanner"/>
+    <Method name="scan"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.CustomTagGenerator"/>
+    <Method name="startGeneration" signature="(ILcom/ibm/ws/jsp/translator/visitor/generator/JavaCodeWriter;)V"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.CustomTagGenerator"/>
+    <Method name="endGeneration" signature="(ILcom/ibm/ws/jsp/translator/visitor/generator/JavaCodeWriter;)V"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.visitor.generator.GenerateJspVisitor"/>
+    <Method name="visit" signature="(Lorg/w3c/dom/Document;IL)V"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.jsp.translator.JspTranslator"/>
+    <Field name="jspOptions"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+</FindBugsFilter>

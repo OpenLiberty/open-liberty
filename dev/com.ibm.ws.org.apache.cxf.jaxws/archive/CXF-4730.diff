@@ -1,0 +1,11 @@
+--- cxf/branches/2.6.x-fixes/api/src/main/java/org/apache/cxf/common/injection/Messages.properties	2013/01/05 10:14:46	1429243
++++ cxf/branches/2.6.x-fixes/api/src/main/java/org/apache/cxf/common/injection/Messages.properties	2013/01/05 10:18:47	1429244
+@@ -29,5 +29,5 @@
+ PRE_DESTROY_THREW_EXCEPTION=Method annotated by @PreDestroy throws exception when invoked
+ SETTER_INJECTION_WITH_INCORRECT_TYPE=setter for resource found but with wrong signature: {0}
+ RESOURCE_NAME_NOT_SPECIFIED=Resource annotation on {0} must specify resource name
+-NO_SETTER_OR_FIELD_FOR_RESOURCE=Resource annotation {0} on {0} but no field or setter found.
+-INJECTION_SETTER_METHOD_NOT_FOUND = Can''t find the injection setter method: {0}
+\ No newline at end of file
++NO_SETTER_OR_FIELD_FOR_RESOURCE=Resource annotation on {0} but no field or setter found.
++INJECTION_SETTER_METHOD_NOT_FOUND = Can''t find the injection setter method: {0}

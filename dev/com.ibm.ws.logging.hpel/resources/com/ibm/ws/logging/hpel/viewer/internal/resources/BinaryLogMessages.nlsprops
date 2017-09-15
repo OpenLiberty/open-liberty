@@ -1,0 +1,268 @@
+###############################################################################
+# Copyright (c) 2013, 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME ws/code/ras/src/com/ibm/ws/logging/hpel/resources/BinaryLogMessages.nlsprops
+#COMPONENTPREFIX CWTRA
+#COMPONENTNAMEFOR CWTRA WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+BL_INVALID_ACTION=The specified action {0} is not valid.  
+
+# do not translate "--minDate"
+BL_INVALID_MINDATE=Unable to parse --minDate value.
+
+# do not translate "--maxDate"
+BL_INVALID_MAXDATE=Unable to parse --maxDate value.
+
+BL_INVALID_REPOSITORYDIR=The repository path {0} is not a valid path name.
+BL_INVALID_TARGETDIR=The target path {0} is not a valid path name.
+BL_UNABLE_TO_COPY=Unable to create a repository at the target location. Ensure that the specified target directory is empty and has write permissions.
+BL_NO_FILES_FOUND_MONITOR=The directory specified does not currently contain any log or trace files.  Continuing to monitor this directory.
+BL_NO_FILES_FOUND=Server logs directory or repository directory specified does not contain any log or trace files.
+BL_OPTION_REQUIRES_A_VALUE=The option {0} requires a value.
+BL_UNKNOWN_OPTION=The option {0} is not recognized.
+BL_BAD_FORMAT=The format {0} is not recognized.
+
+# do not translate "--minDate" or "--maxDate"
+BL_MINDATE_AFTER_MAXDATE=The date specified by --minDate is after the date specified by --maxDate.
+
+# do not translate "--minLevel" or "--maxLevel"
+BL_MINLEVEL_GREATER_THAN_MAXLEVEL=The level specified by --minLevel is higher than the level specified by --maxLevel.
+
+# do not translate "binaryLog help"
+BL_USE_HELP=For usage information use binaryLog help.
+
+BL_REPOSITORY_DIRECTORY=Using {0} as repository directory. 
+BL_TARGET_DIRECTORY=Using {0} as target directory.
+
+# do not translate "serverName", "repositoryPath", "targetPath"
+BL_COPY_REQUIRES_TARGETDIR=The copy action requires both a {serverName | repositoryPath} and a targetPath to be specified.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "action", "serverName", "repositoryPath"
+BL_MAIN_USAGE_001=\
+Usage: binaryLog action {serverName | repositoryPath} [options]
+
+# do not translate "serverName"
+BL_MAIN_USAGE_004=\
+\ \ \ \ serverName
+BL_MAIN_USAGE_005=\
+\tSpecify the name of a Liberty server with a repository to read from.
+
+# do not translate "repositoryPath"
+BL_MAIN_USAGE_006=\
+\ \ \ \ repositoryPath
+
+# do not translate "logdata", "tracedata"
+BL_MAIN_USAGE_007=\
+\tSpecify the path to a repository to read from.  This is typically the\n\
+\tdirectory that contains the logdata and tracedata directories.
+
+BL_MAIN_USAGE_008=\
+Description:
+BL_MAIN_USAGE_009=\
+\tView or copy the contents of a High Performance Extensible Logging   \n\
+\trepository, or list the available server process instances in the    \n\
+\trepository.
+
+BL_MAIN_USAGE_010=\
+Actions:
+
+# do not translate "view"
+BL_MAIN_USAGE_011=\
+\ \ \ \ view
+BL_MAIN_USAGE_012=\
+\tRead a repository, optionally filter it, and create a human readable \n\
+\tversion.
+
+# do not translate "copy"
+BL_MAIN_USAGE_013=\
+\ \ \ \ copy
+BL_MAIN_USAGE_014=\
+\tRead a repository, optionally filter it, and write the contents to a \n\
+\tnew repository.
+
+# do not translate "listInstances"
+BL_MAIN_USAGE_015=\
+\ \ \ \ listInstances
+BL_MAIN_USAGE_016=\
+\tList the server process instances in the repository.
+
+BL_MAIN_USAGE_017=\
+Options:
+
+# do not translate "help [action]"
+BL_MAIN_USAGE_018=\
+\tUse help [action] for detailed option information of each action.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog view", "serverName", "repositoryPath"
+BL_VIEW_USAGE_001=\
+Usage: binaryLog view {serverName | repositoryPath} [options]
+
+BL_VIEW_USAGE_002=\
+\tRead a repository, optionally filter it, and create a human readable \n\
+\tversion.
+
+BL_VIEW_USAGE_003=\
+Filter options:
+BL_VIEW_USAGE_004=\
+\tFilters are all optional.  When multiple filters are used they are   \n\
+\tlogically ANDed together.
+
+# do not translate "--minDate=value"
+BL_VIEW_USAGE_005=\
+\ \ \ \ --minDate=value
+
+# do not translate "--minDate="
+BL_VIEW_USAGE_006=\
+\tFilter based on minimum record creation date. The value must be      \n\
+\tspecified as either a date (for example --minDate=\"{0}\") or a date \n\
+\tand time (for example --minDate=\"{1}\"). You can also enter the     \n\
+\tdate and time in ISO-8601 format; for example, --minDate=\"{2}\" or  \n\
+\t--minDate=\"{3}\".
+
+# do not translate "--maxDate=value"
+BL_VIEW_USAGE_007=\
+\ \ \ \ --maxDate=value
+
+# do not translate "--maxDate="
+BL_VIEW_USAGE_008=\
+\tFilter based on maximum record creation date. The value must be      \n\
+\tspecified as either a date (for example --maxDate=\"{0}\") or a date \n\
+\tand time (for example --maxDate=\"{1}\"). You can also enter the     \n\
+\tdate and time in ISO-8601 format; for example, --maxDate=\"{2}\" or  \n\
+\t--maxDate=\"{3}\".
+
+# do not translate "--minLevel=value"
+BL_VIEW_USAGE_009=\
+\ \ \ \ --minLevel=value
+BL_VIEW_USAGE_010=\
+\tFilter based on minimum level.  Value must be one of                 \n\
+\t{0}.
+
+# do not translate "--maxLevel=value"
+BL_VIEW_USAGE_011=\
+\ \ \ \ --maxLevel=value
+BL_VIEW_USAGE_012=\
+\tFilter based on maximum level.  Value must be one of                 \n\
+\t{0}.
+
+# do not translate "--includeLogger=value[,value]*"
+BL_VIEW_USAGE_013=\
+\ \ \ \ --includeLogger=value[,value]*
+BL_VIEW_USAGE_014=\
+\tInclude records with specified logger name.  Value may include * or ? as a\n\
+\twildcard.
+
+# do not translate "--excludeLogger=value[,value]*"
+BL_VIEW_USAGE_015=\
+\ \ \ \ --excludeLogger=value[,value]*
+BL_VIEW_USAGE_016=\
+\tExclude records with specified logger name.  Value may include * or ? as a\n\
+\twildcard.
+
+# do not translate "--includeMessage=value"
+BL_VIEW_USAGE_017=\
+\ \ \ \ --includeMessage=value
+BL_VIEW_USAGE_018=\
+\tFilter based on message name.  Value may include * or ? as a wildcard.
+
+# do not translate "--includeThread=value"
+BL_VIEW_USAGE_019=\
+\ \ \ \ --includeThread=value
+
+# do not translate "--includeThread=2a"
+BL_VIEW_USAGE_020=\
+\tInclude records with specified thread id.  Values must be in         \n\
+\thexadecimal (for example, --includeThread=2a).
+
+# do not translate "--includeExtension=name=value[,name=value]*"
+BL_VIEW_USAGE_021=\
+\ \ \ \ --includeExtension=name=value[,name=value]*
+BL_VIEW_USAGE_022=\
+\tInclude records with specified extension name and value.  Value may include * or ? as a\n\
+\twildcard.
+
+# do not translate "--includeInstance=value"
+BL_VIEW_USAGE_023=\
+\ \ \ \ --includeInstance=value
+
+# do not translate "latest", "listInstances"
+BL_VIEW_USAGE_024=\
+\tInclude records from the specified server instance.  Value           \n\
+\tmust either be "latest" or be a valid instance ID.  Run this command \n\
+\tusing the listInstances action to see a list of valid instance IDs.
+
+BL_VIEW_USAGE_025=\
+Monitor option:
+
+# do not translate "--monitor"
+BL_VIEW_USAGE_026=\
+\ \ \ \ --monitor
+BL_VIEW_USAGE_027=\
+\tContinuously monitor the repository and output new content as it is  \n\
+\tgenerated.
+			
+BL_VIEW_USAGE_028=\
+Output options:
+
+# do not translate "--format={basic | advanced | CBE-1.0.1}"
+BL_VIEW_USAGE_029=\
+\ \ \ \ --format={basic | advanced | CBE-1.0.1}
+BL_VIEW_USAGE_030=\
+\tSpecify the output format to use.  "basic" is the default format.
+		
+# do not translate "--encoding=value"
+BL_VIEW_USAGE_031=\
+\ \ \ \ --encoding=value
+BL_VIEW_USAGE_032=\
+\tSpecify the character encoding to use for output.
+
+# do not translate "--isoDateFormat"
+BL_VIEW_USAGE_033=\
+\ \ \ \ --isoDateFormat
+BL_VIEW_USAGE_034=\
+\tSpecify ISO-8601 date and time format to use for output.
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "listInstances", "serverName", "repositoryPath"
+BL_LISTINSTANCES_USAGE_001=\
+Usage: binaryLog listInstances {serverName | repositoryPath} [options]
+
+# do not translate "--includeInstance", "binaryLog view"
+BL_LISTINSTANCES_USAGE_002=\
+\tList the IDs of server instances in the repository.  A server        \n\
+\tinstance is the collection of all log/trace records written from the \n\
+\ttime a server is started until it is stopped.  Server instance IDs   \n\
+\tcan be used with the --includeInstance option of the binaryLog view  \n\
+\taction.
+
+#--------------------------------------------------------------------------------------------------
+
+# do not translate "binaryLog", "copy", "serverName", "repositoryPath", "targetPath"
+BL_COPY_USAGE_001=\
+Usage: binaryLog copy {serverName | repositoryPath} targetPath [options]
+
+# do not translate "targetPath"
+BL_COPY_USAGE_002=\
+\ \ \ \ targetPath
+BL_COPY_USAGE_003=\
+\tSpecify the path at which to create a new repository.
+
+
+BL_COPY_USAGE_004=\
+\tRead a repository, optionally filter it, and write the contents to   \n\
+\ta new repository.

@@ -1,0 +1,117 @@
+Index: C:/dev/srcode/cxf/api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java
+===================================================================
+--- C:/dev/srcode/cxf/api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java	(revision 1399301)
++++ C:/dev/srcode/cxf/api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java	(revision 1408414)
+@@ -28,16 +28,22 @@
+ import java.net.URL;
+ import java.net.URLDecoder;
+ import java.net.URLEncoder;
++import java.util.ArrayList;
++import java.util.Arrays;
+ import java.util.Collection;
+ import java.util.Enumeration;
++import java.util.HashSet;
+ import java.util.LinkedHashMap;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Random;
++import java.util.Set;
+ import java.util.StringTokenizer;
+ import java.util.UUID;
+ 
++import javax.activation.CommandInfo;
+ import javax.activation.CommandMap;
++import javax.activation.DataContentHandler;
+ import javax.activation.DataHandler;
+ import javax.activation.DataSource;
+ import javax.activation.FileDataSource;
+@@ -55,16 +61,87 @@
+ import org.apache.cxf.message.MessageUtils;
+ 
+ public final class AttachmentUtil {
+-    
+     public static final String BODY_ATTACHMENT_ID = "root.message@cxf.apache.org";
+     
+     private static volatile int counter;
+     private static final String ATT_UUID = UUID.randomUUID().toString();
+     
+     private static final Random BOUND_RANDOM = new Random();
+-    private static final MailcapCommandMap COMMAND_MAP = new MailcapCommandMap();
++    private static final CommandMap DEFAULT_COMMAND_MAP = CommandMap.getDefaultCommandMap();
++    private static final MailcapCommandMap COMMAND_MAP = new EnhancedMailcapCommandMap();
++    
++    static final class EnhancedMailcapCommandMap extends MailcapCommandMap {
++        @Override
++        public synchronized DataContentHandler createDataContentHandler(
++                String mimeType) {
++            DataContentHandler dch = super.createDataContentHandler(mimeType);
++            if (dch == null) {
++                dch = DEFAULT_COMMAND_MAP.createDataContentHandler(mimeType);
++            }
++            return dch;
++        }
+ 
++        @Override
++        public DataContentHandler createDataContentHandler(String mimeType,
++                DataSource ds) {
++            DataContentHandler dch = super.createDataContentHandler(mimeType);
++            if (dch == null) {
++                dch = DEFAULT_COMMAND_MAP.createDataContentHandler(mimeType, ds);
++            }
++            return dch;
++        }
+ 
++        @Override
++        public synchronized CommandInfo[] getAllCommands(String mimeType) {
++            CommandInfo[] commands = super.getAllCommands(mimeType);
++            CommandInfo[] defaultCommands = DEFAULT_COMMAND_MAP.getAllCommands(mimeType);
++            List<CommandInfo> cmdList = new ArrayList<CommandInfo>(Arrays.asList(commands));
++            
++            // Add CommandInfo which does not exist in current command map.
++            for (CommandInfo defCmdInfo : defaultCommands) {
++                String defCmdName = defCmdInfo.getCommandName();
++                boolean cmdNameExist = false;
++                for (CommandInfo cmdInfo : commands) {
++                    if (cmdInfo.getCommandName().equals(defCmdName)) {
++                        cmdNameExist = true;
++                        break;
++                    }
++                }
++                if (!cmdNameExist) {
++                    cmdList.add(defCmdInfo);
++                }
++            }
++            
++            CommandInfo[] allCommandArray = new CommandInfo[0];
++            return cmdList.toArray(allCommandArray);
++        }
++
++        @Override
++        public synchronized CommandInfo getCommand(String mimeType, String cmdName) {
++            CommandInfo cmdInfo = super.getCommand(mimeType, cmdName);
++            if (cmdInfo == null) {
++                cmdInfo = DEFAULT_COMMAND_MAP.getCommand(mimeType, cmdName);
++            }
++            return cmdInfo;
++        }
++
++        /**
++         * Merge current mime types and default mime types.
++         */
++        @Override
++        public synchronized String[] getMimeTypes() {
++            String[] mimeTypes = super.getMimeTypes();
++            String[] defMimeTypes = DEFAULT_COMMAND_MAP.getMimeTypes();
++            Set<String> mimeTypeSet = new HashSet<String>();
++            mimeTypeSet.addAll(Arrays.asList(mimeTypes));
++            mimeTypeSet.addAll(Arrays.asList(defMimeTypes));
++            String[] mimeArray = new String[0];
++            return mimeTypeSet.toArray(mimeArray);
++        }
++    }
++
++
++
+     private AttachmentUtil() {
+ 
+     }

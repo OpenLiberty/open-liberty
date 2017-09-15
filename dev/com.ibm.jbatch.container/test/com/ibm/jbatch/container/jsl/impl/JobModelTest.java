@@ -1,0 +1,141 @@
+/*
+ * Copyright 2012 International Business Machines Corp.
+ * 
+ * See the NOTICE file distributed with this work for additional information
+ * regarding copyright ownership. Licensed under the Apache License, 
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.ibm.jbatch.container.jsl.impl;
+
+import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.net.URL;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.UnmarshalException;
+import javax.xml.bind.Unmarshaller;
+
+
+
+
+import javax.xml.transform.stream.StreamSource;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
+import test.common.SharedOutputManager;
+
+import com.ibm.jbatch.container.jsl.JSLValidationEventHandler;
+import com.ibm.jbatch.container.jsl.ValidatorHelper;
+import com.ibm.jbatch.jsl.model.Batchlet;
+import com.ibm.jbatch.jsl.model.JSLJob;
+import com.ibm.jbatch.jsl.model.Step;
+
+public class JobModelTest {
+
+	@Test
+	public void testModelNoValidate() throws Exception {
+
+		JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model");
+
+		Unmarshaller u = ctx.createUnmarshaller();
+		FileInputStream fis = new FileInputStream(new File("test/files/valid.job1.xml"));
+
+		// Use this for anonymous type
+		//Job job = (Job)u.unmarshal(url.openStream());
+
+		// Use this for named complex type, which is what the spec uses.
+		Object elem = u.unmarshal(fis);
+		JSLJob job = (JSLJob)((JAXBElement)elem).getValue();
+
+		assertEquals("job1", job.getId());
+		assertEquals(1, job.getExecutionElements().size());
+		Step step = (Step)job.getExecutionElements().get(0);
+		assertEquals("step1", step.getId());
+		Batchlet b = step.getBatchlet();
+		assertEquals("step1Ref", b.getRef());
+	}
+
+	@Test
+	public void testModelValidate() throws Exception {
+
+		JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model");
+
+		Unmarshaller u = ctx.createUnmarshaller();
+		u.setSchema(ValidatorHelper.getXJCLSchema());
+		JSLValidationEventHandler handler = new JSLValidationEventHandler();
+		u.setEventHandler(handler);
+		FileInputStream fis = new FileInputStream(new File("test/files/valid.job1.xml"));
+
+		// Use this for anonymous type
+		//Job job = (Job)u.unmarshal(url.openStream());
+
+		// Use this for named complex type, which is what the spec uses.
+		Object elem = u.unmarshal(fis);
+		assertFalse("XSD invalid, see sysout", handler.eventOccurred());
+
+		JSLJob job = (JSLJob)((JAXBElement)elem).getValue();
+
+		assertEquals("job1", job.getId());
+		assertEquals(1, job.getExecutionElements().size());
+		Step step = (Step)job.getExecutionElements().get(0);
+		assertEquals("step1", step.getId());
+		Batchlet b = step.getBatchlet();
+		assertEquals("step1Ref", b.getRef());
+	}
+
+	@Test
+	public void testInvalidCWWKY0003E() throws Exception {
+
+		SharedOutputManager outputMgr =	SharedOutputManager.getInstance();
+		outputMgr.captureStreams();
+
+		try {
+
+			JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model");
+
+			Unmarshaller u = ctx.createUnmarshaller();
+			u.setSchema(ValidatorHelper.getXJCLSchema());
+			JSLValidationEventHandler handler = new JSLValidationEventHandler();
+			u.setEventHandler(handler);
+
+			File f = new File("test/files/invalid.job1.xml");
+			FileInputStream fis = new FileInputStream(f);
+			StreamSource strSource = new StreamSource(fis);
+			strSource.setSystemId(f);
+
+			// Use this for anonymous type
+			//Job job = (Job)u.unmarshal(url.openStream());
+
+			// Use this for named complex type, which is what the spec uses.
+			boolean caughtExc = false; 
+			try {
+				Object elem = u.unmarshal(strSource);
+			} catch (UnmarshalException e) {
+				caughtExc = true;
+			}
+			assertTrue("XSD invalid", caughtExc);
+			String msg = "CWWKY0003E";
+			assertTrue("Unable to find JSL schema-invalid message CWWKY0003E ", outputMgr.checkForMessages(msg));
+
+		} catch (AssertionError err) {
+			outputMgr.dumpStreams();
+			throw err;
+		} finally {
+			outputMgr.restoreStreams();
+		}
+	}
+
+}

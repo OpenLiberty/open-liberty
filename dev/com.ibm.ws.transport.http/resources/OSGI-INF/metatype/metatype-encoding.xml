@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype-encoding">
+  
+    <OCD name="%transport.encoding" description="%transport.encoding.desc" 
+         id="com.ibm.ws.http.encoding.metatype" ibm:alias="httpEncoding"
+         ibmui:localization="OSGI-INF/l10n/metatype-encoding">   
+         
+        <AD name="%converter.Shift_JIS" description="%converter.Shift_JIS.desc" id="converter.Shift_JIS" required="false" type="String" default="Cp943C" ibmui:group="Converter" />
+
+        <AD name="%converter.EUC-JP" description="%converter.EUC-JP.desc" id="converter.EUC-JP" required="false" type="String" default="Cp33722C" ibmui:group="Converter" />
+
+        <AD name="%converter.EUC-KR" description="%converter.EUC-KR.desc" id="converter.EUC-KR" required="false" type="String" default="Cp970" ibmui:group="Converter" />
+
+        <AD name="%converter.EUC_KR" description="%converter.EUC_KR.desc" id="converter.EUC_KR" required="false" type="String" default="Cp970" ibmui:group="Converter" />
+
+        <AD name="%converter.EUC-TW" description="%converter.EUC-TW.desc" id="converter.EUC-TW" required="false" type="String" default="Cp964" ibmui:group="Converter" />
+
+        <AD name="%converter.Big5" description="%converter.Big5.desc" id="converter.Big5" required="false" type="String" default="Cp950" ibmui:group="Converter" />
+
+        <AD name="%converter.GB2312" description="%converter.GB2312.desc" id="converter.GB2312" required="false" type="String" default="EUC_CN" ibmui:group="Converter" />
+
+        <AD name="%converter.ISO-2022-KR" description="%converter.ISO-2022-KR.desc" id="converter.ISO-2022-KR" required="false" type="String" default="ISO2022KR" ibmui:group="Converter" />
+
+        <AD name="%encoding.en" description="%encoding.en.desc" id="encoding.en" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.fr" description="%encoding.fr.desc" id="encoding.fr" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.de" description="%encoding.de.desc" id="encoding.de" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.es" description="%encoding.es.desc" id="encoding.es" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.pt" description="%encoding.pt.desc" id="encoding.pt" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.da" description="%encoding.da.desc" id="encoding.da" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ca" description="%encoding.ca.desc" id="encoding.ca" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.fi" description="%encoding.fi.desc" id="encoding.fi" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.it" description="%encoding.it.desc" id="encoding.it" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.nl" description="%encoding.nl.desc" id="encoding.nl" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.no" description="%encoding.no.desc" id="encoding.no" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.sv" description="%encoding.sv.desc" id="encoding.sv" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.is" description="%encoding.is.desc" id="encoding.is" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.eu" description="%encoding.eu.desc" id="encoding.eu" required="false" type="String" default="ISO-8859-1" ibmui:group="Encoding" />
+
+        <AD name="%encoding.cs" description="%encoding.cs.desc" id="encoding.cs" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.hr" description="%encoding.hr.desc" id="encoding.hr" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.hu" description="%encoding.hu.desc" id="encoding.hu" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.lt" description="%encoding.lt.desc" id="encoding.lt" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.pl" description="%encoding.pl.desc" id="encoding.pl" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.sh" description="%encoding.sh.desc" id="encoding.sh" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.sk" description="%encoding.sk.desc" id="encoding.sk" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.sl" description="%encoding.sl.desc" id="encoding.sl" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.sq" description="%encoding.sq.desc" id="encoding.sq" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.fo" description="%encoding.fo.desc" id="encoding.fo" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ro" description="%encoding.ro.desc" id="encoding.ro" required="false" type="String" default="ISO-8859-2" ibmui:group="Encoding" />
+
+        <AD name="%encoding.mt" description="%encoding.mt.desc" id="encoding.mt" required="false" type="String" default="ISO-8859-3" ibmui:group="Encoding" />
+
+        <AD name="%encoding.et" description="%encoding.et.desc" id="encoding.et" required="false" type="String" default="ISO-8859-4" ibmui:group="Encoding" />
+
+        <AD name="%encoding.lv" description="%encoding.lv.desc" id="encoding.lv" required="false" type="String" default="ISO-8859-4" ibmui:group="Encoding" />
+
+        <AD name="%encoding.be" description="%encoding.be.desc" id="encoding.be" required="false" type="String" default="ISO-8859-5" ibmui:group="Encoding" />
+
+        <AD name="%encoding.bg" description="%encoding.bg.desc" id="encoding.bg" required="false" type="String" default="ISO-8859-5" ibmui:group="Encoding" />
+
+        <AD name="%encoding.mk" description="%encoding.mk.desc" id="encoding.mk" required="false" type="String" default="ISO-8859-5" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ru" description="%encoding.ru.desc" id="encoding.ru" required="false" type="String" default="ISO-8859-5" ibmui:group="Encoding" />
+
+        <AD name="%encoding.sr" description="%encoding.sr.desc" id="encoding.sr" required="false" type="String" default="ISO-8859-5" ibmui:group="Encoding" />
+
+        <AD name="%encoding.uk" description="%encoding.uk.desc" id="encoding.uk" required="false" type="String" default="ISO-8859-5" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ar" description="%encoding.ar.desc" id="encoding.ar" required="false" type="String" default="ISO-8859-6" ibmui:group="Encoding" />
+
+        <AD name="%encoding.fa" description="%encoding.fa.desc" id="encoding.fa" required="false" type="String" default="ISO-8859-6" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ms" description="%encoding.ms.desc" id="encoding.ms" required="false" type="String" default="ISO-8859-6" ibmui:group="Encoding" />
+
+        <AD name="%encoding.el" description="%encoding.el.desc" id="encoding.el" required="false" type="String" default="ISO-8859-7" ibmui:group="Encoding" />
+
+        <AD name="%encoding.iw" description="%encoding.iw.desc" id="encoding.iw" required="false" type="String" default="ISO-8859-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.he" description="%encoding.he.desc" id="encoding.he" required="false" type="String" default="ISO-8859-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ji" description="%encoding.ji.desc" id="encoding.ji" required="false" type="String" default="ISO-8859-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.yi" description="%encoding.yi.desc" id="encoding.yi" required="false" type="String" default="ISO-8859-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.tr" description="%encoding.tr.desc" id="encoding.tr" required="false" type="String" default="ISO-8859-9" ibmui:group="Encoding" />
+
+        <AD name="%encoding.th" description="%encoding.th.desc" id="encoding.th" required="false" type="String" default="windows-874" ibmui:group="Encoding" />
+
+        <AD name="%encoding.vi" description="%encoding.vi.desc" id="encoding.vi" required="false" type="String" default="windows-1258" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ja" description="%encoding.ja.desc" id="encoding.ja" required="false" type="String" default="Shift_JIS" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ko" description="%encoding.ko.desc" id="encoding.ko" required="false" type="String" default="EUC-KR" ibmui:group="Encoding" />
+
+        <AD name="%encoding.zh" description="%encoding.zh.desc" id="encoding.zh" required="false" type="String" default="GB2312" ibmui:group="Encoding" />
+
+        <AD name="%encoding.zh_TW" description="%encoding.zh_TW.desc" id="encoding.zh_TW" required="false" type="String" default="Big5" ibmui:group="Encoding" />
+
+        <AD name="%encoding.hy" description="%encoding.hy.desc" id="encoding.hy" required="false" type="String" default="UTF-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ka" description="%encoding.ka.desc" id="encoding.ka" required="false" type="String" default="UTF-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.hi" description="%encoding.hi.desc" id="encoding.hi" required="false" type="String" default="UTF-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.mr" description="%encoding.mr.desc" id="encoding.mr" required="false" type="String" default="UTF-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.sa" description="%encoding.sa.desc" id="encoding.sa" required="false" type="String" default="UTF-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.ta" description="%encoding.ta.desc" id="encoding.ta" required="false" type="String" default="UTF-8" ibmui:group="Encoding" />
+
+        <AD name="%encoding.bn" description="%encoding.bn.desc" id="encoding.bn" required="false" type="String" default="UTF-8" ibmui:group="Encoding" />  
+    </OCD>
+  
+    <Designate pid="com.ibm.ws.transport.http.encoding">
+        <Object ocdref="com.ibm.ws.http.encoding.metatype"/>
+    </Designate>
+    
+</metatype:MetaData>

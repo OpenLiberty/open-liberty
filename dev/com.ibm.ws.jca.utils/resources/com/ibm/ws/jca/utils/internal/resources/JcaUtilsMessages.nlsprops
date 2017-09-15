@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/jca/utils/internal/resources/JcaUtilsMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+# {0} = resource adapter class name
+# {1} = annotation used on the class
+# {2} = name of interface that the class is required to implement with this annotation
+J2CA9902.required.rainterface.for.anno.missing=J2CA9902E: The resource adapter class {0} annotated with {1} does not implement the {2} interface.
+J2CA9902.required.rainterface.for.anno.missing.explanation=The annotated resource adapter class does not implement the required interface.
+J2CA9902.required.rainterface.for.anno.missing.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = resource adapter class name
+# {1} = name of interface that the class is required to implement for this deployment descriptor entry type
+J2CA9903.required.rainterface.missing=J2CA9903E: The resource adapter class {0} does not implement the {1} interface.
+J2CA9903.required.rainterface.missing.explanation=The resource adapter class specified in the deployment descriptor does not implement the required interface.
+J2CA9903.required.rainterface.missing.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = resource adapter class name
+# {1} = resource adapter name
+J2CA9904.required.raclass.missing=J2CA9904E: The resource adapter class {0} is specified; however, the class could not be found in resource adapter {1}.
+J2CA9904.required.raclass.missing.explanation=The resource adapter class that is specified in <resourceadapter-class> in the ra.xml file or in a class with the @Connector annotation could not be found in the resource adapter.
+J2CA9904.required.raclass.missing.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9905.required.prop.missing=J2CA9905W: The configuration property {0} is required, however a property definition could not be found in the resource adapter {1}.
+J2CA9905.required.prop.missing.explanation=A property definition could not be found for a required configuration property in the resource adapter.
+J2CA9905.required.prop.missing.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = config property type specified
+# {1} = config property name
+J2CA9906.invalid.type=J2CA9906E: The property type {0} specified for configuration property {1} is not valid.
+J2CA9906.invalid.type.explanation=A configuration property type must be one of the following: String, Long, Double, Float, Integer, Byte, Character, Boolean, or Short.
+J2CA9906.invalid.type.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9908.duplicate.copy=J2CA9908E: The configuration property {0} was found multiple times within the same scope in resource adapter {1}. Duplicate properties are ignored.
+J2CA9908.duplicate.copy.explanation=A configuration property was defined multiple times within a given scope, such as within an activation specification.
+J2CA9908.duplicate.copy.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9909.missing.matching.config.prop=J2CA9909E: The configuration property {0} is specified in the wlp-ra.xml file, but a corresponding ConfigProperty annotation, deployment descriptor entry, or Java Bean property is not found in resource adapter {1}.
+J2CA9909.missing.matching.config.prop.explanation=A configuration property was used in the wlp-ra.xml file, but a definition for the property was not found in the resource adapter.
+J2CA9909.missing.matching.config.prop.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = admin object interface
+# {1} = admin object class
+# {2} = resource adapter name
+J2CA9910.missing.matching.adminobject=J2CA9910E: An <adminobject> element with the interface {0} and class {1} is specified in the wlp-ra.xml file, but a corresponding AdministeredObject annotation or deployment descriptor entry is not found in resource adapter {2}.
+J2CA9910.missing.matching.adminobject.explanation=An <adminobject> element was used in the wlp-ra.xml file, but a definition for it could not be found in the resource adapter.
+J2CA9910.missing.matching.adminobject.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = wlp-ra.xml element name
+# {1} = interface of connection factory or message listener
+# {2} = annotation type
+# {3} = resource adapter name
+J2CA9911.missing.matching.type=J2CA9911E: A {0} element for type {1} is specified in the wlp-ra.xml file, but a corresponding {2} annotation or deployment descriptor entry is not found in the resource adapter {3}.
+J2CA9911.missing.matching.type.explanation=A <connection-definition> or <messagelistener> element was used in the wlp-ra.xml file, but a corresponding definition for it could not be found in the resource adapter.
+J2CA9911.missing.matching.type.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+   
+J2CA9912.conn.defn.required=J2CA9912E: There is no <connection-definition> or class annotated with @ConnectionDefinition although transaction support, authentication mechanisms, or reauthentication support was specified.
+J2CA9912.conn.defn.required.explanation=Transaction support, authentication mechanisms, or reauthentication support can not be specified unless there is at least one <connection-definition> in the ra.xml or there is at least one class annotated with @ConnectionDefinition.
+J2CA9912.conn.defn.required.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9916.duplicate.nls.key=J2CA9916W: Translatable messages file {0} for resource adapter {1} defines multiple messages for the same key: {2}.
+J2CA9916.duplicate.nls.key.explanation=While processing the translation file, a single NLS key was found that is used for multiple messages.
+J2CA9916.duplicate.nls.key.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9917.missing.nls.msg=J2CA9917W: Translatable messages file {0} for resource adapter {1} does not have a translation message for a key {2} that is specified in the wlp-ra.xml file.
+J2CA9917.missing.nls.msg.explanation=No translation message was found for the specified key.
+J2CA9917.missing.nls.msg.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = attribute name
+# {1} = resource adapter name
+J2CA9918.attrdef.already.processed=J2CA9918W: Resource adapter {1} defines duplicate configuration properties named {0} within the same scope. The duplicates are ignored.
+J2CA9918.attrdef.already.processed.explanation=A resource adapter, activation specification, administered object, or connection factory definition specifies duplicate configuration properties with the same name.
+J2CA9918.attrdef.already.processed.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9919.class.not.found=J2CA9919W: The class loader for resource adapter {1} is unable to load {0}. Check if the resource adapter requires a feature that is not enabled or a library that is not accessible to it.
+J2CA9919.class.not.found.explanation=The specified class could not be loaded, possibly because the class or a class it depends on is provided by a feature that is not enabled or a library that is not available to the resource adapter.
+J2CA9919.class.not.found.useraction=Enable any features required by the resource adapter, and configure the resource adapter to have access to any libraries that it requires.
+
+# {0} = type of object
+# {1} = possible ra.xml entry
+# {2} = possible annotation class
+J2CA9920.duplicate.type=J2CA9920W: A duplicate type {0} was specified in {1} and in another entry in the ra.xml file or in one or more classes annotated with {2}.
+J2CA9920.duplicate.type.explanation=A resource adapter, activation specification, administered object, or connection factory definition has been specified more than once with the same type.
+J2CA9920.duplicate.type.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = resource adapter name
+J2CA9922.multiple.connector.anno.found=J2CA9922E: The resource adapter {0} has multiple classes annotated with @Connector, but does not specify which to use via a deployment descriptor.
+J2CA9922.multiple.connector.anno.found.explanation=While multiple @Connector annotated classes are permitted, the class to use for the resource adapter must be explicitly specified in the deployment descriptor.
+J2CA9922.multiple.connector.anno.found.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = message listener type
+# {1} = annotated activation specification class
+J2CA9924.listener.actspec.missing=J2CA9924E: The message listener defined in the ra.xml file with type {0} should override the @Activation annotated class {1} but the listener does not contain an activation specification.
+J2CA9924.listener.actspec.missing.explanation=The ra.xml file contains a message listener type and there is an annotated class for the type, but the ra.xml file does not have a matching activation specification entry.
+J2CA9924.listener.actspec.missing.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9925.admobj.interface.missing=J2CA9925E: Administered object interfaces were not defined via @AdministeredObject annotation and the class {0} did not implement any interfaces.
+J2CA9925.admobj.interface.missing.explanation=The annotated class must either provide the interfaces in the annotation or implement the interfaces.
+J2CA9925.admobj.interface.missing.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9926.admobj.multiple.interfaces=J2CA9926E: Administered object interfaces were not defined via @AdministeredObject so the interfaces defined on the class will be used; however, there are multiple interfaces on class {0}.
+J2CA9926.admobj.multiple.interfaces.explanation=The interfaces must be defined in the annotation.
+J2CA9926.admobj.multiple.interfaces.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+# {0} = method with invalid name
+J2CA9927.cfgprop.invalid.method=J2CA9927E: The annotation @ConfigProperty can only be used on setter methods but was found on {0}.
+J2CA9927.cfgprop.invalid.method.explanation=The annotation @ConfigProperty was specified on a method that's name does not start with set.
+J2CA9927.cfgprop.invalid.method.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9930.value.too.small=J2CA9930W: The value {0} is less than the minimum of {1} for attribute {2}
+J2CA9930.value.too.small.explanation=The configured value does not meet the minimum size constraint for the attribute.
+J2CA9930.value.too.small.useraction=Choose a value equal to or larger than the minimum.
+
+J2CA9931.value.too.large=J2CA9931W: The value {0} exceeds the maximum of {1} for attribute {2}
+J2CA9931.value.too.large.explanation=The configured value exceeds the maximum size constraint for the attribute.
+J2CA9931.value.too.large.useraction=Choose a value equal to or smaller than the maximum.
+
+J2CA9932.value.too.short=J2CA9932W: The value {0} is less than the minimum length {1} for attribute {2}
+J2CA9932.value.too.short.explanation=The configured value does not meet the minimum length constraint for the attribute.
+J2CA9932.value.too.short.useraction=Choose a value equal in length or longer than the minimum.
+
+J2CA9933.value.too.long=J2CA9933W: The value {0} exceeds the maximum length of {1} for attribute {2}
+J2CA9933.value.too.long.explanation=The configured value exceeds the maximum length constraint for the attribute.
+J2CA9933.value.too.long.useraction=Choose a value equal in length or shorter than the maximum.
+
+J2CA9934.not.a.valid.option=J2CA9934E: The value {0} is not a valid option for attribute {1}. Valid options are {2}
+J2CA9934.not.a.valid.option.explanation=The configured value falls outside the range of valid options for the attribute.
+J2CA9934.not.a.valid.option.useraction=Choose a value from the list of valid options.
+
+J2CA9935.secperm.not.supported=J2CA9935I: The Java 2 security permissions specified in the deployment descriptor for resource adapter {0} will not be enforced.
+J2CA9935.secperm.not.supported.explanation=Java 2 security is not enabled in the Liberty profile, so Java 2 security checks are not performed for the resource adapter.
+J2CA9935.secperm.not.supported.useraction=No action is required.
+
+J2CA9936.default.value.error=J2CA9936W: The default value for the property {0} could not be obtained from an instance of class {1} in resource adapter {2} because an error occurred: {3}
+J2CA9936.default.value.error.explanation=An error occurred while attempting to access the default value of a resource adapter JavaBean property.
+J2CA9936.default.value.error.useraction=Review the error and adjust the resource adapter as necessary.
+
+J2CA9937.cfgprop.invalid.return=J2CA9937E: The {0} JavaBean {1} configuration property annotated with @ConfigProperty has a getter method return type of {2} that does not match the {3} configuration property type. 
+J2CA9937.cfgprop.invalid.return.explanation=A configuration property annotated with @ConfigProperty must have a getter method with a return type that matches the configuration property type.
+J2CA9937.cfgprop.invalid.return.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9938.cfgprop.no.getter=J2CA9938E: The {0} JavaBean {1} configuration property annotated with @ConfigProperty does not have a getter method with a return type of {2}.
+J2CA9938.cfgprop.no.getter.explanation=A configuration property annotated with @ConfigProperty must have a getter method with a return type that matches the configuration property type.
+J2CA9938.cfgprop.no.getter.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9939.cfgprop.no.setter=J2CA9939E: The {0} JavaBean {1} configuration property annotated with @ConfigProperty does not have a setter method with a single parameter of type {2}.
+J2CA9939.cfgprop.no.setter.explanation=A configuration property annotated with @ConfigProperty must have a setter method with a single parameter of a type that matches the configuration property type.
+J2CA9939.cfgprop.no.setter.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9940.cfgprop.type.mismatch.field=J2CA9940E: The {0} JavaBean {1} configuration property annotated with @ConfigProperty has the {2} type set in the annotation that does not match the {3} type of the field.
+J2CA9940.cfgprop.type.mismatch.field.explanation=The type set in the @ConfigProperty annotation must match the type of the field it is used on.
+J2CA9940.cfgprop.type.mismatch.field.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9941.cfgprop.type.mismatch.setter=J2CA9941E: The {0} JavaBean {1} configuration property annotated with @ConfigProperty has the {2} type set in the annotation that does not match the {4} type of the parameter in the setter method.
+J2CA9941.cfgprop.type.mismatch.setter.explanation=The type set in the @ConfigProperty annotation must match the type of the parameter in the setter it is used on.
+J2CA9941.cfgprop.type.mismatch.setter.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9942.cfgprop.invalid.parameters=J2CA9942E: The annotation @ConfigProperty can only be used on a setter method with one parameter but was found on {0} with the following parameters: {1}.
+J2CA9942.cfgprop.invalid.parameters.explanation=The annotation @ConfigProperty must be specified on a setter method that has only one parameter.
+J2CA9942.cfgprop.invalid.parameters.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.
+
+J2CA9943.missing.connector.dd=J2CA9943E: The resource adapter {0} is invalid. It should contain either a deployment descriptor or a JavaBean class annotated with one of the resource adapter annotations.
+J2CA9943.missing.connector.dd.explanation=A valid resource adapter must have either a deployment descriptor or a JavaBean class annotated with one of @Connector, @AdministeredObject, @ConnectionDefinition. @ConnectionDefinitions or @Activation annotations.
+J2CA9943.missing.connector.dd.useraction=Investigate the resource adapter vendor's documentation and problem determination processes.

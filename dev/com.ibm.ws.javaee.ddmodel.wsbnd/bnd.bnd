@@ -1,0 +1,55 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.javaee.ddmodel.wsbnd
+Bundle-Name: IBM Vendor Deployment Descriptor API service for Web Service
+Bundle-Description: IBM Vendor Deployment Descriptor API service for Web Service, version ${bVersion}
+    
+-dsannotations: com.ibm.ws.javaee.ddmodel.wsbnd.adapter.WebservicesBndAdapter,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.HttpPublishingComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.PortComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.PropertiesComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.ServiceRefComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebserviceDescriptionComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebserviceEndpointComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebserviceEndpointPropertiesComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebservicesBndComponentImpl,\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl.WebserviceSecurityComponentImpl
+
+Export-Package: \
+    com.ibm.ws.javaee.ddmodel.wsbnd
+
+Private-Package:\
+   com.ibm.ws.javaee.ddmodel.wsbnd.impl, \
+   com.ibm.ws.javaee.ddmodel.wsbnd.internal, \
+   com.ibm.ws.javaee.ddmodel.wsbnd.adapter, \
+   com.ibm.ws.config.xml.internal.nester
+   
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF, \
+  schemas=resources/schemas
+  
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.ddmodel;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

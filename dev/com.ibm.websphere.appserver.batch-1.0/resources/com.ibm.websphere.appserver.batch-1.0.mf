@@ -1,0 +1,41 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: javax.batch.api; type=spec,
+ javax.batch.api.chunk; type=spec,
+ javax.batch.api.chunk.listener; type=spec,
+ javax.batch.api.listener; type=spec,
+ javax.batch.api.partition; type=spec,
+ javax.batch.operations; type=spec,
+ javax.batch.runtime; type=spec,
+ javax.batch.runtime.context; type=spec,
+ javax.inject; type=spec
+IBM-App-ForceRestart: uninstall,
+ install
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: batch-1.0
+Subsystem-Content: com.ibm.websphere.appserver.javax.cdi-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jndi-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.servlet-3.1; type="osgi.subsystem.feature",
+ com.ibm.ws.persistence-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.contextService-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.0, 4.2"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javaeeCompatible-7.0; type="osgi.subsystem.feature",
+ com.ibm.jbatch.spi; version="[1.0.0,1.0.200)",
+ com.ibm.ws.security.credentials; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.security; version="[1.0.0,1.0.200)",
+ com.ibm.jbatch.container; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.javaee.batch.1.0; location:="dev/api/spec/,lib/"; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.batch-1.0
+Subsystem-ManifestVersion: 1
+Subsystem-Name: Batch API 1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.batch-1.0; visibility:=public; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

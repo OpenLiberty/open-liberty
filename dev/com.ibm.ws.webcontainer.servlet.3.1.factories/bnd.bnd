@@ -1,0 +1,45 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS WebContainer Factories
+Bundle-SymbolicName: com.ibm.ws.webcontainer.servlet.3.1.factories
+Bundle-Description: WAS WebContainer 8.1 with Servlet 3.1 support. Factories only.
+WLP-ServerName: IBM WebSphere Application Server
+WLP-ServerVersion: ${liberty.beta.version}
+
+-dsannotations: com.ibm.ws.webcontainer31.async.factory.AsyncContextFactory31Impl,\
+ com.ibm.ws.webcontainer31.osgi.response.factory.IRequestResponseFactory,\
+ com.ibm.ws.webcontainer31.osgi.srt.factory.SRTConnectionContextPool31Impl,\
+ com.ibm.ws.webcontainer31.osgi.webapp.factory.WebAppFactoryImpl31,\
+ com.ibm.ws.webcontainer31.session.impl.factory.SessionContextRegistryImplFactoryImpl31
+ 
+Private-Package: \
+ com.ibm.ws.webcontainer31.async.factory,\
+ com.ibm.ws.webcontainer31.osgi.response.factory,\
+ com.ibm.ws.webcontainer31.osgi.srt.factory,\
+ com.ibm.ws.webcontainer31.osgi.webapp.factory,\
+ com.ibm.ws.webcontainer31.session.impl.factory
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.session;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -1,0 +1,41 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.dynacache" default="build">
+    <property name="instrument.ffdc" value="true" />
+    <property name="no.trace.instrumentation" value="true" />
+
+    <import file="../ant_build/public_imports/standard_imports.xml" />
+
+
+    <!--
+	   <property name="skip.findbugs" value="true"/>
+    -->
+
+    <!-- exclude modified WAS classes from instrumentation -->
+    <!--  
+         <target name="post-compile">
+            <property name="instrument.ffdc" value="true" />
+            <instrument.trace ffdc="${instrument.ffdc}">
+                <fileset dir="${classes.dir}">
+                    <include name="**/*.class" />
+                    <exclude name="**/com/ibm/ws/cache/util/FieldInitializer**" />
+                    <exclude name="**/com/ibm/ws/cache/**Daemon**" />
+                    <exclude name="**/com/ibm/ws/cache/Scheduler**" />
+                    <exclude name="**/com/ibm/ws/cache/persistent/**" />
+                    <exclude name="**/com/ibm/ws/cache/PrimitiveArrayPool**" />
+                    <exclude name="**/com/ibm/ws/cache/NonSyncHashtableEnumerator**" />
+                </fileset>
+            </instrument.trace>
+        </target>
+    -->
+
+
+</project>

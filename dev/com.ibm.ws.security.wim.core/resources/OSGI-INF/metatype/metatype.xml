@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+  
+
+<OCD id="com.ibm.ws.security.wim.core.config" name="%core.config" description="%core.config.desc" ibm:alias="federatedRepository">
+         <AD id="maxSearchResults" name="%maxSearchResults" description="%maxSearchResults.desc"
+            required="false" type="Integer" default="4500"/>
+         
+      	 <AD id="searchTimeout" name="%searchTimeOut" description="%searchTimeOut.desc"
+            required="false" type="String" ibm:type="duration" min="0" max="2147483647" default="10m"/>
+            
+          <AD id="realm" name="%realmRef" description="%realmRef.desc" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.realm" required="false" cardinality="2147483647" />
+	      <AD id="primaryRealm" name="%primaryRealm" description="%primaryRealm.desc" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.realm" required="false" />
+          <AD id="supportedEntityType" name="%supportedEntityType" description="%supportedEntityType.desc"  type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.supportedEntityType" required="false" cardinality="10"/>
+
+		  <AD id="pageCacheSize" name="%pageCacheSize" description="%pageCacheSize.desc" required="false" type="Integer" default="1000"/>
+		  <AD id="pageCacheTimeout" name="%pageCacheTimeOut" description="%pageCacheTimeOut.desc" required="false" type="String" ibm:type="duration" default="30000ms"/>
+		  
+		  <AD id="extendedProperty" name="%extendedProperty" description="%extendedProperty.desc"  type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.extendedProperty" required="false"  cardinality="2147483647"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.core.config">
+    <Object ocdref="com.ibm.ws.security.wim.core.config" />
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.core.supportedEntityType" name="%supportedEntityType" description="%supportedEntityType.desc">
+    <AD id="name" name="%entityName" description="%entityName.desc" required="true" type="String"  cardinality="1" />
+	<AD id="defaultParent" name="%defaultParent" description="%defaultParent.desc" required="true" type="String" cardinality="1"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.core.extendedProperty">
+    <Object ocdref="com.ibm.ws.security.wim.core.extendedProperty"/>
+</Designate>  
+
+<OCD id="com.ibm.ws.security.wim.core.extendedProperty" name="%extendedProperty" description="%extendedProperty.desc">
+	<AD id="name" name="%propertyName" description="%propertyName.desc" required="true" type="String"/>
+	<AD id="dataType" name="%dataType" description="%dataType.desc" required="true" type="String">
+	    <Option label="Integer" value="Integer"/>
+        <Option label="Long" value="Long"/>
+        <Option label="String" value="String"/>
+        <Option label="Boolean" value="Boolean"/>
+        <Option label="Date" value="Date"/>
+        <Option label="Double" value="Double"/>
+        <Option label="BigInteger" value="BigInteger"/>
+        <Option label="BigDecimal" value="BigDecimal"/>
+	</AD>
+	<AD id="multiValued" name="%multiValued" description="%multiValued.desc" required="false" type="Boolean" default="false"/>
+	<AD id="entityType" name="%entityName" description="%entityName.desc" required="true" type="String">
+	    <Option label="Person" value="PersonAccount"/>
+        <Option label="Group" value="Group"/>
+	</AD>
+	<AD id="defaultValue" name="%defaultValue" description="%defaultValue.desc" required="false" type="String"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.core.supportedEntityType">
+    <Object ocdref="com.ibm.ws.security.wim.core.supportedEntityType" />
+</Designate>
+       
+<OCD id="com.ibm.ws.security.wim.core.realm" name="%realm" description="%realm.desc">
+	<AD id="delimiter" name="%delimiter" description="%delimiter.desc" required="false" type="String" default="/"/>
+	<AD id="name" name="%realmName" description="%realmName.desc" required="true" type="String"/>
+	<AD id="allowOpIfRepoDown" name="%allowOpIfRepoDown" description="%allowOpIfRepoDown.desc" required="false" type="Boolean" default="false"/>
+	<AD id="participatingBaseEntry" name="%participatingBaseEntry" description="%participatingBaseEntry.desc" required="true" type="String" ibm:flat="true" ibm:type="pid"
+	    ibm:reference="com.ibm.ws.security.wim.core.registryBaseEntry" cardinality="1000"/>
+		
+		<AD id="uniqueUserIdMapping" name="%uniqueUserIdMapping" description="%uniqueUserIdMapping.desc"
+		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.uniqueUserIdMapping"/>
+		
+		<AD id="userSecurityNameMapping" name="%userSecurityNameMapping" description="%userSecurityNameMapping.desc"
+		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.userSecurityNameMapping"/>
+	
+		<AD id="userDisplayNameMapping" name="%userDisplayNameMapping" description="%userDisplayNameMapping.desc"
+		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.userDisplayNameMapping"/>
+		
+		<AD id="uniqueGroupIdMapping" name="%uniqueGroupIdMapping" description="%uniqueGroupIdMapping.desc"
+		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.uniqueGroupIdMapping"/>
+		
+		<AD id="groupSecurityNameMapping" name="%groupSecurityNameMapping" description="%groupSecurityNameMapping.desc"
+		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.groupSecurityNameMapping"/>
+   	   
+   	    <AD id="groupDisplayNameMapping" name="%groupDisplayNameMapping" description="%groupDisplayNameMapping.desc"
+		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.groupDisplayNameMapping"/>
+
+        <AD id="defaultParents" name="%defaultParents" description="%defaultParents.desc"  type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.core.defaultParents" required="false" />	
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.core.realm">
+	<Object ocdref="com.ibm.ws.security.wim.core.realm"/>
+</Designate>
+
+<!--Reference type to be used by realm and repository-->
+<OCD id="com.ibm.ws.security.wim.core.registryBaseEntry" name="%baseEntry" description="%baseEntry.desc">
+	<AD id="name" name="%baseEntryName" description="%baseEntryName.desc" required="true" type="String"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.core.registryBaseEntry">
+        <Object ocdref="com.ibm.ws.security.wim.core.registryBaseEntry" />
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.uniqueUserIdMapping" name="%uniqueUserIdMappingConfiguration" description="%uniqueUserIdMappingConfiguration.desc">
+	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+		required="true" type="String" default="uniqueName"/>
+	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+		required="true" type="String" default="uniqueName"/>
+</OCD>
+
+
+
+<Designate factoryPid="com.ibm.ws.security.wim.uniqueUserIdMapping">
+	<Object ocdref="com.ibm.ws.security.wim.uniqueUserIdMapping"/>
+</Designate>
+
+
+<OCD id="com.ibm.ws.security.wim.userSecurityNameMapping" name="%userSecurityNameMappingConfiguration" description="%userSecurityNameMappingConfiguration.desc">
+	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+		required="true" type="String" default="principalName"/>
+	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+		required="true" type="String" default="uniqueName"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.userSecurityNameMapping">
+	<Object ocdref="com.ibm.ws.security.wim.userSecurityNameMapping"/>
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.userDisplayNameMapping" name="%userDisplayNameMappingConfiguration" description="%userDisplayNameMappingConfiguration.desc">
+	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+		required="true" type="String" default="principalName"/>
+	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+		required="true" type="String" default="principalName"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.userDisplayNameMapping">
+	<Object ocdref="com.ibm.ws.security.wim.userDisplayNameMapping"/>
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.uniqueGroupIdMapping" name="%uniqueGroupIdMappingConfiguration" description="%uniqueGroupIdMappingConfiguration.desc">
+	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+		required="true" type="String" default="cn"/>
+	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+		required="true" type="String" default="uniqueName"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.uniqueGroupIdMapping">
+	<Object ocdref="com.ibm.ws.security.wim.uniqueGroupIdMapping"/>
+</Designate>
+
+
+<OCD id="com.ibm.ws.security.wim.groupSecurityNameMapping" name="%groupSecurityNameMappingConfiguration" description="%groupSecurityNameMappingConfiguration.desc">
+	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+		required="true" type="String" default="cn"/>
+	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+		required="true" type="String" default="cn"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.groupSecurityNameMapping">
+	<Object ocdref="com.ibm.ws.security.wim.groupSecurityNameMapping"/>
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.groupDisplayNameMapping" name="%groupDisplayNameMappingConfiguration" description="%groupDisplayNameMappingConfiguration.desc">
+	<AD id="inputProperty" name="%propertyForInput" description="%propertyForInput.desc" 
+		required="true" type="String" default="cn"/>
+	<AD id="outputProperty" name="%propertyForOutput" description="%propertyForOutput.desc" 
+		required="true" type="String" default="cn"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.groupDisplayNameMapping">
+	<Object ocdref="com.ibm.ws.security.wim.groupDisplayNameMapping"/>
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.core.defaultParents" name="%defaultParents" description="%defaultParents.desc">
+    <AD id="name" name="%entityName" description="%entityName.desc" required="true" type="String" />
+	<AD id="parentUniqueName" name="%defaultParent" description="%defaultParent.desc" required="true" type="String" />
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.security.wim.core.defaultParents">
+    <Object ocdref="com.ibm.ws.security.wim.core.defaultParents" />
+</Designate>
+
+</metatype:MetaData>

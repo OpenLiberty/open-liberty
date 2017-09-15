@@ -1,0 +1,75 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JAX-RS 2.0 Server
+Bundle-SymbolicName: com.ibm.ws.jaxrs.2.0.server
+Bundle-Description: IBM JAX-RS 2.0 Server; version=${bVersion}
+
+WS-TraceGroup: JAXRS
+
+# jaxrs-2.0 is part of EE7 and therefore requires java 1.7
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
+
+Export-Package: \
+   com.ibm.websphere.jaxrs.server
+
+Import-Package: \
+   com.ibm.ws.webcontainer.extension, \
+   javax.ws.rs.*;version="[2.0,3)", \
+   javax.validation;resolution:=optional, \
+   javax.validation.*;resolution:=optional, \
+   org.apache.cxf.validation;resolution:=optional;version="[3.0.2,4)", \
+   org.apache.cxf.*;version="[3.0.2,4)", \
+   org.apache.cxf.jaxrs.sse;resolution:=optional, \
+   !javax.xml.bind.*, \
+   com.ibm.ws.jaxrs20.metadata, \
+   *
+
+Include-Resource: OSGI-INF=resources/OSGI-INF
+    
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Private-Package:\
+   com.ibm.ws.jaxrs20.server.*, \
+   com.ibm.ws.jaxrs20.server
+
+-dsannotations: com.ibm.ws.jaxrs20.server.component.*
+
+instrument.classesExcludes: com/ibm/ws/jaxrs20/server/internal/resources/*.class
+
+-buildpath: \
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.11,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.11,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.11,\
+	com.ibm.ws.jaxrs.2.0.common;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.ws.kernel.feature, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

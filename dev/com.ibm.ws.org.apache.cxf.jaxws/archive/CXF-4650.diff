@@ -1,0 +1,343 @@
+Index: rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataReaderImpl.java
+===================================================================
+--- rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataReaderImpl.java	(revision 1413974)
++++ rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataReaderImpl.java	(working copy)
+@@ -102,21 +102,24 @@
+     }
+     private Unmarshaller createUnmarshaller() {
+         try {
+-            Unmarshaller um = null;
+-            um = context.createUnmarshaller();
+-            if (databinding.getUnmarshallerListener() != null) {
+-                um.setListener(databinding.getUnmarshallerListener());
+-            }
++            Unmarshaller um = databinding.getJAXBUnmarshaller();
+             if (setEventHandler) {
+                 um.setEventHandler(new WSUIDValidationHandler(veventHandler));
+             }
+-            if (databinding.getUnmarshallerProperties() != null) {
+-                for (Map.Entry<String, Object> propEntry 
+-                    : databinding.getUnmarshallerProperties().entrySet()) {
+-                    try {
+-                        um.setProperty(propEntry.getKey(), propEntry.getValue());
+-                    } catch (PropertyException pe) {
+-                        LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
++            //If the unmarshaller has already been filled with all the initializing properties
++            //and attributes, we don't have to set again.
++            if (um.getAttachmentUnmarshaller() == null) {
++                if (databinding.getUnmarshallerListener() != null) {
++                    um.setListener(databinding.getUnmarshallerListener());
++                }
++
++                if (databinding.getUnmarshallerProperties() != null) {
++                    for (Map.Entry<String, Object> propEntry : databinding.getUnmarshallerProperties().entrySet()) {
++                        try {
++                            um.setProperty(propEntry.getKey(), propEntry.getValue());
++                        } catch (PropertyException pe) {
++                            LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
++                        }
+                     }
+                 }
+             }
+@@ -154,14 +157,20 @@
+             }
+         }
+         
+-        return JAXBEncoderDecoder.unmarshall(createUnmarshaller(), reader, part, 
+-                                             unwrapJAXBElement);
++        Unmarshaller unmarshaller = createUnmarshaller();
++        Object result = JAXBEncoderDecoder.unmarshall(unmarshaller, reader, part,
++                                                      unwrapJAXBElement);
++        databinding.releaseJAXBUnmarshaller(unmarshaller);
++        return result;
+     }
+ 
+     public Object read(QName name, T input, Class<?> type) {
+-        return JAXBEncoderDecoder.unmarshall(createUnmarshaller(), input,
+-                                             name, type, 
+-                                             unwrapJAXBElement);
++        Unmarshaller unmarshaller = createUnmarshaller();
++        Object result = JAXBEncoderDecoder.unmarshall(unmarshaller, input,
++                                                      name, type,
++                                                      unwrapJAXBElement);
++        databinding.releaseJAXBUnmarshaller(unmarshaller);
++        return result;
+     }
+ 
+ }
+Index: rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataWriterImpl.java
+===================================================================
+--- rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataWriterImpl.java	(revision 1413974)
++++ rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataWriterImpl.java	(working copy)
+@@ -49,7 +49,7 @@
+ public class DataWriterImpl<T> extends JAXBDataBase implements DataWriter<T> {
+     private static final Logger LOG = LogUtils.getLogger(JAXBDataBinding.class);
+ 
+-    private JAXBDataBinding databinding;
++    private final JAXBDataBinding databinding;
+     
+     public DataWriterImpl(JAXBDataBinding binding) {
+         super(binding.getContext());
+@@ -98,26 +98,32 @@
+         Marshaller marshaller;
+         try {
+             
+-            marshaller = context.createMarshaller();
+-            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
+-            marshaller.setProperty(Marshaller.JAXB_FRAGMENT, true);
+-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
+-            marshaller.setListener(databinding.getMarshallerListener());
+-            if (databinding.getValidationEventHandler() != null) {
+-                marshaller.setEventHandler(databinding.getValidationEventHandler());
+-            }
+-            
+-            final Map<String, String> nspref = databinding.getDeclaredNamespaceMappings();
+-            if (nspref != null) {
+-                JAXBUtils.setNamespaceWrapper(nspref, marshaller);
+-            }
+-            if (databinding.getMarshallerProperties() != null) {
+-                for (Map.Entry<String, Object> propEntry 
+-                    : databinding.getMarshallerProperties().entrySet()) {
+-                    try {
+-                        marshaller.setProperty(propEntry.getKey(), propEntry.getValue());
+-                    } catch (PropertyException pe) {
+-                        LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
++            marshaller = databinding.getJAXBMarshaller();
++
++            //If the marshaller has already been filled with all the initializing properties
++            //and attributes, we don't have to set again.
++            if (Boolean.FALSE.equals(marshaller.getProperty(Marshaller.JAXB_FRAGMENT))
++                && marshaller.getAttachmentMarshaller() == null) {
++                marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
++                marshaller.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
++                marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.FALSE);
++
++                marshaller.setListener(databinding.getMarshallerListener());
++                if (databinding.getValidationEventHandler() != null) {
++                    marshaller.setEventHandler(databinding.getValidationEventHandler());
++                }
++
++                final Map<String, String> nspref = databinding.getDeclaredNamespaceMappings();
++                if (nspref != null) {
++                    JAXBUtils.setNamespaceWrapper(nspref, marshaller);
++                }
++                if (databinding.getMarshallerProperties() != null) {
++                    for (Map.Entry<String, Object> propEntry : databinding.getMarshallerProperties().entrySet()) {
++                        try {
++                            marshaller.setProperty(propEntry.getKey(), propEntry.getValue());
++                        } catch (PropertyException pe) {
++                            LOG.log(Level.INFO, "PropertyException setting Marshaller properties", pe);
++                        }
+                     }
+                 }
+             }
+@@ -150,7 +156,8 @@
+         if (part != null && !part.isElement() && part.getTypeClass() != null) {
+             honorJaxbAnnotation = true;
+         }
+-        
++
++        Marshaller marshaller = null;
+         if (obj != null
+             || !(part.getXmlSchema() instanceof XmlSchemaElement)) {
+             
+@@ -158,14 +165,16 @@
+                 && part != null
+                 && Boolean.TRUE.equals(part.getProperty(JAXBDataBinding.class.getName() 
+                                                         + ".CUSTOM_EXCEPTION"))) {
+-                JAXBEncoderDecoder.marshallException(createMarshaller(obj, part),
+-                                                     (Exception)obj,
+-                                                     part, 
+-                                                     output);                
++                marshaller = createMarshaller(obj, part);
++                JAXBEncoderDecoder.marshallException(marshaller,
++                                                     (Exception) obj,
++                                                     part,
++                                                     output);               
+             } else {
+                 Annotation[] anns = getJAXBAnnotation(part);
+                 if (!honorJaxbAnnotation || anns.length == 0) {
+-                    JAXBEncoderDecoder.marshall(createMarshaller(obj, part), obj, part, output);
++                    marshaller = createMarshaller(obj, part);
++                    JAXBEncoderDecoder.marshall(marshaller, obj, part, output);
+                 } else if (honorJaxbAnnotation && anns.length > 0) {
+                     //RpcLit will use the JAXB Bridge to marshall part message when it is 
+                     //annotated with @XmlList,@XmlAttachmentRef,@XmlJavaTypeAdapter
+@@ -181,9 +190,10 @@
+                 }
+             }
+         } else if (needToRender(obj, part)) {
+-            JAXBEncoderDecoder.marshallNullElement(createMarshaller(obj, part),
+-                                                   output, part);
++            marshaller = createMarshaller(obj, part);
++            JAXBEncoderDecoder.marshallNullElement(marshaller, output, part);
+         }
++        databinding.releaseJAXBMarshaller(marshaller);
+     }
+ 
+     private boolean needToRender(Object obj, MessagePartInfo part) {
+Index: rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java
+===================================================================
+--- rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java	(revision 1413974)
++++ rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java	(working copy)
+@@ -21,6 +21,7 @@
+ 
+ import java.io.IOException;
+ import java.io.OutputStream;
++import java.lang.ref.SoftReference;
+ import java.lang.reflect.Field;
+ import java.lang.reflect.Method;
+ import java.lang.reflect.ParameterizedType;
+@@ -30,12 +31,14 @@
+ import java.util.Arrays;
+ import java.util.Collection;
+ import java.util.Collections;
++import java.util.Deque;
+ import java.util.HashMap;
+ import java.util.HashSet;
+ import java.util.LinkedHashSet;
+ import java.util.List;
+ import java.util.Map;
+ import java.util.Set;
++import java.util.concurrent.LinkedBlockingDeque;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+ 
+@@ -108,7 +111,10 @@
+                                                                                Node.class,
+                                                                                XMLEventWriter.class,
+                                                                                XMLStreamWriter.class};
+-    
++    private static final boolean ENABLE_MARSHALL_POOLING = true;
++    private static final boolean ENABLE_UNMARSHALL_POOLING = true;
++    private static final int MAX_LOAD_FACTOR = 32;
++
+     private static class DelayedDOMResult extends DOMResult {
+         private final URL resource;
+         private final String publicId;
+@@ -206,6 +212,11 @@
+     private ModCountCopyOnWriteArrayList<Interceptor<? extends Message>> inFault
+         = new ModCountCopyOnWriteArrayList<Interceptor<? extends Message>>();
+ 
++    private Deque<SoftReference<Marshaller>> marshallers 
++        = new LinkedBlockingDeque<SoftReference<Marshaller>>(MAX_LOAD_FACTOR);
++    private Deque<SoftReference<Unmarshaller>> unmarshallers 
++        = new LinkedBlockingDeque<SoftReference<Unmarshaller>>(MAX_LOAD_FACTOR);
++
+     public JAXBDataBinding() {
+     }
+ 
+@@ -816,6 +827,113 @@
+     public List<Interceptor<? extends Message>> getOutInterceptors() {
+         return out;
+     }
++  
++    /**
++     * releaseJAXBMarshalller
++     * Do not call this method if an exception occurred while using the
++     * Marshaller. We don't want an object in an invalid state.
++     * 
++     * @param marshaller Marshaller
++     */
++    public void releaseJAXBMarshaller(Marshaller marshaller) {
++        if (ENABLE_MARSHALL_POOLING && marshaller != null) {
++            marshallers.offerFirst(new SoftReference<Marshaller>(marshaller));
++        }
++    }    
+ 
++    /**
++     * Get JAXBMarshaller
++     * 
++     * @param context JAXBContext
++     * @throws JAXBException
++     */
++    public Marshaller getJAXBMarshaller() throws JAXBException {
++        Marshaller m = null;
+ 
++        if (!ENABLE_MARSHALL_POOLING) {
++            if (LOG.isLoggable(Level.FINE)) {
++                LOG.fine("Marshaller created [no pooling]");
++            }
++            m = getContext().createMarshaller();
++        } else {
++            SoftReference<Marshaller> ref = marshallers.poll();
++            while (ref != null && ref.get() == null) {
++                ref = marshallers.poll();
++            }
++            if (ref != null) {
++                m = ref.get();
++            }
++            if (m == null) {
++                if (LOG.isLoggable(Level.FINE)) {
++                    LOG.fine("Marshaller created [not in pool]");
++                }
++                m = getContext().createMarshaller();
++            } else {
++                if (LOG.isLoggable(Level.FINE)) {
++                    LOG.fine("Marshaller obtained [from  pool]");
++                }
++            }
++        }
++        return m;
++    }
++    
++    /**
++     * Get the unmarshaller. You must call releaseUnmarshaller to put it back into the pool
++     * 
++     * @param binding JAXBDataBinding
++     * @return Unmarshaller
++     * @throws JAXBException
++     */
++    public Unmarshaller getJAXBUnmarshaller() throws JAXBException {
++        if (!ENABLE_UNMARSHALL_POOLING) {
++            if (LOG.isLoggable(Level.FINE)) {
++                LOG.fine("Unmarshaller created [no pooling]");
++            }
++            return getContext().createUnmarshaller();
++        }
++        
++        Unmarshaller unm = null;
++        SoftReference<Unmarshaller> ref = unmarshallers.poll();
++        while (ref != null && ref.get() == null) {
++            ref = unmarshallers.poll();
++        }
++        if (ref != null) {
++            unm = ref.get();
++        }
++        if (unm == null) {
++            if (LOG.isLoggable(Level.FINE)) {
++                LOG.fine("Unmarshaller created [not in pool]");
++            }
++            unm = getContext().createUnmarshaller();
++        } else {
++            if (LOG.isLoggable(Level.FINE)) {
++                LOG.fine("Unmarshaller obtained [from  pool]");
++            }
++        }
++        return unm;
++    }
++
++    /**
++     * Release Unmarshaller Do not call this method if an exception occurred while using the
++     * Unmarshaller. We object my be in an invalid state.
++     * 
++     * @param context JAXBContext
++     * @param unmarshaller Unmarshaller
++     */
++    public void releaseJAXBUnmarshaller(Unmarshaller unmarshaller) {
++        if (LOG.isLoggable(Level.FINE)) {
++            LOG.fine("Unmarshaller placed back into pool");
++        }
++        if (ENABLE_UNMARSHALL_POOLING && unmarshaller != null) {
++            try {
++                unmarshaller.setEventHandler(null);
++                unmarshallers.offerFirst(new SoftReference<Unmarshaller>(unmarshaller));
++            } catch (Throwable t) {
++                // Log the problem, and continue without pooling
++                if (LOG.isLoggable(Level.FINE)) {
++                    LOG.fine("The following exception is ignored. Processing continues " + t);
++                }
++            }
++        }
++    }    
+ }

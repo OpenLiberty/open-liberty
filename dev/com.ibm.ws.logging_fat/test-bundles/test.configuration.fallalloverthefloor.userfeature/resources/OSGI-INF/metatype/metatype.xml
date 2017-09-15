@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.logging.fat.brokenconfig" name="brokenconfig" description="Filling in this config will result in a deliberate explosion by the configured code." ibm:alias="something">
+             <AD id="baseEntry" name="%baseEntry" description="%baseEntry.desc" ibm:type="pid" ibm:reference="com.ibm.ws.wim.core.baseEntry" required="false" type="String" cardinality="1000" />
+    </OCD>
+  
+    <Designate factoryPid="com.ibm.ws.logging.fat.brokenconfig">
+        <Object ocdref="com.ibm.ws.logging.fat.brokenconfig" />
+    </Designate>
+
+  
+</metatype:MetaData>

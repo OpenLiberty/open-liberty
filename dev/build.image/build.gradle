@@ -1,0 +1,316 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+import org.apache.tools.ant.filters.ReplaceTokens
+import groovy.json.*
+
+// Set the generated zip version to the buildID.
+// tasks.gradle file where this task is defined
+// can't see the bnd property because it isn't
+// a bundle.
+def releaseVersion = bnd.buildID
+if (releaseVersionOverride != null) {
+    releaseVersion = releaseVersionOverride
+}
+
+task zipOpenLiberty(type: Zip) {
+  dependsOn parent.subprojects.assemble
+  baseName 'openliberty'
+  from projectDir
+  include 'wlp/**'
+  destinationDir distsDir
+  version releaseVersion
+  doLast {
+    //TODO: need a better mechanism for 'stowaway properties' that need to be used in future gradle invocations
+    def props = new Properties()
+    file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+
+    props.setProperty('zipopenliberty.archivename', archivePath.toString())
+
+    File propsFile = new File("${rootDir}/generated.properties")
+    props.store(propsFile.newWriter(), null)
+  }
+}
+
+task copyPropertiesToBuildImage (type:Copy) {
+    dependsOn jar
+    from "${projectDir}/publish/"
+    into "${projectDir}/wlp/lib/versions/"
+    include '*.properties'
+    filter(ReplaceTokens,
+           tokens: [PRODUCT_VERSION: bnd.libertyRelease, PRODUCT_EDITION: bnd.productEdition, PRODUCT_LICENSE_TYPE: bnd.productLicenseType])
+}
+
+task copyReadmeToBuildImage (type:Copy) {
+    dependsOn jar
+    from "${projectDir}/publish/"
+    into "${projectDir}/wlp/"
+    include 'README.TXT'
+    filter(ReplaceTokens,
+           tokens: [BUILD_ID: bnd.buildID, LIBERTY_VERSION: bnd.libertyRelease])
+}
+
+task copyGeneratedToBuildImageBinTools (type:Copy) {
+    dependsOn jar
+    from "${projectDir}/wlp/lib/"
+    into "${projectDir}/wlp/bin/tools/"
+    include 'bootstrap-agent.jar'
+    rename 'bootstrap-agent.jar', 'ws-javaagent.jar'
+}
+
+task copyGeneratedToCnfLib (type:Copy) {
+    dependsOn jar
+    from "${projectDir}/wlp/dev/api/spec/"
+    into "${rootDir}/${bnd_cnf}/lib/"
+    include 'com.ibm.ws.org.osgi.core.6.0.0_*.jar'
+    rename '.*.jar', 'osgi.core.jar'
+}
+
+assemble {
+    dependsOn copyPropertiesToBuildImage
+    dependsOn copyReadmeToBuildImage
+    dependsOn copyGeneratedToBuildImageBinTools
+    dependsOn copyGeneratedToCnfLib
+}
+
+clean.doLast {
+    file('wlp').deleteDir()
+    file('build').deleteDir()
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            artifactId 'openliberty'
+            version project.version
+            artifact zipOpenLiberty
+        }
+    }
+}
+
+task createJSONForPublicArtifacts {
+    enabled isAutomatedBuild
+
+    doLast {
+        def props = new Properties()
+        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+
+        // Create JSON descriptor
+        delete "${buildDir}/info.json"
+        File json = new File("${buildDir}/info.json")
+        json.createNewFile()
+
+        String testsPassed = "0"
+        if (props.getProperty("tests.total.successful") != null) {
+            testsPassed = props.getProperty("tests.total.successful")
+        }
+        String testsTotal = "0"
+        if (props.getProperty("tests.total.count") != null) {
+            testsTotal = props.getProperty("tests.total.count")
+        }
+
+        String junitPath = props.getProperty("junit.report.zip")
+        String logPath = props.getProperty("published.gradle.log")
+        String driverLocation = props.getProperty("zipopenliberty.archivename")
+        assert junitPath != null
+        assert logPath != null
+        String testResultName = new File(junitPath).getName()
+        String logName = new File(logPath).getName()
+        String driverLocationName = new File(driverLocation).getName()
+
+        def object = [test_passed: "${testsPassed}",
+                      total_tests: "${testsTotal}",
+                      tests_log: "${testResultName}",
+                      build_log: "${logName}"]
+
+        if (isRelease || isContinuousBuild) {
+            object.driver_location = "${driverLocationName}"
+            object.version = "${project.version}"
+        }
+
+        json.text = JsonOutput.prettyPrint(JsonOutput.toJson(object))
+
+        props.setProperty('published.json', json.toString())
+
+        // Store props to file
+        File propsFile = new File('generated.properties')
+        props.store(propsFile.newWriter(), null)
+    }
+}
+
+buildscript {
+    repositories {
+        def props = new Properties()
+        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+        if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
+            maven {
+                credentials {
+                    username props.getProperty("artifactory.download.user")
+                    password props.getProperty("artifactory.download.token")
+                }
+                url ("https://" + props.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
+            }
+        } else {
+            jcenter()
+        }
+    }
+
+    dependencies {
+        classpath 'org.hidetake:gradle-ssh-plugin:2.9.0'
+        classpath 'org.hidetake:groovy-ssh:2.9.0'
+        classpath 'com.jcraft:jsch:0.1.54'
+    }
+}
+
+apply plugin: 'org.hidetake.ssh'
+
+remotes {
+    dhe {
+        def props = new Properties()
+        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+
+        host = props.getProperty("dhe.server")
+        user = props.getProperty("intranet.user")
+        password = props.getProperty("intranet.password")
+        knownHosts = allowAnyHosts
+    }
+}
+
+ssh.settings {
+    jschLog = true
+    fileTransfer = "scp"
+}
+
+task publishPublicArtifactsOnDhe {
+    dependsOn createJSONForPublicArtifacts
+    enabled isAutomatedBuild && isPublicPublishing
+
+    doLast {
+        def props = new Properties()
+        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+
+        // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
+        def (yr, mo, d, t) = [bnd.buildLabel.substring(0,4), bnd.buildLabel.substring(4,6), bnd.buildLabel.substring(6,8), bnd.buildLabel.substring(8)]
+        String version = "${yr}-${mo}-${d}_${t}"
+        String packageName = null
+        if (isRelease) {
+            packageName = props.getProperty("published.package.release")
+        } else if (isContinuousBuild) {
+            packageName = props.getProperty("published.package.nightly")
+        } else {
+            packageName = props.getProperty("published.package.personal")
+            version = props.getProperty("buildResultUUID")
+        }
+
+        String userAtHost = props.getProperty("intranet.user") + "@" + props.getProperty("dhe.server")
+        String dir = "/www/stage/export/pub/software/openliberty/runtime"
+        String publicDHEUrl = "http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime"
+        String dest = userAtHost + ":" + dir
+
+        def artifactList = [props.getProperty("published.json"),
+                            props.getProperty("published.gradle.log"),
+                            props.getProperty("junit.report.zip")]
+
+        if (isContinuousBuild || isRelease) {
+            artifactList.add(props.getProperty("zipopenliberty.archivename"))
+        }
+
+        mkdir("${buildDir}/${version}")
+        artifactList.each { filePath ->
+            copy {
+                from filePath
+                into "${buildDir}/${version}"
+            }
+        }
+
+        // Upload build artifacts
+        ssh.run {
+            session(remotes.dhe) {
+                put from: "${buildDir}/${version}", into: "${dir}/${packageName}/"
+            }
+        }
+
+        delete "${buildDir}/${version}"
+        delete "${buildDir}/info.json"
+
+        if (isContinuousBuild || isRelease) {
+            // Update build listing json with the newly uploaded build
+            exec {
+                commandLine "curl", "-o", "${buildDir}/info.json", "${publicDHEUrl}/${packageName}/info.json"
+            }
+
+            File json = new File("${buildDir}/info.json")
+            if (json.getText().contains("404 Not Found")) {
+                json.text = ""
+            }
+
+            def object = [:]
+            if (json.getText() != "") {
+                object = new JsonSlurper().parseText(json.getText())
+            }
+
+            List versionsList = object['versions']
+            if (versionsList != null) {
+                versionsList.add("${version}")
+            } else {
+                versionsList = ["${version}"]
+            }
+            object['versions'] = versionsList
+            json.text = JsonOutput.toJson(object)
+
+            ssh.run {
+                session(remotes.dhe) {
+                    put from: "${buildDir}/info.json", into: "${dir}/${packageName}/"
+                }
+            }
+        }
+    }
+}
+
+task publishPublicArtifactsOnBintray {
+    dependsOn createJSONForPublicArtifacts
+    enabled isAutomatedBuild && isPublicPublishing
+
+    doLast {
+        def props = new Properties()
+        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+
+        String bintrayUser = props.getProperty("bintray.user")
+        String bintrayApikey = props.getProperty("bintray.apikey")
+
+        // Re-arrange buildLabel, ex: 201708101600 to 2017-08-10_1600
+        def (yr, mo, d, t) = [bnd.buildLabel.substring(0,4), bnd.buildLabel.substring(4,6), bnd.buildLabel.substring(6,8), bnd.buildLabel.substring(8)]
+        String version = "${yr}-${mo}-${d}_${t}"
+        String packageName = (isRelease ? props.getProperty("published.package.release") : props.getProperty("published.package.nightly"))
+        String bintrayREST = "https://api.bintray.com/content/" + props.getProperty("bintray.organization") + "/" + props.getProperty("bintray.repository") + "/${packageName}/${version}/"
+
+        // Upload files using REST API https://api.bintray.com/content/:subject/:repo/:package/:version/${packageName}/${version}
+        exec {
+            commandLine "curl", "-T", props.getProperty("published.json"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
+        }
+        exec {
+            commandLine "curl", "-T", props.getProperty("published.gradle.log"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
+        }
+        exec {
+            commandLine "curl", "-T", props.getProperty("junit.report.zip"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
+        }
+        if (isContinuousBuild || isRelease) {
+            exec {
+                commandLine "curl", "-T", props.getProperty("zipopenliberty.archivename"), "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "${packageName}/${version}/"
+            }
+        }
+
+        // Publish using REST API https://api.bintray.com/content/:subject/:repo/:package/:version/publish
+        exec {
+            commandLine "curl", "-X", "POST", "-u${bintrayUser}:${bintrayApikey}", bintrayREST + "publish"
+        }
+    }
+}

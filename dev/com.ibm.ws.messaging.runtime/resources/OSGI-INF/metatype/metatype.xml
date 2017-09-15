@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    Copyright (c) 2012, 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+  <!-- messagingEngine tag-->
+  <OCD id="com.ibm.ws.messaging.runtime" name="%messagingEngine" description="%messagingEngine.desc" ibm:alias="messagingEngine">
+        <AD id="highMessageThreshold" name="internal" description="internal use only" required="false" type="Long" min="1" default="50000"/>
+		<AD id="fileStore" name="%fileStore" description="%fileStore.desc" required="false" ibm:reference="com.ibm.ws.sib.fileStore" cardinality="1" ibm:type="pid" type="String" default="defaultFileStore"/>		
+        <AD id="queue" name="%queue" description="%queue.desc" required="false" ibm:reference="com.ibm.ws.sib.queue" cardinality="2147483647" ibm:type="pid" type="String" default="Default.Queue"/>
+        <AD id="topicSpace" name="%topicSpace" description="%topicSpace.desc" required="false" ibm:reference="com.ibm.ws.sib.topicSpace" cardinality="2147483647" ibm:type="pid" type="String" default="Default.Topic.Space"/>
+        <AD id="alias" name="%alias" description="%alias.desc" required="false" ibm:reference="com.ibm.ws.sib.alias" cardinality="2147483647" ibm:type="pid" type="String"/>
+        <AD id="messagingSecurity" name="%messagingSecurity" description="%messagingSecurity.desc" required="false" ibm:reference="com.ibm.ws.messaging.security" cardinality="1" ibm:type="pid" type="String"/>
+    </OCD>
+
+    <Designate pid="com.ibm.ws.messaging.runtime">
+        <Object ocdref="com.ibm.ws.messaging.runtime"/>
+    </Designate>
+
+    <!-- fileStore tag-->
+    <OCD id="com.ibm.ws.sib.fileStore" name="%fileStore" description="%fileStore.desc">
+        <AD id="path" name="%path" description="%path.desc" required="false" type="String" default="${server.output.dir}/messaging/messageStore"/>
+        <AD id="logFileSize" name="%logFileSize" description="%logFileSize.desc" required="false" type="Long" min="10" default="10"/>
+        <AD id="fileStoreSize" name="%fileStoreSize" description="%fileStoreSize.desc" required="false" type="Long" min="20" default="400"/>
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.sib.fileStore">
+        <Object ocdref="com.ibm.ws.sib.fileStore"/>
+    </Designate>
+    
+    <!-- queue tag-->
+    <OCD name="%queue" description="%queue.desc" id="com.ibm.ws.sib.queue">
+    	<AD id="id" name="%queueId" description="%queueId.desc" required="true" type="String"/>
+        <AD id="forceReliability" name="%forceReliability" description="%forceReliability.desc" required="false" type="String" default="AssuredPersistent">
+           <Option value="BestEffortNonPersistent" label="BestEffortNonPersistent"/>
+           <Option value="ExpressNonPersistent" label="ExpressNonPersistent"/>
+           <Option value="ReliableNonPersistent" label="ReliableNonPersistent"/>
+           <Option value="ReliablePersistent" label="ReliablePersistent"/>
+           <Option value="AssuredPersistent" label="AssuredPersistent"/>
+        </AD>
+        <AD id="exceptionDestination" name="%exceptionDestination" description="%exceptionDestination.desc" required="false" type="String" default="_SYSTEM.Exception.Destination"/>
+        <AD id="failedDeliveryPolicy" name="%failedDeliveryPolicy" description="%failedDeliveryPolicy.desc" required="false" type="String" default="SEND_TO_EXCEPTION_DESTINATION">
+            <Option value="SEND_TO_EXCEPTION_DESTINATION" label="SEND_TO_EXCEPTION_DESTINATION"/>
+            <Option value="DISCARD" label="DISCARD"/>
+            <Option value="KEEP_TRYING" label="KEEP_TRYING"/>
+        </AD>
+        <AD id="redeliveryInterval" name="%redeliveryInterval" description="%redeliveryInterval.desc" required="false" type="Long" default="5000"/>
+        <AD id="maxRedeliveryCount" name="%maxRedeliveryCount" description="%maxRedeliveryCount.desc" required="false" type="Integer" default="5"/>
+        <AD id="sendAllowed" name="%sendAllowed" description="%sendAllowed.desc" required="false" type="Boolean" default="true"/>
+        <AD id="receiveAllowed" name="%receiveAllowed" description="%receiveAllowed.desc" required="false" type="Boolean" default="true"/>
+        <AD id="maintainStrictOrder" name="%maintainStrictOrder" description="%maintainStrictOrder.desc" required="false" type="Boolean" default="false"/>
+        <AD id="maxMessageDepth" name="%maxMessageDepth" description="%maxMessageDepth.desc" required="false" type="Long" min="1" default="50000"/>
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.sib.queue">
+        <Object ocdref="com.ibm.ws.sib.queue"/>
+    </Designate>
+
+    <!-- topicSpace tag-->
+    <OCD name="%topicSpace" description="%topicSpace.desc" id="com.ibm.ws.sib.topicSpace">
+    	<AD id="id" name="%topicId" description="%topicId.desc" required="true" type="String"/>
+        <AD id="forceReliability" name="%forceReliability" description="%forceReliability.desc" required="false" type="String" default="AssuredPersistent">
+            <Option value="BestEffortNonPersistent" label="BestEffortNonPersistent"/>
+            <Option value="ExpressNonPersistent" label="ExpressNonPersistent"/>
+            <Option value="ReliableNonPersistent" label="ReliableNonPersistent"/>
+            <Option value="ReliablePersistent" label="ReliablePersistent"/>
+            <Option value="AssuredPersistent" label="AssuredPersistent"/>
+        </AD>
+        <AD id="exceptionDestination" name="%exceptionDestination" description="%exceptionDestination.desc" required="false" type="String" default="_SYSTEM.Exception.Destination"/>
+        <AD id="failedDeliveryPolicy" name="%failedDeliveryPolicy" description="%failedDeliveryPolicy.desc" required="false" type="String" default="SEND_TO_EXCEPTION_DESTINATION">
+            <Option value="SEND_TO_EXCEPTION_DESTINATION" label="SEND_TO_EXCEPTION_DESTINATION"/>
+            <Option value="DISCARD" label="DISCARD"/>
+            <Option value="KEEP_TRYING" label="KEEP_TRYING"/>
+       </AD>
+        <AD id="redeliveryInterval" name="%redeliveryInterval" description="%redeliveryInterval.desc" required="false" type="Long" default="5000"/>
+        <AD id="maxRedeliveryCount" name="%maxRedeliveryCount" description="%maxRedeliveryCount.desc" required="false" type="Integer" default="5"/>
+        <AD id="sendAllowed" name="%sendAllowed" description="%sendAllowed.desc" required="false" type="Boolean" default="true"/>
+        <AD id="receiveAllowed" name="%receiveAllowed" description="%receiveAllowed.desc" required="false" type="Boolean" default="true"/>
+        <AD id="maintainStrictOrder" name="%maintainStrictOrder" description="%maintainStrictOrder.desc" required="false" type="Boolean" default="false"/>
+        <AD id="maxMessageDepth" name="%maxMessageDepth" description="%maxMessageDepth.desc" required="false" type="Long" min="1" default="50000"/>
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.sib.topicSpace">
+        <Object ocdref="com.ibm.ws.sib.topicSpace"/>
+    </Designate> 
+
+ 
+ <!-- Alias tag-->
+
+    <OCD name="%alias" description="%alias.desc" id="com.ibm.ws.sib.alias">
+    	<AD id="id" name="%aliasId" description="%aliasId.desc" required="true" type="String"/>
+        <AD id="targetDestination" name="%targetDestination" description="%targetDestination.desc" required="false" type="String" default="Default.Queue"/>
+        
+        <AD id="forceReliability" name="%forceReliability" description="%forceReliability.desc" required="false" type="String" default="AssuredPersistent">
+            <Option value="BestEffortNonPersistent" label="BestEffortNonPersistent"/>
+            <Option value="ExpressNonPersistent" label="ExpressNonPersistent"/>
+            <Option value="ReliableNonPersistent" label="ReliableNonPersistent"/>
+            <Option value="ReliablePersistent" label="ReliablePersistent"/>
+            <Option value="AssuredPersistent" label="AssuredPersistent"/>
+        </AD>
+        <AD id="sendAllowed" name="%sendAllowed" description="%sendAllowed.desc" required="false" type="String" default="true">
+            <Option value="true" label="true"/>
+            <Option value="false" label="false"/>
+        </AD>
+    </OCD> 
+    <Designate factoryPid="com.ibm.ws.sib.alias">
+        <Object ocdref="com.ibm.ws.sib.alias"/>
+    </Designate>
+   
+  
+</metatype:MetaData>

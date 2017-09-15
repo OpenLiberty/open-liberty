@@ -1,0 +1,313 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.FrameReadProcessor"/>
+    <Method name="getFrameBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Field name="frameBuffers"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.FrameReadProcessor"/>
+    <Method name="getMaskArray" signature="()[B"/>
+    <Field name="maskArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.FrameReadProcessor"/>
+    <Method name="processNextBuffer" signature="(Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)I"/>
+    <Bug pattern="ICAST_QUESTIONABLE_UNSIGNED_RIGHT_SHIFT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.util.Utils"/>
+    <Bug pattern="ICAST_QUESTIONABLE_UNSIGNED_RIGHT_SHIFT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.FrameWriteProcessor"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.HandshakeProcessor"/>
+    <Method name="verifyOneValueHeaders" signature="()V"/>
+    <Field name="headerUpgrade"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.MessageReader"/>
+    <Method name="getMessagePayload" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Field name="payloadBuffers"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.MessageReader"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteEndpointAsyncImpl"/>
+    <Method name="sendObject" signature="(Ljava/lang/Object;)Lcom/ibm/ws/wsoc/SendFuture;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteEndpointAsyncImpl"/>
+    <Method name="sendObject" signature="(Ljava/lang/Object;Ljavax/websocket/SendHandler;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteEndpointAsyncImpl"/>
+    <Method name="sendText" signature="(Ljava/lang/String;)Lcom/ibm/ws/wsoc/SendFuture;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteEndpointAsyncImpl"/>
+    <Method name="sendText" signature="(Ljava/lang/String;Ljavax/websocket/SendHandler;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteEndpointBasicImpl"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteWriter"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/ByteArrayOutputStream;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.LinkRead"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.LinkWrite"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SendFuture"/>
+    <Method name="get" signature="()Ljava/lang/Void;"/>
+    <Bug pattern="MWN_MISMATCHED_WAIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SendFuture"/>
+    <Method name="get" signature="(JLjava/util/concurrent/TimeUnit;)Ljava/lang/Void;"/>
+    <Bug pattern="MWN_MISMATCHED_WAIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SendFuture"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SendFuture"/>
+    <Method name="get" signature="()Ljava/lang/Void;"/>
+    <Bug pattern="UW_UNCOND_WAIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SendFuture"/>
+    <Method name="get" signature="()Ljava/lang/Void;"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="close" signature="()Ljavax/websocket/CloseReason ;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="outgoingCloseConnection" signature="()Ljavax/websocket/CloseReason ;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+    
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="convertMessageToReader" signature="()Ljava/io/Reader;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="convertMessageToString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="writeUsingEncoderFromCache" signature="(Ljava/lang/Object;Ljava/lang/Class;)Z"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="writeUsingEncoderFromCache" signature="(Ljava/lang/Object;Ljava/lang/Class;)Z"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="processOnMessageTextAnnotation"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SendFuture"/>
+    <Bug pattern="NN_NAKED_NOTIFY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteOutputStream"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.RemoteWriter"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SendFuture"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.util.IDGenerator"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.wsoc.util.ByteGenerator"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="pushContexts"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="popContexts"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.SessionImpl"/>
+    <Method name="signalAppOnOpen"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.external.WsocHandlerImpl"/>
+    <Method name="handleRequest"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.wsoc.WsocServlet"/>
+    <Method name="doGet"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+     
+   <Match>
+    <Class name="com.ibm.ws.wsoc.configurator.DefaultServerEndpointConfigurator"/>
+    <Method name="attemptNonCDIInjection"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+   
+  <Match>
+    <Class name="com.ibm.ws.wsoc.outbound.ClientConnector"/>
+    <Method name="connectClass"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.wsoc.EndpointHelper"/>
+    <Method name="getSubprotocols"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.wsoc.EndpointHelper"/>
+    <Method name="setSubprotocols"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="~com\.ibm\.ws\.wsoc\.internal\.resources\.WebSockets.*"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.wsoc.outbound.WsocOutboundChain"/>
+    <Method name="setChfwBundle" signature="(Lcom/ibm/websphere/channelfw/osgi/CHFWBundle;)V"/>
+    <Field name="chfw"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="close"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.wsoc.WsocConnLink"/>
+    <Method name="finishReadBeforeIdleClose"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+  
+
+</FindBugsFilter>

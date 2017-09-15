@@ -1,0 +1,35 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.ready.service/resources/com/ibm/ws/security/internal/resources/SecurityReadyServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0007 - CWWKS0009
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved from com.ibm.ws.security project, they should not be retranslated!
+#
+
+SECURITY_SERVICE_STARTING=CWWKS0007I: The security service is starting...
+SECURITY_SERVICE_STARTING.explanation=The security service is in the process of starting. This might take some time if one-time initialization needs to occur.
+SECURITY_SERVICE_STARTING.useraction=No action is required.
+
+SECURITY_SERVICE_READY=CWWKS0008I: The security service is ready.
+SECURITY_SERVICE_READY.explanation=This message is for informational purposes only.
+SECURITY_SERVICE_READY.useraction=No action is required.
+
+SECURITY_SERVICE_STOPPED=CWWKS0009I: The security service has stopped.
+SECURITY_SERVICE_STOPPED.explanation=This message is for informational purposes only.
+SECURITY_SERVICE_STOPPED.useraction=No action is required.

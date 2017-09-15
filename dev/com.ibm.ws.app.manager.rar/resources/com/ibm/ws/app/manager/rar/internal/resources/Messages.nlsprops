@@ -1,0 +1,120 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager.rar/resources/com/ibm/ws/app/manager/rar/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+
+# replaces APPLICATION_START_SUCCESSFUL
+J2CA7001.adapter.install.successful=J2CA7001I: Resource adapter {0} installed in {1} seconds.
+J2CA7001.adapter.install.successful.explanation=The server has installed the resource adapter successfully.
+J2CA7001.adapter.install.successful.useraction=No action is required.
+
+# replaces APPLICATION_START_FAILED
+J2CA7002.adapter.install.failed=J2CA7002E: An exception occurred while installing the resource adapter {0}. The exception message is: {1}
+J2CA7002.adapter.install.failed.explanation=The server could not install the resource adapter.
+J2CA7002.adapter.install.failed.useraction=Read the exception message for information.
+
+# replaces CANNOT_CREATE_DIRECTORY
+J2CA7006.cannot.create.directory=J2CA7006E: The server could not create a download location at {0} for the {1} resource adapter.
+J2CA7006.cannot.create.directory.explanation=When trying to download a resource adapter to install, the server could not create the download directory.
+J2CA7006.cannot.create.directory.useraction=Ensure that there is enough disk space for the download.
+
+# replaces APPLICATION_STOPPED
+J2CA7009.adapter.uninstalled=J2CA7009I: The resource adapter {0} has uninstalled successfully.
+J2CA7009.adapter.uninstalled.explanation=The server has uninstalled the resource adapter successfully.
+J2CA7009.adapter.uninstalled.useraction=No action is required.
+
+# replaces APPLICATION_STOP_FAILED
+J2CA7010.adapter.uninstall.failed=J2CA7010E: An exception occurred while uninstalling the resource adapter {0}. The exception message is: {1}
+J2CA7010.adapter.uninstall.failed.explanation=The server could not uninstall the resource adapter.
+J2CA7010.adapter.uninstall.failed.useraction=Ensure that the resource adapter is in a state where it can be uninstalled.
+
+# replaces APPLICATION_NOT_STARTED
+J2CA7012.adapter.not.installed=J2CA7012I: The resource adapter {0} was not installed.
+J2CA7012.adapter.not.installed.explanation=The resource adapter could not be installed because of earlier errors. 
+J2CA7012.adapter.not.installed.useraction=Check the resource adapter configuration and check the logs for errors during the resource adapter install.
+
+# replaces DUPLICATE_APPLICATION_NAME
+J2CA7013.duplicate.adapter.name=J2CA7013E: It is not possible to install multiple resource adapters or other artifacts called {0}.
+J2CA7013.duplicate.adapter.name.explanation=The resource adapter name must be unique.  This might be because multiple resource adapters or other artifacts have been configured to have the same name, or a single resource adapter has been deployed both by configuration in the server.xml file and by putting the resource adapter in the dropins directory.
+J2CA7013.duplicate.adapter.name.useraction=If multiple resource adapters or other artifacts have the same name, remove or rename one of them. If a single resource adapter has been deployed in two different ways, change the configuration so that only one deployment method is used.
+
+# replaces APPLICATION_NOT_FOUND
+J2CA7014.adapter.not.found=J2CA7014W: The resource adapter {0} could not be installed as it could not be found at location {1}.
+J2CA7014.adapter.not.found.explanation=The server could not find the resource adapter at the specified location (or relative locations if it was a relative path).
+J2CA7014.adapter.not.found.useraction=Check that the location defined is correct for the resource adapter.
+
+# replaces STARTING_APPLICATION
+J2CA7018.installing.adapter=J2CA7018I: Installing resource adapter {0}.
+J2CA7018.installing.adapter.explanation=The resource adapter is being installed.
+J2CA7018.installing.adapter.useraction=No action is required.
+
+# replaces APPLICATION_NOT_UPDATED
+J2CA7020.adapter.not.updated=J2CA7020I: Resource adapter {0} is not updated.
+J2CA7020.adapter.not.updated.explanation=The resource adapter could not be installed because of earlier errors. 
+J2CA7020.adapter.not.updated.useraction=Check the resource adapter configuration and check the logs for errors during the resource adapter install.
+
+# replaces APPLICATION_AT_LOCATION_NOT_VALID
+J2CA7021.adapter.at.location.not.valid=J2CA7021E: Resource adapter {1} at location {0} is invalid.
+J2CA7021.adapter.at.location.not.valid.explanation=The archive or directory at the specified location is not valid so the resource adapter cannot be installed.
+J2CA7021.adapter.at.location.not.valid.useraction=Ensure the identified archive or directory is valid.
+
+# replaces APPLICATION_SLOW_STARTUP
+J2CA7022.adapter.slow.install=J2CA7022W: Resource adapter {0} has not installed in {1} seconds.
+J2CA7022.adapter.slow.install.explanation=The resource adapter did not install in the expected time. This could be because the server is overloaded or the resource adapter is large. If the resource adapter is installing as part of server startup, the server startup will finish without waiting for the resource adapter to install.
+J2CA7022.adapter.slow.install.useraction=If the resource adapter takes a long time to install, then no action is required; otherwise, check the server logs to see if other messages indicate a cause.
+
+# replaces MONITOR_APP_STOP_FAIL
+J2CA7053.monitor.adapter.uninstall.fail=J2CA7053E: An exception occurred while trying to uninstall the {0} resource adapter automatically.
+J2CA7053.monitor.adapter.uninstall.fail.explanation=The installed resource adapter could not be found on the server.
+J2CA7053.monitor.adapter.uninstall.fail.useraction=No action is required.
+
+# replaces MONITOR_APP_START_FAIL
+J2CA7056.monitor.adapter.install.fail=J2CA7056E: An exception occurred while trying to automatically install the {0} resource adapter.
+J2CA7056.monitor.adapter.install.fail.explanation=The resource adapter could not be installed by the server.
+J2CA7056.monitor.adapter.install.fail.useraction=No action is required.
+
+# replaces INVALID_DELETE_OF_APPLICATION
+J2CA7059.invalid.delete.of.adapter=J2CA7059E: The {0} resource adapter installed from {1} was deleted while it is still configured.
+J2CA7059.invalid.delete.of.adapter.explanation=A resource adapter that is currently configured in the server.xml file was deleted.
+J2CA7059.invalid.delete.of.adapter.useraction=If the deletion was intentional, remove the resource adapter configuration from the server.xml file.
+
+# replaces APPLICATION_MONITORING_FAIL
+J2CA7060.adapter.monitoring.fail=J2CA7060W: The application server is unable to monitor the {0} resource adapter.
+J2CA7060.adapter.monitoring.fail.explanation=An resource adapter was installed but monitoring was not started on it. If a file is updated within the resource adapter, the change will not be detected by the server. 
+J2CA7060.adapter.monitoring.fail.useraction=When updating files in this resource adapter, manually uninstall and re-install the resource adapter into the server.
+
+#{0} is the resource adapter name
+error.not.installed=J2CA7701: The application server could not install resource adapter {0}.
+error.not.installed.explanation=An earlier error prevented the resource adapter from being installed.
+error.not.installed.useraction=Check the location specified in the resource adapter configuration element.
+
+#{0} is the application name
+#{1} is the relative path to the application descriptor
+#{2} is the exception message
+error.application.parse.descriptor=J2CA7702E: Application {0} encountered a parse error when processing application descriptor {1}: {2}
+error.application.parse.descriptor.explanation=An error occurred while parsing the application descriptor.  No modules will be available for the application.
+error.application.parse.descriptor.useraction=See the exception information for additional details.  Review the contents of the application descriptor to ensure that the contents are valid as XML data.

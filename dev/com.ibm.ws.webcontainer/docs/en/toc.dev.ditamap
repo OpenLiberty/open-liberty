@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<map id="ras_toc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:noNamespaceSchemaLocation="http://docs.oasis-open.org/dita/v1.0.1/schema/map.xsd">
+
+<!-- topicref format="html" href="pc_dev.htm" id="pojoContainerDevDoc" navtitle="WebContainer Developer Doc"  -->
+	<topicref format="html" href="wc_user.htm" id="webContainerUserDoc" navtitle="WebContainer User Doc" />
+<!-- /topicref -->
+</map>
+<?Pub *0000007040?>

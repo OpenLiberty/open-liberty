@@ -1,0 +1,3 @@
+IBM-SPI-Package: com.ibm.wsspi.kernel.embeddable,
+  com.ibm.wsspi.kernel.security.thread
+ 

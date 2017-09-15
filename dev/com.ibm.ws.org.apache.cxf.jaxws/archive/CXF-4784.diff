@@ -1,0 +1,44 @@
+Index: RPCOutInterceptor.java
+===================================================================
+--- RPCOutInterceptor.java	(revision 1436725)
++++ RPCOutInterceptor.java	(working copy)
+@@ -60,20 +60,22 @@
+ 
+             List<MessagePartInfo> parts = null;
+ 
++            boolean output = false;
+             if (!isRequestor(message)) {
+                 parts = operation.getOutput().getMessageParts();
+-                addOperationNode(nsStack, message, xmlWriter, true, operation);
++                output = true;
+             } else {
+                 parts = operation.getInput().getMessageParts();
+-                addOperationNode(nsStack, message, xmlWriter, false, operation);
++                output = false;
+             }
+-            
++
+             MessageContentsList objs = MessageContentsList.getContentsList(message);
+             if (objs == null) {
++                addOperationNode(nsStack, message, xmlWriter, output, operation);
++                xmlWriter.writeEndElement();
+                 return;
+             }
+-            
+-            
++
+             for (MessagePartInfo part : parts) {
+                 if (objs.hasValue(part)) {
+                     Object o = objs.get(part);
+@@ -87,8 +89,10 @@
+                    // part.setConcreteName(new QName("", part.getConcreteName().getLocalPart()));
+                 }
+             }
++
++            addOperationNode(nsStack, message, xmlWriter, output, operation);
+             writeParts(message, message.getExchange(), operation, objs, parts);
+-            
++
+             // Finishing the writing.
+             xmlWriter.writeEndElement();            
+         } catch (XMLStreamException e) {

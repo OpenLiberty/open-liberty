@@ -1,0 +1,15 @@
+Subsystem-ManifestVersion: 1
+IBM-ShortName: binaryLogging-1.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.binary.logging-1.0; visibility:=private
+Subsystem-Version: 1.0.0
+
+WebSphere-LogProvider: com.ibm.ws.logging.internal.hpel.HpelLogProviderImpl
+
+## 
+## This relies on defaultLogging. We include a location hint to
+## assist with bootstrapping. This is not generally applicable (don't copy).
+##
+Subsystem-Content: com.ibm.websphere.appserver.logging-1.0; location:="lib/platform/defaultLogging-1.0.mf"; type="osgi.subsystem.feature",
+
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2

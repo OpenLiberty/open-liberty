@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere WebServices Global Handler service
+Bundle-SymbolicName: com.ibm.ws.webservices.handler; singleton:=true
+Bundle-Description: WebSphere WebServices Global Handler service, version ${bVersion}
+
+-dsannotations: com.ibm.webservices.handler.impl.GlobalHandlerServiceImpl
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+ com.ibm.wsspi.webservices.handler;provide:=true, \
+ com.ibm.webservices.handler.impl;provide:=true
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

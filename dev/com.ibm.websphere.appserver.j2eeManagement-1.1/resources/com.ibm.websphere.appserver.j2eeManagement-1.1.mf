@@ -1,0 +1,29 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: com.ibm.websphere.management.j2ee; type=ibm-api,
+ javax.management.j2ee; type=spec,
+ javax.management.j2ee.statistics; type=spec,
+ org.omg.stub.javax.management.j2ee; type=spec
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: j2eeManagement-1.1
+Subsystem-Content: com.ibm.websphere.appserver.api.j2eemanagement_1.1-javadoc.zip; type=file; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.j2eemanagement_1.1-javadoc.zip",
+ com.ibm.websphere.appserver.javax.ejb-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.iiopcommon-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.api.j2eemanagement; location:="dev/api/ibm/,lib/"; type=jar; version="[1.1.0,1.1.200)",
+ com.ibm.ws.management.j2ee; version="[1.0.0,1.0.200)",
+ com.ibm.ws.management.j2ee.mbeans; location:="lib/"; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.javaee.management.j2ee.1.1; location:="dev/api/spec/,lib/"; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.j2eeManagement-1.1
+Subsystem-ManifestVersion: 1
+Subsystem-Name: J2EE Management 1.1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.j2eeManagement-1.1; visibility:=public; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.1
+Tool: Bnd-3.3.0.201609221906

@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.filemonitor/resources/com/ibm/ws/kernel/filemonitor/internal/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# -------------------------------------------------------------------------------------------------
+
+badFilter=CWWKE0400W: The specified parameter does not specify a valid file name filter. {0}={1}
+badFilter.explanation=The value for the specified configuration parameter was not, or could not be converted to, a String value.
+badFilter.useraction=Check the value specified in the server configuration.
+
+badInterval=CWWKE0401W: The specified parameter does not represent a valid monitoring interval. {0}={1}
+badInterval.explanation=The value for the specified configuration parameter could not be parsed as a monitor interval.
+badInterval.useraction=Check the value specified in the server configuration and ensure the value is a valid monitor interval. \
+ For example, 1s for one second. Valid units are ms=milliseconds, s=seconds, m=minutes, h=hours.
+
+## unused as of 8.5.0.1
+badDiskCache=CWWKE0402W: The specified cache location could not be allocated, so all information about monitored files will be stored in memory. {0}={1}
+badDiskCache.explanation=The service could not create a cache location for a set of monitored resources.
+badDiskCache.useraction=Verify that you have write access to the server directory and workarea.
+
+createMonitorException=CWWKE0403W: An exception occurred while creating a monitor for {0}. Monitoring for this resource is disabled. The exception message was: {1}
+createMonitorException.explanation=An unexpected exception occurred while creating a monitor for the specified resource. The resource will not be monitored. 
+createMonitorException.useraction=Verify that you have read access to the specified resource. See the exception and the associated FFDC message for more information.
+
+## unreachable in 8.5 GM -- cache file never used
+UNABLE_TO_DELETE_CACHE_FILE=CWWKE0404E: The cache file {0} could not be deleted.
+UNABLE_TO_DELETE_CACHE_FILE.explanation=The service could not delete a cache location for a set of monitored resources.
+UNABLE_TO_DELETE_CACHE_FILE.useraction=Verify that you have write access to the server directory and workarea
+
+fileMonitorException=CWWKE0405W: An exception occurred while notifying a monitor of the following file creations, modifications, and deletions: {0}, {1}, {2}. The monitor class is {3}. The exception message was: {4}
+fileMonitorException.explanation=An unexpected exception occurred while creating a monitor for the specified resource. 
+fileMonitorException.useraction=See the exception and the associated FFDC message for more information.
+
+fileMonitorDisabled=CWWKE0406W: More than {0} exceptions occurred while notifying a monitor of changes. The monitor class is {1}. This FileMonitor has now been disabled. 
+fileMonitorDisabled.explanation=Too many consecutive exceptions occurred while notifying a monitor for the specified resource. The resource will no longer be monitored. 
+fileMonitorDisabled.useraction=See the exceptions and the associated FFDC messages for more information.

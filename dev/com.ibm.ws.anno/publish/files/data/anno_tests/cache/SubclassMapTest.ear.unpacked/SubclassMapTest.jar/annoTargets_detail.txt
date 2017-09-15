@@ -1,0 +1,30 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class: subclassMapTest.H
+  Superclass: subclassMapTest.D
+Class: subclassMapTest.I
+  Superclass: subclassMapTest.D
+Class: subclassMapTest.J
+  Superclass: subclassMapTest.E
+Class: subclassMapTest.A
+  Superclass: java.lang.Object
+Class: subclassMapTest.B
+  Superclass: subclassMapTest.A
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class: subclassMapTest.C
+  Superclass: subclassMapTest.A
+Class: subclassMapTest.D
+  Superclass: subclassMapTest.B
+Class: subclassMapTest.E
+  Superclass: subclassMapTest.B
+Class: subclassMapTest.F
+  Superclass: subclassMapTest.C
+Class: subclassMapTest.G
+  Superclass: subclassMapTest.C
+# ============================================================

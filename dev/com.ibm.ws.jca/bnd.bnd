@@ -1,0 +1,192 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JCA
+Bundle-SymbolicName: com.ibm.ws.jca
+Bundle-Description: JCA; version=${bVersion}
+
+WS-TraceGroup: WAS.j2c
+
+Export-Package: \
+    com.ibm.ws.jca.metadata, \
+    com.ibm.ws.jca.osgi, \
+    com.ibm.ws.jca.rar, \
+    com.ibm.ws.jca.service, \
+    com.ibm.ws.jca.security
+
+Import-Package: \
+    javax.resource.spi.endpoint, \
+    com.ibm.websphere.application.*, \
+    com.ibm.websphere.metatype.*, \
+    com.ibm.ws.jca.utils.metagen, \
+    com.ibm.ws.jca.utils.xml.metatype, \
+    com.ibm.wsspi.application.*, \
+    !com.ibm.websphere.ssl.*, \
+    !com.ibm.wsspi.ssl.*, \
+    !javax.validation.*, \
+    !com.ibm.ws.beanvalidation.service, \
+    !*.internal.*, *
+
+DynamicImport-Package: \
+    javax.validation, \
+    com.ibm.ws.beanvalidation.service, \
+    com.ibm.websphere.ssl, \
+    com.ibm.wsspi.ssl
+
+Private-Package: \
+	com.ibm.ws.jca.internal, \
+	com.ibm.ws.jca.internal.resources
+
+-dsannotations: \
+  com.ibm.ws.jca.internal.ConnectorModuleRuntimeContainer
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+Service-Component: \
+  com.ibm.ws.jca.activationSpec.supertype;\
+    implementation:=com.ibm.ws.jca.service.EndpointActivationService;\
+    provide:='\
+      com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent,\
+      com.ibm.ws.jca.service.EndpointActivationService,\
+      com.ibm.tx.jta.XAResourceFactory';\
+    configuration-policy:=require;\
+    authData=com.ibm.websphere.security.auth.data.AuthData;\
+    bootstrapContext=javax.resource.spi.BootstrapContext;\
+    embeddableWebSphereTransactionManager=com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager;\
+    destination=com.ibm.ws.jca.service.AdminObjectService;\
+    jcaRuntimeVersion=com.ibm.ws.jca.osgi.JCARuntimeVersion;\
+    rRSXAResourceFactory=com.ibm.ws.tx.rrs.RRSXAResourceFactory;\
+    dynamic:='rRSXAResourceFactory,jcaRuntimeVersion';\
+    greedy:='authData,rRSXAResourceFactory';\
+    optional:='authData,rRSXAResourceFactory,jcaRuntimeVersion';\
+    properties:='authData.target=(id=unbound),bootstrapContext.target=(id=unbound),configProperties.target=(id=unbound),destination.target=(id=unbound)',\
+  com.ibm.ws.jca.adminObject.supertype;\
+    implementation:=com.ibm.ws.jca.service.AdminObjectService;\
+    provide:='\
+      com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent,\
+      com.ibm.wsspi.resource.ResourceFactory,\
+      com.ibm.ws.jca.service.AdminObjectService';\
+    configuration-policy:=require;\
+    bootstrapContext=javax.resource.spi.BootstrapContext;\
+    properties:='bootstrapContext.target=(id=unbound)',\
+  com.ibm.ws.jca.connectionFactory.supertype; \
+    implementation:=com.ibm.ws.jca.service.ConnectionFactoryService; \
+    provide:='\
+      com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent,\
+      com.ibm.wsspi.resource.ResourceFactory,\
+      com.ibm.ws.jca.service.ConnectionFactoryService,\
+      com.ibm.tx.jta.XAResourceFactory';\
+    configuration-policy:=require;\
+    bootstrapContext=javax.resource.spi.BootstrapContext;\
+    connectionManager=com.ibm.ws.jca.cm.ConnectionManagerService;\
+    containerAuthData=com.ibm.websphere.security.auth.data.AuthData?;\
+    recoveryAuthData=com.ibm.websphere.security.auth.data.AuthData;\
+    sslConfig=com.ibm.wsspi.ssl.SSLConfiguration;\
+    greedy:='connectionManager,containerAuthData,recoveryAuthData,sslConfig';\
+    optional:='connectionManager,recoveryAuthData,sslConfig';\
+    properties:="bootstrapContext.target=(id=unbound),connectionManager.target=(id=unbound),containerAuthData.target=(id=unbound),recoveryAuthData.target=(id=unbound),sslConfig.target=(id=unbound)",\
+  com.ibm.ws.jca.destination.unspecified;\
+    implementation:=com.ibm.ws.jca.service.AdminObjectService;\
+    provide:='com.ibm.ws.jca.service.AdminObjectService';\
+    configuration-policy:=ignore;\
+    properties:='service.pid=${properties.0.destinationRef}',\
+  com.ibm.ws.jca.bundleResourceAdapter;\
+    implementation:=com.ibm.ws.jca.internal.ResourceAdapterService;\
+    provide:='\
+      org.osgi.service.metatype.MetaTypeProvider,\
+      com.ibm.ws.jca.internal.ResourceAdapterService';\
+    configuration-policy:=require;\
+    immediate:=true;\
+    adaptableModuleFactory=com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;\
+    artifactContainerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
+    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService;\
+    resourceAdapterBundleService=com.ibm.ws.jca.rar.ResourceAdapterBundleService;\
+    properties:="resourceAdapterBundleService.target=(id=unbound)",\
+  com.ibm.ws.jca.resourceAdapter.properties;\
+    implementation:=com.ibm.ws.jca.internal.BootstrapContextImpl;\
+    provide:='javax.resource.spi.BootstrapContext,com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext';\
+    appRecycleService='com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator';\
+    beanValidationService='com.ibm.ws.beanvalidation.service.BeanValidationUsingClassLoader';\
+    classLoadingService='com.ibm.wsspi.classloading.ClassLoadingService';\
+    connectorService='com.ibm.ws.jca.cm.ConnectorService';\
+    contextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
+    contextService='com.ibm.wsspi.threadcontext.WSContextService';\
+    executorService='java.util.concurrent.ExecutorService';\
+    futureMonitor='com.ibm.ws.threading.FutureMonitor';\
+    requiredContextProvider='com.ibm.wsspi.threadcontext.jca.JCAContextProvider';\
+    resourceAdapterService='com.ibm.ws.jca.internal.ResourceAdapterService';\
+    tranInflowManager='com.ibm.tx.jta.TransactionInflowManager';\
+    tranSyncRegistry='javax.transaction.TransactionSynchronizationRegistry';\
+    jcaSecurityContextService=com.ibm.ws.jca.security.JCASecurityContext;\
+    configuration-policy:=require;\
+    greedy:='beanValidationService,contextProvider,jcaSecurityContextService';\
+    multiple:='contextProvider,requiredContextProvider';\
+    optional:='beanValidationService,contextProvider,requiredContextProvider,jcaSecurityContextService';\
+    properties:="contextService.target=(id=unbound),executorService.target=(id=unbound),requiredContextProvider.target=(id=unbound),resourceAdapterService.target=(id=unbound)",\
+  com.ibm.ws.jca.sslHelper;\
+    implementation:=com.ibm.ws.jca.internal.SSLHelperImpl;\
+    provide:='com.ibm.ws.jca.internal.SSLHelper',\
+  com.ibm.ws.jca.ConnectorModuleMetaDataAdapter;\
+    implementation:=com.ibm.ws.jca.internal.ConnectorModuleMetaDataAdapter;\
+    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
+    j2eeNameFactory=com.ibm.websphere.csi.J2EENameFactory; \
+    properties:="service.vendor=IBM,toType=com.ibm.ws.jca.metadata.ConnectorModuleMetaData",\
+  com.ibm.ws.jca.ConnectorModuleMetatypeAdapter;\
+    implementation:=com.ibm.ws.jca.internal.ConnectorModuleMetatypeAdapter;\
+    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
+    configurationHelper=com.ibm.websphere.config.WSConfigurationHelper; \
+    properties:="service.vendor=IBM,toType=com.ibm.ws.jca.internal.ConnectorModuleMetatype",\
+  com.ibm.ws.jca.connectorAdapter;\
+    implementation:=com.ibm.ws.jca.internal.ConnectorAdapter;\
+    provide:='com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter,com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory';\
+    configuration-policy:=ignore;\
+    properties:="service.vendor=IBM,toType=com.ibm.ws.javaee.dd.connector.Connector,deferredMetaData=CONNECTOR"
+
+instrument.classesExcludes: com/ibm/ws/jca/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.javaee.validation.1.0;version=latest,\
+	com.ibm.ws.beanvalidation;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.threading;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.context;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.jca.utils;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.config;version=latest,\
+	com.ibm.ws.dynamic.bundle;version=latest,\
+	com.ibm.wsspi.org.osgi.service.metatype;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.appserver.api.ssl;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

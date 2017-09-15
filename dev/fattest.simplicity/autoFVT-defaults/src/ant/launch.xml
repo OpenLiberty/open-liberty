@@ -1,0 +1,836 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="standard.launch.tasks">
+
+	<!-- This is needed for Moonstone autowas to work -->
+	<target name="init-test-tasks-autowas" unless="inited-test-tasks">
+		<property name="inited-test-tasks" value="true" />
+		<path id="test-buildtasks-autowas">
+			<fileset dir="./build/lib/" includes="infra.buildtasks*.jar" />
+			<fileset dir="./build/lib/" includes="asm*.jar" />
+		</path>
+		<taskdef resource="com/ibm/aries/componenttest/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
+		<taskdef resource="com/ibm/aries/buildtasks/buildtasks.properties" classpathref="test-buildtasks-autowas" loaderref="test-buildtasks-autowas_ldr" />
+	</target>
+
+	<target name="initProperties" depends="init-test-tasks-autowas">
+		<property name="bootstrapping.properties" value="${dir.component.root}/bootstrapping.properties" />
+		<property name="configuration.properties" value="${dir.component.root}/configuration.properties" />
+		<property name="logging.properties" value="${dir.component.root}/logging.properties" />
+		<property name="gen.logging.properties" value="${dir.log}/logging.properties" />
+		<property name="local.properties" value="${dir.component.root}/local.properties" />
+		<property name="simplicity.properties" value="${dir.component.root}/simplicity.properties" />
+		<property name="wsadminlib.py" value="${dir.src}/jython/wsadminlib.py" />
+		<property name="testinfo.properties" value="${dir.component.root}/build/testinfo.properties" />
+		<iff if="zos.environment">
+			<then>
+				<!--  used for running on z/os -->
+				<property name="ascii.file.encoding" value="iso8859-1" />
+			</then>
+			<else>
+				<property name="ascii.file.encoding" value="ISO8859_1" />
+			</else>
+		</iff>
+		
+		<!-- If we are running an automated build, figuring out the test bucket name is -->
+		<!-- not necessary because it will be passed down by the calling ant script -->
+		<iff if="is.running.automated.build">
+			<else>
+	        <condition property="filesToFind" value="FATSuiteLite.class;FATSuite.class;FATTest.class" else="FATSuite.class;FATTest.class">
+	            <or>
+	                <not>
+	                    <isset property="fat.test.mode" />
+	                </not>
+	                <equals arg1="${fat.test.mode}" arg2="lite" casesensitive="false" trim="true" />
+	            </or>
+	        </condition>
+	        
+	        <!-- Works out what tests to run for the autoFVT.zip-->
+	        <scanJars entry="entry.point" filesToFind="${filesToFind}">
+	            <fileset dir="${basedir}/build/lib" includes="**.jar" />
+	        </scanJars>
+	        <echo message="entry point: ${entry.point}" />
+	
+	        <property name="test.bucket.class" value="${entry.point}" />
+	        <property name="test.bucket.name" value="${test.bucket.class}" />
+			</else>
+		</iff>
+	</target>
+
+	<!-- Properties used: configuration.properties, local.properties, bootstrapping.properties, topology.properties, acute.properties, dir.log, dir.log.tmp -->
+	<target name="translateProperties" depends="initProperties">
+		<!-- ACUTE caches information in its topology properties file, so if the state of your server changed since your last invocation, ACUTE won't know about it unless you refresh the file -->
+		<echo>Deleting existing properties files</echo>
+		<delete file="${local.properties}" quiet="true" />
+		<delete file="${simplicity.properties}" quiet="true" />
+
+		<echo>Generating a local properties file that contains all the properties from Ant and configuration.properties</echo>
+		<property file="${configuration.properties}" />
+		<property file="${bootstrapping.properties}" />
+		<property file="${testinfo.properties}" />
+		<echoproperties destfile="${local.properties}" />
+		<echo>Created ${local.properties}</echo>
+
+		<echo>Generating the Simplicity config.props file based on configuration.properties</echo>
+		<propertyfile file="${simplicity.properties}" comment="Simplicity Configuration file">
+			<entry key="webSphereOperationsProvider" value="${simplicity.webSphereOperationsProvider}" />
+			<entry key="commandLineProvider" value="${simplicity.commandLineProvider}" />
+			<entry key="bootstrappingPropsFile" value="${bootstrapping.properties}" />
+			<entry key="useTopologyCaching" value="${simplicity.useTopologyCaching}" />
+			<entry key="jiiwsPort" value="${simplicity.jiiwsPort}" />
+			<entry key="jiiwsInactivityTimeout" value="${simplicity.jiiwsInactivityTimeout}" />
+			<entry key="preferJIIWSWsAdmin" value="${simplicity.preferJIIWSWsAdmin}" />
+		</propertyfile>
+		
+		<!-- Work out the actual entry point based on the current java level -->
+		<echo message="Checking min java level for project based on bootstrapping.properties file..." />
+		            
+        <!-- If this test is compiled with a java level higher than the one we're currently running, -->
+        <!-- bypass the tests by invoking the always passes test instead of real FAT tests -->
+        <property file="${basedir}/fat.bnd.properties" />
+		<script language="javascript"> <![CDATA[
+			var testBucketClassForLowJava = "componenttest.custom.junit.runner.AlwaysPassesTest";
+			var minTestJava = project.getProperty("runtime.minimum.java.level");
+			var javaVersion = project.getProperty("java.specification.version");
+			if(minTestJava != null && javaVersion < minTestJava)
+			  project.setProperty("test.bucket.class", testBucketClassForLowJava);
+        ]]></script>
+        <echo message="runtime.minimum.java.level=${runtime.minimum.java.level}"/>
+        <echo message="java.specification.version=${java.specification.version}"/>
+        <echo message="FAT entry point will be: ${test.bucket.class}"/>
+	</target>
+
+	<!-- Properties used: test.bucket.name, dir.log, dir.log.xml, dir.log.tmp, local.properties, logging.properties, acute.properties, test.bucket.path, test.bucket.class -->
+	<target name="runTests" depends="initProperties">
+		<condition property="do.debug">
+			<isset property="FAT_DEBUGGING" />
+		</condition>
+		<!-- Set isPersonalBuild to true if personalBuild is set, this mimics what we do in ant_build -->
+		<condition property="isPersonalBuild" value="true" else="false">
+			<isset property="personalBuild" />
+		</condition>
+
+		<!-- Set up the correct ports for the test to use -->
+		<setPorts />
+
+		<condition property="is.zos.platform" else="false">
+			<os family="z/os" />
+		</condition>
+		
+		<condition property="is.windows.platform" else="false">
+			<os family="windows" />
+		</condition>
+
+		<tstamp>
+			<format property="today.day" pattern="EEEE" />
+		</tstamp>
+		<!-- Really use local ldap server if fat.test.local.ldap.server is true and platform is not z/OS and day of test execution is not Wednesday. Use of Apache DS is not supported on z/OS -->
+		<condition property="fat.test.really.use.local.ldap" else="false">
+			<and>
+				<istrue value="${fat.test.local.ldap.server}" />
+				<isfalse value="${is.zos.platform}" />
+				<not>
+					<equals arg1="${today.day}" arg2="Wednesday" casesensitive="false" />
+				</not>
+			</and>
+		</condition>
+
+		<!-- Replace LDAP ports of all 3 Apache DS instance in configuration with updated ports from port selector and kill any apache ds related processes -->
+		<replaceLdapPorts />
+		<iff if="unix.mac.environment">
+			<then>
+				<exec executable="sh">
+					<arg value="-c" />
+					<arg value="ps -ef | grep &quot;apacheds-2.0.0-M15&quot; | grep &quot;apacheds.controls&quot; | grep &quot;org.apache.directory.server.UberjarMain&quot; 
+  	  	  	| grep -v grep | awk '{ print $2 }' | xargs kill -9" />
+				</exec>
+			</then>
+		</iff>
+
+		<echo>Initializing the classpath for ${test.bucket.name}</echo>
+		<property file="${bootstrapping.properties}" />
+
+		<!-- Set fattest.timeout to 3 hours if full test is requested, else set it to 1 hour -->
+		<condition property="fattest.timeout" value="10800000" else="3600000">
+			<or>
+				<not>
+					<equals arg1 = "${fat.test.mode}" arg2 = "lite"/>
+				</not>
+				<contains string="${spawn.fullfat.buckets}"  substring="${test.bucket.name}" casesensitive="false"/>
+			</or>
+		</condition>
+
+		<!-- override if not set -->
+		<mkdir dir="${basedir}/output" />
+
+		<!-- by default, only add spec API to the test classpath -->
+		<property name="test.classpath.wlp.include" value="api/spec/*.jar"/>
+		
+		<path id="test.bucket.path">
+			<!-- Our tests themselves -->
+			<fileset dir="${basedir}/build/lib">
+				<include name="*.jar" />
+			</fileset>
+
+			<!-- We want our doctored simplicity high on the classpath -->
+			<fileset dir="${basedir}/lib/">
+				<include name="*.jar" />
+			</fileset>
+
+			<!-- shared libraries from bootstrapping.properties -->
+            <fileset dir="${local.sharedLib}" erroronmissingdir="false">
+ 				<include name="**/*.jar" />
+ 			</fileset>
+			
+			<!-- java libraries for secure SSH authentication -->
+			<fileset dir="${local.java}/lib/" erroronmissingdir="false">
+				<include name="*.jar" />
+			</fileset> 
+			
+			<!-- The maven dependencies of fattest.simplicity -->
+			<fileset dir="${local.java}/generated/lib" erroronmissingdir="false">
+				<include name="*.jar"/>
+			</fileset>
+
+			<fileset dir="${ant.home}/lib/" includes="ant-junit*.jar, ant.jar" />
+			<!-- junit.jar contains hamcrest classes, so include updated hamcrest JAR first -->
+			<fileset dir="${shared.resources}" includes="*hamcrest*.jar" />
+			<fileset dir="${shared.resources}">
+				<include name="junit/old/junit.jar"/>
+				<include name="jmock/2.6.0/jmock-junit4.jar"/>
+				<include name="ws-junit/ws-junit.jar"/>
+			</fileset>
+			
+			<!-- add any libs that may have been added to the server -->
+			<fileset dir="${install.location}" includes="publish/servers/**/*.jar"/>
+			
+			<!-- Give an opportunity to add API/SPI from the liberty image --> 
+			<fileset dir="${liberty.location}/dev/" includes="${test.classpath.wlp.include}"/>
+		</path>
+
+		<echo message="test.bucket.path including junit: ${toString:test.bucket.path}"/>
+
+		<echo>Initializing JRE logging</echo>
+		<delete dir="${dir.log}" quiet="true" />
+		<mkdir dir="${dir.log.xml}" />
+		<mkdir dir="${dir.log.tmp}" />
+		<copy file="${logging.properties}" tofile="${gen.logging.properties}" />
+		<propertyfile file="${gen.logging.properties}" comment="Logging file used by ${test.bucket.name}">
+			<entry key="java.util.logging.FileHandler.pattern" value="${dir.log}/output.txt" />
+		</propertyfile>
+
+		<property name="dir.test.current.directory" value="${basedir}" />
+		
+		<!-- Load all env vars into env.* properties -->
+		<property environment="env"/>
+
+		<echo>Running ${test.bucket.name}</echo>
+		<echo>Timeout: ${fattest.timeout}</echo>
+		<iff if="debug.framework">
+			<then>
+				<!-- if we are debugging then set these values to be passed to the JVM -->
+				<property name="framework.debug.jvmarg1" value="-Xdebug" />
+				<!-- this is the debugging port for the FAT/simplicity JVM -->
+				<property name="framework.debug.jvmarg2" value="-agentlib:jdwp=transport=dt_socket,address=6666,server=y,suspend=y" />
+			</then>
+			<else>
+				<!-- if we are not debugging make sure the values are empty strings to have no JVM effect-->
+				<property name="framework.debug.jvmarg1" value="-Dignore=ignore" />
+				<property name="framework.debug.jvmarg2" value="-Dignore=ignore" />
+			</else>
+		</iff>
+		<iff if="debug.server">
+			<then>
+				<!-- this is the debugging port for the liberty server that will be launched by the tests -->
+				<property name="server.debug.sysprop.value" value="7777" />
+			</then>
+			<else>
+				<property name="server.debug.sysprop.value" value="false" />
+			</else>
+		</iff>
+
+		<iff if="max.permgen.size">
+			<then>
+				<property name="test.run.on.mac.jvmarg1" value="-XX:MaxPermSize=${max.permgen.size}" />
+				<property name="test.run.on.mac.sysprop.value" value="${test.run.on.mac.jvmarg1}" />
+			</then>
+			<else>
+				<property name="test.run.on.mac.jvmarg1" value="-Dignore=ignore" />
+				<property name="test.run.on.mac.sysprop.value" value="false" />
+			</else>
+		</iff>
+
+		<iff if="embedded.trace">
+			<then>
+				<echo>embedded.trace is active</echo>
+				<property name="framework.debug.embed.jvmarg1" value="-javaagent:${libertyInstallPath}/bin/tools/ws-javaagent.jar" />
+			</then>
+			<else>
+				<!-- if we are not debugging make sure the values are empty strings to have no JVM effect-->
+				<property name="framework.debug.embed.jvmarg1" value="-Dignore=ignore" />
+			</else>
+		</iff>
+
+		<!-- Server log validation should be done by default -->
+		<!-- Individual buckets must opt-out if they don't want to have logs checked -->
+		<property name="enable.server.log.validation" value="false" />
+		
+		<!-- Java 9 args to launch JUnit with -->
+		<!-- To fully override java9.args specify 'java9.args' -->
+		<!-- To add additonal args, specify 'java9.args.append' -->
+		<property name="java9.args.append" value=""/>
+		<property name="java9.args" value="--add-modules java.activation,java.xml.bind,java.xml.ws,java.xml.ws.annotation ${java9.args.append}"/>
+		<condition property="conditional.java9.args" value="${java9.args}" else="">
+			<istrue value="${is.java9}"/>
+		</condition>
+		<echo message="Launching FAT with java 9 args: ${conditional.java9.args}"/>
+
+		<!-- START coverage properties -->
+		<property name="exec.data.file" location="${dir.log.coverage}/jacoco.exec" />
+		<property name="jacocoant.file" location="${junit_jar}/jacoco-0.7.6.201602180812/lib/jacocoant.jar" />
+		<property name="jacocoagent.file" location="${junit_jar}/jacoco-0.7.6.201602180812/lib/jacocoagent.jar" />
+		<!-- END coverage properties -->
+
+		<echo>Coverage settings:</echo>
+		<echo>test.coverage: ${test.coverage}</echo>
+		<echo>exec.data.file: ${exec.data.file}</echo>
+		<echo>jacocoant.file: ${jacocoant.file}</echo>
+		<echo>jacocoagent.file: ${jacocoagent.file}</echo>
+
+		<mkdir dir="${build.tmp.dir}" />
+		
+		<!-- Note that users can override framework.maxheap from personal build -->
+		<property name="framework.maxheap" value="-Xmx1024m" />
+		<echo>framework.maxheap=${framework.maxheap}</echo>
+		<property name="apache.ds.home" location="${basedir}/apacheds-2.0.0-M15" />
+		<try rethrow="false">
+			<sequential>
+				<junit printsummary="on" fork="on" dir="${dir.test.current.directory}" timeout="${fattest.timeout}" failureproperty="test.failure" includeantruntime="no">
+					<!-- junit printsummary="on" fork="on" dir="${dir.test.current.directory}" watchdog="TimeoutWatchdog(${fattest.timeout})" failureproperty="test.failure" includeantruntime="no" -->
+					<!-- Push in the is.running.automated.build and isPersonalBuild -->
+					<sysproperty key="disable.ffdc.checking" value="${disable.ffdc.checking}" />
+					<sysproperty key="is.running.automated.build" value="${is.running.automated.build}" />
+					<sysproperty key="isPersonalBuild" value="${isPersonalBuild}" />
+					<sysproperty key="user.dir" value="${dir.test.current.directory}" />
+					<sysproperty key="console.log" value="console.${buildLabel}.log" />
+					<!-- set the temp directory -->
+					<sysproperty key="java.io.tmpdir" value="${build.tmp.dir}" />
+					<!-- Tell jUnit where the main property file is -->
+					<sysproperty key="local.properties" value="${local.properties}" />
+					<!-- Tell jUnit which logging properties to use -->
+					<sysproperty key="java.util.logging.config.file" value="${gen.logging.properties}" />
+					<!-- Tell ACUTE where to find its configuration file -->
+					<sysproperty key="simplicityConfigProps" value="${simplicity.properties}" />
+					<!-- Add test ports properties -->
+					<sysproperty key="osgiConsolePort" value="${osgi.console}" />
+					<!-- Add the server.origin property -->
+					<sysproperty key="server.origin" value="${server.origin}" />
+					<!-- Pass select env vars in as system properties  -->
+                    <syspropertyset>
+                        <propertyref prefix="env.bvt.prop." />
+                        <propertyref prefix="env.global." />
+                        <propertyref prefix="env.fat.test." />
+                        <propertyref prefix="env.fat.bucket." />
+                        <propertyref prefix="env.ldap." />
+                        <mapper type="glob" from="env.*" to="*" />
+                    </syspropertyset>
+					<syspropertyset>
+						<propertyref prefix="bvt.prop." />
+						<mapper type="glob" from="bvt.prop.*" to="*" />
+					</syspropertyset>
+					<!-- Add global properties -->
+					<syspropertyset>
+						<propertyref prefix="global." />
+					</syspropertyset>
+					<!-- copy any fat.test.* properties into the FAT running framework -->
+					<syspropertyset>
+						<propertyref prefix="fat.test." />
+						<propertyref prefix="fat.bucket."/>
+					</syspropertyset>
+					<!-- copy all ldap ports properties -->
+					<syspropertyset>
+						<propertyref prefix="ldap." />
+					</syspropertyset>
+					<!-- copy the delete.run.fats property -->
+					<sysproperty key="delete.run.fats" value="${delete.run.fats}" />
+					<!-- copy the coverage property to FATs -->
+					<sysproperty key="test.coverage" value="${test.coverage}" />
+					<!-- JVM argument used to generate code coverage report using JaCoCo-->
+					<sysproperty key="javaagent.for.jacoco" value="-javaagent:${jacocoagent.file}=destfile=${exec.data.file}" />
+					<sysproperty key="apache.ds.home" value="${apache.ds.home}" />
+					<!-- HttpUnit thinks it needs com.sun.net.ssl.internal.www.protocol in
+           java.protocol.handler.pkgs, so it forcibly prepends the package to
+           the system property if it's not already present.  Unfortunately, that
+           package is non-functional on IBM Java 7, so we set it here after the
+           normal sun.net.www.protocol package (97197, 114608). -->
+					<sysproperty key="java.protocol.handler.pkgs" value="sun.net.www.protocol|com.sun.net.ssl.internal.www.protocol" />
+					<!-- if LibertyServer.stopServer() should check messages.log for unexpected errors/warnings -->
+					<sysproperty key="enable.server.log.validation" value="${enable.server.log.validation}" />
+					<!-- show junit where the test case is located-->
+					<classpath refid="test.bucket.path" />
+					<!-- report will be generated as xml -->
+					<formatter type="xml" />
+					<!-- Invoke JUnit TestSuite -->
+					<test todir="${dir.log.xml}" name="${test.bucket.class}" />
+					<!-- need the file.encoding for running on z/os -->
+					<jvmarg value="-Dfile.encoding=${ascii.file.encoding}" />
+					<!-- conditional JVM args and properties follow
+               these are all defined from properties that are only
+               set under certain conditions e.g. debugging, mac etc
+               and take dummy values when not needed -->
+					<!-- debug conditionals-->
+					<jvmarg value="${framework.debug.jvmarg1}" />
+					<jvmarg value="${framework.debug.jvmarg2}" />
+					<sysproperty key="debugging.port" value="${server.debug.sysprop.value}" />
+					<!-- mac conditionals -->
+					<jvmarg value="${test.run.on.mac.jvmarg1}" />
+					<sysproperty key="fat.on.mac" value="${test.run.on.mac.sysprop.value}" />
+					<jvmarg value="${framework.maxheap}" />
+					<!-- embedded trace conditionals -->
+					<jvmarg value="${framework.debug.embed.jvmarg1}" /> 
+					<!-- add java 9 specific args -->
+                    <jvmarg line="${conditional.java9.args}"/>
+				</junit>
+			</sequential>
+			<finally>
+				<!-- If the tests timeout, attempt to copy logs from zombie servers -->
+				<fileset dir="${basedir}/output" includes="*.mrk" id="markfiles" />
+				<foreach param="serverFile" in="markfiles">
+					<echo>Failure running ${test.bucket.name}, attempting to copy logs from servers that did not stop properly : ${serverFile}</echo>
+					<local name="serverDir"/>
+					<basename property="serverDir" file="${serverFile}" suffix=".mrk" />
+					<tstamp>
+						<format property="copyTime" pattern="dd-MM-yyyy-HH-mm-ss" />
+					</tstamp>
+
+					<copy failonerror="false" todir="${basedir}/output/servers/${serverDir}-${copyTime}">
+						<fileset dir="${libertyInstallPath}/usr/servers/${serverDir}" />
+					</copy>
+				</foreach>
+				<delete>
+					<fileset dir="${basedir}/output" includes="*.mrk" />
+				</delete>
+
+			</finally>
+		</try>
+		<echo>Finished running ${test.bucket.name}</echo>
+		<echo>XML report is available at ${dir.log.xml}</echo>
+        <iff if="is.running.automated.build">
+        	<then>
+        		<!-- Restore the keys so nothing is broken -->
+        		<restoreSSHKeys />
+        	</then>
+        </iff>
+
+
+		<iff if="test.failure">
+			<then>
+				<echo file="${basedir}/output/fail.log" message="Test FAILED" />
+			</then>
+		</iff>
+
+		<iff if="unix.mac.environment">
+			<then>
+				<property name="cleanupServer" location="${basedir}/../../ant_build/resources/bin/cleanupServers" />
+				<chmod file="${cleanupServer}" perm="755" />
+				<exec dir="${basedir}" executable="${cleanupServer}" />
+				<!-- Kill any apache ds related processes -->
+				<exec executable="sh">
+					<arg value="-c" />
+					<arg value="ps -ef | grep &quot;apacheds-2.0.0-M15&quot; | grep &quot;apacheds.controls&quot; | grep &quot;org.apache.directory.server.UberjarMain&quot; 
+      	  	| grep -v grep | awk '{ print $2 }' | xargs kill -9" />
+				</exec>
+			</then>
+		</iff>
+
+		<!-- Move any test framework javacores into the javacores directory (they will have created in the test directory) -->
+		<fileset id="javacores.test" dir="${dir.test.current.directory}">
+			<include name="javacore*" />
+			<include name="core*" />
+			<include name="heapdump*.phd" />
+			<include name="Snap*" />
+			<include name="*.hprof" />
+			<include name="hs_err*" />
+		</fileset>
+
+		<!-- Move any server javacores into the javacores directory (they will have created in the server directory) -->
+		<property name="javacores.server.exclude" value="donotexclude" />
+		<fileset id="javacores.server" dir="${libertyInstallPath}">
+			<include name="javacore*" />
+			<include name="core*" />
+			<include name="heapdump*.phd" />
+			<include name="Snap*" />
+			<include name="*.hprof" />
+			<include name="hs_err*" />
+			<include name="usr/servers/*/javacore*" />
+			<include name="usr/servers/*/core*" />
+			<include name="usr/servers/*/heapdump*.phd" />
+			<include name="usr/servers/*/Snap*" />
+			<include name="usr/servers/*/*.hprof" />
+			<include name="usr/servers/*/hs_err*" />
+			<exclude name="${javacores.server.exclude}" />
+		</fileset>
+
+		<iff>
+			<length property="total.length.of.all.javacores" mode="all" when="greater" length="0">
+				<fileset refid="javacores.test" />
+				<fileset refid="javacores.server" />
+			</length>
+			<then>
+				<mkdir dir="${dir.log.javacores}" />
+				<move todir="${dir.log.javacores}">
+					<fileset refid="javacores.test" />
+					<fileset refid="javacores.server" />
+				</move>
+			</then>
+		</iff>
+
+	</target>
+
+	<target name="stopServer">
+		<echo>stopServer for ${serverFile}</echo>
+	</target>
+
+	<!-- Properties used: dir.log.html, dir.log.xml. -->
+	<target name="generateReports" description="Generates an HTML report based on the existing XML report" depends="initProperties">
+		<!-- Use fork="true" for reallyGenerateReports so that junitreport can have
+         its own heap to avoid OOM for FATs with really large result XMLs. -->
+		<java classname="org.apache.tools.ant.launch.Launcher" fork="true" maxmemory="1024m" failonerror="true" taskname="startAnt">
+			<classpath>
+				<pathelement location="${ant.home}/lib/ant-launcher.jar" />
+			</classpath>
+			<arg value="-buildfile" />
+			<arg file="${ant.file.standard.launch.tasks}" />
+			<arg value="reallyGenerateReports" />
+			<arg value="-Dbasedir=${basedir}" />
+			<arg value="-Ddir.log.html=${dir.log.html}" />
+			<arg value="-Ddir.log.xml=${dir.log.xml}" />
+		</java>
+
+		<iff>
+			<istrue value="${test.coverage}" />
+			<then>
+				<antcall target="generateFatJaCoCoReport" />
+			</then>
+		</iff>
+	</target>
+
+	<!-- Properties used: dir.log.html, dir.log.xml -->
+	<target name="reallyGenerateReports">
+		<echo>Generating an HTML report based on the existing XML report</echo>
+		<delete dir="${dir.log.html}" quiet="true" />
+		<mkdir dir="${dir.log.html}" />
+		<junitreport todir="${dir.log.xml}">
+			<fileset dir="${dir.log.xml}">
+				<include name="TEST-*.xml" />
+			</fileset>
+			<report format="frames" todir="${dir.log.html}" />
+		</junitreport>
+		<echo>HTML report is available at ${dir.log.html}</echo>
+	</target>
+
+	<!-- Properties used: dir.log -->
+	<target name="archiveReports" description="Archives the existing XML and HTML reports (if they exist) in a unique directory and ZIP file" depends="initProperties">
+		<!-- The archive is deleted with rebuild in liberty; does anyone use it?
+    <echo>Archiving results in a unique directory and ZIP file</echo>
+    <tstamp>
+       Unique, file-name safe, String representation of the time that this script is invoked  (year-month-day-hour-minute-second-millisecond) 
+      <format property="current.time" pattern="yyyy-MM-dd-HH-mm-ss-SSS" locale="en" />
+    </tstamp>
+    <property name="dir.archive" location="${dir.log}.archive" />
+    <property name="dir.archive.current" location="${dir.archive}/${current.time}" />
+    <property name="file.archive.zip" location="${dir.archive.current}.zip" />
+    <mkdir dir="${dir.archive.current}" />
+    <copy todir="${dir.archive.current}">
+      <fileset dir="${dir.log}" />
+    </copy>
+    <echo>Results have been archived in the following directory: ${dir.archive.current}</echo>
+    <zip destfile="${file.archive.zip}" basedir="${dir.archive.current}" />
+    <echo>Results have been archived in the following ZIP: ${file.archive.zip}</echo>
+    -->
+	</target>
+
+	<!-- Used to set up the ports for us for Liberty to use, and the client to use -->
+	<macrodef name="setPorts">
+		<sequential>
+			<property name="testports.properties" value="testports.properties" />
+			<property name="common.xml" value="fatTestCommon.xml" />
+			<property name="ports.xml" value="fatTestPorts.xml" />
+			<iff if="zos.environment">
+				<then>
+					<property name="liberty.dir" value="${basedir}/../../${install.name}" />
+				</then>
+			</iff>
+			<echo>Base dir is:  ${basedir}</echo>
+			<echo>Liberty dir is:  ${liberty.dir}</echo>
+			<echo>libertyInstallPath is:  ${libertyInstallPath}</echo>
+
+			<condition property="liberty.location" value="${liberty.dir}" else="${libertyInstallPath}">
+				<isset property="liberty.dir" />
+			</condition>
+			<echo>liberty.location is:  ${liberty.location}</echo>
+
+			<condition property="install.location" value="${basedir}/autoFVT/" else="${basedir}/">
+				<available file="${basedir}/autoFVT/" />
+			</condition>
+			<echo>install.location is:  ${install.location}</echo>
+
+			<condition property="testports.location" value="${basedir}/../image/output/${install.name}/usr/servers/${testports.properties}" else="${liberty.location}/usr/servers/${testports.properties}">
+				<available file="${basedir}/../image/output/${install.name}/usr/servers" />
+			</condition>
+			<condition property="commonxml.location" value="${basedir}/../image/output/${install.name}/usr/servers/${common.xml}" else="${liberty.location}/usr/servers/${common.xml}">
+				<available file="${basedir}/../image/output/${install.name}/usr/servers" />
+			</condition>
+			<condition property="commonxml.client.location" value="${basedir}/../image/output/${install.name}/usr/clients/${common.xml}" else="${liberty.location}/usr/clients/${common.xml}">
+				<available file="${basedir}/../image/output/${install.name}/usr/servers" />
+			</condition>
+			<condition property="portsxml.location" value="${basedir}/../image/output/${install.name}/usr/servers/${ports.xml}" else="${liberty.location}/usr/servers/${ports.xml}">
+				<available file="${basedir}/../image/output/${install.name}/usr/servers" />
+			</condition>
+			<condition property="portsxml.client.location" value="${basedir}/../image/output/${install.name}/usr/clients/${ports.xml}" else="${liberty.location}/usr/clients/${ports.xml}">
+				<available file="${basedir}/../image/output/${install.name}/usr/servers" />
+			</condition>
+			<property name="liberty.server.dir" value="${basedir}/../image/output/${install.name}/usr/servers" />
+			<!-- We only want to run the port selector once -->
+			<copy file="${install.location}/${testports.properties}" toFile="${testports.location}" overwrite="true" />
+			<!-- We can tolerate the common.xml not being present because anyone who overrides fatTestPorts.xml is likely self-contained -->
+			<copy file="${install.location}/${common.xml}" toFile="${commonxml.location}" overwrite="true" failonerror="false" />
+			<copy file="${install.location}/${common.xml}" toFile="${commonxml.client.location}" overwrite="true" failonerror="false" />
+			<copy file="${install.location}/${ports.xml}" toFile="${portsxml.location}" overwrite="true" />
+			<copy file="${install.location}/${ports.xml}" toFile="${portsxml.client.location}" overwrite="true" />
+			<replace file="${portsxml.client.location}" token="bvt.prop.IIOP" value="bvt.prop.IIOP.client" />
+			<echo level="verbose"> Check ports are available </echo>
+			<portSelector engineName="${build.engine.name}" location="${testports.location}" jvmarg="ports.jvmarg" />
+			<property file="${testports.location}" />
+		</sequential>
+	</macrodef>
+
+	<macrodef name="replaceLdapPorts">
+		<!-- Update respective LDAP instance port with updated port from port selector-->
+		<sequential>
+			<property name="certpath" location="${basedir}\apacheds-2.0.0-M15\instances\liberty.ks" />
+			<loadresource property="certpath.linuxlikepath">
+				<propertyresource name="certpath" />
+				<filterchain>
+					<tokenfilter>
+						<filetokenizer />
+						<replaceregex pattern="\\" replace="/" flags="gi" />
+					</tokenfilter>
+				</filterchain>
+			</loadresource>
+			<iff>
+				<available file="${basedir}/apacheds-2.0.0-M15" property="isApacheDSAvailable" />
+				<then>
+					<echo> For first ldap Non-SSL port : ${ldap.1.port} and SSL port : ${ldap.1.ssl.port} </echo>
+					<echo> For second ldap Non-SSL port : ${ldap.2.port} and SSL port : ${ldap.2.ssl.port} </echo>
+					<echo> For third ldap Non-SSL port : ${ldap.3.port} and SSL port : ${ldap.3.ssl.port} </echo>
+					<copy file="${basedir}/apacheds-2.0.0-M15/instances/TDS/conf/config.ldif.org" tofile="${basedir}/apacheds-2.0.0-M15/instances/TDS/conf/config.ldif" overwrite="true">
+						<filterchain>
+							<tokenfilter>
+								<replaceregex pattern="^[ \t]*ads-systemport: 10389[ \t]*" replace="ads-systemport: ${ldap.1.port}" />
+								<replaceregex pattern="^[ \t]*ads-systemport: 10636[ \t]*" replace="ads-systemport: ${ldap.1.ssl.port}" />
+								<replaceregex pattern="^[ \t]*ads-keystoreFile: liberty.ks[ \t]*" replace="ads-keystoreFile: ${certpath.linuxlikepath}" />
+							</tokenfilter>
+						</filterchain>
+					</copy>
+
+					<copy file="${basedir}/apacheds-2.0.0-M15/instances/AD/conf/config.ldif.org" tofile="${basedir}/apacheds-2.0.0-M15/instances/AD/conf/config.ldif" overwrite="true">
+						<filterchain>
+							<tokenfilter>
+								<replaceregex pattern="^[ \t]*ads-systemport: 20389[ \t]*" replace="ads-systemport: ${ldap.2.port}" />
+								<replaceregex pattern="^[ \t]*ads-systemport: 20636[ \t]*" replace="ads-systemport: ${ldap.2.ssl.port}" />
+								<replaceregex pattern="^[ \t]*ads-keystoreFile: liberty.ks[ \t]*" replace="ads-keystoreFile: ${certpath.linuxlikepath}" />
+							</tokenfilter>
+						</filterchain>
+					</copy>
+
+					<copy file="${basedir}/apacheds-2.0.0-M15/instances/SunOne/conf/config.ldif.org" tofile="${basedir}/apacheds-2.0.0-M15/instances/SunOne/conf/config.ldif" overwrite="true">
+						<filterchain>
+							<tokenfilter>
+								<replaceregex pattern="^[ \t]*ads-systemport: 30389[ \t]*" replace="ads-systemport: ${ldap.3.port}" />
+								<replaceregex pattern="^[ \t]*ads-systemport: 30636[ \t]*" replace="ads-systemport: ${ldap.3.ssl.port}" />
+								<replaceregex pattern="^[ \t]*ads-keystoreFile: liberty.ks[ \t]*" replace="ads-keystoreFile: ${certpath.linuxlikepath}" />
+							</tokenfilter>
+						</filterchain>
+					</copy>
+				</then>
+			</iff>
+		</sequential>
+	</macrodef>
+
+	<!-- Set up all of the necessary properties for coverage reporting.
+       This has to be different from the ant_build jacoco.xml logic since
+       we're not using ant-contrib or other extensions. -->
+	<target name="generateFatJaCoCoReport.setup">
+		<taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+			<classpath path="${jacocoant.file}" />
+		</taskdef>
+
+		<available file="${exec.data.file}" property="is.exec.data.file.avialable" />
+
+		<loadresource property="project.under.test">
+			<propertyresource name="project.name" />
+			<filterchain>
+				<tokenfilter>
+					<filetokenizer />
+					<replaceregex pattern="_(fat.*|test.*|bvt.*|zfat.*)" replace="" flags="i" />
+				</tokenfilter>
+			</filterchain>
+		</loadresource>
+
+		<path id="project.under.test.bundles">
+			<fileset dir="${libertyInstallPath}/lib" >
+				<include name="${project.under.test}*.jar" />
+				<exclude name="com.ibm.ws.jaxrs.2.0.common*.jar" />
+			</fileset>
+		</path>
+		<pathconvert property="project.under.test.bundles.path" refid="project.under.test.bundles" setonempty="false" />
+		<condition property="is.project.under.test.bundles.available">
+			<isset property="project.under.test.bundles.path" />
+		</condition>
+
+		<path id="project.under.test.source">
+			<pathelement location="${libertyInstallPath}/../../${project.under.test}/src" />
+		</path>
+		<pathconvert property="project.under.test.source.path" refid="project.under.test.source" setonempty="false" />
+		<available file="${project.under.test.source.path}" type="dir" property="is.project.under.test.source.available" />
+
+		<condition property="generateFatJaCoCoReport.run">
+			<and>
+				<isset property="is.exec.data.file.avialable" />
+				<isset property="is.project.under.test.bundles.available" />
+			</and>
+		</condition>
+
+		<echo>Debug Data:</echo>
+		<echo>libertyInstallPath: ${libertyInstallPath}</echo>
+		<echo>jacocoant.file: ${jacocoant.file}</echo>
+		<echo>exec.data.file: ${exec.data.file}</echo>
+		<echo>is.exec.data.file.avialable: ${is.exec.data.file.avialable}</echo>
+		<echo>dir.log.coverage: ${dir.log.coverage}</echo>
+		<echo>project.name: ${project.name}</echo>
+		<echo>project.under.test: ${project.under.test}</echo>
+		<echo>project.under.test.bundles.path: ${project.under.test.bundles.path}</echo>
+		<echo>is.project.under.test.bundles.available: ${is.project.under.test.bundles.available}</echo>
+		<echo>project.under.test.source.path: ${project.under.test.source.path}</echo>
+		<echo>is.project.under.test.source.available: ${is.project.under.test.source.available}</echo>
+		<echo>generateFatJaCoCoReport.run: ${generateFatJaCoCoReport.run}</echo>
+	</target>
+
+	<target name="generateFatJaCoCoReport.checkExecDataFile" unless="is.exec.data.file.avialable">
+		<echo level="error">The jacoco.exec file is unavaialbe: ${exec.data.file}</echo>
+		<echo level="error">This can happen if:</echo>
+		<echo level="error">1. The FAT project overrides the default execution targets.</echo>
+		<echo level="error">2. The FAT tests did not actually run.</echo>
+	</target>
+
+	<target name="generateFatJaCoCoReport.checkBundles" unless="is.project.under.test.bundles.available">
+		<echo level="error">The project under test's bundles are unavailable: ${libertyInstallPath}/lib/${project.under.test}*.jar</echo>
+		<echo level="error">This can happen if:</echo>
+		<echo level="error">1. The test project deviates from the standard naming pattern: project / project_[test|fat].</echo>
+		<echo level="error">2. The production code project deviates from the standard bundle naming pattern: project.*jar.</echo>
+		<echo level="error">3. The FAT target is invoked from a non-production project</echo>
+	</target>
+
+	<target name="generateFatJaCoCoReport.noRun" unless="generateFatJaCoCoReport.run">
+		<echo level="error">No FAT coverage report will be generated for ${project.under.test}. See the log for earlier reasons.</echo>
+	</target>
+
+	<target name="generateFatJaCoCoReport.withSource" if="is.project.under.test.source.available">
+		<echo>Generating the FAT coverage report for component ${project.under.test}</echo>
+		<jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
+			<executiondata>
+				<file file="${exec.data.file}" />
+			</executiondata>
+			<!--  the class files and optional source files ...  -->
+			<structure name="FAT coverage report for ${project.under.test}">
+				<classfiles>
+					<fileset dir="${libertyInstallPath}/lib" >
+						<include name="${project.under.test}*.jar" />
+						<exclude name="com.ibm.ws.jaxrs.2.0.common*.jar" />
+					</fileset>
+				</classfiles>
+				<sourcefiles>
+					<fileset dir="${project.under.test.source.path}" />
+				</sourcefiles>
+			</structure>
+			<!--  Produce reports in different formats.  -->
+			<html destdir="${dir.log.coverage}" />
+			<csv destfile="${dir.log.coverage}/report.csv" />
+			<xml destfile="${dir.log.coverage}/report.xml" />
+		</jacoco:report>
+	</target>
+
+	<target name="generateFatJaCoCoReport.noSource" unless="is.project.under.test.source.available">
+		<echo>Generating the FAT coverage report for component ${project.under.test} (no source)</echo>
+		<jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
+			<executiondata>
+				<file file="${exec.data.file}" />
+			</executiondata>
+			<!--  the class files and optional source files ...  -->
+			<structure name="FAT coverage report for ${project.under.test}">
+				<classfiles>
+					<fileset dir="${libertyInstallPath}/lib" >
+						<include name="${project.under.test}*.jar" />
+						<exclude name="com.ibm.ws.jaxrs.2.0.common*.jar" />
+					</fileset>
+				</classfiles>
+			</structure>
+			<!--  Produce reports in different formats.  -->
+			<html destdir="${dir.log.coverage}" />
+			<csv destfile="${dir.log.coverage}/report.csv" />
+			<xml destfile="${dir.log.coverage}/report.xml" />
+		</jacoco:report>
+	</target>
+
+	<!-- Generates the FAT code coverage report, if possible.
+       The target classes are based on the project under test's bundle as the
+       tests are ran against the a server. -->
+	<target name="generateFatJaCoCoReport" depends="generateFatJaCoCoReport.setup,
+                                                  generateFatJaCoCoReport.checkExecDataFile,
+                                                  generateFatJaCoCoReport.checkBundles,
+                                                  generateFatJaCoCoReport.noRun" if="generateFatJaCoCoReport.run">
+		<antcall target="generateFatJaCoCoReport.withSource" />
+		<antcall target="generateFatJaCoCoReport.noSource" />
+		<echo>HTML report for code coverage is available at ${dir.log.coverage}/index.html</echo>
+		<echo>CSV report for code coverage is available at ${dir.log.coverage}/report.csv</echo>
+		<echo>XML report for code coverage is available at ${dir.log.coverage}/report.xml</echo>
+	</target>
+
+	<!-- Want to add ${haltOnFailure} control to this, defaulting to 
+	     old behavior (failing) if not explicitly set. Useful when
+	     testing locally, as individual or SLE customer, and full
+	     status is desired from a single pass.
+	  -->
+	<target name="failIfTestFailures">
+		<echo message="haltOnFailure is '${haltOnFailure}'"/>
+		<iff>
+			<and>
+				<not>
+					<!-- This is only activated if we are NOT in an RTC build -->
+					<isset property="is.running.automated.build" />
+				</not>
+				<!-- and the halt flag is either not set or set true-ish -->
+				<or>
+					<not>
+						<isset property="haltOnFailure"/>
+					</not>
+					<istrue value="haltOnFailure"/>
+				</or>
+			</and>
+			<then>
+				<available file="${basedir}/autoFVT/output/fail.log" property="fail.log.found" />
+				<fail if="fail.log.found" message="The FAT bucket has test failures! See the logs and results for details" />
+			</then>
+		</iff>
+	</target>
+
+</project>

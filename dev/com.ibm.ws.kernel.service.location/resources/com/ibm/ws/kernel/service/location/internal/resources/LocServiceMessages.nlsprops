@@ -1,0 +1,60 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/location/internal/resources/LocServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# -------------------------------------------------------------------------------------------------
+unreachableLocation=CWWKE0200E: The specified location is unreachable. It is not a child of a known or configured path; path={0}.
+unreachableLocation.explanation=The platform uses symbolic paths to provide rudimentary protection from arbitrary access to the file system \
+   when the location service is used to resolve specified paths. README.TXT contains information about how symbolic \
+   paths are configured.
+unreachableLocation.useraction=Check bootstrap.properties for configured paths, and ensure that the configured path \
+   is a child of existing symbols or is associated with an explicitly defined symbol.
+
+invalidResourceType=CWWKE0201E: Unable to create symbol; the specified location exists, and conflicts with required type: {0}={1}.
+invalidResourceType.explanation=The path specified for a symbol exists, and is a different type of resource than the path specifies \
+  (for example, the symbol describes a file, but the resource is a directory).
+invalidResourceType.useraction=Ensure the path is specified correctly. Directory paths must end with a /. Ensure the path \
+  refers to a resource that either does not exist, or exists and is of the required type.
+
+missingTmpDir=CWWKE0202E: The specified temporary directory location does not exist and could not be created: {0}.
+missingTmpDir.explanation=The directory specified as the java.io.tmpdir (either through a system property or a platform-specific \
+  environment variable) does not exist and could not be created.
+missingTmpDir.useraction=Ensure the specified directory exists and has read/write permissions.
+
+relativeTmpDir=CWWKE0203I: The java.io.tempdir was specified with a relative path. The resolved path is {0}.
+relativeTmpDir.explanation=The directory specified as the java.io.tmpdir (either through a system property or a platform-specific \
+  environment variable) was relative, and is resolved relative to the launch directory.
+relativeTmpDir.useraction=No action is required.
+
+locationInitializationError=CWWKE0204E: Unable to initialize the platform location service; reason={0}.
+locationInitializationError.explanation=CMSG0001
+locationInitializationError.useraction=CMSG0002
+
+frameworkShutdown=CWWKE0205W: The framework is shutting down because of a previous initialization error.
+frameworkShutdown.explanation=The framework is shutting down because of a previous error during initialization.
+frameworkShutdown.useraction=Resolve the error then restart the server.

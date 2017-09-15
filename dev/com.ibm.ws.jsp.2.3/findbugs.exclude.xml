@@ -1,0 +1,387 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+    <!-- match generated nls classes: return mutable type -->
+   <Match> 
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+   </Match>
+
+	<!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+   <Match>
+     <Class name="org.apache.jasper.Constants"/>
+     <Method name="&lt;clinit&gt;" signature="()V"/>
+     <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+   </Match>
+    
+   <!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+   <Match>
+     <Class name="org.apache.jasper.el.ELResolverImpl"/>
+     <Method name="getType" signature="(Ljavax/el/ELContext;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Class;"/>
+     <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+  
+   <!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+  <Match>
+    <Class name="org.apache.jasper.el.ELResolverImpl"/>
+    <Method name="getValue" signature="(Ljavax/el/ELContext;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+  
+  <!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+  <Match>
+    <Class name="org.apache.jasper.el.ELResolverImpl"/>
+    <Method name="isReadOnly" signature="(Ljavax/el/ELContext;Ljava/lang/Object;Ljava/lang/Object;)Z"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+  
+  <!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+  <Match>
+    <Class name="org.apache.jasper.el.ELResolverImpl"/>
+    <Method name="setValue" signature="(Ljavax/el/ELContext;Ljava/lang/Object;Ljava/lang/Object;Ljava/lang/Object;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+    
+  <!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+  <Match>
+    <Class name="org.apache.jasper.el.JasperELResolver"/>
+    <Method name="getValue" signature="(Ljavax/el/ELContext;Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+  
+  <!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+  <Match>
+    <Class name="org.apache.jasper.el.JasperELResolver"/>
+    <Field name="resolvers"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+   <!-- This bug excluded for review later before EGA. Remove this comment when review complete. -->
+   <Match>
+    <Class name="org.apache.jasper.el.JasperELResolver"/>
+    <Field  name="size"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.jsp23.webcontainerext.ws.PrepareJspServletResponse23Impl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+    
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.BodyContentImpl"/>
+    <Method name="recycle" signature="()V"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.HttpJspBase"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspContextWrapper"/>
+    <Method name="include" signature="(Ljava/lang/String;Z)V"/>
+    <Bug pattern="IL_INFINITE_RECURSIVE_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspContextWrapper"/>
+    <Method name="copyTagToPageScope" signature="(I)V"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFactoryImpl$PrivilegedGetPageContext"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFactoryImpl$PrivilegedReleasePageContext"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFragmentHelper"/>
+    <Field name="discriminator"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspFragmentHelper"/>
+    <Field name="pageContext"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="convert" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="createTypedArray" signature="(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;Z)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(Ljava/lang/Object;)Ljava/lang/String;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(Z)Ljava/lang/String;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="URLEncode" signature="(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="decode" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="coerce" signature="(Ljava/lang/String;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="convert" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)Ljava/lang/Object;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="createTypedArray" signature="(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;B)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;C)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;J)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="handleSetProperty" signature="(Ljava/lang/Object;Ljava/lang/String;S)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(B)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(C)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(I)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(J)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="toString" signature="(S)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="createTypedArray" signature="(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/reflect/Method;[Ljava/lang/String;Ljava/lang/Class;Ljava/lang/Class;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.JspRuntimeLibrary"/>
+    <Method name="escapeQueryString" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Method name="removeAttribute" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Field name="autoFlush"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Field name="bufferSize"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Field name="isIncluded"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Field name="needsSession"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Field name="page"/>
+    <Bug pattern="UUF_UNUSED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PageContextImpl"/>
+    <Field name="variableResolver"/>
+    <Bug pattern="UUF_UNUSED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.PerThreadTagHandlerPool"/>
+    <Field name="MAX_SIZE"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.TagHandlerPool"/>
+    <Field name="OPTION_MAXSIZE"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.TagHandlerPool"/>
+    <Field name="OPTION_TAGPOOL"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.jasper.runtime.TagHandlerPool"/>
+    <Method name="getTagHandlerPool" signature="(Ljavax/servlet/ServletConfig;)Lorg/apache/jasper/runtime/TagHandlerPool;"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+</FindBugsFilter>

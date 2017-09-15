@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="bin" path="src"/>
+	<classpathentry kind="src" output="bin_test" path="test"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="src" path="/com.ibm.ws.security.jaspic"/>
+	<classpathentry kind="lib" path="/com.ibm.websphere.javaee.security.1.0/generated/com.ibm.websphere.javaee.security.1.0.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.websphere.javaee.security.1.0.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.websphere.javaee.security.1.0"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="javax/security/enterprise/*"/>
+			<accessrule kind="accessible" pattern="javax/security/enterprise/authentication/mechanism/http/*"/>
+			<accessrule kind="accessible" pattern="javax/security/enterprise/credential/*"/>
+			<accessrule kind="accessible" pattern="javax/security/enterprise/identitystore/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.common.encoder"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

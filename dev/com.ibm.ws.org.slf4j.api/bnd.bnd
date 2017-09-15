@@ -1,0 +1,16 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;org.slf4j:slf4j-api;1.7.7}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+-includeresource: \
+   @${repo;org.slf4j:slf4j-api;1.7.7}!/!META-INF/MANIFEST.MF|META-INF/maven/*
+
+-buildpath: org.slf4j:slf4j-api;version=1.7.7

@@ -1,0 +1,223 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+# CXF files from the dev/com.ibm.ws.org.apache.cxf.3.2.jaxrs project:
+cxf-core=cxf-core-3.2.0-20170815.181006-518.jar
+cxf-rt-features-clustering=cxf-rt-features-clustering-3.2.0-20170815.120200-511.jar
+cxf-rt-frontend-jaxrs=cxf-rt-frontend-jaxrs-3.2.0-20170815.120304-511.jar
+cxf-rt-rs-client=cxf-rt-rs-client-3.2.0-20170815.120426-508.jar
+cxf-rt-rs-service-description=cxf-rt-rs-service-description-3.2.0-20170815.120746-505.jar
+cxf-rt-rs-sse=cxf-rt-rs-sse-3.2.0-20170822.090219-358.jar
+cxf-rt-transports-http=cxf-rt-transports-http-3.2.0-20170815.120848-505.jar
+cxf-tools-common=cxf-tools-common-3.2.0-20170814.175354-499.jar
+cxf-tools-wadlto-jaxrs=cxf-tools-wadlto-jaxrs-3.2.0-20170814.175516-496.jar
+
+
+Bundle-Name: JAX-RS 2.1 Engine
+Bundle-SymbolicName: com.ibm.ws.jaxrs.2.1.common
+Bundle-Description: IBM JAX-RS 2.1 engine; version=${bVersion}
+Bundle-ClassPath:  ., lib/${cxf-core}, lib/${cxf-rt-frontend-jaxrs}, lib/${cxf-rt-rs-client}, lib/${cxf-rt-rs-sse},lib/${cxf-rt-transports-http}, lib/${cxf-tools-common}, lib/${cxf-tools-wadlto-jaxrs}, lib/${cxf-rt-rs-service-description}, lib/jackson-core-asl-1.6.2.jar, lib/jackson-jaxrs-1.6.2.jar, lib/jackson-mapper-asl-1.6.2.jar, lib/jackson-xc-1.6.2.jar, \
+
+# jaxrs-2.1 is part of EE8 and therefore requires java 1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+WS-TraceGroup: JAXRS
+
+-nouses: false
+-exportcontents: \
+   !org.apache.cxf.validation, \
+   !org.apache.cxf.jaxrs.validation, \
+   !org.apache.cxf.databinding;version=3.2.0-SNAPSHOT, \
+   org.apache.cxf.*;version=3.2.0-SNAPSHOT, \
+   
+Export-Package: \
+	META-INF.cxf,\
+	com.ibm.ws.jaxrs20,\
+	com.ibm.ws.jaxrs20.api;provide=true,\
+	com.ibm.ws.jaxrs20.bus,\
+	com.ibm.ws.jaxrs20.metadata,\
+	com.ibm.ws.jaxrs20.metadata.builder,\
+	com.ibm.ws.jaxrs20.support,\
+	com.ibm.ws.jaxrs20.utils,\
+	com.ibm.ws.jaxrs20.endpoint,\
+	com.ibm.ws.jaxrs20.injection,\
+	com.ibm.ws.jaxrs20.injection.*,\
+	com.ibm.ws.jaxrs20.threading,\
+	com.ibm.ws.jaxrs21.sse,\
+	com.ibm.websphere.jaxrs.providers.json4j;version=1.1.0,\
+	com.ibm.websphere.jaxrs20.multipart;version=1.1.0,\
+	com.ibm.ws.jaxrs20.clientconfig,\
+	org.apache.cxf.jaxrs.sse;version=3.2.0,\
+	org.apache.cxf.jaxrs.sse.client;version=3.2.0;thread-context=true,\
+	com.ibm.ws.jaxrs20.providers.api
+
+Import-Package: \
+ !com.wordnik.swagger.jaxrs.config, \
+ !com.wordnik.swagger.jaxrs.listing, \
+ com.ibm.websphere.jaxrs20.multipart, \
+ !sun.reflect.generics.reflectiveObjects, \
+ !javax.cache.*, \
+ javax.ws.rs.*, \
+ junit.framework.*;resolution:=optional, \
+# com.sun.xml.fastinfoset.*;resolution:=optional, \
+ org.apache.xml.resolver.*;resolution:=optional, \
+ !org.junit.*;resolution:=optional, \
+ !org.apache.velocity.*, \
+ org.objectweb.asm.*;resolution:=optional, \
+# net.sf.cglib.*;resolution:=optional;version="[2.1.3,3.0.0)", \
+ org.slf4j.*;resolution:=optional;version="[1.5,2)", \
+ org.osgi.framework.*, \
+ org.apache.neethi;resolution:=optional, \
+ org.apache.commons.logging.*;resolution:=optional, \
+ javax.activation, \
+ javax.mail;version="[0.0,2)", \
+ javax.annotation;version="[1.2,2)", \
+ javax.xml.stream.*, \
+ !com.sun.xml.fastinfoset.stax.*, \
+ !javax.xml.ws, \
+ javax.xml.namespace;resolution:=optional, \
+ javax.servlet.*;resolution:=optional;version="[0.0,4)", \
+ javax.xml.ws.*;version="[2.2,3)", \
+ # org.apache.cxf.ws.policy.*;resolution:=optional, \
+ javax.servlet.*;resolution:=optional;version="[0.0,4)", \
+ com.ibm.wsspi.classloading, \
+ com.ibm.websphere.ras, \
+ com.ibm.websphere.ras.annotation, \
+ com.ibm.ws.ffdc, \
+ com.ibm.ws.webcontainer.extension, \
+ com.ibm.ws.webcontainer.osgi, \
+ com.ibm.websphere.security, \
+ !com.sun.xml.bind.marshaller, \
+ !com.ctc.wstx.*, \
+ !com.sun.msv.*, \
+ !com.sun.xml.fastinfoset.stax.*, \
+ !net.sf.cglib.proxy.*, \
+ !javax.validation.*, \
+ !org.codehaus.stax2.*, \
+ !org.apache.log4j.*, \
+ !org.apache.xerces.dom, \
+ !org.apache.xerces.*, \
+ !com.ibm.wsdl.util.xml, \
+ !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+ !org.apache.aries.*;version="[0.3,2)", \
+ !org.osgi.service.blueprint.*, \
+ !org.apache.xerces.dom, \
+ !com.sun.tools.xjc.reader.internalizer, \
+ !org.springframework.*;resolution:=optional;version="[2.5,4)", \
+ !org.apache.aries.*;version="[0.3,2)", \
+ !org.osgi.service.blueprint.*, \
+ !org.apache.aries.*;version="[0.3,2)", \
+ !org.osgi.service.blueprint.*, \
+ !org.apache.xerces.dom, \
+ !org.apache.xerces.*, \
+ !org.apache.cxf.ws.policy.*, \
+ !javax.wsdl.*, \
+ !org.apache.cxf.wsdl.*, \
+ !org.joda.time.*, \
+ !javax.xml.bind.*, \
+ com.ibm.json.xml, \
+ com.ibm.json.java, \
+ !org.osgi.service.http.*, \
+ org.qi4j.*;resolution:=optional, \
+ javax.enterprise.context.*;resolution:=optional, \
+ javax.enterprise.event.*;resolution:=optional, \
+ javax.enterprise.inject.*;resolution:=optional, \
+ javax.enterprise.util.*;resolution:=optional, \
+ javax.inject.*;resolution:=optional, \
+ !org.atmosphere.*, \
+ !org.apache.cxf.cdi.*, \
+ *
+
+# Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
+# those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
+# bundle will be always used due to JAXB 2.2 API is not resolved
+DynamicImport-Package: \
+ javax.xml.ws, \
+ javax.xml.ws.*, \
+ javax.xml.bind, \
+ javax.xml.bind.annotation, \
+ javax.xml.bind.annotation.adapters, \
+ javax.xml.bind.attachment, \
+ javax.xml.bind.helpers, \
+ javax.xml.bind.util, \
+ javax.json, \
+ javax.json.*
+
+Private-Package:\
+   com.ibm.ws.jaxrs20.*, \
+
+Include-Resource: \
+  lib/${cxf-core}=${repo;org.apache.cxf.cxf-core;3.2.0.SNAPSHOT;EXACT}, \
+  lib/${cxf-rt-frontend-jaxrs}=${repo;org.apache.cxf.cxf-rt-frontend-jaxrs;3.2.0.SNAPSHOT;EXACT}, \
+  lib/${cxf-rt-rs-client}=${repo;org.apache.cxf.cxf-rt-rs-client;3.2.0.SNAPSHOT;EXACT}, \
+  lib/${cxf-rt-transports-http}=${repo;org.apache.cxf.cxf-rt-transports-http;3.2.0.SNAPSHOT;EXACT}, \
+  lib/${cxf-tools-common}=${repo;org.apache.cxf.cxf-tools-common;3.2.0.SNAPSHOT;EXACT}, \
+  lib/${cxf-tools-wadlto-jaxrs}=${repo;org.apache.cxf.cxf-tools-wadlto-jaxrs;3.2.0.SNAPSHOT;EXACT}, \
+  lib/${cxf-rt-rs-service-description}=${repo;org.apache.cxf.cxf-rt-rs-service-description;3.2.0.SNAPSHOT;EXACT}, \
+  lib/${cxf-rt-rs-sse}=${repo;org.apache.cxf.cxf-rt-rs-sse;3.2.0.SNAPSHOT;EXACT}, \
+  lib/jackson-core-asl-1.6.2.jar=${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2}, \
+  lib/jackson-jaxrs-1.6.2.jar=${repo;com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;1.6.2}, \
+  lib/jackson-mapper-asl-1.6.2.jar=${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2}, \
+  lib/jackson-xc-1.6.2.jar=${repo;com.ibm.ws.org.codehaus.jackson:jackson-xc;1.6.2}, \
+  org/apache/cxf=${bin}/org/apache/cxf, \
+  org/codehaus/jackson=${bin}/org/codehaus/jackson
+
+-dsannotations: com.ibm.ws.jaxrs20.component.*, \
+ com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
+ 	com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister, \
+ 	com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister
+
+-dependson: com.ibm.ws.org.codehaus.jackson
+
+instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
+
+-buildpath: \
+	org.apache.cxf.cxf-core;strategy=exact;version=3.2.0.SNAPSHOT, \
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.2.0.SNAPSHOT, \
+	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version=3.2.0.SNAPSHOT, \
+	org.apache.cxf.cxf-rt-rs-service-description;strategy=exact;version=3.2.0.SNAPSHOT, \
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.2.0.SNAPSHOT, \
+	org.apache.cxf.cxf-tools-common;strategy=exact;version=3.2.0.SNAPSHOT, \
+	org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version=3.2.0.SNAPSHOT, \
+	org.apache.cxf.cxf-rt-rs-sse;strategy=exact;version=3.2.0.SNAPSHOT,\
+	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2, \
+	com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;version=1.6.2, \
+	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2, \
+	com.ibm.ws.org.codehaus.jackson:jackson-xc;version=1.6.2, \
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.ws.webservices.handler;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.websphere.javaee.mail.1.5;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.0,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.kernel.feature,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.websphere.appserver.spi.threading,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.jaxrs.2.x.config;version=latest

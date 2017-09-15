@@ -1,0 +1,13 @@
+Index: rt/transports/http/src/main/java/org/apache/cxf/transport/http/TrustDecisionUtil.java
+===================================================================
+--- rt/transports/http/src/main/java/org/apache/cxf/transport/http/TrustDecisionUtil.java	(revision 1442012)
++++ rt/transports/http/src/main/java/org/apache/cxf/transport/http/TrustDecisionUtil.java	(working copy)
+@@ -92,7 +92,7 @@
+                 connection.disconnect();
+                 if (LOG.isLoggable(Level.FINE)) {
+                     LOG.log(Level.FINE, "Trust Decider "
+-                        + trustDecider.getLogicalName()
++                        + (trustDecider != null ? trustDecider.getLogicalName() : decider2.getLogicalName())
+                         + " considers Conduit "
+                         + conduitName 
+                         + " untrusted.", untrustedEx);

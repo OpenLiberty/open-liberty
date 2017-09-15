@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD name="%binaryLog" description="%binaryLog.desc" id="com.ibm.ws.logging.binaryLog" ibm:childAlias="binaryLog"
+    		ibm:parentPid="com.ibm.ws.logging">
+        <!--<AD name="%binaryLog.dataDirectory" description="%binaryLog.dataDirectory.desc"
+        	ibm:variable="com.ibm.hpel.log.dataDirectory"
+            id="dataDirectory" required="false" type="String" default="" />-->
+        <AD name="%binaryLog.purgeMaxSize" description="%binaryLog.purgeMaxSize.desc"
+        	ibm:variable="com.ibm.hpel.log.purgeMaxSize"
+            id="purgeMaxSize" required="false" type="Integer" default="50" min="0" />
+        <AD name="%binaryLog.purgeMinTime" description="%binaryLog.purgeMinTime.desc"
+        	ibm:variable="com.ibm.hpel.log.purgeMinTime"
+            id="purgeMinTime" required="false" type="String" ibm:type="duration(h)" default="0" />
+        <AD name="%binaryLog.fileSwitchTime" description="%binaryLog.fileSwitchTime.desc"
+        	ibm:variable="com.ibm.hpel.log.fileSwitchTime" min="0" max="23"
+            id="fileSwitchTime" required="false" type="Integer" />
+        <AD name="%binaryLog.bufferingEnabled" description="%binaryLog.bufferingEnabled.desc"
+        	ibm:variable="com.ibm.hpel.log.bufferingEnabled"
+            id="bufferingEnabled" required="false" type="Boolean" default="true" />
+        <AD name="%binaryLog.outOfSpaceAction" description="%binaryLog.outOfSpaceAction.desc"
+        	ibm:variable="com.ibm.hpel.log.outOfSpaceAction"
+            id="outOfSpaceAction" required="false" type="String" default="StopLogging">
+            <Option label="%out.of.space.action.stop.server" value="StopServer"/>
+            <Option label="%out.of.space.action.purge.old" value="PurgeOld"/>
+            <Option label="%out.of.space.action.stop.logging" value="StopLogging"/>
+        </AD>
+    </OCD>
+
+    <OCD name="%binaryTrace" description="%binaryTrace.desc" id="com.ibm.ws.logging.binaryTrace" ibm:childAlias="binaryTrace"
+    		ibm:parentPid="com.ibm.ws.logging">
+        <!--<AD name="%binaryTrace.dataDirectory" description="%binaryTrace.dataDirectory.desc"
+        	ibm:variable="com.ibm.hpel.trace.dataDirectory"
+            id="dataDirectory" required="false" type="String" default="" />-->
+        <!--<AD name="%binaryTrace.memoryBufferSize" description="%binaryTrace.memoryBufferSize.desc"
+        	ibm:variable="com.ibm.hpel.trace.memoryBufferSize" min="-1"
+            id="memoryBufferSize" required="false" type="Integer" />-->
+        <AD name="%binaryTrace.purgeMaxSize" description="%binaryTrace.purgeMaxSize.desc"
+        	ibm:variable="com.ibm.hpel.trace.purgeMaxSize"
+            id="purgeMaxSize" required="false" type="Integer" default="50" min="0" />
+        <AD name="%binaryTrace.purgeMinTime" description="%binaryTrace.purgeMinTime.desc"
+        	ibm:variable="com.ibm.hpel.trace.purgeMinTime"
+            id="purgeMinTime" required="false" type="String" ibm:type="duration(h)" default="0" />
+        <AD name="%binaryTrace.fileSwitchTime" description="%binaryTrace.fileSwitchTime.desc"
+        	ibm:variable="com.ibm.hpel.trace.fileSwitchTime" min="0" max="23"
+            id="fileSwitchTime" required="false" type="Integer" />
+        <AD name="%binaryTrace.bufferingEnabled" description="%binaryTrace.bufferingEnabled.desc"
+        	ibm:variable="com.ibm.hpel.trace.bufferingEnabled"
+            id="bufferingEnabled" required="false" type="Boolean" default="true" />
+        <AD name="%binaryTrace.outOfSpaceAction" description="%binaryTrace.outOfSpaceAction.desc"
+        	ibm:variable="com.ibm.hpel.trace.outOfSpaceAction"
+            id="outOfSpaceAction" required="false" type="String" default="StopLogging">
+            <Option label="%out.of.space.action.stop.server" value="StopServer"/>
+            <Option label="%out.of.space.action.purge.old" value="PurgeOld"/>
+            <Option label="%out.of.space.action.stop.logging" value="StopLogging"/>
+        </AD>
+   </OCD>
+
+    <Designate pid="com.ibm.ws.logging.binaryLog">
+        <Object ocdref="com.ibm.ws.logging.binaryLog" />
+    </Designate>
+  
+    <Designate pid="com.ibm.ws.logging.binaryTrace">
+        <Object ocdref="com.ibm.ws.logging.binaryTrace" />
+    </Designate>
+
+</metatype:MetaData>

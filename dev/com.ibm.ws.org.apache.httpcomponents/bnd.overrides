@@ -1,0 +1,47 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: Apache Http
+Bundle-SymbolicName: com.ibm.ws.org.apache.httpcomponents.4.3
+Bundle-Description: Apache HttpCore and HttpClient, version 4.3
+
+Export-Package: \
+  org.apache.http;version="4.3", \
+  org.apache.http.annotation;version="4.3", \
+  org.apache.http.auth;version="4.3", \
+  org.apache.http.auth.params;version="4.3", \
+  org.apache.http.client;version="4.3", \
+  org.apache.http.client.config;version="4.3", \
+  org.apache.http.client.entity;version="4.3", \
+  org.apache.http.client.methods;version="4.3", \
+  org.apache.http.client.params;version="4.3", \
+  org.apache.http.client.protocol;version="4.3", \
+  org.apache.http.client.utils;version="4.3", \
+  org.apache.http.concurrent;version="4.3", \
+  org.apache.http.config;version="4.3", \
+  org.apache.http.conn;version="4.3", \
+  org.apache.http.conn.params;version="4.3", \
+  org.apache.http.conn.routing;version="4.3", \
+  org.apache.http.conn.scheme;version="4.3", \
+  org.apache.http.conn.socket;version="4.3", \
+  org.apache.http.conn.ssl;version="4.3", \
+  org.apache.http.conn.util;version="4.3", \
+  org.apache.http.cookie;version="4.3", \
+  org.apache.http.cookie.params;version="4.3", \
+  org.apache.http.entity;version="4.3", \
+  org.apache.http.impl;version="4.3", \
+  org.apache.http.impl.auth;version="4.3", \
+  org.apache.http.impl.client;version="4.3", \
+  org.apache.http.impl.conn;version="4.3", \
+  org.apache.http.impl.conn.tsccm;version="4.3", \
+  org.apache.http.impl.cookie;version="4.3", \
+  org.apache.http.impl.entity;version="4.3", \
+  org.apache.http.impl.execchain;version="4.3", \
+  org.apache.http.impl.io;version="4.3", \
+  org.apache.http.impl.pool;version="4.3", \
+  org.apache.http.io;version="4.3", \
+  org.apache.http.message;version="4.3", \
+  org.apache.http.params;version="4.3", \
+  org.apache.http.pool;version="4.3", \
+  org.apache.http.protocol;version="4.3", \
+  org.apache.http.util;version="4.3"

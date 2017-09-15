@@ -1,0 +1,39 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<faces-config version="2.2" xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+        http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd">
+
+    <!-- This flow definition defines a navigation rule, which allows the definition of explicit navigation paths. -->
+    <flow-definition id="simpleNavigationDeclarative">
+        <view id="simpleNavigationDeclarative">
+            <vdl-document>/simpleNavigationDeclarative/simpleNavigationDeclarative.xhtml</vdl-document>
+        </view>
+        <flow-return id="goIndex">
+            <from-outcome>/JSF22Flows_index</from-outcome>
+        </flow-return>
+        <flow-return id="goReturn">
+            <from-outcome>/JSF22Flows_return</from-outcome>
+        </flow-return>
+        <navigation-rule>
+            <from-view-id>/simpleNavigationDeclarative/simpleNavigationDeclarative.xhtml</from-view-id>
+            <navigation-case>
+                <from-outcome>next_page</from-outcome>
+                <to-view-id>
+                    /simpleNavigationDeclarative/simpleNavigationDeclarative2.xhtml
+                </to-view-id>
+                <redirect/>
+            </navigation-case>
+        </navigation-rule>
+
+    </flow-definition>
+</faces-config>

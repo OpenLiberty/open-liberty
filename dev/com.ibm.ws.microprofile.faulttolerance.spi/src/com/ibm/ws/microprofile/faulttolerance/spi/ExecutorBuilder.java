@@ -1,0 +1,30 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.microprofile.faulttolerance.spi;
+
+import java.util.concurrent.Future;
+
+public interface ExecutorBuilder<T, R> {
+
+    public ExecutorBuilder<T, R> setRetryPolicy(RetryPolicy retry);
+
+    public ExecutorBuilder<T, R> setCircuitBreakerPolicy(CircuitBreakerPolicy circuitBreaker);
+
+    public ExecutorBuilder<T, R> setBulkheadPolicy(BulkheadPolicy bulkhead);
+
+    public ExecutorBuilder<T, R> setFallbackPolicy(FallbackPolicy fallback);
+
+    public ExecutorBuilder<T, R> setTimeoutPolicy(TimeoutPolicy timeout);
+
+    public Executor<R> build();
+
+    public Executor<Future<R>> buildAsync();
+}

@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# Cut-and-pasted from the manifest of the original bundle
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.0
+Created-By: 2.3 (IBM Corporation)
+Bundle-ManifestVersion: 2
+Bundle-Name: Util Plug-in
+Bundle-SymbolicName: com.ibm.tx.util
+Bundle-Vendor: IBM
+DynamicImport-Package: *
+WS-TraceGroup: Transaction
+
+# LIBERTY change - no import of com.ibm.ws.util.logging (we'll pick it
+# dynamically anyway)
+Import-Package: javax.transaction;version="1.1.0"
+
+# all packages have packageinfo files (package-info.java with @version javadoc)
+Export-Package: com.ibm.tx,\
+ com.ibm.tx.config,\
+ com.ibm.tx.util,\
+ com.ibm.tx.util.alarm,\
+ com.ibm.tx.util.logging
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

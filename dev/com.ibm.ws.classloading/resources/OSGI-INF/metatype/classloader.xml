@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" localization="OSGI-INF/l10n/classloader" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+<!-- both alias and childAlias seem to be needed.  Why? -->
+  <OCD name="%classloader.service.name" description="%classloader.service.desc"
+       id="com.ibm.ws.classloading.classloader"
+       ibm:alias="classloader"
+       ibm:childAlias="classloader"
+       ibm:parentPid="com.ibm.ws.app.manager">
+    
+    <AD name="%classloader.delegation" description="%classloader.delegation.desc"  
+        id="delegation" 
+        required="false" 
+        type="String" 
+        default="parentFirst" >
+        <Option label="%parentFirst" value="parentFirst"/>
+        <Option label="%parentLast" value="parentLast"/>   
+    </AD>
+
+    <AD name="%classloader.library.ref" description="%classloader.library.ref.desc"  
+        id="privateLibraryRef" 
+        required="false" 
+        type="String"    
+        cardinality="10000"  
+        ibm:type="pid" 
+        ibm:reference="com.ibm.ws.classloading.sharedlibrary"
+    />
+
+    <AD name="%classloader.common.library.ref" description="%classloader.common.library.ref.desc"  
+        id="commonLibraryRef" 
+        required="false" 
+        type="String"    
+        cardinality="10000"  
+        ibm:type="pid" 
+        ibm:reference="com.ibm.ws.classloading.sharedlibrary"    
+    />
+
+    <AD name="%classloader.provider.ref" description="%classloader.provider.ref.desc"  
+        id="classProviderRef" 
+        required="false" 
+        type="String"    
+        cardinality="10000"  
+        ibm:type="pid" 
+        ibm:reference="com.ibm.ws.jca.resourceAdapter.supertype"    
+    />
+
+     <AD name="%classloader.apis" description="%classloader.apis.desc"
+        id="apiTypeVisibility"
+        required="false"
+        type="String"
+        default="spec\,ibm-api\,api\,stable">
+    </AD>
+    
+    
+    <!-- Revisit this in the first fixpack to give proper multi-choice support with defaults.  
+  
+    <AD name="%classloader.apis" description="%classloader.apis.desc"
+        id="apiTypeVisibility"
+        required="false"
+        type="String"
+        default="spec,ibm-api,api"
+        cardinality="4">
+      <Option label="%classloader.api.spec" value="spec" description="%classloader.api.spec.desc"/>
+      <Option label="%classloader.api.ibmapi" value="ibm-api" description="%classloader.api.ibmapi.desc"/>
+      <Option label="%classloader.api.thirdparty" value="third-party" description="%classloader.api.thirdparty.desc"/>
+      <Option label="%classloader.api.api" value="user" description="%classloader.api.api.desc"/>
+    </AD> -->
+
+  </OCD>
+
+  <Designate factoryPid="com.ibm.ws.classloading.classloader">
+    <Object ocdref="com.ibm.ws.classloading.classloader"/>
+  </Designate>
+
+</metatype:MetaData>

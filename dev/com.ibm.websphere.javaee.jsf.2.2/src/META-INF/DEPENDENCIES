@@ -1,0 +1,17 @@
+// ------------------------------------------------------------------
+// Transitive dependencies of this project determined from the
+// maven pom organized by organization.
+// ------------------------------------------------------------------
+
+Apache MyFaces JSF-2.2 Core API
+
+
+From: 'The Apache Software Foundation' (http://www.apache.org)
+  - Apache Geronimo JSR-330 Spec API (http://geronimo.apache.org/maven/genesis/1.0) org.apache.geronimo.specs:geronimo-atinject_1.0_spec:bundle:1.0
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+  - Apache Geronimo JSR-303 Bean Validation Spec API (http://geronimo.apache.org/maven/specs/geronimo-validation_1.0_spec/1.1) org.apache.geronimo.specs:geronimo-validation_1.0_spec:bundle:1.1
+    License: The Apache Software License, Version 2.0  (http://www.apache.org/licenses/LICENSE-2.0.txt)
+
+
+
+

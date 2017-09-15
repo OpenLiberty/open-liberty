@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=FATAL
+ERROR=ERROR
+AUDIT=AUDIT
+EVENT=EVENT
+DETAIL=DETAIL
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: The trace state has been changed. The new trace state is {0}.
+MSG_TRACE_STATE_CHANGED.explanation=A request to change the current trace state was received and processed.
+MSG_TRACE_STATE_CHANGED.useraction=If the new trace state is not the desired trace state, change it to the desired state.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: Unable to rename file {0} to {1} during log file rollover. Attempting to copy file contents.
+MSG_ROLLOVER_RENAME_FAILED.explanation=Failed to rename the file indicated.  The most likely cause is that another process or thread is accessing the log file. WebSphere will try to complete the rollover operation by copying the contents of the log file - this process is slower, and all threads making attempting to log will be halted during this process.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Determine the cause of the rename failure and resolve it - this may involve shutting down other processes that are accessing the same log file.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: Runtime injection of detailed method trace is not available.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=The class file transformer responsible for adding method-level trace could not be installed, because a suitable java.lang.instrument.Instrumentation reference could not be obtained.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Start the server with the appropriate -javaagent command line argument.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: Runtime injection of detailed method trace failed for class {0} with exception {1}
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=An error occurred while injecting detailed method trace into the specified class.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: Trace level {0} for specification {1} is not valid. The trace specification will be ignored.
+TRACE_STRING_BAD_LEVEL.explanation=The trace level configured for the specified group, class or package name was not recognized, the trace setting for that name will be skipped.
+TRACE_STRING_BAD_LEVEL.useraction=Examine the trace configuration and correct the level to a recognized value. Valid trace levels are listed in the documentation and include 'all', 'info' and 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: Trace setting value {0} for specification {1} is not recognized. The trace specification will be ignored.
+TRACE_STRING_BAD_ACTION.explanation=The trace setting value configured for the specified group, class or package name was not recognized, the trace setting for that name will be skipped.
+TRACE_STRING_BAD_ACTION.useraction=No action is required unless the intended trace setting value is 'disabled'. In this case, examine the trace configuration and correct the setting to 'disabled'.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: The system could not create file {0} because of the following exception: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=An attempt to open the specified resource failed. The exception indicates the root cause of the failure.
+UNABLE_TO_CREATE_RESOURCE.useraction=Examine the exception to determine the root cause. Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the resource, and that the disk is not full. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: The system could not create new file {0}
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=An application server component could not perform an operation on a required resource.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the resource, and that the disk is not full. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: The system could not delete file {0}
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=An application server component could not perform an operation on a required resource.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Ensure that the specified file name is a valid file name. Ensure that the Application Server runtime is allowed write access to the directory for the resource, and that the disk is not full. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: The system could not delete file {0} because of the following exception: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=An attempt to delete the specified resource failed. The exception indicates the root cause of the failure.
+UNABLE_TO_DELETE_RESOURCE.useraction=Examine the exception to determine the root cause. Ensure that the Application Server runtime is allowed write access to the directory for the resource. If this does not solve the problem, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: The configured trace state included the following specifications that do not match any loggers currently registered in the server: {0} Ignore this message if the trace specifications {0} are valid.
+UNKNOWN_TRACE_SPEC.explanation=Loggers are registered in the server when the code that creates them is first used. The system has detected that certain trace specifications refer to loggers that have not been registered in the server. The configured trace specifications may be valid for loggers that are not yet registered, or they could have been typed incorrectly. This check is performed each time the trace specification is updated on a running server.
+UNKNOWN_TRACE_SPEC.useraction=Ensure that the trace specification has been configured correctly. If there are no mistakes in the trace specification string, no action is required. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: The following messages are hidden from the console.log and messages.log files: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Messages that are configured to be hidden are not written to the console.log and messages.log files. However, they are written to the trace.log file. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=No action is required
+
+MSG_ROUTER_UPDATED=TRAS0042I: The message routing group {0} contains the following messages: {1}
+MSG_ROUTER_UPDATED.explanation=The set of message IDs configured for the specified message routing group has changed. The set of message IDs currently associated with this message routing group is listed.
+MSG_ROUTER_UPDATED.useraction=No action is required.
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: Runtime injection of detailed method trace failed for class {0} with exception {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=An error occurred while injecting detailed method trace into the specified class.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=See the problem determination information on the product support web page: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: The following messages are hidden from the console.log and messages.log files: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Messages that are configured to be hidden are not written to the console.log and messages.log files. They are written to the trace.log file. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=No action is required
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

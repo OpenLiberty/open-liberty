@@ -1,0 +1,100 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+   
+   <!-- Callers are required to already have privilege before calling -->
+   <Match>
+     <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+   </Match>
+   
+   <Match>
+     <Class name="com.ibm.tx.jta.UserTransactionFactory"/>
+     <Method name="setUT"/>
+     <Field name="_ut"/>
+     <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+   </Match>
+   
+   <Match>
+     <Class name="com.ibm.tx.jta.UserTransactionFactory"/>
+     <Method name="unsetUT"/>
+     <Field name="_ut"/>
+     <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+   </Match>
+   
+   <Match>
+     <Class name="com.ibm.tx.jta.util.TxTMHelper"/>
+     <Method name="start"/>
+     <Field name="_waitForRecovery"/>
+     <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+   </Match>
+   
+   <Match>
+     <Class name="com.ibm.tx.jta.util.TxTMHelper"/>
+     <Method name="shutdown"/>
+     <Bug pattern="SWL_SLEEP_WITH_LOCK_HELD"/>
+   </Match>
+
+   <!-- TODO Fix this. No time now -->
+   <Match>
+   <Or>
+   	 <Package name="com.ibm.ws.Transaction.resources" />
+     <Class name="com.ibm.tx.jta.TransactionManagerFactory"/>
+     <Class name="com.ibm.tx.jta.TransactionSynchronizationRegistryFactory"/>
+     <Class name="com.ibm.tx.jta.config.DefaultConfigurationProvider"/>
+     <Class name="com.ibm.tx.jta.impl.FailureScopeController"/>
+     <Class name="com.ibm.tx.jta.impl.JCARecoveryWrapper"/>
+     <Class name="com.ibm.tx.jta.impl.JTAXAResourceImpl"/>
+     <Class name="com.ibm.tx.jta.impl.LocalTIDTable"/>
+     <Class name="com.ibm.tx.jta.impl.PartnerLogData"/>
+     <Class name="com.ibm.tx.jta.impl.RecoveryManager"/>
+     <Class name="com.ibm.tx.jta.impl.RegisteredResources"/>
+     <Class name="com.ibm.tx.jta.impl.TimeoutManager$TimeoutInfo"/>
+     <Class name="com.ibm.tx.jta.impl.TranManagerSet"/>
+     <Class name="com.ibm.tx.jta.impl.TransactionImpl"/>
+     <Class name="com.ibm.tx.jta.impl.TransactionImpl$RetryAlarm"/>
+     <Class name="com.ibm.tx.jta.impl.TransactionState"/>
+     <Class name="com.ibm.tx.jta.impl.TransactionSynchronizationRegistryImpl"/>
+     <Class name="com.ibm.tx.jta.impl.TxPrimaryKey"/>
+     <Class name="com.ibm.tx.jta.impl.TxRecoveryAgentImpl"/>
+     <Class name="com.ibm.tx.jta.impl.UserTransactionImpl"/>
+     <Class name="com.ibm.tx.jta.impl.XARecoveryData"/>
+     <Class name="com.ibm.tx.jta.impl.XARecoveryWrapper"/>
+     <Class name="com.ibm.tx.jta.impl.XidImpl"/>
+     <Class name="com.ibm.tx.jta.util.JTMShutdownHook"/>
+     <Class name="com.ibm.tx.jta.util.logging.TxFFDCFilter"/>
+     <Class name="com.ibm.tx.jta.util.logging.TxTr"/>
+     <Class name="com.ibm.tx.jta.util.logging.TxTraceComponent"/>
+     <Class name="com.ibm.tx.ltc.LocalTransactionFactory"/>
+     <Class name="com.ibm.tx.ltc.impl.LTCUOWCallback"/>
+     <Class name="com.ibm.tx.ltc.impl.LocalTranCoordImpl"/>
+     <Class name="com.ibm.tx.ltc.impl.LocalTranCurrentImpl"/>
+     <Class name="com.ibm.tx.ltc.impl.LocalTranCurrentSet"/>
+     <Class name="com.ibm.ws.LocalTransaction.InconsistentLocalTranException"/>
+     <Class name="com.ibm.ws.Transaction.JTA.FailureScopeLifeCycle"/>
+     <Class name="com.ibm.ws.Transaction.JTA.FailureScopeLifeCycleHelper"/>
+     <Class name="com.ibm.ws.Transaction.JTA.JTAResourceBase"/>
+     <Class name="com.ibm.ws.Transaction.JTA.Util"/>
+     <Class name="com.ibm.ws.Transaction.JTA.XAReturnCodeHelper"/>
+     <Class name="com.ibm.ws.Transaction.JTS.Configuration"/>
+     <Class name="com.ibm.ws.Transaction.TranConstants"/>
+     
+     <Class name="com.ibm.tx.jta.util.TxTMHelper"/>
+     <Class name="com.ibm.ws.Transaction.test.XAFlowCallbackControl"/>
+   </Or>
+   </Match>
+
+</FindBugsFilter>

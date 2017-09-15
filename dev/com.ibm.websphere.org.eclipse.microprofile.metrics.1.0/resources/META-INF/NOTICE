@@ -1,0 +1,25 @@
+=========================================================================
+==  NOTICE file corresponding to section 4(d) of the Apache License,   ==
+==  Version 2.0, in this case for Microprofile Metrics                 ==
+=========================================================================
+
+Portions of this software were originally based on the following:
+* Dropwizard Metrics
+  http://metrics.dropwizard.io/3.2.3/
+  under Apache License, v2.0
+
+* CDI Extension for Metrics by Antonin Stefanutti
+  https://github.com/astefanutti/metrics-cdi
+  under Apache License, v2.0
+
+SPDXVersion: SPDX-2.1
+PackageName: Eclipse Microprofile
+PackageHomePage: http://www.eclipse.org/microprofile
+PackageLicenseDeclared: Apache-2.0
+
+PackageCopyrightText: <text>
+Heiko Rupp hrupp@redhat.com,
+Raymond Lam lamr@ca.ibm.com,
+Brenan Nichyporuk brennan.nichyporuk@gmail.com,
+David Chan chdavid@ca.ibm.com,
+</text>

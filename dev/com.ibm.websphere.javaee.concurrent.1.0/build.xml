@@ -1,0 +1,21 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.websphere.javaee.concurrent.1.0" default="build">
+    <property name="spec.name" value="concurrent"/>
+    <property name="spec.marketing.version" value="1.0"/>
+    <property name="spec.javadoc.name" value="javax.enterprise.concurrent-api-1.0-fr-javadoc.jar"/>
+    <property name="bundle.version" value="1.0"/>
+
+    <import file="../ant_build/public_imports/spec_imports.xml"/>
+
+    <target name="package" depends="spec.package"/>
+    <target name="publishToImage" depends="spec.publishToImage" />
+</project>

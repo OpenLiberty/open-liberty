@@ -1,0 +1,211 @@
+Index: F:/opensource/cxf/2.6.x-fixes/rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/client/AbstractClient.java
+===================================================================
+--- F:/opensource/cxf/2.6.x-fixes/rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/client/AbstractClient.java	(revision 1391116)
++++ F:/opensource/cxf/2.6.x-fixes/rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/client/AbstractClient.java	(revision 1391117)
+@@ -58,6 +58,7 @@
+ import org.apache.cxf.helpers.CastUtils;
+ import org.apache.cxf.interceptor.Fault;
+ import org.apache.cxf.interceptor.Interceptor;
++import org.apache.cxf.interceptor.StaxInEndingInterceptor;
+ import org.apache.cxf.jaxrs.impl.MetadataMap;
+ import org.apache.cxf.jaxrs.impl.UriBuilderImpl;
+ import org.apache.cxf.jaxrs.model.ParameterType;
+@@ -826,6 +827,8 @@
+         exchange.put(MessageObserver.class, new ClientMessageObserver(cfg));
+         exchange.put(Endpoint.class, cfg.getConduitSelector().getEndpoint());
+         exchange.put("org.apache.cxf.http.no_io_exceptions", true);
++        //REVISIT - when response handling is actually put onto the in chain, this will likely not be needed
++        exchange.put(StaxInEndingInterceptor.STAX_IN_NOCLOSE, Boolean.TRUE);
+         m.setExchange(exchange);
+         return exchange;
+     }
+Index: F:/opensource/cxf/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/wsdl11/WSDLManagerImpl.java
+===================================================================
+--- F:/opensource/cxf/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/wsdl11/WSDLManagerImpl.java	(revision 1391116)
++++ F:/opensource/cxf/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/wsdl11/WSDLManagerImpl.java	(revision 1391117)
+@@ -43,6 +43,7 @@
+ import javax.wsdl.xml.WSDLReader;
+ import javax.xml.bind.JAXBException;
+ import javax.xml.namespace.QName;
++import javax.xml.stream.XMLStreamReader;
+ 
+ import org.w3c.dom.Document;
+ import org.w3c.dom.Element;
+@@ -227,8 +228,10 @@
+         Definition def = null;
+         if (src.getByteStream() != null || src.getCharacterStream() != null) {
+             Document doc;
++            XMLStreamReader xmlReader = null;
+             try {
+-                doc = StaxUtils.read(StaxUtils.createXMLStreamReader(src), true);
++                xmlReader = StaxUtils.createXMLStreamReader(src);
++                doc = StaxUtils.read(xmlReader, true);
+                 if (src.getSystemId() != null) {
+                     try {
+                         doc.setDocumentURI(new String(src.getSystemId()));
+@@ -238,6 +241,8 @@
+                 }
+             } catch (Exception e) {
+                 throw new WSDLException(WSDLException.PARSER_ERROR, e.getMessage(), e);
++            } finally {
++                StaxUtils.close(xmlReader);
+             }
+             def = reader.readWSDL(wsdlLocator, doc.getDocumentElement());
+         } else {
+Index: F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxInEndingInterceptor.java
+===================================================================
+--- F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxInEndingInterceptor.java	(revision 0)
++++ F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxInEndingInterceptor.java	(revision 1391117)
+@@ -0,0 +1,48 @@
++/**
++ * Licensed to the Apache Software Foundation (ASF) under one
++ * or more contributor license agreements. See the NOTICE file
++ * distributed with this work for additional information
++ * regarding copyright ownership. The ASF licenses this file
++ * to you under the Apache License, Version 2.0 (the
++ * "License"); you may not use this file except in compliance
++ * with the License. You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing,
++ * software distributed under the License is distributed on an
++ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++ * KIND, either express or implied. See the License for the
++ * specific language governing permissions and limitations
++ * under the License.
++ */
++
++package org.apache.cxf.interceptor;
++
++import javax.xml.stream.XMLStreamReader;
++
++import org.apache.cxf.message.Message;
++import org.apache.cxf.message.MessageUtils;
++import org.apache.cxf.phase.AbstractPhaseInterceptor;
++import org.apache.cxf.phase.Phase;
++import org.apache.cxf.staxutils.StaxUtils;
++
++public class StaxInEndingInterceptor extends AbstractPhaseInterceptor<Message> {
++    //certain usages of CXF may require the Stax stream to remain open (example: streaming the stax stuff
++    //directly to the client applications).  Provide a flag to turn off.
++    public static final String STAX_IN_NOCLOSE = StaxInEndingInterceptor.class.getName() + ".dontClose";
++    
++    public static final StaxInEndingInterceptor INSTANCE = new StaxInEndingInterceptor();
++    
++    public StaxInEndingInterceptor() {
++        super(Phase.POST_INVOKE);
++    }
++
++    public void handleMessage(Message message) throws Fault {
++        XMLStreamReader xtr = message.getContent(XMLStreamReader.class);
++        if (xtr != null && !MessageUtils.getContextualBoolean(message, STAX_IN_NOCLOSE, false)) {
++            StaxUtils.close(xtr);
++            message.removeContent(XMLStreamReader.class);
++        }
++    }
++}
+Index: F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxOutEndingInterceptor.java
+===================================================================
+--- F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxOutEndingInterceptor.java	(revision 1391116)
++++ F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxOutEndingInterceptor.java	(revision 1391117)
+@@ -29,6 +29,7 @@
+ import org.apache.cxf.message.Message;
+ import org.apache.cxf.phase.AbstractPhaseInterceptor;
+ import org.apache.cxf.phase.Phase;
++import org.apache.cxf.staxutils.StaxUtils;
+ 
+ public class StaxOutEndingInterceptor extends AbstractPhaseInterceptor<Message> {
+ 
+@@ -51,9 +52,12 @@
+         try {
+             XMLStreamWriter xtw = message.getContent(XMLStreamWriter.class);
+             if (xtw != null) {
+-                xtw.writeEndDocument();
+-                xtw.flush();
+-                xtw.close();
++                try {
++                    xtw.writeEndDocument();
++                    xtw.flush();
++                } finally {
++                    StaxUtils.close(xtw);
++                }                
+             }
+        
+             OutputStream os = (OutputStream)message.get(outStreamHolder);
+Index: F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxInInterceptor.java
+===================================================================
+--- F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxInInterceptor.java	(revision 1391116)
++++ F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/StaxInInterceptor.java	(revision 1391117)
+@@ -46,9 +46,10 @@
+  * Creates an XMLStreamReader from the InputStream on the Message.
+  */
+ public class StaxInInterceptor extends AbstractPhaseInterceptor<Message> {
++    
+     private static final Logger LOG = LogUtils.getL7dLogger(StaxInInterceptor.class);    
+ 
+-    private static Map<Object, XMLInputFactory> factories = new HashMap<Object, XMLInputFactory>();
++    private static Map<Object, XMLInputFactory> factories = new HashMap<Object, XMLInputFactory>();        
+ 
+     public StaxInInterceptor() {
+         super(Phase.POST_STREAM);
+@@ -126,6 +127,7 @@
+         }
+ 
+         message.setContent(XMLStreamReader.class, xreader);
++        message.getInterceptorChain().add(StaxInEndingInterceptor.INSTANCE);
+     }
+ 
+     public static XMLInputFactory getXMLInputFactory(Message m) throws Fault {
+Index: F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/FIStaxInInterceptor.java
+===================================================================
+--- F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/FIStaxInInterceptor.java	(revision 1391116)
++++ F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/interceptor/FIStaxInInterceptor.java	(revision 1391117)
+@@ -37,7 +37,7 @@
+  */
+ public class FIStaxInInterceptor extends AbstractPhaseInterceptor<Message> {
+     public static final String FI_GET_SUPPORTED = "org.apache.cxf.fastinfoset.get.supported";
+-
++    
+     public FIStaxInInterceptor() {
+         this(Phase.POST_STREAM);
+     }
+@@ -70,6 +70,8 @@
+             && message.getContent(InputStream.class) != null
+             && message.getContent(XMLStreamReader.class) == null) {
+             message.setContent(XMLStreamReader.class, getParser(message.getContent(InputStream.class)));
++            //add the StaxInEndingInterceptor which will close the reader
++            message.getInterceptorChain().add(StaxInEndingInterceptor.INSTANCE);
+             
+             ct = ct.replace("fastinfoset", "xml");
+             if (ct.contains("application/xml")) {
+Index: F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java
+===================================================================
+--- F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java	(revision 1391116)
++++ F:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java	(revision 1391117)
+@@ -1588,5 +1588,25 @@
+         writer.flush();
+         return sw.toString();
+     }
++    
++    public static void close(XMLStreamReader reader) {
++        if (reader != null) {
++            try {
++                reader.close();
++            } catch (Exception e) {
++                //ignore
++            }
++        }
++    }
++    
++    public static void close(XMLStreamWriter writer) {
++        if (writer != null) {
++            try {
++                writer.close();
++            } catch (Exception e) {
++                //ignore
++            }
++        }
++    }
+ 
+ }

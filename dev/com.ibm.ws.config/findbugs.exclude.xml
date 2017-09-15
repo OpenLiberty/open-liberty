@@ -1,0 +1,464 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+<!-- Introspector, it's fine -->
+	<Match>
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+		<Class name="com.ibm.ws.config.xml.internal.MetaTypeIntrospection" />
+		<Method name="introspect" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+		<Class name="com.ibm.ws.config.xml.internal.ConfigIntrospection" />
+		<Method name="introspect" />
+	</Match>
+	
+	<Match>
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+		<Class name="com.ibm.ws.config.schemagen.internal.ServerSchemaGeneratorImpl" />
+		<Method name="getOutput" />
+	</Match>
+		
+	<Match>
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+		<Class name="com.ibm.ws.config.schemagen.internal.ServerSchemaGeneratorImpl" />
+		<Method name="generate" signature="()Ljava/lang/String;" />
+	</Match>
+	
+	<Match>
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+		<Class name="com.ibm.ws.config.featuregen.internal.FeatureListMBeanImpl" />
+		<Method name="getOutput" />
+	</Match>
+		
+	<Match>
+		<Bug pattern="IS2_INCONSISTENT_SYNC" />
+		<Class name="com.ibm.ws.config.xml.internal.ConfigRefresher" />
+	</Match>
+
+	<!-- match generated nls classes: return mutable type -->
+	<Match>
+		<Bug code="EI" />
+		<Class name="~.*\.resources\..*" />
+		<Method name="getContents" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED" />
+		<Or>
+			<Class name="com.ibm.ws.config.xml.internal.ServerXMLConfiguration" />
+			<Class name="com.ibm.ws.config.xml.internal.BundleProcessor" />
+			<!-- Executor thread has proper privileges -->
+			<Class name="com.ibm.ws.config.xml.internal.ConfigVariableRegistry" />
+		</Or>
+	</Match>
+
+	<Match>
+		<Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED" />
+		<Class name="com.ibm.ws.config.admin.internal.PersistedConfigManager" />
+		<Method name="&lt;init&gt;" />
+		
+	</Match>
+
+	<Match>
+		<Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED" />
+		<Class name="com.ibm.ws.config.admin.internal.PersistedConfigManager" />
+		<Method name="deleteConfigFile"/>
+		
+	</Match>
+	<!-- called under privilege -->
+	<Match>
+		<Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED" />
+		<Class name="com.ibm.ws.config.admin.internal.ConfigurationStore" />
+		<Or>
+			<Method name="deserializeConfigurationData" />
+			<Method name="serializeConfigurationData" />
+		</Or>
+	</Match>
+
+	<!-- false-positive -->
+	<Match>
+		<Bug pattern="REC_CATCH_EXCEPTION,DLS_DEAD_LOCAL_STORE" />
+		<Or>
+			<Class
+				name="~com\.ibm\.ws\.config\.admin\.internal\.ManagedServiceTracker.*" />
+			<Class
+				name="~com\.ibm\.ws\.config\.admin\.internal\.ManagedServiceFactoryTracker.*" />
+		</Or>
+		<Method name="run" />
+	</Match>
+
+	<!-- false-positive - always non-null -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ExtendedMetatypeManager" />
+		<Method name="registerExtendedServiceFactory" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinitionImpl" />
+		<Method name="initFromEquinoxOCD" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ExtendedMetatypeManager" />
+		<Method name="removeSuperType" />
+	</Match>
+
+	<!-- false-positive - always non-null -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.schemagen.internal.SchemaWriter" />
+		<Method name="error" />
+	</Match>
+	
+    <Match>
+        <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED" />
+        <Class name="com.ibm.ws.config.schemagen.internal.SchemaWriter" />
+        <Method name="getInstallDir" />
+    </Match>
+    <Match>
+        <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED" />
+        <Class name="com.ibm.ws.config.schemagen.internal.SchemaWriter" />
+        <Method name="getInstallDir" />
+    </Match>
+
+	<!-- false-positive - always non-null -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.schema.SchemaMetaTypeParser" />
+		<Method name="warning" />
+	</Match>
+
+	<!-- false-positive - always non-null -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ConfigElement" />
+		<Method name="setMergeOperation" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.admin.internal.UpdateQueue" />
+		<Method name="waitForAll" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ServerXMLConfiguration" />
+		<Method name="loadServerConfiguration" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ServerXMLConfiguration" />
+		<Method name="loadNewConfiguration" />
+	</Match>
+
+	<!-- Oh Hey! Look! Another Dead Local Store when catching an exception! -->
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.MetaTypeRegistry" />
+		<Method name="getReferenceFilterPids" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DE_MIGHT_IGNORE" />
+		<Class name="com.ibm.ws.config.admin.internal.UpdateQueue" />
+		<Method name="waitForAll" />
+	</Match>
+
+	<!-- false-positive - always non-null -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ConfigElement" />
+		<Method name="setMergeOperation" />
+	</Match>
+
+	<Match>
+		<Class name="com.ibm.ws.config.xml.internal.ConfigElement$1" />
+		<Method name="compare" />
+		<Bug code="ES" />
+	</Match>
+
+	<!-- false-positive - caused by injected FFDC code -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.config.schemagen.internal.ServerSchemaGeneratorImpl" />
+		<Method name="generate" signature="()Ljava/lang/String;" />
+		<Local name="e" />
+	</Match>
+	
+	<!-- false-positive - caused by injected FFDC code -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ConfigUpdater" />
+		<Method name="update" />
+		<Local name="e" />
+	</Match>
+
+	<!-- false-positive - caused by injected FFDC code -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ExtendedMetatypeManager" />
+		<Method name="registerExtendedServiceFactory" />
+		<Local name="e" />
+	</Match>
+
+	<!-- It's fine. We need the key so we use keySet(). -->
+	<Match>
+		<Bug pattern="WMI_WRONG_MAP_ITERATOR" />
+		<class name="com.ibm.ws.config.xml.internal.MetaTypeRegistry" />
+		<Method name="addMetaTypeDefinition" />
+	</Match>
+
+	<!-- It's fine. We need the key so we use keySet(). -->
+	<Match>
+		<Bug pattern="WMI_WRONG_MAP_ITERATOR" />
+		<class name="com.ibm.ws.config.xml.internal.MetaTypeRegistry" />
+		<Method name="removeMetaTypeDefinitions" />
+	</Match>
+
+	<!-- It's ok... just a bean -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP" />
+		<class name="com.ibm.websphere.config.AttributeDefinitionProperties" />
+		<Method name="getOptionLabels" />
+		<!-- <Method name="getOptionValues"/> -->
+	</Match>
+
+	<!-- It's ok... just a bean -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP2" />
+		<class name="com.ibm.websphere.config.AttributeDefinitionProperties" />
+		<Method name="setOptionLabels" />
+		<!-- <Method name="setOptionValues"/> -->
+	</Match>
+
+	<!-- It's ok... just a bean -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP" />
+		<class name="com.ibm.websphere.config.AttributeDefinitionProperties" />
+		<Method name="getOptionValues" />
+	</Match>
+
+	<!-- It's ok... just a bean -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP2" />
+		<class name="com.ibm.websphere.config.AttributeDefinitionProperties" />
+		<Method name="setOptionValues" />
+	</Match>
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP" />
+		<class name="com.ibm.websphere.metatype.SchemaGeneratorOptions" />
+		<Method name="getBundles" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP2" />
+		<class name="com.ibm.websphere.metatype.SchemaGeneratorOptions" />
+		<Method name="setBundles" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="SYSTEM_OUT_USED" />
+		<Class name="com.ibm.ws.config.xml.internal.schema.SchemaMetaTypeParser" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="SYSTEM_OUT_USED" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.schema.MetaTypeInformationSpecification" />
+	</Match>
+
+	<!-- This code in this method that call System.out is called from a command 
+		line utility when Tr is uninitialized. -->
+	<Match>
+		<Bug pattern="SYSTEM_ERR_USED" />
+		<Class name="com.ibm.ws.config.schemagen.internal.SchemaWriter" />
+		<Method name="error" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP" />
+		<class name="com.ibm.ws.config.metatype.AttributeDefinitionSpecification" />
+		<Method name="getDefaultValue" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP2" />
+		<class name="com.ibm.ws.config.metatype.AttributeDefinitionSpecification" />
+		<Method name="setDefaultValue" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP" />
+		<class name="com.ibm.ws.config.schemagen.internal.TypeMember" />
+		<Method name="getDefaultValue" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="EI_EXPOSE_REP2" />
+		<class name="com.ibm.ws.config.schemagen.internal.TypeMember" />
+		<Method name="setDefaultValue" />
+	</Match>
+
+	<!-- It's ok. -->
+	<Match>
+		<Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED" />
+		<Class name="com.ibm.ws.config.xml.internal.schema.SchemaMetaTypeParser" />
+	</Match>
+
+	<!-- compareTo() is not used -->
+	<Match>
+		<Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS" />
+		<Class name="com.ibm.ws.config.xml.internal.schema.SchemaBundle" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DE_MIGHT_IGNORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ConfigRefresher" />
+		<Method name="waitForAll" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.admin.internal.WSConfigAdminActivator" />
+		<Method name="getOnError" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.WSConfigXMLActivator" />
+		<Method name="getOnError" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.BundleProcessor" />
+		<Method name="getOnError" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.config.xml.internal.ConfigEvaluator" />
+		<Method name="evaluateMetaTypeAttribute" />
+	</Match>
+
+	<!-- Tr.error called via private methods - assume false positive -->
+	<Match>
+		<Class name="com.ibm.ws.config.schemagen.internal.SchemaWriter" />
+		<Method name="error" />
+		<Bug pattern="TR_COMPUTED_KEY" />
+	</Match>
+	<Match>
+		<Class name="com.ibm.ws.config.schemagen.internal.TypeBuilder" />
+		<Method name="error" />
+		<Bug pattern="TR_COMPUTED_KEY" />
+	</Match>
+	<Match>
+		<Class name="com.ibm.ws.config.xml.internal.XMLConfigParser" />
+		<Method name="logError" />
+		<Bug pattern="TR_COMPUTED_KEY" />
+	</Match>
+
+	<!-- This is ok -->
+	<Match>
+		<Bug pattern="MS_PKGPROTECT" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.validator.XMLConfigValidatorFactory" />
+		<Field name="embedderUnitTestMode" />
+	</Match>
+
+	<!-- This is ok -->
+	<Match>
+		<Bug pattern="SIC_INNER_SHOULD_BE_STATIC" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.validator.ConfigKeySelector$ConfigKeySelectorResult" />
+	</Match>
+
+	<!-- Private method for error logging - false positive -->
+	<Match>
+		<Bug pattern="TR_COMPUTED_KEY" />
+		<Method name="printErrorMessage" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.validator.EmbeddedXMLConfigValidator" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.validator.XMLConfigValidatorFactory" />
+	</Match>
+
+	<!-- Dead local store in auto ffdc block -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.ExtendedMetatypeManager$DelegatingConfigurationListener" />
+		<Method name="configurationEvent" />
+	</Match>
+
+	<Match>
+		<Class
+			name="com.ibm.ws.config.admin.ConfigurationDictionary$CaseInsensitive" />
+		<Method name="compare" />
+		<Bug code="ES" />
+	</Match>
+
+	<!-- False positive. -->
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinitionImpl" />
+		<Method name="getAliasName" />
+	</Match>
+
+	<!-- Use of the default encoding is ok here -->
+	<Match>
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+		<Class name="com.ibm.ws.config.schemagen.internal.SchemaGeneratorImpl" />
+		<Method name="generate" />
+	</Match>
+	<Match>
+		<Bug pattern="DM_DEFAULT_ENCODING" />
+		<Class
+			name="com.ibm.ws.config.xml.internal.validator.EmbeddedXMLConfigValidator" />
+		<Method name="verifyDocument" />
+	</Match>
+
+    <Match>
+        <Bug pattern="TR_MISSING_GUARD"/>
+        <Class name="com.ibm.ws.config.xml.internal.ConfigValidator"/>
+        <Method name ="logRegistryEntry"/>
+    </Match>
+    
+</FindBugsFilter>

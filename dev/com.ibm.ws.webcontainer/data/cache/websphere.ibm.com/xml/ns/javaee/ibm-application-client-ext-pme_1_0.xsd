@@ -1,0 +1,59 @@
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	version="1.0">
+
+	<!-- ******************************************************* -->
+
+	<xsd:include schemaLocation="ibm-common-ext_1_0.xsd" />
+	<xsd:include schemaLocation="ibm-common-ext-pme_1_0.xsd" />
+
+	<!-- ******************************************************* -->
+
+	<xsd:element name="application-client-ext-pme" type="application-client-ext-pmeType">
+		<xsd:annotation>
+			<xsd:documentation>
+
+				The root of the application-client-ext deployment descriptor.
+
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="application-client-ext-pmeType">
+		<xsd:sequence>
+			<xsd:element name="app-profile" type="app-profileType" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="compensation" type="compensationType" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="version" type="xsd:string" fixed="1.0" use="required" />
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="app-profileType">
+		<xsd:sequence>
+			<xsd:element name="component-extension" type="component-extensionType" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="application-client-component-extensionType">
+		<xsd:complexContent>
+			<xsd:extension base="component-extensionType"/>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="compensationType">
+		<xsd:attribute name="type" type="compensation-attributeType" use="required"/>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+</xsd:schema>

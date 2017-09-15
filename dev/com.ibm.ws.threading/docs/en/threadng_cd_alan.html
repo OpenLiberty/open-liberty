@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2008  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Project Liberty Documentation</title>
+</head>
+<body>
+
+<h1 id="Threading_CDD">Conceptual Design of Threading Package</h1>
+<h2 id="Threading base structure">Basic Object Layout</h2>
+<p>The basic concept of the threading support included in the Liberty product is to centralize the management of the 
+threading infrastructure.  In classic WAS,  threads were handed out to components and were not returned until the 
+server terminated.  There were also many different pools of threads, and no clear relationship between the various 
+thread pools, so tuning the server for different multi-programming levels was a difficult exercise and as such the 
+system never really ran optimally
+</p>
+<p>The basic structures in the threading package breaks down into 4 objects.</p>
+<ul>
+<li><b>WorkRequestMgr</b> This is the service that is registered with OSGi, and is the anchor for all
+the functions that are used in the threading package.
+<li><b>WorkRequestStage</b>  This is logically a queue, where the request of work places workrequests 
+that need to be run within the server.  The actually implementation of the WorkRequestStage will not 
+be a simple as a queue, but that is the semantic that is presented to the caller.  There then is a set 
+of executors that take work from the queue and execute it.</li>
+<li><b>WorkRequest</b>  This is the control structure, that represents the piece of work that is 
+going to be run by the stage.</li>
+<li><b>WorkRequestRunnable</b>  The work request runnable is the actual piece of code that is going to be 
+dispatched.  It is associated with the Workrequest, and there can be more than one WorkrequestRunnable 
+associated with the workrequest.  Each is considered independent of one another.  And this point they run 
+sequentially, but there will be an options for multiple scheduling structures, for example a fanout request 
+that allows for the runnables to be called in parallel.</li>
+</li>
+</ul>
+<p>Internally there are some subclasses of WorkRequest knows as a WorkControlRequest.  These are used to control
+the executor threads that are associated with the WorkRequestStage.  These control requests get queued directly
+to the thread and their purpose in live is to perform control functions within this threading framework.
+</p>
+<p>This is a picture of the relationships of the various control structures (green boxes are available outside the bundle):</p>
+<img src='images/Threading.jpg' alt='Threading' />
+<h2>Configuration information</h2>
+<h2>Startup of the Stage</h2>
+<p>The startup of a stage is fairly simple, the stage object initializes itself, ensuring the queue starts empty.  It 
+reads from the configuration what the Multi-programming Level is, in the current code this means the number of 
+threads that are to be started.  Executor threads are started at this time, and they start looking on the queue for 
+work to perform.  If there is no work,  the thread waits until work is added to the queue.  Once this is done, all 
+threads are waken, and they race to the queue.
+</p>
+<h2>Shutdown of the Stage</h2>
+<p>
+There are two forms of shutdown, an immediate shutdown and a quiesce.  In both cases, the stage stops accepting new work, any
+attempt to queue new work will be met with an exception telling the caller that the stage is in a shutdown mode.
+</p>
+<h2>Adjusting the multiprogramming level of the stage</h2>
+<h2>Synchronization within the framework</h2>
+<p>To be added, once complete</p>
+<h2>Monitoring within the stage</h2>
+<p>To be added, once complete</p>
+<h2>Platform uniqueness</h2>
+<p>None</p>
+</body>
+</html>

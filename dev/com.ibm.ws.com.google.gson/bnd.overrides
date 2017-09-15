@@ -1,0 +1,15 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: google.collection
+Bundle-Description: google.collection; version=2.2.4
+Bundle-SymbolicName: com.ibm.ws.com.google.gson.2.2.4
+
+WS-TraceGroup: OPENIDCONNECT
+
+Export-Package: \
+  com.google.gson;version="2.2.4", \
+  com.google.gson.annotations;version="2.2.4", \
+  com.google.gson.reflect;version="2.2.4", \
+  com.google.gson.stream;version="2.2.4"
+

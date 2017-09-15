@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+                   
+                       <OCD id="com.ibm.ws.wsoc.outbound.wsocOutbound" ibm:alias="wsocOutbound" name="%wsocOutbound" description="%wsocOutbound.desc" >
+
+         
+        <AD id="tcpOptionsRef" name="%tcpOptions" description="%tcpOptions.desc"
+            ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid" cardinality="1"
+            type="String" required="false" default="defaultTCPOptions" />               
+
+        <AD id="tcpOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(|(service.pid=${tcpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.tcpchannel.options)(|(id=com.ibm.ws.wsoc.outbound.wsocOutbound-${id}/*)(id=defaultTCPOptions))))" />
+            
+        <AD id="httpOptionsRef" name="%httpOptions" description="%httpOptions.desc"
+            ibm:reference="com.ibm.ws.http.options" ibm:type="pid"
+            type="String" required="false" default="defaultHttpOptions" />
+
+     
+        <AD id="httpOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String"
+            default="(|(service.pid=${httpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.http.options)(|(id=com.ibm.ws.wsoc.outbound.wsocOutbound-${id}/*)(id=defaultHttpOptions))))" /> 
+            
+        <AD id="sslOptionsRef" name="%sslOptions" description="%sslOptions.desc"
+            ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid" cardinality="1"
+            type="String" required="false" />            
+
+        <AD id="sslOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.wsoc.outbound.wsocOutbound-${id}/*)(id=defaultSSLOptions))))" />
+
+   </OCD>
+
+   <Designate pid="com.ibm.ws.wsoc.outbound.wsocOutbound">
+      <Object ocdref="com.ibm.ws.wsoc.outbound.wsocOutbound" /> 
+   </Designate>
+
+                   
+
+
+    
+
+</metatype:MetaData>

@@ -1,0 +1,88 @@
+/*******************************************************************************
+ * Copyright (c) 2010 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+package com.ibm.ws.monitor.internal.command;
+
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.StringTokenizer;
+
+import org.apache.felix.shell.Command;
+
+/**
+ * <em>Untested</em> implementation of a command provider for the Felix framework
+ * that can be used to list entries in the process wide zones of the global context.
+ */
+public class FelixMonitorCommandProvider extends MonitorCommandProvider implements Command {
+
+    public String getName() {
+        return getCommandName();
+    }
+
+    public String getShortDescription() {
+        return getDescription();
+    }
+
+    public String getUsage() {
+        return getSyntaxInformation();
+    }
+    
+    private final static class FelixMessageStream implements MonitorCommandProvider.MessageStream {
+        PrintStream ps;
+
+        FelixMessageStream(PrintStream ps) {
+            this.ps = ps;
+        }
+
+        public void print(Object o) {
+            ps.print(o);
+        }
+
+        public void println(Object o) {
+            ps.println(o);
+        }
+    }
+
+    public void execute(String commandLine, PrintStream outputStream, PrintStream errorStream) {
+        List<String> args = parseCommandLine(commandLine);
+        executeCommand(args, new FelixMessageStream(outputStream), new FelixMessageStream(errorStream));
+    }
+
+    /**
+     * Attempt to perform equinox-compatible command line parsing.
+     *
+     * @param commandLine the command line from the felix console
+     * @return the list of arguments
+     */
+    private static List<String> parseCommandLine(String commandLine) {
+        List<String> args = new ArrayList<String>();
+
+        final String whiteSpaceDelimeters = " \t\n\r\f";
+        StringTokenizer tokenizer = new StringTokenizer(commandLine, whiteSpaceDelimeters);
+        while (tokenizer.hasMoreTokens()) {
+            String token = tokenizer.nextToken(whiteSpaceDelimeters);
+            if (token.startsWith("\"")) {
+                // Token starts and ends with double quotes
+                if (token.endsWith("\"")) {
+                    token = token.substring(1, token.length() - 1);
+                } else {
+                    String enclosedToken = tokenizer.nextToken("\"");
+                    token = token.substring(1) + enclosedToken;
+                    tokenizer.nextToken(whiteSpaceDelimeters);
+                }
+            }
+            args.add(token);
+        }
+
+        return args;
+    }
+}

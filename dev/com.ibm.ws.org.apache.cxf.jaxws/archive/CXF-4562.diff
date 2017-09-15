@@ -1,0 +1,28 @@
+--- cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java	2011/07/22 02:00:25	1149433
++++ cxf/trunk/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java	2012/10/15 08:01:45	1398207
+@@ -113,6 +113,12 @@
+                 writer.writeEndElement();
+                 writer.writeEndElement();
+ 
++                if (fault.getRole() != null) {
++                    writer.writeStartElement(defaultPrefix, "Role", ns);
++                    writer.writeCharacters(fault.getRole());
++                    writer.writeEndElement();
++                }
++
+                 prepareStackTrace(message, fault);
+                 
+                 if (fault.hasDetails()) {
+@@ -129,12 +135,6 @@
+                     writer.writeEndElement();
+                 }
+ 
+-                if (fault.getRole() != null) {
+-                    writer.writeStartElement(defaultPrefix, "Role", ns);
+-                    writer.writeCharacters(fault.getRole());
+-                    writer.writeEndElement();
+-                }
+-
+                 // Fault
+                 writer.writeEndElement();
+             } catch (Exception xe) {

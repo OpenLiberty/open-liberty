@@ -1,0 +1,50 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: JPATest_1.0.0.201111251517.jar
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.osgi.jpa.jpa2.TestTools
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.osgi.jpa.jpa2.MagicCard
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.persistence.Entity
+  FieldAnnotation: javax.persistence.Id
+Class-Seed: com.ibm.osgi.jpa.jpa2.NewAPITest
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: com.ibm.osgi.jpa.jpa2.TestTools
+  MethodAnnotation: javax.persistence.PersistenceUnit
+  MethodAnnotation: javax.persistence.PersistenceContext
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+Class-Excluded: javax.persistence.Entity
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.persistence.PersistenceUnit
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.persistence.PersistenceContext
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.Object
+  ClassSource: JPATest_1.0.0.201111251517.jar
+Class-Excluded: javax.persistence.Id
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+# ============================================================

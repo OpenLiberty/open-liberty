@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: The specified parameter is not a string or string array. {1}={2} for {0}
+invalidStringArray.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a string or string array.
+invalidStringArray.useraction=Check the value specified in the server configuration and ensure the value is a valid representation of a string or string array.
+
+invalidStringCollection=CWWKE0102W: The specified parameter is not a string or string collection. {1}={2} for {0}
+invalidStringCollection.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a string or string collection.
+invalidStringCollection.useraction=Ensure that the value specified in the server configuration is a valid representation of a string or string collection.
+
+invalidBoolean=CWWKE0103W: The specified parameter does not represent a boolean value. {1}={2} for {0}
+invalidBoolean.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a boolean value.
+invalidBoolean.useraction=Ensure that the value specified in the server configuration is a valid representation of a boolean value.
+
+invalidLong=CWWKE0104W: The specified parameter does not represent a long value. {1}={2} for {0}
+invalidLong.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a long value.
+invalidLong.useraction=Ensure that the value specified in the server configuration is a valid representation of a long value.
+
+invalidInteger=CWWKE0105W: The specified parameter does not represent an integer value. {1}={2} for {0}
+invalidInteger.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a integer value.
+invalidInteger.useraction=Ensure that the value specified in the server configuration is a valid representation of an integer value.
+
+invalidIntegerArray=CWWKE0106W: The specified parameter does not represent an integer array. {1}={2} for {0}
+invalidIntegerArray.explanation=The value for the specified configuration parameter is not, or cannot be converted to, an integer array.
+invalidIntegerArray.useraction=Ensure that the value specified in the server configuration is a valid representation of an integer array.
+
+invalidDuration=CWWKE0107W: The specified parameter does not represent a duration value. {1}={2} for {0}
+invalidDuration.explanation=The value for the specified configuration parameter is not, or cannot be converted to, a duration value.
+invalidDuration.useraction=Ensure that the value specified in the server configuration is a valid representation of a duration value.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

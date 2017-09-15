@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.microprofile.config_fat" default="buildandrun" basedir=".">
+
+
+	<!-- These tests should only run if we're using Java 8 or higher -->
+	<property name="javac.boot.classpath" value="1.8" />
+	<property name="minimum.java.level.for.test.execution" value="1.8" />
+	<property name="build.with.java.level" value="1.8" />
+	<property name="feature.requiring.minimum.java.level" value="mpConfig-1.1" />
+	<property name="fat.test.feature.under.test" value="mpConfig-1.1" />
+
+	<!-- This requires the full image because microProfileConfig-0.1 is a separately downloadable feature and not
+	                         available in standard liberty profile editions. -->
+	<property name="fat.image.type" value="use-full-image" />
+
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+
+	<target name="addRequiredFiles">
+
+		<!-- todir needs to be ../wlp/usr/shared/resources  via the autofvt zip -->
+		<property name="shared.resource.dir" value="${basedir}/publish/shared/resources" />
+
+		<!-- expose project dependencies to runtime JRE by storing them in autoFVT.zip (build/lib copied automatically) -->
+		<copy file="../build.image/wlp/lib/com.ibm.ws.org.apache.commons.logging.1.0.3_1.0.${micro.version}.jar" todir="build/lib" />
+
+	</target>
+
+	<target name="post-package-test-applications">
+		<copy file="${basedir}/build/fat-applications/sharedLib.jar" todir="${basedir}/publish/servers/SharedLibUserServer/shared" />
+	</target>
+
+	<target name="localrun1" depends="init-tasks, run-fat" description="Execute FAT bucket(s)" />
+
+
+</project>

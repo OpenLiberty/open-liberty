@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: root
+Build-Jdk: 1.6.0
+Implementation-Build: 1903
+Main-Class: com.ibm.jaxrs.VersionInfo
+X-Compile-Source-JDK: 1.5
+X-Compile-Target-JDK: 1.5
+

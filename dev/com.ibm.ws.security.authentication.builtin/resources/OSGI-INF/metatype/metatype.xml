@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.security.authentication.metatype" ibm:alias="authentication"
+         name="%authentication.config" description="%authentication.config.desc" >
+        <AD id="id" name="internal" description="internal use only"
+            required="true" type="String"
+            default="defaultAuthentication" />
+        <AD id="cacheEnabled" name="%cacheEnabled" description="%cacheEnabled.desc"
+            required="true" type="Boolean"
+            default="true" />
+        <AD id="allowHashtableLoginWithIdOnly" name="%allowHashtableLoginWithIdOnly" description="%allowHashtableLoginWithIdOnly.desc"
+            required="false" type="Boolean"
+            default="false" />
+        <AD id="fillInGroupInformationForHashtableLogin" name="internal" description="internal use only"
+            required="false" type="Boolean"
+            default="false" />
+	 	
+ 	 	<AD id="CollectiveAuthenticationPlugin.target" name="internal"  description="internal use only"
+ 	 		required="false" type="String" default="(name=${wlp.collective.auth.plugin})" />            
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.authentication" >
+        <Object ocdref="com.ibm.ws.security.authentication.metatype"  />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.authentication.cache.metatype" name="%cache.config" description="%cache.config.desc"
+         ibm:alias="authCache">
+        <AD id="initialSize" name="%initialSize" description="%initialSize.desc"
+            required="false" type="Integer" min="1"
+            default="50" />
+        <AD id="maxSize" name="%maxSize" description="%maxSize.desc"
+            required="false" type="Integer" min="1"
+            default="25000" />
+        <AD id="timeout" name="%timeout" description="%timeout.desc"
+            required="false" type="String" ibm:type="duration"
+            default="600s" />
+        <AD id="allowBasicAuthLookup" name="%allowBasicAuthLookup" description="%allowBasicAuthLookup.desc"
+            required="false" type="Boolean"
+            default="true" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.authentication.cache">
+        <Object ocdref="com.ibm.ws.security.authentication.cache.metatype" />
+    </Designate>
+</metatype:MetaData>

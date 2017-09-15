@@ -1,0 +1,78 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: simplestaticAnnotationMixed.war.unpacked
+Class-Source: simplestaticAnnotationMixed.war.unpacked classes
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: web.StaticAnnotationMixed1
+  ClassSource: simplestaticAnnotationMixed.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: web.BaseServlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked classes
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: web.StaticAnnotationMixed2
+  ClassSource: simplestaticAnnotationMixed.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: web.AuthenticateRedirectServlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked classes
+  Superclass: web.BaseServlet
+Class-Seed: web.JAASServlet$1
+  ClassSource: simplestaticAnnotationMixed.war.unpacked classes
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedExceptionAction
+Class-Seed: web.JAASServlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked classes
+  Superclass: web.BaseServlet
+Class-Seed: web.ProgrammaticAPIServlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked classes
+  Superclass: web.BaseServlet
+Class-Excluded: javax.servlet.GenericServlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.Servlet
+  Interface: javax.servlet.ServletConfig
+  Interface: java.io.Serializable
+Class-Excluded: java.io.Serializable
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.http.HttpServlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: javax.servlet.GenericServlet
+  Interface: java.io.Serializable
+Class-Excluded: java.security.PrivilegedExceptionAction
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.annotation.ServletSecurity
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.servlet.Servlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.Object
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+Class-Excluded: javax.servlet.annotation.WebServlet
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: javax.servlet.ServletConfig
+  ClassSource: simplestaticAnnotationMixed.war.unpacked
+  Superclass: java.lang.Object
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+# ============================================================

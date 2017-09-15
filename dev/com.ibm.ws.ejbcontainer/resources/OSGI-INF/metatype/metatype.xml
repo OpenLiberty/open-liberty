@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD name="%ejbContainer" description="%ejbContainer.desc"
+         id="com.ibm.ws.ejbcontainer.runtime"
+         ibm:alias="ejbContainer">
+
+		<!-- These properties are only supported on startup - not modifiable during runtime yet -->
+
+        <AD name="%poolCleanupInterval" description="%poolCleanupInterval.desc"
+            id="poolCleanupInterval" type="String" ibm:type="duration(s)" default="30s" min="1"  />
+
+        <AD name="%cacheSize" description="%cacheSize.desc"
+            id="cacheSize" type="Integer" default="2053" min="1" />
+
+        <AD name="%cacheCleanupInterval" description="%cacheCleanupInterval.desc"
+            id="cacheCleanupInterval" type="String" ibm:type="duration(s)" default="3s" min="1" />
+
+        <AD name="%startEJBsAtAppStart" description="%startEJBsAtAppStart.desc"
+            id="startEJBsAtAppStart" type="Boolean" required="false" ibmui:group="Advanced"/>
+
+        <AD name="%asynchronous" description="%asynchronous.desc"
+            id="asynchronous" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.ejbcontainer.asynchronous.runtime" />
+
+        <AD name="%timerService" description="%timerService.desc"
+            id="timerService" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.ejbcontainer.timer.runtime" />
+
+        <!--  Previously tWAS system properties  -->
+
+<!--    Don't support these yet   
+
+		<AD name="%declaredUncheckedAreSystemExceptions" description="%declaredUncheckedAreSystemExceptions.desc"
+            id="declaredUncheckedAreSystemExceptions" type="Boolean" default="true" ibmui:group="Advanced"/>
+
+        <AD name="%defaultSessionAccessTimeout" description="%defaultSessionAccessTimeout.desc"
+            id="defaultSessionAccessTimeout" type="String" ibm:type="duration(s)" default="-1" min="-1" ibmui:group="Advanced"/>
+
+        <AD name="%defaultStatefulSessionTimeout" description="%defaultStatefulSessionTimeout.desc"
+            id="defaultStatefulSessionTimeout" type="String" ibm:type="duration(s)" default="10m" min="1" ibmui:group="Advanced"/>
+
+        <AD name="%EE5Compatibility" description="%EE5Compatibility.desc"
+            id="EE5Compatibility" type="Boolean" default="false" ibmui:group="Advanced"/>
+
+-->
+
+    </OCD>
+
+    <Designate pid="com.ibm.ws.ejbcontainer.runtime">
+        <Object ocdref="com.ibm.ws.ejbcontainer.runtime" />
+    </Designate>
+
+</metatype:MetaData>

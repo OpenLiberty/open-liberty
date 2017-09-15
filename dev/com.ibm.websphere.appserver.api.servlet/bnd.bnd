@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.1
+
+Bundle-Name: WebSphere WebContainer Servlet API
+Bundle-Description: WebSphere WebContainer Servlet API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.servlet
+
+Import-Package: com.ibm.websphere.servlet.container,com.ibm.websphere.servlet.context,com.ibm.websphere.servlet.error,com.ibm.websphere.servlet.event,com.ibm.websphere.servlet.session,com.ibm.websphere.webcontainer,com.ibm.wsspi.servlet.session
+
+Export-Package: com.ibm.websphere.servlet.container,com.ibm.websphere.servlet.context,com.ibm.websphere.servlet.error,com.ibm.websphere.servlet.event,com.ibm.websphere.servlet.session,com.ibm.websphere.webcontainer,com.ibm.wsspi.servlet.session
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.servlet/pom.xml=com.ibm.websphere.appserver.api.servlet.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+-buildpath: \
+	com.ibm.ws.webcontainer;version=latest, \
+	com.ibm.ws.session;version=latest

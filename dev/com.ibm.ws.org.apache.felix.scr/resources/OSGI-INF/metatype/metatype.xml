@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"  
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+
+ <Designate pid="org.apache.felix.scr.ScrService">
+  <Object ocdref="org.apache.felix.scr.ScrService" />
+ </Designate>
+
+ <OCD id="org.apache.felix.scr.ScrService" name="internal" description="internal use only">
+  <AD id="ds.info.service" type="String"  default="true" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="ds.global.extender" type="String"  default="true" ibm:final="true" name="internal" description="internal use only"/>
+  <AD id="ds.loglevel" type="String"  default="Warnings" ibm:variable="ds.loglevel" name="internal" description="internal use only"/>
+  <AD id="ds.lock.timeout.milliseconds" type="Long"  default="5000" ibm:variable="ds.lock.timeout.milliseconds" name="internal" description="internal use only"/>
+  <AD id="ds.stop.timeout.milliseconds" type="Long"  default="60000" ibm:variable="ds.stop.timeout.milliseconds" name="internal" description="internal use only"/>
+ </OCD>
+
+</metatype:MetaData>

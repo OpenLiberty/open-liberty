@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified"
+        version="1.1">
+
+        <!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+				Licensed Materials - Property of IBM
+
+				"Restricted Materials of IBM"
+
+				Copyright IBM Corp. 2010 All Rights Reserved.
+
+				US Government Users Restricted Rights - Use, duplication or
+				disclosure restricted by GSA ADP Schedule Contract with
+				IBM Corp.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+        <xsd:element name="application-ext" type="application-extType">
+                <xsd:annotation>
+                        <xsd:documentation>
+
+                                The root of the application-ext deployment descriptor.
+
+                        </xsd:documentation>
+                </xsd:annotation>
+        </xsd:element>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="application-extType">
+                <xsd:sequence>
+                        <xsd:element name="module-extension" type="module-extensionType" minOccurs="0" maxOccurs="unbounded"/>
+
+                        <xsd:element name="reload-interval" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:string"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="shared-session-context" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                </xsd:sequence>
+                <xsd:attribute name="client-mode" type="clientModeType"/>
+                <xsd:attribute name="version" type="xsd:string" fixed="1.1" use="required" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="module-extensionType">
+                <xsd:sequence>
+                        <xsd:element name="alt-bindings" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="uri" type="xsd:string"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="alt-extensions" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="uri" type="xsd:string"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <xsd:element name="alt-root" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="uri" type="xsd:string"/>
+                                </xsd:complexType>
+                        </xsd:element>
+
+                        <!-- This element is for internal use only. -->
+                        <xsd:element name="absolute-path" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="path" type="xsd:string"/>
+                                </xsd:complexType>
+                        </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="name" type="xsd:string" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+        
+        <xsd:simpleType name="clientModeType">
+           <xsd:restriction base="xsd:string">
+              <xsd:enumeration value="ISOLATED"></xsd:enumeration>
+              <xsd:enumeration value="FEDERATED"></xsd:enumeration>
+              <xsd:enumeration value="SERVER_DEPLOYED"></xsd:enumeration>
+           </xsd:restriction>
+        </xsd:simpleType>
+
+</xsd:schema>

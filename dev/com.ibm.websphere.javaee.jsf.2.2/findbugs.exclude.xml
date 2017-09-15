@@ -1,0 +1,500 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+  <Match>
+    <Class name="javax.faces.FactoryFinder"/>
+    <Method name="getClassLoader" signature="()Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.FactoryFinder"/>
+    <Method name="getInjectionProvider" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces._FactoryFinderProviderFactory"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces._FactoryFinderProviderFactory"/>
+    <Method name="getContextClassLoader" signature="()Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces._FactoryFinderProviderFactory"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.application.FacesMessage$Severity"/>
+    <Method name="compareTo" signature="(Ljava/lang/Object;)I"/>
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.application.NavigationCase"/>
+    <Method name="getActionURL" signature="(Ljavax/faces/context/FacesContext;)Ljava/net/URL;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.application.NavigationCase"/>
+    <Method name="getBookmarkableURL" signature="(Ljavax/faces/context/FacesContext;)Ljava/net/URL;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.application.NavigationCase"/>
+    <Method name="getRedirectURL" signature="(Ljavax/faces/context/FacesContext;)Ljava/net/URL;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.application.NavigationCase"/>
+    <Method name="getResourceURL" signature="(Ljavax/faces/context/FacesContext;)Ljava/net/URL;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.application.NavigationCase"/>
+    <Method name="getCondition" signature="(Ljavax/faces/context/FacesContext;)Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.application.StateManager$SerializedView"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIComponent$BundleMap"/>
+    <Method name="containsKey" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIComponentBase"/>
+    <Method name="saveAttachedState" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/Object;)Ljava/lang/Object;"/>
+    <Local name="attachedObject"/>
+    <Bug pattern="BC_BAD_CAST_TO_CONCRETE_COLLECTION"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIData"/>
+    <Method name="createUniqueId" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIData"/>
+    <Method name="process" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;I)V"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIForm"/>
+    <Method name="createUniqueId" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UINamingContainer"/>
+    <Method name="createUniqueId" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIViewAction"/>
+    <Method name="broadcast" signature="(Ljavax/faces/event/FacesEvent;)V"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIViewAction"/>
+    <Method name="broadcast" signature="(Ljavax/faces/event/FacesEvent;)V"/>
+    <Local name="defaultActionListener"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIViewParameter"/>
+    <Method name="getDelegateRenderer" signature="(Ljavax/faces/context/FacesContext;)Ljavax/faces/render/Renderer;"/>
+    <Bug pattern="AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIViewParameter"/>
+    <Method name="releaseRenderer" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIViewRoot"/>
+    <Method name="getLocale" signature="()Ljava/util/Locale;"/>
+    <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.UIViewRoot"/>
+    <Method name="createUniqueId" signature="(Ljavax/faces/context/FacesContext;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ClassUtils"/>
+    <Method name="getContextClassLoader" signature="()Ljava/lang/ClassLoader;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentAttributesMap"/>
+    <Field name="_ccBeanInfo"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentAttributesMap"/>
+    <Field name="_component"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentChildrenList"/>
+    <Field name="_component"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentChildrenList"/>
+    <Field name="_list"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentFacetMap"/>
+    <Field name="_component"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentFacetMap"/>
+    <Field name="_entrySet"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentFacetMap"/>
+    <Field name="_keySet"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentFacetMap"/>
+    <Field name="_map"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ComponentFacetMap"/>
+    <Field name="_valueCollection"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ExternalSpecifications"/>
+    <Method name="isBeanValidationAvailable" signature="()Z"/>
+    <Field name="beanValidationAvailable"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ExternalSpecifications"/>
+    <Method name="isCDIAvailable" signature="(Ljavax/faces/context/ExternalContext;)Z"/>
+    <Field name="cdiAvailable"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._MethodBindingToMethodExpression"/>
+    <Field name="methodBinding"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._MethodBindingToMethodExpression"/>
+    <Bug pattern="SE_NO_SERIALVERSIONID"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._PassThroughAttributesMap"/>
+    <Field name="_component"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._PrimitiveArrayIterator"/>
+    <Method name="next" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="IT_NO_SUCH_ELEMENT"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ValueBindingToValueExpression"/>
+    <Field name="_valueBinding"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component._ViewAttributeMap"/>
+    <Field name="_root"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.behavior.AjaxBehavior"/>
+    <Method name="isDisabled" signature="()Z"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.behavior.AjaxBehavior"/>
+    <Method name="isImmediate" signature="()Z"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.component.behavior.AjaxBehavior"/>
+    <Method name="isResetValues" signature="()Z"/>
+    <Bug pattern="BX_UNBOXING_IMMEDIATELY_REBOXED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.context.PartialResponseWriter"/>
+    <Method name="startExtension" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.context.PartialResponseWriter"/>
+    <Method name="updateAttributes" signature="(Ljava/lang/String;Ljava/util/Map;)V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.convert.BigDecimalConverter"/>
+    <Method name="getAsObject" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/lang/String;)Ljava/lang/Object;"/>
+    <Bug pattern="DMI_BIGDECIMAL_CONSTRUCTED_FROM_DOUBLE"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.convert._MessageUtils"/>
+    <Method name="getBundle" signature="(Ljavax/faces/context/FacesContext;Ljava/util/Locale;Ljava/lang/String;)Ljava/util/ResourceBundle;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.event.PhaseEvent"/>
+    <Field name="_facesContext"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.event.PhaseEvent"/>
+    <Field name="_phaseId"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.event.PhaseId"/>
+    <Method name="compareTo" signature="(Ljava/lang/Object;)I"/>
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.flow.builder.NavigationCaseBuilder$RedirectBuilder"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.model.ArrayDataModel"/>
+    <Method name="getWrappedData" signature="()Ljava/lang/Object;"/>
+    <Field name="_data"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.model.ArrayDataModel"/>
+    <Method name="setWrappedData" signature="(Ljava/lang/Object;)V"/>
+    <Field name="_data"/>
+    <Local name="data"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.model.DataModel"/>
+    <Method name="getDataModelListeners" signature="()[Ljavax/faces/model/DataModelListener;"/>
+    <Field name="_cachedListenersArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.model.SelectItemGroup"/>
+    <Method name="getSelectItems" signature="()[Ljavax/faces/model/SelectItem;"/>
+    <Field name="_selectItems"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.model.SelectItemGroup"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;Z[Ljavax/faces/model/SelectItem;)V"/>
+    <Field name="_selectItems"/>
+    <Local name="selectItems"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.model.SelectItemGroup"/>
+    <Method name="setSelectItems" signature="([Ljavax/faces/model/SelectItem;)V"/>
+    <Field name="_selectItems"/>
+    <Local name="selectItems"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.BeanValidator"/>
+    <Method name="postSetValidationGroups" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.BeanValidator"/>
+    <Method name="isDisabled" signature="()Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.BeanValidator"/>
+    <Method name="validate" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/lang/Object;)V"/>
+    <Local name="reference"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.BeanValidator"/>
+    <Method name="validate" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/lang/Object;)V"/>
+    <Local name="valueBaseClass"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.DoubleRangeValidator"/>
+    <Method name="isDisabled" signature="()Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.LengthValidator"/>
+    <Method name="isDisabled" signature="()Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.LongRangeValidator"/>
+    <Method name="setMinimum" signature="(J)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.LongRangeValidator"/>
+    <Method name="isDisabled" signature="()Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.MethodExpressionValidator"/>
+    <Method name="validate" signature="(Ljavax/faces/context/FacesContext;Ljavax/faces/component/UIComponent;Ljava/lang/Object;)V"/>
+    <Local name="cause"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.RegexValidator"/>
+    <Method name="isDisabled" signature="()Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator.RequiredValidator"/>
+    <Method name="isDisabled" signature="()Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator._ExternalSpecifications"/>
+    <Method name="isBeanValidationAvailable" signature="()Z"/>
+    <Field name="beanValidationAvailable"/>
+    <Bug pattern="LI_LAZY_INIT_UPDATE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.validator._MessageUtils"/>
+    <Method name="getBundle" signature="(Ljavax/faces/context/FacesContext;Ljava/util/Locale;Ljava/lang/String;)Ljava/util/ResourceBundle;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.view.facelets.CompositeFaceletHandler"/>
+    <Method name="getHandlers" signature="()[Ljavax/faces/view/facelets/FaceletHandler;"/>
+    <Field name="children"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.view.facelets.CompositeFaceletHandler"/>
+    <Method name="&lt;init&gt;" signature="([Ljavax/faces/view/facelets/FaceletHandler;)V"/>
+    <Field name="children"/>
+    <Local name="children"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="javax.faces.webapp.UIComponentTagBase"/>
+    <Field name="log"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  
+  <Match>
+    <Class name="javax.faces.component.UICommand"/>
+    <Method name="queueEvent" signature="()[Ljavax.faces.event.FacesEvent;)V"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+  
+  <Match>
+    <Class name="javax.faces.component.UIViewAction"/>
+    <Method name="queueEvent" signature="()[Ljavax.faces.event.FacesEvent;)V"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+</FindBugsFilter>

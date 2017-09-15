@@ -1,0 +1,24 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JavaEE API service for Runtime version
+Bundle-SymbolicName: com.ibm.ws.javaee.platform.v7
+Bundle-Description: JavaEE 7.0 API service for runtime, version ${bVersion}
+
+
+# Register a marker service to enable 7.0 javaee.
+Service-Component: \
+  com.ibm.ws.javaee.platform.v7; \
+    implementation:=com.ibm.ws.javaee.version.JavaEEVersion; \
+    provide:=com.ibm.ws.javaee.version.JavaEEVersion; \
+    properties:="version=7.0"

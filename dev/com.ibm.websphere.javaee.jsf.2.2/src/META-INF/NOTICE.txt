@@ -1,0 +1,19 @@
+This product includes software developed by:
+The Apache Software Foundation (http://www.apache.org/).
+
+------------------------------------------------------------------------
+See the file LICENSE.txt
+See licenses for accompanying products in the "/licenses" subdirectory.
+------------------------------------------------------------------------
+
+This software also includes code from Facelets (https://facelets.dev.java.net/)
+for the purpose of implementing Facelets PDL for JSF 2.0 support.
+
+This software also includes code from the Dojo toolkit (http://www.dojotoolkit.org/)
+for the purpose of reusing existing well proven javascript code in the myfaces
+javascript core, which is licensed under a modified BSD license or the Academic Free License version 2.1
+(see http://o.dojotoolkit.org/about/license and http://trac.dojotoolkit.org/browser/dojo/trunk/LICENSE for more information)
+
+This software also includes code from j4fry (http://www.j4fry.org/),
+which is licensed under ASL 2.0.
+ 

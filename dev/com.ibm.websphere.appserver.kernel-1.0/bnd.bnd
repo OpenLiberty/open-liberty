@@ -1,0 +1,146 @@
+-include= ~../cnf/resources/bnd/liberty-release.props
+
+-nobundles=true
+
+-dependson: \
+	org.eclipse.osgi,\
+	com.ibm.ws.cds,\
+	com.ibm.ws.kernel.equinox.module,\
+	com.ibm.ws.org.objectweb.asm,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.service.location,\
+	com.ibm.ws.org.eclipse.equinox.coordinator,\
+	com.ibm.ws.org.eclipse.equinox.metatype,\
+	com.ibm.ws.org.eclipse.equinox.region,\
+	com.ibm.ws.config,\
+	com.ibm.ws.config.ext,\
+	com.ibm.ws.kernel.metatype.helper,\
+	com.ibm.ws.org.apache.felix.scr,\
+	com.ibm.ws.crypto.passwordutil,\
+	com.ibm.ws.event,\
+	com.ibm.ws.threading,\
+	com.ibm.ws.runtime.update,\
+	com.ibm.ws.kernel.filemonitor,\
+	com.ibm.ws.diagnostics,\
+	com.ibm.ws.org.apache.aries.util,\
+	com.ibm.ws.jmx,\
+	com.ibm.ws.org.apache.aries.jmx.api,\
+	com.ibm.ws.org.apache.aries.jmx.core.whiteboard,\
+	com.ibm.ws.kernel.feature,\
+	com.ibm.websphere.appserver.spi.kernel.filemonitor,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.appserver.spi.threading,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.blueprint,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.common.encoder,\
+	com.ibm.ws.kernel.boot.cmdline,\
+	com.ibm.ws.kernel.boot.common,\
+	com.ibm.ws.kernel.boot.core,\
+	com.ibm.ws.kernel.boot.java7,\
+	com.ibm.ws.kernel.boot.logging,\
+	com.ibm.ws.kernel.boot.nested,\
+	com.ibm.ws.kernel.boot.ws-server,\
+	com.ibm.ws.kernel.boot,\
+	com.ibm.ws.kernel.feature.cmdline,\
+	com.ibm.ws.kernel.feature.core,\
+	com.ibm.ws.kernel.security.thread,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.logging,\
+	com.ibm.ws.ras.instrument,\
+	com.ibm.wsspi.org.osgi.namespace.service,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.wsspi.org.osgi.service.event,\
+	com.ibm.wsspi.org.osgi.service.log,\
+	com.ibm.wsspi.org.osgi.service.metatype,\
+	com.ibm.wsspi.thirdparty.equinox,\
+	wlp.lib.extract,\
+	build.image,\
+	com.ibm.websphere.appserver.kernelCore-1.0,\
+	com.ibm.ws.org.apache.commons.daemon,\
+	com.ibm.json4j,\
+	com.ibm.websphere.appserver.api.config,\
+	com.ibm.websphere.appserver.api.hpel,\
+	com.ibm.websphere.appserver.api.kernel.service,\
+	com.ibm.websphere.appserver.osgiConsole-1.0,\
+	com.ibm.websphere.appserver.spi.kernel.embeddable,\
+	com.ibm.websphere.appserver.spi.kernel.metatype,\
+	com.ibm.websphere.javaee.jsonp.1.0,\
+	com.ibm.websphere.org.osgi.service.http,\
+	com.ibm.websphere.org.osgi.service.http.whiteboard,\
+	com.ibm.ws.config.schemagen.schemagen,\
+	com.ibm.ws.config.schemagen,\
+	com.ibm.ws.config.server.schemagen.serverschemagen,\
+	com.ibm.ws.config.server.schemagen,\
+	com.ibm.ws.crypto.certificateutil,\
+	com.ibm.ws.crypto.ltpakeyutil,\
+	com.ibm.ws.jmx.scripting.client,\
+	com.ibm.ws.kernel.boot.archive,\
+	com.ibm.ws.kernel.boot.ws-launch,\
+	com.ibm.ws.kernel.cmdline,\
+	com.ibm.ws.kernel.feature.featurelist,\
+	com.ibm.ws.kernel.instrument.agent,\
+	com.ibm.ws.kernel.instrument.check,\
+	com.ibm.ws.logging.hpel.binarylogviewer,\
+	com.ibm.ws.logging.hpel.osgi,\
+	com.ibm.ws.logging.hpel,\
+	com.ibm.ws.logging.osgi,\
+	com.ibm.ws.org.apache.commons.io.1.4,\
+	com.ibm.ws.org.apache.felix.gogo.command,\
+	com.ibm.ws.org.apache.felix.gogo.runtime,\
+	com.ibm.ws.org.apache.felix.gogo.shell,\
+	com.ibm.ws.org.eclipse.equinox.console,\
+	com.ibm.ws.org.glassfish.json,\
+	com.ibm.ws.product.utility.productutil,\
+	com.ibm.ws.product.utility,\
+	com.ibm.ws.security.utility.securityutil,\
+	com.ibm.ws.security.utility,\
+	com.ibm.wsspi.org.osgi.core,\
+	com.ibm.wsspi.org.osgi.service.cm,\
+	com.ibm.wsspi.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.coordinator,\
+	com.ibm.wsspi.org.osgi.service.metatype.annotations,\
+	com.ibm.wsspi.org.osgi.service.subsystem
+
+# README.TXT; location:="README.TXT"; type="file",
+# Copyright.txt; location:="Copyright.txt"; type="file",
+# isadc; location:="bin/isadc"; type="file",
+# isadc.bat; location:="bin/isadc.bat"; type="file",
+# isadc.internal; location:="lib/tools-internal/isadc"; type="file",
+# isadc.bat.internal; location:="lib/tools-internal/isadc.bat"; type="file",
+# productInfo; location:="bin/productInfo"; type="file",
+# productInfo.bat; location:="bin/productInfo.bat"; type="file",
+# securityUtility; location:="bin/securityUtility"; type="file",
+# securityUtility.bat; location:="bin/securityUtility.bat"; type="file",
+# featureManager; location:="bin/featureManager"; type="file",
+# featureManager.bat; location:="bin/featureManager.bat"; type="file",
+# server; location:="bin/server"; type="file",
+# server.bat; location:="bin/server.bat"; type="file",
+# configUtility; location:="bin/configUtility"; type="file",
+# configUtility.bat; location:="bin/configUtility.bat"; type="file",
+# ws-configUtility.jar; location:="bin/tools/ws-configUtility.jar"; type="file",
+# serverSchemaGen; location:="bin/serverSchemaGen"; type="file",
+# serverSchemaGen.bat; location:="bin/serverSchemaGen.bat"; type="file",
+# ws-serverSchemagen.jar; location:="bin/tools/ws-serverSchemagen.jar"; type="file",
+# ws-featurelist.jar; location:="bin/tools/ws-featurelist.jar"; type="file",
+# ws-featureManager.jar; location:="bin/tools/ws-featureManager.jar"; type="file",
+# ws-isadc.jar; location:="bin/tools/ws-isadc.jar"; type="file",
+# ws-javaagent.jar; location:="bin/tools/ws-javaagent.jar"; type="file",
+# ws-productutil.jar; location:="bin/tools/ws-productutil.jar"; type="file",
+# ws-schemagen.jar; location:="bin/tools/ws-schemagen.jar"; type="file",
+# ws-securityutil.jar; location:="bin/tools/ws-securityutil.jar"; type="file",
+# ws-server.jar; location:="bin/tools/ws-server.jar"; type="file",
+# prunsrv.exe; location:="bin/tools/win/prunsrv.exe"; type="file"; os="win",
+# com.ibm.websphere.appserver.api.kernel.service_1.1-javadoc.zip; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.kernel.service_1.0-javadoc.zip"; type="file",
+# com.ibm.websphere.appserver.spi.kernel.filemonitor_1.0-javadoc.zip; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.kernel.filemonitor_1.0-javadoc.zip"; type="file",
+# com.ibm.websphere.appserver.spi.kernel.embeddable_1.1-javadoc.zip; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.kernel.embeddable_1.1-javadoc.zip"; type="file",
+# com.ibm.websphere.appserver.spi.kernel.metatype_1.0-javadoc.zip; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.kernel.metatype_1.0-javadoc.zip"; type="file",
+# com.ibm.websphere.appserver.spi.kernel.service_1.5-javadoc.zip; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.kernel.service_1.5-javadoc.zip"; type="file",
+# com.ibm.websphere.appserver.spi.threading_1.1-javadoc.zip; location:="dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.threading_1.1-javadoc.zip"; type="file",
+# com.ibm.websphere.appserver.api.config_1.2-javadoc.zip; type="file"; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.config_1.2-javadoc.zip",
+# wlp-anttasks.jar; location:="dev/tools/ant/wlp-anttasks.jar"; type="file",
+# bootstrap-agent.jar; location:="lib/bootstrap-agent.jar"; type="file",
+# ws-launch.jar; location:="lib/ws-launch.jar"; type="file",
+# defaults; location:="lib/platform/defaults"; type="file",

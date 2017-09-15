@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: The configuration element {0} contains an unrecognized attribute {1}.
+CWWKC1000.unrecognized.property.explanation=An unrecognized property is configured on a context service.
+CWWKC1000.unrecognized.property.useraction=Remove or correct the unrecognized property.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: The configured thread context {0} is unavailable for the configuration element {1}.
+CWWKC1001.context.providers.unavailable.explanation=The application server is unable to find provider(s) of the specified type(s) of thread context.
+CWWKC1001.context.providers.unavailable.useraction=Ensure the provider(s) of the requested thread context are enabled.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: The configuration element {0} cannot have more than one sub-element of type {1}.
+CWWKC1002.provider.cardinality.violation.explanation=At most, one element of each type of context provider may be configured under a context service.
+CWWKC1002.provider.cardinality.violation.useraction=Remove duplicate context provider elements from the context service configuration.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: The attribute baseContextRef of configuration element {0} causes an infinite chain of dependencies.
+CWWKC1020.baseContextRef.infinite.explanation=An infinite chain of dependencies exists because baseContextRef directly or indirectly points back to the same context service instance.
+CWWKC1020.baseContextRef.infinite.useraction=Update the context service configuration to break the infinite chain of dependencies.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: The resource {0} is unavailable.
+CWWKC1100.resource.unavailable.explanation=A resource might become unavailable due to the server shutting down or because of a configuration change, either to itself or another service upon which it depends.
+CWWKC1100.resource.unavailable.useraction=Verify the configuration of the resource and any resources upon which it depends.
+
+CWWKC1110.task.canceled=CWWKC1110I: The task {0}, which was submitted to executor service {1}, is canceled.
+CWWKC1110.task.canceled.explanation=Execution of the task has been canceled.
+CWWKC1110.task.canceled.useraction=No action is required.
+
+CWWKC1101.task.failed=CWWKC1101E: The task {0}, which was submitted to executor service {1}, failed with the following error: {2}.
+CWWKC1101.task.failed.explanation=A task submitted to an executor has failed. Refer to the exception message for the cause.
+CWWKC1101.task.failed.useraction=Correct the cause of the failure and resubmit the task.
+
+CWWKC1102.listener.failed=CWWKC1102E: The managed task listener for task {0}, which was submitted to executor service {1}, failed with the following error: {2}.
+CWWKC1102.listener.failed.explanation=A managed task listener operation has failed. Refer to the exception message for the cause.
+CWWKC1102.listener.failed.useraction=Correct the cause of the failure and decide whether or not to resubmit the task.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: Execution of task {0}, which was submitted to executor service {1}, is skipped because the Trigger.skipRun operation failed with the following error: {2}.
+CWWKC1103.skip.run.failed.explanation=The skipRun operation for the Trigger has failed, causing the current execution attempt for the task to be skipped.
+CWWKC1103.skip.run.failed.useraction=Correct the cause of the failure and decide whether or not to resubmit the task.
+
+CWWKC1111.task.invalid=CWWKC1111E: The task {0} is not valid.
+CWWKC1111.task.invalid.explanation=The task cannot be submitted because it is not valid.
+CWWKC1111.task.invalid.useraction=Update the application to submit a valid task to the ExecutorService.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: All tasks are canceled.
+CWWKC1112.all.tasks.canceled.explanation=All of the tasks were canceled before any task could be invoked.
+CWWKC1112.all.tasks.canceled.useraction=No action is required.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: The Future supplied to ManagedTaskListener methods taskSubmitted and taskStarting cannot be used to wait for task completion.
+CWWKC1120.future.get.rejected.explanation=The ManagedTaskListener taskSubmitted and taskStarting methods run on the thread that will submit or start the task. Therefore, the Future supplied to these methods must not be used to wait for the task.
+CWWKC1120.future.get.rejected.useraction=Update the application to avoid invoking get on the Future that is supplied to taskSubmitted and taskStarting.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: A task submitted to managed executor {0} contains an execution property {1} with value {2} that is not valid for managed executors.
+CWWKC1130.xprop.value.invalid.explanation=Some execution property values are not valid for managed executors, but might be valid for other resource types such as context service or managed thread factory.
+CWWKC1130.xprop.value.invalid.useraction=Update the application to omit the execution property or set it to a valid value.

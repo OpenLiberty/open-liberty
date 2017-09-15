@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<connector xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/connector_1_6.xsd" version="1.6" metadata-complete="true">
+  <description>This is the ra.xml for DerbyRA</description> 
+  <display-name>Derby Resource Adapter</display-name> 
+  <vendor-name>IBM</vendor-name> 
+  <eis-type>Derby</eis-type> 
+  <resourceadapter-version>1.0</resourceadapter-version>
+  <resourceadapter>
+    <resourceadapter-class>fat.derbyra.resourceadapter.DerbyResourceAdapter</resourceadapter-class>
+    <config-property>
+      <description>Create database if doesn't exist?</description>
+      <config-property-name>createDatabase</config-property-name> 
+      <config-property-type>java.lang.Boolean</config-property-type> 
+      <config-property-value>true</config-property-value>
+    </config-property>
+    <config-property>
+      <description>Name of database</description>
+      <config-property-name>databaseName</config-property-name> 
+      <config-property-type>java.lang.String</config-property-type> 
+      <config-property-value>memory:derbyra</config-property-value>
+    </config-property>
+    <config-property>
+      <description>Login timeout</description>
+      <config-property-name>loginTimeout</config-property-name> 
+      <config-property-type>java.lang.Integer</config-property-type> 
+      <config-property-value>60</config-property-value>
+    </config-property>
+    <outbound-resourceadapter>
+      <connection-definition>
+        <managedconnectionfactory-class>fat.derbyra.resourceadapter.DerbyManagedConnectionFactory</managedconnectionfactory-class>
+        <config-property>
+          <description>Indicates if connection handles may be dissociated and reassociated</description>
+          <config-property-name>dissociatable</config-property-name> 
+          <config-property-type>java.lang.Boolean</config-property-type>
+          <config-property-value>true</config-property-value> 
+        </config-property>
+        <config-property>
+          <description>User name</description>
+          <config-property-name>userName</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type> 
+        </config-property>
+        <config-property>
+          <description>Password</description>
+          <config-property-name>password</config-property-name> 
+          <config-property-type>java.lang.String</config-property-type>
+          <config-property-confidential>true</config-property-confidential>
+        </config-property>
+        <config-property>
+    	  <description>Indicates if an exception should be thrown in mc destroy</description>
+     	  <config-property-name>exceptionOnDestroy</config-property-name> 
+     	  <config-property-type>java.lang.Boolean</config-property-type>
+     	  <config-property-value>false</config-property-value> 
+    	</config-property>
+        <connectionfactory-interface>javax.sql.DataSource</connectionfactory-interface> 
+        <connectionfactory-impl-class>fat.derbyra.resourceadapter.DerbyConnectionFactory</connectionfactory-impl-class> 
+        <connection-interface>java.sql.Connection</connection-interface> 
+        <connection-impl-class>fat.derbyra.resourceadapter.DerbyConnection</connection-impl-class> 
+      </connection-definition>
+      <reauthentication-support>false</reauthentication-support> 
+    </outbound-resourceadapter>
+    <adminobject>
+      <adminobject-interface>java.util.Map</adminobject-interface>
+      <adminobject-class>fat.derbyra.resourceadapter.DerbyMap</adminobject-class>
+      <config-property>
+        <description>Data Type of Key</description>
+        <config-property-name>keyType</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type>
+        <config-property-value>varchar(20)</config-property-value> 
+      </config-property>
+      <config-property>
+        <description>Table Name</description>
+        <config-property-name>tableName</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type> 
+      </config-property>
+      <config-property>
+        <description>Data Type of Value</description>
+        <config-property-name>valueType</config-property-name> 
+        <config-property-type>java.lang.String</config-property-type>
+        <config-property-value>varchar(50)</config-property-value> 
+      </config-property>
+    </adminobject>
+    <adminobject>
+      <adminobject-interface>javax.resource.spi.BootstrapContext</adminobject-interface>
+      <adminobject-class>fat.derbyra.resourceadapter.DerbyBootstrapContext</adminobject-class>
+    </adminobject>
+  </resourceadapter>
+  <required-work-context>javax.resource.spi.work.ExecutionContext</required-work-context>
+  <required-work-context>javax.resource.spi.work.TransactionContext</required-work-context>
+</connector>

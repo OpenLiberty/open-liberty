@@ -1,0 +1,54 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Artifact API Zip Implementation
+Bundle-SymbolicName: com.ibm.ws.artifact.zip
+Bundle-Description: Implementation of artifact api for on disk zip archives; version=${bVersion}
+
+Export-Package: com.ibm.ws.artifact.zip.cache;provide:=true
+
+WS-TraceGroup: archive.artifact.zip
+
+Private-Package: com.ibm.ws.artifact.zip.internal.*,com.ibm.ws.artifact.zip.cache.internal.*
+
+Service-Component: \
+   com.ibm.ws.artifact.zip.service;\
+    implementation:=com.ibm.ws.artifact.zip.internal.ZipFileContainerFactory;\
+    provide:=com.ibm.ws.artifact.contributor.ArtifactContainerFactoryHelper;\
+    configuration-policy:=ignore;\
+    containerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
+    zipCachingService=com.ibm.ws.artifact.zip.cache.ZipCachingService;\
+    globalClassloadingConfiguration=com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration;\
+    dynamic:='containerFactory';\
+    properties:="service.vendor=IBM,category=JAR,handlesType=java.io.File|com.ibm.wsspi.artifact.ArtifactEntry,handlesEntries=.zip|.jar|.sar|.war|.ear|.rar|.eba|.esa",\
+   com.ibm.ws.artifact.zip.cache.service;\
+    implementation:=com.ibm.ws.artifact.zip.cache.internal.ZipCachingServiceImpl;\
+    provide:=com.ibm.ws.artifact.zip.cache.ZipCachingService;\
+    configuration-policy:=ignore;\
+    optional:="globalClassloadingConfiguration"; \
+    greedy:="globalClassloadingConfiguration"; \
+    properties:="service.vendor=IBM
+
+instrument.classesExcludes: com/ibm/ws/artifact/zip/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.kernel.filemonitor,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.classloading.configuration;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

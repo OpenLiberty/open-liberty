@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+<!--
+    ** WARNING: This file was automatically generated. Do not edit it directly,
+    **          or you will lose your changes.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           version="1.0"
+           xml:lang="en"
+           elementFormDefault="qualified"
+           targetNamespace="http://java.sun.com/jsp/jstl/core">
+
+
+
+    <xs:annotation>
+        <xs:documentation>JSTL core Facelets Tag Library.</xs:documentation>
+        <xs:documentation>display-name: JSTL core Facelets Tag Library.</xs:documentation>
+        <xs:documentation>short-name: c</xs:documentation>
+    </xs:annotation>
+
+
+    <xs:element name="catch">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Catches any Throwable that occurs in its body and optionally 
+exposes it.]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jstl.core.CatchHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="var" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Name of the exported scoped variable for the
+exception thrown from a nested action. The type of the
+scoped variable is the type of the exception thrown.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="choose">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Simple conditional tag that establishes a context for
+mutually exclusive conditional operations, marked by
+&lt;when&gt; and &lt;otherwise&gt;]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jstl.core.ChooseHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="otherwise">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Subtag of &lt;choose&gt; that follows &lt;when&gt; tags
+and runs only if all of the prior conditions evaluated to
+'false']]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jstl.core.ChooseOtherwiseHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="when">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Subtag of &lt;choose&gt; that includes its body if its
+condition evalutes to 'true']]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jstl.core.ChooseWhenHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="test" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The test condition that determines whether or not the
+body content should be processed.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="forEach">
+        <xs:annotation>
+              <xs:documentation><![CDATA[The basic iteration tag, accepting many different
+collection types and supporting subsetting and other
+functionality]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jstl.core.ForEachHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="begin" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[If items specified:
+Iteration begins at the item located at the
+specified index. First item of the collection has
+index 0.
+If items not specified:
+Iteration begins with index set at the value
+specified.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="end" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[If items specified:
+Iteration ends at the item located at the
+specified index (inclusive).
+If items not specified:
+Iteration ends when index reaches the value
+specified.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="items" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Collection of items to iterate over.]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="step" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Iteration will only process every step items of
+the collection, starting with the first one.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: int]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="var" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Name of the exported scoped variable for the
+current item of the iteration. This scoped
+variable has nested visibility. Its type depends
+on the object of the underlying collection.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="varStatus" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Name of the exported scoped variable for the
+status of the iteration.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="if">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Simple conditional tag, which evalutes its body if the
+supplied condition is true and optionally exposes a Boolean
+scripting variable representing the evaluation of this condition]]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jstl.core.IfHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="test" use="required">
+            <xs:annotation>
+              <xs:documentation><![CDATA[The test condition that determines whether or
+not the body content should be processed.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: boolean]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="var" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Name of the exported scoped variable for the
+resulting value of the test condition. The type
+of the scoped variable is Boolean.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="scope" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Scope for var.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+    <xs:element name="set">
+        <xs:annotation>
+              <xs:documentation><![CDATA[Simplified implementation of c:set
+
+Sets the result of an expression evaluation in a 'scope']]></xs:documentation>
+              <xs:documentation>tag-class: org.apache.myfaces.view.facelets.tag.jstl.core.SetHandler</xs:documentation>
+          <xs:documentation>body-content: JSP</xs:documentation>
+        </xs:annotation>
+       
+        <xs:complexType mixed="true">
+          <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:any processContents="lax"/>
+          </xs:choice>
+          <xs:attribute name="var" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Name of the exported scoped variable to hold the value
+specified in the action. The type of the scoped variable is
+whatever type the value expression evaluates to.]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="value" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[Expression to be evaluated.]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.Object]]></xs:documentation>
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="scope" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="target" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+          <xs:attribute name="property" >
+            <xs:annotation>
+              <xs:documentation><![CDATA[]]></xs:documentation>
+              <xs:documentation><![CDATA[rtexprvalue: false]]></xs:documentation>
+              <xs:documentation><![CDATA[Deferred Value Type: java.lang.String]]></xs:documentation>         
+            </xs:annotation>
+          </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

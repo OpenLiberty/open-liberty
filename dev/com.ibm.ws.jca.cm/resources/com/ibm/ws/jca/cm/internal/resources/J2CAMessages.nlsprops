@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: The {0} {1} is unavailable.
+DEACTIVATED_J2CA8001.explanation=This message is for informational purposes only.
+DEACTIVATED_J2CA8001.useraction=No action is required.
+
+DEACTIVATED_J2CA8006=J2CA8006I: The {0} {1} in {2} is unavailable.
+DEACTIVATED_J2CA8006.explanation=This message is for informational purposes only.
+DEACTIVATED_J2CA8006.useraction=No action is required.
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: Unrecognized {0} property: {1}
+UNKNOWN_PROP_J2CA8010.explanation=A configured property is not recognized.
+UNKNOWN_PROP_J2CA8010.useraction=Correct or remove the configured property.
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: Value {0} is not supported for {1} on {2}
+UNSUPPORTED_VALUE_J2CA8011.explanation=A configured value is not supported.
+UNSUPPORTED_VALUE_J2CA8011.useraction=Correct the value or remove the configured property.
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: Unable to load or access files in library {0}
+MISSING_LIBRARY_J2CA8020.explanation=Files cannot be loaded from the shared library.
+MISSING_LIBRARY_J2CA8020.useraction=Verify the file permissions and configuration of the shared library.
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: Application {0} does not have any shared libraries that provide {1} for {2} {3}.
+MISSING_LIBRARY_J2CA8022.explanation=To use application-defined data sources, the JDBC driver that provides the data source class must be made available as a shared library for the application.
+MISSING_LIBRARY_J2CA8022.useraction=Add the JDBC driver as a shared library for the application.
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: Unable to find {0} {1} for {2} {3}.
+MISSING_RESOURCE_J2CA8030.explanation=The specified resource requires another resource which is not available.
+MISSING_RESOURCE_J2CA8030.useraction=Verify that the resource is configured properly.
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: {0} {1} is only permitted to have one {2} element.
+CARDINALITY_ERROR_J2CA8040.explanation=The resource cannot have more than one element of the specified type.
+CARDINALITY_ERROR_J2CA8040.useraction=Update the configuration so that there is only one element of the specified type associated with the resource.
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: An authentication alias should be used instead of defining a user name and password on {0}.
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=It is recommended to use an authentication alias instead configuring a user name and password on a resource.
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=Configure the user name and password in on authData element instead of directly on the resource. 
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: {0} is not a valid parameter for the action {1}.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=Parameters specified for an action must correspond to parameters valid for the given action.
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=Specify valid parameters for the action which is being invoked.
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: {0} is not a valid action for the {1} MBean.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=An attempt was made to invoke an action that was not available for the specified MBean.
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=Change the action being invoked to a valid method for the specified MBean.
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: The {0} attribute is not valid for the {1} MBean.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=An attempt was made to get or set an attribute that was not available for the specified MBean.
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=Change the attribute specified to one of the available attributes for this MBean.

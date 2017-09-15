@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security/resources/com/ibm/ws/webcontainer/security/resources/WebAppSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Web Application Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+MISSING_SEC_ROLE_REF_ROLE_LINK=CWWKS9100W: In servlet {0}, <security-role-ref> element for <role-name>{1}</role-name> is missing corresponding <role-link> element.
+MISSING_SEC_ROLE_REF_ROLE_LINK.explanation=The <role-link> entry for the <security-role-ref> element is required to map the <role-name> to a real security role.
+MISSING_SEC_ROLE_REF_ROLE_LINK.useraction=Define the missing <role-link> entry for the <security-role-ref> element.
+
+INVALID_SEC_ROLE_REF_ROLE_LINK=CWWKS9101W: In servlet {0}, <role-link>{1}</role-link> for <role-name>{2}</role-name> is not a defined <security-role>.
+INVALID_SEC_ROLE_REF_ROLE_LINK.explanation=The <role-link> entry for the <security-role-ref> element is required to map the <role-name> to a real security role.
+INVALID_SEC_ROLE_REF_ROLE_LINK.useraction=Either create a <security-role> element for the <role-link> name, or change the <role-link> entry to name an existing the <security-role> name.
+
+MULTIPLE_URL_PATTERN_DEFINED=CWWKS9102W: Multiple <url-pattern>{0}</url-pattern> defined for <servlet-name>{1}</servlet-name> and <servlet-name>{2}</servlet-name>.
+MULTIPLE_URL_PATTERN_DEFINED.explanation=The <url-pattern> entry in the <servlet-mapping> element maps a specific <servlet-name> to the specified pattern. Using the same pattern creates an ambiguous mapping.
+MULTIPLE_URL_PATTERN_DEFINED.useraction=Change the <url-pattern> to be unique.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9103E: The authorization table for the application {0} could not be created.
+AUTHZ_TABLE_NOT_CREATED.explanation=The authorization table for an application was not created and therefore no users will be authorized.
+AUTHZ_TABLE_NOT_CREATED.useraction=Examine the logs to determine why the authorization table was not created.
+
+SEC_AUTHZ_FAILED=CWWKS9104A: Authorization failed for user {0} while invoking {1} on {2}. The user is not granted access to any of the required roles: {3}.
+SEC_AUTHZ_FAILED.explanation=The user does not have the necessary permission to access the resource.
+SEC_AUTHZ_FAILED.useraction=Contact your security administrator if this is unexpected. Your user must be mapped to one of the roles protecting the resource if access to the protected resource is required.
+
+SSL_CAN_NOT_DETERMINE_PORT=CWWKS9105E: Could not determine the SSL port for automatic redirection. Check the logs to ensure that the HTTPS (SSL) port is started or for possible errors related to the SSL configuration such as a missing or incorrect keyStore element.
+SSL_CAN_NOT_DETERMINE_PORT.explanation=An internal error occurred. The SSL port could not be determined.
+SSL_CAN_NOT_DETERMINE_PORT.useraction=No action can be taken.
+
+SEC_FORM_LOGIN_BAD_CONFIG=CWWKS9106E: SSO Configuration error. FormLogin is configured for web application {0} but SSO is not enabled in the security settings.  SSO must be enabled to use FormLogin.
+SEC_FORM_LOGIN_BAD_CONFIG.explanation=When LTPA is the authentication mechanism, SSO must also be enabled if any web applications use FORM login.
+SEC_FORM_LOGIN_BAD_CONFIG.useraction=Enable SSO in the security settings, then restart the application server.
+
+SEC_FORM_POST_NULL_OR_TOO_LARGE=CWWKS9107W: Post parameters are null or too large to store into a cookie.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.explanation=Post parameters are null, or are larger than the configured maximum size for Web Application Authentication option postParamCookieSize.
+SEC_FORM_POST_NULL_OR_TOO_LARGE.useraction=If post parameters are too large, increase the size for the postParamCookieSize option.
+
+SEC_TAI_VALIDATE_FAILED=CWWKS9107E: Trust Association Init is unable to load Trust Association class {0}.
+SEC_TAI_VALIDATE_FAILED.explanation=When the appropriate interceptor is found for a given request, that interceptor then \
+ validates its trust with the reverse proxy server. This error message  \
+ suggests that the validation has failed and therefore the reverse \
+ proxy cannot be trusted. For example, an incorrect or expired password might  \
+ have been provided.
+SEC_TAI_VALIDATE_FAILED.useraction=In a production environment, the user might be alerted to check \
+ if there is an intruder in the system. In a development environment \
+ in which testing is underway, verify that the expected inputs from the  \
+ reverse proxy server are being passed to the interceptor correctly.  \
+ The nature of these inputs depends on how trust association \
+ is being established. For example, the simplest method is to  \
+ pass a user name and password through the Basic Authentication header.  
+
+SEC_TAI_USER_EXCEPTION=CWWKS9108E: Unable to find a valid user for Trust Association.
+SEC_TAI_USER_EXCEPTION.explanation=An interceptor returns the authenticate user name. \
+ No such user name was returned.
+SEC_TAI_USER_EXCEPTION.useraction=Verify that the reverse proxy server is inserting the correct user name in the HTTP request before \
+ it sends the request to the application server.
+
+SEC_TAI_GENERAL_EXCEPTION=CWWKS9109E: An unexpected exception occurred during Trust Association. The exception is {0}.
+SEC_TAI_GENERAL_EXCEPTION.explanation=This exception refers to all other exceptions that can be created by an interceptor, when validating \
+ trust with the reverse proxy server and when getting the authenticated user name,  except for  \
+ WebTrustAssociationFailedException and WebTrustAssociationUserException.
+SEC_TAI_GENERAL_EXCEPTION.useraction=Debug the problem from the stack trace that is printed together with this error message. \
+ You can also turn on the debug trace to get more information about the nature of the exception.
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: Multiple applications have the name {0}. Security authorization policies requires that names be unique.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Application names must be unique for security authorization policy to be enforced.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Change the applications to have unique names and restart the application.
+
+AUTHZ_INVALID_SECURITYROLE_CONFIG=CWWKS9111E: The object used to create the authorization table, {0}, is invalid and the table will not be created. The object must be an instance of the SecurityRoles class.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.explanation=The object used to create the authorization table must be an instance of the SecurityRoles class.
+AUTHZ_INVALID_SECURITYROLE_CONFIG.useraction=Ensure that the object passed to the API for creating the authorization table is an instance of the SecurityRoles class.
+
+WEB_APP_SECURITY_CONFIGURATION_UPDATED=CWWKS9112A: The web application security settings have changed. The following properties were modified: {0}
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.explanation=The web application security settings were modified. The value of the properties in the message are the new values.
+WEB_APP_SECURITY_CONFIGURATION_UPDATED.useraction=No action is required.
+
+SSL_PORT_IS_NULL=CWWKS9113E: The SSL port is not active. The incoming http request cannot be redirected to a secure port. Check the server.xml file for configuration errors. The https port may be disabled. The keyStore element may be missing or incorrectly specified. The SSL feature may not be enabled. 
+SSL_PORT_IS_NULL.explanation=The SSL port could not be determined, which prevented the incoming HTTP request from being redirected to the HTTPS port. This could happen if there is a configuration error in the keyStore element or the SSL feature is missing.
+SSL_PORT_IS_NULL.useraction=Ensure that you have the correct SSL information in server.xml.
+
+SSL_REQ_URL_MALFORMED_EXCEPTION=CWWKS9114E: The incoming http request cannot be redirected to a secure port because the servlet request URL {0} is malformed. Ensure the request URL is correct.
+SSL_REQ_URL_MALFORMED_EXCEPTION.explanation=The servlet request URL is malformed, which prevented the incoming HTTP request from being redirected to the HTTPS port.
+SSL_REQ_URL_MALFORMED_EXCEPTION.useraction=Ensure the servlet request URL is correct.
+
+SEC_WEB_INTERNAL_SERVER_ERROR=CWWKS9115E: The server encountered an unexpected condition which prevented it from fulfilling the request of method {0} for URL {1}. Review the server logs for more information.
+SEC_WEB_INTERNAL_SERVER_ERROR.explanation=A servlet response indicates an internal server error has occurred.
+SEC_WEB_INTERNAL_SERVER_ERROR.useraction=Review the server logs for more information. If the problem persists, see problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_NULL_AUTHENTICATOR=CWWKS9116E: Login to the URL {0} failed for user {1} due to an internal error. Review the server logs for more information.
+SEC_WEB_NULL_AUTHENTICATOR.explanation=Login process has not completed due to an internal error. 
+SEC_WEB_NULL_AUTHENTICATOR.useraction=Review the server logs for more information. If the problem persists, see problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+SEC_WEB_ILLEGAL_REQUEST=CWWKS9117E: The method {0} is not allowed to process for URL {1}. If this error is unexpected, ensure that the application allows the methods that the client is requesting.
+SEC_WEB_ILLEGAL_REQUEST.explanation=Processing a requested method is prohibited.
+SEC_WEB_ILLEGAL_REQUEST.useraction=If this error is unexpected, ensure that the application allows the methods that the client is requesting.
+
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION=CWWKS9118E: An internal error occurred. Exception {0}
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.explanation=CMSG0001
+GETFORMLOGOUTEXTENSIONPROCESSOR_EXCEPTION.useraction=CMSG0002
+
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION=CWWKS9119W: Logging out user {0} did not complete successfully because an unexpected exception occurred while removing the user''s cookies from the authentication cache. Exception is {1}. Review the server logs for more information, and the log the user out again if possible.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.explanation=Logging out the user did not complete successfully because an unexpected exception occurred removing the user's cookies from the authentication cache.
+AUTHENTICATE_CACHE_REMOVAL_EXCEPTION.useraction=Review the server logs for more information, and log the user out again if possible. If the problem persists, see problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/. 
+
+INVALID_FORM_LOGIN_CONFIGURATION=CWWKS9120W: The form login configuration is missing the definition for the {0} 
+INVALID_FORM_LOGIN_CONFIGURATION.explanation=The form login configuration is missing either the login page or the error page or both.
+INVALID_FORM_LOGIN_CONFIGURATION.useraction=Ensure that the form login configuration includes definitions for both the login page as well as an error page.
+
+OSGI_SERVICE_ERROR=CWWKS9121E: The OSGi service {0} is not available.
+OSGI_SERVICE_ERROR.explanation=The specified OSGi service is not available.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the "clean" option.
+
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED=CWWKS9122I:  For URL {0} in application {1}, the following HTTP methods are uncovered, and accessible: {2}
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.explanation=The deny-uncovered-http-methods element not is specified in the web.xml file for the servlet, and there are HTTP methods for a URL pattern that are unprotected. These unprotected methods will be accessible.
+UNCOVERED_HTTP_METHODS_FOUND_AND_UNPROTECTED.useraction=Ensure that all HTTP methods at all constrained URL patterns have the intended security protections.
+
+UNCOVERED_HTTP_METHODS_FOUND=CWWKS9123I:  For URL {0} in application {1}, the following HTTP methods are uncovered, and not accessible: {2}
+UNCOVERED_HTTP_METHODS_FOUND.explanation=The deny-uncovered-http-methods element is specified in the web.xml file for the servlet, and there are HTTP methods for a URL pattern that are unprotected. These unprotected methods will not be accessible.
+UNCOVERED_HTTP_METHODS_FOUND.useraction=Ensure that all HTTP methods at all constrained URL patterns have the intended security protections.
+
+SEC_JACC_AUTHZ_FAILED=CWWKS9124A: Authorization by the JACC provider failed for user {0} while invoking {1} on {2}.
+SEC_JACC_AUTHZ_FAILED.explanation=The user does not have the necessary permission to access the resource. This authorization decision was made by the user-defined Java Authorization Contract for Containers (JACC) provider.  
+SEC_JACC_AUTHZ_FAILED.useraction=Contact your security administrator if this is unexpected. Your user must be mapped to one of the roles protecting the resource if access to the protected resource is required. You can configure this authorization through the user-defined Java Authorization Contract for Containers (JACC) provider.
+
+
+SEC_FORM_LOGOUTEXITPAGE_INVALID=CWWKS9125E: The URL provided on the custom logoutExitPage of the Form-Logout service can not be displayed, requestURL={0}, logoutExitPage={1}. The logout was successful and the default Form-Logout page was displayed.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.explanation=The Form-Logout service failed to successfully redirect to the page specified on the logoutExitPage servlet parameter. The specified URL is either an invalidly formed URL or the hostname is not specified on the com.ibm.websphere.security.logoutExitPageDomainList property.
+SEC_FORM_LOGOUTEXITPAGE_INVALID.useraction=Correct the URL specified on the logoutExitPage parameter.

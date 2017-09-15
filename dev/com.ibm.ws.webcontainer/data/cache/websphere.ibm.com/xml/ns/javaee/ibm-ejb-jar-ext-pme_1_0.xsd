@@ -1,0 +1,240 @@
+<xsd:schema
+	targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified"
+	attributeFormDefault="unqualified"
+	version="1.0">
+
+	<!-- ******************************************************* -->
+
+	<xsd:include schemaLocation="ibm-common-ext_1_0.xsd" />
+	<xsd:include schemaLocation="ibm-common-ext-pme_1_0.xsd" />
+
+	<!-- ******************************************************* -->
+
+	<xsd:element name="ejb-jar-ext-pme" type="ejb-jar-ext-pmeType">
+		<xsd:annotation>
+			<xsd:documentation>
+
+				The root of the ibm-ejb-jar-ext-pme deployment descriptor.
+
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="ejb-jar-ext-pmeType">
+		<xsd:sequence>
+			<xsd:element name="app-profiles" type="app-profileType" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="internationalization" type="internationalizationType" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="activity-sessions" type="activity-sessionType" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="compensation" type="compensationType" minOccurs="0" maxOccurs="1"/>
+		</xsd:sequence>
+		<xsd:attribute name="version" type="xsd:string" fixed="1.0" use="required" />
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="activity-sessionType">
+		<xsd:sequence>
+			<xsd:element name="ejb-activity-session"  type="ejb-activity-sessionType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="container-activity-session" type="container-activity-sessionType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="app-profileType">
+		<xsd:sequence>
+			<xsd:element name="ejb-module-profile" type="ejb-module-profileType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="defined-access-intent-policy" type="defined-access-intent-policyType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="run-as-task" type="run-as-taskType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="ejb-component-extension" type="ejb-component-extensionType" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="ejb-activity-sessionType">
+		<xsd:attribute name="ejb" type="xsd:string" use="required"/>
+		<xsd:attribute name="type" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="BEAN" />
+					<xsd:enumeration value="CONTAINER" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="container-activity-sessionType">
+		<xsd:sequence>
+			<xsd:element name="method" type="extendedMethodType" minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string"/>
+		<xsd:attribute name="type" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="NOT_SUPPORTED" />
+					<xsd:enumeration value="REQUIRED" />
+					<xsd:enumeration value="SUPPORTS" />
+					<xsd:enumeration value="REQUIRES_NEW" />
+					<xsd:enumeration value="MANDATORY" />
+					<xsd:enumeration value="NEVER" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="ejb-module-profileType">
+		<xsd:sequence>
+			<xsd:element name="applied-access-intent" type="applied-access-intentType" minOccurs="0" maxOccurs="unbounded"/>
+			<xsd:element name="task" type="taskType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="id" type="xsd:ID"/>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="ejb-component-extensionType">
+		<xsd:complexContent>
+			<xsd:extension base="component-extensionType">
+				<!-- In the model, the ejb name is mapped to the appropriate enterprise bean extension -->
+				<xsd:attribute name="ejb" type="xsd:string" use="required"/>
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="defined-access-intent-policyType">
+		<xsd:complexContent>
+			<xsd:extension base="access-intent-entryType">
+				<xsd:attribute name="name" type="xsd:string" use="required" />
+				<xsd:attribute name="description" type="xsd:string" />
+			</xsd:extension>
+		</xsd:complexContent>
+	</xsd:complexType>
+	
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="run-as-taskType">
+		<!-- Element task is only valid if type is RUN_AS_SPECIFIED_TASK -->
+		<xsd:sequence>
+			<xsd:element name="task" type="taskType" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="method" type="extendedMethodType" minOccurs="1" maxOccurs="unbounded"/>
+		</xsd:sequence>
+
+		<xsd:attribute name="name" type="xsd:string" />
+		<xsd:attribute name="description" type="xsd:string"/>
+
+		<xsd:attribute name="type" use="required">
+			<xsd:simpleType>
+				<xsd:restriction base="xsd:string">
+					<xsd:enumeration value="RUN_AS_CALLER_TASK" />
+					<xsd:enumeration value="RUN_AS_OWN_TASK" />
+					<xsd:enumeration value="RUN_AS_SPECIFIED_TASK" />
+				</xsd:restriction>
+			</xsd:simpleType>
+		</xsd:attribute>
+
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="internationalizationType">
+		<xsd:sequence>
+
+			<xsd:element name="application" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="ejb" type="nameType" minOccurs="0" maxOccurs="unbounded" />
+					</xsd:sequence>
+					<xsd:attribute name="id" type="xsd:ID" />
+				</xsd:complexType>
+			</xsd:element>
+			<xsd:choice minOccurs="0" maxOccurs="unbounded">
+				<xsd:element name="run-as-caller">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="method" type="extendedMethodType" minOccurs="0" maxOccurs="unbounded" />
+						</xsd:sequence>
+						<xsd:attribute name="description" type="xsd:string"/>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+	
+				<xsd:element name="run-as-server">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="method" type="extendedMethodType" minOccurs="0" maxOccurs="unbounded" />
+						</xsd:sequence>
+						<xsd:attribute name="description" type="xsd:string"/>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+	
+				<xsd:element name="run-as-specified">
+					<xsd:complexType>
+						<xsd:complexContent>
+							<xsd:extension base="i18n-run-as-specifiedType">
+								<xsd:sequence>
+									<xsd:element name="method" type="extendedMethodType" minOccurs="0" maxOccurs="unbounded" />
+								</xsd:sequence>
+							</xsd:extension>
+						</xsd:complexContent>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="compensationType">
+		<xsd:sequence>
+
+			<xsd:element name="method-policy" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="method" type="extendedMethodType" minOccurs="0" maxOccurs="unbounded"/>
+					</xsd:sequence>
+					<xsd:attribute name="type" type="compensation-attributeType" use="required"/>
+				</xsd:complexType>
+			</xsd:element>
+
+		<xsd:element name="bean-policy" minOccurs="0" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:sequence>
+						<xsd:element name="handler" minOccurs="0" maxOccurs="1">
+							<xsd:complexType>
+								<xsd:attribute name="class" type="xsd:string" use="required"/>
+							</xsd:complexType>
+						</xsd:element>
+						<xsd:element name="ejb" type="nameType" minOccurs="1" maxOccurs="unbounded"/>
+					</xsd:sequence>
+					<xsd:attribute name="type" type="compensation-attributeType" use="required"/>
+				</xsd:complexType>
+		</xsd:element>
+
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+
+</xsd:schema>

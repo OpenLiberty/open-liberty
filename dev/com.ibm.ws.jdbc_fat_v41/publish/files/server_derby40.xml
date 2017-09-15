@@ -1,0 +1,53 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <featureManager>
+      <feature>componenttest-1.0</feature>
+      <feature>servlet-3.0</feature>
+      <feature>localConnector-1.0</feature>
+      <feature>jdbc-4.1</feature>
+      <feature>jndi-1.0</feature>
+      <feature>jsp-2.2</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+
+    <application location="basicfat.war" >
+      <classloader commonLibraryRef="DerbyLib"/>
+    </application>
+    
+    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
+    <library id="DerbyLib">
+    	<fileset dir="${server.config.dir}/derby40" includes="*.jar"/>
+    </library>
+    
+    <dataSource id="ds1" jndiName="jdbc/${id}" jdbcDriverRef="DerbyEmbedded">
+    	<properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <dataSource id="ds2" jndiName="jdbc/${id}" jdbcDriverRef="DerbyEmbedded">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+
+    <dataSource id="ds3" jndiName="jdbc/${id}" jdbcDriverRef="DerbyEmbedded">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+        <connectionManager minPoolSize="0" purgePolicy="EntirePool"/>
+    </dataSource>
+    
+    <dataSource id="XAds" jndiName="jdbc/${id}" jdbcDriverRef="DerbyEmbedded" type="javax.sql.XADataSource">
+        <properties.derby.embedded databaseName="memory:ds1" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    
+    <javaPermission codebase="${server.config.dir}derby40/derby40.jar" className="java.security.AllPermission"/>
+    
+    
+    <variable name="onError" value="FAIL"/>
+</server>

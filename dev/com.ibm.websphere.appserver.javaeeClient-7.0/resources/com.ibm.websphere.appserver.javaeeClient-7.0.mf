@@ -1,0 +1,34 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: com.ibm.ws.ejb.portable; type=internal,
+ javax.xml.ws; type=internal
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: javaeeClient-7.0
+Subsystem-Content: com.ibm.websphere.appserver.ejbRemoteClient-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.cdi-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jndiClient-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jpa-2.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.beanValidation-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jaxwsClient-2.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.j2eeManagementClient-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jsonp-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javaMail-1.5; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jaxb-2.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appclient.appClient-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.managedBeans-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.wasJmsClient-2.0; type="osgi.subsystem.feature"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.javaeeClient-7.0
+Subsystem-ManifestVersion: 1
+Subsystem-Name: Java EE V7 Application Client
+Subsystem-SymbolicName: com.ibm.websphere.appserver.javaeeClient-7.0; visibility:=public; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

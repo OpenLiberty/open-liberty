@@ -1,0 +1,466 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema version="1.0" targetNamespace="http://jaxws.client.common.annuity.acme.wssvt.ibm.com/pojoimpl/" xmlns:tns="http://jaxws.client.common.annuity.acme.wssvt.ibm.com/pojoimpl/" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:ns1="http://bean.common.annuity.acme.wssvt.ibm.com/jaxbjpa/">
+
+  <xs:import namespace="http://bean.common.annuity.acme.wssvt.ibm.com/jaxbjpa/" schemaLocation="AnnuityMgmtSvcPojoJAXWSImpl_schema2.xsd"/>
+
+  <xs:element name="EntityAlreadyExistsException" type="tns:EntityAlreadyExistsException"/>
+
+  <xs:element name="EntityNotFoundException" type="tns:EntityNotFoundException"/>
+
+  <xs:element name="InvalidArgumentException" type="tns:InvalidArgumentException"/>
+
+  <xs:element name="ServerBusinessModuleException" type="tns:ServerBusinessModuleException"/>
+
+  <xs:element name="ServerPersistenceModuleException" type="tns:ServerPersistenceModuleException"/>
+
+  <xs:element name="createAnnuity" type="tns:createAnnuity"/>
+
+  <xs:element name="createAnnuityHolder" type="tns:createAnnuityHolder"/>
+
+  <xs:element name="createAnnuityHolderResponse" type="tns:createAnnuityHolderResponse"/>
+
+  <xs:element name="createAnnuityResponse" type="tns:createAnnuityResponse"/>
+
+  <xs:element name="createContact" type="tns:createContact"/>
+
+  <xs:element name="createContactResponse" type="tns:createContactResponse"/>
+
+  <xs:element name="createPayor" type="tns:createPayor"/>
+
+  <xs:element name="createPayorResponse" type="tns:createPayorResponse"/>
+
+  <xs:element name="createPayout" type="tns:createPayout"/>
+
+  <xs:element name="createPayoutResponse" type="tns:createPayoutResponse"/>
+
+  <xs:element name="deleteAnnuity" type="tns:deleteAnnuity"/>
+
+  <xs:element name="deleteAnnuityHolder" type="tns:deleteAnnuityHolder"/>
+
+  <xs:element name="deleteAnnuityHolderResponse" type="tns:deleteAnnuityHolderResponse"/>
+
+  <xs:element name="deleteAnnuityResponse" type="tns:deleteAnnuityResponse"/>
+
+  <xs:element name="deleteContact" type="tns:deleteContact"/>
+
+  <xs:element name="deleteContactResponse" type="tns:deleteContactResponse"/>
+
+  <xs:element name="deletePayor" type="tns:deletePayor"/>
+
+  <xs:element name="deletePayorResponse" type="tns:deletePayorResponse"/>
+
+  <xs:element name="deletePayout" type="tns:deletePayout"/>
+
+  <xs:element name="deletePayoutResponse" type="tns:deletePayoutResponse"/>
+
+  <xs:element name="deleteRider" type="tns:deleteRider"/>
+
+  <xs:element name="deleteRiderResponse" type="tns:deleteRiderResponse"/>
+
+  <xs:element name="findAnnuityById" type="tns:findAnnuityById"/>
+
+  <xs:element name="findAnnuityByIdResponse" type="tns:findAnnuityByIdResponse"/>
+
+  <xs:element name="findAnnuityHolder" type="tns:findAnnuityHolder"/>
+
+  <xs:element name="findAnnuityHolderResponse" type="tns:findAnnuityHolderResponse"/>
+
+  <xs:element name="findContactById" type="tns:findContactById"/>
+
+  <xs:element name="findContactByIdResponse" type="tns:findContactByIdResponse"/>
+
+  <xs:element name="findHolderAnnuities" type="tns:findHolderAnnuities"/>
+
+  <xs:element name="findHolderAnnuitiesResponse" type="tns:findHolderAnnuitiesResponse"/>
+
+  <xs:element name="findHolderById" type="tns:findHolderById"/>
+
+  <xs:element name="findHolderByIdResponse" type="tns:findHolderByIdResponse"/>
+
+  <xs:element name="findPayorAnnuities" type="tns:findPayorAnnuities"/>
+
+  <xs:element name="findPayorAnnuitiesResponse" type="tns:findPayorAnnuitiesResponse"/>
+
+  <xs:element name="findPayorById" type="tns:findPayorById"/>
+
+  <xs:element name="findPayorByIdResponse" type="tns:findPayorByIdResponse"/>
+
+  <xs:element name="findPayoutById" type="tns:findPayoutById"/>
+
+  <xs:element name="findPayoutByIdResponse" type="tns:findPayoutByIdResponse"/>
+
+  <xs:element name="findRiderById" type="tns:findRiderById"/>
+
+  <xs:element name="findRiderByIdResponse" type="tns:findRiderByIdResponse"/>
+
+  <xs:element name="updateAnnuity" type="tns:updateAnnuity"/>
+
+  <xs:element name="updateAnnuityHolder" type="tns:updateAnnuityHolder"/>
+
+  <xs:element name="updateAnnuityHolderResponse" type="tns:updateAnnuityHolderResponse"/>
+
+  <xs:element name="updateAnnuityResponse" type="tns:updateAnnuityResponse"/>
+
+  <xs:element name="updateContact" type="tns:updateContact"/>
+
+  <xs:element name="updateContactResponse" type="tns:updateContactResponse"/>
+
+  <xs:element name="updatePayor" type="tns:updatePayor"/>
+
+  <xs:element name="updatePayorResponse" type="tns:updatePayorResponse"/>
+
+  <xs:element name="updatePayout" type="tns:updatePayout"/>
+
+  <xs:element name="updatePayoutResponse" type="tns:updatePayoutResponse"/>
+
+  <xs:complexType name="updateAnnuityHolder">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateAnnuityHolderResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ServerBusinessModuleException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="ServerPersistenceModuleException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="InvalidArgumentException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateAnnuity">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateAnnuityResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deletePayout">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:PayoutValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deletePayoutResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findPayoutById">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:PayoutValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findPayoutByIdResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:PayoutValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EntityNotFoundException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findRiderById">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Rider" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findRiderByIdResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:Rider" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findAnnuityById">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findAnnuityByIdResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteContact">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Contact" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteContactResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findHolderById">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findHolderByIdResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createAnnuityHolder">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createAnnuityHolderResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="EntityAlreadyExistsException">
+    <xs:sequence>
+      <xs:element name="message" type="xs:string" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createPayor">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createPayorResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deletePayor">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deletePayorResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="findPayorAnnuities">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findPayorAnnuitiesResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityValueObject" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findContactById">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Contact" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findContactByIdResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:Contact" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteAnnuityHolder">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteAnnuityHolderResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="createAnnuity">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createAnnuityResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findHolderAnnuities">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findHolderAnnuitiesResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityValueObject" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateContact">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Contact" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updateContactResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:Contact" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findAnnuityHolder">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findAnnuityHolderResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:AnnuityHolder" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteAnnuity">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:AnnuityValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteAnnuityResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="updatePayout">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:PayoutValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updatePayoutResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:PayoutValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteRider">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Rider" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="deleteRiderResponse">
+    <xs:sequence/>
+  </xs:complexType>
+
+  <xs:complexType name="updatePayor">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="updatePayorResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createPayout">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:PayoutValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createPayoutResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:PayoutValueObject" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createContact">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Contact" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="createContactResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:Contact" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findPayorById">
+    <xs:sequence>
+      <xs:element name="arg0" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="findPayorByIdResponse">
+    <xs:sequence>
+      <xs:element name="return" type="ns1:Payor" minOccurs="0"/>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:simpleType name="annuityHolderCategory">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="METAL"/>
+      <xs:enumeration value="BRONZE"/>
+      <xs:enumeration value="SILVER"/>
+      <xs:enumeration value="GOLD"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="contactType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="HOME"/>
+      <xs:enumeration value="BUSINESS"/>
+      <xs:enumeration value="OTHER"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="annuityType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="BASIC"/>
+      <xs:enumeration value="EQUITY"/>
+      <xs:enumeration value="FIXED"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:simpleType name="riderType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="REPLACE"/>
+      <xs:enumeration value="OVERRIDE"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

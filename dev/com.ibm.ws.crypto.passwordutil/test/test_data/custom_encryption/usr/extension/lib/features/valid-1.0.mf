@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+IBM-Feature-Version: 2
+IBM-ShortName: valid-1.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Version: 1.0.0
+Subsystem-ManifestVersion: 1.0
+Subsystem-SymbolicName: valid-1.0;visibility:=public
+Subsystem-Content: 
+ com.ibm.ws.crypto.util.custom; version="[1,1.0.100)"; start-phase:="SERVICE_EARLY",
+ valid.jar; location:="bin/tools/extensions/ws-customPasswordEncryption/valid.jar"; type=file
+Subsystem-Description: %description
+

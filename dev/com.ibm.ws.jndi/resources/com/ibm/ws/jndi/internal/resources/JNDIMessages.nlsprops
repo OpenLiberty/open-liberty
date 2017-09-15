@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2011, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jndi/resources/com/ibm/ws/jndi/internal/resources/JNDIMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKN
+#COMPONENTNAMEFOR CWWKN Naming Services
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote ').
+
+# Message numbers CWWKN0nnn are reserved for this file.
+#
+# CWWKN messages are also defined in the com.ibm.ws.jndi.url.contexts project.
+# CWWKN00nn: com.ibm.ws.jndi.internal.resources.JNDIMessages
+# CWWKN01nn: com.ibm.ws.jndi.internal.url.contexts.resources.JNDIMessages
+# CWWKN02nn: com.ibm.ws.jndi.iiop.Messages
+# -------------------------------------------------------------------------------------------------
+
+null.name=The name must not be null.
+empty.name=The name must not be empty.
+
+jndi.entry.bad.name=CWWKN0001W: The name [{0}] could not be parsed, failing with exception [{1}].
+jndi.entry.bad.name.explanation=The name does not conform to the required syntax.  See the exception for details.
+jndi.entry.bad.name.useraction=Fix the name to conform to the required syntax.
+
+jndi.entry.bad.value=CWWKN0002W: The value [{0}] could not be parsed as type [{1}].
+jndi.entry.bad.value.explanation=The provided value did not conform to its stated type.
+jndi.entry.bad.value.useraction=Either change the value to suit the type or change the type to suit the value.
+
+jndi.entry.bad.type=CWWKN0003W: The JNDI entry could not be created because it is configured with an unrecognised type [{0}].
+# DO NOT TRANSLATE: auto, boolean, byte, char, double, float, int, long, short, string
+jndi.entry.bad.type.explanation=The type needs to be an expected value.  Valid values are auto, boolean, byte, char, double, float, int, long, short, or string.
+jndi.entry.bad.type.useraction=Choose a valid type specification.
+
+jndi.entry.bind.failed=CWWKN0004W: The call to bind value [{0}] to name [{1}] failed with exception [{3}]
+jndi.entry.bind.failed.explanation=The bind operation could not proceed. See the exception for details.
+jndi.entry.bind.failed.useraction=Check whether something else is bound at the same or an intermediate name and resolve the conflict.
+
+jndi.osgi.bind.failed=CWWKN0005W: The automatic binding of a registry object to name {0} failed with exception {1}.
+jndi.osgi.bind.failed.explanation=Something prevented the registry object being bound to the name.
+jndi.osgi.bind.failed.useraction=Examine the exception to determine the cause of the failure and redress it.
+
+jndi.objectfactory.no.class=CWWKN0006E: Cannot find the class to create ObjectFactory {0} for class {1}.
+jndi.objectfactory.no.class.explanation=The specified ObjectFactory cannot be created, because the class cannot be found.
+jndi.objectfactory.no.class.useraction=Ensure that {0} is available in the WebSphere Application Server runtime environment.
+
+jndi.objectfactory.create.failed=CWWKN0007E: Cannot create ObjectFactory {0} for class {1}.
+jndi.objectfactory.create.failed.explanation=See the exception for details.
+jndi.objectfactory.create.failed.useraction=See the exception for details.
+
+jndi.servicereference.failed=CWWKN0008E: An object could not be obtained for name {0}.
+jndi.servicereference.failed.explanation=An error occurred while obtaining an object for the specified name.
+jndi.servicereference.failed.useraction=See earlier exceptions for details.
+
+jndi.objectfactory.create.exception=CWWKN0009E: Cannot create ObjectFactory for class {0}. The exception was: {1}
+jndi.objectfactory.create.exception.explanation=See the exception for details.
+jndi.objectfactory.create.exception.useraction=See the exception for details.
+
+jndi.url.create.exception=CWWKN0010E: The system cannot create the java.net.URL value from the {0} string. This URL is configured to be bound at the {1} JNDI name. The following exception  was received: {2}
+jndi.url.create.exception.explanation=The URL string that is specified in the configuration for the JNDI name is not valid and cannot be bound into the JNDI namespace.
+jndi.url.create.exception.useraction=Specify a valid value for the URL string. The exception error provides details regarding the invalid JNDI name.
+
+jndi.decode.failed=CWWKN0011E: An error occurred while decoding the {0} password. Verify that the password is encoded correctly. The exception was: {1}.
+jndi.decode.failed.explanation=The password is not encoded correctly.
+jndi.decode.failed.useraction=Verify that the password is encoded correctly. See the exception for details.

@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" localization="OSGI-INF/l10n/library" xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0">
+
+  <OCD name="%library.service.name" description="%library.service.desc"
+       id="com.ibm.ws.classloading.sharedlibrary"
+       ibm:supportExtensions="true" ibm:alias="library">
+    
+     <AD name="%library.name" description="%library.name.desc"  
+        id="name" 
+        required="false" 
+        type="String"      
+    />
+    
+     <AD name="internal" description="internal use only"  
+        id="id" 
+        required="false" 
+        type="String"
+        default="${service.pid}"      
+    />
+    
+     <AD name="%library.description" description="%library.description.desc"  
+        id="description" 
+        required="false" 
+        type="String"     
+    />
+    
+     <AD name="%library.fileset.ref" description="%library.fileset.ref.desc"  
+        id="filesetRef" 
+        required="false" 
+        type="String"     
+        cardinality="2147483647"   
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.kernel.metatype.helper.fileset"
+    />
+    
+     <AD name="%library.folder.ref" description="%library.folder.ref.desc"  
+        id="folderRef" 
+        required="false" 
+        type="String"     
+        cardinality="2147483647"   
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.classloading.sharedlibrary.folder"
+    />
+    
+      <AD name="%library.file.ref" description="%library.file.ref.desc"  
+        id="fileRef" 
+        required="false" 
+        type="String"     
+        cardinality="2147483647"   
+        ibm:type="pid"
+        ibm:reference="com.ibm.ws.classloading.sharedlibrary.file"
+    />
+    
+     <AD name="%library.apis" description="%library.apis.desc"
+        id="apiTypeVisibility"
+        required="false"
+        type="String"
+        default="spec\,ibm-api\,api\,stable">
+    </AD>
+
+    <!-- Revisit this in the first fixpack to give proper multi-choice support with defaults.
+    
+    <AD name="%library.apis" description="%library.apis.desc"
+        id="apiTypeVisibility"
+        required="false"
+        type="String"
+        default="spec,ibm-api,api"
+        cardinality="4">
+      <Option label="%library.api.spec" value="spec" description="%library.api.spec.desc"/>
+      <Option label="%library.api.ibmapi" value="ibm-api" description="%library.api.ibmapi.desc"/>
+      <Option label="%library.api.api" value="api" description="%library.api.api.desc"/>
+      <Option label="%library.api.thirdparty" value="third-party" description="%library.api.thirdparty.desc"/>
+    </AD> -->    
+    
+  </OCD>
+  
+  <Designate factoryPid="com.ibm.ws.classloading.sharedlibrary">
+      <Object ocdref="com.ibm.ws.classloading.sharedlibrary"/>
+  </Designate>
+  
+  <OCD name="%folder.name" description="%folder.name.desc"
+       id="com.ibm.ws.classloading.sharedlibrary.folder">
+      
+     <AD name="%folder.dir" description="%folder.dir.desc"  
+        id="dir" 
+        required="true" 
+        type="String" 
+        ibm:type="location(dir)"  
+    />
+    
+  </OCD>
+  
+  <Designate factoryPid="com.ibm.ws.classloading.sharedlibrary.folder">
+      <Object ocdref="com.ibm.ws.classloading.sharedlibrary.folder"/>
+  </Designate>
+  
+  <OCD name="%file" description="%file.desc"
+       id="com.ibm.ws.classloading.sharedlibrary.file">
+       
+     <AD name="%file.name" description="%file.name.desc"  
+        id="name" 
+        required="true" 
+        type="String"  
+        ibm:type="location(file)"    
+    />
+    
+  </OCD>
+  
+  <Designate factoryPid="com.ibm.ws.classloading.sharedlibrary.file">
+      <Object ocdref="com.ibm.ws.classloading.sharedlibrary.file"/>
+  </Designate>
+  
+</metatype:MetaData>

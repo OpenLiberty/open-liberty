@@ -1,0 +1,8 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: Apache commons discovery
+Bundle-SymbolicName: com.ibm.ws.org.apache.commons.discovery.0.2
+Bundle-Description: Apache common discovery, version 0.2
+
+Export-Package: org.apache.commons.discovery.*;version="0.2"

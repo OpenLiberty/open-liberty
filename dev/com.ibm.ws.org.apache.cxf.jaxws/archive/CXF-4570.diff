@@ -1,0 +1,95 @@
+Index: AttachmentUtil.java
+===================================================================
+--- AttachmentUtil.java	(revision 1399300)
++++ AttachmentUtil.java	(revision 1399301)
+@@ -186,10 +186,7 @@
+         return dataHandlers == null ? new LinkedHashMap<String, DataHandler>() : dataHandlers;
+     }
+     
+-    public static Attachment createAttachment(InputStream stream, InternetHeaders headers) 
+-        throws IOException {
+-     
+-        String id = headers.getHeader("Content-ID", null);
++    public static String cleanContentId(String id) {
+         if (id != null) {
+             if (id.startsWith("<")) {
+                 // strip <>
+@@ -200,14 +197,25 @@
+                 id = id.substring(4);
+             }
+             // urldecode. Is this bad even without cid:? What does decode do with malformed %-signs, anyhow?
+-            id = URLDecoder.decode(id, "UTF-8");
++            try {
++                id = URLDecoder.decode(id, "UTF-8");
++            } catch (UnsupportedEncodingException e) {
++                //ignore, keep id as is
++            }
+         }
+         if (id == null) {
+             //no Content-ID, set cxf default ID
+             id = "root.message@cxf.apache.org";
+         }
++        return id;
++    }
++    
++    
++    public static Attachment createAttachment(InputStream stream, InternetHeaders headers) 
++        throws IOException {
++     
++        String id = cleanContentId(headers.getHeader("Content-ID", null));
+ 
+-
+         AttachmentImpl att = new AttachmentImpl(id);
+         
+         final String ct = headers.getHeader("Content-Type", null);
+Index: SAAJInInterceptor.java
+===================================================================
+--- SAAJInInterceptor.java	(revision 1399300)
++++ SAAJInInterceptor.java	(revision 1399301)
+@@ -54,6 +54,7 @@
+ import org.apache.cxf.binding.soap.interceptor.ReadHeadersInterceptor;
+ import org.apache.cxf.common.i18n.BundleUtils;
+ import org.apache.cxf.common.injection.NoJSR250Annotations;
++import org.apache.cxf.common.util.StringUtils;
+ import org.apache.cxf.databinding.DataBinding;
+ import org.apache.cxf.headers.Header;
+ import org.apache.cxf.headers.HeaderManager;
+@@ -203,13 +204,15 @@
+                         }
+                     }
+                     AttachmentPart ap = soapMessage.createAttachmentPart(a.getDataHandler());
+-                    ap.setContentId(a.getId());
+                     Iterator<String> i = a.getHeaderNames();
+                     while (i != null && i.hasNext()) {
+                         String h = i.next();
+                         String val = a.getHeader(h);
+                         ap.addMimeHeader(h, val);
+                     }
++                    if (StringUtils.isEmpty(ap.getContentId())) {
++                        ap.setContentId(a.getId());
++                    }
+                     soapMessage.addAttachmentPart(ap);
+                 }
+             }
+Index: SAAJOutInterceptor.java
+===================================================================
+--- SAAJOutInterceptor.java	(revision 1399300)
++++ SAAJOutInterceptor.java	(revision 1399301)
+@@ -40,6 +40,7 @@
+ 
+ 
+ import org.apache.cxf.attachment.AttachmentImpl;
++import org.apache.cxf.attachment.AttachmentUtil;
+ import org.apache.cxf.binding.soap.Soap11;
+ import org.apache.cxf.binding.soap.Soap12;
+ import org.apache.cxf.binding.soap.SoapFault;
+@@ -187,7 +188,8 @@
+                     Iterator<AttachmentPart> it = CastUtils.cast(soapMessage.getAttachments());
+                     while (it.hasNext()) {
+                         AttachmentPart part = it.next();
+-                        AttachmentImpl att = new AttachmentImpl(part.getContentId());
++                        String id = AttachmentUtil.cleanContentId(part.getContentId());
++                        AttachmentImpl att = new AttachmentImpl(id);
+                         try {
+                             att.setDataHandler(part.getDataHandler());
+                         } catch (SOAPException e) {

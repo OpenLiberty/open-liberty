@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Begin Copyright
+
+  Licensed Materials - Property of IBM
+
+  Virtual Member Manager
+
+  (C) Copyright IBM Corp. 2005 All Rights Reserved.
+
+  US Government Users Restricted Rights - Use, duplication or
+  disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
+
+  %Z% %W% %I% %E% %U%
+
+  End Copyright
+-->
+<xsd:schema targetNamespace="http://www.ibm.com/websphere/wim" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns="http://www.ibm.com/websphere/wim" ecore:nsPrefix="wim" ecore:package="com.ibm.websphere.wim.model"  version="1.0" elementFormDefault="qualified" attributeFormDefault="unqualified" xmlns:jaxb="http://java.sun.com/xml/ns/jaxb" xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc" jaxb:extensionBindingPrefixes="xjc" jaxb:version="1.0"  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xsd:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
+  <xs:annotation>     
+  	<xs:appinfo>
+  		<jaxb:globalBindings generateIsSetMethod="true">
+  		</jaxb:globalBindings>
+  	</xs:appinfo> 
+  </xs:annotation>  
+  
+  <xsd:include schemaLocation="wimdomain.xsd"/>
+
+  <xsd:element name="Root" type="Root"/>
+  <xsd:complexType name="Root">
+    <xsd:sequence>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="contexts" type="Context"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="entities" type="Entity"/>
+      <xsd:element maxOccurs="unbounded" minOccurs="0" name="controls" type="Control"/>
+    </xsd:sequence>
+    <xsd:attribute name="validated" type="xsd:boolean" default="false"/>
+  </xsd:complexType>
+
+  <!-- Super type of all controls. Controls are used to specify request information. -->
+  <xsd:complexType name="Control" abstract="true">
+    <xsd:sequence/>
+  </xsd:complexType>
+
+  <xsd:complexType name="ExternalNameControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="CheckGroupMembershipControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:attribute name="level" type="xsd:int" default="1" />
+        <xsd:attribute name="inGroup" type="xsd:boolean" default="false" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- The control specifing whether or not deleting descendants if the entity to be delete has descendants -->
+  <xsd:complexType name="DeleteControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:attribute name="deleteDescendants" type="xsd:boolean" default="false"/>
+        <xsd:attribute name="returnDeleted" type="xsd:boolean" default="false"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+	
+  <!-- The control specifing the information used for paged search -->
+  <xsd:complexType name="PageControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:attribute name="size" type="xsd:int" default="0"/>
+        <xsd:attribute name="cookie" type="xsd:hexBinary"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- The control containing the returned information from paged/sorted search -->
+  <xsd:complexType name="PageResponseControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:attribute name="cookie" type="xsd:hexBinary"/>
+        <xsd:attribute name="totalSize" type="xsd:int" default="0"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+        
+  <!-- Specify the attribute names which can be used for returning or sorting -->
+  <xsd:complexType name="PropertyControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:sequence>
+          <xsd:element name="properties" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="contextProperties" minOccurs="0" maxOccurs="unbounded">
+            <xsd:complexType>
+              <xsd:simpleContent>
+                <xsd:extension base="xsd:string">
+                  <xsd:attribute ref="xml:lang" />
+                </xsd:extension>
+              </xsd:simpleContent>
+            </xsd:complexType>
+          </xsd:element>
+					
+          <!--xsd:element ref="contextProperties" maxOccurs="unbounded"/-->
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+   
+  <!-- Specify the information used for sorted search -->
+  <xsd:complexType name="SortKeyType">
+    <xsd:sequence>
+      <xsd:element name="propertyName" type="xsd:string"/>
+      <xsd:element name="ascendingOrder" type="xsd:boolean" default="true"/>
+    </xsd:sequence>
+  </xsd:complexType>
+	
+  <!-- Specify the information used for sorted search -->
+  <xsd:complexType name="SortControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:sequence>
+          <xsd:element name="sortKeys" type="SortKeyType" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element name="locale" type="xsd:language" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Specify the information used for base search -->
+  <xsd:complexType name="SearchControl">
+    <xsd:complexContent>
+      <xsd:extension base="PropertyControl">
+        <xsd:sequence>
+          <xsd:element name="searchBases" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="countLimit" type="xsd:int" default="0"/>
+        <xsd:attribute name="searchLimit" type="xsd:int" default="0"/>
+        <xsd:attribute name="timeLimit" type="xsd:int" default="0"/>
+        <xsd:attribute name="expression" type="xsd:string"/>
+        <xsd:attribute name="returnSubType" type="xsd:boolean" default="true"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <!-- Specify the information used for search response -->
+  <xsd:complexType name="SearchResponseControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:attribute name="hasMoreResults" type="xsd:boolean"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+	
+  <!-- Specify the hierachy information used in ancestor, descendant, group member and group membership controls.-->
+  <xsd:complexType name="HierarchyControl">
+    <xsd:complexContent>
+      <xsd:extension base="SearchControl">
+        <xsd:attribute name="level" type="xsd:int" default="1" />
+        <xsd:attribute name="treeView" type="xsd:boolean" default="false" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="AncestorControl">
+    <xsd:complexContent>
+      <xsd:extension base="HierarchyControl">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="DescendantControl">
+    <xsd:complexContent>
+      <xsd:extension base="HierarchyControl">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="GroupControl">
+    <xsd:complexContent>
+      <xsd:extension base="HierarchyControl">
+        <xsd:attribute name="modifyMode" type="xsd:int" default="1" />
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="GroupMembershipControl">
+    <xsd:complexContent>
+      <xsd:extension base="GroupControl">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="GroupMemberControl">
+    <xsd:complexContent>
+      <xsd:extension base="GroupControl">
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+ 
+  <!-- LoginControl -->
+  <xsd:complexType name="LoginControl">
+    <xsd:complexContent>
+      <xsd:extension base="SearchControl">
+        <xsd:sequence>
+          <xsd:element name="mappedProperties" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+
+ 	
+
+  <xsd:complexType name="Context">
+    <xsd:sequence>
+      <xsd:element maxOccurs="1" minOccurs="1" name="key" type="xsd:string"/>
+      <xsd:element maxOccurs="1" minOccurs="1" name="value" type="xsd:anySimpleType"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ChangeControl">
+  	<xsd:complexContent>
+  		<xsd:extension base="SearchControl">
+  			<xsd:sequence>
+  				<xsd:element name="checkPoint" type="CheckPointType"
+  					minOccurs="0" maxOccurs="unbounded">
+  				</xsd:element>
+  				<xsd:element name="changeTypes" type="xsd:token" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+  			</xsd:sequence>
+  			
+  		</xsd:extension>
+  	</xsd:complexContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ChangeResponseControl">
+  	<xsd:complexContent>
+  		<xsd:extension base="SearchResponseControl">
+  			<xsd:sequence>
+  				<xsd:element name="checkPoint" type="CheckPointType" maxOccurs="unbounded" minOccurs="0"></xsd:element>
+  			</xsd:sequence>
+  		</xsd:extension>
+  	</xsd:complexContent>
+  </xsd:complexType>
+
+<!-- Specify the information used for clear cache -->
+  <xsd:complexType name="CacheControl">
+    <xsd:complexContent>
+      <xsd:extension base="Control">
+        <xsd:sequence>
+          <xsd:element name="mode" type="xsd:string" />
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>  
+
+ </xsd:schema>

@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.client/resources/com/ibm/ws/security/client/internal/resources/SecurityClientMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service for Client
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1167 - CWWKS1199
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE=CWWKS1167E: The jaasLoginContextEntry {0} has no login modules specified in the loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.explanation=The jassLoginContextEntry has no login modules specified in the loginModuleRef.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_NO_LOGIN_MODULE.useraction=Make sure that there is at least one login module specified in the loginModuleRef.  
+
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF=CWWKS1168W: The loginModuleRef {0} has no JAAS custom loginModule defined.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.explanation=The authentication did not succeed because there is no login module defined for the login module reference.
+JAAS_LOGIN_MODULE_NOT_FOUND_FOR_LOGIN_MODULE_REF.useraction=Ensure the loginModuleRef element has a configured loginModule property.
+
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME=CWWKS1169W: Due to the duplicate name, the jaasLoginContextEntry name {0}, which is defined by the id {1}, is overwritten by the value of the id {2}. 
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.explanation=The same name is defined by more than one jassLoginContextEntry. As a result, the original value is overwritten by another value.
+JAAS_LOGIN_CONTEXT_ENTRY_HAS_DUPLICATE_NAME.useraction=Make sure that every jaasLoginContextEntry has a unique id and name.
+
+JAAS_LOGIN_NO_CALLBACK_HANDLER=CWWKS1170E: The login on the client application failed because the CallbackHandler implementation is null. Ensure a valid CallbackHandler implementation is specified either in the LoginContext constructor or in the client application's deployment descriptor. 
+JAAS_LOGIN_NO_CALLBACK_HANDLER.explanation=The login on the client application failed because the class implementing the CallbackHandler interface is null. Because there is no CallbackHandler, there is no way to gather credentials for a user that wants to log in. Ensure a valid CallbackHandler implementation is specified either in the LoginContext constructor or in the client application's deployment descriptor.
+JAAS_LOGIN_NO_CALLBACK_HANDLER.useraction=Ensure a valid CallbackHandler implementation is specified either as an argument to the LoginContext constructor or in the client application's deployment descriptor.
+
+JAAS_LOGIN_MISSING_CREDENTIALS=CWWKS1171E: The login on the client application failed because the user name or password is null. Ensure the CallbackHandler implementation is gathering the necessary credentials. 
+JAAS_LOGIN_MISSING_CREDENTIALS.explanation=The login on the client application failed because the user name or password is null. Ensure the CallbackHandler implementation is gathering the necessary credentials. The CallbackHandler can be specified either in the LoginContext constructor or in the client application's deployment descriptor.
+JAAS_LOGIN_MISSING_CREDENTIALS.useraction=Ensure the CallbackHandler implementation is gathering the user name and password.
+
+JAAS_LOGIN_UNEXPECTED_EXCEPTION=CWWKS1172E: The login on the client application failed because of an unexpected exception. Review the logs to understand the cause of the exception. The exception is: {0}. 
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.explanation=The login on the client application failed because of an unexpected exception. Review the logs and FFDC entries to understand and correct the cause of the exception.
+JAAS_LOGIN_UNEXPECTED_EXCEPTION.useraction=Review the logs and FFDC entries to understand and correct the cause of the exception.

@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.7.1
+Created-By: 2.4 (IBM Corporation)
+Specification-Title: ServletContainerInitializerAbsoluteNoOthers.war
+Specification-Version: 1.0
+Specification-Vendor: IBM Corp.
+Implementation-Title: ServletContainerInitializerAbsoluteNoOthers.war
+Implementation-Version: 1.0
+Implementation-Vendor: IBM Corp.
+Class-Path: 
+

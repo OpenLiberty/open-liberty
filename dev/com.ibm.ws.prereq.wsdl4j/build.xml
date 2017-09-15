@@ -1,0 +1,55 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.prereq.wsdl4j" default="build">
+	<import file="../ant_build/public_imports/standard_imports.xml" />
+    <property name="bundle.version" value="1.0"/>   
+    
+   	<target name="package" depends="package.package">
+		<echo>Creating build/dev/api/spec/com.ibm.websphere.prereq.wsdl4j.api_1.0.${micro.version}.jar ...</echo>
+
+		<!-- Extract the MANIFEST.MF from com.ibm.ws.prereq.wsdl4j.1.6.2_1.0.x.jar to build the eclipse-compile bundle -->
+		<mkdir dir="build/tp-tmp" />
+		<unzip src="build/lib/${output.jar}" dest="build/tp-tmp">
+			<patternset>
+				<include name="META-INF/MANIFEST.MF" />
+			</patternset>
+		</unzip>
+
+		<!-- Remove the Import-Package block from the MANIFEST.MF -->
+		<manifest file="build/tp-tmp/META-INF/MANIFEST.MF" mode="update">
+			<attribute name="Import-Package" value="removed" />
+			<attribute name="Export-Package" value="replace" />
+			<attribute name="Bundle-Activator" value="removed" />
+			<attribute name="Bundle-SymbolicName" value="com.ibm.websphere.prereq.wsdl4j.api" />
+		</manifest>
+
+		<replace file="build/tp-tmp/META-INF/MANIFEST.MF">
+			<replacetoken><![CDATA[Import-Package: removed]]></replacetoken>
+			<replacevalue><![CDATA[ ]]></replacevalue>
+		</replace>
+
+		<replace file="build/tp-tmp/META-INF/MANIFEST.MF">
+			<replacetoken><![CDATA[Export-Package: replace]]></replacetoken>
+			<replacevalue><![CDATA[Export-Package: com.ibm.wsdl.extensions.http,com.ibm.wsdl.extensions.lightweightschema,com.ibm.wsdl.extensions.mime,com.ibm.wsdl.extensions.schema,com.ibm.wsdl.extensions.soap,com.ibm.wsdl.extensions.soap12,com.ibm.wsdl.extensions,com.ibm.wsdl.factory,com.ibm.wsdl.spi.extensions.lightweightschema,com.ibm.wsdl.spi.extensions.soap12,com.ibm.wsdl.spi.util.xml,com.ibm.wsdl.spi,com.ibm.wsdl.xml,com.ibm.wsdl]]></replacevalue>
+		</replace>
+
+		<replace file="build/tp-tmp/META-INF/MANIFEST.MF">
+			<replacetoken><![CDATA[Bundle-Activator: removed]]></replacetoken>
+			<replacevalue><![CDATA[ ]]></replacevalue>
+		</replace>
+
+		<mkdir dir="build/dev/api/spec" />
+		<jar destfile="build/dev/api/spec/com.ibm.websphere.prereq.wsdl4j.api_1.0.${micro.version}.jar" basedir="build/tp-tmp" excludes="**/*" manifest="build/tp-tmp/META-INF/MANIFEST.MF">
+		</jar>
+		<delete dir="build/tp-tmp" />
+	</target>
+    
+</project>

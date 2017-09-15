@@ -1,0 +1,185 @@
+###############################################################################
+# Copyright (c) 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+briefUsage=\
+Usage: java [JVM options] -javaagent:bin/tools/ws-javaagent.jar \\        \n\
+\t-jar bin/tools/ws-server.jar serverName [actions] [options]  
+scriptUsage=\
+Usage: {0} action serverName [options]
+
+use.actions=Actions:
+use.options=Options:
+use.jvmarg=JVM options:
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# ServerName
+processName.key=\
+\ \ \ \ serverName
+processName.desc=\
+\tA locally unique name for the server; the name can be constructed    \n\
+\tusing Unicode alphanumeric characters (for example, A-Za-z0-9), the  \n\
+\tunderscore (_), dash (-), plus (+) and period (.). A server name     \n\
+\tcannot begin with a dash (-) or period (.).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# JavaAgent 
+javaAgent.key=\
+\ \ \ \ -javaagent:bin/tools/ws-javaagent.jar
+javaAgent.desc=\
+\tThis is a JVM option used to specify an agent for instrumentation.   \n\
+\tThe runtime uses instrumentation for gathering trace and other debug \n\
+\tinformation. The bootstrap-agent.jar is be in the same directory as  \n\
+\tthe jar used to launch the runtime.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+# Actions: create, stop, version, package, dump
+action-key.create=\
+\ \ \ \ --create
+action-desc.create=\
+\tCreate a new server if the specified server does not exist. The      \n\
+\t--template option can be used to specify a template to use when      \n\
+\tcreating a new server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.list=\
+\ \ \ \ --list
+action-desc.list=\
+\tList the Liberty profile application servers that are defined.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.start=\
+\ \ \ \ --start
+action-desc.start=\
+\tStart the named server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.run=\
+\ \ \ \ --run
+action-desc.run=\
+\tRun the named server in the console foreground.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.debug=\
+\ \ \ \ --debug
+action-desc.debug=\
+\tRun the named server in the console foreground after a debugger      \n\
+\tconnects to the debug port (default: 7777).
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.status=\
+\ \ \ \ --status
+action-desc.status=\
+\tCheck the status of the named server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.stop=\
+\ \ \ \ --stop
+action-desc.stop=\
+\tStop the running instance of the named server.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.version=\
+\ \ \ \ --version
+action-desc.version=\
+\tShow server version information and exit.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.package=\
+\ \ \ \ --package
+action-desc.package=\
+\tPackage a server to an archive. The --archive option can be used.    \n\
+\tThe --include option can be used with values "all", "usr", "minify", \n\
+\t"wlp", "runnable", "all,runnable", and "minify,runnable". The values \n\
+\t"runnable" and "all,runnable" are equivalent. The "runnable" value   \n\
+\tworks with "jar" type archives only.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.dump=\
+\ \ \ \ --dump
+action-desc.dump=\
+\tDump diagnostic information from the server into an archive. The     \n\
+\t--archive option can be used.  The --include option can be used with \n\
+\tthe "heap", "system" and "thread" values.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.javadump=\
+\ \ \ \ --javadump
+action-desc.javadump=\
+\tDump diagnostic information from the server JVM. The --include       \n\
+\toption can be used with the "heap" and "system" values.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.help=\
+\ \ \ \ --help
+action-desc.help=\
+\tPrint help information.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.pause=\
+\ \ \ \ --pause
+action-desc.pause=\
+\tPause all the components in the server that can be paused. You can   \n\
+\tpause a subset of the components by specifying the components on the \n\
+\t--target option.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+action-key.resume=\
+\ \ \ \ --resume
+action-desc.resume=\
+\tResume all paused components in the server. You can specify the      \n\
+\t--target option to resume specific paused components.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.clean=\
+\ \ \ \ --clean
+option-desc.clean=\
+\tClean all cached information related to this server instance.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.archive=\
+\ \ \ \ --archive="path to the target archive file"
+option-desc.archive=\
+\tSpecify the archive target to be generated by the package or dump    \n\
+\taction. The target can be specified either as an absolute path or    \n\
+\tas a relative path. If this option is omitted, the archive file will\n\
+\tbe created in the server output directory. The target file name      \n\
+\textension might influence the format of the generated archive.       \n\
+\tThe default archive format for the package action is "pax" on z/OS   \n\
+\tand "zip" on all other platforms.                                    \n\
+\tArchive format "jar" will produce a self-extracting jar similar to   \n\
+\tthe original installer archive.                                      \n\
+\tArchive format "jar" combined with "runnable" on the --include option\n\
+\tproduces a runnable jar file that can run the Liberty server from    \n\
+\tthe jar file by using java -jar.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.include=\
+\ \ \ \ --include=value,value,...
+option-desc.include=\
+\tA comma-delimited list of values. The valid values vary depending on \n\
+\tthe action.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.target=\
+\ \ \ \ --target=value,value
+option-desc.target=\
+\tSpecifies a comma-delimited list of components that you can pause or \n\
+\tresume.
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.template=\
+\ \ \ \ --template="templateName"
+option-desc.template=\
+\tSpecify the name of the template to use when creating a new server. 
+#------------------------------\n at 72 chars -- leading tab-----------\n\#
+option-key.os=\
+\ \ \ \ --os=value,value,...
+option-desc.os=\
+\tSpecifies the operating systems that you want the packaged server to \n\
+\tsupport. Supply a comma-separated list. The default value is any,    \n\
+\tindicating that the server is to be deployable to any operating      \n\
+\tsystem supported by the source.                                      \n\
+\tTo specify that an operating system is not to be supported, prefix it\n\
+\twith a minus sign ("-"). For a list of operating system values, refer\n\
+\tto the OSGi Alliance web site at the following URL:                  \n\
+\thttp://www.osgi.org/Specifications/Reference#os                      \n\
+\tThis option applies only to the package operation, and can be used   \n\
+\tonly with the --include=minify option. If you exclude an operating   \n\
+\tsystem, you cannot later include it if you repeat the minify         \n\
+\toperation on the archive. 

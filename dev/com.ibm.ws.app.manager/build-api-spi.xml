@@ -1,0 +1,49 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.app.manager-api" default="buildApiSpi">
+  <!-- DO NOT CHANGE THE DEFAULT TASK FROM 'buildApiSpi'
+       Top level builds use this task explicity.  Changing the
+       default will create an incompatibility between a default
+       project build and a top level build. -->
+
+  <!-- TODO: Two different names are used, 'basics' for the API and
+       'application' for the SPI.  Is this correct? -->
+
+  <!-- IBM-API Required Properties -->
+  <property name="bundleName" value="WebSphere Application Manager API"/>
+  <property name="api.ibm.symbolic.suffix" value="basics"/>
+  <!-- set the 'api.ibm.version' of '1.2'  -->
+  <property name="api.ibm.version" value="1.2"/>
+
+  <property name="feature.name" value="com.ibm.websphere.appserver.appmanager-1.0"/>
+
+  <property name="api.ibm.packages.exceptions" value="com.ibm.wsspi.security.registry"/>
+
+  <!-- Include Security, FileMonitor, RuntimeUpdate, CmdLineTools and Logging in the APP Manager API. -->
+  <path id="bnd.jars">
+    <fileset dir="../com.ibm.websphere.security/build/lib/" includes="*.jar"/>
+    <fileset dir="../build.image/wlp/lib/" includes="com.ibm.ws.kernel.filemonitor_*.jar"/>
+    <fileset dir="../build.image/wlp/lib/" includes="com.ibm.ws.runtime.update_*.jar"/>
+   </path>
+  <property name="additional.javadoc.src.dirs"
+            value="${basedir}/../com.ibm.websphere.security/src/${path.separator}${basedir}/../com.ibm.ws.logging/src/${path.separator}${basedir}/../com.ibm.ws.kernel.filemonitor/src/${path.separator}${basedir}/../com.ibm.ws.runtime.update/src/"/>
+
+  <!-- IBM-SPI Required Properties -->
+  <property name="spibndfile" value="${basedir}/build/spi.bnd"/>
+  <property name="spi.ibm.bundleName" value="WebSphere Application Manager SPI"/>
+  <property name="spi.ibm.symbolic.suffix" value="application"/>
+  <property name="spi.ibm.version" value="1.0"/>
+
+  <!-- 'api.ibm.version' and 'feature.file' are shared. -->
+
+  <import file="../ant_build/public_imports/apibnd_imports.xml"/>
+
+</project>

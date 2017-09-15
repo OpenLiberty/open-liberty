@@ -1,0 +1,98 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Channel Framework
+Bundle-SymbolicName: com.ibm.ws.channelfw; singleton:=true
+Bundle-Description: Provides the channel framework that allows the creation \
+ of channel chains for handling both inbound and outbound traffic. The TCP \
+ and UDP connector channels are included, version ${bVersion}
+
+WS-TraceGroup: ChannelFramework
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: com.ibm.websphere.channelfw*;provide:=true, \
+	com.ibm.wsspi.channelfw*;provide:=true, \
+	com.ibm.wsspi.connmgmt;provide:=true, \
+	com.ibm.wsspi.bytebuffer;provide:=true, \
+	com.ibm.wsspi.tcpchannel;provide:=true, \
+    com.ibm.wsspi.udpchannel;provide:=true, \
+    com.ibm.websphere.endpoint;provide:=true, \
+	com.ibm.io.async
+	
+Private-Package: com.ibm.io.async, \
+	com.ibm.ws.bytebuffer.internal, \
+	com.ibm.ws.bytebuffer.internal.resources, \
+	com.ibm.ws.channelfw*, \
+	com.ibm.ws.tcpchannel.internal, \
+	com.ibm.ws.tcpchannel.internal.resources, \
+	com.ibm.ws.udpchannel.internal, \
+	com.ibm.ws.udpchannel.internal.resources
+	
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+-dsannotations: com.ibm.websphere.channelfw.osgi.CHFWBundle,\
+   com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration
+
+Service-Component: \
+    com.ibm.ws.tcpchannel.options; \
+        implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+        provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+        modified:='modified';\
+        immediate:=true;\
+        properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=TCPChannel", \
+    com.ibm.ws.udpchannel.options; \
+        implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+        provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+        modified:='modified';\
+        immediate:=true;\
+        properties:="service.vendor=IBM,service.ranking:Integer=0,type:String=UDPChannel", \
+    com.ibm.ws.channelfw.CHFWEventHandler; \
+        implementation:=com.ibm.ws.channelfw.internal.CHFWEventHandler; \
+        configuration-policy:=ignore;\
+        provide:=com.ibm.websphere.event.EventHandler; \
+        properties:="event.topics=com/ibm/websphere/channelfw/*,service.vendor=IBM"
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.logging,\
+	com.ibm.ws.event,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.kernel.feature,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.timer;version=latest,\
+	com.ibm.ws.kernel.security.thread,\
+	com.ibm.ws.kernel.boot.core;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+#  <property name="unittest.prop.com.ibm.ws.logging.exception.log.enabled" value="false" />
+#  file /dev/com.ibm.ws.channelfw/unittestports.properties
+
+-testpath: \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+	cglib:cglib-nodep;version=2.1.0.3, \
+	org.jmock:jmock-legacy;version=2.5.0, \
+	com.ibm.ws.kernel.boot;version=latest

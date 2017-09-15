@@ -1,0 +1,1022 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.HpelSystemStream"/>
+    <Method name="cacheTraceData" signature="([B)Ljava/util/logging/LogRecord;"/>
+    <Local name="data"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.HpelSystemStream"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.HpelSystemStream"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.HpelSystemStream"/>
+    <Method name="getTraceData" signature="([B)Ljava/util/logging/LogRecord;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.HpelSystemStream"/>
+    <Method name="cacheTraceData" signature="([C)Ljava/util/logging/LogRecord;"/>
+    <Local name="data"/>
+    <Bug pattern="NP_GUARANTEED_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.Messages"/>
+    <Method name="getFormattedMessageFromLocalizedMessage" signature="(Ljava/lang/String;[Ljava/lang/Object;Z)Ljava/lang/String;"/>
+    <Local name="retVal"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.StackFinder$1"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Field name="finder"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.TraceNLSResolver"/>
+    <Method name="getMessage" signature="(Ljava/lang/Class;Ljava/util/ResourceBundle;Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;ZLjava/util/Locale;Z)Ljava/lang/String;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.TraceNLSResolver"/>
+    <Method name="getResourceBundle" signature="(Ljava/lang/Class;Ljava/lang/String;Ljava/util/Locale;)Ljava/util/ResourceBundle;"/>
+    <Field name="finder"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ejs.ras.hpel.TraceNLSResolver"/>
+    <Method name="logEvent" signature="(Ljava/lang/String;[Ljava/lang/Object;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.HpelAdvancedFormatter"/>
+    <Method name="createEventHeader" signature="(Lcom/ibm/websphere/logging/hpel/reader/RepositoryLogRecord;Ljava/lang/StringBuilder;)V"/>
+    <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.HpelAdvancedFormatter"/>
+    <Method name="createEventHeader" signature="(Lcom/ibm/websphere/logging/hpel/reader/RepositoryLogRecord;Ljava/lang/StringBuilder;)V"/>
+    <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.HpelCBEFormatter"/>
+    <Method name="createEventOTag" signature="(Ljava/lang/StringBuilder;Lcom/ibm/websphere/logging/hpel/reader/RepositoryLogRecord;Ljava/util/Locale;)V"/>
+    <Field name="CBE_DATE_FORMAT"/>
+    <Bug pattern="STCAL_INVOKE_ON_STATIC_DATE_FORMAT_INSTANCE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.HpelFormatter$CustomHeaderLine"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="getExcludeLoggers" signature="()[Ljava/lang/String;"/>
+    <Field name="excludeLoggers"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="getIncludeLoggers" signature="()[Ljava/lang/String;"/>
+    <Field name="includeLoggers"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="getMaxTime" signature="()Ljava/util/Date;"/>
+    <Field name="maxTime"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="getMessageContent" signature="()[Ljava/lang/String;"/>
+    <Field name="messageContent"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="getMinTime" signature="()Ljava/util/Date;"/>
+    <Field name="minTime"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="getThreadIDs" signature="()[I"/>
+    <Field name="threadIDs"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="setExcludeLoggers" signature="([Ljava/lang/String;)V"/>
+    <Field name="excludeLoggers"/>
+    <Local name="excludeLoggers"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="setIncludeLoggers" signature="([Ljava/lang/String;)V"/>
+    <Field name="includeLoggers"/>
+    <Local name="includeLoggers"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="setMessageContent" signature="([Ljava/lang/String;)V"/>
+    <Field name="messageContent"/>
+    <Local name="messageContent"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="setThreadIDs" signature="([I)V"/>
+    <Field name="threadIDs"/>
+    <Local name="threadIDs"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="setTime" signature="(Ljava/util/Date;Ljava/util/Date;)V"/>
+    <Field name="maxTime"/>
+    <Local name="maxTime"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.LogQueryBean"/>
+    <Method name="setTime" signature="(Ljava/util/Date;Ljava/util/Date;)V"/>
+    <Field name="minTime"/>
+    <Local name="minTime"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.MergedRepository"/>
+    <Method name="&lt;init&gt;" signature="([Lcom/ibm/websphere/logging/hpel/reader/ServerInstanceLogRecordList;)V"/>
+    <Field name="servers"/>
+    <Local name="servers"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RemoteInstanceDetails"/>
+    <Method name="getProcPath" signature="()[Ljava/lang/String;"/>
+    <Field name="procPath"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RemoteInstanceDetails"/>
+    <Method name="getStartTime" signature="()Ljava/util/Date;"/>
+    <Field name="startTime"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RemoteInstanceDetails"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/logging/hpel/reader/LogQueryBean;Ljava/util/Date;[Ljava/lang/String;)V"/>
+    <Field name="procPath"/>
+    <Local name="subProcs"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RemoteInstanceDetails"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/logging/hpel/reader/LogQueryBean;Ljava/util/Date;[Ljava/lang/String;)V"/>
+    <Field name="startTime"/>
+    <Local name="startTime"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RemoteInstanceResult"/>
+    <Method name="getStartTime" signature="()Ljava/util/Date;"/>
+    <Field name="startTime"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RemoteInstanceResult"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/util/Date;Ljava/util/Properties;Ljava/util/Set;)V"/>
+    <Field name="startTime"/>
+    <Local name="startTime"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl"/>
+    <Method name="containsLogFiles" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl"/>
+    <Method name="containsLogFiles" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl"/>
+    <Method name="createBrowser" signature="(Ljava/io/File;)Lcom/ibm/ws/logging/hpel/MainLogRepositoryBrowser;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl"/>
+    <Method name="listRepositories" signature="(Ljava/io/File;)[Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl"/>
+    <Method name="listRepositories" signature="(Ljava/io/File;)[Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl"/>
+    <Method name="verifyLocation" signature="(Ljava/io/File;Ljava/lang/String;)Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl"/>
+    <Method name="verifyLocation" signature="(Ljava/io/File;Ljava/lang/String;)Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl$1"/>
+    <Method name="accept" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl$3"/>
+    <Method name="accept" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl$5"/>
+    <Method name="accept" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl$7"/>
+    <Method name="accept" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.reader.RepositoryReaderImpl$ServerInstanceByTime"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/logging/hpel/reader/RepositoryReaderImpl;J)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.writer.CompatibilityRepositoryExporter"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/File;Lcom/ibm/websphere/logging/hpel/reader/HpelFormatter;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.writer.CompatibilityRepositoryExporter"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/OutputStream;Lcom/ibm/websphere/logging/hpel/reader/HpelFormatter;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.writer.CompatibilityZipRepositoryExporter"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/File;Lcom/ibm/websphere/logging/hpel/reader/HpelFormatter;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.logging.hpel.writer.HPELZipRepositoryExporter"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/File;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.FormatSet"/>
+    <Field name="ivDate"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.FormatSet"/>
+    <Field name="ivFieldPos"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.Guid"/>
+    <Method name="getPseudoIEEE802MACAddress" signature="(J)[B"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.Guid"/>
+    <Method name="getUniqueTimeStamp" signature="()J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.Guid"/>
+    <Method name="getPseudoIEEE802MACAddress" signature="(J)[B"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.Guid"/>
+    <Method name="getUniqueTimeStamp" signature="()J"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.Guid"/>
+    <Method name="getUniqueTimeStamp" signature="()J"/>
+    <Bug pattern="SWL_SLEEP_WITH_LOCK_HELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.Guid"/>
+    <Method name="getAdjustedTimestamp" signature="()J"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.Guid"/>
+    <Method name="getUniqueTimeStamp" signature="()J"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.handlers.LogRecordHandler"/>
+    <Field name="logWriter"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.handlers.LogRecordHandler"/>
+    <Field name="traceWriter"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.handlers.LogRecordTextHandler"/>
+    <Field name="writer"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.handlers.LogRecordTextHandler$SerializationBuffer"/>
+    <Method name="serialize" signature="(Ljava/util/logging/LogRecord;)[B"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.handlers.LogRecordTextHandler$SerializationBuffer"/>
+    <Method name="serializeFileHeader" signature="(Ljava/util/Properties;)[B"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.handlers.LogRepositoryComponent$3"/>
+    <Method name="testWriter" signature="(Lcom/ibm/ws/logging/hpel/impl/LogRepositoryWriterImpl;)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.AbstractHPELRepositoryExporter"/>
+    <Method name="storeHeader" signature="(Ljava/util/Properties;Ljava/lang/String;)V"/>
+    <Local name="pid"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.BinaryLogRecordSerializerVersion2Impl"/>
+    <Method name="deserializeLogRecord" signature="(Lcom/ibm/ws/logging/object/hpel/RepositoryLogRecordImpl;Ljava/io/DataInput;)V"/>
+    <Bug pattern="ICAST_QUESTIONABLE_UNSIGNED_RIGHT_SHIFT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.BinaryLogRecordSerializerVersion2Impl"/>
+    <Method name="serialize" signature="(Lcom/ibm/websphere/logging/hpel/reader/RepositoryLogRecord;Ljava/io/DataOutput;)V"/>
+    <Local name="extensionsMap"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRecordBrowser$OnePidRecordIterator"/>
+    <Method name="compareTo" signature="(Lcom/ibm/ws/logging/hpel/impl/LogRecordBrowser$OnePidRecordIterator;)I"/>
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRecordWrapper"/>
+    <Method name="getParameters" signature="()[Ljava/lang/Object;"/>
+    <Field name="parameters"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRecordWrapper"/>
+    <Method name="getRawData" signature="()[B"/>
+    <Field name="rawData"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryBaseImpl"/>
+    <Field name="KNOWN_FORMATTERS"/>
+    <Bug pattern="MS_MUTABLE_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryBaseImpl"/>
+    <Method name="createLockFile" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryBaseImpl"/>
+    <Method name="isDebugEnabled" signature="()Z"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryBaseImpl$LogRepositoryDirFilter"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryBrowserImpl"/>
+    <Method name="getIds" signature="()[Ljava/lang/String;"/>
+    <Field name="ids"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryBrowserImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/File;[Ljava/lang/String;)V"/>
+    <Field name="ids"/>
+    <Local name="ids"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryManagerImpl"/>
+    <Method name="configure" signature="(JJ)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryManagerImpl"/>
+    <Field name="okToNotify"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryManagerImpl"/>
+    <Method name="configure" signature="(JJ)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryManagerImpl$TimerThread"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryManagerTextImpl"/>
+    <Method name="getLogFile" signature="(Ljava/io/File;J)Ljava/io/File;"/>
+    <Field name="DATEFORMAT"/>
+    <Bug pattern="STCAL_INVOKE_ON_STATIC_DATE_FORMAT_INSTANCE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryManagerTextImpl"/>
+    <Method name="getLogFileTimestamp" signature="(Ljava/io/File;)J"/>
+    <Field name="DATEFORMAT"/>
+    <Bug pattern="STCAL_INVOKE_ON_STATIC_DATE_FORMAT_INSTANCE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositorySpaceAlert"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositorySubManagerImpl"/>
+    <Method name="startNewFile" signature="(J)Ljava/io/File;"/>
+    <Bug pattern="SWL_SLEEP_WITH_LOCK_HELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryWriterCBuffImpl"/>
+    <Method name="setHeader" signature="([B)V"/>
+    <Field name="headerBytes"/>
+    <Local name="headerBytes"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryWriterCBuffImpl"/>
+    <Field name="headerBytes"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.LogRepositoryWriterImpl"/>
+    <Method name="logRecord" signature="(J[B)V"/>
+    <Bug pattern="DM_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.ZipGenericFile"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/File;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.ZipGenericFile"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="HE_EQUALS_NO_HASHCODE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.impl.ZipGenericFile"/>
+    <Field name="zf"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.osgi.Activator"/>
+    <Method name="start" signature="(Lorg/osgi/framework/BundleContext;)V"/>
+    <Field name="bundleContext"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="printCopyUsage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="printListInstancesUsage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="printMainUsage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="printShortUsage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="printViewUsage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.BinaryLog"/>
+    <Method name="validateSettings" signature="()Z"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="createOutputStream" signature="()Ljava/io/PrintStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="readLevels" signature="(Ljava/lang/String;)Ljava/util/Map;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="execute" signature="([Ljava/lang/String;)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="listRepositoryChoices" signature="()[Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="listRepositoryChoices" signature="()[Ljava/io/File;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputLogFilename" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputLogFilename" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputRepositoryDir" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputRepositoryDir" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputRepositoryDir" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputRepositoryDir" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputRepositoryDir" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="createOutputStream" signature="()Ljava/io/PrintStream;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="readHeader" signature="(Ljava/lang/String;)[Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="validateSettings" signature="()Z"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutFormat" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="ES_COMPARING_STRINGS_WITH_EQ"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="readLevels" signature="(Ljava/lang/String;)Ljava/util/Map;"/>
+    <Bug pattern="OBL_UNSATISFIED_OBLIGATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="readHeader" signature="(Ljava/lang/String;)[Ljava/lang/String;"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="readLevels" signature="(Ljava/lang/String;)Ljava/util/Map;"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setOutputRepositoryDir" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="getFormattedDateTime" signature="(Ljava/util/Date;)Ljava/lang/String;"/>
+    <Field name="instanceDF"/>
+    <Bug pattern="STCAL_INVOKE_ON_STATIC_DATE_FORMAT_INSTANCE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Field name="dateFormat"/>
+    <Bug pattern="STCAL_INVOKE_ON_STATIC_DATE_FORMAT_INSTANCE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="displayRecords" signature="(Ljava/io/PrintStream;Lcom/ibm/websphere/logging/hpel/reader/filters/LogViewerFilter;Lcom/ibm/websphere/logging/hpel/reader/RepositoryReaderImpl;Ljava/util/Date;Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="applyHeaderPropsToFormatter" signature="(Lcom/ibm/websphere/logging/hpel/reader/HpelFormatter;Ljava/util/Properties;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="execute" signature="([Ljava/lang/String;Ljava/util/Map;[Ljava/lang/String;)I"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="readHeader" signature="(Ljava/lang/String;)[Ljava/lang/String;"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="readLevels" signature="(Ljava/lang/String;)Ljava/util/Map;"/>
+    <Bug pattern="SYSTEM_ERR_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="displayRecords" signature="(Ljava/io/PrintStream;Lcom/ibm/websphere/logging/hpel/reader/filters/LogViewerFilter;Lcom/ibm/websphere/logging/hpel/reader/RepositoryReaderImpl;Ljava/util/Date;Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="printInstanceLine" signature="(Ljava/lang/String;Ljava/lang/String;Z)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="printInstances" signature="(Ljava/util/ArrayList;Ljava/util/Comparator;ZZ)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="printUsage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="setBinaryRepositoryDir" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.LogViewer"/>
+    <Method name="validateSettings" signature="()Z"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_cs"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_de"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_es"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_fr"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_hu"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_it"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_ja"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_ko"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_pl"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_pt_BR"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_ro"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_ru"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_zh"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.hpel.viewer.internal.resources.BinaryLogMessages_zh_TW"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.object.hpel.RemoteRepositoryCache"/>
+    <Method name="getEnd" signature="()[[B"/>
+    <Field name="end"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.object.hpel.RemoteRepositoryCache"/>
+    <Method name="getStart" signature="()[[B"/>
+    <Field name="start"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.object.hpel.RemoteRepositoryCache"/>
+    <Method name="&lt;init&gt;" signature="(I[[B[[B)V"/>
+    <Field name="end"/>
+    <Local name="end"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.object.hpel.RemoteRepositoryCache"/>
+    <Method name="&lt;init&gt;" signature="(I[[B[[B)V"/>
+    <Field name="start"/>
+    <Local name="start"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.object.hpel.RepositoryLogRecordImpl"/>
+    <Method name="setParameters" signature="([Ljava/lang/Object;)V"/>
+    <Field name="params"/>
+    <Local name="params"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.object.hpel.RepositoryLogRecordImpl"/>
+    <Method name="setRawData" signature="([B)V"/>
+    <Field name="rawData"/>
+    <Local name="rawData"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.logging.object.hpel.RepositoryPointerImpl"/>
+    <Method name="getInstanceIds" signature="()[Ljava/lang/String;"/>
+    <Field name="instanceIds"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+</FindBugsFilter>

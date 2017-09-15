@@ -1,0 +1,293 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Issuing stop for job execution {0} because the batch component is deactivating.
+stopping.job.at.shutdown.explanation=This message is for informational purposes only.
+stopping.job.at.shutdown.useraction=No action is required.
+
+jobs.running.at.shutdown=CWWKY0002I: The batch component is deactivating. Stop requests have been issued for \
+ all active job executions. The following job executions were still running at the time of deactivation: {0}. 
+jobs.running.at.shutdown.explanation=When the batch component is deactivated, it issues stop requests for\
+ all active job executions and waits briefly for them to stop.  Job executions that have not stopped are reported\
+ in the message. Job executions that run beyond the deactivation of the batch component may experience\
+ unpredictable behavior.
+jobs.running.at.shutdown.useraction=It is recommended to wait for all jobs to complete before deactivating\
+ the batch component. The batch component is deactivated when the server is stopped, when the batch feature\
+ is removed, or when the batch configuration is updated.
+ 
+jsl.schema.invalid=CWWKY0003E: The JSL (Job XML document) at URL {0} is not valid \
+ according to the Job XML schema. The first validation error logged by JAXB validator was: {1}.
+jsl.schema.invalid.explanation=The XML document did not conform to the XSD schema.
+jsl.schema.invalid.useraction=Use an XML validation tool to understand which construct violates the schema requirements.
+
+jsl.not.found.batch-jobs=CWWKY0004E: The JSL (Job XML document) name: {0} was not found at the location: {1} within the application archive.
+jsl.not.found.batch-jobs.explanation=The document could not be located at the location identified by the parameters\
+ used to submit (i.e. start) the job.
+jsl.not.found.batch-jobs.useraction=Make sure the parameters used to identify the JSL location are correct. When using remote job submission\
+ to submit a job defined in a JSL packaged within an application module, make sure the application module has been correctly identified by the parameters\
+ passed to the REST interface (directly or using the command-line utility).
+
+persistence.service.status=CWWKY0005I: The batch {0} persistence service is {1}.
+persistence.service.status.explanation=This message is for informational purposes only.
+persistence.service.status.useraction=No action is required.
+
+job.recovery.failed=CWWKY0006W: The batch job recovery service is unable to correct the batch status for a previously running job instance {0} that has terminated. The correction failed due to exception {1}.
+job.recovery.failed.explanation=The batch job recovery service, which corrects the status of jobs that were running when a previous instance of\
+ this server terminated abnormally, could not correct the status of the given job instance due to the given exception.
+job.recovery.failed.useraction=Address the cause of the exception, if possible, and restart the server to run the batch job recovery service again.
+
+recovery.failed=CWWKY0007W: The batch job recovery service is unable to correct the batch status for previously running jobs that have terminated. The correction failed due to exception {0}.
+recovery.failed.explanation=The batch job recovery service, which corrects the status of jobs that were running when a previous instance of\
+ this server terminated abnormally, failed due to the given exception.
+recovery.failed.useraction=Address the cause of the exception, if possible, and restart the server to run the batch job recovery service again.
+
+batch.kernel.persistence=CWWKY0008I: The batch feature is using persistence type {0}.
+batch.kernel.persistence.explanation=This message is for informational purposes only.
+batch.kernel.persistence.useraction=No action is required.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Job {0} started for job instance {1} and job execution {2}.
+job.started.explanation=A new job execution thread was started.
+job.started.useraction=No action is required.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: Job {0} ended with batch status {1} and exit status {2} for job instance {3} and job execution {4}.
+job.ended.explanation=The job execution ended.
+job.ended.useraction=No action is required.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Job {0} failed with batch status {1} and exit status {2} for job instance {3} and job execution {4}.
+job.failed.explanation=The job execution failed to end successfully.
+job.failed.useraction=Review the job logs of the associated job execution to determine the cause of the failure.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Partition {0} started for step {1} for job instance {2} and job execution {3}.
+partition.started.explanation=A new partition was started.
+partition.started.useraction=No action is required.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: Partition {0} ended with batch status {1} and exit status {2} for step {3} for job instance {4} and job execution {5}.
+partition.ended.explanation=The partition ended.
+partition.ended.useraction=No action is required.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Partition {0} failed with batch status {1} and exit status {2} for step {3} for job instance {4} and job execution {5}.
+partition.failed.explanation=The partition failed to end successfully.
+partition.failed.useraction=Review the job logs of the associated job execution to determine the cause of the failure.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Flow {0} started for job instance {1} and job execution {2}.
+flow.started.explanation=The flow started.
+flow.started.useraction=No action is required.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Flow {0} ended for job instance {1} and job execution {2}.
+flow.ended.explanation=The flow ended.
+flow.ended.useraction=No action is required.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Flow {0} failed for job instance {1} and job execution {2}.
+flow.failed.explanation=The flow failed to end successfully.
+flow.failed.useraction=Review the job logs of the associated job execution to determine the cause of the failure.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Step {0} started for job instance {1} and job execution {2}.
+step.started.explanation=The named step has started executing on a thread.
+step.started.useraction=No action is required.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Step {0} failed with batch status {1} and exit status {2} for job instance {3} and job execution {4}.
+step.failed.explanation=The step failed to end successfully.
+step.failed.useraction=Review the job logs of the associated step execution to determine the cause of the failure.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: Step {0} ended with batch status {1} and exit status {2} for job instance {3} and job execution {4}.
+step.ended.explanation=The step has ended processing.
+step.ended.useraction=No action is required.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: A new chunk was started for step {0} in job instance {1} and job execution {2}. Step metrics = {3}
+chunk.started.explanation= A new transaction was started to process this chunk.
+chunk.started.useraction=No action is required.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: The chunk successfully ended for step {0} in job instance {1} and job execution {2}. Step metrics = {3}
+chunk.ended.explanation= The transaction associated with this chunk was successfully committed.
+chunk.ended.useraction=No action is required.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: The current chunk was rolled back to the previous checkpoint for step {0} in job instance {1} and job execution {2}. Step metrics = {3}
+chunk.rollback.explanation= There was a failure during that current chunk that caused a transaction rollback to the previous checkpoint.
+chunk.rollback.useraction=Review the job logs of the associated job execution to determine the cause of the failure.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Processing rollback for current chunk after a retryable exception for step {0} in job instance {1} and job execution {2}. Step metrics = {3}
+chunk.rollback.and.retry.explanation= There was a retryable exception that occurred during chunk processing that will be rolled back to the previous checkpoint and retried.
+chunk.rollback.and.retry.useraction=Review the job logs of the associated job execution to determine the cause of the failure.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: The item reader for step {0} was opened.
+item.reader.opened.explanation=The item reader that is associated with this step has been opened.
+item.reader.opened.useraction=No action is required.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: The item reader for step {0} was closed.
+item.reader.closed.explanation=The item reader that is associated with this step has been closed.
+item.reader.closed.useraction=No action is required.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: The item writer for step {0} was opened.
+item.writer.opened.explanation=The item writer that is associated with this step has been opened.
+item.writer.opened.useraction=No action is required.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: The item writer for step {0} was closed.
+item.writer.closed.explanation=The item writer that is associated with this step has been closed.
+item.writer.closed.useraction=No action is required.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: An exception occurred while running the step {0}.\n{1}
+exception.executing.step.explanation=This may be an application error. An exception has occurred while executing the core portion of the step, after the batch container invoked the relevant batch application artifacts.
+exception.executing.step.useraction=Review the job logs of the associated job execution to determine the cause of the failure.  This may involve debugging your application.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: An exception occurred while running the final portion of step {0}.\n{1}
+exception.after.step.explanation=This may be an application error. An exception has occurred while executing the final portion of the step (e.g. including the StepListener afterStep() method), after the batch container invoked the relevant batch application artifacts.
+exception.after.step.useraction=Review the job logs of the associated job execution to determine the cause of the failure.  This may involve debugging your application.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: An exception occurred while trying to persist step execution status and related data.\n{0}
+error.persisting.stepExecution.explanation=If this occurs, it is common that the final step status is not correctly persisted to the database, and the batch status may end up stuck in a STARTED state in spite of the fact that it is no longer executing. This may interfere with a restart attempt by causing state inconsistency errors upon restart. 
+error.persisting.stepExecution.useraction=Ensure that the database is correctly configured and connected.   After doing so, if necessary you can restart the executor server (the server upon which the job is executing), which will trigger recovery and mark associated jobs and steps as FAILED so that a job restart can be successfully performed. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: An exception occurred while executing the job.\n{0}
+exception.executing.job.explanation=This may be an application error. An exception has occurred while executing the core portion of the job, after the batch container invoked the relevant batch application artifacts.
+exception.executing.job.useraction=Review the job logs of the associated job execution to determine the cause of the failure.  This may involve debugging your application.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: An exception occurred while running the final portion of the job.\n{0}
+exception.after.job.explanation=This may be an application error. An exception has occurred while executing the final portion of the job (e.g. including the JobListener afterJob() method), after the batch container invoked the relevant batch application artifacts.
+exception.after.job.useraction=Review the job logs of the associated job to determine the cause of the failure.  This may involve debugging your application.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: An exception occurred while trying to persist job execution status and related data.\n{0}
+error.persisting.jobExecution.explanation=If this occurs, it is common that the final job batch status is not correctly persisted to the database, and the batch status may end up stuck in a STARTED state in spite of the fact that it is no longer executing. This may interfere with a restart attempt by causing state inconsistency errors upon restart.
+error.persisting.jobExecution.useraction=Ensure that the database is correctly configured and connected.   After doing so, if necessary you can restart the executor server (the server upon which the job is executing), which will trigger recovery and mark associated jobs and steps as FAILED so that a job restart can be successfully performed.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: Invalid job instance id value {0} generated as the primary key value for a batch table. The id value must be a positive integer.\n{1}
+error.invalid.persisted.job.id.explanation=Job execution failed because an invalid id was generated in a batch table. A batch id must be a positive integer.
+error.invalid.persisted.job.id.useraction=Ensure the batch database table definition used allows only positive integers for the id values used as primary keys.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: Invalid job execution id value {0} generated as the primary key value for a batch table. The id value must be a positive integer.\n{1}
+error.invalid.persisted.exe.id.explanation=Job execution failed because an invalid id was generated in a batch table. A batch id must be a positive integer.
+error.invalid.persisted.exe.id.useraction=Ensure the batch database table definition used allows only positive integers for the id values used as primary keys.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: Invalid step execution id value {0} generated as the primary key value for a batch table. The id value must be a positive integer.\n{1}
+error.invalid.persisted.step.id.explanation=Job execution failed because an invalid id was generated in a batch table. A batch id must be a positive integer.
+error.invalid.persisted.step.id.useraction=Ensure the batch database table definition used allows only positive integers for the id values used as primary keys.
+
+partition.recovery.failed=CWWKY0039W: The batch job recovery service is unable to correct the batch status for a previously running partition {0} that has terminated. The correction failed due to exception {1}.
+partition.recovery.failed.explanation=The batch job recovery service, which corrects the status of partitions that were running when a previous instance of\
+ this server terminated abnormally, could not correct the status of the given partition due to the given exception.
+partition.recovery.failed.useraction=Address the cause of the exception, if possible, and restart the server to run the batch job recovery service again.
+
+info.batch.events.publish.topic=CWWKY0040I: The batch runtime will publish events to JMS topic root {0}.
+info.batch.events.publish.topic.explanation=Informational. The batch runtime will publish events to the listed batch JMS topic root.
+info.batch.events.publish.topic.useraction=The batch JMS topic root can be modified. Check the configured options that are used for batchJmsEvents.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: The batch container is running with a CDI feature active, but the CDI engine was not able to load the batch artifact as a CDI-managed bean and perform other CDI injections. This problem might be caused by a missing bean-defining annotation such as @Dependent, an unintended bean discovery mode, or an ambiguous 'ref' value.
+cdi.ambiguous.artifact.names.explanation=When the batch runtime loads artifacts by using the CDI engine, the batch properties (@BatchProperty) and batch contexts (JobContext and StepContext) are injected, and the full capabilities of CDI are made available. These capabilities include the injection of other managed beans according to qualifiers and all other features of the CDI programming model. When the batch runtime loads artifacts without using the CDI engine, it only injects the batch properties and contexts. Because it is not a CDI-managed bean in this path, no other injections or other features of the CDI programming model are available within that batch artifact. This message indicates that although the server is configured so that the CDI feature is active, the batch artifact cannot be loaded as a CDI-managed bean because the 'ref' attribute value that corresponds to this artifact reference in XML does not point to a single, unambiguous CDI-managed bean.
+cdi.ambiguous.artifact.names.useraction=Add the @Dependent annotation or another suitable bean-defining annotation to your batch artifact. Alternatively, you can set bean discovery mode to 'all' in the beans.xml file, although this solution might slow down your application. If all of the ambiguous artifacts are not needed, you can also remove the ambiguous 'ref' attributes from the application so that only a single, unambiguous reference remains.

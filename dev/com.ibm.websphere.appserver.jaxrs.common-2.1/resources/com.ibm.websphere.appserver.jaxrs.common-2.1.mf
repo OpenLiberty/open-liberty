@@ -1,0 +1,38 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-App-ForceRestart: uninstall,
+ install
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: full
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+Subsystem-Content: com.ibm.websphere.appserver.api.jaxrs20_1.0-javadoc.zip; type=file; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.jaxrs20_1.0-javadoc.zip",
+ wadl2java; type=file; location:="bin/jaxrs/wadl2java",
+ wadl2java.bat; type=file; location:="bin/jaxrs/wadl2java.bat",
+ wadl2java.jar; type=file; location:="bin/jaxrs/tools/wadl2java.jar"; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.appserver.injection-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.containerServices-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.servlet-3.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.classloading-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.mail-1.5; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.globalhandler-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.json-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/"; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.appserver.internal.slf4j-1.7.7; type="osgi.subsystem.feature",
+ com.ibm.ws.org.apache.xml.resolver.1.2; version="[1.0.0,1.0.200)",
+ com.ibm.ws.org.apache.neethi.3.0.2; version="[1.0.0,1.0.200)",
+ com.ibm.ws.jaxrs.2.1.common; version="[1.0.0,1.0.200)",
+ com.ibm.ws.jaxrs.2.x.config; version="[1.0.0,1.0.200)",
+ com.ibm.ws.org.apache.ws.xmlschema.core.2.0.3; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.javaee.jaxrs.2.1; location:="dev/api/spec/,lib/"; version="[1.0.0,1.0.200)",
+ com.ibm.ws.jaxrs.2.0.tools; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.jaxrs.common-2.1
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.jaxrs.common-2.1; visibility:=private; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

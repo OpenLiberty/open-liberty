@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Remote Client EJB
+Bundle-SymbolicName: com.ibm.ws.ejbcontainer.remote.client
+Bundle-Description: Remote EJB; version=${bVersion}
+
+WS-TraceGroup: EJBContainer
+
+DynamicImport-Package: *
+
+Import-Package: javax.rmi.*;version="[2.4,3)",\
+ org.omg.*;version="[2.4,3)",\
+ *
+ 
+Private-Package: \
+  com.ibm.ws.ejbcontainer.remote.client.*
+
+-dsannotations: \
+  com.ibm.ws.ejbcontainer.remote.client.internal.ClientEJBStubClassGeneratorImpl, \
+  com.ibm.ws.ejbcontainer.remote.client.internal.EJBClientMetaDataRuntime, \
+  com.ibm.ws.ejbcontainer.remote.client.internal.EJBClientRuntimeImpl, \
+  com.ibm.ws.ejbcontainer.remote.client.internal.injection.EJBLinkClientObjectFactoryImpl, \
+  com.ibm.ws.ejbcontainer.remote.client.internal.injection.EJBLinkClientReferenceFactoryImpl
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.ejbcontainer;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.ws.clientcontainer.remote.common;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

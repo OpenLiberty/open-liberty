@@ -1,0 +1,62 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+Bundle-Name:JAXWS Atomic Transaction Extension
+Bundle-Description: JAXWS Extension for WSAT, version ${bVersion}
+Bundle-SymbolicName: com.ibm.ws.jaxws.wsat
+
+Private-Package: \
+  com.ibm.ws.wsat.policy
+
+Export-Package: \
+ com.ibm.ws.jaxws.wsat, \
+ com.ibm.ws.jaxws.wsat.components
+
+Import-Package: \
+   javax.jws,\
+   javax.xml,\
+   javax.xml.namespace,\
+   org.osgi.framework;version="1.5.0",\
+   javax.xml.bind.*;version="[2.2,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
+   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   com.ibm.websphere.ras, \
+   com.ibm.websphere.ras.annotation, \
+   com.ibm.ws.ffdc, \
+   *
+
+Service-Component: \
+ com.ibm.ws.jaxws.wsat.components.WSATFeatureService; \
+     modified:='modified'; \
+     immediate:=true; \
+     activate:=activate; \
+     deactivate:=deactivate; \
+     implementation:=com.ibm.ws.jaxws.wsat.components.WSATFeatureService; \
+     featureProvisioner=com.ibm.ws.kernel.feature.FeatureProvisioner;\
+     configuration-policy:=ignore; \
+     properties:="service.vendor=IBM"
+
+-buildpath: \
+    org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.org.apache.neethi.3.0.2;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

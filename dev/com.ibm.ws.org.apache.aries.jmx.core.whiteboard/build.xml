@@ -1,0 +1,24 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.org.apache.aries.jmx.core.whiteboard" default="build">
+    <import file="../ant_build/public_imports/rejar_imports.xml"/>
+  
+    <property name="original.jar.name" value="org.apache.aries.jmx.core.whiteboard"/>
+    <property name="original.jar.version" value=""/>
+    <target name="package">
+    	<rejar version="1.0" src.jar="lib/org.apache.aries.jmx.core.whiteboard-1.*.jar">
+            <extra-headers>
+                <!-- Make org.osgi.service.provisioning and org.osgi.service.useradmin import optional -->
+                <attribute name="Import-Package" value="org.apache.aries.util;version=&quot;[1.0,2)&quot;,javax.management,javax.management.openmbean,org.osgi.framework;version=&quot;[1.6,2)&quot;,org.osgi.framework.wiring;version=&quot;[1.0,2)&quot;,org.osgi.jmx;version=&quot;[1.1,2)&quot;,org.osgi.jmx.framework;version=&quot;[1.7,2)&quot;,org.osgi.jmx.framework.wiring;version=&quot;[1.1,2)&quot;,org.osgi.jmx.service.cm;version=&quot;[1.3,2)&quot;,org.osgi.jmx.service.permissionadmin;version=&quot;[1.2,2)&quot;,org.osgi.jmx.service.provisioning;version=&quot;[1.2,2)&quot;,org.osgi.jmx.service.useradmin;version=&quot;[1.1,2)&quot;,org.osgi.service.cm;version=&quot;[1.4,2)&quot;,org.osgi.service.log;version=&quot;[1.3,2)&quot;,org.osgi.service.packageadmin;version=&quot;[1.2,2)&quot;,org.osgi.service.permissionadmin;version=&quot;[1.2,2)&quot;,org.osgi.service.provisioning;resolution:=&quot;optional&quot;;version=&quot;[1.2,2)&quot;,org.osgi.service.startlevel;version=&quot;[1.1,2)&quot;,org.osgi.service.useradmin;resolution:=&quot;optional&quot;;version=&quot;[1.1,2)&quot;,org.osgi.util.tracker;version=&quot;[1.5,2)&quot;"/>
+            </extra-headers>
+    	</rejar>
+    </target>
+</project>

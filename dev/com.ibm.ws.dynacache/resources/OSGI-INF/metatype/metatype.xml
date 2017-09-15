@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+<!--  TODO fix this setup.  It might be possible to do this more inappropriately, but I have no idea how -->
+ <Designate factoryPid="com.ibm.ws.cache">
+  <Object ocdref="com.ibm.ws.cache" />
+ </Designate>
+
+<OCD id="com.ibm.ws.cache" ibm:alias="distributedMap" name="%cache.config" description="%cache.config.desc" ibm:supportExtensions="true">
+  <AD id="jndiName"                           name="%jndiName"     				 description="%jndiName.desc"     			required="false" type="String"  ibm:unique="jndiName" default="${id}" />
+  <AD id="memorySizeInEntries"				  name="%memorySizeInEntries"		 description="%memorySizeInEntries.desc"	required="false" type="Integer" min="0"	default="2000"/>
+  <AD id="memorySizeInMB"					  name="%memorySizeInMB"			 description="%memorySizeInMB.desc"			required="false" type="Integer" min="-1" default="-1"/>
+  <AD id="highThreshold"					  name="%highThreshold"				 description="%highThreshold.desc"			required="false" type="Integer" min="-1" max="100" default="-1"/>
+  <AD id="lowThreshold"						  name="%lowThreshold"		   	 	 description="%lowThreshold.desc"			required="false" type="Integer" min="-1" max="100" default="-1"/>
+  <AD id="cacheProviderName"				  name="%cacheProviderName"		  	 description="%cacheProviderName.desc"		required="false" type="String"  default="default"/>
+  <AD id="cacheProvider.target"               name="internal"                    description="internal use only"            required="false" type="String"  default="(name=${cacheProviderName})" ibm:final="true" />
+  <AD id="libraryRef"                         name="%libraryRef"                 description="%libraryRef.desc"             required="false" type="String"  ibm:type="pid"  ibm:reference="com.ibm.ws.classloading.sharedlibrary" />            
+  <AD id="sharedLib.target"                   name="internal"                    description="internal use only"            required="false" type="String"  default="(service.pid=${libraryRef})" ibm:final="true" />       
+  <AD id="createCacheAtServerStartup"         name="internal"                    description="internal use only"            required="false" type="String" />
+</OCD>
+ 
+<Designate factoryPid="com.ibm.ws.cache.disk">
+  <Object ocdref="com.ibm.ws.cache.disk" />
+ </Designate>
+
+<OCD id="com.ibm.ws.cache.disk" ibm:childAlias="diskCache" name="%disk.config" description="%disk.config.desc" ibm:parentPid="com.ibm.ws.cache">
+  <AD id="sizeInEntries"					  name="%sizeInEntries"			   description="%sizeInEntries.desc"			required="false" type="Integer" min="0" default="100000"/>
+  <AD id="sizeInGB"							  name="%sizeInGB"		 	 	   description="%sizeInGB.desc"					required="false" type="Integer" min="3" default="3"/>
+  <AD id="evictionPolicy"					  name="%evictionPolicy"		   description="%evictionPolicy.desc"			required="false" type="String" default="RANDOM">
+	<Option label="%random"		value="RANDOM"/>
+	<Option label="%size"		value="SIZE"/>
+  </AD>
+  <AD id="highThreshold"					  name="%diskHighThreshold"		   description="%diskHighThreshold.desc"		required="false" type="Integer" min="0" max="100" default="80"/>
+  <AD id="lowThreshold"						  name="%diskLowThreshold"		   description="%diskLowThreshold.desc"			required="false" type="Integer" min="0" max="100" default="70"/>
+  <AD id="location"							  name="%location"		   		   description="%location.desc"					required="false" type="String"  ibm:type="location(dir)"/>
+  <AD id="flushToDiskOnStopEnabled"			  name="%flushToDiskOnStop"		   description="%flushToDiskOnStop.desc"		required="false" type="Boolean" default="false"/>
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.cache.cacheGroup">
+  <Object ocdref="com.ibm.ws.cache.cacheGroup" />
+</Designate>
+
+<OCD id="com.ibm.ws.cache.cacheGroup" ibm:childAlias="cacheGroup" name="%cacheGroup.config" description="%cacheGroup.config.desc" ibm:parentPid="com.ibm.ws.cache" ibm:supportExtensions="true">
+ <AD id="name"		name="%cacheGroup.name"		 description="%cacheGroup.name.desc"	required="false" type="String"  />
+</OCD>
+
+<Designate factoryPid="com.ibm.ws.cache.cacheGroup.member">
+  <Object ocdref="com.ibm.ws.cache.cacheGroup.member" />
+</Designate>
+
+<OCD id="com.ibm.ws.cache.cacheGroup.member" ibm:childAlias="member" name="%member.config" description="%member.config.desc" ibm:parentPid="com.ibm.ws.cache.cacheGroup">
+  <AD id="host"						  name="%host"		  		description="%host.desc"				required="false" type="String"		/>
+  <AD id="port"						  name="%port"			  	description="%port.desc"				required="false" type="Integer"		min="0"/>
+  <AD id="adapterBeanName"			  name="%adapterBeanName"	description="%adapterBeanName.desc"		required="true"  type="String"  	cardinality="1"	/>
+</OCD>
+
+</metatype:MetaData>

@@ -1,0 +1,90 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.microprofile.appConfig.converters.test;
+
+import java.io.IOException;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.eclipse.microprofile.config.Config;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+
+import com.ibm.ws.microprofile.appConfig.test.utils.AppConfigTestApp;
+
+/**
+ * server.env and microprofile-config.properties are also about 1K entries.
+ */
+public class TestDiscoveredConverters implements AppConfigTestApp {
+    /** {@inheritDoc} */
+
+    @Override
+    public String runTest(HttpServletRequest request) {
+
+        System.setProperty(DYNAMIC_REFRESH_INTERVAL_PROP_NAME, "" + 0);
+        ConfigBuilder b = ConfigProviderResolver.instance().getBuilder();
+        b.addDefaultSources();
+        b.addDiscoveredConverters();
+        // The implementation for the above will add the default and discovered converters
+        // (this is the intended behaviour regardless of any javadoc vagaries)
+        //
+        // com.ibm.ws.microprofile.appConfig-1.0_fat/test-applications/converters.war/resources/META-INF/services/org.eclipse.microprofile.config.spi.Converter
+        // Has:
+        // com.ibm.ws.microprofile.appConfig.converters.test.DiscoveredConverterDog
+        // com.ibm.ws.microprofile.appConfig.converters.test.DiscoveredConverterCat
+        //
+        // com.ibm.ws.microprofile.appConfig-1.0_fat/test-applications/converters.war/resources/META-INF/microprofile-config.properties
+        // Has:
+        //                dog=sound=whoof
+        //                cat=sound=meoow
+        // (there is no need to escape an '=' if it is not in the key)
+
+        Config c = b.build();
+
+        Dog otherDog = null;
+        Cat otherCat = null;
+        try {
+            otherDog = new Dog("sound=quack");
+            otherCat = new Cat("sound=moo");
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Now we can actually do the discovered converter magic...
+        Dog dog = c.getOptionalValue("dog", Dog.class).orElse(otherDog);
+        Cat cat = c.getOptionalValue("cat", Cat.class).orElse(otherCat);
+
+        boolean discoveredConverters = false;
+
+        discoveredConverters = dog != null && cat != null && dog.sound.equals("whoof") && cat.sound.equals("meoow");
+        boolean passed = discoveredConverters;
+
+        if (passed) {
+            return "PASSED";
+        } else {
+            StringBuffer result = new StringBuffer();
+            result.append("FAILED: ");
+            Iterable<String> names = c.getPropertyNames();
+            for (String name : names) {
+                result.append("\n" + name + "=" + c.getValue(name, String.class));
+            }
+            return result.toString();
+        }
+    }
+}

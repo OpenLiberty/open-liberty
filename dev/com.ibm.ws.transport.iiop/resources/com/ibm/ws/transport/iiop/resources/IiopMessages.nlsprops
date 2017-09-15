@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: The CORBA name server is now available at {0}.
+NAME_SERVER_AVAILABLE.explanation=This message is for informational purposes only.
+NAME_SERVER_AVAILABLE.useraction=No action is required.
+
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: The CORBA name server is no longer available at {0}.
+NAME_SERVER_UNAVAILABLE.explanation=This message is for informational purposes only.
+NAME_SERVER_UNAVAILABLE.useraction=No action is required.
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: The request to the secured server on the {0} host has failed because the current configuration does not have security enabled. You must configure client-side (outbound) Common Secure Interoperability Version 2 (CSIv2) by including a keyStore element and adding the appropriate version of the appSecurity feature in a server or the appropriate version of the appSecurityClient feature in an application client container.  
+PORT_ZERO.explanation=A request to the server on the indicated host has failed. The server that the request is being sent to has CSIv2 security enabled, but the current configuration does not. A client connecting to that server must also be configured with CSIv2 and Secure Sockets Layer (SSL) security.
+PORT_ZERO.useraction=You must configure client-side (outbound) Common Secure Interoperability Version 2 (CSIv2) by including a keyStore element and adding the appropriate version of the appSecurity feature in a server or the appropriate version of the appSecurityClient feature in an application client container. Consult documentation to determine the current version of the appSecurity or appSecurityClient features to add to your configuration and any required configuration. 

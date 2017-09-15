@@ -1,0 +1,15 @@
+--- cxf/branches/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/service/factory/Messages.properties	2013/02/27 07:34:40	1450657
++++ cxf/branches/2.6.x-fixes/rt/core/src/main/java/org/apache/cxf/service/factory/Messages.properties	2013/02/27 07:38:47	1450658
+@@ -22,12 +22,10 @@
+ INVALID_SCHEMA_URL=Could not load schema {0}
+ ERROR_READING_SCHEMA=There was an error reading the schema {0}.
+ COULD_NOT_FIND_PORTTYPE = Could not find portType named {0}
+-COULD_NOT_SET_WRAPPER_STYLE = Service class: {0} contains overloaded operation can not use wrapper style
+ USING_PROXY_FOR_SERVICE = Service class: {0} is a java.lang.reflect.Proxy instance.  This is known not to work well as \
+   annotations on the real instance are not available.  We suggest overriding the ServiceClass via spring config or \
+   other configuration. (serviceClass/implementorClass attributes on the endpoint/server spring config entry)
+ REFERENCE_TO_UNDEFINED_TYPE = Schema element {0} references undefined type {1} for service {2}.
+-COULD_NOT_FIND_PART = Could not find a message part matching name {0}.  Possible values are {1}.
+ UNMAPPABLE_PORT_TYPE= Service class {0} method {1} part {2} cannot be mapped to schema. Check for use of a JAX-WS-specific type \
+   without the JAX-WS service factory bean.
+ INTRACTABLE_PART= Message part {0} of Message {1} cannot be processed. This can be caused by the use of JAX-WS-specific types \

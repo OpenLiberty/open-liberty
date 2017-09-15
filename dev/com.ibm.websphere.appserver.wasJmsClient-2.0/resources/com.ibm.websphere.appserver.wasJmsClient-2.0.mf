@@ -1,0 +1,28 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: javax.jms; version="2.0"; type=spec,
+ com.ibm.websphere.sib.api.jms; type=internal
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: wasJmsClient-2.0
+Subsystem-Content: com.ibm.websphere.appserver.internal.jms-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.channelfw-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.ws.messaging.common; version="[1.0.0,1.0.200)",
+ com.ibm.ws.resource; version="[1.0.0,1.0.200)",
+ com.ibm.ws.messaging.utils; version="[1.0.0,1.0.200)",
+ com.ibm.ws.messaging.jms.common; version="[1.0.0,1.0.200)",
+ com.ibm.ws.messaging.jms.2.0; version="[2.0.0,2.0.200)",
+ com.ibm.ws.messaging.comms.client; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.wasJmsClient-2.0
+Subsystem-ManifestVersion: 1
+Subsystem-Name: JMS 2.0 Client for Message Server
+Subsystem-SymbolicName: com.ibm.websphere.appserver.wasJmsClient-2.0; visibility:=public; singleton:=true
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

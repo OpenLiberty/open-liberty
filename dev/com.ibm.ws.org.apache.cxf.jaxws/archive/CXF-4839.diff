@@ -1,0 +1,10 @@
+--- cxf/trunk/rt/core/src/main/java/org/apache/cxf/service/factory/ReflectionServiceFactoryBean.java	2013/02/10 07:09:18	1444483
++++ cxf/trunk/rt/core/src/main/java/org/apache/cxf/service/factory/ReflectionServiceFactoryBean.java	2013/02/19 19:55:08	1447887
+@@ -2589,6 +2589,7 @@
+         try {
+             definition = getBus().getExtension(WSDLManager.class).getDefinition(wsdlUrl);
+         } catch (WSDLException e) {
++            LOG.log(Level.WARNING, "Failed to parse WSDL", e);
+             return true;
+         }
+         if (definition.getPortTypes().isEmpty() && definition.getImports().isEmpty()) {

@@ -1,0 +1,31 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="org.eclipse.osgi" default="build">
+  <import file="../ant_build/public_imports/rejar_imports.xml"/>
+    
+  <patternset id="publish.bundles">
+    <include name="**/*org.eclipse.osgi*"/>
+  </patternset>
+  
+  <target name="package">
+    <!-- Don't munge the symbolic name for the eclipse core bundle to avoid breaking all the Eclipse bundles that uses
+    Require-Bundle and depends on the Eclipse SPI we export. The version we pass through is ignored. -->
+    <rejar version="3.11.4" 
+           src.jar="lib/org.eclipse.osgi_*.jar" 
+           original.jar.name="org.eclipse.osgi"
+           original.jar.version="3.11.4"
+           skip.ibmise.name="true"
+           singleton="true"
+           no.import.package="true"
+           useGlobalMicro="false"/>
+  </target>
+  
+</project>

@@ -1,0 +1,19 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: joda-time.joda-time
+Bundle-Description: joda-time joda-time; version=1.6.2
+Bundle-SymbolicName: com.ibm.ws.org.joda.time.1.6.2
+
+WS-TraceGroup: WSS4J
+
+Export-Package: \
+ org.joda.time, \
+ org.joda.time.chrono, \
+ org.joda.time.format
+
+Private-Package: org.joda.time.*
+
+Include-Resource: \
+ @${repo;joda-time:joda-time;1.6.2}!/org/joda/time/**/*xml,\
+ @${repo;joda-time:joda-time;1.6.2}!/!(META-INF/MANIFEST.MF|META-INF/maven/*|org/*)

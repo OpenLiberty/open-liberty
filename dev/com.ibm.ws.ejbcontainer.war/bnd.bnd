@@ -1,0 +1,49 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: EJB Container for WAR
+Bundle-SymbolicName: com.ibm.ws.ejbcontainer.war
+Bundle-Description: EJB Container for WAR; version=${bVersion}
+
+WS-TraceGroup: EJBContainer
+
+Private-Package:\
+  com.ibm.ws.ejbcontainer.war.internal.*
+
+Service-Component:\
+  com.ibm.ws.ejbcontainer.war.runtime;\
+    implementation:=com.ibm.ws.ejbcontainer.war.internal.EJBWARRuntimeImpl;\
+    provide:=com.ibm.ws.container.service.state.ModuleStateListener;\
+    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
+    ejbWARMetaDataRuntime/setEJBWARMetaDataRuntime=com.ibm.ws.ejbcontainer.war.internal.EJBWARMetaDataRuntime;\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.ejbcontainer.war.metaDataRuntime;\
+    implementation:=com.ibm.ws.ejbcontainer.war.internal.EJBWARMetaDataRuntime;\
+    provide:='com.ibm.ws.container.service.metadata.extended.NestedModuleMetaDataFactory,\
+              com.ibm.ws.container.service.metadata.extended.ModuleMetaDataExtender,\
+              com.ibm.ws.ejbcontainer.war.internal.EJBWARMetaDataRuntime';\
+    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
+    metaDataService=com.ibm.ws.container.service.metadata.MetaDataService;\
+    metaDataSlotService=com.ibm.ws.container.service.metadata.MetaDataSlotService;\
+    properties:="service.vendor=IBM,type:String=web,service.ranking:Integer=-2147483648"
+
+-buildpath: \
+	com.ibm.ws.logging,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.ejbcontainer;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component

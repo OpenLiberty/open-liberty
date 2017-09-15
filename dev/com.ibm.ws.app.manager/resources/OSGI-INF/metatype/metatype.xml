@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+
+
+	<OCD description="%appmgmt.desc" name="%appmgmt.name" id="com.ibm.ws.app.management" ibm:alias="applicationManager">
+		<AD id="autoExpand" name="%appmgmt.autoExpand" description="%appmgmt.autoExpand.desc" required="false" type="Boolean" default="false"/>
+		<AD id="startTimeout" name="%appmgmt.startTimeout" description="%appmgmt.startTimeout.desc" required="false" type="String" default="30s" ibm:type="duration(s)" />
+		<AD id="stopTimeout" name="%appmgmt.stopTimeout" description="%appmgmt.stopTimeout.desc" required="false" type="String" default="30s" ibm:type="duration(s)" />
+	</OCD>
+	<Designate pid="com.ibm.ws.app.management">
+		<Object ocdref="com.ibm.ws.app.management"/>
+	</Designate>
+	
+    <OCD description="%appmgr.desc" name="%appmgr.name" id="com.ibm.ws.app.manager" ibm:supportExtensions="true" ibm:alias="application">
+        <AD id="name" name="%appmgr.name.name" description="%appmgr.name.desc" required="false" type="String"/>
+        <AD id="location" name="%appmgr.location.name" description="%appmgr.location.desc" type="String" required="true" ibm:type="location"/>
+        <AD id="type" name="%appmgr.type.name" description="%appmgr.type.desc" type="String" required="false"/>
+        <AD id="context-root" name="%appmgr.contextRoot.name" description="%appmgr.contextRoot.desc" type="String" required="false"/>
+        <AD id="autoStart" name="%appmgr.autoStart.name" description="%appmgr.autoStart.desc" type="Boolean" required="false" default="true"/>
+        <AD id="suppressUncoveredHttpMethodWarning" name="%appmgr.suppressUncoveredHttpMethodWarning.name" description="%appmgr.suppressUncoveredHttpMethodWarning.desc" type="Boolean" required="false" default="false"/>     
+    </OCD>
+    <Designate factoryPid="com.ibm.ws.app.manager">
+        <Object ocdref="com.ibm.ws.app.manager"/>
+    </Designate>
+
+    <OCD description="%appmgrmon.desc" name="%appmgrmon.name" id="com.ibm.ws.app.manager.monitor" ibm:alias="applicationMonitor">   
+        <AD id="pollingRate" name="%appmgrmon.pollingrate.name" description="%appmgrmon.pollingrate.desc" required="false" type="String" ibm:type="duration" default="500ms"/>
+        <AD id="dropins" name="%appmgrmon.location.name" description="%appmgrmon.location.desc" type="String" required="false" default="dropins" ibm:type="location(dir)"/>
+        <AD id="dropinsEnabled" name="%appmgrmon.enable.name" description="%appmgrmon.enable.desc" type="Boolean" required="false" default="true"/>
+        <AD id="updateTrigger" name="%appupdatemon.trigger.name" description="%appupdatemon.trigger.desc" type="String" required="false" default="polled">
+            <Option label="%appupdatemon.trigger.timed" value="polled"/>
+            <Option label="%appupdatemon.trigger.external" value="mbean"/>
+            <Option label="%appupdatemon.trigger.disabled" value="disabled"/>
+        </AD>
+    </OCD>
+    <Designate pid="com.ibm.ws.app.manager.monitor">
+        <Object ocdref="com.ibm.ws.app.manager.monitor"/>
+    </Designate>
+</metatype:MetaData>

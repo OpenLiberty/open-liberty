@@ -1,0 +1,138 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: JAX-WS ClientContainer
+Bundle-SymbolicName: com.ibm.ws.jaxws.clientcontainer
+Bundle-Description: IBM JAX-WS ClientContainer; version=${bVersion}
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+# in cxf-rt-frontend-jaxws-2.6.2 bundle, we exposed: 
+# META-INF/services/javax.xml.ws.spi.Provider = com.ibm.ws.jaxws.client.LibertyProviderImpl
+# so we need make com.ibm.ws.jaxws.client;thread-context=true
+Export-Package: \
+    com.ibm.ws.jaxws, \
+    com.ibm.ws.jaxws.bus, \
+    com.ibm.ws.jaxws.client;thread-context=true, \
+    com.ibm.ws.jaxws.client.injection, \
+    com.ibm.ws.jaxws.metadata, \
+    com.ibm.ws.jaxws.metadata.builder, \
+    com.ibm.ws.jaxws.security, \
+    com.ibm.ws.jaxws.support, \
+    com.ibm.ws.jaxws.utils, \
+    com.ibm.wsspi.jaxws
+   
+Import-Package: \
+   javax.xml.bind.*;version="[2.2,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
+   com.ibm.ws.javaee.ddmodel.wsbnd, \
+   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   *
+
+Private-Package:\
+   com.ibm.ws.jaxws.*, \
+   com.ibm.wsspi.jaxws
+
+# Use Dynamic Import Packages for JAXB Context Factory, 
+# with that, we could work without ResourceProvider Hook
+DynamicImport-Package: com.sun.xml.bind.v2, \
+    com.ibm.xml.xlxp2.jaxb, \
+    com.ibm.xml.xlxp2.api.stax, \
+    com.ibm.xml.xlxp2.api.wssec
+    
+
+-dsannotations: com.ibm.ws.jaxws.metadata.builder.AnnotationEndpointInfoConfigurator,\
+  com.ibm.ws.jaxws.metadata.builder.WebServicesBndEndpointInfoConfigurator,\
+  com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory
+  
+
+Service-Component: \
+  com.ibm.wsspi.jaxws.JaxWsService; \
+     modified:='modified'; \
+     immediate:=true; \
+     configuration-policy:=optional; \
+     activate:=activate; \
+     deactivate:=deactivate; \
+     applicationBusListener/registerApplicationBusListener=com.ibm.ws.jaxws.bus.LibertyApplicationBusListener*; \
+     extensionProvider/registerExtensionProvider=com.ibm.ws.jaxws.bus.ExtensionProvider*; \
+     implementation:=com.ibm.ws.jaxws.support.JaxWsServiceImpl; \
+     provide:='com.ibm.wsspi.jaxws.JaxWsService'; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.injection.WebServiceContextObjectFactoryInfo; \
+     implementation:=com.ibm.ws.jaxws.injection.WebServiceContextObjectFactoryInfo; \
+     provide:='com.ibm.wsspi.injectionengine.ObjectFactoryInfo'; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.support.jaxWsModuleMetaDataListener; \
+    implementation:=com.ibm.ws.jaxws.support.JaxWsModuleMetaDataListener; \
+    provide:='com.ibm.ws.container.service.metadata.ModuleMetaDataListener'; \
+    metaDataSlotService=com.ibm.ws.container.service.metadata.MetaDataSlotService; \
+    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
+    jaxWsModuleInfoBuilders/registerJaxWsModuleInfoBuilder=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder*; \
+    configuration-policy:=optional; \
+    immediate:=true; \
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.client.injection.webServiceRefProcessorProvider;\
+    implementation:=com.ibm.ws.jaxws.client.injection.WebServiceRefProcessorProvider; \
+	provide:=com.ibm.wsspi.injectionengine.InjectionProcessorProvider;\
+	configuration-policy:=optional,\
+  com.ibm.ws.jaxws.support.jaxWsInjectionMetaDataListener;\
+    implementation:=com.ibm.ws.jaxws.support.JaxWsInjectionMetaDataListener;\
+    provide:='com.ibm.wsspi.injectionengine.InjectionMetaDataListener';\
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.metadata.builder.jaxWsModuleInfo.adapter; \
+     implementation:=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoAdapter; \
+     provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter; \
+     properties:="service.vendor=IBM,toType=com.ibm.ws.jaxws.metadata.JaxWsModuleInfo", \
+  com.ibm.ws.jaxws.http.transport.factory.provider; \
+     configuration-policy:=optional; \
+     implementation:=com.ibm.ws.jaxws.support.LibertyHTTPTransportFactoryProvider; \
+     provide:='com.ibm.ws.jaxws.bus.ExtensionProvider'; \
+     properties:="service.vendor=IBM"
+
+Include-Resource: \
+   OSGI-INF=resources/OSGI-INF
+
+instrument.classesExcludes: com/ibm/ws/jaxws/clientcontainer/internal/resources/*.class
+
+-buildpath.bootclasspath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
+	${javac.bootclasspath.${javac.source}}
+
+-buildpath: \
+	org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
+	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
+	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
+	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20170216-1739, \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.javaee.ddmodel.wsbnd;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.ws.clientcontainer;version=latest,\
+	com.ibm.websphere.appserver.spi.classloading;version=latest,\
+	com.ibm.websphere.javaee.wsdl4j.1.2;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

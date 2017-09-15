@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JAX-WS CDI
+Bundle-SymbolicName: com.ibm.ws.jaxws.cdi
+Bundle-Description: IBM JAX-WS CDI support; version=${bVersion}
+
+# jaxws-cdi is part of EE7 and therefore requires java 1.7
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
+
+Import-Package: \
+   *
+
+# If you need use MESSAGE, you must enable this Private-Package, or message will translate wrong
+Private-Package:\
+   com.ibm.ws.jaxws.cdi.*
+
+-dsannotations: com.ibm.ws.jaxws.cdi.component.*    
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.jaxws.clientcontainer;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.managedobject;version=latest

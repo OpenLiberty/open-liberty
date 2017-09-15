@@ -1,0 +1,3087 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+  
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+  <!-- match generated nls classes: return mutable type -->
+  <Match> 
+    <Class name="~.*\.resources\..*" />
+    <Method name="getContents"/>
+    <Bug code="EI" />
+  </Match>
+
+  <!-- PII_CHANGE_OF_MESSAGE_TEXT: 'WARN_MANIFEST_CLASSPATH_NOT_FOUND', 'SRVE9967W'; updated by 136494. -->
+  <!-- The ending ":" in the field name is correct. -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.resources.LShimMessages"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Field name="SRVE9967W:"/>
+    <Bug code="PII"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_isFinished"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_outputBuffer"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_bbOut"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_out"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_bbOutInternal"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_outInternal"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_bbOut"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_out"/>
+    <Bug pattern="SE_BAD_FIELD_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="_writer"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Field name="outputMethodListener"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Bug pattern="SE_NO_SUITABLE_CONSTRUCTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.container.ErrorPage"/>
+    <Method name="getException" signature="()Ljava/lang/Class;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.container.DeployedModule"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.container.DeploymentUtils$JarCacheDisabler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.VirtualHost"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Method name="updateRequestMapper"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Method name="loadVirtualHosts" signature="(Lcom/ibm/ws/sample/webcontainer/WebContainerConfiguration;Ljava/util/Dictionary;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="self"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainerConfiguration"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainerConfiguration"/>
+    <Method name="getVirtualHostConfig" signature="(Ljava/util/Dictionary;)[Lcom/ibm/ws/http/VirtualHost;"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.collaborator.CollaboratorServiceImpl"/>
+    <Method name="unsetWebAppInvocationCollaborator" signature="(Lorg/osgi/framework/ServiceReference;)V"/>
+    <Bug pattern="GC_UNRELATED_TYPES"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.extension.DefaultExtensionProcessor"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Bug pattern="UCF_USELESS_CONTROL_FLOW"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.extension.InvokerExtensionProcessor"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.extension.WebExtensionProcessor"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.metadata.WebModuleMetaDataImpl"/>
+    <Field name="wccmd"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.servlet.ServletWrapper"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext"/>
+    <Field name="nextContext"/>
+    <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="getResource"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED,DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebGroup"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebGroupConfiguration"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="loadCipherToBit" signature="()V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="destroy" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="loadCipherToBit" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="removeDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="removeDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="removeDir" signature="(Ljava/io/File;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="addToCache" signature="(Ljavax/servlet/http/HttpServletRequest;Lcom/ibm/wsspi/webcontainer/RequestProcessor;Lcom/ibm/ws/webcontainer/webapp/WebApp;)V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="appInstallBegun"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="collabHelper"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="self"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="applicationListeners"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="extensionFactories"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="filterErrorListeners"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="filterInvocationListeners"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="filterListeners"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="servletErrorListeners"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="servletInvocationListeners"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="servletListeners"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="webConProperties"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="decodePlusSign"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="loadCipherToBit" signature="()V"/>
+    <Bug pattern="OBL_UNSATISFIED_OBLIGATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="loadCipherToBit" signature="()V"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="addWebApplication" signature="(Lcom/ibm/ws/container/DeployedModule;)V"/>
+    <Field name="appInstallBegun"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="initialize" signature="(Lcom/ibm/ws/webcontainer/WebContainerConfiguration;)V"/>
+    <Field name="collabHelper"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="initialize" signature="(Lcom/ibm/ws/webcontainer/WebContainerConfiguration;)V"/>
+    <Field name="_initialized"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="removeWebApplication" signature="(Lcom/ibm/ws/container/DeployedModule;)V"/>
+    <Field name="_cacheIsFull"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer$PathInfoHelper"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Method name="createServletWrapper" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletConfig;)Lcom/ibm/wsspi/webcontainer/servlet/IServletWrapper;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Method name="handleRequest" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Method name="handleRequest" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Method name="isAvailable" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Method name="isAvailableInDocumentRoot" signature="(Ljava/lang/String;Z)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Method name="handleRequest" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Bug pattern="HRS_REQUEST_PARAMETER_TO_HTTP_HEADER"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor"/>
+    <Method name="handleRequest" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Bug pattern="TR_BAD_TRACENLS_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="canRead" signature="()Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="canWrite" signature="()Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="delete" signature="()Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="deleteOnExit" signature="()V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="exists" signature="()Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="isDirectory" signature="()Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="isFile" signature="()Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Method name="isHidden" signature="()Z"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile$1"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile$2"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile$3"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile$5"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile$6"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile$7"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.DefaultExtensionProcessor$Java2SecurityFile$8"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.FileServletWrapper"/>
+    <Method name="writeResponseToClient" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;Lcom/ibm/wsspi/webcontainer/servlet/IExtendedRequest;)V"/>
+    <Bug pattern="BC_IMPOSSIBLE_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.FileServletWrapper"/>
+    <Field name="listeners"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.FileServletWrapper"/>
+    <Field name="nServicing"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.FileServletWrapper"/>
+    <Method name="writeByBytes" signature="(Ljavax/servlet/http/HttpServletResponse;Ljavax/servlet/ServletOutputStream;)V"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.FileServletWrapper"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/ws/webcontainer/extension/DefaultExtensionProcessor;)V"/>
+    <Field name="fileWrapperEvents"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Field name="nServicing"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Method name="startRequest" signature="(Ljavax/servlet/ServletRequest;)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Field name="cacheWrappers"/>
+    <Bug pattern="MSF_MUTABLE_SERVLET_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Field name="unavailableMessage"/>
+    <Bug pattern="MSF_MUTABLE_SERVLET_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Method name="isDefaultServlet" signature="()Z"/>
+    <Bug pattern="NS_DANGEROUS_NON_SHORT_CIRCUIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.impl.HttpSessionFacadeImpl"/>
+    <Bug pattern="SE_NO_SUITABLE_CONSTRUCTOR_FOR_EXTERNALIZATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.impl.HttpSessionImpl"/>
+    <Bug pattern="SE_NO_SUITABLE_CONSTRUCTOR_FOR_EXTERNALIZATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.impl.SessionAffinityManagerImpl"/>
+    <Method name="analyzeSSLRequest" signature="(Ljavax/servlet/ServletRequest;Ljava/lang/String;)Lcom/ibm/wsspi/session/SessionAffinityContext;"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.impl.SessionAffinityManagerImpl"/>
+    <Method name="setSIPCookie" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;Ljava/lang/String;)V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.impl.HttpSessionContextImpl"/>
+    <Method name="unlockSession" signature="()Ljavax/servlet/http/HttpSession;"/>
+    <Bug pattern="NN_NAKED_NOTIFY"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.container.DeploymentUtils"/>
+    <Method name="addJarClassPathUrls" signature="(Ljava/util/List;Lcom/ibm/ws/adaptable/module/api/Entry;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.impl.SessionAffinityManagerImpl"/>
+    <Method name="setCookie" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;Lcom/ibm/wsspi/session/SessionAffinityContext;Ljava/lang/Object;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTOutputStream"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="getServerName" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="getServerName" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="getDirectConnectionPeerCertificates" signature="()[Ljava/security/cert/X509Certificate;"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="getInputStreamData" signature="()Ljava/util/HashMap;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="getInputStreamData" signature="()Ljava/util/HashMap;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="parseParameters" signature="()V"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="startAsync" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)Ljavax/servlet/AsyncContext;"/>
+    <Bug pattern="TR_BAD_TRACENLS_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest$QSListItem"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest$SRTServletRequestHelper"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest$SRTServletRequestHelper"/>
+    <Field name="asyncListenerEntryList"/>
+    <Bug pattern="UUF_UNUSED_FIELD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData"/>
+    <Bug pattern="BC_BAD_CAST_TO_CONCRETE_COLLECTION"/>
+  </Match>
+
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Method name="setHeader" signature="([BLjava/lang/String;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Method name="sendError" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>  
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="_bufferedOut"/>
+    <Bug pattern="UR_UNINIT_READ"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ApplicationErrorUtils"/>
+    <Method name="getTrimmedStackHtml" signature="(Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ApplicationErrorUtils"/>
+    <Method name="getTrimmedStackHtml" signature="(Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ApplicationErrorUtils"/>
+    <Method name="getTrimmedStackHtml" signature="(Ljava/lang/Throwable;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ApplicationErrorUtils"/>
+    <Method name="issueAppExceptionMessage"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.MetaInfResourcesFileUtils"/>
+    <Method name="findInMetaInfResource"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.MetaInfResourcesFileUtils"/>
+    <Method name="getInputStream"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.MetaInfResourcesFileUtils"/>
+    <Method name="getResourcePaths"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.MetaInfResourcesFileUtils"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.MetaInfResourcesFileUtils"/>
+    <Method name="findInMetaInfResource"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.MetaInfResourcesFileUtils"/>
+    <Method name="getResourcePaths"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.ResourceRef"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="handleRequest" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="initialize" signature="()V"/>
+    <Bug pattern="DC_DOUBLECHECK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getResource" signature="(Ljava/lang/String;)Ljava/net/URL;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;Z)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;Z)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;Z)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="isDisableServletAuditLogging" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="loadWebAppAttributes" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="sendError" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;Lcom/ibm/websphere/servlet/error/ServletErrorReport;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="addDynamicServlet" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Properties;)V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="handleRequest" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="addDynamicServlet" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/util/Properties;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getErrorPageDispatcher" signature="(Ljavax/servlet/ServletRequest;Lcom/ibm/websphere/servlet/error/ServletErrorReport;)Ljavax/servlet/RequestDispatcher;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="isErrorPageDefined" signature="(I)Z"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="sendError" signature="(Ljavax/servlet/http/HttpServletRequest;Ljavax/servlet/http/HttpServletResponse;Lcom/ibm/websphere/servlet/error/ServletErrorReport;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Bug pattern="MF_CLASS_MASKS_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Field name="disableServletAuditLogging"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Field name="WELCOME_FILE_LIST"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Field name="prependSlashToResource"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="getTempDirectory" signature="(Ljava/lang/String;ZZ)Ljava/lang/String;"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="loadWebAppAttributes" signature="()V"/>
+    <Bug pattern="WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp$2"/>
+    <Bug pattern="SE_BAD_FIELD_INNER_CLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp$EnvObject"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp$JSPClassLoadersMap"/>
+    <Bug pattern="SE_BAD_FIELD_INNER_CLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp$JSPClassLoadersMap"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppConfiguration"/>
+    <Method name="isFileServingEnabled" signature="()Z"/>
+    <Field name="disallowAllFileServingProp"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppConfiguration"/>
+    <Method name="isServeServletsByClassnameEnabled" signature="()Z"/>
+    <Field name="disallowServeServletsByClassnameProp"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext"/>
+    <Method name="convertRelativeURIToURL" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppDispatcherContext"/>
+    <Method name="setRequestURI" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher"/>
+    <Field name="dispatcherRethrowSER"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.osgi.extension.WebExtensionProcessor"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.osgi.util.ExtendedDocumentRootUtils"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.osgi.WebAppInfo"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Field name="_initialized"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainerConfiguration"/>
+    <Method name="setConfiguration" signature="(Ljava/util/Dictionary;)V"/>
+    <Local name="properties"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Field name="ERROR_PAGE_COMPATIBILITY"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Field name="MODIFIED_FNF_BEHAVIOR"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Field name="SERVLET_DESTROY_WAIT_TIME"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Field name="SUPPRESS_HEADERS_IN_REQUEST"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Field name="SUPPRESS_HTML_RECURSIVE_ERROR_OUTPUT"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Field name="THROW_MISSING_JSP_EXCEPTION"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Field name="customProps"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="parseMultipart" />
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+   <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="parseMultipart" />
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="prepareMultipart" />
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest$4"/>
+    <Method name="run" />
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest$4"/>
+    <Method name="prepareMultipart" />
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.metadata.WebComponentMetaDataImpl"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WCCustomProperties"/>
+    <Bug pattern="MS_CANNOT_BE_FINAL"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Method name="transferResponse" signature="(Ljavax/servlet/http/HttpServletResponse;)V"/>
+    <Local name="i"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.container.ErrorPage"/>
+    <Method name="getException" signature="()Ljava/lang/Class;"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.container.ErrorPage"/>
+    <Method name="getException" signature="(Ljava/lang/ClassLoader;)Ljava/lang/Class;"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.VirtualHost"/>
+    <Method name="getRedirectPort" signature="([Lcom/ibm/ws/http/Alias;)I"/>
+    <Local name="nfe"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Method name="discriminate" signature="(Lcom/ibm/websphere/http/HttpRequest;)Z"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.container.DeploymentUtils$JarCacheDisabler"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Local name="e"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.response.IResponseImpl"/>
+    <Method name="writeHeaders"/>
+    <Local name="ioe"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.response.IResponseImpl"/>
+    <Method name="writeHeaders" signature="()V"/>
+    <Local name="ioe"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator"/>
+    <Method name="tryDetermineHostName" />
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match> 
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator"/>
+    <Method name="generateXML" />
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match> 
+ 
+   <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator"/>
+    <Method name="generateXML" />
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match> 
+ 
+   <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator$PluginConfigData"/>
+    <Bug pattern="NM_FIELD_NAMING_CONVENTION"/>
+  </Match> 
+       
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator$ServerClusterData"/>
+    <Bug pattern="NM_FIELD_NAMING_CONVENTION"/>
+  </Match>  
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator$ServerData"/>
+    <Method name="createTransportData"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator$ServerClusterData"/>
+    <Method name="createServerData"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator"/>
+    <Method name="tryDetermineHostName"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>  
+   
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.VirtualHost"/>
+    <Method name="handleRequest" signature="(Ljavax/servlet/ServletRequest;Ljavax/servlet/ServletResponse;)V"/>
+    <Local name="cce"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <!-- Pre-existing bad call to trace -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Method name="getVirtualHost" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Method name="registerMBeans"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.WebContainer"/>
+    <Method name="deregisterMBeans"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>  
+
+  <!-- debug calls guarded by trace -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="~(push|pop)ParameterStack" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="initializeNonDDRepresentableAnnotation"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.DirectoryBrowsingServlet"/>
+    <Method name="doGet"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.DirectoryBrowsingServlet"/>
+    <Method name="fillTableRows"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.DynamicVirtualHost"/>
+    <Method name="addSecureRedirect"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainerConfiguration"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="executorRetrieved"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Method name="startWithJavaThread" signature="(Ljava/lang/Runnable;Z)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="completePending"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="completeRunnable"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="dispatchAllowed"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="dispatchPending"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="dispatchRunnable"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="executorRetrieved"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Field name="wcConfig"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Method name="startWithJavaThread" signature="(Ljava/lang/Runnable;Z)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Method name="dispatch"/>
+    <Bug pattern="TR_BAD_TRACENLS_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.response.IResponseImpl"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_WRONG_CLASS_NAME"/>
+  </Match>
+  
+  <Match>
+  <Class name="com.ibm.ws.webcontainer.WebContainerConfiguration"/>
+  <Field name="logger"/>
+  <Bug pattern="MS_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="executorRetrieved"/>
+  <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="completePending"/>
+  <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="completeRunnable"/>
+  <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="dispatchAllowed"/>
+  <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="dispatchPending"/>
+  <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="dispatchRunnable"/>
+  <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="executorRetrieved"/>
+  <Bug pattern="MS_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="logger"/>
+  <Bug pattern="MS_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+  <Field name="wcConfig"/>
+  <Bug pattern="MS_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.DispatchRunnable"/>
+  <Method name="popContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.DispatchRunnable"/>
+  <Method name="popContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.DispatchRunnable"/>
+  <Method name="pushContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.DispatchRunnable"/>
+  <Method name="resetContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.DispatchRunnable"/>
+  <Method name="run" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.DispatchRunnable"/>
+  <Field name="logger"/>
+  <Bug pattern="MS_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.WrapperRunnableImpl"/>
+  <Field name="running"/>
+  <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.WrapperRunnableImpl"/>
+  <Method name="popContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.WrapperRunnableImpl"/>
+  <Method name="popContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.WrapperRunnableImpl"/>
+  <Method name="pushContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.WrapperRunnableImpl"/>
+  <Method name="resetContextData" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.WrapperRunnableImpl"/>
+  <Method name="run" signature="()V"/>
+  <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.async.WrapperRunnableImpl"/>
+  <Field name="logger"/>
+  <Bug pattern="MS_SHOULD_BE_FINAL"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+  <Method name="_finish" signature="()V"/>
+  <Field name="_isFinished"/>
+  <Bug pattern="DC_DOUBLECHECK"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+  <Method name="getCookies" signature="()[Ljavax/servlet/http/Cookie;"/>
+  <Field name="_cookies"/>
+  <Bug pattern="EI_EXPOSE_REP"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+  <Method name="getHeaderTable" signature="()[Ljava/util/Vector;"/>
+  <Field name="headerTable"/>
+  <Bug pattern="EI_EXPOSE_REP"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+  <Method name="getOutputBuffer" signature="()[B"/>
+  <Field name="_outputBuffer"/>
+  <Bug pattern="EI_EXPOSE_REP"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet.response.StoredResponse$InnerEnumeration"/>
+  <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator"/>
+  <Method name="generateXML" signature="(Ljava/lang/String;Ljava/lang/String;Lcom/ibm/ws/webcontainer/osgi/WebContainer;Lcom/ibm/ws/webcontainer/osgi/DynamicVirtualHostManager;Lcom/ibm/wsspi/kernel/service/location/WsLocationAdmin;)V"/>
+  <Bug pattern="TR_NULL_RESOURCE_BUNDLE"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator"/>
+  <Method name="generateXML" signature="(Ljava/lang/String;Ljava/lang/String;Lcom/ibm/ws/webcontainer/osgi/WebContainer;Lcom/ibm/ws/webcontainer/osgi/DynamicVirtualHostManager;Lcom/ibm/wsspi/kernel/service/location/WsLocationAdmin;)V"/>
+  <Bug pattern="TR_NULL_RESOURCE_BUNDLE"/>
+</Match>
+
+<Match>
+  <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+  <Method name="_finish" signature="()V"/>
+  <Bug pattern="DC_DOUBLECHECK"/>
+</Match>
+  
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.EncodingUtils"/>
+    <Method name="isCharsetSupported"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.EncodingUtils"/>
+    <Field name="setContentTypeBySetHeader"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>  
+  
+    <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="handleExtendedDocumentRoots" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="handleExtendedDocumentRoots" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="getLastModifiedMatchedFile" signature="()J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="handleExtendedDocumentRoots" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="handleExtendedDocumentRoots" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ExtendedDocumentRootUtils"/>
+    <Method name="getResourcePaths" signature="(Ljava/lang/String;)Ljava/util/Set;"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.FileResource"/>
+    <Method name="getIS" signature="()Ljava/io/InputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.FileResource"/>
+    <Method name="getLastModified"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ZipFileResource"/>
+    <Method name="getIS" signature="()Ljava/io/InputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ZipFileResource"/>
+    <Method name="getZipEntry" signature="()Ljava/util/zip/ZipEntry;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ZipFileResource"/>
+    <Method name="getZipFile" signature="()Ljava/util/zip/ZipFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ZipFileResource"/>
+    <Method name="getLastModified"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.webcontainer.util.DocumentRootUtils"/>
+    <Method name="getInputStream" signature="()Ljava/io/InputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.DocumentRootUtils"/>
+    <Method name="getLastModifiedMatchedFile" signature="()J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.DocumentRootUtils"/>
+    <Method name="handleDocumentRoots" signature="(Ljava/lang/String;ZZZLjava/util/Map;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.DocumentRootUtils"/>
+    <Method name="checkEDR" signature="(Lcom/ibm/ws/webcontainer/util/ExtendedDocumentRootUtils;Ljava/lang/String;)Z"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.DocumentRootUtils"/>
+    <Method name="getLastModified"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Method name="_loadFilter" signature="(Ljava/lang/String;)Lcom/ibm/ws/webcontainer/filter/FilterInstanceWrapper;"/>
+    <Bug pattern="TR_BAD_TRACENLS_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/webcontainer/webapp/WebAppConfiguration;Lcom/ibm/ws/webcontainer/webapp/WebApp;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/webcontainer/webapp/WebAppConfiguration;Lcom/ibm/ws/webcontainer/webapp/WebApp;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/webcontainer/webapp/WebAppConfiguration;Lcom/ibm/ws/webcontainer/webapp/WebApp;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/webcontainer/webapp/WebAppConfiguration;Lcom/ibm/ws/webcontainer/webapp/WebApp;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.container.config.WebAppConfigurator"/>
+    <Method name="configure" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.container.config.WebAppConfigurator"/>
+    <Method name="getErrorMessageText"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <!-- Allow these specific methods to make calls to methods that should be avoided -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.servlet.EntryServletWrapper"/>
+    <Method name="getLastModified"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="getRealPath"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED,DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.EntryResource"/>
+    <Method name="getLastModified"/>
+    <Bug pattern="DJV_LIBERTY_METHOD_TO_BE_AVOIDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="addClassToHandlesTypesStartupSet"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="scanForHandlesTypesClasses"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.webapp.WebApp"/>
+    <Method name="addClassToHandlesTypesStartupSet"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.InvokerExtensionProcessor"/>
+    <Method name="getServletWrapper"/>
+    <Bug pattern="TR_BAD_TRACENLS_MESSAGE_KEY"/>
+  </Match>
+ 
+  <Match>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+    <Class name="com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager"/>
+    <Local name="e"/>
+  </Match>
+  
+  <Match>
+    <Or>
+      <Class name="com.ibm.websphere.webcontainer.GeneratePluginConfigMBean"/>
+      <Class name="com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean"/>
+    </Or>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+  
+  <!-- Badly coded and existing message (recorded in defect 70672) -->
+  <Match>
+    <Bug pattern="MESSAGE_FORMAT_CALLED_WITH_NO_INSERTS"/>
+    <Class name="com.ibm.ws.webcontainer.extension.InvokerExtensionProcessor"/>
+    <Method name="getServletWrapper"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.URIMatcher"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+  
+    <Match>
+    <Class name="com.ibm.ws.webcontainer.util.URIMatcher"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.URIMatcher"/>
+    <Field name="range"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.URIMatcher"/>
+    <Method name="&lt;init&gt;" signature="(ZI)V"/>
+    <Field name="range"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.URIMatcher"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.URIMatcher"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.URIMatcher"/>
+    <Method name="put" signature="(Ljava/lang/String;Ljava/lang/Object;)V"/>
+    <Local name="currentNode"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.URIMapper"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+  
+  <!-- Pre-existing calls to System.currentTimeMillis -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl"/>
+    <Method name="cancelAsyncTimer"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+    <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextImpl$ExecutorFieldHolder"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+    <Match>
+    <Class name="com.ibm.ws.webcontainer.extension.InvokerExtensionProcessor"/>
+    <Method name="getServletWrapper"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.container.config.EJBModule"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.FileServletWrapper"/>
+    <Method name="~(service|setResponseHeaders)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ServletWrapper"/>
+    <Method name="~(service|handle(Request|UnavailableException))"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Method name="setDateHeader"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="~(addDynamicServlet|commonAddServlet)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match> 
+
+  <!-- Zip file deliberately left open (I think :) -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ZipFileResource"/>
+    <Method name="~get(IS|ZipEntry)"/>
+    <Bug pattern="OS_OPEN_STREAM"/>
+  </Match>
+  
+  <!-- Protected fields, so I assume a subclass could change these from null -->
+  <Match>
+    <Class name="~com\.ibm\.ws\.webcontainer\.osgi\.mbeans\.PluginGenerator\$(DeployedModuleData|PluginConfigData|ServerData)"/>
+    <Field name="~(additionalPatterns|SSLPKCS(Driver|Password)|TrustedProxyList|cellName|cloneSeparator)"/>
+    <Bug pattern="UWF_NULL_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.PluginGenerator$DeployedModuleData"/>
+    <Field name="app"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTInputStream"/>
+    <Field name="contentLength"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+  
+  <!-- Pre-existing (i.e., prior to findbugs 2.0.2) problems -->
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredResponse"/>
+    <Method name="getWriter"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.DynamicVirtualHost"/>
+    <Method name="sendError"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.request.IRequestImpl"/>
+    <Method name="~get(CookieValue|SSLSessionID|PeerCertificates)"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.response.IResponseImpl"/>
+    <Method name="~((add|contains|get|remove|set)Header|set(ContentLanguage|ContentType|Reason))"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.response.WCOutputStream"/>
+    <Method name="~print(ln)?"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.impl.SessionAffinityManagerImpl"/>
+    <Method name="~analyze(SSL)?Request"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="~(get(CookieValueAsBytes|SSLId)|parseParameters)"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletResponse"/>
+    <Method name="~(|&lt;clinit&gt;|(add|contains|get|remove|set)Header)"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.URIMatcher"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.WebContainer"/>
+    <Method name="~(handleRequest|sendUnavailableException)"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <!-- pre-existing (prior to findbugs 2.0.2 and in code that is apar fixes) problems -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Field name="prependSlashToResource"/>
+    <Bug pattern="MS_SHOULD_BE_REFACTORED_TO_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppRequestDispatcher"/>
+    <Field name="dispatcherRethrowSER"/>
+    <Bug pattern="MS_SHOULD_BE_REFACTORED_TO_BE_FINAL"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.EncodingUtils"/>
+    <Field name="setContentTypeBySetHeader"/>
+    <Bug pattern="MS_SHOULD_BE_REFACTORED_TO_BE_FINAL"/>
+  </Match>
+  
+  <!-- Reasonable as documentation -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.WebAppFilterManager"/>
+    <Method name="invokeFilters"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+  
+  <!-- At this point, the NPE is probably the best reaction of the code... (i.e., fixing it is a reasonably sized piece of rework) -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.FileServletWrapper"/>
+    <Method name="handleRequest"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+  
+  <!-- start of pulling in more tWAS files-->
+  <Match>
+    <Class name="com.ibm.websphere.servlet.event.ApplicationEvent"/>
+    <Field name="_context"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.event.FilterInvocationEvent"/>
+    <Field name="request"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.event.FilterListenerImpl"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.event.ServletInvocationEvent"/>
+    <Method name="getRequest" signature="()Ljavax/servlet/http/HttpServletRequest;"/>
+    <Bug pattern="BC_VACUOUS_INSTANCEOF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.event.ServletInvocationEvent"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.filter.ChainedRequest"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.filter.ChainedResponse"/>
+    <Field name="_req"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.CollectionEnumerationHybrid"/>
+    <Field name="iterator"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.DateHeaderField"/>
+    <Method name="getStringValue" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.IntHeaderField"/>
+    <Method name="getStringValue" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredHeader"/>
+    <Method name="getDateHeader" signature="(Ljava/lang/String;)J"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredHeader"/>
+    <Method name="getHeader" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StoredHeader"/>
+    <Method name="getIntHeader" signature="(Ljava/lang/String;)I"/>
+    <Bug pattern="UG_SYNC_SET_UNSYNC_GET"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StringHeaderField"/>
+    <Method name="setDateValue" signature="(J)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.response.StringHeaderField"/>
+    <Method name="setIntValue" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncContextFactory"/>
+    <Field name="self"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncListenerEntry"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncServletReentrantLock"/>
+    <Field name="isValid"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.AsyncServletReentrantLock"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.CompleteRunnable"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.CompleteRunnable"/>
+    <Method name="invokeOnComplete" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.ListenerHelper"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.async.ListenerHelper"/>
+    <Field name="nls"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.collaborator.WebAppNameSpaceCollaborator"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.collaborator.WebAppTransactionCollaborator"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.exception.WebSecurityException"/>
+    <Bug pattern="NM_CLASS_NOT_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.FilterConfig"/>
+    <Method name="getDispatchType" signature="()[Ljavax/servlet/DispatcherType;"/>
+    <Field name="dispatchMode"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.FilterConfig"/>
+    <Method name="setDispatchType" signature="([Ljavax/servlet/DispatcherType;)V"/>
+    <Field name="dispatchMode"/>
+    <Local name="dispatchMode"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.FilterConfig"/>
+    <Field name="nls"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.FilterConfig"/>
+    <Method name="addMappingForServletNames" signature="(Ljava/util/EnumSet;Z[Ljava/lang/String;)V"/>
+    <Bug pattern="TR_BAD_TRACENLS_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.FilterConfig"/>
+    <Method name="addMappingForUrlPatterns" signature="(Ljava/util/EnumSet;Z[Ljava/lang/String;)V"/>
+    <Bug pattern="TR_BAD_TRACENLS_MESSAGE_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.FilterMapping"/>
+    <Method name="getDispatchMode" signature="()[Ljavax/servlet/DispatcherType;"/>
+    <Field name="dispatchMode"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.filter.FilterMapping"/>
+    <Method name="setDispatchMode" signature="([Ljavax/servlet/DispatcherType;)V"/>
+    <Field name="dispatchMode"/>
+    <Local name="dispatchMode"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.IncludedResponse"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.RequestUtils"/>
+    <Method name="getEbcdicEncodingIfZos" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.RequestUtils"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.RequestUtils"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.SingleThreadModelServlet"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.SingleThreadModelServlet"/>
+    <Field name="_pool"/>
+    <Bug pattern="SE_BAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.StaticFileServletWrapper"/>
+    <Method name="getInputStream" signature="()Ljava/io/InputStream;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.StaticFileServletWrapper"/>
+    <Method name="getRandomAccessFile" signature="()Ljava/io/RandomAccessFile;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.StaticFileServletWrapper"/>
+    <Method name="getFileSize" signature="(Z)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.StaticFileServletWrapper"/>
+    <Method name="getLastModified" signature="()J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.StaticFileServletWrapper"/>
+    <Method name="isAvailable" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.TargetConfig"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.TimedServletPool"/>
+    <Method name="&lt;init&gt;" signature="(IJLjava/lang/Class;Ljavax/servlet/ServletConfig;)V"/>
+    <Local name="maxIdleTime"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.TimedServletPoolElement"/>
+    <Method name="access" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.TimedServletPoolElement"/>
+    <Method name="getIdleTime" signature="()J"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.ZipFileServletWrapper"/>
+    <Method name="isAvailable" signature="()Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.SessionCookieConfigImpl"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IDIOM_NO_SUPER_CALL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.SessionManagerConfigBase"/>
+    <Field name="privateSessionCookieDomain"/>
+    <Bug pattern="UWF_NULL_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.session.SessionRegistry"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTConnectionContext"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTRequestContext"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequestPart$10"/>
+    <Method name="run" signature="()Ljava/lang/Boolean;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequestPart$8"/>
+    <Method name="run" signature="()Ljava/lang/Long;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Field name="daysBeforeMonth"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Field name="daysBeforeMonthLeap"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Field name="daysInMonth"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Field name="daysInMonthLeap"/>
+    <Bug pattern="MS_FINAL_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Field name="days"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Field name="months"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Method name="getCurrentTime" signature="()J"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpInputStream"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ArrayEnumeration"/>
+    <Method name="&lt;init&gt;" signature="([Ljava/lang/Object;)V"/>
+    <Field name="_array"/>
+    <Local name="array"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ArrayEnumeration"/>
+    <Field name="_index"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.EventListeners"/>
+    <Method name="getListenerArray" signature="()[Ljava/util/EventListener;"/>
+    <Field name="listeners"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.EventListeners"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.EventListeners"/>
+    <Method name="addListener" signature="(Ljava/util/EventListener;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.EventListeners"/>
+    <Method name="removeListener" signature="(Ljava/util/EventListener;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.EventListeners"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.VirtualHostContextRootMapper"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.VirtualHostContextRootMapper"/>
+    <Field name="nls"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.VirtualHostContextRootMapper"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Field name="out"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.VirtualHostContextRootMapper"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.VirtualHostContextRootMapper$InternalURIMapper"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.VirtualHostMapper"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.WSURLDecoder"/>
+    <Method name="testDecode" signature="(Ljava/lang/String;Ljava/lang/String;II)V"/>
+    <Field name="out"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.WSURLDecoder"/>
+    <Method name="testDecode" signature="(Ljava/lang/String;Ljava/lang/String;II)V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.WSURLDecoder"/>
+    <Method name="testDecode" signature="(Ljava/lang/String;Ljava/lang/String;II)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnApplicationAvailableForService"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnApplicationEnd"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnApplicationStart"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnApplicationUnavailableForService"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterDestroyError"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterDoFilterError"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterFinishDestroy"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterFinishDoFilter"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterFinishInit"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterInitError"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterStartDestroy"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterStartDoFilter"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnFilterStartInit"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletAvailableForService"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletDestroyError"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletFinishDestroy"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletFinishInit"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletFinishService"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletInitError"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletServiceDenied"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletServiceError"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletStartDestroy"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletStartInit"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletStartService"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletUnavailableForService"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.FireOnServletUnloaded"/>
+    <Method name="fireEvent" signature="(Ljava/util/EventObject;Ljava/util/EventListener;)V"/>
+    <Local name="evt"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.SyncFragmentResponse"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.SyncFragmentResponse$SyncResponseWrapper"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppErrorReport"/>
+    <Method name="constructErrorReport" signature="(Ljava/lang/Throwable;Lcom/ibm/wsspi/webcontainer/RequestProcessor;)Lcom/ibm/websphere/servlet/error/ServletErrorReport;"/>
+    <Local name="r"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebAppErrorReport"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.IRequest"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.IResponse"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainer"/>
+    <Method name="getWebContainer" signature="()Lcom/ibm/wsspi/webcontainer/WebContainer;"/>
+    <Field name="self"/>
+    <Bug pattern="LI_LAZY_INIT_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainer"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainer"/>
+    <Field name="nls"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainer"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainer"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/webcontainer/WebContainer;)V"/>
+    <Field name="webcontainer"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainerRequestState"/>
+    <Method name="removeAttribute" signature="(Ljava/lang/String;)V"/>
+    <Local name="oldValue"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.WebContainerRequestState"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.filter.IFilterConfig"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.servlet.AsyncContext"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.BufferedServletOutputStream"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.BufferedServletOutputStream"/>
+    <Method name="addObserver" signature="(Lcom/ibm/wsspi/webcontainer/util/IOutputStreamObserver;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.FileSystem"/>
+    <Method name="walkPath" signature="(Ljava/io/File;Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.FileSystem"/>
+    <Method name="uriCaseCheck" signature="(Ljava/io/File;Ljava/lang/String;ZZ)Z"/>
+    <Bug pattern="DM_STRING_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.FileSystem"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.RequestUtils"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.RequestUtils"/>
+    <Method name="parseName" signature="([CII)Ljava/lang/String;"/>
+    <Local name="i"/>
+    <Bug pattern="SA_LOCAL_SELF_ASSIGNMENT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.ServletUtil"/>
+    <Field name="logger"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.ServletUtil"/>
+    <Field name="nls"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.VirtualHostContextRootMapper"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>  
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.WSURLDecoder"/>
+    <Method name="testDecode" signature="([Ljava/lang/String;[Ljava/lang/String;I;I;)V"/>
+    <Bug pattern="NP_ALWAYS_NULL"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.websphere.servlet.filter.ChainedRequest"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/servlet/filter/ChainedResponse;Ljavax/servlet/http/HttpServletRequest;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.servlet.filter.ChainedRequest"/>
+    <Method name="parsePostData" signature="(ILjavax/servlet/ServletInputStream;)Ljava/util/Hashtable;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.RequestUtils"/>
+    <Method name="getPostBody" signature="(ILjavax/servlet/ServletInputStream;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.servlet.RequestUtils"/>
+    <Method name="parsePostData" signature="(Ljavax/servlet/ServletInputStream;Ljava/lang/String;)Ljava/util/Hashtable;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.http.HttpDate"/>
+    <Method name="toBytes" signature="(Ljava/lang/String;)[B"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.ApplicationErrorUtils"/>
+    <Method name="printException" signature="(Lcom/ibm/websphere/ras/TruncatableThrowable;Ljava/lang/String;Ljava/lang/StringBuilder;)V"/>
+    <Local name="escapeMessage"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.util.WSURLDecoder"/>
+    <Method name="decode" signature="(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.servlet.GenericServletWrapper"/>
+    <Field name="servletConfig"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.BufferedServletOutputStream"/>
+    <Method name="print" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <!-- end of pulling in more tWAS files-->
+    
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.resources.LShimMessages"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Field name="SRVE0315E:"/>
+    <Bug pattern="PII_CHANGE_OF_MESSAGE_TEXT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.webcontainer.util.RequestUtils"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+  
+  <!-- previously, misleading text? -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.resources.LShimMessages"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Field name="SRVE0303E:"/>
+    <Bug pattern="PII_CHANGE_OF_MESSAGE_TEXT"/>
+  </Match>  
+
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.srt.SRTServletRequest"/>
+    <Method name="upgrade"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+  
+  <!-- No need to print the exception in this case -->
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.webapp.WebApp"/>
+    <Method name="commonAddListener" signature="(Ljava/lang/String;Ljava/util/EventListener;Ljava/lang/Class;)V"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.internal.servlet.response.IRequest"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+  
+   <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigListener"/>
+    <Method name="activate"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigListener"/>
+    <Method name="deactivate"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean"/>
+    <Field name="dynVhostMgr"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean"/>
+    <Field name="smgr"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean"/>
+    <Field name="locMgr"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+    
+  <Match>
+    <Class name="com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean"/>
+    <Field name="webContainer"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  
+    
+</FindBugsFilter>

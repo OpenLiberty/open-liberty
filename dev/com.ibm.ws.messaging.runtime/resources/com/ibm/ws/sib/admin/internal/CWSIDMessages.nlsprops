@@ -1,0 +1,356 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# 88661           2012-12-07 chetbhat Modifying the nls based on review
+# 89424           2012-12-12 chetbhat Simplifying metatype.xml for messaging
+# 91146           2013-01-21 sharath  Changing the filestore error messages after property changes
+# 91384           2013-01-23 sharath  Adding message for duplicate alias destination name
+# 92315           2013-08-02 chetbhat Nls changes
+# 91944           2013-02-19 Romil    L2 review changes
+# 94952           2013-02-27 Romil    Changing invalid filestore error message after changing code and properties
+# 95341           2013-02-28 Romil    Removing duplicate CWSID0117E entries in error
+# 95981           2013-03-20 Chetan   Changing the error message for filestore and log size comparision
+# ------------------------------------------------------------------------------
+# File com.ibm.ws.sib.example.CWSIDMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem
+# determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSID0000=CWSID0001I: This is a message with insert {0}
+# MSG_DESCRIPTIVE_NAME_CWSID0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSID0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you want them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Messages in the range SIAS0001-SIAS0049 belong to class com.ibm.ws.sib.???
+#   - SIAS9999 is for emergency use if any new messages are required after the messages file is finalised
+#   - Messages starting from SIAS0100 is reserved for liberty 
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.62,0,07/02/06,04:18:47
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/admin/internal/CWSIDMessages.nlsprops
+#COMPONENTPREFIX CWSID
+#COMPONENTNAMEFOR CWSID Admin
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+ 
+### Search on "TBD" for messages that need information from other components ###
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_INITIALIZING_SIAS0001=CWSID0001I: Messaging engine {0} is initializing.
+ME_INITIALIZING_SIAS0001.explanation=The specified messaging engine is commencing initialization.
+ME_INITIALIZING_SIAS0001.useraction=No action is required.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Internal reason string
+INTERNAL_ERROR_SIAS0003=CWSID0003E: An internal error occurred; reason: {0}
+INTERNAL_ERROR_SIAS0003.explanation=An unexpected internal error occurred during system operation.
+INTERNAL_ERROR_SIAS0003.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination name
+CREATE_DESTINATION_FAILED_SIAS0009=CWSID0009E: Destination {0} cannot be created.
+CREATE_DESTINATION_FAILED_SIAS0009.explanation=The specified destination could not be created. If JACL scripts or custom JMX programs were used to create the configuration, check these for errors.
+CREATE_DESTINATION_FAILED_SIAS0009.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_ACTIVATION_FAILED_SIAS0011=CWSID0011W: It is not possible to activate JMX {0} MBean named {1}.
+MBEAN_ACTIVATION_FAILED_SIAS0011.explanation=The JMX MBean of the specified type and name could not be activated. Although this does not prevent the messaging server from starting, it does mean that any administrative functions that require the existence of this MBean might not work as expected.
+MBEAN_ACTIVATION_FAILED_SIAS0011.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_DEACTIVATION_FAILED_SIAS0012=CWSID0012W: It is not possible to deactivate JMX {0} MBean named {1}.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.explanation=The specified JMX MBean could not be deactivated.
+MBEAN_DEACTIVATION_FAILED_SIAS0012.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Java package and class
+CLASS_LOAD_FAILURE_SIAS0013=CWSID0013W: It is not possible to load class {0}.
+CLASS_LOAD_FAILURE_SIAS0013.explanation=The specified class could not be loaded.
+CLASS_LOAD_FAILURE_SIAS0013.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+
+# {0} Messaging engine name
+ME_RESTART_CHECK_SIAS0027=CWSID0027E: Messaging engine {0} cannot be restarted because a serious error has been reported.
+ME_RESTART_CHECK_SIAS0027.explanation=An attempt was made to start the specified messaging engine, but a serious error condition has previously been reported, so the messaging engine will not be restarted.
+ME_RESTART_CHECK_SIAS0027.useraction=Restart the server or move the messaging engine to an alternate cluster server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} State of the messaging engine
+ME_STATE_CHECK_SIAS0028=CWSID0028W: Messaging engine {0} cannot be stopped from current state {1}.
+ME_STATE_CHECK_SIAS0028.explanation=An attempt was made to stop the specified messaging engine, but stop is not a valid operation when the messaging engine is in the current state.
+ME_STATE_CHECK_SIAS0028.useraction=Check the state of the messaging engine then reissue the operation when valid.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_REPORTED_SIAS0029=CWSID0029E: Messaging engine {0} suffered a common mode error.
+ME_ERROR_REPORTED_SIAS0029.explanation=The messaging engine detected an error that is likely to recur on an alternate server, so failover will not be attempted.
+ME_ERROR_REPORTED_SIAS0029.useraction=Check the logs to determine the error, correct the cause of the error then restart the server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_STOPPED_SIAS0031=CWSID0031E: Messaging engine {0} suffered a common mode error and has been stopped.
+ME_ERROR_STOPPED_SIAS0031.explanation=The messaging engine detected a common mode error and was automatically stopped. No failover will be attempted.
+ME_ERROR_STOPPED_SIAS0031.useraction=Check the logs to determine the error, correct the cause of the error then restart the server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_INITIALIZED_SIAS0033=CWSID0033E: Messaging engine {0} cannot be initialized; caught exception thrown by {1} {2}
+ME_CANNOT_BE_INITIALIZED_SIAS0033.explanation=An unexpected error occurred during engine initialization.
+ME_CANNOT_BE_INITIALIZED_SIAS0033.useraction=Check the logs to determine the error, correct the cause of the error then restart the server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0034=CWSID0034E: Messaging engine {0} cannot be started: caught exception thrown by {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0034.explanation=An unexpected error occurred during engine initialization. The start phase is terminated and engine components that have already been started are stopped.
+ME_CANNOT_BE_STARTED_SIAS0034.useraction=Check the logs to determine the error, correct the cause of the error then restart the server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_CANNOT_BE_STARTED_SIAS0035=CWSID0035E: Messaging engine {0} cannot be started; detected error reported during {1} {2}
+ME_CANNOT_BE_STARTED_SIAS0035.explanation=A messaging engine component could not be started. No other engine components will be started.
+ME_CANNOT_BE_STARTED_SIAS0035.useraction=Check the logs to determine the error, correct the cause of the error then restart the server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0036=CWSID0036E: Messaging engine {0} caught exception thrown by {1} {2} method during cleanup of failed start
+ME_EXCEPTION_CAUGHT_SIAS0036.explanation=The specified messaging engine could not be stopped.
+ME_EXCEPTION_CAUGHT_SIAS0036.useraction=Check the logs to determine the error, correct the cause of the error then restart the server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Component class name
+# {2} The method causing the exception
+ME_EXCEPTION_CAUGHT_SIAS0037=CWSID0037E: Messaging engine {0} caught exception thrown by {1} {2} method
+ME_EXCEPTION_CAUGHT_SIAS0037.explanation=An error was detected by an engine component.
+ME_EXCEPTION_CAUGHT_SIAS0037.useraction=Check the logs to determine the error, correct the cause of the error then restart the server.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} JMX MBean type
+# {1} JMX MBean name
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043=CWSID0043W: It is not possible to send an Event Notification from JMX {0} MBean named {1}.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.explanation=An Event Notification could not be sent from the JMX MBean with the specified type and name. Although this does not prevent the continued operation of the messaging server, it does mean that this MBean cannot notify listeners of important messaging system events.
+MBEAN_SEND_NOTIFICATION_FAILED_SIAS0043.useraction=CMSG0002
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044=CWSID0044I: Messaging Engine {0} with UUID {1} has been started.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.explanation=The messaging engine is available for use.
+NOTIFY_MESSAGING_ENGINE_START_SIAS0044.useraction=No action is required.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045=CWSID0045I: Messaging Engine {0} with UUID {1} has stopped.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.explanation=The messaging engine is no longer available for use.
+NOTIFY_MESSAGING_ENGINE_STOP_SIAS0045.useraction=No action is required.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+ME_ERROR_LOCAL_SIAS0046=CWSID0046E: Messaging engine {0} detected an error and cannot continue to run in this server.
+ME_ERROR_LOCAL_SIAS0046.explanation=The messaging engine is reporting the error to HAManager, which will stop the server. With the Application Server Network Deployment, the server will be restarted if the nodeagent is monitoring it. With a network deployment cluster, the messaging engine will failover to an alternate cluster server if the configured policy allows.
+ME_ERROR_LOCAL_SIAS0046.useraction=Check the logs to determine the cause of the error then correct it so that it does not recur. Either restart the server, or (if you are using network deployment) check that the automatic restart or failover has succeeded and the messaging engine is running.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048=CWSID0048W: The value for the receiveExclusive attribute has been overridden to become "true" for the {0} destination.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.explanation=The destination is set to maintain message ordering. Therefore,  the value for the receiveExclusive attribute has been overridden to be true.
+RECEIVE_EXCLUSIVE_OVERRIDE_WARNING_SIAS0048.useraction=If ordering is not required, unset the maintainMessageOrder attribute to disable the receiveExclusive attribute override.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049=CWSID0049I: Messaging Engine {0} with UUID {1} is starting.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.explanation=The messaging engine is being started.
+NOTIFY_MESSAGING_ENGINE_STARTING_SIAS0049.useraction=No action is required.
+ 
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050=CWSID0050I: Messaging Engine {0} with UUID {1} is stopping.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.explanation=The messaging engine is being stopped.
+NOTIFY_MESSAGING_ENGINE_STOPPING_SIAS0050.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} messaging engine UUID
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052=CWSID0052I: Messaging Engine {0} with UUID {1} failed to stop.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.explanation=The messaging engine failed to stop.
+NOTIFY_MESSAGING_ENGINE_STOP_FAILED_SIAS0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_SIAS9999=CWSID9999E: {0}
+TEMPORARY_SIAS9999.explanation=If the message does not give sufficient information, check previous messages for further help.
+TEMPORARY_SIAS9999.useraction=See the accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} default ME ID
+NO_ID_PROVIDED_SIAS0100=CWSID0100I: No ID provided for messagingEngine tag in the server configuration file. Default ID {0} will be considered.
+NO_ID_PROVIDED_SIAS0100.explanation=ID has not been provided for the messagingEngine tag.
+NO_ID_PROVIDED_SIAS0100.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination Type
+NO_ID_PROVIDED_SIAS0102=CWSID0102E: No ID is defined in the server configuration file for the destination of type {0}. 
+NO_ID_PROVIDED_SIAS0102.explanation=ID is not specified for the destination, hence the destination will not be created.  
+NO_ID_PROVIDED_SIAS0102.useraction=Provide the ID for the destination.
+
+# -------------------------------------------------------------------------------------------------
+NO_FILESTOR_DEFINED_SIAS0104=CWSID0104I:  fileStore tag has not been defined in the server configuration file, hence defaults will be used.
+NO_FILESTOR_DEFINED_SIAS0104.explanation=fileStore tag has not been provided so default values will be taken while creating the filestore.   
+NO_FILESTOR_DEFINED_SIAS0104.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+ME_ID_CHANGE_SIAS0105=CWSID0105I: Messaging engine ID cannot be changed after the server is started.
+ME_ID_CHANGE_SIAS0105.explanation=Messaging engine ID is unique to a messaging engine and cannot be changed while the server is active.
+ME_ID_CHANGE_SIAS0105.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+RESTART_ME_SIAS0106=CWSID0106I: Attempting to start the messaging engine. 
+RESTART_ME_SIAS0106.explanation=Messaging engine was not started during activate() call. Since the user has modified the server configuration file, an attempt will be made to start the messaging engine.  
+RESTART_ME_SIAS0106.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+START_ME_SIAS0107=CWSID0107I: Starting the JMS server. 
+START_ME_SIAS0107.explanation=Initiating the JMS server start.  
+START_ME_SIAS0107.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+ME_STARTED_SIAS0108=CWSID0108I: JMS server has started.  
+ME_STARTED_SIAS0108.explanation=Startup of JMS server has completed successfully.  
+ME_STARTED_SIAS0108.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0109=CWSID0109E: An internal messaging error occurred. JMS server could not be started.
+ME_STOPPED_SIAS0109.explanation=JMS server could not be started.  
+ME_STOPPED_SIAS0109.useraction=See the previous error messages during during an Messaging Engine start  for further information.
+
+# -------------------------------------------------------------------------------------------------
+#{0} Alias destination Name
+INVALID_TARGET_DEST_SIAS0110=CWSID0110E: No target Destination provided for Alias Destination {0}.
+INVALID_TARGET_DEST_SIAS0110.explanation=No target destination provided for the alias destination.
+INVALID_TARGET_DEST_SIAS0110.useraction= Provide a valid target destination in the server configuration file.
+
+# -------------------------------------------------------------------------------------------------
+LOCALIZATION_EXCEPTION_SIAS0113=CWSID0113E: Exception found during destination {0} localization.
+LOCALIZATION_EXCEPTION_SIAS0113.explanation=Exception found during localization of destination.
+LOCALIZATION_EXCEPTION_SIAS0113.useraction=See the previous messages and the  state of messaging engine.
+
+# -------------------------------------------------------------------------------------------------
+# {0} SIBDestination population
+POPULATE_DESTINATION_FAILED_SIAS0114=CWSID0114E: Destination {0} cannot be populated in cache.
+POPULATE_DESTINATION_FAILED_SIAS0114.explanation=The specified destination could not be populated in cache.
+POPULATE_DESTINATION_FAILED_SIAS0114.useraction=See the previous messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0115=CWSID0115E: An internal error occurred because the messaging engine configuration properties are not received. Hence the messaging engine will not be started.
+NULL_SERVICE_PID_SIAS0115.explanation=Configuration was not received from the server.xml file as its registration property (service.pid) which is  used to identify the Managed Service or Managed Service Factory to the Configuration Admin service is null that means bundle cannot use declared service
+NULL_SERVICE_PID_SIAS0115.useraction=See the accompanying error messages for further information on why messaging engine cannot be started. 
+
+# -------------------------------------------------------------------------------------------------
+NULL_SERVICE_PID_SIAS0116=CWSID0116E: An internal error occurred because the messaging engine configuration properties are not received. Hence, no modification will be done to the messaging engine.
+NULL_SERVICE_PID_SIAS0116.explanation=The messaging engine has started, but changes to the messaging engine are not accepted because the service.pid value is  null. Therefore, services are not invoked.
+NULL_SERVICE_PID_SIAS0116.useraction=See the accompanying error messages related to Messaging Engine startup for further information. 
+
+# -------------------------------------------------------------------------------------------------
+MODIFICATION_UNSUCCESSFUL_SIAS0117=CWSID0117E: The system received an internal effort after a modification to the messaging engine configuration did not complete successfully
+MODIFICATION_UNSUCCESSFUL_SIAS0117.explanation=The update to the messaging engine configuration did not complete successfully and caused an internal system error.
+MODIFICATION_UNSUCCESSFUL_SIAS0117.useraction=See the accompanying error messages for further information. 
+
+# -------------------------------------------------------------------------------------------------
+BAD_RELIABILITY_VALUE_SIAS0118=CWSID0118E: The value specified for defaultReliability is greater than the value specified for maxReliability.
+BAD_RELIABILITY_VALUE_SIAS0118.explanation=The value specified for the defaultReliability parameter must be less than or equal to the value supplied for the maxReliability parameter.
+BAD_RELIABILITY_VALUE_SIAS0118.useraction=Run the command again, specifying a defaultReliability value that is less than or equal to the maxReliability value.
+
+# -------------------------------------------------------------------------------------------------
+# {0} filestore path
+FILESTORE_PATH_SIAS0119=CWSID0119I: The filestore path: {0}
+FILESTORE_PATH_SIAS0119.explanation=The specified filestore path.
+FILESTORE_PATH_SIAS0119.useraction=This message is for information purposes only. No action is needed.
+
+# -------------------------------------------------------------------------------------------------
+#Invalid path specified in server configuration file
+INVALID_FS_PATH_SIAS0120=CWSID0120E: The Messaging engine could not be started because an invalid file path {0} was specified in server configuration file.
+INVALID_FS_PATH_SIAS0120.explanation=A valid file path is required in server configuration file before the Messaging Engine can be started.
+INVALID_FS_PATH_SIAS0120.useraction=Correct the file path in server configuration file.
+
+# -------------------------------------------------------------------------------------------------
+ME_STOPPED_SIAS0121=CWSID0121I: JMS server stopped.  
+ME_STOPPED_SIAS0121.explanation=JMS server has stopped.  
+ME_STOPPED_SIAS0121.useraction=No action is required.
+
+# -------------------------------------------------------------------------------------------------
+NULL_ME_ID_SIAS0122=CWSID0122I: No messaging engine ID is provided in the server configuration file.  
+NULL_ME_ID_SIAS0122.explanation=The messaging engine ID has been removed during modification of the server configuration file. The Messaging engine ID change will be ignored while the Messaging Engine is still active.   
+NULL_ME_ID_SIAS0122.useraction= No action is required.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+SAME_DEST_ID_SIAS0123=CWSID0123W: {0} is used for multiple destinations.
+SAME_DEST_ID_SIAS0123.explanation=The same ID can not be used for multiple destinations, duplicate destinations will not be created. 
+SAME_DEST_ID_SIAS0123.useraction= Specify unique destination identifiers.
+# -------------------------------------------------------------------------------------------------
+INVALID_FILE_SIZE_SIAS0124=CWSID0124E: The log file size of {0} megabytes should be less than half the size of the file store {1} megabytes. Either increase the size of the file store or decrease the size of the log file.
+INVALID_FILE_SIZE_SIAS0124.explanation=The log file size is greater than the permanent file store size. The file store size represents the combined size in megabytes for both permanent and temporary store. The file store size is equally divided between the permanent and temporary store, hence the log file size must be smaller than half of the size of the file store.
+INVALID_FILE_SIZE_SIAS0124.useraction=Increase the file store size or decrease the log file size.
+# -------------------------------------------------------------------------------------------------
+# {0} Destination name or ID
+ALIAS_SAME_DEST_ID_SIAS0125=CWSID0125E: The alias destination ID {0} is already defined for a Queue or TopicSpace, hence the alias destination will not be created.
+ALIAS_SAME_DEST_ID_SIAS0125.explanation=The alias destination ID must be unique. 
+ALIAS_SAME_DEST_ID_SIAS0125.useraction=Ensure that you define a unique ID for the alias destination.  

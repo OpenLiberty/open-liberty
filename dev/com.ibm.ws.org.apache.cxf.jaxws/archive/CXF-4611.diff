@@ -1,0 +1,126 @@
+Index: rt/frontend/jaxws/src/test/java/org/apache/cxf/jaxws/JAXWSMethodInvokerTest.java
+===================================================================
+--- rt/frontend/jaxws/src/test/java/org/apache/cxf/jaxws/JAXWSMethodInvokerTest.java	(revision 1406958)
++++ rt/frontend/jaxws/src/test/java/org/apache/cxf/jaxws/JAXWSMethodInvokerTest.java	(revision 1407264)
+@@ -108,24 +108,35 @@
+             ex, new MessageContentsList(new Object[]{new StreamSource()}));
+         assertNull(obj);
+         assertTrue(ex.isOneWay());
++        
++        // request-response with null response, interpretNullAsOneway not set so 
++        // default should be true
++        ex.setOneWay(false);
++        serviceObject.setNullable(true);
++        obj = (MessageContentsList)jaxwsMethodInvoker.invoke(
++            ex, new MessageContentsList(new Object[]{new StreamSource()}));
++        assertNull(obj);
++        assertTrue(ex.isOneWay());
+ 
+         // request-response with null response, interpretNullAsOneway disabled
+         ex.setOneWay(false);
+         serviceObject.setNullable(true);
++        inMessage.setContextualProperty("jaxws.provider.interpretNullAsOneway", Boolean.FALSE);
+         obj = (MessageContentsList)jaxwsMethodInvoker.invoke(
+             ex, new MessageContentsList(new Object[]{new StreamSource()}));
+         assertEquals(1, obj.size());
+         assertNull(obj.get(0));
+         assertFalse(ex.isOneWay());
+ 
+-        // request-response with null response, interpretNullAsOneway enabled
++        
++        // request-response with null response, interpretNullAsOneway explicitly enabled
+         ex.setOneWay(false);
+         serviceObject.setNullable(true);
+         inMessage.setContextualProperty("jaxws.provider.interpretNullAsOneway", Boolean.TRUE);
+-        obj = (MessageContentsList)jaxwsMethodInvoker.invoke(
+-            ex, new MessageContentsList(new Object[]{new StreamSource()}));
++        obj = (MessageContentsList)jaxwsMethodInvoker
++            .invoke(ex, new MessageContentsList(new Object[]{new StreamSource()}));
+         assertNull(obj);
+-        assertTrue(ex.isOneWay());
++        assertTrue(ex.isOneWay());        
+     }
+ 
+     private JAXWSMethodInvoker prepareJAXWSMethodInvoker(Exchange ex, Object serviceObject,
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/JAXWSMethodInvoker.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/JAXWSMethodInvoker.java	(revision 1406958)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/JAXWSMethodInvoker.java	(revision 1407264)
+@@ -29,6 +29,7 @@
+ 
+ import org.apache.cxf.helpers.CastUtils;
+ import org.apache.cxf.interceptor.Fault;
++import org.apache.cxf.interceptor.InterceptorChain;
+ import org.apache.cxf.jaxws.context.WebServiceContextImpl;
+ import org.apache.cxf.jaxws.context.WrappedMessageContext;
+ import org.apache.cxf.message.Exchange;
+@@ -50,6 +51,7 @@
+     protected Object invoke(Exchange exchange, 
+                             final Object serviceObject, Method m,
+                             List<Object> params) {
++        
+         // set up the webservice request context 
+         WrappedMessageContext ctx = new WrappedMessageContext(exchange.getInMessage(), Scope.APPLICATION);
+         
+@@ -62,11 +64,15 @@
+                 params = Collections.singletonList(null);
+             }
+             res = CastUtils.cast((List<?>)super.invoke(exchange, serviceObject, m, params));
++                        
+             if ((serviceObject instanceof Provider) 
+-                && MessageUtils.isTrue(exchange.getInMessage().
+-                                       getContextualProperty("jaxws.provider.interpretNullAsOneway"))
+-                && (res != null && !res.isEmpty() && res.get(0) == null)) {
++                && MessageUtils.getContextualBoolean(exchange.getInMessage(), 
++                                                     "jaxws.provider.interpretNullAsOneway",
++                                                     true)
++                && (res != null && !res.isEmpty() && res.get(0) == null)
++                && exchange.getInMessage().getInterceptorChain().getState() == InterceptorChain.State.EXECUTING) {
+                 // treat the non-oneway call as oneway when a provider returns null
++                // and the chain is not suspended due to a continuation suspend
+                 res = null;
+                 changeToOneway(exchange);
+             }
+Index: systests/jaxws/src/test/java/org/apache/cxf/systest/provider/InterpretNullAsOnewayProviderTest.java
+===================================================================
+--- systests/jaxws/src/test/java/org/apache/cxf/systest/provider/InterpretNullAsOnewayProviderTest.java	(revision 1406958)
++++ systests/jaxws/src/test/java/org/apache/cxf/systest/provider/InterpretNullAsOnewayProviderTest.java	(revision 1407264)
+@@ -52,18 +52,18 @@
+             NullProviderService servant1 = new NullProviderService();
+             Endpoint ep1 = Endpoint.publish(ADDRESS1, servant1);
+             assertNotNull("endpoint published", ep1);
++            ep1.getProperties().put("jaxws.provider.interpretNullAsOneway", Boolean.FALSE);
+             
+             // endpoint interpreting null as oneway
+             NullProviderService servant2 = new NullProviderService();
+             Endpoint ep2 = Endpoint.publish(ADDRESS2, servant2);
+             assertNotNull("endpoint published", ep2);
+-            ep2.getProperties().put("jaxws.provider.interpretNullAsOneway", Boolean.TRUE);
++            ep2.getProperties().put("jaxws.provider.interpretNullAsOneway", "false");            
+ 
+             // endpoint interpreting null as oneway
+             NullProviderService servant3 = new NullProviderService();
+             Endpoint ep3 = Endpoint.publish(ADDRESS3, servant3);
+-            assertNotNull("endpoint published", ep3);
+-            ep3.getProperties().put("jaxws.provider.interpretNullAsOneway", "true");
++            assertNotNull("endpoint published", ep3);            
+         }
+     
+         public static void main(String[] args) throws Exception { 
+@@ -100,13 +100,13 @@
+     }
+     
+     @Test
+-    public void testInterpretNullAsOneway() throws Exception {
++    public void testNotInterpretNullAsOneway2() throws Exception {
+         HttpURLConnection conn = postRequest(ADDRESS2);
+-        assertEquals("http 202 must be returned", 202, conn.getResponseCode());
++        assertTrue("Soap fault must be returned", 400 <= conn.getResponseCode());
+     }
+ 
+     @Test
+-    public void testInterpretNullAsOneway2() throws Exception {
++    public void testInterpretNullAsOneway() throws Exception {
+         HttpURLConnection conn = postRequest(ADDRESS3);
+         assertEquals("http 202 must be returned", 202, conn.getResponseCode());
+     }

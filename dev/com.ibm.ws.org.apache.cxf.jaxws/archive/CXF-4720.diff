@@ -1,0 +1,13 @@
+Index: api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java	(revision 1425017)
++++ api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java	(revision 1425018)
+@@ -366,7 +366,7 @@
+ 
+     public static Attachment createMtomAttachment(boolean isXop, String mimeType, String elementNS, 
+                                                  byte[] data, int offset, int length, int threshold) {
+-        if (!isXop || length < threshold) {
++        if (!isXop || length <= threshold) {
+             return null;
+         }        
+         if (mimeType == null) {

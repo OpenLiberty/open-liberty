@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.config" default="buildApiSpi">
+  <!-- DO NOT CHANGE THE DEFAULT TASK FROM 'buildApiSpi'
+       Top level builds use this task explicity.  Changing the
+       default will create an incompatibility between a default
+       project build and a top level build. -->
+
+  <property name="feature.file" value="${basedir}/externals.mf"/>
+	
+  <!-- IBM-API required properties. -->        
+  <property name="bundleName" value="WebSphere Configuration API"/>
+  <property name="api.ibm.symbolic.suffix" value="config"/>
+  <property name="api.ibm.version" value="1.2"/>    
+    
+  <import file="../ant_build/public_imports/apibnd_imports.xml"/>
+  
+</project>

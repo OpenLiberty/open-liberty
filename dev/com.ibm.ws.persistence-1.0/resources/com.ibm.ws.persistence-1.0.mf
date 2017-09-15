@@ -1,0 +1,31 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+Subsystem-Content: com.ibm.websphere.appserver.api.persistence_1.0-javadoc.zip; type=file; location:="dev/api/ibm/javadoc/com.ibm.websphere.appserver.api.persistence_1.0-javadoc.zip",
+ ws-generateddlutil.jar; type=file; location:="bin/tools/ws-generateddlutil.jar"; version="[1.0.0,1.0.200)",
+ ddlGen.bat; type=file; location:="bin/ddlGen.bat",
+ ddlGen; ibm.file.encoding:=ebcdic; type=file; location:="bin/ddlGen",
+ com.ibm.websphere.appserver.jndi-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.containerServices-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.persistence.base-2.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.0, 4.2"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.api.persistence; location:="dev/api/ibm/,lib/"; type=jar; version="[1.0.0,1.0.200)",
+ com.ibm.ws.persistence.utility; type=jar; version="[1.0.0,1.0.200)",
+ com.ibm.ws.persistence; version="[1.0.0,1.0.200)",
+ com.ibm.websphere.appserver.thirdparty.eclipselink; apiJar=false; location:="dev/api/third-party/,lib/"; version="[1.0.0,1.0.200)",
+ com.ibm.ws.persistence.mbean; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.ws.persistence-1.0
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.ws.persistence-1.0; visibility:=private; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

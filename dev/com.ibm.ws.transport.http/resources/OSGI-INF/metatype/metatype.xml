@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="%virtualHost.desc" name="%virtualHost.name" 
+         id="com.ibm.ws.http.virtualhost" ibm:alias="virtualHost">
+
+        <AD name="%virtualHost.enabled" description="%virtualHost.enabled.desc"
+            id="enabled" required="false" type="Boolean" default="true" />
+
+        <AD name="%virtualHost.hostAlias" description="%virtualHost.hostAlias.desc"
+            id="hostAlias" required="false" type="String" cardinality="2147483647" />
+
+        <AD name="%virtualHost.allowFromEndpoint" description="%virtualHost.allowFromEndpoint.desc"
+            ibm:reference="com.ibm.ws.http" ibm:type="pid"
+            id="allowFromEndpointRef" required="false" type="String" cardinality="2147483647" />
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.http.virtualhost">
+        <Object ocdref="com.ibm.ws.http.virtualhost"/>
+    </Designate>
+    
+    <OCD name="%http.proxyredirect" description="%http.proxyredirect.desc" 
+         id="com.ibm.ws.http.proxyredirect" ibm:alias="httpProxyRedirect">   
+
+        <AD name="%http.proxyredirect.enabled" description="%http.proxyredirect.enabled.desc"
+            id="enabled" required="false" type="Boolean" default="true" />
+
+        <AD name="%http.proxyredirect.host" description="%http.proxyredirect.host.desc"
+            id="host" required="false" type="String" default="*" />
+
+        <!-- NO DEFAULT PORT VALUE FOR HTTP PORT: SPECIFICATION IS REQUIRED -->
+        <AD name="%http.proxyredirect.httpPort" description="%http.proxyredirect.httpPort.desc"
+            id="httpPort" required="true" type="Integer" min="1" max="65535" />
+
+        <!-- NO DEFAULT PORT VALUE FOR HTTPS PORT: SPECIFICATION IS REQUIRED -->
+        <AD name="%http.proxyredirect.httpsPort" description="%http.proxyredirect.httpsPort.desc"
+            id="httpsPort" required="true" type="Integer" min="1" max="65535" />
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.http.proxyredirect">
+        <Object ocdref="com.ibm.ws.http.proxyredirect"/>
+    </Designate>
+    
+    <OCD name="%http.endpoint" description="%http.endpoint.desc" 
+         id="com.ibm.ws.http"
+         ibm:supportExtensions="true" ibm:alias="httpEndpoint">   
+
+        <AD name="%endpoint.enabled" description="%endpoint.enabled.desc"
+            id="enabled" required="false" type="Boolean" default="true" />
+
+        <AD name="%endpoint.host" description="%endpoint.host.desc"
+            id="host" required="false" type="String" ibm:variable="defaultHostName"
+            default="localhost" />
+
+        <!-- Internal field to detect the configured defaultHostName variable -->
+        <AD id="_defaultHostName" name="internal" description="internal"
+            required="true" type="String" ibm:variable="defaultHostName"
+            default="localhost" />
+
+        <!-- NO DEFAULT PORT VALUE FOR HTTP PORT: SPECIFICATION IS OPTIONAL -->
+        <AD name="%endpoint.httpPort" description="%endpoint.httpPort.desc"
+            id="httpPort" required="false" type="Integer" min="-1" max="65535" />
+
+        <!-- NO DEFAULT PORT VALUE FOR HTTPS PORT: SPECIFICATION IS OPTIONAL -->
+        <AD name="%endpoint.httpsPort" description="%endpoint.httpsPort.desc"
+            id="httpsPort" required="false" type="Integer" min="-1" max="65535" />
+
+        <!--  What should happen if there is a configuration error or the port is already bound? -->    
+        <AD id="onError" ibm:variable="onError" name="%onError.name" description="%onError.desc" type="String" ibm:type="onError" default="WARN"> 
+            <Option label="%onError.warn" value="WARN"/>
+            <Option label="%onError.fail" value="FAIL"/>
+            <Option label="%onError.ignore" value="IGNORE"/>   
+        </AD>
+
+        <AD id="httpOptionsRef" name="%endpoint.httpOptions" description="%endpoint.httpOptions.desc"
+            ibm:reference="com.ibm.ws.http.options" ibm:type="pid"
+            type="String" required="false" default="defaultHttpOptions" />
+
+         <!--  n.b.  In these filters, the final e.g. (id=defaultHttpOptions) clause is needed to assure that when the explicitly matched service is removed,
+         httpEndpoint falls back to the default immediately _before_ the target filter is changed to the updated one pointing to the default.  Without this clause,
+         httpEndpoint will bounce.  c.f. 91906 -->   
+        <AD id="httpOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String"
+            default="(|(service.pid=${httpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.http.options)(|(id=com.ibm.ws.http-${id}/*)(id=defaultHttpOptions))))" /> 
+
+        <AD id="sslOptionsRef" name="%endpoint.sslOptions" description="%endpoint.sslOptions.desc"
+            ibm:reference="com.ibm.ws.sslchannel.options" ibm:type="pid"
+            type="String" required="false" />            
+            <!-- type="String" required="false" default="defaultSSLOptions" /> -->
+
+        <AD id="sslOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(|(service.pid=${sslOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.sslchannel.options)(|(id=com.ibm.ws.http-${id}/*)(id=defaultSSLOptions))))" />
+
+       <AD id="tcpOptionsRef" name="%endpoint.tcpOptions" description="%endpoint.tcpOptions.desc"
+            ibm:reference="com.ibm.ws.tcpchannel.options" ibm:type="pid"
+            type="String" required="false" default="defaultTCPOptions" />               
+
+        <AD id="tcpOptions.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(|(service.pid=${tcpOptionsRef})(&amp;(service.factoryPid=com.ibm.ws.tcpchannel.options)(|(id=com.ibm.ws.http-${id}/*)(id=defaultTCPOptions))))" />
+
+        <AD id="accessLoggingRef" name="%endpoint.accessLog" description="%endpoint.accessLog.desc"
+            ibm:reference="com.ibm.ws.http.log.access" ibm:type="pid" cardinality="1"
+            type="String" required="false"/>
+
+        <AD id="accessLogging.target" name="internal" description="internal use only" 
+            ibm:final="true" required="false" type="String" 
+            default="(&amp;(service.pid=${accessLoggingRef})(enabled=true))" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.http">
+        <Object ocdref="com.ibm.ws.http"/>
+    </Designate>
+
+    <OCD name="%http.options" description="%http.options.desc" 
+         id="com.ibm.ws.http.options"
+         ibm:alias="httpOptions">   
+
+        <AD name="%http.keepAlive" description="%http.keepAlive.desc"
+            id="keepAliveEnabled" required="false" type="Boolean" default="true" />
+
+        <AD name="%http.maxKeepAliveRequests" description="%http.maxKeepAliveRequests.desc"
+            id="maxKeepAliveRequests" required="false" type="Integer" default="100" min="-1" />
+
+        <AD name="%http.persistTimeout" description="%http.persistTimeout.desc"
+            id="persistTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="30s" />
+
+        <AD name="%http.readTimeout" description="%http.readTimeout.desc"
+            id="readTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
+        <AD name="%http.writeTimeout" description="%http.writeTimeout.desc"
+            id="writeTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
+        <AD name="%http.removeServerHeader" description="%http.removeServerHeader.desc"
+            id="removeServerHeader" required="false" type="Boolean" default="false" />
+            
+        <AD name="%http.noCacheCookiesControl" description="%http.noCacheCookiesControl.desc"
+            id="NoCacheCookiesControl" required="false" type="Boolean" default="true" />   
+            
+        <!--  Not technically internal but specifying here to get the property types checked if specified -->    
+        <AD name="internal" description="internal use only"
+            id="v0CookieDateRFC1123compat" required="false" type="Boolean" default="true" />
+
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.http.options">
+        <Object ocdref="com.ibm.ws.http.options"/>
+    </Designate>
+
+    <OCD name="%http.dispatcher" description="%http.dispatcher.desc" 
+         id="com.ibm.ws.http.dispatcher" ibm:alias="httpDispatcher">   
+
+		<AD name="%enableWelcomePage" description="%enableWelcomePage.desc"
+            id="enableWelcomePage" required="false" type="Boolean" default="true"/>
+            
+        <AD name="%appOrContextRootMissingMessage" description="%appOrContextRootMissingMessage.desc"
+            id="appOrContextRootMissingMessage" required="false" type="String"/>
+            
+        <AD name="%dispatcher.trustedHeaderOrigin" description="%dispatcher.trustedHeaderOrigin.desc"
+            id="trustedHeaderOrigin" required="false" type="String" default="*" cardinality="2147483647" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.http.dispatcher">
+        <Object ocdref="com.ibm.ws.http.dispatcher"/>
+    </Designate>
+
+    <OCD name="%log.access" description="%log.access.desc" 
+         id="com.ibm.ws.http.log.access" ibm:alias="httpAccessLogging">   
+
+        <AD name="%log.access.enabled" description="%log.access.enabled.desc"
+            id="enabled" required="false" type="Boolean" default="true" />
+
+        <AD name="%log.access.filePath" description="%log.access.filePath.desc"
+            id="filePath" required="false" type="String" default="${server.output.dir}/logs/http_access.log"
+            ibm:unique="accessLogFilePath" ibm:type="location(file)"/>
+
+        <AD name="%log.access.logFormat" description="%log.access.logFormat.desc"
+            id="logFormat" required="false" type="String" default="%h %u %{t}W &quot;%r&quot; %s %b" />
+
+        <AD name="%log.access.max.file.size" description="%log.access.max.file.size.desc" 
+            id="maxFileSize" required="false" type="Integer" min="0" default="20" />
+            
+        <AD name="%log.access.max.files" description="%log.access.max.files.desc"
+            id="maxFiles" required="false" type="Integer" min="0" default="2" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.http.log.access">
+        <Object ocdref="com.ibm.ws.http.log.access"/>
+    </Designate>
+
+</metatype:MetaData>

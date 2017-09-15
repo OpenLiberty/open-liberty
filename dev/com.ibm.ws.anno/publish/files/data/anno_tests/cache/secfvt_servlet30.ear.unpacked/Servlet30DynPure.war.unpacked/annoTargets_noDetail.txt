@@ -1,0 +1,84 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: Servlet30DynPure.war.unpacked
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.ws.secfvt.utils.ServletMethodHelper
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynPure1
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynPure3
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.annotation.security.RunAs
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynPure2
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynPure5
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynPure4
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.annotation.security.DeclareRoles
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.Servlet30DynPure6
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: javax.servlet.http.HttpServlet
+  ClassAnnotation: javax.annotation.security.RunAs
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+Class-Seed: com.ibm.ws.secfvt.servlet.listener.ServletRegistrationContextListener2
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.ServletContextListener
+Class-Excluded: javax.servlet.annotation.WebServlet
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.Object
+  ClassSource: Servlet30DynPure.war.unpacked
+Class-Excluded: java.util.EventListener
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.ServletContextListener
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.util.EventListener
+Class-Excluded: javax.servlet.Servlet
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.http.HttpServlet
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: javax.servlet.GenericServlet
+  Interface: java.io.Serializable
+Class-Excluded: javax.servlet.ServletConfig
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.GenericServlet
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.Servlet
+  Interface: javax.servlet.ServletConfig
+  Interface: java.io.Serializable
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.io.Serializable
+  ClassSource: Servlet30DynPure.war.unpacked
+  Superclass: java.lang.Object
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+Class-Unresolved: javax.annotation.security.DeclareRoles
+Class-Unresolved: javax.annotation.security.RunAs
+# ============================================================

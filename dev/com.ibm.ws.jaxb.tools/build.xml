@@ -1,0 +1,27 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.jaxb.tools" default="build">
+  <property name="instrument.ffdc" value="true" />
+  <property name="no.trace.instrumentation" value="true" />
+  <import file="../ant_build/public_imports/rejar_imports.xml" />
+
+  <!-- Only the jaxb bundle goes into the lib folder -->
+  <patternset id="publish.bundles">
+    <include name="*jaxb*" />
+  </patternset>
+
+  <target name="package">
+    <bndPackage bnd.file="jaxb-tools.bnd"
+                version="1.0" 
+                original.jar.name="jaxb.tools"
+                original.jar.version="2.2.10" />
+  </target>
+</project>

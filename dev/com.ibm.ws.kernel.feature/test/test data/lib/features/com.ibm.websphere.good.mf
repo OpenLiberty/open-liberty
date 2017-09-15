@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Subsystem-SymbolicName: com.ibm.websphere.good
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Content: notexist1;location:="lib/notexist1", 
+ notexist2;location:="lib/notexist2",
+ simple;version=1;location:="lib/simple_1.jar",
+ simple;version=2;location:="lib/simple_2.jar"
+ com.ibm.websphere.A;type="osgi.subsystem.feature",
+ com.ibm.websphere.B;type="osgi.subsystem.feature"
+IBM-Feature-Version: 2

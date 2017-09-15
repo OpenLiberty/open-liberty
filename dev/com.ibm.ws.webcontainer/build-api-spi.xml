@@ -1,0 +1,129 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.webcontainer-api" default="buildApiSpi">
+  <!-- DO NOT CHANGE THE DEFAULT TASK FROM 'buildApiSpi'
+       Top level builds use this task explicity.  Changing the
+       default will create an incompatibility between a default
+       project build and a top level build. -->
+	
+  <!-- IBM API required properties. -->
+  <property name="bundleName" value="WebSphere WebContainer Servlet API"/>  
+  <property name="api.ibm.symbolic.suffix" value="servlet"/>
+  <property name="api.ibm.version" value="1.1"/>
+  
+  <property name="feature.project" value="com.ibm.websphere.appserver.servlet-3.1"/>
+  
+  <property name="api.ibm.packages.exceptions" value="com.ibm.wsspi.servlet.session"/>
+  
+ <!-- IBM SPI required properties. -->
+  <property name="spibndfile.predefined" value="true" />
+  <property name="spibndfile" value="${basedir}/spi.bnd"/>
+  <property name="spi.ibm.packages" value="${basedir}/spi.ibm.packages"/>
+  <property name="spi.ibm.bundleName" value="WebSphere WebContainer Servlet SPI"/>
+  <property name="spi.ibm.version" value="2.0"/>
+  <property name="spi.ibm.symbolic.suffix" value="servlet"/>
+  <!-- 'api.ibm.version' and 'feature.file' are shared. -->
+	
+	<!-- We need to subset the classes to expose so copy the desired SPI classes to a temp location --> 
+	<!-- Some classes are needed on the compile path due to indirect refs from SPI classes but should 
+	not appear in javadoc - use .class extension for those -->	
+	
+	<patternset id="liberty-classes">
+		<include name="com/ibm/websphere/servlet/response/package*"/>
+		<include name="com/ibm/websphere/servlet/response/StoredResponse.*"/>
+		<include name="com/ibm/websphere/servlet/filter/package*"/>
+		<include name="com/ibm/websphere/servlet/filter/IFilterConfig.*"/>
+		<include name="com/ibm/wsspi/webcontainer/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/RequestProcessor.*"/>
+	    <include name="com/ibm/wsspi/webcontainer/collaborator/package*"/>
+	    <include name="com/ibm/wsspi/webcontainer/collaborator/WebAppInitializationCollaborator.*"/>
+		<include name="com/ibm/wsspi/webcontainer/collaborator/WebAppInvocationCollaborator.*"/>	
+		<include name="com/ibm/wsspi/webcontainer/extension/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/extension/ExtensionFactory.*"/>
+		<include name="com/ibm/wsspi/webcontainer/extension/ExtensionProcessor.class"/>
+		<include name="com/ibm/wsspi/webcontainer/filter/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/filter/IFilterConfig.*"/>
+		<include name="com/ibm/wsspi/webcontainer/filter/IFilterMapping.*"/>
+		<include name="com/ibm/wsspi/webcontainer/filter/WebAppFilterManager.*"/>
+		<include name="com/ibm/wsspi/webcontainer/metadata/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/metadata/WebComponentMetaData.*"/>
+		<include name="com/ibm/wsspi/webcontainer/osgi/extension/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/osgi/extension/WebExtensionProcessor.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/GenericServletWrapper.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/IServletConfig*.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/IServletContext.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/IServletWrapper.*"/>
+	    <include name="com/ibm/wsspi/webcontainer/servlet/ServletReferenceListener.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/ServletConfigParmMap*.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/ServletRequestExtended.*"/>
+		<include name="com/ibm/wsspi/webcontainer/webapp/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/webapp/WebAppConfig.*"/>
+		<include name="com/ibm/websphere/servlet/response/package*"/>
+		<include name="com/ibm/websphere/servlet/response/IResponse.*"/>
+		<include name="com/ibm/websphere/servlet/request/package*"/>
+		<include name="com/ibm/websphere/servlet/request/IRequest.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/package*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/ServletResponseExtended.*"/>
+		<include name="com/ibm/wsspi/webcontainer/servlet/IOutputMethodListener.*" />
+		<include name="com/ibm/websphere/servlet/response/package*"/>
+		<include name="com/ibm/websphere/servlet/response/CollectionEnumerationHybrid.*"/>
+		<include name="com/ibm/ws/webcontainer/spiadapter/collaborator/package*"/>
+		<include name="com/ibm/ws/webcontainer/spiadapter/collaborator/IInvocationCollaborator.*"/>
+		<include name="com/ibm/websphere/webcontainer/async/package*"/>
+		<include name="com/ibm/websphere/webcontainer/async/AsyncRequestDispatcher.*"/>
+		<include name="com/ibm/websphere/webcontainer/async/FragmentResponse.*"/>
+		<include name="com/ibm/websphere/webcontainer/async/AsyncRequestDispatcherConfig.*"/>
+	</patternset>
+	
+	<patternset id="undocumented-impl-classes">
+		<include name="com/ibm/ws/webcontainer/extension/WebExtensionProcessor.class"/>
+		<include name="com/ibm/ws/webcontainer/spiadapter/collaborator/IInitializationCollaborator.class"/>
+	</patternset>
+		
+	<property name="spi.ibm.packages.exceptions" 
+		value="com.ibm.ws.webcontainer.extension,
+		com.ibm.websphere.servlet.filter,com.ibm.websphere.servlet.response" />
+	
+	<!-- Copy from tWAS source/binaries first then apply liberty source overrides -->
+
+	<!-- For dev jar; Copy *.class files for bnd  -->
+	<!-- Copy classes from tWAS jar first -->
+	<mkdir dir="${basedir}/build/spiclasses" />
+	<!-- Overwrite with classes built from liberty source -->
+	<copy toDir="${basedir}/build/spiclasses" overwrite="true">
+		<fileset dir="${basedir}/build/classes">
+			<patternset refid="liberty-classes" />		
+		</fileset>
+	</copy>
+	<!-- Add classes needed only for compile, not javadoc -->
+	<copy toDir="${basedir}/build/spiclasses" overwrite="true">
+		<fileset dir="${basedir}/build/classes">
+			<patternset refid="undocumented-impl-classes" />		
+		</fileset>
+	</copy>
+
+	<property name="spi.classes.override" value="${basedir}/build/spiclasses" />
+	
+	<!-- For javadoc: Copy *.java files  -->
+	<!-- Overwrite from liberty source -->
+	<copy toDir="${basedir}/build/spisource" overwrite="true">
+		<fileset dir="${basedir}/src">
+			<patternset refid="liberty-classes" />		
+		</fileset>
+	</copy>
+		
+	<property name="spi.alternate.javadoc.src.dirs" value="${basedir}/build/spisource" />     
+	  
+  
+  <import file="../ant_build/public_imports/apibnd_imports.xml"/>
+  
+</project>

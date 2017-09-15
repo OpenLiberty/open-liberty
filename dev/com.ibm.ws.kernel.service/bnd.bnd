@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.3
+
+Bundle-Name: WebSphere kernel services
+Bundle-SymbolicName: com.ibm.ws.kernel.service
+Bundle-Description: WebSphere kernel services, version ${bVersion}
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+
+Export-Package: \
+ com.ibm.websphere.kernel.server;provide:=true, \
+ com.ibm.wsspi.kernel.service.location, \
+ com.ibm.wsspi.kernel.service.utils;provide:=true, \
+ com.ibm.ws.kernel.service.util;provide:=true, \
+ com.ibm.ws.common.internal.encoder;provide:=true
+ 
+Private-Package: \
+ com.ibm.ws.kernel.server.internal, \
+ com.ibm.ws.kernel.service.utils.resources
+ 
+-includeresource: \
+  OSGI-INF/permissions.perm=resources/permissions.perm
+
+-dsannotations: \
+  com.ibm.ws.kernel.server.internal.ServerInfoMBeanImpl
+
+instrument.classesExcludes: com/ibm/ws/kernel/service/utils/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.logging.core;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

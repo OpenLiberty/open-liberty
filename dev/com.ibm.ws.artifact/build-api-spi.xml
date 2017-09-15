@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.artifact-api" default="buildApiSpi">
+  <!-- DO NOT CHANGE THE DEFAULT TASK FROM 'buildApiSpi'
+       Top level builds use this task explicity.  Changing the
+       default will create an incompatibility between a default
+       project build and a top level build. -->
+
+  <!-- Disable IBM-API steps. -->
+  <property name="noibmapi" value="true" />
+
+  <!-- IBM-SPI required properties. -->
+  <property name="spibndfile" value="${basedir}/build/spi.bnd"/>
+  <property name="spi.ibm.symbolic.suffix" value="artifact"/>
+  <property name="spi.ibm.bundleName" value="WebSphere Artifact SPI"/>
+  <property name="spi.ibm.version" value="1.2"/>
+  <property name="spi.ibm.packages.exceptions" value="com.ibm.ws.adaptable.module.structure"/>
+  <property name="feature.name" value="com.ibm.websphere.appserver.artifact-1.0" />
+
+  <!-- Include the Module jars in the SPI. -->
+  <path id="bnd.jars">
+      <fileset dir="../build.image/wlp/lib/" includes="com.ibm.ws.adaptable.module_*.jar"/>
+      <fileset dir="../com.ibm.ws.artifact.equinox.module/build/lib/" includes="*.jar"/>
+      <fileset dir="../com.ibm.ws.artifact.overlay/build/lib/" includes="*.jar"/>
+  </path>
+  <property name="additional.javadoc.src.dirs" value="${basedir}/../com.ibm.ws.adaptable.module/src/${path.separator}${basedir}/../com.ibm.ws.artifact.equinox.module/src/${path.separator}${basedir}/../com.ibm.ws.artifact.overlay/src/"/>
+
+  <import file="../ant_build/public_imports/apibnd_imports.xml"/>
+
+</project>

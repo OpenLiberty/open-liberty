@@ -1,0 +1,78 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Adaptable Module API
+Bundle-SymbolicName: com.ibm.ws.adaptable.module
+Bundle-Description: Implementation & Provider of the AdaptableModule API; version=${bVersion}
+
+WS-TraceGroup: archive.adaptable
+
+Export-Package: com.ibm.wsspi.adaptable.module;provide:=true,\
+                com.ibm.wsspi.adaptable.module.adapters,\
+                com.ibm.ws.adaptable.module.structure
+
+Private-Package: com.ibm.ws.adaptable.module.internal
+
+-dsannotations=com.ibm.ws.adaptable.module.internal.AdapterFactoryServiceImpl
+
+-ds-felix-extensions=true
+
+Service-Component: \
+  com.ibm.ws.adaptable.module.factory.server;\
+    version:=1.2;\
+    implementation:=com.ibm.ws.adaptable.module.internal.AdaptableModuleFactoryImpl;\
+    provide:=com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;\
+    configuration-policy:=ignore;\
+    adapterFactoryService=com.ibm.wsspi.adaptable.module.adapters.AdapterFactoryService;\
+    containerFactory='com.ibm.wsspi.artifact.factory.ArtifactContainerFactory(&(category=DIR)(category=JAR)(category=LOOSE))';\
+    overlayContainerFactory=com.ibm.wsspi.artifact.overlay.OverlayContainerFactory;\
+    immediate:=true;\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.adaptable.module.fast.mode.container.adapter;\
+    implementation:=com.ibm.ws.adaptable.module.internal.FastModeControlContainerAdapter;\
+    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
+    configuration-policy:=ignore;\
+    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.FastModeControl",\
+  com.ibm.ws.adaptable.module.cache.container.adapter;\
+    implementation:=com.ibm.ws.adaptable.module.internal.NonPersistentCacheContainerAdapter;\
+    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
+    configuration-policy:=ignore;\
+    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.NonPersistentCache",\
+  com.ibm.ws.adaptable.module.cache.entry.adapter;\
+    implementation:=com.ibm.ws.adaptable.module.internal.NonPersistentCacheEntryAdapter;\
+    provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
+    configuration-policy:=ignore;\
+    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.NonPersistentCache",\
+  com.ibm.ws.adaptable.module.masked.path.entry.adapter;\
+    implementation:=com.ibm.ws.adaptable.module.internal.MaskedPathEntryAdapter;\
+    provide:=com.ibm.wsspi.adaptable.module.adapters.EntryAdapter;\
+    configuration-policy:=ignore;\
+    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.MaskedPathEntry",\
+  com.ibm.ws.adaptable.module.overlay.entry.adapter;\
+    implementation:=com.ibm.ws.adaptable.module.internal.AddEntryToOverlayContainerAdapter;\
+    provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
+    configuration-policy:=ignore;\
+    properties:="service.vendor=IBM,toType=com.ibm.wsspi.adaptable.module.AddEntryToOverlay"
+
+-buildpath: \
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.kernel.service;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

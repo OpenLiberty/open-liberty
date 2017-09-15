@@ -1,0 +1,21 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Description: Equinox Metatype, version 1.4.200
+Bundle-Name: Equinox Metatype
+Bundle-SymbolicName: com.ibm.ws.org.eclipse.equinox.metatype
+
+Export-Package: org.eclipse.equinox.metatype;version="1.3.0",\
+   org.osgi.service.metatype
+
+Private-Package: org.eclipse.equinox.metatype.impl
+
+Bundle-Activator: org.eclipse.equinox.metatype.impl.Activator
+
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+
+Provide-Capability: osgi.implementation; osgi.implementation="osgi.metatype"; version:Version="1.3"; uses:="org.osgi.service.metatype", \
+  osgi.extender; osgi.extender="osgi.metatype"; version:Version="1.3"; uses:="org.osgi.service.metatype", \
+  osgi.service; objectClass:List<String>="org.osgi.service.metatype.MetaTypeService"; uses:="org.osgi.service.metatype"
+
+-removeheaders = Eclipse-SourceReferences, Archiver-Version, Build-Jdk, Built-By, Bundle-Localization

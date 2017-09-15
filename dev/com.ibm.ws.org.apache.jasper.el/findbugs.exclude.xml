@@ -1,0 +1,525 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+  <!-- match generated nls classes: return mutable type -->
+   <Match> 
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+   </Match>
+   <Match>
+ 
+   <Class name="~org.apache.el.Messages.*"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+   
+  <Match>
+    <Class name="org.apache.el.Messages"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.MethodExpressionImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Lorg/apache/el/parser/Node;Ljavax/el/FunctionMapper;Ljavax/el/VariableMapper;Ljava/lang/Class;[Ljava/lang/Class;)V"/>
+    <Field name="paramTypes"/>
+    <Local name="paramTypes"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.MethodExpressionLiteral"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/Class;[Ljava/lang/Class;)V"/>
+    <Field name="paramTypes"/>
+    <Local name="paramTypes"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.lang.ELSupport"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.lang.ELSupport"/>
+    <Method name="coerceToBoolean" signature="(Ljava/lang/Object;Z)Ljava/lang/Boolean;"/>
+    <Bug pattern="NP_BOOLEAN_RETURN_NULL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.lang.ELSupport"/>
+    <Method name="compare" signature="(Ljava/lang/Object;Ljava/lang/Object;)I"/>
+    <Bug pattern="RV_NEGATING_RESULT_OF_COMPARETO"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.lang.ExpressionBuilder"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.lang.FunctionMapperImpl$Function"/>
+    <Method name="getMethod" signature="()Ljava/lang/reflect/Method;"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.AstValue"/>
+    <Method name="getTarget" signature="(Lorg/apache/el/lang/EvaluationContext;)Lorg/apache/el/parser/AstValue$Target;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="And" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Assignment" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Boolean" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="BracketSuffix" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Choice" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Compare" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="CompositeExpression" signature="()Lorg/apache/el/parser/AstCompositeExpression;"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Concatenation" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="DeferredExpression" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="DotSuffix" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="DynamicExpression" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Equality" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Expression" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="FloatingPoint" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Function" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Identifier" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Integer" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="LambdaExpression" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="LambdaExpressionOrInvocation" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="LambdaParameters" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="ListData" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Literal" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="LiteralExpression" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="MapData" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="MapEntry" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Math" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="MethodParameters" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Multiplication" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="NonLiteral" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Null" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Or" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="ReInit" signature="(Ljava/io/InputStream;)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="ReInit" signature="(Ljava/io/InputStream;Ljava/lang/String;)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="ReInit" signature="(Ljava/io/Reader;)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="ReInit" signature="(Lorg/apache/el/parser/ELParserTokenManager;)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Semicolon" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="SetData" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="String" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Unary" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="Value" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="ValuePrefix" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="ValueSuffix" signature="()V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParser"/>
+    <Method name="jj_rescan_token" signature="()V"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserConstants"/>
+    <Field name="tokenImage"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserTokenManager"/>
+    <Field name="jjnewLexState"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserTokenManager"/>
+    <Field name="jjstrLiteralImages"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserTokenManager"/>
+    <Method name="ReInit" signature="(Lorg/apache/el/parser/SimpleCharStream;)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserTokenManager"/>
+    <Method name="ReInit" signature="(Lorg/apache/el/parser/SimpleCharStream;I)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserTokenManager"/>
+    <Method name="SwitchTo" signature="(I)V"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserTokenManager"/>
+    <Method name="getNextToken" signature="()Lorg/apache/el/parser/Token;"/>
+    <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ELParserTreeConstants"/>
+    <Field name="jjtNodeName"/>
+    <Bug pattern="MS_OOI_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ParseException"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ParseException"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ParseException"/>
+    <Method name="&lt;init&gt;" signature="(Lorg/apache/el/parser/Token;[[I[Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ParseException"/>
+    <Method name="initialise" signature="(Lorg/apache/el/parser/Token;[[I[Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ParseException"/>
+    <Method name="&lt;init&gt;" signature="(Lorg/apache/el/parser/Token;[[I[Ljava/lang/String;)V"/>
+    <Field name="expectedTokenSequences"/>
+    <Local name="expectedTokenSequencesVal"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ParseException"/>
+    <Method name="&lt;init&gt;" signature="(Lorg/apache/el/parser/Token;[[I[Ljava/lang/String;)V"/>
+    <Field name="tokenImage"/>
+    <Local name="tokenImageVal"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.ParseException"/>
+    <Method name="initialise" signature="(Lorg/apache/el/parser/Token;[[I[Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.SimpleCharStream"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/InputStream;III)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.SimpleCharStream"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/io/InputStream;Ljava/lang/String;III)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.SimpleCharStream"/>
+    <Method name="ReInit" signature="(Ljava/io/InputStream;III)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.SimpleCharStream"/>
+    <Method name="ReInit" signature="(Ljava/io/InputStream;Ljava/lang/String;III)V"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.parser.TokenMgrError"/>
+    <Method name="LexicalError" signature="(ZIIILjava/lang/String;C)Ljava/lang/String;"/>
+    <Bug pattern="NM_METHOD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.stream.Stream"/>
+    <Method name="noneMatch" signature="(Ljavax/el/LambdaExpression;)Lorg/apache/el/stream/Optional;"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.stream.StreamELResolverImpl$ArrayIterator"/>
+    <Method name="next" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="IT_NO_SUCH_ELEMENT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.util.MessageFactory"/>
+    <Method name="get" signature="(Ljava/lang/String;[Ljava/lang/Object;)Ljava/lang/String;"/>
+    <Local name="value"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.util.ReflectionUtil"/>
+    <Method name="forName" signature="(Ljava/lang/String;)Ljava/lang/Class;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.util.ReflectionUtil"/>
+    <Field name="PRIMITIVES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.util.ReflectionUtil"/>
+    <Field name="PRIMITIVE_NAMES"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.util.ReflectionUtil$MatchResult"/>
+    <Method name="compareTo" signature="(Lorg/apache/el/util/ReflectionUtil$MatchResult;)I"/>
+    <Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.el.util.Validation"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+</FindBugsFilter>

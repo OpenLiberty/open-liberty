@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# translator:
+# Translate words on the right hand side of the = sign.
+# Do not translate {0}, {1}, %1, %2 etc.
+# Do NOT translate any words when they START with: '-
+# Do NOT translate any words when they START with: @
+# Preserve all spaces after a backslash (\) even at the end of a line.
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.webservices.javaee.common/resources/com/ibm/ws/webservices/javaee/common/resources/WsEECommonMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere WebServices EE Common Code
+#RANGE 0300-0399
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#{0}=service impl bean link
+warn.dd.invalid.portcomponentname=CWWKW0300W: The value of the <port-component-name> element is null or empty for {0} in the webservices.xml.
+warn.dd.invalid.portcomponentname.explanation=The value of the <port-component-name> element must not be null or empty.
+warn.dd.invalid.portcomponentname.useraction=Ensure that the value of the <port-component-name> element is not null or empty.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.protocolbinding=CWWKW0301W: The value {0} of the <protocol-binding> element is not a valid value for port component {1} in webservices.xml.
+warn.dd.invalid.protocolbinding.explanation=The value of the <protocol-binding> element in the webservices.xml must be one of the following URLs ("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true") or their alias ##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP.
+warn.dd.invalid.protocolbinding.useraction=Use one of the following URLs ("http://schemas.xmlsoap.org/wsdl/soap/http","http://www.w3.org/2003/05/soap/bindings/HTTP/","http://schemas.xmlsoap.org/wsdl/soap/http?mtom=true","http://www.w3.org/2003/05/soap/bindings/HTTP/?mtom=true") or their alias ##SOAP11_HTTP,##SOAP11_HTTP.MTOM,##SOAP12_HTTP,##SOAP12_HTTP.MTOM,##XML_HTTP for the protocol binding.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlservice=CWWKW0302W: The value {0} of the <wsdl-service> element is unqualified for port component {1} in webservices.xml.
+warn.dd.invalid.wsdlservice.explanation=The value of the <wsdl-service> element in the webservices.xml must be a qualified name.
+warn.dd.invalid.wsdlservice.useraction=Use a qualified name for the <wsdl-service> element in the webservices.xml. A qualified name should contain an XML name-space and a local-name. For example, the <wsdl-service> should be defined like <wsdl-service xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLService</wsdl-service> in the webservices.xml.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.wsdlport=CWWKW0303W: The value {0} of the <wsdl-port> element is unqualified for port component {1} in webservices.xml.
+warn.dd.invalid.wsdlport.explanation=The value of the <wsdl-port> element in the webservices.xml must be a qualified name. 
+warn.dd.invalid.wsdlport.useraction=Use a qualified name for the <wsdl-port> element in webservices.xml. A qualified name should contain an XML name-space and a local-name. For example, the <wsdl-port> should be defined like <wsdl-port xmlns:pfx="http://com.ibm.example">pfx:ExampleWSDLPort</wsdl-port> in the webservices.xml.
+
+#{0}=namespace of the port qname
+#{1}=value
+#{2}=port component name
+warn.dd.invalid.namespace.of.wsdlport=CWWKW0304W: The namespace {0} of value {1} in the <wsdl-port> element is invalid for port component {2} in webservices.xml.
+warn.dd.invalid.namespace.of.wsdlport.explanation=If the namespace of the <wsdl-port> element is specified, it must match the namespace specified in the <wsdl-service> element. 
+warn.dd.invalid.namespace.of.wsdlport.useraction=Specify a namespace that matches the one specified in the <wsdl-service> element. 
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.serviceendpointinterface=CWWKW0305W: The value {0} of the <service-endpoint-interface> element is not a fully qualified class name for port component {1} in webservices.xml.
+warn.dd.invalid.serviceendpointinterface.explanation=The value of the <service-endpoint-interface> element in the webservices.xml must be a fully qualified class name.
+warn.dd.invalid.serviceendpointinterface.useraction=Use a fully qualified class name for the <service-endpoint-interface> element in the webservices.xml. The fully qualified class name should be something like <package_name>.<class_name>, for example, com.ibm.ws.example.MyService.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.mtomthreshold=CWWKW0306W: The value {0} of the <mtom-threshold> element is a negative integer for port component {1} in webservices.xml.
+warn.dd.invalid.mtomthreshold.explanation=The value of the <mtom-threshold> element in the webservices.xml must be a non-negative integer.
+warn.dd.invalid.mtomthreshold.useraction=Use a non-negative integer for the <mtom-threshold> element in the webservices.xml.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.enablemtom=CWWKW0307W: The value {0} of the <enable-mtom> element is not a boolean value for port component {1} in webservices.xml.
+warn.dd.invalid.enablemtom.explanation=The value of the <enable-mtom> element in the webservices.xml must be a boolean value.
+warn.dd.invalid.enablemtom.useraction=Set the value of the <enable-mtom> element to true or false.
+
+#{0}=value
+#{1}=port component name
+warn.dd.invalid.respectbinding=CWWKW0308W: The value {0} of the <enabled> element in the <respect-binding> element is not a boolean value for port component {1} in webservices.xml.
+warn.dd.invalid.respectbinding.explanation=The value of the <enabled> element defined in the <respect-binding> element must be a boolean value.
+warn.dd.invalid.respectbinding.useraction=Set the value of the <enabled> element to true or false.
+
+#{0}=value
+#{1}=element tag
+#{2}=port component name
+warn.dd.invalid.addressing=CWWKW0309W: The value {0} of {1} in the <addressing> element is not a boolean value for port component {2} in webservices.xml.
+warn.dd.invalid.addressing.explanation=The value of the <enabled> or the <required> element defined in the <addressing> element must be a boolean value.
+warn.dd.invalid.addressing.useraction=Set the value of the <enabled> or the <required> element to true or false.
+
+#{0}=element tag
+#{1}=port component name
+warn.dd.invalid.handler=CWWKW0310W: The {0} element is missing in the <handler> element for port component {1} in webservices.xml.
+warn.dd.invalid.handler.explanation=The <handler-class> element and the <handler-name> element are required when a handler is set.
+warn.dd.invalid.handler.useraction=Set the <handler-class> element and the <handler-name> element to a valid handler. The value of the <handler-name> element must be a unique name in the same webservices.xml. The value of the <handler-class> element must be a fully qualified class name. The fully qualified class name should be something like <package_name>.<class_name>, for example, com.ibm.ws.example.MyHandler.

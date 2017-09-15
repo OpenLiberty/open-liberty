@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+<h:head>
+    <title>JSF 2.2 (CDI) Faces Flows Test Page</title>
+</h:head>
+    <h:body>
+        In flow ? #{null != facesContext.application.flowHandler.currentFlow}<br/>
+        Flow Id: #{empty facesContext.application.flowHandler.currentFlow.id ? "no flow ID" : facesContext.application.flowHandler.currentFlow.id}<br/><br/>
+        <h:form prependId="false" id="form">
+            This flow tests a basic configuration with a @FlowScoped bean.  The flow is defined via simple-flow.xml<br/>
+            <h:commandButton id="simpleBean" value="Simple flow with FlowScoped bean" action="simpleBean" immediate="true"/><br/>
+
+            This flow tests a basic configuration that's created via the FlowBuilder API<br/>
+            <h:commandButton id="simpleFlowBuilder" value="Simple FlowBuilder flow" action="simpleFlowBuilder" immediate="true"/><br/>
+
+            Tests nested flows, as well as parameter passing; the first flow is defined via FlowBuilder, and the second is defined via *-flow.xml<br/>
+            <h:commandButton id="mixedNested" value="mixed nested flow" action="mixedNested1" immediate="true"/><br/>
+
+            Tests the initialize() and finalize() API calls<br/>
+            <h:commandButton id="initializeFinalize" value="initialize() and finalize()" action="initializeFinalize" immediate="true"/><br/>
+
+            Verifies that JSF switches as defined in programmatically work correctly; in this case, a switch is used to gate a navigation case<br/>
+            <h:commandButton id="programmaticSwitch" value="programmatic switch" action="programmaticSwitch" immediate="true"/><br/>
+
+        </h:form>
+    </h:body>
+</html>

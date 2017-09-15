@@ -1,0 +1,7 @@
+Bundle-Description                      dir.test, version 0.1                     
+Bundle-ManifestVersion                  2                                       
+Bundle-Name                             dir-based bundle                           
+Bundle-SymbolicName                     dir.bundle.test                                  
+Bundle-Version                          0.1                                     
+Created-By                              1.6.0 (IBM Corporation)                 
+Manifest-Version                        1.0                                     

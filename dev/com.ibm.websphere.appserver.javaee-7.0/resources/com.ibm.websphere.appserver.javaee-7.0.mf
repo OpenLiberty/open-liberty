@@ -1,0 +1,38 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-App-ForceRestart: install,
+ uninstall
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: javaee-7.0
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+Subsystem-Content: com.ibm.websphere.appserver.concurrent-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jaspic-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.servlet-3.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jcaInboundSecurity-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.batch-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ejb-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jacc-1.5; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.wasJmsSecurity-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jaxws-2.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jca-1.7; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.webProfile-7.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javaMail-1.5; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.wasJmsServer-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.j2eeManagement-1.1; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.wasJmsClient-2.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.appClientSupport-1.0; type="osgi.subsystem.feature"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.javaee-7.0
+Subsystem-ManifestVersion: 1
+Subsystem-Name: Java EE Full Platform 7.0
+Subsystem-SymbolicName: com.ibm.websphere.appserver.javaee-7.0; visibility:=public; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 7.0.0
+Tool: Bnd-3.3.0.201609221906

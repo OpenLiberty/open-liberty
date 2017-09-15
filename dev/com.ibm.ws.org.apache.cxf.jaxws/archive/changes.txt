@@ -1,0 +1,377 @@
+The change file is used to maintaine the extra CXF changes from the community.
+
+Each entry should follow the format below:
+
+#a.Change Description: What is the change for ?
+#b.Affected file list: Which file is updated/added ?
+#c.Affected library file names: Which jar file is updated ?
+#d Diff file name
+#e.Community status: Is a JIRA in CXF community opened ? Is the patch accepted ? Which version will include the change ?
+
+-------------------------------------------------------------------------------
+a. Fix the namespace binding issue while using IBM XLXP2
+b. api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java
+c. cxf-api-2.6.2.jar
+d. patch/CXF-4520.diff
+e. A JIRA CXF-4520 is created, and the patch file is accepted. The changes will be included in the version >= 2.6.3
+
+-------------------------------------------------------------------------------
+a. Detect the Stax implementation for optimize the XMLInput/OutputFactory creation
+b. api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java
+c. cxf-api-2.6.2.jar
+d. patch/CXF-4521.diff
+e. A JIRA CXF-4521 is created, and the patch file is accepted. The changes will be included in the version >= 2.6.3
+
+-------------------------------------------------------------------------------
+a. Close XMLStreamReader/XMLStreamWriter to avoid leaking
+b. api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java
+   api/org/apache/cxf/interceptor/StaxInEndingInterceptor.java
+   api/org/apache/cxf/staxutils/StaxInInterceptor.java
+   api.org/apache/cxf/staxutils/StaxOutEndingInterceptor.java
+c. cxf-api-2.6.2.jar
+   cxf-rt-core-2.6.2.jar
+d. patch/CXF-4523.diff
+e. A JIRA CXF-4523 is created, and the patch file is accepted. The changes will be included in the version >= 2.6.3
+   The changes in FIStaxInInterceptor is not included, as we do not support FastInfo
+   
+-------------------------------------------------------------------------------
+a. Update the soap:body content for SOAPMessage
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handlder/logiacl/LogicalMessageImpl.java
+c. cxf-rt-frontend-jaxws-2.6.2.jar
+d. patch/CXF-4522.diff
+e. A JIRA CXF-4522 is created, and the patch file is accepted. The changes will be included in the version >= 2.6.3
+
+-------------------------------------------------------------------------------
+a. The message flow is not correct when handler throw ProtocolException outbound
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handlder/HandlerChainInvoker.java
+c. cxf-rt-frontend-jaxws-2.6.2.jar
+d. patch/CXF-4565.diff
+e. A JIRA CXF-4565 is created, and the patch file is accepted. The changes will be included in the version >= 2.7
+
+-------------------------------------------------------------------------------
+a. Fix incorrect field precedence of Soap Fault
+b. rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java
+c. cxf-rt-bindings-soap.2.6.2.jar
+d. patch/CXF-4562.diff
+e. A JIRA CXF-4562 is created, and the patch file is accepted. The change will be included in version >=2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. When the logical handler return false processing the outbound message, the SoapMessage's body is always empty
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handlder/logiacl/LogicalHandlerOutInterceptor.java
+c. cxf-rt-frontend-jaxws-2.6.2.jar
+d. patch/CXF-4583.diff
+e. A JIRA CXF-4583 is created, and the patch file is accepted. The changes will be included in the version >=2.5.7 >= 2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. Fix double content-id in attachment header when creating attachment
+b. api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/saaj/SAAJInInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/saaj/SAAJOutInterceptor.java
+c. cxf-api-2.6.2.jar
+   cxf-rt-bindings-soap-2.6.2.jar
+d. patch/CXF-4570.diff
+e. A JIRA CXF-4570 is created, and source files are moified by cxf committer. The change will be included in version >=2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. Add close() invocation for all XMLStreamReader/Writer
+b. api/src/main/java/org/apache/cxf/configuration/jsse/TLSClientParametersConfig.java
+   api/src/main/java/org/apache/cxf/configuration/spring/AbstractBeanDefinitionParser.java
+   api/src/main/java/org/apache/cxf/configuration/spring/JAXBBeanFactory.java
+   api/src/main/java/org/apache/cxf/interceptor/FIStaxInEndingInterceptor.java
+   api/src/main/java/org/apache/cxf/interceptor/FIStaxInInterceptor.java
+   api/src/main/java/org/apache/cxf/interceptor/StaxInEndingInterceptor.java
+   api/src/main/java/org/apache/cxf/interceptor/StaxInInterceptor.java
+   api/src/main/java/org/apache/cxf/interceptor/StaxOutEndingInterceptor.java
+   api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java
+   api/src/main/java/org/apache/cxf/wsdl/EndpointReferenceUtils.java
+   api/src/main/java/org/apache/cxf/wsdl/JAXBExtensionHelper.java
+   rt/bindings/coloc/src/main/java/org/apache/cxf/binding/coloc/ColocUtil.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelIdParser.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/ChannelService.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/tcp/SoapTcpUtils.java
+   rt/core/src/main/java/org/apache/cxf/wsdl11/WSDLManagerImpl.java
+   rt/databinding/aegis/src/main/generated/org/apache/cxf/aegis/util/jdom/StaxBuilder.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java
+   rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/interceptor/JAXRSOutInterceptor.java
+   rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/DataBindingProvider.java
+   rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/JAXBElementProvider.java
+   rt/frontend/jaxrs/src/main/java/org/apache/cxf/jaxrs/provider/SourceProvider.java
+   rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/DispatchImpl.java
+   rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/SwAOutInterceptor.java
+   rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/spi/ProviderImpl.java
+   rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetInterceptor.java
+   rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/aegis/AegisElementProvider.java
+   rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/json/JSONProvider.java
+   rt/rs/extensions/providers/src/main/java/org/apache/cxf/jaxrs/provider/xmlbeans/XMLBeanStreamSerializer.java
+   rt/ws/policy/src/main/java/org/apache/cxf/ws/policy/PolicyAnnotationListener.java
+   tools/validator/src/main/java/org/apache/cxf/tools/validator/internal/Stax2DOM.java
+   tools/wsdlto/frontend/jaxws/src/main/java/org/apache/cxf/tools/wsdlto/frontend/jaxws/customization/CustomizationParser.java
+c. cxf-api-2.6.2.jar
+   cxf-rt-bindings-soap-2.6.2.jar
+   cxf-rt-core-2.6.2.jar
+   cxf-rt-databinding-jaxb-2.6.2.jar
+   cxf-rt-frontend-jaxws-2.6.2.jar
+   cxf-rt-frontend-simple-2.6.2.jar
+   cxf-rt-ws-policy-2.6.2.jar
+d. patch/CXF-4557.diff
+e. A JIRA CXF-4557 is created, and the patch file is accepted. The changes will be included in the version >=2.5.7 >= 2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. org.w3c.dom.DOMException exception ocurrs when sending soap11 request and returning soap12 response
+b. rt\frontend\jaxws\src\main\java\org\apache\cxf\jaxws\interceptors\MessageModeOutInterceptor.java
+c. cxf-rt-frontend-jaxws-2.6.2.jar
+d. patch/CXF-4584.diff
+e. A JIRA CXF-4584 is created, and the patch file is accepted. The changes will be included in the version >=2.5.7 >= 2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. RI dataContentHandler should be found from defaultCommandMap.
+b. api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java
+c. cxf-api-2.6.2.jar
+d. patch/CXF-4616.diff
+e. A JIRA CXF-4616 is created, and the patch file is accepted. The change will be included in version >=2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. when use code first, If no setter method in Exception class, the property can't get marshalled nor available in generated wsdl.
+b. rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBEncoderDecoder.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBContextInitializer.java
+c. cxf-rt-databinding-jaxb-2.6.2.jar
+d  cxf-4594.diff
+e. A JIRA CXF-4594 is created, and the patch file is accepted. The changes will be included in the version >= 2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. when DOMSource is built without documentFactory.setNamespaceAware(true), additional namespace is added into the soapMessage
+b. api/src/main/java/org/apache/cxf/staxutils/W3CDOMStreamReader.java
+c. cxf-api-2.6.2.jar
+d  cxf-4652.diff
+e. A JIRA CXF-4652 is created, and the patch file is accepted. The changes will be included in the version >= 2.6.4, >=2.7.1
+
+-------------------------------------------------------------------------------
+a. Get a null pointer exception if provider returns null response in payload message mode.
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/JAXWSMethodInvoker.java
+c. cxf-rt-frontend-jaxws-2.6.2.jar
+d. patch/CXF-4611.diff
+e. A JIRA CXF-4611 is created, and the patch file is accepted. The changes will be included in the version >=2.7.1
+
+-------------------------------------------------------------------------------
+a. Add unmarshaller/marshaller pool for better performance
+b. rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataReaderImpl.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataWriterImpl.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java
+c. cxf-rt-databinding-jaxb-2.6.2.jar
+d. CXF-4650.diff
+e. A JIRA CXF-4650 is created, but the patch is not accepted.
+
+-------------------------------------------------------------------------------
+a. Binary size is equal with MTOM threshold should not be sent as attachment
+b. api/src/main/java/org/apache/cxf/attachment/AttachmentUtil.java
+c. cxf-api.2.6.2.jar
+d. CXF-4720.diff
+e. A JIRA CXF-4650 is created, and the patch file is accepted. The changes will be included in the version >=2.6.5, >=2.7.2
+
+-------------------------------------------------------------------------------
+
+a. Duplicated message key
+b. rt\core\src\main\java\org\apache\cxf\service\factory\Messages.properties
+   rt\transports\http\src\main\java\org\apache\cxf\transport\http\Messages.properties
+c. cxf-rt-core-2.6.2.jar
+   cxf-rt-transports-http-2.6.2.jar
+d. CXF-4725.diff
+e. A JIRA CXF-4725 is created, and the patch file is accepted. The changes will be included in the version >=2.6.5, >=2.7.2
+
+-------------------------------------------------------------------------------
+
+a. Introduce "autoRewriteSoapAddressForAllServices" property to overwrite all service endpoints in returning WSDL.
+b. rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetUtils.java
+c. cxf-rt-frontend-simple-2.6.2.jar
+d. CXF-4677.diff
+e. A JIRA CXF-4677 is created, and the patch file is accepted. The changes will be included in the version >=2.7.1 
+
+-------------------------------------------------------------------------------
+a. AutoRewriteSoapAddressForAllServices does not work for relative enpoint addresses 
+b. rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetUtils.java
+c. cxf-rt-frontend-simple-2.6.2.jar
+d. CXF-4695.diff
+e. A JIRA CXF-4695 is created, and the patch file is accepted. The changes will be included in the version >=2.7.2
+
+-------------------------------------------------------------------------------
+a. SOAPFault message improvement in CXF when there is unchecked NPE
+b. api/src/main/java/org/apache/cxf/interceptor/Fault.java
+c. cxf-api-2.6.2.jar
+d. CXF-4684.diff
+e. A JIRA CXF-4695 is created, and the patch file is accepted. The changes will be included in the version >=2.7.2
+
+
+-------------------------------------------------------------------------------
+a. method inherited from super interface can not be part of operations in wsdl
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsServiceConfiguration.java
+c. cxf-rt-frontend-jaxws.2.6.2.jar
+d. CXF-4713.diff
+e. A JIRA CXF-4713 is created, and the patch file is accepted. The changes will be included in the version >=2.6.5, >=2.7.2
+
+
+-------------------------------------------------------------------------------
+a. Add partial wsdl support in CXF
+b. rt/core/src/main/java/org/apache/cxf/wsdl11/WSDLServiceFactory.java
+   rt/core/src/main/java/org/apache/cxf/wsdl11/PartialWSDLProcessor.java
+   rt/core/src/main/java/org/apache/cxf/wsdl11/SOAPBindingUtil.java
+   rt/core/src/main/java/org/apache/cxf/service/factory/ReflectionServiceFactoryBean.java
+c. cxf-rt-core-2.6.2.jar
+d. CXF-4676.diff
+e. A JIRA CXF-4676 is created, and the patch file is accepted. The changes will be included in the version >=2.5.9, >=2.6.6, >=2.7.3, >=2.8.0
+
+-------------------------------------------------------------------------------
+a. Refact SwaOutInterceptor to honor other JAXB impl(besides  JAXB RI)
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/SwAOutInterceptor.java
+c. cxf-rt-frontend-jaxws.2.6.2.jar
+d. CXF-4768.diff
+e. A JIRA CXF-4768 is created, and the patch file is accepted. The changes will be included in the version >=2.5.9, >=2.6.6, >=2.7.3, >=2.8.0
+
+-------------------------------------------------------------------------------
+a. enhance CXF to follow jaxws spec 3.6.2.3 when using RI or Axis2 client
+b. rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/RPCOutInterceptor.java
+c. cxf-rt-bindings-soap-2.6.2.jar
+d. CXF-4784.diff
+e. A JIRA CXF-4768 is created, and the patch file is accepted. The changes will be included in the version >=2.5.9, >=2.6.6, >=2.7.3, >=2.8.0
+
+-------------------------------------------------------------------------------
+a. getMessage from java.lang.Throwable should be included in accepted method. 
+b. rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBContextInitializer.java
+c. cxf-rt-databinding-jaxb-2.6.2.jar
+d. CXF-4748.diff
+e. A JIRA CXF-4748 is created, and the patch file is accepted. The changes will be included in the version >=2.6.6, >=2.7.3
+
+-------------------------------------------------------------------------------
+a. NPE is thrown while enabling fine log level in TrustDecisionUtil if MessageTrustDecider from message context is used
+b. rt/transports/http/src/main/java/org/apache/cxf/transport/http/TrustDecisionUtil.java
+c. cxf-rt-transports-http-2.6.2.jar
+d. CXF-4803.diff
+e. A JIRA CXF-4803 is created, and the patch file is accepted. The changes will be included in the version >=2.5.10, >=2.6.7, >=2.7.4, >=2.8.0
+
+-------------------------------------------------------------------------------
+a. 'lang' and 'subcode' can not be set when using jax-ws front-end in soapfault
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/WebFaultOutInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java
+   api/src/main/java/org/apache/cxf/interceptor/Fault.java
+c. cxf-rt-bindings-soap-2.6.2.jar
+   cxf-rt-frontend-jaxws.2.6.2.jar
+   cxf-api-2.6.2.jar
+d. CXF-4790.diff
+e. A JIRA CXF-4790 is created, and the patch file is accepted. The changes will be included in the version >=2.8.0, >=2.7.4, >=2.6.7, >=2.5.10 
+
+-------------------------------------------------------------------------------
+a. The body and header appears in reverse order for outbound soap message
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/MessageModeOutInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/saaj/SAAJStreamWriter.java
+   api/src/main/java/org/apache/cxf/staxutils/OverlayW3CDOMStreamWriter.java
+c. cxf-rt-bindings-soap-2.6.2.jar
+   cxf-rt-frontend-jaxws.2.6.2.jar
+   cxf-api-2.6.2.jar
+d. CXF-4818.diff
+e. A JIRA CXF-4818 is created. The changes will be included in the version >=2.8.0, >=2.7.4, >=2.6.7
+
+-------------------------------------------------------------------------------
+a. unwanted {0} in the message with key NO_SETTER_OR_FIELD_FOR_RESOURCE from cxf-api 
+b. api/src/main/java/org/apache/cxf/common/injection/Messages.properties
+c. cxf-api-2.6.2.jar
+d. CXF-4730.diff
+e. A JIRA CXF-4730 is created. The changes will be included in the version >=2.7.3, >=2.6.6, >=2.5.9
+
+-------------------------------------------------------------------------------
+a. Soap 1.1 service returns an invalid soap fault for soap 1.2 requests
+b. api/src/main/java/org/apache/cxf/annotations/SchemaValidation.java
+   api/src/main/java/org/apache/cxf/helpers/ServiceUtils.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/AbstractSoapInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/ReadHeadersInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultInInterceptor.jave
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap11FaultOutInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultInInterceptor.java
+   rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutIntercepor.java
+c. cxf-rt-bindings-soap-2.6.2.jar
+   cxf-api-2.6.2.jar
+d. CXF-4794.diff
+e. A JIRA CXF-4794 is created, and the patch file is accepted. The changes will be included in the version >= 2.6.7
+
+-------------------------------------------------------------------------------
+a. Incorrect msg with key COULD_NOT_SET_WRAPPER_STYLE from cxf-rt-core 
+b. rt/core/src/main/java/org/apache/cxf/service/factory/Messages.properties
+c. cxf-rt-core-2.6.2.jar
+d. CXF-4895.diff
+e. A JIRA CXF-4859 is created. The changes will be included in the version >=2.8.0, >=2.7.4, >=2.6.7
+
+-------------------------------------------------------------------------------
+a. Log error/exception when fails to parse WSDL 
+b. rt/core/src/main/java/org/apache/cxf/service/factory/ReflectionServiceFactoryBean.java
+c. cxf-rt-core-2.6.2.jar
+d. CXF-4839.diff
+e. A JIRA CXF-4839 is created. The changes will be included in the version >=2.7.3, >=2.6.6, >=2.5.9
+
+-------------------------------------------------------------------------------
+a. Fix problems where extensors may be adding namespace declarations into the root wsdl instead of the current wsdl when dealing with services that generated imports. 
+b. rt/core/src/main/java/org/apache/cxf/wsdl11/ServiceWSDLBuilder.java
+c. cxf-rt-core-2.6.2.jar
+d. CXF-4877.diff
+e. A JIRA CXF-4877 is created. The changes have be included in the version >=2.7.4, >=2.6.7, >=2.5.10
+
+-------------------------------------------------------------------------------
+a. Early consume publishedEndpointUrl property 
+b. rt/frontend/simple/src/main/java/org/apache/cxf/frontend/WSDLGetUtils.java
+   rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/EndpointImpl.java
+c. cxf-rt-frontend-simple-2.6.2.jar
+   cxf-rt-frontend-jaxws.2.6.2.jar
+d. CXF-4674.diff
+e. A JIRA CXF-4877 is created. The changes have be included in the version >=2.7.1, >=2.6.4
+
+-------------------------------------------------------------------------------
+a. Fix problems that CXF RespectBinding feature does not support the customized binding info under operation and its sub element.
+b. rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsEndpointImpl.java
+c. cxf-rt-frontend-jaxws-2.6.2.jar
+d. CXF-4876.diff
+e. A JIRA CXF-4876 is created. The changes have be included in the version >=2.8.0, >=2.7.4, >=2.6.7, >=2.5.10
+
+-------------------------------------------------------------------------------
+a. Fix problems that CXF cannot get xsd schema file when access wsdl file as "?wsdl" with auto redirect turned on.
+b. rt/transports/http/src/main/java/org/apache/cxf/transport/http/HTTPConduit.java
+   api/src/main/java/org/apache/cxf/transport/TransportURIResolver.java
+c. cxf-api-2.6.2.jar
+   cxf-rt-transports-http-2.6.2.jar
+d. CXF-4918.diff
+e. A JIRA CXF-4918 is created. The changes have be included in the version >=2.8.0, >=2.7.4, >=2.6.7
+
+-------------------------------------------------------------------------------
+a. Fix potential problems with the JAXBContext being null
+b. api/src/main/java/org/apache/cxf/common/jaxb/JAXBContextCache.java
+c. cxf-api-2.6.2.jar
+d. CXF-4947.diff, CXF-4947-2.diff
+e. A JIRA CXF-4947 is created. The CXF-4947.diff have be included in the version >=2.8.0, >=2.7.5, >=2.6.8, but CXF-4947-2.diff is still waiting response from CXF community.
+
+
+
+
+*****************************************************************************************************
+Private changes on CXF files
+*****************************************************************************************************
+Each entry should follow the format below:
+#a. Defect/Task num in RTC
+#b. Affected file list: Which file is updated/added ?
+#c. Affected library file names: Which jar file is updated ?
+#d. why not accepted by CXF community
+--------------------------------------------------------------------------------------
+a. 88874
+b. rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataReaderImpl.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/io/DataWriterImpl.java
+   rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java
+c. cxf-rt-databinding-jaxb-2.6.2.jar
+d. This fix only improve performance for XLXP in Libery, but not improve very much for CXF
+------------------------------------------------------------------------------------------
+a. 95061
+b. rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java
+c. cxf-rt-databinding-jaxb-2.6.2.jar
+d. This fix only improve performance for XLXP in Libery, but not improve very much for CXF
+-------------------------------------------------------------------------------------------
+a. 176959
+b. rt/databinding/jaxb/src/main/java/org/apache/cxf/jaxb/JAXBDataBinding.java
+c. cxf-rt-databinding-jaxb-2.6.2.jar
+d. A fix for 95061
+
+

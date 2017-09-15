@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include=~../cnf/resources/bnd/bundle.props
+         
+bVersion=1.0.0
+
+Bundle-SymbolicName: com.ibm.ws.jsonp.feature.provider.1.0
+
+Export-Package: \
+   com.ibm.ws.jsonp.feature.provider.*;version=1.0
+
+# The file system path is relative to the location of this bnd.bnd file.
+Include-Resource: \
+  META-INF/services=test-bundles/custom.jsonp/resources/META-INF/services
+  
+Service-Component: \
+  com.ibm.ws.jsonp.feature.provide_${bVersion}.ResourceProvider; \
+  implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+  provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+  configuration-policy:=ignore; \
+  properties:= "resources=META-INF/services/javax.json.spi.JsonProvider"
+  

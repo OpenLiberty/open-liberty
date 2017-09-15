@@ -1,0 +1,27 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: wim base
+Bundle-Description:  wim base, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.security.wim.base
+
+Private-Package: com.ibm.websphere.security.wim.util.resources 
+
+Export-Package: \
+ com.ibm.wsspi.security.wim, \
+ com.ibm.wsspi.security.wim.exception, \
+ com.ibm.wsspi.security.wim.model, \
+ com.ibm.websphere.security.wim;provide:=true, \
+ com.ibm.websphere.security.wim.copyright;provide:=true, \
+ com.ibm.websphere.security.wim.ras;provide:=true, \
+ com.ibm.websphere.security.wim.util;provide:=true
+
+instrument.classesExcludes: com/ibm/websphere/security/wim/util/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file

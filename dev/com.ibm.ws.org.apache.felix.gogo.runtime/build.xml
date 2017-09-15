@@ -1,0 +1,32 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.org.apache.felix.gogo.runtime" default="build">
+
+  <import file="../ant_build/public_imports/rejar_imports.xml"/>
+
+  <!-- Don't run findbugs on source here, since it would only be patches where we want to keep changes to a minimum -->
+  <property name="skip.findbugs" value="true"/>
+  <!-- Don't inject trace and ffdc or our patched classes can't load with their original package imports, which is bad -->
+  <property name="no.trace.instrumentation" value="true" />
+
+  <target name="package">
+    <!-- Don't pick up our patches in anything but the eclipse console bundle -->
+	<rejar 
+		version="1.0"
+		src.jar="lib/org.apache.felix.gogo.runtime-0.16.2.jar"
+		skip.local.classes="true"
+        original.jar.name="org.apache.felix.gogo.runtime"
+        original.jar.version="0.16.2"
+	/>
+
+  </target>
+  
+</project>

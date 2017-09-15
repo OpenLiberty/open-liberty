@@ -1,0 +1,7 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: policyExecutorUser-1.0; visibility:=public
+Subsystem-Version: 1.0
+Subsystem-Content: test.policyexecutor.bundle_fat
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-API-Package: com.ibm.ws.threading; type="ibm-api"

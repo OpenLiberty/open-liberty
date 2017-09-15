@@ -1,0 +1,32 @@
+-include= ${workspace}/generated.properties
+
+releaseTypeGA=false
+libertyServiceVersion=17.0.0.3
+libertyBetaVersion=2017.9.0.0
+libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
+
+libertyBundleMicroVersion=18
+copyrightBuildYear=2017
+buildID=${libertyRelease}-${buildLabel}
+productEdition=BASE_ILAN
+productLicenseType=ILAN
+productID=com.ibm.websphere.appserver
+
+gaOrBeta=${if;${releaseTypeGA};ga;beta}
+philOrCord=${if;${releaseTypeGA};phil;cord}
+
+libertyInfocenterLink=http://www14.software.ibm.com/webapp/wsbroker/redirect?version=${philOrCord}&product=was-nd-mp&topic=cwlp_about
+libertyLatestVersionUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/wlp_${gaOrBeta}_latestversion.js
+libertyWelcomePageProductName=WebSphere Application Server ${if;${releaseTypeGA};V${libertyServiceVersion};Beta}
+libertyWelcomePageProductVersion=${libertyRelease}
+libertyWelcomePageJsEnhancementsUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/adminCenter-welcome.js
+libertyWelcomePageCssEnhancementsUrl=https://public.dhe.ibm.com/ibmdl/export/pub/software/websphere/wasdev/downloads/adminCenter-welcome.css
+
+mfProductEdition=${if;${releaseTypeGA}; productEdition="@PRODUCT_EDITION@";}
+mfProductEditionRestricted=${if;${releaseTypeGA}; productEdition="@PRODUCT_EDITION_RESTRICTED@";}
+mfProductEditionZOs=${if;${releaseTypeGA};productEdition="@PRODUCT_EDITION_ZOS@";}
+mfProductEditionLibertyCore=${if;${releaseTypeGA}; productEdition="@PRODUCT_EDITION_LIBERTY_CORE@";}
+mfProductVersion=productVersion="${libertyRelease}"
+mfLicenseInfoSpecial=${if;${releaseTypeGA};@IBM_LI_SPECIAL@;}
+mfFeatureTermsRestricted=http://www.ibm.com/licenses/wlp-featureterms-${if;${releaseTypeGA};@FEATURE_TERMS_RESTRICTED_V1@;v1}
+mfFeatureTermsRestricted=http://www.ibm.com/licenses/${if;${releaseTypeGA};@FEATURE_TERMS_SPECIAL@;wlp-featureterms-v1}

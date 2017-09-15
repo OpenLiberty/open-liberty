@@ -1,0 +1,292 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME wlp.lib.extract/resources/wlp/lib/extract/SelfExtractMessages.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_ALL
+#
+#   All strings in the self-extract utility go through MessageFormat: 
+#    single quote must be coded as 2 consecutive single quotes ''.
+#
+
+
+helpAgreement=View license agreement.
+helpInformation=View license information.
+helpVerbose=Display detailed information during archive extraction.
+helpAcceptLicense=Automatically indicate acceptance of license terms and conditions.
+
+# The following messages are used to tell the user how to run the installer from the command line.
+#
+# usage
+#  
+#   java -jar wlp-liberty-developers-core.jar [options] [installLocation]
+#
+# options
+#    < list of options and descriptions goes here >
+usage=Usage
+installLocation=install location
+options=Options
+
+
+licenseOptionDescription=\
+By choosing the "I Agree" option below, you agree to the terms of the license \
+agreement and non-IBM terms, if applicable. If you do not agree, select "I do \
+not Agree".
+
+licenseeAcknowledges=\
+Licensee acknowledges and agrees that all code (including features, functions \
+or other software downloads) downloaded by Licensee in connection herewith    \
+(the "Code") will only be used with a licensed version of the IBM WebSphere   \
+Application Server Liberty program (the "Program"). Licensee also acknowledges\
+and agrees that use of the Code is subject to the terms of the license        \
+agreements that govern the use of the Program (e.g., International Program    \
+License Agreement, International License Agreement for Non-Warranted Programs,\
+International License Agreement for Evaluation of Programs, International     \
+License Agreement for Early Release of Programs), including, if applicable,   \
+any License Information.
+
+extractPrompt=Target directory for product files?
+extractSuccess=Successfully extracted all product files.
+extractLicenseSuccess=Successfully applied license files.
+licenseNotFound=Failed to find license agreement files.
+
+promptAgreement=Press Enter to display the license terms now, or ''x'' to skip.
+promptInfo=Press Enter to display additional license information now, or ''x'' to skip.
+
+#
+# {0} [1]
+# {1} [2]
+# 
+licensePrompt=Select {0} I Agree, or {1} I do not Agree: 
+
+#
+# {0} IBM WebSphere Application Server Network Deployment Version 8.5 (EXAMPLE)
+# {1} International Program License Agreement
+#
+licenseStatement=\
+Before you can use, extract, or install {0}, you must accept \
+the terms of {1} and additional license information. Please read the following \
+license agreements carefully.
+
+#
+# {0} --viewLicenseAgreement
+# 
+showAgreement=The license agreement is separately viewable using the {0} option. 
+
+#
+# {0} --viewLicenseInfo
+# 
+showInformation=Additional license information is separately viewable using the {0} option.
+
+#
+# {0} --acceptLicense
+# 
+licenseAccepted=The {0} argument was found. This indicates that you have accepted the terms of the license agreement.
+
+#
+# {0} c:/full/directory/path
+# 
+extractInstruction=Enter directory for product files or leave blank to accept the default value.
+extractLicenseInstruction=Specify the directory of the license upgrade archive, or press Enter to accept the default directory.
+extractDefault=The default target directory is {0}
+extractDirectoryExists=Directory already exists: {0}
+extractDirectoryError=Failed to create directory: {0}
+extractDirectory=Extracting files to {0}
+
+#
+# {0} c:/full/directory/path/fileName
+# 
+extractFileError=Failed to extract {0}
+chmodError=Could not modify script permissions: {0}.
+extractFileExists=The file already exists: {0}
+
+#
+# {0} exception message text
+# 
+inputException=Exception processing input: {0}
+
+invalidInstall=The directory {0} is not a valid Liberty install directory.
+invalidVersion=The specified product installation is at version {0} and this product addon only applies to version {1}.
+invalidEdition=The specified product installation is {0} edition and this product addon only applies to the {1} editions.
+invalidLicense=The specified product installation has an {0} license and this product addon is for a product with license {1}.
+invalidInstallType=The specified product installation was installed using IBM Installation Manager, please use IBM Installation Manager to install any product addons.
+invalidOption=The option {0} is not recognized.
+
+#
+# {0} name of the addon
+# {1} list of features that are missing
+# {2} the install directory on which we are trying to install
+#
+missingRequiredFeatures=Unable to install product addon {0}. The specified product installation at {2} is missing required features: {1}. 
+
+allFeaturesAlreadyPresent=Product addon {0} does not need to be installed. The specified product installation at {2} already has all the features of the addon: {1}.
+
+#
+# {0} the install directory
+# {1} the list of addons installed into that installed
+#
+addonsInstalled=The product installation at {0} has the following addons installed: {1}.
+
+#
+# {0} the install directory
+# {1} the list of supported features by that installation
+#
+featuresInstalled=The product installation at {0} supports the following features: {1}.
+
+#
+# {0} name of the addon
+# {1} the features included in the addon
+#
+addonFeatures=This product addon {0} contains the following features: {1}.
+
+helpMakeBackups=Before running this tool, you might need to back up some files. Please follow the instructions given in the ''Directions to apply fix'' section of the readme.txt file.
+helpInstallLocation=The absolute or relative location of the Liberty profile install directory.
+helpSupressInfo=The only messages output from the JAR file will be error messages or confirmation that patching has completed.
+
+# {0} is the Liberty install directory, according to the user.
+couldNotFindLiberty=Could not find directory {0}.
+
+# {0} is the Liberty install directory.
+patchingStarted=Applying fix to Liberty install directory at {0} now.
+patchingStartedWithFix=Applying fix {1} to Liberty install directory at {0} now.
+
+patchingSuccessful=Fix has been applied successfully.
+patchingSuccessfulWithFix=Fix {1} has been applied successfully.
+
+patchingNotNeeded=Fix has already been applied to the Liberty install directory at {0}.
+patchingNotNeededWithFix=Fix {1} has already been applied to the Liberty install directory at {0}.
+
+patchingNotApplicable=None of the features patched by the fix are present in the Liberty install directory at {0}.
+patchingNotApplicableWithFix=None of the features patched by fix {1} are present in the Liberty install directory at {0}.
+
+invalidPatch=Could not read contents of fix. Aborting fix.
+invalidPatchWithFix=Could not read contents of fix {0}. Aborting fix.
+
+# {0} directory location does not exist and cannot be created.
+noWriteAccess=Could not find or create directory {0}. Aborting fix.
+noWriteAccessWithFix=Could not find or create directory {0}. Aborting installation of fix {1}.
+
+restoreBackupsNeeded=The fix was not successfully applied and you need to restore the previous Liberty installation. Follow the instructions in the ''Directions to remove fix'' section of the readme.txt file. Note that some files you are asked to delete in those instructions might not have been created.
+restoreBackupsNeededWithFix=The fix {1} was not successfully applied and you need to restore the previous Liberty installation. Follow the instructions in the ''Directions to remove fix'' section of the readme.txt file. Note that some files you are asked to delete in those instructions might not have been created.
+
+noRestoreNeeded=Although the fix was not successfully applied you do not need to restore or delete any files.
+noRestoreNeededWithFix=Although the fix {1} was not successfully applied you do not need to restore or delete any files.
+
+# {0} is a file's location
+replacingFile=Replacing file at ''{0}''.
+
+patchFailed=The fix could not be applied successfully.
+
+# This message was written speculatively and is sadly not what we need. Use addOnNeedsIFixes instead.
+addonsNeedsFix=The product installation at {0} has had fixes applied to it that are not included in the product addon {1}. Those fixes need to be reapplied since the product addon does not include those fixes. The affected features are: {2}
+
+# This message is terse because it was part of a 2000-character emergency translation. 
+addOnNeedsIFixes=The product installation at {0} has been extended. The following fixes must be reapplied: {1}.  
+
+# This message is for the feature processing in the SelfExtraction code. 
+fileProcessingException=The following exception was thrown processing file {0}: {1}
+
+#
+helpDownloadDependencies=Automatically download any external dependencies.
+# {0} Space-separated list of URLs
+externalDepsInstruction=This package has dependencies on the following external libraries: {0}
+
+#
+# {0} [1]
+# {1} [2]
+externalDepsPrompt=Would you like to automatically download these dependencies? Select {0} Yes (default), or {1} No: 
+
+# {0} URL to download the file from, e.g. : http://url-for-download.com/path/to/file.jar
+# {1] Destination file to download the file to, eg c:/path/to/file/download-file.jar
+downloadFileError=Failed to download remote file from {0} to {1}. 
+downloadingFileNotice=Downloading remote file from {0} to {1}. 
+
+# {0} --verbose
+downloadingBeginNotice=Now downloading external dependencies - additional information is available if using the {0} option.
+
+# {0} Exception description
+readDepsError=Failed reading the external dependencies metadata file, exception {0}
+
+archiveContainsNoLicense=This archive file does not contain a license.
+
+# {0} is a path to a directory
+targetUserDirectory=The target user directory is {0}
+
+#Used when the ifix installer subclass specified by the header in the fix manifest cannot be found/created/invoked.
+# {0} is the error detected, eg class not found, method not found, etc should only happen if the ifix is built incorrectly.
+invalidFixInstaller=Internal error detected executing fix installer : {0}. Unable to apply fix.
+
+#Used if the fix is built missing the required header that specifies the subclass to handle fix installation.
+# {0} is the missing header name.
+missingFixInstallerHeader=Internal error detected missing fix header {0}. Unable to apply fix.
+
+#Used if the specified fix installer does not meet the interface requirement.
+# {0} is the bad fix class name
+badFixInstaller=Internal error, bad fix installer {0}. Unable to apply fix.
+
+#Used when the lpmf file inside the fix is unabled to be parsed.
+# {0} is the error reported parsing the lpmf
+invalidMetaDataFile=Internal error detected processing fix metadata : {0}. Unable to apply fix.
+
+#Cannot create the output log file.
+# {0} is the filename of the log that had the error, {1} is the error.
+unableToCreateFixLog=Unable to create fix installation log file {0} due to {1}. Unable to apply fix. 
+
+#Used when the fix installer is unable to understand the content of a manifest contained in the fix.
+#{0} is the manifest with the issue, {1} is the error.
+invalidFixManifest=Internal error detected processing fix manifest data {0} : {1}. Unable to apply fix.
+
+#The update to the fingerprint could fail.. but the fix will have been applied.
+unableToUpdateFingerprint=Unable to update service fingerprint due to {0}, fix has been applied, please use --clean when starting the server.
+
+#Updated not applicable message stating no files have been written.
+patchingNotApplicableNoChange=No content has been extracted because there are no matching features in the runtime {0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=An error occurred when reading the iFix information for the current installation. The exception message is: {0}.
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=An exception occurred when reading the file {0}. The exception message is: {1}.
+
+# {0} is the manifest file path and {1} is the exception message
+exception.reading.manifest=An exception occurred while reading the manifest file {0}.  Exception: {1}
+
+# Platform utils messages
+ERROR_UNABLE_TO_SET_EXT_ATTR=Unable to set the extended attributes {0} on the following files: {1}
+ERROR_UNABLE_TO_SET_EXECUTE_PERMISSIONS=Unable to set the execute permission on the following files: {0}
+ERROR_UNABLE_TO_GET_UMASK=Unable to retrieve the umask setting using command: {0}
+ERROR_INVALID_EXTATTR_PARMS=The parameters {0} are not valid for the extattr command.  Valid parameters for the extattr command are: [+alps] [-alps]
+ERROR_EXECUTING_COMMAND=There was an error running the command: {0}  The command returned with exit code {1} and error message: {2}
+ERROR_UNABLE_TO_LOCATE_COMMAND_EXE=Unable to locate the {0} executable after checking the following locations: {1}
+
+# java -jar messages 
+UNABLE_TO_FIND_PID=Failed to obtain Process ID of the java -jar process. Unable to delete temporary extraction directory {1} until you manually end the java -jar process.
+
+UNABLE_TO_ATTACH_AGENT=The Liberty Java agent could not be attached. This server will run, but it cannot perform functions that require the Java agent, such as monitoring or tracing. Exception: {0}
+
+UNABLE_TO_FIND_TOOLS_JAR=The Liberty Java agent could not be attached because this server uses a JRE rather than a Java SDK. This server will run, but it cannot perform functions that require the Java agent, such as monitoring or tracing.
+
+UNABLE_TO_FIND_JAVA_AGENT=The Liberty Java agent could not be located. This server will run, but it cannot perform functions that require the Java agent, such as monitoring or tracing.
+
+# messages for LicenseSelfEctractor
+LICENSE_invalidInstall=The {0} directory is not a valid Liberty installation. Specify the root directory of the Liberty installation that you want to upgrade.
+LICENSE_invalidVersion=The license cannot be upgraded because the specified product installation is at version {0}, but the license can only be upgraded from version {1}.
+LICENSE_invalidEdition=The license cannot be upgraded because the specified product installation is the {0} edition, but the license can only upgrade the following editions: {1}
+LICENSE_invalidLicense=The license cannot be upgraded because the specified product installation has a {0} license, but the license can upgrade only products with a {1} license.
+LICENSE_invalidInstallType=The license cannot be upgraded because the specified product installation was installed using IBM Installation Manager. Use IBM Installation Manager to upgrade your installation.
+
+# new messages for license upgrade and downgrade
+LICENSE_replace_invalidVersion=The license cannot be applied because the specified product installation is at version {0}, but the license can only be applied from version {1}.
+LICENSE_replace_invalidInstallType=The license cannot be applied because the specified product installation was installed using IBM Installation Manager. Use IBM Installation Manager to upgrade your installation.
+
+LICENSE_replace_invalidEditonFeatures=The following features do not apply to the {0} edition and must be uninstalled before applying the license: {1}\n\nUse the following command to uninstall these features before applying the license for {2} edition: {3}
+
+LICENSE_downgrade_block_8557_low=This license can only be applied to installation at {0} or above. The current installation is at {1}. Download and update to the latest level and re-apply the license.

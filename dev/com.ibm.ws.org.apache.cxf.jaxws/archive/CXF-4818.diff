@@ -1,0 +1,304 @@
+Index: G:/opensource/cxf/2.6.x-fixes/rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/MessageModeOutInterceptor.java
+===================================================================
+--- G:/opensource/cxf/2.6.x-fixes/rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/MessageModeOutInterceptor.java	(revision 1446269)
++++ G:/opensource/cxf/2.6.x-fixes/rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/MessageModeOutInterceptor.java	(revision 1446345)
+@@ -60,7 +60,6 @@
+ import org.apache.cxf.phase.Phase;
+ import org.apache.cxf.service.model.BindingMessageInfo;
+ import org.apache.cxf.service.model.BindingOperationInfo;
+-import org.apache.cxf.staxutils.OverlayW3CDOMStreamWriter;
+ import org.apache.cxf.staxutils.StaxUtils;
+ import org.apache.cxf.staxutils.W3CDOMStreamWriter;
+ 
+@@ -238,7 +237,7 @@
+                 XMLStreamWriter origWriter = message.getContent(XMLStreamWriter.class);
+                 message.put(SAAJOutInterceptor.ORIGINAL_XML_WRITER, origWriter);
+             }
+-            W3CDOMStreamWriter writer = new OverlayW3CDOMStreamWriter(soapMessage.getSOAPPart());
++            W3CDOMStreamWriter writer = new SAAJStreamWriter(soapMessage.getSOAPPart());
+             // Replace stax writer with DomStreamWriter
+             message.setContent(XMLStreamWriter.class, writer);
+             message.setContent(SOAPMessage.class, soapMessage);
+@@ -293,4 +292,4 @@
+         }
+     }
+         
+-}
+\ No newline at end of file
++}
+Index: G:/opensource/cxf/2.6.x-fixes/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/saaj/SAAJStreamWriter.java
+===================================================================
+--- G:/opensource/cxf/2.6.x-fixes/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/saaj/SAAJStreamWriter.java	(revision 1446269)
++++ G:/opensource/cxf/2.6.x-fixes/rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/saaj/SAAJStreamWriter.java	(revision 1446345)
+@@ -27,9 +27,9 @@
+ import org.w3c.dom.Node;
+ 
+ import org.apache.cxf.common.util.StringUtils;
+-import org.apache.cxf.staxutils.W3CDOMStreamWriter;
++import org.apache.cxf.staxutils.OverlayW3CDOMStreamWriter;
+ 
+-public final class SAAJStreamWriter extends W3CDOMStreamWriter {
++public final class SAAJStreamWriter extends OverlayW3CDOMStreamWriter {
+     private final SOAPPart part;
+ 
+     public SAAJStreamWriter(SOAPPart part) {
+@@ -56,6 +56,18 @@
+         }
+         return e;
+     }
++    protected void adjustOverlaidNode(Node nd2, String pfx) {
++        String namespace = nd2.getNamespaceURI();
++        try {
++            if (namespace != null 
++                && namespace.equals(part.getEnvelope().getElementName().getURI())) {
++                adjustPrefix((SOAPElement)nd2, pfx);
++            }
++        } catch (SOAPException e) {
++            //ignore, fallback
++        }
++        super.adjustOverlaidNode(nd2, pfx);
++    }
+     
+     protected void createAndAddElement(String prefix, String local, String namespace) {
+         try {
+@@ -69,6 +81,9 @@
+                     setChild(adjustPrefix(part.getEnvelope().getBody(), prefix), false);
+                     return;
+                 } else if ("Header".equals(local)) {
++                    if (part.getEnvelope().getHeader() == null) {
++                        part.getEnvelope().addHeader();
++                    }
+                     setChild(adjustPrefix(part.getEnvelope().getHeader(), prefix), false);
+                     return;
+                 } else if ("Fault".equals(local)) {
+@@ -109,4 +124,4 @@
+         }
+         super.createAndAddElement(prefix, local, namespace);
+     }
+-}
+\ No newline at end of file
++}
+Index: G:/opensource/cxf/2.6.x-fixes/systests/jaxws/src/test/java/org/apache/cxf/systest/provider/cxf4818data.txt
+===================================================================
+--- G:/opensource/cxf/2.6.x-fixes/systests/jaxws/src/test/java/org/apache/cxf/systest/provider/cxf4818data.txt	(revision 0)
++++ G:/opensource/cxf/2.6.x-fixes/systests/jaxws/src/test/java/org/apache/cxf/systest/provider/cxf4818data.txt	(revision 1446345)
+@@ -0,0 +1,11 @@
++<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:inb="http://cxf.apache.org/soapheader/inband">
++   <soapenv:Header>
++      <Action xmlns="http://www.w3.org/2005/08/addressing">http://cxf.apache.org/output</Action>
++      <MessageID xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:472f7066-56a3-4807-b1eb-ae1c786c081c</MessageID>
++      <To xmlns="http://www.w3.org/2005/08/addressing">http://www.w3.org/2005/08/addressing/anonymous</To>
++      <RelatesTo xmlns="http://www.w3.org/2005/08/addressing">urn:uuid:9e58b03c-3253-4bd8-8faa-855d15e217e0</RelatesTo>
++   </soapenv:Header>
++   <soapenv:Body>
++      <inb:FooRequest/>
++   </soapenv:Body>
++</soapenv:Envelope>
+\ No newline at end of file
+Index: G:/opensource/cxf/2.6.x-fixes/systests/jaxws/src/test/java/org/apache/cxf/systest/provider/CXF4818Test.java
+===================================================================
+--- G:/opensource/cxf/2.6.x-fixes/systests/jaxws/src/test/java/org/apache/cxf/systest/provider/CXF4818Test.java	(revision 0)
++++ G:/opensource/cxf/2.6.x-fixes/systests/jaxws/src/test/java/org/apache/cxf/systest/provider/CXF4818Test.java	(revision 1446345)
+@@ -0,0 +1,154 @@
++/**
++ * Licensed to the Apache Software Foundation (ASF) under one
++ * or more contributor license agreements. See the NOTICE file
++ * distributed with this work for additional information
++ * regarding copyright ownership. The ASF licenses this file
++ * to you under the Apache License, Version 2.0 (the
++ * "License"); you may not use this file except in compliance
++ * with the License. You may obtain a copy of the License at
++ *
++ * http://www.apache.org/licenses/LICENSE-2.0
++ *
++ * Unless required by applicable law or agreed to in writing,
++ * software distributed under the License is distributed on an
++ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
++ * KIND, either express or implied. See the License for the
++ * specific language governing permissions and limitations
++ * under the License.
++ */
++
++package org.apache.cxf.systest.provider;
++
++
++import java.io.InputStream;
++import java.io.StringReader;
++
++import javax.annotation.Resource;
++import javax.xml.soap.MessageFactory;
++import javax.xml.soap.SOAPMessage;
++import javax.xml.transform.stream.StreamSource;
++import javax.xml.ws.Endpoint;
++import javax.xml.ws.Provider;
++import javax.xml.ws.ServiceMode;
++import javax.xml.ws.WebServiceContext;
++import javax.xml.ws.WebServiceException;
++import javax.xml.ws.WebServiceProvider;
++import javax.xml.ws.soap.Addressing;
++
++import org.w3c.dom.Document;
++import org.w3c.dom.Element;
++import org.w3c.dom.Node;
++
++import org.apache.commons.httpclient.HttpClient;
++import org.apache.commons.httpclient.methods.InputStreamRequestEntity;
++import org.apache.commons.httpclient.methods.PostMethod;
++import org.apache.cxf.staxutils.StaxUtils;
++import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
++import org.apache.cxf.testutil.common.AbstractBusTestServerBase;
++import org.apache.cxf.testutil.common.TestUtil;
++import org.junit.BeforeClass;
++import org.junit.Test;
++
++public class CXF4818Test extends AbstractBusClientServerTestBase {
++
++    public static final String ADDRESS 
++        = "http://localhost:" + TestUtil.getPortNumber(Server.class)
++            + "/AddressProvider/AddressProvider";
++    
++    public static class Server extends AbstractBusTestServerBase {
++
++        protected void run() {
++            Object implementor = new CXF4818Provider();
++            Endpoint.publish(ADDRESS, implementor);                                 
++        }
++
++        public static void main(String[] args) {
++            try {
++                Server s = new Server();
++                s.start();
++            } catch (Exception ex) {
++                ex.printStackTrace();
++                System.exit(-1);
++            } finally {
++                System.out.println("done!");
++            }
++        }
++    }
++
++    @BeforeClass
++    public static void startServers() throws Exception {
++        assertTrue("server did not launch correctly", launchServer(Server.class, true));
++    }
++    
++    @Test
++    public void testCXF4818() throws Exception {
++        InputStream body = getClass().getResourceAsStream("cxf4818data.txt");
++        HttpClient client = new HttpClient();
++        PostMethod post = new PostMethod(ADDRESS);
++        post.setRequestEntity(new InputStreamRequestEntity(body, "text/xml"));
++        client.executeMethod(post); 
++
++        Document doc = StaxUtils.read(post.getResponseBodyAsStream());
++        //System.out.println(StaxUtils.toString(doc));
++        Element root = doc.getDocumentElement();
++        Node child = root.getFirstChild();
++        
++        boolean foundBody = false;
++        boolean foundHeader = false;
++        while (child != null) {
++            if ("Header".equals(child.getLocalName())) {
++                foundHeader = true;
++                assertFalse("Already found body", foundBody);
++            } else if ("Body".equals(child.getLocalName())) {
++                foundBody = true;
++                assertTrue("Did not find header before the body", foundHeader);
++            }
++            child = child.getNextSibling();
++        }
++        assertTrue("Did not find the soap:Body element", foundBody);
++        assertTrue("Did not find the soap:Header element", foundHeader);
++    }
++
++    
++    
++    @WebServiceProvider(serviceName = "GenericService",
++        targetNamespace = "http://cxf.apache.org/basictest", 
++        portName = "GenericServicePosrt")
++    @ServiceMode(value = javax.xml.ws.Service.Mode.MESSAGE)
++    @Addressing
++    public static class CXF4818Provider implements Provider<SOAPMessage> {
++
++        @Resource
++        protected WebServiceContext context;
++
++        public SOAPMessage invoke(SOAPMessage request) {
++            try {
++                String responseText = "<SOAP-ENV:Envelope "
++                    + "xmlns:SOAP-ENV=\"http://schemas.xmlsoap.org/soap/envelope/\">"
++                    + "<SOAP-ENV:Body>"
++                    + "<ns2:FooResponse xmlns:ns2=\"http://cxf.apache.org/soapheader/inband\">"
++                    + "<ns2:Return>Foo Response Body</ns2:Return>"
++                    + "</ns2:FooResponse>"
++                    + "</SOAP-ENV:Body>" 
++                    + "</SOAP-ENV:Envelope>\n";
++
++
++                // Create a SOAP request message
++                MessageFactory soapmsgfactory = MessageFactory.newInstance();
++                SOAPMessage responseMessage = soapmsgfactory.createMessage();
++                StreamSource responseMessageSrc = null;
++
++                responseMessageSrc = new StreamSource(new StringReader(responseText));
++                responseMessage.getSOAPPart().setContent(responseMessageSrc);
++                responseMessage.saveChanges();
++
++                return responseMessage;
++
++            } catch (Exception e) {
++                throw new WebServiceException(e);
++            }
++
++        }
++
++    }    
++}
+Index: G:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/staxutils/OverlayW3CDOMStreamWriter.java
+===================================================================
+--- G:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/staxutils/OverlayW3CDOMStreamWriter.java	(revision 1446269)
++++ G:/opensource/cxf/2.6.x-fixes/api/src/main/java/org/apache/cxf/staxutils/OverlayW3CDOMStreamWriter.java	(revision 1446345)
+@@ -48,6 +48,9 @@
+     public OverlayW3CDOMStreamWriter(Element e) {
+         super(e);
+     }
++    public OverlayW3CDOMStreamWriter(Document doc, Element e) {
++        super(doc, e);
++    }
+     
+     @Override
+     public void writeEndElement() throws XMLStreamException {
+@@ -68,6 +71,7 @@
+                 if (nd2.getNodeType() == Node.ELEMENT_NODE 
+                     && local.equals(nd2.getLocalName())
+                     && StringUtils.isEmpty(nd2.getNamespaceURI())) {
++                    adjustOverlaidNode(nd2, null);
+                     setChild((Element)nd2, false);
+                     return;
+                 }
+@@ -78,6 +82,9 @@
+         super.writeStartElement(local);
+     }
+ 
++    protected void adjustOverlaidNode(Node nd2, String pfx) {
++    }
++
+     public void writeStartElement(String namespace, String local) throws XMLStreamException {
+         isOverlaidStack.add(0, isOverlaid);
+         if (isOverlaid) {
+@@ -92,6 +99,7 @@
+                 if (nd2.getNodeType() == Node.ELEMENT_NODE 
+                     && local.equals(nd2.getLocalName())
+                     && namespace.equals(nd2.getNamespaceURI())) {
++                    adjustOverlaidNode(nd2, "");
+                     setChild((Element)nd2, false);
+                     return;
+                 }
+@@ -121,6 +129,7 @@
+                     if (nd2.getNodeType() == Node.ELEMENT_NODE 
+                         && local.equals(nd2.getLocalName())
+                         && namespace.equals(nd2.getNamespaceURI())) {
++                        adjustOverlaidNode(nd2, prefix);
+                         setChild((Element)nd2, false);
+                         return;
+                     }

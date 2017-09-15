@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Artifact URL Handling.
+Bundle-SymbolicName: com.ibm.ws.artifact.url
+Bundle-Description: Prototype URL handling; version=${bVersion}
+
+WS-TraceGroup: archive.artifact
+
+Export-Package: com.ibm.ws.artifact.url;provide:=true
+
+Private-Package: com.ibm.ws.artifact.url.internal
+
+Service-Component: \
+   com.ibm.ws.artifact.url.protocol;\
+    implementation:=com.ibm.ws.artifact.url.internal.URLStreamHandlerServiceImpl;\
+    provide:='org.osgi.service.url.URLStreamHandlerService,com.ibm.ws.artifact.url.URLService';\
+    configuration-policy:=ignore;\
+    properties:="url.handler.protocol=notabundleresource",\
+   com.ibm.ws.artifact.url.protocol.wsjar;\
+    implementation:=com.ibm.ws.artifact.url.internal.WSJarURLStreamHandler;\
+    provide:='org.osgi.service.url.URLStreamHandlerService';\
+    configuration-policy:=ignore;\
+    zipCachingService=com.ibm.ws.artifact.zip.cache.ZipCachingService;\
+    properties:="url.handler.protocol=wsjar"
+
+-buildpath: \
+	com.ibm.ws.artifact.zip;version=latest,\
+	com.ibm.ws.kernel.security.thread,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.ws.org.apache.aries.util, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

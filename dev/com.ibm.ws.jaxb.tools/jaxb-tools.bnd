@@ -1,0 +1,55 @@
+-include= ~../cnf/resources/bnd/bundle.props, \
+          ~../cnf/resources/bnd/app-resources.bnd
+          
+bVersion=${bundle.version}
+
+Bundle-Name: ${symbolic.name}
+Bundle-SymbolicName: ${symbolic.name}; singleton:=true
+    
+# The SPI definition under META-INF/services
+# Do not publish RI javax.xml.bind.JAXBContext
+app-resources= \
+  META-INF/services/com.sun.tools.xjc.Plugin |\
+  META-INF/services/org.relaxng.datatype.DatatypeLibraryFactory | \
+  META-INF/services/org.iso_relax.verifier.VerifierFactoryLoader
+
+Import-Package: \
+    javax.xml.bind.*; version="[2.2,3)", \
+    com.ibm.wsspi.classloading, \
+    org.apache.xml.*; resolution:=optional, \
+    !org.apache.tools*, \
+    !org.apache.xerces*, \
+    !org.jvnet*, \
+    !com.sun.mirror.*, \
+    !com.sun.xml.bind.*, \
+    !com.sun.source.tree.*, \
+    !com.sun.source.util.*, \
+    !com.sun.xml.fastinfoset.sax.*, \
+    !com.sun.xml.fastinfoset.stax.*, \
+    !sun.nio.cs*, \
+    !com.sun.org.apache.xml.internal.resolver, \
+     !com.sun.org.apache.xml.internal.resolver.tools, \
+    *
+
+Export-Package: \
+    com.sun.xml.bind*;version="2.2.10";thread-context=true
+
+
+        
+
+Include-Resource: \
+  @lib/jaxb-core.jar!/!META-INF/maven/*, \
+  @lib/jaxb-impl.jar!/!META-INF/maven/*, \
+  @lib/jaxb-xjc.jar!/!META-INF/maven/*, \
+  @lib/jaxb-jxc.jar!/!META-INF/maven/*, \
+ com/ibm/ws/jaxb/tools/XJC.class=build/classes/com/ibm/ws/jaxb/tools/XJC.class, \
+ com/ibm/ws/jaxb/tools/SchemaGen.class=build/classes/com/ibm/ws/jaxb/tools/SchemaGen.class
+
+Private-Package:\
+   com.ibm.ws.jaxb.tools.*
+ 
+Copyright: Licensed Materials - Property of IBM 5724-J08, 5724-I63, 57\
+24-H88, 5724-H89, 5655-W65, 5733-W70 Copyright IBM Corp. 1998, 2011 A\
+ll Rights Reserved. US Government Users Restricted Rights - Use, dupl\
+ication or disclosure restricted by GSA ADP Schedule Contract with IB\
+M Corp.

@@ -1,0 +1,51 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: JAX-RS 2.0 EJB
+Bundle-SymbolicName: com.ibm.ws.jaxrs.2.0.ejb
+Bundle-Description: IBM JAX-RS 2.0 EJB support; version=${bVersion}
+
+WS-TraceGroup: JAXRS
+
+# jaxrs-2.0-ejb is part of EE7 and therefore requires java 1.7 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
+
+Import-Package: \
+    *
+
+Private-Package: \
+  com.ibm.ws.jaxrs20.ejb.*
+
+-dsannotations: com.ibm.ws.jaxrs20.ejb.*
+
+instrument.classesExcludes: com/ibm/ws/jaxrs20/ejb/internal/resources/*.class
+ 
+-buildpath: \
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.11,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.11,\
+	com.ibm.ws.jaxrs.2.0.common;version=latest,\
+	com.ibm.ws.jaxrs.2.0.server;version=latest,\
+	com.ibm.ws.jaxrs.2.0.web;version=latest,\
+	com.ibm.ws.ejbcontainer;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.ejbcontainer.core;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

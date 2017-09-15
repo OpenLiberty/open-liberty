@@ -1,0 +1,29 @@
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handler/logical/LogicalHandlerOutInterceptor.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handler/logical/LogicalHandlerOutInterceptor.java	(revision 1383800)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/handler/logical/LogicalHandlerOutInterceptor.java	(working copy)
+@@ -171,12 +171,13 @@
+                                             LogicalHandlerInInterceptor.class.getName());
+                             observer.onMessage(responseMsg);
+                         }
++                        return;
+                     }
+                 } else {
+                     // server side - abort
+-                    //System.out.println("Logical handler server side aborting");
++                    // Even return false, also should try to set the XMLStreamWriter using
++                    // reader or domWriter, or the SOAPMessage's body maybe empty.
+                 }
+-                return;
+             }
+             if (origMessage != null) {
+                 message.setContent(SOAPMessage.class, origMessage);
+@@ -195,8 +196,6 @@
+                 throw new Fault(e);
+             }
+         }
+-        
+     }
+-
+     
+ }

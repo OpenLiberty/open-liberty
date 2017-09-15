@@ -1,0 +1,53 @@
+<?xml encoding="UTF-8"?>
+<!ELEMENT Stats (description,resourceBundle?,(CountStatistic|DoubleStatistic|AverageStatistic|TimeStatistic|RangeStatistic|BoundedRangeStatistic)*)>
+<!ATTLIST Stats type CDATA #REQUIRED>
+
+<!ELEMENT CountStatistic (level,unit,description,comment?,resettable?,aggregatable?,updateOnRequest?,statisticSet?,platform?,zosAggregatable?)>
+<!ATTLIST CountStatistic ID CDATA #REQUIRED>
+<!ATTLIST CountStatistic name CDATA #REQUIRED>
+
+<!ELEMENT DoubleStatistic (level,unit,description,comment?,resettable?,aggregatable?,updateOnRequest?,statisticSet?,platform?,zosAggregatable?)>
+<!ATTLIST DoubleStatistic ID CDATA #REQUIRED>
+<!ATTLIST DoubleStatistic name CDATA #REQUIRED>
+
+<!ELEMENT AverageStatistic (level,unit,description,comment?,resettable?,aggregatable?,updateOnRequest?,statisticSet?,platform?,zosAggregatable?)>
+<!ATTLIST AverageStatistic ID CDATA #REQUIRED>
+<!ATTLIST AverageStatistic name CDATA #REQUIRED>
+
+<!ELEMENT TimeStatistic (level,unit,description,comment?,resettable?,aggregatable?,updateOnRequest?,statisticSet?,platform?,zosAggregatable?)>
+<!ATTLIST TimeStatistic ID CDATA #REQUIRED>
+<!ATTLIST TimeStatistic name CDATA #REQUIRED>
+
+<!ELEMENT RangeStatistic (level,unit,description,comment?,resettable?,aggregatable?,updateOnRequest?,statisticSet?,platform?,zosAggregatable?)>
+<!ATTLIST RangeStatistic ID CDATA #REQUIRED>
+<!ATTLIST RangeStatistic name CDATA #REQUIRED>
+
+<!ELEMENT BoundedRangeStatistic (level,unit,description,comment?,resettable?,aggregatable?,updateOnRequest?,statisticSet?,platform?,zosAggregatable?)>
+<!ATTLIST BoundedRangeStatistic ID CDATA #REQUIRED>
+<!ATTLIST BoundedRangeStatistic name CDATA #REQUIRED>
+
+<!ELEMENT description (#PCDATA)>
+<!ELEMENT resourceBundle (#PCDATA)>
+
+<!-- valid values are {low, medium, high, maximum} -->
+<!ELEMENT level (#PCDATA)>
+<!ELEMENT unit (#PCDATA)>
+<!ELEMENT comment (#PCDATA)>
+
+<!-- valid values are {true, false}. Default is true -->
+<!ELEMENT resettable (#PCDATA)>
+
+<!-- valid values are {true, false}. Default is true -->
+<!ELEMENT aggregatable (#PCDATA)>
+
+<!-- valid values are {true, false}. Default is true -->
+<!ELEMENT zosAggregatable (#PCDATA)>
+
+<!-- valid values are {true, false}. Default is false -->
+<!ELEMENT updateOnRequest (#PCDATA)>
+
+<!-- valid values are {basic, extended, all}. Default is all -->
+<!ELEMENT statisticSet (#PCDATA)>
+
+<!-- valid values are {all, distributed, zos}. Default is all -->
+<!ELEMENT platform (#PCDATA)>

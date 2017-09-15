@@ -1,0 +1,23 @@
+<server description="Server for testing appConfig">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componentTest-1.0</feature>
+    	<feature>mpConfig-1.1</feature>
+	</featureManager>
+	
+	<variable name="server.xml.variable.value" value="server.xml.variable.v1" />
+	
+	<application type="war" location="sharedLibUser.war">
+		<classloader commonLibraryRef="AppConfigSharedLibrary" />
+	</application>
+
+	<library id="AppConfigSharedLibrary">
+        <fileset dir="${server.config.dir}/shared" includes="sharedLib.jar" />
+    </library>
+    
+</server>

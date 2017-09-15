@@ -1,0 +1,631 @@
+#!/bin/sh
+###############################################################################
+# WebSphere Application Client liberty launch script
+#
+# Copyright IBM Corp. 2011, 2014
+# The source code for this program is not published or other-
+# wise divested of its trade secrets, irrespective of what has
+# been deposited with the U.S. Copyright Office.
+# 
+# ----------------------------------------------------------------------------
+#
+# To customize the use of this script (for example with /etc/init.d system 
+# service managers), use the following environment variables:
+#
+# JAVA_HOME  - The java executable is found in ${JAVA_HOME}/bin
+#
+# JVM_ARGS   - A list of JVM command line options,
+#              e.g. system properties or -X parameters
+#              The value will be expanded by the shell (use quotes for spaces)
+#
+# LOG_DIR    - The log file directory
+#              The default value is ${WLP_CLIENT_OUTPUT_DIR}/clientName/logs
+#
+# LOG_FILE   - The log file name
+#              This log file is only used if the client is run in the
+#              background via the start action. This is not supported in client.
+#              The default value is console.log
+#
+# WLP_USER_DIR - The user/custom configuration directory used to store
+#              shared and client-specific configuration. 
+#              See README.TXT for details about shared resource locations.
+#              A client's configuration is at ${WLP_USER_DIR}/clients/clientName
+#              The default value is the usr directory in the install directory.
+#
+# WLP_CLIENT_OUTPUT_DIR - The directory containing output files for defined clients.
+#              This directory must have both read and write permissions for
+#              the user or users that start clients.
+#              By default, a client's output logs and workarea are stored
+#              in the ${WLP_USER_DIR}/clients/clientName directory
+#              (alongside configuration and applications).
+#              If this variable is set, the output logs and workarea 
+#              would be stored in ${WLP_CLIENT_OUTPUT_DIR}/clientName.
+#
+# WLP_DEBUG_ADDRESS - The port to use when running the client in debug mode.
+#              The default value is 7778.
+#
+# WLP_SKIP_UMASK -  Skip setting the umask value to allow the default value 
+#                   to be used.
+###############################################################################
+
+##
+## Determine the platform and absolute path of the installation directory.
+##
+case $OSTYPE in
+  cygwin)
+    uname=CYGWIN_NT
+
+    # Determine the installation directory without forking if possible.  Use
+    # eval to hide ${var//find/replace}, ${var%suffix}, and ${var:first:length}
+    # syntaxes from shells that can't parse them.
+    eval '
+      # cd to the install directory.
+      savePWD=$PWD
+      script=${0//\\/\/}
+      unset CDPATH; cd "${script%/*}"/..
+
+      # Convert the install (current working) directory to a Windows path.
+      case $PWD in
+        /cygdrive/?/*)
+          # Use ${var:first:length} to avoid forking for cygpath.
+          WLP_INSTALL_DIR=${PWD:10:1}:${PWD:11}
+          ;;
+        *)
+          WLP_INSTALL_DIR=`cygpath -ma .`
+      esac
+
+      cd "$savePWD"
+    '
+    ;;
+
+  *)
+    uname=`uname`
+
+    case $uname in
+      CYGWIN_*)
+        WLP_INSTALL_DIR=`cygpath -ma "${0}"/../..`
+        ;;
+
+      *)
+        dirname=`dirname "$0"`
+        WLP_INSTALL_DIR=`unset CDPATH; cd "$dirname/.." && pwd`
+    esac
+esac
+
+##
+## Platform specific setup
+##
+UMASK_O='umask o='
+tryShellExtensions=true
+shareclassesCacheDirPerm=true
+defaultFileEncoding=
+newline='
+'
+nativeEBCDIC=false
+
+case ${uname} in
+  CYGWIN_*)
+    # java.exe is a non-Cygwin process, so we need to pass -W.
+    shareclassesCacheDirPerm=false
+    ;;
+
+  OS/390)
+    defaultFileEncoding=iso8859-1
+    nativeEBCDIC=true         # Auto-convert client.env/client.jvm.options from ASCII-to-EBCDIC, if necessary.
+    _BPXK_WLM_PROPAGATE=NO    # Prevent WLM enclave propagation to spawned processes
+    _EDC_PTHREAD_YIELD=-2     # Disable sleeps inside of pthread_yield
+    JAVA_PROPAGATE=NO         # Prevent WLM enclave propagation to new threads
+    export _BPXK_WLM_PROPAGATE _EDC_PTHREAD_YIELD JAVA_PROPAGATE
+
+    WLP_NLS_PATH="${WLP_INSTALL_DIR}/lib/native/zos/s390x/nls/%N.cat"
+    if [ ${NLSPATH} ]
+    then          
+      NLSPATH="${WLP_NLS_PATH}:${NLSPATH}" 
+    else
+      NLSPATH="${WLP_NLS_PATH}"
+    fi
+    ;;
+
+esac
+
+##
+## safeEcho: Portable echo that can handle backslashes and leading dashes.
+safeEcho()
+{
+  cat <<EOF
+$*
+EOF
+}
+
+# Define escapeForEval functions using ${var//find/replace} and ${var#suffix}
+# if possible since those constructs are significantly faster than safeEcho+sed
+# since they avoid forks.  Use eval (to hide the syntax from shells that don't
+# support them) in a subshell (to avoid exiting the shell process on error) to
+# test if the shell has support.
+if ${tryShellExtensions} && (eval 'true ${1//b/c} ${1#*=}') 2> /dev/null; then
+  # The shell has support.  Define the functions using eval, again to hide the
+  # syntax from shells that don't support it.
+  eval "
+    escapeForEval()
+    {
+      escapeForEvalResult=\\'\${1//\\'/\\'\\\"\\'\\\"\\'}\\'
+    }
+
+    extractValueAndEscapeForEval()
+    {
+      escapeForEval \"\${1#*=}\"
+    }
+
+    substitutePrefixVar()
+    {
+      case \$1 in
+      @\$2@*) substitutePrefixVarResult=\$3\${1#@\$2@};;
+      *) substitutePrefixVarResult=\$1
+      esac
+    }
+  "
+else
+  ##
+  ## escapeForEval: Escape the first parameter to be safe for use in eval,
+  ##                and set escapeForEvalResult with the result.
+  ##
+  escapeForEval() 
+  {
+    escapeForEvalResult=\'`safeEcho "$1" | sed s/\'/\'\"\'\"\'/g`\'
+  }
+
+  ##
+  ## extractValueAndEscapeForEval: Extract the value of a var=value string,
+  ##                               and set escapeForEvalResult with the result.
+  ##
+  extractValueAndEscapeForEval()
+  {
+    escapeForEvalResult=\'`safeEcho "$1" | sed -e 's/[^=]*=//' -e s/\'/\'\"\'\"\'/g`\'
+  }
+
+  ##
+  ## substitutePrefixVar: If $1 has a prefix @$2@, set substitutePrefixVarResult
+  ##                      to $1 with the prefix replaced by $3.  Otherwise, set
+  ##                      to $1.
+  substitutePrefixVar()
+  {
+    case $1 in
+    @$2@*) substitutePrefixVarResult=$3`safeEcho "$1" | sed -e "s/^@$2@//"`;;
+    *) substitutePrefixVarResult=$1
+    esac
+  }
+fi
+
+##
+## Quote ${WLP_INSTALL_DIR} for eval.
+##
+escapeForEval "${WLP_INSTALL_DIR}"
+WLP_INSTALL_DIR_QUOTED=${escapeForEvalResult}
+READ_ETC=1
+
+##
+## Consume script parameters: 
+##   action is required/positional, 
+##   clientName is optional, --options following
+##
+if [ $# -lt 1 ]
+then
+  ACTION=help:usage
+else
+  ACTION=$1
+  shift #consume
+  if [ $# -ge 1 ]
+  then
+    # Only use if it isn't something that looks like an option
+    case $1 in
+    -*);;
+    *)
+      CLIENT_NAME=$1
+      shift #consume
+    esac
+  fi
+fi
+
+##
+## Set client name and directory
+##
+if [ -z "$CLIENT_NAME" ]
+then
+  CLIENT_NAME=defaultClient
+fi
+
+
+##
+## Set JAVA_AGENT_QUOTED if WLP_SKIP_BOOTSTRAP_AGENT is unset.
+##
+JAVA_AGENT_QUOTED=-javaagent:${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-javaagent.jar
+if [ -n "${WLP_SKIP_BOOTSTRAP_AGENT}" ]; then
+  JAVA_AGENT_QUOTED=
+fi
+
+##
+## createClient: Function to launch client create
+##
+createClient()
+{
+  javaCmd "${CLIENT_NAME}" --create "$@"
+  rc=$?
+  return $rc
+}
+
+##
+## mkdirs: Create a directory and all parent directories, if necessary.
+##
+mkdirs()
+{
+  if [ ! -d "$1" ]; then
+    mkdir -p "$1"
+  fi
+}
+
+##
+## checkClient: Check for created/existing client.  If it does not, issue an
+##              error message if the first argument is true, and then exit the
+##              script regardless.
+checkClient()
+{
+  if [ -d "${CLIENT_CONFIG_DIR}" ] || [ "defaultClient" = "${CLIENT_NAME}" ]
+  then
+    return 0
+  fi
+
+  if $1
+  then
+    javaCmd --message:info.clientNotExist "${CLIENT_NAME}"
+    rc=$?
+    if [ $rc = 0 ]
+    then
+      rc=1
+    fi
+  else
+    rc=1
+  fi
+
+  return $rc
+}
+
+##
+## installEnv: Set variables for a non-client or nonexistent client command.
+installEnv()
+{
+  readClientEnv "${WLP_INSTALL_DIR}/etc/client.env"
+  installEnvDefaults
+  clientEnvDefaults
+}
+
+##
+## installEnvDefaults: Set variable defaults for a non-client or nonexistent
+##                     client command.
+installEnvDefaults()
+{
+  readClientEnv "${WLP_INSTALL_DIR}/java/java.env"
+  readClientEnv "${WLP_INSTALL_DIR}/etc/default.env"
+
+  if [ -z "${WLP_USER_DIR}" ]
+  then
+    if [ -z "${WLP_DEFAULT_USER_DIR}" ]
+    then
+      WLP_DEFAULT_USER_DIR=${WLP_INSTALL_DIR}/usr
+    fi
+    WLP_USER_DIR=${WLP_DEFAULT_USER_DIR}
+  fi
+
+  if [ -z "${WLP_CLIENT_OUTPUT_DIR}" ]
+  then
+    if [ -z "${WLP_DEFAULT_OUTPUT_DIR}" ]
+    then
+      WLP_DEFAULT_OUTPUT_DIR=${WLP_USER_DIR}/clients
+    fi
+    WLP_CLIENT_OUTPUT_DIR=${WLP_DEFAULT_OUTPUT_DIR}
+  fi
+
+  CLIENT_CONFIG_DIR=${WLP_USER_DIR}/clients/${CLIENT_NAME}  
+  
+  export WLP_USER_DIR
+  export WLP_CLIENT_OUTPUT_DIR
+}
+
+##
+## clientEnvDefaults: Set defaults for client variables.
+clientEnvDefaults()
+{
+  CLIENT_OUTPUT_DIR=${WLP_CLIENT_OUTPUT_DIR}/${CLIENT_NAME}
+
+  # Unset set/tested variables to prevent collisions with nested process invocations
+  if [ -z "$LOG_DIR" ]
+  then
+    X_LOG_DIR=${CLIENT_OUTPUT_DIR}/logs
+  else
+    X_LOG_DIR=${LOG_DIR}
+    unset LOG_DIR
+  fi
+  export X_LOG_DIR
+
+  if [ -z "$LOG_FILE" ]
+  then
+    X_LOG_FILE=console.log
+  else
+    X_LOG_FILE=${LOG_FILE}
+    unset LOG_FILE
+  fi
+  export X_LOG_FILE
+  
+  if [ -z "${JAVA_HOME}" ]
+  then
+    if [ -z "${JRE_HOME}" ]
+    then
+      if [ -z "${WLP_DEFAULT_JAVA_HOME}" ]
+      then
+        # Use whatever java is on the path
+        JAVA_CMD=java
+      else
+        substitutePrefixVar "${WLP_DEFAULT_JAVA_HOME}" WLP_INSTALL_DIR "${WLP_INSTALL_DIR}"
+        JAVA_HOME=${substitutePrefixVarResult}
+        JAVA_CMD=${JAVA_HOME}/bin/java
+      fi
+    else
+      JAVA_HOME=${JRE_HOME}
+      JAVA_CMD=${JRE_HOME}/bin/java
+    fi
+  else
+    if [ -f "${JAVA_HOME}/jre/bin/java" ]
+    then
+        JAVA_CMD=${JAVA_HOME}/jre/bin/java
+    else
+        JAVA_CMD=${JAVA_HOME}/bin/java
+    fi
+  fi
+
+  # Set a default file encoding if needed
+  if [ -n "$defaultFileEncoding" ]; then
+    if ! expr "${JVM_OPTIONS_QUOTED} ${JVM_ARGS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
+      JVM_ARGS="${JVM_ARGS} -Dfile.encoding=$defaultFileEncoding"
+    fi
+  fi
+  
+  clientUmask
+}
+
+##
+## clientEnv: Set variables for an existing client.
+clientEnv()
+{
+  readClientEnv "${WLP_INSTALL_DIR}/etc/client.env"
+  installEnvDefaults
+
+  readClientEnv "${CLIENT_CONFIG_DIR}/client.env"
+  clientEnvDefaults
+}
+
+##
+## clientEnvAndJVMOptions: Read client.env files and set environment variables.
+##                         Read client.jvm.options file into ${JVM_OPTIONS_QUOTED}
+clientEnvAndJVMOptions()
+{
+  clientEnv
+
+  # Allow Headless mode for running AWT application.
+  JVM_OPTIONS_QUOTED=-Djava.awt.headless=true
+
+  rc=0
+  mergeJVMOptions "${CLIENT_CONFIG_DIR}/client.jvm.options"
+  if [ $rc -ne 0 ]; then
+    return $rc
+  fi
+  
+  # If ${CLIENT_CONFIG_DIR}/client.jvm.options did not exist, then
+  # try to read ${WLP_INSTALL_DIR}/etc/client.jvm.options.
+  if [ $READ_ETC -eq 1 ]; then
+    mergeJVMOptions "${WLP_INSTALL_DIR}/etc/client.jvm.options"
+  fi
+  
+  # If we are running on Java 9, apply Liberty's built-in java 9 options
+  if [ -f "${JAVA_HOME}/lib/modules" ]; then
+    mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+  fi
+
+  return $rc
+}
+
+mergeJVMOptions()
+{
+    jvmOptions=$1
+     
+    if [ -f "$jvmOptions" ]; then
+      READ_ETC=0
+      saveIFS=$IFS
+      IFS=$newline
+      
+      for option in `readNativeFile "$jvmOptions" '[#-]' | tr -d '\r'`; do
+        if [ -n "$option" ]; then
+          case $option in
+          \#*);;
+          *)
+            escapeForEval "${option}"
+            JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} ${escapeForEvalResult}"
+            ;;
+          esac
+        fi
+      done
+      IFS=$saveIFS
+    fi
+}
+
+##
+## readClientEnv: Read client.env file and export environment variables.
+readClientEnv()
+{
+  if [ -f "$1" ]; then
+    saveIFS=$IFS
+    IFS=$newline
+    for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
+      case $line in
+      \#*);;
+      *=*)
+        # Only accept alphanumeric variable names to avoid eval complexities.
+        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
+          extractValueAndEscapeForEval "${line}"
+          eval "${var}=${escapeForEvalResult}; export ${var}"
+        fi
+      esac
+    done
+    IFS=$saveIFS
+  fi
+}
+
+##
+## Detects the code page of the file and converts to EBCDIC,
+## if necessary, before cat'ing.
+##
+## Only applicable if running in a native EBCDIC environment (z/OS).
+##
+## $1 the file name
+## $2 pattern denoting the expected first char of file
+readNativeFile() {
+  if ${nativeEBCDIC}; then
+    # ASCII 'm' overlaps with EBCDIC '_', so strip it out before detecting the codepage.
+    # Note: cat used here to handle ASCII-tagged files.
+    filecontents=`cat "$1" | iconv -f ISO8859-1 -t IBM-1047 | tr -d 'm\r\n'`
+    case $filecontents in
+      $2*) iconv -f ISO8859-1 -t IBM-1047 "$1" ;;  # ASCII file.
+      *) cat "$1"                # EBCDIC file or ASCII-tagged file.
+    esac
+  else
+    cat "$1"
+  fi
+}
+
+##
+## clientWorkingDirectory: Change the working directory to ${CLIENT_OUTPUT_DIR}
+clientWorkingDirectory()
+{
+  # Change the working directory to ${CLIENT_OUTPUT_DIR}.
+  mkdirs "${CLIENT_OUTPUT_DIR}"
+  cd "${CLIENT_OUTPUT_DIR}"
+}
+
+## set the umask value to remove all permissions for the Other category
+## but leave existing values for User and Group unaltered
+##
+## If the WLP_SKIP_UMASK variable is set then do not set umask
+clientUmask()
+{
+  if [ -z "${WLP_SKIP_UMASK}" ]; then
+    $UMASK_O
+  fi
+}
+
+##
+## javaCmd: Execute a java-based command.  Arguments are:
+##
+##   "$@"
+##     All command-line arguments to be passed to the command
+##
+## The following variables must be set:
+##   ${JAVA_CMD} - the java command
+##   ${JAVA_DEBUG} - JVM options to enable debug, or empty
+##   ${JAVA_AGENT_QUOTED} - The -javaagent argument quoted for eval
+##   ${JVM_OPTIONS_QUOTED} - jvm.options quoted for eval
+##   ${WLP_INSTALL_DIR_QUOTED} - ${WLP_INSTALL_DIR} quoted for eval
+javaCmd()
+{
+  # Set all the parameters for the java command.  We use eval so that each line
+  # in client.jvm.options is treated as a distinct argument.
+  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-client.jar "'"$@"'
+  ARGS="$@"
+
+  # Do not add extra logic after the commands without preserving $?
+  "${JAVA_CMD}" "$@"
+}
+
+##
+## clientCmd: Launch a client process.
+##
+##
+clientCmd()
+{
+  X_CMD="${JAVA_CMD} ${ARGS}"
+  export X_CMD
+
+  javaCmd "${CLIENT_NAME}" "$@"
+  rc=$?
+
+  return $rc
+}
+
+JAVA_DEBUG=
+JVM_OPTIONS_QUOTED=
+INVOKED="$0"
+export INVOKED
+
+case "$ACTION" in
+
+  # Start the client in the foreground
+  run | debug)
+    if clientEnvAndJVMOptions
+    then
+      :
+    else
+      exit $?
+    fi
+
+    if checkClient true
+    then
+      if [ "${ACTION}" = "debug" ]
+      then
+        if [ -z "${WLP_DEBUG_ADDRESS}" ]
+        then
+          WLP_DEBUG_ADDRESS=7778
+        fi
+        JAVA_DEBUG="-Dwas.debug.mode=true -Dcom.ibm.websphere.ras.inject.at.transform=true -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=${WLP_DEBUG_ADDRESS}"
+      fi
+
+      clientWorkingDirectory
+      clientCmd "$@"
+      exit $?
+    else
+      exit 2
+    fi
+  ;;
+   
+  create)
+    installEnv
+    createClient "$@"
+    exit $rc
+  ;;
+
+  # Package up the runtime and target client configuration
+  package)
+    clientEnv
+    # Check to see if the client exists
+    if checkClient true
+    then
+      javaCmd "${CLIENT_NAME}" --package "$@" 
+      exit $?
+    else
+      exit 2
+    fi    
+  ;;
+  
+  help)
+    installEnv
+    javaCmd --help
+  ;;  
+
+  help:usage)
+    installEnv
+    javaCmd --help:usage
+  ;;
+  
+  *)
+    installEnv
+    javaCmd --help:actions:${ACTION}
+  ;;
+esac
+
+exit 0

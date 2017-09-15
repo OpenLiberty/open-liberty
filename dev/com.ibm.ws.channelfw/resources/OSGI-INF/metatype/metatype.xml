@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+  
+    <!-- BYTE BUFFER OPTIONS .............................................................. -->
+
+    <OCD name="internal" description="%bytebuffer.config.desc" 
+         id="com.ibm.ws.bytebuffer.metatype" ibm:alias="bytebuffer">   
+
+        <AD name="internal" 
+            description="internal use only"
+            id="internalAttribute" required="false" type="String" />
+         
+    </OCD>
+
+    <Designate pid="com.ibm.ws.bytebuffer">
+        <Object ocdref="com.ibm.ws.bytebuffer.metatype" />
+    </Designate>
+
+    <!-- CHANNEL FRAMEWORK OPTIONS ........................................................ -->
+    
+    <OCD name="%channel.config" description="%channel.config.desc" 
+         id="com.ibm.ws.channelfw.metatype" ibm:alias="channelfw">
+
+        <AD name="%chfw.chain.start.retry.interval" description="%chfw.chain.start.retry.interval.desc"
+            id="chainStartRetryInterval" required="false" type="String" ibm:type="duration" default="5s" min="0"/>
+
+        <AD name="%chfw.chain.start.retry.attempts" description="%chfw.chain.start.retry.attempts.desc"
+            id="chainStartRetryAttempts" required="false" type="Integer" default="60" min="0" />
+
+        <AD name="%chfw.chain.quiesce.timeout" description="%chfw.chain.quiesce.timeout.desc"
+            id="chainQuiesceTimeout" required="false" type="String" ibm:type="duration" default="30s" min="0" />
+
+        <AD name="%chfw.missing.config.warning" description="%chfw.missing.config.warning.desc"
+            id="warningWaitTime" required="false" type="String" ibm:type="duration" default="10s" min="0" />
+    </OCD>
+  
+    <Designate pid="com.ibm.ws.channelfw">
+        <Object ocdref="com.ibm.ws.channelfw.metatype"/>
+    </Designate>
+    
+    <!-- TCP OPTIONS ..................................................................... -->
+    
+    <OCD name="%tcp.options" description="%tcp.options.desc" 
+         id="com.ibm.ws.tcpchannel.options" ibm:alias="tcpOptions">   
+
+        <AD name="%inactivityTimeout" description="%inactivityTimeout.desc"
+            id="inactivityTimeout" required="false" type="String" ibm:type="duration" min="0" default="60s" />
+            
+        <AD name="%tcp.soReuseAddr" description="%tcp.soReuseAddr.desc"
+            id="soReuseAddr" required="false" type="Boolean" default="true" />
+
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.tcpchannel.options">
+        <Object ocdref="com.ibm.ws.tcpchannel.options"/>
+    </Designate>
+
+    <!-- UDP OPTIONS ..................................................................... -->
+    
+    <OCD name="internal" description="%udp.options.desc" 
+         id="com.ibm.ws.udpchannel.options" ibm:alias="udpOptions">   
+
+        <AD name="internal" description="internal use only"
+            id="service.ranking" required="false" type="Integer" default="0"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.udpchannel.options">
+        <Object ocdref="com.ibm.ws.udpchannel.options"/>
+    </Designate>
+</metatype:MetaData>

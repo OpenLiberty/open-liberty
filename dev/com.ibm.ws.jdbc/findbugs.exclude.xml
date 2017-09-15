@@ -1,0 +1,294 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+    <!-- match generated nls classes: return mutable type -->
+    <Match> 
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+      <Bug code="EI" />
+    </Match>
+
+    <Match> 
+      <Class name="com.ibm.ejs.cm.logger.TraceWriter" />
+      <Method name="formatTrace"/>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.jdbc.internal.JDBCDriverService" />
+      <Method name="init"/>
+      <Bug code="TR" />
+    </Match>
+
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.AdapterUtil" />
+      <Method name="&lt;clinit&gt;"/>
+      <Bug code="TR" />
+    </Match>
+
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.AdapterUtil"/>
+      <Method name="getNLSMessage"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+    
+    <!-- Wrapping method, so false positive -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.AdapterUtil"/>
+      <Method name="ignoreWarnOrFail"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.AdapterUtil"/>
+      <Method name="setJdbcRuntimeVersion"/>
+      <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.AdapterUtil"/>
+      <Method name="unsetJdbcRuntimeVersion"/>
+      <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException" />
+      <Method name="formatMessage" />
+      <Bug pattern="TR_COMPUTED_KEY" />
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.jdbc.WSJdbcConnection" />
+      <Bug code="OBL" />
+    </Match>
+
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.jdbc.WSJdbcObject" />
+      <Or>
+        <Method name="closeChildWrappers"/>
+        <Method name="closeResources"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+
+    <!-- Preexisting calls to System.currentTimeMillis -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.jdbc.WSJdbcStatement"/>
+      <Method name="enforceStatementProperties"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.jdbc.WSJdbcTracer" />
+      <Method name="invoke" />
+      <Bug code="TR" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.DB2Helper" />
+      <Method name="&lt;clinit&gt;"/>
+      <Bug code="TR" />
+    </Match>
+
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.DB2Helper" />
+      <Method name="doConnectionSetup"/>
+      <Bug pattern="SQL_NONCONSTANT_STRING_PASSED_TO_EXECUTE" />
+    </Match>
+
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.DB2JCCHelper" />
+      <Or>
+        <Method name="shouldTraceBeDisabled"/>
+        <Method name="shouldTraceBeEnabled"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.DataDirectConnectSQLServerHelper" />
+      <Or>
+        <Method name="getPrintWriter"/>
+        <Method name="shouldTraceBeDisabled"/>
+        <Method name="shouldTraceBeEnabled"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.DerbyHelper" />
+      <Or>
+        <Method name="getPrintWriter"/>
+        <Method name="shouldTraceBeDisabled"/>
+        <Method name="shouldTraceBeEnabled"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.DerbyHelper" />
+      <Method name="&lt;clinit&gt;" />
+      <Bug pattern="TR_WRONG_CLASS_NAME" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.DerbyNetworkClientHelper" />
+      <Or>
+        <Method name="getPrintWriter"/>
+        <Method name="enableJdbcLogging"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.DatabaseHelper" />
+      <Method name="&lt;clinit&gt;" />
+      <Bug pattern="TR_WRONG_CLASS_NAME" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.InformixHelper" />
+      <Or>
+        <Method name="getPrintWriter"/>
+        <Method name="shouldTraceBeDisabled"/>
+        <Method name="shouldTraceBeEnabled"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.InformixJCCHelper" />
+      <Or>
+        <Method name="&lt;clinit&gt;"/>
+        <Method name="disableJdbcLogging"/>
+        <Method name="enableJdbcLogging"/>
+        <Method name="getPrintWriter"/>
+        <Method name="shouldTraceBeDisabled"/>
+        <Method name="shouldTraceBeEnabled"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.MicrosoftSQLServerHelper" />
+      <Or>
+        <Method name="shouldTraceBeDisabled"/>
+        <Method name="shouldTraceBeEnabled"/>
+      </Or>
+      <Bug code="TR" />
+    </Match>
+    
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.OracleHelper" />
+      <Method name="&lt;init&gt;"/>
+      <Bug code="LG" />
+    </Match>
+
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.OracleHelper" />
+      <Method name="&lt;clinit&gt;"/>
+      <Bug code="TR" />
+    </Match>
+
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.SybaseHelper" />
+      <Method name="doConnectionSetup" />
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+    </Match>
+
+    <!-- There is no need for Statement.close on exception path because the Connection will be destroyed -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.WSManagedConnectionFactoryImpl" />
+      <Method name="onConnect"/>
+      <Bug pattern="OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE" />
+    </Match>
+
+    <Match> 
+      <Class name="com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl" />
+      <Method name="cleanupTransactions"/>
+      <Bug code="TR" />
+    </Match>
+
+    <!-- Preexisting calls to System.currentTimeMillis -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.WSRdbManagedConnectionImpl"/>
+      <Method name="processConnectionErrorOccurredEvent"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    
+    <!-- Preexisting calls to System.currentTimeMillis -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.WSRdbXaResourceImpl"/>
+      <Method name="~(commit|rollback)"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    
+    <!-- Preexisting calls -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.AdapterUtil"/>
+      <Method name="toProperties"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.DB2JCCHelper"/>
+      <Method name="&lt;init&gt;"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.DerbyNetworkClientHelper$1"/>
+      <Method name="run"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.OracleHelper"/>
+      <Method name="psSetString"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+    
+    <!-- Reasonable here -->
+    <Match>
+      <Class name="~com\.ibm\.ws\.rsadapter\.spi\..*Helper"/>
+      <Method name="getIsolationLevel"/>
+      <Bug pattern="SF_SWITCH_NO_DEFAULT"/>
+    </Match>
+    
+    <!-- Pre existing usage -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.jdbc.WSJdbcConnection"/>
+      <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+    </Match>
+    
+    <!-- Public fields, so I'm not going to delete them -->
+    <Match>
+      <Class name="com.ibm.ws.rsadapter.impl.StatementCacheKey"/>
+      <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+
+    <Match>
+      <Class name="com.ibm.ws.jdbc.DataSourceService"/>
+      <Method name="getDSRAMessage"/>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+    </Match>
+
+    <!-- Pre-existing calls to activate/deactivate -->
+    <Match>
+      <Class name="com.ibm.ws.jdbc.DataSourceService"/>
+      <Method name="modified"/>
+      <Bug pattern="DJV_LIBERTY_DIRECT_INVOKE_OF_ACTIVATE"/>
+    </Match>
+</FindBugsFilter>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData  xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                    localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="%config.desc" name="%config.name" id="test" ibm:alias="test">
+        <AD id="updateTrigger" name="%config.trigger.name" description="%config.trigger.desc" type="String" required="false" default="polled">
+            <Option label="%config.trigger.timed" value="polled"/>
+            <Option label="%config.trigger.external" value="mbean"/>
+            <Option  label="%config.trigger.disabled" value="disabled"/>
+        </AD>
+        <AD id="onError" ibm:variable="onError" name="%config.onError.name" description="%config.onError.desc" type="String" ibm:type="onError" default="WARN">
+            <Option label="%config.onError.warn" value="WARN"/>
+            <Option label="%config.onError.fail" value="FAIL"/>
+            <Option  label="%config.onError.ignore" value="IGNORE"/>   
+        </AD> 
+        <AD id="config.target" name="internal" description="internal use only" required="false" type="String" default="shouldn't appear"/> 
+        <AD id="duration" name="%config.monitorInterval.name" description="%config.monitorInterval.desc" required="false" type="String" ibm:type="duration" default="500" />
+        <AD id="duration_s" name="%config.monitorInterval.name" description="%config.monitorInterval.desc" required="false" type="String" ibm:type="duration(s)" default="500" />
+        <AD id="duration_h" name="%config.monitorInterval.name" description="%config.monitorInterval.desc" required="false" type="String" ibm:type="duration(h)" default="500" />
+        <AD id="duration_m" name="%config.monitorInterval.name" description="%config.monitorInterval.desc" required="false" type="String" ibm:type="duration(m)" default="500" />
+        <AD id="duration_ms" name="%config.monitorInterval.name" description="%config.monitorInterval.desc" required="false" type="String" ibm:type="duration(ms)" default="500" />
+
+        <AD id="location" required="false" type="String" ibm:type="location" />
+        <AD id="locationFile" required="false" type="String" ibm:type="location(file)" />
+        <AD id="locationDir" required="false" type="String" ibm:type="location(dir)" />
+        <AD id="locationURL" required="false" type="String" ibm:type="location(url)" />
+
+        <AD id="password" required="false" type="String" ibm:type="password"/>
+        <AD id="passwordHash" required="false" type="String" ibm:type="passwordHash" />
+
+        <AD id="onErrorType" required="false" type="String" ibm:type="onError" />
+
+        <AD id="pid" required="false" type="String" ibm:type="pid" ibm:reference="other"/>
+
+        <AD id="noRefPid" required="false" type="String" ibm:type="pid" ibm:reference="notTopLevel"/>
+
+        <AD id="unique" required="false" type="String" ibm:unique="jndiName"/>
+        
+        <AD id="required" required="true" type="String" />
+
+        <AD id="cardinality" required="true" type="String" cardinality="100"/>
+
+        <AD id="minMaxString" required="true" type="String" min="2" max="4"/>
+        <AD id="minString" required="true" type="String" min="2"/>
+        <AD id="maxString" required="true" type="String" max="4"/>
+        
+        <AD id="int" required="true" type="Integer"/>
+        <AD id="intMinMax" required="true" type="Integer" min="2" max="4"/>
+        <AD id="intMin" required="true" type="Integer" min="2"/>
+        <AD id="intMax" required="true" type="Integer" max="4"/>
+        <AD id="anError" required="true" type="String" ibm:type="onError"/>
+        <AD id="token" required="true" type="String" ibm:type="token"/>
+        <AD id="beta" required="true" type="String" ibm:beta="true"/>
+    </OCD>
+
+    <OCD description="%config.desc" name="%config.name" id="testAny" ibm:alias="testAny" ibm:any="1">
+        <AD id="pid" required="false" type="String" ibm:type="pid" ibm:reference="other"/>
+    </OCD>
+
+    <OCD id="otherOCD" ibm:alias="other">
+    </OCD>
+
+    <OCD description="%config.desc" name="%config.name" id="testAnyNoChildren" ibm:alias="testAnyNoChildren" ibm:any="1">
+        <AD id="string" type="String"/>
+    </OCD>
+
+    <Designate pid="testAnyNoChildren">
+        <Object ocdref="testAnyNoChildren"/>
+    </Designate>
+    
+    <OCD id="nonAliasOCD" >
+    </OCD>
+    
+    <OCD id="extendsTest" ibm:extends="test" ibm:excludeChildren="other">
+    </OCD>
+    
+    <OCD id="betaOCD" ibm:alias="betaElement" ibm:beta="true">
+    </OCD>
+    
+    <Designate pid="notTopLevel">
+        <Object ocdref="nonAliasOCD"/>
+    </Designate>
+
+    <Designate pid="other">
+        <Object ocdref="otherOCD"/>
+    </Designate>
+
+    <Designate pid="extendsTest">
+        <Object ocdref="extendsTest"/>
+    </Designate>
+
+    <Designate pid="test">
+        <Object ocdref="test" />
+    </Designate>
+    
+    <Designate pid="testAny">
+        <Object ocdref="testAny" />
+    </Designate>
+    
+    <Designate pid="betaOCD">
+        <Object ocdref="betaOCD" />
+    </Designate>
+</metatype:MetaData>

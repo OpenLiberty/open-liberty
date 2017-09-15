@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="com.ibm.ws.org.apache.cxf.jaxws" default="buildCXFPro" xmlns:nls="antlib:mantis-nls">
+    <import file="../ant_build/public_imports/rejar_imports.xml" />
+    <property name="component.endorsed" value="${basedir}/../com.ibm.websphere.javaee.jaxb.2.2/lib/${path.separator}${basedir}/../com.ibm.websphere.javaee.jaxws.2.2/lib/" />
+    <property name="no.trace.instrumentation" value="true" />
+
+    <property name="version" value="2.6.2" />
+	<property name ="ibmversion" value="-ibm-s20170216-1739"/>
+    <fileset dir="${basedir}/lib" id="ibmjars">
+        <include name="*.jar" />
+    </fileset>
+    <fileset dir="${build.dir}/tmp/lib" id="jars">
+        <include name="*.jar" />
+    </fileset>
+
+    <!-- define a new macro to inject FFDC -->
+    <macrodef name="injectFFDC">
+        <attribute name="output.dir" default="${output.dir}" />
+        <attribute name="jarfile" default="" />
+        <element name="classes" />
+        <sequential>
+            <mkdir dir="@{output.dir}/@{jarfile}.unzip" />
+            <unzip dest="@{output.dir}/@{jarfile}.unzip" src="@{output.dir}/@{jarfile}">
+            </unzip>
+            <echo>Instrument.trace FFDC=true: @{output.dir}/@{jarfile}.unzip</echo>
+            <instrument.trace ffdc="true">
+                <fileset dir="@{output.dir}/@{jarfile}.unzip">
+                    <patternset>
+                        <classes />
+                    </patternset>
+                </fileset>
+            </instrument.trace>
+            <delete file="@{output.dir}/@{jarfile}">
+            </delete>
+            <zip destfile="@{output.dir}/@{jarfile}">
+                <fileset dir="@{output.dir}/@{jarfile}.unzip" />
+            </zip>
+            <delete dir="@{output.dir}/@{jarfile}.unzip">
+            </delete>
+        </sequential>
+    </macrodef>
+	
+	<target name="buildCXFPro" depends="copyJars,build"/>
+	<target name="copyJars">
+        <mkdir dir="${build.dir}/tmp" />
+        <mkdir dir="${build.dir}/tmp/lib" />
+        <foreach param="jar" in="ibmjars">
+        	<local name="jarname" />
+        	<basename property="jarname" file="${jar}" suffix="${ibmversion}.jar" /> 
+        	<echo>"copying ${jar} to ${build.dir}/tmp/lib/${jarname}.jar"</echo>
+        	<copy tofile="${build.dir}/tmp/lib/${jarname}.jar" file="${jar}" />
+        </foreach>		
+	</target>
+
+    <target name="extractmessages">
+        <foreach param="jar" in="jars">
+            <local name="jarname" />
+            <basename property="jarname" file="${jar}" suffix=".jar" />
+
+            <echo file="${build.dir}/tmp/header.nlsprops" message="# The contents of this file contains messages from the apache cxf project${line.separator}" />
+            <echo file="${build.dir}/tmp/header.nlsprops" message="# The markers for the file claim this is not a message file - this is correct as it is NOT a file${line.separator}" append="true" />
+            <echo file="${build.dir}/tmp/header.nlsprops" message="# that conforms to the IBM standard error message conventions.${line.separator}" append="true" />
+            <echo file="${build.dir}/tmp/header.nlsprops" message="#${line.separator}" append="true" />
+            <echo file="${build.dir}/tmp/header.nlsprops" message="#CMVCPATHNAME ${ant.project.name}/resources/${jarname}/extractedpropertyfile${line.separator}" append="true" />
+            <echo file="${build.dir}/tmp/header.nlsprops" message="#ISMESSAGEFILE FALSE${line.separator}" append="true" />
+            <echo file="${build.dir}/tmp/header.nlsprops" message="#NLS_MESSAGEFORMAT_VAR${line.separator}" append="true" />
+            <echo file="${build.dir}/tmp/header.nlsprops" message="#NLS_ENCODING=UNICODE${line.separator}" append="true" />
+
+            <mkdir dir="${resources.dir}/${jarname}" />
+            <copy todir="${resources.dir}/${jarname}" overwrite="true">
+                <zipfileset src="${jar}">
+                    <patternset>
+                        <include name="**/*.properties" />
+                        <exclude name="**/pom.properties" />
+                    	<exclude name="**/version.properties" />
+                    </patternset>
+                </zipfileset>
+                <mapper type="glob" from="*.properties" to="*.nlsprops" />
+                <filterchain>
+                    <concatfilter prepend="${build.dir}/tmp/header.nlsprops" />
+                    <tokenfilter delimoutput="\r\n">
+                        <linetokenizer includeDelims="true" />
+                    </tokenfilter>
+                </filterchain>
+            </copy>
+        </foreach>
+        <fixcrlf srcdir="${resources.dir}" includes="**/*.nlsprops" excludes="**/*_*.nlsprops"/>
+    </target>
+
+
+    <target name="post-compile" depends="compile.post-compile, extractmessages" />
+
+
+    <!-- We DON'T want the nlsprops files compiling - instead we will insert them into the correct jars during binding -->
+    <target name="globalizeCompile">
+        <!-- need to copy into build/tmp so we can (a) rename to .properties and (b) remove the header boilerplate we added -->
+        <copy todir="${build.dir}/tmp/bnd">
+            <fileset dir="${resources.dir}">
+                <include name="**/*.nlsprops" />
+                <!-- copy both english originals and the translations -->
+            </fileset>
+            <mapper type="glob" from="*.nlsprops" to="*.properties" />
+            <filterchain>
+                <headfilter lines="-1" skip="8" />
+            </filterchain>
+        </copy>
+    </target>
+
+    <target name="package">
+        <foreach param="jar" in="jars">
+            <local name="jarname" />
+            <local name="basejarname" />
+            <basename property="jarname" file="${jar}" suffix=".jar" />
+            <basename property="basejarname" file="${jar}" suffix="-${version}.jar" />
+            <!-- Until the translations come back, the build/tmp/bnd directory won't exist - so create it now to keep bnd happy -->
+            <mkdir dir="${build.dir}/tmp/bnd/${jarname}" />
+            <bndPackage version="1.0" bnd.classpath="${build.dir}/tmp/lib/${jarname}.jar,${build.dir}/tmp/bnd/${jarname}" original.jar.name="org.apache.${basejarname}" original.jar.version="${version}" bnd.file="${basejarname}.bnd" />
+        </foreach>
+      
+        <injectFFDC jarfile="com.ibm.ws.org.apache.cxf-rt-bindings-xml.2.6.2_1.0.${micro.version}.jar">
+            <classes>
+                <include name="org/apache/cxf/binding/xml/interceptor/XMLFaultInInterceptor.class" />
+                <include name="org/apache/cxf/binding/xml/interceptor/XMLFaultOutInterceptor.class" />
+                <include name="org/apache/cxf/binding/xml/interceptor/XMLMessageInInterceptor.class" />
+                <include name="org/apache/cxf/binding/xml/interceptor/XMLMessageOutInterceptor.class" />
+            </classes>
+        </injectFFDC>
+
+        <injectFFDC jarfile="com.ibm.ws.org.apache.cxf-rt-databinding-jaxb.2.6.2_1.0.${micro.version}.jar">
+            <classes>
+                <include name="org/apache/cxf/jaxb/attachment/JAXBAttachmentMarshaller.class" />
+                <include name="org/apache/cxf/jaxb/attachment/JAXBAttachmentUnmarshaller.class" />
+                <include name="org/apache/cxf/jaxb/io/DataReaderImpl.class" />
+                <include name="org/apache/cxf/jaxb/io/DataWriterImpl.class" />
+            </classes>
+        </injectFFDC>
+
+        <injectFFDC jarfile="com.ibm.ws.org.apache.cxf-rt-frontend-jaxws.2.6.2_1.0.${micro.version}.jar">
+            <classes>
+                <include name="org/apache/cxf/jaxws/endpoint/dynamic/JaxWsDynamicClientFactory.class" />
+                <include name="org/apache/cxf/jaxws/interceptors/SwAInInterceptor.class" />
+                <include name="org/apache/cxf/jaxws/handler/logical/LogicalHandlerFaultInInterceptor.class" />
+                <include name="org/apache/cxf/jaxws/handler/logical/LogicalHandlerInInterceptor.class" />
+                <include name="org/apache/cxf/jaxws/handler/logical/LogicalHandlerOutInterceptor.class" />
+                <include name="org/apache/cxf/jaxws/handler/logical/LogicalMessageImpl.class" />
+                <include name="org/apache/cxf/jaxws/handler/soap/SOAPMessageContextImpl.class" />
+            </classes>
+        </injectFFDC>
+        <injectFFDC jarfile="com.ibm.ws.org.apache.cxf-rt-core.2.6.2_1.0.${micro.version}.jar">
+            <classes>
+                <include name="org/apache/cxf/wsdl11/WSDLServiceBuilder.class" />
+            </classes>
+        </injectFFDC>
+        <injectFFDC jarfile="com.ibm.ws.org.apache.cxf-rt-bindings-soap.2.6.2_1.0.${micro.version}.jar">
+            <classes>
+                <include name="org/apache/cxf/binding/soap/interceptor/SoapPreProtocolOutInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/StartBodyInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/EndpointSelectionInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/SoapActionInInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/SoapOutInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/Soap11FaultInInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/Soap11FaultOutInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/Soap12FaultInInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/interceptor/MustUnderstandInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/saaj/SAAJInInterceptor.class" />
+                <include name="org/apache/cxf/binding/soap/saaj/SAAJOutInterceptor.class" />
+            </classes>
+        </injectFFDC>
+
+    </target>
+</project>

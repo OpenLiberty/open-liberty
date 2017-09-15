@@ -1,0 +1,68 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: Default JNDI namespace provider
+Bundle-SymbolicName: com.ibm.ws.jndi; singleton:=true
+Bundle-Description: This bundle provides a default JNDI namespace; version=${bVersion}
+Bundle-Activator: com.ibm.ws.jndi.internal.JNDIServiceBinderManager
+
+#optional, should match the trace group used by Tr components (see sample package-info.java)
+WS-TraceGroup: Naming
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+
+Export-Package: com.ibm.ws.jndi;
+Private-Package: com.ibm.ws.jndi.internal.*
+
+-dsannotations-inherit: true
+-dsannotations: \
+  com.ibm.ws.jndi.internal.JNDIObjectFactory               , \
+  com.ibm.ws.jndi.internal.JNDIReferenceEntry              , \
+  com.ibm.ws.jndi.internal.JNDIEntry                       , \
+  com.ibm.ws.jndi.internal.JNDIURLEntry                    , \
+  com.ibm.ws.jndi.internal.WSContextFactory                , \
+  com.ibm.ws.jndi.internal.JNDIIntrospector                , \
+  com.ibm.ws.jndi.internal.JNDIConsole                     , \
+  com.ibm.ws.jndi.internal.WASInitialContextFactoryBuilder , \
+  com.ibm.ws.jndi.internal.WASObjectFactoryBuilder         , \
+  com.ibm.ws.jndi.internal.WASURLObjectFactoryFinder
+
+# embundle the metatype xml
+Include-Resource: OSGI-INF=resources/OSGI-INF
+
+instrument.classesExcludes: com/ibm/ws/jndi/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.logging,\
+	com.ibm.ws.crypto.passwordutil,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.org.apache.aries.jndi.api;version=latest,\
+	org.eclipse.osgi,\
+	com.ibm.ws.classloading;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	com.ibm.ws.kernel.boot;version=latest

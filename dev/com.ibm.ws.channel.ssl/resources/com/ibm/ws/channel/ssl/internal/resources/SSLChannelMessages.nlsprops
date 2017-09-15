@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: The SSL channel cannot be started due to the following incorrect settings:\n {0}
+invalid.security.properties.explanation=One or more settings for security in the SSL channel were not valid.
+invalid.security.properties.useraction=The SSL channel security settings should be modified to the correct values.
+
+handshake.failure=CWWKO0801E: Unable to initialize SSL connection. Unauthorized access was denied or security settings have expired. Exception is {0}.
+handshake.failure.explanation=A new connection failed to complete a successful secure handshake.
+handshake.failure.useraction=Check security settings.  The certificate might have expired or be missing.  Alternatively, an unauthorized client connection might have been denied.  To disable these messages, set the suppressHandshakeErrors parameter of the sslOptions configuration to true.
+
+init.failure=CWWKO0802E: Unable to initialize SSL bundle. Exception is {0}.
+init.failure.explanation=An error was encountered while attempting to initialize the SSL bundle. This is likely due to a dependency failure.
+init.failure.useraction=Review the process logs for information on what failed to start.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: Unable to create default SSL channel configuration. Exception is {0}.
+DEFAULT_OPTIONS_ERROR.explanation=An error was encountered while creating the default configuration for SSL channnels.
+DEFAULT_OPTIONS_ERROR.useraction=Review the exception for information on how the creation failed.
+
+handshake.failure.stop.logging=CWWKO0804I: The maximum number of SSL handshake failures to log has been reached. These messages will no longer be logged.
+handshake.failure.stop.logging.explanation=The number of SSL handshake failures that are logged are limited to avoid excessive log entries.
+handshake.failure.stop.logging.useraction=No action is required.

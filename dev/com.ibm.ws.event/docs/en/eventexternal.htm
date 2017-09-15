@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2008  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Event Documentation</title>
+</head>
+<body>
+<!-- VERY important note:  Use ONLY flat text editors (such as
+Notepad or Wordpad) to edit this file. Do NOT edit this page
+with MS Word or other editors that are not flat text editors.
+-->
+
+<h1 id="event">Event User Documentation</h1>
+
+<h2 id="event_overview">Using the Event Engine in Liberty</h2>
+<p>There is an implementation of com.ibm.websphere.event.EventEngine provided in the Liberty
+runtime. To use this service, you just need to 
+obtain a service reference from the OSGi Service Registry.
+</p>
+<p>To use this service in a DS-managed bundle, do the following:
+<ol>
+<li>Declare a dependency on com.ibm.websphere.event.EventEngine in your service 
+declaration.  For example, in your *.bnd file, include the following:
+<div class="codeSample">
+Service-Component:my.package.EventCreator; \
+				  eventEngine=com.ibm.websphere.event.EventEngine
+</div>
+The service reference will be injected via a method that you must provide on your
+implementation class (my.package.EventCreator in the above example) called
+setEventEngine(HttpService eventEngine).
+</li>
+<li>Use the injected service reference to make calls on the 
+com.ibm.websphere.event.EventEngine - for example
+to create and initiate an Event:
+<div class="codeSample">
+Event myEvent = eventEngine.createEvent(Topic);
+eventEngine.sendEvent(myEvent);
+</div>
+</li>
+</ol>
+</p>
+
+<h2 id="event_types">Asynchronous and Synchronous Events</h2>
+<p>Synchronous events are accessible through the EventEngine's 
+sendEvent methods. The event is handled on the current thread and
+processed immediately. The methods do not return to the caller until
+after the event has finished processing. If the event
+is being handled synchronously, the event object's isDone and isCancelled
+methods are not applicable and will return default values.</p>
+
+<p>Asynchronous events are accessible through the EventEngine's
+postEvent methods. The event is handled on a new thread and the method
+returns to the caller before delivery of the event is completed. If the event
+is being handled asynchronously, the event object's isDone and isCancelled
+methods are applicable.</p>
+
+<h2 id="scheduled_events">Scheduled Event Service</h2>
+<p>The ScheduledEventService is based on the java.util.concurrent.ScheduledExecutorService
+library; however, it spins off asynchronous events on the scheduled items. The
+service provides APIs to schedule one time or repeating events, with an event topic
+and optional event properties. The event firing separates this in usage from the
+threading bundle providing the above service for scheduled runnables. A ScheduledFuture
+object is returned from the schedule APIs to allow canceling of repeating events. 
+</p>
+
+<!-- div class="config">
+Insert configuration or remove if you don't use this section.
+</div -->
+
+<p />
+
+</body>
+</html>

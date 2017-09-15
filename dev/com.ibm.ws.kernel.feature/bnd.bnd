@@ -1,0 +1,69 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WebSphere kernel feature manager
+Bundle-SymbolicName: com.ibm.ws.kernel.feature; singleton:=true
+Bundle-Description: WebSphere kernel feature manager, version ${bVersion}
+
+Export-Package: \
+ com.ibm.ws.kernel.feature;provide:=true, \
+ com.ibm.ws.kernel.feature.provisioning, \
+ com.ibm.wsspi.kernel.feature;provide:=true
+
+Import-Package: \
+ !com.sun.tools.attach, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+
+# NOTE: ODDNESS. we're including wlp.lib.extract as a package. The contents of 
+# that package are provided by wlp.lib.extract project! Dependency-wise, it's better to 
+# leave the classes in the wlp.lib.extract project.
+Private-Package: \
+ com.ibm.ws.kernel.feature.*, \
+ wlp.lib.extract, \
+ wlp.lib.extract.platform
+
+-includeresource: \
+ OSGI-INF/permissions.perm=resources/permissions.perm, \
+ OSGI-INF/metatype=resources/OSGI-INF/metatype, \
+ OSGI-INF/l10n=resources/OSGI-INF/l10n
+
+-dsannotations: com.ibm.ws.kernel.feature.internal.FeatureManager
+
+instrument.classesExcludes: com/ibm/ws/kernel/feature/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.kernel.feature.cmdline;version=latest,\
+	com.ibm.ws.kernel.feature.core;version=latest,\
+	wlp.lib.extract;version=latest
+
+-testpath: \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	com.ibm.websphere.org.osgi.core;version=latest, \
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.kernel.service.location;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
+	com.ibm.ws.runtime.update;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.kernel.boot.logging;version=latest, \
+	com.ibm.ws.kernel.security.thread;version=latest, \
+	com.ibm.ws.org.apache.aries.util;version=latest, \
+	com.ibm.ws.threading;version=latest, \
+	org.eclipse.osgi;version=latest

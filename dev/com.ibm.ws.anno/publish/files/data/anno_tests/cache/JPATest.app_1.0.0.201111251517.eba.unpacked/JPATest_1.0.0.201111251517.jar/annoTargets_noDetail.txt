@@ -1,0 +1,35 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: JPATest_1.0.0.201111251517.jar
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: com.ibm.osgi.jpa.jpa2.TestTools
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+Class-Seed: com.ibm.osgi.jpa.jpa2.MagicCard
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+  ClassAnnotation: javax.persistence.Entity
+Class-Seed: com.ibm.osgi.jpa.jpa2.NewAPITest
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: com.ibm.osgi.jpa.jpa2.TestTools
+Class-Excluded: javax.persistence.Entity
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: JPATest_1.0.0.201111251517.jar
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.Object
+  ClassSource: JPATest_1.0.0.201111251517.jar
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+# ============================================================

@@ -1,0 +1,449 @@
+Summary of cases:
+
+CASE_OPEN_CLOSE:
+// See errorCases.txt: CASE_OPEN_CLOSE: Open/close handled by the caller.
+
+CASE_CLASS_SOURCE_STREAM: Open / close of class input streams is handled by the caller.
+// See errorCases.txt: CASE_CLASS_SOURCE_STREAM: Open / close of class input streams is handled by the caller.
+
+CASE_SOURCE_ITERATION: Exceptions during iteration do not stop processing.
+// See errorCases.txt: CASE_SOURCE_ITERATION: Exceptions during iteration do not stop processing.
+
+Annotation Processing Error Handling Review:
+
+Goals:
+
+(1) Processing, where possible, after encountering a problem, should display
+    a warning message, and possible should emit FFDC information, but should
+    continue processing, so far as this is possible.
+(2) As far as possible and practicable, failures should have a localized impact.
+(3) Warning messages should be concise, but should fully describe the problem
+    which was encountered.
+(4) Where possible, large multiples of warning messages should be avoided, in
+    particular, for a set of problems with a single root cause.
+(5) Failures should be displayed in the most appropriate location.  Usually,
+    that means at the point of failure.
+    
+Annotation Processing Main API Layers:
+
+(1) Class source
+(2) Annotation targets
+(3) Info store
+
+Class source main operations:
+
+(1) A class source is constructed, is opened and closed, may be asked to perform scans,
+    and may be used to obtain input streams for specified resources.
+
+Annotation targets main operations:
+
+(1) Annotation targets are constructed, are populated using a distinct scan operation,
+    and are used as a store of target results.
+    
+Info store main operations:
+
+(1) An info store is associated with a class source, is opened and closed, and is 
+    used to obtain package and class info objects.  Additional info objects detailing
+    previously retrieved info objects may be obtained.
+
+Main flow, Class Source:
+
+(1) An empty root class source is constructed.
+(2) Child class sources are constructed according to the class path
+    which is to be implemented by the class source.
+(3) The child class sources are added to the root class source.
+ 
+Main flow, Annotation Targets:
+
+(1) A class source is provided.
+(2) Annotation targets are constructed.
+(3) A scan is performed on the annotation targets using a class source.
+(4) The scan opens the class source, constructs a scan call back, uses
+    the class source to perform processing through the scan call back,
+    then closes the class source.
+(5) The class source obtains class input streams and provides those to
+    the annotation targets scan callback to obtain class data from the
+    input stream.
+(6) Using a class byte code reader, class data is retrieved from the
+    class input stream and stored into the annotation targets.     
+(7) The completed class targets are used as a static repository of class and
+    annotations information.
+    
+Main flow, Info Store:
+
+(1) A class source is provided.
+(2) An info store is constructed.
+(3) The class source is opened, and is left open while info objects of
+    the class source remain in use.  The open of the class source causes
+    an open of the class source.
+(4) Info objects (class and package info objects) may be obtained
+    directly from the info store.
+(5) Other info objects (class, package, field, method, and annotation
+    info objects) may be obtained from other info objects.
+(6) To obtain a class or package info object, a scan step is performed.
+(7) To scan a class or package info object, an input stream is obtained from
+    the info store, and class bytes are obtained from the input stream.
+    Data obtained from the class bytes are stored in the class or package
+    info object.
+(8) At the conclusion of use of the retrieved info objects, the info store
+    is closed.  The close of the info store causes a close of the associated
+    class source.
+
+Main categories of errors, top view:
+
+(1) Class source errors:
+(1.1) Container open/close failures.
+(1.2) Stream open/close failures.
+
+(2) Annotation targets errors:
+(1.1) Failure to open or close the associated class source.
+(1.2) Exception when obtaining a class input stream.
+(1.3) Exception when reading a class input stream.
+(1.4) Incorrect class bytes. 
+(1.5) Serialization failures.
+
+(3) Info store errors:
+(1.1) Failure to open or close the associated class source.
+(1.2) Class input stream not available.
+(1.3) Exception when obtaining a class input stream.
+(1.4) Exception when reading a class input stream.
+(1.5) Incorrect class bytes.
+     
+Notes:
+
+(1) Several runtime type errors are not addressed by this note.  The case are:
+    - Illegal argument
+    - Unsupported operation
+    - ClassCastException from subtype conversion (asX) methods
+(2) An exception thrown together with a trace warning message is handled under
+    the WARNING cases; the matching exception case is omitted.
+(3) Exception in public APIs are handled by the caller, and in most cases are
+    to still be thrown.  Cases which are still to be thrown are omitted.  For
+    example, see NonDelayedClassInfo.getDeclaredField(FieldInfo).
+(4) Runtime errors which are a result of API misuse are omitted.  For example,
+    see "AnnotationTargetsImpl_Fault.getParamater(int)', which throws
+    'ArrayIndexOutOfBoundsException' when the parameter index is outside
+    of the valid range.
+(5) Exceptions used for non-local flow control are omitted.  For example, see
+    AnnotationTargetsImpl_Visitor.visitField(int, String, String, String, Object),
+    which throws VISIT_ENDED to perform a non-local return.
+(6) Serialization cases (cases from AnnotationTargetsImpl_Serialization) are not
+    handled at this time, as the serialization function is not in use.
+
+General cases:
+
+(1) CASE_SOURCE_OPEN_CLOSE: Open / close are part of a public API, and are handled by the caller.
+-- Should a partial open of an aggregate class source be allowed?	
+(2) CASE_SOURCE_STREAM_IO: Open / close of class input streams is handled by the caller.
+-- A failure to open or close a class input stream is handled by the caller.
+   Typically, under CASE_SOURCE_ITERATION. 
+(3) CASE_SOURCE_ITERATION: Exceptions during iteration do not stop processing.
+-- Exceptions captured during iterative processing are captured and handled immediately.
+   Processing is allowed to continue.
+   Most often, cases occur as CASE_SOURCE_STREAM_IO.
+   
+Annotation Processing Tr.warning and Level.WARNING Cases:
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl.process(ClassSource_Streamer, String, boolean, boolean, boolean)
+
+(1) Failure to open input stream on target class.
+
+com.ibm.ws.anno.info.internal.AnnotationInfoCacheBucket
+
+(1) Case in commented out code; no action is needed.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.resolveClassInfo(String)
+
+(1) Case in commented out code; no action is needed.
+(2) Case in commented out code; no action is needed.
+
+com.ibm.ws.anno.info.internal.InfoVisitor.visitMethod(int, String, String, String, String[])
+
+(1) Case should no longer occur.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets.scanClass(String, InputStream, boolean, boolean, boolean)
+
+(1) Failure to obtain reader on specified class input stream.
+(2) Internal and external class name mismatch.
+(3) Internal and external package name mismatch.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate.close()
+
+(1) Close in child class source.
+(2) Rethrow of child class source close failure.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_Aggregate.closeResourceStream(String, String, InputStream)
+
+(1) Failure to close class input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_ClassLoader.openResourceStream(String, String)
+
+(1) Failure to open class input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_ClassLoader.closeResourceStream(String, String, InputStream)
+
+(1) Failure to close class input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer.scanSeedClasses(Container, String, ClassSource_Streamer, Set<String>, ClassSourceImpl_ScanCounts, boolean)
+
+(1) Failure to adapt child element to an input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer.openResourceStream(String, String, Entry)
+
+(1) Failure to adapt element to an input stream.
+(2) Null result of adapting element to an input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer.closeResourceStream(String, String, InputStream)
+
+(1) Unable to relocate entry for close.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer.closeResourceStream(String, String, Entry, InputStream)
+
+(1) Failure to close class input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory.scanSeedClasses(File, String, ClassSource_Streamer, Set<String>, ClassSourceImpl_ScanCounts, boolean)
+
+(1) Unexpected null file list result.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory.openResourceStream(String, String, String)
+
+(1) Attempt to open target which is not a file.
+(2) Attempt to open target resulted in an exception.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedDirectory.closeResourceStream(String, String, String, InputStream)
+
+(1) Failure to close class input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar.open()
+
+(1) Internal state error opening jar file.
+-- CASE_OPEN_CLOSE
+(2) Failed to open jar file for target file.
+-- CASE_OPEN_CLOSE
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar.close()
+
+(1) Internal state error closing jar file.
+-- CASE_OPEN_CLOSE
+(2) Failure to close jar file.
+-- CASE_OPEN_CLOSE
+(3) Failure to close jar file.
+-- CASE_OPEN_CLOSE
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar.openResourceStream(String, String)
+
+(1) Failure to open entry input stream.
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedJar.closeResourceStream(String, String, InputStream)
+
+(1) Failure to close entry input stream.
+
+com.ibm.ws.anno.info.internal.AnnotationInfoImpl.getValue(String)
+
+(1) Method not found for annotation value.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.basicPutJavaClassInfo(NonDelayedClassInfo)
+
+(1) Put of duplicate, non-identical, java class info.
+(2) Put of duplicate, identical, java class info.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.basicPutAnnotatedClassInfo(NonDelayedClassInfo)
+
+(1) Put of duplicate, non-identical, annotated class info.
+(2) Put of duplicate, identical, annotated class info.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.basicPutClassInfo(NonDelayedClassInfo)
+
+(1) Put of duplicate, non-identical, class info.
+(2) Put of duplicate, identical, class info.
+
+Annotation Processing Exceptions Cases:
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.resolveClassInfo(String)
+
+(1) Exception during scan of class input stream.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.getOrCreateMethodInfo(int, String, String, String, String[], NonDelayedClassInfo)
+
+(1) Put of method info collides with prior method info.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.getOrCreateFieldInfo(int, String, String, String, Object, NonDelayedClassInfo)
+
+(1) Put of field info collides with prior field info.
+
+com.ibm.ws.anno.info.internal.DelayedClassInfo.getClassInfo()
+
+(1) Failed to generate new class info.
+
+com.ibm.ws.anno.info.internal.InfoStoreImpl.open()
+
+(1) Exception when attempting to open an input store.
+-- CASE_OPEN_CLOSE
+
+com.ibm.ws.anno.info.internal.InfoStoreImpl.close()
+
+(1) Failure to close an input store.
+-- CASE_OPEN_CLOSE
+
+com.ibm.ws.anno.info.internal.InfoStoreImpl.scanNewClass(String)
+
+(1) Failure to open class input stream.
+(2) Failure to close class input stream.
+(3) Failure to obtain reader for class input stream class bytes.
+
+com.ibm.ws.anno.info.internal.InfoVisitor_Annotation.storeAnnotationValue(String, AnnotationValueImpl)
+
+(1) Failure to store annotation value due to incorrect state.
+
+com.ibm.ws.anno.info.internal.InfoVisitor.resetState(boolean)
+
+(1) Unexpected residual package when clearing class visitor state.
+(2) Unexpected residual class when clearing class visitor state.
+(3) Unexpected residual method when clearing class visitor state.
+(4) Unexpected residual field when clearing class visitor state.
+(5) Unexpected halt setting when clearing class visitor state.
+
+com.ibm.ws.anno.info.internal.InfoVisitor.resetFileState(boolean)
+
+(1) Unexpected file name set when clear class visitor file state.
+
+com.ibm.ws.anno.info.internal.InfoVisitor.visit(int, int, String, String, String, String[])
+
+(1) Package information not set when processing package data.
+
+com.ibm.ws.anno.info.internal.InfoVisitor.visitField(int, String, String, String, Object)
+
+(1) Field information not set when processing field data.
+
+com.ibm.ws.anno.info.internal.InfoVisitor.visitMethod(int, String, String, String, String[])
+
+(1) Method information not set when processing method data.
+
+com.ibm.ws.anno.info.internal.InfoVisitor.visitEnd()
+
+(1) Unexpected data state when completing class visitor processing.
+
+com.ibm.ws.anno.info.internal.NonDelayedClassInfo.addInterface(DelayedClassInfo)
+
+(1) Add of interface value after late initialization generated an empty interfaces list.
+(2) Add of interface value outside of normal processing.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Scanner.scan()
+
+(1) Failure to open class source.
+(2) Exception during scan of classes.
+(3) Failure to close class source.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Scanner.scan(Set<String>)
+
+(1) Failure to open class source.
+(2) Exception during scan of classes.
+(3) Failure to close class source.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Scanner.scanReferencedClasses(AnnotationTargetsImpl_Streamer)
+
+(1) Exception during scan of classes.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Serialization.writeLine(String, String)
+
+(1) Exception during write of annotation data.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Serialization.flushWrite(String)
+
+(1) Exception when flushing write of annotation data.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Serialization.readNextLine()
+
+(1) Exception during read of annotation data.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Streamer.process(String, InputStream, boolean, boolean, boolean)
+
+(1) Exception during processing of class.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Targets.scanClass(String, InputStream, boolean, boolean, boolean)
+
+(1) Exception attempting to obtain reader for class input stream class bytes.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Visitor.clearNames(String)
+
+(1) Unexpected residual package when clearing class visitor state.
+(2) Unexpected residual class when clearing class visitor state.
+(3) Unexpected residual method when clearing class visitor state.
+(4) Unexpected residual field when clearing class visitor state.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Visitor.visit(int, int, String, String, String, String[])
+
+(1) Unexpected duplicate package addition.
+(2) Unexpected duplicate class addition.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Visitor.visitEnd()
+
+(1) Unexpected data state when completing class visitor processing.
+
+com.ibm.ws.anno.util.internal.UtilImpl_BidirectionalMap.i_record(String, String)
+
+(1) Internal inconsistency when adding mapping data.
+
+com.ibm.ws.anno.util.internal.UtilImpl_InternMap.intern(String, boolean)
+
+(1) Intern of string value attempted on non-valid value.
+
+Exceptions not covered by an adjacent warning:
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer.open()
+
+(1) Failure to obtain fast mode on container class source.
+-- CASE_OPEN_CLOSE
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer.close()
+
+(1) Failure to obtain fast mode on container class source.
+-- CASE_OPEN_CLOSE
+
+com.ibm.ws.anno.classsource.internal.ClassSourceImpl_MappedContainer.scanSeedClasses(Container, String, ClassSource_Streamer, Set<String>, ClassSourceImpl_ScanCounts, boolean)
+
+(1) Exception attempting to adapt child entry to a container.
+
+com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container_WAR.resolveWARClassesContainerData()
+
+(1) Resolve of WEB-INF/classes located entry but was unable to obtain container.
+(2) Resolve of WEB-INF/classes located entry but was unable to obtain container.
+
+com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container_WAR.resolveWARLibraryContainerData()
+
+(1) Resolve of WEB-INF/lib located entry but was unable to obtain container.
+(2) Resolve of WEB-INF/lib located entry but was unable to obtain container.
+
+com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container.addStandardClassSources(String, ClassLoader, ClassSource_Aggregate)
+
+(1) Resolve of application library located entry but was unable to obtain container.
+(2) Resolve of manifest library located entry but was unable to obtain container.
+
+com.ibm.ws.anno.classsource.specification.internal.ClassSourceImpl_Specification_Container.selectJars(ContainerData)
+
+(1) Target container location was unavailable.
+(2) Child entry could not be adapted as a container.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.getPrimitiveClass(Type)
+
+(1) Type received from ASM is not one of the predefined types.
+
+com.ibm.ws.anno.info.internal.ClassInfoCache.resolveClassInfo(String)
+
+(1) An exception occurred while scanning class information.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Serialization.read(AnnotationTargetsImpl_Targets)
+
+(1-6) Syntax errors in annotation targets serialization data.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Serialization.parseValue(String, String[])
+
+(1-3) Syntax error in serialized annotation targets value assignment.
+
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Serialization.read(AnnotationTargetsImpl_Targets)
+
+(1) Read attempted on a serializer which is configured to perform writes.
+ 
+com.ibm.ws.anno.targets.internal.AnnotationTargetsImpl_Serialization.write(AnnotationTargetsImpl_Targets)
+
+(1) Write attempted on a serializer which is configured to perform reads.

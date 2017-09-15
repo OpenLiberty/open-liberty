@@ -1,0 +1,948 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.mfp.CWSIFMessages.props
+#
+# SIB.mfp component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIF0001=CWSIF0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIF0001-CWSIF0010 belong to class com.ibm.ws.sib.mfp.JsMessageFactory & JsMessageFactoryImpl
+#   - Msgs in the range CWSIF0011-CWSIF0020 belong to class com.ibm.ws.sib.mfp.JsJmsMessageFactory
+#   - Msgs in the range CWSIF0021-CWSIF0030 belong to class com.ibm.ws.sib.mfp.trm.TrmMessageFactory
+#   - Msgs in the range CWSIF0031-CWSIF0040 belong to classes com.ibm.ws.sib.mfp.impl.JsMessageHandle*
+#   - Msgs in the range CWSIF0041-CWSIF0050 belong to class com.ibm.ws.sib.mfp.mp.ControlMessageFactory
+#   - Msgs in the range CWSIF0051-CWSIF0060 belong to class com.ibm.ws.sib.mfp.CompHandshakeFactory
+#   - Msgs in the range CWSIF0101-CWSIF0180 belong to class com.ibm.ws.sib.mfp.impl.JsMessageImpl
+#   - Msgs in the range CWSIF0181-CWSIF0190 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0191-CWSIF0199 belong to class com.ibm.ws.sib.mfp.impl.JsApiMessageImpl
+#   - Msgs in the range CWSIF0200-CWSIF0210 belong to class com.ibm.ws.sib.mfp.util.HexString
+#   - Msgs in the range CWSIF0211-CWSIF0220 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulation
+#   - Msgs in the range CWSIF0221-CWSIF0230 belong to class com.ibm.ws.sib.mfp.sdo.SdoEncapsulationManager
+#   - Msgs in the range CWSIF0231-CWSIF0240 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0241-CWSIF0250 belong to package com.ibm.ws.sib.mfp.sdo.importers / repository
+#   - Msgs in the range CWSIF0251-CWSIF0260 belong to class com.ibm.ws.sib.mfp.sdo.mediators.BlobMediator
+#   - Msgs in the range CWSIF0271-CWSIF0280 belong to package com.ibm.ws.sib.mfp.sdo.soap
+#   - Msgs in the range CWSIF0281-CWSIF0290 belong to package com.ibm.ws.sib.mfp.sdo.soap.write
+#   - Msgs in the range CWSIF0291-CWSIF0310 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0311-CWSIF0320 belong to class com.ibm.ws.sib.mfp.sdo.mediators.JmfDataMediator
+#   - Msgs in the range CWSIF0321-CWSIF0350 belong to package com.ibm.ws.sib.mfp.sdo.bean
+#   - Msgs in the range CWSIF0351-CWSIF0360 belong to package com.ibm.ws.sib.mfp.sdo.soap.parse
+#   - Msgs in the range CWSIF0361-CWSIF0370 belong to class com.ibm.ws.sib.mfp.sdo.DataGraphFactoryImpl
+#   - Msgs in the range CWSIF0371-CWSIF0380 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+#   - Msgs in the range CWSIF0381-CWSIF0390 belong to class com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+#   - Msgs in the range CWSIF0391-CWSIF0410 are no longer allocated
+#   - Msgs in the range CWSIF0411-CWSIF0420 are no longer allocated
+#   - Msgs in the range CWSIF0421-CWSIF0430 are no longer allocated
+#   - Msgs in the range CWSIF0431-CWSIF0439 belong to package com.ibm.ws.sib.mfp.sdo.resource
+#   - Msgs in the range CWSIF0500-CWSIF0510 belong to class com.ibm.ws.sib.mfp.impl.JsSdoMessageImpl
+#   - Msgs in the range CWSIF0600-CWSIF0610 belong to class com.ibm.ws.sib.mfp.sdo.repository.WSDLMetaData
+#   - Msgs in the range CWSIF0700-CWSIF0710 belong to class com.ibm.ws.sib.mfp.mqimpl.MQJmsMapMessageEncapsulation
+#   - Msgs in the range CWSIF0711-CWSIF0720 belong to package com.ibm.ws.sib.mfp.sdo.jms
+#   - Msgs in the range CWSIF0721-CWSIF0730 belong to package com.ibm.ws.sib.mfp*
+#   - CWSIF9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/ws/sib/mfp/CWSIFMessages.nlsprops
+#COMPONENTPREFIX CWSIF
+#COMPONENTNAMEFOR CWSIF SIBus MFP
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_FACTORY_CWSIF0001=CWSIF0001E: A JsMessageFactoryImpl instance cannot be created: exception {0}.
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIF0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+NO_DATASLICES_IN_LIST_CWSIF0002=CWSIF0002E: A null or empty DataSlice List was passed to the message restore.
+NO_DATASLICES_IN_LIST_CWSIF0002.explanation=CMSG0001
+NO_DATASLICES_IN_LIST_CWSIF0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011=CWSIF0011E: A JsJmsMessageFactoryImpl instance cannot be created: exception {0}.
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.explanation=CMSG0001
+UNABLE_TO_CREATE_JMSFACTORY_CWSIF0011.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021=CWSIF0021E: A TrmMessageFactoryImpl instance cannot be created: exception {0}.
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.explanation=CMSG0001
+UNABLE_TO_CREATE_TRMFACTORY_CWSIF0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031=CWSIF0031E: A JsMessageHandleFactoryImpl instance cannot be created: exception {0}.
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.explanation=CMSG0001
+UNABLE_TO_CREATE_HANDLEFACTORY_CWSIF0031.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the type of bad data that was passed (NULL or Empty String)
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032=CWSIF0032E: {0} passed to SIMessageHandleRestorer.
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.explanation=CMSG0001
+NULL_HANDLE_PASSED_FOR_RESTORE_CWSIF0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033=CWSIF0033E: Data passed to SIMessageHandleRestorer.restoreFromBytes does not have a valid length.
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.explanation=CMSG0001
+RESTORE_FROM_BYTES_ARRAY_TOO_SHORT_CWSIF0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034=CWSIF0034E: Data passed to SIMessageHandleRestorer.restoreFromBytes does not have valid version information.
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.explanation=CMSG0001
+RESTORE_FROM_BYTES_UNKNOWN_VERSION_NUMBER_CWSIF0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035=CWSIF0035E: Data passed to SIMessageHandleRestorer.restoreFromBytes does not pass internal length validation checks.
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.explanation=CMSG0001
+RESTORE_FROM_BYTES_INTERNAL_LENGTH_CHECK_FAIL_CWSIF0035.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041=CWSIF0041E: A ControlMessageFactoryImpl instance cannot be created: exception {0}.
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.explanation=CMSG0001
+UNABLE_TO_CREATE_CONTROLFACTORY_CWSIF0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051=CWSIF0051E: A CompHandshakeImpl instance cannot be created: exception {0}.
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.explanation=CMSG0001
+UNABLE_TO_CREATE_COMPHANDSHAKE_CWSIF0051.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the implementation class, {1} is the value of the Exception
+UNABLE_TO_CREATE_CWSIF0061=CWSIF0061E: A {0} instance cannot be created: exception {1}.
+UNABLE_TO_CREATE_CWSIF0061.explanation=CMSG0001
+UNABLE_TO_CREATE_CWSIF0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the system message id of the message.
+NOT_API_MESSAGE_CWSIF0101=CWSIF0101E: Message selectors are not supported for message {0}.
+NOT_API_MESSAGE_CWSIF0101.explanation=Message selectors are only supported for API messages.
+NOT_API_MESSAGE_CWSIF0101.useraction=Ensure that the application does not use message selectors for non-API messages.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the message type found
+# {1} is the expected message type
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102=CWSIF0102E: Message type {1} was expected but message type {0} was found.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.explanation=An attempt was made to convert the message from one message type to another message type. This conversion is not supported.
+UNEXPECTED_MESSAGE_TYPE_CWSIF0102.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181=CWSIF0181E: The SDO DataGraph cannot be obtained from the message payload.
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.explanation=CMSG0001
+UNABLE_TO_GET_DATAGRAPH_CWSIF0181.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect class name
+INCORRECT_ENCAPSULATION_CWSIF0182=CWSIF0182E: The message contains an incorrect encapsulation class: {0}
+INCORRECT_ENCAPSULATION_CWSIF0182.explanation=CMSG0001
+INCORRECT_ENCAPSULATION_CWSIF0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# This is an almost exact copy of CWSIA0114E in file CWSIAJMSMessages.nlsprops
+# {0} is the property name
+# {1} is the expected type of the property value
+# {2} is thetype of the property value given
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183=CWSIF0183E: The property {0} should be set using type {1}, not {2}.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.explanation=JMS_IBM_MQMD_ properties must be set using specific variable types.
+BAD_MQMD_PROPERTY_TYPE_CWSIF0183.useraction=Correct the application code to use the required variable type to set this JMS_IBM_MQMD property.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0191=CWSIF0191E: The hexadecimal string {0} is incorrectly formatted for a correlation ID.
+BAD_HEX_STRING_CWSIF0191.explanation=The string is not a valid hexadecimal correlation ID. It must be of the form ID: followed by an even number of hexadecimal characters only.
+BAD_HEX_STRING_CWSIF0191.useraction=Correct the string for which the conversion is failing.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect hexadecimal string
+BAD_HEX_STRING_CWSIF0200=CWSIF0200E: The hexadecimal string {0} is incorrectly formatted.
+BAD_HEX_STRING_CWSIF0200.explanation=An attempt to convert from a string to a byte array failed due to the string either containing non-hexadecimal characters, or an odd number of characters.
+BAD_HEX_STRING_CWSIF0200.useraction=Check the content of the string for which the conversion is failing.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+FORMAT_NOT_FOUND_CWSIF0211=CWSIF0211E: The message format cannot be identified: exception {0}
+FORMAT_NOT_FOUND_CWSIF0211.explanation=CMSG0001
+FORMAT_NOT_FOUND_CWSIF0211.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+GET_LENGTH_FAILED_CWSIF0212=CWSIF0212E: The message length cannot be calculated: exception {0}
+GET_LENGTH_FAILED_CWSIF0212.explanation=CMSG0001
+GET_LENGTH_FAILED_CWSIF0212.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+WRITE_FAILED_CWSIF0213=CWSIF0213E: The message cannot be calculated: exception {0}
+WRITE_FAILED_CWSIF0213.explanation=CMSG0001
+WRITE_FAILED_CWSIF0213.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+UNASSEMBLE_FAILED_CWSIF0214=CWSIF0214E: The JMF message cannot be unassembled: exception {0}
+UNASSEMBLE_FAILED_CWSIF0214.explanation=CMSG0001
+UNASSEMBLE_FAILED_CWSIF0214.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+SCHEMA_ID_ERROR_CWSIF0221=CWSIF0221E: JMF schema ID error: exception {0}
+SCHEMA_ID_ERROR_CWSIF0221.explanation=CMSG0001
+SCHEMA_ID_ERROR_CWSIF0221.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the exception.
+PARSE_FAILED_CWSIF0222=CWSIF0222E: The message cannot be parsed: exception {0}
+PARSE_FAILED_CWSIF0222.explanation=CMSG0001
+PARSE_FAILED_CWSIF0222.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_WSDL_CWSIF0232=CWSIF0232E: Unable to import WSDL file {0}: exception {1}
+INVALID_WSDL_CWSIF0232.explanation=The WSDL importer was unable to import the file.
+INVALID_WSDL_CWSIF0232.useraction=Ensure that you are importing valid WSDL files, and that you are using a supported version of the WSDL standard.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+INVALID_WSDL_CWSIF0233=CWSIF0233E: Unable to locate type: name {0}, namespace {1}.
+INVALID_WSDL_CWSIF0233.explanation=The WSDL importer was unable to locate a type definition.
+INVALID_WSDL_CWSIF0233.useraction=Ensure that you have included an XML Schema definition of the type in the WSDL types section.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the namespace
+INVALID_WSDL_CWSIF0234=CWSIF0234E: Unable to locate element: name {0}, namespace {1}.
+INVALID_WSDL_CWSIF0234.explanation=The WSDL importer was unable to locate an element definition.
+INVALID_WSDL_CWSIF0234.useraction=Ensure that you have included an XML Schema definition of the element in the WSDL types section.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_INPUT_CWSIF0235=CWSIF0235E: Blocking access to input stream for URI: {0}.
+BLOCKED_INPUT_CWSIF0235.explanation=The run-time environment blocked access to the given URI. This is caused by an attempt to load an XML Schema that has not been deployed to the SDO repository.
+BLOCKED_INPUT_CWSIF0235.useraction=Ensure that you have deployed appropriate WSDL and XML Schema files to the SDO repository.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI
+BLOCKED_OUTPUT_CWSIF0236=CWSIF0236E: Blocking access to output stream for URI: {0}.
+BLOCKED_OUTPUT_CWSIF0236.explanation=CMSG0001
+BLOCKED_OUTPUT_CWSIF0236.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI, {1} is the exception
+NESTED_ERROR_CWSIF0237=CWSIF0237E: An exception was raised while loading included resource. Resource URI: {0}, exception: {1}.
+NESTED_ERROR_CWSIF0237.explanation=The file included a nested resource, and errors were found while loading the nested resource.
+NESTED_ERROR_CWSIF0237.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace, {1} is the location, {2} is the exception
+RESOURCE_ERROR_CWSIF0238=CWSIF0238E: An exception was raised while locating Ecore model. Target namespace {0}, location hint {1}, exception {2}.
+RESOURCE_ERROR_CWSIF0238.explanation=An exception was created while looking up the Ecore model.
+RESOURCE_ERROR_CWSIF0238.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the WSDL defintion type (Message, Port Type, Binding or Operation), {1} is the name of the defintion, {2} is the location.
+INVALID_WSDL_CWSIF0240=CWSIF0240E: Unable to locate WSDL {0} with name {1}. The definition was referenced within file {2}.
+INVALID_WSDL_CWSIF0240.explanation=The WSDL importer was unable to locate a definition referenced within the WSDL.
+INVALID_WSDL_CWSIF0240.useraction=Ensure that your WSDL definitions are complete, and that you have included all referenced WSDL files.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the filename, {1} is the exception
+INVALID_XSD_CWSIF0241=CWSIF0241E: Unable to import XML Schema file {0}: exception {1}
+INVALID_XSD_CWSIF0241.explanation=The XML Schema importer was unable to import the file.
+INVALID_XSD_CWSIF0241.useraction=Ensure that you are importing valid XML Schema files, and that you are using a supported version of the XML Schema standard.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error
+INVALID_XSD_CWSIF0242=CWSIF0242E: Error loading XML Schema: {0}
+INVALID_XSD_CWSIF0242.explanation=The XML Schema importer was unable to load the file.
+INVALID_XSD_CWSIF0242.useraction=Ensure that you are importing valid XML Schema files, and that you are using a supported version of the XML Schema standard.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error message
+XSD_ERROR_CWSIF0243=CWSIF0243E: {0}
+XSD_ERROR_CWSIF0243.explanation=An error was reported while importing an XML Schema.
+XSD_ERROR_CWSIF0243.useraction=Refer to the error message for more information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_PARSE_FAILURE_CWSIF0251=CWSIF0251E: Unable to parse message: exception {0}
+BLOB_PARSE_FAILURE_CWSIF0251.explanation=CMSG0001
+BLOB_PARSE_FAILURE_CWSIF0251.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_LENGTH_FAILURE_CWSIF0252=CWSIF0252E: Unable to calculate message length: exception {0}
+BLOB_LENGTH_FAILURE_CWSIF0252.explanation=CMSG0001
+BLOB_LENGTH_FAILURE_CWSIF0252.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BLOB_WRITE_FAILURE_CWSIF0253=CWSIF0253E: Unable to write message: exception {0}
+BLOB_WRITE_FAILURE_CWSIF0253.explanation=CMSG0001
+BLOB_WRITE_FAILURE_CWSIF0253.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the namespace
+BLOB_MODEL_FAILURE_CWSIF0254=CWSIF0254E: Incorrect message model: type name {0}, namespace {1}.
+BLOB_MODEL_FAILURE_CWSIF0254.explanation=CMSG0001
+BLOB_MODEL_FAILURE_CWSIF0254.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_PARSE_FAILURE_CWSIF0271=CWSIF0271E: Unable to parse message: exception {0}
+SOAP_PARSE_FAILURE_CWSIF0271.explanation=An error occured parsing a Web Services message.
+SOAP_PARSE_FAILURE_CWSIF0271.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_LENGTH_FAILURE_CWSIF0272=CWSIF0272E: Unable to calculate message length: exception {0}
+SOAP_LENGTH_FAILURE_CWSIF0272.explanation=An error occured processing a Web Services request, response or fault.
+SOAP_LENGTH_FAILURE_CWSIF0272.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_WRITE_FAILURE_CWSIF0273=CWSIF0273E: Unable to write message: exception {0}
+SOAP_WRITE_FAILURE_CWSIF0273.explanation=An error occured writing a Web Services message.
+SOAP_WRITE_FAILURE_CWSIF0273.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+SOAP_FORMAT_ERROR_CWSIF0274=CWSIF0274E: Incorrect format string: {0}
+SOAP_FORMAT_ERROR_CWSIF0274.explanation=An error occured processing a Web Services request, response or fault.
+SOAP_FORMAT_ERROR_CWSIF0274.useraction=Ensure the message format follows the correct syntax for a SOAP message.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the buffer length, {1} is the start offset, {2} is the length
+SOAP_BUFFER_ERROR_CWSIF0275=CWSIF0275E: Incorrect buffer offsets: Buffer length {0}, Start offset {1}, data length {2}.
+SOAP_BUFFER_ERROR_CWSIF0275.explanation=An error occured processing a Web Services request, response or fault.
+SOAP_BUFFER_ERROR_CWSIF0275.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+SOAP_CREATE_FAILURE_CWSIF0276=CWSIF0276E: Unable to create a new SDO DataGraph: exception {0}
+SOAP_CREATE_FAILURE_CWSIF0276.explanation=An error occured processing a Web Services request, response or fault.
+SOAP_CREATE_FAILURE_CWSIF0276.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of child nodes
+BAD_HEADER_CHILD_CWSIF0281=CWSIF0281E: Header entry contains wrong number of child data objects. Expected 1, found {0}.
+BAD_HEADER_CHILD_CWSIF0281.explanation=The data object representing a header entry did not contain the correct number of child data objects.
+BAD_HEADER_CHILD_CWSIF0281.useraction=Ensure that each header entry contains exactly one child.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the error URI, {1} is the error code, {2} is the additional data
+SOAP_PARSE_ERROR_CWSIF0291=CWSIF0291E: Unable to parse the message. Error URI {0}, error code {1}, additional data {2}
+SOAP_PARSE_ERROR_CWSIF0291.explanation=The XML parser has reported an error while processing a SOAP message.
+SOAP_PARSE_ERROR_CWSIF0291.useraction=Ensure the message is well-formed XML.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0293=CWSIF0293E: Unexpected element found. Element name {0}, element namespace {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0293.explanation=The SOAP Parser expected a SOAP Envelope element, but encountered the above element.
+ENVELOPE_PARSE_ERROR_CWSIF0293.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+ENVELOPE_PARSE_ERROR_CWSIF0294=CWSIF0294E: Unexpected element found. Element name {0}, element namespace {1}.
+ENVELOPE_PARSE_ERROR_CWSIF0294.explanation=The SOAP Parser expected a SOAP Header or Body element, but encountered the above element.
+ENVELOPE_PARSE_ERROR_CWSIF0294.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the mustUnderstand value
+MUST_UNDERSTAND_ERROR_CWSIF0295=CWSIF0295E: Unexpected mustUnderstand value found. Element name {0}, element namespace {1}, mustUnderstand value {2}.
+MUST_UNDERSTAND_ERROR_CWSIF0295.explanation=The SOAP Parser found a SOAP mustUnderstand attribute with an incorrect value.
+MUST_UNDERSTAND_ERROR_CWSIF0295.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI
+NON_ROOT_ERROR_CWSIF0296=CWSIF0296E: Incorrect non-root SOAP body element found. Element name {0}, element namespace {1}.
+NON_ROOT_ERROR_CWSIF0296.explanation=The SOAP Parser found a non-root SOAP body element, but the element is not SOAP encoded.
+NON_ROOT_ERROR_CWSIF0296.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute value
+NON_ROOT_ERROR_CWSIF0297=CWSIF0297E: Incorrect SOAP root attribute found. Element name {0}, element namespace {1}, SOAP root attribute value {2}.
+NON_ROOT_ERROR_CWSIF0297.explanation=The SOAP Parser found an element with an incorrect SOAP root attribute.
+NON_ROOT_ERROR_CWSIF0297.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+NIL_DATA_ERROR_CWSIF0298=CWSIF0298E: Data found within nil element. Element name {0}, element namespace {1}, data {2}.
+NIL_DATA_ERROR_CWSIF0298.explanation=The SOAP Parser encountered data within an element that had an xsi:nil="true" attribute.
+NIL_DATA_ERROR_CWSIF0298.useraction=Ensure the data in the message is compatible with the XML Schema specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the nested element name, {3} is the nested element namespace
+NIL_ELEMENT_ERROR_CWSIF0299=CWSIF0299E: Element found within nil element. Element name {0}, element namespace {1}, nested element name {2}, nested element namespace {3}
+NIL_ELEMENT_ERROR_CWSIF0299.explanation=The SOAP Parser encountered an element within an element that had an xsi:nil="true" attribute.
+NIL_ELEMENT_ERROR_CWSIF0299.useraction=Ensure the data in the message is compatible with the XML Schema specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the attribute name, {3} is the attribute namespace
+NIL_ATTR_ERROR_CWSIF0300=CWSIF0300E: Attribute found within nil element. Element name {0}, element namespace {1}, attribute name {2}, attribute namespace {3}
+NIL_ATTR_ERROR_CWSIF0300.explanation=The SOAP Parser encountered an attribute within an element that had an xsi:nil="true" attribute.
+NIL_ATTR_ERROR_CWSIF0300.useraction=Ensure the data in the message is compatible with the XML Schema specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name, {1} is the type URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0301=CWSIF0301E: Unable to parse a value within the message. Type name {0}, type namespace {1}, data {2}
+VALUE_PARSE_ERROR_CWSIF0301.explanation=The SOAP parser was unable to convert the value into an instance of the type.
+VALUE_PARSE_ERROR_CWSIF0301.useraction=Ensure the data in the message is compatible with the types modeled in the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element URI, {2} is the data
+VALUE_PARSE_ERROR_CWSIF0302=CWSIF0302E: Unexpected text found. Element name {0}, element namespace {1}, data {2}
+VALUE_PARSE_ERROR_CWSIF0302.explanation=The XML element contained some text, but the WSDL model does not allow this element to contain data.
+VALUE_PARSE_ERROR_CWSIF0302.useraction=Ensure the data in the message is compatible with the types modeled in the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the xsi:type value
+XSI_TYPE_ERROR_CWSIF0303=CWSIF0303E: Incorrect xsi:type attribute encountered while processing element name {0}, namespace {1}, xsi:type value {2}
+XSI_TYPE_ERROR_CWSIF0303.explanation=The XML element contained an xsi:type attribute, but the value of the attribute could not be processed.
+XSI_TYPE_ERROR_CWSIF0303.useraction=Ensure the data in the message is compatible with the XML Schema specification.
+
+# -------------------------------------------------------------------------------------------------
+BODY_WSDL_MISMATCH_CWSIF0304=CWSIF0304E: The message body did not match any of the definitions in the WSDL
+BODY_WSDL_MISMATCH_CWSIF0304.explanation=The message body in the SOAP message did not match any of the definitions in the WSDL. This may be because the SOAP message is incorrect or the format string may have identified the wrong WSDL.
+BODY_WSDL_MISMATCH_CWSIF0304.useraction=Ensure the data in the message is compatible with the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+ID_ATTR_NOT_FOUND_CWSIF0305=CWSIF0305E: An id attribute cannot be found for a non-root SOAP body element. Element details: name {0}, namespace {1}.
+ID_ATTR_NOT_FOUND_CWSIF0305.explanation=Each non-root SOAP body element should have an id attribute with a unique value.
+ID_ATTR_NOT_FOUND_CWSIF0305.useraction=Ensure that your message follows the SOAP encoding rules.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the id attribute
+HREF_NOT_FOUND_CWSIF0306=CWSIF0306E: An element with id attribute value {0} is not referenced.
+HREF_NOT_FOUND_CWSIF0306.explanation=Each non-root SOAP body element should be referenced by some other part of the message.
+HREF_NOT_FOUND_CWSIF0306.useraction=Ensure that your message follows the SOAP encoding rules.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the href value
+INVALID_HREF_CWSIF0307=CWSIF0307E: An element which matches href attribute value {0} cannot be found.
+INVALID_HREF_CWSIF0307.explanation=A SOAP encoded element uses an href attribute but an element with a matching id attribute cannot be found.
+INVALID_HREF_CWSIF0307.useraction=Ensure that your message follows the SOAP encoding rules.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the processing instruction target
+PI_PARSE_ERROR_CWSIF0308=CWSIF0308E: Unexpected processing instruction found. Element name {0}, element namespace {1}, target {2}.
+PI_PARSE_ERROR_CWSIF0308.explanation=The XML element contained a processing instruction, but SOAP does not allow elements to contain processing instructions.
+PI_PARSE_ERROR_CWSIF0308.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace
+SIMPLE_ELEMENT_ERROR_CWSIF0309=CWSIF0309E: Unexpected element found. Element name {0}, element namespace {1}.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.explanation=The XML element contained a simple value, but the value does not fit into the data graph.
+SIMPLE_ELEMENT_ERROR_CWSIF0309.useraction=Ensure that the data in the message is compatible with the types modeled in the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the element name, {1} is the element namespace, {2} is the attribute name, {3} is the attribute namespace
+ATTRIBUTE_ERROR_CWSIF0310=CWSIF0310E: Unexpected attribute found. Element name {0}, element namespace {1}, attribute name {2}, attribute namespace {3}.
+ATTRIBUTE_ERROR_CWSIF0310.explanation=The XML element contained an attribute, but the attribute does not fit into the data graph.
+ATTRIBUTE_ERROR_CWSIF0310.useraction=Ensure the data in the message is compatible with the types modeled in the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_PARSE_FAILURE_CWSIF0311=CWSIF0311E: Unable to parse message: exception {0}
+JMF_PARSE_FAILURE_CWSIF0311.explanation=CMSG0001
+JMF_PARSE_FAILURE_CWSIF0311.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_LENGTH_FAILURE_CWSIF0312=CWSIF0312E: Unable to calculate message length: exception {0}
+JMF_LENGTH_FAILURE_CWSIF0312.explanation=CMSG0001
+JMF_LENGTH_FAILURE_CWSIF0312.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+JMF_WRITE_FAILURE_CWSIF0313=CWSIF0313E: Unable to write message: exception {0}
+JMF_WRITE_FAILURE_CWSIF0313.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0313.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect length
+# {1} is the expected length
+JMF_WRITE_FAILURE_CWSIF0314=CWSIF0314E: Message length {0} does not match the expected length {1}
+JMF_WRITE_FAILURE_CWSIF0314.explanation=CMSG0001
+JMF_WRITE_FAILURE_CWSIF0314.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+JMF_FORMAT_ERROR_CWSIF0315=CWSIF0315E: Incorrect format string: {0}
+JMF_FORMAT_ERROR_CWSIF0315.explanation=CMSG0001
+JMF_FORMAT_ERROR_CWSIF0315.useraction=Ensure the message format follows the correct syntax for the JMF Data Access Service.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0321=CWSIF0321E: Unable to parse message: exception {0}.
+BEAN_PARSE_FAILURE_CWSIF0321.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_PARSE_FAILURE_CWSIF0321.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+BEAN_CREATE_FAILURE_CWSIF0322=CWSIF0322E: Failed to create DataObject: parent type name {2}, property name {0}, namespace {1}.
+BEAN_CREATE_FAILURE_CWSIF0322.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_CREATE_FAILURE_CWSIF0322.useraction=Ensure that you have imported WSDL or XML Schema definitions for the message.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+BEAN_PARSE_FAILURE_CWSIF0323=CWSIF0323E: Unable to determine base type for restriction derived type: type name {0}, namespace {1}.
+BEAN_PARSE_FAILURE_CWSIF0323.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_PARSE_FAILURE_CWSIF0323.useraction=Ensure that the WSDL or XML Schema definitions for the message are correct.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the accessor method name
+# {3} is the target Java class name
+BEAN_WRITE_FAILURE_CWSIF0324=CWSIF0324E: Failed to acquire and invoke a method while introspecting an Object representing an enumerated type: type name {0}, namespace {1}, method name {2}, target class name {3}.
+BEAN_WRITE_FAILURE_CWSIF0324.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_WRITE_FAILURE_CWSIF0324.useraction=Ensure that the supplied Objects feature appropriate accessor methods.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0325=CWSIF0325E: Unable to write message: exception {0}.
+BEAN_WRITE_FAILURE_CWSIF0325.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_WRITE_FAILURE_CWSIF0325.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0326=CWSIF0326E: Failed to acquire and invoke a method while introspecting a bean Object: parent type name {2}, property name {0}, namespace {1}, method name {3}, target class name {4}.
+GET_FIELD_FAILURE_CWSIF0326.explanation=An error occured processing a Web Services request, response or fault.
+GET_FIELD_FAILURE_CWSIF0326.useraction=Ensure that the supplied Objects feature appropriate accessor methods.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0327=CWSIF0327E: Failed to acquire and invoke a method while introspecting a bean Object: parent type name {2}, property name {0}, namespace {1}, method name {3}, target class name {4}.
+SET_FIELD_FAILURE_CWSIF0327.explanation=An error occured processing a Web Services request, response or fault.
+SET_FIELD_FAILURE_CWSIF0327.useraction=Ensure that the supplied Objects feature appropriate accessor methods.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+SET_FIELD_FAILURE_CWSIF0328=CWSIF0328E: Failed to acquire and invoke a method while introspecting a bean Object: parent type name {2}, property name {0}, namespace {1}, method name {3}, target class name {4}.
+SET_FIELD_FAILURE_CWSIF0328.explanation=An error occured processing a Web Services request, response or fault.
+SET_FIELD_FAILURE_CWSIF0328.useraction=Ensure that the supplied Objects feature appropriate accessor methods.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+MIME_PARSE_FAILURE_CWSIF0329=CWSIF0329E: Failed to parse MIME attachment: content type {0}.
+MIME_PARSE_FAILURE_CWSIF0329.explanation=An error occured processing a Web Services request, response or fault.
+MIME_PARSE_FAILURE_CWSIF0329.useraction=Ensure that the supplied Objects are appropriate.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the fault feature name
+# {1} is the namespace
+# {2} is the location
+FAULT_PARSE_FAILURE_CWSIF0330=CWSIF0330E: Failed to create DataObject for SOAP fault message: fault feature name {0}, namespace {1}, location {2}.
+FAULT_PARSE_FAILURE_CWSIF0330.explanation=An error occured processing a Web Services request, response or fault.
+FAULT_PARSE_FAILURE_CWSIF0330.useraction=Ensure that WSDL or XML Schema definitions are available for the message.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the accessor method name
+# {4} is the target Java class name
+GET_FIELD_FAILURE_CWSIF0331=CWSIF0331E: Failed to acquire and invoke a method while introspecting a bean Object: parent type name {2}, property name {0}, namespace {1}, method name {3}, target class name {4}.
+GET_FIELD_FAILURE_CWSIF0331.explanation=An error occured processing a Web Services request, response or fault.
+GET_FIELD_FAILURE_CWSIF0331.useraction=Ensure that the supplied Objects feature appropriate accessor methods.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name
+# {1} is the namespace
+# {2} is the parent type
+# {3} is the Java class name
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332=CWSIF0332E: Failed to create a new instance of a bean Object: parent type name {2}, property name {0}, namespace {1}, class name {3}.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.explanation=An error occured processing a Web Services request, response or fault.
+INSTANTIATE_OBJECT_FAILURE_CWSIF0332.useraction=Ensure that the bean Object can be instantiated using Class.newInstance().
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333=CWSIF0333E: Failed to locate model for creation of DataObject representing SOAP-encoded array message: namespace {0}, location {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.explanation=An error occured processing a Web Services request, response or fault.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0333.useraction=Ensure that WSDL or XML Schema definitions are available for the message.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the namespace
+# {1} is the location
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334=CWSIF0334E: Failed to locate model for creation of DataObject representing SOAP-encoded array message: namespace {0}, location {1}.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.explanation=An error occured processing a Web Services request, response or fault.
+SOAP_ENCODED_ARRAY_PARSE_FAILURE_CWSIF0334.useraction=Ensure that WSDL or XML Schema definitions are available for the message.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content type
+# {1} is the content transfer encoding
+# {2} is the content id
+MIME_WRITE_FAILURE_CWSIF0335=CWSIF0335E: Failed to write MIME attachment: content type {0}, content transfer encoding {1}, content id {2}.
+MIME_WRITE_FAILURE_CWSIF0335.explanation=An error occured processing a Web Services request, response or fault.
+MIME_WRITE_FAILURE_CWSIF0335.useraction=Ensure that the data in the message is suitable for MIME body part creation.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation name
+# {1} is the message name
+FAULT_WRITE_FAILURE_CWSIF0336=CWSIF0336E: Failed to write fault message: message name {0}, operation name {1}.
+FAULT_WRITE_FAILURE_CWSIF0336.explanation=An error occured processing a Web Services request, response or fault.
+FAULT_WRITE_FAILURE_CWSIF0336.useraction=Ensure that the data in the message is suitable for Detail Element creation.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_CREATE_FAILURE_CWSIF0338=CWSIF0338E: Unable to create a new SDO DataGraph: exception {0}
+BEAN_CREATE_FAILURE_CWSIF0338.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_CREATE_FAILURE_CWSIF0338.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_PARSE_FAILURE_CWSIF0341=CWSIF0341E: Unable to parse message: exception {0}.
+BEAN_PARSE_FAILURE_CWSIF0341.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_PARSE_FAILURE_CWSIF0341.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_WRITE_FAILURE_CWSIF0342=CWSIF0342E: Unable to write message: exception {0}.
+BEAN_WRITE_FAILURE_CWSIF0342.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_WRITE_FAILURE_CWSIF0342.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+BEAN_LENGTH_FAILURE_CWSIF0343=CWSIF0343E: Unable to calculate message length: exception {0}.
+BEAN_LENGTH_FAILURE_CWSIF0343.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_LENGTH_FAILURE_CWSIF0343.useraction=See accompanying error messages for further information.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+# {2} is the attribute value
+TYPE_MAPPING_FAILURE_CWSIF0346=CWSIF0346E: Failed to process attribute value: type name {0}, namespace {1}, attribute value {2}.
+TYPE_MAPPING_FAILURE_CWSIF0346.explanation=An error occured processing a Web Services request, response or fault.
+TYPE_MAPPING_FAILURE_CWSIF0346.useraction=Ensure that the supplied attribute value is of an appropriate type.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0347=CWSIF0347E: Failed to map schema type to a Java Class: type name {0}, namespace {1}.
+TYPE_MAPPING_FAILURE_CWSIF0347.explanation=An error occured processing a Web Services request, response or fault.
+TYPE_MAPPING_FAILURE_CWSIF0347.useraction=Ensure that an appropriate mapping has been provided.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+# {1} is the namespace
+TYPE_MAPPING_FAILURE_CWSIF0348=CWSIF0348E: Failed to map schema type to a Java Class: type name {0}, namespace {1}.
+TYPE_MAPPING_FAILURE_CWSIF0348.explanation=An error occured processing a Web Services request, response or fault.
+TYPE_MAPPING_FAILURE_CWSIF0348.useraction=Ensure that an appropriate mapping has been provided.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+BEAN_FORMAT_ERROR_CWSIF0350=CWSIF0350E: Incorrect format string: {0}.
+BEAN_FORMAT_ERROR_CWSIF0350.explanation=An error occured processing a Web Services request, response or fault.
+BEAN_FORMAT_ERROR_CWSIF0350.useraction=Ensure the message format follows the correct syntax for the Bean Data Access Service.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+MESSAGE_FEATURE_CWSIF0353=CWSIF0353E: Failed to locate metadata for message. Service namespace {0}, service name {1}, port name {2}, operation name {3}, message name {4}.
+MESSAGE_FEATURE_CWSIF0353.explanation=The SOAP Parser was unable to locate the message metadata for the given message.
+MESSAGE_FEATURE_CWSIF0353.useraction=Ensure that you have imported WSDL definitions for the message.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the element name, {2} is the element namespace
+MIME_ELEM_ERROR_CWSIF0354=CWSIF0354E: Unexpected element found within message part. Message part name {0}, Element name {1}, element namespace {2}.
+MIME_ELEM_ERROR_CWSIF0354.explanation=The SOAP Parser was processing a message part whose content is delegated to a MIME attachment, but the part also contained a nested element.
+MIME_ELEM_ERROR_CWSIF0354.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attribute name, {2} is the attribute namespace
+MIME_ATTR_ERROR_CWSIF0355=CWSIF0355E: Unexpected attribute found within message part. Message part name {0}, Attribute name {1}, attribute namespace {2}.
+MIME_ATTR_ERROR_CWSIF0355.explanation=The SOAP Parser was processing a message part whose content is delegated to a MIME attachment, but the part also contained an unexpected attribute.
+MIME_ATTR_ERROR_CWSIF0355.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the exception
+MIME_REF_ERROR_CWSIF0356=CWSIF0356E: Unable to process MIME attachment. Message part name {0}, exception {1}.
+MIME_REF_ERROR_CWSIF0356.explanation=The SOAP Parser encountered an exception while processing a MIME attachment referenced by the message part.
+MIME_REF_ERROR_CWSIF0356.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name, {1} is the attachment reference
+MIME_REF_NOT_FOUND_CWSIF0357=CWSIF0357E: Unable to locate MIME attachment. Message part name {0}, reference {1}.
+MIME_REF_NOT_FOUND_CWSIF0357.explanation=The SOAP Parser could not find the MIME attachment referenced by the message part.
+MIME_REF_NOT_FOUND_CWSIF0357.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the content id, {1} is the content type, {2} is the exception.
+MIME_IO_ERROR_CWSIF0358=CWSIF0358E: Unable to process MIME attachment. Content ID {0}, Content type {1}, exception {2}.
+MIME_IO_ERROR_CWSIF0358.explanation=The SOAP Parser encountered an IOException while processing a MIME attachment with the given content id and type.
+MIME_IO_ERROR_CWSIF0358.useraction=Ensure the data in the message is compatible with the SOAP specification.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the incorrect format string
+NO_DATA_MEDIATOR_CWSIF0362=CWSIF0362E: The message format {0} is incorrect
+NO_DATA_MEDIATOR_CWSIF0362.explanation=The message format provided does not match an expected message format.
+NO_DATA_MEDIATOR_CWSIF0362.useraction=Ensure a correct message format is provided.
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This message is cloned as INVALID_ARGUMENT_CWSIF0381.
+INVALID_ARGUMENT_CWSIF0371=CWSIF0371E: The supplied value {0} is not valid for the parameter {1} of method {2}
+INVALID_ARGUMENT_CWSIF0371.explanation=A parameter value was supplied that is not permitted for the defined method.
+INVALID_ARGUMENT_CWSIF0371.useraction=Ensure valid parameters are passed to the method in question.
+
+# -------------------------------------------------------------------------------------------------
+UNABLE_TO_GET_CONTENT_CWSIF0372=CWSIF0372E: An IOException occurred while obtain the content of the message element.
+UNABLE_TO_GET_CONTENT_CWSIF0372.explanation=It was not possible to deserialize the message element due to the linked IOException
+UNABLE_TO_GET_CONTENT_CWSIF0372.useraction=Investigate and resolve the problem described in the linked IOException
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_COPY_ERROR_CWSIF0373=CWSIF0373E: An Exception occurred during the copying of a message element: {0}.
+ELEMENT_COPY_ERROR_CWSIF0373.explanation=It was not possible to copy a message element due to the linked Exception.
+ELEMENT_COPY_ERROR_CWSIF0373.useraction=Investigate and resolve the problem described in the linked Exception
+
+
+# com.ibm.ws.sib.mfp.sdo.mime.MimeElementListImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the parameter that was not allowed.
+# {1} is the name of the parameter for which it was supplied.
+# {2} is the name of the method to which it was supplied.
+# This is a clone of INVALID_ARGUMENT_CWSIF0371.
+INVALID_ARGUMENT_CWSIF0381=CWSIF0381E: The supplied value {0} is not valid for the parameter {1} of method {2}
+INVALID_ARGUMENT_CWSIF0381.explanation=A parameter value was supplied that is not permitted for the defined method.
+INVALID_ARGUMENT_CWSIF0381.useraction=Ensure valid parameters are passed to the method in question.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method in which the error was found.
+UNABLE_TO_GET_CONTENT_CWSIF0382=CWSIF0382E: An IOException occurred while serializing or deserializing the message in method {0}
+UNABLE_TO_GET_CONTENT_CWSIF0382.explanation=It was not possible to serialize or deserialize the message element due to the linked IOException
+UNABLE_TO_GET_CONTENT_CWSIF0382.useraction=Investigate and resolve the problem described in the linked IOException
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the class type of the element that was supplied.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383=CWSIF0383E: The MimeElementList only supports MimeElement entries. The supplied parameter was of type {0}.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.explanation=The MimeElementList is a specialized list implementation that supports only MimeElement list entries.
+UNSUPPORTED_ELEMENT_TYPE_CWSIF0383.useraction=Create a MimeElement object containing the parameter before trying to add it to the list.
+
+# -------------------------------------------------------------------------------------------------
+# multipart/related should not be translated
+# {0} is the class type of the element that was supplied.
+NON_MULTIPART_MESSAGE_CWSIF0384=CWSIF0384E: The supplied message is of type {0}, and is not the required type of multipart/related.
+NON_MULTIPART_MESSAGE_CWSIF0384.explanation=The implementation does not support the type of the supplied message.
+NON_MULTIPART_MESSAGE_CWSIF0384.useraction=Do not supply messages of the specified type to this utility.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of contentType headers that exist in the message.
+CONTENT_HEADER_CARDINALITY_CWSIF0385=CWSIF0385E: {0} ContentType header entries were found in the message.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.explanation=The implementation only supports messages that contain exactly one ContentType header field.
+CONTENT_HEADER_CARDINALITY_CWSIF0385.useraction=Do not supply messages containing zero, or more than one content-type fields to this utility.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ELEMENT_LIST_COPY_ERROR_CWSIF0386=CWSIF0386E: An Exception occurred during the copying of a message element list: {0}.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.explanation=It was not possible to copy a message element list due to the linked Exception.
+ELEMENT_LIST_COPY_ERROR_CWSIF0386.useraction=Investigate and resolve the problem described in the linked Exception
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the part name
+# {1} is the containing message name
+NO_TYPE_FOR_PART_CWSIF0431=CWSIF0431E: The WSDL Part {0} in message {1} is not associated with a type or element.
+NO_TYPE_FOR_PART_CWSIF0431.explanation=Each part of a WSDL message must be associated with a XML Schema type or element.
+NO_TYPE_FOR_PART_CWSIF0431.useraction=Ensure that the definition of each message part includes either the 'type' or 'element' attribute.
+
+# -------------------------------------------------------------------------------------------------
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500=CWSIF0500E: A JMS Map Message can not be accessed as an SDO DataGraph.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.explanation=The access of a JMS Map Message through SDO is not supported.
+MAP_NOT_SUPPORTED_AS_SDO_CWSIF0500.useraction=Rewrite the application to use supported function.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501=CWSIF0501E: An error occurred while attempting to access a message''s payload datagraph as a byte array. The linked exception is {0}.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.explanation=The serialization of the payload DataGraph failed.
+ERROR_TRANSCODING_TO_BYTES_CWSIF0501.useraction=Examine the linked exception to determine the problem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502=CWSIF0502E: An error occurred while attempting to create a message''s payload datagraph from a byte array using format {0}. The linked exception is {1}.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.explanation=The parsing of the byte array to create the DataGraph failed.
+ERROR_TRANSCODING_FROM_BYTES_CWSIF0502.useraction=Examine the linked exception to determine the problem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the DataGraph format of the current message
+# {1} is the DataGraph format that was passed in to change the current message to
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503=CWSIF0503E: The Transcoding from format {0} to format {1} is not supported.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.explanation=The Transcoding between the current SDO message DataGraph format and the new DataGraph format is not supported.
+TRANSCODING_NOT_SUPPORTED_BETWEEN_FORMATS_CWSIF0503.useraction=Rewrite the application to use supported function.
+# -------------------------------------------------------------------------------------------------
+# {0} is the format applied to the byte array
+# {1} is the linked exception
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504=CWSIF0504E: An error occurred while attempting to create a message''s payload datagraph from a null byte array argument using format {0}. The linked exception is {1}.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.explanation=A non-null byte array is required to build a DataGraph of this format.
+ERROR_NULL_PAYLOAD_SUPPLIED_CWSIF0504.useraction=Examine the linked exception to determine the problem.
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+WSDL_MISSING_CWSIF0600=CWSIF0600E: The format string identified a port named {0} within a service with name {1} and namespace {2} at WSDL location {3}. The WSDL could not be located.
+WSDL_MISSING_CWSIF0600.explanation=The WSDL identified by the format string could not be located. This may be because the location in the format is incorrect or because the WSDL has not been deployed.
+WSDL_MISSING_CWSIF0600.useraction=Ensure that the WSDL location in the format string is correct.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+SERVICE_MISSING_CWSIF0601=CWSIF0601E: The format string identified a port named {0} within a service with name {1} and namespace {2} at WSDL location {3}. The WSDL was located, but did not contain the named service.
+SERVICE_MISSING_CWSIF0601.explanation=The format string did not match the definitions in the WSDL. This may be because the service name or namespace in the format is incorrect or the wrong WSDL has been deployed.
+SERVICE_MISSING_CWSIF0601.useraction=Ensure that the service name and namespace in the format string match definitions in the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+PORT_MISSING_CWSIF0602=CWSIF0602E: The format string identified a port named {0} within a service with name {1} and namespace {2} at WSDL location {3}. The service was located, but did not contain the named port.
+PORT_MISSING_CWSIF0602.explanation=The format string did not match the definitions in the WSDL. This may be because the port name in the format is incorrect or the wrong WSDL has been deployed.
+PORT_MISSING_CWSIF0602.useraction=Ensure that the port name in the format string matches the definition in the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the port
+# {1} is the service
+# {2} is the namespace
+# {3} is the location
+BINDING_MISSING_CWSIF0603=CWSIF0603E: The format string identified a port named {0} within a service with name {1} and namespace {2} at WSDL location {3}. The port was located, but did not contain a reference to a binding.
+BINDING_MISSING_CWSIF0603.explanation=The format string did not match the definitions in the WSDL. This may be because the WSDL is incomplete or the wrong WSDL has been deployed.
+BINDING_MISSING_CWSIF0603.useraction=Ensure that the port is associated with a binding in the WSDL.
+
+# -------------------------------------------------------------------------------------------------
+DIFFERENT_LENGTH_LISTS_CWSIF0700=CWSIF0700E: The map message does not have an equal number of names and values
+DIFFERENT_LENGTH_LISTS_CWSIF0700.explanation=The map name list and map value lists must be the same length.  Together they represent the name and value pairs of the map message.
+DIFFERENT_LENGTH_LISTS_CWSIF0700.useraction=Ensure both lists have the same length.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the format string
+JMS_FORMAT_ERROR_CWSIF0711=CWSIF0711E: Incorrect format string: {0}
+JMS_FORMAT_ERROR_CWSIF0711.explanation=The format string does not match any of the format strings recognized for a JMS message.
+JMS_FORMAT_ERROR_CWSIF0711.useraction=Ensure the message format is correct for a message type supported for JMS messages.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_WRITE_ERROR_CWSIF0712=CWSIF0712E: The JMS message cannot be serialized,  exception: {0}
+JMS_WRITE_ERROR_CWSIF0712.explanation=The program is attempting to serialize a JMS message and has failed to do so.
+JMS_WRITE_ERROR_CWSIF0712.useraction=Examine the linked exception to determine the problem.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the existing elements type name
+JMS_BAD_MODEL_ERROR_CWSIF0713=CWSIF0713E: A DataObject of type {0} is not suitable as the payload of a JMS message.
+JMS_BAD_MODEL_ERROR_CWSIF0713.explanation=The program is attempting to verify the suitability of a supplied DataObject for forming the payload of a JMS message.
+JMS_BAD_MODEL_ERROR_CWSIF0713.useraction=Modify the program to supply a DataObject of an appropriate type.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_PARSER_CONFIG_ERROR_CWSIF0714=CWSIF0714E: An error occurred while configuring an XML parser to read a JMS stream message;  exception: {0}
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.explanation=An unexpected error occurred while configuring an XML parser.
+JMS_PARSER_CONFIG_ERROR_CWSIF0714.useraction=Examine the linked exception to determine the problem.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_PARSE_ERROR_CWSIF0715=CWSIF0715E: An error occurred while parsing the payload of a JMS stream message; exception: {0}
+JMS_STREAM_PARSE_ERROR_CWSIF0715.explanation=The payload of the JMS stream message is not valid XML.
+JMS_STREAM_PARSE_ERROR_CWSIF0715.useraction=Examine the linked exception to determine the problem.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_READ_IO_ERROR_CWSIF0716=CWSIF0716E: An input/output error occurred in the JMS Data Access Service; exception: {0}
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.explanation=An input/output error occurred in SAX processing while trying to parse the body of a JMS stream message
+JMS_STREAM_READ_IO_ERROR_CWSIF0716.useraction=Examine the linked exception to determine the problem.
+# -------------------------------------------------------------------------------------------------
+# {0} is the linked exception
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717=CWSIF0717E: An input/output error occurred in the JMS Data Access Service; exception: {0}
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.explanation=An input/output error occurred while attempting to write a JMS stream message payload.
+JMS_STREAM_WRITE_IO_ERROR_CWSIF0717.useraction=Examine the linked exception to determine the problem.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_TYPE_ERROR_CWSIF0718=CWSIF0718E: An error has occurred while trying to write a JMS stream message containing an element of type {0}.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.explanation=The type of the element in question is not permitted in a JMS stream message.
+JMS_STREAM_TYPE_ERROR_CWSIF0718.useraction=Modify the program to ensure that objects of this type are not inserted into the stream message.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type name
+JMS_STREAM_WRITE_ERROR_CWSIF0719=CWSIF0719E: An error occurred while writing the payload of a JMS stream message; exception: {0}
+JMS_STREAM_WRITE_ERROR_CWSIF0719.explanation=An unexpected error has occurred while writing the payload of a JMS stream message to bytes.
+JMS_STREAM_WRITE_ERROR_CWSIF0719.useraction=Examine the linked exception to determine the problem.
+# -------------------------------------------------------------------------------------------------
+# {0} is the type of the supplied data
+# {1} is the supplied format
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720=CWSIF0720E: An error occurred in attempting to verify the suitability of a supplied DataObject of type {0} to form the payload of a JMS message with format {1}.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.explanation=The type of the DataObject supplied as the payload of a JMS message must be compatible with the format of that message.
+JMS_TYPE_MISMATCH_ERROR_CWSIF0720.useraction=Modify the program to ensure that the supplied DataObject and format are compatible.
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721=CWSIF0721E: An error occurred in class initialization, exception: {0}
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.explanation=CMSG0001
+UNEXPECTED_CLASS_INIT_ERROR_CWSIF0721.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIF9999=CWSIF9999E: {0}
+TEMPORARY_CWSIF9999.explanation=If the message does not give sufficient information, check the accompanying messages for further help.
+TEMPORARY_CWSIF9999.useraction=See the accompanying error messages for further information.

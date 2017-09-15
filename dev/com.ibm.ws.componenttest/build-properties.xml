@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="test.build.properties">
+
+  <!-- The source for FAT tests lives in fat/src, not just in src -->
+  <property name="src.dir" location="fat/src" />
+  
+  <!-- Define the default location for the test bucket's publish directory. Allows for override -->
+  <property name="bucket.publish.dir" location="${basedir}/publish" />
+
+  <!-- Take most of our properties from the shared ones -->
+  <!-- TODO rework to avoid the ugly import from the internal properties -->
+  <import file="../ant_build/public_imports/internal_imports/standard_properties.xml" />
+
+  <property name="common.dir" location="../test_build" />
+  <property name="componenttest.lib.dir" value="${basedir}/../com.ibm.ws.componenttest/build/lib" />
+  <property name="fattest.lib.dir" value="${basedir}/../fattest.simplicity/build/lib" />
+  <!-- integration test properties -->
+
+  <property name="buckets.dir" value="${basedir}/autoFVT" />
+  <!-- Build resource directory -->
+  <property name="build.res.defaults" value="${basedir}/autoFVT" />
+
+  <property name="fat.applications.source.rel.dir" value="test-applications" />
+  <!-- Build test applications from a temporary overlay directory if we're using shared tests -->
+  <condition property="fat.applications.rel.dir" value="test-applications-overlay" else="${fat.applications.source.rel.dir}">
+    <isset property="shared.tests.project"/>
+  </condition>
+  <property name="fat.applications.dir" value="${basedir}/${fat.applications.rel.dir}" />
+  <property name="fat.bundles.dir" value="${basedir}/test-bundles" />
+  <property name="fat.resourceadapters.dir" value="${basedir}/test-resourceadapters" />
+
+</project>

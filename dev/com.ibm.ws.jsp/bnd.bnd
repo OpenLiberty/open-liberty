@@ -1,0 +1,164 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS JSP
+Bundle-SymbolicName: com.ibm.ws.jsp
+Bundle-Description: WAS JSP 2.2, version ${bVersion}
+
+-dsannotations= \
+  com.ibm.ws.jsp.webcontainerext.JSPExtensionFactory
+
+Service-Component:  \
+  com.ibm.ws.jsp.webxml.configurator;\
+   implementation:=com.ibm.ws.jsp.webxml.JspConfiguratorHelperFactory;\
+   provide:=com.ibm.ws.container.service.config.ServletConfiguratorHelperFactory;\
+   configuration-policy:=ignore;\
+   properties:="service.vendor=IBM",\
+  com.ibm.ws.jsp.taglib.adapter;\
+   implementation:=com.ibm.ws.jsp.taglib.SharedLibClassesContainerInfoAdapter;\
+   provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
+   configAdmin=org.osgi.service.cm.ConfigurationAdmin;\
+   locAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin;\
+   artifactFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
+   moduleFactory= com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;\
+   configuration-policy:=ignore;\
+   properties:="service.vendor=IBM,toType=com.ibm.ws.jsp.taglib.SharedLibClassesContainerInfo", \
+  com.ibm.ws.jsp.webxml.adapter;\
+   implementation:=com.ibm.ws.jsp.webxml.JspXmlExtConfigAdapter;\
+   provide:=com.ibm.wsspi.adaptable.module.adapters.ContainerAdapter;\
+   configuration-policy:=ignore;\
+   properties:="service.vendor=IBM,toType=com.ibm.ws.jsp.configuration.JspXmlExtConfig", \
+  com.ibm.ws.jsp.taglib.InjectionService; \
+    implementation:=com.ibm.ws.jsp.taglib.InjectionServiceImpl; \
+    provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
+    immediate:=true; \
+    properties:="service.vendor=IBM"
+
+Export-Package: com.ibm.ws.jsp.runtime;version=2.2;thread-context=true, \
+   com.ibm.ws.jsp.jsx.tags;version=2.2;thread-context=true, \
+   com.ibm.ws.jsp.tsx.db;version=2.2;thread-context=true, \
+   com.ibm.ws.jsp.tsx.tag;version=2.2;thread-context=true, \
+   com.ibm.ws.jsp;thread-context=true;version=2.2, \
+   com.ibm.ws.jsp.translator;version=2.2, \
+   com.ibm.ws.jsp.translator.utils;version=2.2, \
+   com.ibm.ws.jsp.translator.visitor.validator;version=2.2, \
+   com.ibm.ws.jsp.translator.visitor.generator;version=2.2, \
+   com.ibm.wsspi.jsp.taglib.config, \
+   com.ibm.ws.jsp.configuration;version=2.2, \
+   com.ibm.ws.jsp.runtime.metadata;version=2.2, \
+   com.ibm.ws.jsp.webcontainerext;version=2.2, \
+   com.ibm.ws.jsp.webcontainerext.ws;version=2.2, \
+   org.apache.taglibs.standard.tag.common.sql;version=2.3, \
+   org.apache.taglibs.standard.tlv;thread-context=true;version=2.2, \
+   org.apache.taglibs.standard.tei;thread-context=true;version=2.2, \
+   org.apache.taglibs*;version=2.2, \
+   org.apache.jasper.compiler;thread-context=true;version=2.2, \
+   org.apache.jasper.runtime;thread-context=true;version=2.2
+   
+
+Private-Package: \
+   com.ibm.ws.jsp.*, \
+   com.ibm.ws.webcontainer.jsp.runtime, \
+   com.ibm.wsspi.jsp.*
+   
+   
+
+Import-Package: \
+   junit.*;resolution:=optional, \
+   org.apache.xml.*;resolution:=optional, \
+   org.apache.xpath.*;resolution:=optional, \
+   javax.el;version=2.2, \
+   javax.servlet;version=2.6, \
+   javax.servlet.http;version=2.6, \
+   javax.servlet.resources;version=2.6, \
+   javax.servlet.jsp;version="2.2", \
+   javax.servlet.jsp.el;version=2.2, \
+   javax.servlet.jsp.resources;version=2.2, \
+   javax.servlet.jsp.jstl*;version=1.2, \
+   javax.servlet.jsp.tagext;version=2.2, \
+   com.ibm.websphere.servlet.*;version=0, \
+   com.ibm.wsspi.webcontainer.osgi.*;version=1.0, \
+   com.ibm.wsspi.webcontainer;version=0, \
+   com.ibm.wsspi.webcontainer.*;version=0, \
+   com.ibm.ws.webcontainer.extension;version=0, \
+   com.ibm.ws.webcontainer.util;version=0, \
+   com.ibm.ws.webcontainer.servlet;version=0,\
+   com.ibm.ws.webcontainer;version=0, \
+   com.ibm.jtc.adapter;resolution:=optional, \
+   com.sun.tools.javac;resolution:=optional, \
+   org.apache.webbeans.el;resolution:=optional, \
+   com.ibm.ws.managedobject;resolution:=optional, \
+   org.apache.el;version="2.2", \
+   org.apache.el.lang;version="2.2", \
+   org.apache.el.parser;version="2.2", \
+   org.apache.el.util;version="2.2", \
+   org.apache.jasper.el;version="2.2", \
+   com.ibm.wsspi.el;version="2.2", \
+   org.eclipse.jdt.core.compiler;version="3.10.2";usage="JSP", \
+   org.eclipse.jdt.internal.compiler;version="3.10.2";usage="JSP", \
+   org.eclipse.jdt.internal.compiler.classfmt;version="3.10.2";usage="JSP", \
+   org.eclipse.jdt.internal.compiler.env;version="3.10.2";usage="JSP", \
+   org.eclipse.jdt.internal.compiler.impl;version="3.10.2";usage="JSP", \
+   org.eclipse.jdt.internal.compiler.problem;version="3.10.2";usage="JSP", \
+   sun.io;resolution:=optional, \
+   *
+   
+Include-Resource: \
+   @lib/bsf.jar, \
+   @${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2}, \
+   @${repo;com.ibm.ws.org.apache:xalan;2.7.0}!/!META-INF/*, \
+   standard.jar=${repo;com.ibm.ws.javax.j2ee:standardtld;1.2}, \
+   ard.jar=lib/ard.jar, \
+   OSGI-INF=resources/OSGI-INF, \
+   com/ibm/ws/jsp/webcontainerext/packageinfo=src/com/ibm/ws/jsp/webcontainerext/packageinfo, \
+   com/ibm/ws/jsp/resources/taglibcacheconfig.xml=resources/com/ibm/ws/jsp/resources/taglibcacheconfig.xml, \
+   com/ibm/ws/jsp/resources/optimizedjstltags.xml=resources/com/ibm/ws/jsp/resources/optimizedjstltags.xml, \
+   com/ibm/ws/jsp/resources/optimizedtags.xml=resources/com/ibm/ws/jsp/resources/optimizedtags.xml, \
+   com/ibm/ws/jsp/jsx/tags/jsxFunction.tld=src/com/ibm/ws/jsp/jsx/tags/jsxFunction.tld, \
+   com/ibm/ws/jsp/tsx/tag/tsx.tld=src/com/ibm/ws/jsp/tsx/tag/tsx.tld, \
+   com/ibm/ws/jsp/translator/visitor/configuration/JspVisitorConfiguration.xml=src/com/ibm/ws/jsp/translator/visitor/configuration/JspVisitorConfiguration.xml, \
+   com/ibm/ws/jsp/translator/visitor/configuration/JspVisitorConfiguration.xsd=src/com/ibm/ws/jsp/translator/visitor/configuration/JspVisitorConfiguration.xsd, \
+   com/ibm/ws/jsp/taglib/config/TagLibCacheConfig.xsd=src/com/ibm/ws/jsp/taglib/config/TagLibCacheConfig.xsd
+    
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+instrument.ffdc: false
+instrument.classesExcludes: com/ibm/ws/jsp/resources/*.class
+
+-buildpath: \
+	lib/bsf.jar;version=file,\
+	com.ibm.ws.org.eclipse.jdt.core.3.10.2.v20160712-0000;version=latest,\
+	com.ibm.websphere.javaee.el.2.2;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.2;version=latest,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.kernel.metatype.helper,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.transport.http;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.jsp.jasper;version=latest,\
+	com.ibm.ws.org.apache.jasper.el.2.2;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.artifact.url;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

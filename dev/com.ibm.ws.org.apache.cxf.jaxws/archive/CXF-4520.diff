@@ -1,0 +1,74 @@
+Index: api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java	(revision 1390063)
++++ api/src/main/java/org/apache/cxf/staxutils/StaxUtils.java	(revision 1390064)
+@@ -25,7 +25,10 @@
+ import java.io.StringWriter;
+ import java.io.Writer;
+ import java.net.URL;
++import java.util.Collections;
+ import java.util.Iterator;
++import java.util.LinkedList;
++import java.util.List;
+ import java.util.Stack;
+ import java.util.concurrent.ArrayBlockingQueue;
+ import java.util.concurrent.BlockingQueue;
+@@ -70,7 +73,6 @@
+ import org.w3c.dom.ProcessingInstruction;
+ import org.w3c.dom.Text;
+ import org.w3c.dom.UserDataHandler;
+-
+ import org.xml.sax.InputSource;
+ import org.xml.sax.XMLReader;
+ 
+@@ -787,11 +789,9 @@
+         } else {
+             writer.writeStartElement(prefix, localName, ns);
+         }
++        
++        for (Node attr : sortElementAttributes(e.getAttributes())) {          
+ 
+-        NamedNodeMap attrs = e.getAttributes();
+-        for (int i = 0; i < attrs.getLength(); i++) {
+-            Node attr = attrs.item(i);
+-
+             String name = attr.getLocalName();
+             String attrPrefix = attr.getPrefix();
+             if (attrPrefix == null) {
+@@ -825,7 +825,7 @@
+                     } else if (attrPrefix.length() == 0) {
+                         writer.writeAttribute(attns, name, value);
+                     } else {
+-                        if (repairing && DOMUtils.getNamespace(e, attrPrefix) == null) {
++                        if (repairing && writer.getNamespaceContext().getNamespaceURI(attrPrefix) == null) {
+                             writer.writeNamespace(attrPrefix, attns);
+                         }
+                         writer.writeAttribute(attrPrefix, attns, name, value);
+@@ -855,6 +855,27 @@
+         }
+     }
+ 
++    private static List<Node> sortElementAttributes(NamedNodeMap attrs) {
++        if (attrs.getLength() == 0) {
++            return Collections.<Node> emptyList();
++        }
++        List<Node> sortedAttrs = new LinkedList<Node>();
++        for (int i = 0; i < attrs.getLength(); i++) {
++            Node attr = attrs.item(i);
++            String name = attr.getLocalName();          
++            if (name == null) {
++                name = attr.getNodeName();
++            }
++            if ("xmlns".equals(attr.getPrefix()) || "xmlns".equals(name)) {
++                sortedAttrs.add(0, attr);
++            } else {
++                sortedAttrs.add(attr);
++            }
++        }
++
++        return sortedAttrs;
++    }
++
+     public static void writeNode(Node n, XMLStreamWriter writer, boolean repairing) 
+         throws XMLStreamException {
+         

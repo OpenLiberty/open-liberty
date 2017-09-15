@@ -1,0 +1,317 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!-- NOTE: This is a generated file. Do not edit it directly. -->
+
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
+	xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+	xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+	localization="OSGI-INF/l10n/metatype">
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd" name="%wsbndmetatype.name"
+		description="%wsbndmetatype.desc" ibm:parentPid="com.ibm.ws.app.manager"
+		ibm:childAlias="webservices-bnd">
+
+
+		<AD id="webservice-endpoint" description="%webservice-endpoint.desc"
+			name="%webservice-endpoint.name" type="String" required="false"
+			ibm:type="pid" cardinality="2147483647"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpoint" />
+		<AD id="webservice-endpoint.target" default="${servicePidOrFilter(webservice-endpoint)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+
+		<AD id="webservice-endpoint-properties" description="%webservice-endpoint-properties.desc"
+			name="%webservice-endpoint-properties.name" type="String" required="false"
+			ibm:type="pid" cardinality="2147483647"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpointProperties" />
+		<AD id="webservice-endpoint-properties.target" default="${servicePidOrFilter(webservice-endpoint-properties)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+
+		<AD id="http-publishing" description="%http-publishing.desc" name="%http-publishing.name"
+			type="String" required="false" ibm:type="pid" cardinality="2147483647"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.HttpPublishing" />
+		<AD id="http-publishing.target" default="${servicePidOrFilter(http-publishing)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+
+		<AD id="service-ref" description="%service-ref.desc" name="%service-ref.name"
+			type="String" required="false" ibm:type="pid" cardinality="2147483647"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef" />
+		<AD id="service-ref.target" default="${servicePidOrFilter(service-ref)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd" />
+	</Designate>
+
+
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpoint" name="%wsbnd.WebserviceEndpoint.name"
+		description="%wsbnd.WebserviceEndpoint.desc">
+		<AD id="port-component-name" description="%port-component-name.desc"
+			name="%port-component-name.name" type="String" required="false"
+			cardinality="0" />
+		<AD id="address" description="%address.desc" name="%address.name"
+			type="String" required="false" cardinality="0" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpoint">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpoint" />
+	</Designate>
+
+
+	<!-- Really just a holder for arbitrary properties. We have to include a 
+		dummy AD -->
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpointProperties"
+		name="%webservice-endpoint-properties.name" description="%webservice-endpoint-properties.desc"
+		ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+		<AD id="internal" type="String" name="internal" description="internal"
+			required="false" cardinality="0"/>
+	</OCD>
+
+	<Designate
+		factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpointProperties">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceEndpointProperties" />
+	</Designate>
+
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef" name="%service-ref.name"
+		description="%service-ref.desc">
+		<AD id="port" description="%port.desc" name="%port.name" type="String"
+			required="false" ibm:type="pid" cardinality="2147483647"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.Port" />
+		<AD id="port.target" default="${servicePidOrFilter(port)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+
+		<AD id="properties" description="%properties.desc" name="%properties.name"
+			type="String" required="false" ibm:type="pid" cardinality="0"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.Properties" />
+		<AD id="properties.target" default="${servicePidOrFilter(properties)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+
+		<AD id="port-address" description="%port-address.desc" name="%port-address.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="name" description="%service-ref.name.desc" name="%service-ref.name.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="component-name" description="%component-name.desc" name="%component-name.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="wsdl-location" description="%wsdl-location.desc" name="%wsdl-location.name"
+			type="String" required="false" cardinality="0" />
+
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.ServiceRef" />
+	</Designate>
+
+
+	<!-- Http Publishing -->
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.HttpPublishing" name="%http-publishing.name"
+		description="%http-publishing.desc">
+		<AD id="webservice-security" description="%webservice-security.desc"
+			name="%webservice-security.name" type="String" required="false"
+			ibm:type="pid" cardinality="0"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceSecurity" />
+		<AD id="webservice-security.target" default="${servicePidOrFilter(webservice-security)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+		<AD id="context-root" description="%context-root.desc" name="%context-root.name"
+			type="String" required="false" cardinality="0" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.HttpPublishing">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.HttpPublishing" />
+	</Designate>
+
+	<!-- Port -->
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.Port" name="%wsbnd.Port.name"
+		description="%wsbnd.Port.desc">
+
+		<AD id="properties" description="%properties.desc" name="%properties.name"
+			type="String" required="false" ibm:type="pid" cardinality="0"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.wsbnd.Properties" />
+		<AD id="properties.target" default="${servicePidOrFilter(properties)}"
+			description="internal" name="internal" type="String" required="true"
+			cardinality="0" />
+
+		<AD id="name" description="%port.name.desc" name="%port.name.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="namespace" description="%namespace.desc" name="%namespace.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="address" description="%port.address.desc" name="%port.address.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="username" description="%username.desc" name="%username.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="password" ibm:type="password" description="%password.desc"
+			name="%password.name" type="String" required="false" cardinality="0" />
+		<!-- TODO reference -->
+		<AD id="ssl-ref" description="%ssl-ref.desc" name="%ssl-ref.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="key-alias" description="%key-alias.desc" name="%key-alias.name"
+			type="String" required="false" cardinality="0" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.Port">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.Port" />
+	</Designate>
+
+	<!-- Properties -->
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.Properties" name="%properties.name"
+		ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype"
+		description="%properties.desc">
+		<AD id="internal" name="internal" description="internal" required="false"
+			type="String" cardinality="0" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.Properties">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.Properties" />
+	</Designate>
+
+	<!-- WebserviceSecurity -->
+
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceSecurity" name="%webservice-security.name"
+		description="%webservice-security.desc">
+		<AD id="security-constraint" description="%security-constraint.desc"
+			name="%security-constraint.name" type="String" required="false"
+			ibm:type="pid" cardinality="0"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.web.common.SecurityConstraint"
+			ibm:flat="true" />
+
+		<AD id="login-config" description="%login-config.desc" name="%login-config.name"
+			type="String" required="false" ibm:type="pid" cardinality="0"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.web.common.LoginConfig"
+			ibm:flat="true" />
+
+		<AD id="security-role" description="%security-role.desc" name="%security-role.name"
+			type="String" required="false" ibm:type="pid" cardinality="0"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.common.SecurityRole"
+			ibm:flat="true" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceSecurity">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.wsbnd.WebserviceSecurity" />
+	</Designate>
+
+	<!-- The following metatypes are not specific to wsbnd. If we ever start 
+		generating for javaee models, we can remove these -->
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.web.common.SecurityConstraint"
+		name="%security-constraint.name" description="%security-constraint.desc">
+		<AD id="web-resource-collection" description="%web-resource-collection.desc"
+			name="%web-resource-collection.name" type="String" required="false"
+			cardinality="2147483647" ibm:type="pid"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.common.WebResourceCollection"
+			ibm:flat="true" />
+		<AD id="auth-constraint" description="%auth-constraint.desc" name="%auth-constraint.name"
+			type="String" required="false" cardinality="0" ibm:type="pid"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.common.AuthConstraint"
+			ibm:flat="true" />
+		<AD id="user-data-constraint" description="%user-data-constraint.desc"
+			name="%user-data-constraint.name" type="String" required="false"
+			cardinality="0" ibm:type="pid"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.common.UserDataConstraint"
+			ibm:flat="true" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.web.common.SecurityConstraint">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.web.common.SecurityConstraint" />
+	</Designate>
+
+
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.common.WebResourceCollection"
+		name="%web-resource-collection.name" description="%web-resource-collection.desc">
+		<AD id="web-resource-name" description="%web-resource-name.desc"
+			name="%web-resource-name.name" type="String" required="false"
+			cardinality="0" />
+		<AD id="url-pattern" description="%url-pattern.desc" name="%url-pattern.name"
+			type="String" required="false" cardinality="2147483647" />
+		<AD id="http-method" description="%http-method.desc" name="%http-method.name"
+			type="String" required="false" cardinality="2147483647" />
+		<AD id="http-method-omission" description="%http-method-omission.desc"
+			name="%http-method-omission.name" type="String" required="false"
+			cardinality="2147483647" />
+	</OCD>
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.common.WebResourceCollection">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.common.WebResourceCollection" />
+	</Designate>
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.common.AuthConstraint" name="%wsbnd.AuthConstraint.name"
+		description="%wsbnd.AuthConstraint.desc">
+		<AD id="role-name" name="%role-name.name" description="%role-name.desc"
+			type="String" required="false" cardinality="2147483647" />
+	</OCD>
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.common.AuthConstraint">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.common.AuthConstraint" />
+	</Designate>
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.common.UserDataConstraint" name="%wsbnd.UserDataConstraint.name"
+		description="%wsbnd.UserDataConstraint.desc">
+		<AD id="transport-guarantee" description="%transport-guarantee.desc"
+			name="%transport-guarantee.name" type="Integer" required="false"
+			cardinality="0" />
+	</OCD>
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.common.UserDataConstraint">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.common.UserDataConstraint" />
+	</Designate>
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.web.common.LoginConfig" name="%wsbnd.LoginConfig.name"
+		description="%wsbnd.LoginConfig.desc">
+		<AD id="auth-method" description="%auth-method.desc" name="%auth-method.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="realm-name" description="%realm-name.desc" name="%realm-name.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="form-login-config" description="%form-login-config.desc"
+			name="%form-login-config.name" type="String" required="false"
+			ibm:type="pid" cardinality="0"
+			ibm:reference="com.ibm.ws.javaee.ddmodel.web.common.FormLoginConfig"
+			ibm:flat="true" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.web.common.LoginConfig">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.web.common.LoginConfig" />
+	</Designate>
+
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.web.common.FormLoginConfig"
+		name="%form-login-config.name" description="%form-login-config.desc">
+		<AD id="form-login-page" description="%form-login-page.desc" name="%form-login-page.name"
+			type="String" required="false" cardinality="0" />
+		<AD id="form-error-page" description="%form-error-page.desc" name="%form-error-page.name"
+			type="String" required="false" cardinality="0" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.web.common.FormLoginConfig">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.web.common.FormLoginConfig" />
+	</Designate>
+
+
+	<OCD id="com.ibm.ws.javaee.ddmodel.common.SecurityRole" name="%security-role.name"
+		description="%security-role.desc">
+		<AD id="role-name" name="%role-name.name" description="%role-name.desc"
+			type="String" required="false" cardinality="0" />
+	</OCD>
+
+	<Designate factoryPid="com.ibm.ws.javaee.ddmodel.common.SecurityRole">
+		<Object ocdref="com.ibm.ws.javaee.ddmodel.common.SecurityRole" />
+	</Designate>
+
+
+	<!-- End common javaee types -->
+</metatype:MetaData>

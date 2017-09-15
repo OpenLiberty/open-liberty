@@ -1,0 +1,10 @@
+<FindBugsFilter>
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+   <Match>
+    <Class name="~.*\.resources\..*" />
+    <method name="getContents"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match> 
+
+</FindBugsFilter>

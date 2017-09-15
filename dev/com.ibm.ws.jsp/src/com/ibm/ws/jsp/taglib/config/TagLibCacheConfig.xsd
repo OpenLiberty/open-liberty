@@ -1,0 +1,59 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ 
+ <xsd:annotation>
+  <xsd:documentation xml:lang="en">
+   TagLib Cache Configuration
+  </xsd:documentation>
+ </xsd:annotation>
+
+  <xsd:element name="taglib-cache-config">
+  <xsd:complexType>
+   <xsd:sequence>
+    <xsd:element ref="implict-taglib" minOccurs="0" maxOccurs="unbounded"/>
+    <xsd:element ref="global-taglib" minOccurs="0" maxOccurs="unbounded"/>
+   </xsd:sequence>
+  </xsd:complexType>
+ </xsd:element>
+ 
+ <xsd:element name="implict-taglib" type="implict-taglibType"/>
+
+ <xsd:complexType name="implict-taglibType">
+  <xsd:sequence>
+   <xsd:element name="uri" type="xsd:string"/>
+   <xsd:element name="prefix" type="xsd:string"/>
+   <xsd:element name="location" type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ 
+ <xsd:element name="global-taglib" type="global-taglibType"/>
+
+ <xsd:complexType name="global-taglibType">
+  <xsd:sequence>
+   <xsd:element name="jar-name" type="xsd:string"/>
+    <xsd:element ref="tld-path" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ 
+ <xsd:element name="tld-path" type="tld-pathType"/>
+ 
+ <xsd:complexType name="tld-pathType">
+  <xsd:sequence>
+    <xsd:element ref="availability-condition" minOccurs="0" maxOccurs="unbounded"/>
+  </xsd:sequence>
+  <xsd:attribute name="path" type="xsd:string" use="required"/>
+  <xsd:attribute name="uri" type="xsd:string"/>
+  <xsd:attribute name="contains-listener-defs" type="xsd:boolean"/>
+ </xsd:complexType>
+ 
+ <xsd:element name="availability-condition" type="availability-conditionType"/>
+ 
+ <xsd:complexType name="availability-conditionType">
+  <xsd:sequence>
+   <xsd:element name="type" type="xsd:string"/>
+   <xsd:element name="webinf-filename" type="xsd:string"/>
+   <xsd:element name="servlet-classname" type="xsd:string"/>
+  </xsd:sequence>
+ </xsd:complexType>
+ 
+ </xsd:schema>
+ 

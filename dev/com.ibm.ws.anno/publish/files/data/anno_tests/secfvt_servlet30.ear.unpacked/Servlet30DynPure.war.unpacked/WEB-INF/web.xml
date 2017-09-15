@@ -1,0 +1,52 @@
+
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+﻿<?xml version="1.0" encoding="UTF-8"?>
+   <web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+      <display-name>Servlet 30 Dynamic Annotation Test Application, where constraints from dynamic annotations are used </display-name>                                          
+
+      <listener>
+         <listener-class>com.ibm.ws.secfvt.servlet.listener.ServletRegistrationContextListener2</listener-class>
+      </listener>
+      
+      <servlet>
+         <servlet-name>com.ibm.ws.secfvt.servlet.Servlet30DynPure5</servlet-name>
+         <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynPure5</servlet-class>
+         <run-as>
+            <role-name>Manager</role-name>
+         </run-as>         
+      </servlet>
+      <servlet>
+         <servlet-name>com.ibm.ws.secfvt.servlet.Servlet30DynPure6</servlet-name>
+         <servlet-class>com.ibm.ws.secfvt.servlet.Servlet30DynPure6</servlet-class>
+         <run-as>
+            <role-name>Manager</role-name>
+         </run-as>         
+      </servlet>
+      
+      <security-role id="SecurityRole_1">
+         <description>All authenticated users in an enterprise</description>
+         <role-name>AllAuthenticated</role-name>
+      </security-role>
+      <security-role id="SecurityRole_2">
+         <description>Manager users in an enterprise</description>
+         <role-name>Manager</role-name>
+      </security-role>        
+      <security-role id="SecurityRole_3">
+         <description>Employee users in an enterprise</description>
+         <role-name>Employee</role-name>
+      </security-role>
+      <security-role id="SecurityRole_4">
+         <description>DeclaredManager users in an enterprise</description>
+         <role-name>DeclaredManager</role-name>
+      </security-role>                        
+
+   </web-app>

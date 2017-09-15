@@ -1,0 +1,73 @@
+dev/com.ibm.ws.scaling.manager.stack_fat/publish/files/sophie.zip filter=lfs diff=lfs merge=lfs -text
+dev/com.ibm.ws.ui.tool.deploy_fat.gui.nd.rw.liberty/publish/files/deployLibertyServer.zip filter=lfs diff=lfs merge=lfs -text
+dev/com.ibm.ws.webcontainer_fat/tWAS_autoFVT/WASX.REGR-dd1211.02/autoFVT.zip filter=lfs diff=lfs merge=lfs -text
+
+# Text files with LF eol
+*.awk text eol=lf
+*.bnd text eol=lf
+*.c text eol=lf
+*.conf text eol=lf
+*.cpp text eol=lf
+*.css text eol=lf
+*.feature text eol=lf
+*.groovy text eol=lf
+*.h text eol=lf
+*.html text eol=lf
+*.java text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.jsp text eol=lf
+*.mf text eol=lf
+*.MF text eol=lf
+*.nlsprops text eol=lf
+*.php text eol=lf
+*.pl text eol=lf
+*.pom text eol=lf
+*.prefs text eol=lf
+*.props text eol=lf
+*.properties text eol=lf
+*.py text eol=lf
+*.schema text eol=lf
+*.sh text eol=lf
+*.tcl text eol=lf
+*.txt text eol=lf
+*.TXT text eol=lf
+*.xml text eol=lf
+*.xsd text eol=lf
+*.xsl text eol=lf
+*.xslt text eol=lf
+.classpath text eol=lf
+.gitignore text eol=lf
+.project text eol=lf
+packageinfo text eol=lf
+Makefile text eol=lf
+
+# No EOL translation
+*.bat text eol=crlf
+
+# Binary. No EOL translation, no diff
+*.ico binary
+*.jpeg binary
+*.jpg binary
+*.png binary
+*.crt binary
+*.pdf binary
+*.dll binary
+*.jar binary
+*.jnilib binary
+*.so binary
+*.zip binary
+*.doc binary
+*.ppt binary
+*.xls binary
+*.odg binary
+*.odp binary
+*.ods binary
+*.odt binary
+*.otg binary
+*.otp binary
+*.ots binary
+*.ott binary
+*.key binary
+*.numbers binary
+*.pages binary

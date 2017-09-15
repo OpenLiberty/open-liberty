@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2008  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Transport HTTP Documentation</title>
+</head>
+<body>
+<!-- VERY important note:  Use ONLY flat text editors (such as
+Notepad or Wordpad) to edit this file. Do NOT edit this page
+with MS Word or other editors that are not flat text editors.
+-->
+<h1 id="http">Transport HTTP Documentation</h1>
+
+<h2 id="http_overview">Overview</h2>
+<p>
+The transport HTTP bundle provides both an HTTP channel for other bundles to use
+and also an inbound HTTP dispatcher for various application containers to use.
+</p>
+<h2 id="bundle_info">Using the dispatcher</h2>
+<p>
+The HTTP dispatcher encapsulates configuration and handling of inbound HTTP chains
+listening for traffic. Once a request arrives, it will fire an event that any available
+HTTP containers can check against their applications and either claim or ignore. It
+provides request/response handling in the com.ibm.websphere.http package, which is
+similar but simpler than a servlet spec of the HTTP traffic.</p>
+<br/>
+Steps to use:
+<ul>
+<li>The container must implement com.ibm.websphere.http.HttpContainer and provide that
+as a DS component.</li>
+<li>If the container wants to delay starting the listening chains until an application
+is discovered, then it should have a DS dependency on the com.ibm.websphere.http.HttpDispatcherService
+and keep that as a ServiceReference. Once the application is found, performing a bundle
+context getService() on that ServiceReference will then start the HTTP dispatcher
+and the chains, if not already started. If there is no DS dependency from the container to
+the dispatcher, then the HTTP dispatcher and the chains will start as soon as this
+container component starts.</li>
+<li>The container must listen for an event with the topic of com/ibm/websphere/http/request/ARRIVED.
+The connection can be pulled from the event property map by using the HttpInboundConnection.KEY
+string, and the individual request and response objects are pulled from the connection. Message
+bodies are handling with InputStream and OutputStreams on the message.getBody() call.</li>
+<li>If the container is claiming this request, it must add a property to that event
+map. The key is HTTPRequestClaimed and a value of Boolean.TRUE. This will prevent the
+event from being handed to other containers for review, as each container receives this
+event serially.</li>
+<li>The container can fill in appropriate information on the response object and write
+data through the OutputStream class. Once complete, the container must call the
+HttpInboundConnection.finish() api to signal completion. If it fails to do so, then
+the connection is orphaned and will eventually time out when the client quits
+waiting for further communication.</li>
+<li>There is no configuration information in the container related to the dispatcher. The
+container will receive HTTP traffic from any listening chain configured in the HTTP
+bundle and would need to use vhost mapping in the container itself if particular applications
+only support certain hostnames or ports.</li>
+</ul>
+<br/>
+<h2 id="bundle_info">Using the channel</h2>
+<p>
+Other bundles can use the HTTP inbound or outbound channels in their own chains,
+simply by including the channel type of "HTTPInboundChannel" or "HTTPOutboundChannel"
+in their channel/chain configurations. They would then program against the HTTP channel
+and GenericBNF public APIs (com.ibm.wsspi.http.channel and com.ibm.wsspi.genericbnf).
+</p>
+<h2 id="bundle_info">Using the EncodingUtils</h2>
+<p>
+The EncodingUtils DS component provides string locale and converter methods. It has
+locale mappings that used to ship in WAS property files. It also has internal pooling
+of locale and supported encodings for faster use.
+</p>
+<h2 id="bundle_info">Using the HttpDateFormat</h2>
+<p>
+The HTTP date format service provides apis for creating and formatting, or parsing,
+various HTTP date formats. This contains all the necessary logic for handling the
+multiple possible HTTP date formats, from plain ASCII to various RFC definitions. It
+internally uses threadlocal SimpleDateFormat objects to reduce the overhead as much
+as possible for users of the service.
+</p>
+<h2 id="bundle_info">RequestContext queries</h2>
+<p>
+HTTP dispatcher provides various HTTP information through the request context.
+Using the GlobalContext service, the /request/http queries are routed to the
+HTTP dispatcher's current request on that Event thread. Valid queries include:
+<ul>
+<li>/request/http/uri, read-only, String, request URI</li>
+<li>/request/http/method, read-only, String, request method (GET/POST)</li>
+<li>/request/http/scheme, read-only, String, request scheme (http, https)</li>
+<li>/request/http/query, read-only, String, request query string</li>
+<li>/request/http/version, read-only, String, protocol version</li>
+<li>/request/http/input, read-only, InputStream, request body</li>
+<li>/request/http/remote/address, read-only, String, client hostname</li>
+<li>/request/http/remote/port, read-only, String, client IP</li>
+<li>/request/http/local/address, read-only, String, local hostname</li>
+<li>/request/http/local/port, read-only, String, local port</li>
+<li>/request/http/headers/in/name, read-only, String, request header of that name</li>
+<li>/request/http/sent, read-only, String, whether response has been sent</li>
+<li>/request/http/status, read-write, String, response status code</li>
+<li>/request/http/headers/out/name, read-write, String, response header of that name</li>
+</ul>
+</p>
+<h2 id="config">Bundle configuration</h2>
+<ul>
+<li>EncodingUtils configuration includes mappings of locales and encodings in the
+com.ibm.ws.transport.http.encoding/bundle.cfg file.</li>
+<li>The com.ibm.ws.transport.http/bundle.cfg contains configuration information for
+the listening chains as well as the NCSA access logging component. The listening ports
+are definitions including TCP endpoints, channels, and chains.</li>
+</ul>
+<!-- center>
+Any extra images for the doc goes under images directory<br />
+<img src="images/liberty.jpg" />
+</center -->
+<p />
+
+</body>
+</html>

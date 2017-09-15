@@ -1,0 +1,119 @@
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/WebFaultOutInterceptor.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/WebFaultOutInterceptor.java	(revision 1440375)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/interceptors/WebFaultOutInterceptor.java	(working copy)
+@@ -21,6 +21,7 @@
+ 
+ import java.lang.reflect.InvocationTargetException;
+ import java.lang.reflect.Method;
++import java.util.Locale;
+ import java.util.ResourceBundle;
+ import java.util.logging.Level;
+ import java.util.logging.Logger;
+@@ -28,7 +29,9 @@
+ import javax.xml.namespace.QName;
+ import javax.xml.stream.XMLStreamWriter;
+ import javax.xml.ws.WebFault;
++import javax.xml.ws.soap.SOAPFaultException;
+ 
++import org.apache.cxf.binding.soap.SoapFault;
+ import org.apache.cxf.common.classloader.ClassLoaderUtils;
+ import org.apache.cxf.common.i18n.BundleUtils;
+ import org.apache.cxf.common.logging.LogUtils;
+@@ -82,7 +85,35 @@
+         if (f == null) {
+             return;
+         }
+-
++        try {
++            if (f.getCause().getClass().equals(SOAPFaultException.class)) {
++                SOAPFaultException sf = (SOAPFaultException) (f.getCause());
++                if (sf.getFault().getFaultSubcodes().hasNext()
++                        && f.getClass().equals(SoapFault.class)) {
++                    String subcode = sf.getFault().getFaultSubcodes().next()
++                           .toString();
++                    String nameSpace = subcode.substring(
++                           subcode.indexOf("{") + 1, subcode.indexOf("}"));
++                    String localPart = subcode
++                           .substring(subcode.indexOf("}") + 1);
++                    QName subcodeQName = new QName(nameSpace, localPart);
++                    ((SoapFault) f).setSubCode(subcodeQName);
++                }
++                if (sf.getFault().getFaultReasonLocales().hasNext()) {
++                    Locale lang = (Locale) sf.getFault()
++                           .getFaultReasonLocales().next();
++                    String convertedLang = lang.getLanguage();
++                    String country = lang.getCountry();
++                    if (country.length() > 0) {
++                        convertedLang = convertedLang + '-' + country;
++                    }
++                    f.setLang(convertedLang);
++                }
++                message.setContent(Exception.class, f);
++            }
++        } catch (Exception e) {
++          // do nothing;
++        }
+         Throwable cause = f.getCause();
+         WebFault fault = null;
+         if (cause != null) {
+Index: rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java
+===================================================================
+--- rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java	(revision 1441317)
++++ rt/bindings/soap/src/main/java/org/apache/cxf/binding/soap/interceptor/Soap12FaultOutInterceptor.java	(working copy)
+@@ -28,7 +28,6 @@
+ import org.w3c.dom.Element;
+ import org.w3c.dom.Node;
+ 
+-import org.apache.cxf.binding.soap.Soap11;
+ import org.apache.cxf.binding.soap.SoapFault;
+ import org.apache.cxf.binding.soap.SoapMessage;
+ import org.apache.cxf.binding.soap.interceptor.Soap11FaultOutInterceptor.Soap11FaultOutInterceptorInternal;
+@@ -47,7 +46,7 @@
+     public void handleMessage(SoapMessage message) throws Fault {
+         Fault f = (Fault) message.getContent(Exception.class);
+         message.put(org.apache.cxf.message.Message.RESPONSE_CODE, f.getStatusCode());
+@@ -105,7 +104,11 @@
+ 
+                 writer.writeStartElement(defaultPrefix, "Reason", ns);
+                 writer.writeStartElement(defaultPrefix, "Text", ns);
+-                writer.writeAttribute("xml", "http://www.w3.org/XML/1998/namespace", "lang", getLangCode());
++                String lang = f.getLang();
++                if (lang == null || lang.equalsIgnoreCase("")) {
++                    lang = getLangCode();
++                }
++                writer.writeAttribute("xml", "http://www.w3.org/XML/1998/namespace", "lang", lang);
+                 writer.writeCharacters(getFaultMessage(message, fault));
+                 writer.writeEndElement();
+                 writer.writeEndElement();
+Index: api/src/main/java/org/apache/cxf/interceptor/Fault.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/interceptor/Fault.java	(revision 1440942)
++++ api/src/main/java/org/apache/cxf/interceptor/Fault.java	(working copy)
+@@ -44,11 +44,12 @@
+     private Element detail;
+     private String message;
+     private QName code;
++    private String lang;
+     /**
+      * response http header status code
+      */
+     private int statusCode = DEFAULT_HTTP_RESPONSE_CODE;
+-    
++
+     public Fault(Message message, Throwable throwable) {
+         super(message, throwable);
+         this.message = message.toString();
+@@ -185,4 +186,12 @@
+     public void setStatusCode(int statusCode) {
+         this.statusCode = statusCode;
+     }
++
++    public void setLang(String convertedLang) {
++        lang = convertedLang;
++    }
++
++    public String getLang() {
++        return lang;
++    }
+ }

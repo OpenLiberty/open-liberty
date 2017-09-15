@@ -1,0 +1,87 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+Bundle-Name: JAX-WS WebContainer
+Bundle-SymbolicName: com.ibm.ws.jaxws.webcontainer
+Bundle-Description: IBM JAX-WS Web Container; version=${bVersion}
+
+Service-Component: com.ibm.ws.jaxws.webcontainer.jaxWsWebContainerManager; \
+     implementation:=com.ibm.ws.jaxws.webcontainer.JaxWsWebContainerManagerImpl; \
+     provide:=com.ibm.ws.jaxws.support.JaxWsWebContainerManager; \
+     webModuleHandler='com.ibm.ws.app.manager.module.internal.ModuleHandler(type=web)'; \
+     artifactContainerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory; \
+     adaptableModuleFactory= com.ibm.wsspi.adaptable.module.AdaptableModuleFactory; \
+     wsLocationAdmin=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.webcontainer.extensionFactory; \
+     implementation:=com.ibm.ws.jaxws.webcontainer.JaxWsExtensionFactory; \
+     provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
+     endpointPublisherManager=com.ibm.ws.jaxws.endpoint.EndpointPublisherManager; \
+     jaxWsWebAppConfigurator=com.ibm.ws.jaxws.webcontainer.JaxWsWebAppConfigurator*; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.webcontainer.webEndpointPublisher; \
+     implementation:=com.ibm.ws.jaxws.webcontainer.WebEndpointPublisher; \
+     provide:='com.ibm.ws.jaxws.endpoint.EndpointPublisher'; \
+     jaxWsEndpointConfiguratorManager=com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfiguratorManager;\
+     ImplBeanCustomizer/registerImplBeanCustomizer=com.ibm.ws.jaxws.ImplBeanCustomizer*;\
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.router.initializer; \
+     implementation:=com.ibm.ws.jaxws.webcontainer.JaxWsRouterServletContainerInitializer; \
+     provide:=javax.servlet.ServletContainerInitializer; \
+     immediate:=true;\
+     properties:="service.vendor=IBM"\
+  
+
+Export-Package: \
+    com.ibm.ws.jaxws.webcontainer
+
+Import-Package: \
+   javax.xml.bind.*;version="[2.2,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
+   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   *
+
+Private-Package:\
+   com.ibm.ws.jaxws.webcontainer.*
+   
+Include-Resource: OSGI-INF=resources/OSGI-INF
+    
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+instrument.classesExcludes: com/ibm/ws/jaxws/webcontainer/internal/resources/*.class
+
+-buildpath.bootclasspath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
+	${javac.bootclasspath.${javac.source}}
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.app.manager.module;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.webcontainer;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

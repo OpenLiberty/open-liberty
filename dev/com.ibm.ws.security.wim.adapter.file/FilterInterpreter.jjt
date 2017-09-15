@@ -1,0 +1,157 @@
+options {
+  IGNORE_CASE = true;
+  STATIC = false;
+}
+
+PARSER_BEGIN(FilterInterpreter)
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************
+ * 
+ * Change History:
+ * 
+ * Tag           Person           Defect/Feature      Comments
+ * ----------    ------           --------------      --------------------------------------------------
+ */
+
+package com.ibm.ws.security.wim.scim.parser;
+
+public class FilterInterpreter {
+
+}
+
+PARSER_END(FilterInterpreter)
+
+SKIP :
+{
+  " "
+| "\n"
+| "\r"
+}
+
+TOKEN :
+{
+  < DT: "\""
+        (
+          (["0"-"9"] ["0"-"9"] ["0"-"9"] ["0"-"9"]) "-"
+          (["0"-"1"] ["0"-"9"]) "-"
+          (["0"-"3"] ["0"-"9"]) "T"
+          (["0"-"9"] ["0"-"9"]) ":"
+          (["0"-"9"] ["0"-"9"]) ":"
+          (["0"-"9"] ["0"-"9"])
+        )
+        "\"" >
+|
+  < BOOL: ("true" | "false") >
+|
+  < ATTR_OP: ("eq" | "co" | "sw" | "pr" | "gt" | "ge" | "lt" | "le") >
+|
+  < LGCL_OP: "and" | "or" >
+|
+  < ATTRIBUTE: <LETTER> (<LETTER>|".")* <LETTER> >
+|
+  < NUM: ( <DIGIT> )+ >
+|
+  < LETTER: ["a"-"z"] >
+|
+  < DIGIT: ["0"-"9"] >
+|
+  < STR:
+      "\""
+      (   (~["\"","\\","\n","\r"])
+        | ("\\"
+            ( ["n","t","b","r","f","\\","'","\""]
+            | ["0"-"7"] ( ["0"-"7"] )?
+            | ["0"-"3"] ["0"-"7"] ["0"-"7"]
+            )
+          )
+      )*
+      "\""
+  >
+|
+  < LBRACE: "(" >
+| 
+  < RBRACE: ")" >
+
+}
+
+/** 
+ http://www.simplecloud.info/specs/draft-scim-api-01.html#query-resources
+
+ Each expression MUST contain an attribute name followed by an attribute operator and optional value.
+ Multiple expressions MAY be combined using the two logical operators.
+ Furthermore expressions can be grouped together using "()".
+*/
+SimpleNode parse() : {}
+{
+  Expression() <EOF>
+  { return jjtThis; }
+}
+
+void Expression() : {}
+{
+    (SimpleExpression() | ( LBrace() Expression() RBrace() ) ) [ LgclOp() Expression() ]
+}
+
+void LgclOp() :
+{ Token t = null; }
+{
+  t = <LGCL_OP>
+{ jjtThis.value = t.image; }
+}
+
+void RBrace() :
+{ Token t = null; }
+{
+  t = <RBRACE>
+{ jjtThis.value = t.image; }
+}
+
+void LBrace() :
+{ Token t = null; }
+{
+  t = <LBRACE>
+{ jjtThis.value = t.image; }
+}
+
+void SimpleExpression() : {}
+{
+  Attribute() AttrOp() [ Value() ]
+}
+
+void AttrOp() :
+{ Token t = null; }
+{
+  t = <ATTR_OP>
+{ jjtThis.value = t.image; }
+}
+
+void Attribute() :
+{ Token t = null; }
+{
+  t = <ATTRIBUTE>
+{ jjtThis.value = t.image; }
+}
+
+void Value() :
+{ Token t = null; }
+{
+  t = <STR>
+{ jjtThis.value = t.image; }
+|
+  t = <NUM>
+{ jjtThis.value = t.image; }
+|
+  t = <DT>
+{ jjtThis.value = t.image; }
+|
+  t = <BOOL>
+{ jjtThis.value = t.image; }
+}

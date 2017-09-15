@@ -1,0 +1,68 @@
+###############################################################################
+# Copyright (c) 2013, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.mdb/resources/com/ibm/ws/mdb/resources/EJBMDBMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in EJBContainerMessages.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
+
+MDB_ENDPOINT_ACTIVATED_CNTR4013I=CNTR4013I: The message endpoint for the {0} message-driven bean has been activated and is ready to accept messages. 
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.explanation=The activation specification for the message-driven bean is available and the message endpoint has become active and is ready to accept messages.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.useraction=No action is required.
+
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I=CNTR4014I: The message endpoint for the {0} message-driven bean has been deactivated and is unavailable to accept messages.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.explanation=The message-driven bean is being removed or the activation specification is no longer available. The message endpoint is no longer available to accept messages.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.useraction=No action is required.
+
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W=CNTR4015W: The message endpoint for the {0} message-driven bean cannot be activated because the {1} activation specification is not available. The message endpoint will not receive messages until the activation specification becomes available.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.explanation=The server is starting the message-driven bean but is unable to activate the message endpoint because the activation specification could not be found. The message endpoint will not receive messages until the endpoint can be activated.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Verify that an activation specification has been configured with the specified name. If the configuration exists, wait for the activation specification to become available.
+
+MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: The message endpoint for the {0} message-driven bean cannot be activated because the {1} destination is not available. The message endpoint will not receive messages until the destination becomes available.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=The server is starting the message-driven bean but is unable to activate the message endpoint because the destination could not be found. The message endpoint will not receive messages until the endpoint can be activated.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Verify that a destination has been configured with the specified name. If the configuration exists, wait for the destination to become available.

@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: The user registry operation could not be completed. The format of the value of the {0} property is not valid. The value of the property must be of the correct data type and format.
+INVALID_PROPERTY_VALUE_FORMAT.explanation=The format of the value of the property is not valid. For example, the type of the property is an integer, but the value specified is not a valid integer.
+INVALID_PROPERTY_VALUE_FORMAT.useraction=Ensure that the value of the property is of the correct data type and format.
+
+ENTITY_NOT_FOUND=CWIML4001E: The user registry operation could not be completed. The {0} entity was not found. Specify the correct entity or create the missing entity.
+ENTITY_NOT_FOUND.explanation=The specified entity name, which could be a uniqueName or a uniqueId, could not be found in the underlying repository. The user registry operation cannot continue without finding this entity.
+ENTITY_NOT_FOUND.useraction=Ensure that the entity exists in the underlying repository. If the entity exists, then verify that the read permission is set for the entity and try again.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: The user registry operation could not be completed. More than one record exists for the {0} principal name in the configured user registries. The principal name must be unique across all the user registries.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Multiple principals were found for the given principal name. The login process cannot continue.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Ensure that the right principal name is specified. For example, specifying the principal name as a unique name can avoid this type of exception.

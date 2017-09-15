@@ -1,0 +1,165 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+#
+
+global.description=Description:
+global.options=Options:
+global.usage=Usage:
+global.options.statement=\
+\tUse help [actionName] for detailed option information of each action.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+help.desc=\
+\tPrint help information for the specified action.
+help.usage.options=\
+\t{0} help [actionName]
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+version.desc=\
+\tPrint product information such as product name and version.
+version.usage.options=\
+\t{0} version [options]
+version.option-key.output=\
+\ \ \ \ --output="path to an output file"
+version.option-desc.output=\
+\tA path to a file that contains the output from this command. This    \n\
+\toption is not required. Default is STDOUT.
+version.option-key.verbose=\
+\ \ \ \ --verbose
+version.option-desc.verbose=\
+\tDisplay the whole content of each properties file.
+version.option-key.ifixes=\
+\ \ \ \ --ifixes
+version.option-desc.ifixes=\
+\tWhen provided specifies that the list of iFixes installed are also output.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseAgreement.desc=\
+\tDisplays the license agreement for the Liberty profile edition that is installed.
+viewLicenseAgreement.usage.options=\
+\t{0} viewLicenseAgreement
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseInfo.desc=\
+\tDisplays the license information for the Liberty profile edition that is installed.
+viewLicenseInfo.usage.options=\
+\t{0} viewLicenseInfo
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+featureInfo.desc=\
+\tList all the installed features.
+featureInfo.usage.options=\
+\t{0} featureInfo [options]
+featureInfo.option-key.output=\
+\ \ \ \ --output="path to an output file"
+featureInfo.option-desc.output=\
+\tA path to a file that contain the output from this command. This     \n\
+\toption is not required. Default is STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+validate.desc=\
+\tValidate a production installation against a product checksum file.
+validate.usage.options=\
+\t{0} validate [options]
+validate.option-key.checksumfile=\
+\ \ \ \ --checksumfile="path to the checksum file"
+validate.option-desc.checksumfile=\
+\tSpecify the file that contains the checksum of *.mf and *.blst files \n\
+\tbeing installed. This option is not required. Default is the file    \n\
+\tlib/version/productChecksums.cs
+validate.option-key.output=\
+\ \ \ \ --output="path to an output file"
+validate.option-desc.output=\
+\tA path to a file that contains the output from this command. This    \n\
+\toption is not required. Default is STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+compare.desc=\
+\tCompare the iFixes applied to the current installation with a new fix\n\
+\tpack level and lists any iFixes not in the fix pack or compares with \n\
+\ta supplied list of iFixes and lists if they are included in the      \n\
+\t current version.
+compare.usage.options=\
+\t{0} compare [options]
+compare.option-key.target=\
+\ \ \ \ --target="path to directory or archive file"
+compare.option-desc.target=\
+\tSpecify the target file to compare the current install with. The     \n\
+\ttarget can be either a directory or archive file but must be a valid \n\
+\tWebSphere Application Server Liberty Profile installation location.
+compare.option-key.apars=\
+\ \ \ \ --apars="a comma separated list of APAR IDs"
+compare.option-desc.apars=\
+\tThe compare tool checks the current installation against this comma  \n\
+\tseparated list of APAR IDs to see if it contains them, and then lists\n\
+\tany APARs that are not included.
+compare.option-key.output=\
+\ \ \ \ --output="path to an output file"
+compare.option-desc.output=\
+\tA path to a file to contain the output from this command. This option\n\
+\tis not required. Default is STDOUT.
+compare.option-key.verbose=\
+\ \ \ \ --verbose
+compare.option-desc.verbose=\
+\tDisplay detailed error messages when an error occurs.
+compare.option.addon=\
+One of --target or --apars must be supplied.

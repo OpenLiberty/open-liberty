@@ -1,0 +1,22 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-API-Package: javax.json; type=spec,
+ javax.json.stream; type=spec,
+ javax.json.spi; type=spec
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: jsonp-1.0
+Subsystem-Content: com.ibm.websphere.javaee.jsonp.1.0; location:="dev/api/spec/,lib/"; version="[1.0.0,1.0.200)",
+ com.ibm.ws.org.glassfish.json.1.0; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.jsonp-1.0
+Subsystem-ManifestVersion: 1
+Subsystem-Name: JavaScript Object Notation Processing
+Subsystem-SymbolicName: com.ibm.websphere.appserver.jsonp-1.0; visibility:=public; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

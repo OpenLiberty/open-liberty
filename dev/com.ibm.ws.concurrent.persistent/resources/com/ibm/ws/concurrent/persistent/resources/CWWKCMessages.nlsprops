@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: Persistent executor {0} rolled back task {1}. The task is scheduled to retry after {2} seconds.
+CWWKC1500.task.rollback.retry.explanation=Task execution was marked to roll back. The task will retry after the specified number of seconds.
+CWWKC1500.task.rollback.retry.useraction=Wait for the task to retry.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: Persistent executor {0} rolled back task {1} due to failure {2}. The task is scheduled to retry after {3} seconds.
+CWWKC1501.task.failure.retry.explanation=Task execution failed and rolled back. The task will retry after the specified number of seconds.
+CWWKC1501.task.failure.retry.useraction=If the failure is transient, wait for the task to retry. Otherwise, correct the cause of the failure if the failure is unexpected.
+
+CWWKC1502.task.rollback=CWWKC1502W: Persistent executor {0} rolled back task {1}.
+CWWKC1502.task.rollback.explanation=Task execution was marked to roll back.
+CWWKC1502.task.rollback.useraction=If the rollback is unexpected, reschedule the task.
+
+CWWKC1503.task.failure=CWWKC1503W: Persistent executor {0} rolled back task {1} due to failure {2}.
+CWWKC1503.task.failure.explanation=Task execution failed and rolled back.
+CWWKC1503.task.failure.useraction=Correct the cause of the failure, if the failure is unexpected, and reschedule the task.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Persistent executor {0} aborted task {1} because it rolled back or failed {2} consecutive times.
+CWWKC1510.retry.limit.reached.rollback.explanation=The task has reached the limit of consecutive retries and will not be attempted again.
+CWWKC1510.retry.limit.reached.rollback.useraction=If the rollbacks or failures are unexpected, determine the cause and reschedule the task. If the rollbacks and failures are intermittent, consider increasing the retry limit. 
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Persistent executor {0} aborted task {1} because it rolled back or failed {2} consecutive times. The final failure is {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=The task has reached the limit of consecutive retries and will not be attempted again.
+CWWKC1511.retry.limit.reached.failed.useraction=If the failures or rollbacks are unexpected, determine the cause and reschedule the task. If the rollbacks and failures are intermittent, consider increasing the retry limit. 
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: You cannot schedule persistent tasks from the current thread context.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Schedule persistent tasks only from a thread that is associated with an application or feature with a serializable class loader identity.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Ensure that context for the application or feature is present on the thread when scheduling tasks.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: You can invoke the {0} method only on TaskStatus that is obtained after the task has ended. Determine if the task was ended at the time when a TaskStatus instance was obtained by verifying that the getNextExecutionTime value is null.
+CWWKC1550.status.unavailable.until.ended.explanation=TaskStatus is an immutable snapshot of task state. Any value returned from isDone or isCancelled prior to the task ending would become invalid once the task ends. An error is raised when attempted before the task ends to avoid returning an unreliable value.
+CWWKC1550.status.unavailable.until.ended.useraction=Use the getNextExecutionTime method to determine if a task has ended. Use the isDone and isCancelled methods only if the task has ended.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: You can invoke the get method only on TaskStatus that is obtained after the task has ended. Use the getResult method to obtain the result of the execution that was the most recent execution at the time when the TaskStatus instance was obtained.
+CWWKC1551.result.unavailable.until.ended.explanation=TaskStatus is an immutable snapshot of task state. Any value returned from get prior to the task ending would become invalid once another execution attempt completes or the task ends. An error is raised when attempted before the task ends to avoid returning an unreliable value.
+CWWKC1551.result.unavailable.until.ended.useraction=Use the getResult method to obtain the result of the execution attempt that was the most recent attempt when the TaskStatus instance was obtained. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: You can invoke the getDelay method only on TaskStatus for one-shot tasks. For repeating tasks and tasks scheduled with a Trigger, use the getNextExecutionTime method to get the expected next execution time after the execution that was most recent when the TaskStatus was obtained.
+CWWKC1552.delay.unavailable.explanation=TaskStatus is an immutable snapshot of task state. Any value returned from getDelay prior to the task ending would become invalid once another execution attempt completes. An error is raised when attempted before the task ends to avoid returning an unreliable value.
+CWWKC1552.delay.unavailable.useraction=Use the getNextExecutionTime method to get the expected next execution time that corresponds to the time when the TaskStatus was obtained.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: Persistent executor {0} is unable to obtain the result of task {1}. Refer to the cause exception.
+CWWKC1553.result.inaccessible.explanation=An error occurred which prevented the task result from being obtained.
+CWWKC1553.result.inaccessible.useraction=Refer to the cause exception to correct the problem, then reschedule the task.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: Task {0} failed to run. Refer to the cause exception.
+CWWKC1554.general.task.failure.explanation=The task failed to run due to the specified exception.
+CWWKC1554.general.task.failure.useraction=Refer to the cause exception to correct the problem, then reschedule the task.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: Task {0} is aborted because it rolled back or failed {1} consecutive times.
+CWWKC1555.retry.limit.reached.explanation=The task has reached the limit of consecutive retries and will not be attempted again.
+CWWKC1555.retry.limit.reached.useraction=Refer to the cause exception to correct the problem, then reschedule the task. If the problem is intermittent, consider increasing the retry limit.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: Execution of tasks from application {0} is deferred until the application and modules that scheduled the tasks are available.
+CWWKC1556.task.exec.deferred.explanation=The application and module that scheduled a task must be available so that the task can run.
+CWWKC1556.task.exec.deferred.useraction=Ensure the application and the module that scheduled the task are available. Alternately, cancel the task if it is no longer needed.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  An error occurred. Request {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=An error occurred while attempting to perform the requested operation.
+CWWKC1559.mbean.operation.failure.useraction=Check the server logs for details about the operation error.

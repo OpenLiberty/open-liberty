@@ -1,0 +1,140 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+    <!-- match generated nls classes: return mutable type -->
+    <Match> 
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+      <Bug code="EI" />
+    </Match>
+    
+   <Match> 
+      <Bug code="EI_EXPOSE_REP" />
+      <Class name="com.ibm.ws.jaxws.internal.resources.JaxWsCommonMessages" />
+      <Method name="getContents"/>
+   </Match>
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE,DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="com.ibm.ws.jaxws.utils.JaxWsUtils"/>
+     <Or>
+        <Method name="createAbsoluteURL" signature="(Ljava/lang/String;)Ljava.net.URL"/>
+        <Method name="getMethodBySignature" />
+        <Method name="getModuleInfo" />
+        <Method name="getWebModuleInfo" />
+     </Or>
+   </Match>
+   <Match>
+     <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+     <Class name="com.ibm.ws.jaxws.support.JaxWsModuleMetaDataListener"/>
+     <Or>
+        <Method name="setMetaDataSlotService" signature="(Lcom/ibm/ws/container/service/metadata/MetaDataSlotService;)"/>
+        <Method name="unsetMetaDataSlotService" signature="(Lcom/ibm/ws/container/service/metadata/MetaDataSlotService;)"/>
+     </Or>
+   </Match>
+   
+   <Match>
+     <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory$TransientWebServiceRefInfo"/>
+     <Method name="getWsdlURL" signature="(Ljava/lang/String;)Ljava.net.URL"/>
+   </Match>
+
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE,DJV_DO_INSIDE_DO_PRIVILEGED,DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+     <Class name="com.ibm.ws.jaxws.metadata.builder.HandlerChainInfoBuilder"/>
+     <Or>
+        <Method name="resolveHandlerChainFileName" />
+        <Method name="processHandlerElement" />
+        <Method name="getInitMethod" />
+        <Method name="initializeViaInitMethod" />
+     </Or>
+   </Match>
+
+   <Match>
+     <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+     <Class name="com.ibm.ws.jaxws.support.JaxWsServiceImpl"/>
+     <Method name="activate" />
+   </Match>
+
+   <Match>
+     <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+     <Class name="com.ibm.ws.jaxws.client.LibertyProviderImpl"/>
+     <Method name="createServiceDelegate" />
+   </Match>
+
+   <Match>
+     <Bug pattern="REC_CATCH_EXCEPTION"/>
+     <Class name="com.ibm.ws.jaxws.support.LibertyJaxWsServiceFactoryBean$JaxWsEndpointImplHelper"/>
+     <Method name="buildWsdlExtensibilities" />
+   </Match>
+   
+   <!-- Computed key here is (now) valid since we're simply picking between choices -->
+   <Match>
+     <Bug pattern="TR_COMPUTED_KEY"/>
+     <Class name="com.ibm.ws.jaxws.client.injection.WebServiceRefBinding"/>
+     <Method name="merge"/>
+   </Match>
+   <!-- Computed key valid here as we're wrapping the Tr call -->
+   <Match>
+     <Bug pattern="TR_COMPUTED_KEY"/>
+     <Class name="com.ibm.ws.jaxws.utils.JaxWsMergingValidator"/>
+     <Method name="~log(Error|Warning)"/>
+   </Match>
+   <Match>
+     <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+     <Class name="com.ibm.ws.jaxws.client.LibertyServiceImpl"/>
+     <Method name="prepareProperties"/>
+   </Match>
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.jaxws.jmx.internal.JMXMBeanServerDelegation"/>
+	 <Method name="unregisterMBean" />
+   </Match>
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.jaxws.jmx.internal.JMXMBeanServerDelegation$1"/>
+	 <Method name="run" />
+   </Match>
+    <!-- added by Iris -->
+    <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.jaxws.support.LibertyHTTPConduit"/>
+     <Or>
+        <Method name="getNonEmptyContent" />
+     </Or>
+   </Match>
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.jaxws.globalhandler.GlobalHandlerInterceptor"/>
+     <Method name="createXMLStreamReaderFromSOAPMessage" />
+   </Match>
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.jaxws.globalhandler.GlobalHandlerInterceptor"/>
+     <Method name="handleMessage" />
+   </Match>
+   <Match>
+     <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+     <Class name="com.ibm.ws.jaxws.support.LibertyHTTPConduit$LibertyWrappedOutputStream"/>
+     <Method name="getInputStream" />
+   </Match>
+   <Match>
+     <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+     <Class name="com.ibm.ws.jaxws.client.injection.ServiceRefObjectFactory"/>
+     <Method name="getServiceInstance" />
+   </Match>
+</FindBugsFilter>

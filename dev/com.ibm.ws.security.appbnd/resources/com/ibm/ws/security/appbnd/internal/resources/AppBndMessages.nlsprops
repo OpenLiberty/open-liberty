@@ -1,0 +1,31 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.appbnd/resources/com/ibm/ws/security/appbnd/internal/resources/AppBndMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Application Bindings
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9100 - CWWKS9199
+
+AUTHZ_TABLE_DUPLICATE_APP_NAME=CWWKS9110E: During application startup, the application failed to start because multiple applications were found to have the name of {0}. Security authorization policies require that names be unique. Review the application configuration in the server.xml.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.explanation=Application names must be unique for security authorization policy to be enforced.
+AUTHZ_TABLE_DUPLICATE_APP_NAME.useraction=Review the configuration to verify applications have unique names, and restart the application.
+
+AUTHZ_TABLE_NOT_CREATED=CWWKS9111E: An internal error occurred during application startup. The authorization table for the application {0} could not be created and therefore no users will be authorized to protected resources.
+AUTHZ_TABLE_NOT_CREATED.explanation=The authorization table for an application was not created and therefore no users will be authorized to protected resources.
+AUTHZ_TABLE_NOT_CREATED.useraction=Examine the application's authorization configuration to determine why the authorization table was not created.
+
+RUNAS_INVALID_CONFIG=CWWKS9112W: Invalid run-as configuration for security-role name {0} in the application {1}. Check the configuration for run-as and confirm that the userid and password are configured correctly. The initial caller identity will be used for authorization because the runAs role could not be applied.
+RUNAS_INVALID_CONFIG.explanation= The run-as configuration for the security-role name is invalid for the application. Check the configuration of run-as and ensure the userid and password are configured correctly.
+RUNAS_INVALID_CONFIG.useraction=Review the run-as configuration of the application for the security-role name to make sure the username and password are configured correctly.

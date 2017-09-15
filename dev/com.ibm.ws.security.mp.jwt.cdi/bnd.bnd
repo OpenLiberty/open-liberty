@@ -1,0 +1,41 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Name: com.ibm.ws.security.mp.jwt.cdi
+Bundle-SymbolicName: com.ibm.ws.security.mp.jwt.cdi
+Bundle-Description: Microprofile JWT CDI, version ${bVersion}
+
+Import-Package: *
+
+Export-Package: \
+    !com.ibm.ws.security.mp.jwt.cdi.resources, \
+    com.ibm.ws.security.mp.jwt.cdi*
+
+Private-Package: \
+    com.ibm.ws.security.mp.jwt.cdi.resources
+
+Include-Resource: \
+    META-INF=resources/META-INF
+
+WS-TraceGroup: MPJWT
+
+-dsannotations-inherit: true
+-dsannotations: com.ibm.ws.security.mp.jwt.cdi.JwtCDIExtension
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+-buildpath: \
+    com.ibm.ws.logging;version=latest,\
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\
+    com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+    com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest,\
+    com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+    com.ibm.ws.security;version=latest,\
+    com.ibm.ws.security.mp.jwt;version=latest,\
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
+

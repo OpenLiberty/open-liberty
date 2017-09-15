@@ -1,0 +1,113 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.transport.http; singleton:=true
+Bundle-Name: HTTP Transport
+
+Bundle-Description: HTTP protocol implementation bundle. This provides \
+an HTTP dispatcher for multiple containers to hook into to receive a standard \
+inbound HTTP connection interface, as well as the HTTP channel \
+for direct and exclusive access of traffic for specific appplication channels. \
+An outbound HTTP channel is also implemented for client traffic, version ${bVersion}.
+
+Bundle-Activator: com.ibm.ws.http.internal.HttpChannelProvider
+
+WS-TraceGroup: HttpTransport
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+# For each exported package, create (in that package) a package-info.java
+# file, and place an @version javadoc tag in package-level javadoc. 
+# Append ";provide:=true" if this bundle also provides an implementation
+# for the exported API.
+Export-Package: \
+    com.ibm.wsspi.genericbnf*;provide:=true, \
+    com.ibm.wsspi.http*;provide:=true, \
+    com.ibm.wsspi.http.ee7*;provide:=true, \
+    com.ibm.wsspi.http.ee8*;provide:=true, \
+    com.ibm.ws.transport.access*;provide:=true, \
+    com.ibm.ws.genericbnf, \
+    com.ibm.ws.http.dispatcher.classify, \
+    com.ibm.ws.http.channel.outstream, \
+    com.ibm.ws.http.channel.inputstream, \
+    com.ibm.ws.http.channel.h2internal, \
+    com.ibm.ws.http.channel.h2internal.frames, \
+    com.ibm.ws.http.channel.h2internal.exceptions, \
+    com.ibm.ws.http.channel.h2internal.hpack, \
+    com.ibm.ws.http.channel.h2internal.huffman
+    
+Private-Package: \
+    com.ibm.ws.http.*, \
+	com.ibm.ws.http.dispatcher*, \
+	com.ibm.ws.http.channel*, \
+	com.ibm.ws.http.logging.internal, \
+	com.ibm.ws.genericbnf.internal, \
+	com.ibm.ws.http.dispatcher.classify
+
+-dsannotations: com.ibm.ws.http.channel.internal.inbound.HttpPipelineEventHandler,\
+  com.ibm.ws.http.dispatcher.internal.HttpDispatcher,\
+  com.ibm.ws.http.internal.DefaultMimeTypesImpl,\
+  com.ibm.ws.http.internal.EncodingUtilsImpl,\
+  com.ibm.ws.http.internal.HttpDateFormatImpl,\
+  com.ibm.ws.http.internal.HttpEndpointImpl,\
+  com.ibm.ws.http.internal.VirtualHostImpl,\
+  com.ibm.ws.http.logging.internal.AccessLogger,\
+  com.ibm.ws.http.internal.HttpProxyRedirect
+
+Service-Component: \
+    com.ibm.ws.http.options; \
+        implementation:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+        provide:=com.ibm.wsspi.channelfw.ChannelConfiguration; \
+        modified:='modified';\
+        immediate:=true;\
+        properties:="service.vendor=IBM,service.ranking:Integer=0"
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF, \
+    {OSGI-INF/welcome/index.html=resources/OSGI-INF/welcome/index.html}
+
+DynamicImport-Package: com.ibm.wsspi.request.probe.bci
+
+instrument.classesExcludes: \
+    **/com/ibm/ws/genericbnf/**, \
+    **/com/ibm/ws/http/channel/internal/**, \
+    **/com/ibm/ws/http/logging/internal/**, \
+    **/com/ibm/wsspi/genericbnf/**, \
+    **/com/ibm/wsspi/http/channel/**, \
+    **/com/ibm/wsspi/http/logging/**, \
+    **/com/ibm/wsspi/http/HttpOutputStream.class, \
+    **/com/ibm/wsspi/http/HttpInputStream.class
+
+-buildpath: \
+	com.ibm.ws.logging.core,\
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.event,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
+	com.ibm.ws.timer;version=latest,\
+	com.ibm.ws.runtime.update,\
+	com.ibm.ws.threading,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	cglib:cglib-nodep;version=2.1.0.3, \
+	org.jmock:jmock-legacy;version=2.5.0, \
+	com.ibm.ws.org.objenesis:objenesis;version=1.0

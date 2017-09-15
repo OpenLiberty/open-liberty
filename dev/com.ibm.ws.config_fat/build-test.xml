@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+
+<project name="com.ibm.ws.config_fat" default="buildandrun" basedir=".">	
+		
+	<mkdir dir="publish/servers/com.ibm.ws.config.schemaGen.mbean/download_target" />
+    <import file="../ant_build/public_imports/fat_imports.xml" />
+    
+    <property name="config.bundle.fragment" value="com.ibm.ws.config.ext_1.0.${micro.version}.jar" />
+    <property name="config.fat.validator.dir" value="publish/files/validator" />
+    <property name="config.validator.dir" value="${basedir}/../build.image/wlp/lib" />
+
+    <!-- Disable validation to avoid failures for custom elements. -->
+    <target name="validate-server-xmls"/>
+
+	<target name="addRequiredLibraries">
+		    <copy todir="${required.lib.dir}" flatten="true">
+		      <fileset dir="${basedir}/../build.image/wlp">
+		        <include name="clients/restConnector.jar"/>
+		        <include name="dev/api/ibm/com.ibm.websphere.appserver.api.config_*jar"/>
+		      </fileset>
+		    </copy>
+	  
+    <echo message="Creating embedded fragment jar for use in FAT" />
+    <mkdir dir="${config.fat.validator.dir}" />
+    <jar jarfile="${config.fat.validator.dir}/${config.bundle.fragment}" filesetmanifest="merge">
+      <zipfileset src="${config.validator.dir}/${config.bundle.fragment}" excludes="**/ConfigExtension.class" />
+    </jar>
+	</target>
+	
+	<target name="addAutoInstallApplications" description="Automatically Install applications on LibertyServer instance creation">
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.restart/apps"/>
+		
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.restart/apps/restart.war">
+			<zipfileset includes="**/*" src="${basedir}/publish/files/restart.zip"/>
+			<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>
+		
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.metatype.provider/apps"/>
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.metatype.provider/apps/metatypeprovider.war">
+			<zipfileset includes="**/*" src="${basedir}/publish/files/metatypeprovider.zip"/>
+			<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>
+		      
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.refresh/apps"/>
+		<copy file="${basedir}/publish/servers/com.ibm.ws.config.restart/apps/restart.war"
+		      todir="${basedir}/publish/servers/com.ibm.ws.config.refresh/apps"/>
+		
+	    <mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.refresh.error/apps"/>
+	    <copy file="${basedir}/publish/servers/com.ibm.ws.config.restart/apps/restart.war"
+	          todir="${basedir}/publish/servers/com.ibm.ws.config.refresh.error/apps"/>
+	    
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.restart.var/apps"/>
+		<copy file="${basedir}/publish/servers/com.ibm.ws.config.restart/apps/restart.war"
+		      todir="${basedir}/publish/servers/com.ibm.ws.config.restart.var/apps"/>
+		
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.import/apps"/>
+		<copy file="${basedir}/publish/servers/com.ibm.ws.config.restart/apps/restart.war"
+		      todir="${basedir}/publish/servers/com.ibm.ws.config.import/apps"/>
+	    
+	    <mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.import.error/apps"/>
+	    <copy file="${basedir}/publish/servers/com.ibm.ws.config.restart/apps/restart.war"
+              todir="${basedir}/publish/servers/com.ibm.ws.config.import.error/apps"/>
+			
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.childalias/apps"/>
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.childalias/apps/childalias.war">
+			<zipfileset includes="**/*" src="${basedir}/publish/files/childalias.zip"/>
+			<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>		
+		      
+	    <mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.merging/apps"/>
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.merging/apps/mergedconfig.war">
+			<zipfileset includes="**/*" src="${basedir}/publish/files/mergedconfig.zip"/>
+			<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>		
+		
+		  <mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.varmerging/apps"/>
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.varmerging/apps/varmerge.war">
+			<zipfileset includes="**/*" src="${basedir}/publish/files/varmerge.zip"/>
+			<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>	
+		
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.delayedVar/apps"/>
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.delayedVar/apps/varmerge.war">
+					<zipfileset includes="**/*" src="${basedir}/publish/files/varmerge.zip"/>
+					<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>	
+		
+		 <mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.helper/apps"/>
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.helper/apps/confighelper.war" filesetmanifest="merge">
+			<zipfileset includes="**/*" src="${basedir}/publish/files/confighelper.zip"/>
+			<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>	
+		
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.dropins/apps"/>
+		<jar destfile="${basedir}/publish/servers/com.ibm.ws.config.dropins/apps/configdropins.war" filesetmanifest="merge">
+			<zipfileset includes="**/*" src="${basedir}/publish/files/dropins.zip"/>
+			<zipfileset includes="**/*.class" src="../ant_build/lib/junit.jar" prefix="WEB-INF/classes" />
+		</jar>
+		
+				
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.config.schemaGen.mbean/dropins"/>
+		<move file="${basedir}/publish/files/mbeans.zip" 
+			  tofile="${basedir}/publish/servers/com.ibm.ws.config.schemaGen.mbean/dropins/mbeans.war"/>
+		
+		<delete file="${basedir}/publish/files/restart.zip"/>
+
+                <move file="${basedir}/publish/files/metatype.zip" 
+                      tofile="${basedir}/publish/files/metatype/com.ibm.ws.config.metatype_1.0.jar"/>
+
+	    <!-- copy the bundles for the config extensions test to the autoFVT files locations -->
+        <mkdir dir="${basedir}/publish/files/bundles"/>
+        <move todir="${basedir}/publish/files/bundles">
+            <fileset dir="${basedir}/publish/bundles" includes="*.jar"/>
+        </move>
+	    
+	</target>
+	
+	<target name="run-fat" depends="test.run.fat.bucket.run-fat">
+        <available file="${liberty.dir}/lib/${config.bundle.fragment}.bak" property="libertydir.needs.cleanup" />
+        <available file="${async.image.output.dir}/wlp/lib/${config.bundle.fragment}.bak" property="asyncdir.needs.cleanup" />
+	    <if if="libertydir.needs.cleanup">
+	        <echo message="${liberty.dir}/lib/${config.bundle.fragment}.bak exists, restoring proper fragment"/>
+            <delete file="${liberty.dir}/lib/${config.bundle.fragment}" />
+            <move file="${liberty.dir}/lib/${config.bundle.fragment}.bak"
+                  tofile="${liberty.dir}/lib/${config.bundle.fragment}" />
+        </if>
+        <if if="asyncdir.needs.cleanup">
+	        <echo message="${async.image.output.dir}/wlp/lib/${config.bundle.fragment}.bak exists, restoring proper fragment"/>
+            <delete file="${async.image.output.dir}/wlp/lib/${config.bundle.fragment}" />
+            <move file="${async.image.output.dir}/wlp/lib/${config.bundle.fragment}.bak"
+                  tofile="${async.image.output.dir}/wlp/lib/${config.bundle.fragment}" />
+        </if>
+	</target>
+
+</project>

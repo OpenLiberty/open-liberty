@@ -1,0 +1,19 @@
+-include= -liberty-release.props
+
+Subsystem-ManifestVersion: 1
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+Subsystem-Description: %description
+Subsystem-Localization: OSGI-INF/l10n/${symbolicName}
+visibility=private
+singleton=false
+Subsystem-SymbolicName: ${symbolicName}; visibility:=${visibility}; singleton:=${singleton}
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-InstallTo: core
+Subsystem-Vendor: IBM Corp.
+-removeheaders=\
+TODAY, DSTAMP, TSTAMP, Bnd-LastModified, \
+Include-Resource, Export-Package, Private-Package, Ignore-Package, \
+Bundle-SymbolicName, Bundle-Name, Bundle-Description, Bundle-ManifestVersion, Bundle-Version, Manifest-Version
+-includeresource=OSGI-INF/l10n/=build/l10n/,OSGI-INF=resources/icons/${symbolicName}/OSGI-INF

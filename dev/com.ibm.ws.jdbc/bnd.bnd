@@ -1,0 +1,135 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Database Connectivity
+Bundle-SymbolicName: com.ibm.ws.jdbc
+Bundle-Description: Database connectivity infrastructure, version ${bVersion}
+
+WS-TraceGroup: RRA
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Export-Package: \
+    com.ibm.ws.jdbc;provide:=true, \
+    com.ibm.ws.jdbc.osgi; provide:=true, \
+    com.ibm.ws.jdbc.timedoperations, \
+    com.ibm.ws.rsadapter, \
+    com.ibm.ws.rsadapter.jdbc, \
+    com.ibm.ws.rsadapter.impl
+
+Import-Package: \
+    com.ibm.ws.jca.adapter, \
+    com.ibm.ws.jca.cm, \
+    com.ibm.ws.util;version="[1.0,2)", \
+    !*.internal.*, !com.ibm.ws.j2c, !com.ibm.ws.security.jaas.common, *
+
+Private-Package: \
+    com.ibm.ejs.cm.logger, \
+    com.ibm.websphere.ce.cm, \
+    com.ibm.ws.jdbc.internal, \
+    com.ibm.ws.jdbc.internal.resources, \
+    com.ibm.ws.jdbc.*, \
+    com.ibm.ws.rsadapter.exceptions, \
+    com.ibm.ws.rsadapter.resources
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+    
+Service-Component: \
+  com.ibm.ws.jdbc.dataSource; \
+    implementation:=com.ibm.ws.jdbc.DataSourceService; \
+    provide:='\
+      com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent,\
+      com.ibm.wsspi.resource.ResourceFactory,\
+      com.ibm.ws.jdbc.DataSourceService,\
+      com.ibm.tx.jta.XAResourceFactory'; \
+    configuration-policy:=require; \
+    modified:='modified'; \
+    appRecycleService=com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;\
+    connectionManager=com.ibm.ws.jca.cm.ConnectionManagerService?; \
+    connectorService=com.ibm.ws.jca.cm.ConnectorService;\
+    containerAuthData=com.ibm.websphere.security.auth.data.AuthData?; \
+    driver=com.ibm.ws.jdbc.internal.JDBCDriverService; \
+    jaasLoginContextEntry=com.ibm.ws.security.jaas.common.JAASLoginContextEntry?; \
+    jdbcRuntimeVersion=com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion; \
+    recoveryAuthData=com.ibm.websphere.security.auth.data.AuthData?; \
+    greedy:='connectionManager,containerAuthData,driver,jaasLoginContextEntry,jdbcRuntimeVersion,recoveryAuthData';\
+    properties:='\
+      connectionManager.target=(id=unbound),\
+      containerAuthData.target=(id=unbound),\
+      driver.target=(id=unbound),\
+      jaasLoginContextEntry.target=(id=unbound),\
+      recoveryAuthData.target=(id=unbound),\
+      creates.objectClass=|javax.sql.DataSource', \
+  com.ibm.ws.jdbc.jdbcDriver; \
+    implementation:=com.ibm.ws.jdbc.internal.JDBCDriverService; \
+    provide:='com.ibm.ws.jdbc.internal.JDBCDriverService,com.ibm.wsspi.library.LibraryChangeListener'; \
+    configuration-policy:=require; \
+    modified:='modified'; \
+    connectorService=com.ibm.ws.jca.cm.ConnectorService;\
+    sharedLib=com.ibm.wsspi.library.Library; \
+    properties:='sharedLib.target=(id=unbound)', \
+  com.ibm.ws.jdbc.DataSourceResourceFactoryBuilder; \
+    implementation:=com.ibm.ws.jdbc.DataSourceResourceFactoryBuilder; \
+    provide:=com.ibm.ws.resource.ResourceFactoryBuilder; \
+    configAdmin=org.osgi.service.cm.ConfigurationAdmin; \
+    connectorService=com.ibm.ws.jca.cm.ConnectorService;\
+    properties:='creates.objectClass=javax.sql.DataSource', \
+  com.ibm.ws.jdbc.serialization; \
+    implementation:=com.ibm.ws.rsadapter.jdbc.SerializationObjectReplacerImpl; \
+    resRefConfigFactory=com.ibm.ws.resource.ResourceRefConfigFactory;\
+    provide:=com.ibm.ws.serialization.SerializationObjectReplacer, \
+  com.ibm.ws.jdbc.deserialization; \
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
+    properties:='classes=com.ibm.ws.rsadapter.jdbc.SerializedDataSourceWrapper'
+
+DynamicImport-Package: com.ibm.wsspi.timedoperations, \
+    com.ibm.ws.timedoperations.bci, \
+    com.ibm.wsspi.request.probe.bci, \
+    com.ibm.wsspi.probeExtension, \
+    com.ibm.ws.security.jaas.common
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.ws.jca.cm;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.crypto.passwordutil;version=latest,\
+	com.ibm.ws.kernel.metatype.helper;version=latest,\
+	com.ibm.ws.app.manager.lifecycle;version=latest,\
+	com.ibm.ws.security.jaas.common;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.serialization;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.hamcrest:hamcrest-all;version=1.3, \
+	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+	org.jmock:jmock;strategy=exact;version=2.5.1, \
+	com.ibm.ws.kernel.boot;version=latest

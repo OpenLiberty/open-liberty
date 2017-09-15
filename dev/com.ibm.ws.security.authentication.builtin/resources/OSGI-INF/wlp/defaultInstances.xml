@@ -1,0 +1,49 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <jaasLoginModule id="hashtable" className="com.ibm.ws.security.authentication.jaas.modules.HashtableLoginModule" controlFlag="REQUIRED" libraryRef="jaasSharedLib" />
+    <jaasLoginModule id="userNameAndPassword" className="com.ibm.ws.security.authentication.jaas.modules.UsernameAndPasswordLoginModule" controlFlag="REQUIRED"  libraryRef="jaasSharedLib" />
+    <jaasLoginModule id="certificate" className="com.ibm.ws.security.authentication.jaas.modules.CertificateLoginModule" controlFlag="REQUIRED" libraryRef="jaasSharedLib" />
+    <jaasLoginModule id="token" className="com.ibm.ws.security.authentication.jaas.modules.TokenLoginModule" controlFlag="REQUIRED" libraryRef="jaasSharedLib" />
+
+    <jaasLoginModule id="proxy" className="com.ibm.ws.security.jaas.common.modules.WSLoginModuleProxy" controlFlag="REQUIRED" libraryRef="jaasSharedLib">
+        <options delegate="com.ibm.ws.security.authentication.jaas.modules.WSLoginModuleImpl" />
+    </jaasLoginModule>
+
+    <jaasLoginModule id="identityAssertion" className="com.ibm.wsspi.security.common.auth.module.IdentityAssertionLoginModule" controlFlag="REQUIRED" libraryRef="jaasSharedLib" />
+
+	<jaasLoginContextEntry id="system.UNAUTHENTICATED" name="system.UNAUTHENTICATED" loginModuleRef="hashtable,userNameAndPassword,certificate,token" />
+	<jaasLoginContextEntry id="system.WEB_INBOUND" name="system.WEB_INBOUND" loginModuleRef="hashtable,userNameAndPassword,certificate,token" />
+	<jaasLoginContextEntry id="system.DEFAULT" name="system.DEFAULT" loginModuleRef="hashtable,userNameAndPassword,certificate,token" />
+	<jaasLoginContextEntry id="system.DESERIALIZE_CONTEXT" name="system.DESERIALIZE_CONTEXT" loginModuleRef="hashtable,userNameAndPassword,certificate,token" />
+    <jaasLoginContextEntry id="system.RMI_INBOUND" name="system.RMI_INBOUND" loginModuleRef="hashtable,userNameAndPassword,certificate,token" />    
+    <jaasLoginContextEntry id="WSLogin" name="WSLogin" loginModuleRef="proxy" />
+    
+    <library id="jaasSharedLib" apiTypeVisibility="spec, ibm-api, api">
+        <fileset dir="${server.config.dir}/lib/global/" includes="*" />
+    </library>
+    <jaasLoginContextEntry id="JAASClient" name="JAASClient" loginModuleRef="krb5LoginModule" />
+	<jaasLoginModule id="krb5LoginModule" className="com.ibm.security.auth.module.Krb5LoginModule" controlFlag="REQUIRED" libraryRef="jaasSharedLib">
+    	<options useDefaultCcache="false" credsType="both" forwardable="true"/>
+    </jaasLoginModule>
+        
+    <!-- default location for all custom JAAS login modules specifies in the JAAS configuration file (jaas.conf) -->
+    <library id="jaasDefaultSharedLib" apiTypeVisibility="spec, ibm-api, api">
+        <fileset dir="${server.config.dir}/resources/security/jaas/" includes="*" />
+        <fileset dir="${shared.config.dir}/resources/security/jaas/" includes="*" />
+        <fileset dir="${server.config.dir}/resources/security/jaas/" />
+        <fileset dir="${shared.config.dir}/resources/security/jaas/" />
+    </library>
+
+    <variable name="wlp.collective.auth.plugin" value="NullCollectiveAuthenticationPlugin" />    
+
+</server>

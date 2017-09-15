@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.kernel.feature.core
+
+Export-Package: \
+	com.ibm.ws.kernel.feature,\
+	com.ibm.ws.kernel.feature.internal,\
+	com.ibm.ws.kernel.feature.internal.subsystem,\
+	com.ibm.ws.kernel.feature.provisioning,\
+	com.ibm.ws.kernel.feature.resolver,\
+	com.ibm.wsspi.kernel.feature
+
+publish.wlp.jar.disabled: true
+
+-sources: true
+
+-buildpath: \
+	org.eclipse.osgi;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.kernel.boot.core;version=latest,\
+	com.ibm.ws.kernel.boot.nested;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.runtime.update;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.namespace.service;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.wsspi.org.osgi.service.event;version=latest,\
+	com.ibm.ws.org.eclipse.equinox.region;version=latest,\
+	com.ibm.ws.org.apache.aries.util;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

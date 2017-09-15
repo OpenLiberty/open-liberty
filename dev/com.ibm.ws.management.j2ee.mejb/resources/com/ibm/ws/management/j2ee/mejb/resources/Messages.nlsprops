@@ -1,0 +1,32 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.j2ee.mejb/resources/com/ibm/ws/management/j2ee/mejb/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKJ
+#COMPONENTNAMEFOR JSR77
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+MANAGEMENT_EJB_SERVICE_ACTIVATED=CWWKJ0200I: The ManagementEJB service started.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.explanation=The ManagementEJB service successfully started.
+MANAGEMENT_EJB_SERVICE_ACTIVATED.useraction=This message is for informational purposes only. No action is needed.
+
+MANAGEMENT_EJB_SERVICE_DEACTIVATED=CWWKJ0201I: The ManagementEJB service stopped.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.explanation=The ManagementEJB service successfully stopped.
+MANAGEMENT_EJB_SERVICE_DEACTIVATED.useraction=This message is for informational purposes only. No action is needed.
+
+MANAGEMENT_EJB_START_ERROR=CWWKJ0202E: The system EJB module cannot be started. Error: {0} 
+MANAGEMENT_EJB_START_ERROR.explanation=The product cannot start the system EJB module because an error occurred.
+MANAGEMENT_EJB_START_ERROR.useraction=Ensure the EJB module is configured correctly. 
+

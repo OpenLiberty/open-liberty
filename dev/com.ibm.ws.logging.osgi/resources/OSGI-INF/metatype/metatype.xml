@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011, 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+ 
+    <OCD name="%logging.properties" description="%logging.properties.desc" 
+         id="com.ibm.ws.logging" ibm:alias="logging" ibm:supportExtensions="true">
+    
+      	<AD name="%max.file.size" description="%max.file.size.desc" 
+            ibm:variable="com.ibm.ws.logging.max.file.size"
+            id="maxFileSize" required="false" type="Integer" min="0" default="20" />
+            
+        <AD name="%max.files" description="%max.files.desc"
+            ibm:variable="com.ibm.ws.logging.max.files"
+            id="maxFiles" required="false" type="Integer" min="0" default="2" />
+
+        <AD name="%log.directory" description="%log.directory.desc"
+            ibm:variable="com.ibm.ws.logging.log.directory" ibm:type="location(dir)"
+            id="logDirectory" required="false" type="String" default="${server.output.dir}/logs" />
+    
+        <AD name="%message.file.name" description="%message.file.name.desc"
+            ibm:variable="com.ibm.ws.logging.message.file.name"
+            id="messageFileName" required="false" type="String" default="messages.log" />
+    
+        <AD name="%trace.file.name" description="%trace.file.name.desc" 
+            ibm:variable="com.ibm.ws.logging.trace.file.name"
+            id="traceFileName" required="false" type="String" default="trace.log" />
+    
+        <AD name="%trace.specification" description="%trace.specification.desc" 
+            ibm:variable="com.ibm.ws.logging.trace.specification"        
+            id="traceSpecification" required="false" type="String" default="*=info"/>    
+    
+        <AD name="%hide.messages" description="%hide.messages.desc"
+            ibm:variable="com.ibm.ws.logging.hideMessage"        
+            id="hideMessage" required="false" type="String"/>    
+    
+    	<AD name="%trace.format" description="%trace.format.desc" 
+            ibm:variable="com.ibm.ws.logging.trace.format"
+            id="traceFormat" required="false" type="String" default="ENHANCED">
+            <Option label="%trace.basic" value="BASIC"/>
+            <Option label="%trace.enhanced" value="ENHANCED"/>
+            <Option label="%trace.advanced" value="ADVANCED"/>
+        </AD>
+        
+        <AD name="%isoDateFormat" description="%isoDateFormat.desc"
+        	ibm:variable="com.ibm.ws.logging.isoDateFormat"
+            id="isoDateFormat" required="false" type="Boolean" default="false" />
+
+        <AD name="%console.level" description="%console.level.desc" 
+            ibm:variable="com.ibm.ws.logging.console.log.level"
+            id="consoleLogLevel" required="false" type="String" default="AUDIT">
+            <Option label="%console.level.info" value="INFO"/>
+            <Option label="%console.level.audit" value="AUDIT"/>
+            <Option label="%console.level.warning" value="WARNING"/>
+            <Option label="%console.level.error" value="ERROR"/>
+            <Option label="%console.level.off" value="OFF"/>
+        </AD>  
+
+        <AD name="%console.copySystemStreams" description="%console.copySystemStreams.desc" 
+            ibm:variable="com.ibm.ws.logging.copy.system.streams"
+            id="copySystemStreams" required="false" type="Boolean" default="true" />  
+
+        <AD name="%filter.sensitive" description="%filter.sensitive.desc"
+            id="suppressSensitiveTrace" required="false" type="Boolean" default="false" />
+
+        <AD name="internal" description="internal use only"
+            id="publishOsgiEvents" required="false" type="String" default="NONE">
+            <Option value="ALL" label="ALL"/>
+            <Option value="INFO" label="INFO"/>
+            <Option value="NONE" label="NONE"/>
+        </AD>
+    </OCD>
+  
+    <Designate pid="com.ibm.ws.logging">
+        <Object ocdref="com.ibm.ws.logging"/>
+    </Designate>
+    
+</metatype:MetaData>

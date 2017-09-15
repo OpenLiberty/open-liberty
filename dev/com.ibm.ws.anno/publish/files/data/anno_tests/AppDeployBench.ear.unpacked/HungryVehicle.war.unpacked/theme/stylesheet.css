@@ -1,0 +1,2234 @@
+/********************************
+ *	Faces Components Stylesheet *
+ ********************************/
+
+.form {
+}
+
+.commandLink {
+}
+
+.outputLink {
+}
+
+.graphicImage {
+}
+
+.outputLabel {
+}
+
+.inputText {
+}
+
+.inputText_Error {
+	border-style: solid;
+	border-color: #DE5C5C;
+}
+
+.inputTextarea {
+}
+
+.inputSecret {
+}
+
+.inputHidden {
+}
+
+.outputText {
+}
+
+.outputFormat {
+}
+
+.commandButton {
+}
+
+.message {
+}
+
+.messages {
+}
+
+.selectBooleanCheckbox {
+}
+
+.selectBooleanCheckbox_Error {
+}
+
+.selectOneRadio {
+}
+
+.selectOneRadio_Error {
+}
+
+.selectOneRadio_Disabled {
+	color: GrayText;
+}
+
+.selectManyCheckbox {
+}
+
+.selectManyCheckbox_Error {
+}
+
+.selectManyCheckbox_Disabled {
+	color: GrayText;
+}
+
+.selectOneListbox {
+}
+
+.selectOneListbox_Error {
+}
+
+.selectManyListbox {
+}
+
+.selectManyListbox_Error {
+}
+
+.selectOneMenu {
+}
+
+.selectOneMenu_Error {
+}
+
+.selectManyMenu {
+}
+
+.selectManyMenu_Error {
+}
+
+.panelGroup {
+}
+
+.panelGrid {
+}
+
+.dataTable {
+	empty-cells:show;
+}
+
+.headerClass {
+	background-color: ThreeDFace;
+	color: WindowText;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDShadow;
+	margin:2px;
+	padding:0px;
+	padding-left:4pt;
+	padding-right:4pt;
+	padding-bottom:2px;
+	font-weight: 400;
+	overflow: -moz-scrollbars-none;
+}
+
+.footerClass {
+	background-color: ThreeDFace;
+	color: WindowText;
+	border-width: 0px;
+	border-style: none;
+	padding:0px;
+	padding-left:4pt;
+	padding-right:4pt;
+	font-weight: 400;
+	overflow: -moz-scrollbars-none;
+}
+
+.rowClass1 {
+	background-color: window;
+}
+
+.rowClass2 {
+	background-color: ThreeDFace;
+}
+
+.columnClass1 {
+	background-color: window;
+	margin:2px;
+	padding:0px;
+	padding-left:4pt;
+	padding-right:4pt;
+	padding-bottom:2px;
+	overflow: -moz-scrollbars-none;
+}
+
+.columnClass2 {
+	background-color: ThreeDFace;
+	margin:2px;
+	padding:0px;
+	padding-left:4pt;
+	padding-right:4pt;
+	padding-bottom:2px;	
+}
+
+.commandExButton {
+	
+}
+
+.commandExButton_Label {
+	color: windowtext;
+	text-align: center;
+	vertical-align: middle
+}
+
+.commandExButton_Icon {
+	text-align: left;
+	margin-left: 4px;
+	height: 17px;
+	width: 17px
+}
+
+.commandExButton_Icon_moused {
+	text-align: left;
+	margin-left: 4px;
+	height: 17px;
+	width: 17px
+}
+
+.commandExButton_Icon_depressed {
+	text-align: left;
+	margin-left: 4px;
+	height: 17px;
+	width: 17px
+}
+
+.commandExButton_Icon_disabled {
+	text-align: left;
+	margin-left: 4px;
+	height: 17px;
+	width: 17px
+}
+
+.requestLink {
+	
+}
+
+.outputLinkEx {
+	
+}
+
+.graphicImageEx {
+	
+}
+
+.outputSeparator {
+	
+}
+
+.fileupload {
+	
+}
+
+.panelBox {
+	
+}
+
+.panelLayout {
+	
+}
+
+.playerGenericPlayer {
+	
+}
+
+.playerFlash {
+	
+}
+
+.playerShockwave {
+	
+}
+
+.playerRealPlayer {
+	
+}
+
+.playerMediaPlayer {
+	
+}
+
+.panelActionbar {
+	
+}
+
+.panelActionbar A:link {
+	text-decoration: none
+}
+
+.panelActionbar A:visited {
+	text-decoration: none
+}
+
+.panelActionbar A:hover {
+	text-decoration: underline
+}
+
+.panelActionbar IMG {
+	border: 0
+}
+
+.panelActionbar TD {
+	padding: 1px
+}
+
+.inputText_Slider {
+	background-color: buttonface;
+	border: 1px;
+	border-style: solid;
+	border-color: windowframe;
+	font-family: sans-serif;
+	text-decoration: none;
+	color: windowtext
+}
+
+.inputText_Slider_Body {
+	background-color: buttonface;
+	color: threedshadow;
+	border-style: solid;
+	border-color: threedhighlight;
+	border-right-color: threedShadow
+}
+
+.inputText_DatePicker {
+	background-color: ButtonFace;
+	border: 1px;
+	border-style: solid;
+	border-color: ButtonShadow;
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: normal;
+	color: WindowText;
+	padding: 2px;
+	margin: 0px
+}
+
+.inputText_DatePicker-Size {
+	
+}
+
+.inputText_DatePicker-Header {
+	border-width: 0px;
+	border-bottom-width: 1px;
+	border-style: solid;
+	border-color: ButtonShadow
+}
+
+.inputText_DatePicker-Body {
+	border-width: 0px;
+	border-style: none;
+	background-color: window
+}
+
+.inputText_DatePicker-HeaderLine1 {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputText_DatePicker-HeaderLine2 {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputText_DatePicker-HeaderWeekday {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputText_DatePicker-HeaderYear {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputText_DatePicker-HeaderMonth {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputText_DatePicker-HeaderLine1 {
+	width: 12px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	padding-bottom: 1px
+}
+
+.inputText_DatePicker-HeaderYear {
+	color: WindowText;
+	padding-top: 2px;
+	padding-bottom: 1px
+}
+
+.inputText_DatePicker-HeaderLine2 {
+	width: 12px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 3px
+}
+
+.inputText_DatePicker-HeaderMonth {
+	color: WindowText;
+	padding-bottom: 3px
+}
+
+.inputText_DatePicker-Button {
+	border: 0px;
+	width: 12px;
+	height: 12px
+}
+
+.inputText_DatePicker-HeaderWeekday {
+	color: WindowText;
+	background-color: ButtonFace;
+	padding-top: 1px;
+	padding-bottom: 2px
+}
+
+.inputText_DatePicker-OtherMonth {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-CurrentMonth {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-InvalidDay {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-CurrentDay {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-CurrentOtherDay {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-Today {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-CurrentToday {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-Hover {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 0px;
+	border-style: none;
+	padding: 2px;
+	padding-left: 3px;
+	padding-right: 3px
+}
+
+.inputText_DatePicker-Hover {
+	background-color: InactiveCaptionText
+}
+
+.inputText_DatePicker-OtherMonth {
+	color: GrayText;
+	border-color: Window
+}
+
+.inputText_DatePicker-CurrentMonth {
+	color: WindowText;
+	border-color: Window
+}
+
+.inputText_DatePicker-Today {
+	border-color: Window;
+	color: Window;
+	background-color: ThreeDDarkShadow;
+	font-weight: bold
+}
+
+.inputText_DatePicker-Today A {
+	border-color: Window;
+	color: Window;
+	background-color: ThreeDDarkShadow;
+	font-weight: bold
+}
+
+.inputText_DatePicker-CurrentDay {
+	color: HighlightText;
+	background-color: Highlight
+}
+
+.inputText_DatePicker-CurrentToday {
+	color: HighlightText;
+	background-color: Highlight
+}
+
+.inputText_DatePicker-CurrentToday {
+	font-weight: bold
+}
+
+.inputText_DatePicker-CurrentOtherDay {
+	color: HighlightText;
+	background-color: Highlight
+}
+
+.inputText_DatePicker-InvalidDay {
+	color: GrayText;
+	background-color: buttonface;
+	border-color: buttonface
+}
+
+.inputText_Typeahead {
+	background-color: Window;
+	border-width: 1px;
+	border-style: solid;
+	border-color: ThreeDDarkShadow
+}
+
+.inputText_Typeahead-List {
+	background-color: Window;
+	text-align: left;
+	vertical-align: middle;
+	height: auto;
+	font-family: sans-serif;
+	font-weight: 400;
+	font-size: 10pt;
+	border-collapse: collapse
+}
+
+.inputText_Typeahead-Item {
+	background-color: Window;
+	color: WindowText;
+	padding-left: 1pt;
+	padding-right: 1pt
+}
+
+.inputText_Typeahead-Item-Selected {
+	color: Window;
+	background-color: Highlight;
+	padding-left: 1pt;
+	padding-right: 1pt
+}
+
+.inputText_Typeahead-Item a {
+	text-decoration: none;
+	color: WindowText
+}
+
+.inputText_Typeahead-Item-Selected a {
+	text-decoration: none;
+	color: Window
+}
+
+.dataTableEx {
+	empty-cells: show
+}
+
+.panelRowCategory {
+	
+}
+
+.inputRowSelect {
+	vertical-align: middle;
+	margin: 0px;
+	margin-top: 1px;
+	margin-left: 3px
+}
+
+.commandExRowEdit {
+	
+}
+
+.editStyleClass {
+	background-color: Window;
+	border-color: WindowFrame;
+	border-style: solid;
+	border-width: 1px;
+	padding-bottom: 4px;
+	text-align: right
+}
+
+.editStyleClass A {
+	margin: 0px;
+	padding: 0px;
+	border-width: 0px;
+	border-style: none;
+	width: 1px;
+	height: 1px
+}
+
+.pagerSimple {
+	
+}
+
+.pagerGoto {
+	
+}
+
+.pagerGoto_inputText {
+	
+}
+
+.pagerWeb {
+	
+}
+
+.outputStatistics {
+	
+}
+
+.pagerDeluxe {
+	background-color: ThreeDFace;
+	border-color: ThreeDFace;
+	border-width: 1px;
+	border-style: solid
+}
+
+.pagerDeluxeActive {
+	padding: 0px;
+	margin: 0px;
+	border-width: 1px;
+	border-color: ThreeDShadow;
+	border-style: solid;
+	background-color: transparent
+}
+
+.pagerDeluxeHidden {
+	padding: 0px;
+	margin: 0px;
+	border-width: 0px;
+	border-color: transparent;
+	border-style: solid;
+	background-color: transparent
+}
+
+.pagerDeluxeActive_button {
+	padding: 0px;
+	margin: 0px;
+	width: 22px;
+	height: 19px;
+	background-color: ThreeDFace;
+	border-style: solid;
+	border-width: 1px;
+	border-color: Window;
+	font-size: 13px
+}
+
+.pagerDeluxeHidden_button {
+	padding: 0px;
+	margin: 0px;
+	width: 22px;
+	height: 19px;
+	background-color: transparent;
+	border-style: solid;
+	border-width: 0px;
+	border-color: transparent
+}
+
+.pagerDeluxe_text {
+	vertical-align: middle;
+	text-align: center;
+	padding: 0px;
+	padding-left: 8px;
+	padding-right: 8px;
+	margin: 0px;
+	background-color: ThreeDFace;
+	border-width: 0px;
+	border-style: solid;
+	border-color: ThreeDFace;
+	font-size: 13px;
+	color: windowtext
+}
+
+.pagerDeluxe_button_twistie {
+	color: windowtext;
+	border-color: windowtext;
+	list-style-type: none
+}
+
+.pagerDeluxeActive_button_twistie {
+	color: windowtext;
+	border-color: windowtext;
+	list-style-type: none
+}
+
+.sortHeader_sortasc-img {
+	background-image: url("img/JSF_sort_asc.gif");
+	background-repeat: no-repeat;
+	width: 11px;
+	height: 5px;
+	border-style: none
+}
+
+.sortHeader_sortascon-img {
+	background-image: url("img/JSF_sort_ascon.gif");
+	background-repeat: no-repeat;
+	width: 11px;
+	height: 5px;
+	border-style: none
+}
+
+.sortHeader_sortdesc-img {
+	background-image: url("img/JSF_sort_desc.gif");
+	background-repeat: no-repeat;
+	width: 11px;
+	height: 5px;
+	border-style: none
+}
+
+.sortHeader_sortdescon-img {
+	background-image: url("img/JSF_sort_descon.gif");
+	background-repeat: no-repeat;
+	width: 11px;
+	height: 5px;
+	border-style: none
+}
+
+.sortHeader_sortbi-img {
+	background-image: url("img/JSF_sort_bi.gif");
+	background-repeat: no-repeat;
+	width: 11px;
+	height: 11px;
+	border-style: none
+}
+
+.sortHeader_sortbiup-img {
+	background-image: url("img/JSF_sort_biup.gif");
+	background-repeat: no-repeat;
+	width: 11px;
+	height: 11px;
+	border-style: none
+}
+
+.sortHeader_sortbidown-img {
+	background-image: url("img/JSF_sort_bidown.gif");
+	background-repeat: no-repeat;
+	width: 11px;
+	height: 11px;
+	border-style: none
+}
+
+.sortHeader_sortasc {
+	text-decoration: none;
+	border: none;
+	color: #000000
+}
+
+.sortHeader_sortascon {
+	text-decoration: none;
+	border: none;
+	color: #000000
+}
+
+.sortHeader_sortdesc {
+	text-decoration: none;
+	border: none;
+	color: #000000
+}
+
+.sortHeader_sortdescon {
+	text-decoration: none;
+	border: none;
+	color: #000000
+}
+
+.sortHeader_sortbi {
+	text-decoration: none;
+	border: none;
+	color: #000000
+}
+
+.sortHeader_sortbiup {
+	text-decoration: none;
+	border: none;
+	color: #000000
+}
+
+.sortHeader_sortbidown {
+	text-decoration: none;
+	border: none;
+	color: #000000
+}
+
+.inputMiniCalendar {
+	background-color: ButtonFace;
+	border: 1px;
+	border-style: solid;
+	border-color: ButtonShadow;
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: normal;
+	color: WindowText;
+	padding: 2px;
+	margin: 0px;
+	width: 130pt
+}
+
+.inputMiniCalendar-Size {
+	
+}
+
+.inputMiniCalendar-Header {
+	border-width: 0px;
+	border-bottom-width: 1px;
+	border-style: solid;
+	border-color: ButtonShadow
+}
+
+.inputMiniCalendar-Body {
+	border-width: 0px;
+	border-style: none;
+	background-color: window
+}
+
+.inputMiniCalendar-HeaderLine1 {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputMiniCalendar-HeaderLine2 {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputMiniCalendar-HeaderWeekday {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputMiniCalendar-HeaderYear {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputMiniCalendar-HeaderMonth {
+	font-family: Arial, sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	font-weight: bold;
+	vertical-align: middle
+}
+
+.inputMiniCalendar-HeaderLine1 {
+	width: 12px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-top: 2px;
+	padding-bottom: 1px
+}
+
+.inputMiniCalendar-HeaderYear {
+	color: WindowText;
+	padding-top: 2px;
+	padding-bottom: 1px
+}
+
+.inputMiniCalendar-HeaderLine2 {
+	width: 12px;
+	padding-left: 2px;
+	padding-right: 2px;
+	padding-bottom: 3px
+}
+
+.inputMiniCalendar-HeaderMonth {
+	color: WindowText;
+	padding-bottom: 3px
+}
+
+.inputMiniCalendar-Button {
+	border: 0px;
+	width: 12px;
+	height: 12px
+}
+
+.inputMiniCalendar-HeaderWeekday {
+	color: WindowText;
+	background-color: ButtonFace;
+	padding-top: 1px;
+	padding-bottom: 2px
+}
+
+.inputMiniCalendar-OtherMonth {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-CurrentMonth {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-CurrentDay {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-CurrentOtherDay {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-InvalidDay {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-Today {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-CurrentToday {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-Hover {
+	font-family: Arial, sans-serif;
+	font-size: 9pt;
+	text-decoration: none;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: middle;
+	border-width: 1px;
+	border-style: solid;
+	padding: 1px;
+	padding-left: 2px;
+	padding-right: 2px;
+	border-color: window
+}
+
+.inputMiniCalendar-Hover {
+	background-color: InactiveCaptionText;
+	border-color: black
+}
+
+.inputMiniCalendar-OtherMonth {
+	color: GrayText
+}
+
+.inputMiniCalendar-CurrentMonth {
+	color: WindowText
+}
+
+.inputMiniCalendar-Today {
+	border-color: Window;
+	color: Window;
+	background-color: ThreeDDarkShadow;
+	font-weight: bold
+}
+
+.inputMiniCalendar-CurrentDay {
+	color: HighlightText;
+	background-color: Highlight
+}
+
+.inputMiniCalendar-CurrentToday {
+	color: HighlightText;
+	background-color: Highlight
+}
+
+.inputMiniCalendar-CurrentToday {
+	font-weight: bold
+}
+
+.inputMiniCalendar-CurrentOtherDay {
+	color: HighlightText;
+	background-color: Highlight
+}
+
+.inputMiniCalendar-InvalidDay {
+	color: GrayText;
+	background-color: buttonface;
+	border-color: buttonface
+}
+
+.selectOneColor {
+	
+}
+
+.selectOneColor_ColorPicker {
+	background-color: white;
+	border: 1px;
+	border-style: solid;
+	border-color: ButtonShadow;
+	margin: 0px;
+	padding: 0px
+}
+
+.selectOneColor_ColorPicker-Body {
+	background-color: white;
+	border-width: 0px;
+	border-style: none;
+	margin: 2px
+}
+
+.selectOneColor_ColorPicker-GridCell {
+	padding: 2px;
+	border-color: white;
+	border-style: solid;
+	border-width: 1px;
+	background-color: white
+}
+
+.selectOneColor_ColorPicker-GridCell-Hover {
+	padding: 2px;
+	border-color: white;
+	border-style: solid;
+	border-width: 1px;
+	background-color: white
+}
+
+.selectOneColor_ColorPicker-GridCell-Selected {
+	padding: 2px;
+	border-color: white;
+	border-style: solid;
+	border-width: 1px;
+	background-color: white
+}
+
+.selectOneColor_ColorPicker-GridCell-Hover-Selected {
+	padding: 2px;
+	border-color: white;
+	border-style: solid;
+	border-width: 1px;
+	background-color: white
+}
+
+.selectOneColor_ColorPicker-GridCell-Hover {
+	border-color: Highlight;
+	background-color: InactiveCaptionText
+}
+
+.selectOneColor_ColorPicker-GridCell-Selected {
+	border-color: Highlight;
+	background-color: ThreeDLightShadow
+}
+
+.selectOneColor_ColorPicker-GridCell-Hover-Selected {
+	border-color: black;
+	background-color: InactiveCaptionText
+}
+
+.selectOneColor_ColorPicker-GridSwatch {
+	width: 10px;
+	height: 10px;
+	border-width: 1px;
+	border-color: ThreeDShadow;
+	border-style: solid
+}
+
+.progressBar {
+	width: 500px;
+	height: 100px
+}
+
+.progressBar-Table {
+	background-color: ThreeDFace;
+	border-style: solid;
+	border-width: 1px;
+	border-color: windowtext
+}
+
+.progressBar-Message {
+	color: windowtext;
+	background-color: ThreeDFace;
+	font-size: 20px
+}
+
+.progressBar-Bar {
+	color: windowtext;
+	background-color: blue;
+	height: 20px
+}
+
+.progressBar-Bar_container {
+	border-color: windowtext;
+	border-style: solid;
+	border-width: 1px
+}
+
+.progressBar-Bar_text {
+	color: windowtext;
+	background-color: transparent;
+	height: 20px
+}
+
+.panelSection {
+	
+}
+
+.panelSection-header {
+	
+}
+
+.panelSection-header a {
+	text-decoration: underline;
+	color: black
+}
+
+.panelSection-header a:hover {
+	
+}
+
+.panelSection-body {
+	
+}
+
+.panelSectionWide {
+	
+}
+
+.panelSectionWide-header {
+	border-style: solid;
+	border-width: 1px;
+	border-color: black
+}
+
+.panelSectionWide-header a {
+	text-decoration: none;
+	color: black;
+	display: block;
+	width: 100%
+}
+
+.panelSectionWide-header a:hover {
+	
+}
+
+.panelSectionWide-body {
+	
+}
+
+.panelMenu {
+	background-color: #E7E7E7
+}
+
+.panelMenu_1_div {
+	
+}
+
+.panelMenu_1_table {
+	font-family: sans-serif;
+	font-size: 8pt
+}
+
+.panelMenu_1_cell_normal {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_disabled {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_moused {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_selected {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_selected_moused {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_first_normal {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_first_disabled {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_first_moused {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_first_selected {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_first_selected_moused {
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 32pt;
+	text-align: left;
+	background-color: #E7E7E7;
+	border-width: 0px;
+	border-right-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_1_cell_first_normal {
+	border-left-width: 1px
+}
+
+.panelMenu_1_cell_first_disabled {
+	border-left-width: 1px
+}
+
+.panelMenu_1_cell_first_moused {
+	border-left-width: 1px
+}
+
+.panelMenu_1_cell_first_selected {
+	border-left-width: 1px
+}
+
+.panelMenu_1_cell_first_selected_moused {
+	border-left-width: 1px
+}
+
+.panelMenu_1_cell_moused {
+	background-color: white
+}
+
+.panelMenu_1_cell_first_moused {
+	background-color: white
+}
+
+.panelMenu_1_item_normal {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_1_item_moused {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_1_item_selected {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_1_item_selected_moused {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_1_item_disabled {
+	color: gray
+}
+
+.panelMenu_2_div {
+	background-color: white;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB;
+	margin: 0px;
+	margin-left: -1px;
+	margin-top: 1px
+}
+
+.panelMenu_2_table {
+	color: WindowText;
+	font-family: sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	border-width: 0px;
+	border-style: none
+}
+
+.panelMenu_2_cell_normal {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_disabled {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_selected {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_selected_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_last_normal {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_last_disabled {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_last_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_last_selected.panelMenu_2_cell_last_selected_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_alt_normal {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_alt_disabled {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_alt_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_alt_selected {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_alt_selected_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 14px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px
+}
+
+.panelMenu_2_cell_alt_normal {
+	padding-left: 10px;
+	background-color: #E7E7E7
+}
+
+.panelMenu_2_cell_alt_disabled {
+	padding-left: 10px;
+	background-color: #E7E7E7
+}
+
+.panelMenu_2_cell_alt_moused {
+	padding-left: 10px;
+	background-color: #E7E7E7
+}
+
+.panelMenu_2_cell_alt_selected {
+	padding-left: 10px;
+	background-color: #E7E7E7
+}
+
+.panelMenu_2_cell_alt_selected_moused {
+	padding-left: 10px;
+	background-color: #E7E7E7
+}
+
+.panelMenu_2_cell_moused {
+	background-color: #c5c5c5
+}
+
+.panelMenu_2_cell_last_moused {
+	background-color: #c5c5c5
+}
+
+.panelMenu_2_cell_alt_moused {
+	background-color: #c5c5c5
+}
+
+.panelMenu_2_cell_last_selected {
+	border-bottom-width: 0px
+}
+
+.panelMenu_2_cell_last_selected_moused {
+	border-bottom-width: 0px
+}
+
+.panelMenu_2_cell_last_normal {
+	border-bottom-width: 0px
+}
+
+.panelMenu_2_cell_last_moused {
+	border-bottom-width: 0px
+}
+
+.panelMenu_2_cell_last_disabled {
+	border-bottom-width: 0px
+}
+
+.panelMenu_2_item_normal {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_2_item_moused {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_2_item_selected {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_2_item_alt_normal {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_2_item_alt_moused {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_2_item_alt_selected {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_2_item_disabled {
+	color: gray;
+	text-decoration: none
+}
+
+.panelMenu_2_item_alt_disabled {
+	color: gray;
+	text-decoration: none
+}
+
+.panelMenu_2_arrow_normal {
+	right: 4px;
+	color: WindowText
+}
+
+.panelMenu_2_arrow_moused {
+	right: 4px;
+	color: WindowText
+}
+
+.panelMenu_2_arrow_disabled {
+	right: 4px;
+	color: gray
+}
+
+.panelMenu_2_separator {
+	text-align: left;
+	margin: 0px;
+	padding: 0px;
+	padding-left: 6px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px;
+	background-color: #E7E7E7
+}
+
+.panelMenu_3_div {
+	margin: 0px;
+	margin-left: 2px;
+	background-color: #E7E7E7;
+	border-width: 1px;
+	border-style: solid;
+	border-color: #ABABAB
+}
+
+.panelMenu_3_table {
+	margin: 0px;
+	margin-top: 1px;
+	color: WindowText;
+	font-family: sans-serif;
+	font-size: 8pt;
+	text-decoration: none;
+	border-width: 0px;
+	border-style: none
+}
+
+.panelMenu_3_cell_normal {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_disabled {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_selected {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_selected_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_last_normal {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_last_disabled {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_last_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_last_selected {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_last_selected_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_alt_normal {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_alt_disabled {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_alt_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_alt_selected {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_alt_selected_moused {
+	text-align: left;
+	margin: 0px;
+	padding: 2px;
+	padding-left: 12px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: white;
+	border-bottom-width: 1px
+}
+
+.panelMenu_3_cell_last_normal {
+	border-style: none;
+	border-bottom-width: 0px
+}
+
+.panelMenu_3_cell_last_disabled {
+	border-style: none;
+	border-bottom-width: 0px
+}
+
+.panelMenu_3_cell_last_moused {
+	border-style: none;
+	border-bottom-width: 0px
+}
+
+.panelMenu_3_cell_last_selected {
+	border-style: none;
+	border-bottom-width: 0px
+}
+
+.panelMenu_3_cell_last_selected_moused {
+	border-style: none;
+	border-bottom-width: 0px
+}
+
+.panelMenu_3_cell_moused {
+	background-color: white
+}
+
+.panelMenu_3_cell_alt_moused {
+	background-color: white
+}
+
+.panelMenu_3_cell_last_moused {
+	background-color: white
+}
+
+.panelMenu_3_item_normal {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_3_item_moused {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_3_item_alt_normal {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_3_item_alt_moused {
+	color: WindowText;
+	text-decoration: none
+}
+
+.panelMenu_3_item_alt_normal {
+	font-weight: bold
+}
+
+.panelMenu_3_item_alt_moused {
+	font-weight: bold
+}
+
+.panelMenu_3_item_disabled {
+	color: gray;
+	text-decoration: none
+}
+
+.panelMenu_3_item_alt_disabled {
+	color: gray;
+	text-decoration: none
+}
+
+.panelMenu_3_arrow_normal {
+	right: 4px;
+	color: white
+}
+
+.panelMenu_3_arrow_moused {
+	right: 4px;
+	color: WindowText
+}
+
+.panelMenu_3_arrow_disabled {
+	right: 4px;
+	color: gray
+}
+
+.panelMenu_3_separator {
+	text-align: left;
+	margin: 0px;
+	padding: 0px;
+	padding-left: 6px;
+	padding-right: 22pt;
+	border-width: 0px;
+	border-style: solid;
+	border-color: #E5E5E5;
+	border-bottom-width: 1px;
+	background-color: white
+}
+
+.panelFormBox {
+	
+}
+
+.panelFormBox_Header {
+	
+}
+
+.panelFormBox_Label {
+	
+}
+
+.panelFormBox_Label-Required {
+	
+}
+
+.panelFormBox_Label-Error {
+	
+}
+
+.panelFormBox_Label-Required-Error {
+	
+}
+
+.panelFormBox_Content {
+	
+}
+
+.panelFormBox_Content-Error {
+	
+}
+
+.panelFormBox_Info {
+	
+}
+
+.panelFormBox_Error {
+	
+}
+
+.panelFormBox_MessagesArea {
+	
+}
+
+.panelFormBox_MessagesArea-Info {
+	
+}
+
+.panelFormBox_MessagesArea-Error {
+	
+}
+
+.panelFormBox_Label-Cell {
+	
+}
+
+.panelFormBox_Help-Cell {
+	
+}
+
+.panelFormBox_Content-Cell {
+	
+}
+
+.panelFormBox_Top-Cell {
+	
+}
+
+.panelFormBox_Bottom-Cell {
+	
+}
+
+.panelFormBox_Left-Cell {
+	
+}
+
+.panelFormBox_Right-Cell {
+	
+}
+
+.panelFormBox_Spacer-Cell {
+	
+}
+
+.panelFormBox_Released {
+	
+}
+
+.panelFormBox_Released {
+	
+}
+
+.panelFormBox_Label-Released-Cell {
+	
+}
+
+.panelFormBox_Help-Released-Cell {
+	
+}
+
+.panelFormBox_Content-Released-Cell {
+	
+}
+
+.panelDialog {
+	position: absolute;
+	background-color: #ffffff;
+	border-width: 2px;
+	border-color: #5F7BC7;
+	border-style: solid
+}
+
+.panelDialog_TitleBar {
+	text-align: center;
+	color: white;
+	font-family: sans-serif;
+	font-weight: bold;
+	font-size: 11px;
+	padding-left: 15px;
+	padding-right: 20px;
+	padding-top: 1px;
+	padding-bottom: 2px;
+	background-color: #1177cc;
+	background-repeat: repeat-x;
+	background-image: url("img/JSF_title_bar.gif");
+	cursor: pointer
+}
+
+.panelDialog_TitleBar-CloseButton {
+	position: absolute;
+	top: 1px;
+	right: 1px;
+	cursor: default;
+	border-style: none;
+	border-width: 0px
+}
+
+.panelDialog_TitleBar-CloseButton-img {
+	background-image: url("img/JSF_title_closebtn.gif");
+	background-repeat: no-repeat;
+	width: 16px;
+	height: 14px;
+	border-style: none;
+	border-width: 0px
+}
+
+.panelDialog_ContentArea {
+	font-family: sans-serif;
+	font-size: 12px;
+	padding: 2px;
+	padding-top: 10px
+}
+
+.panelDialog_Footer {
+	text-align: right;
+	display: block;
+	padding-top: 2px;
+	padding-right: 2px;
+	padding-bottom: 2px;
+	font-size: 12px
+}

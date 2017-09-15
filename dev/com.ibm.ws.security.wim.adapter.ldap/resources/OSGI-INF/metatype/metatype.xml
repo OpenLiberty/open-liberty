@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+    <OCD id="com.ibm.ws.security.registry.ldap.config.metatype" name="%ldap.config" description="%ldap.config.desc"
+         ibm:alias="ldapRegistry" ibm:objectClass="com.ibm.ws.security.wim.ConfiguredRepository">
+        <AD id="realm" name="%realm" description="%realm.desc"
+            required="false" type="String"
+            default="LdapRegistry" />
+        <AD id="host" name="%host" description="%host.desc"
+            required="true" type="String" />
+        <AD id="port" name="%port" description="%port.desc"
+            required="true" type="Integer" />
+         <AD id ="baseDN" name="%baseDN" description="%baseDN.desc"
+            required="true" type="String" />            
+        <AD id="bindDN" name="%bindDN" description="%bindDN.desc"
+            required="false" type="String" />
+        <AD id="bindPassword" name="%bindPassword" description="%bindPassword.desc"
+            required="false" type="String" ibm:type="password" /> 
+        <AD id="ldapType" name="%ldapType" description="%ldapType.desc"
+            required="true" type="String">
+            <Option label="%ldapType.actived" value="Microsoft Active Directory"/>
+            <Option label="%ldapType.custom" value="Custom"/>
+            <Option label="%ldapType.domino" value="IBM Lotus Domino"/>
+            <Option label="%ldapType.edirectory" value="Novell eDirectory"/>
+            <Option label="%ldapType.ibm_dir_server" value="IBM Tivoli Directory Server"/>
+            <Option label="%ldapType.iplanet" value="Sun Java System Directory Server"/>
+            <Option label="%ldapType.netscape" value="Netscape Directory Server"/>
+            <Option label="%ldapType.secureway" value="IBM SecureWay Directory Server"/>
+        </AD>                   
+        <AD id="ignoreCase" name="%ignoreCase" description="%ignoreCase.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="recursiveSearch" name="%recursiveSearch" description="%recursiveSearch.desc"
+            required="false" type="Boolean" default="false"/>
+        <AD id="reuseConnection" name="%reuseConnection" description="%reuseConnection.desc"
+            required="false" type="Boolean" default="true"/>
+        <AD id="sslEnabled" name="%sslEnabled" description="%sslEnabled.desc"
+            required="false" type="Boolean" default="false"/>
+        <AD id="sslRef" name="%sslRef" description="%sslRef.desc"
+            required="false" type="String"  ibm:type="pid"  ibm:reference="com.ibm.ws.ssl.repertoire" ibmui:uiReference="com.ibm.ws.ssl.repertoire" />
+            
+        <AD id="SSLSupport.cardinality.minimum" name="internal" description="internal use only"
+            type="String" default="${count(sslRef)}"/>
+        <AD id="SSLSupport.target" name="internal" description="internal use only"
+            type="String" default="(repertoirePIDs=${sslRef})"/>
+            
+        <AD id="searchTimeout" name="%searchTimeout" description="%searchTimeout.desc"
+            required="false" type="String" ibm:type="duration" default="1m"/>
+        <AD id="searchCountLimit" name="internal" description="internal use only"
+            required="false" type="String"/> 
+        <AD id="connectTimeout" name="%connectTimeout" description="%connectTimeout.desc"
+            required="false" type="String" ibm:type="duration" default="1m"/>
+        <AD id="failoverServers" name="%ldap.failoverServers" description="%ldap.failoverServers.desc"
+            ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.config.failoverServers"
+            required="false" type="String" cardinality="2147483647" />
+        <AD id="certificateMapMode" name="%certificateMapMode" description="%certificateMapMode.desc"
+        	required="false" type="String">
+        	<Option label="%certificateMapMode.exact_dn" value="EXACT_DN"/>
+            <Option label="%certificateMapMode.certificate_filter" value="CERTIFICATE_FILTER"/>
+        </AD>
+        <AD id="certificateFilter" name="%certificateFilter" description="%certificateFilter.desc"
+            required="false" type="String"/>
+        <AD id="activedFilters" name="%activedFilters" description="%activedFilters.desc"
+            required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.actived"/>
+        <AD id="customFilters" name="%customFilters" description="%customFilters.desc"
+            required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.custom"/>
+        <AD id="domino50Filters" name="%domino50Filters" description="%domino50Filters.desc"
+            required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.domino50"/>
+        <AD id="edirectoryFilters" name="%eDirectoryFilters" description="%eDirectoryFilters.desc"
+            required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.eDirectory"/>
+        <AD id="idsFilters" name="%idsFilters" description="%idsFilters.desc"
+            required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.ids"/>
+        <AD id="iplanetFilters" name="%iplanetFilters" description="%iplanetFilters.desc"
+            required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.iPlanet"/>
+        <AD id="netscapeFilters" name="%netscapeFilters" description="%netscapeFilters.desc"
+            required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.netscape"/>
+        <AD id="securewayFilters" name="%securewayFilters" description="%securewayFilters.desc"
+            required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.internal.filters.secureway"/>
+        
+        <!-- VMM ported entries -->
+        <!-- Removed Adapter class name -->
+        <!-- Added name attribute -->
+        <AD id="name" name="internal" description="internal use only"
+				required="false" type="String" />        
+        <!-- Made the plural baseEntries to baseEntry for consumability -->
+         <AD id="registryBaseEntry" name="internal" description="internal use only"
+		            	 ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.config.registryBaseEntry"
+		            	required="false" type="String" cardinality="2147483347" />        	
+		
+		<!-- Made the plural loginProperties to loginProperty for consumability -->
+		<AD id="loginProperty" name="internal" description="internal use only"
+				required="false" type="String" default="uid"/>
+		<!-- Made the plural ldapEntityTypes to ldapEntityType for consumability -->				
+		<AD id="ldapEntityType" name="%ldapEntityType" description="%ldapEntityType.desc"
+			  	required="false" type="String" cardinality="2147483347" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.entityType"/>
+		<AD id="groupProperties" name="internal" description="internal use only" 
+			    	required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.groupConfiguration"/>
+		<AD id="attributeConfiguration" name="%attributeConfiguration" description="%attributeConfiguration.desc"
+		     	required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.attributeConfiguration"/>
+		<AD id="contextPool" name="%contextPoolConfig" description="%contextPoolConfig.desc"
+			required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.contextPool"/>
+		<AD id="ldapCache" name="%cacheConfigProp" description="%cacheConfigProp.desc"
+			required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.cacheConfig"/>
+		
+		<!-- This has been deleted as stand alone has reuseConnection, that has the same property as the connectionPool -->
+		<!--  AD id="connectionPool" name="%connectionPool" description="%connectionPool.desc"
+			required="false" type="Boolean" default="false"-->
+		
+		<!-- Connection time out is deleted as it is also part of the stand alone LDAP config. VMM has a default of 20 ms whereas stand alone default is 1 ms  -->
+		<!--  AD id="connectionTimeout" name="connectionTimeout" description="%connectionTimeout.desc"
+			required="false" type="duration" default="20sec"-->
+			
+		<!-- 
+			How to handle LDAP referrals. Support "referal" as well since we instructed customers to use
+			it while it was misspelled prior to exposing "referral" publicly.
+		 -->
+		<AD id="referral" name="%referral" description="%referral.desc" required="false" type="String" default="ignore">
+			<Option label="%referral.ignore" value="ignore"/>
+			<Option label="%referral.follow" value="follow"/>
+		</AD>
+		<AD id="referal" name="internal" description="internal use only" required="false" type="String">
+			<Option label="internal use only" value="ignore"/>
+			<Option label="internal use only" value="follow"/>
+		</AD>
+
+		<!-- Made the plural derefAliases to derefAlias for consumability -->	
+		<AD id="derefAlias" name="internal" description="internal use only"
+			required="false" type="Boolean" default="false"/>
+		<AD id="primaryServerQueryTimeInterval" name="internal" description="internal use only"
+			required="false" type="Integer" default="15"/>
+		<AD id="returnToPrimaryServer" name="%returnToPrimaryServer" description="%returnToPrimaryServer.desc"
+			required="false" type="Boolean" default="true"/>	
+		<AD id="timestampFormat" name="internal" description="internal use only" required="false" type="String" />
+		<!-- End VMM ported Entries -->	
+
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.config">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.config.metatype" />
+    </Designate>
+    
+    
+    <OCD id="com.ibm.ws.security.registry.ldap.config.failoverServers.metatype" name="%ldap.failoverServers" description="%ldap.failoverServers.desc">
+        <AD id="name" name="%failoverServers.name" description="%failoverServers.desc"
+            required="false" type="String" />
+        <AD id="server" name="%ldap.failoverServers.server" description="%ldap.failoverServers.server.desc"
+            ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.registry.ldap.config.failoverServers.server"
+            required="false" type="String" cardinality="2147483647" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.config.failoverServers">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.config.failoverServers.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.config.failoverServers.server.metatype" name="%ldap.failoverServers.server" description="%ldap.failoverServers.server.desc">
+        <AD id="host" name="%failoverServer.host" description="%failoverServer.host.desc"
+            required="true" type="String" />
+        <AD id="port" name="%failoverServer.port" description="%failoverServer.port.desc"
+            required="true" type="Integer" />
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.config.failoverServers.server">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.config.failoverServers.server.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.actived.metatype" name="%activedFilters" description="%activedFilters.desc"
+         ibm:alias="activedLdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(sAMAccountName=%v)(objectcategory=user))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(objectcategory=group))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="user:sAMAccountName"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="memberOf:member"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.actived">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.actived.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.custom.metatype" name="%customFilters" description="%customFilters.desc"
+         ibm:alias="customLdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(uid=%v)(objectclass=ePerson))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="*:uid"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="ibm-allGroups:member;ibm-allGroups:uniqueMember;groupOfNames:member;groupOfUniqueNames:uniqueMember"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.custom">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.custom.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.domino50.metatype" name="%domino50Filters" description="%domino50Filters.desc"
+         ibm:alias="domino50LdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(uid=%v)(objectclass=Person))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(objectclass=dominoGroup))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="person:uid"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="dominoGroup:member"/>
+    </OCD>
+
+   <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.domino50">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.domino50.metatype" />
+    </Designate>
+
+
+     <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.edirectory.metatype" name="%eDirectoryFilters" description="%eDirectoryFilters.desc"
+         ibm:alias="edirectoryLdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(objectclass=Person))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(objectclass=groupOfNames))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="person:cn"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="groupOfNames:member"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.eDirectory">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.edirectory.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.ids.metatype" name="%idsFilters" description="%idsFilters.desc"
+         ibm:alias="idsLdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(uid=%v)(objectclass=ePerson))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="*:uid"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="ibm-allGroups:member;ibm-allGroups:uniqueMember;groupOfNames:member;groupOfUniqueNames:uniqueMember"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.ids">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.ids.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.iplanet.metatype" name="%iplanetFilters" description="%iplanetFilters.desc"
+         ibm:alias="iplanetLdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(uid=%v)(objectclass=inetOrgPerson))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(objectclass=ldapsubentry))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="inetOrgPerson:uid"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="nsRole:nsRole"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.iPlanet">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.iplanet.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.netscape.metatype" name="%netscapeFilters" description="%netscapeFilters.desc"
+         ibm:alias="netscapeLdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(uid=%v)(objectclass=inetOrgPerson))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="inetOrgPerson:uid"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="groupOfNames:member;groupOfUniqueNames:uniqueMember"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.netscape">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.netscape.metatype" />
+    </Designate>
+
+
+    <OCD id="com.ibm.ws.security.registry.ldap.internal.filters.secureway.metatype" name="%securewayFilters" description="%securewayFilters.desc"
+         ibm:alias="securewayLdapFilterProperties">
+        <AD id="userFilter" name="%userFilter" description="%userFilter.desc" required="true" type="String" default="(&amp;(uid=%v)(objectclass=ePerson))"/>
+        <AD id="groupFilter" name="%groupFilter" description="%groupFilter.desc" required="true" type="String" default="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)))"/>
+        <AD id="userIdMap" name="%userIdMap" description="%userIdMap.desc" required="true" type="String" default="*:uid"/>
+        <AD id="groupIdMap" name="%groupIdMap" description="%groupIdMap.desc" required="true" type="String" default="*:cn"/>
+        <AD id="groupMemberIdMap" name="%groupMemberIdMap" description="%groupMemberIdMap.desc" required="true" type="String" default="groupOfNames:member;groupOfUniqueNames:uniqueMember"/>
+    </OCD>
+
+    <Designate factoryPid="com.ibm.ws.security.registry.ldap.internal.filters.secureway">
+        <Object ocdref="com.ibm.ws.security.registry.ldap.internal.filters.secureway.metatype" />
+    </Designate>
+
+<!-- begin LDAP from VMM config -->
+
+
+<OCD id="com.ibm.ws.security.wim.adapter.config.registryBaseEntry" name="%registryBaseEntry" description="%registryBaseEntry.desc">
+	<AD id="baseDN" name="%baseDN" description="%baseDN.desc"
+		required="true" type="String" />
+	<AD id="name" name="%baseName" description="%baseName.desc"
+		required="false" type="String" />	
+</OCD>
+<Designate factoryPid="com.ibm.ws.security.wim.adapter.config.registryBaseEntry">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.config.registryBaseEntry"/>
+</Designate>
+
+
+<OCD id="com.ibm.ws.security.wim.adapter.ldap.contextPool" name="%contextPool" description="%contextPool.desc">
+	<AD id="enabled" name="%contextPoolEnabled" description="%contextPoolEnabled.desc"
+		required="false" type="Boolean" default="true"/>
+	<AD id="initialSize" name="%initialSize" description="%initialSize.desc"
+		required="false" type="Integer" default="1"/>
+	<AD id="maxSize" name="%maxSize" description="%maxSize.desc"
+		required="false" type="Integer" default="0"/>
+	<AD id="timeout" name="%timeOut" description="%timeOut.desc"
+		required="false" type="String" ibm:type="duration" default="0s"/>
+	<AD id="waitTime" name="%waitTime" description="%waitTime.desc"
+		required="false" type="String" ibm:type="duration" default="3s"/>
+	<AD id="preferredSize" name="%preferredSize" description="%preferredSize.desc"
+		required="false" type="Integer" default="3"/>
+</OCD>
+<Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.contextPool">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.contextPool"/>
+</Designate>
+
+
+<OCD id="com.ibm.ws.security.wim.adapter.ldap.cacheConfig" name="%cacheConfig" description="%cacheConfig.desc">
+	<AD id="attributesCache" name="%attributeCacheProp" description="%attributeCacheProp.desc"
+		required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.attributeCache"/>
+	<AD id="searchResultsCache" name="%searchResultsCacheProp" description="%searchResultsCacheProp.desc"
+		required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.searchResultsCache"/>
+</OCD>
+<Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.cacheConfig">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.cacheConfig"/>
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.adapter.ldap.attributeCache" name ="%attributeCache" description="%attributeCache.desc">
+	<AD id="enabled" name="%enabled" description="%enabled.desc"
+		required="false" type="Boolean" default="true"/>
+	<AD id="size" name="%attributeCacheSize" description="%attributeCacheSize.desc"
+		required="false" type="Integer" default="2000"/>
+	<AD id="timeout" name="%attributeCacheTimeout" description="%attributeCacheTimeout.desc"
+		required="false" type="String" ibm:type="duration" default="1200s"/>
+	<AD id="sizeLimit" name="%sizeLimit" description="%sizeLimit.desc"
+		required="false" type="Integer" default="2000"/>
+	<AD id="serverTTLAttribute" name="%serverTTLAttribute" description="%serverTTLAttribute.desc"
+		required="false" type="String" />
+</OCD>
+<Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.attributeCache">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.attributeCache"/>
+</Designate>
+
+<OCD id="com.ibm.ws.security.wim.adapter.ldap.searchResultsCache" name="%searchResultsCache" description="%searchResultsCache.desc">
+
+	<AD id="enabled" name="%enabled" description="%enabled.desc"
+		required="false" type="Boolean" default="true"/>
+	<AD id="size" name="%size" description="%size.desc"
+		required="false" type="Integer" default="2000"/>
+	<AD id="timeout" name="%searchResultsTimeOut" description="%searchResultsTimeOut.desc"
+		required="false" type="String" ibm:type="duration" default="1200s"/>
+	<AD id="resultsSizeLimit" name="%resultsSizeLimit" description="%resultsSizeLimit.desc"
+		required="false" type="Integer" default="2000"/>
+</OCD>
+<Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.searchResultsCache">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.searchResultsCache"/>
+</Designate>	
+
+
+
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.attributeConfiguration" name="%ldapAttributeConfiguration" description="%ldapAttributeConfiguration.desc">
+	<AD id="attribute" name="%attribute" description="%attribute.desc"
+		ibm:flat="true" ibm:type="pid" type="String" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.attribute" 
+		required="false" cardinality="2147483647"/>
+	
+	<AD id="externalIdAttribute" name="%externalIdAttribute" description="%externalIdAttribute.desc"
+		ibm:flat="true" ibm:type="pid" type="String" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.externalIdAttribute"
+		required="false" cardinality="2147483647"/>
+	
+	<AD id="propertyNotSupported" name="internal" description="internal use only"
+		ibm:flat="true" ibm:type="pid" type="String" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.propertyNotSupported"
+		required="false" cardinality="2147483647"/>
+ </OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.attributeConfiguration">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.attributeConfiguration"/>
+ </Designate>
+
+ <!-- Changed plural attributes to attribute for consumability -->
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.attribute" name="%ldapAttribute" description="%ldapAttribute.desc">
+	<AD id="name" name="%ldapAttributeName" description="%ldapAttributeName.desc" required="true" type="String"/>
+	<AD id="propertyName" name="%propertyName" description="%propertyName.desc" required="false" type="String"/>
+	<AD id="defaultValue" name="%defaultValue" description="%defaultValue.desc" required="false" type="String"/>
+	<AD id="syntax" name="%syntax" description="%syntax.desc" required="false" type="String"/>
+	<!-- Changed plural entityTypes to entityType -->
+	<AD id="entityType" name="%entityType" description="%entityType.desc" required="false" type="String"/>
+ </OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.attribute">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.attribute"/>
+ </Designate>
+
+<OCD id="com.ibm.ws.security.wim.adapter.ldap.externalIdAttribute" name="%extIdAttribute" description="%extIdAttribute.desc">
+ 	<AD id="name" name="%externalIdAttributeName" description="%externalIdAttributeName.desc" required="true" type="String"/>
+ 	<AD id="syntax" name="%syntax" description="%syntax.desc" required="false" type="String"/>
+	<AD id="entityType" name="%entityType" description="%entityType.desc" required="false" type="String"/>
+ 	<AD id="autoGenerate" name="%autoGenerate" description="%autoGenerate.desc" required="false" type="Boolean" default="false"/>
+ </OCD>
+  <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.externalIdAttribute">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.externalIdAttribute"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.propertyNotSupported" name="internal" description="internal use only">
+	<AD id="propertyName" name="%propertyName" description="%propertyName.desc" required="false" type="String"/>
+ </OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.propertyNotSupported">
+	<Object ocdref="com.ibm.ws.security.wim.adapter.ldap.propertyNotSupported"/>
+ </Designate>
+
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.groupConfiguration" name="%ldapGroupConfiguration" description="%ldapGroupConfiguration.desc">
+	<!-- Changed the plural  memberAttributes to memberAttribute for consumability -->
+	<AD id="memberAttribute" name="%memberAttributeName" description="%memberAttributeName.desc" 
+	       ibm:flat="true" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.memberAttribute" cardinality="2147483647"/>
+	<!-- Changed the plural  membershipAttributes to memberAttribute for consumability -->
+	<AD id="membershipAttribute" name="%membershipAttribute" description="%membershipAttribute.desc"
+	       ibm:flat="true" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.membershipAttribute"/>
+	<AD id="dynamicMemberAttribute" name="%dynamicMemberAttribute" description="%dynamicMemberAttribute.desc" 
+	       ibm:flat="true" type="String" required="false" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.dynamicMemberAttribute" />
+ </OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.groupConfiguration">
+    <Object ocdref="com.ibm.ws.security.wim.adapter.ldap.groupConfiguration"/>
+ </Designate>
+
+
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.memberAttribute" name="%ldapMemberAttributes" description="%ldapMemberAtttributes.desc">
+	<AD id="name" name="%memberName" type="String" description="%memberName.desc"/>
+	<AD id="objectClass" name="%memberAttributeObjectClass" type="String" description="%memberAttributeObjectClass.desc"/> 
+	<AD id="scope" name="%scope" type="String" description="%scope.desc"/>
+	<AD id="dummyMember" name="%dummyMember" type="String" description="%dummyMember.desc" required="false" />
+ </OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.memberAttribute">
+   <Object ocdref="com.ibm.ws.security.wim.adapter.ldap.memberAttribute"/>
+ </Designate>
+ 
+<!-- Changed plural membershipAttribute to membershipAttributes for consumability -->
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.membershipAttribute" name="%ldapMembershipAttribute" description="%ldapMemberAtttribute.desc">
+	<AD id="name" name="%membershipAttributeName" type="String" description="%membershipAttributeName.desc"/>
+	<AD id="scope" name="%membershipScope" type="String" description="%membershipScope.desc"/>
+ </OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.membershipAttribute">
+   <Object ocdref="com.ibm.ws.security.wim.adapter.ldap.membershipAttribute"/>
+ </Designate>
+ 
+ <!-- Added Dynamic Member Attributes -->
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.dynamicMemberAttribute" name="%ldapDynamicMemberAttribute" description="%ldapDynamicMemberAttribute.desc">
+	<AD id="name" name="%memberName" type="String" description="%memberName.desc"/>
+	<AD id="objectClass" name="%objectClass" type="String" description="%objectClass.desc"/>	
+ </OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.dynamicMemberAttribute">
+   <Object ocdref="com.ibm.ws.security.wim.adapter.ldap.dynamicMemberAttribute"/>
+ </Designate>
+
+<!-- Changed plural entityType to entityTypes for consumability -->
+<OCD id="com.ibm.ws.security.wim.adapter.ldap.entityType" name="%supportedLdapEntityType" description="%supportedLdapEntityType.desc">
+	<AD id="name" name="%ldapEntityTypeName" description="%ldapEntityTypeName.desc"
+		required="true" type="String" />
+	<AD id="searchFilter" name="%searchFilter" description="%searchFilter.desc"
+		required="false" type="String" />
+	<AD id="objectClass" name="%objectClass" description="%ldapEntityTypeObjectClass.desc"
+		required="true" type="String" cardinality="2147483647" />
+	<AD id="searchBase" name="%searchBase" description="%searchBase.desc"
+		required="false" type="String" cardinality="2147483647" />
+
+	<!-- Changed plural rdnProperties to rdnProperty for consumability -->
+	<AD id="rdnProperty" name="internal" description="for internal use only"
+		required="false" type="String" ibm:flat="true" ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.rdnProperty" cardinality="2147483647" />
+</OCD>
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.entityType">
+      <Object ocdref="com.ibm.ws.security.wim.adapter.ldap.entityType" />
+ </Designate>
+ 
+
+ <OCD id="com.ibm.ws.security.wim.adapter.ldap.rdnProperty" name="%ldapRdnProperties" description="%ldapRdnProperties.desc">
+        <AD id="name" name="%ldapRdnPropertyName" description="%ldapRdnPropertyName.desc" required="true" type="String"/>  
+	<AD id="objectClass" name="%objectClass" description="%objectClass.desc"
+	    required="true" type="String" cardinality="2147483647"/>
+ </OCD>
+
+ <Designate factoryPid="com.ibm.ws.security.wim.adapter.ldap.rdnProperty">
+       <Object ocdref="com.ibm.ws.security.wim.adapter.ldap.rdnProperty" />
+ </Designate>
+ 
+ 
+ 
+  
+
+<!-- End LDAP from VMM config -->
+ 
+</metatype:MetaData>

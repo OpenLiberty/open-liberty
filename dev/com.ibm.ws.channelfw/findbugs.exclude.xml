@@ -1,0 +1,1354 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+  
+  <Match>
+    <Class name="com.ibm.io.async.AbstractAsyncChannel"/>
+    <Field name="channelIdentifier"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AbstractAsyncChannel"/>
+    <Field name="readIOCB"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AbstractAsyncChannel"/>
+    <Field name="writeIOCB"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AbstractAsyncChannel"/>
+    <Field name="addrField"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AbstractAsyncFuture"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AsyncLibrary"/>
+    <Field name="completionKeyPool"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AsyncSocketChannel"/>
+    <Field name="getFileDescriptorMethod"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AsyncSocketChannel"/>
+    <Field name="nioUtilsClass"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AsyncSocketChannel"/>
+    <Field name="nioUtilsClassChecked"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AsyncSocketChannelHelper"/>
+    <Field name="timeoutException"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.AsyncSocketChannelHelper"/>
+    <Field name="timer"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.LookupTable"/>
+    <Field name="currentCapacity"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.LookupTable"/>
+    <Field name="theElementArray"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.ResultHandler$PrivilegedThreadStarter2"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.io.async.Timer"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.ChannelUtils"/>
+    <Method name="displayChains" signature="(Lcom/ibm/websphere/ras/TraceComponent;Lcom/ibm/wsspi/channelfw/ChannelFramework;Ljava/lang/Class;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.ChannelUtils"/>
+    <Method name="displayChains" signature="(Lcom/ibm/websphere/ras/TraceComponent;Lcom/ibm/wsspi/channelfw/ChannelFramework;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.ChannelUtils"/>
+    <Method name="displayChains" signature="(Lcom/ibm/websphere/ras/TraceComponent;Ljava/util/List;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.ChannelUtils"/>
+    <Method name="displayChannels" signature="(Lcom/ibm/websphere/ras/TraceComponent;Lcom/ibm/wsspi/channelfw/ChannelFramework;Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.ChannelUtils"/>
+    <Method name="printDebugStackTrace" signature="(Lcom/ibm/websphere/ras/TraceComponent;Ljava/lang/Throwable;Ljava/lang/String;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.ChannelUtils"/>
+    <Method name="printThreadStackTrace" signature="(Lcom/ibm/websphere/ras/TraceComponent;Ljava/lang/Thread;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.ChannelUtils"/>
+    <Method name="debugTrace" signature="(Ljava/lang/Object;Ljava/lang/String;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.ByteBufferConfiguration"/>
+    <Method name="createBufferManager" signature="(Ljava/util/Map;)Lcom/ibm/wsspi/bytebuffer/WsByteBufferPoolManager;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.osgi.CHFWBundle"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="singleton"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FCWsByteBufferImpl"/>
+    <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="forcePut" signature="(ILjava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="forcePut" signature="(ILjava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="put" signature="(ILjava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="put" signature="(ILjava/lang/Object;)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="syncGetValueFromBucket" signature="(Lcom/ibm/ws/bytebuffer/internal/FastSyncHashBucket;IZ)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="syncGetValueFromBucket" signature="(Lcom/ibm/ws/bytebuffer/internal/FastSyncHashBucket;IZ)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="syncPutIntoBucket" signature="(Lcom/ibm/ws/bytebuffer/internal/FastSyncHashBucket;Lcom/ibm/ws/bytebuffer/internal/FastSyncHashEntry;)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="syncPutIntoBucket" signature="(Lcom/ibm/ws/bytebuffer/internal/FastSyncHashBucket;Lcom/ibm/ws/bytebuffer/internal/FastSyncHashEntry;)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.FastSynchHashTable"/>
+    <Method name="syncPutIntoBucket" signature="(Lcom/ibm/ws/bytebuffer/internal/FastSyncHashBucket;Lcom/ibm/ws/bytebuffer/internal/FastSyncHashEntry;)Ljava/lang/Object;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.PooledWsByteBufferImpl"/>
+    <Method name="getallBuffers" signature="()Ljava/util/Hashtable;"/>
+    <Field name="allWsByteBuffers"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.PooledWsByteBufferImpl"/>
+    <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="printStackToDebug" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="copyToDirectBuffer" signature="()V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="copyToDirectBuffer" signature="()V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="copyToDirectBuffer" signature="()V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="copyToDirectBuffer" signature="()V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="moveUpUsingGetMinMax" signature="(III)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="moveUpUsingGetMinMax" signature="(III)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="moveUpUsingGetMinMax" signature="(III)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="moveUpUsingGetMinMax" signature="(III)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="moveUpUsingGetMinMax" signature="(III)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Field name="cleanUpOld"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/util/Map;)V"/>
+    <Field name="cleanUpOld"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/util/Map;)V"/>
+    <Field name="instanceRef"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Method name="allocateCommon" signature="(IZ)Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Method name="duplicate" signature="(Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Method name="slice" signature="(Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="~com\.ibm\.ws\.bytebuffer\.internal\.resources\.ByteBufferMessages.*"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.CFEndPointImpl"/>
+    <Method name="assignAddress" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.CFEndPointImpl"/>
+    <Method name="getOutboundVCFactory" signature="(Ljava/util/Map;Z)Lcom/ibm/wsspi/channelfw/VirtualConnectionFactory;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.CFEndPointImpl"/>
+    <Method name="getOutboundVCFactory" signature="(Ljava/util/Map;Z)Lcom/ibm/wsspi/channelfw/VirtualConnectionFactory;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainDataImpl"/>
+    <Method name="getChannelList" signature="()[Lcom/ibm/websphere/channelfw/ChannelData;"/>
+    <Field name="channelDataArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainDataImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Lcom/ibm/websphere/channelfw/FlowType;[Lcom/ibm/websphere/channelfw/ChannelData;Ljava/util/Map;)V"/>
+    <Field name="channelDataArray"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainDataImpl"/>
+    <Or>
+    <Field name="enabled"/>
+    <Field name="chainEventListeners"/>
+    </Or>
+    <Bug pattern="SE_TRANSIENT_FIELD_NOT_RESTORED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainDataImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Lcom/ibm/websphere/channelfw/FlowType;[Lcom/ibm/websphere/channelfw/ChannelData;Ljava/util/Map;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainDataImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Lcom/ibm/websphere/channelfw/FlowType;[Lcom/ibm/websphere/channelfw/ChannelData;Ljava/util/Map;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainDataImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/channelfw/internal/ChainDataImpl;[Lcom/ibm/websphere/channelfw/ChannelData;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainDataImpl"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/channelfw/internal/ChainDataImpl;[Lcom/ibm/websphere/channelfw/ChannelData;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainGroupDataImpl"/>
+    <Method name="getChains" signature="()[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Field name="chainArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainGroupDataImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;[Lcom/ibm/websphere/channelfw/ChainData;Lcom/ibm/ws/channelfw/internal/ChannelFrameworkImpl;)V"/>
+    <Field name="chainArray"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChainGroupDataImpl"/>
+    <Method name="setChains" signature="([Lcom/ibm/websphere/channelfw/ChainData;)V"/>
+    <Field name="chainArray"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFactoryDataImpl"/>
+    <Method name="getDeviceInterface" signature="()[Ljava/lang/Class;"/>
+    <Field name="deviceInterface"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFactoryDataImpl"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/Class;[Ljava/lang/Class;Ljava/lang/Class;)V"/>
+    <Field name="deviceInterface"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="singleton"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="destroyChainGroup" signature="(Ljava/lang/String;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="getAllChains" signature="(Ljava/lang/Class;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="getAllChains" signature="(Ljava/lang/String;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="getInternalRunningChains" signature="(Ljava/lang/String;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="getRunningChains" signature="(Ljava/lang/Class;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="getRunningChains" signature="(Ljava/lang/String;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="getRunningChannels" signature="()[Lcom/ibm/websphere/channelfw/ChannelData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="initChainGroup" signature="(Ljava/lang/String;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="startChainGroup" signature="(Ljava/lang/String;Lcom/ibm/websphere/channelfw/ChainStartMode;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="stopChainGroup" signature="(Ljava/lang/String;J)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_TOO_MUCH_CODE_BEFORE_EXIT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="getAllChains" signature="(Ljava/lang/Class;)[Lcom/ibm/websphere/channelfw/ChainData;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelFrameworkImpl"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.CFEndPointImpl"/>
+    <Method name="determineChannelAccessor"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ChannelUtilsBase"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ConnectionDescriptorImpl"/>
+    <Method name="getLocalHostName" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.ConnectionDescriptorImpl"/>
+    <Method name="getRemoteHostName" signature="()Ljava/lang/String;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.InboundVirtualConnectionImpl"/>
+    <Method name="getDiscriminatorStatus" signature="()[I"/>
+    <Field name="discStatus"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.InboundVirtualConnectionImpl"/>
+    <Method name="setDiscriminatorStatus" signature="([I)V"/>
+    <Field name="discStatus"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.VirtualConnectionImpl"/>
+    <Field name="closeWaiting"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.VirtualConnectionImpl"/>
+    <Field name="currentState"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.VirtualConnectionImpl"/>
+    <Field name="readOutWithClosePending"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.VirtualConnectionImpl"/>
+    <Field name="writeOutWithClosePending"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.chains.Chain"/>
+    <Method name="getChannels" signature="()[Lcom/ibm/wsspi/channelfw/Channel;"/>
+    <Field name="channels"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.chains.Chain"/>
+    <Method name="getChannelsData" signature="()[Lcom/ibm/websphere/channelfw/ChannelData;"/>
+    <Field name="channelDataArray"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="singleton"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.discrim.DiscriminationProcessImpl"/>
+    <Method name="removeDiscriminatorNode" signature="(Lcom/ibm/wsspi/channelfw/Discriminator;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.discrim.MultiDiscriminatorAlgorithm"/>
+    <Method name="discriminate" signature="(Lcom/ibm/ws/channelfw/internal/InboundVirtualConnection;Ljava/lang/Object;Lcom/ibm/wsspi/channelfw/ConnectionLink;)I"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="~com\.ibm\.ws\.channelfw\.internal\.resources\.ChannelfwMessages.*"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AccessLists"/>
+    <Method name="accessDenied" signature="(Ljava/net/InetAddress;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AioSocketIOChannel"/>
+    <Method name="readAIO" signature="(Lcom/ibm/ws/tcpchannel/internal/AioTCPReadRequestContextImpl;ZJ)Z"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AioSocketIOChannel"/>
+    <Method name="readAIOSync" signature="(JLcom/ibm/ws/tcpchannel/internal/TCPReadRequestContextImpl;)J"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AioTCPChannel"/>
+    <Method name="init" signature="()V"/>
+    <Field name="aioReadCompletionListener"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AioTCPChannel"/>
+    <Method name="init" signature="()V"/>
+    <Field name="aioWriteCompletionListener"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AioTCPChannel"/>
+    <Method name="setup" signature="(Lcom/ibm/websphere/channelfw/ChannelData;Lcom/ibm/ws/tcpchannel/internal/TCPChannelConfiguration;Lcom/ibm/ws/tcpchannel/internal/TCPChannelFactory;)Lcom/ibm/ws/tcpchannel/internal/ChannelTermination;"/>
+    <Field name="jitSupportedByNative"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AioTCPWriteRequestContextImpl"/>
+    <Method name="updateForAllData" signature="(J)Z"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.NBAccept"/>
+    <Method name="registerPort" signature="(Lcom/ibm/ws/tcpchannel/internal/TCPPort;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.NBAccept"/>
+    <Method name="registerPort" signature="(Lcom/ibm/ws/tcpchannel/internal/TCPPort;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.NBAccept"/>
+    <Method name="registerPort" signature="(Lcom/ibm/ws/tcpchannel/internal/TCPPort;)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.NBAccept"/>
+    <Method name="registerPort" signature="(Lcom/ibm/ws/tcpchannel/internal/TCPPort;)V"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.NBAccept"/>
+    <Method name="removePort" signature="(Lcom/ibm/ws/tcpchannel/internal/TCPPort;)V"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.NioSocketIOChannel"/>
+    <Method name="close" signature="()V"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.NioTCPWriteRequestContextImpl"/>
+    <Method name="processSyncWriteRequest" signature="(JI)J"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.SimpleSync"/>
+    <Method name="simpleWait" signature="()V"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.channelfw.osgi.CHFWBundle"/>
+    <Method name="waitServerCompletelyStarted" signature="()V"/>
+    <Bug pattern="WA_NOT_IN_LOOP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPBaseRequestContext"/>
+    <Method name="getBuffers" signature="()[Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;"/>
+    <Field name="buffers"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPBaseRequestContext"/>
+    <Method name="setBuffers" signature="([Lcom/ibm/wsspi/bytebuffer/WsByteBuffer;)V"/>
+    <Field name="buffers"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannel"/>
+    <Method name="start" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannel"/>
+    <Bug pattern="LI_LAZY_INIT_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannel"/>
+    <Field name="acceptReqProcessor"/>
+    <Bug pattern="MS_PKGPROTECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannel"/>
+    <Method name="dumpStatistics" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannel$PrivilegedThreadStarter"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannel$StatisticsLogger"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/channelfw/ChannelData;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/channelfw/ChannelData;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/websphere/channelfw/ChannelData;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelFactory"/>
+    <Method name="init" signature="(Lcom/ibm/websphere/channelfw/ChannelFactoryData;)V"/>
+    <Field name="commClass"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPChannelFactory"/>
+    <Method name="init" signature="(Lcom/ibm/websphere/channelfw/ChannelFactoryData;)V"/>
+    <Field name="commClassName"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPConnLink"/>
+    <Method name="destroy" signature="(Ljava/lang/Exception;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="setValues" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="getOSName"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match> 
+  
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="setValues" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="setValues" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="setValues" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPFactoryConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPProxyResponse"/>
+    <Method name="setForwardProxyBuffers" signature="(Ljava/util/Map;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPProxyResponse"/>
+    <Method name="setForwardProxyBuffers" signature="(Ljava/util/Map;)Z"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPWriteRequestContextImpl"/>
+    <Method name="fileChannelWrite" signature="(JJ)J"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPWriteRequestContextImpl"/>
+    <Method name="fileChannelWrite" signature="(JJ)J"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.WorkQueueManager"/>
+    <Method name="startSelectors" signature="(Z)V"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.WorkQueueManager$StartPrivilegedThread"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="~com\.ibm\.ws\.tcpchannel\.internal\.resources\.TCPChannelMessages.*"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.AccessLists"/>
+    <Method name="accessDenied" signature="(Ljava/net/InetAddress;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.CumulativeLogger"/>
+    <Method name="getLoggerInstance" signature="()Lcom/ibm/ws/udpchannel/internal/CumulativeLogger;"/>
+    <Bug pattern="DC_DOUBLECHECK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPBufferFactory"/>
+    <Method name="getRef" signature="()Lcom/ibm/ws/udpchannel/internal/UDPBufferFactory;"/>
+    <Bug pattern="DC_DOUBLECHECK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannel"/>
+    <Method name="start" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannel"/>
+    <Method name="start" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannel"/>
+    <Method name="getApplicationAddress" signature="()[Ljava/lang/Class;"/>
+    <Field name="appSideList"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="setChannelData" signature="(Lcom/ibm/websphere/channelfw/ChannelData;)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelConfiguration"/>
+    <Method name="outputConfigToTrace" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPChannelFactory"/>
+    <Field name="existingChannels"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPConnLink"/>
+    <Method name="getLocalAddress" signature="()Ljava/net/InetAddress;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPConnLink"/>
+    <Method name="destroy" signature="(Ljava/lang/Exception;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPConnLink"/>
+    <Method name="destroy" signature="(Ljava/lang/Exception;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.UDPWriteRequestContextImpl"/>
+    <Method name="write" signature="(Ljava/net/SocketAddress;Lcom/ibm/websphere/udpchannel/UDPWriteCompletedCallback;Z)Lcom/ibm/wsspi/channelfw/VirtualConnection;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/udpchannel/internal/UDPChannelFactory;)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/udpchannel/internal/UDPChannelFactory;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/udpchannel/internal/UDPChannelFactory;)V"/>
+    <Bug pattern="SC_START_IN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/udpchannel/internal/UDPChannelFactory;)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager"/>
+    <Method name="sendToDiscriminaters" signature="(Lcom/ibm/wsspi/channelfw/VirtualConnection;Lcom/ibm/ws/udpchannel/internal/UDPReadRequestContextImpl;Lcom/ibm/ws/udpchannel/internal/UDPChannel;)V"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager$SelectorTask"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager$SelectorTask"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager$SelectorTask"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.channelfw.utils.HostNameUtils$1"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="~com\.ibm\.ws\.udpchannel\.internal\.resources\.UDPMessages.*"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.channelfw.objectpool.CircularObjectPool"/>
+    <Field name="cleanUpOld"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.osgi.BundleBoundLockService"/>
+    <Method name="notifyBundleStopped"/>
+    <Bug pattern="NN_NAKED_NOTIFY"/>
+  </Match>
+
+  <!-- Pre-existing calls to System.currentTimeMillis -->
+  <Match>
+    <Class name="com.ibm.io.async.AsyncSocketChannelHelper"/>
+    <Method name="createTimeout"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <!-- Note: here the call to System.currentTimeMillis is being used for debug purposes and hence is good -->
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="~(checkValidity|setOwnerID)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <!-- Same again -->
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Method name="lookForLeaks"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <!-- Lots of hits for System.currentTimeMillis in the tcpchannel -->
+  <Match>
+    <Class name="~com\.ibm\.ws\.tcpchannel\.internal\.(AioReadCompletionListener|AioSocketIOChannel|AioWriteCompletionListener|ConnectChannelSelector|NioTCP(Read|Write)RequestContextImpl|TCPBaseRequestContext|TCPChannel)"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <!--  And one in the udpchanel -->
+  <Match>
+    <Class name="com.ibm.ws.udpchannel.internal.WorkQueueManager$SelectorTask"/>
+    <Method name="run"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>  
+  
+  <!-- Assume the error message is indeed in default encoding -->
+  <Match>
+    <Class name="com.ibm.io.async.AsyncLibrary$ErrorMessageCache"/>
+    <Method name="get"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <!-- Assume these are ok -->
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferImpl"/>
+    <Method name="~putString(Value)?"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.bytebuffer.internal.WsByteBufferPoolManagerImpl"/>
+    <Method name="~(lookFor|set)Leak(s|DetectionSettings)"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <!-- Fall back logic for encoding not supported -->
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.FilterListFastStr"/>
+    <Method name="convertToEntries"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPProxyResponse"/>
+    <Method name="&lt;clinit&gt;"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <!-- Used for trace -->
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.TCPProxyResponse"/>
+    <Method name="~(setForwardProxyBuffers|validateProxyResponse)"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <!-- Default encoding expected -->
+  <Match>
+    <Class name="com.ibm.wsspi.bytebuffer.WsByteBufferUtils"/>
+    <Method name="~(asString|putStringValue)"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <!-- Not dangerous in thi case -->
+  <Match>
+    <Class name="com.ibm.io.async.AbstractAsyncFuture"/>
+    <Method name="resetFuture"/>
+    <Field name="reuseCount"/>
+    <Bug pattern="VO_VOLATILE_INCREMENT"/>
+  </Match>
+  
+  <!-- Explicitly commented as could be null -->
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.AioSocketIOChannel"/>
+    <Method name="~(read|write)AIO"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+  
+  <!-- The null check being complained about here was added because of an actual
+       NullPointerException in a test bucket.  So yes, it definitely can be null. -->
+  <Match>
+    <Class name="com.ibm.ws.tcpchannel.internal.SocketRWChannelSelector"/>
+    <Method name="updateSelector"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+  </Match>
+  
+  <!-- Couldn't bring myself to delete these protected fields (and their enclosing classes for that matter) -->
+  <Match>
+    <Class name="com.ibm.io.async.AsyncSocketChannel$ConnectReturn"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.io.async.CompletedFutureWorkItem"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.channelfw.internal.discrim.DiscriminatorNode"/>
+    <Field name="prev"/>
+    <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+  
+</FindBugsFilter>

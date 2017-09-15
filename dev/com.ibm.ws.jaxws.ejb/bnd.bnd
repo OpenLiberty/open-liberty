@@ -1,0 +1,93 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+          
+bVersion=1.0
+
+Bundle-Name: JAX-WS EJB
+Bundle-SymbolicName: com.ibm.ws.jaxws.ejb
+Bundle-Description: IBM JAX-WS EJB support; version=${bVersion}
+
+Service-Component: \
+  com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
+     implementation:=com.ibm.ws.jaxws.ejb.EJBInWarJaxWsModuleInfoBuilderExtension; \
+     provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension'; \
+     endpointInfoBuilder=com.ibm.ws.jaxws.metadata.builder.EndpointInfoBuilder?; \
+     configuration-policy:=optional; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.ejb.jaxwsEJBEndpointConfigurator; \
+     implementation:=com.ibm.ws.jaxws.ejb.JaxWsEJBEndpointConfigurator; \
+     provide:='com.ibm.ws.jaxws.endpoint.JaxWsEndpointConfigurator'; \
+     ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer; \
+     configuration-policy:=optional; \
+     activate:=activate; \
+     deactivate:=deactivate; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.ejb.jaxws.module.info.builder; \
+     implementation:=com.ibm.ws.jaxws.ejb.EJBJaxWsModuleInfoBuilder; \
+     provide:='com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilder'; \
+     jaxWsWebContainerManager=com.ibm.ws.jaxws.support.JaxWsWebContainerManager; \
+     endpointInfoBuilder=com.ibm.ws.jaxws.metadata.builder.EndpointInfoBuilder?; \
+     jaxWsModuleInfoBuilderExtension=com.ibm.ws.jaxws.metadata.builder.JaxWsModuleInfoBuilderExtension*; \
+     dynamic:='jaxWsWebContainerManager'; \
+     optional:='jaxWsWebContainerManager'; \
+     activate:=activate; \
+     deactivate:=deactivate; \
+     configuration-policy:=optional; \
+     properties:="service.vendor=IBM", \
+  com.ibm.ws.jaxws.ejb.handler.resolver; \
+     implementation:=com.ibm.ws.jaxws.ejb.EJBHandlerResolver; \
+     provide:='com.ibm.wsspi.ejbcontainer.WSEJBHandlerResolver'; \
+     configuration-policy:=optional; \
+     properties:="service.vendor=IBM", \
+
+Export-Package: \
+    com.ibm.ws.jaxws.ejb
+
+Import-Package: \
+   javax.xml.bind.*;version="[2.2,3)", \
+   javax.xml.ws.*;version="[2.2,3)", \
+   org.apache.cxf.*;version="[2.6.2,2.6.3)", \
+   *
+
+Private-Package:\
+   com.ibm.ws.jaxws.ejb.*
+
+instrument.classesExcludes: com/ibm/ws/jaxws/ejb/internal/resources/*.class
+
+-buildpath.bootclasspath: \
+	com.ibm.websphere.javaee.jaxb.2.2;version=latest;boot=true,\
+	com.ibm.websphere.javaee.jaxws.2.2;version=latest;boot=true,\
+	${javac.bootclasspath.${javac.source}}
+
+-buildpath: \
+    org.apache.cxf.cxf-api;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-bindings-soap;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-core;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-databinding-jaxb;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-frontend-jaxws;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-frontend-simple;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-management;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	org.apache.cxf.cxf-rt-ws-policy;strategy=exact;version=2.6.2.ibm-s20170216-1739,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.ejbcontainer;version=latest,\
+	com.ibm.ws.jaxws.common;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

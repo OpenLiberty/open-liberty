@@ -1,0 +1,26 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.cds" default="build">
+  <import file="../ant_build/public_imports/rejar_imports.xml"/>
+
+	  <target name="package">
+	    <!-- Override so we don't get com.ibm.ws.com.ibm.cds.2.2.0_1.0.0.jar -->
+	  	<rejar version="1.0" 
+	           src.jar="lib/com.ibm.cds_*.jar" 
+	           original.jar.name="cds"
+	           original.jar.version="3.0.1"
+	           no.import.package="true"/>
+
+
+	  </target>
+
+
+</project>

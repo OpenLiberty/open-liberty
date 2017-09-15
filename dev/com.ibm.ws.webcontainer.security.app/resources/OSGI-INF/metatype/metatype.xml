@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.webcontainer.security.metatype" name="%webAppSecurityService.config" description="%webAppSecurityService.config.desc" ibm:alias="webAppSecurity">
+
+        <AD id="allowFailOverToBasicAuth" name="%allowFailOverToBasicAuth" description="%allowFailOverToBasicAuth.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+        <AD id="allowLogoutPageRedirectToAnyHost" name="%allowLogoutPageRedirectToAnyHost" description="%allowLogoutPageRedirectToAnyHost.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+        <AD id="displayAuthenticationRealm" name="%displayAuthenticationRealm" description="%displayAuthenticationRealm.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+       <AD id="httpOnlyCookies" name="%httpOnlyCookies" description="%httpOnlyCookies.desc"
+            required="false" type="Boolean"
+            default="true" />
+
+        <AD id="logoutOnHttpSessionExpire" name="%logoutOnHttpSessionExpire" description="%logoutOnHttpSessionExpire.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+		<AD id="wasReqURLRedirectDomainNames" name="%wasReqURLRedirectDomainNames" description="%wasReqURLRedirectDomainNames.desc"
+            required="false" type="String" />
+
+        <AD id="logoutPageRedirectDomainNames" name="%logoutPageRedirectDomainNames" description="%logoutPageRedirectDomainNames.desc"
+            required="false" type="String" />
+
+        <AD id="postParamCookieSize" name="%postParamCookieSize" description="%postParamCookieSize.desc"
+            required="false" type="Integer"
+            default="16384" />
+
+        <AD id="postParamSaveMethod" name="%postParamSaveMethod" description="%postParamSaveMethod.desc"
+            required="false" type="String"
+            default="Cookie">
+            <Option label="Cookie" value="Cookie" />
+            <Option label="Session" value="Session" />
+            <Option label="None" value="None" />
+        </AD>
+
+        <AD id="preserveFullyQualifiedReferrerUrl" name="%preserveFullyQualifiedReferrerUrl" description="%preserveFullyQualifiedReferrerUrl.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+        <AD id="singleSignonEnabled" name="%singleSignonEnabled" description="%singleSignonEnabled.desc"
+            required="false" type="Boolean"
+            default="true" />
+
+        <AD id="ssoCookieName" name="%ssoCookieName" description="%ssoCookieName.desc"
+            required="false" type="String"
+            default="LtpaToken2" />
+            
+        <AD id="useOnlyCustomCookieName" name="%useOnlyCustomCookieName" description="%useOnlyCustomCookieName.desc"
+            required="false" type="Boolean"
+            default="false" />
+            
+        <AD id="autoGenSsoCookieName" name="internal" description="internal user only"
+            required="false" type="Boolean"
+            default="false" />
+
+        <AD id="ssoDomainNames" name="%ssoDomainNames" description="%ssoDomainNames.desc"
+            required="false" type="String" />
+
+        <AD id="ssoRequiresSSL" name="%ssoRequiresSSL" description="%ssoRequiresSSL.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+        <AD id="ssoUseDomainFromURL" name="%ssoUseDomainFromURL" description="%ssoUseDomainFromURL.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+        <AD id="useAuthenticationDataForUnprotectedResource" name="%useAuthenticationDataForUnprotectedResource" description="%useAuthenticationDataForUnprotectedResource.desc"
+            required="false" type="Boolean"
+            default="true" />
+
+        <AD id="webAlwaysLogin" name="%webAlwaysLogin" description="%webAlwaysLogin.desc"
+            required="false" type="Boolean"
+            default="false" />
+
+        <AD id="loginFormURL" name="%loginFormURL" description="%loginFormURL.desc"
+            required="false" type="String"/>
+        
+        <AD id="allowAuthenticationFailOverToAuthMethod" name="%allowAuthenticationFailOverToAuthMethod" description="%allowAuthenticationFailOverToAuthMethod.desc"
+            required="false" type="String" > 
+ 				<Option label="%allowAuthenticationFailOverToAuthMethod.BASIC" value="BASIC" />
+            	<Option label="%allowAuthenticationFailOverToAuthMethod.FORM" value="FORM" />
+        </AD> 
+		<AD id="includePathInWASReqURL" name="%includePathInWASReqURL" description="%includePathInWASReqURL.desc"
+            required="false" type="Boolean"
+            default="false" />
+        <AD id="trackLoggedOutSSOCookies" name="%trackLoggedOutSSOCookies" description="%trackLoggedOutSSOCookies.desc"
+            required="false" type="Boolean"
+            default="false" />
+             
+
+    </OCD>
+
+    <Designate pid="com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl">
+        <Object ocdref="com.ibm.ws.webcontainer.security.metatype"/>
+    </Designate>
+
+</metatype:MetaData>

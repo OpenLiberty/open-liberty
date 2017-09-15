@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2008  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>WebContainer's Session Component Documentation</title>
+</head>
+<body>
+<!-- VERY important note:  Use ONLY flat text editors (such as
+Notepad or Wordpad) to edit this file. Do NOT edit this page
+with MS Word or other editors that are not flat text editors.
+-->
+<h1 id="session">WebContainer's Session Component Documentation</h1>
+
+<h2 id="session_overview">Overview</h2>
+<p>
+The WebContainer's session component bundle provides a very specific implementation of 
+http session for the WAS WebContainer component to use. Abstracted as much as possible,
+this session component still has a large part of its implementation living in the 
+WebContainer bundle. A more generic session component is not available because the dispatcher does not
+provide the Servlet interfaces at this point. That may change in the future if we provide more Servlet containers.
+</p>
+<h2 id="bundle_info">Using this Session Implementation</h2>
+<p>
+At this time, much of the logic necessary to use this session component is tied deeply into the 
+WAS WebContainer component. Therefore, this session implementation requires that 
+the component using it extends and implements many classes. Currently, the 
+WebContainer implements/extends methods the following classes:</p>
+<br/>
+<ul>
+<li>HttpSession</li>
+<li>SessionContext</li>
+<li>HttpSessionFacade</li>
+<li>MemoryStore</li>
+<li>SessionAffinityManager</li>
+<li>SessionContextRegistry</li>
+</ul>
+<br/>
+<h2 id="session_storage">Session Storage Support</h2>
+<p>
+Currently, the only form of session storage supported is in-memory storage.
+</p>
+<!-- center>
+Any extra images for the doc goes under images directory<br />
+<img src="images/liberty.jpg" />
+</center -->
+<p />
+
+</body>
+</html>

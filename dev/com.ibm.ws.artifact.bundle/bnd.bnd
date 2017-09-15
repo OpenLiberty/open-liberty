@@ -1,0 +1,38 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Artifact API Bundle Implementation
+Bundle-SymbolicName: com.ibm.ws.artifact.bundle
+Bundle-Description: Implementation of artifact api that is backed by an org.osgi.framework.Bundle object; version=${bVersion}
+
+WS-TraceGroup: archive.artifact.xml
+
+Private-Package: com.ibm.ws.artifact.bundle.internal*
+
+
+Service-Component: \
+   com.ibm.ws.artifact.bundle.service;\
+    implementation:=com.ibm.ws.artifact.bundle.internal.BundleContainerFactoryHelper;\
+    provide:=com.ibm.ws.artifact.contributor.ArtifactContainerFactoryHelper;\
+    configuration-policy:=ignore;\
+    containerFactory=com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;\
+    dynamic:='containerFactory';\
+    properties:="service.vendor=IBM,handlesType=org.osgi.framework.Bundle,category=BUNDLE"
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.kernel.service

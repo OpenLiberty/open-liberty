@@ -1,0 +1,10 @@
+# This was created based on instructions here:
+# https://help.github.com/articles/dealing-with-line-endings/
+#
+# The z/OS sandbox builds do not work well on non-windows platforms
+# when windows style line endings (CRLF) are committed to Git.  The
+# non-Windows FTP programs will not change CRLF to LF when an
+# ascii file is sent to the z/OS host.
+* text=auto
+
+publish/bin/client text eol=lf

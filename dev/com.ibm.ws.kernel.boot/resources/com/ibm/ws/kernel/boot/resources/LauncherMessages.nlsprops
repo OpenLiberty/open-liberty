@@ -1,0 +1,743 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0001 - 0099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 0900 - 0999 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 1000 - 1099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# ---------- ERROR msgs ----------------------------
+
+audit.launchTime=CWWKE0001I: The server {0} has been launched.
+audit.launchTime.explanation=This message is for informational purposes only.
+audit.launchTime.useraction=No action is required.
+
+audit.kernelStartTime=CWWKE0002I: The kernel started after {0}
+audit.kernelStartTime.explanation=The kernel has been started. The interval (in seconds) is relative to when the platform was launched.
+audit.kernelStartTime.useraction=No action is required.
+
+info.bootstrapChange=CWWKE0003I: The bootstrap locations have changed, so the server will be clean started.
+info.bootstrapChange.explanation=This message is for informational purposes only.
+info.bootstrapChange.useraction=No action is required.
+
+error.badLocation=CWWKE0004E: The system could not resolve locations for server installation.
+error.badLocation.explanation=A server installation could not be found at a specified location.
+error.badLocation.useraction=Reinstall or repair the Liberty profile. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+error.unableToLaunch=CWWKE0005E: The runtime environment could not be launched.
+error.unableToLaunch.explanation=An issue was encountered that prevented the runtime environment from being launched.
+error.unableToLaunch.useraction=Review the available logs to identify the issue and resolve it.
+
+error.enableIIOPTransport=CWWKE0006E: Please enable the orb feature for ORB support.
+error.enableIIOPTransport.explanation=Object Request Broker (ORB) support requires the orb feature.
+error.enableIIOPTransport.useraction=Enable the orb feature to enable ORB support.
+ 
+error.cannotConvertEbcdicToAscii=CWWKE0007E: The system did not successfully convert the following file from EBCDIC to ASCII: {0}
+error.cannotConvertEbcdicToAscii.explanation=While processing the specified file, an error occurred that prevented the system from converting from the EBCDIC format to ASCII. The EBCDIC version of the file remains intact.
+error.cannotConvertEbcdicToAscii.useraction=Manually convert the file if you want to view it on an ASCII-based system.  No action is required if this file will be processed by IBM support.
+
+error.bootPropsURI=CWWKE0008E: The bootstrap properties URI is malformed. uri={0}, reason={1}
+error.bootPropsURI.explanation=There is an error in the URI for the specified bootstrap properties file.
+error.bootPropsURI.useraction=Correct the URI for the bootstrap properties then retry the command.
+
+# {0} is the path to the missing Java dump file
+error.missingDumpFile=CWWKE0009E: The system cannot find the following file and this file will not be included in the server dump archive: {0}
+error.missingDumpFile.explanation=The system is configured to request that Java dumps be taken and collected in the server dump archive. The requested Java dump cannot be found on the file system at the location indicated and will not be collected in the server dump archive.
+error.missingDumpFile.useraction=Check the server logs, the console.log and messages.log, or both, to determine if the requested Java dumps are available at another location or determine why the Java dump failed. Attempt to acquire and collect any missing Java dumps manually. See the problem determination information on the WebSphere Application Server Support web page for information on how to manually generate javacores: http://www.ibm.com/software/webservers/appserv/was/support
+
+error.badConfigRoot=CWWKE0010E: The required server.xml file must exist and be readable. Path: {0} Reason: {1}
+error.badConfigRoot.explanation=The server.xml file cannot be read or does not exist.
+error.badConfigRoot.useraction=Ensure that the server.xml file exists and can be read by the current user.
+
+error.archiveTarget=CWWKE0011E: The --archive parameter requires an argument: \
+   --archive="<file to archive>"
+error.archiveTarget.explanation=A required argument was not supplied.
+error.archiveTarget.useraction=Supply the correct argument then retry the command. Try using --help for a description of the arguments for the supplied option.
+
+error.serverNameCharacter=CWWKE0012E: The specified server name contains a character that is not valid (name={0}). \
+  Valid characters are: Unicode alphanumeric (e.g. 0-9, a-z, A-Z), underscore (_), dash (-), plus (+), and period (.). \
+  A server name cannot begin with a dash (-) or period (.).
+error.serverNameCharacter.explanation=A character that is not valid has been used in the server name.
+error.serverNameCharacter.useraction=Rename the server using only valid characters: Unicode alphanumeric (e.g. 0-9, a-z, A-Z), underscore (_), dash (-), plus (+), and period (.).
+
+error.unknownArgument=CWWKE0013E: Unknown option: {0}
+error.unknownArgument.explanation=The specified option was not recognized.
+error.unknownArgument.useraction=Retry the command using valid options. Try using --help for a list of valid options.
+
+error.bootPropsStream=CWWKE0014E: The system could not open or read the specified bootstrap properties. Path: {0} Reason: {1}
+error.bootPropsStream.explanation=The bootstrap.properties file cannot be read or does not exist.
+error.bootPropsStream.useraction=Ensure that the specified file exists and can be read by the current user.
+
+error.platformBundleException=CWWKE0015E: Internal errors occurred while starting the server. 
+error.platformBundleException.explanation=At least one exception was encountered while installing or starting the server. 
+error.platformBundleException.useraction=Check that the product has been installed correctly. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.secPermission=CWWKE0016E: The bootstrap JAR file requires the AllPermission security configuration in order to \
+ launch the runtime environment and the OSGi framework ({0}).
+error.secPermission.explanation=The Java 2 Security permissions are insufficient for the bootstrap JAR file to launch the runtime environment and the OSGi framework.
+error.secPermission.useraction=Ensure that the bootstrap JAR file has been granted AllPermission privileges in the Java 2 Security policy file.
+
+# CWWKE0017E removed because it's only used in com.ibm.ws.kernel.boot.cmdline. Do not reuse.
+
+error.unknownException=CWWKE0018E: An exception occurred while launching the runtime environment: {0}
+error.unknownException.explanation=The exception prevented the launch of the server.
+error.unknownException.useraction=Resolve the exception, if possible, then retry the action. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.frameworkDef=CWWKE0019E: The required framework definition was not specified.
+error.frameworkDef.explanation=The server installation is missing required files and the server could not start.
+error.frameworkDef.useraction=Check that the product has been installed correctly. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.frameworkDefFile=CWWKE0020E: The specified framework definition ({0}) does not exist.
+error.frameworkDefFile.explanation=The framework definition file was not found.
+error.frameworkDefFile.useraction=Ensure that the framework definition resource exists and can be read by the current user.
+
+error.frameworkJarFile=CWWKE0021E: The specified framework bundle ({0}) does not exist.
+error.frameworkJarFile.explanation=The specified framework bundle artifact could not be found.
+error.frameworkJarFile.useraction=Ensure that the resource exists and can be read by the current user.
+
+error.kernelDef=CWWKE0022E: The required kernel definition was not specified.
+error.kernelDef.explanation=The server installation is missing required files and the server could not start.
+error.kernelDef.useraction=Check that the product has been installed correctly. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.kernelDefFile=CWWKE0023E: The specified kernel definition ({0}) does not exist.
+error.kernelDefFile.explanation=The specified kernel definition could not be found.
+error.kernelDefFile.useraction=Ensure that the kernel definition resource exists and can be read by the current user.
+
+error.specifiedLocation=CWWKE0025E: The value of {0} must refer to a directory. The specified value \
+ references an existing file resource. Value: {1}
+error.specifiedLocation.explanation=The supplied location refers to an existing file instead of a directory.
+error.specifiedLocation.useraction=Change the specified location to a directory then retry the action.
+
+warning.noPlatformCache=CWWKE0026W: The system could not write the platform cache file ({0}). Exception: {1}
+warning.noPlatformCache.explanation=The specified platform cache file could not be written.
+warning.noPlatformCache.useraction=Check and resolve the exception, then retry the action.
+
+warning.singleServer=CWWKE0027W: Only one server may be specified on the command line; \
+  subsequent names will be ignored (server={0}, ignored={1}).
+warning.singleServer.explanation=You may specify only one server on the command line. The first server name has been processed; the remaining names have been ignored.
+warning.singleServer.useraction=No action is required. Specify only one server to avoid this warning.
+  
+error.serverAlreadyRunning=CWWKE0029E: An instance of server {0} is already running.
+error.serverAlreadyRunning.explanation=You are trying to start a server that is already running.
+error.serverAlreadyRunning.useraction=Stop the existing server instance before trying to start the server, or start a different server.
+
+# {0} The server name
+# {1} The server directory path
+# {2} The exception thrown when trying to create
+error.creatingNewServer=CWWKE0030E: An exception occurred while creating server {0}. serverPath: {1} Reason: {2}
+error.creatingNewServer.explanation=The specified server could not be created.
+error.creatingNewServer.useraction=Check and resolve the exception, then try again to create the server.
+
+error.noExistingServer=CWWKE0031E: Specified server {0} does not exist; use the --create option to create a new server. serverPath: {1}
+error.noExistingServer.explanation=The specified server does not exist, so no action can be performed on it.
+error.noExistingServer.useraction=Check the name of the server, or create a server with the specified name, then retry the command.
+
+## No longer used
+error.bundleInstallException=CWWKE0032E: One or more exceptions occurred while installing platform bundles.
+error.bundleInstallException.explanation=At least one exception was encountered while installing the platform bundles.
+error.bundleInstallException.useraction=Review the logs to identify and resolve the exceptions, then try again to install the bundles.
+
+error.missingBundleException=CWWKE0033E: Platform bundles could not be found.
+error.missingBundleException.explanation=One or more platform bundles could not be found.
+error.missingBundleException.useraction=Ensure that the platform resources exist and can be read by the current user.
+
+error.noStartedBundles=CWWKE0034E: No bundles were installed, please verify install image.
+error.noStartedBundles.explanation=The installation image might be incomplete.
+error.noStartedBundles.useraction=Verify the installation then try again to install the bundles.
+
+error.initLog=CWWKE0035E: There was a problem with the specified initial log file. logPath={0}
+error.initLog.explanation=The location of the initial log file was not specified correctly, or the file was not readable.
+error.initLog.useraction=Check the location and state of the initial log file.
+
+audit.kernelUpTime=CWWKE0036I: The server {0} stopped after {1}.
+audit.kernelUpTime.explanation=The kernel has stopped after the specified interval (in seconds). This interval is relative to when the platform was launched.
+audit.kernelUpTime.useraction=No action is required.
+
+error.unknown.console.protocol=CWWKE0037E: {0} is not a supported console protocol. The telnet protocol will be used instead. 
+error.unknown.console.protocol.explanation=The specified protocol is not supported, so the system uses the default protocol (telnet) instead.
+error.unknown.console.protocol.useraction=No action is required to use the default protocol. Otherwise, modify the configuration to use a supported protocol.
+
+error.rasProvider=CWWKE0038E: The required log provider was not specified.
+error.rasProvider.explanation=The server installation is missing required files and the server could not start.
+error.rasProvider.useraction=Check that the product has been installed correctly. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.rasProviderResolve=CWWKE0039E: The specified log provider JAR file or bundle ({0}) does not exist.
+error.rasProviderResolve.explanation=The specified log provider resource could not be found.
+error.rasProviderResolve.useraction=Ensure that the log provider resource exists and can be read by the current user.
+
+error.frameworkRestart=CWWKE0040E: The platform bundles could not be resolved against the cache. Restart the server with a clean start.
+error.frameworkRestart.explanation=The platform bundles could not be resolved against the platform cache. This problem can normally be resolved with a clean restart.
+error.frameworkRestart.useraction=Restart the server using the --clean option to clear the cache.
+
+info.frameworkRestart=CWWKE0041I: The platform cache is out of sync. Restarting the framework.
+info.frameworkRestart.explanation=The framework has been restarted because the platform cache was out of sync.
+info.frameworkRestart.useraction=No action is required.
+
+# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+
+error.unsupportedLaunch=CWWKE0043E: The launch location is not a local file. ({0})
+error.unsupportedLaunch.explanation=The runtime environment must be launched from a local file, for example a JAR file.
+error.unsupportedLaunch.useraction=Verify that the command being used is using the command java -jar <localJarFile> to launch the runtime environment. 
+
+error.serverDirPermission=CWWKE0044E: There is no write permission for server directory {0}
+error.serverDirPermission.explanation=The server directory must be writable in order to start the server.
+error.serverDirPermission.useraction=Verify that you have write access to the server directory and workarea.
+
+error.serverDirExists=CWWKE0045E: It was not possible to create the server called {0} because the server directory {1} already exists.
+error.serverDirExists.explanation=The server directory must not already exist when creating a server.
+error.serverDirExists.useraction=Either choose a new server name or delete the directory, then rerun the command.
+
+error.noAttachAPI=CWWKE0046E: An implementation of the Java Attach API could not be found.
+error.noAttachAPI.explanation=The function requested requires the Java Attach API, and an implementation could not be found.
+error.noAttachAPI.useraction=Specify the location of the Java Attach API on the CLASSPATH.
+
+error.shutdownClientException=CWWKE0047E: The process control agent stopped with an unexpected exception {0}
+error.shutdownClientException.explanation=The specified exception prevented the process control agent from running correctly.
+error.shutdownClientException.useraction=Resolve the exception then retry the action.
+
+warning.serverNotFound=CWWKE0048W: A running instance of the server with name {0} and server directory {1} could not be found.
+warning.serverNotFound.explanation=The process control agent could not find a running instance of the specified server.
+warning.serverNotFound.useraction=Check that an instance of the specified server is running, and that it is running under the same JRE implementation.
+
+error.stopServerError=CWWKE0049E: Server {0} could not be stopped. 
+error.stopServerError.explanation=A running instance of the specified server was found, but it did not shut down properly in response to a stop command. 
+error.stopServerError.useraction=Review the server logs for more information about why the server did not shut down properly.
+
+error.invalid.directory=CWWKE0050E: Could not initialize server command listener. Server directory {0} is not valid.
+error.invalid.directory.explanation=The directory does not exist or is not readable.
+error.invalid.directory.useraction=Review the configuration.
+
+error.packageServerError=CWWKE0051E: Server {0} could not be packaged.
+error.packageServerError.explanation=Could not package the specified server.
+error.packageServerError.useraction=Review the server logs for more information. If the problem persists, see problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/.
+
+error.serverCommand.init=CWWKE0052E: Failed to initialize the server command listener because of an IO exception {0}
+error.serverCommand.init.explanation=An unexpected exception occurred when initializing the server command listener.
+error.serverCommand.init.useraction=Review the server logs for more information about why the command failed. If the problem persists, see problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/.
+
+warning.unrecognized.command=CWWKE0053W: Unrecognized command {0}
+warning.unrecognized.command.explanation=The command was ignored because it was not recognized.
+warning.unrecognized.command.useraction=Use the help action to verify you are attempting a valid command with valid options. If the problem persists, see problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/.
+
+error.fileNotFound=CWWKE0054E: Unable to open file {0}. 
+error.fileNotFound.explanation=A FileNotFoundException exception occurred when trying to open the file. 
+error.fileNotFound.useraction=Check that the path exists, and you have write access and sufficient disk space.
+
+# {0} The date the server was shutdown. 
+# Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
+# Note {0,time,short} tells the message formatter to expand
+info.stop.request.received=CWWKE0055I: Server shutdown requested on {0,date,full} at {0,time,short}. The server {1} is shutting down.
+info.stop.request.received.explanation=This message is for informational purposes only.
+info.stop.request.received.useraction=No action is required.
+
+error.unableZipDir=CWWKE0056E: Unable to zip up directory due to an IO exception {0}. 
+error.unableZipDir.explanation=An IOException occurred.
+error.unableZipDir.useraction=Retry the operation. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+info.introspect.request.received=CWWKE0057I: Introspect request received. The server is dumping status.
+info.introspect.request.received.explanation=This message is for informational purposes only.
+info.introspect.request.received.useraction=No action is required.
+
+warn.packageServer.include.unknownOption=CWWKE0058W: Unable to use option --include={0}, will use --include=all instead.
+warn.packageServer.include.unknownOption.explanation=The option was ignored because it was not recognized.
+warn.packageServer.include.unknownOption.useraction=Retry the command using valid options. Try using --help for a list of valid options.
+
+warn.unableWriteFile=CWWKE0059W: Unable to write file {0} due to an IO exception {1}. 
+warn.unableWriteFile.explanation=An IO exception occurred.
+warn.unableWriteFile.useraction=Retry the operation. If the error still persists, report the problem to IBM service.
+
+# {0} The name of an iFix jar file
+# {1} The name of a base jar file
+warn.ifix.ignored=CWWKE0060W: Ignoring iFix jar {0} because base jar {1} does not exist.
+warn.ifix.ignored.explanation=A iFix jar has been found, but the base jar the iFix applies to has not been installed.
+warn.ifix.ignored.useraction=Obtain an iFix for the fixpack level installed, or update to the appropriate fixpack level, or delete the iFix jar.
+
+warn.fileEncodingNotFound=CWWKE0061W: The z/OS coded character set identifier for encoding {0} does not exist. Text files will not be tagged. 
+warn.fileEncodingNotFound.explanation=Text files are not tagged with the specified encoding.
+warn.fileEncodingNotFound.useraction=The file may need to be translated to the IBM-1047 encoding before being viewed with standard editors and text utilities.
+
+warn.unableTagFile=CWWKE0062W: Text files will not be tagged because __chattr service failed with errno {0}. 
+warn.unableTagFile.explanation=Text files are not tagged with the specified encoding.
+warn.unableTagFile.useraction=The file may need to be translated to the IBM-1047 encoding before being viewed with standard editors and text utilities.
+
+warn.registerNative=CWWKE0063W: Unable to register the native method with descriptor name {0}. 
+warn.registerNative.explanation=Registration of the native method failed.
+warn.registerNative.useraction=Check that the native method exists.
+
+error.loadNativeLibrary=CWWKE0064E: Unable to load z/OS native library from {0}.
+error.loadNativeLibrary.explanation=Unable to load z/OS native library.
+error.loadNativeLibrary.useraction=Check that the path exists and retry. 
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerExists=CWWKE0065E: An exception occurred while creating server {0}. External activity was detected at the server path ({1}) so the server creation was stopped.
+error.creatingNewServerExists.explanation=The specified server cannot be created because another appplication was performing file operations in the new server directory.
+error.creatingNewServerExists.useraction=Investigate why there was file activity in the server directory outside the create command then delete the server directory and try to create the server again.
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerMkDirFail=CWWKE0066E: A directory cannot be created for the {0} server at the following location: {1}.
+error.creatingNewServerMkDirFail.explanation=The specified server cannot be created either because there was not enough space to create the server or because the system cannot write to the location.
+error.creatingNewServerMkDirFail.useraction=Ensure that there is enough disk space to create the server and that the location has the correct write permissions before you try to create the server again.
+
+info.javadump.request.received=CWWKE0067I: Java dump request received.
+info.javadump.request.received.explanation=This message is for informational purposes only.
+info.javadump.request.received.useraction=No action is required.
+
+info.javadump.created=CWWKE0068I: Java dump created: {0}
+info.javadump.created.explanation=This message is for informational purposes only.
+info.javadump.created.useraction=No action is required.
+
+warn.javadump.unsupported=CWWKE0069W: Java dump type {0} is not supported.
+warn.javadump.unsupported.explanation=A dump was requested, but the server JVM does not support the dump type.
+warn.javadump.unsupported.useraction=No action is required.
+
+warn.package.invalid.looseFile=CWWKE0070W: The loose file {0} is invalid.
+warn.package.invalid.looseFile.explanation= Could not find the file or the file's format is wrong.
+warn.package.invalid.looseFile.useraction=Ensure the file is existent and the file's format is correct.
+
+# {0} The name of an interim fix resource
+# {1} The name of a base resource
+warn.ifix.resource.ignored=CWWKE0071W: Ignoring interim fix {0} because base version {1} does not exist.
+warn.ifix.resource.ignored.explanation=An interim fix resource has been found, but the base resource that the interim fix applies to has not been installed.
+warn.ifix.resource.ignored.useraction=Obtain an interim fix for the installed fix pack level, or update to the appropriate fix pack level, or delete the interim fix resource.
+
+# {0} The invalid BLST specification string
+error.blst.spec.invalid=CWWKE0072E: The BLST specification string {0} is invalid. The specification must be of the form: <symbolic-name>;version="<version-range>".
+error.blst.spec.invalid.explanation=The specification string for the BLST file does not conform to the required syntax. The server is not started.
+error.blst.spec.invalid.useraction=Specify the the symbolic-name and version-range of the BLST file in the form: <symbolic-name>;version="<version-range>". The symbolic-name must be a valid OSGi token. The version-range must be a valid OSGi version-range. Additionally, the version range must contain both an upper and lower bound, which may can be either inclusive or exclusive, and must not specify a qualifier.
+
+# {0} The BLST filename
+error.blst.failed.to.resolve=CWWKE0073E: Failed to resolve the BLST file for {0}.
+error.blst.failed.to.resolve.explanation=The named BLST file could not be located. The server installation is missing required files and the server could not start.
+error.blst.failed.to.resolve.useraction=Specify a resolvable BLST file in the server bootstrap.properties file of the server.
+
+error.platform.dir.not.found=CWWKE0074E: Failed to locate the platform directory.
+error.platform.dir.not.found.explanation=The platform directory could not be located. The server installation is missing required files and the server could not start.
+error.platform.dir.not.found.useraction=Check that the product has been installed correctly. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.unknown.kernel.version=CWWKE0075E: Failed to read the kernel version range from the bootstrap manifest.
+error.unknown.kernel.version.explanation=The version range of the kernel could not be read. The server installation is missing required files and the server could not start.
+error.unknown.kernel.version.useraction=Check that the product has been installed correctly. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for minify.. 
+error.minify.unable.to.start.server=CWWKE0076E: Unable to query server {0} to determine features to retain.
+error.minify.unable.to.start.server.explanation=The named server was unable to be queried to determine the features to retain during packaging. The resulting package archive may be invalid.
+error.minify.unable.to.start.server.useraction=Check the named server is able to start, and reattempt the package. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.unable.to.stop.server=CWWKE0077E: Unable to stop server {0}, started to determine features to retain.
+error.minify.unable.to.stop.server.explanation=The named server has been queried for currently configured features, but has not shutdown as requested.
+error.minify.unable.to.stop.server.useraction=Check the named server is able to start, and stop and reattempt the package operation. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.unable.to.determine.features=CWWKE0078E: Unable to determine features to retain for server {0}.
+error.minify.unable.to.determine.features.explanation=The server is unable to be packaged with the options selected, as it was not possible to determine the configured features for the server.
+error.minify.unable.to.determine.features.useraction=Check the configuration for the server, and verify the server is able to start and stop. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.missing.manifest=CWWKE0079E: Packaging the server {0} failed due to a missing server manifest.
+error.minify.missing.manifest.explanation=The server could not be packaged, because the server manifest was missing.
+error.minify.missing.manifest.useraction=Check that the product has been installed correctly. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.unable.load.property=CWWKE0080E: Unable to load property {0} in file {1}.
+error.unable.load.property.explanation=The property could not be found within the specified property file.
+error.unable.load.property.useraction=Make sure that the property name exists and is spelled correctly.
+
+unable.to.package.missing.file=CWWKE0081E: Unable to package server {0} with requested operating system filter {1} due to missing resource {2}.
+unable.to.package.missing.file.explanation=The request to package the server with the requested operating system filter was prevented due to a missing resource.
+unable.to.package.missing.file.useraction=Confirm if the server being packaged had the requested operating system content removed by a prior packaging operation that specified --include=minify. If so, retry the package on a server that has not been reduced by a previous package operation. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+error.unable.to.package=CWWKE0082E: Unable to package server {0} due to an IO exception {1}.
+error.unable.to.package.explanation=An IOException occurred when packaging required Liberty content.
+error.unable.to.package.useraction=Retry the package operation on a freshly installed server. If the problem persists, see the problem determination information on the WebSphere Application Server Support Web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.os.without.include=CWWKE0083E: The --os parameter can only be used with --include=minify.
+error.os.without.include.explanation=The --os parameter is intended to be used in conjuction with --include=minify to specify which operating systems to support during a packaging operation.
+error.os.without.include.useraction=Consult the documentation, and either remove the --os parameter from the command, or add --include=minify and retry the operation.
+
+audit.system.exit=CWWKE0084I: The server {0} is stopping because thread {1} ({2}) called the method {3}: {4}
+audit.system.exit.explanation=The specified thread called a method to exit the JVM. The server intercepted the request and will attempt to stop in an orderly manner.
+audit.system.exit.useraction=If stopping the server was unexpected, determine why the specified thread called the method.
+
+audit.jvm.shutdown=CWWKE0085I: The server {0} is stopping because the JVM is exiting.
+audit.jvm.shutdown.explanation=The server intercepted a request to stop the JVM and will attempt to stop in an orderly manner. The JVM might be exiting because the operating system sent a terminating signal to the server process.
+audit.jvm.shutdown.useraction=If stopping the server was unexpected, determine if a terminating signal was sent to the server process.
+
+warning.serverStartedCommandPortDisabled=CWWKE0087W: Server start was initiated for server {0}, but it is not possible to tell if startup was completed because the server command port is disabled.
+warning.serverStartedCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port was explicitly disabled for this server, therefore it is not possible to tell when the server has completed startup.
+warning.serverStartedCommandPortDisabled.useraction=Manually check the server logs to verify that the server started successfully.
+
+warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Server start was initiated for server {0} with process ID {1}, but it is not possible to tell if startup has completed because the server command port is disabled.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port was explicitly disabled for this server, therefore it is not possible to tell when the server has completed startup.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=Manually check the server logs to verify that the server started successfully.
+
+error.serverStopCommandPortDisabled=CWWKE0089E: Server {0} could not be stopped because the server command port is disabled.
+error.serverStopCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port is disabled for this server, therefore it cannot be stopped from this script.  Note that the command port is disabled by default when a server is started as a started task on z/OS.
+error.serverStopCommandPortDisabled.useraction=If the server is running as a started task on z/OS, the server can be stopped from the operator console.  Otherwise, the server process can be stopped from a shell.
+
+warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Server {0} dump complete in {1}.  Some information could not be obtained because the server command port is disabled, preventing direct communication with the running server.
+warning.serverDumpCompleteCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port is disabled for this server, therefore some portions of the server dump that require direct communication to the server could not be obtained.  Note that the command port is disabled by default when a server is started as a started task on z/OS.
+warning.serverDumpCompleteCommandPortDisabled.useraction=If the server is running as a started task on z/OS, a full server dump can be requested from the operator console.  See the information center for details.
+
+error.serverJavaDumpCommandPortDisabled=CWWKE0091E: Server {0} dump could not be taken because the server command port is disabled.
+error.serverJavaDumpCommandPortDisabled.explanation=The server command port is required for communication with a running server.  The command port is disabled for this server, therefore the requested dump could not be taken.  Note that the command port is disabled by default when a server is started as a started task on z/OS.
+error.serverJavaDumpCommandPortDisabled.useraction=If the server is running as a started task on z/OS, this dump can be requested from the operator console.  See the information center for details.
+
+info.javadump.zos.system.created=CWWKE0092I: Java System Transaction Dump (SYSTDUMP) request is complete.
+info.javadump.zos.system.created.explanation=This message is for informational purposes only. Please refer to the system log for details on the dataset name and volume that contains the output of the Java system dump.
+info.javadump.zos.system.created.useraction=No action is required.
+
+warn.fingerprintUnableToMkDirs=CWWKE0093W: The server could not create the location {0} when trying to write the file {1}. 
+warn.fingerprintUnableToMkDirs.explanation=The directory create operation did not succeed. The disk might be full or the server might not have permission to write to the location.
+warn.fingerprintUnableToMkDirs.useraction=Verify the directory location and permissions to see if the problem can be resolved.
+
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol=CWWKE0094W: The server cannot package the application files because one or more location symbols in the {0} file is unknown.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.explanation=The server puts the package file that it creates into the path specified in the loose configuration application XML file. However, the path in the loose configuration application XML file has at least one unknown symbol in it. You can find known symbols in the WLP_HOME/README.TXT file. The location symbols are wrapped in ${...} text.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.useraction=Change the path in the loose configuration application XML file to use known location symbols.
+
+warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: The server cannot package application files specified in the {0} loose configuration application XML file because it cannot find them.
+warning.unableToPackageLooseConfigFileMissingPath.explanation=The specified loose configuration application XML file contains invalid information about the location of the files. For example, it might specify a directory that cannot be found. Paths in this XML file should be relative to the configuration directory of the server. The archive represented by this file will not be included in the packaged server output.
+warning.unableToPackageLooseConfigFileMissingPath.useraction=Modify the paths in the loose configuration application XML file to point to the correct location that contains the application files. 
+
+warn.packageRuntime.include.unknownOption=CWWKE0099W: Unable to use option --include={0}, will use --include=wlp instead.
+warn.packageRuntime.include.unknownOption.explanation=The option was ignored because it was not recognized.
+warn.packageRuntime.include.unknownOption.useraction=Retry the command using valid options. Try using --help for a list of valid options.
+
+audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: This product is licensed for development, and limited production use. The full license terms can be viewed here: {0}
+audit.licenseRestriction.base_ilan.ilan.explanation=This product is licensed for development and limited production use. To see the definition of development use and understand the production limitations, read the product license files.
+audit.licenseRestriction.base_ilan.ilan.useraction=No action is required.
+
+audit.licenseRestriction.developers.ilan=CWWKE0101I: This product is licensed for development use. The full license terms can be viewed here: {0}
+audit.licenseRestriction.developers.ilan.explanation=This product is licensed for development use. To see the definition of development use and understand the limitations, read the product license files.
+audit.licenseRestriction.developers.ilan.useraction=No action is required.
+
+error.create.unknownJavaLevel=CWWKE0102E: The system is not able to determine the Java specification level from the system properties.  The value is not specified or not specified correctly.  The system properties contains the following value for java.specification.level: {0}
+error.create.unknownJavaLevel.explanation=The process that is attempting to create the server was not able to determine the level of Java in use.  This level is required in order to determine the optimal settings for the server.
+error.create.unknownJavaLevel.useraction=Ensure that you are using a supported JDK.  You might also need to modify your JAVA_HOME environment variable to point to a supported JDK installation.
+
+error.create.java8serverenv=CWWKE0103E: Unable to create a server.env file in the following location: {0}
+error.create.java8serverenv.explanation=The process that is attempting to create the server was not able to generate a server.env file in the specified location.  This file provides the required JVM arguments for the server to function properly.
+error.create.java8serverenv.useraction=Ensure that you have write access to the server directory and that you have sufficient disk space.  Additionally, you can manually create the server.env file with the following value:  WLP_SKIP_MAXPERMSIZE=true.  You must ensure that the server process has read access to this file.
+
+audit.licenseRestriction.early_access.ilar=CWWKE0104I: This product is a beta and cannot be used in production. The full license terms can be viewed here: {0}
+audit.licenseRestriction.early_access.ilar.explanation=This product is a beta and must be used according to the terms of the beta license.
+audit.licenseRestriction.early_access.ilar.useraction=No action is required.
+
+error.zosProcStart.create.pidfile=CWWKE0105E: Starting server {0} using the z/OS STC procedure {1} might have failed before the PID file was created. Check STC output for verification.
+error.zosProcStart.create.pidfile.explanation=The PID file for this server was not created within the wait period. The server's start status could not be verified.
+error.zosProcStart.create.pidfile.useraction=Manually verify the status of the newly started server.
+
+error.zosProcStart.mvs.start=CWWKE0106E: The z/OS STC procedure {0} failed to start. The start returned with MGCRE return code {1}.
+error.zosProcStart.mvs.start.explanation=The STC procedure specified by the WLP_ZOS_PROCEDURE property in server.env failed to start. 
+error.zosProcStart.mvs.start.useraction=Verify that the procedure name provided exists and is not surrounding by single or double quotes. Check the MCGRE return code for further details and actions.
+
+error.zosProcStart.start.length=CWWKE0107E: The z/OS STC procedure {0} could not be started. The maximum length of the start command has been exceeded.
+error.zosProcStart.start.length.explanation=The procedure name, server name, and start parameters provided to start the server as a started task exceeded the maximum MVS console command length.
+error.zosProcStart.start.length.useraction=Shorten the server name and procedure name so that the MVS start command will be less than 126 characters.
+
+info.addProductExtension=CWWKE0108I: The product extension {0} was programmatically enabled. The product identifier of the product extension is {1}. The product install location of the product extension is {2}.
+info.addProductExtension.explanation= This message is for informational purposes only. The product extension was added by a call to the com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension SPI.
+info.addProductExtension.useraction=No action is required.
+
+# CWWKE0109W removed because it's no longer used - do not reuse 
+
+#
+# W A R N I N G:   Do not use CWWKE0100 - CCWKE0199 they are reserved in ServiceMessages.nlsprops
+#
+# Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
+#
+
+error.clientNameCharacter=CWWKE0900E: The specified client name contains a character that is not valid (name={0}). \
+  Valid characters are: Unicode alphanumeric (e.g. 0-9, a-z, A-Z), underscore (_), dash (-), plus (+), and period (.). \
+  A client name cannot begin with a dash (-) or period (.).
+error.clientNameCharacter.explanation=A character that is not valid has been used in the client name.
+error.clientNameCharacter.useraction=Rename the client using only valid characters: Unicode alphanumeric (e.g. 0-9, a-z, A-Z), underscore (_), dash (-), plus (+), and period (.).
+
+warning.singleClient=CWWKE0901W: Only one client may be specified on the command line; \
+  subsequent names will be ignored (client={0}, ignored={1}).
+warning.singleClient.explanation=You may specify only one client on the command line. The first client name has been processed; the remaining names have been ignored.
+warning.singleClient.useraction=No action is required. Specify only one client to avoid this warning.
+
+# {0} The client name
+# {1} The client directory path
+# {2} The exception thrown when trying to create
+error.creatingNewClient=CWWKE0902E: An exception occurred while creating client {0}. clientPath: {1} Reason: {2}
+error.creatingNewClient.explanation=The specified client could not be created.
+error.creatingNewClient.useraction=Check and resolve the exception, then try again to create the client.
+
+error.noExistingClient=CWWKE0903E: Specified client {0} does not exist; use the --create option to create a new client. clientPath: {1}
+error.noExistingClient.explanation=The specified client does not exist, so no action can be performed on it.
+error.noExistingClient.useraction=Check the name of the client, or create a client with the specified name, then retry the command.
+
+error.clientDirExists=CWWKE0904E: It was not possible to create the client called {0} because the client directory {1} already exists.
+error.clientDirExists.explanation=The client directory must not already exist when creating a client.
+error.clientDirExists.useraction=Either choose a new client name or delete the directory, then rerun the command.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientExists=CWWKE0905E: An exception occurred while creating client {0}. External activity was detected at the client path ({1}) so the client creation was stopped.
+error.creatingNewClientExists.explanation=The specified client cannot be created because another application was performing file operations in the new client directory.
+error.creatingNewClientExists.useraction=Investigate why there was file activity in the client directory outside the create command then delete the client directory and try to create the client again.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientMkDirFail=CWWKE0906E: An exception occurred while creating client {0} at location {1}.
+error.creatingNewClientMkDirFail.explanation=The specified client cannot be created either because there was not enough space to create the client or because the location is prevented from being written to.
+error.creatingNewClientMkDirFail.useraction=Ensure that there is enough disk space to create the client and ensure that the location can be written to then try again. 
+
+audit.launchTime.client=CWWKE0907I: The client {0} has been launched.
+audit.launchTime.client.explanation=This message is for informational purposes only.
+audit.launchTime.client.useraction=No action is required.
+
+audit.kernelUpTime.client=CWWKE0908I: The client {0} stopped after {1}.
+audit.kernelUpTime.client.explanation=The kernel has stopped after the specified interval (in seconds). This interval is relative to when the platform was launched.
+audit.kernelUpTime.client.useraction=No action is required.
+
+# {0} The server name 
+info.java2security.started=CWWKE0909I: Server {0} started with Java 2 Security enabled
+info.java2security.started.explanation=This message is for informational purposes only.
+info.java2security.started.useraction=No action is required.
+
+#{0} Cause of exception
+error.set.securitymanager=CWWKE0910E: Failure to set the default Security Manager due to exception: {0}.  This occurs if the security manager has already been set and its checkPermission method does not allow it to be replaced.
+error.set.securitymanager.explanation=Java 2 Security is enabled but a failure occurred setting the default Security Manager.
+error.set.securitymanager.useraction=Ensure that the security manager has not already been set by starting the server with the -Djava.security.manager option.  \
+If already set, remove the -Djava.security.manager option, and restart the server with Java 2 Security enabled by specifying the websphere.java.security property \
+in the bootstrap.properties file. 
+
+#{0} Cause of exception
+error.set.trace.securitymanager=CWWKE0911E: Failure to set the NoRethrow Security Manager due to exception: {0}.  This occurs if the security manager has already been set and its checkPermission method does not allow it to be replaced.
+error.set.trace.securitymanager.explanation=Java 2 Security is enabled but a failure occurred setting the NoRethrow Security Manager.
+error.set.trace.securitymanager.useraction=Ensure that the security manager has not already been set by starting the server with the -Djava.security.manager option.  \
+If already set, remove the -Djava.security.manager option, and restart the server with Java 2 Security enabled by specifying the websphere.java.security property \
+in the bootstrap.properties file. 
+
+warning.java.security.permdenied=CWWKE0912W: Current Java 2 Security policy reported a potential violation of Java 2 Security Permission. {0}Permission:{1}Code:{2}{3}Stack Trace:{4}Code Base Location:{5}
+warning.java.security.permdenied.explanation=The Java Security Manager checkPermission() threw a SecurityException on the subject Permission.
+warning.java.security.permdenied.useraction=Verify that the attempted operation is permitted and update the permissions policy file for the bundle or application as needed.
+
+error.java.security.exception.codebase=CWWKE0913E: An unexpected exception is caught when trying to determine the code base location.  Exception: {0}.  
+error.java.security.exception.codebase.explanation=A failure occurred determining the code base location of the code which has generated a Java 2 Security Permission access control exception.
+error.java.security.exception.codebase.useraction=Check the exception and server logs for details.   Ensure that the security manager has not already been set by starting the server with the -Djava.security.manager \
+option and specifying a -Djava.security.policy option.  If either or both are set, remove the settings and restart the server with Java 2 Security enabled by specifying the websphere.java.security property in the bootstrap.properties file.
+
+warning.zOS.java.security.permdenied1=CWWKE0914W: The current Java 2 Security policy reported a potential violation of a Java 2 Security Permission. Refer to the Knowledge Center for further information.{0}Permission:{1}Code:{2}Code Base Location:{3}
+warning.zOS.java.security.permdenied1.explanation=The Java Security Manager checkPermission() threw a SecurityException on the subject Permission. A caller on the call stack does not have the required permission.  This might not be a problem if the caller properly handles this exception.
+warning.zOS.java.security.permdenied1.useraction=Verify that the attempted operation is permitted by examining all Java 2 security policy files and application code. Additional permissions might be required, an AccessController.doPrivileged call might be needed in some code on the call stack, or the Security Manager has properly prevented access to a resource that a caller does not have permission to access.
+
+warning.zOS.java.security.permdenied2=CWWKE0915W: The current Java 2 Security policy report a potential violation of a Java 2 Security Permission.  Stack Trace:{0} 
+warning.zOS.java.security.permdenied2.explanation=The Java Security Manager checkPermission() threw a SecurityException. A caller on the call stack does not have the required permission.
+warning.zOS.java.security.permdenied2.useraction=Verify that the attempted operation is permitted by examining all Java 2 security files and application code. Additional permissions might be required.   
+
+error.client.runner.missing=CWWKE0916E: CWWKE0916E: The client feature was not enabled. Review the error messages.
+error.client.runner.missing.explanation=A client feature was not enabled, or an error occurred while loading the feature.
+error.client.runner.missing.useraction=Ensure that a client feature is enabled, and check for error messages.
+
+error.client.runner=CWWKE0917E: The client application reported an error.
+error.client.runner.explanation=The product received an error from the running client application.
+error.client.runner.useraction=See error messages for details about the client application error.
+
+# {0} server name
+# {1} host name
+# {2} logs location
+# {3} unique request id
+error.mbean.operation.failure=CWWKE0918E:  Unable to perform the requested operation. Refer to the logs on Liberty profile server {0} on host {1} at location {2} for request {3} for details.
+error.mbean.operation.failure.explanation=An error occurred while attempting to perform the requested operation.
+error.mbean.operation.failure.useraction=Check the server logs for details about the operation error.
+
+java.security.permdenied.class.info=CWWKE0919I: Offending class is: {0}
+java.security.permdenied.class.info.explanation=The Java Security Manager checkPermission() threw a SecurityException due to the class not having the required permissions.
+java.security.permdenied.class.info.useraction=Verify that the attempted operation is permitted and update the permissions policy file for the bundle or application as needed.
+
+java.security.permdenied.codebaseloc.info=CWWKE0920I: At code base location: {0}
+java.security.permdenied.codebaseloc.info.explanation=The Java Security Manager checkPermission() threw a SecurityException for a class at the specified code base location.
+java.security.permdenied.codebaseloc.info.useraction=Verify that the attempted operation is permitted and update the permissions policy file for the bundle or application as needed.
+
+warning.java.security.permdenied.quickmsg=CWWKE0921W: Current Java 2 Security policy reported a potential violation of Java 2 Security Permission. {0}
+warning.java.security.permdenied.quickmsg.explanation=The Java Security Manager checkPermission() threw a SecurityException on the subject Permission.
+warning.java.security.permdenied.quickmsg.useraction=Verify that the attempted operation is permitted and update the permissions policy file for the bundle or application as needed.
+
+error.package.missingLibExtractDir=CWWKE0922E: The package command cannot complete because the installation is missing the lib/extract directory.
+error.package.missingLibExtractDir.explanation=The lib/extract directory contains metadata and self extraction classes required for the package command to complete.  If this directory is missing, it could indicate that the installation of WebSphere Liberty Profile was incomplete or that the directory was deleted.
+error.package.missingLibExtractDir.useraction=Reinstall WebSphere Liberty Profile and ensure that the lib/extract directory exists under the WLP_HOME directory.
+
+
+
+
+
+info.server.pause.all.request.received=CWWKE0923I: A request was received to pause all pause capable components in the server.
+info.server.pause.all.request.received.explanation=A user issued a request to pause all pause capable components in the server. The server will attempt to pause these components. 
+info.server.pause.all.request.received.useraction=No action is required.
+
+info.server.pause.request.received=CWWKE0924I: A request was received to pause the following components in the server: {0}
+info.server.pause.request.received.explanation=A user issued a request to pause specific components in the server. The server will attempt to pause these components. 
+info.server.pause.request.received.useraction=No action is required.
+
+info.server.resume.all.request.received=CWWKE0925I: A request was received to resume all paused components in the server.
+info.server.resume.all.request.received.explanation=A user issued a request to resume all paused components in the server. The server will attempt to resume these components.
+info.server.resume.all.request.received.useraction=No action is required.
+
+info.server.resume.request.received=CWWKE0926I: A request was received to resume the following components in the server: {0}
+info.server.resume.request.received.explanation=A user issued a request to resume specific components in the server. The server will attempt to resume these components if paused.
+info.server.resume.request.received.useraction=No action is required.
+
+error.pause.request.failed=CWWKE0927E: A pause request was received, but the infrastructure for pausing components is not available. The request cannot be processed. 
+error.pause.request.failed.explanation=A user issued a pause request. However, the request could not be processed. The server might still be initializing or shutting down.
+error.pause.request.failed.useraction=Verify that the server has fully initialized and is not in the process of shutting down.
+
+error.resume.request.failed=CWWKE0928E: A resume request was received, but the infrastructure for pausing components is not available. The request cannot be processed. 
+error.resume.request.failed.explanation=A user issued a resume request, but the request could not be processed. The server might still be initializing or shutting down.
+error.resume.request.failed.useraction=Verify that the server is fully initialized and is not in the process of shutting down.
+
+error.server.pause.failed=CWWKE0929E: A pause request completed, but the following components failed to pause: {0}
+error.server.pause.failed.explanation=The server processed a pause request, but some pause capable components failed to pause. All other pause capable components paused successfully.
+error.server.pause.failed.useraction=Check the server logs for additional errors from the failed components.
+
+error.server.resume.failed=CWWKE0930E: A resume request completed, but the following components failed to resume: {0}
+error.server.resume.failed.explanation=The server processed a resume request, but some paused components failed to resume. All other paused components resumed successfully.
+error.server.resume.failed.useraction=Check the server logs for additional errors from the failed components.
+
+warning.server.pause.invalid.targets=CWWKE0931W: A request was received to pause specific components, but the component list on the target option was empty. No action was taken.
+warning.server.pause.invalid.targets.explanation=A user issued a pause request with an empty target list on the target option. The request completed but no action was taken.
+warning.server.pause.invalid.targets.useraction=Specify on the target option a list of components to pause. To pause all pause capable components in the server, issue a pause request without the target option.
+
+warning.server.resume.invalid.targets=CWWKE0932W: A request was received to resume specific components, but the component list on the target option was empty. No action was taken.
+warning.server.resume.invalid.targets.explanation=A user issued a resume request with an empty target list on the target option. The request completed but no action was taken.
+warning.server.resume.invalid.targets.useraction=Specify on the target option a list of components to resume. To resume all paused components in the server, issue a resume request without the target option.
+
+warning.server.pause.no.targets=CWWKE0933W: A pause request was received, but no pause capable components were found in the server. No action was taken.
+warning.server.pause.no.targets.explanation=The server processed a pause request, but no pause capable components were found on the server. No action was taken.
+warning.server.pause.no.targets.useraction=Verify that pause capable components are available in the server.
+
+warning.server.resume.no.targets=CWWKE0934W: A resume request was received, but no pause capable components were found in the server. No action was taken.
+warning.server.resume.no.targets.explanation=The server processed a resume request, but no pause capable components were found. No action was taken.
+warning.server.resume.no.targets.useraction=Verify that pause capable components are available in the server.
+
+warning.server.pause.missing.targets=CWWKE0935W: A pause request was received, but the following components could not be found: {0}
+warning.server.pause.missing.targets.explanation=The server processed a pause request, but some specific components could not be found. The request was processed for all other components specified.
+warning.server.pause.missing.targets.useraction=Verify that the specified component names are correct and that the components are registered in the server and pause capable.
+
+warning.server.resume.missing.targets=CWWKE0936W: A resume request was received, but the following components were not found: {0}
+warning.server.resume.missing.targets.explanation=The server processed a resume request, but some specific components were not found. The request was processed for all other components specified.
+warning.server.resume.missing.targets.useraction=Verify that the specified component names are correct and that the components are registered in the server and pause capable.
+
+warning.server.status.missing.targets=CWWKE0937W: A status request was received, but the following components were not found: {0}
+warning.server.status.missing.targets.explanation=The server processed a status request, but some specific components were not found. The request was processed for all other components specified.
+warning.server.status.missing.targets.useraction=Verify that the specified component names are correct and that the components are registered in the server and pause capable.
+
+info.server.pause.request.completed=CWWKE0938I: A pause request completed.
+info.server.pause.request.completed.explanation=A pause request completed.
+info.server.pause.request.completed.useraction=No action is required.
+
+info.server.resume.request.completed=CWWKE0939I: A resume request completed.
+info.server.resume.request.completed.explanation=A resume request completed.
+info.server.resume.request.completed.useraction=No action is required.
+
+info.envProductExtension=CWWKE0940I: The {0} product extension has a product identifier of {1} and a product installation location of {2}. This product extension was enabled by specifying the WLP_PRODUCT_EXT_DIR environment variable. 
+info.envProductExtension.explanation= The WLP_PRODUCT_EXT_DIR environment variable points to the location of the product extension. The server found and is using the product extension.
+info.envProductExtension.useraction=No action is required.
+
+warning.variable.invalid=CWWKE0941W: The variable declaration {0} specified in server.env is invalid because it contains non-alphanumeric characters in the variable name. The value will not be used.
+warning.variable.invalid.explanation=Only alphanumeric characters are allowed in variable names specified in the server.env file.
+warning.variable.invalid.useraction=Either modify the variable name to only use alphanumeric characters or move the definition of the variable to the bootstrap.properties file.
+
+info.serverStarting=Starting server {0}.
+info.serverStarted=Server {0} started.
+info.serverStartedWithPID=Server {0} started with process ID {1}.
+info.serverIsRunning=Server {0} is running.
+info.clientIsRunning=Client {0} is running.
+info.serverIsAlreadyRunning=Server {0} is already running.
+info.serverIsRunningWithPID=Server {0} is running with process ID {1}.
+info.serverIsAlreadyRunningWithPID=Server {0} is already running with process ID {1}.
+info.serverNotRunning=Server {0} is not running.
+info.serverStopping=Stopping server {0}.
+info.serverStopped=Server {0} stopped.
+info.serverNotExist=Server {0} does not exist.
+info.clientNotExist=Client {0} does not exist.
+info.serverPackaging=Packaging server {0}.
+info.clientPackaging=Packaging client {0}.
+info.serverPackagingCollectingInformation=Querying server {0} for content.
+info.serverPackagingBuildingArchive=Building archive for server {0}.
+info.serverPackageComplete=Server {0} package complete in {1}.
+info.clientPackageComplete=Client {0} package complete in {1}.
+info.serverDumping=Dumping server {0}.
+info.serverDumpComplete=Server {0} dump complete in {1}.
+info.serverDumpCompleteZos=Server {0} System Transaction Dump (SYSTDUMP) request is complete.
+info.serverStartException=Server {0} start failed. Check server logs for details.
+info.serverStartUnreachable=Server {0} status could not be determined. Remove file {1} if process ID {2} is not the server process.
+info.serverStatusException=Server {0} status could not be determined. Check server logs for details.
+info.serverStopException=Server {0} stop failed. Check server logs for details.
+info.serverPackageException=Server {0} package failed. Check server logs for details.
+info.serverPackageUnreachable=Server {0} package failed. It must be stopped before it can be packaged.
+info.clientPackageException=Client {0} package failed. Check client logs for details.
+info.clientPackageUnreachable=Client {0} package failed. You must stop the client before it can be packaged.
+info.serverDumpOptionUnsupported=Server {0} does not support the Java dump type {1}.
+info.serverDumpException=Server {0} dump failed. Check server logs for details.
+info.unableZipFile=Unable to archive file {0} due to {1}.
+info.LibInventoryGenerationException=Can not generate library inventory during server {0} dump.
+info.defaultServer=Server was not specified. Using default: {0}
+info.defaultClient=Client was not specified. Using default: {0}
+info.runtimePackaging=Packaging liberty runtime.
+info.runtimePackageComplete=Runtime package complete in {0}.
+info.runtimePackageException=Runtime package failed. Check server logs for details.
+
+info.pausingListeners=Pausing the {0} server.
+info.pausedListeners=Pausing the {0} server completed.
+info.pauseFailedException=Pausing the {0} server failed. Check the server logs for details.
+info.pausingListeners.target=Pausing the specified target components of the {0} server.
+info.pausedListeners.target=Pausing the specified target components of the {0} server completed.
+info.pauseFailedException.target=Pausing the specified target components of the {0} server failed. Check the server logs for details.
+info.resumingListeners=Resuming the {0} server.
+info.resumedListeners=Resuming the {0} server completed.
+info.resumeFailedException=Resuming the {0} server failed. Check the server logs for details.
+info.resumingListeners.target=Resuming the specified target components of the {0} server.
+info.resumedListeners.target=Resuming the specified target components of the {0} server completed.
+info.resumeFailedException.target=Resuming the specified target components of the {0} server failed. Check the server logs for details.
+
+# For info.serverLaunch and info.serverVersion: 
+# {0} version (build and/or product name)
+# {1} java.vm.name, e.g. IBM J9 VM
+# {2} java.runtime.version, e.g. pxp3260_26sr2ifx-20120419_02 (SR2) (en_US)
+# {3} server name, only applicable for info.serverLaunch
+# The order of the inserts is important and must be preserved
+info.serverLaunch=Launching {3} ({0}) on {1}, version {2}
+info.serverVersion={0} on {1}, version {2}
+
+info.configRoot=Config document: {0}
+info.bootProp=Boot properties: {0}
+info.cmdArgs=Parameters: {0}
+info.consolePort=Listening on port {0} ... 
+info.newServerCreated=Server {0} created.
+info.newClientCreated=Client {0} created.
+info.days={0} days
+info.hours={0} hours
+info.minutes={0} minutes
+info.seconds={0} seconds
+info.configNotExist=server.xml not specified
+info.syslogs=Output redirected to SystemOut.log and SystemErr.log in {0}
+info.initlogs=Redirecting stdout and stderr to file {0} 
+
+info.no.servers.defined=There are no servers defined in the user directory {0}.
+info.list.of.defined.servers=The following servers are defined relative to the user directory {0}.
+info.communicate.server=A communication error has occurred between the command {0} and the server {1}.

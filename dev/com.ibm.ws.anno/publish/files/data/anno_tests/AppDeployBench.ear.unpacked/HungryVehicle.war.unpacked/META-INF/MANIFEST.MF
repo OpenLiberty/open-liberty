@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Ant-Version: Apache Ant 1.6.5
+Created-By: 2.4 (IBM Corporation)
+Class-Path: FailureLog_Manager.jar Sequence_Manager.jar StationBusines
+ sEJBs.jar Station_Manager.jar Store_Manager.jar JCAViolationManager.jar
+

@@ -1,0 +1,28 @@
+Index: api/src/main/java/org/apache/cxf/staxutils/W3CDOMStreamReader.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/staxutils/W3CDOMStreamReader.java	(revision 1413459)
++++ api/src/main/java/org/apache/cxf/staxutils/W3CDOMStreamReader.java	(working copy)
+@@ -369,6 +369,9 @@
+         String ln = getCurrentNode().getLocalName();
+         if (ln == null) {
+             ln = getCurrentNode().getNodeName();
++            if (ln.indexOf(":") != -1) {
++                ln = ln.substring(ln.indexOf(":") + 1);
++            }
+         }
+         return ln;
+     }
+@@ -390,7 +393,12 @@
+     public String getPrefix() {
+         String prefix = getCurrentNode().getPrefix();
+         if (prefix == null) {
+-            prefix = "";
++            String nodeName = getCurrentNode().getNodeName();
++            if (nodeName.indexOf(":") != -1) {
++                prefix = nodeName.substring(0, nodeName.indexOf(":"));
++            }  else {
++                prefix = "";
++            }
+         }
+         return prefix;
+     }

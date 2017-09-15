@@ -1,0 +1,37 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../../../cnf/resources/bnd/bundle.props
+bVersion=1.0.0
+
+# For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+Bundle-Name: Test Config Extensions
+Bundle-SymbolicName: test.config.extensions; singleton:=true
+Bundle-Description: This bundle provides some services to use for testing; version=${bVersion}
+
+Web-ContextPath: config-extensions-test
+
+# export the interface packages
+Export-Package: \
+  test.config.extensions;provide:=true
+
+Service-Component:\
+  test.config.extensions.super.component;\
+    provide:='org.osgi.service.cm.ManagedServiceFactory,test.config.extensions.ConfigPropertiesProvider';\
+    implementation:=test.config.extensions.ExtensionsTest;\
+    properties:="service.pid=test.config.extensions.super,service.vendor=IBM",\
+  test.config.extensions.internal.super.component;\
+    provide:='org.osgi.service.cm.ManagedServiceFactory,test.config.extensions.ConfigPropertiesProvider';\
+    implementation:=test.config.extensions.ExtensionsTest;\
+    properties:="service.pid=test.config.extensions.internal.super,service.vendor=IBM"
+
+Include-Resource:\
+ OSGI-INF/metatype/metatype-extensions.xml=resources/metatype-extensions.xml

@@ -1,0 +1,30 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.context/resources/com/ibm/ws/security/context/resources/SecurityContextMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Context
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0800 - CWWKS0899
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR=CWWKS0800E: An authentication error occurred while recreating the subjects of the deserialized security context. The exception is: {0}. As a result, the unauthenticated subject will be used for this security context. 
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.explanation=While recreating the subjects that were in the security context, an authentication error occurred. As a result, the unauthenticated subject will be used instead.
+SEC_CONTEXT_DESERIALIZE_AUTHN_ERROR.useraction=Review the exception and logs to understand why the authentication failed.
+
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS=CWWKS0801E: While getting the subject principal, the subject was found to have more than one principal of type WSPrincipal. Only one WSPrincipal can exist in the subject. The names of the WSPrincipals are: {0}. As a result, the security context will not be deserialized on the thread.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.explanation=The security context could not be deserialized because the subject has too many principals of type WSPrincipal. Only one principal of this type is supported.
+SEC_CONTEXT_DESERIALIZE_TOO_MANY_PRINCIPALS.useraction=Review the application to understand why the subject has more than one WSPrincipal.
+
+SEC_CONTEXT_UNABLE_TO_SERIALIZE=CWWKS0802W: While serializing the security context, the custom cache key {0} could not be serialized due to the following exception: {1}. As a result, the security context will not contain the custom cache key.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.explanation=The custom cache key for the subject could not be serialized while serializing the security context. Although the security context will not contain the custom cache key, this does not affect the serialization of the security context itself.
+SEC_CONTEXT_UNABLE_TO_SERIALIZE.useraction=Review the logs to understand why the serialization of the custom cache key failed.

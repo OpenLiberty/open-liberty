@@ -1,0 +1,46 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Thread context capture and propagation service
+Bundle-SymbolicName: com.ibm.ws.context
+Bundle-Description: Provides thread context capture and propagation; version=${bVersion}
+
+WS-TraceGroup: context
+
+Export-Package: \
+    com.ibm.ws.context.service.serializable;provide:=true,\
+    com.ibm.wsspi.threadcontext;provide:=true,\
+    com.ibm.wsspi.threadcontext.jca;provide:=true
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+# catch any packages not explicitly exported and make sure they are private
+Private-Package: \
+    com.ibm.ws.context.service.*
+
+-dsannotations: com.ibm.ws.context.service.serializable.ThreadContextManager
+
+instrument.classesExcludes: com/ibm/ws/context/service/resources/*.class
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

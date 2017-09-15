@@ -1,0 +1,35 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: failsafe OSGi bundle
+Bundle-SymbolicName: com.ibm.ws.net.jodah.failsafe.1.0.4
+Bundle-Description: Failsafe OSGi Bundle, version 1.0.4
+Implementation-Title: Failsafe OSGi Bundle
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.html
+Implementation-Version: 1.0.4
+Embed-Dependency: *; scope=compile; inline=true
+Specification-Title: net.jodah.failsafe
+Import-Package: *
+Export-Package: net.jodah.failsafe,\
+ net.jodah.failsafe.event,\
+ net.jodah.failsafe.function,\
+ net.jodah.failsafe.util,\
+ net.jodah.failsafe.util.concurrent,\
+ net.jodah.failsafe.internal,\
+ net.jodah.failsafe.internal.util;provide:=true
+DynamicImport-Package: *
+
+Include-Resource: \
+  @${repo;net.jodah:failsafe;1.0.4}!/!META-INF/maven/*
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version>=1.8))"

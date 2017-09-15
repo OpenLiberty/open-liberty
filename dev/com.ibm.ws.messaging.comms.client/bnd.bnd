@@ -1,0 +1,88 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: com.ibm.ws.messaging.comms.client
+Bundle-SymbolicName: com.ibm.ws.messaging.comms.client
+Bundle-Description: JMS Communications Client; version=${bVersion}
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+Export-Package: \
+com.ibm.ws.sib.comms.client,\
+com.ibm.ws.sib.comms.client.proxyqueue,\
+com.ibm.ws.sib.comms.client.proxyqueue.asynch,\
+com.ibm.ws.sib.comms.client.proxyqueue.impl,\
+com.ibm.ws.sib.comms.client.proxyqueue.queue,\
+com.ibm.ws.sib.comms.client.util,\
+com.ibm.ws.sib.comms.common,\
+com.ibm.ws.sib.jfapchannel.approxtime,\
+com.ibm.ws.sib.jfapchannel.framework,\
+com.ibm.ws.sib.jfapchannel.impl,\
+com.ibm.ws.sib.jfapchannel.impl.eventrecorder,\
+com.ibm.ws.sib.jfapchannel.impl.octracker,\
+com.ibm.ws.sib.jfapchannel.impl.rldispatcher,\
+com.ibm.ws.sib.jfapchannel.richclient.approxtime.impl,\
+com.ibm.ws.sib.jfapchannel.richclient.framework.impl,\
+com.ibm.ws.sib.jfapchannel.richclient.impl,\
+com.ibm.ws.sib.jfapchannel.richclient.impl.octracker,\
+com.ibm.ws.sib.jfapchannel.richclient.threadpool.impl,\
+com.ibm.ws.sib.jfapchannel.threadpool,\
+com.ibm.ws.sib.jfapchannel,\
+com.ibm.ws.sib.jfapchannel.buffer,\
+com.ibm.ws.sib.jfapchannel.richclient.buffer.impl
+
+
+Service-Component: \
+   com.ibm.ws.messaging.comms.client;\
+     implementation:=com.ibm.ws.sib.jfapchannel.impl.CommsClientServiceFacade;\
+     provide:=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface; \
+     chfwBundle=com.ibm.websphere.channelfw.osgi.CHFWBundle;\
+     executorService=java.util.concurrent.ExecutorService;\
+     alarmManager=com.ibm.ejs.util.am.AlarmManager; \
+     commonServiceFacade=com.ibm.ws.sib.common.service.CommonServiceFacade;\
+     optional:='commonServiceFacade';\
+     dynamic:='commonServiceFacade';\
+     configuration-policy:=ignore;\
+     immediate:=true,\
+   com.ibm.ws.messaging.comms.wasJmsOutbound;\
+     implementation:=com.ibm.ws.sib.jfapchannel.impl.CommsOutboundChain;\
+     commsClientService=com.ibm.ws.sib.comms.CommsClientServiceFacadeInterface;\
+     tcpOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+     sslOptions=com.ibm.wsspi.channelfw.ChannelConfiguration;\
+     sslSupport=com.ibm.websphere.channelfw.osgi.ChannelFactoryProvider;\
+     configuration-policy:=require;\
+     dynamic:='tcpOptions,sslOptions,sslSupport';\
+     optional:='sslOptions,sslSupport';\
+     greedy:='tcpOptions,sslOptions,sslSupport';\
+     properties:='sslSupport.target=(type=SSLChannel), service.vendor=IBM
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.messaging.common;version=latest,\
+	com.ibm.ws.messaging.utils;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.ws.timer;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.channelfw;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

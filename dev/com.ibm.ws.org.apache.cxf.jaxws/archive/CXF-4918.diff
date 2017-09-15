@@ -1,0 +1,36 @@
+Index: branches/2.6.x-fixes/rt/transports/http/src/main/java/org/apache/cxf/transport/http/HTTPConduit.java
+===================================================================
+diff -u -N -r1450511 -r1461310
+--- branches/2.6.x-fixes/rt/transports/http/src/main/java/org/apache/cxf/transport/http/HTTPConduit.java	(.../HTTPConduit.java)	(revision 1450511)
++++ branches/2.6.x-fixes/rt/transports/http/src/main/java/org/apache/cxf/transport/http/HTTPConduit.java	(.../HTTPConduit.java)	(revision 1461310)
+@@ -1128,6 +1128,7 @@
+         connection.setReadTimeout((int)cp.getReceiveTimeout());
+         connection.setUseCaches(false);
+         connection.setInstanceFollowRedirects(false);
++        message.put("http.retransmit.url", newURL.toString());
+ 
+         // If the HTTP_REQUEST_METHOD is not set, the default is "POST".
+         String httpRequestMethod = (String)message.get(Message.HTTP_REQUEST_METHOD);
+
+Index: branches/2.6.x-fixes/api/src/main/java/org/apache/cxf/transport/TransportURIResolver.java
+===================================================================
+diff -u -N -r1348210 -r1461311
+--- branches/2.6.x-fixes/api/src/main/java/org/apache/cxf/transport/TransportURIResolver.java	(.../TransportURIResolver.java)	(revision 1348210)
++++ branches/2.6.x-fixes/api/src/main/java/org/apache/cxf/transport/TransportURIResolver.java	(.../TransportURIResolver.java)	(revision 1461311)
+@@ -129,9 +129,13 @@
+                     InputStream ins = exch.get(InputStream.class);
+                     resourceOpened.addElement(ins);
+                     InputSource src = new InputSource(ins);
+-                    src.setPublicId(base.toString());
+-                    src.setSystemId(base.toString());
+-                    lastestImportUri = base.toString();
++                    String u = (String)message.get("http.retransmit.url");
++                    if (u == null) {
++                        u = base.toString();
++                    }
++                    src.setPublicId(u);
++                    src.setSystemId(u);
++                    lastestImportUri = u;
+                     currentResolver.unresolve();
+                     return src;
+                 }

@@ -1,0 +1,141 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.classloading/resources/com/ibm/ws/classloading/internal/resources/ClassLoadingServiceMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKL
+#COMPONENTNAMEFOR CWWKL Class Loading Service
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+cls.class.file.not.found=CWWKL0001E: The system could not find class [{0}] as resource [{1}].
+cls.class.file.not.found.explanation=An attempt to load the class file as a resource for an application did not succeed.
+cls.class.file.not.found.useraction=Ensure the class is available to the application.
+
+cls.class.file.not.readable=CWWKL0002E: The system could not read class [{0}] as resource [{1}].
+cls.class.file.not.readable.explanation=An attempt to read the class file as a resource for an application did not succeed.
+cls.class.file.not.readable.useraction=Check the file system integrity. If the problem persists, see problem determination information on the WebSphere Application Server Support page at http://www.ibm.com/software/webservers/appserv/was/support/
+
+cls.gateway.not.resolvable=CWWKL0003E: The system could not create a class loader for the application [{0}] at version [{1}].
+cls.gateway.not.resolvable.explanation=The system tried to create an application class loader, but the server does not provide the required Java packages. 
+cls.gateway.not.resolvable.useraction=Check that the server is configured with all the features needed to support this application.
+
+cls.library.id.missing=CWWKL0004E: The system could not create a shared library.
+cls.library.id.missing.explanation=To define a shared library in the server configuration, you must specify an ID attribute. 
+cls.library.id.missing.useraction=Edit the server configuration and add an ID attribute to the library element.
+
+cls.library.missing=CWWKL0005E: The system could not locate a shared library with ID [{0}].
+cls.library.missing.explanation=To reference a library in the server configuration, you must specify the ID of an existing library. 
+cls.library.missing.useraction=Edit the server configuration and ensure the referenced library has been defined and that the ID is correct.
+
+cls.library.id.invalid=CWWKL0006E: A shared library has an invalid ID [{0}] due to error [{1}] 
+cls.library.id.invalid.explanation=To specify the ID for a shared library in the server configuration, you must follow attribute naming conventions.
+cls.library.id.invalid.useraction=Edit the server configuration and modify the ID attribute of the library element.
+
+cls.fileset.missing=CWWKL0007E: Shared library [{0}] references a fileset [{1}] that does not exist.
+cls.fileset.missing.explanation=To reference a fileset from a shared library in the server configuration, you must specify the ID of an existing fileset.
+cls.fileset.missing.useraction=Check the server configuration for the library element, and ensure that the referenced fileset exists.
+
+# {0} - application identifier
+# {1} - application classloader allowedApiTypes
+# {2} - library identifier
+# {3} - library allowedApiTypes
+cls.class.space.conflict=CWWKL0008W: Application [{0}] is incompatible with the common class loader for library [{2}] because they have inconsistent API visibility configurations. Library [{2}] is configured with [{3}] and application [{0}] is configured with [{1}].
+cls.class.space.conflict.explanation=An application references a library through a common class loader and will therefore need to share class instances; however, they have been configured to see different API sets. The application and the library must be configured to see exactly the same set of APIs in order to ensure consistent application behavior.
+cls.class.space.conflict.useraction=Either update the configuration so the application and the library can see the same API set, or configure the application to use the library privately.
+
+cls.api.type.unknown=CWWKL0009W: Application [{0}] is configured to use an unknown API type of [{1}], which will be ignored.  Valid types are as follows: [{2}].
+cls.api.type.unknown.explanation=Applications can be configured to specify which API types they intend to access.
+cls.api.type.unknown.useraction=Ensure that the configuration lists only valid types.
+
+cls.classloader.missing=CWWKL0010E: The system could not locate the class loader with ID [{0}].
+cls.classloader.missing.explanation=To reference a class loader in the server configuration, you must specify the ID of an existing class loader. 
+cls.classloader.missing.useraction=Check the server configuration to ensure that the class loader has been defined and that the ID is correct.
+
+cls.fileset.not.ready=CWWKL0011W: The system could not retrieve fileset [{0}] for shared library [{1}].
+cls.fileset.not.ready.explanation=A shared library is in use but one of the associated filesets canot be retrieved in time.
+cls.fileset.not.ready.useraction=Check for and redress any errors or warnings associated with the fileset.
+
+cls.library.file.invalid=CWWKL0012W: The library [{0}] specifies a file with name [{1}]. This file either does not exist or is incorrectly specified.
+cls.library.file.invalid.explanation=To add a file to a library in the server configuration, you must specify the fully qualified name of an existing file.
+cls.library.file.invalid.useraction=Edit the server configuration and modify the file attribute of the library element.
+
+cls.library.folder.invalid=CWWKL0013W: The library [{0}] specifies a folder with name [{1}]. This folder either does not exist or is not a valid folder .
+cls.library.folder.invalid.explanation=To add a file to a library in the server configuration, you must specify the fully qualified path to an existing folder.
+cls.library.folder.invalid.useraction=Edit the server configuration and modify the folder attribute of the library element.
+
+cls.library.file.forbidden=CWWKL0014I: The file [{0}] can not be added to a classpath.
+cls.library.file.forbidden.explanation=To add a file to a classpath it must be a valid container of classes and resources such as a jar file.
+cls.library.file.forbidden.useraction=Edit the server configuration and ensure any  file or fileset attributes are referencing valid class and resource containers.
+
+cls.library.created=CWWKL0015I: The library [{0}] is available for use.
+cls.library.created.explanation=A library has become available, for example as a result of processing the server configuration.
+cls.library.created.useraction=No user action is required.
+
+WARN_JARS_STILL_CACHED=CWWKL0016W: Unable to prepare JAR files for deletion, applications containing JARs that cannot be deleted.
+WARN_JARS_STILL_CACHED.explanation=The server was unable to prevent locking of the JAR files within installed applications. The JAR files may remain locked until the server stops.
+WARN_JARS_STILL_CACHED.useraction=To delete JAR files within an installed application the server must be stopped prior to deletion.
+
+cls.library.archive=CWWKL0017W: The file [{0}] can not be added to the classpath due to error [{1}].
+cls.library.archive.explanation=Only archive files such as jar or zip files can be added to the classpath.
+cls.library.archive.useraction=Edit the server configuration and ensure any files referenced from the classloader element are archive files.
+
+cls.library.destroyed=CWWKL0018I: The library [{0}] is unavailable.
+cls.library.destroyed.explanation=A library has become unavailable, for example because it was removed from the server configuration.
+cls.library.destroyed.useraction=If the library is still required, ensure that it is still configured correctly.
+####################### CLASS PROVIDER MESSAGES 0030-0039 ####################### 
+#################################################################################
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - syntax exception message
+cls.provider.id.invalid=CWWKL0030E: The class loader [{0}] cannot find the class provider [{1}]. The search failed with syntax error message [{2}].
+cls.provider.id.invalid.explanation=A class loader has been configured to delegate to a class provider but could not retrieve the appropriate class provider. The class loader will work but will not be able to retrieve any classes or resources from the specified class provider.
+cls.provider.id.invalid.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider service vendor
+cls.provider.loader.null=CWWKL0031E: The class loader [{0}] cannot delegate to the class provider [{1}].  The class provider returned a null class loader. The class provider service vendor is [{2}].
+cls.provider.loader.null.explanation=A class loader has been configured to delegate to a class provider but the class provider has not provided a compatible class loader and cannot be used. The class loader will work, but will not be able to retrieve any classes or resources from the specified class provider.
+cls.provider.loader.null.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support or check with the class provider service vendor.
+
+# {0} - class loader id
+# {1} - provider id
+# {2} - provider type
+# {3} - provider service vendor
+cls.provider.loader.unknown=CWWKL0032E: The class loader [{0}] cannot delegate to the class provider [{1}]. The class provider returned an unexpected class loader of type [{2}]. The class provider service vendor is [{3}].
+cls.provider.loader.unknown.explanation=A class loader has been configured to delegate to a class provider but the class provider has not provided a compatible class loader and cannot be used. The class loader will work, but will not be able to retrieve any classes or resources from the specified class provider.
+cls.provider.loader.unknown.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support or check with the class provider service vendor.
+
+# {0} - class loader id
+# {1} - class loader api types
+# {2} - provider id
+# {3} - provider api types
+cls.provider.class.space.conflict=CWWKL0033W: The class loader [{0}] is incompatible with the class provider [{2}] because their API visibility configurations are inconsistent. The class loader is configured with [{1}] and the class provider is configured with [{3}].
+cls.provider.class.space.conflict.explanation=A class loader has been configured to delegate to a specified class provider and will share class instances. However, they have been configured to see different API sets. The delegating class loader and the class provider must be configured to see the same set of APIs in order to have consistent application behavior.
+cls.provider.class.space.conflict.useraction=Update the configuration so the delegating class loader and the class provider can see the same API set.
+
+slf.no.cache=CWWKL0070E: The cache directory did not create successfully.
+slf.no.cache.explanation=The system was not able to create a folder on the disk.
+slf.no.cache.useraction=Make sure that the drive is has the correct write permissions and that there is enough space on disk
+slf.no.acf=CWWKL0071E: A null value was found for the ArtifactContainerFactory object.
+slf.no.acf.explanation=The ArtifactContainerFactory object must not be null when the server is running.
+slf.no.acf.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support or check with the class provider service vendor.
+slf.failed.delete=CWWKL0072W: The [{0}] cache file cannot be deleted. This result can lead to the corruption of nested archives.
+slf.failed.delete.explanation=The system failed to delete the cache file. Because the file still exists in the system, this might cause corruption in nested archives.
+slf.failed.delete.useraction=Verify that the cache file is not in a locked state, which can cause the file deletion to fail.

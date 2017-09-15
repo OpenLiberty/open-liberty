@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+# This file is to be included in the bnd file of any component that needs to 
+# publish its resources to applications.  Including components need to provide 
+# a pipe-separated list of resources to be published as the value of the
+# 'app-resources' variable.
+#
+# Example bnd.bnd file (note that ordering of include and var does not matter)
+# +--------------------------------------------------------------------------+
+# |                                                                          |
+# | # include some templates for this bnd file                               |
+# | -include= \                                                              |
+# |   ~../cnf/resources/bnd/bundle.props, \                            |
+# |   ~../cnf/resources/bnd/app-resources.bnd                          |
+# |                                                                          |
+#  \  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\ |
+#   \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \|
+#
+# |\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\  /\
+# | \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \/  \
+# |                                                                          |
+# | # define the version of this bundle                                      |
+# | bVersion=1.0                                                             |
+# |                                                                          |
+# | # define which resources are to be shared with application classloaders  |
+# | app-resources= \                                                         |
+# |   META-INF/resources/ThisFile.txt |\                                     |
+# |   META-INF/resources/ThatFile.txt |\                                     |
+# |   META-INF/resources/com.ibm.ws.something/AnotherFile.xml |\             |
+# |   com/ibm/ws/something/YetAnotherFile.properties                         |
+# |                                                                          |
+# +--------------------------------------------------------------------------+
+#
+
+# NOTE: Bundle-SymbolicName cannot contains "-"
+Service-Component: \
+  ${bSymbolicName}_${bVersion}.ResourceProvider; \
+  implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+  provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+  configuration-policy:=ignore; \
+  properties:= "resources=${app-resources}"
+  

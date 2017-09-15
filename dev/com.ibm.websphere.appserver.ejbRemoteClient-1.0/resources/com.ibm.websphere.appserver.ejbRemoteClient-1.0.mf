@@ -1,0 +1,25 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+Subsystem-Content: ejbRemotePortable.jar; type=file; location:="clients/ejbRemotePortable.jar",
+ com.ibm.websphere.appserver.javaeePlatform-7.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ejbCore-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.ejb-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.iiopclient-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.javax.interceptor-1.2; type="osgi.subsystem.feature",
+ com.ibm.ws.ejbcontainer.remote.client; version="[1.0.0,1.0.200)",
+ com.ibm.ws.ejbcontainer.v32; version="[1.0.0,1.0.200)",
+ com.ibm.ws.ejbcontainer.remote; version="[1.0.0,1.0.200)"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.ejbRemoteClient-1.0
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.ejbRemoteClient-1.0; visibility:=private; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

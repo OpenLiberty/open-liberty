@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN" "http://java.sun.com/dtd/web-app_2_3.dtd">
+<web-app id="WebApp_ID" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+  <display-name>ibm/api</display-name>
+  <description>The IBM Rest APIs for the Liberty server</description>
+
+  <servlet>
+    <display-name>RESTProxyServlet</display-name>
+    <servlet-name>RESTProxyServlet</servlet-name>
+    <servlet-class>com.ibm.ws.rest.handler.internal.servlet.RESTProxyServlet</servlet-class>
+    <multipart-config>
+        <max-file-size>1000000000</max-file-size>
+        <max-request-size>1000000000</max-request-size>
+        <file-size-threshold>0</file-size-threshold>
+    </multipart-config>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>RESTProxyServlet</servlet-name>
+    <url-pattern>/*</url-pattern>
+  </servlet-mapping>
+  
+  <security-constraint id="SecurityConstraint_1">
+    <display-name>ibm/api REST Security Constraint</display-name>
+    <web-resource-collection id="WebResourceCollection_1">
+      <web-resource-name>ibm/api REST URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>allAuthenticatedUsers</role-name>
+      <role-name>Administrator</role-name>
+    </auth-constraint>
+    <user-data-constraint id="UserDataConstraint_1">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-constraint id="SecurityConstraint_2">
+    <display-name>ibm/api REST Security Constraint</display-name>
+    <web-resource-collection id="WebResourceCollection_2">
+      <web-resource-name>ibm/api REST URL</web-resource-name>
+      <url-pattern>/*</url-pattern>
+      <http-method>OPTIONS</http-method>
+    </web-resource-collection>
+    <user-data-constraint id="UserDataConstraint_2">
+      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+    </user-data-constraint>
+  </security-constraint>
+
+  <security-role id="SecurityRole_1">
+    <description>Any Role</description>
+    <role-name>allAuthenticatedUsers</role-name>
+  </security-role>
+  
+  <security-role id="SecurityRole_2">
+    <description>Administrator Role</description>
+    <role-name>Administrator</role-name>
+  </security-role>
+  
+  <login-config id="LoginConfig_1">
+  	<auth-method>CLIENT_CERT</auth-method>
+    <realm-name>ibm/api</realm-name>
+  </login-config>  
+
+</web-app>
+  

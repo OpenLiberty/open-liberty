@@ -1,0 +1,265 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.websphere.security.wim.util/resources/com/ibm/websphere/security/wim/util/resources/WebsphereWimUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTPREFIX CWIMK
+#COMPONENTNAMEFOR Virtual Member Manager wim utilities 
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Configuration:0000-0499
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+# Message prefix block: Schema/Realm: 0500-0999
+# Message prefix block: User Registry: 3000-3499
+
+INVALID_UNIQUE_NAME_SYNTAX=CWIML1011E: The user registry operation could not be completed. The {0} unique name syntax is not valid. Provide a unique name with the correct syntax. For example, uid=xyz,dc=yourco,dc=com.
+INVALID_UNIQUE_NAME_SYNTAX.explanation=The specified unique name syntax is not valid. The uniqueName specified in the identifier property is not correct. The user registry operation cannot continue without the correct unique name.
+INVALID_UNIQUE_NAME_SYNTAX.useraction=Verify that the unique name is spelt correctly. Review the unique name syntax. For example, if it is in a Distinguished Name (DN) format, ensure that the special characters are escaped correctly.
+
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION=CWIMK0001E: The user registry operation could not be completed. The entity type definition {0} is not valid. Correct the entity definition in the server.xml file.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.explanation= The entity type must be defined with an entity type name and at least one corresponding Relative Distinguished Name (RDN) property.
+INVALID_SUPPORTED_ENTITY_TYPE_DEFINITION.useraction=Modify and correct the entity type definition in the server.xml file.
+
+INVALID_BASE_ENTRY_DEFINITION=CWIMK0002E: The user registry operation could not be completed. The base entry definition {0} is not valid.  Correct the base entry definition in the server.xml file. For example, the syntax is <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.explanation= The specified definition of the base entry is incorrect. The syntax for defining a base entry is <baseEntry name="..." baseDN="...."/>.
+INVALID_BASE_ENTRY_DEFINITION.useraction= Modify and correct the base entry definition in the server.xml file.
+
+INVALID_REALM_DEFINITION=CWIMK0003E: The user registry operation could not be completed. The realm definition {0} is not valid. Correct the realm definition in the server.xml file.
+INVALID_REALM_DEFINITION.explanation= The realm tag is missing, or is invalid because of a missing required attribute.
+INVALID_REALM_DEFINITION.useraction=Modify and correct the realm definition in the server.xml file.
+
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION=CWIMK0004E: The user registry operation could not be completed. The participating base entry definition {0} is not valid. Correct the participating base entry definition in the server.xml file. For example, the syntax is <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.explanation= The specified definition of the participating base entry is incorrect. The syntax for defining a participating base entry is <participatingBaseEntry name="..."/>.
+INVALID_PARTICIPATING_BASE_ENTRY_DEFINITION.useraction=Modify and correct the participating base entry definition in the server.xml file.
+
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION=CWIMK0005E: The user registry operation could not be completed. The mapping definition of the user registry attribute {0} is not valid. Correct the user registry attribute mapping in the server.xml file.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.explanation= The mapping definition of the user registry attribute is defined incorrectly.
+INVALID_UR_ATTRIBUTE_MAPPING_DEFINITION.useraction=Modify and correct the mapping definition of the user registry attribute in the server.xml file.
+
+INVALID_REALM_NAME=CWIMK0006E: The user registry operation could not be completed. The specified realm name {0} is not valid. Specify an existing realm name.
+INVALID_REALM_NAME.explanation=The specified realm name is not defined or is incorrect in the server.xml file.
+INVALID_REALM_NAME.useraction=Ensure that the realm name exists and it is spelt correctly in the server.xml file. If it does not exist, a valid realm must be specified.
+
+MISSING_BASE_ENTRY_IN_REALM=CWIMK0007E: The user registry operation could not be completed. No valid base entry is defined for the realm {0}. Define the base entry for the realm in the server.xml file.
+MISSING_BASE_ENTRY_IN_REALM.explanation=At least one valid participating base entry must be defined for a realm.
+MISSING_BASE_ENTRY_IN_REALM.useraction=Ensure that a valid participating base entry is defined for the realm in the server.xml file.
+
+MISSING_BASE_ENTRY=CWIMK0008E: The user registry operation could not be completed. The repository {0} must contain at least one base entry. Define the base entry in the server.xml file.
+MISSING_BASE_ENTRY.explanation=After adding a repository, at least one base entry must be added to it.
+MISSING_BASE_ENTRY.useraction=Add at least one base entry to the repository in the server.xml file.
+
+FEDERATED_MANAGER_SERVICE_READY=CWIMK0009I: The user registry federation service is ready.
+FEDERATED_MANAGER_SERVICE_READY.explanation=This message is for informational purposes only.
+FEDERATED_MANAGER_SERVICE_READY.useraction=No action is required.
+
+FEDERATED_MANAGER_SERVICE_STOPPED=CWIMK0010I: The user registry federation service is stopped.
+FEDERATED_MANAGER_SERVICE_STOPPED.explanation=This message is for informational purposes only.
+FEDERATED_MANAGER_SERVICE_STOPPED.useraction=No action is required.
+
+ENTITY_IDENTIFIER_NOT_SPECIFIED=CWIML1009E: The user registry operation could not be completed. The identifier of the entity was not found. Specify the correct identifier as the input parameter. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.explanation=The identifier of the entity was not specified. The system cannot find the entity. The user registry operation cannot continue without finding this entity. 
+ENTITY_IDENTIFIER_NOT_SPECIFIED.useraction=Ensure that the entity in the input object contains an identifier property.
+
+EXTERNAL_NAME_CONTROL_NOT_FOUND=CWIML1024E: The user registry operation could not be completed. The {0} external name is specified, but the control for the external name is not specified. Specify the control for the given external name.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.explanation=During get operation, if the externalName is set, then the ExternalNameControl must be specified.
+EXTERNAL_NAME_CONTROL_NOT_FOUND.useraction=Specify the ExternalNameControl or remove the externalName from the input object.
+
+INVALID_IDENTIFIER=CWIML1010E: The user registry operation could not be completed. The uniqueId = {0} and uniqueName = {1} attributes of the identifier object are either not valid or not defined in the back-end repository.
+INVALID_IDENTIFIER.explanation=The specified identifier object is not valid. Either a valid uniqueId or uniqueName attribute must be specified in the identifier object. The user registry operation cannot continue without a valid identifier object. If an identifier object has been specified, either the uniqueId or the uniqueName is empty or null.
+INVALID_IDENTIFIER.useraction=Ensure that the entity in the input object has an identifier with a valid uniqueId or uniqueName (both cannot be null or empty). 
+
+ENTITY_NOT_IN_REALM_SCOPE=CWIML0515E: The user registry operation could not be completed. The {0} entity is not in the scope of the {1} realm. Specify an entity that is in the scope of the configured realm in the server.xml file.
+ENTITY_NOT_IN_REALM_SCOPE.explanation=The operation cannot be performed because the specified entity is not in the scope of the realm.
+ENTITY_NOT_IN_REALM_SCOPE.useraction=Ensure that the unique name of the entity is specified correctly. If a realm name is specified in the Context object of the input object, ensure that the name is spelt correctly.
+
+MISSING_SORT_KEY=CWIML1001E: The user registry operation could not be completed. The sort key is missing from the input sort control object. Define the sort key for the specified sort control object.
+MISSING_SORT_KEY.explanation=A SortControl object was passed in for the search operation without a sort key, which is required to perform the sort.
+MISSING_SORT_KEY.useraction=Set the sort key in the SortControl object and ensure that the property used as the sort key is part of the return property list.
+
+MISSING_SEARCH_CONTROL=CWIML1017E: The user registry operation could not be completed. The search control object is missing from the input object of the search operation. Definethe search control object in the input object.
+MISSING_SEARCH_CONTROL.explanation=The SearchControl object must be specified in the input object of the search operation.
+MISSING_SEARCH_CONTROL.useraction=Specify the SearchControl object in the search input object.
+
+MISSING_COOKIE=CWIML1002E: The user registry operation could not be completed. The cookie used to get the next page of the search results is missing from the page control object. Define the cookie parameter in the page control object.
+MISSING_COOKIE.explanation=The user registry cannot get the next page of the search results. The cookie parameter that is used to get the next page of the search results must be specified in the PageControl object.
+MISSING_COOKIE.useraction=Ensure that the cookie property is specified in the PageControl object with an initial value of 0. The cookie in the PageResponseControl object returns the cookie value that is used to get the next page of the search results.
+
+INVALID_COOKIE=CWIML1041E: The user registry operation could not be completed. The cookie specified in the page control object is not valid or has expired.
+INVALID_COOKIE.explanation=User registry cannot get the next page of the search results. The cookie parameter that is used to get the next page of the search results in the PageControl object is not valid. 
+INVALID_COOKIE.useraction=Ensure that a valid cookie is specified in the PageControl object. 
+
+INCORRECT_COUNT_LIMIT=CWIML1022E: The user registry operation could not be completed. The count limit {0} specified in the search control object is not valid. The value must be 0 or a positive number.
+INCORRECT_COUNT_LIMIT.explanation=The count limit for a search operation cannot be a negative number. A positive number sets the maximum number of entries returned as a result of the search. The value 0 indicates no limit; all entries are returned if the search limit is set to 0.
+INCORRECT_COUNT_LIMIT.useraction=Do not specify a negative number for count limit.
+
+INCORRECT_SEARCH_LIMIT=CWIML1031E: The user registry operation could not be completed. The search limit {0} specified in the search control object is not valid. The value must be 0 or a positive number.
+INCORRECT_SEARCH_LIMIT.explanation=The search limit for a search operation cannot be a negative number.
+INCORRECT_SEARCH_LIMIT.useraction=Do not specify a negative number for the search limit property. The value must be 0 or a positive number.
+
+CANNOT_SPECIFY_COUNT_LIMIT=CWIML1019E: The user registry operation could not be completed. Cannot specify the countLimit parameter in a search control object when the page control object is also specified in the search call. Specify count limits or the page control object but not both.
+CANNOT_SPECIFY_COUNT_LIMIT.explanation=The countLimit parameter is used to specify the number of search results the caller wants to return in a search operation. It cannot be used together with the PageControl object.
+CANNOT_SPECIFY_COUNT_LIMIT.useraction=Based on the requirement, the caller can use either the countLimit parameter or the PageControl object but not both. 
+
+MISSING_SEARCH_EXPRESSION=CWIML1003E: The user registry operation could not be completed. The expression property is missing from the search control object. Define expression property in the search control object. 
+MISSING_SEARCH_EXPRESSION.explanation=The search operation cannot be performed. The expression property must be specified in the SearchControl object.
+MISSING_SEARCH_EXPRESSION.useraction=Provide a search expression string in the expression property in the SearchControl object.
+
+SEARCH_EXPRESSION_ERROR=CWIML1004E: The user registry operation could not be completed. An error exists in the search expression specified in the search control object: {0}. Verify the search expression syntax in the search control object.
+SEARCH_EXPRESSION_ERROR.explanation=The operation cannot be performed. The search expression specified in the SearchControl object does not follow a supported XPath syntax.
+SEARCH_EXPRESSION_ERROR.useraction=Review the syntax of the search expression and correct any errors.
+
+INVALID_SEARCH_EXPRESSION=CWIML1029E: The user registry operation could not be completed. The syntax of the search expression {0} is not valid. Specify the correct syntax of the search expression. 
+INVALID_SEARCH_EXPRESSION.explanation=The search operation cannot be performed because the search expression is not valid.
+INVALID_SEARCH_EXPRESSION.useraction=Provide a valid search expression.
+
+EXCEED_MAX_TOTAL_SEARCH_LIMIT=CWIML1018E: The user registry operation could not be completed. {0} search results exceeds the specified maximum search limit {1}. No search results will be returned. Increase the maximum search limit or change the search expression to retrieve lesser number of records.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.explanation=The number of records returned by the search is greater than the maximum number of records specified in the search limit.
+EXCEED_MAX_TOTAL_SEARCH_LIMIT.useraction=Either increase the maximum search limit or make the search expression more restrictive so that a smaller number of records are fetched.
+
+INVALID_CHANGETYPE=CWIML4552E: The user registry operation could not be completed. The specified changeType, {0}, is not valid for a search for the changed entities. The valid change types are add, modify, delete, rename and * (* is for all change types).
+INVALID_CHANGETYPE.explanation=The valid change types for a search for changed entities are add, modify, delete, rename and * (* is for all change types).
+INVALID_CHANGETYPE.useraction=Specify one of the valid change types.
+
+MISSING_ENTITY_DATA_OBJECT=CWIML1030E: The user registry operation could not be completed. The input Entity object is missing for operation {0}. The entity data object must be defined for the object you want to operate on.
+MISSING_ENTITY_DATA_OBJECT.explanation=The specified operation requires an Entity object.
+MISSING_ENTITY_DATA_OBJECT.useraction=The entity object must be defined for the entity that you want to operate on.
+
+ACTION_MULTIPLE_ENTITIES_SPECIFIED=CWIML1016E: The user registry operation could not be completed. The {0} action does not support multiple entities. Specify only one entity for this operation.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.explanation=The operation does not support multiple entities. For example, the update operation can only be performed on one entity at a time.
+ACTION_MULTIPLE_ENTITIES_SPECIFIED.useraction=Ensure that only one entity is passed for the user registry operation.
+
+MISSING_OR_EMPTY_PRINCIPAL_NAME=CWIML4536E: The login operation could not be completed. The principal name is missing or empty. 
+MISSING_OR_EMPTY_PRINCIPAL_NAME.explanation=A principal name is required to log in with a password.
+MISSING_OR_EMPTY_PRINCIPAL_NAME.useraction=Ensure that the principal name is specified.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: The user registry operation could not be completed. More than one record exists for the {0} principal name in the configured user registries. The principal name must be unique across all the user registries.
+MULTIPLE_PRINCIPALS_FOUND.explanation=Multiple principals were found for the given principal name. The login process cannot continue.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Ensure that the right principal name is specified. For example, specifying the principal name as a unique name can avoid this type of exception.
+
+AUTHENTICATE_NOT_SUPPORTED=CWIML4530E: The authentication operation could not be completed. The authentication with the certificate is not supported by the {0} repository. Root cause: {1}
+AUTHENTICATE_NOT_SUPPORTED.explanation=The authentication is not supported with the certificate by the repository.
+AUTHENTICATE_NOT_SUPPORTED.useraction=Ensure that the authentication is supported with the certificate by the repository.
+
+CERTIFICATE_MAP_FAILED=CWIML3011E: The login operation could not be completed. The certificate mapping failed. Specify the correct certificate mapping in the server.xml file or use a valid certificate.
+CERTIFICATE_MAP_FAILED.explanation=An error occurred while mapping the given certificate to the user registry.
+CERTIFICATE_MAP_FAILED.useraction=Either correct the certificate mapping in the serve.xml file or login with a valid certificate.
+
+PRINCIPAL_NOT_FOUND=CWIML4537E: The login operation could not be completed. The specified principal name {0} is not found in the back-end repository.
+PRINCIPAL_NOT_FOUND.explanation=The principal name is not found in the repository. The login process cannot continue.
+PRINCIPAL_NOT_FOUND.useraction=Ensure that the correct principal name is specified.
+
+NON_EXISTING_SEARCH_BASE=CWIML1042E: The user registry operation could not be completed. The specified search base {0} does not exist in the current configured realm. Specify the valid search base and ensure that the base entry is configured in the current realm.
+NON_EXISTING_SEARCH_BASE.explanation=The specified search base does not exist in the current realm.
+NON_EXISTING_SEARCH_BASE.useraction=Check the search base specified and ensure that the corresponding base entry is configured in the current realm.
+
+ENTITY_NOT_FOUND=CWIML4001E: The user registry operation could not be completed. The {0} entity was not found. Specify the correct entity or create the missing entity.
+ENTITY_NOT_FOUND.explanation=The specified entity name, which could be a uniqueName or a uniqueId, could not be found in the underlying repository. The user registry operation cannot continue without finding this entity.
+ENTITY_NOT_FOUND.useraction=Ensure that the entity exists in the underlying repository. If the entity exists, then verify that the read permission is set for the entity and try again.
+
+INVALID_LEVEL_IN_CONTROL=CWIML4514E: The user registry operation could not be completed. An incorrect value for the {0} property level is specified in {1}. The value of the property, level, must be either 0 or a positive integer.
+INVALID_LEVEL_IN_CONTROL.explanation=The value of the property level, was specified as a negative number.
+INVALID_LEVEL_IN_CONTROL.useraction=The value of the property, level, must be either 0 or a positive integer. Change the value of the property level and then try again.
+
+NAMING_EXCEPTION=CWIML4520E: The LDAP operation could not be completed. The LDAP naming exception {0} occurred during processing.
+NAMING_EXCEPTION.explanation=The message indicates that a general naming exception has occurred during an LDAP operation. See the exception for additional details. 
+NAMING_EXCEPTION.useraction=Ensure that the related repository (for example, a database or an LDAP server) is started and set up correctly.
+
+SYSTEM_EXCEPTION=CWIML1998E: The user registry operation could not be completed. The following system exception occurred while processing the user registry operation: {0} 
+SYSTEM_EXCEPTION.explanation=The program encountered a system exception while performing the user registry operation. 
+SYSTEM_EXCEPTION.useraction= Review the logs for the cause of this error and take appropriate corrective actions.
+
+INVALID_PROPERTY_VALUE=CWIML1013E: The user registry operation could not be completed. The entered value of the property {0} is not valid for the entity {1}. The value of the property must be correct and must be of the correct data type.
+INVALID_PROPERTY_VALUE.explanation=The value of the property is not valid. For example, an identifier type property points to an incorrect entry.
+INVALID_PROPERTY_VALUE.useraction=Ensure that the value of the property is correct and is of the correct data type. If you are trying to retrieve identifier type property along with other properties, then split them into two calls. One call to retrieve non-identifier type properties and the other call to retrieve the identifier type property.
+
+GENERIC=CWIML1999E: The user registry operation could not be completed. A runtime error occurred during processing: {0}
+GENERIC.explanation=The program encountered the specified error during the operation.
+GENERIC.useraction= Review the logs for the cause of this error and take appropriate corrective actions.
+
+MISSING_MANDATORY_PROPERTY=CWIML1028E: The user registry operation could not be completed. The value of the mandatory property {0} is missing. Provide a value for the mandatory property.
+MISSING_MANDATORY_PROPERTY.explanation=The operation cannot be performed because the value of the mandatory property is missing. For example, RDN (Relative Distinguished Name) property is not specified when the entity is created; or propertyName or entityTypeName is missing from PropertyDefinitionControl or ExtensionPropertyDefinitionControl; or entityName is missing from the entitySchema.
+MISSING_MANDATORY_PROPERTY.useraction=Provide a value for the mandatory property.
+
+CANNOT_DELETE_LOGGED_IN_USER=CWIML5504E: The user registry operation could not be completed. The user with uniqueName {0} cannot be deleted because it is the logged in user. Log in as a different user to delete this user.
+CANNOT_DELETE_LOGGED_IN_USER.explanation=The user has tried to delete himself or herself from virtual member manager. This action is not allowed.
+CANNOT_DELETE_LOGGED_IN_USER.useraction=Log in as a different user to delete the current user.
+
+AUTH_SUBJECT_CRED_FAILURE=CWIML2005E: The user registry operation could not be completed. An unexpected error occurred while retrieving the subject's credentials. Please review the trace logs to identify the root cause of the error.
+AUTH_SUBJECT_CRED_FAILURE.explanation=The subject's credentials cannot be retrieved because of an unknown error.
+AUTH_SUBJECT_CRED_FAILURE.useraction=Review the trace logs for the root cause of the error. There might be a problem with the WebSphere security configuration.
+
+AUTH_SUBJECT_FAILURE=CWIML2004E: The user registry operation could not be completed. An unexpected error occurred while retrieving the caller's subject. Please review the trace logs to identify the root cause of the error.
+AUTH_SUBJECT_FAILURE.explanation=The caller's subject cannot be retrieved because of an unknown error.
+AUTH_SUBJECT_FAILURE.useraction=Review the trace logs for the root cause of the error. There might be a problem with the WebSphere security configuration.
+
+INVALID_PARENT_UNIQUE_ID=CWIML1014E: The {0} uniqueId property of the parent is not valid.
+INVALID_PARENT_UNIQUE_ID.explanation=The specified uniqueId of the parent entity is not valid. Please specify a valid unique Id.
+INVALID_PARENT_UNIQUE_ID.useraction=Verify uniqueId for the parent entity is present in the repository and that it is specified correctly.
+
+DEFAULT_PARENT_NOT_FOUND=CWIML0516E: The default parent for {0} cannot be determined. Verify that the configuration for the {1} realm is correct.
+DEFAULT_PARENT_NOT_FOUND.explanation=The operation could not be performed because the default parent for this entity type could not be determined.
+DEFAULT_PARENT_NOT_FOUND.useraction=Ensure that the default parent for the entity type is configured for the federated repositories or realm. The parent may also be specified as part of the input.
+
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION=CWIML1034E: Missing repositoriesForGroups configuration for repository {0}.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.explanation=There is no cross-repository group configuration defined for the repository.
+MISSING_REPOSITORIES_FOR_GROUPS_CONFIGURATION.useraction=Refer to the log file for the reason of failure. Check your repository configuration.
+
+ENTITY_TYPE_NOT_SUPPORTED=CWIML0510W: The entity type {0} specified is not a valid entity type for this operation.
+ENTITY_TYPE_NOT_SUPPORTED.explanation=An operation has been requested on an entity, but that operation does not support the specified entity type.
+ENTITY_TYPE_NOT_SUPPORTED.useraction=Ensure that the entities provided in the input are of supported entity types, and remove any unsupported entity types from the input.
+
+CAN_NOT_CONSTRUCT_UNIQUE_NAME=CWIML1008E: The {0} RDN property for the {1} entity type was provided in the input. The unique name cannot be created in the underlying repository because the RDN information specified in the input is ambiguous.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.explanation=When creating an entity, the relative distinguished name (RDN) must be well formed and contain properties that are not ambiguous. For example, the OrgContainer entity type can represent either an organization (that uses the 'o' RDN property) or an organizational unit (that uses the 'ou' RDN property) in an underlying repository. If both 'o' and 'ou' are specified in the RDN for the input data object for the new entity, a unique name for the new entity cannot be created.
+CAN_NOT_CONSTRUCT_UNIQUE_NAME.useraction=Determine the entity type that you want to create in the underlying repository and provide the appropriate RDN property for that type. For example, if you want to create an organization, provide only the 'o' property value.
+
+REPOSITORY_INITIALIZATION_FAILED=CWIML4510E: Unable to initialize the configured repository {0} due to the underlying failure : {1}
+REPOSITORY_INITIALIZATION_FAILED.explanation=The federated repository could not be initialized due to an underlying failure.
+REPOSITORY_INITIALIZATION_FAILED.useraction=Review the reason message and the trace file to determine the cause of the failure. Fix the error and try again.
+
+CUSTOM_REGISTRY_EXCEPTION=CWIML3010E: The user registry operation could not be completed. An exception occurred in the custom registry configured for {0}
+CUSTOM_REGISTRY_EXCEPTION.explanation=An exception was thrown by the custom registry. The custom registry might be unavailable or unable to perform the operation.
+CUSTOM_REGISTRY_EXCEPTION.useraction=Review the reason message and the trace file to determine the cause of the failure. Fix the error and try again.
+
+ENTITY_GET_FAILED=CWIML4505E: The user registry was unable to get the entity {0} due to an underlying error : {1}
+ENTITY_GET_FAILED.explanation=The entity cannot be retrieved because of the reason specified by the underlying repository.
+ENTITY_GET_FAILED.useraction=Review the reason message and the trace file to determine the cause of the failure. Fix the error and try again.
+
+PROPERTY_NOT_DEFINED_FOR_ENTITY=CWIML4516E: The user registry operation could not be completed. The property {0} is not defined for {1}
+PROPERTY_NOT_DEFINED_FOR_ENTITY.explanation=The specified property is not defined for the particular entity type.
+PROPERTY_NOT_DEFINED_FOR_ENTITY.useraction=Verify that the property name is correct.
+
+MALFORMED_SEARCH_EXPRESSION=CWIML3006W: The user registry operation could not be completed because the search expression {0} is not valid. Specify the correct syntax of the search expression.
+MALFORMED_SEARCH_EXPRESSION.explanation=The search operation cannot be performed because the search expression is not valid.
+MALFORMED_SEARCH_EXPRESSION.useraction=Provide a valid search expression.
+
+ENTITY_SEARCH_FAILED=CWIML4506E: The user registry operation could not be completed because the user registry encountered the underlying error : {1}
+ENTITY_SEARCH_FAILED.explanation=The entity cannot be searched because of the reason specified by the underlying registry.
+ENTITY_SEARCH_FAILED.useraction=Review the reason message and the trace file to determine the cause of the failure. Fix the error and try again.
+
+MISSING_OR_EMPTY_PASSWORD=CWIML4541E: The login operation could not be completed because the password was either missing or empty.
+MISSING_OR_EMPTY_PASSWORD.explanation=If the principal name is specified during login process, then the password cannot be null or empty.
+MISSING_OR_EMPTY_PASSWORD.useraction=Specify the password.
+
+CERTIFICATE_GENERATE_FAILED=CWIML3012E: The login operation could not be completed, as the generation of the certificate failed.
+CERTIFICATE_GENERATE_FAILED.explanation=An error occurred while generating the certificate from the input certificate file.
+CERTIFICATE_GENERATE_FAILED.useraction=Log in with a valid certificate.
+
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED=CWIML4542E: The login operation could not be completed because the user registry does not support logging in with a certificate.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.explanation=Authentication using a certificate is not allowed by the underlying user registry.
+AUTHENTICATION_WITH_CERT_NOT_SUPPORTED.useraction=Authenticate using a user ID and password instead of using a certificate.
+
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY=CWIML1027E: The user registry operation could not be completed because the repository {0} is a read-only repository. It does not support write operations. 
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.explanation=The repository is a read-only repository. It does not support create, update, or delete operations.
+CANNOT_WRITE_TO_READ_ONLY_REPOSITORY.useraction=Ensure that a write operation is not invoked on a read-only repository.

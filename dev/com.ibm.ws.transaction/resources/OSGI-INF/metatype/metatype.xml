@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+    
+    <Designate pid="com.ibm.ws.transaction">
+        <Object ocdref="com.ibm.ws.transaction"/>
+    </Designate>
+          
+    <OCD description="%transaction.config.desc" name="%transaction.config" id="com.ibm.ws.transaction" ibm:alias="transaction">
+        <AD name="%recover.on.startup" description="%recover.on.startup.desc"
+            id="recoverOnStartup" required="false" type="Boolean" default="false" />
+
+        <AD name="%wait.for.recovery" description="%wait.for.recovery.desc"
+            id="waitForRecovery" required="false" type="Boolean" default="false" />
+            
+        <AD name="%accept.heuristic.hazard" description="%accept.heuristic.hazard.desc"
+            id="acceptHeuristicHazard" required="false" type="Boolean" default="true" />
+            
+        <AD name="%client.inactivity.timeout" description="%client.inactivity.timeout.desc"
+            id="clientInactivityTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
+        <AD name="%heuristic.retry.interval" description="%heuristic.retry.interval.desc"
+            id="heuristicRetryInterval" required="false" type="String" ibm:type="duration(s)" min="0" default="60s" />
+
+        <AD name="%heuristic.retry.limit" description="%heuristic.retry.limit.desc"
+            id="heuristicRetryWait" required="false" type="Integer" default="5" />
+
+        <AD name="%max.transaction.timeout" description="%max.transaction.timeout.desc"
+            id="propogatedOrBMTTranLifetimeTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="0" />
+
+        <AD name="%totalTranLifetimeTimeout" description="%totalTranLifetimeTimeout.desc"
+            id="totalTranLifetimeTimeout" required="false" type="String" ibm:type="duration(s)" min="0" default="120s" />
+
+        <AD name="%transaction.log.directory" description="%transaction.log.directory.desc"
+            id="transactionLogDirectory" required="false" type="String" default="${server.output.dir}/tranlog/" />
+
+        <AD name="%transaction.log.size" description="%transaction.log.size.desc"
+            id="transactionLogSize" required="false" type="Integer" default="1024" />
+            
+        <AD name="%recovery.identity" description="%recovery.identity.desc"
+            id="recoveryIdentity" required="false" type="String" default="" />
+        
+        <AD name="%recovery.group" description="%recovery.group.desc"
+            id="recoveryGroup" required="false" type="String" default="" />            
+            
+        <AD name="%logging.for.heuristic.reporting.enabled" description="%logging.for.heuristic.reporting.enabled.desc" 
+            id="enableLoggingForHeuristicReporting" required="false" type="Boolean" default="false" />
+        
+        <AD name="%transaction.log.dbtablesuffix" description="%transaction.log.dbtablesuffix.desc"
+            id="transactionLogDBTableSuffix" required="false" type="String" default="" />
+            
+        <AD name="%timeout.grace.period.enabled" description="%timeout.grace.period.enabled.desc"
+            id="timeoutGracePeriodEnabled" required="false" type="Boolean" default="false" />
+
+        <AD name="%heuristic.completion.direction" description="%heuristic.completion.direction.desc"
+            id="lpsHeuristicCompletion" required="false" type="String" default="ROLLBACK" >
+            <Option label="%rollback" value="ROLLBACK" />
+            <Option label="%commit" value="COMMIT" />
+            <Option label="%manual" value="MANUAL" />
+        </AD>
+
+        <AD name="%default.max.shutdown.delay" description="%default.max.shutdown.delay.desc"
+            id="defaultMaxShutdownDelay" required="false" type="String" ibm:type="duration(s)" min="0" default="2s" />
+            
+        <AD id="dataSourceRef" type="String" required="false" ibm:type="pid" 
+            ibm:reference="com.ibm.ws.jdbc.dataSource" cardinality="1" 
+            name="%dataSourceRef" description="%dataSourceRef.desc"/>
+            
+        <AD id="dataSourceFactory.target" type="String" required="false" 
+            default="(&amp;(service.pid=${dataSourceRef})(creates.objectClass=javax.sql.DataSource)(transactional=false))" 
+            ibm:final="true"  name="internal" description="internal use only"/>
+             
+    </OCD>
+  
+
+
+
+</metatype:MetaData>

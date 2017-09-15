@@ -1,0 +1,80 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authorization.jacc/resources/com/ibm/ws/security/authorization/jacc/internal/resources/JaccAuthorizationMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Security JACC Authorization
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS2850 - CWWKS2879
+
+JACC_SERVICE_STARTING=CWWKS2850I: The JACC service is starting. The Policy Provider class name is {0}. The PolicyConfigurationFactory class name is {1}.
+JACC_SERVICE_STARTING.explanation=This message is for informational purposes only.
+JACC_SERVICE_STARTING.useraction=No action is required.
+
+JACC_SERVICE_STARTED=CWWKS2851I: The JACC service has started. The Policy Provider class name is {0}. The PolicyConfigurationFactory class name is {1}.
+JACC_SERVICE_STARTED.explanation=This message is for informational purposes only.
+JACC_SERVICE_STARTED.useraction=No action is required.
+
+JACC_SERVICE_STOPPED=CWWKS2852I: The JACC service has stopped. The Policy Provider class name is {0}. The built-in authorization service is activated.
+JACC_SERVICE_STOPPED.explanation=This message is for informational purposes only.
+JACC_SERVICE_STOPPED.useraction=No action is required.
+
+JACC_SERVICE_START_FAILURE=CWWKS2853E: The JACC service failed to start. The Policy Provider class name is {0}. The PolicyConfigurationFactory class name is {1}.
+JACC_SERVICE_START_FAILURE.explanation=The JACC service failed to start.
+JACC_SERVICE_START_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_POLICY_IS_NOT_SET=CWWKS2854E: The JACC provider cannot be initialized because the Policy class name is not set by the property (javax.security.jacc.policy.provider).
+JACC_POLICY_IS_NOT_SET.explanation=The JACC provider cannot be initialized because the Policy class name is not set.
+JACC_POLICY_IS_NOT_SET.useraction=Make sure that the property (javax.security.jacc.policy.provider) of the JACC user feature sets the proper class name.
+
+JACC_FACTORY_IS_NOT_SET=CWWKS2855E: The JACC provider cannot be initialized because the PolicyConfigurationFactory class name is not set by the property (javax.security.jacc.PolicyConfigurationFactory.provider).
+JACC_FACTORY_IS_NOT_SET.explanation=The JACC provider cannot be initialized because the PolicyConfigurationFactory class name is not set.
+JACC_FACTORY_IS_NOT_SET.useraction=Make sure that the property (javax.security.jacc.PolicyConfigurationFactory.provider) of the JACC user feature sets the proper class name.
+
+JACC_INCONSISTENT_POLICY_CLASS=CWWKS2856W: The Policy class name {0} which is specified by the JVM system property (javax.security.jacc.policy.provider) is not identical to the class name {1} which  is specified by the JACC provider. {1} will be used.
+JACC_INCONSISTENT_POLICY_CLASS.explanation=The Policy class name which is specified by the JVM system property is not identical to the Policy class name which is specified by the bundle property of the JACC provider class. The value of the system property is ignored and the value of the bundle property is used.
+JACC_INCONSISTENT_POLICY_CLASS.useraction=The JVM system property is not required. Remove the JVM system property and restart the server.
+
+JACC_INCONSISTENT_FACTORY_CLASS=CWWKS2857W: The PolicyConfigurationFactory class name {0} which is specified by the JVM system property (javax.security.jacc.PolicyConfigurationFactory.provider)  is not consistent with the class name {1} which is specified by the JACC provider. {1} will be used.
+JACC_INCONSISTENT_FACTORY_CLASS.explanation=The PolicyConfigurationFactory class name which is specified by the JVM system property is not identical to the PolicyConfigurationFactory class name which is specified by the bundle property of the JACC provider class. The value of the system property is ignored and the value of the bundle property is used.
+JACC_INCONSISTENT_FACTORY_CLASS.useraction=The JVM system property is not required. Remove the JVM system property and restart the server.
+
+JACC_FACTORY_INSTANTIATION_FAILURE=CWWKS2858E: The JACC service is unable to load the PolicyConfigurationFactory class {0}.
+JACC_FACTORY_INSTANTIATION_FAILURE.explanation=The JACC service is unable to load the specified PolicyConfigurationFactory class.
+JACC_FACTORY_INSTANTIATION_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_POLICY_INSTANTIATION_FAILURE=CWWKS2859E: The JACC service is unable to set the Policy provider class {0} due to the exception {1}.
+JACC_POLICY_INSTANTIATION_FAILURE.explanation=The JACC service is unable to set the Policy provider class due to the exception.
+JACC_POLICY_INSTANTIATION_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_GET_POLICYCONFIGURATION_FAILURE=CWWKS2860E: The JACC service is unable to get the PolicyConfiguration object with the contextID {0}. The exception is {1}.
+JACC_GET_POLICYCONFIGURATION_FAILURE.explanation=The JACC service is unable to get the JACC provider PolicyConfiguration object. This might be a severe error in the JACC provider.
+JACC_GET_POLICYCONFIGURATION_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE=CWWKS2861E: The JACC service is unable to propagate the Web security constraints with the contextID {0} to the JACC provider due to the exception {1}.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.explanation=The JACC service is unable to propagate the Web security constraints to the JACC provider due to the unexpected exception.
+JACC_WEB_PERMISSION_PROPAGATION_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_IMPLIES_FAILURE=CWWKS2862E: Authorization for the resource with the contextID {0} failed due to the exception {1}.
+JACC_IMPLIES_FAILURE.explanation=Authorization for the specified resource failed.
+JACC_IMPLIES_FAILURE.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_NO_EJB_PLUGIN=CWWKS2863E: The module for processing the EJB security roles is not available.
+JACC_NO_EJB_PLUGIN.explanation=The JACC service is unable to process the EJB security roles because the required module is not available.
+JACC_NO_EJB_PLUGIN.useraction=Review the JACC provider logs and the server logs for more information.
+
+JACC_NO_WEB_PLUGIN=CWWKS2864E: The module for processing the Web security roles is not available.
+JACC_NO_WEB_PLUGIN.explanation=The JACC service is unable to process the Web security roles because the required module is not available.
+JACC_NO_WEB_PLUGIN.useraction=Review the JACC provider logs and the server logs for more information.
+

@@ -1,0 +1,102 @@
+# ============================================================
+# Encoding: UTF-8
+# Version: 1.0
+# TimeStamp: TBD
+# ============================================================
+# Class Source Data:
+Class-Source: staticAnnotationPure.war.unpacked
+Class-Source: staticAnnotationPure.war.unpacked classes
+# ============================================================
+# Package Data:
+# ============================================================
+# Class Data:
+Class-Seed: web.JAASServlet
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+Class-Seed: web.JAASServlet$1
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: java.lang.Object
+  Interface: java.security.PrivilegedExceptionAction
+Class-Seed: web.ProgrammaticAPIServlet
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+Class-Seed: web.BaseServlet
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: javax.servlet.http.HttpServlet
+Class-Seed: web.StaticAnnotationPure2
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: web.AuthenticateRedirectServlet
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+Class-Seed: web.StaticAnnotationPure1
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: web.StaticAnnotationPure6
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: web.StaticAnnotationPure3
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.annotation.security.RunAs
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: web.StaticAnnotationPure5
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Seed: web.StaticAnnotationPure4
+  ClassSource: staticAnnotationPure.war.unpacked classes
+  Superclass: web.BaseServlet
+  ClassAnnotation: javax.annotation.security.DeclareRoles
+  ClassAnnotation: javax.servlet.annotation.WebServlet
+  ClassAnnotation: javax.servlet.annotation.ServletSecurity
+Class-Excluded: javax.servlet.annotation.ServletSecurity
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.lang.annotation.Annotation
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.Servlet
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.security.PrivilegedExceptionAction
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.GenericServlet
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+  Interface: javax.servlet.Servlet
+  Interface: javax.servlet.ServletConfig
+  Interface: java.io.Serializable
+Class-Excluded: javax.servlet.annotation.WebServlet
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+  Interface: java.lang.annotation.Annotation
+Class-Excluded: java.io.Serializable
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: javax.servlet.ServletConfig
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: java.lang.Object
+Class-Excluded: java.lang.Object
+  ClassSource: staticAnnotationPure.war.unpacked
+Class-Excluded: javax.servlet.http.HttpServlet
+  ClassSource: staticAnnotationPure.war.unpacked
+  Superclass: javax.servlet.GenericServlet
+  Interface: java.io.Serializable
+# ============================================================
+# Unresolved Package Data:
+# ============================================================
+# Unresolved Class Data:
+Class-Unresolved: javax.annotation.security.DeclareRoles
+Class-Unresolved: javax.annotation.security.RunAs
+# ============================================================

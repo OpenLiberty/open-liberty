@@ -1,0 +1,2039 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+
+
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedExceptionInfo"/>
+    <Method name="getFormatArguments" signature="()[Ljava/lang/Object;"/>
+    <Field name="formatArguments"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedExceptionInfo"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;Lcom/ibm/websphere/exception/DistributedExceptionEnabled;)V"/>
+    <Field name="formatArguments"/>
+    <Local name="formatArguments"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedExceptionInfo"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;Ljava/lang/String;Lcom/ibm/websphere/exception/DistributedExceptionEnabled;Ljava/lang/Throwable;)V"/>
+    <Field name="formatArguments"/>
+    <Local name="formatArguments"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedExceptionInfo"/>
+    <Method name="setLocalizationInfo" signature="(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V"/>
+    <Field name="formatArguments"/>
+    <Local name="formatArguments"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedExceptionInfo"/>
+    <Method name="serializePreviousException" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedExceptionInfo"/>
+    <Method name="serializePreviousException" signature="()V"/>
+    <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedExceptionInfo"/>
+    <Method name="setExceptionInfo" signature="(Ljava/lang/Throwable;)V"/>
+    <Bug pattern="UPM_UNCALLED_PRIVATE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.AliasEntry"/>
+    <Method name="getAliasArray" signature="()[Ljava/lang/Object;"/>
+    <Field name="aliasList"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.AliasEntry"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/Object;Ljava/lang/Object;I[Ljava/lang/Object;)V"/>
+    <Field name="aliasList"/>
+    <Local name="aliasArray"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.AliasEntry"/>
+    <Method name="readExternal" signature="(Ljava/io/ObjectInput;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.BatchUpdateDaemon"/>
+    <Method name="addToDRSBuffer" signature="(Lcom/ibm/ws/cache/BatchUpdateDaemon$BatchUpdateList;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="flushToDisk" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Lcom/ibm/ws/cache/CacheConfig;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="freeLruEntry" signature="()Lcom/ibm/ws/cache/FreeLruEntryResult;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="freeLruEntry" signature="()Lcom/ibm/ws/cache/FreeLruEntryResult;"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="freeLruEntry" signature="()Lcom/ibm/ws/cache/FreeLruEntryResult;"/>
+    <Bug pattern="TR_MISSING_ENTRY_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invalidateAndSet" signature="(Lcom/ibm/ws/cache/EntryInfo;Ljava/lang/Object;Z)Ljava/lang/Object;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="_syncSetEntry" signature="(Lcom/ibm/ws/cache/CacheEntry;IZZ)Lcom/ibm/ws/cache/CacheEntry;"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="freeLruEntry" signature="()Lcom/ibm/ws/cache/FreeLruEntryResult;"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="invokeGCIfNecessary" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="pinLocal" signature="(Ljava/lang/Object;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="pinLocal" signature="(Ljava/lang/Object;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="unpinLocal" signature="(Ljava/lang/Object;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="unpinLocal" signature="(Ljava/lang/Object;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="freeLruEntry" signature="()Lcom/ibm/ws/cache/FreeLruEntryResult;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lruToDisk" signature="(Lcom/ibm/ws/cache/CacheEntry;)Lcom/ibm/ws/cache/Cache$LruToDiskResult;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache$LruToDiskResult"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="processOffloadDirectory" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setBatchUpdateInterval" signature="(Ljava/lang/Object;I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setDiskCacheEvictionPolicy" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="getFilteredStatusCodes" signature="()[I"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Field name="DEFAULT_PRIORITY"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Field name="MAX_PRIORITY"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Local name="o"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/util/Map;)V"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setBatchUpdateInterval" signature="(Ljava/lang/Object;I)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setDiskCacheEvictionPolicy" signature="(I)V"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setDiskCacheEvictionPolicy" signature="(I)V"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setBatchUpdateInterval" signature="(Ljava/lang/Object;I)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setBatchUpdateInterval" signature="(Ljava/lang/Object;I)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setDiskCacheEvictionPolicy" signature="(I)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig"/>
+    <Method name="setDiskCacheEvictionPolicy" signature="(I)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Method name="getSerializedId" signature="()[B"/>
+    <Field name="serializedId"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Method name="getSerializedValue" signature="()[B"/>
+    <Field name="serializedValue"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Field name="cacheEntryPool"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Method name="readExternal" signature="(Ljava/io/ObjectInput;)V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Method name="reset" signature="()V"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Method name="toString" signature="()Ljava/lang/String;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry$LRUHead"/>
+    <Method name="next" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="IT_NO_SUCH_ELEMENT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="waitForCleanupComplete" signature="()V"/>
+    <Bug pattern="DE_MIGHT_IGNORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/cache/CacheConfig;Lcom/ibm/ws/cache/intf/DCache;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="checkDirectoryWriteable" signature="(Ljava/lang/String;)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="checkDirectoryWriteable" signature="(Ljava/lang/String;)I"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="readAndDeleteInvalidationFile" signature="()Lcom/ibm/ws/cache/ValueSet;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="readLastScanFile" signature="()V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/cache/CacheConfig;Lcom/ibm/ws/cache/intf/DCache;)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Method name="&lt;init&gt;" signature="(Lcom/ibm/ws/cache/CacheConfig;Lcom/ibm/ws/cache/intf/DCache;)V"/>
+    <Bug pattern="ICAST_INTEGER_MULTIPLY_CAST_TO_LONG"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Field name="sleepTime"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Field name="stopping"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk$12"/>
+    <Method name="run" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheServiceImpl"/>
+    <Method name="deleteOSGiConfiguration" signature="()V"/>
+    <Bug pattern="REC_CATCH_EXCEPTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheServiceImpl"/>
+    <Method name="addCacheInstanceConfig" signature="(Lcom/ibm/ws/cache/CacheConfig;)V"/>
+    <Field name="commonCacheConfig"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheStatisticsListenerImpl"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Method name="startServices" signature="(Z)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Method name="getEntry" signature="(Ljava/lang/String;Ljava/lang/Object;Z)Lcom/ibm/ws/cache/CacheEntry;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Method name="getEntry" signature="(Ljava/lang/String;Ljava/lang/Object;Z)Lcom/ibm/ws/cache/CacheEntry;"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Method name="setEntry" signature="(Ljava/lang/String;Lcom/ibm/ws/cache/CacheEntry;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Method name="setEntry" signature="(Ljava/lang/String;Lcom/ibm/ws/cache/CacheEntry;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Method name="setExternalCacheFragment" signature="(Lcom/ibm/ws/cache/intf/ExternalInvalidation;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheUnitImpl"/>
+    <Method name="setExternalCacheFragment" signature="(Lcom/ibm/ws/cache/intf/ExternalInvalidation;)V"/>
+    <Bug pattern="TR_WRONG_METHOD_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DCacheBase"/>
+    <Field name="bEnableListener"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DCacheBase"/>
+    <Field name="eventSource"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DiskCacheSizeInfo"/>
+    <Field name="currentDataGB"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DiskCacheSizeInfo"/>
+    <Field name="currentDependencyIdGB"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DiskCacheSizeInfo"/>
+    <Field name="currentTemplateGB"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DiskCacheSizeInfo"/>
+    <Field name="diskCacheSizeInBytesHighLimit"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DiskCacheSizeInfo"/>
+    <Field name="diskCacheSizeInBytesLimit"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DiskCacheSizeInfo"/>
+    <Field name="diskCacheSizeInBytesLowLimit"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DiskCleanupThread"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.DistributedObjectCacheAdapter$DMIEntry"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.EntryInfo"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.FastHashtable"/>
+    <Field name="buckets"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.GarbageCollectorThread"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.GarbageCollectorThread"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.GarbageCollectorThread"/>
+    <Method name="run" signature="()V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDependencyMap"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_WRONG_CLASS_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDependencyTable"/>
+    <Method name="replace" signature="(Ljava/lang/Object;Lcom/ibm/ws/cache/ValueSet;)I"/>
+    <Local name="valueSet"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDependencyTable"/>
+    <Method name="reduceTableSize" signature="()I"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDependencyTable"/>
+    <Method name="reduceTableSize" signature="()I"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDependencyTable"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_WRONG_CLASS_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDependencyTable$IteratorEnumerator"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Method name="readValueSetSize" signature="(ILjava/lang/Object;)Lcom/ibm/ws/cache/Result;"/>
+    <Local name="answer"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Method name="writeValueSet" signature="(ILjava/lang/Object;Lcom/ibm/ws/cache/ValueSet;Z)I"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Method name="writeValueSetEntry" signature="(ILjava/lang/Object;Ljava/lang/Object;Lcom/ibm/ws/cache/ValueSet;Z)Lcom/ibm/ws/cache/Result;"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Field name="dependency_suffix"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Field name="object_suffix"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Field name="template_suffix"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Field name="EvictionTable"/>
+    <Bug pattern="NM_FIELD_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Method name="writeAuxiliaryDepTables" signature="()I"/>
+    <Local name="valueSet"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Method name="writeAuxiliaryDepTables" signature="()I"/>
+    <Local name="valueSet"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Bug pattern="PURE_OBJECT_USED_AS_LOCK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Method name="removeExpiredCache" signature="(Z)I"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache$BinaryHeap"/>
+    <Method name="printHeap" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache$DepSizeComparator"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache$EvictionSizeComparator"/>
+    <Method name="equals" signature="(Ljava/lang/Object;)Z"/>
+    <Bug pattern="HE_EQUALS_USE_HASHCODE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache$EvictionSizeComparator"/>
+    <Bug pattern="SE_COMPARATOR_SHOULD_BE_SERIALIZABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache$EvictionTableEntry"/>
+    <Method name="equals" signature="(Lcom/ibm/ws/cache/HTODDynacache$EvictionTableEntry;)Z"/>
+    <Bug pattern="EQ_SELF_USE_OBJECT"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache$EvictionTableEntry"/>
+    <Method name="equals" signature="(Lcom/ibm/ws/cache/HTODDynacache$EvictionTableEntry;)Z"/>
+    <Bug pattern="HE_EQUALS_USE_HASHCODE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODInvalidationBuffer"/>
+    <Method name="add" signature="(Lcom/ibm/ws/cache/ValueSet;IIIZZZ)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODInvalidationBuffer"/>
+    <Method name="add" signature="(Ljava/lang/Object;IIIZZZ)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.InvalidateByIdEvent"/>
+    <Method name="readExternal" signature="(Ljava/io/ObjectInput;)V"/>
+    <Local name="currentTimeMillis"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.InvalidateByIdEvent"/>
+    <Method name="writeExternal" signature="(Ljava/io/ObjectOutput;)V"/>
+    <Bug pattern="DMI_INVOKING_TOSTRING_ON_ARRAY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.InvalidateByIdEvent"/>
+    <Method name="getSerializedId" signature="()[B"/>
+    <Field name="serializedId"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.InvalidateByTemplateEvent"/>
+    <Method name="readExternal" signature="(Ljava/io/ObjectInput;)V"/>
+    <Local name="currentTimeMillis"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.MBeans"/>
+    <Method name="invalidateCacheIDs" signature="(Ljava/lang/String;Ljava/lang/String;Z)[Ljava/lang/String;"/>
+    <Local name="cpattern"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.MBeans"/>
+    <Method name="getCache" signature="(Ljava/lang/String;)Lcom/ibm/ws/cache/intf/DCache;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.MBeans"/>
+    <Method name="getCacheEntry" signature="(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.MBeans"/>
+    <Method name="getCacheIDsOnDisk" signature="(Ljava/lang/String;Ljava/lang/String;)[Ljava/lang/String;"/>
+    <Local name="diskSet"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.PrimitiveArrayPool"/>
+    <Method name="traceDebug" signature="(Ljava/lang/String;Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.PropertiesEntityResolver"/>
+    <Method name="resolveEntity" signature="(Ljava/lang/String;Ljava/lang/String;)Lorg/xml/sax/InputSource;"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.PropertiesEntityResolver"/>
+    <Method name="resolveEntity" signature="(Ljava/lang/String;Ljava/lang/String;)Lorg/xml/sax/InputSource;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Queue$QueueEnumeration"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Field name="cacheServiceRef"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Field name="cache"/>
+    <Bug pattern="MS_CANNOT_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Field name="commandCache"/>
+    <Bug code="MS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Field name="jspCache"/>
+    <Bug code="MS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Field name="cacheUnit"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Method name="createCache" signature="(Ljava/lang/String;Lcom/ibm/ws/cache/CacheConfig;)Lcom/ibm/ws/cache/intf/DCache;"/>
+    <Local name="ns"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Method name="createCache" signature="(Ljava/lang/String;Lcom/ibm/ws/cache/CacheConfig;)Lcom/ibm/ws/cache/intf/DCache;"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ServerCache"/>
+    <Method name="createCache" signature="(Ljava/lang/String;Lcom/ibm/ws/cache/CacheConfig;)Lcom/ibm/ws/cache/intf/DCache;"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.TimeLimitDaemon$BinaryHeap"/>
+    <Field name="heapArray"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.TimeLimitDaemon$BinaryHeap"/>
+    <Field name="heapSize"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.TimeLimitDaemon$InvalidationTask"/>
+    <Method name="equals"/>
+    <Bug code="Eq, HE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.command.CommandCache"/>
+    <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.CacheHandler$SkipCacheAttributeHandler"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.CacheId"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.CacheInstance"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.CacheProcessor"/>
+    <Method name="preProcess" signature="(Lcom/ibm/ws/cache/config/CacheId;)Z"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.CacheProcessor"/>
+    <Method name="preProcess" signature="(Lcom/ibm/ws/cache/config/ConfigEntry;)Z"/>
+    <Bug pattern="DM_BOOLEAN_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.CacheProcessor"/>
+    <Method name="preProcess" signature="(Lcom/ibm/ws/cache/config/CacheId;)Z"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Component"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.ConfigEntry"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.DependencyId"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Field"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Invalidation"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Method"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.NotValue"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Property"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Range"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.RuleHandler"/>
+    <Method name="startElement" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/xml/sax/Attributes;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.RuleHandler"/>
+    <Method name="startElement" signature="(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lorg/xml/sax/Attributes;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Value"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.eca.ECAConnection"/>
+    <Method name="getInetAddress" signature="()Ljava/net/InetAddress;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.eca.ECAConnection"/>
+    <Method name="getInetAddress" signature="(I)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.eca.ECAConnection"/>
+    <Method name="getInetAddress" signature="()Ljava/net/InetAddress;"/>
+    <Bug pattern="TR_MISSING_ENTRY_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.eca.ECAListener"/>
+    <Method name="&lt;init&gt;" signature="(I)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.eca.ECAListener"/>
+    <Method name="accept" signature="()Lcom/ibm/ws/cache/eca/ECAConnection;"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.eca.ECAListener"/>
+    <Method name="accept" signature="()Lcom/ibm/ws/cache/eca/ECAConnection;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.FileManagerImpl"/>
+    <Method name="writeUserData" signature="(I)V"/>
+    <Bug pattern="ICAST_INTEGER_MULTIPLY_CAST_TO_LONG"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.FileManagerImpl"/>
+    <Field name="type"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.FileManagerImpl"/>
+    <Field name="truetype"/>
+    <Bug pattern="UUF_UNUSED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.FileManagerImpl$Block"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.FileManagerImpl$Listhead"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.MultivolumeRAFWrapper"/>
+    <Method name="makeVolume" signature="(J)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.MultivolumeRAFWrapper"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;Lcom/ibm/ws/cache/persistent/filemgr/FileManager;Lcom/ibm/ws/cache/DiskCacheSizeInfo;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.MultivolumeRAFWrapper"/>
+    <Method name="&lt;init&gt;" signature="(Ljava/lang/String;Ljava/lang/String;Lcom/ibm/ws/cache/persistent/filemgr/FileManager;Lcom/ibm/ws/cache/DiskCacheSizeInfo;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.MultivolumeRAFWrapper"/>
+    <Method name="exists" signature="(Ljava/lang/String;)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.MultivolumeRAFWrapper"/>
+    <Method name="makeVolume" signature="(J)V"/>
+    <Local name="file"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.MultivolumeRAFWrapper"/>
+    <Method name="readIntOverVolume" signature="(I)J"/>
+    <Local name="count"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.MultivolumeRAFWrapper"/>
+    <Method name="writeInt" />
+    <Local name="ie"/>
+    <Bug pattern="DLS_DEAD_LOCAL_STORE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashHeader"/>
+    <Field name="headerSize"/>
+    <Bug pattern="SS_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashHeader"/>
+    <Method name="write" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashHeader"/>
+    <Field name="currentRehashIndex"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashHeader"/>
+    <Field name="headerLoc"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashHeader"/>
+    <Field name="headerLoc"/>
+    <Bug code="SS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashHeader"/>
+    <Method name="calcOffset"/>
+    <Bug code="ICAST"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableEntry"/>
+    <Method name="getSerializedCacheValue" signature="()[B"/>
+    <Field name="serializedCacheValue"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableEntry"/>
+    <Method name="copy" signature="(JJLjava/lang/Object;Ljava/lang/Object;JJIIIJJI[BIIZZ)V"/>
+    <Field name="serializedCacheValue"/>
+    <Local name="serializedCacheValue"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableEntry"/>
+    <Method name="copy" signature="(Ljava/lang/Object;Ljava/lang/Object;IIIJJJ[B[BIZ)V"/>
+    <Field name="serializedCacheValue"/>
+    <Local name="serializedCacheValue"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableEntry"/>
+    <Method name="copy" signature="(Ljava/lang/Object;Ljava/lang/Object;IIIJJJ[B[BIZ)V"/>
+    <Field name="serializedKey"/>
+    <Local name="serializedKey"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="readEntry2" signature="(JJIJIZILjava/lang/Object;Lcom/ibm/ws/cache/HTODDynacache$EvictionTableEntry;)Lcom/ibm/ws/cache/persistent/htod/HashtableEntry;"/>
+    <Bug pattern="BIT_SIGNED_CHECK"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="doRehash" signature="(I)V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="recover" signature="()V"/>
+    <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="exists" signature="(Ljava/lang/String;I)Z"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="addRangeIndex" signature="(I)V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="initRangeIndex" signature="()V"/>
+    <Bug pattern="DM_NUMBER_CTOR"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Field name="collisions"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Field name="debug"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Field name="htindex"/>
+    <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="readEntry2" signature="(JJIJIZILjava/lang/Object;Lcom/ibm/ws/cache/HTODDynacache$EvictionTableEntry;)Lcom/ibm/ws/cache/persistent/htod/HashtableEntry;"/>
+    <Local name="key"/>
+    <Bug pattern="NP_NULL_PARAM_DEREF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="main" signature="([Ljava/lang/String;)V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="usage" signature="()V"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="doRehash" signature="(I)V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="recover" signature="()V"/>
+    <Bug pattern="THREAD_START_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="print" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+    <Method name="println" signature="(Ljava/lang/String;)V"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk$AnalyzeStruct"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk$AnalyzeStruct"/>
+    <Field name="buffersize"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk$AnalyzeStruct"/>
+    <Field name="location"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk$AnalyzeStruct"/>
+    <Field name="object"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk$AnalyzeStruct"/>
+    <Field name="objectsize"/>
+    <Bug pattern="URF_UNREAD_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk$ListAction"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.util.ByteArrayPlusOutputStream"/>
+    <Method name="getTheBuffer" signature="()[B"/>
+    <Field name="buf"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.util.ByteArrayPlusOutputStream"/>
+    <Method name="&lt;init&gt;" signature="([B)V"/>
+    <Field name="buf"/>
+    <Local name="inbuf"/>
+    <Bug pattern="EI_EXPOSE_REP2"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache"/>
+    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_cs"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_de"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_es"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_fr"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_hu"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_it"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_ja"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_ko"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_pl"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_pt_BR"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_ro"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_ru"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_zh"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.resources.dynacache_zh_TW"/>
+    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
+    <Field name="resources"/>
+    <Bug pattern="EI_EXPOSE_REP"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.AssertUtility"/>
+    <Method name="assertCheck" signature="(ZLjava/lang/Object;)Z"/>
+    <Bug pattern="SYSTEM_OUT_USED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.FieldInitializer"/>
+    <Method name="updateFieldsFromProperties" signature="(Ljava/lang/Class;Ljava/lang/Object;Ljava/util/Properties;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.FieldInitializer"/>
+    <Method name="updateFieldsFromSystemProperties" signature="(Ljava/lang/Class;Ljava/lang/Object;)V"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.ObjectSizer"/>
+    <Field name="unsizeableObjectList"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.ObjectSizer"/>
+    <Method name="&lt;clinit&gt;" signature="()V"/>
+    <Bug pattern="TR_WRONG_CLASS_NAME"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.SerializationUtility"/>
+    <Method name="activate" signature="(Lorg/osgi/service/component/ComponentContext;)V"/>
+    <Field name="_bundleContext"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.SerializationUtility"/>
+    <Method name="activate" signature="(Lorg/osgi/service/component/ComponentContext;)V"/>
+    <Field name="_instance"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.SerializationUtility"/>
+    <Method name="deactivate" signature="(Lorg/osgi/service/component/ComponentContext;)V"/>
+    <Field name="_bundleContext"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.SerializationUtility"/>
+    <Method name="deactivate" signature="(Lorg/osgi/service/component/ComponentContext;)V"/>
+    <Field name="_instance"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.ValidateUtility"/>
+    <Field name="verify"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.ValidateUtility"/>
+    <Method name="objectNotNull" signature="(Ljava/lang/Object;Ljava/lang/String;)V"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.util.WsObjectInputStream"/>
+    <Field name="resolver"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.ConfigEntry"/>
+    <Method name="clone" signature="()Ljava/lang/Object;"/>
+    <Bug pattern="CN_IMPLEMENTS_CLONE_BUT_NOT_CLONEABLE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.ConfigEntry$Component"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.ConfigEntry$Property"/>
+    <Bug pattern="SIC_INNER_SHOULD_BE_STATIC"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Field name="distributedMaps"/>
+    <Bug pattern="MS_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="createDistributedObjectCache" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="createDistributedObjectCache" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_COMPUTED_KEY"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="createDistributedObjectCache" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="createDistributedObjectCache" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="createDistributedObjectCache" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="createDistributedObjectCache" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_INCORRECTLY_GUARDED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="createDistributedObjectCache" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="getMap" signature="(Ljava/lang/String;Ljava/util/Properties;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="removeMap" signature="(Ljava/lang/String;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.wsspi.cache.DistributedObjectCacheFactory"/>
+    <Method name="removeMap" signature="(Ljava/lang/String;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Bug pattern="TR_MISSING_GUARD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.websphere.cache.ChangeEvent"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.websphere.cache.InvalidationEvent"/>
+    <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Or>
+        <Method name="_syncAddAlias"/>
+        <Method name="_syncSetValue"/>
+        <Method name="checkExpired"/>
+        <Method name="extractStackTrace"/>
+        <Method name="getEntry"/>
+        <Method name="flushToDisk"/>
+        <Method name="lookForLeaks"/>
+        <Method name="refreshCachePerf"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+        <Or>
+        <Method name="isInvalid"/>
+        <Method name="processDrsOutbound"/>
+        <Method name="setExpirationTime"/>
+        <Method name="setValue"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheInstanceInfo"/>
+      <Method name="getCacheInstanceInfo"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk"/>
+      <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheOnDisk$4"/>
+      <Method name="run"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.cache.EntryInfo"/>
+    <Or>
+      <Method name="setTimeLimit"/>
+      <Method name="setExpirationTime"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.cache.ExternalCacheServices"/>
+      <Method name="writeToExternalCaches"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODInvalidationBuffer"/>
+    <Method name="isFull" signature="()Z"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODInvalidationBuffer"/>
+    <Method name="setlastRemoveTime" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Or>
+      <Method name="&lt;init&gt;"/>
+      <Method name="delCacheEntry"/>
+      <Method name="getExpiredEntriesFromEvictionTable"/>
+      <Method name="walkEvictionTable"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.InvalidateByIdEvent"/>
+      <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.InvalidateByTemplateEvent"/>
+      <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.InvalidationAuditDaemon"/>
+      <Method name="&lt;init&gt;"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableEntry"/>
+    <Or>
+      <Method name="copy"/>
+      <Method name="isExpired"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.htod.HashtableOnDisk"/>
+      <Method name="readEntry2"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.PrimitiveArrayPool"/>
+    <Or>
+      <Method name="releaseUnusedPools"/>
+      <Method name="returnToPool"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.PrimitiveArrayPool$PoolEntry"/>
+      <Method name="touch"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.cache.RealTimeDaemon"/>
+    <Or>
+      <Method name="start"/>
+      <Method name="alarm"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <Match>
+    <Class name="com.ibm.ws.cache.servlet.CacheHook"/>
+      <Method name="putInCache"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.servlet.ESISupport"/>
+      <Method name="setSurrogateControl"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.TimeLimitDaemon"/>
+    <Or>
+      <Method name="&lt;init&gt;"/>
+      <Method name="diskCacheHouseKeeping"/>
+      <Method name="valueHasChanged"/>
+    </Or>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig$ExternalCacheGroup"/>
+      <Field name="name"/>
+    <Bug code="UrF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig$ExternalCacheGroupMember"/>
+      <Field name="address"/>
+    <Bug code="UrF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig$ExternalCacheGroupMember"/>
+      <Field name="beanName"/>
+    <Bug code="UrF"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheConfig$ExternalCacheGroup"/>
+      <Field name="type"/>
+    <Bug code="UuF"/>
+  </Match>
+
+  <!-- Default encoding is expected -->
+  <Match>
+    <Class name="com.ibm.websphere.exception.DistributedException"/>
+    <Method name="printStackTrace"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.cache.Cache"/>
+    <Method name="lookForLeaks"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.cache.HTODDynacache"/>
+    <Method name="dump_object_statistics"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.cache.persistent.filemgr.FileManagerImpl"/>
+    <Method name="main"/>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+  </Match>
+  
+  <!-- No race happens here in practise -->
+  <Match>
+    <Class name="com.ibm.ws.cache.TimeLimitDaemon"/>
+    <Method name="createExpirationMetaData"/>
+    <Bug pattern="AT_OPERATION_SEQUENCE_ON_CONCURRENT_ABSTRACTION"/>
+  </Match>
+  
+  <!-- Cast protected by a type variable -->
+  <Match>
+    <Class name="com.ibm.ws.cache.DependencyTable"/>
+    <Method name="clear"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+  
+  <!-- Spots repeated error messages, so definitely intended -->
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheEntry"/>
+    <Method name="readExternal"/>
+    <Field name="errorAlreadyDisplayed"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+   
+   <!-- Not prepared to delete protected/public fielda at this time -->
+   <Match>
+     <Class name="com.ibm.ws.cache.config.CacheInstance"/>
+     <Field name="processorData"/>
+     <Bug pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.cache.FreeLruEntryResult"/>
+     <Field name="entriesRemoved"/>
+     <Bug  pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+   </Match>
+    <Match>
+     <Class name="com.ibm.ws.cache.NullRemoteServices"/>
+     <Field name="initialized"/>
+     <Bug  pattern="URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD"/>
+   </Match>
+    <Match>
+     <Class name="com.ibm.ws.cache.config.Invalidation"/>
+     <Field name="invalidationGeneratorImpl"/>
+     <Bug  pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+   </Match>
+     <Match>
+     <Class name="com.ibm.ws.cache.util.WsObjectInputStream"/>
+     <Field name="resolver"/>
+     <Bug  pattern="UWF_UNWRITTEN_PUBLIC_OR_PROTECTED_FIELD"/>
+   </Match>
+   
+   <!-- The code is clearer with the null checks made (findbugs is correct, the
+        value of "cacheEntry" can be shown to be null at the relevant locations, but
+        that requires some thought to demonstrate -->
+   <Match>
+     <Class name="com.ibm.ws.cache.Cache"/>
+     <Method name="getCacheEntry"/>
+     <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+   </Match>
+    
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheServiceImpl"/>
+    <Field name="processedUrls"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.CacheServiceImpl"/>
+    <Method name="initializeConfigPropertiesFiles" signature="(Ljava/lang/ClassLoader;Ljava/lang/String;)V"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+  
+        <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Field name="processedUrls"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Method name="initializeConfigPropertiesFiles" signature="(Ljava/lang/ClassLoader;Ljava/lang/String;)V"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Method name="start" signature="()V"/>
+    <Field name="objectCacheEnabled"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Method name="stop" signature="()V"/>
+    <Field name="objectCacheEnabled"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Method name="start" signature="()V"/>
+    <Bug pattern="TR_MISSING_ENTRY_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Method name="contextDestroyed" signature="(Ljavax/servlet/ServletContextEvent;)V"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Method name="contextInitialized" signature="(Ljavax/servlet/ServletContextEvent;)V"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheServiceImpl"/>
+    <Method name="stop" signature="()V"/>
+    <Bug pattern="TR_MISSING_EXIT_TRACE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheUnitImpl"/>
+    <Field name="serverCacheReference"/>
+    <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.ObjectCacheUnitImpl"/>
+    <Method name="createDistributedObjectCache" signature="(Lcom/ibm/ws/cache/CacheConfig;)Lcom/ibm/websphere/cache/DistributedObjectCache;"/>
+    <Local name="config"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+   
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Field"/>
+    <Field name="fieldImpl"/>
+    <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.cache.config.Method"/>
+    <Field name="methodImpl"/>
+    <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+  </Match> 
+</FindBugsFilter>

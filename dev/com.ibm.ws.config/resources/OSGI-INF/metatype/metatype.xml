@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+	           xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" 
+	           localization="OSGI-INF/l10n/metatype">
+
+    <OCD description="%config.desc" name="%config.name" id="com.ibm.ws.config" ibm:alias="config">
+        <AD id="monitorInterval" name="%config.monitorInterval.name" description="%config.monitorInterval.desc" required="false" type="String" ibm:type="duration" default="500ms" />
+		<AD id="updateTrigger" name="%config.trigger.name" description="%config.trigger.desc" type="String" required="false" default="polled">
+			<Option label="%config.trigger.timed" value="polled"/>
+			<Option label="%config.trigger.external" value="mbean"/>
+			<Option	label="%config.trigger.disabled" value="disabled"/>
+        </AD>
+        <AD id="onError" ibm:variable="onError" name="%config.onError.name" description="%config.onError.desc" type="String" ibm:type="onError" default="WARN">
+            <Option label="%config.onError.warn" value="WARN"/>
+			<Option label="%config.onError.fail" value="FAIL"/>
+			<Option	label="%config.onError.ignore" value="IGNORE"/>   
+		</AD>  
+    </OCD>
+
+    <Designate pid="com.ibm.ws.config">
+        <Object ocdref="com.ibm.ws.config" />
+    </Designate>
+  
+</metatype:MetaData>

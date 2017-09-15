@@ -1,0 +1,26 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/liberty-release.props
+
+-nobundles=true
+
+publish.feature.resources: *.mf
+
+-dependson: \
+	com.ibm.websphere.appserver.channelfw-1.0;version=latest, \
+	com.ibm.ws.org.apache.yoko.corba.spec;version=latest, \
+	com.ibm.ws.org.apache.yoko.osgi;version=latest, \
+	com.ibm.ws.org.apache.servicemix.bundles.bcel;version=latest, \
+	com.ibm.ws.org.apache.yoko.rmi.impl;version=latest, \
+	com.ibm.ws.org.apache.yoko.core;version=latest, \
+	com.ibm.ws.org.apache.yoko.util;version=latest, \
+	com.ibm.ws.transport.iiop;version=latest, \
+	com.ibm.ws.org.apache.yoko.rmi.spec;version=latest

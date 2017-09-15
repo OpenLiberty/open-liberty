@@ -1,0 +1,56 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: jstl facode
+Bundle-SymbolicName: com.ibm.ws.jsp.jstl.facade
+Bundle-Description: facade to provide a classloader for our internal jstl classes for osgi application jsp backwards compatibility; version=${bVersion}
+
+Provide-Capability: com.ibm.ws.jsp.jstl.facade
+
+Import-Package: \
+  javax.el;version="[2.2.0,4.0.0)", \
+  javax.servlet.jsp;version="[2.2,3.0)", \
+  javax.servlet.jsp.el;version="[2.2,3.0)", \
+  javax.servlet.jsp.resources;version="[2.2,3.0)", \
+  javax.servlet.jsp.tagext;version="[2.2,3.0)", \
+  javax.servlet.jsp.jstl.core;version="[1.2.0,2.0.0)", \
+  javax.servlet.jsp.jstl.fmt;version="[1.2.0,2.0.0)", \
+  javax.servlet.jsp.jstl.sql;version="[1.2.0,2.0.0)", \
+  javax.servlet.jsp.jstl.tlv;version="[1.2.0,2.0.0)", \
+  org.apache.taglibs.standard.extra.commons.collections;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.extra.commons.collections.iterators;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.extra.commons.collections.map;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.extra.spath;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.functions;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.lang.jstl;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.lang.jstl.parser;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.lang.jstl.test;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.lang.jstl.test.beans;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.lang.support;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.resources;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.common.core;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.common.fmt;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.common.sql;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.common.xml;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.el.core;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.el.fmt;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.el.sql;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.el.xml;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.rt.core;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.rt.fmt;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.rt.sql;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tag.rt.xml;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tei;version="[2.2,3.0)", \
+  org.apache.taglibs.standard.tlv;version="[2.2,3.0)", \
+  org.apache.taglibs.standard;version="[2.2,3.0)"

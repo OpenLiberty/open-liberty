@@ -1,0 +1,154 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: EJB Container
+Bundle-SymbolicName: com.ibm.ws.ejbcontainer
+Bundle-Description: EJB Container; version=${bVersion}
+
+WS-TraceGroup: EJBContainer
+
+# com.ibm.websphere.csi is a legacy split package that cannot be fixed easily,
+# so we use Require-Bundle to search com.ibm.ws.container.service and our bundle.
+Require-Bundle: com.ibm.ws.container.service
+
+# com.ibm.ws.injectionengine is used by the OverrideEJB classes.
+#
+# org.omg.stub.java.rmi apparently (still) needs to be a dynamically imported
+# package.  ejbLite needs this import, but I am guessing this import is only
+# used when ejbRemote is enabled as well, which imports Yoko, which
+# satisfies this requirement. 
+#
+# com.ibm.ws.logging needs an explicit import because LoggerHelper intentionally
+# accesses it via reflection only.
+Import-Package: \
+  !com.ibm.ws.injectionengine, \
+  !org.omg.stub.java.rmi, \
+  com.ibm.ws.logging, \
+  *
+
+DynamicImport-Package: \
+  org.omg.stub.java.rmi
+
+Export-Package: \
+  com.ibm.ejs.container;-split-package:=merge-first, \
+  com.ibm.ejs.container.interceptors, \
+  com.ibm.ejs.container.util, \
+  com.ibm.websphere.ejbcontainer.mbean, \
+  com.ibm.websphere.ejbcontainer, \
+  com.ibm.ws.ejbcontainer, \
+  com.ibm.ws.ejbcontainer.jitdeploy, \
+  com.ibm.ws.ejbcontainer.runtime, \
+  com.ibm.ws.ejbcontainer.util, \
+  com.ibm.ws.ejbcontainer.osgi; provide:=true, \
+  com.ibm.ws.ejb.portable, \
+  com.ibm.ws.metadata.ejb, \
+  com.ibm.wsspi.ejbcontainer 
+  
+
+Private-Package: \
+  com.ibm.ejs.container.*, \
+  com.ibm.ejs.csi.*, \
+  com.ibm.ejs.persistence.*, \
+  com.ibm.ejs.util.cache.*, \
+  com.ibm.websphere.cpi.*, \
+  com.ibm.websphere.csi.*, \
+  com.ibm.websphere.cpmi.*, \
+  com.ibm.websphere.ejbcontainer.*, \
+  com.ibm.ws.csi.*, \
+  com.ibm.ws.ejb.*, \
+  com.ibm.ws.ejbcontainer.*, \
+  com.ibm.ws.injectionengine.factory.*, \
+  com.ibm.ws.javaee.util, \
+  com.ibm.ws.traceinfo.ejbcontainer, \
+  com.ibm.ws.util.cache, \
+  com.ibm.wsspi.ejbcontainer.*
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+-dsannotations-inherit: true
+-dsannotations: \
+  com.ibm.ws.ejbcontainer.osgi.internal.EJBContainerImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.EJBModuleRuntimeContainerImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.EJBRuntimeImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.EJBTransactionSettingsProvider, \
+  com.ibm.ws.ejbcontainer.osgi.internal.EJBUserTransactionDecorator, \
+  com.ibm.ws.ejbcontainer.osgi.internal.ModuleInitDataAdapter, \
+  com.ibm.ws.ejbcontainer.osgi.internal.ModuleInitDataFactory, \
+  com.ibm.ws.ejbcontainer.osgi.internal.SerializedEJBRefHandler, \
+  com.ibm.ws.ejbcontainer.osgi.internal.diagnostics.EJBContainerIntrospector, \
+  com.ibm.ws.ejbcontainer.osgi.internal.injection.EJBLinkObjectFactoryImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.injection.EJBLinkReferenceFactoryImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.injection.OSGiEJBFactoryImpl, \
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.ContextJavaColonNamingHelper, \
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.TimerServiceJavaColonNamingHelper, \
+  com.ibm.ws.ejbcontainer.osgi.internal.naming.EJBJavaColonNamingHelper
+
+Service-Component: \
+  com.ibm.ws.ejb.injection.processor.EJBProcessorProvider;\
+    implementation:=com.ibm.ws.ejb.injection.processor.EJBProcessorProvider;\
+    provide:=com.ibm.wsspi.injectionengine.InjectionProcessorProvider;\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory;\
+    implementation:=com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory;\
+    provide:='javax.naming.spi.ObjectFactory,com.ibm.ws.ejbcontainer.injection.factory.MBLinkObjectFactory';\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.ejbcontainer.classProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="service.vendor=IBM,\
+      classes=com.ibm.ejs.container.passivator.EJBObjectInfo\
+        |com.ibm.ejs.container.passivator.EJBObjectInfo$FieldInfo\
+        |com.ibm.ejs.container.passivator.PassivatorSerializableHandle\
+        |com.ibm.ejs.container.util.StatefulBeanOReplacement\
+        |com.ibm.ws.ejbcontainer.internal.EJBReferenceImpl\
+        |com.ibm.ws.ejbcontainer.osgi.internal.SerializedEJBRef\
+        |com.ibm.ws.ejbcontainer.util.ParsedScheduleExpression\
+        |javax.ejb.ScheduleExpression"
+
+instrument.classesIncludes: com/ibm/ws/ejbcontainer/osgi/**/*.class
+instrument.classesExcludes: com/ibm/ws/ejbcontainer/osgi/internal/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.ejbcontainer.core;version=latest,\
+	com.ibm.ws.ejbcontainer.remote.portable.core;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.javaee.dd.ejb;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+ 	com.ibm.ws.kernel.feature;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.ws.kernel.security.thread;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.artifact;version=latest,\
+	com.ibm.ws.artifact.overlay;version=latest,\
+	com.ibm.ws.threading;version=latest,\
+	com.ibm.ws.kernel.boot;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.1;version=latest,\
+	com.ibm.ws.jndi.url.contexts;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

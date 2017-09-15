@@ -1,0 +1,8 @@
+# These defaults are present in (and read from) the jar manifest. 
+# Use the following properties (in the System or bootstrap.properties) to
+# override the values:
+#   websphere.kernel
+#   websphere.log.provider
+WebSphere-DefaultKernel: kernelCore-1.0
+WebSphere-DefaultLogProvider: defaultLogging-1.0
+WebSphere-DefaultExtension-zos: zosExtensions-1.0

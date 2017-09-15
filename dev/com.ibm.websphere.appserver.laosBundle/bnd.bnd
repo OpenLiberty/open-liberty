@@ -1,0 +1,87 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/liberty-release.props
+
+-nobundles=true
+
+laosBundleAutoFeatures= \
+	com.ibm.websphere.appserver.appJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.batchSecurity-1.0,\
+	com.ibm.websphere.appserver.beanValidationCDI-1.0,\
+	com.ibm.websphere.appserver.cdi-1.2-batch-1.0,\
+	com.ibm.websphere.appserver.cdi1.2-appSecurity1.0,\
+	com.ibm.websphere.appserver.cdi1.2-appSecurityClient1.0,\
+	com.ibm.websphere.appserver.cdi1.2-ejb3.2,\
+	com.ibm.websphere.appserver.cdi1.2-jms-2.0,\
+	com.ibm.websphere.appserver.cdi1.2-jndi1.0,\
+	com.ibm.websphere.appserver.cdi1.2-jsf2.2,\
+	com.ibm.websphere.appserver.cdi1.2-servlet3.1,\
+	com.ibm.websphere.appserver.cdi1.2-transaction1.2,\
+	com.ibm.websphere.appserver.classloaderContext-1.0,\
+	com.ibm.websphere.appserver.connectionpoolmonitor-1.0,\
+	com.ibm.websphere.appserver.csiv2-1.0,\
+	com.ibm.websphere.appserver.distributedMapPMI-1.0,\
+	com.ibm.websphere.appserver.ejbComponentMetadataDecorator-1.0,\
+	com.ibm.websphere.appserver.ejbJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.ejbliteJPA-1.0,\
+	com.ibm.websphere.appserver.ejbRemoteClientServer-1.0,\
+	com.ibm.websphere.appserver.ejbSecurity-1.0,\
+	com.ibm.websphere.appserver.iioptransport.transaction-1.0,\
+	com.ibm.websphere.appserver.j2eeManagement1.1-transaction1.2,\
+	com.ibm.websphere.appserver.j2eeManagementMejb-1.0,\
+	com.ibm.websphere.appserver.jaccEjb-1.5,\
+	com.ibm.websphere.appserver.jaccWeb-1.5,\
+	com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0,\
+	com.ibm.websphere.appserver.javaMailJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.jaxrs20managedbeans-1.0,\
+	com.ibm.websphere.appserver.jaxrsAppSecurity-2.0,\
+	com.ibm.websphere.appserver.jaxrsBeanValidation-2.0,\
+	com.ibm.websphere.appserver.jaxrscdi-2.0,\
+	com.ibm.websphere.appserver.jaxrsejb-2.0,\
+	com.ibm.websphere.appserver.jaxwscdi-2.2,\
+	com.ibm.websphere.appserver.jaxwsClientSecurity-2.2,\
+	com.ibm.websphere.appserver.jaxwsejb-2.2,\
+	com.ibm.websphere.appserver.jaxwsSecurity-1.0,\
+	com.ibm.websphere.appserver.jaxwsweb-2.2,\
+	com.ibm.websphere.appserver.jca.resourcedefinition.jms-2.0,\
+	com.ibm.websphere.appserver.jcaJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.jdbcJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.jeeMetadataContext-1.0,\
+	com.ibm.websphere.appserver.jms.defaultresource-1.0,\
+	com.ibm.websphere.appserver.jmsJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.jndi1.0-iiop1.0,\
+	com.ibm.websphere.appserver.jndiJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.jpa2.0-2.1-bv1.1,\
+	com.ibm.websphere.appserver.jpaContainer2.1-cdi1.2,\
+	com.ibm.websphere.appserver.jpaContainer-2.1,\
+	com.ibm.websphere.appserver.jsf.beanValidation-2.2,\
+	com.ibm.websphere.appserver.sessionMonitor-1.0,\
+	com.ibm.websphere.appserver.transactionContext-1.0,\
+	com.ibm.websphere.appserver.webAppSecurity-1.0,\
+	com.ibm.websphere.appserver.webcontainerMonitor-1.0,\
+	com.ibm.websphere.appserver.webJ2eeManagement-1.0,\
+	com.ibm.websphere.appserver.webservicesee-1.3,\
+	com.ibm.websphere.appserver.websocketCDI-1.2
+
+-dependson: \
+	com.ibm.websphere.appserver.kernel-1.0,\
+	com.ibm.websphere.appserver.javaee-7.0,\
+	com.ibm.websphere.appserver.javaeeClient-7.0,\
+	com.ibm.websphere.appserver.appSecurityClient-1.0,\
+	com.ibm.websphere.appserver.bells-1.0,\
+	com.ibm.websphere.appserver.microProfile-1.0,\
+	com.ibm.websphere.appserver.passwordUtilities-1.0,\
+	com.ibm.websphere.appserver.ldapRegistry-3.0,\
+	com.ibm.websphere.appserver.federatedRegistry-1.0,\
+	com.ibm.websphere.appserver.monitor-1.0,\
+	com.ibm.websphere.appserver.restConnector-2.0,\
+	com.ibm.websphere.appserver.localConnector-1.0,\
+	${laosBundleAutoFeatures}

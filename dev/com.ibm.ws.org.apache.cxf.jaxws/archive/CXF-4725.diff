@@ -1,0 +1,24 @@
+Index: rt/core/src/main/java/org/apache/cxf/service/factory/Messages.properties
+===================================================================
+--- rt/core/src/main/java/org/apache/cxf/service/factory/Messages.properties	(revision 1426133)
++++ rt/core/src/main/java/org/apache/cxf/service/factory/Messages.properties	(working copy)
+@@ -22,7 +22,6 @@
+ INVALID_SCHEMA_URL=Could not load schema {0}
+ ERROR_READING_SCHEMA=There was an error reading the schema {0}.
+ COULD_NOT_FIND_PORTTYPE = Could not find portType named {0}
+-NO_METHOD_FOR_OP = Could not find a matching method for operation {0}. Operation will be unavailable.
+ COULD_NOT_SET_WRAPPER_STYLE = Service class: {0} contains overloaded operation can not use wrapper style
+ USING_PROXY_FOR_SERVICE = Service class: {0} is a java.lang.reflect.Proxy instance.  This is known not to work well as \
+   annotations on the real instance are not available.  We suggest overriding the ServiceClass via spring config or \
+Index: rt/transports/http/src/main/java/org/apache/cxf/transport/http/Messages.properties
+===================================================================
+--- rt/transports/http/src/main/java/org/apache/cxf/transport/http/Messages.properties	(revision 1426133)
++++ rt/transports/http/src/main/java/org/apache/cxf/transport/http/Messages.properties	(working copy)
+@@ -23,7 +23,6 @@
+ NULL_RESPONSE_MSG = Response object is null
+ DECOUPLED_RESPONSE_FAILED_MSG = Decouple response failed
+ MISSING_PATH_INFO = PATH_INFO not present in message context, multiplex id is unavailable. Ensure the portName passed to getCurrentEndpointReferenceId is correct if the service has multiple ports
+-INVALID_ENCODING_MSG = Invalid character set {0} in request.
+ INVALID_TIMEOUT_FORMAT = Invalid name/value pair {0}={1} set in RequestConext 
+ NO_HTTP_DESTINATION_FACTORY_FOUND = Cannot find any registered HttpDestinationFactory from the Bus.
+ EXECUTOR_FULL = Executor rejected background task to retrieve the response, running on current thread.

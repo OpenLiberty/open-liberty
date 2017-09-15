@@ -1,0 +1,258 @@
+#!/bin/sh
+
+##
+## Determine the platform and absolute path of the directory for the current script.
+##
+case $OSTYPE in
+  cygwin)
+    uname=CYGWIN_NT
+
+    # Determine the installation directory without forking if possible.  Use
+    # eval to hide ${var//find/replace}, ${var%suffix}, and ${var:first:length}
+    # syntaxes from shells that can't parse them.
+    eval '
+      # cd to the install directory.
+      savePWD=$PWD
+      script=${0//\\/\/}
+      unset CDPATH; cd "${script%/*}/../@TOOL_SCRIPT_RELATIVE@"
+
+      # Convert the install (current working) directory to a Windows path.
+      case $PWD in
+        /cygdrive/?/*)
+          # Use ${var:first:length} to avoid forking for cygpath.
+          WLP_INSTALL_DIR=${PWD:10:1}:${PWD:11}
+          ;;
+        *)
+          WLP_INSTALL_DIR=`cygpath -ma .`
+      esac
+
+      cd "$savePWD"
+    '
+    ;;
+
+  *)
+    uname=`uname`
+
+    case $uname in
+      CYGWIN_*)
+        WLP_INSTALL_DIR=`cygpath -ma "${0}"/../../@TOOL_SCRIPT_RELATIVE@`
+        ;;
+
+      *)
+        dirname=`dirname "$0"`
+        WLP_INSTALL_DIR=`unset CDPATH; cd "$dirname/../@TOOL_SCRIPT_RELATIVE@" && pwd`
+    esac
+esac
+
+##
+## Platform specific setup
+##
+newline='
+'
+nativeEBCDIC=false
+
+case ${uname} in
+  OS/390)
+    defaultFileEncoding=iso8859-1
+    # Auto-convert server.env/jvm.options from ASCII-to-EBCDIC, if necessary.
+    nativeEBCDIC=true
+    ;;
+esac
+
+##
+## safeEcho: Portable echo that can handle backslashes and leading dashes.
+safeEcho()
+{
+  cat <<EOF
+$*
+EOF
+}
+
+# Define escapeForEval functions using ${var//find/replace} and ${var#suffix}
+# if possible since those constructs are significantly faster than safeEcho+sed
+# since they avoid forks.  Use eval (to hide the syntax from shells that don't
+# support them) in a subshell (to avoid exiting the shell process on error) to
+# test if the shell has support.
+if (eval 'true ${1//b/c} ${1#*=}') 2> /dev/null; then
+  # The shell has support.  Define the functions using eval, again to hide the
+  # syntax from shells that don't support it.
+  eval "
+    escapeForEval()
+    {
+      escapeForEvalResult=\\'\${1//\\'/\\'\\\"\\'\\\"\\'}\\'
+    }
+
+    extractValueAndEscapeForEval()
+    {
+      escapeForEval \"\${1#*=}\"
+    }
+
+    substitutePrefixVar()
+    {
+      case \$1 in
+      @\$2@*) substitutePrefixVarResult=\$3\${1#@\$2@};;
+      *) substitutePrefixVarResult=\$1
+      esac
+    }
+  "
+else
+  ##
+  ## escapeForEval: Escape the first parameter to be safe for use in eval,
+  ##                and set escapeForEvalResult with the result.
+  ##
+  escapeForEval() 
+  {
+    escapeForEvalResult=\'`safeEcho "$1" | sed s/\'/\'\"\'\"\'/g`\'
+  }
+
+  ##
+  ## extractValueAndEscapeForEval: Extract the value of a var=value string,
+  ##                               and set escapeForEvalResult with the result.
+  ##
+  extractValueAndEscapeForEval()
+  {
+    escapeForEvalResult=\'`safeEcho "$1" | sed -e 's/[^=]*=//' -e s/\'/\'\"\'\"\'/g`\'
+  }
+
+  ##
+  ## substitutePrefixVar: If $1 has a prefix @$2@, set substitutePrefixVarResult
+  ##                      to $1 with the prefix replaced by $3.  Otherwise, set
+  ##                      to $1.
+  substitutePrefixVar()
+  {
+    case $1 in
+    @$2@*) substitutePrefixVarResult=$3`safeEcho "$1" | sed -e "s/^@$2@//"`;;
+    *) substitutePrefixVarResult=$1
+    esac
+  }
+fi
+
+##
+## Quote ${WLP_INSTALL_DIR} for eval.
+##
+escapeForEval "${WLP_INSTALL_DIR}"
+WLP_INSTALL_DIR_QUOTED=${escapeForEvalResult}
+
+##
+## Detects the code page of the file and converts to EBCDIC,
+## if necessary, before cat'ing.
+##
+## Only applicable if running in a native EBCDIC environment (z/OS).
+##
+## $1 the file name
+## $2 pattern denoting the expected first char of file
+readNativeFile() {
+  if ${nativeEBCDIC}; then
+    # ASCII 'm' overlaps with EBCDIC '_', so strip it out before detecting the codepage.
+    # Note: cat used here to handle ASCII-tagged files.
+    filecontents=`cat "$1" | iconv -f ISO8859-1 -t IBM-1047 | tr -d 'm\r\n'`
+    case $filecontents in
+      # ASCII file.
+      $2*) iconv -f ISO8859-1 -t IBM-1047 "$1";;
+      # EBCDIC file or ASCII-tagged file.
+      *) cat "$1"
+    esac
+  else
+    cat "$1"
+  fi
+}
+
+##
+## readServerEnv: Read server.env file and export environment variables.
+readServerEnv()
+{
+  if [ -f "$1" ]; then
+    saveIFS=$IFS
+    IFS=$newline
+    for line in `readNativeFile "$1" '[#_A-Za-z=]' | tr -d '\r'`; do
+      case $line in
+      \#*);;
+      *=*)
+        # Only accept alphanumeric variable names to avoid eval complexities.
+        if var=`safeEcho "$line" | sed -e 's/^\([a-zA-Z0-9_][a-zA-Z0-9_]*\)=.*/\1/'`; then
+          extractValueAndEscapeForEval "${line}"
+          eval "${var}=${escapeForEvalResult}; export ${var}"
+        fi
+      esac
+    done
+    IFS=$saveIFS
+  fi
+}
+
+##
+## toolJavaCmd: Executes a java command for the tool JAR.
+toolJavaCmd()
+{
+  eval "set -- ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/@TOOL_JAR@ "'"$@"'
+  "${JAVA_CMD}" "$@"
+}
+
+readServerEnv "${WLP_INSTALL_DIR}/java/java.env"
+readServerEnv "${WLP_INSTALL_DIR}/etc/default.env"
+readServerEnv "${WLP_INSTALL_DIR}/etc/server.env"
+
+if [ -z "${WLP_USER_DIR}" ]
+then
+  if [ -z "${WLP_DEFAULT_USER_DIR}" ]
+  then
+    WLP_DEFAULT_USER_DIR=${WLP_INSTALL_DIR}/usr
+  fi
+  WLP_USER_DIR=${WLP_DEFAULT_USER_DIR}
+  export WLP_USER_DIR
+fi
+
+if [ -z "${WLP_OUTPUT_DIR}" ]
+then
+  if [ -z "${WLP_DEFAULT_OUTPUT_DIR}" ]
+  then
+    WLP_DEFAULT_OUTPUT_DIR=${WLP_USER_DIR}/servers
+  fi
+  WLP_OUTPUT_DIR=${WLP_DEFAULT_OUTPUT_DIR}
+  export WLP_OUTPUT_DIR
+fi
+
+if [ -z "${JAVA_HOME}" ]
+then
+  if [ -z "${JRE_HOME}" ]
+  then
+    if [ -z "${WLP_DEFAULT_JAVA_HOME}" ]
+    then
+      # Use whatever java is on the path
+      JAVA_CMD=java
+    else
+      substitutePrefixVar "${WLP_DEFAULT_JAVA_HOME}" WLP_INSTALL_DIR "${WLP_INSTALL_DIR}"
+      JAVA_CMD=${substitutePrefixVarResult}/bin/java
+    fi
+  else
+    JAVA_CMD=${JRE_HOME}/bin/java
+  fi
+else
+  if [ -f "${JAVA_HOME}/jre/bin/java" ]
+  then
+    JAVA_HOME=${JAVA_HOME}/jre
+  fi
+  JAVA_CMD=${JAVA_HOME}/bin/java
+fi
+
+# Set a default file encoding if needed
+if [ -n "$defaultFileEncoding" ]; then
+  if ! expr "${JVM_ARGS} ${IBM_JAVA_OPTIONS}" : '.*\(-Dfile\.encoding\=[^[:space:]]\)' > /dev/null; then
+    JVM_ARGS="${JVM_ARGS} -Dfile.encoding=$defaultFileEncoding"
+  fi
+fi
+
+# Prevent the Java invocation appearing as an application on a mac
+# Setting on all platforms to avoid cross platform bugs
+JVM_ARGS="-Djava.awt.headless=true ${JVM_ARGS}"
+
+# If this is a Java 9 JDK, add some JDK 9 workarounds to the JVM_ARGS
+if [ -f "${JAVA_HOME}/lib/modules" ]; then 
+  JVM_ARGS="${JVM_ARGS} --add-modules java.se.ee --add-opens java.base/java.lang=ALL-UNNAMED --add-exports java.base/sun.security.action=ALL-UNNAMED"
+fi
+
+# Execute the tool script or JAR.
+if [ -f "${WLP_INSTALL_DIR}"/lib/tools-internal/@TOOL_SCRIPT@ ]; then
+  . "${WLP_INSTALL_DIR}"/lib/tools-internal/@TOOL_SCRIPT@ "$@"
+else
+  toolJavaCmd "$@"
+fi

@@ -1,0 +1,308 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/*
+ * Master Gradle initialization script
+ *
+ * Depends on bnd_* values from gradle.properties.
+ */
+
+/* Construct a properties file to store build-time variables. generated.properties is used to pass information from
+ * Gradle during initialization into bnd during configuration for use in cnf/build.bnd.
+ */
+def loadBuildProps() {
+  Properties props = new Properties()
+
+  // Property for Artifactory matrix parameters
+  def branchName = gitBranch()
+  def matrixParams = ";GIT_BRANCH=master;GIT_FEATURE_BRANCH=${branchName}"
+
+  // Properties for automated-build relevant tasks. These assignments below are defaults for when building locally
+  def isAutomatedBuild = false
+  def isContinuousBuild = false
+  def isRelease = false
+  def isPublicPublishing = false
+
+  def isRemotePublishing = false
+  if (System.properties['is.remote.publishing']!=null) {
+    isRemotePublishing = System.properties['is.remote.publishing'];
+  }
+
+  // Does userhome Gradle startup properties exist?
+  File usrHomeProps = file(System.properties['user.home'] + '/gradle.startup.properties')
+  if (!usrHomeProps.exists()) {
+    if (System.properties['build.properties.path']!=null) {
+      usrHomeProps = file(System.properties['build.properties.path']);
+    }
+  }
+
+  if (usrHomeProps.exists()) {
+    usrHomeProps.withInputStream { props.load(it) }    
+    props.each {      
+      props.setProperty(it.key, it.value)      
+    }
+  }
+
+  // Retain properties from prior builds; used in automated build publishing
+  //TODO: need a better mechanism for 'stowaway properties' that need to be used in future gradle invocations
+  File genPropsFile = file('generated.properties')
+  if (genPropsFile.exists()) {
+    Properties genProps = new Properties()
+    genPropsFile.withInputStream { genProps.load(it) }
+    if (genProps['tests.total.count'] != null) {
+      props.setProperty('tests.total.count', genProps['tests.total.count'])
+    }
+
+    if (genProps['tests.total.successful'] != null) {
+      props.setProperty('tests.total.successful', genProps['tests.total.successful'])
+    }
+
+    if (genProps['zipopenliberty.archivename'] != null) {
+      props.setProperty('zipopenliberty.archivename', genProps['zipopenliberty.archivename'])
+    }
+  }
+  
+  def fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl=https://repo.maven.apache.org/maven2/;index=${build}/oss_dependencies.maven')
+  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/;index=${build}/oss_ibm.maven')
+  def fetchRepoIBMJava = ('error') //Not yet supported to not have this set via gradle.startup.properties
+  def pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublish')
+
+  def javaHome = org.gradle.internal.jvm.Jvm.current().getJavaHome()
+  props.setProperty('java.home', javaHome.getAbsolutePath())
+  props.setProperty('javac.bootclasspath.1.4', '${ibmjdklib.bootclasspath}')
+  props.setProperty('javac.bootclasspath.1.6', '${ibmjdklib.bootclasspath}')
+  props.setProperty('javac.bootclasspath.1.7', '${ibmjdklib.bootclasspath}')
+  props.setProperty('javac.bootclasspath.1.8', '${ibmjdklib.bootclasspath}')
+  
+  if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
+    //Some functionality is added if we are able to access particular internal systems.
+    //This is to support more controlled dependency management, and multiple JDK paths for cross-compilation
+    def artifactoryExists = true;
+    def repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
+    def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
+    fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_dependencies.maven')
+    fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_ibm.maven')
+    fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository;local=~/.ibmjava/repository;name = IBMInternalJava;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/ibm_java.maven')
+    pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublish;releaseUrl='+ uploadRepoURL + matrixParams + ';snapshotUrl='+ uploadRepoURL + matrixParams + ';index=${build}/openliberty.maven')
+
+    isAutomatedBuild = (props.getProperty("buildResultUUID") != null)
+
+    if (props.getProperty('is.continuous.build') != null) {
+      isContinuousBuild = parseBoolean(props.getProperty('is.continuous.build'))
+    }
+
+    if (props.getProperty('is.release') != null) {
+      isRelease = parseBoolean(props.getProperty('is.release'))
+    }
+
+    if (props.getProperty('is.public.publishing') != null) {
+      isPublicPublishing = parseBoolean(props.getProperty('is.public.publishing'))
+    }
+
+    props.setProperty('javac.bootclasspath.1.4', '${internaljavac.bootclasspath.1.4}')
+    props.setProperty('javac.bootclasspath.1.6', '${internaljavac.bootclasspath.1.6}')
+    props.setProperty('javac.bootclasspath.1.7', '${internaljavac.bootclasspath.1.7}')
+    props.setProperty('javac.bootclasspath.1.8', '${internaljavac.bootclasspath.1.8}')
+  }
+
+  // Must be run after isRelease is set
+  def (qualifier, timestamp) = getVersionQualifier(isRelease)
+
+  props.setProperty('version.qualifier', qualifier)
+  props.setProperty('buildLabel', timestamp)
+  props.setProperty('artifactory.matrix.parameters', matrixParams)
+  props.setProperty('fetch.oss.repository', fetchRepoPublic)
+  props.setProperty('fetch.oss.ibm.repository', fetchRepoIBM)
+  props.setProperty('fetch.ibm.java.repository', fetchRepoIBMJava)
+  props.setProperty('push.ibm.repository', pushRepoIBM)
+  props.setProperty('is.automated.build', isAutomatedBuild.toString())
+  props.setProperty('is.continuous.build', isContinuousBuild.toString())
+  props.setProperty('is.release', isRelease.toString())
+  props.setProperty('maven.release.name', mavenLocalPath)
+  props.setProperty('is.remote.publishing', isRemotePublishing.toString())
+  props.setProperty('is.public.publishing', isPublicPublishing.toString())
+
+  // Store props to file for bnd to use. Imported by cnf/build.bnd and props files in cnf/resources/bnd
+  File propsFile = new File('generated.properties')
+  props.store(propsFile.newWriter(), null)
+
+  // Set extra properties extension
+  gradle.rootProject { rootProject ->
+    rootProject.ext.qualifier = props.getProperty("version.qualifier")
+    rootProject.ext.matrixParams = props.getProperty("artifactory.matrix.parameters")
+    rootProject.ext.isAutomatedBuild = parseBoolean(props.getProperty("is.automated.build"))
+    rootProject.ext.isContinuousBuild = parseBoolean(props.getProperty("is.continuous.build"))
+    rootProject.ext.isRelease = parseBoolean(props.getProperty('is.release'))
+    rootProject.ext.isRemotePublishing = parseBoolean(props.getProperty('is.remote.publishing'))
+    rootProject.ext.isPublicPublishing = parseBoolean(props.getProperty('is.public.publishing'))
+    rootProject.ext.releaseVersionOverride = props.getProperty('release.version.override')
+    rootProject.ext.usrHomeProps = usrHomeProps
+
+    // Test results for this run
+    rootProject.ext.testCountTotal = 0
+    rootProject.ext.successfulTestCountTotal = 0
+    rootProject.ext.failedTestCountTotal = 0
+    rootProject.ext.skippedTestCountTotal = 0
+  }
+}
+
+def getVersionQualifier(boolean isRelease) {
+  //ex: 201708101600
+  def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+  if (isRelease) {
+    return [timestamp, timestamp]
+  }
+  def branchName = System.env.BRANCH_NAME ?: gitBranch()
+  if (branchName == '' || branchName == 'HEAD') {
+    // Default to master if something went wrong
+    branchName = 'master'
+  }
+  return [branchName, timestamp]
+}
+
+def gitBranch() {
+  def branch = ""
+  def proc = "git rev-parse --abbrev-ref HEAD".execute()
+  proc.in.eachLine { line -> branch = line }
+  proc.err.eachLine { line -> println line }
+  proc.waitFor()
+  branch
+}
+
+private boolean parseBoolean(String value) {
+  return 'on'.equalsIgnoreCase(value) || 'true'.equalsIgnoreCase(value)
+}
+
+loadBuildProps()
+
+/* Add bnd gradle plugin as a script dependency */
+buildscript {
+  repositories {
+    maven {
+      url uri(bnd_repourl)
+    }
+  }
+
+  dependencies {
+    classpath bnd_plugin
+  }
+
+  /* Since the files in the repository change with each build, we need to recheck for changes */
+  configurations.classpath {
+    resolutionStrategy {
+      cacheChangingModulesFor 30, 'minutes'
+      cacheDynamicVersionsFor 30, 'minutes'
+    }
+  }
+
+  dependencies {
+    components {
+      all { ComponentMetadataDetails details ->
+        details.changing = true
+      }
+    }
+  }
+
+  /* Pass bnd gradle plugin classpath to rootProject once created */
+  def bndPlugin = files(configurations.classpath.files)
+  gradle.rootProject { rootProject ->
+    rootProject.ext.bndPlugin = bndPlugin
+  }
+}
+
+/* Initialize the bnd workspace */
+import aQute.bnd.build.Workspace
+import aQute.bnd.osgi.Constants
+
+import java.text.SimpleDateFormat
+
+Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
+Workspace.addGestalt(Constants.GESTALT_BATCH, null)
+def workspace = new Workspace(rootDir, bnd_cnf).setOffline(startParameter.offline)
+
+/* Add cnf project to the graph */
+include bnd_cnf
+
+/* Start with the declared build project name */
+def defaultProjectName = bnd_build
+
+/* If in a subproject, use the subproject name */
+for (def currentDir = startParameter.currentDir; currentDir != rootDir; currentDir = currentDir.parentFile) {
+  defaultProjectName = currentDir.name
+}
+
+/* Build a set of project names we need to include from the specified tasks */
+def projectNames = startParameter.taskNames.collect { taskName ->
+  def elements = taskName.split(':')
+  switch (elements.length) {
+    case 1:
+      return defaultProjectName
+    case 2:
+      return elements[0].empty ? bnd_build : elements[0]
+    default:
+      return elements[0].empty ? elements[1] : elements[0]
+  }
+}.toSet()
+
+/* Include the default project name if in a subproject or no tasks specified */
+if ((startParameter.currentDir != rootDir) || projectNames.empty) {
+  projectNames += defaultProjectName
+}
+
+/* If bnd_build used but declared empty, add all non-private folders of rootDir */
+if (projectNames.remove('')) {
+  rootDir.eachDir {
+    def projectName = it.name
+    if (!projectName.startsWith('.') && file(projectName + "/build.gradle").exists()) {
+      projectNames += projectName
+    }
+  }
+}
+
+/* Add each project and its dependencies to the graph */
+projectNames.each { projectName ->
+  include projectName
+  def project = getBndProject(workspace, projectName)
+  project?.getDependson()*.getName().each {
+    include it
+  }
+}
+
+/* Get the bnd project for the specified project name */
+def getBndProject(Workspace workspace, String projectName) {
+  def project = workspace.getProject(projectName)
+  if (project == null) {
+    return null
+  }
+  project.prepare()
+  if (project.isValid()) {
+    return project
+  }
+
+  project.getInfo(workspace, "${rootDir} :")
+  def errorCount = 0
+  project.getWarnings().each {
+    println "Warning: ${it}"
+  }
+  project.getErrors().each {
+    println "Error  : ${it}"
+    errorCount++
+  }
+  if (!project.isOk()) {
+    def str = 'even though no errors were reported'
+    if (errorCount == 1) {
+      str = 'one error was reported'
+    } else if (errorCount > 1) {
+      str = "${errorCount} errors were reported"
+    }
+    throw new GradleException("Project ${rootDir}/${projectName} is invalid, ${str}")
+  }
+  throw new GradleException("Project ${rootDir}/${projectName} is not a valid bnd project")
+}

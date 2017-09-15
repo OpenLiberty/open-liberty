@@ -1,0 +1,93 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Messaging Interfaces
+Bundle-SymbolicName: com.ibm.ws.messaging.common
+Bundle-Description: Messaging Interfaces ; version=${bVersion}
+
+   
+Export-Package: com.ibm.websphere.sib,\
+ com.ibm.websphere.sib.exception,\
+ com.ibm.websphere.sib.management,\
+ com.ibm.wsspi.sib.core,\
+ com.ibm.wsspi.sib.core.exception,\
+ com.ibm.wsspi.sib.core.selector,\
+ com.ibm.wsspi.sib.core.trm,\
+ com.ibm.wsspi.sib.messagecontrol,\
+ com.ibm.ws.sib.admin,\
+ com.ibm.ws.sib.admin.exception,\
+ com.ibm.ws.sib.matchspace,\
+ com.ibm.ws.sib.matchspace.utils,\
+ com.ibm.ws.sib.mfp,\
+ com.ibm.ws.sib.mfp.control,\
+ com.ibm.ws.sib.mfp.trm,\
+ com.ibm.ws.sib.mfp.jmf,\
+ com.ibm.ws.sib.mfp.impl,\
+ com.ibm.ws.sib.msgstore,\
+ com.ibm.ws.sib.msgstore.gbs,\
+ com.ibm.ws.sib.msgstore.transactions,\
+ com.ibm.ws.sib.processor,\
+ com.ibm.ws.sib.processor.exceptions,\
+ com.ibm.ws.sib.processor.runtime,\
+ com.ibm.ws.sib.processor.test,\
+ com.ibm.ws.sib.transaction,\
+ com.ibm.ws.sib.transactions,\
+ com.ibm.ws.sib.transactions.mpspecific,\
+ com.ibm.ws.sib.trm,\
+ com.ibm.ws.sib.trm.topology,\
+ com.ibm.ws.sib.trm.contact,\
+ com.ibm.ws.sib.trm.dlm,\
+ com.ibm.ws.sib.trm.status,\
+ com.ibm.ws.sib.trm.links,\
+ com.ibm.ws.sib.trm.links.mql,\
+ com.ibm.ws.sib.trm.links.ibl,\
+ com.ibm.ws.sib.trm.security,\
+ com.ibm.ws.sib.trm.utils,\
+ com.ibm.ws.sib.trm.client,\
+ com.ibm.ws.sib.trm.impl,\
+ com.ibm.ws.sib.trm.wlm.server,\
+ com.ibm.ws.sib.comms,\
+ com.ibm.ws.sib.comms.mq,\
+ com.ibm.ws.sib.security,\
+ com.ibm.ws.sib.security.auth,\
+ com.ibm.ws.sib.core.impl,\
+ com.ibm.ws.sib.common.service,\
+ com.ibm.ws.sib.jfapchannel
+ 
+ 
+Private-Package: \
+ com.ibm.ws.sib.mfp.schema,\
+ com.ibm.ws.sib.mfp.jmf,\
+ com.ibm.ws.sib.mfp.jmf.tools,\
+ com.ibm.ws.sib.mfp.jmf.parser,\
+ com.ibm.ws.sib.mfp.jmf.impl,\
+ com.ibm.ws.sib.mfp.util,\
+ com.ibm.ws.sib.common.service
+
+-dsannotations=com.ibm.ws.sib.common.service.CommonServiceFacade
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.container.service;version=latest, \
+	com.ibm.ws.messaging.utils;version=latest,\
+	com.ibm.ws.channelfw;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

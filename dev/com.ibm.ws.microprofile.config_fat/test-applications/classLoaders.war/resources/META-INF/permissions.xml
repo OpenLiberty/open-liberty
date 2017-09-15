@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/permissions_7.xsd"
+	version="7">
+	<permission>
+		<class-name>java.util.PropertyPermission</class-name>
+		<name>microprofile.config.refresh.rate</name>
+		<actions>write</actions>
+	</permission>
+	<permission>
+		<class-name>java.lang.RuntimePermission</class-name>
+		<name>getClassLoader</name>
+	</permission>
+	<permission>
+                <class-name>java.lang.RuntimePermission</class-name>
+                <name>createClassLoader</name>
+        </permission>
+	<permission>
+		<class-name>java.util.PropertyPermission</class-name>
+		<name>user.dir</name>
+		<actions>read</actions>
+	</permission>
+	<permission>
+                <class-name>java.io.FilePermission</class-name>
+                <name>&lt;&lt;ALL FILES&gt;&gt;</name>
+                <actions>read</actions>
+        </permission>
+        <!-- this permission shouldn't be needed but there is a java bug -->
+        <permission>
+                <class-name>java.lang.RuntimePermission</class-name>
+                <name>accessClassInPackage.com.ibm.oti.shared</name>
+        </permission>
+</permissions>

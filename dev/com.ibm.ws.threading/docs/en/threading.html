@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-us" lang="en-us">
+<!--
+ * ============================================================================
+ * Licensed Materials - Property of IBM
+ * Project Liberty
+ *
+ * (C) Copyright IBM Corp. 2008  All Rights Reserved.
+ *
+ * US Government Users Restricted Rights - Use, duplication or disclosure
+ * restricted by GSA ADP Schedule Contract with IBM Corp.
+ * ============================================================================
+-->
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Threading</title>
+</head>
+
+<body>
+<h1>Threading Overview</h1>
+<p>
+One of the goals of the Liberty platform is to scale well in modern multi-core
+environments.  In support of this, work management, scheduling, and dispatching
+will be centralized in the threading and event services to allow for greater
+control over how work is distributed and executed within a server.
+</p>
+
+<h2>Managing Threads</h2>
+<p>
+In the classic application server, thread pools were everywhere.  There were
+thread pools for the web container, thread pools for the orb, thread pools for
+asynch beans, thread pools for JMX notification, thread pools for messaging,
+thread pools for DRS, thread pools for DCS, etc.  This proliferation of thread
+pools led to a proliferation of threads with, in turn, led to significant
+resource consumption above what was needed.
+</p>
+<p>
+In addition the increased resource consumption, each of these pools attempted
+to manage its own work without any coordination.  This generally resulted in
+sub-optimal dispatching policies.
+</p>
+<p>
+To help alleviate the issues (real or imagined) with having so many thread
+pools, components within Liberty are discouraged from (read that as
+&quot;don't do it&quot;) explicitly creating threads or thread pools.  The
+goal is to move components from a model where they &quot;own&quot; threads
+to a model where they submit <em>tasks</em> for execution and rely on the
+runtime to handle the mechanics. 
+</p>
+
+<h2>Scheduler Implementation</h2>
+<p>
+The current implementation of the scheduler is a basic thread pool that
+employs work stealing.  As with a standard thread pool, a global queue is
+available to hold work that is submitted for execution.  In addition to that
+global queue, each thread in the pool maintains its own stack of work.
+The scheduler is non-preemptive.
+</p>
+<p>
+When work is submitted to the scheduler the new work can either be added
+to the global work queue or it can be pushed to the bottom of a double-ended
+queue owned by the thread.  Threads within the pool will first look at their
+own work pile for work.  If work is found, it will be executed.  If no work
+is found on the local work pile, the thread will then look for work on the
+global work queue.  If no work is found on the global work queue, the thread
+will look at the other active threads in the pool and will attempt to
+<em>steal</em> work from another <em>victim</em> thread.
+</p>
+
+<h3>The Work Stealing Deque</h3>
+<p>
+The data structure used to maintain the local work piles is a double-ended
+queue or <em>deque</em>.  The thread that owns the deque is adds and removes
+work from one end while thieves take it from the other end.
+</p>
+<p>
+Since a deque is owned by a single thread, the push and pop operations can
+be done without any synchronization until the top and bottom of the list
+are within some threshold.  When synchronization is required, it is done
+via an atomic compare-and-swap operation that is non-blocking.
+</p>
+<p>
+There are three types of deques implemented in the threading code.  Each of
+the implementations consists of a circular buffer to hold work, an index
+to the bottom of the list, and a composite object that holds the top index,
+and largest steal size.
+</p>
+<dl><dt>Steal-Half</dt><dd>
+A <em>Steal-Half</em> deque is used to implement the local work pile.  A
+compare and swap operation is used to change the steal range each time the
+size of the deque crosses a power of two boundary.  The steal range
+represents which elements can be stolen by a thief.  By changing the steal
+range at each power of two boundary, we can allow the thief to steal up to
+1/2 of the elements in a deque at one time.  By allowing larger steals, it
+allows workloads to be balanced more quickly.
+</dd><dt>Steal-One</dt><dd>
+The <em>classic</em> work-stealing deque.  This deque only allows a thief
+to take one element at a time but it allows the owner of the deque to push
+and pop work without any synchronization until it removes the last item.
+</dd><dt>Steal-All</dt><dd>
+A <em>Steal-All</em> deque is an implementation that does not allow the
+owner to pop items or steal from victims but it allows thieves to take all
+of the items on the deque in one shot.  When in strict-stealing mode, this
+deque is used to implement the foreign deques as foreign threads will never
+run work destined for another thread pool.
+</dd></dl>
+
+<h3>Benefits of Work Stealing</h3>
+<p>
+There are several benefits to a work stealing scheduler.
+</p>
+<ul><li>
+The data structures used to implement the work piles are completely
+lock free and non-blocking.  This ensures that active threads can always
+make progress.
+</li><li>
+Work scheduled within the thread pool is added to the thread's
+local deque, there is implicit affinity of work to the current processor.
+Combined with the last-in-first-out nature of the deque, this results in
+a very good processor cache behavior.
+</li><li>
+The oldest work created by a thread lives at the end of the deque that
+thieves steal from.  This means that thieves get the work has the highest
+latency and, in fork/join processing models, the most compute intensive
+work is the oldest.
+</li><li>
+Work stealing has been theoretically proven to be an optimal scheduling policy
+as it implicitly balances the work across the active processors.  Basically,
+if a processor runs out of work, rather than waiting for someone to give it
+something to do, it will use its spare cycles to go off and find something to
+execute.  In a model where the operating system attempts to fairly distribute
+cpu time to active threads, this allows a thread to make productive use of
+the time it's been given to even out the workload.
+</li></ul>
+
+
+<h3>Strict Work-Stealing Scheduling Policy</h3>
+<p>
+Work submitted to the executor from a thread that is not part of the pool
+can either be pushed to a <em>foreign</em> deque or added to the global
+work queue.  If work is pushed to a foreign deque, the scheduling policy
+is <em>strict</em> work stealing.
+</p>
+<p>
+In this mode local threads will have to move work generated by threads
+outside of the pool to their own deques during steal operations.  While
+this policy avoids locking and hot cache lines, it takes more instructions
+to manage the work as it will always end up on at least two queues before
+execution.
+</p>
+
+
+<h2>Submitting Tasks</h2>
+<p>
+The Liberty Event Engine is built on top of the threading services and can
+be used to easily implement most pipeline or continuation work flows.  If the
+basic services provided by the event engine are insufficient, components may
+directly submit tasks for execution to an <code>ExecutorService</code>
+instance made available by the threading code.
+</p>
+<p>
+Outside of the event engine, there are two ways to acquire a reference to
+an executor.  The first is to resolve a reference to the default scheduler.
+This scheduler is bound in the service registry behind the
+<code>java.util.concurrent.ExecutorService</code>.  The second option is for
+a component to request its own named instance of the service.  This is
+accomplished by calling the <code>getStage</code> method on the
+<code>com.ibm.ws.threading.WorkStageManager</code> service bound in the
+service registry.
+</p>
+<p>
+In both cases, the object that is returned implements the Java
+<code>java.util.concurrent.ExecutorService</code> contract.  This will allow
+various styles of <code>Callable</code> and <code>Runnable</code> scheduling.
+Please see the <code>ExecutorService</code> javadoc for details.
+</p>
+
+</body>
+</html>

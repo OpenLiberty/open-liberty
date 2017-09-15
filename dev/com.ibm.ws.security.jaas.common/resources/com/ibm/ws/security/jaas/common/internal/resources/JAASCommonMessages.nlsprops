@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.authentication.builtin/resources/com/ibm/ws/security/jaas/common/internal/resources/JAASCommonMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Authentication Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# JAAS Message prefix block: CWWKS1133 - CWWKS1166
+
+# Only the following message falls outside of the allocated block above 
+# because it was moved as-is from another package for a refactor
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET=CWWKS1108E: WSLoginModuleProxy delegate option is not set.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.explanation=The authentication did not succeed because the WSLoginModuleProxy delegate option is not set.
+JAAS_WSLOGIN_MODULE_PROXY_DELEGATE_NOT_SET.useraction=Verify that the WSLoginModuleProxy configuration includes the delegate option.
+
+# NOTE!! Any messages added here should start at CWWKS1133
+
+# Start msgs from cWAS
+security.jaas.open.URL=CWWKS1133E: Could not open URL: {0}. The exception is {1}
+security.jaas.open.URL.explanation=A MalformedURLException occurred trying to connect to the specified URL. 
+security.jaas.open.URL.useraction=Investigate the exception. Check the specified URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.create.URL=CWWKS1134E: Could not create URL: {0}. The exception is {1}
+security.jaas.create.URL.explanation=An IOException occurred trying to connect to the specified URL.
+security.jaas.create.URL.useraction=Investigate the exception. Check the specified URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.parser.URL=CWWKS1135E: A file parser exception occurred with file : {0}. The exception is {1}
+security.jaas.parser.URL.explanation=An IOException occurred trying to connect to the specified URL.
+security.jaas.parser.URL.useraction=Investigate the exception. Check the specified URL.
+# -------------------------------------------------------------------------------------------------
+security.jaas.duplicate.config=CWWKS1136E: Duplicate login configuration name {0}. Will over write.
+security.jaas.duplicate.config.explanation=A Duplicate login configuration name was specified in the configuration data.
+security.jaas.duplicate.config.useraction=Check the configuration data.
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parseIO=CWWKS1137E: An IOException occurred during parsing of the JAAS application configuration. The exception is {0}.
+security.jaas.app.parseIO.explanation=An IOException occurred during parsing of the JAAS application configuration.
+security.jaas.app.parseIO.useraction=Check the configuration file. Investigate the exception. 
+# -------------------------------------------------------------------------------------------------
+security.jaas.app.parse=CWWKS1138E: A ParserException occurred during parsing of the JAAS application configuration. The exception is {0}.
+security.jaas.app.parse.explanation=A ParserException occurred during parsing of the JAAS application configuration.
+security.jaas.app.parse.useraction=Investigate the exception, which has the information of the syntax error in the configuration file.
+# -------------------------------------------------------------------------------------------------
+# End msgs from cWAS
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP=CWWKS1139W: A default jaasLoginContextEntry {0} can not be specified in the JAAS configuration file {1}. A default jaasLoginContextEntry must be specified in the server.xml or client.xml file.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.explanation=The default jaasLoginContextEntry can not be specified in the JAAS configuration file.
+DEFAULT_JAAS_LOGIN_CONTEXT_ENTRY_SKIP.useraction=Verify that the JAAS configuration file does not have a default jaasLoginContextEntry.
+
+OSGI_SERVICE_ERROR=CWWKS1140E: The OSGi service {0} is not available.
+OSGI_SERVICE_ERROR.explanation=The specified OSGi service is not available.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the "clean" option.
+
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND=CWWKS1141E: Exception performing class for name for {0}. Unexpected exception {1}.  
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.explanation=Exception performing class for name.
+JAAS_CUSTOM_LOGIN_MODULE_CLASS_NOT_FOUND.useraction=Verify that all custom JAAS login modules specified in the JAAS configuration file exist in the default JAAS directory. The default JAAS directory for the server is ${server.config.dir}/resources/security/jaas; The default JAAS directory for the client is ${client.config.dir}/resources/security/jaas.
+
+JAAS_DUPLICATE_ENTRY_NAME=CWWKS1142W: Duplicate login configuration name {0} was specified in the JAAS configuration and the server.xml/client.xml files. The login configuration name in the server.xml/client.xml file will be used.
+JAAS_DUPLICATE_ENTRY_NAME.explanation=A Duplicate login configuration name was specified in the JAAS configuration file and server.xml/client.xml file
+JAAS_DUPLICATE_ENTRY_NAME.useraction=Check the JAAS configuration file and server.xml/client.xml file.

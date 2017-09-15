@@ -1,0 +1,59 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: EJB EPC enablement feature for JPA
+Bundle-SymbolicName: com.ibm.ws.ejbcontainer.jpa
+Bundle-Description: EJB EPC enablement feature for JPA; version=${bVersion}
+
+WS-TraceGroup: EJBContainer
+
+Private-Package: \
+  com.ibm.ws.ejbcontainer.jpa.internal.*,\
+  com.ibm.ws.ejbcontainer.jpa.resources
+  
+Export-Package: \
+  com.ibm.ws.ejbcontainer.jpa.injection.factory
+  
+Service-Component:\
+  com.ibm.ws.ejbcontainer.jpa.runtime;\
+    implementation:=com.ibm.ws.ejbcontainer.jpa.internal.EJBJPAContainerImpl;\
+    provide:='com.ibm.ws.ejbcontainer.runtime.EJBJPAContainer';\
+    jpaComponent/setJPAComponent=com.ibm.ws.jpa.JPAComponent;\
+    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.ejbcontainer.jpa.context;\
+    implementation:=com.ibm.ws.ejbcontainer.jpa.internal.JPAContextAccessor;\
+    provide:='com.ibm.ws.jpa.JPAExPcBindingContextAccessor';\
+    ejbContainer/setEJBContainer=com.ibm.ws.ejbcontainer.osgi.EJBContainer;\
+    properties:="service.vendor=IBM",\
+  com.ibm.ws.ejbcontainer.jpa.factory;\
+    implementation:=com.ibm.ws.ejbcontainer.jpa.injection.factory.HybridJPAObjectFactory;\
+    provide:='javax.naming.spi.ObjectFactory,com.ibm.ws.ejbcontainer.jpa.injection.factory.HybridJPAObjectFactory';\
+    lookupDelegate=com.ibm.ws.jpa.JPALookupDelegate?;\
+    properties:="service.vendor=IBM"
+
+instrument.classesExcludes: com/ibm/ws/ejbcontainer/jpa/resources/*.class
+
+-buildpath: \
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.ejbcontainer;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.ejbcontainer.core;version=latest,\
+	com.ibm.ws.jpa.container;version=latest,\
+	com.ibm.ws.jpa.container.core;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

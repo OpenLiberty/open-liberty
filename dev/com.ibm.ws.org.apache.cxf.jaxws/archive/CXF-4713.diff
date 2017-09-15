@@ -1,0 +1,27 @@
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsServiceConfiguration.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsServiceConfiguration.java	(revision 1401207)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsServiceConfiguration.java	(working copy)
+@@ -165,14 +165,16 @@
+             || method.isSynthetic()) {
+             return Boolean.FALSE;
+         }
++        
+         WebMethod wm = method.getAnnotation(WebMethod.class);
+-        if (wm != null) {
+-            if (wm.exclude()) {
+-                return Boolean.FALSE;
+-            } else {
+-                return Boolean.TRUE;
+-            }
++        Class<?>  cls = method.getDeclaringClass();
++        if ((wm != null) && wm.exclude()) {
++            return Boolean.FALSE;
+         }
++        if ((wm != null && !wm.exclude()) || (cls.isInterface() 
++                && cls.isAssignableFrom(implInfo.getSEIClass()))) {
++            return Boolean.TRUE;
++        }
+         if (method.getDeclaringClass().isInterface()) {
+             return hasWebServiceAnnotation(method);
+         }

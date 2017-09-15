@@ -1,0 +1,397 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="liberty-ghe">
+    <import file="${basedir}/public_imports/internal_imports/pass-back.xml" />
+    <import file="${basedir}/public_imports/internal_imports/universal_properties.xml" />
+
+    <!-- Find the latest Continuous or Release or Stabilization tag (depending on build type)
+         Target output: latest.tag - property with the most recent build tag
+         -->
+    <target name="latestTag">
+        <!-- Unset properties used in this target so that repeat runs of latestTag
+             will get tags that have been newly created while this build is running. -->
+        <var name="debug.all.tags" unset="true" />
+        <var name="latest.matching.tag" unset="true" />
+        <var name="latest.nonmatching.tag" unset="true" />
+        <var name="latest.tag" unset="true" />
+
+		<!-- Depending whether ghe.build.type is Continuous or Release or Stabilization, we use a
+             different matching pattern to find tags. -->
+ 		<script language="javascript">
+          <![CDATA[
+          var buildType = project.getProperty("ghe.build.type");
+          if (buildType == "Continuous") {
+          	project.setProperty("tag.match", "i*" );
+          } else if (buildType == "Release") {
+            project.setProperty("tag.match", "r*" );
+          } else if (buildType == "Stabilization") {
+            project.setProperty("tag.match", "s*");
+          } 
+          ]]>
+        </script>
+        
+        <echo>
+            Listing all fetched tags:
+               git tag
+        </echo>
+        <exec executable="git" failonerror="false" dir="${git.root.dir}" outputproperty="debug.all.tags" logError="true">
+            <arg line="tag" />
+        </exec>
+        <echo message="Debug Information - these are all of the tags git knows about" />
+        <echo message="debug.all.tags = ${line.separator}${debug.all.tags}" />
+
+        <echo>
+            Finding latest tag which matches pattern:
+               git describe --abbrev=0 --tags --match "${tag.match}"
+        </echo>
+        <exec executable="git" failonerror="false" dir="${git.root.dir}" outputproperty="latest.matching.tag" logError="true">
+            <arg line="describe --abbrev=0 --tags --match" />
+            <arg value="${tag.match}" />
+        </exec>
+        <echo message="latest.matching.tag = ${latest.matching.tag}" />
+        
+        <echo>
+            Finding latest tag:
+               git describe --abbrev=0 --tags
+        </echo>
+        <exec executable="git" failonerror="false" dir="${git.root.dir}" outputproperty="latest.nonmatching.tag" logError="true">
+            <arg line="describe --abbrev=0 --tags" />
+        </exec>
+        <echo message="latest.nonmatching.tag = ${latest.nonmatching.tag}" />
+        
+        <condition property="latest.tag" value="${latest.nonmatching.tag}" else="${latest.matching.tag}">
+            <equals arg1="${latest.matching.tag}" arg2="" />
+        </condition>
+        <echo message="latest.tag = ${latest.tag}" />
+    </target>
+
+    <!-- Log the current git config
+         Target output: none (debug messages only)
+         -->
+    <target name="logGitConfigItems">
+        <exec executable="git" failonerror="false" dir="${git.root.dir}" outputproperty="git.config.items" logError="true">
+            <arg line="config --list" />
+        </exec>
+        <echo message="Debug Information - dump of git config"/>
+        <echo message="git.config.items = ${line.separator}${git.config.items}"/>
+        <echo message="potential tag buildLabel = ${buildLabel}" />
+    </target>
+
+    <!-- Grab the commits since the last build tag and dump it to a file which
+         we push to the build logs. This identifies what is new since the last
+         green release build.
+         Target output: published commits.log
+         -->
+    <target name="commitsInBuild" depends="logGitConfigItems, latestTag">
+        <echo>
+            Determining commits since last good build:
+               git log ${latest.tag}..HEAD --oneline
+        </echo>
+        <exec executable="git" failonerror="false" dir="${git.root.dir}" outputproperty="commits.since.latest.green.build" logError="true">
+            <arg line="log ${latest.tag}..HEAD --oneline" />
+        </exec>
+        <echo>
+            Determining HEAD commit:
+               git log HEAD -1 --oneline
+        </echo>
+        <exec executable="git" failonerror="false" dir="${git.root.dir}" outputproperty="head.commit" logError="true">
+            <arg line="log HEAD -1 --oneline" />
+        </exec>
+        <echo file="${build.log.dir}/commits.log">latest.tag = ${latest.tag}
+HEAD is now at ${head.commit}
+
+Commits since the latest tagged build in this branch, in order of most to least recent
+${commits.since.latest.green.build}
+</echo>
+        <publishLog filePath="${build.log.dir}/commits.log" label="Log containing build commits" />
+
+        <length string="${commits.since.latest.green.build}" property="commits.length.debug"/>
+
+        <iff>
+            <not>
+                <length string="${commits.since.latest.green.build}" trim="true" length="0" when="greater" />
+            </not>
+            <then>
+                <property name="commits.empty" value="true" />
+            </then>
+            <else>
+                <property name="commits.empty" value="false" />
+            </else>
+        </iff>
+
+        <echo message="String size of commit list for debug: ${commits.length.debug}" />
+        <echo message="commits.empty = ${commits.empty}" />
+    </target>
+    
+    <target name="taggingChecks">
+        <!-- Only checkout from specific branch if the repo being used is was-liberty. -->
+        <if if="build.tag">
+            <!-- integration branch for Continuous builds. -->
+            <iff>
+                <and>
+                    <equals arg1="${git.clone.repository.sshUrl}" arg2="git@github.ibm.com:was-liberty/WS-CD-Open.git" />
+                    <equals arg1="${ghe.build.type}" arg2="Continuous" />
+                </and>
+                <then>
+                    <iff><not><equals arg1="${git.clone.checkout.branch}" arg2="integration" /></not>
+                        <then>
+                            <fail message="Tagging and pushing commits can only run on the integration branch for git@github.ibm.com:was-liberty/WS-CD-Open.git for Continuous builds." />
+                        </then>
+                    </iff>
+                </then>
+            </iff>
+            
+            <!-- master branch for Release builds. -->
+            <iff>
+                <and>
+                    <equals arg1="${git.clone.repository.sshUrl}" arg2="git@github.ibm.com:was-liberty/WS-CD-Open.git" />
+                    <equals arg1="${ghe.build.type}" arg2="Release" />
+                </and>
+                <then>
+                    <iff><not><equals arg1="${git.clone.checkout.branch}" arg2="master" /></not>
+                        <then>
+                            <fail message="Tagging and pushing commits can only run on the master branch for git@github.ibm.com:was-liberty/WS-CD-Open.git for Release builds." />
+                        </then>
+                    </iff>
+                </then>
+            </iff>
+        </if>
+    </target>
+
+    <!-- Create the build tag before any build activities occur.
+         The determination to push this tag is made only after all build activities
+         have completed. Early creation ensures the tag is created with the starting HEAD.
+         The new tag creation must happen after latestTag executes.
+         If the build is good then the tag is pushed.
+
+         Tag format: i<buildLabel> or r<buildLabel> or s<buildLabel>
+         For more see: https://github.ibm.com/was-liberty/WS-CD-Open/wiki/Tags
+          -->
+    <target name="createBuildTag">
+        <!-- Use javascript to make str concat easier. -->
+        <script language="javascript">
+          <![CDATA[
+          var gitBuildTag;
+          var tagMessage;
+
+          var buildType = project.getProperty("ghe.build.type");
+          if (buildType == null) {
+              // Defaults to creating continuous build tags
+              buildType = "Continuous";
+          }
+
+          if (buildType == "Continuous") {
+              // Continuous builds tag convention,
+              // excluding last int because it gets incremented.
+              gitBuildTag          = "i" + project.getProperty("buildLabel");
+          } else if (buildType == "Release") {
+              // Release builds tag convention,
+              // excluding last int because it gets incremented.
+              gitBuildTag          = "r" + project.getProperty("buildLabel");
+          } else if (buildType == "Stabilization") {
+              // Stabilization builds tag convention,
+              // excluding last int because it gets incremented.
+              gitBuildTag          = "s" + project.getProperty("buildLabel");
+        }
+
+          if (buildType == "Continuous") {
+            tagMessage = "Continuous build " + gitBuildTag;
+          } else if (buildType == "Release") {
+            tagMessage = "Release build " + gitBuildTag;
+          } else if (buildType == "Stabilization") {
+            tagMessage = "Stabilization buld " + gitBuildTag;
+          }
+
+          project.setProperty("git.build.tag", gitBuildTag);
+          project.setProperty("tag.message", tagMessage);
+          ]]>
+        </script>
+
+        <echo>
+            Create tag to represent build snapshot (will be pushed if build is good):
+               git tag -a ${git.build.tag} -m '${tag.message}'
+        </echo>
+        <!-- Create and push tag to integration, then promote to master. -->
+        <exec executable="git" failonerror="true" dir="${git.root.dir}">
+            <arg line="tag -a ${git.build.tag} -m '${tag.message}'" />
+        </exec>
+    </target>
+
+    <target name="preGitBasedBuild" depends="commitsInBuild, taggingChecks, createBuildTag">
+        <!-- skip.build.if.empty.commits - defined in build definitions
+             If true, the build will skip most build activities once it
+             is determined there are no new commits since the last tag.
+             If unset or false, a full build will run when no new commits
+             are detected. -->
+        <echo message="skip.build.if.empty.commits = ${skip.build.if.empty.commits}" />
+        <iff>
+            <and>
+                <istrue value="${commits.empty}" />
+                <istrue value="${skip.build.if.empty.commits}" />
+            </and>
+            <then>
+                <property name="skip.build.empty.commits" value="true" />
+            </then>
+        </iff>
+        <echo message="skip.build.empty.commits = ${skip.build.empty.commits}" />
+
+        <!-- Pass computed properties back to the calling project -->
+        <antcall target="save-to-pass-back" />
+    </target>
+
+    <target name="determineIfShouldMerge">
+        <condition property="should.check.merge.conflicts" value="true">
+            <equals arg1="${ghe.build.type}" arg2="Continuous" />
+        </condition>
+    </target>
+
+    <!-- Check merge conflicts should not be moving the HEAD after the build -->
+    <target name="checkMergeConflicts" depends="determineIfShouldMerge" if="should.check.merge.conflicts">
+        <!-- Current branch, which is integration for continuous builds,
+             must not conflict with the master branch. If it does,
+             someone needs to manually merge master back to integration. -->
+        <exec executable="git" failonerror="false" dir="${git.root.dir}" outputproperty="output.merge.master" logError="true">
+            <arg line="pull targetRepo master" />
+        </exec>
+        <echo message="${output.merge.master}" />
+
+        <!-- If we get this message, manual intervention is required.
+             Builds should fail fast because a commit was put in master
+             that wasn't from the integration branch. Release builds tag
+             the master branch, but that should merge automatically. -->
+        <condition property="merge.failed">
+            <matches pattern=".*Automatic merge failed.*" string="${output.merge.master}" />
+        </condition>
+        <fail if="merge.failed">
+            Automatic merge of master into ${git.clone.checkout.branch} branch failed.
+            Someone may have committed to the master branch.
+            Merge the master branch to the integration branch and push to both branches.
+        </fail>
+    </target>
+    
+    <target name="test.if.can.tag">
+        <echo message="Determing if the tag will be pushed. Loading properties from pass-back." />
+
+        <!-- Needed properties from other ant targets in the build.
+             See the top of this file for more details. -->
+        <property file="${pass-back.property.file}" />
+        
+        <echo message="tagging.based.on = ${tagging.based.on}" />
+        <echo message="final.build.status.is.ok = ${final.build.status.is.ok}" />
+        <echo message="all.failures.accounted.for = ${all.failures.accounted.for}" />
+
+        <condition property="build.considered.good" value="${final.build.status.is.ok}">
+            <equals arg1="${tagging.based.on}" arg2="final.build.status.is.ok" />
+        </condition>
+        <condition property="build.considered.good" value="${all.failures.accounted.for}">
+            <equals arg1="${tagging.based.on}" arg2="all.failures.accounted.for" />
+        </condition>
+
+        <echo message="build.considered.good = ${build.considered.good}" />
+        <echo message="commits.empty = ${commits.empty}" />
+        <echo message="force.tag.if.commits.empty = ${force.tag.if.commits.empty}" />
+        <echo message="force.tag.and.merge = ${force.tag.and.merge}" />
+        
+        <!-- Looks convoluted, but basic idea is to create a new git tag if the build
+             is "good" OR we are force to. Do not tag if there are no commits in the
+             build UNLESS force.tag.if.commits.empty is set true. -->
+        <condition property="push.new.git.tag">
+            <or>
+                <and>
+                   <or>
+                      <not><istrue value="${commits.empty}"/></not> <!-- use istrue since it could be unset -->
+                      <istrue value="${force.tag.if.commits.empty}"/>
+                   </or>
+                   <istrue value="${build.considered.good}"/>
+                </and>
+                <istrue value="${force.tag.and.merge}"/>
+            </or>
+        </condition>
+        
+        <echo message="push.new.git.tag = ${push.new.git.tag}" />
+    </target>
+
+    <target name="tagAndPromote" if="push.new.git.tag" depends="test.if.can.tag">
+        <!-- If the build was good enough to accept, we record that by pushing
+             the git tag (snapshot) to targetRepo. -->
+        <echo>
+            Build completed successfully. Pushing git tag...
+                git push targetRepo ${git.build.tag}
+        </echo>
+        <exec executable="git" failonerror="true" dir="${git.root.dir}">
+            <arg line="push targetRepo ${git.build.tag}" />
+        </exec>
+
+        <!-- If ghe.build.type is Continuous, also push commits to master. -->
+        <iff>
+            <equals arg1="${ghe.build.type}" arg2="Continuous" />
+            <then>
+                <echo message="Continuous build - checking if can push to master" />
+                <!-- In order to push the commits to master, there must be no merge conflicts.
+                     First, try to pull master. If there is nothing to pull, then we're good.
+                     If the pull from master is successful, we push our HEAD to master.
+                     This process can fail if someone manually pushed to master, which
+                     that should never happen -->
+                <antcall target="checkMergeConflicts"/>
+                <echo>
+                    Commits can merge. Proceeding to push to master:
+                        git push targetRepo HEAD:master
+                </echo>
+                <!-- Push commits and tags to master on the was-liberty/WS-CD-Open repository. -->
+                <exec executable="git" failonerror="true" dir="${git.root.dir}">
+                    <arg line="push targetRepo HEAD:master" />
+                </exec>
+                <echo>New commits included in this build successfully pushed to master</echo>
+            </then>
+        </iff>
+        
+        <addTagToBuild tag="${git.build.tag}"
+                       repositoryAddress="${repositoryAddress}"
+                       userId="${userId}"
+                       passwordFile="${passwordFile}"
+                       buildUUID="${buildResultUUID}" />
+        <echo>New tag ${git.build.tag} pushed to GHE</echo>
+        <antcall target="deleteOldTags" />
+    </target>
+
+    <target name="deleteOldTags">
+        <echo>
+            Deleting old tags from official repository:
+                ${git.root.dir}/tools/deleteOldTags.sh
+        </echo>
+        <!-- Run deleteOldTags.sh, but do not fail if something goes wrong (can do it manually). -->
+        <exec executable="${git.root.dir}/tools/deleteOldTags.sh" dir="${git.root.dir}/"
+              failonerror="false" failifexecutionfails="false"
+              outputproperty="debug.delete.old.tags" logError="true">
+            <arg line="targetRepo" />
+        </exec>
+        <echo>Debug deleteOldTags.sh output - debug.delete.old.tags</echo>
+        <echo>${debug.delete.old.tags}</echo>
+    </target>
+
+    <!-- Set an RTC tag on the build result to indicate no new commits.
+         skip.build.empty.commits - defined in build-liberty.xml -->
+    <target name="tagNoNewCommits" if="skip.build.empty.commits" unless="push.new.git.tag">
+        <echo>Build completed successfully with no new commits. Tagging RTC build result with 'no_new_commits'</echo>
+        <addTagToBuild tag="no_new_commits"
+                       repositoryAddress="${repositoryAddress}"
+                       userId="${userId}"
+                       passwordFile="${passwordFile}"
+                       buildUUID="${buildResultUUID}" />
+    </target>
+
+    <!-- If the build had no commits, it is RTC tagged with 'no_new_commits'.
+         Otherwise, a new Green Continuous and Release builds create a git tag,
+         add an RTC tag to the build, and for continuous integration builds,
+         promote commits to the master branch. -->
+    <target name="tagCompletedBuild" depends="test.if.can.tag, tagNoNewCommits, tagAndPromote" />
+
+</project>

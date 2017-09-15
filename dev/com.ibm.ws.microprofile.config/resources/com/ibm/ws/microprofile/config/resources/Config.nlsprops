@@ -1,0 +1,104 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Config is closed.
+config.closed.CWMCG0001E=CWMCG0001E: Config is closed.
+config.closed.CWMCG0001E.explanation=Operations cannot be performed on a Config instance that has been closed.
+config.closed.CWMCG0001E.useraction=Obtain a new Config instance and attempt the operation again.
+
+# ClassLoader must not be null.
+null.classloader.CWMCG0002E=CWMCG0002E: ClassLoader must not be null.
+null.classloader.CWMCG0002E.explanation=The ClassLoader used by a ConfigBuilder must not be null.
+null.classloader.CWMCG0002E.useraction=Set the ClassLoader to a non-null value.
+
+# A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E=CWMCG0003E: A Config instance already exists for the specified ClassLoader.
+config.already.exists.CWMCG0003E.explanation=A Config instance has already been set for the specified ClassLoader.
+config.already.exists.CWMCG0003E.useraction=Use the 'releaseConfig' method to remove the previous instance and then retry the method.
+
+# Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E=CWMCG0004E: Unable to close the Config instance. The exception is: {0}.
+could.not.close.CWMCG0004E.explanation=An exception occurred while trying to close a Config instance. Its resources might not have been released.
+could.not.close.CWMCG0004E.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+# Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E=CWMCG0006E: Unable to convert the string "{0}" to a value of type {1}.
+unable.to.convert.CWMCG0006E.explanation=No suitable Converter was found for the given type.
+unable.to.convert.CWMCG0006E.useraction=Add a suitable Converter or ensure the class has a public String constructor or a static valueOf(String) method.
+
+# A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E=CWMCG0007E: A Converter of type {0} threw an exception. The input string was: "{1}". The exception is: {2}.
+conversion.exception.CWMCG0007E.explanation=A Converter threw an exception.
+conversion.exception.CWMCG0007E.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+# Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E=CWMCG0008E: Unable to convert the string "{0}" to a value of type Boolean. Expected one of [true, yes, on, false, no, off].
+unable.to.convert.boolean.CWMCG0008E.explanation=The input string was not a valid Boolean value.
+unable.to.convert.boolean.CWMCG0008E.useraction=Update the source input string and re-try the operation.
+
+# Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E=CWMCG0009E: Could not determine conversion type of Converter class {0}.
+unable.to.determine.conversion.type.CWMCG0009E.explanation=The Converter implementation class did not have a suitable generic type.
+unable.to.determine.conversion.type.CWMCG0009E.useraction=Ensure that the implementation class has a suitable generic type variable for the Converter interface.
+
+# Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E=CWMCG0010E: Unable to discover ConfigSources. The exception is: {0}.
+unable.to.discover.config.sources.CWMCG0010E.explanation=The Java ServiceLoader created an exception. The most likely cause is that one of the named ConfigSource classes could not be found.
+unable.to.discover.config.sources.CWMCG0010E.useraction=Check the classes named in the Java service files within your application. Review the server message.log and FFDC logs to further identify the problem.
+
+# Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E=CWMCG0011E: Unable to discover ConfigSourceProviders. The exception is: {0}.
+unable.to.discover.config.source.providers.CWMCG0011E.explanation=The Java ServiceLoader created an exception. The most likely cause is that one of the named ConfigSourceProvider classes could not be found.
+unable.to.discover.config.source.providers.CWMCG0011E.useraction=Check the classes named in the Java service files within your application. Review the server message.log and FFDC logs to further identify the problem.
+
+# Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E=CWMCG0012E: Unable to discover Converters. The exception is: {0}.
+unable.to.discover.converters.CWMCG0012E.explanation=The Java ServiceLoader created an exception. The most likely cause is that one of the named Converter classes could not be found.
+unable.to.discover.converters.CWMCG0012E.useraction=Check the classes named in the Java service files within your application. Review the server message.log and FFDC logs to further identify the problem.
+
+# Unable to cancel asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E=CWMCG0013E: The server is unable to cancel the asynchronous update thread.
+future.update.not.cancelled.CWMCG0013E.explanation=The attempt to cancel a future asynchronous update failed. Typically this is caused by a long running update call to a ConfigSource instance.
+future.update.not.cancelled.CWMCG0013E.useraction=Review the server message.log and FFDC logs to identify the problem.
+
+# A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E=CWMCG0014E: A Converter could not be found for type {0}.
+could.not.find.converter.CWMCG0014E.explanation=A Converter could not be found to convert the raw property String into the requested type.
+could.not.find.converter.CWMCG0014E.useraction=Ensure that a suitable Converter class is available and listed in the Java service file.
+
+# The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E=CWMCG0015E: The property {0} was not found in the configuration.
+no.such.element.CWMCG0015E.explanation=The requested property did not exist in any of the configured sources.
+no.such.element.CWMCG0015E.useraction=Add the property to one of the existing sources or add a new source that contains the property.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG9999E=CWMCG9999E: A Config API error has occurred: {0}.
+temporary.CWMCG9999E.explanation=A Config API error has occurred that prevents normal operation.
+temporary.CWMCG9999E.useraction=Review the server message.log and FFDC logs to identify the problem.

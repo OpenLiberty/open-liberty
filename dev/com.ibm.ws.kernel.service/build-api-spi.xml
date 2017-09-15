@@ -1,0 +1,40 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.kernel.service-api-spi" default="buildApiSpi">
+
+  <patternset id="sub.api.spi.files">
+    <include name="build-api.xml" />
+    <include name="build-spi.xml" />
+  </patternset>
+  
+  <target name="buildApiSpi">
+    <subApiSpi target="buildApiSpi" />
+  </target>
+
+  <target name="clean">
+    <subApiSpi target="clean" />
+  </target>
+
+  <!-- Convenience for more complex BVT projects. Iterate over child files whose names 
+  follow the convention bvt-*.xml or *-bvt.xml -->
+  <macrodef name="subApiSpi">
+    <attribute name="target" />
+    <element name="properties" />
+    <sequential>
+      <subant target="@{target}">
+        <fileset dir="${basedir}">
+          <patternset refid="sub.api.spi.files" />
+        </fileset>
+      </subant>
+    </sequential>
+  </macrodef>
+
+</project>

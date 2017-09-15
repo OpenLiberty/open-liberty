@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Sun RI 1.2 JSF Implementation is detected for webapp {0} but a MyFaces StartupServletContextListener is also registered.
+jsf.warn.myfaces.listener.for.ri.app.explanation=A listener was found that does not match the JSF implementation that is in use.
+jsf.warn.myfaces.listener.for.ri.app.useraction=Remove the StartupServletContextListener or use the corresponding JSF implementation.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: The Sun RI 1.2 JSF Implementation is detected but was not able to be initialized.  JSF might not have initialized properly for webapp {0}.
+jsf.warn.ri.impl.not.initialized.explanation=The JSF implementation might not have properly initialized.
+jsf.warn.ri.impl.not.initialized.useraction=Examine the log files to determine the cause of the failure.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: The MyFaces JSF Implementation is selected for {0} but a Sun RI ConfigureListener is also registered.
+jsf.warn.ri.listener.for.myfaces.app.explanation=A SunRI ConfigureListener was found that does not match the JSF implementation in use.
+jsf.warn.ri.listener.for.myfaces.app.useraction=Remove the ConfigureListener or use the corresponding JSF implementation.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: The WebSphere MyFaces JSF Implementation is detected but was not able to be initialized for webapp {0}.
+jsf.warn.myfaces.not.initialized.explanation=The JSF implementation might not have properly initialized.
+jsf.warn.myfaces.not.initialized.useraction=Examine the log files to determine the cause of the failure.
+
+jsf.warn.exception.during.listener=JSFG0855W: Exception caught while attempting to register the JSF lifecycle listener  {0}.  JSF might not have initialized properly for webapp {1}.
+jsf.warn.exception.during.listener.explanation=An exception occurs when registering the listener.
+jsf.warn.exception.during.listener.useraction=Examine the log files to determine the cause of the exception.

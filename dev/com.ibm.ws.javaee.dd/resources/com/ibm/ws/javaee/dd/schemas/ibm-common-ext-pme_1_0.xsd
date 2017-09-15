@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	elementFormDefault="qualified" attributeFormDefault="unqualified"
+	version="1.0">
+
+	<!-- ******************************************************* -->
+	
+	<xsd:annotation>
+		<xsd:documentation>
+				Licensed Materials - Property of IBM
+
+				"Restricted Materials of IBM"
+
+				Copyright IBM Corp. 2010 All Rights Reserved.
+
+				US Government Users Restricted Rights - Use, duplication or
+				disclosure restricted by GSA ADP Schedule Contract with
+				IBM Corp.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="taskType">
+		<xsd:attribute name="name" type="xsd:string" use="required"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:complexType name="task-refType">
+		<xsd:sequence>
+			<xsd:element name="task" type="taskType" />
+		</xsd:sequence>
+		<xsd:attribute name="logical-name" type="xsd:string" use="required"/>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:simpleType name="i18nType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="APPLICATION"></xsd:enumeration>
+			<xsd:enumeration value="RUN_AS_CALLER"></xsd:enumeration>
+			<xsd:enumeration value="RUN_AS_SERVER"></xsd:enumeration>
+			<xsd:enumeration value="RUN_AS_SPECIFIED"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<!-- ******************************************************* -->
+	
+	<xsd:simpleType name="compensation-attributeType">
+		<xsd:restriction base="xsd:string">
+			<xsd:enumeration value="SUPPORTS"></xsd:enumeration>
+			<xsd:enumeration value="REQUIRED"></xsd:enumeration>
+		</xsd:restriction>
+	</xsd:simpleType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="i18n-run-as-specifiedType">
+		<xsd:sequence>
+
+			<xsd:element name="locale" minOccurs="1" maxOccurs="unbounded">
+				<xsd:complexType>
+					<xsd:attribute name="lang" type="xsd:string"/>
+					<xsd:attribute name="country" type="xsd:string"/>
+					<xsd:attribute name="variant" type="xsd:string"/>
+					<xsd:attribute name="description" type="xsd:string"/>
+				</xsd:complexType>
+			</xsd:element>
+
+			<xsd:element name="time-zone" minOccurs="1" maxOccurs="1">
+				<xsd:complexType>
+					<xsd:attribute name="name" type="xsd:string" use="required"/>
+					<xsd:attribute name="description" type="xsd:string"/>
+				</xsd:complexType>
+			</xsd:element>
+
+		</xsd:sequence>
+		<!-- Attribute name maps to the description feature of I18NRunAsSpecified in the model -->
+		<!-- Attribute description maps to the description feature of I18NContainerInternationalization in the model  -->
+		<!-- In a web project, name MUST be specified and description SHOULD NOT be specfied. -->
+		<!-- In an ejb project description MAY be specified and name SHOULD NOT be specified.  -->
+		<xsd:attribute name="name" type="xsd:string" />
+		<xsd:attribute name="description" type="xsd:string" />
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name="component-extensionType">
+		<xsd:sequence>
+			<xsd:element name="task" type="taskType" minOccurs="0" maxOccurs="1"/>
+			<xsd:element name="task-ref" type="task-refType" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+      <!-- ******************************************************* -->
+
+	<xsd:complexType name= "access-intent-entryType">
+		<xsd:sequence>
+			<xsd:group ref="access-intent-entryGroup"></xsd:group>
+		</xsd:sequence>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:complexType name= "applied-access-intentType">
+		<xsd:sequence>
+			<xsd:group ref="access-intent-entryGroup"></xsd:group>
+		</xsd:sequence>
+		<xsd:attribute name="name" type="xsd:string" default="com.ibm.websphere.ejbquery.Default"/>
+		<xsd:attribute name="access-intent-name" type="xsd:string" use="required"/>
+		<xsd:attribute name="description" type="xsd:string"/>
+		<xsd:attribute name="id" type="xsd:ID" />
+	</xsd:complexType>
+
+	<!-- ******************************************************* -->
+
+	<xsd:group name= "access-intent-entryGroup">
+		<xsd:sequence>
+		
+			<xsd:choice minOccurs="1" maxOccurs="unbounded">
+				<xsd:element name="optimistic-read">
+					<xsd:complexType>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+
+				<xsd:element name="optimistic-update">
+					<xsd:complexType>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+
+				<xsd:element name="pessimistic-read">
+					<xsd:complexType>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+
+				<xsd:element name="pessimistic-update">
+					<xsd:complexType>
+						<xsd:attribute name="no-collision" type="xsd:boolean"/>
+						<xsd:attribute name="exclusive" type="xsd:boolean"/>
+						<xsd:attribute name="greedy" type="xsd:boolean"/>
+						<xsd:attribute name="promote" type="xsd:boolean"/>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+
+				<xsd:element name="collection-access-pattern">
+					<xsd:complexType>
+						<xsd:attribute name="type" use="required">
+							<xsd:simpleType>
+								<xsd:restriction base="xsd:string">
+									<xsd:enumeration value="RANDOM"/>
+									<xsd:enumeration value="SERIAL"/>
+								</xsd:restriction>
+							</xsd:simpleType>
+						</xsd:attribute>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="collection-increment">
+					<xsd:complexType>
+						<xsd:attribute name="increment" type="xsd:integer" use="required"/>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="collection-scope">
+					<xsd:complexType>
+						<xsd:sequence>
+							<!-- Time-out is only valid if type is TIMEOUT -->
+							<xsd:element name="time-out" minOccurs="0" maxOccurs="1">
+								<xsd:complexType>
+									<xsd:attribute name="value" type="xsd:integer"/>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+						<xsd:attribute name="type" use="required">
+							<xsd:simpleType>
+								<xsd:restriction base="xsd:string">
+									<xsd:enumeration value="SESSION"/>
+									<xsd:enumeration value="TRANSACTION"/>
+									<xsd:enumeration value="TIMEOUT"/>
+								</xsd:restriction>
+							</xsd:simpleType>
+						</xsd:attribute>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+				
+				<xsd:choice>
+					<xsd:element name="deferred-operation">
+						<xsd:complexType>
+							<xsd:attribute name="batch" type="xsd:boolean"/>
+							<xsd:attribute name="type" use="required">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:enumeration value="NONE"/>
+										<xsd:enumeration value="CREATE_ONLY"/>
+										<xsd:enumeration value="ALL"/>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:attribute>
+							<xsd:attribute name="id" type="xsd:ID" />
+						</xsd:complexType>
+					</xsd:element>
+					<!-- Partial-operation is currently for internal use only -->
+					<xsd:element name="partial-operation">
+						<xsd:complexType>
+							<xsd:attribute name="group" type="xsd:integer" use="required"/>
+							<xsd:attribute name="type" use="required">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:enumeration value="NONE"/>
+										<xsd:enumeration value="UPDATE_ONLY"/>
+										<xsd:enumeration value="BOTH"/>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:attribute>
+							<xsd:attribute name="id" type="xsd:ID" />
+						</xsd:complexType>
+					</xsd:element>
+					<xsd:element name="verify-read-only-data">
+						<xsd:complexType>
+							<xsd:attribute name="type" use="required">
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:enumeration value="NONE"/>
+										<xsd:enumeration value="AT_TRAN_BEGIN"/>
+										<xsd:enumeration value="AT_TRAN_END"/>
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:attribute>
+							<xsd:attribute name="id" type="xsd:ID" />
+						</xsd:complexType>
+					</xsd:element>
+				</xsd:choice>
+				
+				<xsd:element name="read-ahead-hint">
+					<xsd:complexType>
+						<xsd:attribute name="hint" type="xsd:string" use="required"/>
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="resource-manager-prefetch-increment">
+					<xsd:complexType>
+						<xsd:attribute name="increment" type="xsd:integer" use="required" />
+						<xsd:attribute name="id" type="xsd:ID" />
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:choice>
+		</xsd:sequence>
+	</xsd:group>
+
+</xsd:schema>

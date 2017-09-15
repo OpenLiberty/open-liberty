@@ -1,0 +1,53 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.jsp" default="build">
+
+  <property name="no.auto.format" value="true"/>
+  <property name="instrument.ffdc" value="false"/>
+
+  <!-- Spec required properties -->	
+  <property name="spec.name" value="jsp.tld"/>
+  <property name="spec.marketing.version" value="2.2"/>
+  <property name="bundle.version" value="1.2"/>
+  
+  <!-- Copied from spec_imports.xml (for now). -->
+  <property name="java.spec.prefix" value="com.ibm.websphere.javaee"/>
+
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+
+  <!-- Copied from spec_imports.xml (for now). -->
+  <property name="symbolic.name" value="${java.spec.prefix}.${spec.name}.${spec.marketing.version}"/>
+  <property name="spec.jar.name" value="${symbolic.name}_${bundle.version}${micro.suffix}.jar"/>
+        
+  <!-- These steps should be updated: Updates should only be made to files under build. -->  
+
+  <property name="jsp.tld.dir" value="${build.dir}/tmp/specjsptld"/>
+
+  <!-- Package the Apache taglibs in the dev spec folder so that the tooling can pick them up -->
+  
+  <target name="publishExtra" if="publish.image.dir">
+    <mkdir dir="${jsp.tld.dir}"/>
+    <unzip src="lib/standard.jar" dest="${jsp.tld.dir}"/>
+
+    <mkdir dir="${dev.api.spec.dir}"/>
+    <jar destfile="${dev.api.spec.dir}/${spec.jar.name}" basedir="${jsp.tld.dir}">         
+      <manifest>
+        <attribute name="Bundle-SymbolicName" value="${symbolic.name}"/>
+        <attribute name="Bundle-Version" value="${bundle.version}${micro.suffix}"/>
+        <attribute name="Export-Package" value="org.apache.taglibs.standard.tag.common.core;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.common.xml;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.el.core;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.el.fmt;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.el.sql;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.el.xml;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.rt.core;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.rt.fmt;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.rt.sql;version=&quot;1.0.0&quot;,org.apache.taglibs.standard.tag.rt.xml;version=&quot;1.0.0&quot;"/>
+        <attribute name="Bundle-ManifestVersion" value="2"/>
+      </manifest>
+    </jar>
+  
+    <copy file="${dev.api.spec.dir}/${spec.jar.name}"
+    	  todir="${publish.image.dir}/${image.write.dev.api.spec.dir}"/>
+  </target>
+</project>

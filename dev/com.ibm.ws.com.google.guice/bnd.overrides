@@ -1,0 +1,30 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: com.ibm.ws.guice
+Bundle-Description: org apache guice; version=2.0
+Bundle-SymbolicName: com.ibm.ws.com.google.guice.2.0
+
+WS-TraceGroup: \
+  OPENID
+
+Export-Package: \
+  com.google.inject, \
+  com.google.inject.binder, \
+  com.google.inject.internal;version="1.0.16", \
+  com.google.inject.internal.asm;version="1.0.16", \
+  com.google.inject.internal.cglib.core;version="1.0.16", \
+  com.google.inject.internal.cglib.proxy;version="1.0.16", \
+  com.google.inject.internal.cglib.reflect;version="1.0.16", \
+  com.google.inject.matcher, \
+  com.google.inject.spi, \
+  com.google.inject.util
+
+Import-Package: \
+  com.google.inject.internal.asm.util;resolution:=optional, \
+  org.aopalliance.intercept.*;resolution:=optional, \
+  *
+
+Include-Resource: \
+ @${repo;com.google.inject:guice;2.0}!/LICENSE,\
+ @${repo;com.google.inject:guice;2.0}!/NOTICE

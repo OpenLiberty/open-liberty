@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD id="com.ibm.ws.threading.metatype" name="%executor.service.name" description="%executor.service.desc" ibm:alias="executor">
+        <AD name="%name"         description="%name.desc"         id="name"        required="false" type="String"  default="Default Executor" />
+        <AD name="%max.threads"  description="%max.threads.desc"  id="maxThreads"  required="false" type="Integer" default="-1" />
+        <AD name="%core.threads" description="%core.threads.desc" id="coreThreads" required="false" type="Integer" default="-1" />
+        <AD name="%keep.alive"   description="%keep.alive.desc"   id="keepAlive"   required="false" type="String"  ibm:type="duration" default="60s" />
+        <AD name="%steal.policy" description="%steal.policy.desc" id="stealPolicy" required="false" type="String"  default="LOCAL" >
+            <Option label="%steal.policy.strict" value="STRICT"/>
+            <Option label="%steal.policy.local"  value="LOCAL"/>
+            <Option label="%steal.policy.never"  value="NEVER"/>
+        </AD>
+        <AD name="%reject.policy"  description="%reject.policy.desc" id="rejectedWorkPolicy" required="false" type="String" default="ABORT" >
+            <Option label="%reject.policy.abort"  value="ABORT"/>
+            <Option label="%reject.policy.caller" value="CALLER_RUNS"/>
+        </AD>
+    </OCD>
+
+    <!-- Designate pid="com.ibm.ws.threading" --> <!-- factoryPid="com.ibm.ws.threading" -->
+    <Designate pid="com.ibm.ws.threading">
+        <Object ocdref="com.ibm.ws.threading.metatype" />
+    </Designate>
+  
+</metatype:MetaData>

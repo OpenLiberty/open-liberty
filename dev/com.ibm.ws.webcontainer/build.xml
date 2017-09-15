@@ -1,0 +1,43 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.webcontainer" default="build">
+	<!--somthing seems to be using java 8 so we need findbugs3-->
+	<property name="use.findbugs3" value="true"/>
+    <!-- Indicate that the NLS messages come from tWAS and hence shouldn't be duplicated in the Infocenter -->
+    <property name="nlsxml.files.need.copying" value="false"/>
+
+    <!-- Opt out of the autoformatting and auto-import-organising -->
+    <property name="no.auto.format" value="true" />
+
+    <import file="../ant_build/public_imports/standard_imports.xml"/>
+    
+    <!--property name="no.trace.instrumentation" value="true"/-->
+
+    <!-- exclude modified WAS classes from instrumentation -->
+    <!-- also exclude classes that may trace buffers and-or other sensitive user information -->
+    <target name="post-compile">
+        <property name="instrument.ffdc" value="true" />
+        <instrument.trace ffdc="${instrument.ffdc}">
+            <fileset dir="${classes.dir}">
+                <include name="**/*.class" />
+                <exclude name="**/com/ibm/ws/webcontainer/**" />
+                <exclude name="**/com/ibm/wsspi/webcontainer/**" />
+                <include name="**/com/ibm/ws/webcontainer/osgi/**/*.class" />
+                <include name="**/com/ibm/wsspi/webcontainer/osgi/**/*.class" />
+                <exclude name="**/com/ibm/ws/webcontainer/osgi/response/WCOutputStream.class" />
+                <exclude name="**/com/ibm/ws/webcontainer/osgi/request/IRequestImpl.class" />
+                <exclude name="**/com/ibm/ws/webcontainer/osgi/webapp/WebApp.class" />
+            </fileset>
+        </instrument.trace>
+
+    </target>
+
+</project>

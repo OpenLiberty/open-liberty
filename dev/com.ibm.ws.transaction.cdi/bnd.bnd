@@ -1,0 +1,47 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Transactions CDI Integration
+Bundle-SymbolicName: com.ibm.ws.transaction.cdi
+Bundle-Description: Transactions CDI Integration, version ${bVersion}
+
+Include-Resource: META-INF=resources/META-INF
+
+WS-TraceGroup: Transaction
+
+Export-Package: \
+ com.ibm.tx.jta.cdi,\
+ com.ibm.tx.jta.cdi.interceptors
+
+-dsannotations-inherit: true
+-dsannotations: \
+  com.ibm.tx.jta.cdi.TransactionContextExtension 
+
+-buildpath: \
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.tx.util;version=latest,\
+	com.ibm.ws.cdi.1.2.interfaces;version=latest, \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.logging;version=latest

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2011 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+     
+    <OCD id="com.ibm.ws.security.token.ltpa.configuration" name="%ltpa.token.config" description="%ltpa.token.config.desc"
+         ibm:alias="ltpa">
+        <AD id="keysFileName" name="%keysFileName" description="%keysFileName.desc"
+            required="false" type="String" ibm:type="location(file)"
+            default="${server.output.dir}/resources/security/ltpa.keys" />
+        <AD id="keysPassword" name="%keysPassword" description="%keysPassword.desc"
+            required="false" type="String" ibm:type="password"
+            default="{xor}CDo9Hgw=" /> <!-- WebAS -->
+        <AD id="expiration"  name="%expiration" description="%expiration.desc"
+            required="false" type="String" ibm:type="duration(m)"
+            default="120m" />
+        <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
+            required="false" type="String" ibm:type="duration" default="0ms" />
+    </OCD>
+
+    <Designate pid="com.ibm.ws.security.token.ltpa.LTPAConfiguration">
+        <Object ocdref="com.ibm.ws.security.token.ltpa.configuration" />
+    </Designate>
+  
+</metatype:MetaData>

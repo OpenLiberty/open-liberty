@@ -1,0 +1,898 @@
+/********************************
+ *	Tabbed Panel: Style 0		*
+ *								*
+ *	SlantActiveLeft = 0			*
+ *	SlantInactiveLeft = 0		*
+ *	SlantActiveRight = 2		*
+ *	SlantInactiveRight = 2		*
+ ********************************/
+
+/* The table displaying all of the tabs, panels and buttons which has 3 rows, each row has one cell for all tabs, panels and buttons*/
+.tabbedPanel {
+	background-color: #DCDDCC;
+	border-width: 1px; 
+	border-style: solid; 
+	border-color: #808080;
+	padding: 0px;
+	margin: 0px;
+}
+
+/* The Cell displaying all of the tabs*/
+.tabbedPanel-Header {
+	border-width: 0px; 
+	border-bottom-width: 5px; 
+	border-style: solid;
+	border-color: #95A5B9;
+	padding: 0px;
+	padding-left:4px;
+	padding-top:4px;
+	margin: 0px;
+}
+
+/* The table inside the tabs cell*/
+.tabbedPanel-Header TABLE {
+	margin-right: 0px;
+	cursor: pointer;
+}
+
+/* Common style for active and inactive tabs*/
+.tabbedPanel-TabActive, .tabbedPanel-TabInactive {
+	font-family: sans-serif; 
+	font-size: 10pt;
+	font-weight: bold;
+	text-decoration: none;
+	border-width: 1px; 
+	border-bottom-width: 0px; 
+	border-style: solid; 
+	border-color: #95A5B9; 
+	padding: 1px; 
+	padding-top: 2px;
+	padding-bottom: 1px; 
+}
+
+/* style for active tab*/
+.tabbedPanel-TabActive {
+	background-color: #B1D2EB;
+	color: window;
+}
+
+/* style for inactive tab(s)*/
+.tabbedPanel-TabInactive {
+	background-color: #E5ECF3; 
+	color: windowtext;
+}
+
+/* style for the text in active tab*/
+.tabbedPanel-HyperActive {
+	color: window;
+	text-decoration: none
+}
+
+/* style for the text in inactive tab(s)*/
+.tabbedPanel-HyperInactive {
+	color: windowtext;
+	text-decoration: none
+}
+
+.tabbedPanel-TabLabel {
+	cursor: pointer;
+}
+
+/* style for the panels*/
+.tabbedPanel-Body {
+	padding: 4px;
+}
+
+/* style for the Div object which is inside the panels*/
+.tabbedPanel-Body .tabbedPanel_DIV {
+	background-color: #EEEEEE; 
+	border-width: 1px; 
+	border-style: solid; 
+	border-color: #808080;
+}
+
+/* style for footer cell which has all the buttons*/
+.tabbedPanel-Footer {
+	padding:0px;
+	padding-bottom: 4px;
+	padding-right:6px;
+}
+
+.tabbedPanel-Footer {
+	text-align: right;
+}
+
+.tabbedPanel-FooterDiv table{
+	
+	text-align: right;
+	margin-left: auto;  
+	
+}
+
+
+/* style  for the input html components inside the footer cell*/
+.tabbedPanel-Footer INPUT {
+	margin: 0px;
+	margin-left: 6px;
+}
+
+
+/*Use for getting all the system image icons*/
+.tabbedPanel-classForTabSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|previous=jsl/tab/icons/previous.gif|disprevious=jsl/tab/icons/previous_disabled.gif|next=jsl/tab/icons/next.gif|disnext=jsl/tab/icons/next_disabled.gif|");*/
+}
+
+
+/********************************
+ *	Tabbed Panel: Style 1		*
+ *								*
+ *	SlantActiveLeft = 2			*
+ *	SlantInactiveLeft = 2		*
+ *	SlantActiveRight = 2		*
+ *	SlantInactiveRight = 2		*
+ ********************************/
+
+.tabbedPanel_1 {
+	background-color: transparent;
+	border-width: 0px; 
+	border-bottom-width: 1px;
+	border-style: solid;
+	border-color: #ACACAC;
+	padding: 0px;
+	margin: 0px;
+}
+.tabbedPanel_1-Header {
+	border-width: 0px; 
+	border-bottom-width: 1px; 
+	border-style: solid;
+	border-color: #808080;
+	padding: 0px;
+	padding-top: 4px;
+	padding-left: 4px;
+	margin: 0px;
+}
+.tabbedPanel_1-Header TABLE {
+	margin-right: 5px;
+	cursor: pointer;
+}
+.tabbedPanel_1-TabActive, .tabbedPanel_1-TabInactive {
+	font-family: sans-serif; 
+	font-size: 10pt;
+	font-weight: 400;
+	text-decoration: none;
+	color: windowtext;
+	border-width: 1px;
+	border-bottom-width: 0px;
+	border-style: solid; 
+	border-color: #808080; 
+	padding: 8px; 
+	padding-top: 0px;
+	padding-bottom: 0px;
+	text-align: center; 
+}
+.tabbedPanel_1-TabActive {
+	border-color: #808080;
+	border-bottom-color: #D4D0C8;
+	background-color: #D4D0C8;
+}
+.tabbedPanel_1-TabInactive {
+	border-color: #808080;
+	background-color:#ACACAA; 
+}
+.tabbedPanel_1-HyperActive {
+	color: windowtext;
+	text-decoration: none;
+}
+.tabbedPanel_1-HyperInactive {
+	color: windowtext;
+	text-decoration: none;
+}
+
+.tabbedPanel_1-TabLabel {
+	cursor: pointer;
+}
+
+.tabbedPanel_1-Body {
+	background-color: #D4D0C8; 
+	border-width: 1px;
+	border-top-width: 0px; 
+	border-bottom-width: 0px;
+	border-style: solid; 
+	border-color: #ACACAC;
+	padding: 4px;
+}
+.tabbedPanel_1-Footer {
+	border-color: #ACACAC;
+	border-style: solid;
+	border-width: 1px;
+	border-top-width: 0px;
+	padding: 8px;
+	background-color: #D4D0C8;
+}
+
+
+.tabbedPanel_1-FooterDiv {
+	text-align: right;
+}
+
+
+.tabbedPanel_1-FooterDiv table{
+	
+	text-align: right;
+	margin-left: auto;  
+	
+}
+
+.tabbedPanel_1-Footer INPUT {
+	margin: 0px;
+	margin-left: 6px;
+}
+
+/*Use for getting all the system image icons*/
+.tabbedPanel_1-classForTabSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|previous=jsl/tab/icons/previous.gif|disprevious=jsl/tab/icons/previous_disabled.gif|next=jsl/tab/icons/next.gif|disnext=jsl/tab/icons/next_disabled.gif|");*/
+}
+/********************************
+ *	Tabbed Panel: Style 2		*
+ *								*
+ *	SlantActiveLeft = 0			*
+ *	SlantInactiveLeft = 0		*
+ *	SlantActiveRight = 4		*
+ *	SlantInactiveRight = 0		*
+ ********************************/
+
+.tabbedPanel_2 {
+	background-color: transparent;
+	border-width: 0px; 
+	padding: 0px;
+	margin: 0px;
+}
+.tabbedPanel_2-Header {
+	border-width: 0px; 
+	border-bottom-width: 3px; 
+	border-style: solid;
+	border-color: #7D95B3;
+	padding: 0px;
+	padding-top: 4px;
+	padding-left: 8px;
+	margin: 0px;
+}
+.tabbedPanel_2-Header TABLE {
+	margin-right: 2px;
+	cursor: pointer;
+}
+.tabbedPanel_2-TabActive, .tabbedPanel_2-TabInactive  {
+	font-family: sans-serif; 
+	font-size: 10pt;
+	text-decoration: none;
+	border-width: 1px;
+	border-style: solid; 
+	border-color: #808080; 
+	padding-left: 8px;
+	padding-right: 2px;
+	padding-top: 2px;
+	padding-bottom: 1px; 
+}
+.tabbedPanel_2-TabActive {
+	background-color: #7D95B3;
+	border-color: #7D95B3;
+	color: window;
+	font-weight: bold;
+}
+.tabbedPanel_2-TabInactive {
+	background-color: #DEDEDE; 
+	border-color: #D4D4D4;
+	color: windowtext;
+	font-weight: 400;
+}
+
+.tabbedPanel_2-HyperActive {
+	color: window;
+	text-decoration: none
+}
+.tabbedPanel_2-HyperInactive {
+	color: windowtext;
+	text-decoration: none
+}
+
+.tabbedPanel_2-TabLabel {
+	cursor: pointer;
+}
+
+.tabbedPanel_2-Body {
+	background-color: transparent; 
+	border-width: 2px;
+	border-top-width: 0px; 
+	border-style: solid; 
+	border-color: #7D95B3;
+	padding: 4px;
+}
+
+
+.tabbedPanel_2-FooterDiv {
+	text-align: right;
+}
+
+
+.tabbedPanel_2-FooterDiv table{
+	
+	text-align: right;
+	margin-left: auto;  
+	
+}
+
+
+
+.tabbedPanel_2-Footer {
+	padding:8px;
+}
+.tabbedPanel_2-Footer INPUT {
+	margin: 0px;
+	margin-left: 6px;
+}
+
+/*Use for getting all the system image icons*/
+.tabbedPanel_2-classForTabSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|previous=jsl/tab/icons/previous.gif|disprevious=jsl/tab/icons/previous_disabled.gif|next=jsl/tab/icons/next.gif|disnext=jsl/tab/icons/next_disabled.gif|");*/
+}
+
+/********************************
+ *	Tabbed Panel: Style 3		*
+ *								*
+ *	SlantActiveLeft = 0			*
+ *	SlantInactiveLeft = 0		*
+ *	SlantActiveRight = 0		*
+ *	SlantInactiveRight = 0		*
+ ********************************/
+.tabbedPanel_3 {
+	background-color: transparent;
+	border-width: 0px; 
+	padding: 0px;
+	margin: 0px;
+}
+.tabbedPanel_3-Header {
+	border-width: 0px; 
+	border-bottom-width: 3px; 
+	border-style: solid;
+	border-color: #7D95B3;
+	padding: 0px;
+	padding-top: 4px;
+	padding-left: 8px;
+	margin: 0px;
+}
+.tabbedPanel_3-Header TABLE {
+	margin-right: 2px;
+	cursor: pointer;
+}
+.tabbedPanel_3-TabActive, .tabbedPanel_3-TabInactive {
+	font-family: sans-serif; 
+	font-size: 10pt;
+	text-decoration: none;
+	border-width: 0px;
+	border-bottom-width: 2px;
+	border-style: solid; 
+	padding: 5px; 
+	padding-top: 3px;
+	padding-bottom: 3px; 
+}
+.tabbedPanel_3-TabActive {
+	background-color: #7D95B3;
+	border-color: #7D95B3; 
+	color: window;
+	font-weight: bold;
+}
+.tabbedPanel_3-TabInactive {
+	background-color:#DEDEDE; 
+	border-color: window; 
+	color: windowtext;
+	font-weight: 400;
+}
+.tabbedPanel_3-HyperActive {
+	color: window;
+	text-decoration: none;
+}
+.tabbedPanel_3-HyperInactive {
+	color: windowtext;
+	text-decoration: none;
+}
+
+.tabbedPanel_3-TabLabel {
+	cursor: pointer;
+}
+
+.tabbedPanel_3-Body {
+	background-color: transparent; 
+	border-width: 0px;
+	padding: 4px;
+}
+.tabbedPanel_3-Footer {
+}
+
+.tabbedPanel_3-FooterDiv {
+	text-align: right;
+}
+
+
+.tabbedPanel_3-FooterDiv table{
+	
+	text-align: right;
+	margin-left: auto;  
+	
+}
+
+
+
+.tabbedPanel_3-Footer INPUT {
+	margin: 0px;
+	margin-left: 6px;
+}
+/*Use for getting all the system image icons*/
+.tabbedPanel_3-classForTabSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|previous=jsl/tab/icons/previous.gif|disprevious=jsl/tab/icons/previous_disabled.gif|next=jsl/tab/icons/next.gif|disnext=jsl/tab/icons/next_disabled.gif|");*/
+}
+
+/********************************
+ *	Tabbed Panel: Notebook		*
+ *								*
+ *	SlantActiveLeft = 0			*
+ *	SlantInactiveLeft = 0		*
+ *	SlantActiveRight = 2		*
+ *	SlantInactiveRight = 2		*
+ ********************************/
+
+
+.tabbedPanel_notebook {
+	background-color: #DCDDCC;
+	border-width: 1px; 
+	border-style: solid; 
+	border-color: #808080;
+	padding: 0px;
+	margin: 0px;
+
+}
+
+/* The Cell displaying all of the tabs*/
+.tabbedPanel_notebook-Header, .tabbedPanel_notebook-HeaderRTL {
+	border-width: 0px; 
+	border-right-width: 5px; 
+	border-style: solid;
+	border-color: #95A5B9;
+	padding: 0px;
+	padding-left:0px;
+	padding-top:0px;
+	margin: 0px;
+	
+}
+
+.tabbedPanel_notebook-HeaderRTL {
+	border-right-width: 0px; 
+	border-left-width: 5px; 
+}
+
+
+/* The table inside the tabs cell*/
+.tabbedPanel_notebook-Header TABLE {
+	margin-right: 0px;
+	padding: 0px;
+	border-width: 0px;
+	border-spacing: 0px;
+	cursor: pointer;
+	
+}
+
+.tabbedPanel_notebook-tabDiv {
+	overflow: auto;
+	padding-left: 2px;
+	padding-top: 2px;
+	
+}
+
+/* Common style for active and inactive tabs*/
+.tabbedPanel_notebook-TabActive, .tabbedPanel_notebook-TabInactive, .tabbedPanel_notebook-LastTabInactive {
+	font-family: sans-serif; 
+	font-size: 10pt;
+	font-weight: bold;
+	text-decoration: none;
+	border-width: 1px; 
+	border-left-width: 0px;
+	border-bottom-width: 0px;
+	border-right-width: 0px; 
+	border-style: solid; 
+	border-color: #95A5B9; 
+	padding: 2px; 
+	padding-left: 1px; 
+	padding-top: 2px;
+	padding-bottom: 1px; 
+	
+	
+}
+
+/* style for active tab*/
+.tabbedPanel_notebook-TabActive {
+	background-color: #95A5B9;
+	color: window;
+}
+
+/* style for inactive tab(s)*/
+.tabbedPanel_notebook-TabInactive {
+	background-color: #E5ECF3; 
+	color: windowtext;
+}
+
+.tabbedPanel_notebook-LastTabInactive {
+	background-color: #E5ECF3; 
+	color: windowtext;
+	border-bottom-width: 1px;
+}
+
+/* style for the text in active tab*/
+.tabbedPanel_notebook-HyperActive {
+	color: window;
+	text-decoration: none;
+}
+
+/* style for the text in inactive tab(s)*/
+.tabbedPanel_notebook-HyperInactive {
+	color: windowtext; 
+	text-decoration: none;
+}
+
+.tabbedPanel_notebook-TabLabel {
+	cursor: pointer;
+}
+
+/* style for the panels*/
+.tabbedPanel_notebook-Body {
+	padding: 4px;
+}
+
+/* style for the Div object which is inside the panels*/
+.tabbedPanel_notebook-Body .tabbedPanel_DIV {
+	background-color: #EEEEEE;  
+	border-width: 1px; 
+	border-style: solid; 
+	border-color: #808080;
+	padding: 4px;
+}
+
+.tabbedPanel_notebook-FooterDiv {
+	text-align: right;
+}
+
+
+.tabbedPanel_notebook-FooterDiv table{
+	
+	text-align: right;
+	margin-left: auto;  
+	
+}
+
+
+
+/* style for footer cell which has all the buttons*/
+.tabbedPanel_notebook-Footer {
+	padding:0px;
+	padding-bottom: 4px;
+	padding-right:6px;
+}
+
+/* style  for the input html components inside the footer cell*/
+.tabbedPanel_notebook-Footer INPUT {
+	margin: 0px;
+	margin-left: 6px;
+}
+
+
+/*Use for getting all the system image icons*/
+.tabbedPanel_notebook-classForTabSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|previous=jsl/tab/icons/previous.gif|disprevious=jsl/tab/icons/previous_disabled.gif|next=jsl/tab/icons/next.gif|disnext=jsl/tab/icons/next_disabled.gif|");*/
+}
+
+
+
+
+
+
+
+
+/********************************
+ *	Tabbed Panel: Notebook2		*
+ *								*
+ *	SlantActiveLeft = 0			*
+ *	SlantInactiveLeft = 0		*
+ *	SlantActiveRight = 2		*
+ *	SlantInactiveRight = 2		*
+ ********************************/
+
+/* The table displaying all of the tabs, panels and buttons which has 3 rows, each row has one cell for all tabs, panels and buttons*/
+.tabbedPanel_notebook2 {
+	background-color: #95A5B9;
+	border-width: 1px; 
+	border-style: solid; 
+	border-color: #95A5B9;
+	padding: 0px;
+	margin: 0px;
+}
+
+/* The Cell displaying all of the tabs*/
+.tabbedPanel_notebook2-Header, .tabbedPanel_notebook2-HeaderRTL {
+	border-width: 1px; 
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	border-style: solid;
+	border-color: #95A5B9;
+	padding: 0px;
+	padding-left:0px;
+	padding-top:0px;
+	margin: 0px;
+}
+
+/* The table inside the tabs cell*/
+.tabbedPanel_notebook2-Header TABLE {
+	margin-right: 0px;
+	cursor: pointer;
+}
+
+.tabbedPanel_notebook2-tabDiv {
+	overflow: auto;
+	
+}
+
+/* Common style for active and inactive tabs*/
+.tabbedPanel_notebook2-TabActive, .tabbedPanel_notebook2-TabInactive, .tabbedPanel_notebook2-LastTabInactive {
+	font-family: sans-serif; 
+	font-size: 10pt;
+	font-weight: bold;
+	text-decoration: underline;
+   	border-width: 0px; 
+	border-bottom-width: 1px; 
+	border-style: solid; 
+	border-color: #95A5B9; 
+	padding: 3px; 
+	
+	padding-left: 10px;
+}
+
+/* style for active tab*/
+.tabbedPanel_notebook2-TabActive {
+	background-color: #FFFFFF;
+	color: windowtext;
+	
+}
+
+/* style for inactive tab(s)*/
+.tabbedPanel_notebook2-TabInactive, .tabbedPanel_notebook2-LastTabInactive {
+	background-color: #E5ECF3; 
+	color: windowtext;
+	font-weight: normal;
+	border-right-width: 1px;
+	border-color: #95A5B9;
+	
+}
+
+/* style for the text in active tab*/
+.tabbedPanel_notebook2-HyperActive {
+	color: #456579;
+	text-decoration: underline;
+	
+}
+
+/* style for the text in inactive tab(s)*/
+.tabbedPanel_notebook2-HyperInactive {
+	color: #456579;
+	text-decoration: underline;
+	
+}
+
+.tabbedPanel_notebook2-TabLabel {
+	cursor: pointer;
+}
+
+/* style for the panels*/
+.tabbedPanel_notebook2-Body {
+	padding: 0px;
+}
+
+/* style for the Div object which is inside the panels*/
+.tabbedPanel_notebook2-Body .tabbedPanel_DIV {
+	background-color: #FFFFFF; 
+	border-width: 6px; 
+	border-style: solid; 
+	border-color: #FFFFFF;
+}
+
+.tabbedPanel_notebook2-FooterDiv {
+	text-align: right;
+}
+
+
+.tabbedPanel_notebook2-FooterDiv table{
+	
+	text-align: right;
+	margin-left: auto;  
+	
+}
+
+
+
+/* style for footer cell which has all the buttons*/
+.tabbedPanel_notebook2-Footer {
+	padding:2px;
+	padding-bottom: 4px;
+	padding-right:6px;
+	border-width: 1px;
+	border-color: #FFFFFF;
+}
+
+/* style  for the input html components inside the footer cell*/
+.tabbedPanel_notebook2-Footer INPUT {
+	margin: 0px;
+	margin-left: 6px;
+}
+
+
+/*Use for getting all the system image icons*/
+.tabbedPanel_notebook2-classForTabSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|previous=jsl/tab/icons/previous.gif|disprevious=jsl/tab/icons/previous_disabled.gif|next=jsl/tab/icons/next.gif|disnext=jsl/tab/icons/next_disabled.gif|");*/
+}
+
+
+/********************************
+ *	Tabbed Panel: wizard2		*
+ *								*
+ *	SlantActiveLeft = 0			*
+ *	SlantInactiveLeft = 0		*
+ *	SlantActiveRight = 2		*
+ *	SlantInactiveRight = 2		*
+ ********************************/
+
+/* The table displaying all of the tabs, panels and buttons which has 3 rows, each row has one cell for all tabs, panels and buttons*/
+.tabbedPanel_wizard2 {
+	background-color: #335588;
+	border-width: 1px; 
+	border-style: solid; 
+	border-color: #95A5B9;
+	padding: 0px;
+	margin: 0px;
+}
+
+/* The Cell displaying all of the tabs*/
+.tabbedPanel_wizard2-Header, .tabbedPanel_wizard2-HeaderRTL {
+	border-width: 1px; 
+	border-right-width: 0px;
+	border-bottom-width: 1px;
+	border-style: solid;
+	border-color: #95A5B9;
+	padding: 10px;
+	padding-left:0px;
+	padding-top:0px;
+	margin: 0px;
+}
+
+/* The table inside the tabs cell*/
+.tabbedPanel_wizard2-Header TABLE {
+	margin-right: 0px;
+	cursor: pointer;
+}
+
+.tabbedPanel_wizard2-tabDiv {
+	overflow: auto;
+	
+}
+
+
+
+
+
+/* style for the text in active tab*/
+.tabbedPanel_wizard2-HyperActive {
+	margin-right: 4px;
+	color: #FFFF00;
+	text-decoration: underline;
+	
+}
+
+/* style for the text in inactive tab(s)*/
+.tabbedPanel_wizard2-HyperInactive {
+	margin-right: 4px;
+	color: #EEEEEE;
+	text-decoration: underline;
+	
+}
+
+.tabbedPanel_wizard2-TabLabel {
+	cursor: pointer;
+}
+
+
+/* style for the panels*/
+.tabbedPanel_wizard2-Body {
+	padding: 0px;
+}
+
+/* style for the Div object which is inside the panels*/
+.tabbedPanel_wizard2-Body .tabbedPanel_DIV {
+ 	background-color: #FFFFFF; 
+	
+	border-width: 6px; 
+	border-style: solid; 
+	border-color: #FFFFFF;
+}
+
+/* style for footer cell which has all the buttons*/
+.tabbedPanel_wizard2-Footer {
+	padding:2px;
+	padding-bottom: 4px;
+	padding-right:6px;
+	border-width: 1px;
+	border-color: #FFFFFF;
+	background-color: #6688AA; 	
+	
+}
+/* 	This is for the alignment of the buttons in the command area. 
+   	The text-align attribute in FooterDiv sets this. 
+	For this to work in Mozilla, you will also need to set the margins 
+	in the FooterDiv table class.   	
+*/
+.tabbedPanel_wizard2-FooterDiv{
+	
+	text-align: right;
+}
+
+.tabbedPanel_wizard2-FooterDiv table{
+	
+	text-align: left;
+	margin-left: auto;  
+	
+}
+
+.tabbedPanel_wizard2-subButtonPanel{
+	
+
+}
+
+.tabbedPanel_wizard2-subButtonPanelDiv{
+	vertical-align: middle;
+	background-color: #CCCCCC;
+	left: 0px;
+	right: auto;
+	text-align: left;
+
+}
+
+.tabbedPanel_wizard2-subButtonPanelDiv table{
+	margin-right: auto;  
+	margin-left: 0px;
+	
+	
+}
+
+
+
+.tabbedPanel_wizard2-Table {
+	
+	margin: auto;
+
+}
+
+/* style  for the input html components inside the footer cell*/
+.tabbedPanel_wizard2-Footer INPUT {
+	margin: 0px auto;
+	
+	
+}
+
+
+/*Use for getting all the system image icons*/
+.tabbedPanel_wizard2-classForTabSysIcons {
+	/*Sample style, please uncomment the following line and modify the icons path if you want use your own customized system icons*/
+	/*list-style-image:url("|previous=jsl/tab/icons/previous.gif|disprevious=jsl/tab/icons/previous_disabled.gif|next=jsl/tab/icons/next.gif|disnext=jsl/tab/icons/next_disabled.gif|");*/
+}
+
+

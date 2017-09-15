@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WS_J2EE_el
+Bundle-SymbolicName: com.ibm.websphere.javaee.el.2.2; singleton:=true
+Bundle-Description: WS_J2EE_el, version 2.2
+
+Export-Package: \
+ javax.el;thread-context=true; version="2.2.0", \
+ com.ibm.wsspi.el;thread-context=true; version="2.2.0"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	com.ibm.ws.javax.j2ee:el;version=2.2

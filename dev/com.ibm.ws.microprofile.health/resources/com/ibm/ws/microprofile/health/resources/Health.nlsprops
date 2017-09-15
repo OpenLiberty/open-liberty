@@ -1,0 +1,45 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMH
+#COMPONENTNAMEFOR CWMH MicroProfile Health API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Health Impl -  range is 0000-4999, plus 9999 for the emergency message
+# The range 0000-0049 has been reserved for messages issued above the HealthCheckExecutor within the call stack
+# The range 0050-0099 has been reserved for messages issued at or below the HealthCheckExecutor within the call stack
+#-----------------------------------------------------------------------------------------------------------------------------
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Health error message
+#-----------------------------------------------------------------------------------------------------------------------------
+OSGI_SERVICE_ERROR=CWMH0000E: The {0} OSGi service is not available.
+OSGI_SERVICE_ERROR.explanation=This internal server error is thrown because the specified service is not available.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the clean option.
+
+# A Health API error has occurred: {0}
+temporary.CWMH9999E=CWMH9999E: The following Health API error has occurred: {0}
+temporary.CWMH9999E.explanation=A Health API error has occurred that prevents normal operation.
+temporary.CWMH9999E.useraction=Review the FFDC logs and exception text to identify the problem.
+
+# The HealthCheck bean call method had an exception
+healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: The {0} HealthCheck method in the {1} application from the {2} module threw exception {3} with the following message: {4}
+healthcheck.bean.call.exception.CWMH0050E.explanation=The specified call method has produced an exception.
+healthcheck.bean.call.exception.CWMH0050E.useraction=Review your call method within the HealthCheck bean to identify the exception that occurred.

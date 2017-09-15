@@ -1,0 +1,24 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.ws.org.eclipse.equinox.console
+
+Export-Package: \
+   org.eclipse.equinox.console.common; version=1.0.16, \
+   org.eclipse.equinox.console.common.terminal; version=1.0.16, \
+   org.eclipse.equinox.console.completion.common; version=1.0.16
+
+Private-Package: \
+   org.eclipse.equinox.console.command.adapter, \
+   org.eclipse.equinox.console.commands, \
+   org.eclipse.equinox.console.common, \
+   org.eclipse.equinox.console.common.terminal, \
+   org.eclipse.equinox.console.completion, \
+   org.eclipse.equinox.console.completion.common, \
+   org.eclipse.equinox.console.telnet
+
+-includeresource: \
+   @${repo;org.eclipse.equinox.console;1.1.200.v20150929-1405}!/about.html, \
+   @${repo;org.eclipse.equinox.console;1.1.200.v20150929-1405}!/plugin.properties
+
+-removeheaders = Require-Bundle

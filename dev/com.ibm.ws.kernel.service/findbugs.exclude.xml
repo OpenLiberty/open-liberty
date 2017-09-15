@@ -1,0 +1,201 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+	<!-- See http://findbugs.sourceforge.net/manual/filter.html for details 
+		of the syntax of this file -->
+
+	<!-- All classes in com.ibm.ws.kernel.service can be assumed to have privilege 
+		(at least for now....) -->
+	<Match>
+		<Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED, DJV_DO_INSIDE_DO_PRIVILEGED" />
+	</Match>
+	
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.FileUtils" />
+		<Method name="tryToClose" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.kernel.service.location.internal.RemoteResource" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.TimestampUtils" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.PersistedMapUtils" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.OsgiPropertyUtils" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.CompositeEnumeration" />
+		<Method name="nextElement" />
+		<Local name="e" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.kernel.service.location.internal.Activator" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.kernel.service.location.internal.WsLocationAdminImpl" />
+	</Match>
+	<Match>
+		<!-- caught exceptions printed by FFDC Instrumentation -->
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.kernel.service.location.internal.WsLocationAdminImpl$ServerIdHolder" />
+		<Method name="readId" />
+	</Match>
+	<Match>
+		<!-- caught exceptions printed by FFDC Instrumentation -->
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.kernel.service.location.internal.WsLocationAdminImpl$ServerIdHolder" />
+		<Method name="writeId" />
+	</Match>
+	<Match>
+		<!-- caught exceptions printed by FFDC Instrumentation -->
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class
+			name="com.ibm.ws.kernel.service.location.internal.WsLocationAdminImpl$ServerIdHolder" />
+		<Method name="tryToClose" />
+	</Match>
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.ws.kernel.pseudo.internal.PseudoContextFactory" />
+	</Match>
+	<Match>
+		<Bug pattern="OBL_UNSATISFIED_OBLIGATION" />
+		<Class name="com.ibm.ws.kernel.service.location.internal.LocalFileResource" />
+		<Method name="getChannel" />
+	</Match>
+
+	<!-- RootRegEntry defines compareTo in order to sort the strings from longest 
+		to shortest: (x.compareTo(y)==0) == (x.equals(y)) is true, as that only happens 
+		when the strings are equal. -->
+	<Match>
+		<Bug pattern="EQ_COMPARETO_USE_OBJECT_EQUALS" />
+		<Class
+			name="com.ibm.ws.kernel.service.location.internal.SymbolRegistry$RootRegEntry" />
+	</Match>
+
+	<Match>
+		<Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.PersistedMapUtils" />
+		<Method name="store" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.PathUtils" />
+		<Method name="~(checkCase|isPossiblyCaseInsensitive)" />
+	</Match>
+	<!-- Nothing to be done if the file is/isn't deleted  -->
+	<Match>
+		<Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.PathUtils" />
+		<Method name="isPossiblyCaseInsensitive" />
+	</Match>
+
+	<Match>
+		<Class name="com.ibm.wsspi.kernel.service.utils.LDAPUtils" />
+		<Method name="escapeFilterChar" signature="(C)Ljava/lang/String;" />
+		<Local name="e" />
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+	</Match>
+
+	<!-- match generated nls classes: return mutable type -->
+	<Match>
+		<Class name="~.*\.resources\..*" />
+		<Method name="getContents" />
+		<Bug code="EI" />
+	</Match>
+
+	<!-- deliberate fall through, commented as such -->
+	<Match>
+		<Class name="com.ibm.wsspi.kernel.service.utils.BlockingList" />
+		<Method name="size" signature="()I" />
+		<Bug pattern="SF_SWITCH_FALLTHROUGH" />
+	</Match>
+
+	<!-- this wait method has the same semantics as Object.wait(), so the loop 
+		should be implemented by the caller -->
+	<Match>
+		<Class name="com.ibm.wsspi.kernel.service.utils.EventReadWriteLock" />
+		<Method name="internalWait" signature="(I)Z" />
+		<Bug pattern="WA_NOT_IN_LOOP" />
+	</Match>
+
+	<Match>
+		<Bug pattern="DLS_DEAD_LOCAL_STORE" />
+		<Class name="com.ibm.wsspi.kernel.service.utils.BlockingList" />
+		<Method name="preFetchAll" />
+	</Match>
+
+    <!-- Wrapping method, so false positive -->
+    <Match>
+      <Bug pattern="TR_COMPUTED_KEY"/>
+      <Class name="com.ibm.wsspi.kernel.service.utils.TimestampUtils"/>
+      <Method name="auditElapsedTime"/>
+    </Match>
+    
+    <!-- Modifying file perms is a best effort -->
+    <Match>
+      <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+      <Class name="com.ibm.wsspi.kernel.service.utils.FileUtils$SetFilePermsAction"/>
+      <Method name="run"/>
+    </Match>
+    
+    <!--  Pre-existing calls to System.currentTimeMillis -->
+    <Match>
+      <Class name="com.ibm.ws.kernel.service.location.internal.RemoteResource"/>
+      <Method name="~(cacheResource|getLastModified)"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.wsspi.kernel.service.utils.EventReadWriteLockWithTimeOut"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.wsspi.kernel.service.utils.TimestampUtils"/>
+      <Method name="&lt;clinit&gt;"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.wsspi.kernel.service.utils.TimestampUtils"/>
+      <Method name="getElapsedTime"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    <Match>
+      <Class name="com.ibm.wsspi.kernel.service.utils.PersistedMapUtils"/>
+      <Method name="store"/>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+    </Match>
+    
+    <!-- As long as we're consistent, using platform encoding is OK here -->
+    <Match>
+      <Class name="com.ibm.wsspi.kernel.service.utils.TimestampUtils"/>
+      <Method name="~(read|write)Time(To|From)File"/>
+      <Bug pattern="DM_DEFAULT_ENCODING"/>
+    </Match>
+</FindBugsFilter>

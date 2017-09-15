@@ -1,0 +1,211 @@
+<!--
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+-->
+
+<!--
+    DTD for the JavaServer Faces Application Configuration File (Version 1.1)
+
+    To support validation of your configuration file(s), include the following
+    DOCTYPE element at the beginning (after the "xml" declaration):
+
+    <!DOCTYPE faces-config PUBLIC
+     "-//Sun Microsystems, Inc.//DTD JavaServer Faces Config 1.1//EN"
+     "http://java.sun.com/dtd/web-facesconfig_1_1.dtd">
+
+-->
+
+
+<!-- ==================== Defined Types =================================== -->
+<!ENTITY % Action "CDATA">
+<!ENTITY % ClassName "CDATA">
+<!ENTITY % Identifier "CDATA">
+<!ENTITY % JavaType "CDATA">
+<!ENTITY % Language "CDATA">
+<!ENTITY % ResourcePath "CDATA">
+<!ENTITY % Scope "(request|session|application)">
+<!ENTITY % ScopeOrNone "(request|session|application|none)">
+<!ENTITY % ViewIdPattern "CDATA">
+<!-- ==================== Top Level Elements ============================== -->
+<!ELEMENT faces-config    ((application|factory|component|converter|managed-bean|navigation-rule|referenced-bean|render-kit|lifecycle|validator)*)>
+<!ATTLIST faces-config    xmlns CDATA #IMPLIED>
+<!-- ==================== Definition Elements ============================= -->
+<!ELEMENT application     ((action-listener|default-render-kit-id|message-bundle|navigation-handler|view-handler|state-manager|property-resolver|variable-resolver|locale-config)*)>
+<!ELEMENT factory     ((application-factory|faces-context-factory|lifecycle-factory|render-kit-factory)*)>
+<!ELEMENT attribute       (description*, display-name*, icon*, attribute-name, attribute-class, default-value?, suggested-value?, attribute-extension*)>
+<!ELEMENT attribute-extension ANY>
+<!ELEMENT component       (description*, display-name*, icon*, component-type, component-class, facet*, attribute*, property*, component-extension*)>
+<!ELEMENT component-extension ANY>
+<!ELEMENT facet       (description*, display-name*, icon*, facet-name, facet-extension*)>
+<!ELEMENT facet-extension ANY>
+<!ELEMENT facet-name (#PCDATA)>
+<!ELEMENT converter       (description*, display-name*, icon*, (converter-id | converter-for-class), converter-class, attribute*, property*)>
+<!ELEMENT icon            (small-icon?, large-icon?)>
+<!ATTLIST icon            xml:lang        %Language;      #IMPLIED>
+<!ELEMENT lifecycle       (phase-listener*)>
+<!ELEMENT locale-config (default-locale?, supported-locale*)>
+<!ELEMENT managed-bean (description*, display-name*, icon*, managed-bean-name, managed-bean-class, managed-bean-scope, (managed-property* | map-entries | list-entries))>
+<!ELEMENT managed-property (description*, display-name*, icon*, property-name, property-class?, (map-entries|null-value|value|list-entries))>
+<!ELEMENT map-entry (key, (null-value|value))>
+<!ELEMENT map-entries (key-class?, value-class?, map-entry*)>
+<!ELEMENT message-bundle (#PCDATA)>
+<!ELEMENT navigation-case (description*, display-name*, icon*, from-action?, from-outcome?, to-view-id, redirect?)>
+<!ELEMENT navigation-rule (description*, display-name*, icon*, from-view-id?, navigation-case*)>
+<!ELEMENT property        (description*, display-name*, icon*, property-name, property-class, default-value?, suggested-value?, property-extension*)>
+<!ELEMENT property-extension ANY>
+<!ELEMENT referenced-bean (description*, display-name*, icon*, referenced-bean-name, referenced-bean-class)>
+<!ELEMENT render-kit      (description*, display-name*, icon*, render-kit-id?, render-kit-class?, renderer*)>
+<!ELEMENT renderer        (description*, display-name*, icon*, component-family, renderer-type, renderer-class, facet*, attribute*, renderer-extension*)>
+<!ELEMENT renderer-extension ANY>
+<!ELEMENT validator       (description*, display-name*, icon*, validator-id, validator-class, attribute*, property*)>
+<!ELEMENT list-entries    (value-class?, (null-value|value)*)>
+<!-- ==================== Subordinate Elements ============================ -->
+<!ELEMENT action-listener (#PCDATA)>
+<!ELEMENT application-factory (#PCDATA)>
+<!ELEMENT attribute-class (#PCDATA)>
+<!ELEMENT attribute-name  (#PCDATA)>
+<!ELEMENT component-class (#PCDATA)>
+<!ELEMENT component-family (#PCDATA)>
+<!ELEMENT component-type  (#PCDATA)>
+<!ELEMENT converter-class (#PCDATA)>
+<!ELEMENT converter-for-class (#PCDATA)>
+<!ELEMENT converter-id    (#PCDATA)>
+<!ELEMENT default-render-kit-id   (#PCDATA)>
+<!ELEMENT default-locale (#PCDATA)>
+<!ELEMENT default-value (#PCDATA)>
+<!ELEMENT description     ANY>
+<!ATTLIST description     xml:lang        %Language;      #IMPLIED>
+<!ELEMENT display-name    (#PCDATA)>
+<!ATTLIST display-name    xml:lang        %Language;      #IMPLIED>
+<!ELEMENT faces-context-factory (#PCDATA)>
+<!ELEMENT from-action (#PCDATA)>
+<!ELEMENT from-outcome    (#PCDATA)>
+<!ELEMENT from-view-id    (#PCDATA)>
+<!ELEMENT key             (#PCDATA)>
+<!ELEMENT key-class       (#PCDATA)>
+<!ELEMENT large-icon      (#PCDATA)>
+<!ELEMENT lifecycle-factory (#PCDATA)>
+<!ELEMENT managed-bean-class  (#PCDATA)>
+<!ELEMENT managed-bean-name (#PCDATA)>
+<!ELEMENT managed-bean-scope (#PCDATA)>
+<!ELEMENT navigation-handler (#PCDATA)>
+<!ELEMENT phase-listener (#PCDATA)>
+<!ELEMENT redirect EMPTY>
+<!ELEMENT suggested-value (#PCDATA)>
+<!ELEMENT view-handler (#PCDATA)>
+<!ELEMENT state-manager (#PCDATA)>
+<!ELEMENT null-value EMPTY>
+<!ELEMENT property-class  (#PCDATA)>
+<!ELEMENT property-name   (#PCDATA)>
+<!ELEMENT property-resolver (#PCDATA)>
+<!ELEMENT referenced-bean-class  (#PCDATA)>
+<!ELEMENT referenced-bean-name (#PCDATA)>
+<!ELEMENT render-kit-id   (#PCDATA)>
+<!ELEMENT render-kit-class (#PCDATA)>
+<!ELEMENT renderer-class  (#PCDATA)>
+<!ELEMENT render-kit-factory (#PCDATA)>
+<!ELEMENT renderer-type   (#PCDATA)>
+<!ELEMENT small-icon      (#PCDATA)>
+<!ELEMENT supported-locale (#PCDATA)>
+<!ELEMENT to-view-id      (#PCDATA)>
+<!ELEMENT validator-class (#PCDATA)>
+<!ELEMENT validator-id    (#PCDATA)>
+<!ELEMENT value (#PCDATA)>
+<!ELEMENT value-class (#PCDATA)>
+<!ELEMENT variable-resolver (#PCDATA)>
+<!-- ============================ Identifier Attributes ==================== -->
+<!ATTLIST action-listener                   id ID #IMPLIED>
+<!ATTLIST application                       id ID #IMPLIED>
+<!ATTLIST application-factory               id ID #IMPLIED>
+<!ATTLIST attribute                         id ID #IMPLIED>
+<!ATTLIST attribute-class                   id ID #IMPLIED>
+<!ATTLIST attribute-extension               id ID #IMPLIED>
+<!ATTLIST attribute-name                    id ID #IMPLIED>
+<!ATTLIST component                         id ID #IMPLIED>
+<!ATTLIST component-class                   id ID #IMPLIED>
+<!ATTLIST component-extension               id ID #IMPLIED>
+<!ATTLIST component-family                  id ID #IMPLIED>
+<!ATTLIST component-type                    id ID #IMPLIED>
+<!ATTLIST converter                         id ID #IMPLIED>
+<!ATTLIST converter-class                   id ID #IMPLIED>
+<!ATTLIST converter-for-class               id ID #IMPLIED>
+<!ATTLIST converter-id                      id ID #IMPLIED>
+<!ATTLIST default-locale                    id ID #IMPLIED>
+<!ATTLIST default-render-kit-id             id ID #IMPLIED>
+<!ATTLIST default-value                     id ID #IMPLIED>
+<!ATTLIST description                       id ID #IMPLIED>
+<!ATTLIST display-name                      id ID #IMPLIED>
+<!ATTLIST faces-config                      id ID #IMPLIED>
+<!ATTLIST faces-context-factory             id ID #IMPLIED>
+<!ATTLIST facet                             id ID #IMPLIED>
+<!ATTLIST facet-extension                   id ID #IMPLIED>
+<!ATTLIST facet-name                        id ID #IMPLIED>
+<!ATTLIST factory                           id ID #IMPLIED>
+<!ATTLIST from-action                       id ID #IMPLIED>
+<!ATTLIST from-outcome                      id ID #IMPLIED>
+<!ATTLIST from-view-id                      id ID #IMPLIED>
+<!ATTLIST icon                              id ID #IMPLIED>
+<!ATTLIST key                               id ID #IMPLIED>
+<!ATTLIST key-class                         id ID #IMPLIED>
+<!ATTLIST large-icon                        id ID #IMPLIED>
+<!ATTLIST lifecycle                         id ID #IMPLIED>
+<!ATTLIST lifecycle-factory                 id ID #IMPLIED>
+<!ATTLIST list-entries                      id ID #IMPLIED>
+<!ATTLIST locale-config                     id ID #IMPLIED>
+<!ATTLIST managed-bean                      id ID #IMPLIED>
+<!ATTLIST managed-bean-class                id ID #IMPLIED>
+<!ATTLIST managed-bean-name                 id ID #IMPLIED>
+<!ATTLIST managed-bean-scope                id ID #IMPLIED>
+<!ATTLIST managed-property                  id ID #IMPLIED>
+<!ATTLIST map-entries                       id ID #IMPLIED>
+<!ATTLIST map-entry                         id ID #IMPLIED>
+<!ATTLIST message-bundle                    id ID #IMPLIED>
+<!ATTLIST navigation-case                   id ID #IMPLIED>
+<!ATTLIST navigation-handler                id ID #IMPLIED>
+<!ATTLIST navigation-rule                   id ID #IMPLIED>
+<!ATTLIST null-value                        id ID #IMPLIED>
+<!ATTLIST phase-listener                    id ID #IMPLIED>
+<!ATTLIST property                          id ID #IMPLIED>
+<!ATTLIST property-class                    id ID #IMPLIED>
+<!ATTLIST property-extension                id ID #IMPLIED>
+<!ATTLIST property-name                     id ID #IMPLIED>
+<!ATTLIST property-resolver                 id ID #IMPLIED>
+<!ATTLIST redirect                          id ID #IMPLIED>
+<!ATTLIST referenced-bean                   id ID #IMPLIED>
+<!ATTLIST referenced-bean-class             id ID #IMPLIED>
+<!ATTLIST referenced-bean-name              id ID #IMPLIED>
+<!ATTLIST render-kit                        id ID #IMPLIED>
+<!ATTLIST render-kit-class                  id ID #IMPLIED>
+<!ATTLIST render-kit-factory                id ID #IMPLIED>
+<!ATTLIST render-kit-id                     id ID #IMPLIED>
+<!ATTLIST renderer                          id ID #IMPLIED>
+<!ATTLIST renderer-class                    id ID #IMPLIED>
+<!ATTLIST renderer-extension                id ID #IMPLIED>
+<!ATTLIST renderer-type                     id ID #IMPLIED>
+<!ATTLIST small-icon                        id ID #IMPLIED>
+<!ATTLIST state-manager                     id ID #IMPLIED>
+<!ATTLIST suggested-value                   id ID #IMPLIED>
+<!ATTLIST supported-locale                  id ID #IMPLIED>
+<!ATTLIST to-view-id                        id ID #IMPLIED>
+<!ATTLIST validator                         id ID #IMPLIED>
+<!ATTLIST validator-class                   id ID #IMPLIED>
+<!ATTLIST validator-id                      id ID #IMPLIED>
+<!ATTLIST value                             id ID #IMPLIED>
+<!ATTLIST value-class                       id ID #IMPLIED>
+<!ATTLIST variable-resolver                 id ID #IMPLIED>
+<!ATTLIST view-handler                      id ID #IMPLIED>
+

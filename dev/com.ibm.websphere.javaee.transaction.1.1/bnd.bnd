@@ -1,0 +1,28 @@
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.transaction.1.1; singleton:=true
+
+Export-Package: \
+	javax.transaction,\
+	javax.transaction.xa
+
+-includeresource: \
+  @${repo;org.apache.geronimo.specs:geronimo-jta_1.1_spec;1.1.1}!/META-INF/NOTICE
+
+# this pulls in the partial javax.transaction and javax.transaction.xa packages from the jre
+# and lets us export them.
+Require-Bundle: system.bundle
+
+Copyright: Licensed Materials - Property of IBM 5724-J08, 5724-I63, 57\
+24-H88, 5724-H89, 5655-W65, 5733-W70 Copyright IBM Corp. 1998, 2011 A\
+ll Rights Reserved. US Government Users Restricted Rights - Use, dupl\
+ication or disclosure restricted by GSA ADP Schedule Contract with IB\
+M Corp.
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	org.apache.geronimo.specs:geronimo-jta_1.1_spec;version=1.1.1

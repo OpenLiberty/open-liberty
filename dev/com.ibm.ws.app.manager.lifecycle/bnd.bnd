@@ -1,0 +1,24 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+-nouses=true
+bVersion=1.0
+
+Bundle-Name: WebSphere Application Manager Lifecycle
+Bundle-SymbolicName: com.ibm.ws.app.manager.lifecycle
+Bundle-Description: WebSphere Application Manager Lifecycle, version ${bVersion}
+
+Private-Package: com.ibm.ws.app.manager.lifecycle.internal
+
+Export-Package: com.ibm.wsspi.application.lifecycle
+
+-buildpath: \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -1,0 +1,94 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+<!-- WasTr is a trace wrapper, so obviously it's going to do some strange things
+trace -->
+    <Match> 
+      <Bug code="TR" />
+      <Class name="com.ibm.ws.tx.util.logging.WASTr" />
+    </Match>    
+
+    <Match> 
+      <Bug code="TR" />
+      <Class name="com.ibm.ws.tx.util.logging.WASTraceComponent" />
+    </Match>    
+
+    <Match> 
+      <Bug code="TR" />
+      <Class name="com.ibm.ws.tx.jta.embeddable.EmbeddableJCATranWrapperImpl" />
+    </Match>    
+
+<!-- The embeddable code writes to static singletons from 
+static factories, and we're not going to look at that 
+until at least task 47580 -->
+
+    <Match> 
+      <Bug code="ST" />
+    </Match>    
+
+    <Match> 
+      <Bug pattern="MS_PKGPROTECT" />
+    </Match>    
+
+<!-- Confusing findbugs error - it thinks something is a 
+class we don't think it is. Ignore until we replace 
+everything with services. -->
+    <Match> 
+      <Bug pattern="BC_VACUOUS_INSTANCEOF" />
+      <Class name="com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory" />
+    </Match>    
+
+<!-- Ignored pending story 47730, which eliminates the 
+need to use maps of system properties to configure things -->
+
+    <Match> 
+      <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED" />
+      <Class name="com.ibm.tx.jta.embeddable.config.EmbeddableConfigurationProviderImpl" />
+    </Match> 
+    
+    <!-- TODO Fix these. No time now -->
+    <Match>
+      <Or>
+      <Class name="com.ibm.tx.jta.embeddable.EmbeddableTransactionManagerFactory"/>
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableTimeoutManager"/>
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableUserTransactionImpl"/>
+      <Class name="com.ibm.tx.jta.embeddable.impl.JTAAsyncResourceBase"/>
+      <Class name="com.ibm.tx.jta.embeddable.impl.WSATAsyncResource"/>
+      <Class name="com.ibm.tx.jta.embeddable.impl.WSATParticipantWrapper"/>
+      <Class name="com.ibm.tx.jta.embeddable.impl.WSATRecoveryCoordinator"/>
+      <Class name="com.ibm.ws.Transaction.NativeJDBCDriverHelper"/>
+      <Class name="com.ibm.ws.uow.embeddable.jndi.UOWManagerJNDIFactory"/>
+      <Class name="com.ibm.wsspi.uow.UOWManagerFactory"/>
+      <Class name="com.ibm.tx.jta.embeddable.config.EmbeddableConfigurationProviderImpl" />
+      <Class name="com.ibm.tx.jta.embeddable.config.EmbeddableRuntimeMetaDataProviderImpl" />
+      <Class name="com.ibm.tx.remote.TransactionWrapper" />
+      <Class name="com.ibm.ws.uow.embeddable.UOWManager" />
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableRegisteredResources" />
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerImpl" />
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableTranManagerSet" />
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableTransactionImpl" />
+      <Class name="com.ibm.tx.ltc.embeddable.impl.EmbeddableLocalTranCurrentImpl" />
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableTimeoutManager$TimeoutInfo" />
+      <Class name="com.ibm.tx.ltc.embeddable.impl.LTCCallbacks" />
+      <Class name="com.ibm.ws.uow.embeddable.EmbeddableUOWTokenImpl" />
+      <Class name="com.ibm.ws.uow.embeddable.EmbeddableUOWManagerImpl" />
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableTMHelper" />
+      <Class name="com.ibm.tx.jta.embeddable.impl.EmbeddableRecoveryAgentImpl" />
+      </Or>
+    </Match>
+
+</FindBugsFilter>

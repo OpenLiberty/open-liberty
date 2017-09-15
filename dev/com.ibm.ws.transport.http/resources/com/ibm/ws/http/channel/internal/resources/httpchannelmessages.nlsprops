@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+#COMPONENTPREFIX CWWKT
+#COMPONENTNAMEFOR CWWKT WebSphere kernel transport http channel
+#CMVCPATHNAME com.ibm.ws.transport.http/resources/com/ibm/ws/http/channel/internal/resources/httpchannelmessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+
+config.maxpersist=CWWKT0001E: The maximum number of requests ({0}) allowed per socket is not valid. Valid values include {1} for unlimited, or any positive number.
+config.maxpersist.explanation=The configured value for the maximum number of requests allowed per socket is not valid.
+config.maxpersist.useraction=Configure a valid value for the maximum number of requests allowed per socket.
+
+config.incomingbody=CWWKT0002E: The incoming buffer size of {0} is not valid. Sizes must be between {1} and {2}.
+config.incomingbody.explanation=The configured value for the incoming buffer size is not valid.
+config.incomingbody.useraction=Configure a valid value for the incoming buffer size.
+
+config.incomingheader=CWWKT0003E: The header buffer size of {0} is not valid. Sizes must be between {1} and {2}.
+config.incomingheader.explanation=The configured value for the header buffer size is not valid.
+config.incomingheader.useraction=Configure a valid value for the header buffer size.
+
+config.outgoingbuffer=CWWKT0004E: The outgoing buffer size of {0} is not valid. Sizes must be between {1} and {2}.
+config.outgoingbuffer.explanation=The configured value for the outgoing buffer size is not valid.
+config.outgoingbuffer.useraction=Configure a valid value for the outgoing buffer size.
+
+config.persisttimeout=CWWKT0005E: The persistent timeout of {0} is not valid. Timeouts must be greater than {1}.
+config.persisttimeout.explanation=The configured value for the persistent timeout parameter is not valid.
+config.persisttimeout.useraction=Configure a valid value for the persistent timeout parameter.
+
+config.readtimeout=CWWKT0006E: The read timeout of {0} is not valid. Timeouts must be greater than {1}.
+config.readtimeout.explanation=The configured value for the read timeout parameter is not valid.
+config.readtimeout.useraction=Configure a valid value for the read timeout parameter.
+
+config.writetimeout=CWWKT0007E: The write timeout of {0} is not valid. Timeouts must be greater than {1}.
+config.writetimeout.explanation=The configured value for the write timeout parameter is not valid.
+config.writetimeout.useraction=Configure a valid value for the write timeout parameter.
+
+config.fieldsize=CWWKT0008E: The field size limit of {0} is not valid. This size must be between {1} and {2}.
+config.fieldsize.explanation=The configured value for the field size limit is not valid.
+config.fieldsize.useraction=Configure a valid value for the field size limit.
+
+config.numheaders=CWWKT0009E: The number of headers limit of {0} is not valid. This size must be between {1} and {2}.
+config.numheaders.explanation=The configured value for the number of headers limit is not valid.
+config.numheaders.useraction=Configure a valid value for the number of headers limit.
+
+config.incomingbodymaxsize=CWWKT0010E: The maximum number of bytes for an incoming message body of {0} is not valid. This size must be greater than or equal to {1}.
+config.incomingbodymaxsize.explanation=The configured value for the maximum number of bytes for an incoming message body is not valid.
+config.incomingbodymaxsize.useraction=Configure a valid value for the maximum number of bytes for an incoming message body.
+
+NO_DEFAULT_CONFIGURATION=CWWKT0011W: Unable to find a default configuration for {0} using ID {1}
+NO_DEFAULT_CONFIGURATION.explanation=The specified default configuration cannot be found for the specified ID.
+NO_DEFAULT_CONFIGURATION.useraction=Verify the server configuration, then perform a clean restart.
+
+DEFAULT_OPTIONS_ERROR=CWWKT0012E: An internal error occurred. Unable to create default configuration. Exception {0}
+DEFAULT_OPTIONS_ERROR.explanation=CMSG0001
+DEFAULT_OPTIONS_ERROR.useraction=CMSG0002
+
+DEFAULT_ENDPOINT_ERROR=CWWKT0013E: An internal error occurred. Unable to create default endpoint. Exception {0}
+DEFAULT_ENDPOINT_ERROR.explanation=CMSG0001
+DEFAULT_ENDPOINT_ERROR.useraction=CMSG0002
+
+DEFAULT_VHOST_ERROR=CWWKT0014E: An internal error occurred. Unable to create default virtual host.  Exception {0}
+DEFAULT_VHOST_ERROR.explanation=CMSG0001
+DEFAULT_VHOST_ERROR.useraction=CMSG0002
+
+missingPorts.endpointDisabled=CWWKT0015W: No ports were configured for endpoint {0}. The endpoint has been disabled.
+missingPorts.endpointDisabled.explanation=An HTTP endpoint requires at least one port to be configured.
+missingPorts.endpointDisabled.useraction=Assign a valid port value to the httpPort, or the httpsPort, or both.
+
+context.root.added=CWWKT0016I: Web application available ({0}): {1}
+context.root.added.explanation=This message is for informational purposes only.
+context.root.added.useraction=No action is required.
+
+context.root.removed=CWWKT0017I: Web application removed ({0}): {1}
+context.root.removed.explanation=This message is for informational purposes only.
+context.root.removed.useraction=No action is required.
+
+Missing.App.Or.Context.Root=CWWKT0018E: The application or context root for this request has not been found: {0}
+Missing.App.Or.Context.Root.explanation=The request cannot be handled by an application on the server.
+Missing.App.Or.Context.Root.useraction=Make sure that the application is defined and deployed, and has been correctly referenced by the client.
+
+#Cannot remove above due to service rules, but we do not need a message key as this is never logged
+#only output to the browser on our 404 page - removing it means we give away less server implementation info
+Missing.App.Or.Context.Root.No.Error.Code=The application or context root for this request has not been found: {0}
+Missing.App.Or.Context.Root.No.Error.Code.explanation=The request cannot be handled by an application on the server.
+Missing.App.Or.Context.Root.No.Error.Code.useraction=Make sure that the application is defined and deployed, and has been correctly referenced by the client.
+
+config.httpChain.error=CWWKT0019E: A problem occurred while configuring endpoint {0}: {1}.
+config.httpChain.error.explanation=The HTTP endpoint could not be started due to a configuration problem.
+config.httpChain.error.useraction=Examine the message and exception logs for related errors. 
+
+start.httpChain.error=CWWKT0020E: A problem occurred while starting endpoint {0}: {1}.
+start.httpChain.error.explanation=The HTTP endpoint could not be started due to an unexpected problem. 
+start.httpChain.error.useraction=Examine the message and exception logs for related errors. 
+
+httpChain.error.shutdown=CWWKT0021I: The server is stopping because of a possible configuration error. \
+ The endpoint {0} cannot be started; this might happen if the configured port is already in use.
+httpChain.error.shutdown.explanation=The HTTP endpoint was configured with onError=FAIL, \
+ which causes the server to stop if there is a problem starting the endpoint. 
+httpChain.error.shutdown.useraction=Examine the message and exception logs for related errors. \
+ To prevent the server from stopping due to a problem while starting the endpoint, make sure that onError is set to WARN or IGNORE.
+
+unresolveableHost=CWWKT0022E: The configured host {0} for HTTP endpoint {1} could not be resolved. The endpoint has been disabled.
+unresolveableHost.explanation=A HTTP endpoint requires a host value that can be resolved to an active network interface.
+unresolveableHost.useraction=Ensure the host value refers to an active network interface, or use * to bind to all interfaces.
+
+unresolveableDefaultHost=CWWKT0023W: The configured defaultHostName {0} could not be resolved, using localhost instead.
+unresolveableDefaultHost.explanation=The defaultHostName variable specifies a host value that could not be resolved to an active network interface.
+unresolveableDefaultHost.useraction=Ensure that the configured defaultHostName value refers to an active network interface.
+
+defaultHostDisabled=CWWKT0024W: The default virtual host (default_host) can not be disabled.
+defaultHostDisabled.explanation=The default virtual host is required by the runtime environment. 
+defaultHostDisabled.useraction=No action is required.
+
+noHostAliases=CWWKT0025W: The virtual host {0} has no configured host aliases, it will not receive inbound requests.
+noHostAliases.explanation=All non-default virtual hosts must define at least one host alias (host:port) to identify \
+  inbound requests that should be routed to that virtual host. The specified virtual host does not have any host aliases defined, \
+  which will prevent any requests from being routed to it.
+noHostAliases.useraction=Update the virtualHost element in the server.xml file to define at least one hostAlias attribute.
+
+invalidAlias=CWWKT0026W: A configured host alias for virtual host {0} is invalid and will be ignored. {1}
+invalidAlias.explanation=The configured host alias contains invalid characters or syntax that is incorrect.
+invalidAlias.useraction=Update the virtual host element in the server.xml file to either correct or remove the invalid host alias. Note that IPv6 addresses must be enclosed in [].
+
+wildcardReason=The wildcard character * can not be combined with other characters in the host alias.
+badHostPortReason=The specified host is not a valid IP address or host name, or the specified port is not an integer.
+
+duplicateAlias=CWWKT0027W: Host alias {0} for virtual host {1} conflicts with an existing host alias and will be ignored.
+duplicateAlias.explanation=The specified host alias conflicts with an existing host alias.
+duplicateAlias.useraction=Ensure that all host aliases defined as virtual host elements in the server.xml file are unique.
+
+context.root.changed=CWWKT0028I: Web application moved ({0}): {1}
+context.root.changed.explanation=This message is for informational purposes only.
+context.root.changed.useraction=No action is required.

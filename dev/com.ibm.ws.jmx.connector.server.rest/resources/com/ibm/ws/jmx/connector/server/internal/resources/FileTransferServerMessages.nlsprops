@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.server/resources/com/ibm/ws/jmx/connector/server/internal/resources/FileTransferServerMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Connector
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0121 - CWWKX0199
+
+SERVER_ACCESS_DENIED_ERROR=CWWKX0121E: Access denied to path {0}.
+SERVER_ACCESS_DENIED_ERROR.explanation=An attempt was made to access a path that is outside the configured read/write region.
+SERVER_ACCESS_DENIED_ERROR.useraction=Correct the path to indicate one that is within the configured read/write region.
+
+OSGI_SERVICE_ERROR=CWWKX0122E: OSGi service {0} is not available.
+OSGI_SERVICE_ERROR.explanation=This is an internal server error thrown because the specified service is not available.
+OSGI_SERVICE_ERROR.useraction=Restart the server with the "clean" option.
+
+DOWNLOAD_REQUEST_COMPLETE_INFO=CWWKX0123I: Download request for file {0} has completed successfully.
+DOWNLOAD_REQUEST_COMPLETE_INFO.explanation=The download request for the specified file has completed successfully.
+DOWNLOAD_REQUEST_COMPLETE_INFO.useraction=This is an informational message, and no action is required.
+
+UPLOAD_REQUEST_COMPLETE_INFO=CWWKX0124I: Upload request for file {0} has completed successfully.
+UPLOAD_REQUEST_COMPLETE_INFO.explanation=The upload request for the specified file has completed successfully.
+UPLOAD_REQUEST_COMPLETE_INFO.useraction=This is an informational message, and no action is required.
+
+DELETE_REQUEST_COMPLETE_INFO=CWWKX0125I: Delete request for file {0} has completed successfully.
+DELETE_REQUEST_COMPLETE_INFO.explanation=The delete request for the specified file has completed successfully.
+DELETE_REQUEST_COMPLETE_INFO.useraction=This is an informational message, and no action is required.
+
+DELETE_REQUEST_ERROR=CWWKX0126E: Delete request for file {0} could not be completed.
+DELETE_REQUEST_ERROR.explanation=The delete request for the specified file was unsuccessful, it may be in use by another process.
+DELETE_REQUEST_ERROR.useraction=Verify that the file is not being used by another process and that appropriate permissions exist that allow the file to be deleted.
+
+PATH_NOT_VALID=CWWKX0127E: The {0} path is not valid.
+PATH_NOT_VALID.explanation=The specified path is not valid, and was not able to be located.
+PATH_NOT_VALID.useraction=Ensure a valid path containing no invalid characters or values is specified.
+
+NO_WRITE_LOCATION=CWWKX0128E: There are no configured writable locations on the routing server.
+NO_WRITE_LOCATION.explanation=There are no configured writable locations on the routing server.
+NO_WRITE_LOCATION.useraction=Ensure that at least 1 writable location is configured on the routing server.
+
+UPLOAD_EXPANSION_ERROR=CWWKX0129E: Uploaded archive {0} could not be expanded.
+UPLOAD_EXPANSION_ERROR.explanation=Expansion for the specified uploaded archive could not be completed.
+UPLOAD_EXPANSION_ERROR.useraction=Ensure the archive is not corrupt.
+
+ARCHIVE_EXPANDER_ERROR=CWWKX0130E: The archive expander utility could not be located.
+ARCHIVE_EXPANDER_ERROR.explanation=The necessary archive expander utility could not be located.
+ARCHIVE_EXPANDER_ERROR.useraction=Ensure the Liberty installation directory is not corrupt.
+
+UNKNOWN_TASK_ID_ERROR=CWWKX0131E: A task with id {0} was not found.
+UNKNOWN_TASK_ID_ERROR.explanation=The provided identifier does not match any tasks currently being held in the task registry.
+UNKNOWN_TASK_ID_ERROR.useraction=Query a valid identifier that has not been recycled.
+
+INVALID_ACTION_OPTIONS=CWWKX0132E: The post transfer action options {0} are not valid.
+INVALID_ACTION_OPTIONS.explanation=The post transfer action options must be null, empty or a comma-separated list with the same length as the actions list.
+INVALID_ACTION_OPTIONS.useraction=Ensure the post transfer action options contain a valid value.

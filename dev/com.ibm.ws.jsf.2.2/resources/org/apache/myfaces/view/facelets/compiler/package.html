@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+
+ $Id: package.html 1187701 2011-10-22 12:21:54Z bommel $
+-->
+</head>
+<body bgcolor="white">
+Facelet compiler package, <b>not for extension</b>.  
+{@link org.apache.myfaces.view.facelets.compiler.Compiler Compilers} are used in conjunction with a
+{@link org.apache.myfaces.view.facelets.FaceletFactory FaceletFactory} implementation.
+<p/>
+You may register multiple {@link org.apache.myfaces.view.facelets.tag.TagLibrary TagLibraries} and
+{@link org.apache.myfaces.view.facelets.tag.TagDecorator TagDecorators} in order to define how the
+document will be parsed with the Compiler instance.  TagLibraries packaged with Facelets
+will be loaded for you automatically and bound to their appropriate namespaces.
+<pre><code>
+Compiler compiler = new SAXCompiler();
+compiler.setTrimmingWhitespace(true);
+compiler.addTagLibrary(new MyTagLibrary());
+
+String alias = "index.html";
+URL url = faces.getExternalContext().getResource(alias);
+FaceletHandler handler = compiler.compile(url, alias);
+</code></pre>
+<p/>
+A Compiler instance may be used multiple times and is thread safe for compilation.
+</body>
+</html>

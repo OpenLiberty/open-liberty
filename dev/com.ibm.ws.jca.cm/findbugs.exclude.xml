@@ -1,0 +1,179 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+    <!-- match generated nls classes: return mutable type -->
+   <Match> 
+      <Bug pattern="EI_EXPOSE_REP" />
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents"/>
+   </Match>
+
+   <Match> 
+      <Class name="com.ibm.ejs.cm.logger.TraceWriter" />
+      <Method name="formatTrace"/>
+      <Bug code="TR" />
+   </Match>
+
+   <Match> 
+      <Class name="com.ibm.ejs.j2c.CommonFunction" />
+      <Method name="&lt;clinit&gt;"/>
+      <Bug code="TR" />
+   </Match>
+
+   <Match> 
+      <Class name="com.ibm.ejs.j2c.ConnectionEventListener" />
+      <Bug code="Nm" />
+   </Match>
+
+   <Match> 
+      <Class name="com.ibm.ejs.j2c.ConnectionManager" />
+      <Bug code="Nm" />
+   </Match>
+
+   <Match> 
+      <Class name="com.ibm.ejs.j2c.MCWrapper" />
+      <Bug code="Nm" />
+   </Match>
+
+   <Match> 
+      <Class name="com.ibm.ws.jca.cm.AbstractConnectionFactoryService" />
+      <Field name="isInitialized"/>
+      <Bug code="DJV" />
+   </Match>
+   
+   <!-- Computed key used to choose between keys -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.ConnectionManagerServiceImpl"/>
+     <Method name="modified"/>
+     <Bug pattern="TR_COMPUTED_KEY"/>
+   </Match>
+
+   <!--  Wrapping method around Tr.warning etc. -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.ConnectorServiceImpl"/>
+     <Method name="ignoreWarnOrFail"/>
+     <Bug pattern="TR_COMPUTED_KEY"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ws.jca.cm.ConnectorService"/>
+     <Method name="logMessage"/>
+     <Bug pattern="TR_COMPUTED_KEY"/>
+   </Match>
+   
+   <!-- Pre-existing calls to System.currentTimeMillis() -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.ConnectionManager"/>
+     <Method name="allocateConnection"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ejs.j2c.FreePool"/>
+     <Method name="~(createOrWaitForConnection|queueRequest)"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   <Match>
+     <Class name="~com\.ibm\.ejs\.j2c\.(MCWrapper|PoolManager|StuckTaskTimer|ThreadSupportedCleanupAndDestroy)"/>
+     <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+   </Match>
+   
+   <!-- Can we use some of Liberty's threading things to handle these? -->
+   <Match>
+     <Or>
+       <Class name="com.ibm.ejs.j2c.StuckTaskTimer" />
+       <Class name="com.ibm.ejs.j2c.SurgeTaskTimer" />
+       <Class name="com.ibm.ejs.j2c.TaskTimer" />
+       <Class name="com.ibm.ejs.j2c.TestConnectionTaskTimer" />
+       <Class name="com.ibm.ejs.j2c.ThreadSupportedCleanupAndDestroy" />
+     </Or>
+     <Bug pattern="THREAD_START_CALLED" />
+   </Match>
+   
+   <Match>
+     <Class name="com.ibm.websphere.j2c.ConnectionEvent" />
+     <Bug pattern="NM_SAME_SIMPLE_NAME_AS_SUPERCLASS" />
+   </Match>
+   <Match>
+     <Or>
+        <Class name="com.ibm.websphere.j2c.ConnectionEventListener" />
+        <Class name="com.ibm.websphere.j2c.ConnectionManager" />
+     </Or>
+     <Bug pattern="NM_SAME_SIMPLE_NAME_AS_INTERFACE" />
+   </Match>
+   
+   <Match>
+     <Class name="com.ibm.ejs.j2c.ThreadSupportedCleanupAndDestroy" />
+     <Method name="run" />
+     <Bug pattern="TR_INCORRECTLY_GUARDED" />
+   </Match>
+   
+   <!-- I'm (rashly) going to assume these BAD_FIELDS are not a problem in practice -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.ConnectionManager"/>
+     <Field name="~(connectionFactorySvc|handleToCMDMap)"/>
+     <Bug pattern="SE_BAD_FIELD"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ejs.j2c.J2CGlobalConfigProperties"/>
+     <Field name="threadToViolatingHandleMap"/>
+     <Bug pattern="SE_BAD_FIELD"/>
+   </Match>
+   
+   <!-- At this stage the NPE is probably safest! -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.ConnectionManager"/>
+     <Method name="initializeForUOW"/>
+     <Bug pattern="NP_NULL_ON_SOME_PATH_EXCEPTION"/>
+   </Match>
+   
+   <!-- Hmm, not sure if the field is used outside of the package -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.J2CUtilityClass"/>
+     <Field name="pmiNameToCompAlias"/>
+     <Bug pattern="MS_PKGPROTECT"/>
+   </Match>
+   
+   <!-- The main offender is a debug method, and I don't want to mess with the sync in this class -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.PoolManager"/>
+     <Bug pattern="IS2_INCONSISTENT_SYNC"/>
+   </Match>
+
+   <!-- Not sure of the cause of this false positive, but having a redunant null check is, at least, safe -->
+   <Match>
+     <Class name="com.ibm.ejs.j2c.ConnectionManager"/>
+     <Method name="~(allocateConnection|initializeForUOW)"/>
+     <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+   </Match>
+   <Match>
+     <Class name="com.ibm.ejs.j2c.FreePool"/>
+     <Method name="createOrWaitForConnection"/>
+     <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE"/>
+   </Match>
+   
+   <!-- Using new Integer(0) ensures we lock on a nonboxed Integer which will be unique -->
+   <Match>
+     <Or>
+        <Class name="com.ibm.ejs.j2c.FreePool" />
+        <Class name="com.ibm.ejs.j2c.MCWrapper" />
+        <Class name="com.ibm.ejs.j2c.PoolManager" />
+        <Class name="com.ibm.ejs.j2c.SharedPool" />
+     </Or>
+     <Bug pattern="DL_SYNCHRONIZATION_ON_BOXED_PRIMITIVE"/>
+   </Match>
+
+</FindBugsFilter>

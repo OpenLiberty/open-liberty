@@ -1,0 +1,39 @@
+# default gosh_profile
+# only read if etc/gosh_profile doesn't exist relative to the System property
+# gosh.home or failing that the current directory.
+
+# catch all exceptions from this script to avoid it aborting startup
+try {
+
+  # ensure equinox commands are found first
+  SCOPE = equinox:*
+
+  # add methods on BundleContext object as commands
+  #addcommand context ${.context} (${.context} class)
+  # bug: above invokes (String, Object, String) instead of (String, Object, Class)
+  addcommand context ${.context}
+
+  # add methods on System object as commands
+  addcommand system (((${.context} bundles) 0) loadclass java.lang.System)
+
+  # alias to print full stack trace
+  e = { $exception printStackTrace }
+
+  ## disable console auto-formatting of each result
+  #  you will then need to explicitly use the 'format' command
+  #  to print the result of commands that don't write to stdout.
+  #.Gogo.format = false
+
+  ## disable printing the formatted result of a command into pipelines
+  #.Format.Pipe = false
+
+  # set prompt
+  prompt = 'osgi> '
+
+  # print welcome message
+  # cat ($0 resolve motd)
+} {
+    echo "$0: ERROR: $exception"
+}
+
+# end

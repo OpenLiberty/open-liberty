@@ -1,0 +1,53 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.container.service-api" default="buildApiSpi"> 
+  <!-- DO NOT CHANGE THE DEFAULT TASK FROM 'buildApiSpi'
+       Top level builds use this task explicity.  Changing the
+       default will create an incompatibility between a default
+       project build and a top level build. -->
+
+  <!-- Disable IBM-API steps. -->
+  <property name="noibmapi" value="true"/>
+
+  <!-- IBM-SPI required properties. -->
+  <property name="spibndfile" value="${basedir}/build/spi.bnd"/> 
+  <property name="spi.ibm.symbolic.suffix" value="containerServices"/>
+  <property name="spi.ibm.bundleName" value="WebSphere Container Services SPI"/>
+  <property name="api.ibm.version" value="2.0"/>
+  <property name="feature.name" value="com.ibm.websphere.appserver.containerServices-1.0"/>
+
+  <property name="spi.ibm.packages.exceptions"
+            value="com.ibm.ws.container.service.annotations,
+                   com.ibm.ws.container.service.app.deploy,                    
+                   com.ibm.ws.container.service.config,                          
+                   com.ibm.ws.container.service.naming,
+                   com.ibm.ws.container.service.security,
+                   com.ibm.ws.container.service.state,
+                   com.ibm.ws.serialization,
+                   com.ibm.wsspi.resource"/>
+    
+  <!-- Include Resource, and Serialization in the API. -->
+  <path id="bnd.jars">
+        <fileset dir="../com.ibm.ws.resource/build/lib/" includes="*.jar"/>
+        <fileset dir="../com.ibm.ws.serialization/build/lib/" includes="*.jar"/>
+   </path> 
+
+  <property name="build.javadoc.src.dir" value="build/javadoc/src"/>
+  <pathconvert property="additional.javadoc.src.dirs">
+    <path location="${build.javadoc.src.dir}"/>
+    <path location="${basedir}/../com.ibm.ws.resource/src/"/>
+    <path location="${basedir}/../com.ibm.ws.serialization/src/"/>
+  </pathconvert>
+
+  <import file="../ant_build/public_imports/apibnd_imports.xml"/>
+
+</project>
+

@@ -1,0 +1,62 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.artifact.api.loose/resources/com/ibm/ws/artifact/api/loose/internal/resources/LooseApiMessages.nlsprops
+#COMPONENTPREFIX CWWKM
+#COMPONENTNAMEFOR CWWKM Loose Config
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+# 0000-0999: in-use or reserved
+# 1001-1100: Loose api
+# -------------------------------------------------------------------------------------------------
+
+#{0} is xml file location
+XML_NOT_FOUND=CWWKM1001E: The XML file in {0} could not be found.
+XML_NOT_FOUND.explanation=The specified XML file could not be found.
+XML_NOT_FOUND.useraction=Ensure that the file is in the correct location and has not been moved.
+
+#{0} is xml file location
+XML_STREAM_ERROR=CWWKM1002E: The XML file in {0} could not be read.
+XML_STREAM_ERROR.explanation=The specified XML file could not be read.
+XML_STREAM_ERROR.useraction=Ensure that the file is correctly formatted as XML.
+
+#{0} is location of file on disk
+EXCLUDES_ON_FILE=CWWKM1003W: The XML file declared in a workspace application references a file in {0} and includes an "excludes" attribute that is not valid. 
+EXCLUDES_ON_FILE.explanation=The XML file element has an "excludes" attribute that is not valid. The attribute was ignored.
+EXCLUDES_ON_FILE.useraction=Remove the "excludes" attribute from the element.
+
+#{0} is name of the archive
+EXCLUDES_ON_ARCHIVE=CWWKM1004W: The XML file declared in a workspace application references an archive named {0} and includes an "excludes" attribute that is not valid. 
+EXCLUDES_ON_ARCHIVE.explanation=The XML archive element has an "excludes" attribute that is not valid. The attribute was ignored.
+EXCLUDES_ON_ARCHIVE.useraction=Remove the "excludes" attribute from the element.
+
+#{0} is the pattern
+INVALID_EXCLUDE_PATTERN=CWWKM1005E: The XML file declared in a workspace application contains an "excludes" attribute that is not valid: {0}
+INVALID_EXCLUDE_PATTERN.explanation=The "excludes" attribute is not valid and cannot be understood.
+INVALID_EXCLUDE_PATTERN.useraction=Change the attribute to be the correct syntax or remove it if it is not needed.
+
+#{0} is the filename of the missing file
+DECLARED_FILE_NOT_FOUND=CWWKM1006I: The XML file declared in a workspace application references a file {0} that could not be found.
+DECLARED_FILE_NOT_FOUND.explanation=The file declared for the workspace application could not be found.
+DECLARED_FILE_NOT_FOUND.useraction=Ensure that the file is in the referenced location, or that the referenced location matches the location of the file.

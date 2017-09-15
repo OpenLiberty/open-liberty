@@ -1,0 +1,7 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.1
+
+Bundle-SymbolicName: com.ibm.ws.org.apache.aries.jndi.api
+
+-includeresource: \
+    @${repo;org.apache.aries.jndi:org.apache.aries.jndi.api;1.1.0}!/!META-INF/maven/*|org/*

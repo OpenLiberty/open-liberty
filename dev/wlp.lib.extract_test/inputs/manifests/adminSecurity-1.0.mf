@@ -1,0 +1,14 @@
+Subsystem-ManifestVersion: 1
+Subsystem-SymbolicName: com.ibm.websphere.appserver.adminSecurity-1.0
+Subsystem-Version: 1.0.0
+Subsystem-Content: com.ibm.websphere.security; version="[1,1.0.100)",
+ com.ibm.ws.security.authentication.tai; version="[1,1.0.100)",
+ com.ibm.ws.webcontainer.security; version="[1.0.0,1.0.100)",
+ com.ibm.ws.webcontainer.security.admin; version="[1,1.0.100)",
+ com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:="3.1"; type="osgi.subsystem.feature", 
+ com.ibm.websphere.appserver.security-1.0; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.distributedMap-1.0; type="osgi.subsystem.feature",
+ com.ibm.ws.javaee.jaspic.1.1; version="[1,1.0.100)"; location:="dev/api/spec/"
+Subsystem-Type: osgi.subsystem.feature
+IBM-Feature-Version: 2
+IBM-ProductID: com.ibm.websphere.appserver

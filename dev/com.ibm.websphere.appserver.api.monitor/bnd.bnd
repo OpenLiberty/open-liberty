@@ -1,0 +1,29 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion: 1.1
+
+Bundle-Name: WebSphere Monitor API
+Bundle-Description: WebSphere Monitor API, version ${bVersion}
+Bundle-SymbolicName: com.ibm.websphere.appserver.api.monitor
+
+Import-Package: com.ibm.websphere.monitor.jmx
+
+Export-Package: com.ibm.websphere.monitor.jmx
+
+-includeresource: {META-INF/maven/com.ibm.websphere.appserver.api/com.ibm.websphere.appserver.api.monitor/pom.xml=com.ibm.websphere.appserver.api.monitor.pom}
+
+publish.wlp.jar.suffix: dev/api/ibm
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.monitor

@@ -1,0 +1,30 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/liberty-release.props
+
+-nobundles=true
+
+publish.feature.resources: **
+
+-dependson: \
+	com.ibm.websphere.appserver.javax.cdi-1.2;version=latest, \
+	com.ibm.websphere.appserver.jndi-1.0;version=latest, \
+	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
+	com.ibm.ws.persistence-1.0;version=latest, \
+	com.ibm.websphere.appserver.contextService-1.0;version=latest, \
+	com.ibm.websphere.appserver.jdbc-4.1;version=latest, \
+	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
+	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
+	com.ibm.jbatch.spi;version=latest, \
+	com.ibm.ws.security.credentials;version=latest, \
+	com.ibm.websphere.security;version=latest, \
+	com.ibm.jbatch.container;version=latest, \
+	com.ibm.websphere.javaee.batch.1.0;version=latest

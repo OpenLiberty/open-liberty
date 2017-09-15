@@ -1,0 +1,30 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<project name="com.ibm.ws.kernel.boot.ws-launch" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+  
+  <target name="publishExtra" if="publish.image.dir">
+    <echo>Publishing ws-launch.jar to ${publish.image.dir}/${image.write.dir}</echo>
+    <copy todir="${publish.image.dir}/${image.write.dir}" file="${lib.dir}/ws-launch.jar" />
+  </target>
+
+  <target name="post-compile">
+    <!-- lib/ws-launch.jar for backwards compatibility -->
+    <jar jarfile="${lib.dir}/ws-launch.jar">
+      <manifest>
+        <attribute name="Main-Class" value="com.ibm.ws.kernel.boot.cmdline.EnvCheck"/>
+        <!-- Use ws-server.jar so this file doesn't need to change when ${output.jar} changes. -->
+        <attribute name="Class-Path" value="../bin/tools/ws-server.jar"/>
+      </manifest>
+    </jar>
+  </target>
+  
+</project>

@@ -1,0 +1,31 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+instrument.disabled: true
+
+publish.wlp.jar.disabled: true
+
+-buildpath: \
+	com.ibm.ws.ejbcontainer.core;version=latest,\
+	com.ibm.ws.logging;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.javaee.connector.1.6;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.ws.tx.jta.extensions;version=latest,\
+	com.ibm.ws.injection;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.1;version=latest

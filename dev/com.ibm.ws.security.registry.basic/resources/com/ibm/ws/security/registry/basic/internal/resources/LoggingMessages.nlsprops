@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: The user definition is not valid: {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=The syntax for defining a user is <user name="..." password="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=Change the user definition in the configuration.
+USER_MUST_DEFINE_NAME=A user element must define a name.
+USER_MUST_DEFINE_PASSWORD=The user element with name ''{0}'' must define a password.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: The group definition is not valid: {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=The syntax for defining a group is <group name="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=Change the group definition in the configuration.
+GROUP_MUST_DEFINE_NAME=A group element must define a name.
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: The member definition is not valid: {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=The syntax for defining a member is <member name="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=Change the member definition in the configuration.
+MEMBER_MUST_DEFINE_NAME=A member element must define a name.
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: There are no users defined for the BasicRegistry configuration of ID {0}.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=No users are defined for the configuration. This might be intentional, but is likely to be a configuration error.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=If required, define at least one user in the configuration.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: Multiple users with the name ''{0}'' are defined. The entries for this user will not be used.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=User names must be unique.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=Define only one user with the specified name.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: Multiple groups with the name ''{0}'' are defined. The entries for this group will not be used.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=Group names must be unique.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=Define only one group with the specified name
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: Multiple member entries with the name ''{0}'' are defined for the group ''{1}''.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=Groups only support one member entry per user name.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Define only one member entry for the user in the specified group.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: Member entry with the name ''{0}'' for group ''{1}'' does not match a defined user.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=The name specified for the member entry does not match any defined users.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Check the spelling of the member name and ensure it matches a user defined in the registry.

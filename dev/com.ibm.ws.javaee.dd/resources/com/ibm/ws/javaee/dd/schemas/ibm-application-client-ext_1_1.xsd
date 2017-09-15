@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns="http://websphere.ibm.com/xml/ns/javaee"
+        xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        elementFormDefault="qualified" attributeFormDefault="unqualified"
+        version="1.1">
+
+        <!-- ******************************************************* -->
+
+	<xsd:annotation>
+		<xsd:documentation>
+				Licensed Materials - Property of IBM
+
+				"Restricted Materials of IBM"
+
+				Copyright IBM Corp. 2010 All Rights Reserved.
+
+				US Government Users Restricted Rights - Use, duplication or
+				disclosure restricted by GSA ADP Schedule Contract with
+				IBM Corp.
+		</xsd:documentation>
+	</xsd:annotation>
+
+	<!-- ******************************************************* -->
+
+        <xsd:element name="application-client-ext" type="application-client-extType">
+                <xsd:annotation>
+                        <xsd:documentation>
+
+                                The root of the application-client-ext deployment descriptor.
+
+                        </xsd:documentation>
+                </xsd:annotation>
+        </xsd:element>
+
+        <!-- ******************************************************* -->
+
+        <xsd:complexType name="application-client-extType">
+                <xsd:annotation>
+                        <xsd:documentation>
+                                <![CDATA[
+        The metadata-complete attribute is only applicable when the version
+        of the deployment descriptor in the jar file is at or below the 1.4
+        level.  It is ignored in archives which have no deployment descriptor,
+        or in archives where the deployment descriptor version is 5.0 or above. 
+                                ]]>
+                                </xsd:documentation>
+                </xsd:annotation>
+
+                <xsd:sequence>
+                        <xsd:element name="allow-jta-demarcation" minOccurs="0" maxOccurs="1">
+                                <xsd:complexType>
+                                        <xsd:attribute name="value" type="xsd:boolean" use="required"/>
+                                </xsd:complexType>
+                        </xsd:element>
+                </xsd:sequence>
+                <xsd:attribute name="metadata-complete" type="xsd:boolean" default="true"/>
+                <xsd:attribute name="bootstrapAddress"  type="xsd:string" />
+                <xsd:attribute name="version" type="xsd:string" fixed="1.1" use="required" />
+                <xsd:attribute name="id" type="xsd:ID" />
+        </xsd:complexType>
+
+</xsd:schema>

@@ -1,0 +1,27 @@
+Created-By: 1.8.0_131 (Oracle Corporation)
+IBM-App-ForceRestart: install,
+ uninstall
+IBM-AppliesTo: com.ibm.websphere.appserver;${mfProductEdition}${mfProductVersion}
+IBM-Feature-Version: 2
+IBM-InstallTo: core
+IBM-License-Agreement: wlp/lafiles/LA
+IBM-ProductID: com.ibm.websphere.appserver
+IBM-ShortName: ejb-3.2
+Subsystem-Category: JavaEE7Application
+Subsystem-Content: com.ibm.websphere.appserver.ejbPersistentTimer-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ejbHome-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ejbLite-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.2"; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.mdb-3.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.transaction-1.2; type="osgi.subsystem.feature",
+ com.ibm.websphere.appserver.ejbRemote-3.2; type="osgi.subsystem.feature"
+Subsystem-Description: %description
+Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
+Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.ejb-3.2
+Subsystem-ManifestVersion: 1
+Subsystem-Name: Enterprise JavaBeans 3.2
+Subsystem-SymbolicName: com.ibm.websphere.appserver.ejb-3.2; visibility:=public; singleton:=false
+Subsystem-Type: osgi.subsystem.feature
+Subsystem-Vendor: IBM Corp.
+Subsystem-Version: 1.0.0
+Tool: Bnd-3.3.0.201609221906

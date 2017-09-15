@@ -1,0 +1,230 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+
+
+#COMPONENTPREFIX CWWKH
+#COMPONENTNAMEFOR CWWKH WebSphere WebSocket
+#CMVCPATHNAME com.ibm.ws.wsoc-1.0/resources/com/ibm/ws/wsoc/internal/resources/WebSockets.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+invalid.endpointclass=CWWKH0001E: Exception occurred during WebSocket application deployment because Annotated Endpoint class {0} is either not public, or concrete, or does not have a public no-args constructor.
+invalid.endpointclass.explanation=Annotated Server Endpoint class must be public, concrete, and have a public no-args constructor.
+invalid.endpointclass.useraction=Fix Annotated Server Endpoint class to be public, concrete, and have a public no-args constructor. After you resolve the problem, deploy the application again.
+
+missing.annotation=CWWKH0002E: Exception occurred during WebSocket application deployment because both @onOpen and @onMessage annotation are missing in Annotated Endpoint Class {0}.
+missing.annotation.explanation=Annotated ServerEndpoint class is invalid if both @OnOpen and @onMessage are missing.
+missing.annotation.useraction=Fix Annotated ServerEndpoint class by adding @OnOpen and/or @OnMessage. After you resolve the problem, deploy the application again.
+
+morethanonepong.annotation=CWWKH0003E: Exception occurred during WebSocket application deployment because more than one @OnMessage method with Pong message type is defined in Annotated Endpoint class {0}.
+morethanonepong.annotation.explanation=Annotated ServerEndpoint is invalid because more than one @OnMessage method with Pong message type is defined in Annotated Endpoint class. WebSocket application is not deployed successfully. 
+morethanonepong.annotation.useraction=Fix Annotated ServerEndpoint class by defining only one pong msg type @OnMessage method. After you resolve the problem, deploy the application again.
+
+morethanonebinary.annotation=CWWKH0004E: Exception occurred during WebSocket application deployment because more than one @OnMessage method with binary message type is defined in Annotated Endpoint class {0}.
+morethanonebinary.annotation.explanation=Annotated ServerEndpoint is invalid because more than one @OnMessage method with binary message type is defined in Annotated Endpoint class. WebSocket application is not deployed successfully. 
+morethanonebinary.annotation.useraction=Fix Annotated ServerEndpoint class by defining only one binary message type @OnMessage method. After you resolve the problem, deploy the application again.
+
+missing.msgtype.param=CWWKH0005E: Exception occurred during WebSocket application deployment because @OnMessage method in the Annotated Endpoint class {0} does not have pong, binary or text type message parameter.
+missing.msgtype.param.explanation=Annotated ServerEndpoint is invalid because @OnMessage method does not have pong, binary or text type message parameter. WebSocket application is not deployed successfully. 
+missing.msgtype.param.useraction=Fix Annotated ServerEndpoint class by declaring @OnMessage method with either text or binary or pong type message parameter. After you resolve the problem, deploy the application again.
+
+morethanonetext.annotation=CWWKH0006E: Exception occurred during WebSocket application deployment because more than one @OnMessage method with text message type is defined in Annotated Endpoint class {0}.
+morethanonetext.annotation.explanation=Annotated ServerEndpoint is invalid because more than one @OnMessage method with text message type is defined in Annotated Endpoint class. WebSocket application is not deployed successfully. 
+morethanonetext.annotation.useraction=Fix Annotated ServerEndpoint class by defining only one text msg type @OnMessage method. After you resolve the problem, deploy the application again.
+
+invalid.onopen.annotation=CWWKH0007E: Exception occurred during WebSocket application deployment because @OnOpen method {0} in Annotated endpoint class {1} has parameters other than Session, EndpointConfig or @PathParam parameters.
+invalid.onopen.annotation.explanation=Invalid parameter type found in @OnOpen method. @OnOpen method can have only optional Session, optional EndpointConfig and optional @PathParam parameters 
+invalid.onopen.annotation.useraction=Fix Annotated ServerEndpoint class by removing invalid parameter type in @OnOpen method. After you resolve the problem, deploy the application again.
+
+morethanoneclose.annotation=CWWKH0008E: Exception occurred during WebSocket application deployment because more than one @OnClose methods are defined in Annotated Endpoint class {0}. @OnClose methods are {1} and {2}.
+morethanoneclose.annotation.explanation=Annotated ServerEndpoint is invalid because more than one @OnClose methods are defined in Annotated Endpoint class. WebSocket application is not deployed successfully. 
+morethanoneclose.annotation.useraction=Fix Annotated ServerEndpoint class by defining only one @OnClose method. After you resolve the problem, deploy the application again.
+
+invalid.onclose.annotation=CWWKH0009E: Exception occurred during WebSocket application deployment because @OnClose method {0} in Annotated endpoint class {1} has parameters other than Session, CloseReason or @PathParam parameters.
+invalid.onclose.annotation.explanation=Invalid parameter type found in @OnClose method. @OnClose method can have only optional Session, optional CloseReason and optional @PathParam parameters. 
+invalid.onclose.annotation.useraction=Fix Annotated ServerEndpoint class by removing invalid parameter type in @OnClose method. After you resolve the problem, deploy the application again.
+
+morethanoneerror.annotation=CWWKH0010E: Exception occurred during WebSocket application deployment because more than one @OnError method is defined in Annotated Endpoint class {0}. @OnError methods are {1} and {2}.
+morethanoneerror.annotation.explanation=Annotated ServerEndpoint is invalid because more than one @OnError method is defined in Annotated Endpoint class. WebSocket application is not deployed successfully. 
+morethanoneerror.annotation.useraction=Fix Annotated ServerEndpoint class by defining only one @OnError method. After you resolve the problem, deploy the application again.
+
+invalid.onerror.annotation=CWWKH0011E: Exception occurred during WebSocket application deployment because @OnError method {0} in Annotated endpoint class {1} has parameters other than Throwable, Session or @PathParam parameters.
+invalid.onerror.annotation.explanation=Invalid parameter type found in @OnError method. @OnError method can have only mandatory Throwable, optional Session and optional @PathParam parameters. 
+invalid.onerror.annotation.useraction=Fix Annotated ServerEndpoint class by removing invalid parameter type in @OnError method. After you resolve the problem, deploy the application again.
+
+missing.throwable=CWWKH0012E: Exception occurred during WebSocket application deployment because @OnError method {0} in Annotated endpoint class {1} is missing mandatory parameter of type Throwable.
+missing.throwable.explanation=Annotated ServerEndpoint is invalid because @OnError method is missing mandatory parameter of type Throwable. WebSocket application is not deployed successfully. 
+missing.throwable.useraction=Fix Annotated ServerEndpoint class by adding mandatory parameter of type Throwable in @OnError method. After you resolve the problem, deploy the application again.
+
+invalid.pong.annotation=CWWKH0013E: Exception occurred during WebSocket application deployment because @OnMessage method {0} in Annotated endpoint class {1} has invalid parameter {2}.
+invalid.pong.annotation.explanation=Invalid parameter type found in @OnMessage method with pong message type. WebSocket application is not deployed successfully.
+invalid.pong.annotation.useraction=Fix Annotated ServerEndpoint class by removing invalid parameter type in @OnMessage method. After you resolve the problem, deploy the application again.
+
+morethanone.binary.param=CWWKH0014E: Exception occurred during WebSocket application deployment because @OnMessage method {0} in Annotated endpoint class {1} has more than one binary message type parameter.
+morethanone.binary.param.explanation=Annotated ServerEndpoint is invalid because @OnMessage method has more than one binary message type parameter. WebSocket application is not deployed successfully. 
+morethanone.binary.param.useraction=Fix Annotated ServerEndpoint class by defining only one binary message type parameter. After you resolve the problem, deploy the application again.
+
+invalid.decoderclass=CWWKH0015E: Exception occurred during WebSocket application deployment because decoder class {0} used in @OnMessage method {1} of Annotated endpoint class {2} is either not public, or concrete, or does not have a public no-args constructor.
+invalid.decoderclass.explanation=Decoder class used in Annotated ServerEndpoint class must be public, concrete, and have a public no-args constructor.
+invalid.decoderclass.useraction=Fix decoder class to be public, concrete, and have a public no-args constructor. After you resolve the problem, deploy the application again.
+
+morethanone.message.param=CWWKH0016E: Exception occurred during WebSocket application deployment because @OnMessage method {0} in Annotated endpoint class {1} has more than one message type parameter {2}.
+morethanone.message.param.explanation=Annotated ServerEndpoint is invalid because @OnMessage method has more than one message type parameter. WebSocket application is not deployed successfully. 
+morethanone.message.param.useraction=Fix @OnMessage method by defining only one message type parameter as per javax.websocket.OnMessage API documentation. After you resolve the problem, deploy the application again.
+
+invalid.binary.param=CWWKH0017E: Exception occurred during WebSocket application deployment because @OnMessage method {0} in Annotated endpoint class {1} has invalid parameter {2}.
+invalid.binary.param.explanation=Invalid parameter type found in @OnMessage method with binary message type. WebSocket application is not deployed successfully.
+invalid.binary.param.useraction=Fix @OnMessage method by removing invalid parameter type according to javax.websocket.OnMessage API documentation. After you resolve the problem, deploy the application again.
+
+morethanone.text.param=CWWKH0018E: Exception occurred during WebSocket application deployment because @OnMessage method {0} in Annotated endpoint class {1} has more than one text message type parameter {2}.
+morethanone.text.param.explanation=Annotated ServerEndpoint is invalid because @OnMessage method has more than one text message type parameter. WebSocket application is not deployed successfully. 
+morethanone.text.param.useraction=Fix @OnMessage method by defining only one text message type parameter according to javax.websocket.OnMessage API documentation. After you resolve the problem, deploy the application again.
+
+invalid.text.param=CWWKH0019E: Exception occurred during WebSocket application deployment because @OnMessage method {0} in Annotated endpoint class {1} has invalid parameter {2}.
+invalid.text.param.explanation=Invalid parameter type found in @OnMessage method with text message type. WebSocket application is not deployed successfully.
+invalid.text.param.useraction=Fix @OnMessage method by removing invalid parameter type according to javax.websocket.OnMessage API documentation. After you resolve the problem, deploy the application again.
+
+missing.path.segment=CWWKH0020E: Exception occurred while invoking WebSocket Server Endpoint. @PathParam parameter {0} defined on the method {1} does not have corresponding path segment in @ServerEndpoint URI in Annotated endpoint class {2}.
+missing.path.segment.explanation=@PathParam parameter does not have corresponding path segment in @ServerEndpoint URI. 
+missing.path.segment.useraction=Fix @PathParam parameter name to match one of the path segments in @ServerEndpoint URI. After you resolve the problem, deploy the application again.
+
+missing.pathparam.value=CWWKH0021E: Exception occurred during WebSocket application deployment because @PathParam annotation {0} defined in method {1} is missing the annotation value in Annotated endpoint class {2}.
+missing.pathparam.value.explanation=@PathParam annotation does not have value. WebSocket application is not deployed successfully.
+missing.pathparam.value.useraction=Fix @PathParam annotation by adding the value to the annotation. After you resolve the problem, deploy the application again.
+
+invalid.pathparam.type=CWWKH0022E: Exception occurred during WebSocket application deployment because @PathParam parameter {0} defined in method {1} has invalid type in Annotated endpoint class {2}.
+invalid.pathparam.type.explanation=@PathParam parameter has invalid type. WebSocket application is not deployed successfully.
+invalid.pathparam.type.useraction=Fix @PathParam annotation type to be either String, any Java primitive type, or boxed version. After you resolve the problem, deploy the application again.
+
+mismatch.pathparam.type=CWWKH0023E: Exception occurred while executing method {0} in Annotated Endpoint class {1} while converting @PathParam data at the parameter index {2} to type {3}.
+mismatch.pathparam.type.explanation=Converting path @PathParam parameter with matching segment from ServerEndpoint URI failed due to invalid type. Endpoint method is not executed successfully.
+mismatch.pathparam.type.useraction=Make sure incoming ServerEndpoint URI segment is a data type match for corresponding @PathParam parameter.
+
+bytes.notavailable=CWWKH0024E: Exception occurred while reading an incoming WebSocket message because no more bytes are available to read.
+bytes.notavailable.explanation=Exception occurred while reading an incoming WebSocket message because no more byte available to read.
+bytes.notavailable.useraction=Check incoming WebSocket message data for correctness.
+
+onmessage.notdefined=CWWKH0025E: Client sent a message to Endpoint {0} which does not have @OnMessage method or MessageHandler for this type of message defined.
+onmessage.notdefined.explanation=Unable to execute WebSocket client request because the client is sending a message to ServerEndpoint which does not have @OnMessage method or MessageHandler for this type of message defined.
+onmessage.notdefined.useraction=Either notify the client or add @OnMessage method to Annotated Server Endpoint, or add a MessageHandler, to be able to serve the client request and deploy the application again.
+
+decoder.ioexception=CWWKH0026E: Unable to execute WebSocket client request because IOException occurred calling onMessage in class {0} while decoding {1} message data. Exception message is {2}
+decoder.ioexception.explanation=Unable to execute WebSocket client request because IOException occurred calling onMessage while decoding message data. 
+decoder.ioexception.useraction=Check incoming message data and check the decoder.
+
+decoder.create.exception=CWWKH0027E: Unable to execute WebSocket request because of problem creating new instance of decoder class {0}. Exception is {1}
+decoder.create.exception.explanation=Unable to execute WebSocket request because of problem creating new instance of decoder class.
+decoder.create.exception.useraction=Check the decoder class.
+
+fin1.processing.error=CWWKH0028E: Exception occurred while reading an incoming WebSocket message in ServerEndpoint class {0} because of an error processing FIN value of 1.
+fin1.processing.error.explanation=Exception occurred while reading an incoming WebSocket message because of an error processing FIN value of 1.
+fin1.processing.error.useraction=Check incoming WebSocket message frame data for correctness.
+ 
+fin0.processing.error=CWWKH0029E: Exception occurred while reading an incoming WebSocket message in ServerEndpoint class {0} because of an error processing FIN value of 0.
+fin0.processing.error.explanation=Exception occurred while reading an incoming WebSocket message because of an error processing FIN value of 0.
+fin0.processing.error.useraction=Check incoming WebSocket message frame data for correctness.
+
+invalid.opcode=CWWKH0030E: Exception occurred while reading an incoming WebSocket message in ServerEndpoint class {0} because of an invalid opcode {1} in the message frame.
+invalid.opcode.explanation=Exception occurred while reading an incoming WebSocket message because of an invalid opcode in the message frame.
+invalid.opcode.useraction=Check incoming WebSocket message frame data for correctness.
+
+invalid.continue.opcode=CWWKH0031E: Exception occurred while reading an incoming WebSocket message in ServerEndpoint class {0} because of an invalid continue opcode with unfragmented message.
+invalid.continue.opcode.explanation=Exception occurred while reading an incoming WebSocket message because of an invalid continue opcode with unfragmented message.
+invalid.continue.opcode.useraction=Check incoming WebSocket message frame data for correctness.  
+
+incorrect.maskflag=CWWKH0032E: Exception occurred while reading an incoming WebSocket message in ServerEndpoint class {0} because the mask flag is not set correctly in the message frame.
+incorrect.maskflag.explanation=Exception occurred while reading an incoming WebSocket message because the mask flag is not set correctly in the message frame.
+incorrect.maskflag.useraction=Check incoming WebSocket message frame data for correctness. 
+
+invalid.maskflag.value=CWWKH0033E: Exception occurred while reading an incoming WebSocket message in ServerEndpoint class {0} because the Mask Flag is not set to a correct value.
+invalid.maskflag.value.explanation=Exception occurred while reading an incoming WebSocket message because the Mask Flag is not set to a correct value in the message frame.
+invalid.maskflag.value.useraction=Check incoming WebSocket message frame data for correctness.
+
+duplicate.uri=CWWKH0034E: Exception occurred during WebSocket application deployment because more than one server endpoints have the same URI {0}.
+duplicate.uri.explanation=Annotated ServerEndpoint is invalid because more than one server endpoints have the same URI. WebSocket application is not deployed successfully. 
+duplicate.uri.useraction=Define unique ServerEndpoint URIs in WebSocket application. After you resolve the problem, deploy the application again.
+
+invalid.nonzero.opcode=CWWKH0035E: Exception occurred while reading an incoming WebSocket message in ServerEndpoint class {0} because of an invalid non-zero opcode on non-first frame.
+invalid.nonzero.opcode.explanation=Exception occurred while reading an incoming WebSocket message because of an invalid non-zero opcode on non-first frame.
+invalid.nonzero.opcode.useraction=Check incoming WebSocket message frame data for correctness.
+
+morethanoneonopen.annotation=CWWKH0036E: Exception occurred during WebSocket application deployment because more than one @OnOpen method is defined in Annotated Endpoint class {0}.
+morethanoneonopen.annotation.explanation=Annotated ServerEndpoint is invalid because more than one @OnOpen method is defined in Annotated Endpoint class. WebSocket application is not deployed successfully. 
+morethanoneonopen.annotation.useraction=Fix Annotated ServerEndpoint class by defining only one @OnOpen method. After you resolve the problem, deploy the application again.
+
+invalid.message.toobig=CWWKH0037E: Invalid incoming WebSocket message in ServerEndpoint class {0}. Incoming message size is {1} which is larger than the maxMessageSize {2} defined in @OnMessage annotation method {3}.
+invalid.message.toobig.explanation=WebSocket message can not exceed maxMessageSize defined in @OnMessage annotation.
+invalid.message.toobig.useraction=Check the client to send WebSocket message smaller than maxMessageSize defined in @OnMessage or increase maxMessageSize in @OnMessage and deploy the application again.
+
+maxidletimeout.closesession=CWWKH0038E: The WebSocket session has been inactive for {0} seconds. Closing the connection.
+maxidletimeout.closesession.explanation=The WebSocket session timed out. WebSocket sessions become inactive when messages are not sent or received within the number of seconds specified by the maxIdleTimeout setting.
+maxidletimeout.closesession.useraction=Check why the client is not sending or receiving messages. If necessary, increase the maxIdleTimeout setting using the Session.setMaxIdleTimeout() API.
+
+client.invalid.returncode=CWWKH0039E: When an outgoing WebSocket request was sent to the {1} endpoint on the target server, a {0} response was returned instead of a 101 response.
+client.invalid.returncode.explanation=Outgoing WebSocket operations require a 101 response code for WebSocket operations.
+client.invalid.returncode.useraction=Use the invalid response code to determine if the target endpoint is a valid and running WebSocket endpoint and to determine the cause of the failure on the outgoing WebSocket request. 
+
+client.invalid.acceptkey=CWWKH0040E: The target server responded with an invalid WebSocket accept key when sending an outgoing WebSocket request to the {1} endpoint.  
+client.invalid.acceptkey.explanation=Outgoing WebSocket operations require that the target server returns a valid WebSocket accept key for WebSocket operations.
+client.invalid.acceptkey.useraction=Verify that the target server is compliant with the WebSocket protocol.
+
+client.invalid.endpoint=CWWKH0041E: The invalid {0} endpoint was specified during an outgoing  WebSocket request.
+client.invalid.endpoint.explanation=A valid endpoint is required for an outgoing  WebSocket request.
+client.invalid.endpoint.useraction=Check that the ClientEndpoint parameter used in the connectToServer method of the WebSocket API call is an annotated client endpoint. 
+
+client.invalid.scheme=CWWKH0042E: An invalid {0} scheme was used for the outgoing client connection. Valid schemes for the WebSocket protocol are ws or wss.
+client.invalid.scheme.explanation=Valid WebSocket schemes  are ws or wss.
+client.invalid.scheme.useraction=Use a valid scheme during an outgoing WebSocket request.
+
+client.invalid.configurator=CWWKH0043E: The {0} Configurator class was not created during an outgoing request. The exception is {1}. 
+client.invalid.configurator.explanation=The Configuration class was not created during an outgoing request, possibly because the public zero argument constructor of the Configurator class did not exist or was not accessible.
+client.invalid.configurator.useraction=Verify the correctness of the configurator class and that the class has an accessible public zero argument constructor.
+ 
+client.connection.error=CWWKH0044E: The {0} endpoint could not be processed during an outgoing WebSocket request.  The exception is {1}.
+client.connection.error.explanation=The exception occurred when the endpoint attempted to connect to the target server during an outgoing WebSocket request.
+client.connection.error.useraction=Use exception details to determine the cause and fix the problem.
+
+client.invalid.endpointclass=CWWKH0045E: The {0} class is not valid and was specified during an outgoing WebSocket request.
+client.invalid.endpointclass.explanation=A valid endpoint class is required for an outgoing  WebSocket request.
+client.invalid.endpointclass.useraction=Verify that the  Endpoint parameter that is used in the connectToServer method of the WebSocket API call extends a WebSocket endpoint class.
+
+adding.endpoint=CWWKH0046I: Adding a WebSocket ServerEndpoint with the following URI: {0}
+adding.endpoint.explanation=The WebSocket ServerEndpoint with the specified URI is available for the WebSocket client to use.
+adding.endpoint.useraction=No action is required. 
+
+invalid.endpoint.context=CWWKH0047E: The WebSocket ServerEndpoints with the {0} context path are not available for the client.
+invalid.endpoint.context.explanation=The WebSocket ServerEndpoints with the specified context path are unavailable to service the WebSocket client.
+invalid.endpoint.context.useraction=For information about why the ServerEndpoints are not available, see the Liberty profile server logs and trace.
+
+client.connection.nossl=CWWKH0048E: The {0} endpoint could not be processed during an outgoing secure WebSocket request because security is not enabled.
+client.connection.nossl.explanation=Security must be enabled to process outgoing secure WebSocket requests.
+client.connection.nossl.useraction=Enable security.
+
+endpoint.addsclosed=CWWKH0049E: Unable to add additional WebSocket endpoints after the WebSocket application started.
+endpoint.addsclosed.explanation=WebSocket endpoints must be added before the WebSocket application starts.
+endpoint.addsclosed.useraction=Add WebSocket endpoints before the WebSocket application starts.
+
+endpoint.creation.error=CWWKH0050E: The {0} endpoint class could not be created.  The exception is {1}.
+endpoint.creation.error.explanation=The exception occurred during endpoint class creation.
+endpoint.creation.error.useraction=Use exception details to determine the cause and fix the problem.
+
+endpoint.instance.error=CWWKH0051E: The server cannot access the {0} endpoint class because of the following exception: {1}
+endpoint.instance.error.explanation=When the server attempted to access the specified endpoint class, an error occurred.
+endpoint.instance.error.useraction=Review the exception details to determine why the endpoint class cannot be accessed, and fix the problem.
+
+missingslashornull.uri=CWWKH0052E: An exception occurred during deployment/start of server Endpoint: {0} with uri: "{1}". Endpoint URI is either null or does not start with /.
+missingslashornull.uri.explanation=ServerEndpoint is invalid because Endpoint URI is either null or does not start with / in endpoint class. WebSocket application is not available for requests. 
+missingslashornull.uri.useraction=Define non null Endpoint URI beginning with /. After you resolve the problem, deploy the application again.
+
+
+

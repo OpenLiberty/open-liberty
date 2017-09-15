@@ -1,0 +1,684 @@
+Index: rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsEndpointImpl.java
+===================================================================
+--- rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsEndpointImpl.java	(revision 1415161)
++++ rt/frontend/jaxws/src/main/java/org/apache/cxf/jaxws/support/JaxWsEndpointImpl.java	(working copy)
+@@ -21,6 +21,7 @@
+ 
+ import java.lang.reflect.Method;
+ import java.util.ArrayList;
++import java.util.Collection;
+ import java.util.Iterator;
+ import java.util.List;
+ import java.util.logging.Logger;
+@@ -77,9 +78,13 @@
+ import org.apache.cxf.jaxws.spi.ProviderImpl;
+ import org.apache.cxf.message.Message;
+ import org.apache.cxf.service.Service;
++import org.apache.cxf.service.model.BindingFaultInfo;
+ import org.apache.cxf.service.model.BindingInfo;
++import org.apache.cxf.service.model.BindingMessageInfo;
++import org.apache.cxf.service.model.BindingOperationInfo;
+ import org.apache.cxf.service.model.DescriptionInfo;
+ import org.apache.cxf.service.model.EndpointInfo;
++import org.apache.cxf.service.model.Extensible;
+ import org.apache.cxf.staxutils.W3CDOMStreamWriter;
+ import org.apache.cxf.ws.addressing.EndpointReferenceType;
+ import org.apache.cxf.ws.addressing.JAXWSAConstants;
+@@ -87,6 +92,7 @@
+ import org.apache.cxf.ws.addressing.WSAddressingFeature;
+ import org.apache.cxf.wsdl.WSDLManager;
+ 
++
+ /**
+  * A JAX-WS specific implementation of the CXF {@link org.apache.cxf.endpoint.Endpoint} interface.
+  * Extends the interceptor provider functionality of its base class by adding 
+@@ -201,11 +207,41 @@
+     }
+     
+     private void extractWsdlExtensibilities(EndpointInfo endpoint) {
+-        List<ExtensibilityElement> bindingExtensors 
+-            = endpoint.getBinding().getExtensors(ExtensibilityElement.class);
+-        List<ExtensibilityElement> portExtensors 
+-            = endpoint.getExtensors(ExtensibilityElement.class);
++        List<ExtensibilityElement> portExtensors = getExtensors(endpoint);
++        List<ExtensibilityElement> bindingExtensors = getExtensors(endpoint.getBinding());        
++        
++        //check the extensions under <wsdl:binding>
+         checkRespectBindingFeature(bindingExtensors);
++        
++        Collection<BindingOperationInfo> bindingOperations = endpoint.getBinding().getOperations();
++        if (null != bindingOperations) {
++            Iterator<BindingOperationInfo> iterator = bindingOperations.iterator();
++            while (iterator.hasNext()) {
++                BindingOperationInfo operationInfo = iterator.next();
++                BindingMessageInfo inputInfo = operationInfo.getInput();
++                BindingMessageInfo outputnfo = operationInfo.getOutput();
++                Collection<BindingFaultInfo> faults = operationInfo.getFaults();
++                
++                //check the extensions under <wsdl:operation>
++                checkRespectBindingFeature(getExtensors(operationInfo));
++                //check the extensions under <wsdl:input>
++                checkRespectBindingFeature(getExtensors(inputInfo));
++                //check the extensions under <wsdl:output>
++                checkRespectBindingFeature(getExtensors(outputnfo));
++                if (null != faults) {
++                    Iterator<BindingFaultInfo> faultIterator = faults.iterator();
++                    while (faultIterator.hasNext()) {
++                        BindingFaultInfo faultInfo = faultIterator.next();
++                        
++                        //check the extensions under <wsdl:fault>
++                        checkRespectBindingFeature(getExtensors(faultInfo));
++                    }
++                }
++                
++            }
++        }
++
++        
+         if (hasUsingAddressing(bindingExtensors) || hasUsingAddressing(portExtensors)) {
+             WSAddressingFeature feature = new WSAddressingFeature();
+             if (addressingRequired(bindingExtensors)
+@@ -217,6 +253,10 @@
+         extractWsdlEprs(endpoint);
+     }
+     
++    private List<ExtensibilityElement> getExtensors(Extensible extensibleInfo) {
++        return (null != extensibleInfo) ? extensibleInfo.getExtensors(ExtensibilityElement.class) : null;
++    }
++    
+     private void checkRespectBindingFeature(List<ExtensibilityElement> bindingExtensors) {
+         if (bindingExtensors != null) {
+             Iterator<ExtensibilityElement> extensionElements = bindingExtensors.iterator();
+Index: systests/uncategorized/src/test/java/org/apache/cxf/cxf2006/RespectBindingFeatureClientServerTest.java
+===================================================================
+--- systests/uncategorized/src/test/java/org/apache/cxf/cxf2006/RespectBindingFeatureClientServerTest.java	(revision 1415161)
++++ systests/uncategorized/src/test/java/org/apache/cxf/cxf2006/RespectBindingFeatureClientServerTest.java	(working copy)
+@@ -21,25 +21,42 @@
+ 
+ import javax.xml.namespace.QName;
+ import javax.xml.ws.RespectBindingFeature;
++
+ import org.apache.cxf.testutil.common.AbstractBusClientServerTestBase;
++import org.apache.cxf.testutil.common.ServerLauncher;
+ import org.apache.hello_world_rpclit.GreeterRPCLit;
+ import org.apache.hello_world_rpclit.SOAPServiceRPCLit;
+-import org.junit.BeforeClass;
++import org.junit.After;
+ import org.junit.Test;
+ 
+ public class RespectBindingFeatureClientServerTest extends AbstractBusClientServerTestBase {
+     public static final String PORT = Server.PORT;
+     private final QName portName = new QName("http://apache.org/hello_world_rpclit", "SoapPortRPCLit");
+     private SOAPServiceRPCLit service = new SOAPServiceRPCLit();
+-
+-    @BeforeClass
+-    public static void startServers() throws Exception {
+-        assertTrue("server did not launch correctly", launchServer(Server.class, true));
++    private ServerLauncher serverLauncher;
++    
++    @After
++    public void tearDown() throws Exception {
++        if (null != serverLauncher) {
++            serverLauncher.signalStop();
++            serverLauncher.stopServer();
++        }
++    }
++    
++    private void startServers(String wsdlLocation) throws Exception {
++        String[] args = new String[] {wsdlLocation};
++        
++        serverLauncher = new ServerLauncher(Server.class.getName(), null, args, true);
++        boolean isServerReady = serverLauncher.launchServer();
++        
++        assertTrue("server did not launch correctly", isServerReady);
+         createStaticBus();
+     }
+ 
+     @Test
+     public void testRespectBindingFeature() throws Exception {
++        startServers("/wsdl_systest/cxf2006.wsdl");
++        
+         try {
+             GreeterRPCLit greeter = service.getPort(portName, GreeterRPCLit.class,
+                                                     new RespectBindingFeature(true));
+@@ -52,10 +69,62 @@
+                        ex.getMessage().indexOf("extension with required=true attribute") > -1);
+         }
+     }
+-
++    
+     @Test
++    public void testOperationRespectBindingFeature() throws Exception {
++        startServers("/wsdl_systest/cxf_operation_respectbing.wsdl");
++        
++        try {
++            GreeterRPCLit greeter = service.getPort(portName, GreeterRPCLit.class,
++                                                    new RespectBindingFeature(true));
++            updateAddressPort(greeter, PORT);
++            greeter.greetMe("hello");
++            fail("WebServiceException is expected");
++        } catch (Exception ex) {
++            assertTrue("WebServiceException is expected", ex instanceof javax.xml.ws.WebServiceException);
++            assertTrue("RespectBindingFeature message is expected: " + ex.getMessage(),
++                       ex.getMessage().indexOf("extension with required=true attribute") > -1);
++        }
++    }
++    
++    @Test
++    public void testOperationInputRespectBindingFeature() throws Exception {
++        startServers("/wsdl_systest/cxf_operation_input_respectbing.wsdl");
++        
++        try {
++            GreeterRPCLit greeter = service.getPort(portName, GreeterRPCLit.class,
++                                                    new RespectBindingFeature(true));
++            updateAddressPort(greeter, PORT);
++            greeter.greetMe("hello");
++            fail("WebServiceException is expected");
++        } catch (Exception ex) {
++            assertTrue("WebServiceException is expected", ex instanceof javax.xml.ws.WebServiceException);
++            assertTrue("RespectBindingFeature message is expected: " + ex.getMessage(),
++                       ex.getMessage().indexOf("extension with required=true attribute") > -1);
++        }
++    }
++    
++    @Test
++    public void testOperationOutputRespectBindingFeature() throws Exception {
++        startServers("/wsdl_systest/cxf_operation_output_respectbing.wsdl");
++        
++        try {
++            GreeterRPCLit greeter = service.getPort(portName, GreeterRPCLit.class,
++                                                    new RespectBindingFeature(true));
++            updateAddressPort(greeter, PORT);
++            greeter.greetMe("hello");
++            fail("WebServiceException is expected");
++        } catch (Exception ex) {
++            assertTrue("WebServiceException is expected", ex instanceof javax.xml.ws.WebServiceException);
++            assertTrue("RespectBindingFeature message is expected: " + ex.getMessage(),
++                       ex.getMessage().indexOf("extension with required=true attribute") > -1);
++        }
++    }
++    
++    @Test
+     public void testRespectBindingFeatureFalse() throws Exception {
+-
++        startServers("/wsdl_systest/cxf2006.wsdl");
++        
+         GreeterRPCLit greeter = service.getPort(portName, GreeterRPCLit.class,
+                                                 new RespectBindingFeature(false));
+         updateAddressPort(greeter, PORT);
+Index: systests/uncategorized/src/test/java/org/apache/cxf/cxf2006/Server.java
+===================================================================
+--- systests/uncategorized/src/test/java/org/apache/cxf/cxf2006/Server.java	(revision 1415161)
++++ systests/uncategorized/src/test/java/org/apache/cxf/cxf2006/Server.java	(working copy)
+@@ -32,14 +32,23 @@
+ public class Server extends AbstractBusTestServerBase {        
+     public static final String PORT = allocatePort(Server.class);
+     Endpoint ep;
++    String wsdlLocation;
+     
++    public Server() {
++        this(new String[] {"/wsdl_systest/cxf2006.wsdl"});
++    }
++    
++    public Server(String[] args) {
++        wsdlLocation = args.length > 0 ? args[0] : "/wsdl_systest/cxf2006.wsdl";
++    }
++    
+     protected void run()  {
+         String address;
+         Object implementor = new RPCLitGreeterImpl();
+         address = "http://localhost:" + PORT + "/SOAPServiceRPCLit/SoapPort";
+         ep = Endpoint.create(implementor);
+ 
+-        URL wsdl = getClass().getResource("/wsdl_systest/cxf2006.wsdl");
++        URL wsdl = getClass().getResource(wsdlLocation);
+         ((EndpointImpl)ep).setWsdlLocation(wsdl.toString());
+         ((EndpointImpl)ep).getInInterceptors().add(new LoggingInInterceptor());
+         ((EndpointImpl)ep).getOutInterceptors().add(new LoggingOutInterceptor());
+Index: systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_input_respectbing.wsdl
+===================================================================
+--- systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_input_respectbing.wsdl	(revision 0)
++++ systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_input_respectbing.wsdl	(working copy)
+@@ -0,0 +1,143 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
++	license agreements. See the NOTICE file distributed with this work for additional 
++	information regarding copyright ownership. The ASF licenses this file to 
++	you under the Apache License, Version 2.0 (the "License"); you may not use 
++	this file except in compliance with the License. You may obtain a copy of 
++	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
++	by applicable law or agreed to in writing, software distributed under the 
++	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
++	OF ANY KIND, either express or implied. See the License for the specific 
++	language governing permissions and limitations under the License. -->
++<wsdl:definitions name="HelloWorld"
++	targetNamespace="http://apache.org/hello_world_rpclit" xmlns="http://schemas.xmlsoap.org/wsdl/"
++	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://apache.org/hello_world_rpclit"
++	xmlns:x1="http://apache.org/hello_world_rpclit/types" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
++	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:foo='http://foo.org/foo'>
++	<wsdl:types>
++		<schema targetNamespace="http://apache.org/hello_world_rpclit/types"
++			xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
++			<complexType name="myComplexStruct">
++				<sequence>
++					<element name="elem1" type="xsd:string" />
++					<element name="elem2" type="xsd:string" />
++					<element name="elem3" type="xsd:int" />
++				</sequence>
++			</complexType>
++		</schema>
++	</wsdl:types>
++
++	<wsdl:message name="sayHiRequest" />
++
++	<wsdl:message name="sayHiResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="greetMeRequest">
++		<wsdl:part type="xsd:string" name="in" />
++	</wsdl:message>
++
++	<wsdl:message name="greetMeResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="greetUsRequest">
++		<wsdl:part type="xsd:string" name="you" />
++		<wsdl:part type="xsd:string" name="me" />
++	</wsdl:message>
++
++	<wsdl:message name="greetUsResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="sendReceiveDataRequest">
++		<wsdl:part type="x1:myComplexStruct" name="in" />
++	</wsdl:message>
++
++	<wsdl:message name="sendReceiveDataResponse">
++		<wsdl:part type="x1:myComplexStruct" name="out" />
++	</wsdl:message>
++
++	<wsdl:portType name="GreeterRPCLit">
++		<wsdl:operation name="sayHi">
++			<wsdl:input message="tns:sayHiRequest" name="sayHiRequest" />
++			<wsdl:output message="tns:sayHiResponse" name="sayHiResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="greetMe">
++			<wsdl:input message="tns:greetMeRequest" name="greetMeRequest" />
++			<wsdl:output message="tns:greetMeResponse" name="greetMeResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="sendReceiveData">
++			<wsdl:input message="tns:sendReceiveDataRequest" name="SendReceiveDataRequest" />
++			<wsdl:output message="tns:sendReceiveDataResponse" name="SendReceiveDataResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="greetUs">
++			<wsdl:input message="tns:greetUsRequest" name="greetUsRequest" />
++			<wsdl:output message="tns:greetUsResponse" name="greetUsResponse" />
++		</wsdl:operation>
++	</wsdl:portType>
++
++	<wsdl:binding name="Greeter_SOAPBinding_RPCLit" type="tns:GreeterRPCLit">
++
++		<soap:binding style="rpc"
++			transport="http://schemas.xmlsoap.org/soap/http" />
++
++		<wsdl:operation name="sayHi">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++		<wsdl:operation name="greetMe">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<foo:bar wsdl:required="true" />
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++
++		</wsdl:operation>
++
++		<wsdl:operation name="greetUs">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++		<wsdl:operation name="sendReceiveData">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++	</wsdl:binding>
++
++	<wsdl:service name="SOAPServiceRPCLit">
++		<wsdl:port binding="tns:Greeter_SOAPBinding_RPCLit" name="SoapPortRPCLit">
++			<soap:address location="http://localhost:9002/SOAPServiceRPCLit/SoapPort" />
++		</wsdl:port>
++	</wsdl:service>
++
++</wsdl:definitions>
+\ No newline at end of file
+Index: systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_output_respectbing.wsdl
+===================================================================
+--- systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_output_respectbing.wsdl	(revision 0)
++++ systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_output_respectbing.wsdl	(working copy)
+@@ -0,0 +1,143 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
++	license agreements. See the NOTICE file distributed with this work for additional 
++	information regarding copyright ownership. The ASF licenses this file to 
++	you under the Apache License, Version 2.0 (the "License"); you may not use 
++	this file except in compliance with the License. You may obtain a copy of 
++	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
++	by applicable law or agreed to in writing, software distributed under the 
++	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
++	OF ANY KIND, either express or implied. See the License for the specific 
++	language governing permissions and limitations under the License. -->
++<wsdl:definitions name="HelloWorld"
++	targetNamespace="http://apache.org/hello_world_rpclit" xmlns="http://schemas.xmlsoap.org/wsdl/"
++	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://apache.org/hello_world_rpclit"
++	xmlns:x1="http://apache.org/hello_world_rpclit/types" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
++	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:foo='http://foo.org/foo'>
++	<wsdl:types>
++		<schema targetNamespace="http://apache.org/hello_world_rpclit/types"
++			xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
++			<complexType name="myComplexStruct">
++				<sequence>
++					<element name="elem1" type="xsd:string" />
++					<element name="elem2" type="xsd:string" />
++					<element name="elem3" type="xsd:int" />
++				</sequence>
++			</complexType>
++		</schema>
++	</wsdl:types>
++
++	<wsdl:message name="sayHiRequest" />
++
++	<wsdl:message name="sayHiResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="greetMeRequest">
++		<wsdl:part type="xsd:string" name="in" />
++	</wsdl:message>
++
++	<wsdl:message name="greetMeResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="greetUsRequest">
++		<wsdl:part type="xsd:string" name="you" />
++		<wsdl:part type="xsd:string" name="me" />
++	</wsdl:message>
++
++	<wsdl:message name="greetUsResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="sendReceiveDataRequest">
++		<wsdl:part type="x1:myComplexStruct" name="in" />
++	</wsdl:message>
++
++	<wsdl:message name="sendReceiveDataResponse">
++		<wsdl:part type="x1:myComplexStruct" name="out" />
++	</wsdl:message>
++
++	<wsdl:portType name="GreeterRPCLit">
++		<wsdl:operation name="sayHi">
++			<wsdl:input message="tns:sayHiRequest" name="sayHiRequest" />
++			<wsdl:output message="tns:sayHiResponse" name="sayHiResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="greetMe">
++			<wsdl:input message="tns:greetMeRequest" name="greetMeRequest" />
++			<wsdl:output message="tns:greetMeResponse" name="greetMeResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="sendReceiveData">
++			<wsdl:input message="tns:sendReceiveDataRequest" name="SendReceiveDataRequest" />
++			<wsdl:output message="tns:sendReceiveDataResponse" name="SendReceiveDataResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="greetUs">
++			<wsdl:input message="tns:greetUsRequest" name="greetUsRequest" />
++			<wsdl:output message="tns:greetUsResponse" name="greetUsResponse" />
++		</wsdl:operation>
++	</wsdl:portType>
++
++	<wsdl:binding name="Greeter_SOAPBinding_RPCLit" type="tns:GreeterRPCLit">
++
++		<soap:binding style="rpc"
++			transport="http://schemas.xmlsoap.org/soap/http" />
++
++		<wsdl:operation name="sayHi">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++		<wsdl:operation name="greetMe">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<foo:bar wsdl:required="true" />
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++
++		</wsdl:operation>
++
++		<wsdl:operation name="greetUs">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++		<wsdl:operation name="sendReceiveData">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++	</wsdl:binding>
++
++	<wsdl:service name="SOAPServiceRPCLit">
++		<wsdl:port binding="tns:Greeter_SOAPBinding_RPCLit" name="SoapPortRPCLit">
++			<soap:address location="http://localhost:9002/SOAPServiceRPCLit/SoapPort" />
++		</wsdl:port>
++	</wsdl:service>
++
++</wsdl:definitions>
+\ No newline at end of file
+Index: systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_respectbing.wsdl
+===================================================================
+--- systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_respectbing.wsdl	(revision 0)
++++ systests/uncategorized/src/test/resources/wsdl_systest/cxf_operation_respectbing.wsdl	(working copy)
+@@ -0,0 +1,143 @@
++<?xml version="1.0" encoding="UTF-8"?>
++<!-- Licensed to the Apache Software Foundation (ASF) under one or more contributor 
++	license agreements. See the NOTICE file distributed with this work for additional 
++	information regarding copyright ownership. The ASF licenses this file to 
++	you under the Apache License, Version 2.0 (the "License"); you may not use 
++	this file except in compliance with the License. You may obtain a copy of 
++	the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required 
++	by applicable law or agreed to in writing, software distributed under the 
++	License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS 
++	OF ANY KIND, either express or implied. See the License for the specific 
++	language governing permissions and limitations under the License. -->
++<wsdl:definitions name="HelloWorld"
++	targetNamespace="http://apache.org/hello_world_rpclit" xmlns="http://schemas.xmlsoap.org/wsdl/"
++	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://apache.org/hello_world_rpclit"
++	xmlns:x1="http://apache.org/hello_world_rpclit/types" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
++	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:foo='http://foo.org/foo'>
++	<wsdl:types>
++		<schema targetNamespace="http://apache.org/hello_world_rpclit/types"
++			xmlns="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
++			<complexType name="myComplexStruct">
++				<sequence>
++					<element name="elem1" type="xsd:string" />
++					<element name="elem2" type="xsd:string" />
++					<element name="elem3" type="xsd:int" />
++				</sequence>
++			</complexType>
++		</schema>
++	</wsdl:types>
++
++	<wsdl:message name="sayHiRequest" />
++
++	<wsdl:message name="sayHiResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="greetMeRequest">
++		<wsdl:part type="xsd:string" name="in" />
++	</wsdl:message>
++
++	<wsdl:message name="greetMeResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="greetUsRequest">
++		<wsdl:part type="xsd:string" name="you" />
++		<wsdl:part type="xsd:string" name="me" />
++	</wsdl:message>
++
++	<wsdl:message name="greetUsResponse">
++		<wsdl:part type="xsd:string" name="out" />
++	</wsdl:message>
++
++	<wsdl:message name="sendReceiveDataRequest">
++		<wsdl:part type="x1:myComplexStruct" name="in" />
++	</wsdl:message>
++
++	<wsdl:message name="sendReceiveDataResponse">
++		<wsdl:part type="x1:myComplexStruct" name="out" />
++	</wsdl:message>
++
++	<wsdl:portType name="GreeterRPCLit">
++		<wsdl:operation name="sayHi">
++			<wsdl:input message="tns:sayHiRequest" name="sayHiRequest" />
++			<wsdl:output message="tns:sayHiResponse" name="sayHiResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="greetMe">
++			<wsdl:input message="tns:greetMeRequest" name="greetMeRequest" />
++			<wsdl:output message="tns:greetMeResponse" name="greetMeResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="sendReceiveData">
++			<wsdl:input message="tns:sendReceiveDataRequest" name="SendReceiveDataRequest" />
++			<wsdl:output message="tns:sendReceiveDataResponse" name="SendReceiveDataResponse" />
++		</wsdl:operation>
++		<wsdl:operation name="greetUs">
++			<wsdl:input message="tns:greetUsRequest" name="greetUsRequest" />
++			<wsdl:output message="tns:greetUsResponse" name="greetUsResponse" />
++		</wsdl:operation>
++	</wsdl:portType>
++
++	<wsdl:binding name="Greeter_SOAPBinding_RPCLit" type="tns:GreeterRPCLit">
++
++		<soap:binding style="rpc"
++			transport="http://schemas.xmlsoap.org/soap/http" />
++
++		<wsdl:operation name="sayHi">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++		<wsdl:operation name="greetMe">
++			<soap:operation soapAction="" style="rpc" />
++			<foo:bar wsdl:required="true" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++
++		</wsdl:operation>
++
++		<wsdl:operation name="greetUs">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++		<wsdl:operation name="sendReceiveData">
++			<soap:operation soapAction="" style="rpc" />
++			<wsdl:input>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:input>
++			<wsdl:output>
++				<soap:body namespace="http://apache.org/hello_world_rpclit"
++					use="literal" />
++			</wsdl:output>
++		</wsdl:operation>
++
++	</wsdl:binding>
++
++	<wsdl:service name="SOAPServiceRPCLit">
++		<wsdl:port binding="tns:Greeter_SOAPBinding_RPCLit" name="SoapPortRPCLit">
++			<soap:address location="http://localhost:9002/SOAPServiceRPCLit/SoapPort" />
++		</wsdl:port>
++	</wsdl:service>
++
++</wsdl:definitions>
+\ No newline at end of file

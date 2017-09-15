@@ -1,0 +1,373 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+   <!-- See http://findbugs.sourceforge.net/manual/filter.html for details 
+      of the syntax of this file -->
+
+   <!-- match generated nls classes: return mutable type -->
+   <Match>
+      <Class name="~.*\.resources\..*" />
+      <Method name="getContents" />
+      <Bug code="EI" />
+   </Match>
+
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class name="com.ibm.ws.jaxrs20.utils.JaxRsUtils" />
+      <Or>
+         <Method name="getModuleInfo" />
+         <Method name="getWebModuleInfo" />
+      </Or>
+   </Match>
+   <Match>
+      <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
+      <Class name="com.ibm.ws.jaxrs20.component.JaxRsModuleMetaDataListener" />
+      <Or>
+         <Method name="setMetaDataSlotService" />
+         <Method name="setMetaDataSlotService" />
+         <Method name="setMetaDataSlotService" />
+         <Method name="unsetMetaDataSlotService" />
+         <Method name="unsetMetaDataSlotService" />
+         <Method name="unsetMetaDataSlotService" />
+      </Or>
+   </Match>
+   <Match>
+      <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD" />
+      <Class name="com.ibm.ws.jaxrs20.component.JaxRsProviderFactory" />
+      <Or>
+         <Method name="activate" />
+         <Method name="deactivate" />
+      </Or>
+   </Match>
+   <Match>
+      <Bug pattern="MS_CANNOT_BE_FINAL" />
+      <Class name="com.ibm.ws.jaxrs20.support.JaxRsMetaDataManager" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.jaxrs.utils.InjectionUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class name="org.apache.cxf.jaxrs.utils.InjectionUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.jaxrs.utils.InjectionUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="EI_EXPOSE_REP2" />
+      <Class name="org.apache.cxf.jaxrs.utils.MessageContextProxyClassLoader" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE" />
+      <Class name="org.apache.cxf.jaxrs.utils.InjectionUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class name="org.apache.cxf.jaxrs.utils.InjectionUtils$1" />
+   </Match>
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class name="org.apache.cxf.jaxrs.utils.InjectionUtils$2" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider" />
+      <Or>
+         <Method name="readFrom" />
+      </Or>
+   </Match>
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class name="com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider" />
+      <Or>
+         <Method name="getActualType" />
+      </Or>
+   </Match>
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class
+         name="com.ibm.ws.jaxrs20.component.globalhandler.GlobalHandlerInterceptor" />
+      <Method name="handleMessage" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.common.logging.LogUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_NULL_ON_SOME_PATH" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="EI_EXPOSE_REP2" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="EI_EXPOSE_REP2" />
+      <Class name="org.apache.cxf.jaxrs.provider.LibertyJaxrs20ClassLoader" />
+   </Match>
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class name="org.apache.cxf.common.logging.LogUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="EQ_DOESNT_OVERRIDE_EQUALS" />
+      <Class
+         name="org.apache.cxf.jaxrs.provider.AbstractJAXBProvider$JAXBCollectionWrapperReader" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE" />
+      <Class name="org.apache.cxf.common.logging.LogUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="BC_VACUOUS_INSTANCEOF" />
+      <Class name="com.ibm.ws.jaxrs20.component.injection.ContextObjectFactory" />
+   </Match>
+   <Match>
+      <Bug pattern="BC_VACUOUS_INSTANCEOF" />
+      <Class name="com.ibm.ws.jaxrs20.injection.AbstractParamInjectionBinding" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.jaxrs.provider.ProviderFactory" />
+   </Match>
+   <Match>
+      <Bug pattern="REC_CATCH_EXCEPTION" />
+      <Class name="org.apache.cxf.jaxrs.provider.ProviderFactory" />
+   </Match>
+   <Match>
+      <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED" />
+      <Class name="org.apache.cxf.jaxrs.interceptor.CachedTime" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_NULL_ON_SOME_PATH" />
+      <Class name="org.apache.cxf.transport.http.Headers" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.transport.http.Headers" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.jaxrs.interceptor.JAXRSOutInterceptor" />
+   </Match>
+   <Match>
+      <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED" />
+      <Class name="org.apache.cxf.jaxrs.interceptor.JAXRSOutInterceptor" />
+   </Match>
+   <Match>
+      <Bug pattern="DM_DEFAULT_ENCODING" />
+      <Class
+         name="org.apache.cxf.jaxrs.model.wadl.WadlGenerator$StringSchemaWriter" />
+   </Match>
+   <Match>
+      <Bug pattern="ES_COMPARING_PARAMETER_STRING_WITH_EQ" />
+      <Class name="org.apache.cxf.jaxrs.model.wadl.WadlGenerator" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.jaxrs.model.wadl.WadlGenerator" />
+   </Match>
+   <Match>
+      <Bug pattern="BC_IMPOSSIBLE_CAST" />
+      <Class name="org.apache.cxf.jaxrs.utils.JAXRSUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_NULL_ON_SOME_PATH" />
+      <Class name="org.apache.cxf.jaxrs.utils.JAXRSUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.jaxrs.utils.JAXRSUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_ATOMIC_SHOULD_BE_FINAL" />
+      <Class name="org.apache.cxf.jaxrs.client.AbstractClient" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
+      <Class name="org.apache.cxf.jaxrs.client.AbstractClient" />
+   </Match>
+   <Match>
+      <Bug
+         pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED,DM_STRING_CTOR,NP_NULL_ON_SOME_PATH,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RV_RETURN_VALUE_IGNORED_BAD_PRACTICE,SF_SWITCH_NO_DEFAULT,DE_MIGHT_IGNORE" />
+      <Class name="org.apache.cxf.staxutils.StaxUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
+      <Class name="org.apache.cxf.staxutils.W3CDOMStreamReader" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED" />
+      <Class name="com.ibm.ws.jaxrs20.JaxRsConstants" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_NULL_ON_SOME_PATH" />
+      <Class name="org.apache.cxf.jaxrs.provider.AbstractConfigurableProvider" />
+   </Match>
+   <Match>
+      <Bug
+         pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED,DM_DEFAULT_ENCODING,IS2_INCONSISTENT_SYNC,NP_GUARANTEED_DEREF,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.transport.http.AbstractHTTPDestination" />
+   </Match>
+   <Match>
+      <Bug pattern="IS2_INCONSISTENT_SYNC" />
+      <Class name="org.apache.cxf.jaxrs.impl.AsyncResponseImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2" />
+      <Class name="org.apache.cxf.jaxrs.impl.ResponseImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="MS_CANNOT_BE_FINAL" />
+      <Class name="com.ibm.ws.jaxrs20.component.Jaxrs20GlobalHandlerServiceImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="WMI_WRONG_MAP_ITERATOR,NP_LOAD_OF_KNOWN_NULL_VALUE" />
+      <Class name="org.apache.cxf.jaxrs.impl.ConfigurationImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.jaxrs.impl.MediaTypeHeaderProvider" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE" />
+      <Class name="org.apache.cxf.jaxrs.impl.LinkBuilderImpl" />
+   </Match>
+    <Match>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+        <Class name="org.apache.cxf.jaxrs.utils.HttpUtils" />
+    </Match>
+    <Match>
+        <Bug pattern="RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE" />
+        <Class name="org.apache.cxf.jaxrs.utils.HttpUtils" />
+    </Match>
+   <Match>
+      <Bug pattern="REC_CATCH_EXCEPTION" />
+      <Class name="org.apache.cxf.jaxrs.model.wadl.WadlGenerator" />
+   </Match>   
+   <Match>
+      <Bug pattern="SBSC_USE_STRINGBUFFER_CONCATENATION" />
+      <Class name="org.apache.cxf.tools.wadlto.jaxrs.SourceGenerator" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_CONSTRUCT_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.tools.wadlto.jaxrs.SourceGenerator" />
+   </Match>
+   <Match>
+      <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED" />
+      <Class name="org.apache.cxf.tools.wadlto.jaxrs.SourceGenerator" />
+   </Match>
+   <Match>
+      <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE" />
+      <Class name="org.apache.cxf.tools.wadlto.jaxrs.SourceGenerator" />
+   </Match>
+   <Match>
+      <Bug pattern="GC_UNRELATED_TYPES" />
+      <Class name="org.apache.cxf.jaxrs.provider.ServerProviderFactory$ServerConfigurationImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="WMI_WRONG_MAP_ITERATOR" />
+      <Class name="org.apache.cxf.jaxrs.provider.ServerProviderFactory$MethodFeatureContextImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="THROWABLE_PRINT_STACK_TRACE_CALLED" />
+      <Class name="org.apache.cxf.common.logging.LogUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
+      <Class name="org.apache.cxf.jaxrs.impl.ResponseBuilderImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="EI_EXPOSE_REP2" />
+      <Class name="org.apache.cxf.jaxrs.impl.ResponseBuilderImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE" />
+      <Class name="org.apache.cxf.jaxrs.utils.ResourceUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="NP_NULL_ON_SOME_PATH" />
+      <Class name="org.apache.cxf.jaxrs.utils.ResourceUtils" />
+   </Match>
+   <Match>
+      <Bug pattern="SE_BAD_FIELD" />
+      <Class name="org.apache.cxf.message.MessageImpl" />
+   </Match>
+   <Match>
+      <Bug pattern="DE_MIGHT_IGNORE" />
+      <Class name="org.apache.cxf.jaxrs.interceptor.JAXRSDefaultFaultOutInterceptor" />
+   </Match>
+   
+   <!-- Preserving original intent of CXF open source message/logging/tracing -->
+   <Match>
+      <Bug pattern="TR_SPACES_IN_MESSAGE_KEY,TR_COMPUTED_KEY,TR_MISSING_GUARD,TR_INCORRECTLY_GUARDED"/>
+      <Or>
+      <Class name="org.apache.cxf.jaxrs.impl.MediaTypeHeaderProvider"/>
+      <Class name="org.apache.cxf.jaxrs.interceptor.JAXRSOutInterceptor"/>
+      <Class name="org.apache.cxf.jaxrs.utils.HttpUtils"/>
+      <Class name="org.apache.cxf.jaxrs.utils.InjectionUtils"/>
+      <Class name="org.apache.cxf.jaxrs.utils.JAXRSUtils"/>
+      <Class name="org.apache.cxf.transport.http.AbstractHTTPDestination"/>
+      <Class name="org.apache.cxf.transport.http.Headers"/>
+      </Or>
+   </Match>
+   <!-- preserve open source, warts and all  -->
+   <Match>
+      <Bug pattern="DE_MIGHT_IGNORE,NP_BOOLEAN_RETURN_NULL,WMI_WRONG_MAP_ITERATOR" />  
+      <Or>      
+      <Class name="org.apache.cxf.jaxrs.client.spec.ClientImpl"/>
+       <Class name="org.apache.cxf.jaxrs.client.spec.ClientImpl$WebTargetImpl"/>
+      </Or>
+   </Match>
+   
+   <Match>
+      <Bug pattern="WMI_WRONG_MAP_ITERATOR,TR_INCORRECTLY_GUARDED,TR_MISSING_GUARD" />
+      <Or>
+      <Class name="com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl" />
+      <Class name="com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigHolder" /> 
+      </Or>
+   </Match>
+   
+      <Match>
+      <Bug pattern="SE_BAD_FIELD" />
+      <Or>
+      <Class name="org.apache.cxf.jaxrs.JAXRSServiceImpl" />
+      <Class name="org.apache.cxf.message.ExchangeImpl" /> 
+      </Or>
+   </Match>
+</FindBugsFilter>

@@ -1,0 +1,38 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+  <featureManager>
+    <!-- <feature>osgiConsole-1.0</feature> -->
+    <feature>persistentExecutor-1.0</feature>
+    <feature>servlet-3.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <persistentExecutor jndiName="concurrent/myPersistentExecutor" taskStoreRef="DBTaskStore" pollInterval="100ms" retryLimit="0"/>
+  <databaseStore id="DBTaskStore" dataSourceRef="LockTestDB"/>
+
+  <!-- database for scheduled tasks -->
+  <dataSource id="LockTestDB">
+    <jdbcDriver libraryRef="DerbyLib"/>
+    <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/lockdb"/>
+  </dataSource>
+  <library id="DerbyLib">
+    <fileset dir="${server.config.dir}/derby" includes="*.jar"/>
+  </library>
+  
+  <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+  <variable name="onError" value="FAIL"/>
+
+  <application location="pxlocktest.war" />
+
+</server>

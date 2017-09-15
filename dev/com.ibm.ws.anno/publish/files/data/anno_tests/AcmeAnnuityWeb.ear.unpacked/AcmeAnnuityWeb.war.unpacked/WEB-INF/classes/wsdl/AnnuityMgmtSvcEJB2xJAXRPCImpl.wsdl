@@ -1,0 +1,2075 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsdl:definitions targetNamespace="http://ejb2xjaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com" xmlns:impl="http://ejb2xjaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com" xmlns:intf="http://ejb2xjaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com" xmlns:tns2="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com" xmlns:tns3="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsi="http://ws-i.org/profiles/basic/1.1/xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+ <wsdl:types>
+  <schema targetNamespace="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <complexType name="Contact">
+    <complexContent>
+     <extension base="tns2:AnnuityPersistebleObject">
+      <sequence>
+       <element name="address" nillable="true" type="tns2:Address"/>
+       <element name="email" nillable="true" type="xsd:string"/>
+       <element name="phone" nillable="true" type="xsd:string"/>
+       <element name="contactType" nillable="true" type="tns2:ContactType"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="AnnuityPersistebleObject">
+    <sequence>
+     <element name="id" nillable="true" type="xsd:string"/>
+     <element name="lastUpdateDate" nillable="true" type="xsd:dateTime"/>
+     <element name="config" nillable="true" type="tns2:StringParameterizable"/>
+     <element name="version" type="xsd:int"/>
+    </sequence>
+   </complexType>
+   <complexType name="StringParameterizable">
+    <sequence>
+     <element name="params" nillable="true" type="tns2:ArrayOfEntry"/>
+    </sequence>
+   </complexType>
+   <complexType name="Entry">
+    <sequence>
+     <element name="key" nillable="true" type="xsd:string"/>
+     <element name="value" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfEntry">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="Entry" nillable="true" type="tns2:Entry"/>
+    </sequence>
+   </complexType>
+   <complexType name="Address">
+    <sequence>
+     <element name="line1" nillable="true" type="xsd:string"/>
+     <element name="line2" nillable="true" type="xsd:string"/>
+     <element name="city" nillable="true" type="xsd:string"/>
+     <element name="state" nillable="true" type="xsd:string"/>
+     <element name="zipCode" nillable="true" type="xsd:string"/>
+     <element name="country" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <simpleType name="ContactType">
+    <restriction base="xsd:string">
+     <enumeration value="OTHER"/>
+     <enumeration value="BUSINESS"/>
+     <enumeration value="HOME"/>
+    </restriction>
+   </simpleType>
+   <complexType name="AnnuityHolder">
+    <complexContent>
+     <extension base="tns2:Person">
+      <sequence>
+       <element name="category" nillable="true" type="tns2:AnnuityHolderCategory"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="Person">
+    <complexContent>
+     <extension base="tns2:AnnuityPersistebleObject">
+      <sequence>
+       <element name="firstName" nillable="true" type="xsd:string"/>
+       <element name="lastName" nillable="true" type="xsd:string"/>
+       <element name="governmentId" nillable="true" type="xsd:string"/>
+       <element name="dateOfBirth" nillable="true" type="xsd:dateTime"/>
+       <element name="timeOfBirth" nillable="true" type="xsd:dateTime"/>
+       <element name="picture" type="xsd:base64Binary"/>
+       <element name="contact" nillable="true" type="tns2:Contact"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <simpleType name="AnnuityHolderCategory">
+    <restriction base="xsd:string">
+     <enumeration value="GOLD"/>
+     <enumeration value="SILVER"/>
+     <enumeration value="BRONZE"/>
+     <enumeration value="METAL"/>
+    </restriction>
+   </simpleType>
+   <complexType name="Payor">
+    <complexContent>
+     <extension base="tns2:AnnuityPersistebleObject">
+      <sequence>
+       <element name="name" nillable="true" type="xsd:string"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="PayoutValueObject">
+    <sequence>
+     <element name="payout" nillable="true" type="tns2:Payout"/>
+     <element name="annuityVO" nillable="true" type="tns2:AnnuityValueObject"/>
+    </sequence>
+   </complexType>
+   <complexType name="Payout">
+    <complexContent>
+     <extension base="tns2:AnnuityPersistebleObject">
+      <sequence>
+       <element name="taxableAmount" nillable="true" type="xsd:decimal"/>
+       <element name="startDate" nillable="true" type="xsd:dateTime"/>
+       <element name="endDate" nillable="true" type="xsd:dateTime"/>
+       <element name="annuity" nillable="true" type="tns2:Annuity"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="Annuity">
+    <complexContent>
+     <extension base="tns2:AnnuityPersistebleObject">
+      <sequence>
+       <element name="lastPaidAmt" nillable="true" type="xsd:double"/>
+       <element name="accountNumber" nillable="true" type="xsd:string"/>
+       <element name="amount" nillable="true" type="xsd:double"/>
+       <element name="annuityHolderId" nillable="true" type="xsd:string"/>
+       <element name="payouts" nillable="true" type="tns2:ArrayOfPayout"/>
+       <element name="riders" nillable="true" type="tns2:ArrayOfRider"/>
+       <element name="payors" nillable="true" type="tns2:ArrayOfPayor"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ArrayOfPayout">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="Payout" nillable="true" type="tns2:Payout"/>
+    </sequence>
+   </complexType>
+   <complexType name="Rider">
+    <complexContent>
+     <extension base="tns2:AnnuityPersistebleObject">
+      <sequence>
+       <element name="rule" nillable="true" type="xsd:string"/>
+       <element name="effectiveDate" nillable="true" type="xsd:dateTime"/>
+       <element name="type" nillable="true" type="tns2:RiderType"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <simpleType name="RiderType">
+    <restriction base="xsd:string">
+     <enumeration value="OVERRIDE"/>
+     <enumeration value="REPLACE"/>
+    </restriction>
+   </simpleType>
+   <complexType name="ArrayOfRider">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="Rider" nillable="true" type="tns2:Rider"/>
+    </sequence>
+   </complexType>
+   <complexType name="ArrayOfPayor">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="Payor" nillable="true" type="tns2:Payor"/>
+    </sequence>
+   </complexType>
+   <complexType name="AnnuityValueObject">
+    <sequence>
+     <element name="annuity" nillable="true" type="tns2:Annuity"/>
+     <element name="annuityType" nillable="true" type="tns2:AnnuityType"/>
+     <element name="basic" nillable="true" type="tns2:Annuity"/>
+     <element name="equity" nillable="true" type="tns2:EquityAnnuity"/>
+     <element name="fixed" nillable="true" type="tns2:FixedAnnuity"/>
+    </sequence>
+   </complexType>
+   <simpleType name="AnnuityType">
+    <restriction base="xsd:string">
+     <enumeration value="FIXED"/>
+     <enumeration value="EQUITY"/>
+     <enumeration value="BASIC"/>
+    </restriction>
+   </simpleType>
+   <complexType name="EquityAnnuity">
+    <complexContent>
+     <extension base="tns2:Annuity">
+      <sequence>
+       <element name="fundNames" nillable="true" type="xsd:string"/>
+       <element name="indexRate" nillable="true" type="xsd:double"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="FixedAnnuity">
+    <complexContent>
+     <extension base="tns2:Annuity">
+      <sequence>
+       <element name="rate" nillable="true" type="xsd:double"/>
+      </sequence>
+     </extension>
+    </complexContent>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://ejb2xjaxrpc.ejbws.impl.business.annuity.acme.wssvt.ibm.com" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:tns2="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <import namespace="http://bean.jaxrpc.business.common.annuity.acme.wssvt.ibm.com"/>
+   <element name="createContactResponse">
+    <complexType>
+     <sequence>
+      <element name="createContactReturn" nillable="true" type="tns2:Contact"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createAnnuityHolder">
+    <complexType>
+     <sequence>
+      <element name="arg_0_1" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createAnnuityHolderResponse">
+    <complexType>
+     <sequence>
+      <element name="createAnnuityHolderReturn" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createPayor">
+    <complexType>
+     <sequence>
+      <element name="arg_0_2" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createPayorResponse">
+    <complexType>
+     <sequence>
+      <element name="createPayorReturn" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createPayout">
+    <complexType>
+     <sequence>
+      <element name="arg_0_3" nillable="true" type="tns2:PayoutValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createPayoutResponse">
+    <complexType>
+     <sequence>
+      <element name="createPayoutReturn" nillable="true" type="tns2:PayoutValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createAnnuity">
+    <complexType>
+     <sequence>
+      <element name="arg_0_4" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="createAnnuityResponse">
+    <complexType>
+     <sequence>
+      <element name="createAnnuityReturn" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findHolderAnnuities">
+    <complexType>
+     <sequence>
+      <element name="arg_0_5" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findHolderAnnuitiesResponse">
+    <complexType>
+     <sequence>
+      <element name="findHolderAnnuitiesReturn" nillable="true" type="impl:ArrayOf_tns2_nillable_AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findPayorAnnuities">
+    <complexType>
+     <sequence>
+      <element name="arg_0_6" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findPayorAnnuitiesResponse">
+    <complexType>
+     <sequence>
+      <element name="findPayorAnnuitiesReturn" nillable="true" type="impl:ArrayOf_tns2_nillable_AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findAnnuityById">
+    <complexType>
+     <sequence>
+      <element name="arg_0_7" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findAnnuityByIdResponse">
+    <complexType>
+     <sequence>
+      <element name="findAnnuityByIdReturn" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findContactById">
+    <complexType>
+     <sequence>
+      <element name="arg_0_8" nillable="true" type="tns2:Contact"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findContactByIdResponse">
+    <complexType>
+     <sequence>
+      <element name="findContactByIdReturn" nillable="true" type="tns2:Contact"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findRiderById">
+    <complexType>
+     <sequence>
+      <element name="arg_0_9" nillable="true" type="tns2:Rider"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findRiderByIdResponse">
+    <complexType>
+     <sequence>
+      <element name="findRiderByIdReturn" nillable="true" type="tns2:Rider"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findHolderById">
+    <complexType>
+     <sequence>
+      <element name="arg_0_10" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findHolderByIdResponse">
+    <complexType>
+     <sequence>
+      <element name="findHolderByIdReturn" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findPayoutById">
+    <complexType>
+     <sequence>
+      <element name="arg_0_11" nillable="true" type="tns2:PayoutValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findPayoutByIdResponse">
+    <complexType>
+     <sequence>
+      <element name="findPayoutByIdReturn" nillable="true" type="tns2:PayoutValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findAnnuityHolder">
+    <complexType>
+     <sequence>
+      <element name="arg_0_12" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findAnnuityHolderResponse">
+    <complexType>
+     <sequence>
+      <element name="findAnnuityHolderReturn" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findPayorById">
+    <complexType>
+     <sequence>
+      <element name="arg_0_13" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="findPayorByIdResponse">
+    <complexType>
+     <sequence>
+      <element name="findPayorByIdReturn" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updatePayor">
+    <complexType>
+     <sequence>
+      <element name="arg_0_14" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updatePayorResponse">
+    <complexType>
+     <sequence>
+      <element name="updatePayorReturn" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updatePayout">
+    <complexType>
+     <sequence>
+      <element name="arg_0_15" nillable="true" type="tns2:PayoutValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updatePayoutResponse">
+    <complexType>
+     <sequence>
+      <element name="updatePayoutReturn" nillable="true" type="tns2:PayoutValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateAnnuity">
+    <complexType>
+     <sequence>
+      <element name="arg_0_16" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateAnnuityResponse">
+    <complexType>
+     <sequence>
+      <element name="updateAnnuityReturn" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateContact">
+    <complexType>
+     <sequence>
+      <element name="arg_0_17" nillable="true" type="tns2:Contact"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateContactResponse">
+    <complexType>
+     <sequence>
+      <element name="updateContactReturn" nillable="true" type="tns2:Contact"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateAnnuityHolder">
+    <complexType>
+     <sequence>
+      <element name="arg_0_18" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="updateAnnuityHolderResponse">
+    <complexType>
+     <sequence>
+      <element name="updateAnnuityHolderReturn" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deletePayout">
+    <complexType>
+     <sequence>
+      <element name="arg_0_19" nillable="true" type="tns2:PayoutValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deletePayoutResponse">
+    <complexType>
+     <sequence/>
+    </complexType>
+   </element>
+   <element name="deleteAnnuity">
+    <complexType>
+     <sequence>
+      <element name="arg_0_20" nillable="true" type="tns2:AnnuityValueObject"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deleteAnnuityResponse">
+    <complexType>
+     <sequence/>
+    </complexType>
+   </element>
+   <element name="deleteContact">
+    <complexType>
+     <sequence>
+      <element name="arg_0_21" nillable="true" type="tns2:Contact"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deleteContactResponse">
+    <complexType>
+     <sequence/>
+    </complexType>
+   </element>
+   <element name="deleteAnnuityHolder">
+    <complexType>
+     <sequence>
+      <element name="arg_0_22" nillable="true" type="tns2:AnnuityHolder"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deleteAnnuityHolderResponse">
+    <complexType>
+     <sequence/>
+    </complexType>
+   </element>
+   <element name="deleteRider">
+    <complexType>
+     <sequence>
+      <element name="arg_0_23" nillable="true" type="tns2:Rider"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deleteRiderResponse">
+    <complexType>
+     <sequence/>
+    </complexType>
+   </element>
+   <element name="deletePayor">
+    <complexType>
+     <sequence>
+      <element name="arg_0_24" nillable="true" type="tns2:Payor"/>
+     </sequence>
+    </complexType>
+   </element>
+   <element name="deletePayorResponse">
+    <complexType>
+     <sequence/>
+    </complexType>
+   </element>
+   <element name="createContact">
+    <complexType>
+     <sequence>
+      <element name="arg_0_0" nillable="true" type="tns2:Contact"/>
+     </sequence>
+    </complexType>
+   </element>
+   <complexType name="ArrayOf_tns2_nillable_AnnuityValueObject">
+    <sequence>
+     <element maxOccurs="unbounded" minOccurs="0" name="AnnuityValueObject" nillable="true" type="tns2:AnnuityValueObject"/>
+    </sequence>
+   </complexType>
+  </schema>
+  <schema targetNamespace="http://exception.jaxrpc.business.common.annuity.acme.wssvt.ibm.com" xmlns="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+   <complexType name="EntityAlreadyExistsException">
+    <complexContent>
+     <extension base="tns3:ServerBusinessLogicException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServerBusinessLogicException">
+    <complexContent>
+     <extension base="tns3:AnnuityServerException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="AnnuityServerException">
+    <complexContent>
+     <extension base="tns3:AnnuityException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="AnnuityException">
+    <complexContent>
+     <extension base="tns3:AcmeException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType abstract="true" name="AcmeException">
+    <sequence>
+     <element name="message" nillable="true" type="xsd:string"/>
+    </sequence>
+   </complexType>
+   <element name="EntityAlreadyExistsException" nillable="true" type="tns3:EntityAlreadyExistsException"/>
+   <complexType name="InvalidArgumentException">
+    <complexContent>
+     <extension base="tns3:ServerBusinessLogicException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="InvalidArgumentException" nillable="true" type="tns3:InvalidArgumentException"/>
+   <complexType name="ServerPersistenceModuleException">
+    <complexContent>
+     <extension base="tns3:ServerInternalErrorException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <complexType name="ServerInternalErrorException">
+    <complexContent>
+     <extension base="tns3:AnnuityServerException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="ServerPersistenceModuleException" nillable="true" type="tns3:ServerPersistenceModuleException"/>
+   <complexType name="ServerBusinessModuleException">
+    <complexContent>
+     <extension base="tns3:ServerInternalErrorException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="ServerBusinessModuleException" nillable="true" type="tns3:ServerBusinessModuleException"/>
+   <complexType name="EntityNotFoundException">
+    <complexContent>
+     <extension base="tns3:ServerBusinessLogicException">
+      <sequence/>
+     </extension>
+    </complexContent>
+   </complexType>
+   <element name="EntityNotFoundException" nillable="true" type="tns3:EntityNotFoundException"/>
+  </schema>
+ </wsdl:types>
+
+   <wsdl:message name="EntityAlreadyExistsException">
+     <wsdl:part element="tns3:EntityAlreadyExistsException" name="fault"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updateAnnuityResponse">
+     <wsdl:part element="intf:updateAnnuityResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteAnnuityHolderRequest">
+     <wsdl:part element="intf:deleteAnnuityHolder" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updatePayoutRequest">
+     <wsdl:part element="intf:updatePayout" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findPayorAnnuitiesResponse">
+     <wsdl:part element="intf:findPayorAnnuitiesResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteAnnuityRequest">
+     <wsdl:part element="intf:deleteAnnuity" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findRiderByIdResponse">
+     <wsdl:part element="intf:findRiderByIdResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createPayoutResponse">
+     <wsdl:part element="intf:createPayoutResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteRiderResponse">
+     <wsdl:part element="intf:deleteRiderResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createAnnuityRequest">
+     <wsdl:part element="intf:createAnnuity" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updateContactRequest">
+     <wsdl:part element="intf:updateContact" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updatePayorResponse">
+     <wsdl:part element="intf:updatePayorResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findContactByIdRequest">
+     <wsdl:part element="intf:findContactById" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findAnnuityByIdResponse">
+     <wsdl:part element="intf:findAnnuityByIdResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteAnnuityHolderResponse">
+     <wsdl:part element="intf:deleteAnnuityHolderResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="ServerBusinessModuleException">
+     <wsdl:part element="tns3:ServerBusinessModuleException" name="fault"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updateAnnuityHolderRequest">
+     <wsdl:part element="intf:updateAnnuityHolder" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findPayorByIdResponse">
+     <wsdl:part element="intf:findPayorByIdResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteContactRequest">
+     <wsdl:part element="intf:deleteContact" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="ServerPersistenceModuleException">
+     <wsdl:part element="tns3:ServerPersistenceModuleException" name="fault"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findHolderAnnuitiesResponse">
+     <wsdl:part element="intf:findHolderAnnuitiesResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findRiderByIdRequest">
+     <wsdl:part element="intf:findRiderById" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findAnnuityHolderRequest">
+     <wsdl:part element="intf:findAnnuityHolder" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findPayorByIdRequest">
+     <wsdl:part element="intf:findPayorById" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findAnnuityByIdRequest">
+     <wsdl:part element="intf:findAnnuityById" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updateAnnuityHolderResponse">
+     <wsdl:part element="intf:updateAnnuityHolderResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deletePayoutResponse">
+     <wsdl:part element="intf:deletePayoutResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteContactResponse">
+     <wsdl:part element="intf:deleteContactResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteRiderRequest">
+     <wsdl:part element="intf:deleteRider" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="EntityNotFoundException">
+     <wsdl:part element="tns3:EntityNotFoundException" name="fault"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updateContactResponse">
+     <wsdl:part element="intf:updateContactResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deletePayorRequest">
+     <wsdl:part element="intf:deletePayor" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findHolderAnnuitiesRequest">
+     <wsdl:part element="intf:findHolderAnnuities" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createAnnuityResponse">
+     <wsdl:part element="intf:createAnnuityResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deletePayorResponse">
+     <wsdl:part element="intf:deletePayorResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findPayoutByIdRequest">
+     <wsdl:part element="intf:findPayoutById" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createAnnuityHolderResponse">
+     <wsdl:part element="intf:createAnnuityHolderResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findAnnuityHolderResponse">
+     <wsdl:part element="intf:findAnnuityHolderResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updatePayorRequest">
+     <wsdl:part element="intf:updatePayor" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findPayorAnnuitiesRequest">
+     <wsdl:part element="intf:findPayorAnnuities" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createPayorRequest">
+     <wsdl:part element="intf:createPayor" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="InvalidArgumentException">
+     <wsdl:part element="tns3:InvalidArgumentException" name="fault"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deletePayoutRequest">
+     <wsdl:part element="intf:deletePayout" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="deleteAnnuityResponse">
+     <wsdl:part element="intf:deleteAnnuityResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createPayorResponse">
+     <wsdl:part element="intf:createPayorResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findHolderByIdResponse">
+     <wsdl:part element="intf:findHolderByIdResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findContactByIdResponse">
+     <wsdl:part element="intf:findContactByIdResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updatePayoutResponse">
+     <wsdl:part element="intf:updatePayoutResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findPayoutByIdResponse">
+     <wsdl:part element="intf:findPayoutByIdResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createPayoutRequest">
+     <wsdl:part element="intf:createPayout" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createContactResponse">
+     <wsdl:part element="intf:createContactResponse" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createContactRequest">
+     <wsdl:part element="intf:createContact" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="createAnnuityHolderRequest">
+     <wsdl:part element="intf:createAnnuityHolder" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="updateAnnuityRequest">
+     <wsdl:part element="intf:updateAnnuity" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:message name="findHolderByIdRequest">
+     <wsdl:part element="intf:findHolderById" name="parameters"/>
+
+  </wsdl:message>
+
+   <wsdl:portType name="AnnuityMgmtSvcEJB2xJAXRPCSEI">
+     <wsdl:operation name="createContact">
+       <wsdl:input message="intf:createContactRequest" name="createContactRequest"/>
+
+       <wsdl:output message="intf:createContactResponse" name="createContactResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityAlreadyExistsException" name="EntityAlreadyExistsException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createAnnuityHolder">
+       <wsdl:input message="intf:createAnnuityHolderRequest" name="createAnnuityHolderRequest"/>
+
+       <wsdl:output message="intf:createAnnuityHolderResponse" name="createAnnuityHolderResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityAlreadyExistsException" name="EntityAlreadyExistsException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createPayor">
+       <wsdl:input message="intf:createPayorRequest" name="createPayorRequest"/>
+
+       <wsdl:output message="intf:createPayorResponse" name="createPayorResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityAlreadyExistsException" name="EntityAlreadyExistsException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createPayout">
+       <wsdl:input message="intf:createPayoutRequest" name="createPayoutRequest"/>
+
+       <wsdl:output message="intf:createPayoutResponse" name="createPayoutResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityAlreadyExistsException" name="EntityAlreadyExistsException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createAnnuity">
+       <wsdl:input message="intf:createAnnuityRequest" name="createAnnuityRequest"/>
+
+       <wsdl:output message="intf:createAnnuityResponse" name="createAnnuityResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityAlreadyExistsException" name="EntityAlreadyExistsException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findHolderAnnuities">
+       <wsdl:input message="intf:findHolderAnnuitiesRequest" name="findHolderAnnuitiesRequest"/>
+
+       <wsdl:output message="intf:findHolderAnnuitiesResponse" name="findHolderAnnuitiesResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findPayorAnnuities">
+       <wsdl:input message="intf:findPayorAnnuitiesRequest" name="findPayorAnnuitiesRequest"/>
+
+       <wsdl:output message="intf:findPayorAnnuitiesResponse" name="findPayorAnnuitiesResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findAnnuityById">
+       <wsdl:input message="intf:findAnnuityByIdRequest" name="findAnnuityByIdRequest"/>
+
+       <wsdl:output message="intf:findAnnuityByIdResponse" name="findAnnuityByIdResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityNotFoundException" name="EntityNotFoundException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findContactById">
+       <wsdl:input message="intf:findContactByIdRequest" name="findContactByIdRequest"/>
+
+       <wsdl:output message="intf:findContactByIdResponse" name="findContactByIdResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityNotFoundException" name="EntityNotFoundException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findRiderById">
+       <wsdl:input message="intf:findRiderByIdRequest" name="findRiderByIdRequest"/>
+
+       <wsdl:output message="intf:findRiderByIdResponse" name="findRiderByIdResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityNotFoundException" name="EntityNotFoundException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findHolderById">
+       <wsdl:input message="intf:findHolderByIdRequest" name="findHolderByIdRequest"/>
+
+       <wsdl:output message="intf:findHolderByIdResponse" name="findHolderByIdResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityNotFoundException" name="EntityNotFoundException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findPayoutById">
+       <wsdl:input message="intf:findPayoutByIdRequest" name="findPayoutByIdRequest"/>
+
+       <wsdl:output message="intf:findPayoutByIdResponse" name="findPayoutByIdResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityNotFoundException" name="EntityNotFoundException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findAnnuityHolder">
+       <wsdl:input message="intf:findAnnuityHolderRequest" name="findAnnuityHolderRequest"/>
+
+       <wsdl:output message="intf:findAnnuityHolderResponse" name="findAnnuityHolderResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityNotFoundException" name="EntityNotFoundException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findPayorById">
+       <wsdl:input message="intf:findPayorByIdRequest" name="findPayorByIdRequest"/>
+
+       <wsdl:output message="intf:findPayorByIdResponse" name="findPayorByIdResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+       <wsdl:fault message="intf:EntityNotFoundException" name="EntityNotFoundException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updatePayor">
+       <wsdl:input message="intf:updatePayorRequest" name="updatePayorRequest"/>
+
+       <wsdl:output message="intf:updatePayorResponse" name="updatePayorResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updatePayout">
+       <wsdl:input message="intf:updatePayoutRequest" name="updatePayoutRequest"/>
+
+       <wsdl:output message="intf:updatePayoutResponse" name="updatePayoutResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updateAnnuity">
+       <wsdl:input message="intf:updateAnnuityRequest" name="updateAnnuityRequest"/>
+
+       <wsdl:output message="intf:updateAnnuityResponse" name="updateAnnuityResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updateContact">
+       <wsdl:input message="intf:updateContactRequest" name="updateContactRequest"/>
+
+       <wsdl:output message="intf:updateContactResponse" name="updateContactResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updateAnnuityHolder">
+       <wsdl:input message="intf:updateAnnuityHolderRequest" name="updateAnnuityHolderRequest"/>
+
+       <wsdl:output message="intf:updateAnnuityHolderResponse" name="updateAnnuityHolderResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deletePayout">
+       <wsdl:input message="intf:deletePayoutRequest" name="deletePayoutRequest"/>
+
+       <wsdl:output message="intf:deletePayoutResponse" name="deletePayoutResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteAnnuity">
+       <wsdl:input message="intf:deleteAnnuityRequest" name="deleteAnnuityRequest"/>
+
+       <wsdl:output message="intf:deleteAnnuityResponse" name="deleteAnnuityResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteContact">
+       <wsdl:input message="intf:deleteContactRequest" name="deleteContactRequest"/>
+
+       <wsdl:output message="intf:deleteContactResponse" name="deleteContactResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteAnnuityHolder">
+       <wsdl:input message="intf:deleteAnnuityHolderRequest" name="deleteAnnuityHolderRequest"/>
+
+       <wsdl:output message="intf:deleteAnnuityHolderResponse" name="deleteAnnuityHolderResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteRider">
+       <wsdl:input message="intf:deleteRiderRequest" name="deleteRiderRequest"/>
+
+       <wsdl:output message="intf:deleteRiderResponse" name="deleteRiderResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deletePayor">
+       <wsdl:input message="intf:deletePayorRequest" name="deletePayorRequest"/>
+
+       <wsdl:output message="intf:deletePayorResponse" name="deletePayorResponse"/>
+
+       <wsdl:fault message="intf:ServerPersistenceModuleException" name="ServerPersistenceModuleException"/>
+
+       <wsdl:fault message="intf:InvalidArgumentException" name="InvalidArgumentException"/>
+
+       <wsdl:fault message="intf:ServerBusinessModuleException" name="ServerBusinessModuleException"/>
+
+    </wsdl:operation>
+
+  </wsdl:portType>
+
+   <wsdl:binding name="AnnuityMgmtSvcEJB2xJAXRPCImplPortSoapBinding" type="intf:AnnuityMgmtSvcEJB2xJAXRPCSEI">
+ <wsaw:UsingAddressing wsdl:required="false" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl"/>
+
+     <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+     <wsdl:operation name="createContact">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="createContactRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="createContactResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityAlreadyExistsException">
+         <wsdlsoap:fault name="EntityAlreadyExistsException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createAnnuityHolder">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="createAnnuityHolderRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="createAnnuityHolderResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityAlreadyExistsException">
+         <wsdlsoap:fault name="EntityAlreadyExistsException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createPayor">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="createPayorRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="createPayorResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityAlreadyExistsException">
+         <wsdlsoap:fault name="EntityAlreadyExistsException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createPayout">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="createPayoutRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="createPayoutResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityAlreadyExistsException">
+         <wsdlsoap:fault name="EntityAlreadyExistsException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="createAnnuity">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="createAnnuityRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="createAnnuityResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityAlreadyExistsException">
+         <wsdlsoap:fault name="EntityAlreadyExistsException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findHolderAnnuities">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findHolderAnnuitiesRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findHolderAnnuitiesResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findPayorAnnuities">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findPayorAnnuitiesRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findPayorAnnuitiesResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findAnnuityById">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findAnnuityByIdRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findAnnuityByIdResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityNotFoundException">
+         <wsdlsoap:fault name="EntityNotFoundException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findContactById">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findContactByIdRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findContactByIdResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityNotFoundException">
+         <wsdlsoap:fault name="EntityNotFoundException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findRiderById">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findRiderByIdRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findRiderByIdResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityNotFoundException">
+         <wsdlsoap:fault name="EntityNotFoundException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findHolderById">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findHolderByIdRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findHolderByIdResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityNotFoundException">
+         <wsdlsoap:fault name="EntityNotFoundException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findPayoutById">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findPayoutByIdRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findPayoutByIdResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityNotFoundException">
+         <wsdlsoap:fault name="EntityNotFoundException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findAnnuityHolder">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findAnnuityHolderRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findAnnuityHolderResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityNotFoundException">
+         <wsdlsoap:fault name="EntityNotFoundException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="findPayorById">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="findPayorByIdRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="findPayorByIdResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="EntityNotFoundException">
+         <wsdlsoap:fault name="EntityNotFoundException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updatePayor">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="updatePayorRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="updatePayorResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updatePayout">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="updatePayoutRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="updatePayoutResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updateAnnuity">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="updateAnnuityRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="updateAnnuityResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updateContact">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="updateContactRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="updateContactResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="updateAnnuityHolder">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="updateAnnuityHolderRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="updateAnnuityHolderResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deletePayout">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="deletePayoutRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="deletePayoutResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteAnnuity">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="deleteAnnuityRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="deleteAnnuityResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteContact">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="deleteContactRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="deleteContactResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteAnnuityHolder">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="deleteAnnuityHolderRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="deleteAnnuityHolderResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deleteRider">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="deleteRiderRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="deleteRiderResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+     <wsdl:operation name="deletePayor">
+       <wsdlsoap:operation soapAction=""/>
+
+       <wsdl:input name="deletePayorRequest">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:input>
+
+       <wsdl:output name="deletePayorResponse">
+         <wsdlsoap:body use="literal"/>
+
+      </wsdl:output>
+
+       <wsdl:fault name="ServerPersistenceModuleException">
+         <wsdlsoap:fault name="ServerPersistenceModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="InvalidArgumentException">
+         <wsdlsoap:fault name="InvalidArgumentException" use="literal"/>
+
+      </wsdl:fault>
+
+       <wsdl:fault name="ServerBusinessModuleException">
+         <wsdlsoap:fault name="ServerBusinessModuleException" use="literal"/>
+
+      </wsdl:fault>
+
+    </wsdl:operation>
+
+  </wsdl:binding>
+
+   <wsdl:service name="AnnuityMgmtSvcEJB2xJAXRPCImpl">
+     <wsdl:port binding="intf:AnnuityMgmtSvcEJB2xJAXRPCImplPortSoapBinding" name="AnnuityMgmtSvcEJB2xJAXRPCImplPort">
+       <wsdlsoap:address location="file:undefined_location"/>
+
+    </wsdl:port>
+
+  </wsdl:service>
+
+</wsdl:definitions>

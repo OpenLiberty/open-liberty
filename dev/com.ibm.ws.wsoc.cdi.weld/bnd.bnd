@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+Bundle-Name: WebSocketCDI1.2
+Bundle-SymbolicName: com.ibm.ws.wsoc.cdi.weld
+Bundle-Description: WebSocket v1.2 CDI Integration Bundle; version=${bVersion}
+
+Export-Package:  com.ibm.ws.wsoc.cdi.weld
+
+Service-Component: \
+  com.ibm.ws.wsoc.manager;\
+    implementation:=com.ibm.ws.wsoc.cdi.weld.ServiceManager; \
+    provide:=com.ibm.ws.wsoc.injection.InjectionService12; \
+    cdiService=com.ibm.ws.cdi.CDIService; \
+    injectionEngine=com.ibm.wsspi.injectionengine.InjectionEngine; \
+    configuration-policy:=ignore;\
+    immediate:=true;\
+    properties:="service.vendor=IBM", \
+  com.ibm.ws.wsoc.injection.class.list.collaborator; \
+     implementation:=com.ibm.ws.wsoc.cdi.weld.WebSocketInjectionClassListCollaborator ; \
+     provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
+     immediate:=true; \
+     properties:="service.vendor=IBM"
+
+-buildpath: \
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.ws.wsoc;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.0;version=latest,\
+	com.ibm.ws.cdi.1.2.weld.impl;version=latest,\
+	com.ibm.ws.injection.core;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -1,0 +1,96 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+  <!-- See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file -->
+
+  <!-- match generated nls classes: return mutable type -->
+  <Match>
+    <Class name="~.*\.resources\..*" />
+    <Method name="getContents"/>
+    <Bug code="EI" />
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAToken2" />
+    <Method name="clone" signature="()Ljava/lang/Object;" />
+    <Bug pattern="CN_IDIOM_NO_SUPER_CALL" />
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPADigSignature" />
+    <Method name="&lt;clinit&gt;" signature="()V" />
+    <Bug pattern="DLS_DEAD_LOCAL_STORE" />
+  </Match>
+
+  <!--  Pre-existing usages of System.currentTimeMillis -->
+  <Match>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPACrypto"/>
+    <Method name="trng"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAKeyCreator"/>
+    <Method name="call"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAKeyInfoManager"/>
+    <Method name="prepareLTPAKeyInfo"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  <Match>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAToken2"/>
+    <Method name="setExpiration"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+  <!-- We don't need the result of the callable - we just need it invoked (eventually) -->
+  <Match>
+    <Bug pattern="RV_RETURN_VALUE_IGNORED_BAD_PRACTICE"/>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl"/>
+    <Method name="submitTaskToCreateLTPAKeys"/>
+  </Match>
+
+  <!-- pre-existing problems (i.e., prior to introducing findbugs 2.0.2) -->
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAKeyCreateTask"/>
+    <Method name="getKeyPasswordBytes"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAKeyInfoManager"/>
+    <Method name="prepareLTPAKeyInfo"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAToken2"/>
+    <Method name="decrypt"/>
+  </Match>
+  <Match>
+    <Bug pattern="DM_DEFAULT_ENCODING"/>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.UserData"/>
+    <Method name="toBytes"/>
+  </Match>
+  
+  <!--  I don't know why this triggers but ignore it because it seems to be a false positive -->
+  <Match>
+    <Bug pattern="NP_LOAD_OF_KNOWN_NULL_VALUE"/>
+    <Class name="com.ibm.ws.security.token.ltpa.internal.LTPAKeyFileCreatorImpl"/>
+    <Method name="getOutputStream"/>
+  </Match>
+  
+</FindBugsFilter>

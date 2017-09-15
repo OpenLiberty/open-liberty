@@ -1,0 +1,85 @@
+Index: api/src/main/java/org/apache/cxf/common/jaxb/JAXBContextCache.java
+===================================================================
+--- api/src/main/java/org/apache/cxf/common/jaxb/JAXBContextCache.java	(revision 1468324)
++++ api/src/main/java/org/apache/cxf/common/jaxb/JAXBContextCache.java	(working copy)
+@@ -62,9 +62,14 @@
+         private final JAXBContext context;
+         private final Set<Class<?>> classes;
+         private final WeakReference<CachedContextAndSchemasInternal> ccas;
++        private CachedContextAndSchemas(JAXBContext context, Set<Class<?>> classes, CachedContextAndSchemasInternal i) {
++            this.context = context;
++            this.classes = classes;
++            ccas = new WeakReference<CachedContextAndSchemasInternal>(i);
++        }
+         private CachedContextAndSchemas(CachedContextAndSchemasInternal i) {
+-            classes = i.getClasses();
+-            context = i.getContext();
++            this.context = i.getContext();
++            this.classes = i.getClasses();
+             ccas = new WeakReference<CachedContextAndSchemasInternal>(i);
+         }
+         public JAXBContext getContext() {
+@@ -179,28 +184,28 @@
+         if (props != null) {
+             map.putAll(props);
+         }
+-        CachedContextAndSchemasInternal cachedContextAndSchemas = null;
++        CachedContextAndSchemasInternal cachedContextAndSchemasInternal = null;
+         JAXBContext context = null;
+         if (typeRefs == null || typeRefs.isEmpty()) {
+             synchronized (JAXBCONTEXT_CACHE) {
+                 if (exact) {
+-                    cachedContextAndSchemas = JAXBCONTEXT_CACHE.get(classes);
++                    cachedContextAndSchemasInternal = JAXBCONTEXT_CACHE.get(classes);
+                 } else {
+                     for (Map.Entry<Set<Class<?>>, CachedContextAndSchemasInternal> k : JAXBCONTEXT_CACHE.entrySet()) {
+                         Set<Class<?>> key = k.getKey();
+                         if (key != null && key.containsAll(classes)) {
+-                            cachedContextAndSchemas = k.getValue();
++                            cachedContextAndSchemasInternal = k.getValue();
+                             break;
+                         }
+                     }
+                 }
+-                if (cachedContextAndSchemas != null) {
+-                    context = cachedContextAndSchemas.getContext();
++                if (cachedContextAndSchemasInternal != null) {
++                    context = cachedContextAndSchemasInternal.getContext();
+                     if (context == null) {
+-                        JAXBCONTEXT_CACHE.remove(cachedContextAndSchemas.getClasses());
+-                        cachedContextAndSchemas = null;
++                        JAXBCONTEXT_CACHE.remove(cachedContextAndSchemasInternal.getClasses());
++                        cachedContextAndSchemasInternal = null;
+                     } else {
+-                        return new CachedContextAndSchemas(cachedContextAndSchemas);
++                        return new CachedContextAndSchemas(cachedContextAndSchemasInternal);
+                     }
+                 }
+             }
+@@ -211,7 +216,7 @@
+             } catch (JAXBException ex) {
+                 // load jaxb needed class and try to create jaxb context 
+                 boolean added = addJaxbObjectFactory(ex, classes);
+-                while (cachedContextAndSchemas == null && added) {
++                while (cachedContextAndSchemasInternal == null && added) {
+                     try {
+                         context = AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
+                             public JAXBContext run() throws Exception {
+@@ -228,14 +233,14 @@
+                 }
+             }
+         }
+-        cachedContextAndSchemas = new CachedContextAndSchemasInternal(context, classes);
++        cachedContextAndSchemasInternal = new CachedContextAndSchemasInternal(context, classes);
+         synchronized (JAXBCONTEXT_CACHE) {
+             if (typeRefs == null || typeRefs.isEmpty()) {
+-                JAXBCONTEXT_CACHE.put(classes, cachedContextAndSchemas);
++                JAXBCONTEXT_CACHE.put(classes, cachedContextAndSchemasInternal);
+             }
+         }
+ 
+-        return new CachedContextAndSchemas(cachedContextAndSchemas);
++        return new CachedContextAndSchemas(context, classes, cachedContextAndSchemasInternal);
+     }
+     
+     private static boolean checkObjectFactoryNamespaces(Class<?> clz) {
