@@ -35,17 +35,17 @@ requestType.info.CWMMC0001I.explanation=The request type is not supported. The t
 requestType.info.CWMMC0001I.useraction=Make GET or OPTIONS requests.
 
 #Metric was not found.
-metricNotFound.info.CWMMC0002I=CWMMC0002I: The metric name {0} was not found.
+metricNotFound.info.CWMMC0002I=CWMMC0002I: The {0} metric name was not found.
 metricNotFound.info.CWMMC0002I.explanation=The metric does not exist.
 metricNotFound.info.CWMMC0002I.useraction=Enter the correct metric name.
 
 #Registry was not found.
-registryNotFound.info.CWMMC0003I=CWMMC0003I: The registry {0} was not found.
+registryNotFound.info.CWMMC0003I=CWMMC0003I: The {0} registry was not found.
 registryNotFound.info.CWMMC0003I.explanation=The registry does not exist.
 registryNotFound.info.CWMMC0003I.useraction=Enter the correct registry name.
 
 #Registry is empty.
-emptyRegistry.info.CWMMC0004I=CWMMC0004I: The registry {0} has no content.
+emptyRegistry.info.CWMMC0004I=CWMMC0004I: The {0} registry has no content.
 emptyRegistry.info.CWMMC0004I.explanation=The registry is empty.
 emptyRegistry.info.CWMMC0004I.useraction=Populate the registry with metrics.
 
