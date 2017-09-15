@@ -22,6 +22,7 @@ import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.MetricsHandler;
 
@@ -34,17 +35,24 @@ public class PrometheusBuilder {
 
     private static final String QUANTILE = "quantile";
 
+    @FFDCIgnore({ IllegalStateException.class })
     public static void buildGauge(StringBuilder builder, String name, Gauge<?> gauge, String description, Double conversionFactor, String tags, String appendUnit) {
-        double gaugeVal = 0;
         // Skip non number values
-        if (!Number.class.isInstance(gauge.getValue())) {
+        Number gaugeValNumber = null;
+        Object gaugeValue = null;
+        try {
+            gaugeValue = gauge.getValue();
+        } catch (IllegalStateException e) {
+            // The forwarding gauge is likely unloaded. A warning has already been emitted
+            return;
+        }
+        if (!Number.class.isInstance(gaugeValue)) {
             Tr.event(tc, "Skipping Prometheus output for Gauge: " + name + " of type " + gauge.getValue().getClass());
             return;
         }
-        Number gaugeValNumber = (Number) gauge.getValue();
+        gaugeValNumber = (Number) gaugeValue;
         if (!(Double.isNaN(conversionFactor))) {
-            gaugeVal = gaugeValNumber.doubleValue() * conversionFactor;
-            gaugeValNumber = gaugeVal;
+            gaugeValNumber = gaugeValNumber.doubleValue() * conversionFactor;
         }
         getPromTypeLine(builder, name, "gauge", appendUnit);
         getPromHelpLine(builder, name, description, appendUnit);
