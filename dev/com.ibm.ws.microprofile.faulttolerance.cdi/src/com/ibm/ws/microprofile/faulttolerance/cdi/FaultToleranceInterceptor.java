@@ -223,7 +223,12 @@ public class FaultToleranceInterceptor {
                 };
 
                 Executor<Future<Object>> async = (Executor<Future<Object>>) executor;
-                result = async.execute(callable, executionContext);
+                try {
+                    result = async.execute(callable, executionContext);
+                } catch (ExecutionException e) {
+                    throw e.getCause();
+                }
+
             } else {
 
                 Callable<Object> callable = () -> {
