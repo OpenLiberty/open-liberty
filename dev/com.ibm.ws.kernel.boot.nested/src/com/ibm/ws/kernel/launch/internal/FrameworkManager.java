@@ -363,8 +363,9 @@ public class FrameworkManager {
      */
     private void outputLicenseRestrictionMessage() {
         try {
+            // TODO need to work out how to strip the IBM branding knowledge out of here.
             ProductInfo pi = ProductInfo.getAllProductInfo().get("com.ibm.websphere.appserver");
-            if (pi.getReplacedBy() == null) {
+            if (pi != null && pi.getReplacedBy() == null) {
                 String edition = String.valueOf(pi.getEdition()).toLowerCase();
                 String licenseType = String.valueOf(pi.getProperty("com.ibm.websphere.productLicenseType")).toLowerCase();
                 String key = "audit.licenseRestriction." + edition + '.' + licenseType;
