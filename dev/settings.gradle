@@ -56,8 +56,8 @@ def loadBuildProps() {
   if (genPropsFile.exists()) {
     Properties genProps = new Properties()
     genPropsFile.withInputStream { genProps.load(it) }
-    if (genProps['tests.total.count'] != null) {
-      props.setProperty('tests.total.count', genProps['tests.total.count'])
+    if (genProps['tests.total.failed'] != null) {
+      props.setProperty('tests.total.failed', genProps['tests.total.failed'])
     }
 
     if (genProps['tests.total.successful'] != null) {

@@ -494,7 +494,7 @@ task testResults {
     def props = new Properties()
     file("${rootDir}/generated.properties").withInputStream { props.load(it) }
 
-    props.setProperty('tests.total.count', testCountTotal.toString())
+    props.setProperty('tests.total.failed', failedTestCountTotal.toString())
     props.setProperty('tests.total.successful', successfulTestCountTotal.toString())
 
     File propsFile = new File('generated.properties')
