@@ -62,7 +62,7 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
         this.scheduledExecutorService = scheduledExecutorService;
 
         if (circuitBreakerPolicy != null) {
-            this.circuitBreaker = new CircuitBreakerImpl(circuitBreakerPolicy, false);
+            this.circuitBreaker = new CircuitBreakerImpl(circuitBreakerPolicy);
         }
 
         this.fallbackPolicy = fallbackPolicy;
@@ -106,6 +106,14 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
         executionContext.start();
     }
 
+    protected boolean enableCircuitBreaker() {
+        return true;
+    }
+
+    protected boolean enableFallback() {
+        return true;
+    }
+
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore({ net.jodah.failsafe.CircuitBreakerOpenException.class, net.jodah.failsafe.FailsafeException.class })
@@ -119,11 +127,11 @@ public class SynchronousExecutorImpl<R> implements Executor<R> {
             executionContextImpl.onRetry();
         });
 
-        if (executionContextImpl.getCircuitBreaker() != null) {
+        if (executionContextImpl.getCircuitBreaker() != null && enableCircuitBreaker()) {
             failsafe = failsafe.with(executionContextImpl.getCircuitBreaker());
         }
 
-        if (executionContextImpl.getFallbackPolicy() != null) {
+        if (executionContextImpl.getFallbackPolicy() != null && enableFallback()) {
             @SuppressWarnings("unchecked")
             Callable<R> fallback = () -> {
                 return (R) executionContextImpl.getFallbackPolicy().getFallbackFunction().execute(executionContext);

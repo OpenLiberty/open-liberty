@@ -13,6 +13,8 @@ package com.ibm.ws.microprofile.faulttolerance.impl;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.spi.CircuitBreakerPolicy;
 
 import net.jodah.failsafe.CircuitBreaker;
@@ -22,11 +24,9 @@ import net.jodah.failsafe.CircuitBreaker;
  */
 public class CircuitBreakerImpl extends CircuitBreaker {
 
-    private final boolean async;
-    private volatile boolean nested = false;
+    private static final TraceComponent tc = Tr.register(CircuitBreakerImpl.class);
 
-    public CircuitBreakerImpl(CircuitBreakerPolicy policy, boolean async) {
-        this.async = async;
+    public CircuitBreakerImpl(CircuitBreakerPolicy policy) {
 
         Duration delay = policy.getDelay();
         Class<? extends Throwable>[] failOn = policy.getFailOn();
@@ -48,14 +48,4 @@ public class CircuitBreakerImpl extends CircuitBreaker {
         withSuccessThreshold(successThreshold);
     }
 
-    @Override
-    public void recordSuccess() {
-        if (!async || nested) {
-            super.recordSuccess();
-        }
-    }
-
-    public void setNested() {
-        this.nested = true;
-    }
 }

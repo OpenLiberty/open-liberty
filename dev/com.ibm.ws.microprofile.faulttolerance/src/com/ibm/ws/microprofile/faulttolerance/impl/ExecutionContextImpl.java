@@ -132,10 +132,6 @@ public class ExecutionContextImpl implements FTExecutionContext {
             timeout.restartOnNewThread(Thread.currentThread());
         }
 
-        if (this.circuitBreaker != null) {
-            this.circuitBreaker.setNested();
-        }
-
         int retriesRemaining = this.retry.getMaxRetries() - this.retries;
         if (this.retry.getMaxDuration() != null) {
             long maxDuration = this.retry.getMaxDuration().toNanos();

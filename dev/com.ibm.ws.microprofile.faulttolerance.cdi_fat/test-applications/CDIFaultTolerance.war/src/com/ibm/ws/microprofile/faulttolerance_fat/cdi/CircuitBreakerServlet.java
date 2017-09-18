@@ -1,5 +1,9 @@
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+
 /*******************************************************************************
  * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -12,6 +16,8 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
  *******************************************************************************/
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -104,6 +110,44 @@ public class CircuitBreakerServlet extends FATServlet {
         if (!"serviceB: 4".equals(res)) {
             throw new AssertionError("Bad Result: " + res);
         }
+    }
+
+    public void testCBAsync() throws Exception {
+        for (int i = 0; i < 3; i++) {
+            try {
+                bean.serviceC().get();
+                fail("Exception not thrown");
+            } catch (ExecutionException e) {
+                //assertThat("Execution exception cause", e.getCause(), instanceOf(ConnectException.class));
+            }
+        }
+
+        // Circuit should now be open
+
+        try {
+            bean.serviceC();
+            fail("Exception not thrown");
+        } catch (CircuitBreakerOpenException e) {
+            // Expected
+        }
+    }
+
+    public void testCBAsyncFallback() throws Exception {
+        for (int i = 0; i < 3; i++) {
+            assertThat(bean.serviceD().get(), is("serviceDFallback"));
+        }
+
+        assertThat(bean.getExecutionCounterD(), is(3));
+
+        // Circuit should now be open
+        Future<String> future = bean.serviceD();
+        String result = future.get();
+
+        // CB is open, expect to fall back
+        assertThat(result, is("serviceDFallback"));
+
+        // However, we don't expect the call to have reached the serviceD method
+        assertThat(bean.getExecutionCounterD(), is(3));
     }
 
     /**
