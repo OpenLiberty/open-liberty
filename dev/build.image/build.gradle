@@ -178,8 +178,8 @@ remotes {
         file("${rootDir}/generated.properties").withInputStream { props.load(it) }
 
         host = props.getProperty("dhe.server")
-        user = props.getProperty("intranet.user")
-        password = props.getProperty("intranet.password")
+        user = props.getProperty("dhe.user")
+        password = props.getProperty("dhe.password")
         knownHosts = allowAnyHosts
     }
 }
@@ -202,15 +202,13 @@ task publishPublicArtifactsOnDhe {
         String version = "${yr}-${mo}-${d}_${t}"
         String packageName = null
         if (isRelease) {
-            packageName = props.getProperty("published.package.release")
-        } else if (isContinuousBuild) {
             packageName = props.getProperty("published.package.nightly")
         } else {
             packageName = props.getProperty("published.package.personal")
             version = props.getProperty("buildResultUUID")
         }
 
-        String userAtHost = props.getProperty("intranet.user") + "@" + props.getProperty("dhe.server")
+        String userAtHost = props.getProperty("dhe.user") + "@" + props.getProperty("dhe.server")
         String dir = "/www/stage/export/pub/software/openliberty/runtime"
         String publicDHEUrl = "http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/runtime"
         String dest = userAtHost + ":" + dir
