@@ -261,7 +261,7 @@ public class AsyncServlet extends FATServlet {
         long duration = end - start;
 
         // Ensure that this method was executed synchronously
-        assertThat("Call duration", duration, greaterThan(TestConstants.WORK_TIME));
+        assertThat("Call duration", duration, greaterThan(TestConstants.WORK_TIME - TestConstants.TEST_TWEAK_TIME_UNIT));
         assertThat("Call result", future.get(), is(notNullValue()));
         assertThat("Call result", future.get().getData(), equalTo(AsyncBean.CONNECT_A_DATA));
     }
