@@ -113,8 +113,10 @@ task createJSONForPublicArtifacts {
             testsPassed = props.getProperty("tests.total.successful")
         }
         String testsTotal = "0"
-        if (props.getProperty("tests.total.count") != null) {
-            testsTotal = props.getProperty("tests.total.count")
+        if ((props.getProperty("tests.total.successful") != null) &&
+                (props.getProperty("tests.total.failed") != null)) {
+            def sum = Integer.valueOf(props.getProperty("tests.total.successful")) + Integer.valueOf(props.getProperty("tests.total.failed"))
+            testsTotal = sum.toString()
         }
 
         String junitPath = props.getProperty("junit.report.zip")
