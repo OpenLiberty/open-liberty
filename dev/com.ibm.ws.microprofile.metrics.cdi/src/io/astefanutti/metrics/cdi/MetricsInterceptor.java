@@ -91,8 +91,9 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
             // TODO: discover annotations declared on implemented interfaces
             for (Method method : type.getDeclaredMethods()) {
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
-                if (gauge.isPresent())
+                if (gauge.isPresent()) {
                     registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), gauge.metadata());
+                }
             }
             type = type.getSuperclass();
         } while (!Object.class.equals(type));

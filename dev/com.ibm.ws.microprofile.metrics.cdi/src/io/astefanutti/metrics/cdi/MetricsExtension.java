@@ -51,6 +51,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -121,7 +122,8 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 // skip producer methods with injection point
                 || hasInjectionPoints(bean.getValue()))
                 continue;
-            registry.register(name.of(bean.getValue()), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()));
+            Metadata metadata = name.metadataOf(bean.getValue());
+            registry.register(metadata.getName(), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), metadata);
         }
 
         // Let's clear the collected metric producers
