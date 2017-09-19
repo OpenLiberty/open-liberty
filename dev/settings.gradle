@@ -83,6 +83,7 @@ def loadBuildProps() {
 
   //bin is needed for IBM JDKs
   jdkLibs.include 'bin/default/**/vm.jar'
+  jdkLibs.include 'lib/**/default/**/vm.jar'
   jdkLibs.include 'lib/*.jar'
 
   def jdkLibString = ""
