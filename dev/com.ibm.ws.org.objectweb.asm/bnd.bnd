@@ -8,9 +8,9 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.objectweb.asm.all;5.2}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.objectweb.asm.all;6.0.0.BETA}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 instrument.disabled: true
 
 -buildpath: \
-	org.objectweb.asm.all;version=5.2
+	org.objectweb.asm.all;version=6.0.0.BETA

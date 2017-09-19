@@ -179,6 +179,7 @@ org.osgi:org.osgi.service.subsystem:1.1.0
 org.osgi:osgi.core:5.0.0
 org.ow2.asm:asm-all:5.0.3
 org.ow2.asm:asm-all:5.2
+org.ow2.asm:asm-all:6.0_BETA
 org.powermock:powermock-core:1.5
 org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-jdk14:1.7.7
