@@ -59,6 +59,7 @@ public class HealthExecutorImpl implements HealthExecutor {
         J2EEName j2eeName = j2eeNameFactory.create(appName, moduleName, ONLY_WAR_EJB_NOT_SUPPORTED);
 
         Map<String, String> execProps = new HashMap<String, String>();
+        Set<HealthCheckResponse> retval;
 
         // TaskIdentity identifies the task for the purposes of mgmt/auditing.
         execProps.put(MANAGEDTASK_IDENTITY_NAME, HC_MANAGEDTASK_IDENTITY_NAME);
@@ -69,7 +70,7 @@ public class HealthExecutorImpl implements HealthExecutor {
         HealthCheckCDIBeanInvoker proxy = appModuleContextService.createContextualProxy(execProps, j2eeName, healthCheckCDIBeanInvoker, HealthCheckCDIBeanInvoker.class);
 
         try {
-            return proxy.checkAllBeans();
+            retval = proxy.checkAllBeans();
         } catch (HealthCheckBeanCallException e) {
             logger.log(Level.SEVERE, "healthcheck.bean.call.exception.CWMH0050E", new Object[] { e.getBeanName(),
                                                                                                  appName,
@@ -78,6 +79,17 @@ public class HealthExecutorImpl implements HealthExecutor {
                                                                                                  e.getMessage() });
             throw e;
         }
+
+        for (HealthCheckResponse hcr : retval) {
+            if (HealthCheckResponse.State.DOWN == hcr.getState()) {
+                logger.log(Level.WARNING, "healthcheck.application.down.CWMH0051W", new Object[] { hcr.getClass().toString(),
+                                                                                                   appName,
+                                                                                                   moduleName,
+                                                                                                   hcr.getState().toString(),
+                                                                                                   hcr.getData() != null ? hcr.getData().toString() : "{NO DATA}" });
+            }
+        }
+        return retval;
     }
 
 }
