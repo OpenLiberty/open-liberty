@@ -55,5 +55,5 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 ## Community
 1. [Open Liberty group.io](https://groups.io/g/openliberty)
 2. [OpenLibertyIO on Twitter](https://twitter.com/OpenLibertyIO)
-3. [was-liberty tag on stackoverflow](https://stackoverflow.com/questions/tagged/websphere-liberty)
+3. [open-liberty tag on stackoverflow](https://stackoverflow.com/questions/tagged/open-liberty)
 
