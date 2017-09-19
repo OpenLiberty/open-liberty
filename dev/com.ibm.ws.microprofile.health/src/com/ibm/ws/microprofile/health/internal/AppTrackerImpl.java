@@ -47,12 +47,14 @@ import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 /**
  * Retrieves the application and modules names during application deployments
  */
-@Component(service = { AppTracker.class,
+@Component(service = { AppTracker.class, configurationPolicy = ConfigurationPolicy.IGNORE,
                        ServletContainerInitializer.class }, property = { "service.vendor=IBM" })
 @HandlesTypes(HealthCheck.class)
 public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
 
     private static final TraceComponent tc = Tr.register(AppTrackerImpl.class);
+
+    private static final String BUNDLE_CONTEXT_KEY = "osgi-bundlecontext";
 
     private final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
 
@@ -92,24 +94,36 @@ public class AppTrackerImpl implements ServletContainerInitializer, AppTracker {
 
     /*
      * collect all app and module names and save it for later use
-     */   
+     */
     private AppModuleName setAppModuleNames(IServletContext isc) {
 
         WebAppConfig webAppConfig = isc.getWebAppConfig();
-        if (webAppConfig.isSystemApp())
+        if (webAppConfig.isSystemApp()) {
+            Tr.debug(tc, "Detected system app so won't track for health check; appName = ", webAppConfig.getApplicationName());
             return null;
+        }
+
+        if (isOsgiApp(isc)) {
+            Tr.debug(tc, "Detected OSGi app, so won't track for health check; appName = ", webAppConfig.getApplicationName());
+            return null;
+        }
 
         WebModuleMetaData webModuleMetaData = ((WebAppConfigExtended) webAppConfig).getMetaData();
         String appName = webModuleMetaData.getApplicationMetaData().getName();
 
-        // Only scan the customer applications
-        if (!appName.equals("com.ibm.ws.microprofile.health")) {
-            String moduleName = webModuleMetaData.getJ2EEName().toString();
+        String moduleName = webModuleMetaData.getJ2EEName().toString();
+        return addAppModuleNames(appName, moduleName);
+    }
 
-            // update app and module names
-            return addAppModuleNames(appName, moduleName);
+    // Seems like this should be an SPI instead of having to calculate based on patterns this far down the chain.
+    // Will look into this in the future, hopefully.
+    private boolean isOsgiApp(IServletContext isc) {
+        Object bundleCtxAttr = isc.getAttribute(BUNDLE_CONTEXT_KEY);
+        Tr.debug(tc, "Servet context attr for key = " + BUNDLE_CONTEXT_KEY + ", = " + bundleCtxAttr);
+        if (bundleCtxAttr != null) {
+            return true;
         } else {
-            return null;
+            return false;
         }
     }
 
