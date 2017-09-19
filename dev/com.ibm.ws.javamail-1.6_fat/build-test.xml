@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.javamail-1.6_fat" default="buildandrun" basedir=".">
+	<mkdir dir="test-applications/TestingApp/resources/WEB-INF" />
+	<!--import file="../ant_build/public_imports/fat_imports.xml" / -->
+	
+	<!-- need to specify image time because feature isn't yet published -->
+	<property name="fat.image.type" value="use-full-image"/>  
+	
+	<property name="unittest.endorsed" value="${basedir}/../com.ibm.websphere.javaee.annotation.1.1/lib/"/>
+	
+    <!-- override since LibertySPIFatTest creates a new config element -->
+    <target name="validate-server-xmls"/>
+
+	<!-- Add jar files not built by this project that are needed by the client code -->
+	<target name="addRequiredLibraries">
+		<!-- For example, you could copy the restConnector.jar into the autoFVT.zip if needed
+		<copy todir="${required.lib.dir}">
+			<fileset dir="${basedir}/../build.image/wlp/clients/" includes="restConnector.jar"/>
+		</copy>
+		-->
+		<copy todir="${required.lib.dir}">
+			<fileset dir="${basedir}/../com.ibm.ws.com.sun.mail.javax.mail/lib/" includes="javax.mail*.jar"/>
+			<fileset dir="${basedir}/." includes="greenmail-1.3.1b.jar"/>
+		</copy>
+	</target>
+
+	<!-- Add files which are not part of your project's publish/files directory.
+	     Note any files under publish/files are already published and do not need
+	     to be added here. -->
+	<target name="addRequiredFiles">
+		
+		<copy todir="${required.files.dir}">
+			<fileset dir="${basedir}/." includes="greenmail-1.3.1b.jar"/>
+		</copy>
+	</target>
+
+
+	<target name="addAutoInstallApplications" description="Automatically Install applications on LibertyServer instance creation">
+		<mkdir dir="${basedir}/publish/servers/mailSessionTestServer/dropins"/>
+			<move file="${basedir}/publish/files/TestingApp.zip" tofile="${basedir}/publish/servers/mailSessionTestServer/dropins/TestingApp.war"/>
+		<mkdir dir="${basedir}/publish/servers/com.ibm.ws.javamail.fat/apps"/>
+		<copy file="${basedir}/publish/files/fvtweb.zip" tofile="${basedir}/publish/servers/com.ibm.ws.javamail.fat/apps/fvtweb.war"/>
+		<zip destfile="${basedir}/publish/servers/com.ibm.ws.javamail.fat/apps/fvtapp.ear" >
+            <zipfileset dir="${basedir}/publish/files/fvtapp" includes="**"/>
+            <zipfileset dir="${basedir}/publish/servers/com.ibm.ws.javamail.fat/apps" includes="*.war"/>
+        </zip>
+		<zip destfile="${basedir}/publish/servers/com.ibm.ws.javamail.fat/apps/fvtapp.ear" >
+			<zipfileset dir="${basedir}/publish/files/fvtapp" includes="**"/>
+			<zipfileset dir="${basedir}/publish/servers/com.ibm.ws.javamail.fat/apps" includes="*.war"/>
+		</zip>
+		<delete>
+            <fileset dir="${basedir}/publish/servers/com.ibm.ws.javamail.fat/apps">
+                <include name="fvtweb.war"/>
+            </fileset>
+        </delete> 
+	</target>
+
+</project>

@@ -1,0 +1,23 @@
+# IBM Confidential OCO Source Material
+# (C) COPYRIGHT International Business Machines Corp. 2011, 2013.
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# -------------------------------------------------------------------------------------------------
+#CMVCPATHNAME com.ibm.javamail.repository/resources/com/ibm/ws/javamail/repository/internal/resources/MailMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere JavaMail API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# TODO: Get the correct Message Prefix block for JAVAMAIL feature
+# liberty wiki should have a list of the Message Prefix
+# Message prefix block: CWWKJ0200 - CWWKJ0299
+
+#-----  JavaMail messages
+
+CWWKX0957I=CWWKX0957I: server.xml \u4e2d\u7684\u90ae\u4ef6\u4f1a\u8bdd\u5df2\u6210\u529f\u521b\u5efa javax.mail.Session \u5bf9\u8c61
+CWWKX0957I.explanation= \u5df2\u6210\u529f\u4f7f\u7528 server.xml \u4e2d\u63d0\u4f9b\u7684\u4fe1\u606f\u521b\u5efa\u90ae\u4ef6\u4f1a\u8bdd
+CWWKX0957I.useraction= \u6b64\u65f6\uff0c\u65e0\u9700\u6267\u884c\u4efb\u4f55\u64cd\u4f5c

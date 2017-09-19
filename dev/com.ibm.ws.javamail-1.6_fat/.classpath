@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/fvtweb/src"/>
+	<classpathentry kind="src" path="test-applications/TestingApp/src"/>
+	<classpathentry excluding="src/" kind="src" path="fat"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="src" path="/fattest.simplicity"/>
+	<classpathentry kind="lib" path="/com.ibm.ws.com.sun.mail.javax.mail.1.6/generated/com.ibm.ws.com.sun.mail.javax.mail.1.6.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.ws.com.sun.mail.javax.mail.1.6.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.ws.com.sun.mail.javax.mail.1.6"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="javax/mail/*"/>
+			<accessrule kind="accessible" pattern="javax/mail/event/*"/>
+			<accessrule kind="accessible" pattern="javax/mail/internet/*"/>
+			<accessrule kind="accessible" pattern="javax/mail/search/*"/>
+			<accessrule kind="accessible" pattern="javax/mail/util/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/auth/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/imap/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/imap/protocol/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/iap/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/pop3/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/smtp/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/util/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/util/logging/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/handlers/*"/>
+			<accessrule kind="accessible" pattern="com/sun/mail/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="src" path="/com.ibm.ws.org.apache.commons.logging"/>
+	<classpathentry kind="lib" path="greenmail-1.3.1b.jar"/>
+	<classpathentry kind="lib" path="/com.ibm.websphere.javaee.ejb.3.2/generated/com.ibm.websphere.javaee.ejb.3.2.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.websphere.javaee.ejb.3.2.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.websphere.javaee.ejb.3.2"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="javax/ejb/*"/>
+			<accessrule kind="accessible" pattern="javax/ejb/embeddable/*"/>
+			<accessrule kind="accessible" pattern="javax/ejb/spi/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
