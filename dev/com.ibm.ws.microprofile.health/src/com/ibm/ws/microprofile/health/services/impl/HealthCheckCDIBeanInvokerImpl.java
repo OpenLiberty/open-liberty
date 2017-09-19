@@ -21,6 +21,8 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.health.services.impl;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,6 +30,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.naming.InitialContext;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingException;
 
 import org.eclipse.microprofile.health.Health;
 import org.eclipse.microprofile.health.HealthCheck;
@@ -37,6 +41,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.ws.microprofile.health.services.HealthCheckCDIBeanInvoker;
 
@@ -62,6 +67,7 @@ public class HealthCheckCDIBeanInvokerImpl implements HealthCheckCDIBeanInvoker 
         return retVal;
     }
 
+    @FFDCIgnore(NameNotFoundException.class)
     private Set<Object> getHealthCheckBeans() {
         BeanManager beanManager = null;
         Set<Object> healthCheckBeans = new HashSet<Object>();
@@ -69,7 +75,9 @@ public class HealthCheckCDIBeanInvokerImpl implements HealthCheckCDIBeanInvoker 
         try {
             InitialContext context = new InitialContext();
             beanManager = (BeanManager) context.lookup("java:comp/BeanManager");
-        } catch (Exception e) {
+        } catch (NameNotFoundException e) {
+            Tr.event(tc, "Catching NameNotFoundException looking up CDI java:comp/BeanManager.  Ignoring assuming the reason is because there are zero CDI managed beans");
+        } catch (NamingException e) {
             throw new RuntimeException(e);
         }
         if (beanManager != null) {
