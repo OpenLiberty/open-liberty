@@ -160,6 +160,12 @@ public class QueuedFuture<R> implements Future<R>, Callable<Future<R>> {
             }
 
             throw e;
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException) {
+                throw new ExecutionException(e.getCause().getCause());
+            } else {
+                throw e;
+            }
         }
         return result;
     }
@@ -194,6 +200,12 @@ public class QueuedFuture<R> implements Future<R>, Callable<Future<R>> {
             }
 
             throw e;
+        } catch (ExecutionException e) {
+            if (e.getCause() instanceof com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException) {
+                throw new ExecutionException(e.getCause().getCause());
+            } else {
+                throw e;
+            }
         }
         return result;
 

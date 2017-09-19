@@ -11,10 +11,14 @@
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 
 import java.time.temporal.ChronoUnit;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 
 import javax.enterprise.context.RequestScoped;
 
+import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.CircuitBreaker;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
@@ -24,6 +28,7 @@ public class CircuitBreakerBean {
 
     private int executionCounterA = 0;
     private int executionCounterB = 0;
+    private int executionCounterD = 0;
 
     @CircuitBreaker(delay = 1, delayUnit = ChronoUnit.SECONDS, requestVolumeThreshold = 3, failureRatio = 1.0)
     @Timeout(value = 3, unit = ChronoUnit.SECONDS)
@@ -51,5 +56,27 @@ public class CircuitBreakerBean {
             throw new ConnectException("serviceB exception: " + executionCounterB);
         }
         return "serviceB: " + executionCounterB;
+    }
+
+    @Asynchronous
+    @CircuitBreaker(requestVolumeThreshold = 3, failureRatio = 1.0)
+    public Future<String> serviceC() throws ConnectException {
+        throw new ConnectException("serviceC");
+    }
+
+    @Asynchronous
+    @CircuitBreaker(requestVolumeThreshold = 3, failureRatio = 1.0)
+    @Fallback(fallbackMethod = "serviceDFallback")
+    public Future<String> serviceD() throws ConnectException {
+        executionCounterD++;
+        throw new ConnectException("serviceD: " + executionCounterD);
+    }
+
+    public Future<String> serviceDFallback() {
+        return CompletableFuture.completedFuture("serviceDFallback");
+    }
+
+    public int getExecutionCounterD() {
+        return executionCounterD;
     }
 }

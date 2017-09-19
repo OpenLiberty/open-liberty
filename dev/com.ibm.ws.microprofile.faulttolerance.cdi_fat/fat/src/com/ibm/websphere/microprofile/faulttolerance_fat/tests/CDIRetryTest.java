@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
@@ -70,6 +71,23 @@ public class CDIRetryTest extends LoggingTest {
     public void testRetryDurationZero() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
         getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryDurationZero", "SUCCESS");
+    }
+
+    /**
+     * Not really related to retry but it's easiest to test it here
+     */
+    @Test
+    public void testExecutorsClose() throws Exception {
+
+        RemoteFile traceLog = SHARED_SERVER.getLibertyServer().getMostRecentTraceFile();
+        SHARED_SERVER.getLibertyServer().setMarkToEndOfLog(traceLog);
+
+        // This calls a RequestScoped bean which only has fault tolerance annotations on the method
+        // This should cause executors to get cleaned up
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryAbortOn", "SUCCESS");
+
+        SHARED_SERVER.getLibertyServer().waitForStringInLog("Cleaning up executors", traceLog);
     }
 
     /** {@inheritDoc} */

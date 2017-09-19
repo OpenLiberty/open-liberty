@@ -118,4 +118,27 @@ public class TimeoutServlet extends FATServlet {
         // No TimeoutException expected
     }
 
+    public void testNonInterruptableTimeout() throws InterruptedException {
+        try {
+            bean.busyWait(1000); // Busy wait time is greater than timeout (=500)
+            fail("No exception thrown");
+        } catch (TimeoutException e) {
+            if (Thread.interrupted()) {
+                fail("Thread was in interrupted state upon return");
+            }
+            // This wait is to ensure our thread doesn't get interrupted later, after the method has finished
+            Thread.sleep(1000);
+        }
+    }
+
+    public void testNonInterruptableDoesntTimeout() throws Exception {
+        bean.busyWait(10); // Busy wait time is less than timeout (=500)
+
+        if (Thread.interrupted()) {
+            fail("Thread was in interrupted state upon return");
+        }
+
+        Thread.sleep(2000); // Wait to ensure that our thread isn't interrupted after the method has finished
+    }
+
 }
