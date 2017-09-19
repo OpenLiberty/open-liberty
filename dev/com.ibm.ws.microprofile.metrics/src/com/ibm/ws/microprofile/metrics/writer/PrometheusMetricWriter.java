@@ -12,6 +12,7 @@ package com.ibm.ws.microprofile.metrics.writer;
 
 import java.io.IOException;
 import java.io.Writer;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -24,6 +25,9 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricUnits;
 import org.eclipse.microprofile.metrics.Timer;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -36,10 +40,14 @@ import com.ibm.ws.microprofile.metrics.helper.Util;
  */
 public class PrometheusMetricWriter implements OutputWriter {
 
-    private final Writer writer;
+    private static final TraceComponent tc = Tr.register(PrometheusMetricWriter.class);
 
-    public PrometheusMetricWriter(Writer writer) {
+    private final Writer writer;
+    private final Locale locale;
+
+    public PrometheusMetricWriter(Writer writer, Locale locale) {
         this.writer = writer;
+        this.locale = locale;
     }
 
     /**
@@ -64,6 +72,7 @@ public class PrometheusMetricWriter implements OutputWriter {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore({ EmptyRegistryException.class, NoSuchRegistryException.class })
     public void write() throws IOException {
         StringBuilder builder = new StringBuilder();
         for (String registryName : Constants.REGISTRY_NAMES_LIST) {
@@ -93,7 +102,14 @@ public class PrometheusMetricWriter implements OutputWriter {
 
             //description
             Metadata metricMetaData = metricMetadataMap.get(entryName);
-            String description = metricMetaData.getDescription();
+
+            String description = "";
+
+            if (metricMetaData.getDescription() == null || metricMetaData.getDescription().isEmpty()) {
+
+            } else {
+                description = Tr.formatMessage(tc, locale, metricMetaData.getDescription());
+            }
 
             String tags = metricMetaData.getTagsAsString();
 
@@ -104,7 +120,12 @@ public class PrometheusMetricWriter implements OutputWriter {
             double conversionFactor = 0;
             String appendUnit = null;
 
-            if (unit.equals(MetricUnits.NANOSECONDS)) {
+            if (unit == null || unit.trim().isEmpty() || unit.equals(MetricUnits.NONE)) {
+
+                conversionFactor = Double.NaN;
+                appendUnit = null;
+
+            } else if (unit.equals(MetricUnits.NANOSECONDS)) {
 
                 conversionFactor = Constants.NANOSECONDCONVERSION;
                 appendUnit = Constants.APPENDEDSECONDS;
@@ -189,11 +210,6 @@ public class PrometheusMetricWriter implements OutputWriter {
                 conversionFactor = Constants.GIBIBITCONVERSION;
                 appendUnit = Constants.APPENDEDBYTES;
 
-            } else if (unit.equals(MetricUnits.NONE)) {
-
-                conversionFactor = Double.NaN;
-                appendUnit = null;
-
             } else if (unit.equals(MetricUnits.MILLISECONDS)) {
 
                 conversionFactor = Constants.MILLISECONDCONVERSION;
@@ -202,7 +218,7 @@ public class PrometheusMetricWriter implements OutputWriter {
             } else {
 
                 conversionFactor = Double.NaN;
-                appendUnit = unit;
+                appendUnit = "_" + unit;
             }
 
             if (Counter.class.isInstance(metric)) {
@@ -216,7 +232,7 @@ public class PrometheusMetricWriter implements OutputWriter {
             } else if (Meter.class.isInstance(metric)) {
                 PrometheusBuilder.buildMeter(builder, metricNamePrometheus, (Meter) metric, description, tags);
             } else {
-                throw new RuntimeException("Unsupported Metric Type");
+                Tr.event(tc, "Metric type '" + metric.getClass() + " for " + entryName + " is invalid.");
             }
         }
     }

@@ -44,7 +44,7 @@ import org.eclipse.microprofile.metrics.Timer;
 
     @Produces
     private static Counter counter(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.counter(metricName.of(ip));
+        return registry.counter(metricName.metadataOf(ip, Counter.class));
     }
 
     @Produces
@@ -62,16 +62,16 @@ import org.eclipse.microprofile.metrics.Timer;
 
     @Produces
     private static Histogram histogram(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.histogram(metricName.of(ip));
+        return registry.histogram(metricName.metadataOf(ip, Histogram.class));
     }
 
     @Produces
     private static Meter meter(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.meter(metricName.of(ip));
+        return registry.meter(metricName.metadataOf(ip, Meter.class));
     }
 
     @Produces
     private static Timer timer(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.timer(metricName.of(ip));
+        return registry.timer(metricName.metadataOf(ip, Timer.class));
     }
 }

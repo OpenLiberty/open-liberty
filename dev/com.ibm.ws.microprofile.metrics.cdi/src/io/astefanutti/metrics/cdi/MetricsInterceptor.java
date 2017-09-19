@@ -35,17 +35,26 @@ import javax.interceptor.AroundConstruct;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import org.eclipse.microprofile.metrics.Metric;
+import org.eclipse.microprofile.metrics.MetricFilter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
 import org.eclipse.microprofile.metrics.annotation.Gauge;
 import org.eclipse.microprofile.metrics.annotation.Metered;
 import org.eclipse.microprofile.metrics.annotation.Timed;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
+
 @Interceptor
 @MetricsBinding
 @Priority(Interceptor.Priority.LIBRARY_BEFORE)
 // See http://docs.oracle.com/javaee/7/tutorial/doc/interceptors.htm
 /* package-private */ class MetricsInterceptor {
+
+    private static final TraceComponent tc = Tr.register(MetricsInterceptor.class);
 
     private final MetricRegistry registry;
 
@@ -82,8 +91,9 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
             // TODO: discover annotations declared on implemented interfaces
             for (Method method : type.getDeclaredMethods()) {
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
-                if (gauge.isPresent())
-                    registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()));
+                if (gauge.isPresent()) {
+                    registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), gauge.metadata());
+                }
             }
             type = type.getSuperclass();
         } while (!Object.class.equals(type));
@@ -117,12 +127,31 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
             method.setAccessible(true);
         }
 
+        @FFDCIgnore({ IllegalStateException.class })
         @Override
         public Object getValue() {
-            return invokeMethod(method, object);
+            try {
+                return invokeMethod(method, object);
+            } catch (IllegalStateException e) {
+                // This is likely due to an Application being unloaded, we need to unregister the invalid metric
+                // Need to use Factory to get registry.
+                MetricRegistryFactory.getApplicationRegistry().removeMatching(new MetricFilter() {
+
+                    @Override
+                    public boolean matches(String name, Metric metric) {
+                        if (metric.equals(ForwardingGauge.this)) {
+                            Tr.warning(tc, "cannot.resolve.metric.warning.CWMMC3000W", name);
+                            return true;
+                        }
+                        return false;
+                    }
+                });
+                throw e;
+            }
         }
     }
 
+    @FFDCIgnore({ InvocationTargetException.class })
     private static Object invokeMethod(Method method, Object object) {
         try {
             return method.invoke(object);

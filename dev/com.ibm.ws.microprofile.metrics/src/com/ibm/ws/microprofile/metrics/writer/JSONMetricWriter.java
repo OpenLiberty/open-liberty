@@ -23,6 +23,9 @@ import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.Timer;
 
 import com.ibm.json.java.JSONObject;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.metrics.Constants;
 import com.ibm.ws.microprofile.metrics.exceptions.EmptyRegistryException;
 import com.ibm.ws.microprofile.metrics.exceptions.NoSuchMetricException;
@@ -42,7 +45,7 @@ public class JSONMetricWriter implements OutputWriter {
 
     /**
      * {@inheritDoc}
-     * 
+     *
      * @throws EmptyRegistryException
      */
     @Override
@@ -58,6 +61,7 @@ public class JSONMetricWriter implements OutputWriter {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore({ EmptyRegistryException.class, NoSuchRegistryException.class })
     public void write() throws IOException {
         JSONObject payload = new JSONObject();
         for (String registryName : Constants.REGISTRY_NAMES_LIST) {
@@ -78,6 +82,9 @@ public class JSONMetricWriter implements OutputWriter {
         return getJsonFromMetricMap(Util.getMetricsAsMap(registryName, metricName));
     }
 
+    private static final TraceComponent tc = Tr.register(JSONMetricWriter.class);
+
+    @FFDCIgnore({ IllegalStateException.class })
     private JSONObject getJsonFromMetricMap(Map<String, Metric> metricMap) {
         JSONObject jsonObject = new JSONObject();
         for (Entry<String, Metric> entry : metricMap.entrySet()) {
@@ -86,7 +93,11 @@ public class JSONMetricWriter implements OutputWriter {
             if (Counter.class.isInstance(metric)) {
                 jsonObject.put(metricName, ((Counter) metric).getCount());
             } else if (Gauge.class.isInstance(metric)) {
-                jsonObject.put(metricName, ((Gauge) metric).getValue());
+                try {
+                    jsonObject.put(metricName, ((Gauge) metric).getValue());
+                } catch (IllegalStateException e) {
+                    // The forwarding gauge is likely unloaded. A warning has already been emitted
+                }
             } else if (Timer.class.isInstance(metric)) {
                 jsonObject.put(metricName, getJsonFromMap(Util.getTimerNumbers((Timer) metric)));
             } else if (Histogram.class.isInstance(metric)) {
@@ -94,7 +105,7 @@ public class JSONMetricWriter implements OutputWriter {
             } else if (Meter.class.isInstance(metric)) {
                 jsonObject.put(metricName, getJsonFromMap(Util.getMeterNumbers((Meter) metric)));
             } else {
-                throw new RuntimeException("Unsupported Metric Type");
+                Tr.event(tc, "Metric type '" + metric.getClass() + " for " + metricName + " is invalid.");
             }
         }
         return jsonObject;

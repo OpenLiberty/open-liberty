@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -70,15 +69,23 @@ public class MetricsHandler implements RESTHandler {
     public void handleRequest(RESTRequest request, RESTResponse response) throws IOException {
 
         Locale locale = null;
+        String regName = "";
+        String attName = "";
+        String acceptHeader = "";
+        String method = "";
         try {
             locale = request.getLocale();
+            regName = request.getPathVariable(Constants.SUB);
+            attName = request.getPathVariable(Constants.ATTRIBUTE);
+            acceptHeader = request.getHeader(Constants.ACCEPT_HEADER);
+            method = request.getMethod();
             setInitialContentType(request, response);
         } catch (Exception e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Tr.formatMessage(tc, locale, "internal.error.CWMMC0007E", e));
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Tr.formatMessage(tc, locale, "internal.error.CWMMC0006E", e));
         }
 
         try {
-            OutputWriter outputWriter = getOutputWriter(request, response);
+            OutputWriter outputWriter = getOutputWriter(request, response, locale);
             String attribute = request.getPathVariable(Constants.ATTRIBUTE);
             String sub = request.getPathVariable(Constants.SUB);
 
@@ -100,22 +107,27 @@ public class MetricsHandler implements RESTHandler {
                 outputWriter.write();
             }
         } catch (EmptyRegistryException e) {
-            Tr.event(tc, "The registry is empty");
+            Tr.event(tc, "The " + regName + " registry is empty.");
             response.setStatus(HttpServletResponse.SC_NO_CONTENT);
         } catch (NoSuchRegistryException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, Tr.formatMessage(tc, locale, "registryNotFound.error.CWMMC0004E", e));
+            Tr.event(tc, "The registry" + regName + " was not found.");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, Tr.formatMessage(tc, locale, "registryNotFound.info.CWMMC0003I", regName));
         } catch (NoSuchMetricException e) {
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, Tr.formatMessage(tc, locale, "metricNotFound.error.CWMMC0003E", e));
+            Tr.event(tc, "The metric " + attName + " was not found.");
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, Tr.formatMessage(tc, locale, "metricNotFound.info.CWMMC0002I", attName));
         } catch (IOException e) {
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Tr.formatMessage(tc, locale, "internal.error.CWMMC0007E", e));
+            Tr.event(tc, "internal.error.CWMMC0006E");
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, Tr.formatMessage(tc, locale, "internal.error.CWMMC0006E"));
         } catch (HTTPNotAcceptableException e) {
-            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, Tr.formatMessage(tc, locale, "notAcceptable.error.CWMMC0001E", e));
+            Tr.event(tc, "Accept Header: " + acceptHeader + ", is invalid.");
+            response.sendError(HttpServletResponse.SC_NOT_ACCEPTABLE, Tr.formatMessage(tc, locale, "notAcceptable.info.CWMMC0000I", acceptHeader));
         } catch (HTTPMethodNotAllowedException e) {
-            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, Tr.formatMessage(tc, locale, "requestType.error.CWMMC0002E", e));
+            Tr.event(tc, "HTTP method: " + method + ", is not allowed.");
+            response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, Tr.formatMessage(tc, locale, "requestType.info.CWMMC0001I"));
         }
     }
 
-    private OutputWriter getOutputWriter(RESTRequest request, RESTResponse response) throws IOException, HTTPNotAcceptableException, HTTPMethodNotAllowedException {
+    private OutputWriter getOutputWriter(RESTRequest request, RESTResponse response, Locale locale) throws IOException, HTTPNotAcceptableException, HTTPMethodNotAllowedException {
         String method = request.getMethod();
         String accept = request.getHeader(Constants.ACCEPT_HEADER);
         Writer writer = response.getWriter();
@@ -124,23 +136,18 @@ public class MetricsHandler implements RESTHandler {
             accept = Constants.ACCEPT_HEADER_TEXT;
         }
 
-        Pattern p = Pattern.compile(accept.replace("*", ".*"));
-
         if (Constants.METHOD_GET.equals(method)) {
-            if (p.matcher(Constants.ACCEPT_HEADER_TEXT).matches()) {
-                return new PrometheusMetricWriter(writer);
-            } else if (p.matcher(Constants.ACCEPT_HEADER_JSON).matches()) {
+            if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
+                return new PrometheusMetricWriter(writer, locale);
+            } else if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
                 return new JSONMetricWriter(writer);
             } else {
                 Tr.event(tc, "The Accept header is invalid.");
-                return new PrometheusMetricWriter(writer);
+                return new PrometheusMetricWriter(writer, locale);
             }
         } else if (Constants.METHOD_OPTIONS.equals(method)) {
-            if (p.matcher(Constants.ACCEPT_HEADER_TEXT).matches()) {
-                throw new HTTPNotAcceptableException();
-            }
-            if (p.matcher(Constants.ACCEPT_HEADER_JSON).matches()) {
-                return new JSONMetadataWriter(writer);
+            if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
+                return new JSONMetadataWriter(writer, locale);
             } else {
                 throw new HTTPNotAcceptableException();
             }
@@ -155,10 +162,10 @@ public class MetricsHandler implements RESTHandler {
         if (accept == null) {
             accept = Constants.ACCEPT_HEADER_TEXT;
         }
-        Pattern p = Pattern.compile(accept.replace("*", ".*"));
-        if (p.matcher(Constants.ACCEPT_HEADER_TEXT).matches()) {
+
+        if (accept.contains(Constants.ACCEPT_HEADER_TEXT)) {
             response.setContentType(Constants.TEXTCONTENTTYPE);
-        } else if (p.matcher(Constants.ACCEPT_HEADER_JSON).matches()) {
+        } else if (accept.contains(Constants.ACCEPT_HEADER_JSON)) {
             response.setContentType(Constants.JSONCONTENTTYPE);
         } else {
             response.setContentType(Constants.TEXTCONTENTTYPE);

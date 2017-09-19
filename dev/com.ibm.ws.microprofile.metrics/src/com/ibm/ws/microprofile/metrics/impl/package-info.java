@@ -21,5 +21,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-@org.osgi.annotation.versioning.Version("1.0.0")
+@org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "METRICS", messageBundle = "com.ibm.ws.microprofile.metrics.resources.Metrics")
 package com.ibm.ws.microprofile.metrics.impl;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -35,7 +35,14 @@ import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.AnnotatedParameter;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.eclipse.microprofile.metrics.Counter;
+import org.eclipse.microprofile.metrics.Gauge;
+import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
+import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
+import org.eclipse.microprofile.metrics.MetricType;
+import org.eclipse.microprofile.metrics.Timer;
 import org.eclipse.microprofile.metrics.annotation.Metric;
 
 @Vetoed
@@ -107,5 +114,66 @@ import org.eclipse.microprofile.metrics.annotation.Metric;
             throw new UnsupportedOperationException("Unable to retrieve name for parameter [" + parameter
                                                     + "], @Metric annotation on injected parameter is required before Java 8");
         }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Metadata metadataOf(InjectionPoint ip, Class<?> type) {
+        Annotated annotated = ip.getAnnotated();
+        String name = of(ip);
+        return metadataOf(annotated, name, type);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Metadata metadataOf(AnnotatedMember<?> member) {
+        // getBaseType is a reflection proxy class, we can't directly compare the classes.
+        // If type can be determined more efficiently, we can remove the overloaded methods that pass in class
+        String typeName = member.getBaseType().getTypeName();
+        if (typeName.startsWith(Gauge.class.getName())) {
+            return metadataOf(member, Gauge.class);
+        } else if (typeName.startsWith(Counter.class.getName())) {
+            return metadataOf(member, Counter.class);
+        } else if (typeName.startsWith(Meter.class.getName())) {
+            return metadataOf(member, Meter.class);
+        } else if (typeName.startsWith(Histogram.class.getName())) {
+            return metadataOf(member, Histogram.class);
+        } else if (typeName.startsWith(Timer.class.getName())) {
+            return metadataOf(member, Timer.class);
+        }
+        return null;
+    }
+
+    public Metadata metadataOf(Annotated annotated, String name, Class<?> type) {
+        Metadata metadata = new Metadata(name, MetricType.from(type));
+        if (annotated.isAnnotationPresent(Metric.class)) {
+            Metric metric = annotated.getAnnotation(Metric.class);
+            metadata.setDescription(metadataValueOf(metric.description()));
+            metadata.setDisplayName(metadataValueOf(metric.displayName()));
+            metadata.setUnit(metadataValueOf(metric.unit()));
+            for (String tag : metric.tags()) {
+                metadata.addTag(tag);
+            }
+        }
+        return metadata;
+    }
+
+    /**
+     * Since annotations have the default value of "", convert it to null.
+     *
+     * @param value
+     * @return The value of the metadata field if present, null otherwise
+     */
+    private String metadataValueOf(String value) {
+        if (value == null || value.trim().isEmpty())
+            return null;
+        return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Metadata metadataOf(AnnotatedMember<?> member, Class<?> type) {
+        String name = of(member);
+        return metadataOf(member, name, type);
     }
 }
