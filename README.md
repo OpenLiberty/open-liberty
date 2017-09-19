@@ -2,7 +2,7 @@
 
 # OpenLiberty
 
-[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/OpenLiberty)
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/OpenLibertyIO)
 ![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
 [![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
 
