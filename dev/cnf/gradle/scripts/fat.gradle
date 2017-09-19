@@ -36,6 +36,7 @@ task cleanBeforeRun() {
 
 task addRequiredLibraries {
   shouldRunAfter cleanFat
+  shouldRunAfter jar
   def props = new Properties()
   file("${rootDir}/generated.properties").withInputStream { props.load(it) }
   repositories {
@@ -244,10 +245,6 @@ task runfat(type: Exec) {
 
 compileJava {
   dependsOn cleanFat
-}
-
-jar {
-  dependsOn addRequiredLibraries
 }
 
 assemble {

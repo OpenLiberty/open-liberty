@@ -196,7 +196,7 @@
 			</fileset> 
 			
 			<!-- The maven dependencies of fattest.simplicity -->
-			<fileset dir="${local.java}/generated/lib" erroronmissingdir="false">
+			<fileset dir="${local.java}/build/libs/lib" erroronmissingdir="false">
 				<include name="*.jar"/>
 			</fileset>
 

@@ -71,4 +71,5 @@ test.project: true
 	org.hamcrest:hamcrest-all;version=1.3,\
 	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file,\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.common.encoder;version=latest
