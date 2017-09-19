@@ -14,6 +14,9 @@ Open Liberty is a highly composable, fast to start, dynamic application server r
 * [Contribute to open liberty](https://github.com/OpenLiberty/open-liberty#contribute-to-open-liberty)
 * [Community](https://github.com/OpenLiberty/open-liberty#community)
 
+## Downloading
+You can download released versions and nightly build artifacts from: http://www.openliberty.io/downloads/
+
 ## Quick start
     git clone https://github.com/OpenLiberty/sample-mpconf.git
     cd sample-mpconf
