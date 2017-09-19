@@ -59,7 +59,7 @@ public class HealthCheckHttpResponseBuilder {
 
     JSON json = null;
 
-    void addResponse(Set<HealthCheckResponse> hcResponseSet) {
+    void addResponses(Set<HealthCheckResponse> hcResponseSet) {
         Iterator<HealthCheckResponse> hcResponseIt = hcResponseSet.iterator();
         while (hcResponseIt.hasNext()) {
             HealthCheckResponse hcResponse = hcResponseIt.next();

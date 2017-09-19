@@ -63,7 +63,7 @@ public class HealthCheckServlet extends HttpServlet {
 
             ServiceReference<HealthCheckService> ref = ctxt.getServiceReference(HealthCheckService.class);
             if (ref == null) {
-                logger.log(Level.SEVERE, "healthcheck.bean.call.exception.CWMH0000E", "HealthCheckService");
+                logger.log(Level.SEVERE, "healthcheck.CWMH0000E", "HealthCheckService");
                 throw new ServletException(Tr.formatMessage(tc, "OSGI_SERVICE_ERROR", "HealthCheckService"));
             } else {
                 healthService = ctxt.getService(ref);
