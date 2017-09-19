@@ -33,7 +33,7 @@ public class Util {
 
     public static Map<String, Metric> getMetricsAsMap(String registryName, String metricName) throws NoSuchRegistryException, NoSuchMetricException, EmptyRegistryException {
         MetricRegistry registry = getRegistry(registryName);
-        Map<String, Metric> metricMap = registry.getMetrics();//Metric.class, new Filter(regex));
+        Map<String, Metric> metricMap = registry.getMetrics();
         Map<String, Metric> returnMap = new HashMap<String, Metric>();
         if (metricMap.isEmpty()) {
             throw new EmptyRegistryException();
