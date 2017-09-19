@@ -76,11 +76,34 @@ def loadBuildProps() {
 
   def javaHome = org.gradle.internal.jvm.Jvm.current().getJavaHome()
   props.setProperty('java.home', javaHome.getAbsolutePath())
-  props.setProperty('javac.bootclasspath.1.4', '${ibmjdklib.bootclasspath}')
-  props.setProperty('javac.bootclasspath.1.6', '${ibmjdklib.bootclasspath}')
-  props.setProperty('javac.bootclasspath.1.7', '${ibmjdklib.bootclasspath}')
-  props.setProperty('javac.bootclasspath.1.8', '${ibmjdklib.bootclasspath}')
+
+  //scrape java.home JARs in jre/lib
+	
+  FileTree jdkLibs = fileTree(System.properties['java.home'])
+
+  //bin is needed for IBM JDKs
+  jdkLibs.include 'bin/default/**/vm.jar'
+  jdkLibs.include 'lib/*.jar'
+
+  def jdkLibString = ""
+  Boolean isFirstPass = true;
   
+  jdkLibs.each {File file -> 
+  
+
+  if (isFirstPass) {
+     jdkLibString = jdkLibString + file + ";version=file;boot=true"
+  } else {
+     jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
+  }
+	 isFirstPass = false;
+  }
+
+  props.setProperty('javac.bootclasspath.1.4', jdkLibString)
+  props.setProperty('javac.bootclasspath.1.6', jdkLibString)
+  props.setProperty('javac.bootclasspath.1.7', jdkLibString)
+  props.setProperty('javac.bootclasspath.1.8', jdkLibString)
+ 
   if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
     //Some functionality is added if we are able to access particular internal systems.
     //This is to support more controlled dependency management, and multiple JDK paths for cross-compilation
