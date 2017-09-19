@@ -40,7 +40,9 @@ import java.util.jar.Manifest;
  * <li> Remote URLs that point to directories are not supported.</li>
  */
 public class JarFileClassLoader extends URLClassLoader {
-
+    static {
+        ClassLoader.registerAsParallelCapable();
+    }
     private final CopyOnWriteArrayList<URL> urls;
     private final CopyOnWriteArrayList<ResourceHandler> resourceHandlers;
     private final boolean verify;
