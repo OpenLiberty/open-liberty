@@ -67,7 +67,7 @@ public class PathUtil {
      * Eg, for /we/like/pies and /we/like will return pies<br>
      * for /fish/are/friends/not/food and /fish/are/friends will return not<br>
      * <p>
-     * <em>Will explode in fiery ball of death if parentPath is not a parent of path, you have been warned.</em>
+     * <em>Caller's responsibility to ensure parentPath is actually a parent of path.</em>
      * 
      * @param path full path
      * @param parentPath path segment that is a super path within path
