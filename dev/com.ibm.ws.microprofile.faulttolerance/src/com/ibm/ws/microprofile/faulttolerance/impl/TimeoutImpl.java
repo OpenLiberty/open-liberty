@@ -30,17 +30,20 @@ public class TimeoutImpl {
 
     private static final TraceComponent tc = Tr.register(TimeoutImpl.class);
 
+    private final String id;
     private final TimeoutPolicy timeoutPolicy;
     private final ScheduledExecutorService scheduledExecutorService;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private Future<?> future;
-    private volatile boolean timedout = false;
-    private boolean stopped = false;
-    private volatile long targetEnd;
-    private Runnable timeoutTask;
-    private volatile long start;
 
-    private final String id;
+    //lock must be held whenever reading or writing any of the following properties
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    //=========================================
+    private Future<?> future; //the future which represents the scheduled timeout task
+    private boolean timedout = false; //has the timeout popped?
+    private boolean stopped = false; //has the timeout been stopped?
+    private long start; //what relative nanoTime was the timeout started?
+    private long targetEnd; //what relative nanoTime do we expect the timeout to occur
+    private Runnable timeoutTask; //the task which will be run when the timeout does occur
+    //=========================================
 
     /**
      * @param timeoutPolicy
@@ -76,7 +79,7 @@ public class TimeoutImpl {
     /**
      * This method is run when the timer pops
      */
-    void timeout() {
+    private void timeout() {
         lock.writeLock().lock();
         try {
             //if already stopped, do nothing, otherwise check times and run the timeout task

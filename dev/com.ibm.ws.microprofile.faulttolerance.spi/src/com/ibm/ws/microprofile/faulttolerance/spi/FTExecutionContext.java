@@ -13,7 +13,7 @@ package com.ibm.ws.microprofile.faulttolerance.spi;
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 
 /**
- *
+ * The Execution Context keeps track of execution state. It may only be used once.
  */
 public interface FTExecutionContext extends ExecutionContext {
 
