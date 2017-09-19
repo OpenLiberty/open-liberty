@@ -37,6 +37,8 @@ public class ExecutionContextImpl implements FTExecutionContext {
 
     private final String id;
 
+    private volatile boolean closed = false;
+
     public ExecutionContextImpl(String id, Method method, Object[] params, TimeoutImpl timeout, CircuitBreakerImpl circuitBreaker, FallbackPolicy fallbackPolicy, RetryImpl retry) {
         this.id = id;
         this.method = method;
@@ -66,6 +68,9 @@ public class ExecutionContextImpl implements FTExecutionContext {
     *
     */
     public void start() {
+        if (this.closed) {
+            throw new IllegalStateException();
+        }
         this.startTime = System.nanoTime();
         debugRelativeTime("start");
         if (timeout != null) {
@@ -74,6 +79,9 @@ public class ExecutionContextImpl implements FTExecutionContext {
     }
 
     public void start(QueuedFuture<?> future) {
+        if(this.closed){
+            throw new IllegalStateException();
+        }
         this.startTime = System.nanoTime();
         debugRelativeTime("start");
         if (timeout != null) {
@@ -92,8 +100,11 @@ public class ExecutionContextImpl implements FTExecutionContext {
     }
 
     /**
-    *
-    */
+     * Check if the timeout has "popped". If it has then it will throw a TimeoutException. If not then return the
+     * time remaining, in nanoseconds.
+     *
+     * @return the time remaining on the timeout, in nanoseconds. If there is no timeout then return -1.
+     */
     public long check() {
         debugRelativeTime("check");
         long remaining = -1;
@@ -164,10 +175,13 @@ public class ExecutionContextImpl implements FTExecutionContext {
     /** {@inheritDoc} */
     @Override
     public void close() {
-        //TODO might need to do more here
+        //at the moment the only thing that might need to happen is to stop the timeout...
+        //however, if execution has completed normally and as designed, the timeout will already be stopped
+        //one day there might be more things that need closing
         if (this.timeout != null) {
             this.timeout.stop();
         }
+        this.closed = true;
     }
 
     @Override
