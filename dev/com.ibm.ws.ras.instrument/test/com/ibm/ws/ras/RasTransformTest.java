@@ -112,7 +112,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	public void testJava6BasicInjection() {
 		try {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava6";
-			Class transformedClass = transformClass(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava6.class");
+			Class transformedClass = transformClass(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava6.class");
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
@@ -125,7 +125,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	public void testJava7BasicInjection() {
 		try {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava7";
-			Class transformedClass = transformClass(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava7.class");
+			Class transformedClass = transformClass(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava7.class");
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
@@ -138,7 +138,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	public void testJava7StaticInit() {
 		try {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava7StaticInit";
-			Class transformedClass = transformClass(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava7StaticInit.class");
+			Class transformedClass = transformClass(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava7StaticInit.class");
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
@@ -153,7 +153,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	public void testJava8Basic() {
 		try {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava8";
-			Class transformedClass = transformClass(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8.class");
+			Class transformedClass = transformClass(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava8.class");
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
@@ -166,7 +166,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	public void testJava8Lambdas() {
 		try {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava8Lambdas";
-			Class transformedClass = transformClass(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8Lambdas.class");
+			Class transformedClass = transformClass(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava8Lambdas.class");
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
@@ -179,7 +179,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	public void testJava8StaticInit() {
 		try {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava8StaticInit";
-			Class transformedClass = transformClass(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticInit.class");
+			Class transformedClass = transformClass(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticInit.class");
 			
 			transformedClass.newInstance();		
 		} catch (Exception e) {
@@ -194,8 +194,8 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava8StaticLambdas";
 			String classUnderTestInnerClass = "com.ibm.example.bytecode.HelloWorldJava8StaticLambdas$Converter";
 
-			byte[] preTransformBytes = makeBytesFromFile("bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas.class");
-			byte[] preTransformBytesInnerClass = makeBytesFromFile("bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas$Converter.class");
+			byte[] preTransformBytes = makeBytesFromFile("test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas.class");
+			byte[] preTransformBytesInnerClass = makeBytesFromFile("test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas$Converter.class");
 			
 			Map<String, byte[]> classDefsPreTransform = new HashMap<String, byte[]>();
 			classDefsPreTransform.put(classUnderTest, preTransformBytes);
@@ -209,8 +209,8 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 
 			
 			
-			byte[] classUnderTestBytes = transformedClassBytes(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas.class");
-			byte[] classUnderTestBytesInnerClass = transformedClassBytes(classUnderTestInnerClass, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas$Converter.class");
+			byte[] classUnderTestBytes = transformedClassBytes(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas.class");
+			byte[] classUnderTestBytesInnerClass = transformedClassBytes(classUnderTestInnerClass, "test/test data/com/ibm/example/bytecode/HelloWorldJava8StaticLambdas$Converter.class");
 			
 			Map<String, byte[]> classDefs = new HashMap<String, byte[]>();
 			classDefs.put(classUnderTest, classUnderTestBytes);
@@ -233,7 +233,7 @@ public class RasTransformTest extends LibertyRuntimeTransformer {
 	public void testJava8LambdaInjection() {
 		try {
 			String classUnderTest = "com.ibm.example.bytecode.HelloWorldJava8Lambdas";
-			Class transformedClass = transformClass(classUnderTest, "bin_test/test data/com/ibm/example/bytecode/HelloWorldJava8Lambdas.class");
+			Class transformedClass = transformClass(classUnderTest, "test/test data/com/ibm/example/bytecode/HelloWorldJava8Lambdas.class");
 			
 			transformedClass.newInstance();		
 			
