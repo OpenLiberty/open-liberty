@@ -1,5 +1,6 @@
 -include= ~../cnf/resources/bnd/feature.props
 symbolicName=com.ibm.websphere.appserver.javaMail-1.5
+singleton=true
 visibility=public
 IBM-API-Package: javax.mail;  type="spec", \
  javax.mail.internet;  type="spec", \
