@@ -334,10 +334,22 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                                            ModuleClassLoaderFactory moduleClassLoaderFactory) throws MetaDataException {
             try {
                 String contextRoot = this.contextRoot;
+                /** Field to verify if Default Context Root is being used */
+                boolean isDefaultContextRootUsed = false;
                 if (contextRoot == null) {
+                    /**
+                     * If the module name is equal to the default context root,
+                     * it means that the default context root is being used.
+                     */
+                    if (moduleName.equals(defaultContextRoot)) {
+                        isDefaultContextRootUsed = true;
+                    }
                     contextRoot = ContextRootUtil.getContextRoot(defaultContextRoot);
                 }
-                return new WebModuleInfoImpl(appInfo, moduleName, name, contextRoot, container, altDDEntry, classesContainerInfo, moduleClassLoaderFactory);
+                WebModuleInfoImpl webModuleInfo = new WebModuleInfoImpl(appInfo, moduleName, name, contextRoot, container, altDDEntry, classesContainerInfo, moduleClassLoaderFactory);
+                /** Set the Default Context Root information to the web module info */
+                webModuleInfo.setDefaultContextRootUsed(isDefaultContextRootUsed);
+                return webModuleInfo;
             } catch (UnableToAdaptException e) {
                 FFDCFilter.processException(e, getClass().getName(), "createModuleInfo", this);
                 return null;

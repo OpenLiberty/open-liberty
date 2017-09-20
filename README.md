@@ -2,8 +2,7 @@
 
 # OpenLiberty
 
-[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/OpenLibertyAS)
-![Linux](https://img.shields.io/badge/os-linux-green.svg?style=flat)
+[![Twitter](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/OpenLibertyIO)
 [![License](https://img.shields.io/badge/License-EPL%201.0-green.svg)](https://opensource.org/licenses/EPL-1.0)
 
 # Summary
@@ -13,6 +12,9 @@ Open Liberty is a highly composable, fast to start, dynamic application server r
 * [Getting Started](https://github.com/OpenLiberty/open-liberty#getting-started)
 * [Contribute to open liberty](https://github.com/OpenLiberty/open-liberty#contribute-to-open-liberty)
 * [Community](https://github.com/OpenLiberty/open-liberty#community)
+
+## Downloading
+You can download released versions and nightly build artifacts from: http://www.openliberty.io/downloads/
 
 ## Quick start
     git clone https://github.com/OpenLiberty/sample-mpconf.git
@@ -49,8 +51,13 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 4. Perform a local release
 
     ```./gradlew releaseNeeded```
+    
+    **NOTE:** This task releases all projects to the local releaseRepo.
+    The final openliberty zip can be found in
+    
+    ```open-liberty\dev\cnf\release\dev\openliberty\<version>\openliberty-xxx.zip```
 
-4. Go [Open issues](https://github.com/OpenLiberty/open-liberty/issues), [Review existing contributions](https://github.com/OpenLiberty/open-liberty/pulls), or [Submit fixes](https://github.com/OpenLiberty/open-liberty/blob/master/CONTRIBUTING.md).
+5. Go [Open issues](https://github.com/OpenLiberty/open-liberty/issues), [Review existing contributions](https://github.com/OpenLiberty/open-liberty/pulls), or [Submit fixes](https://github.com/OpenLiberty/open-liberty/blob/master/CONTRIBUTING.md).
 
 ## Community
 1. [Open Liberty group.io](https://groups.io/g/openliberty)

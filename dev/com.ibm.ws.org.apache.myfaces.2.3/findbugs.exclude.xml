@@ -1,0 +1,177 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<FindBugsFilter>
+  <!-- Begin Global Findbugs Excludes do not edit by hand - edit globally-->
+  <Match>
+    <Bug pattern="BC_IMPOSSIBLE_INSTANCEOF,BC_VACUOUS_INSTANCEOF,BSHIFT_WRONG_ADD_PRIORITY,CO_COMPARETO_INCORRECT_FLOATING,DE_MIGHT_IGNORE,DLS_DEAD_LOCAL_STORE,DM_BOXED_PRIMITIVE_FOR_PARSING,DM_BOXED_PRIMITIVE_TOSTRING,DM_NUMBER_CTOR,DMI_HARDCODED_ABSOLUTE_FILENAME,EQ_DOESNT_OVERRIDE_EQUALS,INT_BAD_COMPARISON_WITH_NONNEGATIVE_VALUE,IT_NO_SUCH_ELEMENT,ME_ENUM_FIELD_SETTER,ME_MUTABLE_ENUM_FIELD,MS_CANNOT_BE_FINAL,MS_MUTABLE_ARRAY,MS_MUTABLE_COLLECTION,MS_MUTABLE_COLLECTION_PKGPROTECT,MS_PKGPROTECT,NP_LOAD_OF_KNOWN_NULL_VALUE,NP_NULL_ON_SOME_PATH,NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE,NP_NULL_PARAM_DEREF,OBL_UNSATISFIED_OBLIGATION_EXCEPTION_EDGE,RANGE_ARRAY_INDEX,RCN_REDUNDANT_NULLCHECK_OF_NULL_VALUE,RCN_REDUNDANT_NULLCHECK_OF_NONNULL_VALUE,RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE,RpC_REPEATED_CONDITIONAL_TEST,RV_RETURN_VALUE_IGNORED_NO_SIDE_EFFECT,SA_FIELD_SELF_ASSIGNMENT,SQL_PREPARED_STATEMENT_GENERATED_FROM_NONCONSTANT_STRING,STCAL_STATIC_SIMPLE_DATE_FORMAT_INSTANCE,UC_USELESS_CONDITION,UC_USELESS_CONDITION_TYPE,UC_USELESS_OBJECT,UC_USELESS_VOID_METHOD,WMI_WRONG_MAP_ITERATOR"/>
+  </Match>
+  <!-- End Global Findbugs Excludes do not edit by hand - edit globally-->
+
+  <!--See http://findbugs.sourceforge.net/manual/filter.html for details of the syntax of this file-->
+  <!--This file was generated from the list of known bugs for this project-->
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="registerListener" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Ljava/lang/String;Ljava/lang/ClassLoader;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>	
+  
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Bug pattern="DMI_BLOCKING_METHODS_ON_URL"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configureRuntimeConfig" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="handleSerialFactory" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configureRuntimeConfig" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="getDefaultSourcClassForSystemEvent" signature="(Ljava/lang/Class;)Ljava/lang/String;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="handleSerialFactory" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+  
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="update" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WebSphereLifecycleProviderFactory"/>
+    <Method name="release" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WebSphereLifecycleProviderFactory"/>
+    <Method name="release" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider"/>
+    <Method name="getBaseUrls" signature="()Ljava/util/Set;"/>
+    <Bug pattern="DMI_COLLECTION_OF_URLS"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.config.annotation.WebSphereAnnotationLifecycleProvider"/>
+    <Method name="&lt;init&gt;" signature="(Ljavax/naming/Context;)V"/>
+    <Local name="context"/>
+    <Bug pattern="BC_UNCONFIRMED_CAST"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="getResourceLastModified" signature="(Ljava/net/URL;)J"/>
+    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configure" signature="()V"/>
+    <Field name="lastUpdate"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="update" signature="()V"/>
+    <Field name="lastUpdate"/>
+    <Bug pattern="ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD"/>
+  </Match>
+
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="configure" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+  
+  <Match>
+    <Class name="org.apache.myfaces.config.FacesConfigurator"/>
+    <Method name="update" signature="()V"/>
+    <Bug pattern="SYSTEM_CURRENT_TIME_MILLIS_CALLED"/>
+  </Match>
+
+</FindBugsFilter>

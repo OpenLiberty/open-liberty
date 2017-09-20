@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
@@ -32,6 +33,7 @@ public class CompleteRunnable implements Runnable {
     public CompleteRunnable(IExtendedRequest extendedRequest,AsyncContextImpl asyncContextImpl) {
         this.iExtendedRequest = extendedRequest;
         this.asyncContextImpl = asyncContextImpl;
+       
         requestDataOnCompleteRequestThread = new SRTServletRequestThreadData();
         requestDataOnCompleteRequestThread.init(SRTServletRequestThreadData.getInstance());
     }

@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Wykryto implementacj\u0119 technologii JSF Sun RI 1.2 dla aplikacji WWW {0}, ale zarejestrowano tak\u017ce proces nas\u0142uchuj\u0105cy MyFaces StartupServletContextListener.
+jsf.warn.myfaces.listener.for.ri.app.explanation=Znaleziono proces nas\u0142uchuj\u0105cy, kt\u00f3ry nie jest zgodny z u\u017cywan\u0105 implementacj\u0105 technologii JSF.
+jsf.warn.myfaces.listener.for.ri.app.useraction=Usu\u0144 proces nas\u0142uchuj\u0105cy StartupServletContextListener lub u\u017cyj odpowiedniej implementacji JSF.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: Wykryto implementacj\u0119 technologii JSF Sun RI 1.2, ale nie mo\u017cna by\u0142o jej zainicjowa\u0107.  By\u0107 mo\u017ce nie zainicjowano poprawnie technologii JSF dla aplikacji WWW {0}.
+jsf.warn.ri.impl.not.initialized.explanation=By\u0107 mo\u017ce implementacja technologii JSF nie zosta\u0142a poprawnie zainicjowana.
+jsf.warn.ri.impl.not.initialized.useraction=Sprawd\u017a pliki dziennika, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: Wybrano implementacj\u0119 technologii JSF MyFaces dla elementu {0}, ale zarejestrowano te\u017c proces nas\u0142uchuj\u0105cy ConfigureListener Sun RI.
+jsf.warn.ri.listener.for.myfaces.app.explanation=Znaleziono proces nas\u0142uchuj\u0105cy ConfigureListener SunRI, kt\u00f3ry nie jest zgodny z u\u017cywan\u0105 implementacj\u0105 technologii JSF.
+jsf.warn.ri.listener.for.myfaces.app.useraction=Usu\u0144 proces nas\u0142uchuj\u0105cy ConfigureListener lub u\u017cyj odpowiedniej implementacji JSF.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: Wykryto implementacj\u0119 technologii JSF WebSphere MyFaces, ale nie mo\u017cna by\u0142o jej zainicjowa\u0107 dla aplikacji WWW {0}.
+jsf.warn.myfaces.not.initialized.explanation=By\u0107 mo\u017ce implementacja technologii JSF nie zosta\u0142a poprawnie zainicjowana.
+jsf.warn.myfaces.not.initialized.useraction=Sprawd\u017a pliki dziennika, aby okre\u015bli\u0107 przyczyn\u0119 niepowodzenia.
+
+jsf.warn.exception.during.listener=JSFG0855W: Wychwycono wyj\u0105tek podczas pr\u00f3by zarejestrowania procesu nas\u0142uchuj\u0105cego cyklu \u017cycia JSF {0}.  By\u0107 mo\u017ce nie zainicjowano poprawnie technologii JSF dla aplikacji WWW {1}.
+jsf.warn.exception.during.listener.explanation=Wyst\u0105pi\u0142 wyj\u0105tek podczas rejestrowania procesu nas\u0142uchuj\u0105cego.
+jsf.warn.exception.during.listener.useraction=Sprawd\u017a pliki dziennika, aby okre\u015bli\u0107 przyczyn\u0119 wyst\u0105pienia wyj\u0105tku.

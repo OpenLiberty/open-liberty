@@ -29,5 +29,5 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  bin/jaxrs/wadl2java, \
  bin/jaxrs/wadl2java.bat, \
  bin/jaxrs/tools/wadl2java.jar
-kind=noship
-edition=full
+kind=beta
+edition=core

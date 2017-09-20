@@ -18,6 +18,6 @@ publish.feature.resources: **
 	com.ibm.websphere.appserver.cdi-1.2;version=latest, \
 	com.ibm.websphere.appserver.jaxrs-2.0;version=latest, \
 	com.ibm.websphere.appserver.jsonp-1.0;version=latest, \
-        com.ibm.websphere.appserver.mpConfig-1.0;version=latest, \
+        com.ibm.websphere.appserver.mpConfig-1.1;version=latest, \
         com.ibm.websphere.appserver.mpFaultTolerance-1.0;version=latest, \
 	com.ibm.ws.require.java8;version=latest

@@ -964,7 +964,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         @FFDCIgnore(Throwable.class)
         public void run() {
             try {
-                DecoratedExecutorThread.setExecutor(this.classifiedExecutor);
+                if (this.classifiedExecutor != null) {
+                    DecoratedExecutorThread.setExecutor(this.classifiedExecutor);
+                }
                 runnable.run();
             } catch (Throwable t) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -980,7 +982,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     }
                 }
             } finally {
-                DecoratedExecutorThread.setExecutor(null);
+                if (this.classifiedExecutor != null) {
+                    DecoratedExecutorThread.removeExecutor();
+                }
             }
         }
     }

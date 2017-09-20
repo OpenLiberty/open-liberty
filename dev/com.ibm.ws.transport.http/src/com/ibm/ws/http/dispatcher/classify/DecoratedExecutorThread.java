@@ -35,4 +35,12 @@ public class DecoratedExecutorThread {
         return currentExecutor.get();
     }
 
+    /**
+     * Removes the Classified Executor on the thread.
+     * 
+     * @param ex Classified Executor
+     */
+    public static void removeExecutor() {
+        currentExecutor.remove();
+    }
 }

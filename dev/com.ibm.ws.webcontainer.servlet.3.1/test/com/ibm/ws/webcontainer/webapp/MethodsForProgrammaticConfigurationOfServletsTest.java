@@ -22,23 +22,38 @@ package com.ibm.ws.webcontainer.webapp;
 
 import static org.junit.Assert.assertTrue;
 
+import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.websphere.csi.J2EENameFactory;
-import com.ibm.websphere.servlet.request.IRequest;
 import com.ibm.ws.container.service.metadata.MetaDataService;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-import com.ibm.ws.webcontainer.osgi.srt.SRTConnectionContext;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.ws.webcontainer31.osgi.webapp.WebApp31;
+import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 
 public class MethodsForProgrammaticConfigurationOfServletsTest {
 
     private final Mockery context = new Mockery();
-    final private IRequest request = context.mock(IRequest.class);
-    private SRTConnectionContext connContext;
+    final private URIMatcherFactory matcherFactory = context.mock(URIMatcherFactory.class);
 
+    @Before
+    public void setupURIMatcherFactory() {
+        
+        context.checking(new Expectations() {
+            {
+                one(matcherFactory).createURIMatcher(with(any(Boolean.class)));
+            }
+        });
+        
+        // Set the factory that is necessary for the creation of the objects used by this
+        // unit test.
+        MethodsForProgrammaticConfigurationOfServletsTest.WebContainer webContainer = new WebContainer();
+        webContainer.setURIMatcherFactory(matcherFactory);
+    }
+    
     @Test
     public void testDeclareRoles() {
 
@@ -235,5 +250,21 @@ public class MethodsForProgrammaticConfigurationOfServletsTest {
 
         assertTrue(caughtUnsupportedOperationException);
         ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
+    }
+
+    /*
+     * This is an inner class for testing. We needed a way to set the factories necessary
+     * to create the objects used by the unit tests. Since there is no runtime involved here
+     * Declarative Services is never invoked to actually set the factories resulting in NPEs.
+     *
+     * Extending the actual com.ibm.ws.webcontainer.osgi.WebContainer allows us to create
+     * public methods that just call through to the protected methods to set the factories.
+     */
+    private class WebContainer extends com.ibm.ws.webcontainer.osgi.WebContainer {
+
+        @Override
+        public void setURIMatcherFactory(URIMatcherFactory factory) {
+            super.setURIMatcherFactory(factory);
+        }
     }
 }

@@ -127,10 +127,12 @@ public class HealthCheckResponseTest {
 
         Map<String, Object> attribute = new HashMap<String, Object>();
         attribute.put("first-key", "first-value");
+        attribute.put("second-key", "second-value");
         final Optional<Map<String, Object>> data = Optional.of(attribute);
 
         HealthCheckResponseBuilder builder = new HealthCheckResponseBuilderImpl();
         builder = builder.withData("first-key", "first-value");
+        builder = builder.withData("second-key", "second-value");
         HealthCheckResponse response = builder.build();
         Optional<Map<String, Object>> testData = response.getData();
 
@@ -163,10 +165,12 @@ public class HealthCheckResponseTest {
 
         Map<String, Object> attribute = new HashMap<String, Object>();
         attribute.put("first-key", (long) 15000);
+        attribute.put("first-key", (long) 5000);
         final Optional<Map<String, Object>> data = Optional.of(attribute);
 
         HealthCheckResponseBuilder builder = new HealthCheckResponseBuilderImpl();
         builder = builder.withData("first-key", 15000);
+        builder = builder.withData("first-key", 5000);
         HealthCheckResponse response = builder.build();
         Optional<Map<String, Object>> testData = response.getData();
 

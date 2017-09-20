@@ -17,6 +17,6 @@ publish.feature.resources: **
 -dependson: \
     com.ibm.wsspi.appserver.webBundle-1.0;version=latest, \
     com.ibm.wsspi.appserver.webBundleSecurity-1.0;version=latest, \
-    com.ibm.websphere.appserver.servlet-3.0;version=latest, \
+    com.ibm.websphere.appserver.servlet-3.1;version=latest, \
     com.ibm.websphere.appserver.httpcommons-1.0;version=latest
 

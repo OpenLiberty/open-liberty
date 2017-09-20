@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: F\u00fcr die Webanwendung {0} wurde die Sun RI 1.2-JSF-Implementierung erkannt, aber es ist auch ein MyFaces-Listener StartupServletContextListener registriert.
+jsf.warn.myfaces.listener.for.ri.app.explanation=Es wurde ein Listener gefunden, der nicht mit der verwendeten JSF-Implementierung \u00fcbereinstimmt.
+jsf.warn.myfaces.listener.for.ri.app.useraction=Entfernen Sie den StartupServletContextListener oder verwenden Sie die richtige JSF-Implementierung.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: Die Sun RI 1.2-JSF-Implementierung wurde erkannt, konnte aber nicht initialisiert werden. M\u00f6glicherweise wurde JSF nicht ordnungsgem\u00e4\u00df f\u00fcr die Webanwendung {0} initialisiert.
+jsf.warn.ri.impl.not.initialized.explanation=Die JSF-Implementierung wurde m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df initialisiert.
+jsf.warn.ri.impl.not.initialized.useraction=Untersuchen Sie die Protokolldateien, um die Fehlerursache zu bestimmen.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: F\u00fcr {0} ist die MyFaces-JSF-Implementierung ausgew\u00e4hlt, aber es ist auch ein Sun RI-Listener ConfigureListener registriert.
+jsf.warn.ri.listener.for.myfaces.app.explanation=Es wurde ein SunRI-Listener ConfigureListener gefunden, der nicht mit der verwendeten JSF-Implementierung \u00fcbereinstimmt.
+jsf.warn.ri.listener.for.myfaces.app.useraction=Entfernen Sie den ConfigureListener oder verwenden Sie die richtige JSF-Implementierung.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: Die WebSphere MyFaces-JSF-Implementierung wurde erkannt, konnte aber f\u00fcr die Webanwendung {0} nicht initialisiert werden.
+jsf.warn.myfaces.not.initialized.explanation=Die JSF-Implementierung wurde m\u00f6glicherweise nicht ordnungsgem\u00e4\u00df initialisiert.
+jsf.warn.myfaces.not.initialized.useraction=Untersuchen Sie die Protokolldateien, um die Fehlerursache zu bestimmen.
+
+jsf.warn.exception.during.listener=JSFG0855W: Beim Versuch, den JSF-Lifecycle-Listener {0} zu registrieren, wurde eine Ausnahme abgefangen. M\u00f6glicherweise wurde JSF nicht ordnungsgem\u00e4\u00df f\u00fcr die Webanwendung {1} initialisiert.
+jsf.warn.exception.during.listener.explanation=Beim Registrieren des Listeners ist eine Ausnahme eingetreten.
+jsf.warn.exception.during.listener.useraction=Untersuchen Sie die Protokolldateien, um die Ausnahmeursache zu bestimmen.

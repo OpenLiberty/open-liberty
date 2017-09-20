@@ -30,6 +30,32 @@ public class SRTServletContainerVersionTest {
 
     private final Mockery context = new Mockery();
     private int mockId = 1;
+    
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testServlet40ObjectCreation() throws Exception {
+        WebContainer webContainer = new WebContainer();
+        final ServiceReference<ServletVersion> versionRef = context.mock(ServiceReference.class, "sr" + mockId++);
+
+        context.checking(new Expectations() {
+            {
+                allowing(versionRef).getProperty(ServletVersion.VERSION);
+                will(returnValue(WebContainer.SPEC_LEVEL_40));
+            }
+        });
+
+        Class<WebContainer> clazz = (Class<WebContainer>) webContainer.getClass();
+
+        Method versionSetter = clazz.getDeclaredMethod("setVersion", ServiceReference.class);
+
+        versionSetter.setAccessible(true);
+        versionSetter.invoke(webContainer, versionRef);
+
+        assertTrue("Returned webApp container version should be 40", WebContainer.getServletContainerSpecLevel() == WebContainer.SPEC_LEVEL_40);
+
+        context.assertIsSatisfied();
+        ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
+    }
 
     @SuppressWarnings("unchecked")
     @Test

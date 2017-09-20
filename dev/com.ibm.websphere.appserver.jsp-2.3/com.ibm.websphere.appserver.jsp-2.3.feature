@@ -34,7 +34,7 @@ IBM-SPI-Package: com.ibm.wsspi.jsp.taglib.config
 Subsystem-Name: JavaServer Pages 2.3
 -features=com.ibm.websphere.appserver.javax.jsp-2.3, \
  com.ibm.websphere.appserver.javax.el-3.0, \
- com.ibm.websphere.appserver.servlet-3.1, \
+ com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
  com.ibm.websphere.appserver.el-3.0
 -bundles=com.ibm.ws.org.eclipse.jdt.core.3.10.2.v20160712-0000, \
  com.ibm.websphere.javaee.jstl.1.2; location:="dev/api/spec/,lib/", \

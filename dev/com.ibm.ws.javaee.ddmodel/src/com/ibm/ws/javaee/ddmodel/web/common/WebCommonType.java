@@ -23,6 +23,7 @@ import com.ibm.ws.javaee.dd.common.ParamValue;
 import com.ibm.ws.javaee.dd.common.SecurityRole;
 import com.ibm.ws.javaee.dd.jsp.JSPConfig;
 import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
+import com.ibm.ws.javaee.dd.web.common.DefaultContextPath;
 import com.ibm.ws.javaee.dd.web.common.ErrorPage;
 import com.ibm.ws.javaee.dd.web.common.Filter;
 import com.ibm.ws.javaee.dd.web.common.FilterMapping;
@@ -30,6 +31,8 @@ import com.ibm.ws.javaee.dd.web.common.LocaleEncodingMappingList;
 import com.ibm.ws.javaee.dd.web.common.LoginConfig;
 import com.ibm.ws.javaee.dd.web.common.MimeMapping;
 import com.ibm.ws.javaee.dd.web.common.Ordering;
+import com.ibm.ws.javaee.dd.web.common.RequestEncoding;
+import com.ibm.ws.javaee.dd.web.common.ResponseEncoding;
 import com.ibm.ws.javaee.dd.web.common.SecurityConstraint;
 import com.ibm.ws.javaee.dd.web.common.Servlet;
 import com.ibm.ws.javaee.dd.web.common.ServletMapping;
@@ -39,6 +42,7 @@ import com.ibm.ws.javaee.dd.web.common.WelcomeFileList;
 import com.ibm.ws.javaee.ddmodel.DDParser;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParsableListImplements;
 import com.ibm.ws.javaee.ddmodel.DDParser.ParseException;
+import com.ibm.ws.javaee.ddmodel.common.DefaultContextPathType;
 import com.ibm.ws.javaee.ddmodel.common.DescriptionType;
 import com.ibm.ws.javaee.ddmodel.common.DisplayNameType;
 import com.ibm.ws.javaee.ddmodel.common.EJBLocalRefType;
@@ -51,8 +55,10 @@ import com.ibm.ws.javaee.ddmodel.common.ListenerType;
 import com.ibm.ws.javaee.ddmodel.common.MessageDestinationRefType;
 import com.ibm.ws.javaee.ddmodel.common.MessageDestinationType;
 import com.ibm.ws.javaee.ddmodel.common.ParamValueType;
+import com.ibm.ws.javaee.ddmodel.common.RequestEncodingType;
 import com.ibm.ws.javaee.ddmodel.common.ResourceEnvRefType;
 import com.ibm.ws.javaee.ddmodel.common.ResourceRefType;
+import com.ibm.ws.javaee.ddmodel.common.ResponseEncodingType;
 import com.ibm.ws.javaee.ddmodel.common.SecurityRoleRefType;
 import com.ibm.ws.javaee.ddmodel.common.SecurityRoleType;
 import com.ibm.ws.javaee.ddmodel.common.XSDTokenType;
@@ -299,6 +305,21 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
         return locale_encoding_mapping_list;
     }
 
+    @Override
+    public DefaultContextPath getDefaultContextPath() {
+        return default_context_path;
+    }
+
+    @Override
+    public RequestEncoding getRequestEncoding() {
+        return request_encoding;
+    }
+
+    @Override
+    public ResponseEncoding getResponseEncoding() {
+        return response_encoding;
+    }
+
     // choice {
     DescriptionType.ListType description;
     DisplayNameType.ListType display_name;
@@ -323,6 +344,9 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
     // JNDIEnvironmentRefsGroup fields appear here in sequence
     MessageDestinationType.ListType message_destination;
     LocaleEncodingMappingListType locale_encoding_mapping_list;
+    DefaultContextPathType default_context_path;
+    RequestEncodingType request_encoding;
+    ResponseEncodingType response_encoding;
     // } choice
 
     /*
@@ -519,6 +543,42 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
             this.locale_encoding_mapping_list = locale_encoding_mapping_list;
             return true;
         }
+        if ("default-context-path".equals(localName)) {
+            if (this.default_context_path != null) {
+                throw new ParseException(parser.tooManyElements("default-context-path"));
+            }
+
+            DefaultContextPathType default_context_path = new DefaultContextPathType();
+            parser.parse(default_context_path);
+
+            String value = default_context_path.getValue();
+            if ((value.length() >= 1 && value.charAt(0) != '/') || (value.length() > 1 && value.charAt(value.length() - 1) == '/')) {
+                throw new ParseException(parser.unexpectedContent());
+            }
+            this.default_context_path = default_context_path;
+            return true;
+        }
+        if ("request-character-encoding".equals(localName)) {
+            RequestEncodingType request_encoding = new RequestEncodingType();
+            parser.parse(request_encoding);
+            if (this.request_encoding == null) {
+                this.request_encoding = request_encoding;
+            } else {
+                throw new ParseException(parser.tooManyElements("request-character-encoding"));
+            }
+            return true;
+        }
+        if ("response-character-encoding".equals(localName)) {
+            ResponseEncodingType response_encoding = new ResponseEncodingType();
+            parser.parse(response_encoding);
+            if (this.response_encoding == null) {
+                this.response_encoding = response_encoding;
+            } else {
+                throw new ParseException(parser.tooManyElements("response-character-encoding"));
+            }
+            return true;
+        }
+
         return false;
     }
 
@@ -649,6 +709,9 @@ public class WebCommonType extends JNDIEnvironmentRefsGroup implements WebCommon
         super.describe(diag);
         diag.describeIfSet("message-destination", message_destination);
         diag.describeIfSet("locale-encoding-mapping-list", locale_encoding_mapping_list);
+        diag.describeIfSet("default-context-path", default_context_path);
+        diag.describeIfSet("request-character-encoding", request_encoding);
+        diag.describeIfSet("response-character-encoding", response_encoding);
     }
 
     /*

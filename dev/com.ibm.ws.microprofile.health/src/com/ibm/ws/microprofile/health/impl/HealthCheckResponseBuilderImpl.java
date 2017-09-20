@@ -33,91 +33,57 @@ import org.eclipse.microprofile.health.HealthCheckResponseBuilder;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-/**
- * Health
- */
 public class HealthCheckResponseBuilderImpl extends HealthCheckResponseBuilder {
 
     private static final TraceComponent tc = Tr.register(HealthCheckResponseBuilderImpl.class);
 
     private String name;
-    private Optional<Map<String, Object>> data;
+
+    private final Optional<Map<String, Object>> data = Optional.of(new HashMap<String, Object>());
     private State state;
 
     public HealthCheckResponseBuilderImpl() {}
 
     @Override
-    public HealthCheckResponseBuilder name(String sName) {
-        synchronized (this) {
-            if (sName == null || sName.length() == 0) {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "Name is null"));
-            }
-            this.name = sName;
-        }
+    public HealthCheckResponseBuilder name(String name) {
+        validateName(name);
+        this.name = name;
         return this;
     }
 
     @Override
     public HealthCheckResponseBuilder withData(String key, String value) {
-        synchronized (this) {
-            Map<String, Object> attribute = new HashMap<String, Object>();
-            if (key == null || key.length() == 0) {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "Key is null"));
-            }
-            attribute.put(key, value);
-            this.data = Optional.of(attribute);
-        }
-        return this;
+        return withData(key, (Object) value);
     }
 
     @Override
     public HealthCheckResponseBuilder withData(String key, long value) {
-        synchronized (this) {
-            Map<String, Object> attribute = new HashMap<String, Object>();
-            if (key == null || key.length() == 0) {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "Key is null"));
-            }
-            attribute.put(key, value);
-            this.data = Optional.of(attribute);
-        }
-        return this;
+        return withData(key, Long.valueOf(value));
     }
 
     @Override
     public HealthCheckResponseBuilder withData(String key, boolean value) {
-        synchronized (this) {
-            Map<String, Object> attribute = new HashMap<String, Object>();
-            if (key == null || key.length() == 0) {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "Key is null"));
-            }
-            attribute.put(key, value);
-            this.data = Optional.of(attribute);
-        }
-        return this;
+        return withData(key, Boolean.valueOf(value));
     }
 
     @Override
     public HealthCheckResponseBuilder up() {
-        synchronized (this) {
-            this.state = State.UP;
-        }
+        this.state = State.UP;
         return this;
     }
 
     @Override
     public HealthCheckResponseBuilder down() {
-        synchronized (this) {
-            this.state = State.DOWN;
-        }
+        this.state = State.DOWN;
         return this;
     }
 
     @Override
     public HealthCheckResponseBuilder state(boolean up) {
-        synchronized (this) {
-            if (up)
-                this.state = State.UP;
-        }
+        if (up)
+            this.state = State.UP;
+        else
+            this.state = State.DOWN;
         return this;
     }
 
@@ -144,6 +110,27 @@ public class HealthCheckResponseBuilderImpl extends HealthCheckResponseBuilder {
         builder.append(data);
 
         return builder.toString();
+    }
+
+    private HealthCheckResponseBuilder withData(String key, Object value) {
+        validateKey(key);
+
+        if (data.isPresent())
+            data.get().put(key, value);
+
+        return this;
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.length() == 0) {
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "Name is null"));
+        }
+    }
+
+    private void validateKey(String key) {
+        if (key == null || key.length() == 0) {
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "Key is null"));
+        }
     }
 
 }
