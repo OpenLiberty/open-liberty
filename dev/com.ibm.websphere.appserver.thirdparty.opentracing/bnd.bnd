@@ -14,8 +14,7 @@ bVersion=1.0
 instrument.disabled: true
 
 -includeresource: \
-    @${repo;io.opentracing:opentracing-api;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*, \
-    @${repo;io.opentracing:opentracing-util;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
+    @${repo;io.opentracing:opentracing-api;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
 
 Bundle-SymbolicName: com.ibm.websphere.appserver.thirdparty.opentracing
 Bundle-Name: io.opentracing Third-Party API
@@ -23,8 +22,7 @@ Bundle-Description: io.opentracing Third-Party API, version ${bVersion}
 
 Export-Package: io.opentracing;version=0.30.0, \
     io.opentracing.propagation;version=0.30.0, \
-    io.opentracing.tag;version=0.30.0, \
-    io.opentracing.util;version=0.30.0
+    io.opentracing.tag;version=0.30.0
 
 publish.wlp.jar.suffix: dev/api/third-party
 

@@ -24,24 +24,15 @@ WS-TraceGroup: OPENTRACING
                 com.ibm.ws.opentracing.OpentracingJaxRsProviderRegister
                 
 -includeresource: \
-   @${repo;io.opentracing:opentracing-api;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*, \
-   @${repo;io.opentracing:opentracing-util;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
-
-Export-Package: io.opentracing;version=0.30.0, \
-    io.opentracing.propagation;version=0.30.0, \
-    io.opentracing.tag;version=0.30.0, \
-    io.opentracing.util;version=0.30.0
-
+   @${repo;io.opentracing:opentracing-api;0.30.0}!/!(OSGI-OPT/src|META-INF/maven)/*
 
 Import-Package: *
-
 
 Export-Package:  com.ibm.ws.opentracing, \
                  com.ibm.ws.opentracing.tracer;provide=true, \
                  io.opentracing;version=0.30.0, \
                  io.opentracing.propagation;version=0.30.0, \
-                 io.opentracing.tag;version=0.30.0, \
-                 io.opentracing.util;version=0.30.0
+                 io.opentracing.tag;version=0.30.0
                 
 Private-Package: com.ibm.ws.opentracing.resources
 
@@ -49,7 +40,6 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
 -buildpath: \
         io.opentracing:opentracing-api;version=0.30.0, \
-        io.opentracing:opentracing-util;version=0.30.0, \
         com.ibm.websphere.javaee.jaxrs.2.0;version=latest, \
         com.ibm.ws.logging;version=latest, \
         com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
