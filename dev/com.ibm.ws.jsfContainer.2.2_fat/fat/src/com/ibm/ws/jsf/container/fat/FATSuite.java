@@ -23,7 +23,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 JSF22FlowsTests.class,
                 CDIFlowsTests.class,
                 JSF22StatelessViewTests.class,
-                JSF22BeanValidationTests.class
+                JSF22BeanValidationTests.class,
+                FeatureConflictTest.class
 })
 public class FATSuite {
 

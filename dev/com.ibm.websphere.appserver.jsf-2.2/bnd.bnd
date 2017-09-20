@@ -21,6 +21,7 @@ publish.feature.resources: **
 	com.ibm.websphere.appserver.javax.jsf-2.2;version=latest, \
 	com.ibm.websphere.appserver.jsp-2.3;version=latest, \
 	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
+	com.ibm.websphere.appserver.jsfProvider-2.2.0.MyFaces;version=latest,\
 	com.ibm.ws.org.apache.commons.beanutils;version=latest, \
 	com.ibm.ws.org.apache.commons.collections;version=latest, \
 	com.ibm.ws.jsf.2.2;version=latest, \
