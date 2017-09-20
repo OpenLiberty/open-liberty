@@ -43,7 +43,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class MailSessionInjectionTest {
 
     protected static LibertyServer server;

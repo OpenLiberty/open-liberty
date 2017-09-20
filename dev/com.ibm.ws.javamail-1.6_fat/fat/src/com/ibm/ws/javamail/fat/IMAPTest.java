@@ -46,7 +46,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
-//@Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class IMAPTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("mailSessionTestServer");
     private final Class<?> c = IMAPTest.class;
