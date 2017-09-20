@@ -6,3 +6,5 @@ Subsystem-Type: osgi.subsystem.feature
 IBM-API-Package: com.ibm.wsspi.threadcontext; type="internal",
  org.osgi.framework; type="internal"
 IBM-Feature-Version: 2
+IBM-Test-Feature: true
+
