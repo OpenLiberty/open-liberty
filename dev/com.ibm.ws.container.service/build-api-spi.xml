@@ -21,7 +21,7 @@
   <property name="spibndfile" value="${basedir}/build/spi.bnd"/> 
   <property name="spi.ibm.symbolic.suffix" value="containerServices"/>
   <property name="spi.ibm.bundleName" value="WebSphere Container Services SPI"/>
-  <property name="api.ibm.version" value="2.0"/>
+  <property name="api.ibm.version" value="2.1"/>
   <property name="feature.name" value="com.ibm.websphere.appserver.containerServices-1.0"/>
 
   <property name="spi.ibm.packages.exceptions"

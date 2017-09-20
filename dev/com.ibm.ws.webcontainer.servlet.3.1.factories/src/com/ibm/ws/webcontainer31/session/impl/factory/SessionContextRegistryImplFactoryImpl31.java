@@ -25,7 +25,7 @@ public class SessionContextRegistryImplFactoryImpl31 implements SessionContextRe
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.webcontainer.session.impl.SessionContextRegistryImplFactory#createSessionContextRegistryImpl(com.ibm.ws.webcontainer.httpsession.SessionManager)
      */
     @Override

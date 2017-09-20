@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: A rendszer a Sun RI 1.2 JSF megval\u00f3s\u00edt\u00e1st tal\u00e1lta a(z) {0} webalkalmaz\u00e1shoz, de a MyFaces StartupServletContextListener is regisztr\u00e1lva van.
+jsf.warn.myfaces.listener.for.ri.app.explanation=A rendszer olyan figyel\u0151t tal\u00e1lt, amely nem egyezik meg a haszn\u00e1latban l\u00e9v\u0151 JSF megval\u00f3s\u00edt\u00e1ssal.
+jsf.warn.myfaces.listener.for.ri.app.useraction=T\u00e1vol\u00edtsa el a StartupServletContextListener-t vagy haszn\u00e1lja a megfelel\u0151 JSF megval\u00f3s\u00edt\u00e1st.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: A rendszer megtal\u00e1lta a Sun RI 1.2 JSF megval\u00f3s\u00edt\u00e1st, de nem tudta inicializ\u00e1lni.  A JSF val\u00f3sz\u00edn\u0171leg nem megfelel\u0151en lett inicializ\u00e1lva a(z) {0} webalkalmaz\u00e1shoz.
+jsf.warn.ri.impl.not.initialized.explanation=A JSF megval\u00f3s\u00edt\u00e1s val\u00f3sz\u00edn\u0171leg nem megfelel\u0151en lett inicializ\u00e1lva.
+jsf.warn.ri.impl.not.initialized.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1\u00e9rt tekintse meg a napl\u00f3f\u00e1jlokat.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: A MyFaces JSF megval\u00f3s\u00edt\u00e1s lett kiv\u00e1lasztva a(z) {0} sz\u00e1m\u00e1ra, de a Sun RI ConfigureListener is regisztr\u00e1lva van.
+jsf.warn.ri.listener.for.myfaces.app.explanation=A rendszer \u00fagy tal\u00e1lta, hogy a SunRI ConfigureListener nem egyezik meg a haszn\u00e1latban l\u00e9v\u0151 JSF megval\u00f3s\u00edt\u00e1ssal.
+jsf.warn.ri.listener.for.myfaces.app.useraction=T\u00e1vol\u00edtsa el a ConfigureListener-t vagy haszn\u00e1lja a megfelel\u0151 JSF megval\u00f3s\u00edt\u00e1st.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: A rendszer megtal\u00e1lta a WebSphere MyFaces JSF megval\u00f3s\u00edt\u00e1st, de nem tudta inicializ\u00e1lni a(z) {0} webalkalmaz\u00e1shoz.
+jsf.warn.myfaces.not.initialized.explanation=A JSF megval\u00f3s\u00edt\u00e1s val\u00f3sz\u00edn\u0171leg nem megfelel\u0151en lett inicializ\u00e1lva.
+jsf.warn.myfaces.not.initialized.useraction=A hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1\u00e9rt tekintse meg a napl\u00f3f\u00e1jlokat.
+
+jsf.warn.exception.during.listener=JSFG0855W: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} JSF \u00e9letciklus figyel\u0151 regisztr\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.  A JSF val\u00f3sz\u00edn\u0171leg nem megfelel\u0151en lett inicializ\u00e1lva a(z) {1} webalkalmaz\u00e1shoz.
+jsf.warn.exception.during.listener.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nik a figyel\u0151 regisztr\u00e1l\u00e1sakor.
+jsf.warn.exception.during.listener.useraction=A kiv\u00e9tel ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1\u00e9rt tekintse meg a napl\u00f3f\u00e1jlokat.

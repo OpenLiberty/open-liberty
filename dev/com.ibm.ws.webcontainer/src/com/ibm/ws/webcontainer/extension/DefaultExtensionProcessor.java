@@ -1182,7 +1182,8 @@ private ICollaboratorHelper collabHelper;
 	}
 	
 	public URIMatcher createURIMatcher (List list){
-		URIMatcher uriMatcher = new URIMatcher(true);
+                // Servlet 4.0 : Use URIMatcherFactory
+                URIMatcher uriMatcher = WebContainer.getWebContainer().getURIMatcherFactory().createURIMatcher(true);
 
 		Iterator i = list.iterator();
 		while (i.hasNext()){

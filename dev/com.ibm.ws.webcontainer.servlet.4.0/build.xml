@@ -1,0 +1,28 @@
+<project name="com.ibm.ws.webcontainer.servlet.4.0" default="build">
+    <property name="build.with.java.level" value="1.8"/>
+    <property name="javac.source" value="1.8" />
+    <property name="javac.target" value="1.8" />
+    <property name="javac.boot.classpath" value="1.8" />
+
+    <import file="../ant_build/public_imports/standard_imports.xml"/>
+	
+    <!-- skip findbugs until it works with Java 8 -->
+    <property name="skip.findbugs" value="true"/>
+
+    <!-- exclude modified WAS classes from instrumentation -->
+    <!-- also exclude classes that may trace buffers and-or other sensitive user information -->
+    <target name="post-compile">
+        <property name="instrument.ffdc" value="true" />
+        <instrument.trace ffdc="${instrument.ffdc}">
+            <fileset dir="${classes.dir}">
+                <include name="**/*.class" />
+                <exclude name="**/com/ibm/ws/webcontainer40/**" />
+                <exclude name="**/com/ibm/wsspi/webcontainer40/**" />
+                <include name="**/com/ibm/ws/webcontainer40/osgi/**/*.class" />
+                <exclude name="**/com/ibm/ws/webcontainer40/osgi/request/IRequest40Impl.class" />
+                <exclude name="**/com/ibm/ws/webcontainer40/osgi/webapp/WebApp40.class" />
+            </fileset>
+        </instrument.trace>
+    </target>
+    
+</project>

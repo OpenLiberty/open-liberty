@@ -60,6 +60,8 @@ public class WebAppConfigurationAdapter implements ContainerAdapter<WebAppConfig
 
     //
 
+    private WebAppConfiguratorHelperFactory webAppConfiguratorHelperFactory;
+    
     public WebAppConfigurationAdapter() {
         // Deliberately empty
     }
@@ -107,6 +109,8 @@ public class WebAppConfigurationAdapter implements ContainerAdapter<WebAppConfig
         WebAppConfigurator webAppConfigurator =
             new WebAppConfigurator(containerToAdapt, overlayCache,
                                    resourceRefConfigFactorySRRef.getService());
+        
+        webAppConfigurator.configureWebAppHelperFactory(webAppConfiguratorHelperFactory, resourceRefConfigFactorySRRef.getService());
         
         for (ServletConfiguratorHelperFactory configHelperFactory : servletConfiguratorHelperFactories.services()) {
             ServletConfiguratorHelper configHelper = configHelperFactory.createConfiguratorHelper(webAppConfigurator);
@@ -177,4 +181,13 @@ public class WebAppConfigurationAdapter implements ContainerAdapter<WebAppConfig
                         ")")
     protected void setAdaptorFactoryService(AdapterFactoryService afs) { }
     protected void unsetAdaptorFactoryService(AdapterFactoryService afs) { }
+    
+    @Reference(cardinality=ReferenceCardinality.MANDATORY, policy=ReferencePolicy.DYNAMIC, policyOption=ReferencePolicyOption.GREEDY)
+    protected void setWebAppConfiguratorHelperFactory(WebAppConfiguratorHelperFactory factory) {
+        webAppConfiguratorHelperFactory = factory;
+    }
+    
+    protected void unsetWebAppConfiguratorHelperFactory(WebAppConfiguratorHelperFactory factory) {
+        // no-op intended here to avoid webAppFactory being null when switching service implementations
+    }
 }

@@ -23,7 +23,9 @@ laosBundleAutoFeatures= \
 	com.ibm.websphere.appserver.cdi1.2-jms-2.0,\
 	com.ibm.websphere.appserver.cdi1.2-jndi1.0,\
 	com.ibm.websphere.appserver.cdi1.2-jsf2.2,\
+	com.ibm.websphere.appserver.cdi1.2-jsf2.3,\
 	com.ibm.websphere.appserver.cdi1.2-servlet3.1,\
+	com.ibm.websphere.appserver.cdi1.2-servlet4.0,\
 	com.ibm.websphere.appserver.cdi1.2-transaction1.2,\
 	com.ibm.websphere.appserver.classloaderContext-1.0,\
 	com.ibm.websphere.appserver.connectionpoolmonitor-1.0,\
@@ -63,6 +65,7 @@ laosBundleAutoFeatures= \
 	com.ibm.websphere.appserver.jpaContainer2.1-cdi1.2,\
 	com.ibm.websphere.appserver.jpaContainer-2.1,\
 	com.ibm.websphere.appserver.jsf.beanValidation-2.2,\
+	com.ibm.websphere.appserver.jsf.beanValidation-2.3,\
 	com.ibm.websphere.appserver.sessionMonitor-1.0,\
 	com.ibm.websphere.appserver.transactionContext-1.0,\
 	com.ibm.websphere.appserver.webAppSecurity-1.0,\

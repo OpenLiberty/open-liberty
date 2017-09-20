@@ -18,6 +18,7 @@ import java.util.logging.Logger;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.util.WSThreadLocal;
+import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.util.UnsynchronizedStack;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.webapp.IWebAppDispatcherContext;
@@ -48,15 +49,14 @@ public class SRTServletRequestThreadData {
 
         SRTServletRequestThreadData tempState = null;
         tempState=(SRTServletRequestThreadData) instance.get();
-
-        if (tempState == null) {
-            tempState = new SRTServletRequestThreadData();
-            instance.set(tempState);
-        }
-
-        return tempState;
-    }
-
+         
+         if (tempState == null) {
+                tempState = new SRTServletRequestThreadData();
+                instance.set(tempState);
+         }
+         
+         return tempState;
+   }
 
 
     public SRTServletRequestThreadData() {

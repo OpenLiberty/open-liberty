@@ -191,8 +191,6 @@ public class WebAppConfigurator implements ServletConfigurator {
         this.overlayCache = overlayCache;
 
         this.configHelpers = new ArrayList<ServletConfiguratorHelper>();        
-        webAppHelper = new WebAppConfiguratorHelper(this, resourceRefConfigFactory, getListenerInterfaces());        
-        this.configHelpers.add(webAppHelper);
 
         this.webApp = moduleContainer.adapt(WebApp.class);
         this.webBnd = moduleContainer.adapt(WebBnd.class);
@@ -209,6 +207,16 @@ public class WebAppConfigurator implements ServletConfigurator {
         // this.currentSource = null;
         // this.currentLibraryURI = null;
         // this.currentMetadataComplete = false;
+    }
+    
+    /**
+     * Configure the WebApp helper factory
+     * @param webAppConfiguratorHelperFactory The factory to be used
+     * @param resourceRefConfigFactory
+     */
+    public void configureWebAppHelperFactory(WebAppConfiguratorHelperFactory webAppConfiguratorHelperFactory, ResourceRefConfigFactory resourceRefConfigFactory) {
+        webAppHelper = webAppConfiguratorHelperFactory.createWebAppConfiguratorHelper(this, resourceRefConfigFactory, getListenerInterfaces());        
+        this.configHelpers.add(webAppHelper);
     }
     
     /**

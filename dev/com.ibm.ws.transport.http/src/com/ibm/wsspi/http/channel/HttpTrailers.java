@@ -18,11 +18,11 @@ import com.ibm.wsspi.genericbnf.HeaderStorage;
  * the deferred headers, as well as controling specific headers
  * immediately (i.e deferring creation of a Date header versus setting
  * the Date right now).
- * 
+ *
  * Deferred headers will be figured out at the actual marshalling time
  * or when explicitly triggered. This contains several APIs for setting,
  * removing, or querying the existance of deferred headers.
- * 
+ *
  * @ibm-private-in-use
  */
 public interface HttpTrailers extends HeaderStorage {
@@ -33,7 +33,7 @@ public interface HttpTrailers extends HeaderStorage {
 
     /**
      * Query whether there is a deferred trailer header of the given name.
-     * 
+     *
      * @param target
      * @return boolean (true if exists)
      */
@@ -41,7 +41,7 @@ public interface HttpTrailers extends HeaderStorage {
 
     /**
      * Query whether there is a deferred trailer header of the given name.
-     * 
+     *
      * @param target
      * @return boolean (true if exists)
      */
@@ -49,13 +49,13 @@ public interface HttpTrailers extends HeaderStorage {
 
     /**
      * Set a trailer based upon a not-yet established value.
-     * 
+     *
      * When the deferred trailer is set, it is the users responsibilityto
      * synchronize the deferred trailer list with the Trailer header field
      * upfront. For instance if one sets the deferred trailer
      * HDR_CONTENT_LANGUAGE, then the trailer header in the head of the HTTP
      * request/response should contain "Trailer: Content-Language"
-     * 
+     *
      * @param hdr
      *            the header to use.
      * @param htg
@@ -71,13 +71,13 @@ public interface HttpTrailers extends HeaderStorage {
 
     /**
      * Set a trailer based upon a not-yet established value.
-     * 
+     *
      * When the deferred trailer is set, it is the users responsibility
      * to synchronize the deferred trailer list with the Trailer header field.
      * For instance if one sets the deferred trailer "test1", then the trailer
      * header in the outbound HTTP Request/Response should contain,
      * "Trailer: test1"
-     * 
+     *
      * @param hdr
      *            the header to use.
      * @param htg
@@ -94,12 +94,12 @@ public interface HttpTrailers extends HeaderStorage {
     /**
      * Remove a deferred trailer from the current list of trailers to generate
      * when serializing this object.
-     * 
+     *
      * The user is responsible for maintaining consistency between the trailer
      * header field at the head of the HTTP request/response with the deferred
      * trailer list. For instance after removeDeferredTrailer("test1"), is
      * called the trailer header field should not contain "test1".
-     * 
+     *
      * @param hdr
      *            the trailer name to remove (i.e. 'Date').
      * @throws IllegalArgumentException
@@ -110,13 +110,13 @@ public interface HttpTrailers extends HeaderStorage {
     /**
      * Remove a deferred trailer from the current list of trailers to generate
      * when serializing this object.
-     * 
+     *
      * The user is responsible for maintaining consistency between the trailer
      * header field at the head of the HTTP request/response with the deferred
      * trailer list. For instance after removeDeferredTrailer(HDR_CONTENT_-
      * LANGUAGE), is called the trailer header field should not contain
      * "Content-Language".
-     * 
+     *
      * @param hdr
      *            the trailer to remove (i.e. 'Date').
      * @throws IllegalArgumentException
@@ -126,14 +126,14 @@ public interface HttpTrailers extends HeaderStorage {
 
     /**
      * Compute all deferred headers.
-     * 
+     *
      * <p>
      * All <code>HttpTrailerGenerator</code> will be called upon to create the
      * value for their respective header. The values they create will
      * automatically be added to the Trailer-based <code>BNFHeaders</code> object
      * for immediate serialization.
      * </p>
-     * 
+     *
      */
     void computeRemainingTrailers();
 
@@ -143,7 +143,7 @@ public interface HttpTrailers extends HeaderStorage {
 
     /**
      * clear out these headers for reuse.
-     * 
+     *
      */
     void clear();
 

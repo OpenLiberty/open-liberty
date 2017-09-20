@@ -43,3 +43,8 @@ temporary.CWMH9999E.useraction=Review the FFDC logs and exception text to identi
 healthcheck.bean.call.exception.CWMH0050E=CWMH0050E: The {0} HealthCheck method in the {1} application from the {2} module threw exception {3} with the following message: {4}
 healthcheck.bean.call.exception.CWMH0050E.explanation=The specified call method has produced an exception.
 healthcheck.bean.call.exception.CWMH0050E.useraction=Review your call method within the HealthCheck bean to identify the exception that occurred.
+
+# The HealthCheck bean call method had a DOWN outcome
+healthcheck.application.down.CWMH0051W=CWMH0051W: The {0} implementing HealthCheckResponse in the {1} application in module {2}, reported a DOWN outcome {3} with data {4}.
+healthcheck.application.down.CWMH0051W.explanation=The DOWN outcome might cause a monitoring service to take action on this server.
+healthcheck.application.down.CWMH0051W.useraction=No user action is required.  This warning is a record of the DOWN outcome.

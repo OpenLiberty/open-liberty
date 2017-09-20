@@ -70,6 +70,7 @@ import com.ibm.ws.webcontainer.exception.WebContainerException;
 import com.ibm.ws.webcontainer.exception.WebGroupVHostNotFoundException;
 import com.ibm.ws.webcontainer.osgi.collaborator.CollaboratorServiceImpl;
 import com.ibm.ws.webcontainer.servlet.CacheServletWrapper;
+import com.ibm.ws.webcontainer.servlet.CacheServletWrapperFactory;
 import com.ibm.ws.webcontainer.session.IHttpSessionContext;
 import com.ibm.ws.webcontainer.spi.servlet.http.IHttpServletResponseListener;
 import com.ibm.ws.webcontainer.srt.SRTConnectionContext;
@@ -94,6 +95,7 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedResponse;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer.util.ThreadContextHelper;
+import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 
 /**
  * Container that handles incoming HTTP requests
@@ -206,6 +208,9 @@ public abstract class WebContainer extends BaseContainer {
     private static boolean servletCachingInitNeeded = true; //TODO: make false and require dynacache to set to true
 
     public static boolean appInstallBegun = false;
+    
+    // Servlet 4.0 : Must be static since referenced from static method
+    protected static CacheServletWrapperFactory cacheServletWrapperFactory;
 
     protected WebContainer(String name, Container parent) {
         super(name, parent);
@@ -1237,8 +1242,8 @@ public abstract class WebContainer extends BaseContainer {
                     logger.logp(Level.FINE, CLASS_NAME, "addToCache", "Adding to cache cacheKey --> " + cacheKey + " uri -->" + req.getRequestURI() + " servletWrapper -->"
                                                                       + ((IServletWrapper) s).getServletName());
                 }
-
-                CacheServletWrapper wrapper = new CacheServletWrapper((IServletWrapper) s, req, cacheKeyStr, app);
+                // Servlet 4.0 : Use CacheServletWrapperFactory
+                CacheServletWrapper wrapper =  cacheServletWrapperFactory.createCacheServletWrapper((IServletWrapper) s, req, cacheKeyStr, app);
                 // keep a rough count of the number of items in the cache
                 _cacheMap.put(cacheKeyStr, wrapper);
                 _cacheSize.incrementAndGet();
@@ -1670,6 +1675,9 @@ public abstract class WebContainer extends BaseContainer {
     public abstract void decrementNumRequests();
     
     public abstract AsyncContextFactory getAsyncContextFactory();
+    
+    // Servlet 4.0
+    public abstract URIMatcherFactory getURIMatcherFactory();
 
     // ================== CLASS ================== 721610
     private static class ReadCipherBitSize {

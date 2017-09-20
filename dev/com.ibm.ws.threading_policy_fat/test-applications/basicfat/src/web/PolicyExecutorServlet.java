@@ -2518,6 +2518,92 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(future.isDone());
     }
 
+    // Tests behavior when shutdown occurs while timed invokeAll is submitting and running tasks. Supply a group of 5 tasks to invokeAll.
+    // The first task should complete successfully. The second task shuts down the executor. When the executor shuts down, the third and
+    // fourth tasks might or might not have been enqueued, depending on timing. However, the fifth task will not have been enqueued yet due to a
+    // maximum concurrency of 1 and maximum queue size of 2. The shutdown should prevent further enqueuing of tasks which causes the invokeAll
+    // operation to be rejected.
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testShutdownDuringTimedInvokeAll() throws Exception {
+        PolicyExecutor executor = provider.create("testShutdownDuringTimedInvokeAll")
+                        .maxConcurrency(1)
+                        .maxQueueSize(2)
+                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1))
+                        .queueFullAction(QueueFullAction.Abort);
+
+        AtomicInteger completedAfterShutdown = new AtomicInteger();
+        CountDownLatch unused = new CountDownLatch(0);
+        List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
+        tasks.add(Callable.class.cast(new SharedIncrementTask()));
+        tasks.add(Callable.class.cast(new ShutdownTask(executor, false, unused, unused, 0)));
+        tasks.add(Callable.class.cast(new SharedIncrementTask(completedAfterShutdown)));
+        tasks.add(Callable.class.cast(new SharedIncrementTask(completedAfterShutdown)));
+        tasks.add(Callable.class.cast(new SharedIncrementTask(completedAfterShutdown)));
+
+        try {
+            fail("shutdown should cause tasks submitted by invokeAll to be rejected. Instead: " +
+                 executor.invokeAll(tasks, 5, TimeUnit.MINUTES));
+        } catch (RejectedExecutionException x) {
+        }
+
+        assertEquals(1, SharedIncrementTask.class.cast(tasks.get(0)).count());
+
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        int count = completedAfterShutdown.get();
+        assertTrue(Integer.toString(count), count < 3);
+    }
+
+    // Tests behavior when shutdownNow occurs while invokeAll is submitting and running tasks. Supply a group of 3 tasks to invokeAll.
+    // The first task should complete successfully. The second task waits for the third to start and then shuts down the executor.
+    // Relying on behavior of policy executor that runs invokeAll tasks in reverse order order on the current thread if the global
+    // executor hasn't been able to start them, the third (last) task should start on the current thread and block until canceled
+    // by shutdownNow.
+    @SuppressWarnings("unchecked")
+    @Test
+    public void testShutdownNowDuringInvokeAll() throws Exception {
+        PolicyExecutor executor = provider.create("testShutdownNowDuringInvokeAll")
+                        .maxConcurrency(2)
+                        .queueFullAction(QueueFullAction.Abort);
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch task3BeginLatch = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+        List<Callable<Object>> tasks = new ArrayList<Callable<Object>>();
+        tasks.add(Callable.class.cast(new SharedIncrementTask()));
+        tasks.add(Callable.class.cast(new ShutdownTask(executor, true, unused, task3BeginLatch, TimeUnit.MINUTES.toNanos(5))));
+        tasks.add(Callable.class.cast(new CountDownTask(task3BeginLatch, blocker, TimeUnit.MINUTES.toNanos(5))));
+
+        List<Future<Object>> futures = executor.invokeAll(tasks);
+
+        assertEquals(3, futures.size());
+
+        Future<Object> future = futures.get(0);
+        assertFalse(future.isCancelled());
+        assertTrue(future.isDone());
+        assertEquals(1, future.get(0, TimeUnit.SECONDS));
+        assertEquals(1, SharedIncrementTask.class.cast(tasks.get(0)).count());
+
+        future = futures.get(1);
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+        try {
+            fail("ShutdownTask should have been canceled by shutdown. Instead: " + future.get(0, TimeUnit.SECONDS));
+        } catch (CancellationException x) { // due to shutdown
+        }
+
+        future = futures.get(2);
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+        try {
+            fail("CountDownTask should have been canceled by shutdown. Instead: " + future.get(0, TimeUnit.SECONDS));
+        } catch (CancellationException x) { // due to shutdown
+        }
+
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
     //Ensure that a policy executor can be obtained from the injected provider
     @Test
     public void testGetPolicyExecutor() throws Exception {

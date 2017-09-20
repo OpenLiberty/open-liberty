@@ -18,7 +18,8 @@ Bundle-Description: weld JSF, version ${bVersion}
 
 Private-Package: com.ibm.ws.cdi.jsf;version=1.0;thread-context=true
  
-Import-Package: * 
+Import-Package: javax.faces.*;version="[1.0,2.4)", \
+ *
 
 WS-TraceGroup: JCDI
 
@@ -38,7 +39,7 @@ WS-TraceGroup: JCDI
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.jsf.2.2;version=latest,\
+	com.ibm.ws.jsf.shared;version=latest,\
 	com.ibm.ws.org.jboss.weld.2.4.3;version=latest,\
 	com.ibm.ws.cdi.1.2.interfaces;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

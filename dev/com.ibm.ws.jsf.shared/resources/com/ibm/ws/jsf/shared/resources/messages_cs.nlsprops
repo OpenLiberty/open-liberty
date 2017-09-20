@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Je zji\u0161t\u011bna implementace Sun RI 1.2 JSF pro webapp {0}, je ale tak\u00e9 zaregistrov\u00e1n listener MyFaces StartupServletContextListener.
+jsf.warn.myfaces.listener.for.ri.app.explanation=Byl nalezen listener, kter\u00fd neodpov\u00edd\u00e1 pou\u017eit\u00e9 implementaci JSF.
+jsf.warn.myfaces.listener.for.ri.app.useraction=Odeberte StartupServletContextListener, nebo pou\u017eijte odpov\u00eddaj\u00edc\u00ed implementaci JSF.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: Implementace Sun RI 1.2 JSF byla zji\u0161t\u011bna, nelze ji ale inicializovat. Implementace JSF nemus\u00ed b\u00fdt pro webapp {0} spr\u00e1vn\u011b inicializov\u00e1na.
+jsf.warn.ri.impl.not.initialized.explanation=Implementace JSF nemus\u00ed b\u00fdt spr\u00e1vn\u011b inicializov\u00e1na.
+jsf.warn.ri.impl.not.initialized.useraction=Prozkoumejte soubory protokolu, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: Implementace MyFaces JSF je vybr\u00e1na pro {0}, je ale rovn\u011b\u017e registrov\u00e1n listener Sun RI ConfigureListener.
+jsf.warn.ri.listener.for.myfaces.app.explanation=Byl nalezen listener SunRI ConfigureListener, kter\u00fd neodpov\u00edd\u00e1 pou\u017eit\u00e9 implementaci JSF.
+jsf.warn.ri.listener.for.myfaces.app.useraction=Odeberte ConfigureListener nebo pou\u017eijte odpov\u00eddaj\u00edc\u00ed implementaci JSF.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: Implementace WebSphere MyFaces JSF byla zji\u0161t\u011bna, nebylo ale mo\u017en\u00e9 ji inicializovat pro webapp {0}.
+jsf.warn.myfaces.not.initialized.explanation=Implementace JSF nemus\u00ed b\u00fdt spr\u00e1vn\u011b inicializov\u00e1na.
+jsf.warn.myfaces.not.initialized.useraction=Prozkoumejte soubory protokolu, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu selh\u00e1n\u00ed.
+
+jsf.warn.exception.during.listener=JSFG0855W: Byla zachycena v\u00fdjimka p\u0159i pokusu registrovat listener \u017eivotn\u00edho cyklu JSF {0}. Implementace JSF nemus\u00ed b\u00fdt pro webapp {1} spr\u00e1vn\u011b inicializov\u00e1na.
+jsf.warn.exception.during.listener.explanation=Do\u0161lo k v\u00fdjimce p\u0159i registraci listeneru.
+jsf.warn.exception.during.listener.useraction=Prozkoumejte soubory protokolu, abyste mohli ur\u010dit p\u0159\u00ed\u010dinu v\u00fdjimky.

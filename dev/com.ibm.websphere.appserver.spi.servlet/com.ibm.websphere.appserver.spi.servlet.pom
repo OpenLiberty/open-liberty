@@ -25,5 +25,5 @@
   <artifactId>com.ibm.websphere.appserver.spi.servlet</artifactId>
   <version>${bFullVersion}</version>
   <name>WebSphere WebContainer Servlet SPI</name>
-  <description>WebSphere WebContainer Servlet SPI, version 2.0</description>
+  <description>WebSphere WebContainer Servlet SPI, version 2.1</description>
 </project>

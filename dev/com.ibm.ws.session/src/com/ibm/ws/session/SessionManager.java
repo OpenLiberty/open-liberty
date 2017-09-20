@@ -13,6 +13,7 @@ package com.ibm.ws.session;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 
@@ -170,6 +171,8 @@ public class SessionManager implements IGenericSessionManager, ISessionManagerCu
     
     //APAR PI60026 - Duplicated in MemoryStore.java
     private static final String overflowId = "overflowed-session";
+    
+    private static Map<String, SessionManager> sessionManagerMap = new HashMap<String, SessionManager>();
 
     // ----------------------------------------
     // Protected constructor
@@ -191,6 +194,8 @@ public class SessionManager implements IGenericSessionManager, ISessionManagerCu
         _sessionStateEventDispatcher = new SessionStateEventDispatcher(_sessionStateObservers);
         _sessionEventDispatcher = new SessionEventDispatcher(_sessionObservers);
         _storeCallback = new StoreCallback(this);
+        
+        sessionManagerMap.put(id, this);
     }
 
     protected void setAppSessionMgr(SessionManager asm) {
@@ -199,6 +204,10 @@ public class SessionManager implements IGenericSessionManager, ISessionManagerCu
 
     public SessionManager getAppSessionMgr() {
         return appSessionMgr;
+    }
+    
+    public static SessionManager getSessionManager(String id) {
+        return sessionManagerMap.get(id);
     }
 
     // ----------------------------------------

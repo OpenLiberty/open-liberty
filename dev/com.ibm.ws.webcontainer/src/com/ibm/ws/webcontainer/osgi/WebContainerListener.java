@@ -272,6 +272,6 @@ public class WebContainerListener implements ModuleMetaDataListener,
         }
         WebContainer wc = (WebContainer) WebContainer.getWebContainer();
         WebContainer.setServerStopping(true);
-        wc.waitForApplicationInitialization();
+        if (wc!=null) wc.waitForApplicationInitialization();
     }
 }
