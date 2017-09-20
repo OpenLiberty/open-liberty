@@ -17,4 +17,4 @@ publish.feature.resources: **
 -dependson: \
 	com.ibm.websphere.appserver.jaxrs.common-2.1;version=latest, \
 	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
-	com.ibm.ws.jaxrs.2.1.client;version=latest
+	com.ibm.ws.jaxrs.2.0.client;version=latest
