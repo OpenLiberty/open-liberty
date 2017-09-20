@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.threading;
 
+import java.io.PrintWriter;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -62,5 +63,11 @@ public class PolicyExecutorProvider {
      */
     public PolicyExecutor create(String identifier) {
         return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, identifier, policyExecutors);
+    }
+
+    public void introspectPolicyExecutors(PrintWriter out) {
+        for (PolicyExecutorImpl executor : policyExecutors.values()) {
+            executor.introspect(out);
+        }
     }
 }
