@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: L''impl\u00e9mentation Sun RI 1.2 JSF est d\u00e9tect\u00e9e pour l''application Web {0} mais un \u00e9l\u00e9ment MyFaces StartupServletContextListener est \u00e9galement enregistr\u00e9.
+jsf.warn.myfaces.listener.for.ri.app.explanation=Un programme d'\u00e9coute a \u00e9t\u00e9 d\u00e9tect\u00e9 qui ne correspond pas \u00e0 l'impl\u00e9mentation JSF utilis\u00e9e.
+jsf.warn.myfaces.listener.for.ri.app.useraction=Retirez l'\u00e9l\u00e9ment StartupServletContextListener ou utilisez l'impl\u00e9mentation JSF correspondante.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: L''impl\u00e9mentation JSF Sun RI 1.2 a \u00e9t\u00e9 d\u00e9tect\u00e9e mais n''a pas pu \u00eatre initialis\u00e9e.  JSF n''est peut-\u00eatre pas correctement initialis\u00e9 pour l''application Web {0}.
+jsf.warn.ri.impl.not.initialized.explanation=L'impl\u00e9mentation JSF n'a peut-\u00eatre pas \u00e9t\u00e9 correctement initialis\u00e9e.
+jsf.warn.ri.impl.not.initialized.useraction=Consultez les fichiers journaux pour d\u00e9terminer la cause de l'incident.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: L''impl\u00e9mentation MyFaces JSF est s\u00e9lectionn\u00e9e pour {0} mais un \u00e9l\u00e9ment Sun RI ConfigureListener est \u00e9galement enregistr\u00e9.
+jsf.warn.ri.listener.for.myfaces.app.explanation=Un \u00e9l\u00e9ment SunRI ConfigureListener a \u00e9t\u00e9 d\u00e9tect\u00e9 qui ne correspond pas \u00e0 l'impl\u00e9mentation JSF utilis\u00e9e.
+jsf.warn.ri.listener.for.myfaces.app.useraction=Retirez l'\u00e9l\u00e9ment ConfigureListener ou utilisez l'impl\u00e9mentation JSF correspondante.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: L''impl\u00e9mentation JSF WebSphere MyFaces a \u00e9t\u00e9 d\u00e9tect\u00e9e mais n''a pas pu \u00eatre initialis\u00e9e pour l''application Web {0}.
+jsf.warn.myfaces.not.initialized.explanation=L'impl\u00e9mentation JSF n'a peut-\u00eatre pas \u00e9t\u00e9 correctement initialis\u00e9e.
+jsf.warn.myfaces.not.initialized.useraction=Consultez les fichiers journaux pour d\u00e9terminer la cause de l'incident.
+
+jsf.warn.exception.during.listener=JSFG0855W: Exception intercept\u00e9e lors de la tentative d''enregistrement du programme d''\u00e9coute du cycle de vie JSF {0}.  JSF n''est peut-\u00eatre pas correctement initialis\u00e9 pour l''application Web {1}.
+jsf.warn.exception.during.listener.explanation=Une exception se produit lors de l'enregistrement du programme d'\u00e9coute.
+jsf.warn.exception.during.listener.useraction=Consultez les fichiers journaux pour d\u00e9terminer la cause de l'exception.

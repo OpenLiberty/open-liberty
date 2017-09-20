@@ -20,6 +20,7 @@ import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;
 import com.ibm.wsspi.webcontainer.WebContainerRequestState;
 import com.ibm.wsspi.webcontainer.async.WrapperRunnable;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
+import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.async.AsyncContextImpl;
 
 public class WrapperRunnableImpl extends ServiceWrapper implements WrapperRunnable {

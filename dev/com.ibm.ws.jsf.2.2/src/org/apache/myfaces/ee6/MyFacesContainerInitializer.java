@@ -67,8 +67,8 @@ import org.apache.myfaces.spi.FacesConfigResourceProvider;
 import org.apache.myfaces.spi.FacesConfigResourceProviderFactory;
 import org.apache.myfaces.webapp.StartupServletContextListener;
 
-import com.ibm.ws.jsf.JSFConstants;
-import com.ibm.ws.jsf.JSFConstants.JSFImplEnabled;
+import com.ibm.ws.jsf.shared.JSFConstants;
+import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
 
 /**
  * This class is called by any Java EE 6 complaint container at startup.

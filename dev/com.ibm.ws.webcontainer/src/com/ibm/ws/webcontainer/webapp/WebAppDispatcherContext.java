@@ -61,17 +61,17 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     private UnsynchronizedStack _exceptionStack = new UnsynchronizedStack();
     protected IExtendedRequest _request;
     protected SRTRequestContext reqContext = null;
-    private WebAppDispatcherContext parentContext = null;
+    protected WebAppDispatcherContext parentContext = null;
 
     // instance variables not needing cloning
     //=======================================
     private String relativeUri;
-    private String _servletPath;
-    private String _pathInfo;
+    protected String _servletPath;
+    protected String _pathInfo;
     private String _requestUri;
     private String _contextPath=null;
     private String queryString = null;
-    private boolean _useParent = false;
+    protected boolean _useParent = false;
     private boolean enforceSecurity = true;
     private String decodedReqUri;           //280335
     //=======================================
@@ -410,7 +410,12 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
         //System.out.println("Setting pathinfo = "+pathInfo);
         _pathInfo = pathInfo;
     }
-
+    
+    // implemented by Servlet 4
+    public String getMappingValue() {
+        return null;
+    }
+    
     /* (non-Javadoc)
      * @see com.ibm.ws.webcontainer.webapp.IWebAppDispatcherContext#getRequestURI()
      */
@@ -898,7 +903,9 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
     {
         ((SRTServletRequest)_request).resetPathElements();
 
-
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable (Level.FINE)) {    //PI67942
+            logger.logp(Level.FINE, CLASS_NAME,"setPathElements", "ervletPath = " + servletPath +", pathInfo = " + pathInfo +" : this = " + this);
+        }
         //PK39337 - start
         if (removeServletPathSlash) {
 
@@ -960,6 +967,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 
         if (_pathInfo != null)
             relativeUri += _pathInfo;
+        
     }
 
     /* (non-Javadoc)
@@ -1152,7 +1160,7 @@ public abstract class WebAppDispatcherContext implements Cloneable, IWebAppDispa
 
     public void clearAndPushServletReference(IServletWrapper servletWrapper) {
         this._servletReferenceStack.clear();
-        this._servletReferenceStack.push(servletWrapper);
+        pushServletReference(servletWrapper);
     }
     public void setDispatcherType(DispatcherType dispatcherType) {
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE))

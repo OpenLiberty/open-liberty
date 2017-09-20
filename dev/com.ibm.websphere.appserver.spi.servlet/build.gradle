@@ -8,3 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+ 
+ task publishTempDevSpiIBMJavadoc {
+     copy {
+        from "${projectDir}"
+        into "${rootDir}/build.image/wlp/dev/spi/ibm/javadoc"
+        include 'com.ibm.websphere.appserver.spi.servlet.javadoc.zip'
+        rename '.javadoc.zip', "_2.0-javadoc.zip"
+      }
+    }
+ 

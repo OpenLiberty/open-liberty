@@ -19,6 +19,61 @@
   <!--This file was generated from the list of known bugs for this project-->
 
   <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="&lt;init&gt;" signature="()V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>
+
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="registerListener" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Ljava/lang/String;Ljava/lang/ClassLoader;)Z"/>
+    <Field name="log"/>
+    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
+  </Match>	
+  
+  <Match>
+    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
+    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
+    <Bug pattern="DMI_BLOCKING_METHODS_ON_URL"/>
+  </Match>
+
+  <Match>
     <Class name="org.apache.myfaces.application.ApplicationFactoryImpl"/>
     <Method name="createAndLogNewApplication" signature="()V"/>
     <Field name="log"/>
@@ -1314,83 +1369,6 @@
   </Match>
 
   <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="&lt;init&gt;" signature="()V"/>
-    <Field name="log"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
-    <Field name="log"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
-    <Field name="log"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="&lt;init&gt;" signature="()V"/>
-    <Field name="log"/>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="createExtensionProcessor" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;)Lcom/ibm/wsspi/webcontainer/extension/ExtensionProcessor;"/>
-    <Field name="log"/>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
-    <Field name="log"/>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="registerListener" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Ljava/lang/String;Ljava/lang/ClassLoader;)Z"/>
-    <Field name="log"/>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.util.JspURIMatcher"/>
-    <Method name="put" signature="(Ljava/lang/String;Ljava/lang/Object;)V"/>
-    <Field name="log"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.util.JspURIMatcher"/>
-    <Method name="put" signature="(Ljava/lang/String;Ljava/lang/Object;)V"/>
-    <Field name="log"/>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.util.WSFacesUtil"/>
-    <Method name="removeExtraPathInfo" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
-    <Field name="log"/>
-    <Bug pattern="NP_NULL_ON_SOME_PATH"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.util.WSFacesUtil"/>
-    <Method name="removeExtraPathInfo" signature="(Ljava/lang/String;)Ljava/lang/String;"/>
-    <Field name="log"/>
-    <Bug pattern="RCN_REDUNDANT_NULLCHECK_WOULD_HAVE_BEEN_A_NPE"/>
-  </Match>
-
-  <Match>
     <Class name="com.ibm.ws.jsf.config.annotation.WASMyFacesAnnotationProvider"/>
     <Method name="getBaseUrls" signature="()Ljava/util/Set;"/>
     <Bug pattern="DMI_COLLECTION_OF_URLS"/>
@@ -1401,134 +1379,6 @@
     <Method name="&lt;init&gt;" signature="(Ljavax/naming/Context;)V"/>
     <Local name="context"/>
     <Bug pattern="BC_UNCONFIRMED_CAST"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.extprocessor.JSFExtensionFactory"/>
-    <Method name="initFaces" signature="(Lcom/ibm/wsspi/webcontainer/servlet/IServletContext;Lcom/ibm/wsspi/webcontainer/webapp/WebAppConfig;)V"/>
-    <Bug pattern="DMI_BLOCKING_METHODS_ON_URL"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages"/>
-    <Bug pattern="NM_CLASS_NAMING_CONVENTION"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_cs"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_de"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_es"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_fr"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_hu"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_it"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_ja"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_ko"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_pl"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_pt_BR"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_ro"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_ru"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_zh"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.resources.messages_zh_TW"/>
-    <Method name="getContents" signature="()[[Ljava/lang/Object;"/>
-    <Field name="resources"/>
-    <Bug pattern="EI_EXPOSE_REP"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.util.FacesMessages"/>
-    <Field name="bundle"/>
-    <Bug pattern="MS_SHOULD_BE_REFACTORED_TO_BE_FINAL"/>
-  </Match>
-
-  <Match>
-    <Class name="com.ibm.ws.jsf.util.WSFacesUtil"/>
-    <Method name="getClassLoader" signature="(Ljava/lang/Object;)Ljava/lang/ClassLoader;"/>
-    <Bug pattern="DJV_DO_INSIDE_DO_PRIVILEGED"/>
   </Match>
 
   <Match>

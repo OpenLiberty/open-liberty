@@ -50,6 +50,12 @@ public interface WebContainerConstants {
 	    public static final String CONTEXT_PATH_ASYNC_ATTR = "javax.servlet.async.context_path";
 	    public static final String PATH_INFO_ASYNC_ATTR = "javax.servlet.async.path_info"; 
 	    public static final String QUERY_STRING_ASYNC_ATTR = "javax.servlet.async.query_string";
+	    
+	// For Servlet 4.0 (values will only bet set when servlet 4.0 is enabled)
+	public static final String MAPPING_INCLUDE_ATTR = "javax.servlet.include.mapping";
+	public static final String MAPPING_FORWARD_ATTR = "javax.servlet.forward.mapping";
+        public static final String MAPPING_ASYNC_ATTR = "javax.servlet.dispatch.mapping";
+
 	
     public static final String [] WEBCONTAINER_REQ_ATTRS = {DISPATCH_TYPE_ATTR,DISPATCH_NESTED_ATTR,SERVLET_PATH_FORWARD_ATTR,
 		REQUEST_URI_FORWARD_ATTR, CONTEXT_PATH_FORWARD_ATTR, PATH_INFO_FORWARD_ATTR, QUERY_STRING_FORWARD_ATTR,

@@ -1,0 +1,175 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: WAS JSF 2.3
+Bundle-SymbolicName: com.ibm.ws.org.apache.myfaces.2.3
+Bundle-Description: WAS JSF 2.3, version ${bVersion}
+Implementation-Version: 2.3.0
+WLP-ServerName: IBM WebSphere Application Server
+WLP-ServerVersion: ${liberty.beta.version}
+
+app-resources= \
+  META-INF/services/org.apache.myfaces.config.annotation.LifecycleProviderFactory | \
+  META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider | \
+  META-INF/services/org.apache.myfaces.spi.AnnotationProvider | \
+  META-INF/services/org.apache.myfaces.spi.InjectionProvider | \
+  META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \
+  META-INF/services/javax.faces.application.ApplicationFactory
+javac.source: 1.8
+javac.target: 1.8
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+Service-Component: com.ibm.ws.jsf.2.3; \
+   implementation:=com.ibm.ws.jsf.extprocessor.JSFExtensionFactory; \
+   provide:='com.ibm.wsspi.webcontainer.extension.ExtensionFactory'; \
+   serializationService=com.ibm.ws.serialization.SerializationService; \
+   classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService;\
+   cdiJSFInitializerService=com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer; \
+   greedy:="cdiJSFInitializerService"; \
+   optional:="cdiJSFInitializerService"; \
+   properties:="service.vendor=IBM", \
+com.ibm.ws.jsf.2.3.taglib; \
+   implementation:=com.ibm.ws.jsf.extprocessor.JSFGlobalTagLibConfig; \
+   provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
+   properties:="service.vendor=IBM", \
+com.ibm.ws.myfaces.initializer; \
+     implementation:=org.apache.myfaces.ee6.MyFacesContainerInitializer; \
+     provide:=javax.servlet.ServletContainerInitializer; \
+     properties:="service.vendor=IBM,service.ranking:Integer=101", \
+com.ibm.ws.jsf.2.3.injection.class.list.collaborator; \
+   implementation:=com.ibm.ws.jsf.shared.util.JSFInjectionClassListCollaborator ; \
+   provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator'; \
+   immediate:=true; \
+   properties:="service.vendor=IBM", \
+${Bundle-SymbolicName}_${bVersion}.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=${app-resources}", \
+com.ibm.ws.jsf.2.3.cdiextension; \
+   implementation:=com.ibm.ws.jsf.shared.ext.CdiExtension; \
+   provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
+   properties:="service.vendor=IBM,\
+                bean.defining.annotations=javax.faces.flow.FlowScoped;javax.faces.view.ViewScoped,\
+                api.classes=javax.faces.flow.builder.FlowDefinition;javax.faces.flow.builder.FlowBuilderParameter,\
+                extension.classes.only=true", \
+com.ibm.ws.jsf.23.dd; \
+    implementation:=com.ibm.ws.javaee.version.FacesVersion; \
+    provide:=com.ibm.ws.javaee.version.FacesVersion; \
+    properties:="version:Integer=23"
+
+-fixupmessages.missingexport: "Used bundle version * for exported package";is:=ignore
+
+instrument.ffdc: false
+instrument.classesExcludes: \
+    **/org/**
+
+Include-Resource: \
+  @lib/myfaces-impl-2.3.0-beta.jar!/META-INF/**, \
+  @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
+  @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
+  META-INF=@src/META-INF
+
+# Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the 
+# org.apache.myfaces.buildtools package is javax.j2ee.jsf-2.2/lib/myfaces-builder-annotations-1.0.9.jar
+
+Export-Package: !org.apache.myfaces.buildtools.*, \
+org.apache.myfaces.*;version="1.0.17", \
+com.ibm.ws.jsf.cdi, \
+com.ibm.ws.jsf.config.*;thread-context=true;mandatory:="thread-context", \
+com.ibm.ws.jsf.ext, \
+com.ibm.ws.jsf.spi.*, \
+com.ibm.ws.jsf.extprocessor, \
+org.apache.myfaces.application;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.application.viewstate;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.cdi.model;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.cdi.view;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.cdi.util;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.component;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.component.search;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.component.visit;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.context;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.context.servlet;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.config.annotation;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.config.impl.digester.elements;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.flow;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.lifecycle;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.renderkit;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.renderkit.html;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.shared.taglib;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.shared.taglib.core;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.spi.impl;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.taglib.core;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.taglib.html;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.compiler;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.component;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.el;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.impl;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.pool;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.pool.impl;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag.composite;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag.jsf;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag.jsf.core;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag.jsf.html;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag.jstl.core;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag.jstl.fn;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.tag.ui;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.view.facelets.util;thread-context=true;mandatory:="thread-context", \
+org.apache.myfaces.webapp;thread-context=true;mandatory:="thread-context"
+
+# Import everything we need except for the below exclusions that will not be needed at runtime.
+Import-Package: !com.google.inject, \
+ !javax.ejb, \
+ !javax.persistence, \
+ !org.apache.tomcat, \
+ *
+
+-buildpath: \
+	lib/myfaces-impl-2.3.0-beta.jar;version=file,\
+	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
+	com.ibm.ws.jsf.shared;version=latest,\
+	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
+	com.ibm.websphere.javaee.jstl.1.2;version=latest,\
+	com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+	com.ibm.ws.org.apache.commons.codec.1.3;version=latest,\
+	com.ibm.ws.org.apache.commons.digester.1.8;version=latest,\
+	com.ibm.ws.org.apache.commons.beanutils.1.8.3;version=latest,\
+	com.ibm.ws.com.google.guice.2.0;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.adaptable.module;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.ws.javaee.dd.common;version=latest,\
+	com.ibm.ws.anno;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.ws.jsp;version=latest,\
+	com.ibm.ws.org.apache.commons.collections.3.2.1;version=latest,\
+	com.ibm.ws.beanvalidation.core;version=latest,\
+	com.ibm.websphere.javaee.el.3.0;version=latest,\
+	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
+	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.logging.core,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

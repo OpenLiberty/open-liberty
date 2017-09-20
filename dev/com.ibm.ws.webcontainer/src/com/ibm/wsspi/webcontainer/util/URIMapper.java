@@ -12,6 +12,7 @@ package com.ibm.wsspi.webcontainer.util;
 
 import com.ibm.ws.webcontainer.core.RequestMapper;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
+import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 
@@ -19,12 +20,14 @@ public class URIMapper extends com.ibm.ws.webcontainer.util.URIMapper implements
 {
 	public URIMapper()
 	{
-		matcher = new URIMatcher();
+	    // Servlet 4.0 : Use URIMatcherFactory
+	    matcher = WebContainer.getWebContainer().getURIMatcherFactory().createURIMatcher();
 	}
 	
 	public URIMapper(boolean scalable)
 	{
-	    matcher = new URIMatcher(scalable);
+	    // Serlvet 4.0 : Use URIMatcherFactory
+	    matcher = WebContainer.getWebContainer().getURIMatcherFactory().createURIMatcher(scalable);
 	}
 
 	/**

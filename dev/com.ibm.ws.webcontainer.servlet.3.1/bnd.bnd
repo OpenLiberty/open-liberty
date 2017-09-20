@@ -37,6 +37,7 @@ Service-Component: \
 # for the exported API.
 Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer31.async, \
+    com.ibm.ws.webcontainer31.facade*, \
     com.ibm.ws.webcontainer31.osgi*;provide:=true, \
     com.ibm.ws.webcontainer31.srt*, \
     com.ibm.ws.webcontainer31.upgrade*, \

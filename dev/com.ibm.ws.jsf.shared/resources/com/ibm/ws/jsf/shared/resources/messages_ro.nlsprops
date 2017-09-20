@@ -1,0 +1,27 @@
+#CMVCPATHNAME ws/code/jsf/src/com/ibm/ws/jsf/resources/messages.nlsprops
+#COMPONENTPREFIX JSFG
+#COMPONENTNAMEFOR JSFG jsf
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -------------------------------------------------------------------------------------------------
+
+jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Este detectat\u0103 Sun RI 1.2 JSF Implementation pentru webapp-ul {0} dar este \u00eenregistrat \u015fi MyFaces StartupServletContextListener.
+jsf.warn.myfaces.listener.for.ri.app.explanation=A fost g\u0103sit un ascult\u0103tor care nu se potrive\u015fte cu implementarea JSF care este \u00een uz.
+jsf.warn.myfaces.listener.for.ri.app.useraction=\u00cenl\u0103tura\u0163i StartupServletContextListener sau utiliza\u0163i implementarea JSF corespunz\u0103toare.
+
+jsf.warn.ri.impl.not.initialized=JSFG0852W: Este detectat\u0103 Sun RI 1.2 JSF Implementation dar nu s-a putut ini\u0163ializa.  E posibil ca JSF s\u0103 nu se fi ini\u0163ializat corespunz\u0103tor pentru webapp-ul {0}.
+jsf.warn.ri.impl.not.initialized.explanation=E posibil ca implementarea JSF s\u0103 nu se fi ini\u0163ializat corespunz\u0103tor.
+jsf.warn.ri.impl.not.initialized.useraction=Examina\u0163i fi\u015fierele istoric pentru a determina cauza e\u015fecului.
+
+jsf.warn.ri.listener.for.myfaces.app=JSFG0853W: Este selectat\u0103 MyFaces JSF Implementation pentru {0} dar este \u00eenregistrat \u015fi un Sun RI ConfigureListener.
+jsf.warn.ri.listener.for.myfaces.app.explanation=A fost g\u0103sit un SunRI ConfigureListener care nu se potrive\u015fte cu implementarea JSF care este \u00een uz.
+jsf.warn.ri.listener.for.myfaces.app.useraction=\u00cenl\u0103tura\u0163i ConfigureListener sau utiliza\u0163i implementarea JSF corespunz\u0103toare.
+
+jsf.warn.myfaces.not.initialized=JSFG0854W: Este detectat\u0103 WebSphere MyFaces JSF Implementation dar nu s-a putut ini\u0163ializa pentru webapp-ul {0}.
+jsf.warn.myfaces.not.initialized.explanation=E posibil ca implementarea JSF s\u0103 nu se fi ini\u0163ializat corespunz\u0103tor.
+jsf.warn.myfaces.not.initialized.useraction=Examina\u0163i fi\u015fierele istoric pentru a determina cauza e\u015fecului.
+
+jsf.warn.exception.during.listener=JSFG0855W: A fost prins\u0103 excep\u0163ia \u00een timpul \u00eencerc\u0103rii de a \u00eenregistra ascult\u0103torul ciclului de via\u0163\u0103 JSF  {0}.  E posibil ca JSF s\u0103 nu se fi ini\u0163ializat corespunz\u0103tor pentru webapp-ul {1}.
+jsf.warn.exception.during.listener.explanation=A ap\u0103rut o excep\u0163ie la \u00eenregistrarea ascult\u0103torului.
+jsf.warn.exception.during.listener.useraction=Examina\u0163i fi\u015fierele istoric pentru a determina cauza excep\u0163iei.
