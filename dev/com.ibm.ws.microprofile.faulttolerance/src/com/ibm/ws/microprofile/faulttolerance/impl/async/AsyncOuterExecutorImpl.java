@@ -39,6 +39,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.ExecutionException;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.RetryPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyExecutor.QueueFullAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
@@ -163,7 +164,8 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
                     //be rejected otherwise!
                     executionContext.close();
 
-                    BulkheadException bulkheadException = new BulkheadException(Tr.formatMessage(tc, "bulkhead.no.threads.CWMFT0001E", executionContext.getMethod()), e);
+                    BulkheadException bulkheadException = new BulkheadException(Tr.formatMessage(tc, "bulkhead.no.threads.CWMFT0001E",
+                                                                                                 FTDebug.formatMethod(executionContext.getMethod())), e);
                     reportFailure(executionContext, bulkheadException);
                     throw bulkheadException;
                 }

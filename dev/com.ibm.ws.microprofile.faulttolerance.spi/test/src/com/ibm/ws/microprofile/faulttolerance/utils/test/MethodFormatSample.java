@@ -8,17 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.impl;
+package com.ibm.ws.microprofile.faulttolerance.utils.test;
+
+import java.util.concurrent.Future;
+
+import com.ibm.ws.microprofile.faulttolerance.utils.test.TestFormatMethod;
 
 /**
- *
+ * Sample class with methods to support {@link TestFormatMethod}
  */
-public class FTConstants {
+public class MethodFormatSample {
 
-    public static final String SCHEDULED_EXECUTOR_SERVICE_JNDI = "java:comp/DefaultManagedScheduledExecutorService";
+    public void simpleMethod() {}
 
-    public static final String JSE_FLAG = "com.ibm.ws.microprofile.faulttolerance.jse";
+    public void methodWithParameters(String a, int b) {}
 
-    public static final long MIN_TIMEOUT_NANO = 1000000; //1ms
+    public void genericParameter(Future<String> future) {}
 
+    public static class InnerClass {
+        public void innerClassMethod() {}
+    }
 }
