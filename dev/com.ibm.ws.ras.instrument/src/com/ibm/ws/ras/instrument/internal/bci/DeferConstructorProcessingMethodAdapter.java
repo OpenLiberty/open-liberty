@@ -89,7 +89,7 @@ public class DeferConstructorProcessingMethodAdapter extends MethodVisitor {
      * Create an instance of a {@code ProbeMethodAdapter}.
      */
     DeferConstructorProcessingMethodAdapter(MethodVisitor visitor) {
-        super(Opcodes.ASM4, visitor);
+        super(Opcodes.ASM5, visitor);
     }
 
     private void push(Object stackElement, int count) {
@@ -464,8 +464,8 @@ public class DeferConstructorProcessingMethodAdapter extends MethodVisitor {
     }
 
     @Override
-    public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-        super.visitMethodInsn(opcode, owner, name, desc);
+    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
+        super.visitMethodInsn(opcode, owner, name, desc, itf);
         if (!waitingForSuper)
             return;
 

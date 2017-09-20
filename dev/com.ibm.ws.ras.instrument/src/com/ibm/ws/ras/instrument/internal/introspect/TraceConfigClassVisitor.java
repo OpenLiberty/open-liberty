@@ -44,7 +44,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
     protected TraceObjectFieldAnnotationVisitor traceObjectFieldAnnotationVisitor;
 
     public TraceConfigClassVisitor(ClassVisitor cv) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
     }
 
     @Override
@@ -92,7 +92,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
         private final MethodInfo methodInfo;
 
         private MethodInfoMethodVisitor(MethodVisitor mv, MethodInfo methodInfo) {
-            super(Opcodes.ASM4, mv);
+            super(Opcodes.ASM5, mv);
             this.methodInfo = methodInfo;
         }
 
@@ -113,7 +113,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
             private final MethodInfo methodInfo;
 
             private FFDCIgnoreAnnotationVisitor(AnnotationVisitor av, MethodInfo methodInfo) {
-                super(Opcodes.ASM4, av);
+                super(Opcodes.ASM5, av);
                 this.methodInfo = methodInfo;
             }
 
@@ -131,7 +131,7 @@ public class TraceConfigClassVisitor extends ClassVisitor {
             private final MethodInfo methodInfo;
 
             private FFDCIgnoreValueArrayVisitor(AnnotationVisitor av, MethodInfo methodInfo) {
-                super(Opcodes.ASM4, av);
+                super(Opcodes.ASM5, av);
                 this.methodInfo = methodInfo;
             }
 
