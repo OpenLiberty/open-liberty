@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -41,9 +43,11 @@ import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.http.EncodingUtils;
 import com.ibm.wsspi.http.HttpDateFormat;
 import com.ibm.wsspi.http.VirtualHostListener;
+import com.ibm.wsspi.http.WelcomePage;
 import com.ibm.wsspi.http.WorkClassifier;
 import com.ibm.wsspi.http.ee7.HttpTransportBehavior;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
+import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.timer.ApproximateTime;
 import com.ibm.wsspi.timer.QuickApproxTime;
 
@@ -70,6 +74,9 @@ public class HttpDispatcher {
     public volatile WorkClassifier workClassifier = null;
 
     private volatile ServiceReference<HttpTransportBehavior> behaviorRef;
+
+    private static ConcurrentServiceReferenceSet<WelcomePage> welcomePages = new ConcurrentServiceReferenceSet("welcomePage");
+
     private static volatile boolean useEE7Streams = false;
 
     static final String CONFIG_ALIAS = "httpDispatcher";
@@ -91,7 +98,7 @@ public class HttpDispatcher {
 
     /**
      * WebContainer configuration for whether or not private headers should be trusted.
-     * 
+     *
      * @see #PROP_TRUSTED_PRIVATE_HEADER_ORIGIN
      */
     static final String PROP_WC_TRUSTED = "trusted";
@@ -129,15 +136,17 @@ public class HttpDispatcher {
 
     /**
      * DS method to activate this component.
-     * 
+     *
      * @param context
      */
     @Activate
-    protected void activate(Map<String, Object> properties) {
+    protected void activate(ComponentContext compCtx, Map<String, Object> properties) {
         modified(properties);
 
         // Set this as the active HttpDispatcher instance
         instance.set(this);
+
+        welcomePages.activate(compCtx);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "HttpDispatcher activated, id=" + properties.get(ComponentConstants.COMPONENT_ID));
@@ -146,14 +155,16 @@ public class HttpDispatcher {
 
     /**
      * DS method to deactivate this component.
-     * 
+     *
      * @param context
      */
     @Deactivate
-    protected void deactivate(Map<String, Object> properties, int reason) {
+    protected void deactivate(ComponentContext compCtx, Map<String, Object> properties, int reason) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "HttpDispatcher deactivated, id=" + properties.get(ComponentConstants.COMPONENT_ID) + ",reason=" + reason);
         }
+
+        welcomePages.deactivate(compCtx);
 
         // Clear this as the active HttpDispatcher instance (unless another has already replaced)
         instance.compareAndSet(this, null);
@@ -162,7 +173,7 @@ public class HttpDispatcher {
     /**
      * DS method for runtime updates to configuration without stopping and
      * restarting the component.
-     * 
+     *
      * @param config
      */
     @Modified
@@ -208,14 +219,24 @@ public class HttpDispatcher {
         enableWelcomePage = value;
     }
 
+    public static InputStream getWelcomePageStream(String url) {
+      WelcomePage page = welcomePages.getHighestRankedService();
+      return page.openWelcomePage(url);
+    }
+
+    public static InputStream getNotFoundStream() {
+      WelcomePage page = welcomePages.getHighestRankedService();
+      return page.openNotFoundPage();
+    }
+
     /**
      * Get the value for the appOrContextRootMissingMessage custom property. return null if it was not set.
-     * 
+     *
      * @return String the value for the appOrContextRootMissingMessage custom property, null if it was not set.
      */
     public static String getContextRootNotFoundMessage() {
         // this does not return a default string, since the caller may (and does in our case) choose to build a runtime
-        // dependent string. 
+        // dependent string.
 
         HttpDispatcher f = instance.get();
         if (f != null)
@@ -226,7 +247,7 @@ public class HttpDispatcher {
 
     /**
      * Set the value for the appOrContextRootMissingMessage custom property.
-     * 
+     *
      * @param value the new value for the appOrContextRootMissingMessage custom property.
      */
     private void setContextRootNotFoundMessage(String value) {
@@ -242,7 +263,7 @@ public class HttpDispatcher {
         if (f != null)
             return f.padAppOrContextRootNotFoundMessage;
 
-        // In the absence of an Http dispatcher: pad the error message if necessary 
+        // In the absence of an Http dispatcher: pad the error message if necessary
         return true;
     }
 
@@ -262,13 +283,13 @@ public class HttpDispatcher {
         List<String> addrs = new ArrayList<String>();
 
         // HttpDispatcher trustedHeaderOrigin value is used if the value is not the default, *
-        // If the value is *, check WebContainer trusted attribute: If trusted=false (not the default), 
-        // set trustedHeaderOrigin=none 
+        // If the value is *, check WebContainer trusted attribute: If trusted=false (not the default),
+        // set trustedHeaderOrigin=none
         if (null != value) {
             for (String ipaddr : value) {
                 if ("none".equalsIgnoreCase(ipaddr)
                     || (!wcTrusted && "*".equals(ipaddr))) {
-                    // If the dispatcher setting contains "none" 
+                    // If the dispatcher setting contains "none"
                     // OR the dispatcher setting contains the default "*" while trusted headers were disabled on the webcontainer,
                     // then we don't trust host headers at all. who cares where from.
                     usePrivateHeaders = false;
@@ -287,7 +308,7 @@ public class HttpDispatcher {
         // yes, trust/use private headers for virtual host selection
         usePrivateHeaders = true;
 
-        // if ip addresses were specified, only use the private header if the 
+        // if ip addresses were specified, only use the private header if the
         // request came from one of the accepted IP addresses.
         if (addrs.isEmpty()) {
             restrictPrivateHeaderOrigin = null;
@@ -312,7 +333,7 @@ public class HttpDispatcher {
     /**
      * Check to see if the source host address is one we allow
      * for specification of private headers
-     * 
+     *
      * @param hostAddr The source host address
      * @return true if this is a trusted source of private headers
      */
@@ -336,7 +357,7 @@ public class HttpDispatcher {
      * Access the HTTP date formatter service.
      * Make sure date format service is never null: even after this component has
      * been deactivated.
-     * 
+     *
      * @return HttpDateFormat
      */
     public static HttpDateFormat getDateFormatter() {
@@ -345,7 +366,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for setting the encoding utils service reference.
-     * 
+     *
      * @param service
      */
     @Reference(name = "encodingUtils")
@@ -355,7 +376,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for removing the encoding utils service reference.
-     * 
+     *
      * @param service
      */
     protected void unsetEncodingUtils(EncodingUtils service) {
@@ -367,7 +388,7 @@ public class HttpDispatcher {
      * Access the string encoding utils service.
      * Make sure encoding service never returns null: even after this component has
      * been deactivated.
-     * 
+     *
      * @return EncodingUtils
      */
     public static EncodingUtils getEncodingUtils() {
@@ -385,7 +406,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for setting the event service reference.
-     * 
+     *
      * @param service
      */
     @Reference(name = "eventService")
@@ -395,7 +416,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for removing the event service reference.
-     * 
+     *
      * @param service
      */
     protected void unsetEventService(EventEngine service) {
@@ -405,7 +426,7 @@ public class HttpDispatcher {
 
     /**
      * Access the event engine service.
-     * 
+     *
      * @return EventEngine - null if not found
      */
     public static EventEngine getEventService() {
@@ -418,7 +439,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for setting the collaboration engine reference.
-     * 
+     *
      * @param service
      */
     @Reference(name = "executorService")
@@ -428,7 +449,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for removing the collaboration engine reference.
-     * 
+     *
      * @param service
      */
     protected void unsetExecutorService(ExecutorService service) {
@@ -438,7 +459,7 @@ public class HttpDispatcher {
 
     /**
      * Access the collaboration engine.
-     * 
+     *
      * @return CollaborationEngine - null if not found
      */
     public static ExecutorService getExecutorService() {
@@ -459,7 +480,7 @@ public class HttpDispatcher {
 
     /**
      * Access the channel framework's {@link ApproximateTime} service.
-     * 
+     *
      * @return the approximate time service instance to use within the channel framework
      */
     public static long getApproxTime() {
@@ -470,7 +491,7 @@ public class HttpDispatcher {
      * Set the approximate time service reference.
      * This is a required reference: will be called before activation.
      * It is also dynamic: it may be replaced-- but we will always have one.
-     * 
+     *
      * @param ref new ApproximateTime service instance/provider
      */
     @Reference(name = "approxTime", policy = ReferencePolicy.DYNAMIC)
@@ -481,7 +502,7 @@ public class HttpDispatcher {
     /**
      * Remove the reference to the approximate time service.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param ref ApproximateTime service instance/provider to remove
      */
     protected void unsetApproxTime(ApproximateTime ref) {
@@ -490,7 +511,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for setting the required channel framework service.
-     * 
+     *
      * @param bundle
      */
     @Reference(name = "chfwBundle")
@@ -500,7 +521,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for removing the reference to the channel framework.
-     * 
+     *
      * @param bundle
      */
     protected void unsetChfwBundle(CHFWBundle bundle) {
@@ -511,7 +532,7 @@ public class HttpDispatcher {
 
     /**
      * Access the channel framework bundle.
-     * 
+     *
      * @return CHFWBundle
      */
     public static CHFWBundle getCHFWBundle() {
@@ -524,7 +545,7 @@ public class HttpDispatcher {
 
     /**
      * Access the current reference to the bytebuffer pool manager.
-     * 
+     *
      * @return WsByteBufferPoolManager
      */
     public static WsByteBufferPoolManager getBufferManager() {
@@ -537,7 +558,7 @@ public class HttpDispatcher {
 
     /**
      * Access the current reference to the channel framework instance.
-     * 
+     *
      * @return ChannelFramework
      */
     public static ChannelFramework getFramework() {
@@ -558,6 +579,20 @@ public class HttpDispatcher {
         updatedWebContainer(ref);
     }
 
+    @Trivial
+    @Reference(policy = ReferencePolicy.DYNAMIC,
+               service = WelcomePage.class,
+               policyOption = ReferencePolicyOption.GREEDY,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               name="welcomePage")
+    protected void setWelcomePage(ServiceReference<WelcomePage> ref) {
+      welcomePages.addReference(ref);
+    }
+
+    protected void unsetWelcomePage(ServiceReference<WelcomePage> ref) {
+      welcomePages.removeReference(ref);
+    }
+
     /**
      * @param ref
      * @see #parseTrustedPrivateHeaderOrigin(String[])
@@ -569,7 +604,7 @@ public class HttpDispatcher {
         if (newTrusted != wcTrusted) {
             wcTrusted = newTrusted;
 
-            // Check the value of trusted headers.. 
+            // Check the value of trusted headers..
             parseTrustedPrivateHeaderOrigin(origHeaderOrigin);
         }
     }
@@ -578,7 +613,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for setting the Work Classification service reference.
-     * 
+     *
      * @param service
      */
     @Reference(name = "workClassifier", policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL)
@@ -588,7 +623,7 @@ public class HttpDispatcher {
 
     /**
      * DS method for removing the Work Classification service reference.
-     * 
+     *
      * @param service
      */
     protected void unsetWorkClassifier(WorkClassifier service) {
@@ -599,7 +634,7 @@ public class HttpDispatcher {
 
     /**
      * Access to the WorkClassifier
-     * 
+     *
      * @return WorkClassifier - null if not found
      */
     public static WorkClassifier getWorkClassifier() {

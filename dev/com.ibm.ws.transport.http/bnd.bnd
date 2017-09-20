@@ -27,7 +27,7 @@ WS-TraceGroup: HttpTransport
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 # For each exported package, create (in that package) a package-info.java
-# file, and place an @version javadoc tag in package-level javadoc. 
+# file, and place an @version javadoc tag in package-level javadoc.
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
@@ -45,7 +45,7 @@ Export-Package: \
     com.ibm.ws.http.channel.h2internal.exceptions, \
     com.ibm.ws.http.channel.h2internal.hpack, \
     com.ibm.ws.http.channel.h2internal.huffman
-    
+
 Private-Package: \
     com.ibm.ws.http.*, \
 	com.ibm.ws.http.dispatcher*, \
@@ -57,6 +57,7 @@ Private-Package: \
 -dsannotations: com.ibm.ws.http.channel.internal.inbound.HttpPipelineEventHandler,\
   com.ibm.ws.http.dispatcher.internal.HttpDispatcher,\
   com.ibm.ws.http.internal.DefaultMimeTypesImpl,\
+  com.ibm.ws.http.internal.DefaultWelcomePage,\
   com.ibm.ws.http.internal.EncodingUtilsImpl,\
   com.ibm.ws.http.internal.HttpDateFormatImpl,\
   com.ibm.ws.http.internal.HttpEndpointImpl,\
@@ -95,6 +96,7 @@ instrument.classesExcludes: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.timer;version=latest,\
