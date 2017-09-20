@@ -34,7 +34,7 @@ public class OpentracingUserFeatureAccessService {
         OpentracingUserFeatureAccessService.opentracingTracerFactory = opentracingTracerFActory;
     }
 
-    public static Tracer getTracerInstance(String serviceName) {
+    public static synchronized Tracer getTracerInstance(String serviceName) {
         Tracer tracer = null;
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

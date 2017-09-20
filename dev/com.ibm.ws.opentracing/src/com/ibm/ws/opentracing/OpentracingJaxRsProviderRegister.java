@@ -14,10 +14,12 @@ package com.ibm.ws.opentracing;
 import java.util.List;
 import java.util.Set;
 
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 
 /**
@@ -27,25 +29,82 @@ import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 public class OpentracingJaxRsProviderRegister implements JaxRsProviderRegister {
     private static final TraceComponent tc = Tr.register(OpentracingJaxRsProviderRegister.class);
 
-    private OpentracingClientFilter opentracingClientFilter = null;;
-    private OpentracingContainerFilter opentracingContainerFilter = null;
+    // DSR activation API ...
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister#installProvider(boolean, java.util.List, java.util.Set)
-     */
+    protected void activate(ComponentContext context) {
+        setContainerFilter();
+        setClientFilter();
+    }
+
+    protected void deactivate(ComponentContext context) {
+        clearContainerFilter();
+        clearClientFilter();
+    }
+
+    // The filters.  There is a single container filter and a single client
+    // filter, both of which are shared by all applications.  The filters are
+    // stateless.
+
+    private OpentracingContainerFilter containerFilter;
+    private OpentracingClientFilter clientFilter;
+
+    @Trivial
+    protected void setContainerFilter() {
+        containerFilter = new OpentracingContainerFilter();
+    }
+
+    @Trivial
+    protected void clearContainerFilter() {
+        containerFilter = null;
+    }
+
+    @Trivial
+    protected OpentracingContainerFilter getContainerFilter() {
+        return containerFilter;
+    }
+
+    @Trivial
+    protected void setClientFilter() {
+        clientFilter = new OpentracingClientFilter();
+    }
+
+    @Trivial
+    protected void clearClientFilter() {
+        clientFilter = null;
+    }
+
+    @Trivial
+    protected OpentracingClientFilter getClientFilter() {
+        return clientFilter;
+    }
+
+    //
+
     @Override
+    @Trivial
     public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
-        if (clientSide) {
-            if (opentracingClientFilter == null) {
-                opentracingClientFilter = new OpentracingClientFilter();
-                providers.add(opentracingClientFilter);
+        String methodName = "installProvider";
+
+        if ( clientSide ) {
+            OpentracingClientFilter useClientFilter = getClientFilter();
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName, "Client Filter", useClientFilter);
             }
+            if ( useClientFilter != null ) {
+                providers.add(useClientFilter);
+            } else {
+                // Ignore: The component is not active.
+            }
+
         } else {
-            if (opentracingContainerFilter == null) {
-                opentracingContainerFilter = new OpentracingContainerFilter();
-                providers.add(opentracingContainerFilter);
+            OpentracingContainerFilter useContainerFilter = getContainerFilter();
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName, "Container Filter", useContainerFilter);
+            }
+            if ( useContainerFilter != null ) {
+                providers.add(useContainerFilter);
+            } else {
+                // Ignore: The component is not active.
             }
         }
     }

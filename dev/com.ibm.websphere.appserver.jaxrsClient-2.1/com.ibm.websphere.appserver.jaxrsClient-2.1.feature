@@ -17,5 +17,5 @@ Subsystem-Name: Java RESTful Services Client 2.1
 -features=com.ibm.websphere.appserver.jaxrs.common-2.1, \
  com.ibm.websphere.appserver.javaeeCompatible-7.0
 -bundles=com.ibm.ws.jaxrs.2.0.client
-kind=noship
-edition=full
+kind=beta
+edition=core
