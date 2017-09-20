@@ -20,7 +20,7 @@ publish.feature.resources: **
 	com.ibm.websphere.appserver.javax.annotation-1.2;version=latest, \
 	com.ibm.ws.require.java8;version=latest, \
 	com.ibm.ws.microprofile.config;version=latest, \
-	com.ibm.ws.com.netflix.archaius.2.1.10;version=latest, \
-	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest, \
-	com.ibm.ws.org.slf4j.api.1.7.7;version=latest, \
-	com.ibm.ws.org.slf4j.jdk14.1.7.7;version=latest
+	com.ibm.ws.com.netflix.archaius;version=latest, \
+	com.ibm.ws.org.apache.commons.lang3;version=latest, \
+	com.ibm.ws.org.slf4j.api;version=latest, \
+	com.ibm.ws.org.slf4j.jdk14;version=latest
