@@ -42,6 +42,6 @@ public class FeatureConflictTest extends FATServletClient {
         server.startServer();
         assertNotNull(server.waitForStringInLog(".* CWWKF0033E: " +
                                                 ".* com.ibm.websphere.appserver.jsfProvider-2.2.0.[MyFaces|Container]" +
-                                                ".* com.ibm.websphere.appserver.jsfProvider-2.2.0.[MyFaces|Container].*", 5000));
+                                                ".* com.ibm.websphere.appserver.jsfProvider-2.2.0.[MyFaces|Container].*"));
     }
 }
