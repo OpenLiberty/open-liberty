@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/HealthCheckTestApp/src"/>
+	<classpathentry kind="src" path="test-applications/MultipleHealthCheckApp1/src"/>
+	<classpathentry kind="src" path="test-applications/MultipleHealthCheckApp2/src"/>
+	<classpathentry kind="src" path="test-applications/MultipleHealthCheckApp3/src"/>
+	<classpathentry kind="src" path="test-applications/HealthCheckNoAPIImplApp/src"/>
+	<classpathentry kind="src" path="test-applications/HealthCheckNoAnnotationApp/src"/>
+	<classpathentry kind="src" path="test-applications/HealthCheckExceptionApp/src"/>
+	<classpathentry kind="src" path="test-applications/HealthCheckNoCDIFAT/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
