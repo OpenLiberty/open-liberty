@@ -17,5 +17,6 @@ IBM-API-Package: org.jboss.weld; type="internal", \
   com.ibm.websphere.appserver.jndi-1.0, \
   com.ibm.websphere.appserver.jsp-2.3, \
   com.ibm.websphere.appserver.javaeeCompatible-7.0
+-files=lib/com.ibm.ws.jsfContainer.2.2_1.0.${libertyBundleMicroVersion}.jar
 kind=noship
 edition=full
