@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance.impl.async;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.Callable;
@@ -61,6 +63,20 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
     private final BulkheadPolicy bulkheadPolicy;
     private final WSContextService contextService;
     private final ExecutorService executorService;
+
+    /**
+     * The collection of contexts to capture under createThreadContext.
+     * Classloader, JeeMetadata, and security.
+     */
+    @SuppressWarnings("unchecked")
+    private static final Map<String, ?>[] THREAD_CONTEXT_PROVIDERS = new Map[] {
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.classloader.context.provider"),
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.javaee.metadata.context.provider"),
+                                                                                 Collections.singletonMap(WSContextService.THREAD_CONTEXT_PROVIDER,
+                                                                                                          "com.ibm.ws.security.context.provider"),
+    };
 
     public AsyncOuterExecutorImpl(RetryPolicy retryPolicy,
                                   CircuitBreakerPolicy circuitBreakerPolicy,
@@ -150,7 +166,7 @@ public class AsyncOuterExecutorImpl<R> extends SynchronousExecutorImpl<Future<R>
             public Future<R> call() {
                 ThreadContextDescriptor threadContext = null;
                 if (contextService != null) {
-                    threadContext = contextService.captureThreadContext(new HashMap<String, String>());
+                    threadContext = contextService.captureThreadContext(new HashMap<String, String>(), THREAD_CONTEXT_PROVIDERS);
                 }
                 QueuedFuture<R> queuedFuture = new QueuedFuture<>(innerTask, executionContext, threadContext);
 
