@@ -399,6 +399,11 @@ public class LdapConfigManager {
     private String timestampFormat;
 
     /**
+     * This is to determine member vs membership priority
+     */
+    private boolean iDefaultMembershipAttr = true;
+
+    /**
      * Refreshes the caches using the given configuration data object.
      * This method should be called when there are changes in configuration and schema.
      *
@@ -839,8 +844,10 @@ public class LdapConfigManager {
                 // Check if iGroupMemberIdMap have ibm-allGroups , if true then do the nested search for group members
                 iLdapOperationalAttr = (iGroupMemberIdMap.contains(IBM_ALL_GROUPS));
 
-                // Clear the membership attribute
-                iMembershipAttrName = null;
+                // Clear the membership attribute if we were using the default. Otherwise keep it, as it was explicitly set
+                if (iDefaultMembershipAttr) {
+                    iMembershipAttrName = null;
+                }
                 LdapEntity ldapEntity = null;
                 List<String> grpTypes = getGroupTypes();
                 List<String> objectClasses = new ArrayList<String>();
@@ -1402,6 +1409,7 @@ public class LdapConfigManager {
                 iMembershipAttrScope = LdapConstants.LDAP_DIRECT_GROUP_MEMBERSHIP;
             }
         } else {
+            iDefaultMembershipAttr = false;
             Map<String, Object> mbrshipAttr = membershipPropList.get(0);
             String name = (String) mbrshipAttr.get(ConfigConstants.CONFIG_PROP_NAME);
             if (name.trim().length() == 0) {
