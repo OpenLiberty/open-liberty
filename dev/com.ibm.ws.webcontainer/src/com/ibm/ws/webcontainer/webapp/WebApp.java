@@ -1460,6 +1460,11 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
         }
     }
 
+    protected IServletWrapper jspAwareCreateServletWrapper(IServletConfig servletConfig, String servletName) {
+        
+        return jspAwareCreateServletWrapper((WebExtensionProcessor) requestMapper.map("/dummyPath.jsp"),servletConfig,servletName);
+    }
+    
     private IServletWrapper jspAwareCreateServletWrapper(
                                                          WebExtensionProcessor jspProcessor, IServletConfig servletConfig, String servletName) {
         IServletWrapper wrapper = null;
