@@ -6,16 +6,23 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- * IBM Corporation - initial API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+apply from: '../cnf/gradle/scripts/fat.gradle'
 
-package com.ibm.ws.opentracing.tracer;
-
-import io.opentracing.Tracer;
-
-/**
- * <p>Tracer factory interface.</p>
- */
-public interface OpentracingTracerFactory {
-    Tracer newInstance(String appName);
+	
+addRequiredLibraries {
+  doLast {
+    configurations {
+      json
+    }
+    dependencies {
+      json 'com.ibm.ws.prereq:json4j:1.0.1.0'
+    }
+    copy {
+      from configurations.json
+      into "${buildDir}/autoFVT/lib/"
+    }
+  }
 }
+
