@@ -183,6 +183,7 @@ remotes {
         user = props.getProperty("dhe.user")
         password = props.getProperty("dhe.password")
         knownHosts = allowAnyHosts
+        println "DEBUG host=" + host + " user=" + user
     }
 }
 
