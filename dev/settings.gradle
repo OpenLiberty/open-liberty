@@ -85,6 +85,7 @@ def loadBuildProps() {
   jdkLibs.include 'bin/default/**/vm.jar'
   jdkLibs.include 'lib/**/default/**/vm.jar'
   jdkLibs.include 'lib/*.jar'
+  jdkLibs.exclude 'lib/ibmcfw.jar' //has com.ibm.nws.ejs.ras.Tr, which we don't want
 
   def jdkLibString = ""
   Boolean isFirstPass = true;
