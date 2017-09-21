@@ -51,7 +51,7 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.api.json;version=latest,\
 	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
