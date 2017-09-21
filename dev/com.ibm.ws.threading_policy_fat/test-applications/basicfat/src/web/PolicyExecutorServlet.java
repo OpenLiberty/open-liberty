@@ -1703,6 +1703,91 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
+    // Test the code path where untimed invokeAll is interrupted while it is running a task on the current thread
+    // after the other tasks have been successfully submitted. Once interrupted, invokeAll must immediately cancel all of
+    // its tasks which have not already completed and return.
+    @Test
+    public void testInvokeAllInterruptedWhileRunningTaskAfterOtherTasksSubmitted() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAllInterruptedWhileRunningTaskAfterOtherTasksSubmitted")
+                        .maxConcurrency(2)
+                        .queueFullAction(QueueFullAction.Abort);
+
+        CountDownLatch beginLatch = new CountDownLatch(2);
+        CountDownLatch blocker = new CountDownLatch(1);
+        long taskDurationNS = TimeUnit.MINUTES.toNanos(5);
+        Collection<CountDownTask> tasks = new LinkedHashSet<CountDownTask>();
+        tasks.add(new CountDownTask(beginLatch, blocker, taskDurationNS));
+        tasks.add(new CountDownTask(beginLatch, blocker, taskDurationNS));
+
+        // interrupt current thread upon seeing that both tasks have started
+        Future<?> interrupterFuture = testThreads.submit(new InterrupterTask(Thread.currentThread(), beginLatch, 5, TimeUnit.MINUTES));
+
+        long start = System.nanoTime();
+        try {
+            List<Future<Boolean>> futures = executor.invokeAll(tasks);
+            fail("invokeAll should have been interrupted. Instead: " + futures);
+        } catch (InterruptedException x) { // pass
+        }
+
+        // confirm that invokeAll completed in a timely manner after interrupt
+        long duration = System.nanoTime() - start;
+        assertTrue(Long.toString(duration), duration < taskDurationNS);
+
+        interrupterFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Test the code path where untimed invokeAll is interrupted while it is running a task on the current thread
+    // because the queue has reached capacity. Once interrupted, invokeAll must immediately cancel all of
+    // its tasks which have not already completed and return.
+    @Test
+    public void testInvokeAllInterruptedWhileRunningTaskThatCannotBeSubmitted() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAllInterruptedWhileRunningTaskThatCannotBeSubmitted")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .queueFullAction(QueueFullAction.CallerRuns);
+
+        // Invoke 4 tasks.
+        // The first will start running and block.
+        // The second will be enqueued and might be able to start after the interrupt and before it gets canceled.
+        // The third will be forced to run on current thread due to the queue having reached capacity. We will have this task block as well.
+        // The fourth should never run.
+
+        CountDownLatch beginLatch1and3 = new CountDownLatch(2); // to wait for first and third tasks to start
+        CountDownLatch beginLatch4 = new CountDownLatch(1); // to ensure the fourth task never starts
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+        long taskDurationNS = TimeUnit.MINUTES.toNanos(5);
+        Collection<CountDownTask> tasks = new ArrayList<CountDownTask>();
+        tasks.add(new CountDownTask(beginLatch1and3, blocker, taskDurationNS));
+        tasks.add(new CountDownTask(unused, unused, 0));
+        tasks.add(new CountDownTask(beginLatch1and3, blocker, taskDurationNS));
+        tasks.add(new CountDownTask(beginLatch4, unused, 0));
+
+        // interrupt current thread upon seeing that both tasks have started
+        Future<?> interrupterFuture = testThreads.submit(new InterrupterTask(Thread.currentThread(), beginLatch1and3, 5, TimeUnit.MINUTES));
+
+        long start = System.nanoTime();
+        try {
+            List<Future<Boolean>> futures = executor.invokeAll(tasks);
+            fail("invokeAll should have been interrupted. Instead: " + futures);
+        } catch (InterruptedException x) { // pass
+        }
+
+        // confirm that invokeAll completed in a timely manner after interrupt
+        long duration = System.nanoTime() - start;
+        assertTrue(Long.toString(duration), duration < taskDurationNS);
+
+        assertEquals(1, beginLatch4.getCount());
+
+        interrupterFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
     // Use invokeAll where the group of tasks to invoke is a single task and where it is no tasks at all.
     // When a single task is invoked, it runs on the current thread if a permit is available, and otherwise on a separate thread.
     // However, if using CallerRuns, then it always runs on the current thread regardless of whether a permit is available.
@@ -2557,7 +2642,7 @@ public class PolicyExecutorServlet extends FATServlet {
 
     // Tests behavior when shutdownNow occurs while invokeAll is submitting and running tasks. Supply a group of 3 tasks to invokeAll.
     // The first task should complete successfully. The second task waits for the third to start and then shuts down the executor.
-    // Relying on behavior of policy executor that runs invokeAll tasks in reverse order order on the current thread if the global
+    // Relying on behavior of policy executor that runs invokeAll tasks in reverse order on the current thread if the global
     // executor hasn't been able to start them, the third (last) task should start on the current thread and block until canceled
     // by shutdownNow.
     @SuppressWarnings("unchecked")

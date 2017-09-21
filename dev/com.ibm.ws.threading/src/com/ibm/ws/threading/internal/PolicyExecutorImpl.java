@@ -421,15 +421,18 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      * @param wait amount of time to wait for a queue position.
      * @param callerRunsOverride indicates if a task should always or may never run on the current thread
      *            if no queue positions are available. A value of null means the queueFullAction will determine.
+     * @return true if the task was enqueued for later execution by the global thread pool.
+     *         If the task instead ran on the current thread instead, then returns false.
      * @throws RejectedExecutionException if the task is rejected rather than being queued.
      *             If this method runs the task on the current thread and the task raises InterruptedException,
      *             the InterruptedException is chained to the RejectedExecutionException.
      */
     @FFDCIgnore(value = { InterruptedException.class, RejectedExecutionException.class }) // these are raised directly to invoker, who decides how to handle
-    private void enqueue(PolicyTaskFuture<?> policyTaskFuture, long wait, Boolean callerRunsOverride) {
+    private boolean enqueue(PolicyTaskFuture<?> policyTaskFuture, long wait, Boolean callerRunsOverride) {
+        boolean enqueued;
         try {
             if (wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS)) {
-                queue.offer(policyTaskFuture);
+                enqueued = queue.offer(policyTaskFuture);
                 int w = withheldConcurrency.incrementAndGet();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "withheld concurrency --> " + w);
@@ -452,9 +455,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 if (action == QueueFullAction.Abort)
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1201.queue.full.abort", identifier, maxQueueSize, wait));
                 else if (action == QueueFullAction.CallerRuns) {
-                    Throwable x = runTask(policyTaskFuture);
-                    if (x instanceof InterruptedException)
-                        throw (InterruptedException) x;
+                    runTask(policyTaskFuture);
+                    enqueued = false;
                 } else
                     throw new UnsupportedOperationException("queueFullAction=" + action); // TODO DiscardOldest, CallerRunsIfSameExecutor, and null (which defaults based on maxConcurrency)
             } else
@@ -476,6 +478,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 Tr.debug(this, tc, "enqueue", x);
             throw x;
         }
+        return enqueued;
     }
 
     /**
@@ -555,11 +558,22 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             int t = 0, numToSubmitAsync = useCurrentThread ? taskCount - 1 : taskCount;
             for (Callable<T> task : tasks) {
                 PolicyTaskFuture<T> taskFuture = new PolicyTaskFuture<T>(task);
-                if (t++ < numToSubmitAsync)
+                if (t++ < numToSubmitAsync) {
+                    boolean enqueued;
                     if (useCurrentThread)
-                        enqueue(taskFuture, 0, true);
+                        enqueued = enqueue(taskFuture, 0, true);
                     else
-                        enqueue(taskFuture, maxWaitForEnqueueNS.get(), null);
+                        enqueued = enqueue(taskFuture, maxWaitForEnqueueNS.get(), null);
+
+                    if (!enqueued) // must immediately return if ran on current thread and was interrupted
+                        try {
+                            taskFuture.get();
+                        } catch (CancellationException x) {
+                        } catch (ExecutionException x) {
+                            if (x.getCause() instanceof InterruptedException)
+                                throw (InterruptedException) x.getCause();
+                        }
+                }
                 futures.add(taskFuture);
             }
 
@@ -580,15 +594,24 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                             Tr.debug(this, tc, "no longer in queue", taskFuture);
                         continue; // other thread could already be processing the task, or it could be cancelled
                     }
-                    Throwable x = runTask(taskFuture);
-                    if (x instanceof InterruptedException)
-                        throw (InterruptedException) x;
+
+                    runTask(taskFuture);
+
+                    // must immediately return if current thread is interrupted
+                    try {
+                        taskFuture.get();
+                    } catch (CancellationException x) {
+                    } catch (ExecutionException x) {
+                        if (x.getCause() instanceof InterruptedException)
+                            throw (InterruptedException) x.getCause();
+                    }
                 }
 
             // wait for completion
             for (Future<T> future : futures)
                 try {
-                    future.get();
+                    if (!future.isDone())
+                        future.get();
                     taskCount--;
                 } catch (CancellationException x) {
                     if (trace && tc.isDebugEnabled())
@@ -827,13 +850,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      * @param future the future for the task.
      * @return Exception that occurred while running the task. Otherwise null.
      */
-    @Trivial // do the tracing ourselves to ensure exception is included
-    Throwable runTask(PolicyTaskFuture<?> future) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "runTask", future);
-
-        Throwable failure = null;
+    void runTask(PolicyTaskFuture<?> future) {
         try {
             if (providerCreated != null) // the following code only matters when life cycle operations are permitted
                 running.add(future); // intentionally done before checking state to avoid missing cancels on shutdownNow
@@ -842,20 +859,18 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             if (currentState == State.ACTIVE || currentState == State.ENQUEUE_STOPPING || currentState == State.ENQUEUE_STOPPED)
                 future.futureTask.run();
             else {
-                if (trace && tc.isDebugEnabled())
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Cancel task due to policy executor state " + currentState);
                 future.cancel(false);
             }
-        } catch (Throwable x) {
-            failure = x;
+        } catch (Error x) {
+            // auto FFDC
+        } catch (RuntimeException x) {
+            // auto FFDC
         } finally {
             if (providerCreated != null)
                 running.remove(future);
         }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "runTask", failure);
-        return failure;
     }
 
     @Override
