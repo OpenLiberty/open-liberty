@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.11,ou=objectClasses,cn=apachemeta,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.11
+m-name: metaSchema
+m-description: A schema object under which meta schema definitions are found
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: top
+m-typeobjectclass: STRUCTURAL
+m-must: cn
+m-may: m-disabled
+m-may: m-dependencies
+creatorsname: uid=admin,ou=system

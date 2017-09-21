@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.808,ou=attributeTypes,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-equality: caseExactMatch
+m-ordering: caseExactOrderingMatch
+m-substr: caseExactSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.808
+m-name: ads-saslMechName
+m-description: SASL mechanism name
+entryUUID: 5e1f0db0-80da-4457-9667-d248d33a7088
+entryCSN: 20130919065344.662000Z#000000#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065353.746Z

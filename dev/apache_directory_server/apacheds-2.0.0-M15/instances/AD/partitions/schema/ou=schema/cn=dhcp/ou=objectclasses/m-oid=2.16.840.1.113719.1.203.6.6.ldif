@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.6.6,ou=objectClasses,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 2.16.840.1.113719.1.203.6.6
+m-name: dhcpHost
+m-description: This represents information about a particular client
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: cn
+entryUUID: 2bfd532e-44d9-43a1-ac14-c0ee572e5574
+m-may: dhcpLeaseDN
+m-may: dhcpHWAddress
+m-may: dhcpOptionsDN
+m-may: dhcpStatements
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.871000Z#000000#000#000000
+entryParentId: a00d4ccc-bbc8-4bdc-9c84-7b200f2d9361
+createTimestamp: 20130919081909.355Z

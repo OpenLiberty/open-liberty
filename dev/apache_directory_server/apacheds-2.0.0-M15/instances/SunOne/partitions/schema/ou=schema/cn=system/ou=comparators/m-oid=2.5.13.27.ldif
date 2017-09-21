@@ -1,0 +1,8 @@
+version: 1
+dn: m-oid=2.5.13.27,ou=comparators,cn=system,ou=schema
+m-oid: 2.5.13.27
+m-fqcn: org.apache.directory.api.ldap.model.schema.comparators.GeneralizedTimeComparator
+objectclass: metaComparator
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.825,ou=attributeTypes,cn=adsconfig,ou=schema
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.825
+m-description: user DN used for authenticating with replication provider
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-name: ads-replUserDn
+creatorsname: uid=admin,ou=system
+m-equality: distinguishedNameMatch
+m-length: 0

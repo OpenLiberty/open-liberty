@@ -1,0 +1,24 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.27,ou=attributeTypes,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113719.1.203.4.27
+m-name: dhcpDomainName
+m-description: This is the name of the domain sent to the client by the server. 
+  It is essentially the same as the value for DHCP option 15 sent to the client,
+  and represents only the domain - not the full FQDN.  To obtain the full FQDN a
+ ssigned to the client you must prepend the "dhcpAssignedHostName" to this value
+  with a ".".
+m-obsolete: FALSE
+entryUUID: af99dfa9-975b-4838-8e87-36c0154c71c6
+entryCSN: 20130919081858.835000Z#000000#000#000000
+entryParentId: e4750b4b-8dc1-4318-b657-bba5670b4f0b
+createTimestamp: 20130919081908.898Z

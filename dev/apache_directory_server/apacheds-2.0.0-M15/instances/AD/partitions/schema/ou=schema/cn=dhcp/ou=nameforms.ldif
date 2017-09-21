@@ -1,0 +1,10 @@
+version: 1
+dn: ou=nameForms,cn=dhcp,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 44313aeb-dc6b-4ba2-9d6e-054cd8672a74
+entryCSN: 20130919081858.671000Z#000000#000#000000
+entryParentId: 46016b49-fa8b-4efa-88df-4cc2c46cdfdf
+ou: nameforms
+createTimestamp: 20130919081911.268Z

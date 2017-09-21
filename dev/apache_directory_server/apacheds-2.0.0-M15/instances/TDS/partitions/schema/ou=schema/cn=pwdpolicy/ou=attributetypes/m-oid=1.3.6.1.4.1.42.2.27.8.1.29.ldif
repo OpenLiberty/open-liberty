@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.8.1.29,ou=attributeTypes,cn=pwdpolicy,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-equality: generalizedTimeMatch
+m-ordering: generalizedTimeOrderingMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
+m-singlevalue: TRUE
+m-length: 0
+m-nousermodification: TRUE
+m-usage: directoryOperation
+m-oid: 1.3.6.1.4.1.42.2.27.8.1.29
+m-name: pwdLastSuccess
+m-description: The timestamp of the last successful authentication
+entryUUID: c4ddf855-1ff9-4505-ad17-25999dff799b
+entryCSN: 20130919065345.509000Z#000000#000#000000
+entryParentId: dda02085-cefb-4fca-be6a-80c8c0b760fb
+createTimestamp: 20130919065352.948Z

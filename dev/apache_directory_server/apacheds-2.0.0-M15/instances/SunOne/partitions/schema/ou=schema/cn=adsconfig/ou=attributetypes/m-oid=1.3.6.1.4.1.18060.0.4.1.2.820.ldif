@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.820,ou=attributeTypes,cn=adsconfig,ou=schema
+m-ordering: distinguishedNameMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.820
+m-description: base DN of the DIT to be searched or replicated
+m-supattributetype: distinguishedName
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-name: ads-searchBaseDN
+creatorsname: uid=admin,ou=system
+m-equality: distinguishedNameMatch
+m-length: 0

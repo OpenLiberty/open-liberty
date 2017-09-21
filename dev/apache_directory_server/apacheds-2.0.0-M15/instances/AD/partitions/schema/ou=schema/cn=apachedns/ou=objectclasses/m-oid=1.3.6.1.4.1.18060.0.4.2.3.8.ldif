@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.2.3.8,ou=objectClasses,cn=apachedns,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.18060.0.4.2.3.8
+m-name: apacheDnsTextRecord
+m-description: A text TXT record
+m-obsolete: FALSE
+m-supobjectclass: apacheDnsAbstractRecord
+m-must: apacheDnsCharacterString
+entryUUID: 10fe2f88-6c28-4b40-9708-7523a5922905
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.422000Z#000000#000#000000
+entryParentId: 4a0ef78b-970f-47c3-a6fe-0c428cee99b4
+createTimestamp: 20130919081909.373Z

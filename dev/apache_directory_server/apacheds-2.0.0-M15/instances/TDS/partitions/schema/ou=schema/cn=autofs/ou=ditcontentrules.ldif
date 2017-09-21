@@ -1,0 +1,10 @@
+version: 1
+dn: ou=ditContentRules,cn=autofs,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 8ef5b3f2-9655-41f6-b5bd-f425589fe9db
+entryCSN: 20130919065344.972000Z#000001#000#000000
+entryParentId: 3c0f335a-7431-478f-98cd-f0e780047f29
+ou: ditcontentrules
+createTimestamp: 20130919065353.044Z

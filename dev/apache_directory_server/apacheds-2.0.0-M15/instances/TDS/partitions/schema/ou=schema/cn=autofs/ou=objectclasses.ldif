@@ -1,0 +1,10 @@
+version: 1
+dn: ou=objectClasses,cn=autofs,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: afb5737a-e5aa-4e45-950c-fed678d48626
+entryCSN: 20130919065344.974000Z#000002#000#000000
+entryParentId: 3c0f335a-7431-478f-98cd-f0e780047f29
+ou: objectclasses
+createTimestamp: 20130919065353.243Z

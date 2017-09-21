@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.0.0,ou=syntaxes,cn=apache,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.0.0
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaSyntax
+x-not-human-readable: FALSE
+m-description: Java Byte
+m-obsolete: FALSE
+entryUUID: 7865a0b9-aa0e-4d1b-957c-38fe36ce7ead
+entrycsn: 20100111202214.878000Z#000000#000#000000
+entryParentId: 85b38a54-1d1a-4774-9eaa-0d226a3352d0
+createtimestamp: 20100111145217Z

@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=2.5.4.23.1,ou=attributeTypes,cn=collective,ou=schema
+m-collective: TRUE
+m-singlevalue: FALSE
+m-oid: 2.5.4.23.1
+m-obsolete: FALSE
+m-supattributetype: facsimileTelephoneNumber
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.22
+m-usage: USER_APPLICATIONS
+m-name: c-FacsimileTelephoneNumber
+creatorsname: uid=admin,ou=system

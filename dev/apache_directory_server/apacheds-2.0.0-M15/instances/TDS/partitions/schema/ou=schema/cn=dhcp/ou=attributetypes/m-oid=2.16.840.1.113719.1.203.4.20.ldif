@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.20,ou=attributeTypes,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113719.1.203.4.20
+m-name: dhcpVersion
+m-description: The version attribute of this object.
+m-obsolete: FALSE
+entryUUID: 46e2d426-7e8d-4100-90b5-aa747d9fcc63
+entryCSN: 20130919065345.232000Z#000000#000#000000
+entryParentId: 920d556c-6037-40c6-8766-5417ea615dab
+createTimestamp: 20130919065353.178Z

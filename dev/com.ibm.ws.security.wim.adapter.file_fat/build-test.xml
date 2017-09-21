@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.security.wim.adapter.file_fat" default="buildandrun" basedir=".">
+	<import file="../ant_build/public_imports/fat_imports.xml" />
+	
+	<property name="fat.image.type" value="use-full-image"/>
+	
+	<property name="publish.servers" value="${basedir}/publish/servers/" />
+
+	<!-- <usr_fileRegistry> -->
+	<target name="validate-server-xmls"/>
+
+	<target name="addRequiredLibraries">
+		<copy todir="${required.lib.dir}">
+			<fileset dir="../build.image/wlp/lib" includes="com.ibm.ws.logging_*.jar"/>
+			<fileset dir="../build.image/wlp/lib" includes="com.ibm.ws.security.registry_*.jar"/>
+			<fileset dir="../com.ibm.ws.security.registry_test.servlet/build/lib" includes="*.jar"/>
+			<fileset dir="../build.image/wlp/lib" includes="com.ibm.json4j_*.jar"/>
+			<fileset dir="../com.ibm.ws.security.wim.scim_fat/build/lib" includes="com.ibm.ws.security.wim.scim_*.jar"/>
+		</copy>
+	</target>
+	
+	<!-- Copy test.file.adapter bundle to autoFVT's files, so that it can later be copied to liberty root duing test execution. -->
+	<target name="addRequiredFiles">
+		<copy todir="${required.files.dir}">
+			<fileset file="../com.ibm.ws.security.wim.adapter.file/build/lib/com.ibm.ws.security.wim.adapter.file_*.jar"/>
+		</copy>
+		
+		<union id="required.files.resources">
+			<mappedresources>
+				<globmapper from="*" to="autoFVT/apacheds-2.0.0-M15/*"/>
+				<fileset dir="../apache_directory_server/apacheds-2.0.0-M15"/>
+			</mappedresources>
+		</union>
+	</target>
+
+	<target name="addAutoInstallApplications" description="Automatically Install applications on LibertyServer instance creation">
+		
+		<mkdir dir="${publish.servers}/com.ibm.ws.security.wim.adapter.file.fat.allURAPIs/dropins" />
+				<copy todir="${publish.servers}/com.ibm.ws.security.wim.adapter.file.fat.allURAPIs/dropins">
+					<fileset dir="../com.ibm.ws.security.registry_test.servlet/build/test-application" includes="*.war"/>
+				</copy>
+		
+		<mkdir dir="${publish.servers}/com.ibm.ws.security.wim.adapter.file.fat.multiplerepos/dropins" />
+				<copy todir="${publish.servers}/com.ibm.ws.security.wim.adapter.file.fat.multiplerepos/dropins">
+					<fileset dir="../com.ibm.ws.security.registry_test.servlet/build/test-application" includes="*.war"/>
+				</copy>
+		
+		<mkdir dir="${publish.servers}/com.ibm.ws.security.wim.adapter.file.fat.repowithoutid/dropins" />
+				<copy todir="${publish.servers}/com.ibm.ws.security.wim.adapter.file.fat.repowithoutid/dropins">
+					<fileset dir="../com.ibm.ws.security.registry_test.servlet/build/test-application" includes="*.war"/>
+				</copy>
+		
+	</target>
+</project>

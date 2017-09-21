@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.2,ou=attributeTypes,cn=apachemeta,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: caseIgnoreMatch
+m-syntax: 1.3.6.1.4.1.18060.0.4.0.0.6
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.2
+m-name: m-name
+m-description: The Object name
+m-obsolete: FALSE
+entryUUID: 4d3e574c-3065-4f63-9e30-68b1e9177601
+entryCSN: 20130919065344.924000Z#000001#000#000000
+entryParentId: 922ee3f2-ef70-42fd-9757-18594e8a255b
+createTimestamp: 20130919065353.990Z

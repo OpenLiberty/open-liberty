@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.21,ou=attributeTypes,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113719.1.203.4.21
+m-name: dhcpImplementation
+m-description: Description of the DHCP Server implementation e.g. DHCP Servers v
+ endor.
+m-obsolete: FALSE
+entryUUID: 368dd638-9976-4bf2-80fe-fc68ad288ac5
+entryCSN: 20130919065345.232000Z#000001#000#000000
+entryParentId: 920d556c-6037-40c6-8766-5417ea615dab
+createTimestamp: 20130919065353.475Z

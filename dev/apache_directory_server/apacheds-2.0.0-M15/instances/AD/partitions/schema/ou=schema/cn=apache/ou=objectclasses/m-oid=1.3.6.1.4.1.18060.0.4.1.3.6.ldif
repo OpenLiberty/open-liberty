@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.6,ou=objectClasses,cn=apache,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.6
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: windowsFile
+m-supobjectclass: top
+entryUUID: 9b02cbb7-2838-49c9-b20e-d2e0d07a65ed
+m-must: windowsFilePath
+entryCSN: 20130919081858.337000Z#000000#000#000000
+entryParentId: 027117b6-5b7a-4a2f-a588-31ea70f8cd8a
+createTimestamp: 20130919081911.016Z

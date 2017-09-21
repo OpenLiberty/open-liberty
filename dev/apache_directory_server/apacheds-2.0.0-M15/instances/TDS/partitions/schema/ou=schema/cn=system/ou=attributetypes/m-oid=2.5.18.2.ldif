@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.5.18.2,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: generalizedTimeMatch
+m-ordering: generalizedTimeOrderingMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DIRECTORY_OPERATION
+m-oid: 2.5.18.2
+m-name: modifyTimestamp
+m-description: RFC2252: time which object was last modified
+m-obsolete: FALSE
+entryUUID: ab4f70af-bbeb-41c8-b903-b86506c0c8cf
+entryCSN: 20130919065345.652000Z#000001#000#000000
+entryParentId: 8d7781fa-8bd8-4ab1-8c8c-ae6a13d0b74a
+createTimestamp: 20130919065351.489Z

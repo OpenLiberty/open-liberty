@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.8,ou=objectClasses,cn=nis,ou=schema
+m-must: cn
+m-oid: 1.3.6.1.1.1.2.8
+m-supobjectclass: top
+m-description: Abstraction of a netgroup
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: nisNetgroup
+creatorsname: uid=admin,ou=system
+m-may: nisNetgroupTriple
+m-may: memberNisNetgroup
+m-may: description

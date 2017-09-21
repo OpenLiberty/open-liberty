@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.0.10,ou=syntaxCheckers,cn=adsconfig,ou=schema
+m-fqcn: org.apache.directory.api.ldap.model.schema.syntaxCheckers.SearchScopeSyn
+ taxChecker
+m-oid: 1.3.6.1.4.1.18060.0.4.1.0.10
+creatorsname: 0.9.2342.19200300.100.1.1=admin,2.5.4.11=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaSyntaxChecker
+entryUUID: bdd83b00-8461-4b8c-9bcb-a1f128765d3a
+entrycsn: 20100111202214.878000Z#000000#000#000000
+entryParentId: 90b2a180-1707-422a-94e8-d6d842e84c33
+createtimestamp: 20100111145217Z

@@ -1,0 +1,14 @@
+version: 1
+dn: cn=other,ou=schema
+objectclass: metaSchema
+objectclass: top
+creatorsname: uid=admin,ou=system
+cn: other
+entryUUID: 4e073e74-bf92-4239-86a8-ed236ba4d0b2
+m-dependencies: system
+m-dependencies: core
+m-dependencies: apache
+m-dependencies: apachemeta
+entryCSN: 20130919065344.520000Z#000001#000#000000
+entryParentId: 3456708f-5a09-4e37-8bcb-59f59172fa8c
+createTimestamp: 20130919065351.900Z

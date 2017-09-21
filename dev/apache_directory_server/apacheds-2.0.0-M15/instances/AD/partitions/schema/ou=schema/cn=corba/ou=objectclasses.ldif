@@ -1,0 +1,10 @@
+version: 1
+dn: ou=objectClasses,cn=corba,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 16f089df-2ea2-45d8-8a04-5a3b37320fe1
+entryCSN: 20130919081858.546000Z#000000#000#000000
+entryParentId: 66b4f8d5-e4f4-4857-b5be-e84b8d72be03
+ou: objectclasses
+createTimestamp: 20130919081908.477Z

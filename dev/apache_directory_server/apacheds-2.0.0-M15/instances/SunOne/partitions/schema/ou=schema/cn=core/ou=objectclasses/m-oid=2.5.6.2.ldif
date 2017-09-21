@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=2.5.6.2,ou=objectClasses,cn=core,ou=schema
+m-must: c
+m-oid: 2.5.6.2
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2256: a country
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: country
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: searchGuide
+m-may: description

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.22,ou=attributeTypes,cn=apachemeta,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: supDITStructureRuleMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.36
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.22
+m-name: m-supDITStructureRule
+m-description: The list of superiors
+m-obsolete: FALSE
+entryUUID: e54d2096-c82a-4d0f-b117-117fce719e45
+entryCSN: 20130919065344.926000Z#000000#000#000000
+entryParentId: 922ee3f2-ef70-42fd-9757-18594e8a255b
+createTimestamp: 20130919065351.741Z

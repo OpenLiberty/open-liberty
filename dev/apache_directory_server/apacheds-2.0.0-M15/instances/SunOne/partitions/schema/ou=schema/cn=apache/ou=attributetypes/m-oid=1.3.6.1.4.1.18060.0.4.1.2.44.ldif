@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.44,ou=attributeTypes,cn=apache,ou=schema
+m-singlevalue: FALSE
+m-obsolete: FALSE
+m-description: Revision numbers used in change log
+m-usage: DSA_OPERATION
+creatorsname: uid=admin,ou=system
+m-ordering: integerOrderingMatch
+m-collective: FALSE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.44
+m-nousermodification: TRUE
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-name: revisions
+m-equality: integerMatch

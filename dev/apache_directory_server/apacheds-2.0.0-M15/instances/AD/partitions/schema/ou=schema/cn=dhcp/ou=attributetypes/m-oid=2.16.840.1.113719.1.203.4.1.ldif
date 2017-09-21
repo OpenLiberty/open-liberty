@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.1,ou=attributeTypes,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113719.1.203.4.1
+m-name: dhcpPrimaryDN
+m-description: The DN of the dhcpServer which is the primary server for the conf
+ iguration.
+m-obsolete: FALSE
+entryUUID: 5f4b3a13-01d1-473b-8433-f5fc25465702
+entryCSN: 20130919081858.782000Z#000000#000#000000
+entryParentId: e4750b4b-8dc1-4318-b657-bba5670b4f0b
+createTimestamp: 20130919081909.584Z

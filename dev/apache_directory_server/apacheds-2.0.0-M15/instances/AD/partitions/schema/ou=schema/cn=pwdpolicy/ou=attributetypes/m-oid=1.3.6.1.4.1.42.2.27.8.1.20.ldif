@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.8.1.20,ou=attributeTypes,cn=pwdpolicy,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-equality: octetStringMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.40
+m-length: 0
+m-nousermodification: TRUE
+m-usage: directoryOperation
+m-oid: 1.3.6.1.4.1.42.2.27.8.1.20
+m-name: pwdHistory
+m-description: The history of user s passwords
+entryUUID: 280453d5-dbff-4303-bf12-8b40e663e8a2
+entryCSN: 20130919081859.064000Z#000001#000#000000
+entryParentId: fb59bad3-7431-4f89-b398-dee1afd6638f
+createTimestamp: 20130919081909.253Z

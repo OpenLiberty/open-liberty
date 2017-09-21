@@ -1,0 +1,10 @@
+version: 1
+dn: ou=objectClasses,cn=rfc2307bis,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 2202d288-c61b-491e-b81c-352abaae7fb8
+entryCSN: 20130919065345.523000Z#000001#000#000000
+entryParentId: 96c3284e-d895-4e67-a69e-87579ac70f2e
+ou: objectClasses
+createTimestamp: 20130919065353.491Z

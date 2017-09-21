@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.8,ou=objectClasses,cn=apache,ou=schema
+m-must: fullyQualifiedJavaClassName
+m-must: javaClassByteCode
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.8
+m-obsolete: FALSE
+m-supobjectclass: top
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: javaClass
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system

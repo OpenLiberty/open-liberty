@@ -1,0 +1,12 @@
+dn: cn=customschema, ou=schema
+objectclass: top
+objectclass: metaSchema
+creatorsName: 
+cn: customschema
+entryUUID: cba9e093-3f47-44c7-be7b-64d8c3ba2a7b
+m-dependencies: inetorgperson
+m-dependencies: system
+m-dependencies: core
+entryCSN: 20130925093634.490000Z#000000#001#000000
+entryParentId: 529257cc-a63e-4ee3-827f-354e24136008
+createTimestamp: 20130925093634.490Z

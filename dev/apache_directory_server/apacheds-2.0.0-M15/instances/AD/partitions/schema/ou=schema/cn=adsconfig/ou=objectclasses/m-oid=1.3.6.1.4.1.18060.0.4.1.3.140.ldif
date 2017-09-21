@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.140,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.140
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-name: ads-journal
+m-description: The Journal
+m-supobjectclass: ads-base
+entryUUID: 6516d317-31f4-448c-b1d1-f86ef7bd7fb4
+m-must: ads-journalWorkingDir
+m-must: ads-journalRotation
+m-must: ads-journalId
+m-must: ads-journalFileName
+entryCSN: 20130919081858.229000Z#000000#000#000000
+entryParentId: b7bdbf3b-4a7c-4ab1-919f-7cc70e45f752
+createTimestamp: 20130919081910.176Z

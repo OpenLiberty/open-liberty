@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.821,ou=attributeTypes,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseExactMatch
+m-ordering: caseExactOrderingMatch
+m-syntax: 1.3.6.1.4.1.18060.0.4.1.0.10
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.821
+m-name: ads-replSearchScope
+m-description: the search scope of the replication
+entryUUID: 3db833c2-9a60-4591-bb68-b895ab6e2ebc
+entryCSN: 20130919081858.176000Z#000000#000#000000
+entryParentId: c27651a1-f4fc-4f73-a257-08b4691776f8
+createTimestamp: 20130919081908.343Z

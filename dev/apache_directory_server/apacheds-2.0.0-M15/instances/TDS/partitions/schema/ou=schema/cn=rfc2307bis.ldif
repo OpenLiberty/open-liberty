@@ -1,0 +1,14 @@
+version: 1
+dn: cn=rfc2307bis,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaSchema
+objectclass: top
+cn: rfc2307bis
+m-disabled: TRUE
+entryUUID: 96c3284e-d895-4e67-a69e-87579ac70f2e
+m-dependencies: system
+m-dependencies: core
+m-dependencies: nis
+entryCSN: 20130919065344.521000Z#000001#000#000000
+entryParentId: 3456708f-5a09-4e37-8bcb-59f59172fa8c
+createTimestamp: 20130919065352.121Z

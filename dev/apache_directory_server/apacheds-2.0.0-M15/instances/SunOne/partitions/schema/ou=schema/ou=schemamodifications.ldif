@@ -1,0 +1,14 @@
+version: 1
+dn: ou=schemaModifications,ou=schema
+objectClass: schemaModificationAttributes
+objectClass: top
+ou: schemaModifications
+schemaModifiersName: uid=admin,ou=system
+schemaModifyTimestamp: 20090818022733Z
+subschemaSubentryName: cn=schema
+createTimestamp: 20090818022733Z
+creatorsName: uid=admin,ou=system
+entryCSN: 20090818052733.272000Z#000000#000#000000
+modifiersName: uid=admin,ou=system
+modifyTimestamp: 20090818022733Z
+

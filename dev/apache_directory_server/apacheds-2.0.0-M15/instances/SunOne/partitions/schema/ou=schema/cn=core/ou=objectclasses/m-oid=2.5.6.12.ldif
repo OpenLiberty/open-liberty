@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.5.6.12,ou=objectClasses,cn=core,ou=schema
+m-must: presentationAddress
+m-must: cn
+m-oid: 2.5.6.12
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2256: an application entity
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: applicationEntity
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: supportedApplicationContext
+m-may: seeAlso
+m-may: ou
+m-may: o
+m-may: l
+m-may: description

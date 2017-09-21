@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.6.5,ou=objectClasses,cn=dhcp,ou=schema
+m-must: cn
+m-oid: 2.16.840.1.113719.1.203.6.5
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: Group object that lists host DNs and parameters. This is a container object.
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: dhcpGroup
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: dhcpHostDN
+m-may: dhcpOptionsDN
+m-may: dhcpStatements
