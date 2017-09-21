@@ -51,13 +51,13 @@ import com.ibm.wsspi.security.wim.model.SearchControl;
            configurationPid = "com.ibm.ws.security.wim.adapter.file.config",
            property = "service.vendor=IBM",
            reference = @Reference(bind = "setSecurityService", unbind = "unsetSecurityService", service = SecurityService.class, name = BaseRepository.KEY_SECURITY_SERVICE))
-public class FileAdapter extends BaseRepository implements ConfiguredRepository {
+public class TestFileAdapter extends BaseRepository implements ConfiguredRepository {
 
     private final FileData data = new FileData();
 
     static final String REALM = "realm";
     String reposRealm = null;
-    private static final TraceComponent tc = Tr.register(FileAdapter.class, "wimUtil", "com.ibm.ws.security.wim.util.resources.WimUtilMessages");
+    private static final TraceComponent tc = Tr.register(TestFileAdapter.class, "wimUtil", "com.ibm.ws.security.wim.util.resources.WimUtilMessages");
 
     @Override
     @Activate
