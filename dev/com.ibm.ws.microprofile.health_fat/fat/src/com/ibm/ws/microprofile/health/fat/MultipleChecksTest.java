@@ -86,6 +86,7 @@ public class MultipleChecksTest {
         if (!server1.isStarted()) {
             server1.startServer();
         }
+        server1.waitForStringInLog("CWWKT0016I: Web application available.*health*");
     }
 
     @AfterClass
@@ -94,6 +95,11 @@ public class MultipleChecksTest {
     }
 
     @Test
+    public void testMultipleHealthChecks() throws Exception {
+        testMultipleUPChecks();
+        testMultipleChecksDOWN();
+    }
+
     public void testMultipleUPChecks() throws Exception {
 
         //copyFiles();
@@ -140,11 +146,10 @@ public class MultipleChecksTest {
         assertEquals(jsonResponse.getString("outcome"), "UP");
     }
 
-    @Test
     public void testMultipleChecksDOWN() throws Exception {
 
         URL healthURL = new URL("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/health");
-        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 503, 10000);
+        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 503, 10 * 1000);
         assertEquals(503, con.getResponseCode());
         assertEquals("application/json; charset=UTF-8", con.getHeaderField("Content-Type"));
 

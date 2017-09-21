@@ -56,6 +56,7 @@ public class CDIHealthCheckTest {
         if (!server1.isStarted()) {
             server1.startServer();
         }
+        server1.waitForStringInLog("CWWKT0016I: Web application available.*health*");
     }
 
     @AfterClass
@@ -64,11 +65,11 @@ public class CDIHealthCheckTest {
     }
 
     @Test
-    public void testJsonRecieved() throws Exception {
+    public void testJsonReceived() throws Exception {
 
         URL healthURL = new URL("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/health");
 
-        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 200, 1000);
+        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 200, 10 * 1000);
 
         assertEquals("application/json; charset=UTF-8", con.getHeaderField("Content-Type"));
         BufferedReader br = HttpUtils.getConnectionStream(con);
@@ -82,16 +83,21 @@ public class CDIHealthCheckTest {
         assertEquals(1, checks.size());
         assertEquals("testJsonRecieved", ((JsonObject) checks.get(0)).getString("name"));
         assertEquals(jsonResponse.getString("outcome"), "UP");
-
-        //stopServer()
     }
 
     @Test
+    public void testSingleHealthChecks() throws Exception {
+        testSingleOutcomeUP();
+        testSingleOutcomeDOWN();
+        testCheckUPWithData();
+        testCheckDOWNWithData();
+    }
+
     public void testSingleOutcomeUP() throws Exception {
 
         URL healthURL = new URL("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/health");
 
-        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 200, 1000);
+        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 200, 10 * 1000);
 
         BufferedReader br = HttpUtils.getConnectionStream(con);
         Json.createReader(br);
@@ -107,13 +113,12 @@ public class CDIHealthCheckTest {
         assertEquals(jsonResponse.getString("outcome"), "UP");
     }
 
-    @Test
     public void testSingleOutcomeDOWN() throws Exception {
 
         URL healthURL = new URL("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/health");
 
         HttpURLConnection con = null;
-        con = HttpUtils.getHttpConnection(healthURL, 503, 10000);
+        con = HttpUtils.getHttpConnection(healthURL, 503, 10 * 1000);
         assertEquals(503, con.getResponseCode());
 
         assertEquals("application/json; charset=UTF-8", con.getHeaderField("Content-Type"));
@@ -131,11 +136,10 @@ public class CDIHealthCheckTest {
         assertEquals(jsonResponse.getString("outcome"), "DOWN");
     }
 
-    @Test
     public void testCheckUPWithData() throws Exception {
 
         URL healthURL = new URL("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/health");
-        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 200, 10000);
+        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 200, 10 * 1000);
 
         assertEquals("application/json; charset=UTF-8", con.getHeaderField("Content-Type"));
         BufferedReader br = HttpUtils.getConnectionStream(con);
@@ -156,11 +160,10 @@ public class CDIHealthCheckTest {
         assertEquals(jsonResponse.getString("outcome"), "UP");
     }
 
-    @Test
     public void testCheckDOWNWithData() throws Exception {
 
         URL healthURL = new URL("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/health");
-        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 503, 10000);
+        HttpURLConnection con = HttpUtils.getHttpConnection(healthURL, 503, 10 * 1000);
         assertEquals(503, con.getResponseCode());
         assertEquals("application/json; charset=UTF-8", con.getHeaderField("Content-Type"));
         BufferedReader br = HttpUtils.getResponseBody(con, "UTF-8");

@@ -49,6 +49,8 @@ public class HealthCheckExceptionTest {
         ShrinkHelper.exportToServer(server1, "dropins", hcexceptionApp);
 
         server1.startServer();
+        server1.waitForStringInLog("CWWKT0016I: Web application available.*health*");
+
     }
 
     @AfterClass
