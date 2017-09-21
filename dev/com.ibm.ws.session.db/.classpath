@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.osgi.annotation.versioning"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.container.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.tx.ltc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.transaction.1.1"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.tx.jta"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.jdbc"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.tx.jta.extensions"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.resource"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.javaee.dd.common"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.tx.embeddable"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.session"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.serialization"/>
+	<classpathentry kind="output" path="build/classes"/>
+</classpath>

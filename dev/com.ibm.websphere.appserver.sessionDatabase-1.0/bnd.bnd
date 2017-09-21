@@ -1,0 +1,19 @@
+-include ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.appserver.sessionDatabase-1.0
+
+publish.feature.resources: **
+
+-dependson: \
+	com.ibm.websphere.appserver.jndi-1.0;version=latest, \
+	com.ibm.websphere.appserver.javax.servlet-3.0;version=latest, \
+	com.ibm.websphere.appserver.transaction-1.1;version=latest, \
+	com.ibm.websphere.appserver.jdbc-4.0;version=latest
+
+-buildpath: \
+	${javac.bootclasspath.java6}, \
+	com.ibm.websphere.security;version=latest, \
+	com.ibm.ws.session.db;version=latest, \
+	com.ibm.ws.serialization;version=latest, \
+	com.ibm.ws.session;version=latest

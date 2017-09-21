@@ -1,0 +1,53 @@
+# For information on bnd syntax, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
+
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Database Store for HTTP Sessions
+Bundle-SymbolicName: com.ibm.ws.session.db
+Bundle-Description: Allows persistence of sessions to a database, version ${bVersion}
+
+Private-Package: \
+   	com.ibm.ws.session.store.common, \
+   	com.ibm.ws.session.store.db, \
+    com.ibm.ws.session.db.resources
+
+Include-Resource: \
+    OSGI-INF=resources/OSGI-INF
+
+Service-Component: \
+  com.ibm.ws.session.db; \
+    implementation:=com.ibm.ws.session.store.db.DatabaseStoreService; \
+    provide:=com.ibm.ws.session.SessionStoreService; \
+    configuration-policy:=require; \
+    dataSourceFactory=com.ibm.wsspi.resource.ResourceFactory; \
+    embeddableWebSphereTransactionManager=com.ibm.ws.tx.embeddable.EmbeddableWebSphereTransactionManager; \
+    localTransactionCurrent=com.ibm.ws.LocalTransaction.LocalTransactionCurrent; \
+    resourceConfigFactory=com.ibm.wsspi.resource.ResourceConfigFactory; \
+    serializationService=com.ibm.ws.serialization.SerializationService; \
+    uowCurrent=com.ibm.ws.Transaction.UOWCurrent; \
+    userTransaction=javax.transaction.UserTransaction; \
+    dynamic:="dataSourceFactory,embeddableWebSphereTransactionManager,localTransactionCurrent,resourceRefConfigFactory,uowCurrent,userTransaction"; \
+    properties:='service.vendor=IBM,service.ranking:Integer=100,dataSourceFactory.target=(id=unbound)', \
+  com.ibm.ws.session.db.deserialization; \
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider; \
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider; \
+    properties:='classes=com.ibm.ws.session.store.common.J2EEObjectWrapper'
+
+instrument.disabled: true
+
+-buildpath: \
+	com.ibm.ws.session;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.appserver.spi.kernel.service,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.serialization;version=latest,\
+	com.ibm.tx.ltc;version=latest,\
+	com.ibm.tx.jta;version=latest,\
+	com.ibm.ws.tx.embeddable;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
