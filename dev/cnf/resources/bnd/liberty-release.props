@@ -1,6 +1,6 @@
 -include= ${workspace}/generated.properties
 
-releaseTypeGA=false
+releaseTypeGA=true
 libertyServiceVersion=17.0.0.3
 libertyBetaVersion=2017.9.0.0
 libertyRelease=${if;${releaseTypeGA};${libertyServiceVersion};${libertyBetaVersion}}
