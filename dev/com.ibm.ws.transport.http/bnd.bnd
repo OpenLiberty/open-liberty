@@ -82,6 +82,7 @@ DynamicImport-Package: com.ibm.wsspi.request.probe.bci
 instrument.classesExcludes: \
     **/com/ibm/ws/genericbnf/**, \
     **/com/ibm/ws/http/channel/internal/**, \
+    **/com/ibm/ws/http/channel/h2internal/**, \
     **/com/ibm/ws/http/logging/internal/**, \
     **/com/ibm/wsspi/genericbnf/**, \
     **/com/ibm/wsspi/http/channel/**, \

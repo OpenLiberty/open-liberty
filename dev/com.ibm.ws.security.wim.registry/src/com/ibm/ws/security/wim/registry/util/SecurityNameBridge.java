@@ -113,7 +113,7 @@ public class SecurityNameBridge {
 
             //PM55588 Change the order, first call search API
             String inputAttrName = this.propertyMap.getInputUniqueUserId(idAndRealm.getRealm());
-            String outputAttrName = this.propertyMap.getOutputUserPrincipal(idAndRealm.getRealm());
+            String outputAttrName = this.propertyMap.getOutputUserSecurityName(idAndRealm.getRealm());
             if (!this.mappingUtils.isIdentifierTypeProperty(inputAttrName) || allowDNAsPrincipalName) {
                 List<Control> controls = root.getControls();
                 SearchControl searchControl = new SearchControl();

@@ -819,9 +819,9 @@ public abstract class AbstractRasMethodAdapter<C extends AbstractRasClassAdapter
     }
 
     @Override
-    public void visitMethodInsn(int opcode, String owner, String name, String desc) {
+    public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean itf) {
         processPendingExceptionHandlerEntry(-1);
-        super.visitMethodInsn(opcode, owner, name, desc);
+        super.visitMethodInsn(opcode, owner, name, desc, itf);
 
         if (waitingForSuper) {
             // Process the args
@@ -1161,28 +1161,28 @@ public abstract class AbstractRasMethodAdapter<C extends AbstractRasClassAdapter
         }
         switch (type.getSort()) {
             case Type.BOOLEAN:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Boolean", "valueOf", "(Z)Ljava/lang/Boolean;", false);
                 break;
             case Type.BYTE:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Byte", "valueOf", "(B)Ljava/lang/Byte;", false);
                 break;
             case Type.CHAR:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Character", "valueOf", "(C)Ljava/lang/Character;", false);
                 break;
             case Type.DOUBLE:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf", "(D)Ljava/lang/Double;", false);
                 break;
             case Type.FLOAT:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Float", "valueOf", "(F)Ljava/lang/Float;", false);
                 break;
             case Type.INT:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
                 break;
             case Type.LONG:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf", "(J)Ljava/lang/Long;", false);
                 break;
             case Type.SHORT:
-                visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;");
+                visitMethodInsn(INVOKESTATIC, "java/lang/Short", "valueOf", "(S)Ljava/lang/Short;", false);
                 break;
             case Type.ARRAY:
             case Type.OBJECT:
@@ -1260,7 +1260,7 @@ public abstract class AbstractRasMethodAdapter<C extends AbstractRasClassAdapter
                                INVOKESTATIC,
                                Type.getInternalName(Class.class),
                                "forName",
-                               Type.getMethodDescriptor(Type.getType(Class.class), new Type[] { Type.getType(String.class) }));
+                               Type.getMethodDescriptor(Type.getType(Class.class), new Type[] { Type.getType(String.class) }), false);
         }
     }
 
