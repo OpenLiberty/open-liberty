@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corporation and others.
+H* Copyright (c) 2017 IBM Corporation and others.
 *
 * All rights reserved. This program and the accompanying materials
 * are made available under the terms of the Eclipse Public License v1.0
@@ -30,6 +30,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ConcurrentMap;
 
 import javax.enterprise.inject.Vetoed;
@@ -91,6 +92,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     private final ConcurrentMap<String, Metric> metrics;
     private final ConcurrentMap<String, Metadata> metadata;
+    private final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
 
     /**
      * Creates a new {@link MetricRegistry}.
@@ -100,6 +102,8 @@ public class MetricRegistryImpl extends MetricRegistry {
 
         //initializing metadata in a separate list
         this.metadata = new ConcurrentHashMap<String, Metadata>();
+
+        this.applicationMap = new ConcurrentHashMap<String, ConcurrentLinkedQueue<String>>();
     }
 
     /**
@@ -123,16 +127,8 @@ public class MetricRegistryImpl extends MetricRegistry {
      * @throws IllegalArgumentException if the name is already registered
      */
     @Override
-    @SuppressWarnings("unchecked")
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
-
-        final Metric existing = metrics.putIfAbsent(name, metric);
-        this.metadata.putIfAbsent(name, new Metadata(name, MetricType.from(metric.getClass())));
-        if (existing == null) {
-        } else {
-            throw new IllegalArgumentException("A metric named " + name + " already exists");
-        }
-        return metric;
+        return register(name, metric, new Metadata(name, MetricType.from(metric.getClass())));
     }
 
     @Override
@@ -144,7 +140,51 @@ public class MetricRegistryImpl extends MetricRegistry {
         } else {
             throw new IllegalArgumentException("A metric named " + name + " already exists");
         }
+        addNameToApplicationMap(name);
         return metric;
+    }
+
+    /**
+     * Adds the metric name to an application map.
+     * This map is not a complete list of metrics owned by an application,
+     * produced metrics are managed in the MetricsExtension
+     *
+     * @param name
+     */
+    private void addNameToApplicationMap(String name) {
+        String appName = getApplicationName();
+
+        // If it is a base metric, the name will be null
+        if (appName == null)
+            return;
+        ConcurrentLinkedQueue<String> list = applicationMap.get(appName);
+        if (list == null) {
+            ConcurrentLinkedQueue<String> newList = new ConcurrentLinkedQueue<String>();
+            list = applicationMap.putIfAbsent(appName, newList);
+            if (list == null)
+                list = newList;
+        }
+        list.add(name);
+    }
+
+    public void unRegisterApplicationMetrics(String appName) {
+        ConcurrentLinkedQueue<String> list = applicationMap.remove(appName);
+        if (list != null) {
+            for (String metricName : list) {
+                remove(metricName);
+            }
+        }
+    }
+
+    private String getApplicationName() {
+        com.ibm.ws.runtime.metadata.ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (metaData != null) {
+            com.ibm.websphere.csi.J2EEName name = metaData.getJ2EEName();
+            if (name != null) {
+                return name.getApplication();
+            }
+        }
+        return null;
     }
 
     /**
@@ -161,31 +201,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     @Override
     public Counter counter(Metadata metadata) {
-        Counter counter = getOrAdd(metadata.getName(), MetricBuilder.COUNTERS);
-        this.metadata.put(metadata.getName(), metadata);
-        return counter;
-    }
-
-    /**
-     * Return the {@link Counter} registered under this name; or create and register
-     * a new {@link Counter} using the provided MetricSupplier if none is registered.
-     *
-     * @param name the name of the metric
-     * @param supplier a MetricSupplier that can be used to manufacture a counter.
-     * @return a new or pre-existing {@link Counter}
-     */
-    Counter counter(String name, final MetricSupplier<Counter> supplier) {
-        return getOrAdd(name, new MetricBuilder<Counter>() {
-            @Override
-            public Counter newMetric() {
-                return supplier.newMetric();
-            }
-
-            @Override
-            public boolean isInstance(Metric metric) {
-                return Counter.class.isInstance(metric);
-            }
-        });
+        return getOrAdd(metadata, MetricBuilder.COUNTERS);
     }
 
     /**
@@ -202,31 +218,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     @Override
     public Histogram histogram(Metadata metadata) {
-        Histogram histogram = getOrAdd(metadata.getName(), MetricBuilder.HISTOGRAMS);
-        this.metadata.put(metadata.getName(), metadata);
-        return histogram;
-    }
-
-    /**
-     * Return the {@link Histogram} registered under this name; or create and register
-     * a new {@link Histogram} using the provided MetricSupplier if none is registered.
-     *
-     * @param name the name of the metric
-     * @param supplier a MetricSupplier that can be used to manufacture a histogram
-     * @return a new or pre-existing {@link Histogram}
-     */
-    Histogram histogram(String name, final MetricSupplier<Histogram> supplier) {
-        return getOrAdd(name, new MetricBuilder<Histogram>() {
-            @Override
-            public Histogram newMetric() {
-                return supplier.newMetric();
-            }
-
-            @Override
-            public boolean isInstance(Metric metric) {
-                return Histogram.class.isInstance(metric);
-            }
-        });
+        return getOrAdd(metadata, MetricBuilder.HISTOGRAMS);
     }
 
     /**
@@ -243,31 +235,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     @Override
     public Meter meter(Metadata metadata) {
-        Meter meter = getOrAdd(metadata.getName(), MetricBuilder.METERS);
-        this.metadata.put(metadata.getName(), metadata);
-        return meter;
-    }
-
-    /**
-     * Return the {@link Meter} registered under this name; or create and register
-     * a new {@link Meter} using the provided MetricSupplier if none is registered.
-     *
-     * @param name the name of the metric
-     * @param supplier a MetricSupplier that can be used to manufacture a Meter
-     * @return a new or pre-existing {@link Meter}
-     */
-    Meter meter(String name, final MetricSupplier<Meter> supplier) {
-        return getOrAdd(name, new MetricBuilder<Meter>() {
-            @Override
-            public Meter newMetric() {
-                return supplier.newMetric();
-            }
-
-            @Override
-            public boolean isInstance(Metric metric) {
-                return Meter.class.isInstance(metric);
-            }
-        });
+        return getOrAdd(metadata, MetricBuilder.METERS);
     }
 
     /**
@@ -284,53 +252,7 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     @Override
     public Timer timer(Metadata metadata) {
-        Timer timer = getOrAdd(metadata.getName(), MetricBuilder.TIMERS);
-        this.metadata.put(metadata.getName(), metadata);
-        return timer;
-    }
-
-    /**
-     * Return the {@link Timer} registered under this name; or create and register
-     * a new {@link Timer} using the provided MetricSupplier if none is registered.
-     *
-     * @param name the name of the metric
-     * @param supplier a MetricSupplier that can be used to manufacture a Timer
-     * @return a new or pre-existing {@link Timer}
-     */
-    Timer timer(String name, final MetricSupplier<Timer> supplier) {
-        return getOrAdd(name, new MetricBuilder<Timer>() {
-            @Override
-            public Timer newMetric() {
-                return supplier.newMetric();
-            }
-
-            @Override
-            public boolean isInstance(Metric metric) {
-                return Timer.class.isInstance(metric);
-            }
-        });
-    }
-
-    /**
-     * Return the {@link Gauge} registered under this name; or create and register
-     * a new {@link Gauge} using the provided MetricSupplier if none is registered.
-     *
-     * @param name the name of the metric
-     * @param supplier a MetricSupplier that can be used to manufacture a Gauge
-     * @return a new or pre-existing {@link Gauge}
-     */
-    Gauge gauge(String name, final MetricSupplier<Gauge> supplier) {
-        return getOrAdd(name, new MetricBuilder<Gauge>() {
-            @Override
-            public Gauge newMetric() {
-                return supplier.newMetric();
-            }
-
-            @Override
-            public boolean isInstance(Metric metric) {
-                return Gauge.class.isInstance(metric);
-            }
-        });
+        return getOrAdd(metadata, MetricBuilder.TIMERS);
     }
 
     /**
@@ -481,21 +403,21 @@ public class MetricRegistryImpl extends MetricRegistry {
     }
 
     @SuppressWarnings("unchecked")
-    private <T extends Metric> T getOrAdd(String name, MetricBuilder<T> builder) {
-        final Metric metric = metrics.get(name);
+    private <T extends Metric> T getOrAdd(Metadata metadata, MetricBuilder<T> builder) {
+        final Metric metric = metrics.get(metadata.getName());
         if (builder.isInstance(metric)) {
             return (T) metric;
         } else if (metric == null) {
             try {
-                return register(name, builder.newMetric());
+                return register(metadata.getName(), builder.newMetric(), metadata);
             } catch (IllegalArgumentException e) {
-                final Metric added = metrics.get(name);
+                final Metric added = metrics.get(metadata.getName());
                 if (builder.isInstance(added)) {
                     return (T) added;
                 }
             }
         }
-        throw new IllegalArgumentException(name + " is already used for a different type of metric");
+        throw new IllegalArgumentException(metadata.getName() + " is already used for a different type of metric");
     }
 
     @SuppressWarnings("unchecked")
@@ -522,10 +444,6 @@ public class MetricRegistryImpl extends MetricRegistry {
 
     public Metadata getMetadata(String name) {
         return metadata.get(name);
-    }
-
-    interface MetricSupplier<T extends Metric> {
-        T newMetric();
     }
 
     /**
