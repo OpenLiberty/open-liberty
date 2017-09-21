@@ -1,0 +1,18 @@
+<server description="openTracingServer">
+
+  <featureManager>
+    <feature>servlet-3.1</feature>
+    <feature>opentracing-1.0</feature> 
+    <feature>opentracingMock-0.30</feature>
+    <feature>componenttest-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <application location="serviceApp.war">
+    <classloader apiTypeVisibility="spec, ibm-api, third-party"/>
+  </application>
+
+  <logging traceSpecification="*=audit:com.ibm.ws.opentracing.*=all"/>
+
+</server>

@@ -11,7 +11,6 @@
 
 package com.ibm.ws.opentracing.mock;
 
-import java.util.List;
 import java.util.Map;
 
 import io.opentracing.ActiveSpan;
@@ -24,83 +23,136 @@ import io.opentracing.mock.MockTracer.Propagator;
 import io.opentracing.propagation.Format;
 import io.opentracing.util.ThreadLocalActiveSpanSource;
 
+/**
+ * <p>Open liberty mock tracer implementation.</p>
+ *
+ * <p>This tracer implementation provides two key functions:</p>
+ *
+ * <p>This tracer wraps a {@link MockTracer}, to which all tracer operations
+ * are forwarded.</p>
+ *
+ * <p>This tracer provides an implementation of {@link #toString} which places
+ * details of spans managed by the wrapped tracer.  These details are provided
+ * through {@link #toString} so to provide access to span details without adding
+ * a new API.</p>
+ */
 public class OpentracingMockTracer implements Tracer {
-    MockTracer tracer;
+    /** <p>Mock tracer wrapped by this tracer.</p> */
+    private final MockTracer tracer;
 
-    public OpentracingMockTracer() {
-        tracer = new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
+    /**
+     * <p>Answer the tracer wrapped by this mock tracer.</p>
+     *
+     * @return The traccer wrapped by this tracer.
+     */
+    private MockTracer getTracer() {
+        return tracer;
     }
+
+    /**
+     * <p>Create and return a new mock tracer.</p>
+     *
+     * <p>This implementation wraps an instance of {@link MockTracer}.</p>
+     */
+    public OpentracingMockTracer() {
+        this.tracer = new MockTracer(new ThreadLocalActiveSpanSource(), Propagator.TEXT_MAP);
+        System.out.println("OpentracingMockTracer.<init>");
+    }
+
+    // Tracer pass-throughs.
+    //
+    // 'finishedSpans' is an operation on MockTracer, not on Tracer, and is not implemented as a
+    // pass through.
 
     /** {@inheritDoc} */
     @Override
     public ActiveSpan activeSpan() {
-        ActiveSpan active = tracer.activeSpan();
+        ActiveSpan activeSpan = getTracer().activeSpan();
         long threadId = Thread.currentThread().getId();
-        System.out.println("OpentracingMockTracer.activeSpan Thread:" + threadId + " Span = " + active);
+        System.out.println("OpentracingMockTracer.activeSpan Thread = " + threadId + " Span = " + activeSpan);
+        return activeSpan;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ActiveSpan makeActive(Span span) {
+        long threadId = Thread.currentThread().getId();
+        System.out.println("OpentracingMockTracer.makeActive Thread = " + threadId + " Span = " + span);
+        ActiveSpan active = getTracer().makeActive(span);
+        System.out.println("OpentracingMockTracer.makeActive Thread = " + threadId + " ActiveSpan = " + active);
         return active;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ActiveSpan makeActive(Span arg0) {
+    public SpanBuilder buildSpan(String operationName) {
         long threadId = Thread.currentThread().getId();
-        System.out.println("OpentracingMockTracer.makeActive Thread:" + threadId + " Span = " + arg0);
-        ActiveSpan active = tracer.makeActive(arg0);
-        System.out.println("OpentracingMockTracer.makeActive Thread:" + threadId + " ActiveSpan = " + arg0);
-        return active;
+        System.out.println("OpentracingMockTracer.buildSpan Thread = " + threadId + " OperationName = " + operationName);
+        return getTracer().buildSpan(operationName);
     }
 
     /** {@inheritDoc} */
     @Override
-    public SpanBuilder buildSpan(String arg0) {
+    public <C> SpanContext extract(Format<C> format, C carrier) {
         long threadId = Thread.currentThread().getId();
-        System.out.println("OpentracingMockTracer.buildSpan Thread:" + threadId + " name = " + arg0);
-        return tracer.buildSpan(arg0);
+        System.out.println("OpentracingMockTracer.extract Thread = " + threadId);
+        return getTracer().extract(format, carrier);
     }
 
     /** {@inheritDoc} */
     @Override
-    public <C> SpanContext extract(Format<C> arg0, C arg1) {
+    public <C> void inject(SpanContext spanContext, Format<C> format, C carrier) {
         long threadId = Thread.currentThread().getId();
-        System.out.println("OpentracingMockTracer.extract Thread:" + threadId);
-        return tracer.extract(arg0, arg1);
+        System.out.println("OpentracingMockTracer.inject Thread = " + threadId + " SpanContext = " + spanContext);
+        getTracer().inject(spanContext, format, carrier);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public <C> void inject(SpanContext arg0, Format<C> arg1, C arg2) {
-        long threadId = Thread.currentThread().getId();
-        System.out.println("OpentracingMockTracer.inject Thread:" + threadId + " SpanContext = " + arg0);
-        tracer.inject(arg0, arg1, arg2);
-    }
+    //
 
-    /** {@inheritDoc} */
+    /**
+     * <p>Subclass re-implementation: Implement to answer a JSON formatted list of
+     * the finished spans of the wrapped tracer.</p>
+     *
+     * @return A print string for this mock tracer.  This implementation
+     *     emits a JSON formatted list of the finished spans.
+     */
     @Override
     public String toString() {
-        String result = "[";
-        List<MockSpan> finishedSpans = tracer.finishedSpans();
+        StringBuilder result = new StringBuilder("{ ");
+
+        result.append("\"completedSpans\": [");
+
         String elementPrefix = "\n  ";
-        for (MockSpan finishedSpan : finishedSpans) {
-            Long elapsed = finishedSpan.finishMicros() - finishedSpan.startMicros();
-            result += elementPrefix + "{ " +
-                      "\"traceID\":\"" + finishedSpan.context().traceId() + "\", " +
-                      "\"parentID\":\"" + finishedSpan.parentId() + "\", " +
-                      "\"spanID\":\"" + finishedSpan.context().spanId() + "\", " +
-                      "\"operationName\":\"" + finishedSpan.operationName() + "\", " +
-                      "\"startTime\":\"" + finishedSpan.startMicros() + "\", " +
-                      "\"finishTime\":\"" + finishedSpan.finishMicros() + "\", " +
-                      "\"elapsedTime\":\"" + elapsed + "\", ";
-            result += "\"Tags\": {";
-            Map<String, Object> tags = finishedSpan.tags();
-            String tagPrefix = "";
-            for (String tag : tags.keySet()) {
-                result += tagPrefix + "\"" + tag + "\":\"" + tags.get(tag) + "\"";
+        for ( MockSpan finishedSpan : getTracer().finishedSpans() ) {
+            long elapsedMicros = finishedSpan.finishMicros() - finishedSpan.startMicros();
+            result.append(elementPrefix);
+            result.append("{ ");
+            result.append("\"traceId\": \"" + finishedSpan.context().traceId() + "\", ");
+            result.append("\"parentId\": \"" + finishedSpan.parentId() + "\", ");
+            result.append("\"spanId\": \"" + finishedSpan.context().spanId() + "\", ");
+            result.append("\"operation\": \"" + finishedSpan.operationName() + "\", ");
+            result.append("\"start\": " + Long.toString(finishedSpan.startMicros()) + ", ");
+            result.append("\"finish\": " + Long.toString(finishedSpan.finishMicros()) + ", ");
+            result.append("\"elapsed\": " + Long.toString(elapsedMicros) + ", ");
+
+            result.append("\"tags\": {");
+            String tagPrefix = " ";
+            for ( Map.Entry<String, Object> tagEntry : finishedSpan.tags().entrySet() ) {
+                result.append(tagPrefix);
+                result.append("\"" + tagEntry.getKey() + "\": \"" + tagEntry.getValue() + "\"");
                 tagPrefix = ", ";
             }
-            result += "}}";
+            result.append(" }");
+
+            result.append(" }");
+
             elementPrefix = ",\n  ";
         }
-        result = result + "\n]\n";
-        return result;
+
+        result.append(" ]");
+
+        result.append(" }");
+
+        return result.toString();
     }
 }
