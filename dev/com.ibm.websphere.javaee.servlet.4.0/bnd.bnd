@@ -20,9 +20,8 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	com.ibm.ws.internal.prereq.java:java.ibmjgssprovider;strategy=exact;version=1.8.0,\
-    lib/com.ibm.ws.javaee.servlet.4.0.jar;version=file,\
-    lib/com.ibm.ws.javax.servlet.resources_4.0.jar;version=file,\
+	com.ibm.ws.javaee.servlet.3.1;version=1.0.10.201509101149,\
+	com.ibm.ws.javax.j2ee:servlet.resources;version=3.1, \
     com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
