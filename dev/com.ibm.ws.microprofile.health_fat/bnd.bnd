@@ -20,7 +20,7 @@ src: \
 	test-applications/HealthCheckNoAPIImplApp/src, \
 	test-applications/HealthCheckNoAnnotationApp/src, \
 	test-applications/HealthCheckExceptionApp/src, \
-	test-applications/HealthCheckNoCDIFat/src
+	test-applications/HealthCheckNoCDIApp/src
 	
 javac.source: 1.8
 javac.target: 1.8

@@ -67,6 +67,7 @@ public class NoHealthCheckAPIImplTest {
         if (!server1.isStarted()) {
             server1.startServer();
         }
+        server1.waitForStringInLog("CWWKT0016I: Web application available.*health*");
     }
 
     @AfterClass
