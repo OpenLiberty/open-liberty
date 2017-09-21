@@ -13,6 +13,8 @@ package com.ibm.ws.microprofile.metrics;
 import java.util.Arrays;
 import java.util.List;
 
+import org.eclipse.microprofile.metrics.MetricRegistry;
+
 /**
  *
  */
@@ -37,10 +39,7 @@ public class Constants {
     public final static String ATTRIBUTE = "attribute";
 
     // Registry Names
-    public final static String BASE = "base";
-    public final static String VENDOR = "vendor";
-    public final static String APPLICATION = "application";
-    private final static String[] REGISTRY_NAMES_ARRAY = { BASE, VENDOR, APPLICATION };
+    private final static String[] REGISTRY_NAMES_ARRAY = { MetricRegistry.Type.BASE.getName(), MetricRegistry.Type.VENDOR.getName(), MetricRegistry.Type.APPLICATION.getName() };
     public final static List<String> REGISTRY_NAMES_LIST = Arrays.asList(REGISTRY_NAMES_ARRAY);
 
     // Dropwizard Histogram, Meter, or Timer Constants
