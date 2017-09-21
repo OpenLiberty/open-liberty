@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ public class WebContainerMonitor {
         //Following line with add traditional PMI support
         //If we don't add WebAppMonitorListener to Global Listener, PMI WebAppModule wouldn't work
         if(!PmiRegistry.isDisabled()){
-            WebContainer.addGlobalListener("com.ibm.ws.webcontainer.WebAppMonitorListener");
+            WebContainer.addGlobalListener("com.ibm.ws.webcontainer.monitor.WebAppMonitorListener");
         }
     }
 
