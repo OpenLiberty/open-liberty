@@ -26,11 +26,11 @@ public class TraceOptionsAnnotationVisitor extends AnnotationVisitor {
     protected boolean traceExceptionHandling;
 
     public TraceOptionsAnnotationVisitor() {
-        super(Opcodes.ASM4);
+        super(Opcodes.ASM5);
     }
 
     public TraceOptionsAnnotationVisitor(AnnotationVisitor av) {
-        super(Opcodes.ASM4, av);
+        super(Opcodes.ASM5, av);
     }
 
     @Override
@@ -62,7 +62,7 @@ public class TraceOptionsAnnotationVisitor extends AnnotationVisitor {
     private final class TraceGroupsValueArrayVisitor extends AnnotationVisitor {
 
         private TraceGroupsValueArrayVisitor(AnnotationVisitor av) {
-            super(Opcodes.ASM4, av);
+            super(Opcodes.ASM5, av);
         }
 
         @Override

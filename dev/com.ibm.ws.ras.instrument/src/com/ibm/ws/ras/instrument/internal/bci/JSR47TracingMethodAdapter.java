@@ -41,7 +41,7 @@ public class JSR47TracingMethodAdapter extends AbstractRasMethodAdapter<Abstract
                         INVOKEVIRTUAL,
                         "java/util/logging/Logger",
                         "entering",
-                        "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V");
+                        "(Ljava/lang/String;Ljava/lang/String;[Ljava/lang/Object;)V", false);
 
         visitLabel(skipTraceLabel);
         return true;
@@ -71,7 +71,7 @@ public class JSR47TracingMethodAdapter extends AbstractRasMethodAdapter<Abstract
                             INVOKEVIRTUAL,
                             "java/util/logging/Logger",
                             "exiting",
-                            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V");
+                            "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Object;)V", false);
         } else {
             visitGetTraceObjectField();
             visitLoadClassName();
@@ -80,7 +80,7 @@ public class JSR47TracingMethodAdapter extends AbstractRasMethodAdapter<Abstract
                             INVOKEVIRTUAL,
                             "java/util/logging/Logger",
                             "exiting",
-                            "(Ljava/lang/String;Ljava/lang/String;)V");
+                            "(Ljava/lang/String;Ljava/lang/String;)V", false);
         }
 
         visitLabel(skipTraceLabel);
@@ -110,7 +110,7 @@ public class JSR47TracingMethodAdapter extends AbstractRasMethodAdapter<Abstract
                         INVOKEVIRTUAL,
                         "java/util/logging/Logger",
                         "throwing",
-                        "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V");
+                        "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V", false);
 
         visitLabel(skipTraceLabel);
         return true;
@@ -147,7 +147,7 @@ public class JSR47TracingMethodAdapter extends AbstractRasMethodAdapter<Abstract
                         INVOKEVIRTUAL,
                         "java/util/logging/Logger",
                         "logp",
-                        "(Ljava/util/logging/Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V");
+                        "(Ljava/util/logging/Level;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Throwable;)V", false);
 
         visitLabel(skipTraceLabel);
         return true;
@@ -164,7 +164,7 @@ public class JSR47TracingMethodAdapter extends AbstractRasMethodAdapter<Abstract
                         INVOKESTATIC,
                         "java/util/logging/Logger",
                         "getLogger",
-                        "(Ljava/lang/String;)Ljava/util/logging/Logger;");
+                        "(Ljava/lang/String;)Ljava/util/logging/Logger;", false);
         visitSetTraceObjectField();
 
         // Liberty doesn't currently have the WsLogger or LoggerHelper implementations
@@ -215,7 +215,7 @@ public class JSR47TracingMethodAdapter extends AbstractRasMethodAdapter<Abstract
 
         visitGetTraceObjectField();
         visitGetLoggingLevel(levelName);
-        visitMethodInsn(INVOKEVIRTUAL, "java/util/logging/Logger", "isLoggable", "(Ljava/util/logging/Level;)Z");
+        visitMethodInsn(INVOKEVIRTUAL, "java/util/logging/Logger", "isLoggable", "(Ljava/util/logging/Level;)Z", false);
         visitJumpInsn(IFEQ, skipTraceLabel);
     }
 }
