@@ -1,0 +1,502 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 1997-2012
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+#CMVCPATHNAME com.ibm.ws.session.db/resources/com/ibm/ws/session/db/resources/WASSession.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.invalidateError=SESN0015E: \u903e\u6642\u968e\u6bb5\u4f5c\u696d\u7684\u8cc7\u6599\u5eab\u5931\u6548\u9047\u5230\u932f\u8aa4\u3002
+DatabaseHashMap.invalidateError.explanation=\u4f7f\u903e\u6642\u8cc7\u6599\u5eab\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.invalidateError.useraction=\u5982\u679c\u767c\u751f SQLException\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.performInvalidationError=SESN0016E: \u903e\u6642\u968e\u6bb5\u4f5c\u696d\u7684\u8cc7\u6599\u5eab\u5931\u6548\u9047\u5230\u932f\u8aa4\u3002
+DatabaseHashMap.performInvalidationError.explanation=\u4f7f\u903e\u6642\u8cc7\u6599\u5eab\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.performInvalidationError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.checkMinimumInvalidationError=SESN0019E: \u968e\u6bb5\u4f5c\u696d\u903e\u6642\u503c\u975e\u81f3\u5c11\u70ba\u6642\u9593\u578b\u5beb\u5165\u9593\u9694\u7684\u4e09\u500d\u3002
+WsSessionContext.checkMinimumInvalidationError.explanation=\u4f7f\u7528\u6642\u9593\u578b\u5beb\u5165\u6642\uff0c\u968e\u6bb5\u4f5c\u696d\u903e\u6642\u503c\u5fc5\u9808\u81f3\u5c11\u70ba\u5beb\u5165\u9593\u9694\u7684\u4e09\u500d\u3002\u968e\u6bb5\u4f5c\u696d\u903e\u6642\u503c\u66ab\u6642\u5f97\u5230\u66f4\u6b63\u3002
+WsSessionContext.checkMinimumInvalidationError.useraction=\u8acb\u66f4\u65b0\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u914d\u7f6e\u503c\uff0c\u4f7f\u968e\u6bb5\u4f5c\u696d\u903e\u6642\u503c\u81f3\u5c11\u662f\u6642\u9593\u578b\u5beb\u5165\u9593\u9694\u7684\u4e09\u500d\u3002
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.checkListErr=SESN0026E: \u8655\u7406\u8cc7\u6599\u5eab\u6240\u5132\u5b58\u7684 HttpSessionBindingListeners \u6642\uff0c\u767c\u751f\u554f\u984c\u3002
+DatabaseHashMapMR.checkListErr.explanation=\u8655\u7406\u8cc7\u6599\u5eab\u6240\u5132\u5b58\u7684 HttpSessionBindingListeners \u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMapMR.checkListErr.useraction=\u5982\u679c\u767c\u751f SQLException\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHandleErr=SESN0028E: \u5229\u7528 EJB \u63a7\u9ede\u53d6\u5f97 EJB \u7269\u4ef6\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u5148\u524d\u5df2\u5c07 EJBObject \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5f9e EJB \u63a7\u9ede\u767c\u51fa getEJBObject \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.convertObjectHandleErr.explanation=\u5229\u7528 EJB \u63a7\u9ede\u53d6\u5f97 Enterprise Bean (EJB) \u7269\u4ef6\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u5148\u524d\u5df2\u5c07 EJBObject \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5f9e\u63a7\u9ede\u767c\u51fa getEJBObject \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.convertObjectHandleErr.useraction=\u8acb\u53c3\u95b1 EJB \u6587\u4ef6\u3002
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHomeErr=SESN0029E: \u5229\u7528 EJB Home \u63a7\u9ede\u53d6\u5f97 EJB Home \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u5148\u524d\u5df2\u5c07 EJBHome \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5f9e\u63a7\u9ede\u767c\u51fa getEJBHome \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.convertObjectHomeErr.explanation=\u5229\u7528 EJB Home \u63a7\u9ede\u53d6\u5f97 Enterprise Bean (EJB) Home \u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u5148\u524d\u5df2\u5c07 EJBHome \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5f9e\u63a7\u9ede\u767c\u51fa getEJBHome \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.convertObjectHomeErr.useraction=\u8acb\u53c3\u95b1 EJB \u6587\u4ef6\u3002
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectContextErr=SESN0030E: \u5230\u9054\u8d77\u59cb\u74b0\u5883\u5b9a\u7fa9\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u5148\u524d\u5df2\u5c07 InitialContext \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5728\u91cd\u65b0\u5efa\u69cb javax.naming.InitialContext \u6642\uff0c\u767c\u751f NamingException\u3002
+BackedSession.convertObjectContextErr.explanation=\u5230\u9054\u8d77\u59cb\u74b0\u5883\u5b9a\u7fa9\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u5148\u524d\u5df2\u5c07 InitialContext \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5728\u91cd\u65b0\u5efa\u69cb javax.naming.InitialContext \u6642\uff0c\u767c\u751f NamingException\u3002
+BackedSession.convertObjectContextErr.useraction=\u6709\u95dc\u932f\u8aa4\u8a0a\u606f\u8acb\u53c3\u95b1\u540d\u7a31\u4f3a\u670d\u5668\u6587\u4ef6\u3002
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHandleErr=SESN0031E: \u53d6\u5f97 EJB Home \u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u5df2\u5c07 EJBHome \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5728\u767c\u51fa getHomeHandle \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.putValueGutsHandleErr.explanation=\u53d6\u5f97 EJB Home \u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u5df2\u5c07 EJBHome \u65b0\u589e\u81f3\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5728\u767c\u51fa getHomeHandle \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.putValueGutsHandleErr.useraction=\u8acb\u53c3\u95b1 EJB \u6587\u4ef6\u3002
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHomeErr=SESN0032E: \u53d6\u5f97 EJB \u63a7\u9ede\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002\u5df2\u5c07 EJBObject \u653e\u5230\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5728\u767c\u51fa getHandle \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.putValueGutsHomeErr.explanation=\u53d6\u5f97 EJB \u63a7\u9ede\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u5df2\u5c07 EJBObject \u653e\u5230\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002\u5728\u767c\u51fa getHandle \u65b9\u6cd5\u6642\uff0c\u767c\u751f RemoteException\u3002
+BackedSession.putValueGutsHomeErr.useraction=\u8acb\u53c3\u95b1 EJB \u6587\u4ef6\u3002
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsContextErr=SESN0033E: \u5df2\u5c07 javax.naming.Context \u653e\u5165\u968e\u6bb5\u4f5c\u696d\u4e2d\uff0c\u4f46\u767c\u51fa getEnvironment()on javax.naming.Context \u6642\uff0c\u767c\u751fRemoteException\u3002
+BackedSession.putValueGutsContextErr.explanation=\u5df2\u5c07 javax.naming.Context \u653e\u5165\u968e\u6bb5\u4f5c\u696d\u4e2d\uff0c\u4f46\u767c\u51fa getEnvironment()on javax.naming.Context \u6642\uff0c\u767c\u751fRemoteException\u3002
+BackedSession.putValueGutsContextErr.useraction=\u6709\u95dc\u932f\u8aa4\u8a0a\u606f\u8acb\u53c3\u95b1\u540d\u7a31\u4f3a\u670d\u5668\u6587\u4ef6\u3002
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.getSwappableListenersErr=SESN0034E: \u8a66\u5716\u5f9e\u8cc7\u6599\u5eab\u53d6\u6d88\u67d0\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u7684\u5e8f\u5217\u5316\u6642\uff0c\u9020\u6210 ClassNotFoundException\u3002\u8981\u89e3\u9664\u5e8f\u5217\u5316\u7684\u7269\u4ef6\u5fc5\u9808\u5728\u53ef\u5b58\u53d6\u968e\u6bb5\u4f5c\u696d\u7684\u6240\u6709 JVM \u7684\u985e\u5225\u8def\u5f91\u4e2d\u3002
+DatabaseHashMapMR.getSwappableListenersErr.explanation=\u8a66\u5716\u5f9e\u8cc7\u6599\u5eab\u53d6\u6d88\u67d0\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u7684\u5e8f\u5217\u5316\u6642\uff0c\u9020\u6210 ClassNotFoundException\u3002\u8981\u89e3\u9664\u5e8f\u5217\u5316\u7684\u7269\u4ef6\u5fc5\u9808\u5728\u53ef\u5b58\u53d6\u968e\u6bb5\u4f5c\u696d\u7684\u6240\u6709 JVM \u7684\u985e\u5225\u8def\u5f91\u4e2d\u3002
+DatabaseHashMapMR.getSwappableListenersErr.useraction=\u8acb\u66f4\u65b0\u985e\u5225\u8def\u5f91\uff0c\u4f7f\u89e3\u9664\u5e8f\u5217\u5316\u7684\u5c6c\u6027\u51fa\u73fe\u5728\u61c9\u7528\u7a0b\u5f0f\u7684\u985e\u5225\u8def\u5f91\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.removeSessionsError=SESN0035E: \u5617\u8a66\u5f9e\u8cc7\u6599\u5eab\u79fb\u9664\u968e\u6bb5\u4f5c\u696d\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.removeSessionsError.explanation=\u5617\u8a66\u5f9e\u8cc7\u6599\u5eab\u79fb\u9664\u968e\u6bb5\u4f5c\u696d\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.removeSessionsError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.doInvalidationsError=SESN0036E: \u5617\u8a66\u4f7f\u8cc7\u6599\u5eab\u4e2d\u7684\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.doInvalidationsError.explanation=\u5617\u8a66\u4f7f\u8cc7\u6599\u5eab\u4e2d\u7684\u968e\u6bb5\u4f5c\u696d\u5931\u6548\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.doInvalidationsError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.pollForInvalidsError=SESN0037E: \u5617\u8a66\u8f2a\u8a62\u8cc7\u6599\u5eab\u4e2d\u7684\u7121\u6548\u968e\u6bb5\u4f5c\u696d\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.pollForInvalidsError.explanation=\u5617\u8a66\u8f2a\u8a62\u8cc7\u6599\u5eab\u4e2d\u7684\u7121\u6548\u968e\u6bb5\u4f5c\u696d\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.pollForInvalidsError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getConnectionError=SESN0038E: \u5617\u8a66\u53d6\u5f97\u8cc7\u6599\u5eab\u9023\u7dda\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.getConnectionError.explanation=\u5617\u8a66\u53d6\u5f97\u8cc7\u6599\u5eab\u9023\u7dda\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.getConnectionError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectAndLockError=SESN0039E: \u767c\u751f\u8cc7\u6599\u5eab\u932f\u8aa4\u3002
+DatabaseHashMap.selectAndLockError.explanation=\u767c\u751f\u8cc7\u6599\u5eab\u932f\u8aa4\u3002
+DatabaseHashMap.selectAndLockError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.commonSetupError=SESN0040E: \u8a66\u5716\u5e8f\u5217\u5316\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u4f9b\u5f8c\u7e8c\u8cc7\u6599\u5eab\u5beb\u5165\u4f5c\u696d\u4f7f\u7528\u6642\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+DatabaseHashMap.commonSetupError.explanation=\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u53ef\u80fd\u56e0\u592a\u5927\u800c\u7121\u6cd5\u5e8f\u5217\u5316\u3002
+DatabaseHashMap.commonSetupError.useraction=\u8acb\u5728\u968e\u6bb5\u4f5c\u696d\u4e2d\u653e\u7f6e\u8f03\u5c11\u8cc7\u6599\uff0c\u6216\u8003\u616e\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u591a\u5217\u8cc7\u6599\u5eab\u6a21\u5f0f\u3002
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbStoreError=SESN0041E: \u5617\u8a66\u5728\u8cc7\u6599\u5eab\u4e2d\u5132\u5b58\u968e\u6bb5\u4f5c\u696d\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.ejbStoreError.explanation=\u5617\u8a66\u5728\u8cc7\u6599\u5eab\u4e2d\u5132\u5b58\u968e\u6bb5\u4f5c\u696d\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.ejbStoreError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbCreateError=SESN0042E: \u5617\u8a66\u5c07\u968e\u6bb5\u4f5c\u696d\u63d2\u5165\u8cc7\u6599\u5eab\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.ejbCreateError.explanation=\u5617\u8a66\u5c07\u968e\u6bb5\u4f5c\u696d\u63d2\u5165\u8cc7\u6599\u5eab\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.ejbCreateError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.dataSrcErr=SESN0043E: \u5617\u8a66\u53d6\u5f97\u5df2\u914d\u7f6e\u7684 DataSource \u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.dataSrcErr.explanation=\u5617\u8a66\u53d6\u5f97\u5df2\u914d\u7f6e\u7684\u8cc7\u6599\u4f86\u6e90\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.dataSrcErr.useraction=\u8acb\u78ba\u5b9a\u60a8\u5df2\u6b63\u78ba\u914d\u7f6e\u8cc7\u6599\u4f86\u6e90\u3002\u7576\u555f\u7528\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u6301\u7e8c\u6027\u6642\uff0c\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u914d\u7f6e\u5fc5\u9808\u542b\u6709\u6709\u6548\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getValueErrBH=SESN0044E: \u5f9e\u8cc7\u6599\u5eab\u4e2d\u8b80\u5165\u968e\u6bb5\u4f5c\u696d\u61c9\u7528\u7a0b\u5f0f\u8cc7\u6599\u7684\u7269\u4ef6\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+
+DatabaseHashMap.getValueErrBH.explanation=\u5f9e\u8cc7\u6599\u5eab\u4e2d\u8b80\u5165\u968e\u6bb5\u4f5c\u696d\u61c9\u7528\u7a0b\u5f0f\u8cc7\u6599\u7684\u7269\u4ef6\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+
+DatabaseHashMap.getValueErrBH.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.createTableError=SESN0047E: \u5617\u8a66\u8d77\u59cb\u8a2d\u5b9a\u8cc7\u6599\u5eab\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.createTableError.explanation=\u5617\u8a66\u8d77\u59cb\u8a2d\u5b9a\u8cc7\u6599\u5eab\u6642\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.createTableError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+BackedHashtable.classNotFoundError=SESN0051E: \u8a66\u5716\u5f9e\u5f8c\u7aef\u5c07\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u89e3\u9664\u5e8f\u5217\u5316\u6642\uff0c\u9020\u6210 ClassNotFoundException\u3002
+BackedHashtable.classNotFoundError.explanation=\u8a66\u5716\u5f9e\u5f8c\u7aef\u5c07\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u89e3\u9664\u5e8f\u5217\u5316\u6642\uff0c\u9020\u6210 ClassNotFoundException\u3002\u8981\u89e3\u9664\u5e8f\u5217\u5316\u7684\u7269\u4ef6\u5fc5\u9808\u5728\u53ef\u5b58\u53d6\u968e\u6bb5\u4f5c\u696d\u7684\u6240\u6709 JVM \u7684\u985e\u5225\u8def\u5f91\u4e2d\u3002
+BackedHashtable.classNotFoundError.useraction=\u8acb\u66f4\u65b0\u985e\u5225\u8def\u5f91\uff0c\u4f7f\u89e3\u9664\u5e8f\u5217\u5316\u7684\u5c6c\u6027\u51fa\u73fe\u5728\u61c9\u7528\u7a0b\u5f0f\u7684\u985e\u5225\u8def\u5f91\u4e2d\u3002
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.db2LongVarCharErr=SESN0055E: \u8a66\u5716\u5c07\u8d85\u51fa 2M \u7684\u8cc7\u6599\u5beb\u5165\u5927\u578b\u76f4\u6b04\u4e2d\u3002
+DatabaseHashMap.db2LongVarCharErr.explanation=\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u53ef\u80fd\u592a\u5927\uff0c\u7121\u6cd5\u586b\u5165\u8cc7\u6599\u5eab\u76f4\u6b04\u3002
+DatabaseHashMap.db2LongVarCharErr.useraction=\u8acb\u5728\u968e\u6bb5\u4f5c\u696d\u4e2d\u653e\u7f6e\u8f03\u5c11\u8cc7\u6599\uff0c\u6216\u8003\u616e\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u591a\u5217\u8cc7\u6599\u5eab\u6a21\u5f0f\u3002 
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.oracleGetValueError=SESN0056E: \u547c\u53eb getValue \u6216 getAttribute \u65b9\u6cd5\u4f86\u8b80\u53d6\u8cc7\u6599\u5eab\u4e2d\u7684\u503c\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+DatabaseHashMap.oracleGetValueError.explanation=\u547c\u53eb getValue \u6216 getAttribute \u65b9\u6cd5\u4f86\u8b80\u53d6\u8cc7\u6599\u5eab\u4e2d\u7684\u503c\u6642\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+DatabaseHashMap.oracleGetValueError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propHitErr=SESN0057E: \u5c07\u61c9\u7528\u7a0b\u5f0f\u8cc7\u6599\u8b8a\u66f4\u5132\u5b58\u5230\u8cc7\u6599\u5eab\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMapMR.propHitErr.explanation=\u5c07\u61c9\u7528\u7a0b\u5f0f\u8cc7\u6599\u8b8a\u66f4\u5132\u5b58\u5230\u8cc7\u6599\u5eab\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMapMR.propHitErr.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.handleAsyncError=SESN0062E: \u8a66\u5716\u4ee5\u968e\u6bb5\u4f5c\u696d\u6700\u5f8c\u5e7e\u6b21\u5b58\u53d6\u4f86\u66f4\u65b0\u8cc7\u6599\u5eab\u6642\uff0c\u5075\u6e2c\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+DatabaseHashMap.handleAsyncError.explanation=\u8a66\u5716\u4ee5\u968e\u6bb5\u4f5c\u696d\u6700\u5f8c\u5e7e\u6b21\u5b58\u53d6\u4f86\u66f4\u65b0\u8cc7\u6599\u5eab\u6642\uff0c\u5075\u6e2c\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+DatabaseHashMap.handleAsyncError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectNoUpdateError=SESN0063E: \u8a66\u5716\u5b58\u53d6\u8cc7\u6599\u5eab\u6642\uff0c\u5075\u6e2c\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+DatabaseHashMap.selectNoUpdateError.explanation=\u8a66\u5716\u5b58\u53d6\u8cc7\u6599\u5eab\u6642\uff0c\u5075\u6e2c\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+DatabaseHashMap.selectNoUpdateError.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: \u8a66\u5716\u5c07\u8d85\u51fa 2M \u7684\u8cc7\u6599\u5beb\u5165\u5927\u578b\u76f4\u6b04\u4e2d\u3002
+DatabaseHashMapMR.db2LongVarCharErr.explanation=\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u53ef\u80fd\u592a\u5927\uff0c\u7121\u6cd5\u586b\u5165\u8cc7\u6599\u5eab\u76f4\u6b04\u3002
+DatabaseHashMapMR.db2LongVarCharErr.useraction=\u8acb\u5148\u7e2e\u6e1b\u9019\u500b\u5c6c\u6027\u7684\u5927\u5c0f\uff0c\u518d\u5617\u8a66\u5c07\u5b83\u5132\u5b58\u5728\u968e\u6bb5\u4f5c\u696d\u4e2d\u3002
+
+
+ControllerSession.Initialized=SESN0126I: \u5df2\u9806\u5229\u8d77\u59cb\u8a2d\u5b9a {0} \u670d\u52d9\u3002
+ControllerSession.Initialized.explanation=\u5df2\u9806\u5229\u8d77\u59cb\u8a2d\u5b9a DRS \u4e2d\u7684 z/OS Controller Service for HttpSession \u652f\u63f4\u3002
+ControllerSession.Initialized.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CaughtException=SESN0127E: \u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\uff1a
+ControllerSession.CaughtException.explanation=\u5728\u6307\u5b9a\u7684\u65b9\u6cd5\u4e2d\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+ControllerSession.CaughtException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyException=SESN0128E: \u5efa\u7acb DRSControllerProxy \u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1a\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1
+
+ControllerSession.ProxyException.explanation=\u5728\u5efa\u7acb DRSControllerProxy \u6642\uff0c\u6307\u5b9a\u7684\u65b9\u6cd5\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+ControllerSession.ProxyException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyRefException=SESN0129E: \u5efa\u7acb DRSControllerProxy \u53c3\u7167\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1a\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1
+
+ControllerSession.ProxyRefException.explanation=\u5728\u5efa\u7acb DRSControllerProxy \u53c3\u7167\u6642\uff0c\u6307\u5b9a\u7684\u65b9\u6cd5\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+ControllerSession.ProxyRefException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullJoinHAGroup=SESN0130E: joinHAGroup \u50b3\u56de\u7a7a\u503c
+ControllerSession.NullJoinHAGroup.explanation=\u5728\u6307\u5b9a\u7684\u65b9\u6cd5\u4e2d\u547c\u53eb joinHAGroup\uff0c\u4f46\u50b3\u56de\u7a7a\u503c\u3002
+ControllerSession.NullJoinHAGroup.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CallbackException=SESN0131E: \u5728\u5efa\u7acb\u56de\u547c\u6642\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\uff1a
+
+ControllerSession.CallbackException.explanation=\u5728\u5efa\u7acb\u56de\u547c\u6642\uff0c\u6307\u5b9a\u7684\u65b9\u6cd5\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+ControllerSession.CallbackException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryKey=SESN0132E: \u50b3\u905e\u7684 entryKey = \u7a7a\u503c\uff1a\u5df2\u4e2d\u6b62\u5efa\u7acb\u9805\u76ee\u7684\u5617\u8a66\u3002
+ControllerSession.NullEntryKey.explanation=\u50b3\u905e\u4e86\u7a7a\u503c entryKey \u53c3\u6578\u7d66\u6307\u5b9a\u7684\u65b9\u6cd5\u3002\u4e2d\u6b62\u5617\u8a66\u5efa\u7acb\u9805\u76ee\u3002
+ControllerSession.NullEntryKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryValue=SESN0133E: \u50b3\u905e\u7684\u53c3\u6578\u503c = \u7a7a\u503c\uff1a\u5df2\u4e2d\u6b62\u5efa\u7acb\u9805\u76ee\u7684\u5617\u8a66\u3002
+ControllerSession.NullEntryValue.explanation=\u50b3\u905e\u7d66\u6307\u5b9a\u65b9\u6cd5\u7684\u503c\u53c3\u6578\u70ba\u4e00\u500b\u7a7a\u503c\u3002\u4e2d\u6b62\u5617\u8a66\u5efa\u7acb\u9805\u76ee\u3002
+ControllerSession.NullEntryValue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceRemException=SESN0134E: \u5728\u63a7\u5236\u5340\u57df\u4e2d\u5efa\u7acb DRS \u5be6\u4f8b\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1a\u6355\u6349\u5230\u9060\u7aef\u7570\u5e38\u72c0\u6cc1\uff1a
+
+ControllerSession.DRSInstanceRemException.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u5728\u63a7\u5236\u5340\u4e2d\u5efa\u7acb DRS \u5be6\u4f8b\u6642\uff0c\u6355\u6349\u5230\u9060\u7aef\u7570\u5e38\u72c0\u6cc1\u3002
+ControllerSession.DRSInstanceRemException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceException=SESN0135E: \u5728\u63a7\u5236\u5340\u57df\u4e2d\u5efa\u7acb DRS \u5be6\u4f8b\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1a\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\uff1a
+
+ControllerSession.DRSInstanceException.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u5728\u63a7\u5236\u5340\u4e2d\u5efa\u7acb DRS \u5be6\u4f8b\u6642\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+ControllerSession.DRSInstanceException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.SessContextGroupException=SESN0136E: \u5728\u63a7\u5236\u5340\u57df\u4e2d\u5efa\u7acb SessionContext \u7fa4\u7d44\u5be6\u4f8b\u6642\uff0c\u767c\u751f\u932f\u8aa4\uff1a\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\uff1a
+
+ControllerSession.SessContextGroupException.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u5728\u63a7\u5236\u5340\u4e2d\u5efa\u7acb SessionContext \u7fa4\u7d44\u5be6\u4f8b\u6642\uff0c\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+ControllerSession.SessContextGroupException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nulldbmParm=SESN0137E: DRSBootstrapMsg \u53c3\u6578 = \u7a7a\u503c\u3002
+ControllerSession.nulldbmParm.explanation=\u50b3\u905e\u7d66\u6307\u5b9a\u65b9\u6cd5\u7684 DRSBootstrapMsg \u53c3\u6578\u70ba\u4e00\u500b\u7a7a\u503c\u3002
+
+ControllerSession.nulldbmParm.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.Nullevent=SESN0138E: \u4e8b\u4ef6\u53c3\u6578 = \u7a7a\u503c\u3002
+ControllerSession.Nullevent.explanation=\u50b3\u905e\u7d66\u6307\u5b9a\u65b9\u6cd5\u7684\u4e8b\u4ef6\u53c3\u6578\u70ba\u4e00\u500b\u7a7a\u503c\u3002
+
+ControllerSession.Nullevent.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoProxy=SESN0139E: \u7121\u6cd5\u7372\u5f97\u8a18\u865f {0} \u7684 Proxy\u3002
+ControllerSession.NoProxy.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u7121\u6cd5\u53d6\u5f97\u6307\u5b9a\u8a18\u865f\u7684 Proxy\u3002
+
+ControllerSession.NoProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.TokenToBytes=SESN0140E: \u7121\u6cd5\u5c07\u8a18\u865f\u8f49\u63db\u6210\u4f4d\u5143\u7d44\u9663\u5217\uff1a\u8a18\u865f = {0}\u3002
+
+ControllerSession.TokenToBytes.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u7121\u6cd5\u5c07\u8a18\u865f\u8f49\u63db\u6210\u4f4d\u5143\u7d44\u9663\u5217\u3002
+
+ControllerSession.TokenToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventToBytes=SESN0141E: \u7121\u6cd5\u5c07\u4e8b\u4ef6 {0} \u8f49\u63db\u6210\u4f4d\u5143\u7d44\u9663\u5217\u3002
+
+ControllerSession.EventToBytes.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u7121\u6cd5\u5c07\u4e8b\u4ef6\u8f49\u63db\u6210\u4f4d\u5143\u7d44\u9663\u5217\u3002
+
+ControllerSession.EventToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONUP=SESN0142I: HttpSessDRSControllerVars DRS \u5be6\u4f8b {0} \u6536\u5230 REPLICATION_UP \u4e8b\u4ef6\u3002
+
+ControllerSession.EventREPLICATIONUP.explanation=\u6307\u5b9a\u7684 HttpSessDRSControllerVars DRS \u5be6\u4f8b\u6536\u5230 REPLICATION_UP \u4e8b\u4ef6\u3002
+
+ControllerSession.EventREPLICATIONUP.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONDOWN=SESN0143I: HttpSessDRSControllerVars DRS \u5be6\u4f8b {0} \u6536\u5230 REPLICATION_DOWN \u4e8b\u4ef6\u3002
+
+ControllerSession.EventREPLICATIONDOWN.explanation=\u6307\u5b9a\u7684 HttpSessDRSControllerVars DRS \u5be6\u4f8b\u6536\u5230 REPLICATION_DOWN \u4e8b\u4ef6\u3002
+
+ControllerSession.EventREPLICATIONDOWN.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventISCONGESTED=SESN0144I: HttpSessDRSControllerVars DRS \u5be6\u4f8b {0} \u6536\u5230 IS_CONGESTED \u4e8b\u4ef6\u3002
+
+ControllerSession.EventISCONGESTED.explanation=\u6307\u5b9a\u7684 HttpSessDRSControllerVars DRS \u5be6\u4f8b\u6536\u5230 IS_CONGESTED \u4e8b\u4ef6\u3002
+
+ControllerSession.EventISCONGESTED.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventNOTCONGESTED=SESN0145I: HttpSessDRSControllerVars DRS \u5be6\u4f8b {0} \u6536\u5230 NOT_CONGESTED \u4e8b\u4ef6\u3002
+
+ControllerSession.EventNOTCONGESTED.explanation=\u6307\u5b9a\u7684 HttpSessDRSControllerVars DRS \u5be6\u4f8b\u6536\u5230 NOT_CONGESTED \u4e8b\u4ef6\u3002
+
+ControllerSession.EventNOTCONGESTED.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullKey=SESN0146E: \u8f49\u63db\u6210\u5b57\u4e32\u7d22\u5f15\u7684 entryKey \u70ba\u7a7a\u503c\u3002
+
+ControllerSession.NullKey.explanation=\u5728\u6307\u5b9a\u7684\u65b9\u6cd5\u4e2d\uff0c\u8f49\u63db\u81ea entryKey \u7684\u5b57\u4e32\u7d22\u5f15\u9375\u70ba\u7a7a\u503c\u3002
+ControllerSession.NullKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regInUnregtable=SESN0147E: \u932f\u8aa4\uff1a\u5df2\u767b\u9304\u542b\u6709\u8a18\u865f {0} \u7684\u670d\u52d9\u8005\uff0c\u4f46\u5b83\u537b\u51fa\u73fe\u5728\u672a\u767b\u9304\u7684\u8868\u683c\u4e2d\u3002
+
+ControllerSession.regInUnregtable.explanation=\u5df2\u767b\u9304\u670d\u52d9\u8005\uff0c\u4f46\u8a18\u865f\u51fa\u73fe\u5728\u672a\u767b\u9304\u7684\u8868\u683c\u4e2d\u3002
+ControllerSession.regInUnregtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regNotinRegtable=SESN0148E: \u932f\u8aa4\uff1a\u5df2\u767b\u9304\u542b\u6709\u8a18\u865f {0} \u7684\u670d\u52d9\u8005\uff0c\u4f46\u5b83\u672a\u51fa\u73fe\u5728\u5df2\u767b\u9304\u7684\u8868\u683c\u4e2d\u3002
+
+ControllerSession.regNotinRegtable.explanation=\u5df2\u767b\u9304\u670d\u52d9\u8005\uff0c\u4f46\u8a18\u865f\u672a\u51fa\u73fe\u5728\u767b\u9304\u7684\u8868\u683c\u4e2d\u3002
+ControllerSession.regNotinRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.unregInRegtable=SESN0149E: \u932f\u8aa4\uff1a\u5df2\u53d6\u6d88\u767b\u9304\u542b\u6709\u8a18\u865f {0} \u7684\u670d\u52d9\u8005\uff0c\u4f46\u5b83\u537b\u51fa\u73fe\u5728\u5df2\u767b\u9304\u7684\u8868\u683c\u4e2d\u3002
+
+ControllerSession.unregInRegtable.explanation=\u5df2\u53d6\u6d88\u767b\u9304\u670d\u52d9\u8005\uff0c\u4f46\u8a18\u865f\u51fa\u73fe\u5728\u767b\u9304\u7684\u8868\u683c\u4e2d\u3002
+ControllerSession.unregInRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullContext=SESN0150E: \u932f\u8aa4\uff1a\u6240\u50b3\u56de\u4e4b\u5be6\u4f8b {0} \u7684\u74b0\u5883\u5b9a\u7fa9\u70ba\u7a7a\u503c\u3002
+
+ControllerSession.nullContext.explanation=\u5728\u67e5\u95b1\u4e2d\u6240\u50b3\u56de\u7684\u5be6\u4f8b\u74b0\u5883\u5b9a\u7fa9\u70ba\u7a7a\u503c\u3002
+ControllerSession.nullContext.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullToken=SESN0151E: \u8a18\u865f\u53c3\u6578 = \u7a7a\u503c\u3002
+
+ControllerSession.nullToken.explanation=\u50b3\u905e\u7d66\u6307\u5b9a\u65b9\u6cd5\u7684\u8a18\u865f\u53c3\u6578\u70ba\u4e00\u500b\u7a7a\u503c\u3002
+ControllerSession.nullToken.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenExists=SESN0152E: \u932f\u8aa4\uff1a\u8a66\u5716\u65b0\u589e\u5df2\u7d93\u5b58\u5728\u7684\u8a18\u865f\u3002
+
+ControllerSession.tokenExists.explanation=\u50b3\u905e\u7d66\u6307\u5b9a\u65b9\u6cd5\u4e4b\u6240\u8981\u65b0\u589e\u7684\u8a18\u865f\u5df2\u5b58\u5728\u3002
+ControllerSession.tokenExists.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNoMatch=SESN0153E: \u932f\u8aa4\uff1a\u9810\u671f\u7684\u8a18\u865f {0} \u4e0d\u7b26\u5408 tmp2 {1}\u3002
+
+ControllerSession.tokenNoMatch.explanation=\u6307\u5b9a\u7684\u8a18\u865f\u4e0d\u7b26\u5408 tmp2 \u4e2d\u7684\u8a18\u865f\u3002
+
+ControllerSession.tokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.arrayToObject=SESN0154E: \u932f\u8aa4\uff1a\u6240\u50b3\u56de\u7684\u4f4d\u5143\u7d44\u9663\u5217\u7121\u6cd5\u8f49\u63db\u6210\u7269\u4ef6\u3002
+
+ControllerSession.arrayToObject.explanation=\u6240\u50b3\u56de\u7684\u4f4d\u5143\u7d44\u9663\u5217\u7121\u6cd5\u8f49\u63db\u6210\u7269\u4ef6\u3002
+
+ControllerSession.arrayToObject.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.byteArrayNull=SESN0155E: \u932f\u8aa4\uff1a\u6240\u50b3\u56de\u7684\u4f4d\u5143\u7d44\u9663\u5217\u662f\u7a7a\u503c\u3002
+
+ControllerSession.byteArrayNull.explanation=\u6240\u50b3\u56de\u7684\u4f4d\u5143\u7d44\u9663\u5217\u70ba\u7a7a\u503c\u3002
+
+ControllerSession.byteArrayNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoCreateProxy=SESN0156E: \u7121\u6cd5\u5efa\u7acb\u8a18\u865f {0} \u7684 Proxy\u3002
+ControllerSession.NoCreateProxy.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u7121\u6cd5\u5efa\u7acb\u6307\u5b9a\u8a18\u865f\u7684 Proxy\u3002
+
+ControllerSession.NoCreateProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.environ=SESN0157E: \u932f\u8aa4\uff1a\u5728\u4e0d\u6b63\u78ba\u7684\u74b0\u5883\u4e2d\u547c\u53eb\u65b9\u6cd5\u3002
+ControllerSession.environ.explanation=\u5728\u975e\u63a7\u5236\u5340\u57df\u74b0\u5883\u4e2d\uff0c\u547c\u53eb\u6307\u5b9a\u7684\u65b9\u6cd5\u3002
+
+ControllerSession.environ.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokencontextNull=SESN0158E: \u932f\u8aa4\uff1astoken = {0} \u548c ID = {1} \u7684\u74b0\u5883\u5b9a\u7fa9\u70ba\u7a7a\u503c\u3002
+ControllerSession.stokencontextNull.explanation=\u6307\u5b9a\u7684 stoken \u548c ID \u7684\u74b0\u5883\u5b9a\u7fa9\u70ba\u7a7a\u503c\u3002
+
+ControllerSession.stokencontextNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.getUnregisteredErr=SESN0159E: \u932f\u8aa4\uff1a\u7121\u6cd5\u53d6\u5f97 stoken {0} \u7684\u672a\u767b\u9304\u9805\u76ee\u3002
+ControllerSession.getUnregisteredErr.explanation=\u7121\u6cd5\u53d6\u5f97 stoken \u7684\u672a\u767b\u9304\u9805\u76ee\u3002
+
+ControllerSession.getUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.locateUnregisteredErr=SESN0160E: \u932f\u8aa4\uff1a\u627e\u4e0d\u5230 stoken {0} \u7684\u672a\u767b\u9304\u9805\u76ee\u3002
+ControllerSession.locateUnregisteredErr.explanation=\u627e\u4e0d\u5230 stoken \u7684\u672a\u767b\u9304\u9805\u76ee\u3002
+
+ControllerSession.locateUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullGroupName=SESN0161E: GroupName \u53c3\u6578\u70ba\u7a7a\u503c\u3002
+
+ControllerSession.nullGroupName.explanation=\u50b3\u905e\u7d66\u6307\u5b9a\u65b9\u6cd5\u7684 GroupName \u53c3\u6578\u70ba\u4e00\u500b\u7a7a\u503c\u3002
+ControllerSession.nullGroupName.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.instanceCreateFail=SESN0162E: \u8a18\u865f = \u7a7a\u503c\uff1a\u7121\u6cd5\u5efa\u7acb\u63a7\u5236\u5340\u57df\u5be6\u4f8b\u3002
+
+ControllerSession.instanceCreateFail.explanation=\u6307\u5b9a\u7684\u65b9\u6cd5\u7121\u6cd5\u5efa\u7acb\u63a7\u5236\u5340\u5be6\u4f8b\u3002
+ControllerSession.instanceCreateFail.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.registerServantNullReturn=SESN0163E: \u932f\u8aa4\uff1aregisterServant \u50b3\u56de\u7a7a\u503c\u3002
+
+ControllerSession.registerServantNullReturn.explanation=\u547c\u53eb registerServant \u4f46\u50b3\u56de\u7a7a\u503c\u3002
+ControllerSession.registerServantNullReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokenNoMatch=SESN0164E: \u932f\u8aa4\uff1astoken {0} \u4e0d\u7b26\u5408 stokenTest {1}\u3002
+
+ControllerSession.stokenNoMatch.explanation=\u6307\u5b9a\u7684 stoken \u4e0d\u7b26\u5408 stokenTest \u8a18\u865f\u3002
+
+ControllerSession.stokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNotinArray=SESN0165E: \u932f\u8aa4\uff1a\u8a18\u865f {0} \u4e0d\u5728\u8a18\u865f\u9663\u5217\u4e2d\u3002
+
+ControllerSession.tokenNotinArray.explanation=\u6307\u5b9a\u7684 stoken \u4e0d\u5728\u8a18\u865f\u9663\u5217\u4e2d\u3002
+
+ControllerSession.tokenNotinArray.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenInstanceOffset=SESN0166E: \u5728\u8a18\u865f\u8868\u4e2d\uff0c\u767c\u751f instanceOffset \u932f\u8aa4\uff1atoken = {0}\uff0cinstanceOffset \u975e >= 0\u3002
+
+ControllerSession.tokenInstanceOffset.explanation=\u5728\u8655\u7406\u8a18\u865f\u6642\uff0c\u6307\u5b9a\u7684\u65b9\u6cd5\u767c\u73fe instanceOffset \u932f\u8aa4\u3002
+
+ControllerSession.tokenInstanceOffset.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.confirmServantRegistration=SESN0167E: \u932f\u8aa4\uff1aconfirmServantRegistration \u50b3\u56de\u7a7a\u503c\u3002
+
+ControllerSession.confirmServantRegistration.explanation=\u547c\u53eb confirmServantRegistration\uff0c\u4f46\u50b3\u56de\u7a7a\u503c\u3002
+
+ControllerSession.confirmServantRegistration.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullSessvalue=SESN0168E: \u932f\u8aa4\uff1a\u8f49\u63db\u6210\u968e\u6bb5\u4f5c\u696d\u7684\u503c\u53c3\u6578\u70ba\u7a7a\u503c\u3002
+
+ControllerSession.nullSessvalue.explanation=\u5728\u6307\u5b9a\u7684\u65b9\u6cd5\u4e2d\uff0c\u8f49\u63db\u81ea\u503c\u53c3\u6578\u7684\u968e\u6bb5\u4f5c\u696d\u70ba\u7a7a\u503c\u3002
+
+ControllerSession.nullSessvalue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.wrongTableDef=SESN0181E: \u8868\u683c\u5b58\u5728\uff0c\u4f46\u542b\u6709\u932f\u8aa4\u5b9a\u7fa9\u3002
+DatabaseHashMap.wrongTableDef.explanation=\u5efa\u7acb\u7684\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\u5eab\u8868\u683c\u4e0d\u6b63\u78ba\u3002
+DatabaseHashMap.wrongTableDef.useraction=\u624b\u52d5\u6368\u68c4\u8868\u683c\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cantstartLTC=SESN0182E: \u7121\u6cd5\u555f\u52d5\u5340\u57df\u4ea4\u6613\u3002
+DatabaseHashMap.cantstartLTC.explanation=\u8a66\u5716\u555f\u52d5\u5340\u57df\u4ea4\u6613\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+DatabaseHashMap.cantstartLTC.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.localRollBack=SESN0183E: \u56e0 setRollbackOnly \u800c\u56de\u5fa9\u5340\u57df\u4ea4\u6613
+DatabaseHashMap.localRollBack.explanation=\u6e05\u9664\u5340\u57df\u4ea4\u6613\u6642\u767c\u751f\u932f\u8aa4\uff0c\u800c\u5c0e\u81f4\u5b83\u56de\u5fa9\u3002
+DatabaseHashMap.localRollBack.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.deferWrite=SESN0184I: \u56e0\u70ba\u968e\u6bb5\u4f5c\u696d\u662f\u5728 service \u65b9\u6cd5 {0} \u4e2d\uff0c\u6240\u4ee5\u5ef6\u9072\u5beb\u5165\u76f4\u5230\u4e0b\u6b21
+DatabaseHashMap.deferWrite.explanation=\u73fe\u5728\u7121\u6cd5\u6301\u7e8c\u4fdd\u5b58\u968e\u6bb5\u4f5c\u696d\uff0c\u56e0\u70ba Servlet \u76ee\u524d\u6b63\u5728\u5b58\u53d6\u5b83\u3002\u5b83\u5c07\u6301\u7e8c\u4fdd\u5b58\u5230\u4e0b\u6b21\u57f7\u884c\u6642\u9593\u578b\u5beb\u51fa\u5668\u57f7\u884c\u7dd2\u6642\u3002
+DatabaseHashMap.deferWrite.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.nullConnection=SESN0185E: \u53d6\u5f97\u7684\u662f\u7a7a\u503c\u8cc7\u6599\u5eab\u9023\u7dda\u3002
+DatabaseHashMap.nullConnection.explanation=\u53d6\u5f97\u7684\u662f\u7a7a\u503c\u8cc7\u6599\u5eab\u9023\u7dda\u3002
+DatabaseHashMap.nullConnection.useraction=\u5982\u679c\u767c\u751f SQLException \u7684\u8a71\uff0c\u8acb\u53c3\u95b1\u74b0\u5883\u6240\u9069\u7528\u7684\u8cc7\u6599\u5eab\u6587\u4ef6\u3002\u53e6\u5916\uff0c\u8acb\u78ba\u5b9a\u60a8\u5df2\u9069\u7576\u914d\u7f6e\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u7684\u8cc7\u6599\u4f86\u6e90\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cmdaNull=SESN0186W: ComponentMetaDataAccessor \u662f\u7a7a\u503c\u3002
+DatabaseHashMap.cmdaNull.explanation=\u7121\u6cd5\u5b58\u53d6 ComponentMetaDataAccessor\u3002
+DatabaseHashMap.cmdaNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propertyTooBig=SESN0187I: \u6b64\u5167\u5bb9\u592a\u5927 {0}
+DatabaseHashMapMR.propertyTooBig.explanation=\u6307\u5b9a\u7684\u5167\u5bb9\u5c0d\u8cc7\u6599\u5eab\u800c\u8a00\u592a\u5927\u3002
+DatabaseHashMapMR.propertyTooBig.useraction=\u8acb\u6e1b\u5c11\u5167\u5bb9\u7684\u5927\u5c0f\uff0c\u6216\u4e0d\u8981\u5728\u968e\u6bb5\u4f5c\u696d\u4e2d\u5132\u5b58\u5b83\u3002
+# -------------------------------------------------------------------------------------------------
+MTMStore.drsContext=SESN0188I: \u61c9\u7528\u7a0b\u5f0f {0} \u7684\u8a18\u61b6\u9ad4\u5230\u8a18\u61b6\u9ad4\u6a21\u5f0f\u662f {1}
+MTMStore.drsContext.explanation=\u70ba\u6b64\u61c9\u7528\u7a0b\u5f0f\u6307\u5b9a\u8a18\u61b6\u9ad4\u5230\u8a18\u61b6\u9ad4\u6284\u5beb\u7684\u6a21\u5f0f\u3002
+MTMStore.drsContext.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.timeOut=SESN0189E: \u7b49\u5f85\u5b58\u53d6\u968e\u6bb5\u4f5c\u696d\u6642\u767c\u751f\u903e\u6642\u3002\u5e8f\u5217\u5316\u968e\u6bb5\u4f5c\u696d\u5b58\u53d6\u529f\u80fd\u914d\u7f6e\u70ba\u4e0d\u5bb9\u8a31\u5b58\u53d6\u3002
+WsSessionContext.timeOut.explanation=\u5e8f\u5217\u5316\u968e\u6bb5\u4f5c\u696d\u5b58\u53d6\u529f\u80fd\u5df2\u555f\u7528\uff0c\u4e14\u914d\u7f6e\u70ba\u4e0d\u5bb9\u8a31\u903e\u6642\u5b58\u53d6\u3002
+WsSessionContext.timeOut.useraction=\u53ef\u50be\u51fa\u61c9\u7528\u7a0b\u5f0f\u4f3a\u670d\u5668\u7684\u57f7\u884c\u7dd2\u4f86\u6aa2\u67e5\u7576\u6389\u7684\u61c9\u7528\u7a0b\u5f0f\u3002\u8003\u616e\u589e\u52a0\u903e\u6642\u503c\uff0c\u6216\u5bb9\u8a31\u903e\u6642\u5b58\u53d6\u968e\u6bb5\u4f5c\u696d\u3002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serviceNull=SESN0190E: CoreStack \u670d\u52d9\u662f\u7a7a\u503c\uff0c\u7121\u6cd5\u91dd\u5c0d {0} \u7d50\u5408 HAGroup
+WsSessionMgrComponentImpl.serviceNull.explanation=\u7121\u6cd5\u5b58\u53d6 CoreStack \u670d\u52d9\u53ca\u7d50\u5408 HAGroup\u3002
+WsSessionMgrComponentImpl.serviceNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerMTMCacheMsgListener.unableCreate=SESN0191E: \u7121\u6cd5\u5728 zOS \u4e0a\u5efa\u7acb\u968e\u6bb5\u4f5c\u696d\u5f8c\u7aef\u5132\u5b58\u3002\u5c07\u653e\u68c4\u968e\u6bb5\u4f5c\u696d {0} \u7684 createEntrywill
+ControllerMTMCacheMsgListener.unableCreate.explanation=\u5728 zOS \u4e0a\u5efa\u7acb\u968e\u6bb5\u4f5c\u696d\u5f8c\u7aef\u5132\u5b58\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+ControllerMTMCacheMsgListener.unableCreate.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.registerSessionFailed=SESN0192E: \u5c0d ID {0} \u547c\u53eb registerSession \u65b9\u6cd5\u5931\u6557\uff0c\u56de\u8986\u78bc\u70ba {1}
+SessionServantAffinityManager.registerSessionFailed.explanation=\u7121\u6cd5\u5efa\u7acb\u6b64\u968e\u6bb5\u4f5c\u696d\u7684 zOS \u670d\u52d9\u8005\u89aa\u7de3\u6027\u3002
+SessionServantAffinityManager.registerSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.unregisterSessionFailed=SESN0193E: \u5c0d ID {0} \u547c\u53eb unregisterSession \u65b9\u6cd5\u5931\u6557\uff0c\u56de\u8986\u78bc\u70ba {1}
+SessionServantAffinityManager.unregisterSessionFailed.explanation=\u7121\u6cd5\u91cb\u653e\u6b64\u968e\u6bb5\u4f5c\u696d\u7684 zOS \u670d\u52d9\u8005\u89aa\u7de3\u6027\u3002
+SessionServantAffinityManager.unregisterSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdNotFound=SESN0197W: \u7121\u6cd5\u5224\u65b7 zOS \u4f3a\u670d\u5668 ID\uff0c\u56e0\u6b64\uff0c\u5b83\u5c07\u9810\u8a2d\u70ba -1\u3002
+WsSessionMgrComponentImpl.serverIdNotFound.explanation=\u672a\u5f9e server.xml \u53d6\u5f97\u4f3a\u670d\u5668 ID\u3002
+WsSessionMgrComponentImpl.serverIdNotFound.useraction=\u5fc5\u8981\u7684\u8a71\uff0c\u8acb\u66f4\u6b63\u914d\u7f6e\u3002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdException=SESN0198E: \u5728\u53d6\u5f97 zOS \u4f3a\u670d\u5668 ID \u6642\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\uff0c\u56e0\u6b64\uff0c\u5b83\u5c07\u9810\u8a2d\u70ba -1\u3002
+WsSessionMgrComponentImpl.serverIdException.explanation=\u53d6\u5f97 zOS \u4f3a\u670d\u5668 ID \u6642\u767c\u751f\u932f\u8aa4
+WsSessionMgrComponentImpl.serverIdException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled=SESN0199I: \u5df2\u555f\u7528 HttpSession \u672a\u53d7\u7ba1\u7406\u7684\u4f3a\u670d\u5668\u6284\u5beb\u3002
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.explanation=\u9019\u500b zOS \u57fa\u790e\u4f3a\u670d\u5668\u5c07\u6284\u5beb\u968e\u6bb5\u4f5c\u696d\u8cc7\u6599\uff0c\u4ee5\u4f9b\u670d\u52d9\u8005\u5931\u6548\u63a5\u624b\u6642\u4f7f\u7528\u3002
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.useraction=\u9019\u5247\u8a0a\u606f\u53ea\u4f9b\u53c3\u8003\u3002
+# -------------------------------------------------------------------------------------------------
+MTMBuffWrapper.serializationException=SESN0200E: \u5617\u8a66\u5e8f\u5217\u5316\u6642\u6355\u6349\u5230\u7570\u5e38\u72c0\u6cc1\u3002
+MTMBuffWrapper.serializationException.explanation=\u7269\u4ef6\u7121\u6cd5\u5e8f\u5217\u5316
+MTMBuffWrapper.serializationException.useraction=\u8acb\u78ba\u5b9a\u7269\u4ef6\u70ba\u53ef\u5e8f\u5217\u5316\u7684\u3002
+# -------------------------------------------------------------------------------------------------
+MTMDataXfer.attributeConversionException=SESN0201E: \u7121\u6cd5\u8f49\u63db\u5c6c\u6027 {0}
+MTMDataXfer.attributeConversionException.explanation=\u5c6c\u6027\u7121\u6cd5\u5e8f\u5217\u5316\u3002
+MTMDataXfer.attributeConversionException.useraction=\u8acb\u78ba\u5b9a\u7269\u4ef6\u70ba\u53ef\u5e8f\u5217\u5316\u7684\u3002
+# -------------------------------------------------------------------------------------------------
+MTMHashMap.attributeReplicationFailure=SESN0202E: \u7121\u6cd5\u6284\u5beb\u5c6c\u6027 {0}
+MTMHashMap.attributeReplicationFailure.explanation=\u5c6c\u6027\u7121\u6cd5\u5e8f\u5217\u5316
+MTMHashMap.attributeReplicationFailure.useraction=\u8acb\u78ba\u5b9a\u7269\u4ef6\u70ba\u53ef\u5e8f\u5217\u5316\u7684\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning=SESN0203W: \u7121\u6cd5\u5728\u8cc7\u6599\u5eab\u591a\u5217\u914d\u7f6e\u4e2d\u5132\u5b58\u8207\u968e\u6bb5\u4f5c\u696d ID \u76f8\u540c\u540d\u7a31\u7684\u5c6c\u6027 {0}\u3002\u5c07\u4e0d\u6703\u6301\u7e8c\u4fdd\u5b58\u5c6c\u6027\u3002
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.explanation=\u968e\u6bb5\u4f5c\u696d\u5c6c\u6027\u540d\u7a31\u4e0d\u80fd\u8207\u8cc7\u6599\u5eab\u591a\u5217\u914d\u7f6e\u4e2d\u7684\u968e\u6bb5\u4f5c\u696d ID \u76f8\u7b26\u3002
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.useraction=\u8b8a\u66f4\u968e\u6bb5\u4f5c\u696d\u5c6c\u6027\u540d\u7a31\uff0c\u4f7f\u5c6c\u6027\u5f97\u4ee5\u6301\u7e8c\u4fdd\u5b58\u3002
+# -------------------------------------------------------------------------------------------------
+MTMVars.DRSNotStarted=SESN0204E: Application Server \u7121\u6cd5\u4f7f\u7528\u8a18\u61b6\u9ad4\u81f3\u8a18\u61b6\u9ad4\u6284\u5beb\u4f86\u555f\u52d5\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\uff0c\u56e0\u70ba {0} \u6284\u5beb\u7db2\u57df\u6709\u554f\u984c\u3002
+MTMVars.DRSNotStarted.explanation=Application Server \u627e\u4e0d\u5230\u6240\u5b9a\u7fa9\u7684\u6284\u5beb\u7db2\u57df\u3002
+MTMVars.DRSNotStarted.useraction=\u8acb\u5efa\u7acb\u6284\u5beb\u7db2\u57df\uff0c\u4e26\u91cd\u65b0\u555f\u52d5\u4f3a\u670d\u5668\uff0c\u6216\u662f\u505c\u7528\u6240\u6709\u61c9\u7528\u7a0b\u5f0f\u7684\u8a18\u61b6\u9ad4\u81f3\u8a18\u61b6\u9ad4\u968e\u6bb5\u4f5c\u696d\u6284\u5beb\u3002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.IndexIncorrect=SESN0205W: \u5728\u968e\u6bb5\u4f5c\u696d\u671f\u9593\uff0c\u767c\u73fe\u8cc7\u6599\u5eab\u4e2d\u6709\u4e0d\u6b63\u78ba\u7684\u7d22\u5f15\u3002
+DatabaseHashMap.IndexIncorrect.explanation=\u53ef\u80fd\u662f\u60a8\u8868\u683c\u4e2d\u6240\u5efa\u7acb\u7684\u968e\u6bb5\u4f5c\u696d\u7d22\u5f15\u4e0d\u5728 Application Server \u7bc4\u570d\u5167\u3002
+DatabaseHashMap.IndexIncorrect.useraction=\u8acb\u6368\u68c4\u7d22\u5f15\uff0c\u4e26\u91cd\u65b0\u555f\u52d5 Application Server\u3002
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=\u968e\u6bb5\u4f5c\u696d\u7269\u4ef6\u662f\uff1a{0}
+CommonMessage.sessionid=\u968e\u6bb5\u4f5c\u696d ID \u662f\uff1a{0}
+CommonMessage.miscData=\u96dc\u9805\u8cc7\u6599\uff1a{0}
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.propertyError=SESN8000W: \u8f09\u5165\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u81ea\u8a02\u5167\u5bb9 {0} \u6642\u767c\u751f\u932f\u8aa4
+WsSessionMgrComponentImpl.propertyError.explanation= \u7121\u6cd5\u8f09\u5165\u968e\u6bb5\u4f5c\u696d\u81ea\u8a02\u5167\u5bb9\u3002
+WsSessionMgrComponentImpl.propertyError.useraction= \u8acb\u78ba\u5b9a\u968e\u6bb5\u4f5c\u696d\u7ba1\u7406\u7a0b\u5f0f\u81ea\u8a02\u5167\u5bb9\u503c\u662f\u6b63\u78ba\u7684\uff0c\u800c\u4e14\u4e26\u6c92\u6709\u53c3\u7167\u672a\u5b9a\u7fa9\u7684\u8b8a\u6578\u3002
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=\u7570\u5e38\u72c0\u6cc1\u662f\uff1a
+#----------AdminTask messages----------
+AdminTask.sessiongroup.description=\u968e\u6bb5\u4f5c\u696d\u7fa4\u7d44\u76f8\u95dc\u7684\u7ba1\u7406\u4f5c\u696d\u3002
+AdminTask.addDisabledSessionCookie.title=AddDisabledSessionCookie
+AdminTask.addDisabledSessionCookie.description=\u65b0\u589e\u61c9\u7528\u7a0b\u5f0f\u7121\u6cd5\u4ee5\u7a0b\u5f0f\u65b9\u5f0f\u4fee\u6539\u7684 Cookie \u914d\u7f6e
+AdminTask.cookieDomain.parm.title=cookieDomain
+AdminTask.cookieDomain.parm.description=\u7db2\u57df\u3001\u540d\u7a31\u548c\u8def\u5f91\u5fc5\u9808\u7b26\u5408 Cookie \u4ee5\u4e0d\u5141\u8a31\u5176\u4ed6\u7684\u914d\u7f6e\u3002\u9019\u662f\u7db2\u57df\u53c3\u6578\u3002
+AdminTask.cookieName.parm.title=cookieName
+AdminTask.cookieName.parm.description=\u7db2\u57df\u3001\u540d\u7a31\u548c\u8def\u5f91\u5fc5\u9808\u7b26\u5408 Cookie \u4ee5\u4e0d\u5141\u8a31\u5176\u4ed6\u7684\u914d\u7f6e\u3002\u9019\u662f\u540d\u7a31\u53c3\u6578\u3002
+AdminTask.cookiePath.parm.title=cookiePath
+AdminTask.cookiePath.parm.description=\u7db2\u57df\u3001\u540d\u7a31\u548c\u8def\u5f91\u5fc5\u9808\u7b26\u5408 Cookie \u4ee5\u4e0d\u5141\u8a31\u5176\u4ed6\u7684\u914d\u7f6e\u3002\u9019\u662f\u8def\u5f91\u53c3\u6578\u3002
+AdminTask.removeDisabledSessionCookie.title=removeDisabledSessionCookie
+AdminTask.removeDisabledSessionCookie.description=\u79fb\u9664 Cookie \u914d\u7f6e\uff0c\u4f7f\u61c9\u7528\u7a0b\u5f0f\u80fd\u5920\u4ee5\u7a0b\u5f0f\u65b9\u5f0f\u4fee\u6539
+AdminTask.cookieId.parm.title=cookieId
+AdminTask.cookieId.parm.description=Cookie \u7684 ID
+AdminTask.listDisabledSessionCookie.title=listDisabledSessionCookie
+AdminTask.listDisabledSessionCookie.description=\u5217\u51fa\u7121\u6cd5\u4ee5\u7a0b\u5f0f\u4fee\u6539\u7684 Cookie \u914d\u7f6e\u96c6
+AdminTask.modifyDisabledSessionCookie.title=modifyDisabledSessionCookie
+AdminTask.modifyDisabledSessionCookie.description=\u4fee\u6539\u73fe\u6709\u7684 Cookie \u914d\u7f6e
+
+AdminTask.targetObject.title=SessionSecurity
+AdminTask.targetObject.description=\u4e0d\u9700\u8981\u76ee\u6a19\u3002\u5c07\u5728 Cell \u4e0b\u9762\u4fee\u6539 SessionSecurity\u3002
+
+AdminTask.element.already.exists=SESN0800E: \u5143\u7d20\u5df2\u5b58\u5728\u3002
+AdminTask.element.already.exists.explanation=\u60a8\u6b63\u5728\u65b0\u589e\u7684\u5143\u7d20\u7b26\u5408\u5df2\u5b58\u5728\u7684\u5143\u7d20\u3002
+AdminTask.element.already.exists.useraction=
+
+AdminTask.element.id.not.found=SESN0801E: \u627e\u4e0d\u5230\u8a72 ID \u7684\u5143\u7d20
+AdminTask.element.id.not.found.explanation=\u627e\u4e0d\u5230\u8a72 ID \u7684\u5143\u7d20\u3002
+AdminTask.element.id.not.found.useraction=
+#----------AdminTask messages----------

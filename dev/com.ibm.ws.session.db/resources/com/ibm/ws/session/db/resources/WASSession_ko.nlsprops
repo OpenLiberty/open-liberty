@@ -1,0 +1,467 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 1997-2012
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+#CMVCPATHNAME com.ibm.ws.session.db/resources/com/ibm/ws/session/db/resources/WASSession.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.invalidateError=SESN0015E: \uc138\uc158\uc774 \uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub41c \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb34\ud6a8\ud654\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.invalidateError.explanation=\uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub41c \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc138\uc158 \ubb34\ud6a8\ud654 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.invalidateError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0, \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.performInvalidationError=SESN0016E: \uc138\uc158\uc774 \uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub41c \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb34\ud6a8\ud654\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.performInvalidationError.explanation=\uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub41c \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc138\uc158 \ubb34\ud6a8\ud654 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.performInvalidationError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.checkMinimumInvalidationError=SESN0019E: \uc138\uc158 \uc81c\ud55c\uc2dc\uac04\uc774 \uc2dc\uac04 \uae30\ubc18 \uc4f0\uae30 \uac04\uaca9\uc758 \ucd5c\uc18c 3\ubc30\uac00 \uc544\ub2d9\ub2c8\ub2e4.
+WsSessionContext.checkMinimumInvalidationError.explanation=\uc2dc\uac04 \uae30\ubc18 \uc4f0\uae30\uac00 \uc0ac\uc6a9\ub418\ub294 \uacbd\uc6b0, \uc138\uc158 \uc81c\ud55c\uc2dc\uac04\uc740 \uc4f0\uae30 \uac04\uaca9\uc758 \ucd5c\uc18c 3\ubc30\uc5ec\uc57c \ud569\ub2c8\ub2e4. \uc138\uc158 \uc81c\ud55c\uc2dc\uac04\uc774 \uc77c\uc2dc\uc801\uc73c\ub85c \uc815\uc815\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WsSessionContext.checkMinimumInvalidationError.useraction=\uc138\uc158 \uc81c\ud55c\uc2dc\uac04\uc774 \uc2dc\uac04 \uae30\ubc18 \uc4f0\uae30 \uac04\uaca9\uc758 \ucd5c\uc18c 3\ubc30\uac00 \ub418\ub3c4\ub85d \uc138\uc158 \uad00\ub9ac\uc790 \uad6c\uc131 \uac12\uc744 \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.checkListErr=SESN0026E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc800\uc7a5\ub41c HttpSessionBindingListeners \ucc98\ub9ac \uc911\uc5d0 \ubb38\uc81c\uc810\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.checkListErr.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc800\uc7a5\ub41c HttpSessionBindingListeners \ucc98\ub9ac \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.checkListErr.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0, \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHandleErr=SESN0028E: EJB \ud578\ub4e4\uc744 \uc0ac\uc6a9\ud558\uc5ec EJB \uc624\ube0c\uc81d\ud2b8\ub97c \uac00\uc838\uc624\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBObject\uac00 \uc774\uc804\uc5d0 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. EJB \ud578\ub4e4\uc5d0\uc11c getEJBObject \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.convertObjectHandleErr.explanation=EJB \ud578\ub4e4\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc5d4\ud130\ud504\ub77c\uc774\uc988 Bean(EJB) \uc624\ube0c\uc81d\ud2b8\ub97c \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBObject\uac00 \uc774\uc804\uc5d0 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud578\ub4e4\uc5d0\uc11c getEJBObject \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.convertObjectHandleErr.useraction=EJB \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectHomeErr=SESN0029E: EJB \ud648 \ud578\ub4e4\uc744 \uc0ac\uc6a9\ud558\uc5ec EJB \ud648\uc744 \uac00\uc838\uc624\ub294 \uc911 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBHome\uc774 \uc774\uc804\uc5d0 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud578\ub4e4\uc5d0\uc11c getEJBHome \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.convertObjectHomeErr.explanation=EJB \ud648 \ud578\ub4e4\uc744 \uc0ac\uc6a9\ud558\uc5ec \uc5d4\ud130\ud504\ub77c\uc774\uc988 Bean(EJB) \ud648\uc744 \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBHome\uc774 \uc774\uc804\uc5d0 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud578\ub4e4\uc5d0\uc11c getEJBHome \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.convertObjectHomeErr.useraction=EJB \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.convertObjectContextErr=SESN0030E: \ucd08\uae30 \ucee8\ud14d\uc2a4\ud2b8\ub97c \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. InitialContext\uac00 \uc774\uc804\uc5d0 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. javax.naming.InitialContext \uba54\uc18c\ub4dc\ub97c \uc7ac\uad6c\uc131\ud558\ub294 \uc911\uc5d0 NamingException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.convertObjectContextErr.explanation=\ucd08\uae30 \ucee8\ud14d\uc2a4\ud2b8\ub97c \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. InitialContext\uac00 \uc774\uc804\uc5d0 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. javax.naming.InitialContext \uba54\uc18c\ub4dc\ub97c \uc7ac\uad6c\uc131\ud558\ub294 \uc911\uc5d0 NamingException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.convertObjectContextErr.useraction=\uc624\ub958 \uba54\uc2dc\uc9c0\uc5d0 \ub300\ud574 \ub124\uc774\ubc0d \uc11c\ubc84 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHandleErr=SESN0031E: EJB \ud648\uc744 \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBHome\uc774 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. getHomeHandle \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.putValueGutsHandleErr.explanation=EJB \ud648\uc744 \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBHome\uc774 \uc138\uc158\uc5d0 \ucd94\uac00\ub418\uc5c8\uc2b5\ub2c8\ub2e4. getHomeHandle \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.putValueGutsHandleErr.useraction=EJB \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsHomeErr=SESN0032E: EJB \ud578\ub4e4\uc744 \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBObject\uac00 \uc138\uc158\uc73c\ub85c \uc1a1\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4. getHandle \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.putValueGutsHomeErr.explanation=EJB \ud578\ub4e4\uc744 \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. EJBObject\uac00 \uc138\uc158\uc73c\ub85c \uc1a1\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4. getHandle \uba54\uc18c\ub4dc\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.putValueGutsHomeErr.useraction=EJB \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BackedSession.putValueGutsContextErr=SESN0033E: getEnvironment()on javax.naming.Context\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 javax.naming.Context\uac00 \uc138\uc158\uc73c\ub85c \uc1a1\uc2e0\ub418\uc5c8\uc73c\uba70 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.putValueGutsContextErr.explanation=getEnvironment()on javax.naming.Context\ub97c \ubc1c\ud589\ud558\ub294 \uc911\uc5d0 javax.naming.Context\uac00 \uc138\uc158\uc73c\ub85c \uc1a1\uc2e0\ub418\uc5c8\uc73c\uba70 RemoteException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedSession.putValueGutsContextErr.useraction=\uc624\ub958 \uba54\uc2dc\uc9c0\uc5d0 \ub300\ud574 \ub124\uc774\ubc0d \uc11c\ubc84 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.getSwappableListenersErr=SESN0034E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158 \uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654 \ud574\uc81c\ud558\ub294 \uc2dc\ub3c4\ub85c ClassNotFoundException\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc9c1\ub82c\ud654 \ud574\uc81c\ub418\ub294 \uc624\ube0c\uc81d\ud2b8\ub294 \uc138\uc158\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294 \ubaa8\ub4e0 JVM\uc758 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \ud3ec\ud568\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+DatabaseHashMapMR.getSwappableListenersErr.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158 \uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654 \ud574\uc81c\ud558\ub294 \uc2dc\ub3c4\ub85c ClassNotFoundException\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc9c1\ub82c\ud654 \ud574\uc81c\ub418\ub294 \uc624\ube0c\uc81d\ud2b8\ub294 \uc138\uc158\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294 \ubaa8\ub4e0 JVM\uc758 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \ud3ec\ud568\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+DatabaseHashMapMR.getSwappableListenersErr.useraction=\uc9c1\ub82c\ud654 \ud574\uc81c\ub41c \uc18d\uc131\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \uc788\ub3c4\ub85d \ud074\ub798\uc2a4 \uacbd\ub85c\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.removeSessionsError=SESN0035E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158\uc744 \uc81c\uac70\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.removeSessionsError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158\uc744 \uc81c\uac70\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.removeSessionsError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.doInvalidationsError=SESN0036E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158\uc744 \ubb34\ud6a8\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.doInvalidationsError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158\uc744 \ubb34\ud6a8\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.doInvalidationsError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.pollForInvalidsError=SESN0037E: \uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc138\uc158\uc5d0 \ub300\ud574 \ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \ud3f4\ub9c1\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.pollForInvalidsError.explanation=\uc720\ud6a8\ud558\uc9c0 \uc54a\uc740 \uc138\uc158\uc5d0 \ub300\ud574 \ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \ud3f4\ub9c1\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.pollForInvalidsError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getConnectionError=SESN0038E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc5f0\uacb0\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.getConnectionError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc5f0\uacb0\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.getConnectionError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectAndLockError=SESN0039E: \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.selectAndLockError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.selectAndLockError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.commonSetupError=SESN0040E: \ucc28\ud6c4 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc4f0\uae30\uc5d0 \ub300\ud55c \uc138\uc158\uc744 \uc9c1\ub82c\ud654\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.commonSetupError.explanation=\uc138\uc158 \ub370\uc774\ud130\uac00 \ub108\ubb34 \ucee4\uc11c \uc9c1\ub82c\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.commonSetupError.useraction=\uc138\uc158\uc5d0\uc11c \ub354 \uc801\uc740 \ub370\uc774\ud130\ub97c \uc1a1\uc2e0\ud558\uac70\ub098 \ub2e4\uc911 \ud589 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubaa8\ub4dc\uc758 \uc138\uc158 \uad00\ub9ac\uc790 \uad6c\uc131\uc744 \uace0\ub824\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbStoreError=SESN0041E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc138\uc158\uc744 \uc800\uc7a5\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.ejbStoreError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc138\uc158\uc744 \uc800\uc7a5\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.ejbStoreError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.ejbCreateError=SESN0042E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc138\uc158\uc744 \uc0bd\uc785\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.ejbCreateError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc138\uc158\uc744 \uc0bd\uc785\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.ejbCreateError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.dataSrcErr=SESN0043E: \uad6c\uc131\ub41c \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \ud655\ubcf4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.dataSrcErr.explanation=\uad6c\uc131\ub41c \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \ud655\ubcf4\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.dataSrcErr.useraction=\ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc81c\ub300\ub85c \uad6c\uc131\ud588\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790 \uc9c0\uc18d\uc774 \uc0ac\uc6a9 \uac00\ub2a5\ud560 \ub54c \uc138\uc158 \uad00\ub9ac\uc790 \uad6c\uc131\uc774 \uc720\ud6a8\ud55c \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.getValueErrBH=SESN0044E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158\uc5d0 \ub300\ud55c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub370\uc774\ud130 \uc624\ube0c\uc81d\ud2b8\ub97c \uc77d\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. 
+DatabaseHashMap.getValueErrBH.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uc138\uc158\uc5d0 \ub300\ud55c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub370\uc774\ud130 \uc624\ube0c\uc81d\ud2b8\ub97c \uc77d\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. 
+DatabaseHashMap.getValueErrBH.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.createTableError=SESN0047E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \ucd08\uae30\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.createTableError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \ucd08\uae30\ud654\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.createTableError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+BackedHashtable.classNotFoundError=SESN0051E: \ubc31\uc5d4\ub4dc\uc5d0\uc11c \uc138\uc158 \uc624\ube0c\uc81d\ud2b8 \uc9c1\ub82c\ud654 \ud574\uc81c\ub97c \uc2dc\ub3c4\ud55c \uacb0\uacfc ClassNotFoundException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+BackedHashtable.classNotFoundError.explanation=\ubc31\uc5d4\ub4dc\uc5d0\uc11c \uc138\uc158 \uc624\ube0c\uc81d\ud2b8 \uc9c1\ub82c\ud654 \ud574\uc81c\ub97c \uc2dc\ub3c4\ud55c \uacb0\uacfc ClassNotFoundException\uc774 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc9c1\ub82c\ud654 \ud574\uc81c\ub418\ub294 \uc624\ube0c\uc81d\ud2b8\ub294 \uc138\uc158\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc788\ub294 \ubaa8\ub4e0 JVM\uc758 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \ud3ec\ud568\ub418\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+BackedHashtable.classNotFoundError.useraction=\uc9c1\ub82c\ud654 \ud574\uc81c\ub41c \uc18d\uc131\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \ud074\ub798\uc2a4 \uacbd\ub85c\uc5d0 \uc788\ub3c4\ub85d \ud074\ub798\uc2a4 \uacbd\ub85c\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.db2LongVarCharErr=SESN0055E: \ub300\ud615 \uc5f4\uc5d0 2M \ub118\uac8c \uc4f0\ub824\ub294 \uc2dc\ub3c4\uac00 \uc788\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.db2LongVarCharErr.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc5f4\uc5d0\ub294 \uc138\uc158 \ub370\uc774\ud130\uac00 \ub108\ubb34 \ud074 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.db2LongVarCharErr.useraction=\uc138\uc158\uc5d0\uc11c \ub354 \uc801\uc740 \ub370\uc774\ud130\ub97c \uc1a1\uc2e0\ud558\uac70\ub098 \uc5ec\ub7ec \ud589 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubaa8\ub4dc\uc758 \uc138\uc158 \uad00\ub9ac\uc790 \uad6c\uc131\uc744 \uace0\ub824\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.oracleGetValueError=SESN0056E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uac12\uc744 \uc77d\uae30 \uc704\ud574 getValue \ub610\ub294 getAttribute \uba54\uc18c\ub4dc\uac00 \ud638\ucd9c\ub420 \ub54c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.oracleGetValueError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0\uc11c \uac12\uc744 \uc77d\uae30 \uc704\ud574 getValue \ub610\ub294 getAttribute \uba54\uc18c\ub4dc\uac00 \ud638\ucd9c\ub420 \ub54c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.oracleGetValueError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propHitErr=SESN0057E: \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub370\uc774\ud130 \ubcc0\uacbd\uc0ac\ud56d\uc744 \uc800\uc7a5\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.propHitErr.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ub370\uc774\ud130 \ubcc0\uacbd\uc0ac\ud56d\uc744 \uc800\uc7a5\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.propHitErr.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.handleAsyncError=SESN0062E: \uc138\uc158 \ucd5c\uc885 \uc561\uc138\uc2a4 \uc2dc\uac04\uc73c\ub85c \ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.handleAsyncError.explanation=\uc138\uc158 \ucd5c\uc885 \uc561\uc138\uc2a4 \uc2dc\uac04\uc73c\ub85c \ub370\uc774\ud130\ubca0\uc774\uc2a4\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\ub824\uace0 \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.handleAsyncError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.selectNoUpdateError=SESN0063E: \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc561\uc138\uc2a4\ub97c \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.selectNoUpdateError.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc561\uc138\uc2a4\ub97c \uc2dc\ub3c4\ud558\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uacac\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.selectNoUpdateError.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.db2LongVarCharErr=SESN8558E: \ub300\ud615 \uc5f4\uc5d0 2M \ub118\uac8c \uc4f0\ub824\ub294 \uc2dc\ub3c4\uac00 \uc788\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.db2LongVarCharErr.explanation=\ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc5f4\uc5d0\ub294 \uc138\uc158 \ub370\uc774\ud130\uac00 \ub108\ubb34 \ud074 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.db2LongVarCharErr.useraction=\uc138\uc158\uc5d0 \uc800\uc7a5\ud558\uae30 \uc804\uc5d0 \uc774 \ud2b9\uc131\uc758 \ud06c\uae30\ub97c \uc904\uc774\uc9c0 \ub9c8\uc2ed\uc2dc\uc624.
+
+
+ControllerSession.Initialized=SESN0126I: {0} \uc11c\ube44\uc2a4 \ucd08\uae30\ud654\uac00 \uc644\ub8cc\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.Initialized.explanation=DRS\uc5d0\uc11c HttpSession\uc5d0 \ub300\ud55c z/OS \uc81c\uc5b4\uae30 \uc11c\ube44\uc2a4 \uc9c0\uc6d0\uc774 \ucd08\uae30\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.Initialized.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CaughtException=SESN0127E: \uc218\uc2e0\ub41c \uc608\uc678:
+ControllerSession.CaughtException.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.CaughtException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyException=SESN0128E: DRSControllerProxy \uc791\uc131 \uc911 \uc624\ub958: \uc218\uc2e0\ub41c \uc608\uc678 
+ControllerSession.ProxyException.explanation=DRSControllerProxy\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.ProxyException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.ProxyRefException=SESN0129E: DRSControllerProxy \ucc38\uc870 \uc791\uc131 \uc911 \uc624\ub958: \uc218\uc2e0\ub41c \uc608\uc678 
+ControllerSession.ProxyRefException.explanation=DRSControllerProxy \ucc38\uc870\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.ProxyRefException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullJoinHAGroup=SESN0130E: joinHAGroup\uc774 \ub110\uc744 \ub9ac\ud134
+ControllerSession.NullJoinHAGroup.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c joinHAGroup\uc758 \ud638\ucd9c\uc774 \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.NullJoinHAGroup.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.CallbackException=SESN0131E: \ucf5c\ubc31 \uc791\uc131 \uc911\uc5d0 \uc218\uc2e0\ub41c \uc608\uc678: 
+ControllerSession.CallbackException.explanation=\ucf5c\ubc31\uc744 \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.CallbackException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryKey=SESN0132E: \uc804\ub2ec\ub41c entryKey \ub9e4\uac1c\ubcc0\uc218\uac00 \ub110\uc784: \ud56d\ubaa9 \uc791\uc131 \uc2dc\ub3c4\uac00 \uc911\ub2e8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.NullEntryKey.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0 \ub110 entryKey \ub9e4\uac1c\ubcc0\uc218\uac00 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud56d\ubaa9\uc744 \uc791\uc131\ud558\uae30 \uc704\ud55c \uc2dc\ub3c4\uac00 \uc911\ub2e8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.NullEntryKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullEntryValue=SESN0133E: \uc804\ub2ec\ub41c \ub9e4\uac1c\ubcc0\uc218 \uac12\uc774 \ub110\uc784: \ud56d\ubaa9 \uc791\uc131 \uc2dc\ub3c4\uac00 \uc911\ub2e8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.NullEntryValue.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc758 \uac12 \ub9e4\uac1c\ubcc0\uc218\uc5d0 \ub300\ud574 \ub110 \uac12\uc774 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \ud56d\ubaa9\uc744 \uc791\uc131\ud558\uae30 \uc704\ud55c \uc2dc\ub3c4\uac00 \uc911\ub2e8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.NullEntryValue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceRemException=SESN0134E: \uc81c\uc5b4 \uc601\uc5ed\uc5d0\uc11c DRS \uc778\uc2a4\ud134\uc2a4 \uc791\uc131 \uc911 \uc624\ub958: \uc218\uc2e0\ub41c \uc6d0\uaca9 \uc608\uc678: 
+ControllerSession.DRSInstanceRemException.explanation=\uc81c\uc5b4 \uc601\uc5ed\uc5d0\uc11c DRS \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc6d0\uaca9 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.DRSInstanceRemException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.DRSInstanceException=SESN0135E: \uc81c\uc5b4 \uc601\uc5ed\uc5d0\uc11c DRS \uc778\uc2a4\ud134\uc2a4 \uc791\uc131 \uc911 \uc624\ub958: \uc218\uc2e0\ub41c \uc608\uc678: 
+ControllerSession.DRSInstanceException.explanation=\uc81c\uc5b4 \uc601\uc5ed\uc5d0\uc11c DRS \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.DRSInstanceException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.SessContextGroupException=SESN0136E: \uc81c\uc5b4 \uc601\uc5ed\uc5d0\uc11c SessionContext \uadf8\ub8f9 \uc778\uc2a4\ud134\uc2a4 \uc791\uc131 \uc911 \uc624\ub958: \uc218\uc2e0\ub41c \uc608\uc678: 
+ControllerSession.SessContextGroupException.explanation=\uc81c\uc5b4 \uc601\uc5ed\uc5d0\uc11c SessionContext \uadf8\ub8f9 \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.SessContextGroupException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nulldbmParm=SESN0137E: DRSBootstrapMsg \ub9e4\uac1c\ubcc0\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+ControllerSession.nulldbmParm.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc758 DRSBootstrapMsg \ub9e4\uac1c\ubcc0\uc218\uc5d0 \ub300\ud574 \ub110 \uac12\uc774 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+ControllerSession.nulldbmParm.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.Nullevent=SESN0138E: event \ub9e4\uac1c\ubcc0\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+ControllerSession.Nullevent.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc758 \uc774\ubca4\ud2b8 \ub9e4\uac1c\ubcc0\uc218\uc5d0 \ub300\ud574 \ub110 \uac12\uc774 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+ControllerSession.Nullevent.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoProxy=SESN0139E: {0} \ud1a0\ud070\uc5d0 \ub300\ud55c \ud504\ub85d\uc2dc\ub97c \ud655\ubcf4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ControllerSession.NoProxy.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uac00 \uc9c0\uc815\ub41c \ud1a0\ud070\uc5d0 \ub300\ud55c \ud504\ub85d\uc2dc\ub97c \ud655\ubcf4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ControllerSession.NoProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.TokenToBytes=SESN0140E: \ud1a0\ud070\uc744 \ubc14\uc774\ud2b8 \ubc30\uc5f4\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc74c: \ud1a0\ud070 = {0}. 
+ControllerSession.TokenToBytes.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uac00 \ud1a0\ud070\uc744 \ubc14\uc774\ud2b8 \ubc30\uc5f4\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.TokenToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventToBytes=SESN0141E: {0} \uc774\ubca4\ud2b8\ub97c \ubc14\uc774\ud2b8 \ubc30\uc5f4\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventToBytes.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uac00 \uc774\ubca4\ud2b8\ub97c \ubc14\uc774\ud2b8 \ubc30\uc5f4\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventToBytes.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONUP=SESN0142I: HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4 {0}\uc774(\uac00) REPLICATION_UP \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventREPLICATIONUP.explanation=\uc9c0\uc815\ub41c HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4\uac00 REPLICATION_UP \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventREPLICATIONUP.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventREPLICATIONDOWN=SESN0143I: HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4 {0}\uc774(\uac00) REPLICATION_DOWN \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventREPLICATIONDOWN.explanation=\uc9c0\uc815\ub41c HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4\uac00 REPLICATION_DOWN \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventREPLICATIONDOWN.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventISCONGESTED=SESN0144I: HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4 {0}\uc774(\uac00) IS_CONGESTED \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventISCONGESTED.explanation=\uc9c0\uc815\ub41c HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4\uac00 IS_CONGESTED \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventISCONGESTED.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.EventNOTCONGESTED=SESN0145I: HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4 {0}\uc774(\uac00) NOT_CONGESTED \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventNOTCONGESTED.explanation=\uc9c0\uc815\ub41c HttpSessDRSControllerVars DRS \uc778\uc2a4\ud134\uc2a4\uac00 NOT_CONGESTED \uc774\ubca4\ud2b8\ub97c \uc218\uc2e0\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.EventNOTCONGESTED.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NullKey=SESN0146E: \ubb38\uc790\uc5f4 \ud0a4\ub85c \ubcc0\ud658\ub41c entryKey\uac00 \ub110\uc785\ub2c8\ub2e4. 
+ControllerSession.NullKey.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c\ub294 entryKey\uc5d0\uc11c \ubcc0\ud658\ub41c \ubb38\uc790\uc5f4 \ud0a4\uac00 \ub110\uc785\ub2c8\ub2e4.
+ControllerSession.NullKey.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regInUnregtable=SESN0147E: \uc624\ub958: {0} \ud1a0\ud070\uc744 \uc0ac\uc6a9\ud558\uc5ec \ud558\uc704(servant)\uac00 \ub4f1\ub85d\ub418\uc5c8\uc9c0\ub9cc \ub4f1\ub85d \ucde8\uc18c\ub41c \ud14c\uc774\ube14\uc5d0 \ub098\ud0c0\ub0a9\ub2c8\ub2e4. 
+ControllerSession.regInUnregtable.explanation=\ud558\uc704(servant)\uac00 \ub4f1\ub85d\ub418\uc5c8\uc9c0\ub9cc, \ub4f1\ub85d \ucde8\uc18c \ud14c\uc774\ube14\uc5d0 \ud1a0\ud070\uc774 \ud45c\uc2dc\ub429\ub2c8\ub2e4.
+ControllerSession.regInUnregtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.regNotinRegtable=SESN0148E: \uc624\ub958: {0} \ud1a0\ud070\uc744 \uc0ac\uc6a9\ud558\uc5ec \ud558\uc704(servant)\uac00 \ub4f1\ub85d\ub418\uc5c8\uc9c0\ub9cc \ub4f1\ub85d\ub41c \ud14c\uc774\ube14\uc5d0 \ub098\ud0c0\ub098\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+ControllerSession.regNotinRegtable.explanation=\ud558\uc704(servant)\uac00 \ub4f1\ub85d\ub418\uc5c8\uc9c0\ub9cc, \ub4f1\ub85d \ud14c\uc774\ube14\uc5d0 \ud1a0\ud070\uc774 \ud45c\uc2dc\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+ControllerSession.regNotinRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.unregInRegtable=SESN0149E: \uc624\ub958: {0} \ud1a0\ud070\uc744 \uc0ac\uc6a9\ud558\uc5ec \ud558\uc704(servant)\uac00 \ub4f1\ub85d \ucde8\uc18c\ub418\uc5c8\uc9c0\ub9cc \ub4f1\ub85d\ub41c \ud14c\uc774\ube14\uc5d0 \ub098\ud0c0\ub0a9\ub2c8\ub2e4. 
+ControllerSession.unregInRegtable.explanation=\ud558\uc704(servant)\uac00 \ub4f1\ub85d \ucde8\uc18c\ub418\uc5c8\uc9c0\ub9cc, \ub4f1\ub85d \ud14c\uc774\ube14\uc5d0 \ud1a0\ud070\uc774 \ud45c\uc2dc\ub429\ub2c8\ub2e4.
+ControllerSession.unregInRegtable.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullContext=SESN0150E: \uc624\ub958: {0} \uc778\uc2a4\ud134\uc2a4\uc5d0 \ub300\ud574 \ub9ac\ud134\ub41c \ucee8\ud14d\uc2a4\ud2b8\uac00 \ub110\uc785\ub2c8\ub2e4. 
+ControllerSession.nullContext.explanation=\uc778\uc2a4\ud134\uc2a4 \uac80\uc0c9\uc5d0\uc11c \ub9ac\ud134\ub41c \ucee8\ud14d\uc2a4\ud2b8\uac00 \ub110\uc785\ub2c8\ub2e4.
+ControllerSession.nullContext.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullToken=SESN0151E: token \ub9e4\uac1c\ubcc0\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+
+ControllerSession.nullToken.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc758 \ud1a0\ud070 \ub9e4\uac1c\ubcc0\uc218\uc5d0 \ub300\ud574 \ub110 \uac12\uc774 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.nullToken.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenExists=SESN0152E: \uc624\ub958: \uc774\ubbf8 \uc788\ub294 \ud1a0\ud070\uc744 \ucd94\uac00\ud558\ub824\uace0 \ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.tokenExists.explanation=\uc774\ubbf8 \uc874\uc7ac\ud558\ub294 \ud1a0\ud070\uc744 \ucd94\uac00\ud558\ub824\uace0 \uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0 \uc804\ub2ec\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.tokenExists.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNoMatch=SESN0153E: \uc624\ub958: \uc608\uc0c1\ud55c \ud1a0\ud070 {0}\uc774(\uac00) tmp2 {1}\uacfc(\uc640) \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+ControllerSession.tokenNoMatch.explanation=\uc9c0\uc815\ub41c \ud1a0\ud070\uc774 tmp2\uc758 \ud1a0\ud070\uacfc \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+ControllerSession.tokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.arrayToObject=SESN0154E: \uc624\ub958: \ub9ac\ud134\ub41c \ubc14\uc774\ud2b8 \ubc30\uc5f4\uc744 \uc624\ube0c\uc81d\ud2b8\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.arrayToObject.explanation=\ub9ac\ud134\ub41c \ubc14\uc774\ud2b8 \ubc30\uc5f4\uc744 \uc624\ube0c\uc81d\ud2b8\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.arrayToObject.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.byteArrayNull=SESN0155E: \uc624\ub958: \ub9ac\ud134\ub41c \ubc14\uc774\ud2b8 \ubc30\uc5f4\uc774 \ub110\uc785\ub2c8\ub2e4. 
+ControllerSession.byteArrayNull.explanation=\ub9ac\ud134\ub41c \ubc14\uc774\ud2b8 \ubc30\uc5f4\uc774 \ub110\uc785\ub2c8\ub2e4. 
+ControllerSession.byteArrayNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.NoCreateProxy=SESN0156E: {0} \ud1a0\ud070\uc5d0 \ub300\ud55c \ud504\ub85d\uc2dc\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ControllerSession.NoCreateProxy.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uac00 \uc9c0\uc815\ub41c \ud1a0\ud070\uc5d0 \ub300\ud55c \ud504\ub85d\uc2dc\ub97c \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ControllerSession.NoCreateProxy.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.environ=SESN0157E: \uc624\ub958: \uc798\ubabb\ub41c \ud658\uacbd\uc5d0\uc11c \uba54\uc18c\ub4dc\uac00 \ud638\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.environ.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uac00 \ube44\uc81c\uc5b4 \uc601\uc5ed \ud658\uacbd\uc5d0\uc11c \ud638\ucd9c\ub418\uc5c8\uc2b5\ub2c8\ub2e4. 
+ControllerSession.environ.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokencontextNull=SESN0158E: \uc624\ub958: stoken = {0} \ubc0f id = {1}\uc5d0 \ub300\ud574 \ucee8\ud14d\uc2a4\ud2b8\uac00 \ub110\uc785\ub2c8\ub2e4.
+ControllerSession.stokencontextNull.explanation=\uc9c0\uc815\ub41c stoken \ubc0f ID\uc5d0 \ub300\ud55c \ucee8\ud14d\uc2a4\ud2b8\uac00 \ub110\uc785\ub2c8\ub2e4. 
+ControllerSession.stokencontextNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.getUnregisteredErr=SESN0159E: \uc624\ub958: {0} stoken\uc5d0 \ub300\ud574 \ub4f1\ub85d \ucde8\uc18c\ub41c \ud56d\ubaa9\uc744 \uac00\uc838\uc62c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ControllerSession.getUnregisteredErr.explanation=stoken\uc5d0 \ub300\ud55c \ub4f1\ub85d \ucde8\uc18c \ud56d\ubaa9\uc744 \uac00\uc838\uc62c \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.getUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.locateUnregisteredErr=SESN0160E: \uc624\ub958: {0} stoken\uc5d0 \ub300\ud574 \ub4f1\ub85d \ucde8\uc18c\ub41c \ud56d\ubaa9\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+ControllerSession.locateUnregisteredErr.explanation=stoken\uc5d0 \ub300\ud55c \ub4f1\ub85d \ucde8\uc18c \ud56d\ubaa9\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.locateUnregisteredErr.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullGroupName=SESN0161E: GroupName \ub9e4\uac1c\ubcc0\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+
+ControllerSession.nullGroupName.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc758 GroupName \ub9e4\uac1c\ubcc0\uc218\uc5d0 \ub300\ud574 \ub110 \uac12\uc774 \uc804\ub2ec\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+ControllerSession.nullGroupName.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.instanceCreateFail=SESN0162E: \ud1a0\ud070\uc774 \ub110\uc784: \uc81c\uc5b4 \uc601\uc5ed \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.instanceCreateFail.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uac00 \uc81c\uc5b4 \uc601\uc5ed \uc778\uc2a4\ud134\uc2a4\ub97c \uc791\uc131\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.instanceCreateFail.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.registerServantNullReturn=SESN0163E: \uc624\ub958: registerServant\uc5d0\uc11c \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.registerServantNullReturn.explanation=registerServant \ud638\ucd9c\uc774 \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4.
+ControllerSession.registerServantNullReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.stokenNoMatch=SESN0164E: \uc624\ub958: {0} stoken\uc774 {1} stokenTest\uc640 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+ControllerSession.stokenNoMatch.explanation=\uc9c0\uc815\ub41c stoken\uc774 stokenTest \ud1a0\ud070\uacfc \uc77c\uce58\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+ControllerSession.stokenNoMatch.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenNotinArray=SESN0165E: \uc624\ub958: {0} \ud1a0\ud070\uc774 \ud1a0\ud070 \ubc30\uc5f4\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.tokenNotinArray.explanation=\uc9c0\uc815\ub41c stoken\uc774 \ud1a0\ud070 \ubc30\uc5f4\uc5d0 \uc5c6\uc2b5\ub2c8\ub2e4. 
+ControllerSession.tokenNotinArray.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.tokenInstanceOffset=SESN0166E: \ud1a0\ud070 \ud14c\uc774\ube14\uc758 instanceOffset \uc624\ub958: \ud1a0\ud070\uc740 {0}\uc774\uace0 instanceOffset\uc740 0\ubcf4\ub2e4 \ud06c\uac70\ub098 \uac19\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
+ControllerSession.tokenInstanceOffset.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c \ud1a0\ud070\uc744 \ucc98\ub9ac\ud558\ub294 \uc911\uc5d0 instanceOffset \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.tokenInstanceOffset.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.confirmServantRegistration=SESN0167E: \uc624\ub958: confirmServantRegistration\uc5d0\uc11c \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.confirmServantRegistration.explanation=confirmServantRegistration \ud638\ucd9c\uc774 \ub110\uc744 \ub9ac\ud134\ud588\uc2b5\ub2c8\ub2e4. 
+ControllerSession.confirmServantRegistration.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerSession.nullSessvalue=SESN0168E: \uc624\ub958: \uc138\uc158\uc73c\ub85c \ubcc0\ud658\ub41c \uac12 \ub9e4\uac1c\ubcc0\uc218\uac00 \ub110\uc785\ub2c8\ub2e4. 
+ControllerSession.nullSessvalue.explanation=\uc9c0\uc815\ub41c \uba54\uc18c\ub4dc\uc5d0\uc11c\ub294 \uac12 \ub9e4\uac1c\ubcc0\uc218\uc5d0\uc11c \ubcc0\ud658\ub41c \uc138\uc158\uc774 \ub110\uc785\ub2c8\ub2e4. 
+ControllerSession.nullSessvalue.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.wrongTableDef=SESN0181E: \ud14c\uc774\ube14\uc774 \uc788\uc9c0\ub9cc \uc815\uc758\uac00 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.wrongTableDef.explanation=\uc138\uc158 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ud14c\uc774\ube14\uc774 \uc798\ubabb \uc791\uc131\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.wrongTableDef.useraction=\ud14c\uc774\ube14\uc744 \uc218\ub3d9\uc73c\ub85c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cantstartLTC=SESN0182E: \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.cantstartLTC.explanation=\ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc2dc\uc791\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.cantstartLTC.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.localRollBack=SESN0183E: setRollbackOnly\ub85c \uc778\ud574 \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc774 \ub864\ubc31\ub428
+DatabaseHashMap.localRollBack.explanation=\ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc744 \uc815\ub9ac\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud558\uc5ec \ub85c\uceec \ud2b8\ub79c\uc7ad\uc158\uc774 \ub864\ubc31\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.localRollBack.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.deferWrite=SESN0184I: \uc138\uc158\uc774 \uc11c\ube44\uc2a4 \uba54\uc18c\ub4dc {0}\uc5d0 \uc788\uae30 \ub54c\ubb38\uc5d0 \ub2e4\uc74c \uc138\uc158\uae4c\uc9c0 \uc4f0\uae30 \uc9c0\uc5f0
+DatabaseHashMap.deferWrite.explanation=\uc11c\ube14\ub9bf\uc774 \ud604\uc7ac \uc138\uc158\uc5d0 \uc561\uc138\uc2a4\ud558\ub294 \uc911\uc774\uc5b4\uc11c \uc9c0\uae08 \ub2f9\uc7a5 \uc138\uc158\uc744 \uc9c0\uc18d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc2dc\uac04 \uae30\ubc18 \uc791\uc131\uc790 \uc2a4\ub808\ub4dc\ub97c \ub2e4\uc74c \ubc88\uc5d0 \uc2e4\ud589\ud558\uba74 \uc138\uc158\uc774 \uc9c0\uc18d\ub429\ub2c8\ub2e4.
+DatabaseHashMap.deferWrite.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.nullConnection=SESN0185E: \ub110 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc5f0\uacb0\uc744 \uac00\uc838\uc654\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.nullConnection.explanation=\ub110 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \uc5f0\uacb0\uc744 \uac00\uc838\uc654\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.nullConnection.useraction=SQLException\uc774 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 \uc0ac\uc6a9\uc790 \ud658\uacbd\uc758 \ud574\ub2f9 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ubb38\uc11c\ub97c \ucc38\uc870\ud558\uc2ed\uc2dc\uc624. \uc138\uc158 \uad00\ub9ac\uc790\uc5d0 \ub300\ud574 \ub370\uc774\ud130 \uc18c\uc2a4\ub97c \uc62c\ubc14\ub85c \uad6c\uc131\ud588\ub294\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.cmdaNull=SESN0186W: ComponentMetaDataAccessor \ub9e4\uac1c\ubcc0\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
+DatabaseHashMap.cmdaNull.explanation=ComponentMetaDataAccessor\uc5d0 \uc561\uc138\uc2a4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.cmdaNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.propertyTooBig=SESN0187I: \uc774 \ud2b9\uc131\uc740 \ub108\ubb34 \ud070 {0}\uc785\ub2c8\ub2e4.
+DatabaseHashMapMR.propertyTooBig.explanation=\uc9c0\uc815\ub41c \ud2b9\uc131\uc774 \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \ube44\ud574 \ub108\ubb34 \ud07d\ub2c8\ub2e4.
+DatabaseHashMapMR.propertyTooBig.useraction=\ud2b9\uc131 \ud06c\uae30\ub97c \uc904\uc774\uac70\ub098 \uc138\uc158\uc5d0 \uc800\uc7a5\ud558\uc9c0 \ub9c8\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+MTMStore.drsContext=SESN0188I: {0} \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc758 \uba54\ubaa8\ub9ac \uac04 \ubaa8\ub4dc\uac00 {1}\uc785\ub2c8\ub2e4.
+MTMStore.drsContext.explanation=\uc774 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \uba54\ubaa8\ub9ac \uac04 \ubcf5\uc81c \ubaa8\ub4dc\ub97c \uc9c0\uc815\ud569\ub2c8\ub2e4.
+MTMStore.drsContext.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+WsSessionContext.timeOut=SESN0189E: \uc138\uc158 \uc561\uc138\uc2a4 \ub300\uae30\uac00 \uc81c\ud55c\uc2dc\uac04 \ucd08\uacfc\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc138\uc158 \uc561\uc138\uc2a4 \uc9c1\ub82c\ud654 \uae30\ub2a5\uc774 \uc561\uc138\uc2a4\ub97c \ud5c8\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+WsSessionContext.timeOut.explanation=\uc138\uc158 \uc561\uc138\uc2a4 \uc9c1\ub82c\ud654 \uae30\ub2a5\uc774 \uc0ac\uc6a9 \uac00\ub2a5\ud558\uba70 \uc81c\ud55c\uc2dc\uac04\uc774 \ub418\uba74 \uc561\uc138\uc2a4\ub97c \ud5c8\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc5b4 \uc788\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+WsSessionContext.timeOut.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84 \uc2a4\ub808\ub4dc\ub97c \ub364\ud504\ud558\uc5ec \uc815\uc9c0\ub41c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc81c\ud55c\uc2dc\uac04\uc744 \ub298\ub9ac\uac70\ub098 \uc81c\ud55c\uc2dc\uac04\uc774 \ub418\uba74 \uc138\uc158\uc5d0 \uc561\uc138\uc2a4 \ud5c8\uc6a9\uc744 \uace0\ub824\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serviceNull=SESN0190E: CoreStack \uc11c\ube44\uc2a4\uac00 \ub110\uc774\uba70, {0}\uc5d0 \ub300\ud574 HAGroup\uc744 \uacb0\ud569\ud560 \uc218 \uc5c6\uc74c
+WsSessionMgrComponentImpl.serviceNull.explanation=CoreStack \uc11c\ube44\uc2a4\uc5d0 \uc561\uc138\uc2a4\ud558\uc5ec HAGroup\uc744 \uacb0\ud569\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.serviceNull.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+ControllerMTMCacheMsgListener.unableCreate=SESN0191E: zOS\uc5d0\uc11c \uc138\uc158 \uc9c0\uc6d0 \uc800\uc7a5\uc744 \uc791\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. {0} \uc138\uc158\uc5d0 \ub300\ud55c createEntry\uac00 \ud3ec\uae30\ub429\ub2c8\ub2e4.
+ControllerMTMCacheMsgListener.unableCreate.explanation=zOS\uc5d0\uc11c \uc138\uc158 \uc9c0\uc6d0 \uc800\uc7a5\uc744 \uc791\uc131\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+ControllerMTMCacheMsgListener.unableCreate.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.registerSessionFailed=SESN0192E: ID {0}\uc5d0 \ub300\ud55c registerSession \uba54\uc18c\ub4dc \ud638\ucd9c\uc774 \ub9ac\ud134 \ucf54\ub4dc {1}(\uc73c)\ub85c \uc2e4\ud328
+SessionServantAffinityManager.registerSessionFailed.explanation=\uc774 \uc138\uc158\uc5d0 \ub300\ud574 zOS \ud558\uc704(servant) \uc720\uc0ac\uc131\uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SessionServantAffinityManager.registerSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionServantAffinityManager.unregisterSessionFailed=SESN0193E: ID {0}\uc5d0 \ub300\ud55c unregisterSession \uba54\uc18c\ub4dc \ud638\ucd9c\uc774 \ub9ac\ud134 \ucf54\ub4dc {1}(\uc73c)\ub85c \uc2e4\ud328
+SessionServantAffinityManager.unregisterSessionFailed.explanation=\uc774 \uc138\uc158\uc5d0 \ub300\ud574 zOS \ud558\uc704(servant) \uc720\uc0ac\uc131\uc744 \ud574\uc81c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SessionServantAffinityManager.unregisterSessionFailed.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdNotFound=SESN0197W: zOS \uc11c\ubc84 ID\ub97c \ud310\ubcc4\ud560 \uc218 \uc5c6\uc5b4 \uae30\ubcf8\uac12\uc774 -1\ub85c \uc124\uc815\ub429\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.serverIdNotFound.explanation=server.xml\uc5d0\uc11c \uc11c\ubc84 ID\ub97c \ud655\ubcf4\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.serverIdNotFound.useraction=\ud544\uc694\ud558\uba74 \uad6c\uc131\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.serverIdException=SESN0198E: zOS \uc11c\ubc84 ID\ub97c \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc608\uc678\uac00 \uc218\uc2e0\ub418\uc5b4 \uae30\ubcf8\uac12\uc774 -1\ub85c \uc124\uc815\ub429\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.serverIdException.explanation=zOS \uc11c\ubc84 ID\ub97c \uac00\uc838\uc624\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.serverIdException.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled=SESN0199I: HttpSession \ube44\uad00\ub9ac \uc11c\ubc84 \ubcf5\uc81c\uac00 \uc0ac\uc6a9 \uac00\ub2a5\ud558\uac8c \ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.explanation=\ud574\ub2f9 zOS \uae30\ubcf8 \uc11c\ubc84\ub294 \ud558\uc704(servant) \uc7a5\uc560 \ubcf5\uad6c \uc138\uc158 \ub370\uc774\ud130\ub97c \ubcf5\uc81c\ud569\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.unmanagedServerReplicationEnabled.useraction=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4 \uba54\uc2dc\uc9c0\uc785\ub2c8\ub2e4.
+# -------------------------------------------------------------------------------------------------
+MTMBuffWrapper.serializationException=SESN0200E: \uc9c1\ub82c\ud654 \uc911\uc5d0 \uc608\uc678\uac00 \uc218\uc2e0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+MTMBuffWrapper.serializationException.explanation=\uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
+MTMBuffWrapper.serializationException.useraction=\uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+MTMDataXfer.attributeConversionException=SESN0201E: {0} \uc18d\uc131 \ubcc0\ud658\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+MTMDataXfer.attributeConversionException.explanation=\uc18d\uc131\uc744 \uc9c1\ub82c\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+MTMDataXfer.attributeConversionException.useraction=\uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+MTMHashMap.attributeReplicationFailure=SESN0202E: {0} \uc18d\uc131 \ubcf5\uc81c\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+MTMHashMap.attributeReplicationFailure.explanation=\uc18d\uc131\uc744 \uc9c1\ub82c\ud654\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+MTMHashMap.attributeReplicationFailure.useraction=\uc624\ube0c\uc81d\ud2b8\ub97c \uc9c1\ub82c\ud654\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning=SESN0203W: \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ub2e4\uc911 \ud589 \uad6c\uc131\uc5d0 \uc138\uc158 ID\uc640 \ub3d9\uc77c\ud55c \uc774\ub984\uc73c\ub85c {0} \uc18d\uc131\uc744 \uc800\uc7a5\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc18d\uc131\uc774 \uc9c0\uc18d\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.explanation=\uc138\uc158 \uc18d\uc131 \uc774\ub984\uc740 \ub370\uc774\ud130\ubca0\uc774\uc2a4 \ub2e4\uc911 \ud589 \uad6c\uc131\uc5d0\uc11c \uc138\uc158 ID\uc640 \uc77c\uce58\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+DatabaseHashMapMR.AttributeEqualsSessionIdWarning.useraction=\uc18d\uc131\uc774 \uc9c0\uc18d\ub418\uac8c \ud558\ub824\uba74 \uc138\uc158 \uc18d\uc131 \uc774\ub984\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+MTMVars.DRSNotStarted=SESN0204E: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc758 {0} \ubcf5\uc81c \ub3c4\uba54\uc778\uc5d0 \ubb38\uc81c\uac00 \uc788\uc73c\ubbc0\ub85c \uba54\ubaa8\ub9ac \ub300 \uba54\ubaa8\ub9ac \ubcf5\uc81c\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc138\uc158 \uad00\ub9ac\uc790\ub97c \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+MTMVars.DRSNotStarted.explanation=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uac00 \uc815\uc758\ub41c \ubcf5\uc81c \ub3c4\uba54\uc778\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+MTMVars.DRSNotStarted.useraction=\ubcf5\uc81c \ub3c4\uba54\uc778\uc744 \uc791\uc131\ud55c \ud6c4 \uc11c\ubc84\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud558\uac70\ub098 \uae30\ud0c0 \ubaa8\ub4e0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0 \ub300\ud574 \uba54\ubaa8\ub9ac \ub300 \uba54\ubaa8\ub9ac \uc138\uc158 \ubcf5\uc81c\ub97c \uc0ac\uc6a9 \ubd88\ub2a5\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+DatabaseHashMap.IndexIncorrect=SESN0205W: \uc138\uc158\uc5d0 \uc0ac\uc6a9\ub41c \ub370\uc774\ud130\ubca0\uc774\uc2a4\uc5d0 \uc798\ubabb\ub41c \uc0c9\uc778\uc774 \uc788\uc2b5\ub2c8\ub2e4.
+DatabaseHashMap.IndexIncorrect.explanation=\ud14c\uc774\ube14\uc758 \uc138\uc158 \uc0c9\uc778\uc740 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\uc758 \uc678\ubd80\uc5d0\uc11c \uc791\uc131\ub41c \uac83\ucc98\ub7fc \ub098\ud0c0\ub0a9\ub2c8\ub2e4.
+DatabaseHashMap.IndexIncorrect.useraction=\uc0c9\uc778\uc744 \uc81c\uac70\ud558\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uc11c\ubc84\ub97c \ub2e4\uc2dc \uc2dc\uc791\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=\uc138\uc158 \uc624\ube0c\uc81d\ud2b8: {0}
+CommonMessage.sessionid=\uc138\uc158 ID: {0}
+CommonMessage.miscData=\uae30\ud0c0 \ub370\uc774\ud130: {0}
+# -------------------------------------------------------------------------------------------------
+WsSessionMgrComponentImpl.propertyError=SESN8000W: \uc138\uc158 \uad00\ub9ac\uc790 \uc0ac\uc6a9\uc790 \uc815\uc758 \ud2b9\uc131 {0}\uc744(\ub97c) \ub85c\ub4dc\ud558\ub294 \uc911\uc5d0 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.propertyError.explanation= \uc138\uc158 \uc0ac\uc6a9\uc790 \uc815\uc758 \ud2b9\uc131\uc774 \ub85c\ub4dc\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4.
+WsSessionMgrComponentImpl.propertyError.useraction= \uc138\uc158 \uad00\ub9ac\uc790 \uc0ac\uc6a9\uc790 \uc815\uc758 \ud2b9\uc131 \uac12\uc774 \uc62c\ubc14\ub974\uba70 \uc815\uc758\ub418\uc9c0 \uc54a\uc740 \ubcc0\uc218\ub97c \ucc38\uc870\ud558\uc9c0 \uc54a\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=\uc608\uc678\ub294 \uc785\ub2c8\ub2e4.
+#----------AdminTask messages----------
+AdminTask.sessiongroup.description=admin \ud0dc\uc2a4\ud06c\uc640 \uad00\ub828\ub41c \uc138\uc158 \uadf8\ub8f9\uc785\ub2c8\ub2e4.
+AdminTask.addDisabledSessionCookie.title=AddDisabledSessionCookie
+AdminTask.addDisabledSessionCookie.description=\ud504\ub85c\uadf8\ub798\ubc0d\uc73c\ub85c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc218\uc815\ud560 \uc218 \uc5c6\ub294 \ucfe0\ud0a4 \uad6c\uc131\uc744 \ucd94\uac00\ud569\ub2c8\ub2e4.
+AdminTask.cookieDomain.parm.title=cookieDomain
+AdminTask.cookieDomain.parm.description=\ucd94\uac00 \uad6c\uc131\uc744 \ud5c8\uc6a9\ud558\uc9c0 \uc54a\uc73c\ub824\uba74 \ub3c4\uba54\uc778, \uc774\ub984 \ubc0f \uacbd\ub85c\uac00 \ucfe0\ud0a4\uc5d0 \ub300\ud574 \uc77c\uce58\ud574\uc57c \ud569\ub2c8\ub2e4. \uc774\ub294 \ub3c4\uba54\uc778 \ub9e4\uac1c\ubcc0\uc218\uc785\ub2c8\ub2e4.
+AdminTask.cookieName.parm.title=cookieName
+AdminTask.cookieName.parm.description=\ucd94\uac00 \uad6c\uc131\uc744 \ud5c8\uc6a9\ud558\uc9c0 \uc54a\uc73c\ub824\uba74 \ub3c4\uba54\uc778, \uc774\ub984 \ubc0f \uacbd\ub85c\uac00 \ucfe0\ud0a4\uc5d0 \ub300\ud574 \uc77c\uce58\ud574\uc57c \ud569\ub2c8\ub2e4. \uc774\ub294 \uc774\ub984 \ub9e4\uac1c\ubcc0\uc218\uc785\ub2c8\ub2e4.
+AdminTask.cookiePath.parm.title=cookiePath
+AdminTask.cookiePath.parm.description=\ucd94\uac00 \uad6c\uc131\uc744 \ud5c8\uc6a9\ud558\uc9c0 \uc54a\uc73c\ub824\uba74 \ub3c4\uba54\uc778, \uc774\ub984 \ubc0f \uacbd\ub85c\uac00 \ucfe0\ud0a4\uc5d0 \ub300\ud574 \uc77c\uce58\ud574\uc57c \ud569\ub2c8\ub2e4. \uc774\ub294 \uacbd\ub85c \ub9e4\uac1c\ubcc0\uc218\uc785\ub2c8\ub2e4.
+AdminTask.removeDisabledSessionCookie.title=removeDisabledSessionCookie
+AdminTask.removeDisabledSessionCookie.description=\ud504\ub85c\uadf8\ub798\ubc0d\uc73c\ub85c \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uc218\uc815\ud560 \uc218 \uc5c6\ub3c4\ub85d \ucfe0\ud0a4 \uad6c\uc131\uc744 \uc81c\uac70\ud569\ub2c8\ub2e4.
+AdminTask.cookieId.parm.title=cookieId
+AdminTask.cookieId.parm.description=\ucfe0\ud0a4\uc758 ID\uc785\ub2c8\ub2e4.
+AdminTask.listDisabledSessionCookie.title=listDisabledSessionCookie
+AdminTask.listDisabledSessionCookie.description=\ud504\ub85c\uadf8\ub798\ubc0d\uc73c\ub85c \uc218\uc815\ud560 \uc218 \uc5c6\ub294 \ucfe0\ud0a4 \uad6c\uc131\uc758 \uc138\ud2b8\ub97c \ub098\uc5f4\ud569\ub2c8\ub2e4.
+AdminTask.modifyDisabledSessionCookie.title=modifyDisabledSessionCookie
+AdminTask.modifyDisabledSessionCookie.description=\uae30\uc874 \ucfe0\ud0a4 \uad6c\uc131\uc744 \uc218\uc815\ud569\ub2c8\ub2e4.
+
+AdminTask.targetObject.title=SessionSecurity
+AdminTask.targetObject.description=\ub300\uc0c1\uc774 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc140\uc5d0\uc11c SessionSecurity\uac00 \uc218\uc815\ub429\ub2c8\ub2e4.
+
+AdminTask.element.already.exists=SESN0800E: \uc694\uc18c\uac00 \uc774\ubbf8 \uc788\uc2b5\ub2c8\ub2e4.
+AdminTask.element.already.exists.explanation=\ucd94\uac00\ud558\ub294 \uc694\uc18c\uac00 \uae30\uc874\uc5d0 \uc788\ub294 \uc694\uc18c\uc640 \uc77c\uce58\ud569\ub2c8\ub2e4.
+AdminTask.element.already.exists.useraction=
+
+AdminTask.element.id.not.found=SESN0801E: \ud574\ub2f9 ID\uc758 \uc694\uc18c\ub97c \ucc3e\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
+AdminTask.element.id.not.found.explanation=\ud574\ub2f9 ID\uc758 \uc694\uc18c\ub97c \ucc3e\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
+AdminTask.element.id.not.found.useraction=
+#----------AdminTask messages----------

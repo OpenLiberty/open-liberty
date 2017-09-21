@@ -1,0 +1,8 @@
+<project name="com.ibm.ws.session.db" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+
+  <!-- Disable trace/ffdc injection as it is hard-coded in this project --> 
+  <property name="no.trace.instrumentation" value="true"/>
+	<!-- Disable autoformatting as this code needs to be diff'ed with WAS code -->
+	<property name="no.auto.format" value="true"/>
+</project>

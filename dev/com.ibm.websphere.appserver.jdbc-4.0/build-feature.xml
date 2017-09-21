@@ -1,0 +1,3 @@
+<project name="com.ibm.websphere.appserver.jdbc-4.0" default="build" basedir=".">
+  <import file="../ant_build/public_imports/feature_imports.xml"/>
+</project>
