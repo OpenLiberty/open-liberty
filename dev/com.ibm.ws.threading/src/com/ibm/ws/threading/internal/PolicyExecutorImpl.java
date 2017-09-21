@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.threading.internal;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -973,5 +974,47 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         PolicyTaskFuture<?> policyTaskFuture = new PolicyTaskFuture<Void>(task, null);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
+    }
+
+    public void introspect(PrintWriter out) {
+        final String INDENT = "  ";
+        final String DOUBLEINDENT = INDENT + INDENT;
+        out.println(identifier);
+        out.println(INDENT + "coreConcurrency = " + coreConcurrency);
+        out.println(INDENT + "maxConcurrency = " + maxConcurrency);
+        out.println(INDENT + "maxQueueSize = " + maxQueueSize);
+        out.println(INDENT + "maxWaitForEnqueue = " + TimeUnit.NANOSECONDS.toMillis(maxWaitForEnqueueNS.get()) + " ms");
+        out.println(INDENT + "queueFullAction = " + queueFullAction.toString());
+        int numRunningThreads, numRunningPrioritizedThreads;
+        synchronized (configLock) {
+            numRunningThreads = maxConcurrency - maxConcurrencyConstraint.availablePermits();
+            numRunningPrioritizedThreads = coreConcurrency - coreConcurrencyAvailable.get();
+        }
+        out.println(INDENT + "Total Enqueued to Global Executor = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
+        out.println(INDENT + "withheldConcurrency = " + withheldConcurrency.get());
+        out.println(INDENT + "Remaining Queue Capacity = " + maxQueueSizeConstraint.availablePermits());
+        out.println(INDENT + "Created by PolicyExecutorProvider = " + (providerCreated != null));
+        out.println(INDENT + "state = " + state.toString());
+        out.println(INDENT + "Running Task Futures: ");
+        if (running.isEmpty()) {
+            out.println(DOUBLEINDENT + "None");
+        } else {
+            for (PolicyTaskFuture<?> task : running) {
+                out.println(DOUBLEINDENT + task.toString());
+            }
+        }
+        int counter = 50;
+        out.println(INDENT + "Queued Task Futures (up to first " + counter + "):");
+        if (queue.isEmpty()) {
+            out.println(DOUBLEINDENT + "None");
+        } else {
+            for (PolicyTaskFuture<?> task : queue) {
+                if (counter-- > 0)
+                    out.println(DOUBLEINDENT + task.toString());
+                else
+                    break;
+            }
+        }
+        out.println();
     }
 }
