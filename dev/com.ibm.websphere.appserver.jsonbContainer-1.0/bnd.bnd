@@ -8,13 +8,11 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+-include= ~../cnf/resources/bnd/liberty-release.props
 
-Bundle-SymbolicName: com.ibm.websphere.appserver.jsonbContainer-1.0
+-nobundles=true
 
 publish.feature.resources: **
 
--buildpath: \
-	${javac.bootclasspath.java6}, \
+-dependson: \
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest
