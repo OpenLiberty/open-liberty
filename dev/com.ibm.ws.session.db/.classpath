@@ -8,7 +8,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.0"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.1"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.container.service"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.tx.ltc"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.transaction.1.1"/>

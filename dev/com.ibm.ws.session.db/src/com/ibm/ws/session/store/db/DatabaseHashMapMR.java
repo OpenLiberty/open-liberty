@@ -1,27 +1,13 @@
-/*COPYRIGHT_START***********************************************************
+/*******************************************************************************
+ * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * IBM Confidential OCO Source Material
- * 5724-J08, 5724-I63, 5724-H88, 5724-H89, 5655-N02, 5733-W70 (C) COPYRIGHT International Business Machines Corp. 1997, 2012
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- *
- *   IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
- *   ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- *   PURPOSE. IN NO EVENT SHALL IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR
- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
- *   USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- *   OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
- *   OR PERFORMANCE OF THIS SOFTWARE.
- *
- *  @(#) 1.8.1.2 SERV1/ws/code/session.store/src/com/ibm/ws/session/store/db/DatabaseHashMapMR.java, WAS.session, WASX.SERV1, ff1146.05 6/7/11 10:41:16 [11/21/11 18:33:09]
- *
- * @(#)file   DatabaseHashMapMR.java
- * @(#)version   1.8.1.2
- * @(#)date      6/7/11
- *
- *COPYRIGHT_END*************************************************************/
-
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.store.db;
 
 import java.io.BufferedInputStream;
@@ -71,13 +57,13 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
      */
     public DatabaseHashMapMR(IStore store, SessionManagerConfig smc, DatabaseStoreService databaseStoreService) {
         super(store, smc, databaseStoreService);
-        // We know we're running multi-row..if not writeAllProperties and not time-based writes, 
+        // We know we're running multi-row..if not writeAllProperties and not time-based writes,
         // we must keep the app data tables per thread (rather than per session)
         appDataTablesPerThread = (!_smc.writeAllProperties() && !_smc.getEnableTimeBasedWrite());
     }
-    
+
     private void initMultirowDBTypes(Connection conn) throws SQLException {
-        
+
         if (!usingOracle) { // START PM99783
             PreparedStatement testPS  = null;
             try {
@@ -92,20 +78,20 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                 }
             }
         } else {  // Oracle DB does not support getParameterType, hence need to find column types old fashion way, code lifted from getTableDefinition and modified
-            
+
             boolean smallExists = false;
             boolean mediumExists = false;
             boolean largeExists = false;
-            
+
             DatabaseMetaData dmd = conn.getMetaData();
             String tbName = tableName;
             String qualifierName = null;
-            
+
             tbName = tbName.toUpperCase(); // note code in getTableDefinition converts tbName and qualifier to uppercase for Oracle case, hence do same thing here to be consistent
             if (dbid != null) {
                 qualifierName = dbid.toUpperCase(); // cmd PQ81615
             }
-            
+
             ResultSet rs1 = dmd.getColumns(null, qualifierName, tbName, "%");
             try {
                 while (rs1.next()) {
@@ -134,9 +120,9 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
             } finally {
                 closeResultSet(rs1);
             }
-            
+
         } // END PM99783
-       
+
     }
 
     /*
@@ -177,13 +163,13 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "problem getting types", e); //PM99783
                 }
                 if (conn != null)
-                    closeConnection(conn);                
+                    closeConnection(conn);
                 return false;
             }
         }
 
         try {
-            // we are not synchronized here - were not in old code either 
+            // we are not synchronized here - were not in old code either
             Hashtable sht = null;
             if (_smc.writeAllProperties()) {
                 Hashtable ht = d2.getSwappableData();
@@ -265,9 +251,9 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                         LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "before update " + propid + " for session " + id);
                     }
 
-                    // based on the amount of data, we choose whether to go to the 
-                    // small, medium, or large columns (nulling out whatever is 
-                    // in the other columns).  We first attempt an update.  If a 
+                    // based on the amount of data, we choose whether to go to the
+                    // small, medium, or large columns (nulling out whatever is
+                    // in the other columns).  We first attempt an update.  If a
                     // row count > 0 is returned, we are done.  Otherwise, the
                     // row does not yet exist so we insert.
 
@@ -343,7 +329,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                                                                                                                                 + largeColSize + " bytes");
                         }
                         // note, the old value in the largecolumn is left alone
-                        // since further access will look at the small column and then the 
+                        // since further access will look at the small column and then the
                         // medium column prior to the large column
 
                         if (!usingInformix) {
@@ -393,7 +379,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                 if (enumCount>0) {
                     results = batchUpdatePS.executeBatch();
                     if (usingOracle) { //PM99783 when on Oracle DB, executeBatch() returns -2 (SUCCESS_NO_INFO), might be related to BatchPerformanceWorkaround Oracle property, hence we getUpdateCount instead
-                        updateCount = batchUpdatePS.getUpdateCount(); 
+                        updateCount = batchUpdatePS.getUpdateCount();
                     }
                 } else {
                     results = new int[0]; //skip trying to insert
@@ -402,18 +388,18 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                 updateClose=true;
                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "after " + results.length + " batch update(s), total update count : " + updateCount);
-                }                
+                }
                 boolean needToInsert = false;
                 int batchInsertPSCount = results.length;
-                // PI53220 Oracle 11 returns -2 (SUCCESS_NO_INFO); PI57327 Oracle 12 returns successful results. 
-                if (results[0] == java.sql.Statement.SUCCESS_NO_INFO && updateCount > 0 && (_smc.writeAllProperties() || batchInsertPSCount == updateCount))                
+                // PI53220 Oracle 11 returns -2 (SUCCESS_NO_INFO); PI57327 Oracle 12 returns successful results.
+                if (results[0] == java.sql.Statement.SUCCESS_NO_INFO && updateCount > 0 && (_smc.writeAllProperties() || batchInsertPSCount == updateCount))
                 {
                     batchInsertPSCount = batchInsertPSCount - updateCount; // Oracle only : when Write All option or no insert cases
-                }                              
+                }
                 for (int i=0;i<batchInsertPSCount;i++) {
                     if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                         LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "For batch # " + (i+1) + ", update result : " + results[i]);
-                    }                    
+                    }
                     if (results[i]<=0) { //no rows updated (PM99783)
                         if (!needToInsert) {
                             needToInsert = true;
@@ -424,7 +410,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                         batchInsertPS.setString(2, updateRow.getPropId());
                         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "Insert attribute " + updateRow.getPropId());
-                        }                        
+                        }
                         switch (updateRow.getSize()) {
                         case DatabaseMRHelper.SMALL:
                             if (!updateRow.isUseStream()) {
@@ -437,7 +423,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                                 batchInsertPS.setBinaryStream(3, bis, objbuf.length);
                                 batchInsertPS.setNull(4, mediumPropType);
                                 batchInsertPS.setNull(5, largePropType);
-                            }                            
+                            }
                             break;
                         case DatabaseMRHelper.MEDIUM:
                             if (!updateRow.isUseStream()) {
@@ -467,8 +453,8 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                             break;
                         default:
                             break;
-                        } 
-                        
+                        }
+
                         batchInsertPS.setString(6, updateRow.getAppName());
                         batchInsertPS.addBatch();
                     }
@@ -481,8 +467,8 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                     } catch (java.sql.BatchUpdateException e) {
                         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "Continue insert due to BatchPerformanceWorkaround enabled");
-                        }                         
-                    }                    
+                        }
+                    }
                     batchInsertPS.close();
                     insertClose=true;
                 }
@@ -491,7 +477,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                     for (int i:results) {
                         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "Insert result : " + i);
-                        }                                                 
+                        }
                         if (usingOracle && i == java.sql.Statement.SUCCESS_NO_INFO) { //PM99783
                             //Oracle executeBatch() returns -2 (SUCCESS_NO_INFO)
                         }
@@ -601,7 +587,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
                 }
             }
         } catch (SQLException se) {
-            //            if (isStaleConnectionException(se)) { 
+            //            if (isStaleConnectionException(se)) {
             //                com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMapMR.handlePropertyHits", "422", d2);
             //                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[HANDLE_PROPERTY_HITS], "StaleConnectionException");
             //            } else {
@@ -649,7 +635,7 @@ public class DatabaseHashMapMR extends DatabaseHashMap {
 
         upAnyProp = "update " + tableName + " set small = ?, medium = ?, large = ? where id = ? and propid = ? and appname = ?";
         insAnyProp  = "insert into " + tableName + " (id, propid, small, medium, large, appname) values (?, ?, ?, ?, ?, ?)";
-        
+
         insNoProp = "insert into " + tableName + " (id, propid, appname, listenercnt, lastaccess, creationtime, maxinactivetime, username) values (?, ?, ?, ?, ?, ?, ?, ?)";
         findProps = "select propid, small, medium, large from " + tableName + " where id = ? and propid <> ? and appname = ? "; //*dbc2.2
     }

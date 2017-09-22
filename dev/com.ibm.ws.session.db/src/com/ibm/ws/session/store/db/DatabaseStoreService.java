@@ -1,14 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2012, 2013
- *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
- * U.S. Copyright Office.
- */
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.store.db;
 
 import java.util.Map;
@@ -52,9 +51,9 @@ public class DatabaseStoreService implements SessionStoreService {
     private final AtomicServiceReference<UOWCurrent> uowCurrentRef = new AtomicServiceReference<UOWCurrent>("uowCurrent");
     private final AtomicServiceReference<UserTransaction> userTransactionRef = new AtomicServiceReference<UserTransaction>("userTransaction");
     private final AtomicServiceReference<SerializationService> serializationServiceRef = new AtomicServiceReference<SerializationService>("serializationService");
-    
+
     private static boolean completedPassivation = true; // 128284
-    
+
     public ResourceFactory getDataSourceFactory() {
         return this.dataSourceFactoryRef.getService();
     }
@@ -70,18 +69,18 @@ public class DatabaseStoreService implements SessionStoreService {
     public SerializationService getSerializationService() {
         return this.serializationServiceRef.getService();
     }
-    
+
     public static synchronized void setCompletedPassivation(boolean isInProcessOfStopping) { // 128284
         completedPassivation = isInProcessOfStopping;
     }
-    
+
     public static synchronized boolean isCompletedPassivation() { // 128284
         return completedPassivation;
     }
 
     /**
      * Get the current unit of work.
-     * 
+     *
      * @return the current unit of work. Null if not available.
      */
     public UOWCurrent getUOWCurrent() {
@@ -132,7 +131,7 @@ public class DatabaseStoreService implements SessionStoreService {
     /**
      * Declarative Services method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context for this component instance
      */
     protected void activate(ComponentContext context, Map<String, Object> properties) {
@@ -148,13 +147,13 @@ public class DatabaseStoreService implements SessionStoreService {
         userTransactionRef.activate(context);
         serializationServiceRef.activate(context);
         configurationProperties = properties;
-       
+
     }
 
     /**
      * Declarative Services method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context for this component instance
      */
     protected void deactivate(ComponentContext context) {
@@ -170,8 +169,8 @@ public class DatabaseStoreService implements SessionStoreService {
         if (isCompletedPassivation()) { //START 128284
             serializationServiceRef.deactivate(context);
         } else {
-            
-            while (!isCompletedPassivation()){ 
+
+            while (!isCompletedPassivation()){
                 try {
                     Thread.sleep(100L); // sleep 1/10th of a second
                 } catch (InterruptedException e) {
@@ -181,12 +180,12 @@ public class DatabaseStoreService implements SessionStoreService {
                 }
             }
         } // END 128284
-        
+
     }
 
     /**
      * Called by Declarative Services to modify service config properties
-     * 
+     *
      * @param context for this component instance
      */
     protected void modified(ComponentContext context, Map<String, Object> properties) {
@@ -199,7 +198,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for setting the data source service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void setDataSourceFactory(ServiceReference<ResourceFactory> ref) {
@@ -211,7 +210,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for unsetting the data source service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void unsetDataSourceFactory(ServiceReference<ResourceFactory> ref) {
@@ -223,7 +222,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for setting the ResourceConfigFactory service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void setResourceConfigFactory(ServiceReference<ResourceConfigFactory> ref) {
@@ -235,7 +234,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for unsetting the ResourceConfigFactory service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void unsetResourceConfigFactory(ServiceReference<ResourceConfigFactory> ref) {
@@ -247,7 +246,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for setting the LocalTransactionCurrent service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void setLocalTransactionCurrent(ServiceReference<LocalTransactionCurrent> ref) {
@@ -259,7 +258,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for unsetting the LocalTransactionCurrent service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void unsetLocalTransactionCurrent(ServiceReference<LocalTransactionCurrent> ref) {
@@ -271,7 +270,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for setting the EmbeddableWebSphereTransactionManager service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void setEmbeddableWebSphereTransactionManager(ServiceReference<EmbeddableWebSphereTransactionManager> ref) {
@@ -283,7 +282,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for unsetting the EmbeddableWebSphereTransactionManager service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void unsetEmbeddableWebSphereTransactionManager(ServiceReference<EmbeddableWebSphereTransactionManager> ref) {
@@ -295,7 +294,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for setting the UOWCurrent service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void setUowCurrent(ServiceReference<UOWCurrent> ref) {
@@ -307,7 +306,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for unsetting the UOWCurrent service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void unsetUowCurrent(ServiceReference<UOWCurrent> ref) {
@@ -319,7 +318,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for setting the UserTransaction service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void setUserTransaction(ServiceReference<UserTransaction> ref) {
@@ -331,7 +330,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for unsetting the UserTransaction service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void unsetUserTransaction(ServiceReference<UserTransaction> ref) {
@@ -343,7 +342,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for setting the SerializationService service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void setSerializationService(ServiceReference<SerializationService> ref) {
@@ -355,7 +354,7 @@ public class DatabaseStoreService implements SessionStoreService {
 
     /**
      * Declarative Services method for unsetting the SerializationService service reference
-     * 
+     *
      * @param ref reference to service object; type of service object is verified
      */
     protected void unsetSerializationService(ServiceReference<SerializationService> ref) {
