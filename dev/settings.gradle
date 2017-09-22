@@ -115,6 +115,13 @@ def loadBuildProps() {
   // Must be run after isRelease is set
   def (qualifier, timestamp) = getVersionQualifier(isRelease)
 
+  //For release builds we can use a consistent qualifier of the build label.
+  //This comes from the RTC build engines
+  if (isRelease && (props.getProperty('buildLabel') != null)) {
+	qualifier = props.getProperty('buildLabel')
+  }
+  
+  
   props.setProperty('version.qualifier', qualifier)
   props.setProperty('buildLabel', timestamp)
   props.setProperty('artifactory.matrix.parameters', matrixParams)
@@ -155,7 +162,7 @@ def loadBuildProps() {
 
 def getVersionQualifier(boolean isRelease) {
   //ex: 201708101600
-  def timestamp = new SimpleDateFormat("yyyyMMddHHmm").format(new java.util.Date())
+  def timestamp = new SimpleDateFormat("yyyyMMdd-HHmm").format(new java.util.Date())
   if (isRelease) {
     return [timestamp, timestamp]
   }
