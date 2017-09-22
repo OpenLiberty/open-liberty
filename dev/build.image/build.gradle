@@ -21,23 +21,96 @@ if (releaseVersionOverride != null) {
     releaseVersion = releaseVersionOverride
 }
 
+String packageDir = "${buildDir}/openliberty"
+
+task packageOpenLiberty {
+    dependsOn parent.subprojects.assemble
+    doLast {
+        // Create server in order to minify an image that only includes kind=ga features
+        String serverName = "packageOpenLiberty"
+        exec {
+            workingDir "${projectDir}/wlp/bin"
+            commandLine "./server", "create", serverName
+        }
+
+        try {
+            String features = ""
+            fileTree(dir: "${rootDir}", include: '*/*.feature').visit { element ->
+                if (element.isDirectory()) {
+                    return
+                }
+
+                File featureFile = element.getFile()
+                if (featureFile.text.contains("kind=ga")) {
+                    for (String line : featureFile.text.split("\\n")) {
+                        if (line.contains("IBM-ShortName:")) {
+                            String shortname = line.substring(14)
+                            shortname = shortname.replaceAll("\\s+", "")
+                            features += "\n<feature>" + shortname + "</feature>"
+                            break
+                        }
+                    }
+                }
+            }
+
+            def serverXml = file("${projectDir}/wlp/usr/servers/${serverName}/server.xml")
+            serverXml.text = """<?xml version="1.0" encoding="UTF-8"?>
+<server description="new server">
+<featureManager>${features}
+</featureManager>
+</server>
+"""
+
+            String archive = "${buildDir}/openliberty.zip"
+            delete archive
+            exec {
+                workingDir "${projectDir}/wlp/bin"
+                commandLine "./server", "package", serverName, "--archive=${archive}", "--include=minify"
+            }
+
+            // Postprocess to remove unwanted files
+            delete packageDir
+            copy {
+                from(zipTree(file(archive)))
+                exclude 'wlp/usr/servers/**'
+                exclude 'wlp/lib/versions/package_*'
+                into packageDir
+            }
+
+        } finally {
+            delete "${projectDir}/wlp/usr/servers/${serverName}"
+        }
+    }
+}
+
+// Includes only kind=ga features.
 task zipOpenLiberty(type: Zip) {
-  dependsOn parent.subprojects.assemble
-  baseName 'openliberty'
-  from projectDir
-  include 'wlp/**'
-  destinationDir distsDir
-  version releaseVersion
-  doLast {
-    //TODO: need a better mechanism for 'stowaway properties' that need to be used in future gradle invocations
-    def props = new Properties()
-    file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+    dependsOn packageOpenLiberty
+    baseName 'openliberty'
+    from packageDir
+    destinationDir distsDir
+    version releaseVersion
+    doLast {
+        //TODO: need a better mechanism for 'stowaway properties' that need to be used in future gradle invocations
+        def props = new Properties()
+        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
 
-    props.setProperty('zipopenliberty.archivename', archivePath.toString())
+        props.setProperty('zipopenliberty.archivename', archivePath.toString())
 
-    File propsFile = new File("${rootDir}/generated.properties")
-    props.store(propsFile.newWriter(), null)
-  }
+        File propsFile = new File("${rootDir}/generated.properties")
+        props.store(propsFile.newWriter(), null)
+    }
+}
+publish.dependsOn zipOpenLiberty
+
+// Includes all features.
+task zipOpenLibertyAll(type: Zip) {
+    dependsOn parent.subprojects.assemble
+    baseName 'openliberty-all'
+    from projectDir
+    include 'wlp/**'
+    destinationDir distsDir
+    version releaseVersion
 }
 
 task copyPropertiesToBuildImage (type:Copy) {
@@ -91,7 +164,7 @@ publishing {
         maven(MavenPublication) {
             artifactId 'openliberty'
             version project.version
-            artifact zipOpenLiberty
+            artifact zipOpenLibertyAll
         }
     }
 }
