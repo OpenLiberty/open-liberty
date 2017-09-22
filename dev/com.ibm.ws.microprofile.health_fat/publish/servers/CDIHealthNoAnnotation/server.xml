@@ -6,7 +6,6 @@
         <feature>osgiconsole-1.0</feature>
         <feature>localConnector-1.0</feature>
         <feature>appSecurity-2.0</feature>
-        <feature>mpMetrics-1.0</feature>
         <feature>mpHealth-1.0</feature>
     </featureManager>
 	
