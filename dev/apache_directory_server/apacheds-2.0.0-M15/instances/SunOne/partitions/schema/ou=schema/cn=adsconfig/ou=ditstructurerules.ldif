@@ -1,0 +1,6 @@
+version: 1
+dn: ou=ditStructureRules,cn=adsconfig,ou=schema
+ou: ditstructurerules
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

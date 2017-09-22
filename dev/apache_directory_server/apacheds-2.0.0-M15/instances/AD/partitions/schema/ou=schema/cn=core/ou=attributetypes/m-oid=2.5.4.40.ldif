@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=2.5.4.40,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.10
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.40
+m-name: crossCertificatePair
+m-description: RFC2256: X.509 cross certificate pair, use ;binary
+m-obsolete: FALSE
+entryUUID: 12321ee5-326c-456a-8f1d-65f27e909ac3
+entryCSN: 20130919081858.582000Z#000001#000#000000
+entryParentId: 380762cf-db05-48e1-a596-4becaad7489a
+createTimestamp: 20130919081910.626Z

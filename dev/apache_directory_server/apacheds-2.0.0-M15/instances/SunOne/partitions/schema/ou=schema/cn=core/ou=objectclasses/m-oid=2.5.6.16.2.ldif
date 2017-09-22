@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=2.5.6.16.2,ou=objectClasses,cn=core,ou=schema
+m-oid: 2.5.6.16.2
+m-obsolete: FALSE
+m-supobjectclass: certificationAuthority
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: certificationAuthority-V2
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system
+m-may: deltaRevocationList

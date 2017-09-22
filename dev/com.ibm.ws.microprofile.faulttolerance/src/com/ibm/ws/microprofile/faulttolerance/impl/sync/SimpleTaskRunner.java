@@ -16,8 +16,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.impl.ExecutionContextImpl;
-import com.ibm.ws.microprofile.faulttolerance.impl.FTConstants;
 import com.ibm.ws.microprofile.faulttolerance.impl.TaskRunner;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 /**
  * SimpleTaskRunner will call the task and end the execution afterwards
@@ -35,7 +35,7 @@ public class SimpleTaskRunner<R> implements TaskRunner<R> {
         } catch (InterruptedException e) {
             //if the interrupt was caused by a timeout then check and throw that instead (which is what check does)
             long remaining = executionContext.check();
-            FTConstants.debugTime(tc, "Task Interrupted", remaining);
+            FTDebug.debugTime(tc, "Task Interrupted", remaining);
             throw e;
         } finally {
             executionContext.end();

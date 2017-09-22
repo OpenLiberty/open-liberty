@@ -1,0 +1,8 @@
+version: 1
+dn: cn=java,ou=schema
+cn: java
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+creatorsname: uid=admin,ou=system

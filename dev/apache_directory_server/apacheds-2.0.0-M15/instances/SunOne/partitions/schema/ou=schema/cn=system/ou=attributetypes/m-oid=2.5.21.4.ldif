@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=2.5.21.4,ou=attributeTypes,cn=system,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 2.5.21.4
+m-obsolete: FALSE
+m-description: RFC2252: matching rules
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.30
+m-usage: DIRECTORY_OPERATION
+m-name: matchingRules
+creatorsname: uid=admin,ou=system
+m-equality: objectIdentifierFirstComponentMatch

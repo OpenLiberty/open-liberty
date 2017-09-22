@@ -1,0 +1,23 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.300,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.300
+m-name: ads-ldapServer
+m-description: The LdapServer ObjectClass
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-dsBasedServer
+m-must: ads-confidentialityRequired
+m-must: ads-maxSizeLimit
+m-must: ads-maxTimeLimit
+m-must: ads-maxPDUSize
+m-must: ads-saslHost
+m-must: ads-saslPrincipal
+m-must: ads-saslRealms
+m-may: ads-keystoreFile
+m-may: ads-certificatePassword
+m-may: ads-replReqHandler
+m-must: ads-replEnabled
+m-must: ads-replPingerSleep
+m-may: ads-enabledCipherSuites
+creatorsname: uid=admin,ou=system

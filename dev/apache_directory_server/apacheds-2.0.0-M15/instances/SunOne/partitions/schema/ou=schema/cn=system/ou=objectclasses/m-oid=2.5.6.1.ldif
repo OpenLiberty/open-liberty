@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=2.5.6.1,ou=objectClasses,cn=system,ou=schema
+m-must: aliasedObjectName
+m-oid: 2.5.6.1
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2256: an alias
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: alias
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.9,ou=attributeTypes,cn=apache,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: integerMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.9
+m-name: apacheSamType
+m-description: Single-use Authentication Mechanism type/vendor code
+m-obsolete: FALSE
+entryUUID: cb97f72d-e8bf-486c-8c81-e738b68f143c
+entryCSN: 20130919081858.311000Z#000000#000#000000
+entryParentId: 4df5a1ec-ea39-4907-aea4-1e0f3ccbb1c5
+createTimestamp: 20130919081908.345Z

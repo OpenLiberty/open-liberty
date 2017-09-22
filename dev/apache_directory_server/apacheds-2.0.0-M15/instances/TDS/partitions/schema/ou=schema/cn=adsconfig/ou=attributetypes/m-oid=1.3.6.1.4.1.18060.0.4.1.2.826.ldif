@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.826,ou=attributeTypes,cn=adsconfig,ou=schema
+m-supattributetype: userPassword
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: octetStringMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.40
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.826
+m-name: ads-replUserPassword
+m-description: replication user password
+entryUUID: fd679e04-e87f-4e2d-9541-1d22e9ce3c36
+entryCSN: 20130919065344.680000Z#000000#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065352.848Z

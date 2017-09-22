@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.810,ou=attributeTypes,cn=adsconfig,ou=schema
+m-ordering: caseExactOrderingMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.810
+m-description: Fully qualified class name of SASL mechanism implementation
+m-substr: caseExactSubstringsMatch
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-name: ads-saslMechClassName
+creatorsname: uid=admin,ou=system
+m-equality: caseExactMatch
+m-length: 0

@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.832,ou=attributeTypes,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaAttributeType
+objectclass: metaTop
+m-equality: caseExactMatch
+m-ordering: caseExactOrderingMatch
+m-substr: caseExactSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.832
+m-name: ads-replReqHandler
+m-description: FQCN of the replication replication request handler on a master/p
+ rovider
+entryUUID: 677cbf0b-69a2-4837-9915-03957d8febc8
+entryCSN: 20130919081858.186000Z#000000#000#000000
+entryParentId: c27651a1-f4fc-4f73-a257-08b4691776f8
+createTimestamp: 20130919081910.700Z

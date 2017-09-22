@@ -1,0 +1,10 @@
+version: 1
+dn: ou=comparators,cn=samba,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 11a8bf86-8de3-48b8-8713-e94561aef557
+entryCSN: 20130919065345.534000Z#000001#000#000000
+entryParentId: 3e2780bb-b45a-4a77-af0b-01e17f5d7c45
+ou: comparators
+createTimestamp: 20130919065352.784Z

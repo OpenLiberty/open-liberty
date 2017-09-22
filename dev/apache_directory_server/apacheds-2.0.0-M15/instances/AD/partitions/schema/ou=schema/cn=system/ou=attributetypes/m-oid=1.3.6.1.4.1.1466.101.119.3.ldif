@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.1466.101.119.3,ou=attributeTypes,cn=system,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DSA_OPERATION
+m-oid: 1.3.6.1.4.1.1466.101.119.3
+m-name: entryTtl
+m-description: RFC2589: entry time-to-live
+m-obsolete: FALSE
+entryUUID: 20069471-094f-4641-be04-509fa13320b5
+entryCSN: 20130919081859.224000Z#000001#000#000000
+entryParentId: 00d07a58-ce34-4e15-b277-c443ee6d991b
+createTimestamp: 20130919081909.466Z

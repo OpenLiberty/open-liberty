@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.100,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.100
+m-name: ads-directoryService
+m-description: The DirectoryService ObjectClass
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-base
+m-must: ads-directoryServiceId
+m-must: ads-dsReplicaId
+m-must: ads-dsAccessControlEnabled
+m-must: ads-dsAllowAnonymousAccess
+m-must: ads-dsDenormalizeOpAttrsEnabled
+m-must: ads-dsPasswordHidden
+m-must: ads-dsSyncPeriodMillis
+m-may: ads-dsTestEntries
+creatorsname: uid=admin,ou=system

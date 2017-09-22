@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.814,ou=attributeTypes,cn=adsconfig,ou=schema
+m-ordering: caseIgnoreOrderingMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.814
+m-description: A web app context path
+m-substr: caseIgnoreSubstringsMatch
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.44
+m-name: ads-httpAppCtxPath
+creatorsname: uid=admin,ou=system
+m-equality: caseIgnoreMatch
+m-length: 0

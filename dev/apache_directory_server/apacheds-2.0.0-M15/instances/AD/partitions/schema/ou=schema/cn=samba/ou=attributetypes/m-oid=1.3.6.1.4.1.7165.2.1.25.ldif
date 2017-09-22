@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.25,ou=attributeTypes,cn=samba,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: caseIgnoreIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.7165.2.1.25
+m-name: sambaNTPassword
+m-description: MD4 hash of the unicode password
+m-obsolete: FALSE
+entryUUID: 28751cb6-b659-4921-9b17-b5ad012f6c96
+entryCSN: 20130919081859.159000Z#000001#000#000000
+entryParentId: e8bc977c-2b64-4188-b869-b5e0fb8f3cc7
+createTimestamp: 20130919081909.042Z

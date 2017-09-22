@@ -1,0 +1,6 @@
+version: 1
+dn: ou=nameForms,cn=adsconfig,ou=schema
+ou: nameforms
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

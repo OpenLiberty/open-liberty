@@ -1,0 +1,10 @@
+version: 1
+dn: ou=ditContentRules,cn=nis,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: f0720344-c627-4f7e-9d5a-3bb78c93f7ad
+entryCSN: 20130919065345.415000Z#000000#000#000000
+entryParentId: 847ae40b-db40-407e-832e-a4438d3b5bea
+ou: ditcontentrules
+createTimestamp: 20130919065353.184Z

@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=0.9.2342.19200300.100.4.17,ou=objectClasses,cn=cosine,ou=schema
+m-must: associatedDomain
+m-oid: 0.9.2342.19200300.100.4.17
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC1274: an object related to an domain
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: domainRelatedObject
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system

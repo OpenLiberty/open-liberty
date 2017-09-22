@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.1.18,ou=attributeTypes,cn=nis,ou=schema
+m-collective: FALSE
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.1.1.1.18
+m-obsolete: FALSE
+m-nousermodification: FALSE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-usage: USER_APPLICATIONS
+m-name: oncRpcNumber
+creatorsname: uid=admin,ou=system
+m-equality: integerMatch

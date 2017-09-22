@@ -1,0 +1,19 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.5,ou=objectClasses,cn=apachemeta,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.5
+m-name: metaMatchingRule
+m-description: meta definition of the MatchingRule object
+m-obsolete: FALSE
+m-supobjectclass: metaTop
+m-must: m-syntax
+entryUUID: e5a43a9b-ef45-493c-9ce4-f6818066ccb4
+m-may: m-name
+m-may: m-obsolete
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.480000Z#000001#000#000000
+entryParentId: 16fce3d7-6907-42d6-a78a-932c7cce7eaa
+createTimestamp: 20130919081908.199Z

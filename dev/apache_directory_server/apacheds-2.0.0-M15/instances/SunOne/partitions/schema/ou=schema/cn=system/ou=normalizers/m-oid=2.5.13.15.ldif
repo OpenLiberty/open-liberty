@@ -1,0 +1,8 @@
+version: 1
+dn: m-oid=2.5.13.15,ou=normalizers,cn=system,ou=schema
+m-oid: 2.5.13.15
+m-fqcn: org.apache.directory.api.ldap.model.schema.normalizers.NumericNormalizer
+objectclass: metaNormalizer
+objectclass: metaTop
+objectclass: top
+creatorsname: uid=admin,ou=system

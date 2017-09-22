@@ -1,0 +1,10 @@
+version: 1
+dn: ou=ditContentRules,cn=adsconfig,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 3894a6e9-d578-4bf7-ba6f-274025523bc2
+entryCSN: 20130919065344.556000Z#000000#000#000000
+entryParentId: 9733c68c-5e3d-4f4f-b7ab-cd8d9e37abf1
+ou: ditcontentrules
+createTimestamp: 20130919065351.718Z

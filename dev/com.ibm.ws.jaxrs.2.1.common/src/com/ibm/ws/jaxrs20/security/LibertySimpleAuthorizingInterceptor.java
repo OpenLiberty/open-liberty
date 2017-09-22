@@ -11,6 +11,7 @@
 package com.ibm.ws.jaxrs20.security;
 
 import java.lang.reflect.Method;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +22,7 @@ import javax.annotation.security.RolesAllowed;
 import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.security.AbstractAuthorizingInInterceptor;
 import org.apache.cxf.interceptor.security.AccessDeniedException;
+import org.apache.cxf.interceptor.security.AuthenticationException;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.security.SecurityContext;
 
@@ -41,7 +43,16 @@ public class LibertySimpleAuthorizingInterceptor extends
                 return;
             }
         }
+
         throw new AccessDeniedException("Unauthorized");
+    }
+
+    private boolean ensureAuthentication(SecurityContext sc) {
+        Principal p = sc.getUserPrincipal();
+        if (p == null || "UNAUTHENTICATED".equals(p.getName())) {
+            throw new AuthenticationException();
+        }
+        return true;
     }
 
     private boolean parseMethodSecurity(Method method, SecurityContext sc) {
@@ -63,7 +74,11 @@ public class LibertySimpleAuthorizingInterceptor extends
                     Tr.debug(
                              tc,
                              "found RolesAllowed in method: {} "
-                                             + method.getName());
+                                             + method.getName(),
+                                             new Object[] { rolesAllowed.value() });
+                }
+                if (!ensureAuthentication(sc)) {
+                    return false;
                 }
                 String[] theseroles = rolesAllowed.value();
 
@@ -98,6 +113,9 @@ public class LibertySimpleAuthorizingInterceptor extends
         // try DenyAll
         DenyAll denyAll = cls.getAnnotation(DenyAll.class);
         if (denyAll != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Found class level @DenyAll - authorization denied for " + cls.getName());
+            }
             return false;
         } else { // try RolesAllowed
 
@@ -109,7 +127,11 @@ public class LibertySimpleAuthorizingInterceptor extends
                     Tr.debug(
                              tc,
                              "found RolesAllowed in class level: {} "
-                                             + cls.getName());
+                                 + cls.getName(),
+                             new Object[] { theseroles });
+                }
+                if (!ensureAuthentication(sc)) {
+                    return false;
                 }
                 if (!isUserInRole(sc, Arrays.asList(theseroles), false)) {
                     return false;

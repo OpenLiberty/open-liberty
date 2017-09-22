@@ -1,0 +1,6 @@
+version: 1
+dn: cn=system,ou=schema
+cn: system
+objectclass: metaSchema
+objectclass: top
+creatorsname: uid=admin,ou=system

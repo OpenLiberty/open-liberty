@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.2.1.42,ou=attributeTypes,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.2.1.42
+m-name: sambaOptionName
+m-description: Option Name
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
+m-singlevalue: FALSE
+m-usage: USER_APPLICATIONS
+m-obsolete: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

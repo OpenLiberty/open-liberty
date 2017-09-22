@@ -129,20 +129,6 @@
 			<os family="windows" />
 		</condition>
 
-		<tstamp>
-			<format property="today.day" pattern="EEEE" />
-		</tstamp>
-		<!-- Really use local ldap server if fat.test.local.ldap.server is true and platform is not z/OS and day of test execution is not Wednesday. Use of Apache DS is not supported on z/OS -->
-		<condition property="fat.test.really.use.local.ldap" else="false">
-			<and>
-				<istrue value="${fat.test.local.ldap.server}" />
-				<isfalse value="${is.zos.platform}" />
-				<not>
-					<equals arg1="${today.day}" arg2="Wednesday" casesensitive="false" />
-				</not>
-			</and>
-		</condition>
-
 		<!-- Replace LDAP ports of all 3 Apache DS instance in configuration with updated ports from port selector and kill any apache ds related processes -->
 		<replaceLdapPorts />
 		<iff if="unix.mac.environment">
@@ -231,6 +217,20 @@
 		
 		<!-- Load all env vars into env.* properties -->
 		<property environment="env"/>
+		
+		<tstamp>
+			<format property="today.day" pattern="EEEE" />
+		</tstamp>
+		<!-- Really use local ldap server if fat.test.local.ldap.server is true and platform is not z/OS and day of test execution is not Wednesday. Use of Apache DS is not supported on z/OS -->
+		<condition property="env.fat.test.really.use.local.ldap" else="false">
+			<and>
+				<istrue value="${fat.test.local.ldap.server}" />
+				<isfalse value="${is.zos.platform}" />
+				<not>
+					<equals arg1="${today.day}" arg2="Wednesday" casesensitive="false" />
+				</not>
+			</and>
+		</condition>
 
 		<echo>Running ${test.bucket.name}</echo>
 		<echo>Timeout: ${fattest.timeout}</echo>

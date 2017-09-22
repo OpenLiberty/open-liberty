@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.1.20,ou=attributeTypes,cn=apache,ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.20
+m-name: entryDN
+m-description: DN of the entry
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: TRUE
+m-nousermodification: TRUE
+m-usage: DIRECTORY_OPERATION
+m-obsolete: FALSE
+creatorsname: uid=admin,ou=system

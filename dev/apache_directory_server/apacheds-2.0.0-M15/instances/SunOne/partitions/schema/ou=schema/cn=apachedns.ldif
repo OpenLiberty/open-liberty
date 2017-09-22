@@ -1,0 +1,9 @@
+version: 1
+dn: cn=apachedns,ou=schema
+cn: apachedns
+m-disabled: TRUE
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,27 @@
+<server description="new server">
+
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+		<feature>testfileadapter-1.0</feature>
+	</featureManager>
+
+	<fileRegistry adapterClassName="fileadapterclass1" >
+	   	 <baseEntry name="o=defaultWIMFileBasedRealm" baseDN="o=defaultWIMFileBasedRealm"/>   
+   	</fileRegistry>
+   	
+   	
+    <federatedRepository maxSearchResults="2000" searchTimeout="400000">
+    	<primaryRealm name="defaultWIMFileBasedRealm">
+            <participatingBaseEntry name="o=defaultWIMFileBasedRealm"/>
+            <uniqueUserIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+            <userSecurityNameMapping inputProperty="principalName" outputProperty="principalName"/>
+            <userDisplayNameMapping inputProperty="principalName" outputProperty="principalName"/>
+            <uniqueGroupIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+            <groupSecurityNameMapping inputProperty="cn" outputProperty="cn"/>
+            <groupDisplayNameMapping inputProperty="cn" outputProperty="cn"/>
+    	</primaryRealm>
+    </federatedRepository>
+</server>

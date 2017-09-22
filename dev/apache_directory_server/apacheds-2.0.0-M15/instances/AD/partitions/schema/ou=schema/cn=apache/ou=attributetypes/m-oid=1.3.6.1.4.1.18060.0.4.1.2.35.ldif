@@ -1,0 +1,22 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.35,ou=attributeTypes,cn=apache,ou=schema
+m-supattributetype: modifyTimestamp
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: generalizedTimeMatch
+m-ordering: generalizedTimeOrderingMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: DIRECTORY_OPERATION
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.35
+m-name: schemaModifyTimestamp
+m-description: time which schema was modified
+m-obsolete: FALSE
+entryUUID: a24ece13-0d20-4650-bccb-f2a077dc257f
+entryCSN: 20130919081858.291000Z#000001#000#000000
+entryParentId: 4df5a1ec-ea39-4907-aea4-1e0f3ccbb1c5
+createTimestamp: 20130919081910.522Z

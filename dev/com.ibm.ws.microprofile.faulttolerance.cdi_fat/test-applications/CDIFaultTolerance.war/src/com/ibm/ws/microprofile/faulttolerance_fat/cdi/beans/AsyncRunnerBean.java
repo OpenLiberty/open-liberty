@@ -14,11 +14,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
 
-import javax.enterprise.context.RequestScoped;
+import javax.enterprise.context.ApplicationScoped;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
 
-@RequestScoped
+@ApplicationScoped
 @Asynchronous
 public class AsyncRunnerBean {
 

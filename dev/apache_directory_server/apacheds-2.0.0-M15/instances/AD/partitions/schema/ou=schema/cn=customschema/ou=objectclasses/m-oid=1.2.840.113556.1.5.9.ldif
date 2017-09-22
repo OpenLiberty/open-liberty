@@ -1,0 +1,24 @@
+dn: m-oid=1.2.840.113556.1.5.9, ou=objectclasses, cn=customschema, ou=schema
+m-oid: 1.2.840.113556.1.5.9
+creatorsName: 
+m-name: user
+objectclass: metaTop
+objectclass: metaObjectClass
+objectclass: top
+m-description: user object class for AD
+m-supObjectClass: organizationalPerson
+entryUUID: dcb7294e-ba34-4193-ac40-fc5784c26cb2
+m-must: cn
+m-may: objectCategory
+m-may: password
+m-may: sAMAccountName
+m-may: userPrincipalName
+m-may: displayName
+m-may: distinguishedName
+m-may: name
+m-may: givenName
+m-may: objectGUID
+m-may: memberOf
+entryCSN: 20131001134022.050000Z#000000#001#000000
+entryParentId: ec57ebf4-3eb1-48d8-b664-105f1dcbdb39
+createTimestamp: 20131001134022.050Z

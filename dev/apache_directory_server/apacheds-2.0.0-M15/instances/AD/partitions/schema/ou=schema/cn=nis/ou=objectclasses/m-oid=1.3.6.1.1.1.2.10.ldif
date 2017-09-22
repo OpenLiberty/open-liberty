@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.10,ou=objectClasses,cn=nis,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.2.10
+m-name: nisObject
+m-description: An entry in a NIS map
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: cn
+m-must: nisMapEntry
+m-must: nisMapName
+entryUUID: 2abe5278-4ffc-4f0c-a291-a6aa230f122a
+m-may: description
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081859.020000Z#000001#000#000000
+entryParentId: 8df15f8c-2157-419e-9521-c39c3dedaac8
+createTimestamp: 20130919081910.364Z

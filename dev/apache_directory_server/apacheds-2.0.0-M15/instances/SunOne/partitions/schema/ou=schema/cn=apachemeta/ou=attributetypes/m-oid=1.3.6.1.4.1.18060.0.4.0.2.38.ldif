@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.38,ou=attributeTypes,cn=apachemeta,ou=schema
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.38
+m-name: m-dependencies
+m-description: The dependencies of a schema: other schema names.
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-equality: caseIgnoreMatch
+m-usage: USER_APPLICATIONS
+m-singlevalue: FALSE
+m-collective: FALSE
+m-obsolete: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

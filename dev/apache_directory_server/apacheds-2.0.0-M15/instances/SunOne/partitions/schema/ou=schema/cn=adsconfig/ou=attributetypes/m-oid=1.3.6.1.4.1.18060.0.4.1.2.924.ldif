@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.924, ou=attributetypes, cn=adsconfig, ou=schema
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.924
+m-name: ads-enabledCipherSuites
+m-description: The cipher suites to be used in LDAPS and StartTLS
+m-equality: caseIgnoreMatch
+m-ordering: caseIgnoreOrderingMatch
+m-substr: caseIgnoreSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-length: 0

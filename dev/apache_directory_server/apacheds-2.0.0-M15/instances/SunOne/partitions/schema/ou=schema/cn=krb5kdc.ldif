@@ -1,0 +1,8 @@
+version: 1
+dn: cn=krb5kdc,ou=schema
+cn: krb5kdc
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+creatorsname: uid=admin,ou=system

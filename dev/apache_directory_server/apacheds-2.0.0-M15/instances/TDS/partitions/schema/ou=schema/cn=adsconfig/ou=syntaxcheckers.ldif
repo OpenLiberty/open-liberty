@@ -1,0 +1,10 @@
+version: 1
+dn: ou=syntaxCheckers,cn=adsconfig,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 90b2a180-1707-422a-94e8-d6d842e84c33
+entryCSN: 20130919065344.561000Z#000000#000#000000
+entryParentId: 9733c68c-5e3d-4f4f-b7ab-cd8d9e37abf1
+ou: syntaxcheckers
+createTimestamp: 20130919065352.640Z

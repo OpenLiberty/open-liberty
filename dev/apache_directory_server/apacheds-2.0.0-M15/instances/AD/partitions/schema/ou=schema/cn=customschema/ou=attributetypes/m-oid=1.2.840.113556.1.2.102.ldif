@@ -1,0 +1,13 @@
+dn: m-oid=1.2.840.113556.1.2.102, ou=attributetypes, cn=customschema, ou=schema
+m-oid: 1.2.840.113556.1.2.102
+creatorsName: 
+m-name: memberOf
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+entryUUID: e074b48e-db8d-4cdb-a3cb-846c308158bb
+m-length: 0
+entryCSN: 20131001134021.987000Z#000000#001#000000
+entryParentId: 6193ae93-5885-4a80-b0b0-aee07a1d5c4b
+createTimestamp: 20131001134021.987Z

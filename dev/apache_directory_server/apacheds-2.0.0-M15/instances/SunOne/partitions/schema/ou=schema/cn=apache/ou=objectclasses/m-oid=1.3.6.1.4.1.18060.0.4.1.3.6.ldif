@@ -1,0 +1,10 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.6,ou=objectClasses,cn=apache,ou=schema
+m-must: windowsFilePath
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.6
+m-supobjectclass: top
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: windowsFile
+creatorsname: uid=admin,ou=system

@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.3.13,ou=objectClasses,cn=apachemeta,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-oid: 1.3.6.1.4.1.18060.0.4.0.3.13
+m-name: metaComparator
+m-description: meta definition of a Comparator object
+m-obsolete: FALSE
+m-supobjectclass: metaTop
+m-must: m-fqcn
+entryUUID: 0a2e8a78-f60f-48db-92b3-6881791b09e3
+m-may: m-bytecode
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.478000Z#000001#000#000000
+entryParentId: 16fce3d7-6907-42d6-a78a-932c7cce7eaa
+createTimestamp: 20130919081911.088Z

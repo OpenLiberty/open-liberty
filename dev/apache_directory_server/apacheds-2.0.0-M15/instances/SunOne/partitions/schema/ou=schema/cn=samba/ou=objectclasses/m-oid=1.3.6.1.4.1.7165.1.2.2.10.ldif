@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.7165.1.2.2.10,ou=objectClasses,cn=samba,ou=schema
+m-oid: 1.3.6.1.4.1.7165.1.2.2.10
+m-name: sambaConfig
+m-description: Samba Configuration Section
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-obsolete: FALSE
+m-supobjectclass: top
+m-typeobjectclass: AUXILIARY
+m-may: description
+creatorsname: uid=admin,ou=system

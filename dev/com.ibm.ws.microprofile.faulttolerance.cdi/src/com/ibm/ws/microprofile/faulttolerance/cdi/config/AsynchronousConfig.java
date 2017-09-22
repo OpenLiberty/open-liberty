@@ -18,6 +18,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.FaultToleranceDefiniti
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 public class AsynchronousConfig extends AbstractAnnotationConfig<Asynchronous> implements Asynchronous {
 
@@ -44,7 +45,7 @@ public class AsynchronousConfig extends AbstractAnnotationConfig<Asynchronous> i
         if (method != null) {
             Class<?> originalMethodReturnType = getAnnotatedMethod().getReturnType();
             if (!(Future.class.isAssignableFrom(originalMethodReturnType))) {
-                throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "asynchronous.method.not.returning.future.CWMFT5001E", method));
+                throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "asynchronous.method.not.returning.future.CWMFT5001E", FTDebug.formatMethod(method)));
             }
         }
     }

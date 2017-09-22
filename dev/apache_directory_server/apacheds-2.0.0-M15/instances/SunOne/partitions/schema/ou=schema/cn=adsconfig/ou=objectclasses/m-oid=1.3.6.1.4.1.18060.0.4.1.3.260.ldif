@@ -1,0 +1,12 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.260,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.260
+m-name: ads-dsBasedServer
+m-description: The DirectoryService based server ObjectClass
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-server
+m-typeobjectclass: ABSTRACT
+m-may: ads-searchBaseDN
+creatorsname: uid=admin,ou=system

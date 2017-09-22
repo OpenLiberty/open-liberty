@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.8.1.16,ou=attributeTypes,cn=pwdpolicy,ou=schema
+m-ordering: generalizedTimeOrderingMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.42.2.27.8.1.16
+m-description: The time the password was last changed
+m-nousermodification: TRUE
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.24
+m-usage: directoryOperation
+m-name: pwdChangedTime
+creatorsname: uid=admin,ou=system
+m-equality: generalizedTimeMatch
+m-length: 0
