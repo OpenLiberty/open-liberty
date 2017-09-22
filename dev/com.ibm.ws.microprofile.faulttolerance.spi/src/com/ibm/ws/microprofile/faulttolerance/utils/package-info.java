@@ -6,19 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.faulttolerance.impl;
-
-/**
- *
- */
-public class FTConstants {
-
-    public static final String SCHEDULED_EXECUTOR_SERVICE_JNDI = "java:comp/DefaultManagedScheduledExecutorService";
-
-    public static final String JSE_FLAG = "com.ibm.ws.microprofile.faulttolerance.jse";
-
-    public static final long MIN_TIMEOUT_NANO = 1000000; //1ms
-
-}
+@org.osgi.annotation.versioning.Version("1.0")
+package com.ibm.ws.microprofile.faulttolerance.utils;
