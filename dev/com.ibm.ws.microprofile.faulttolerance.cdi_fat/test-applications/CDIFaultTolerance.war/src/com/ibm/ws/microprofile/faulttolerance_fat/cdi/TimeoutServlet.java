@@ -28,6 +28,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
+import com.ibm.ws.microprofile.faulttolerance_fat.util.Connection;
 
 import componenttest.app.FATServlet;
 
@@ -111,6 +112,11 @@ public class TimeoutServlet extends FATServlet {
             // Ensure that the correct number of calls have been made
             assertThat("connectD calls", bean.getConnectDCalls(), is(8));
         }
+    }
+
+    public void testTimeoutWithFallback() throws Exception {
+        Connection result = bean.connectF();
+        assertThat(result.getData(), is("Fallback for: connectF - data!"));
     }
 
     public void testTimeoutZero(HttpServletRequest request, HttpServletResponse response) throws Exception {
