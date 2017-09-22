@@ -12,13 +12,27 @@
 bVersion=1.0
 
 src: \
-	fat/src
-
+	fat/src, \
+	test-applications/HealthCheckTestApp/src, \
+	test-applications/MultipleHealthCheckApp1/src, \
+	test-applications/MultipleHealthCheckApp2/src, \
+	test-applications/MultipleHealthCheckApp3/src, \
+	test-applications/HealthCheckNoAPIImplApp/src, \
+	test-applications/HealthCheckNoAnnotationApp/src, \
+	test-applications/HealthCheckExceptionApp/src, \
+	test-applications/HealthCheckNoCDIApp/src
+	
+javac.source: 1.8
+javac.target: 1.8
+	
 test.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
 	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
+    org.jboss.shrinkwrap:shrinkwrap-impl-base;version=1.2.3,\
+    org.jboss.shrinkwrap:shrinkwrap-spi;version=1.2.3,\
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	fattest.simplicity;version=latest, \
@@ -35,4 +49,8 @@ test.project: true
 	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
 	com.ibm.ws.runtime.update;version=latest, \
 	com.ibm.ws.kernel.feature.core;version=latest, \
-    com.ibm.ws.kernel.feature;version=latest
+	com.ibm.ws.kernel.feature;version=latest, \
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
+	com.ibm.ws.org.apache.johnzon.core.1.1;version=latest, \
+	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
+	com.ibm.websphere.org.eclipse.microprofile.health.1.0;version=latest
