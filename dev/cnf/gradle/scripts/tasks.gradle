@@ -155,6 +155,7 @@ subprojects {
         copy {
           from "${rootDir}/cnf/resources/bin"
           into "${rootDir}/build.image/wlp/bin/" + bnd('publish.tool.script.subdir', '')
+          fileMode 0755
           rename 'tool(.*)', bnd('publish.tool.script') + '$1'
           filter(org.apache.tools.ant.filters.ReplaceTokens,
                  tokens: [TOOL_JAR: bnd('publish.tool.script.subdir', '') + 'tools/' + bnd('publish.tool.jar'),
