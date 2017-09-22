@@ -1,0 +1,6 @@
+<project name="com.ibm.ws.jms20.feature" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+  <property name="instrument.ffdc" value="false" />
+  <property name="no.trace.instrumentation" value="true" />
+  <property name="skip.chkpii" value="true" />
+</project>
