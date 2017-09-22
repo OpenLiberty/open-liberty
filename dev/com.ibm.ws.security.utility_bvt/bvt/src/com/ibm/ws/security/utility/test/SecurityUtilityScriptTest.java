@@ -94,11 +94,13 @@ public class SecurityUtilityScriptTest {
 
     @Test
     public void testHelp() throws Exception {
+        String findString = Pattern.quote("Usage: securityUtility {encode|createSSLCertificate|createLTPAKeys|help} [options]");
         List<String> usageOutput = getScriptHelpOutput(null);
-        assertEquals("Usage help should produce one line of output. Output was: " + usageOutput, 1, usageOutput.size());
+
+        assertTrue("Usage Help should contain list of actions. Expected: '" + findString + "' Found: " + usageOutput, findMatchingLine(usageOutput, findString));
 
         List<String> actionsHelp = getScriptInvalidOutput(null, "invalidaction");
-        assertEquals("Invalid actions help should produce two lines of output. Output was: " + actionsHelp, 2, actionsHelp.size());
+        assertTrue("Invalid actions help should produce two lines of output which contains invalid task name and usage. Output was: " + actionsHelp, (findMatchingLine(actionsHelp, "Unknown task: invalidaction") && findMatchingLine(actionsHelp, findString)));
 
         List<String> helpOutput = getScriptHelpOutput(null, "help");
         assertTrue("Full help should contain encode help. Output was: " + helpOutput, findMatchingLine(helpOutput, "\\s*encode.*"));
