@@ -1,5 +1,5 @@
 -include= ~../cnf/resources/bnd/feature.props
-symbolicName=com.ibm.websphere.appserver.jaxrsSSLSecurity-2.1
+symbolicName=com.ibm.websphere.appserver.jaxrsAppSecurity-2.1
 visibility=private
 IBM-App-ForceRestart: uninstall, \
  install
