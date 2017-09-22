@@ -123,7 +123,9 @@ org.apache.johnzon:johnzon-core:1.1.0
 org.apache.johnzon:johnzon-jsonb:1.1.0
 org.apache.johnzon:johnzon-mapper:1.1.0
 org.apache.myfaces.core:myfaces-api:2.2.12
+org.apache.myfaces.core:myfaces-api:2.3.0-beta
 org.apache.myfaces.core:myfaces-impl:2.2.12
+org.apache.myfaces.core:myfaces-impl:2.3.0-beta
 org.apache.myfaces.buildtools:myfaces-builder-annotations:1.0.9
 org.apache.neethi:neethi:3.0.2
 org.apache.servicemix.bundles:org.apache.servicemix.bundles.bcel:5.2_3
