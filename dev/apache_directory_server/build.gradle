@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-build {
+task copyApacheDSJar {
   
   doLast {
 
@@ -58,6 +58,10 @@ build {
       into "${projectDir}/apacheds-2.0.0-M15/lib/"
     }
   }
+}
+
+assemble {
+  dependsOn copyApacheDSJar
 }
 
 clean {

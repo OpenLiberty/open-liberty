@@ -1,0 +1,23 @@
+<server description="new server">
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<ldapRegistry id="LDAP" realm="SampleLdapSUNRealm" host="${ldap.server.13.name}" port="${ldap.server.13.port}"
+		baseDN="dc=rtp,dc=raleigh,dc=ibm,dc=com"
+		ldapType="Sun Java System Directory Server"
+		searchTimeout="8m">
+		<failoverServers name="failoverLdapServers">
+      		<server host="${ldap.server.3.name}" port="${ldap.server.3.port}"/>
+       </failoverServers>
+	</ldapRegistry>
+
+    <federatedRepository>
+        <primaryRealm name="WIMRegistry">
+            <participatingBaseEntry name="dc=rtp,dc=raleigh,dc=ibm,dc=com"/>
+        </primaryRealm>
+    </federatedRepository>
+</server>
