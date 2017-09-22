@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.health.fat;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -28,12 +28,9 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.*;
+import componenttest.topology.utils.HttpUtils;
 
-@Mode(TestMode.LITE)
 @RunWith(FATRunner.class)
 public class HealthCheckExceptionTest {
 
