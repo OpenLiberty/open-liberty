@@ -17,6 +17,7 @@ import org.apache.cxf.jaxrs.security.SimpleAuthorizingFilter;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
+import com.ibm.ws.jaxrs20.security.LibertyAuthFilter;
 import com.ibm.ws.jaxrs20.security.LibertySimpleAuthorizingInterceptor;
 
 @Component(immediate=true)
@@ -28,10 +29,10 @@ public class SecurityAnnoProviderRegister implements JaxRsProviderRegister {
         if (!clientSide) {
             if (features.contains("appSecurity-2.0") || features.contains("appSecurity-1.0")) {
                 //add one built-in ContainerRequestFilter to handle basic security
-                SimpleAuthorizingFilter sm = new SimpleAuthorizingFilter();
+                LibertyAuthFilter laf = new LibertyAuthFilter();
                 LibertySimpleAuthorizingInterceptor in = new LibertySimpleAuthorizingInterceptor();
-                sm.setInterceptor(in);
-                providers.add(sm);
+                laf.setInterceptor(in);
+                providers.add(laf);
             }
         }
     }
