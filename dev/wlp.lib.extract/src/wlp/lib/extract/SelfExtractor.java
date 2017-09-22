@@ -690,8 +690,16 @@ public class SelfExtractor implements LicenseProvider {
                         if (productAddOn) {
                             continue; // If the file already exists just skip over it.
                         } else if (allowNonEmptyInstallDirectory) {
-                            SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
-                            return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractFileExists", file.getAbsolutePath());
+                            if (name.endsWith("wlp/lib/extract/META-INF/MANIFEST.MF")) {
+                                // Sometimes there will be 2 manifests, one at META-INF/ and one at wlp/lib/extract/META-INF/
+                                // In this case we want to take the one at META-INF/ and ignore the other one
+                                continue;
+                            } else if (name.endsWith("META-INF/MANIFEST.MF")) {
+                                file.delete();
+                            } else {
+                                SelfExtractUtils.rollbackExtract(createdDirectoriesAndFiles);
+                                return new ReturnCode(ReturnCode.BAD_OUTPUT, "extractFileExists", file.getAbsolutePath());
+                            }
                         }
                     }
 
