@@ -867,7 +867,7 @@ public class UIViewRoot extends UIComponentBase implements UniqueIdVendor
             FacesContext facesContext = getFacesContext();
             if (facesContext != null)
             {
-                facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, this);
+                facesContext.getApplication().publishEvent(facesContext, PostConstructViewMapEvent.class, UIViewRoot.class, this);
             }
         }
 
