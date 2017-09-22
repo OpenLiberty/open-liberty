@@ -49,7 +49,7 @@ public class WelcomePageHelper {
   @Reference(policy = ReferencePolicy.DYNAMIC,
              service = WelcomePage.class,
              policyOption = ReferencePolicyOption.GREEDY,
-             cardinality = ReferenceCardinality.OPTIONAL,
+             cardinality = ReferenceCardinality.MULTIPLE,
              name="welcomePage")
   protected void setWelcomePage(ServiceReference<WelcomePage> ref) {
     welcomePages.addReference(ref);
