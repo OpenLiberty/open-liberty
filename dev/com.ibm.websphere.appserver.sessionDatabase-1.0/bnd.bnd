@@ -17,7 +17,7 @@ publish.feature.resources: **
 
 -dependson: \
 	com.ibm.websphere.appserver.jndi-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.servlet-3.1;version=latest, \
+	com.ibm.websphere.appserver.javax.servlet-3.0;version=latest, \
 	com.ibm.websphere.appserver.transaction-1.1;version=latest, \
 	com.ibm.websphere.appserver.jdbc-4.0;version=latest
 
