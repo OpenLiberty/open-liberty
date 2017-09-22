@@ -47,7 +47,7 @@ Export-Package: \
     com.ibm.ws.http.channel.h2internal.huffman
 
 Private-Package: \
-    com.ibm.ws.http.*, \
+  com.ibm.ws.http.*, \
 	com.ibm.ws.http.dispatcher*, \
 	com.ibm.ws.http.channel*, \
 	com.ibm.ws.http.logging.internal, \
@@ -63,7 +63,8 @@ Private-Package: \
   com.ibm.ws.http.internal.HttpEndpointImpl,\
   com.ibm.ws.http.internal.VirtualHostImpl,\
   com.ibm.ws.http.logging.internal.AccessLogger,\
-  com.ibm.ws.http.internal.HttpProxyRedirect
+  com.ibm.ws.http.internal.HttpProxyRedirect,\
+  com.ibm.ws.http.dispatcher.internal.channel.WelcomePageHelper
 
 Service-Component: \
     com.ibm.ws.http.options; \

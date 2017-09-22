@@ -47,7 +47,6 @@ import com.ibm.wsspi.http.WelcomePage;
 import com.ibm.wsspi.http.WorkClassifier;
 import com.ibm.wsspi.http.ee7.HttpTransportBehavior;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
-import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
 import com.ibm.wsspi.timer.ApproximateTime;
 import com.ibm.wsspi.timer.QuickApproxTime;
 
@@ -74,8 +73,6 @@ public class HttpDispatcher {
     public volatile WorkClassifier workClassifier = null;
 
     private volatile ServiceReference<HttpTransportBehavior> behaviorRef;
-
-    private static ConcurrentServiceReferenceSet<WelcomePage> welcomePages = new ConcurrentServiceReferenceSet("welcomePage");
 
     private static volatile boolean useEE7Streams = false;
 
@@ -140,13 +137,11 @@ public class HttpDispatcher {
      * @param context
      */
     @Activate
-    protected void activate(ComponentContext compCtx, Map<String, Object> properties) {
+    protected void activate(Map<String, Object> properties) {
         modified(properties);
 
         // Set this as the active HttpDispatcher instance
         instance.set(this);
-
-        welcomePages.activate(compCtx);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "HttpDispatcher activated, id=" + properties.get(ComponentConstants.COMPONENT_ID));
@@ -159,12 +154,10 @@ public class HttpDispatcher {
      * @param context
      */
     @Deactivate
-    protected void deactivate(ComponentContext compCtx, Map<String, Object> properties, int reason) {
+    protected void deactivate(Map<String, Object> properties, int reason) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "HttpDispatcher deactivated, id=" + properties.get(ComponentConstants.COMPONENT_ID) + ",reason=" + reason);
         }
-
-        welcomePages.deactivate(compCtx);
 
         // Clear this as the active HttpDispatcher instance (unless another has already replaced)
         instance.compareAndSet(this, null);
@@ -217,16 +210,6 @@ public class HttpDispatcher {
 
     private void enableWelcomePage(boolean value) {
         enableWelcomePage = value;
-    }
-
-    public static InputStream getWelcomePageStream(String url) {
-      WelcomePage page = welcomePages.getHighestRankedService();
-      return page.openWelcomePage(url);
-    }
-
-    public static InputStream getNotFoundStream() {
-      WelcomePage page = welcomePages.getHighestRankedService();
-      return page.openNotFoundPage();
     }
 
     /**
@@ -577,20 +560,6 @@ public class HttpDispatcher {
                target = "(service.pid=com.ibm.ws.webcontainer)")
     protected void setWebContainer(ServiceReference<VirtualHostListener> ref) {
         updatedWebContainer(ref);
-    }
-
-    @Trivial
-    @Reference(policy = ReferencePolicy.DYNAMIC,
-               service = WelcomePage.class,
-               policyOption = ReferencePolicyOption.GREEDY,
-               cardinality = ReferenceCardinality.OPTIONAL,
-               name="welcomePage")
-    protected void setWelcomePage(ServiceReference<WelcomePage> ref) {
-      welcomePages.addReference(ref);
-    }
-
-    protected void unsetWelcomePage(ServiceReference<WelcomePage> ref) {
-      welcomePages.removeReference(ref);
     }
 
     /**

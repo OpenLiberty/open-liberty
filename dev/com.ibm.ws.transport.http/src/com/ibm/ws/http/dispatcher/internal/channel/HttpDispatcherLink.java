@@ -419,13 +419,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         String theURI = this.isc.getRequest().getRequestURI();
 
-        return HttpDispatcher.getWelcomePageStream(theURI);
+        return WelcomePageHelper.getWelcomePageStream(theURI);
     }
 
     private InputStream getNotFoundStream() {
         if (!!!HttpDispatcher.isWelcomePageEnabled())
             return null;
-        return HttpDispatcher.getNotFoundStream();
+        return WelcomePageHelper.getNotFoundStream();
     }
 
     private void displayLandingPage(InputStream in) throws IOException {
