@@ -42,8 +42,8 @@ laosBundleAutoFeatures= \
 	com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0,\
 	com.ibm.websphere.appserver.javaMailJ2eeManagement-1.0,\
 	com.ibm.websphere.appserver.jaxrs20managedbeans-1.0,\
-	com.ibm.websphere.appserver.jaxrsAppSecurity-2.0,\
 	com.ibm.websphere.appserver.jaxrsBeanValidation-2.0,\
+	com.ibm.websphere.appserver.jaxrsSSLSecurity-2.0,\
 	com.ibm.websphere.appserver.jaxrscdi-2.0,\
 	com.ibm.websphere.appserver.jaxrsejb-2.0,\
 	com.ibm.websphere.appserver.jaxwscdi-2.2,\
