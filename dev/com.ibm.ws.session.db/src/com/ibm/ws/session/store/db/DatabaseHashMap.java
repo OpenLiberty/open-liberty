@@ -1,26 +1,13 @@
-/*COPYRIGHT_START***********************************************************
+/*******************************************************************************
+ * Copyright (c) 1997, 2013 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * IBM Confidential OCO Source Material
- * 5724-J08, 5724-I63, 5724-H88, 5724-H89, 5655-N02, 5733-W70 (C) COPYRIGHT International Business Machines Corp. 1997, 2013
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- *
- *   IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
- *   ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- *   PURPOSE. IN NO EVENT SHALL IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR
- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
- *   USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- *   OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
- *   OR PERFORMANCE OF THIS SOFTWARE.
- *
- *  @(#) 1.14 SERV1/ws/code/session.store/src/com/ibm/ws/session/store/db/DatabaseHashMap.java, WAS.session, WAS70.SERV1, cf030849.09 7/7/08 09:31:17 [12/10/08 13:17:17]
- *
- * @(#)file   DatabaseHashMap.java
- * @(#)version   1.14
- * @(#)date      7/7/08
- *
- *COPYRIGHT_END*************************************************************/
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.store.db;
 
 import java.io.BufferedInputStream;
@@ -90,7 +77,7 @@ public class DatabaseHashMap extends BackedHashMap {
     //PK55900 : make sure tableName is only constructed once in initDBSettings()
     boolean firstInitialize = true;
 
-    static final int SOMEBIGSIZE = 2100000; // Used for missing DataSource      
+    static final int SOMEBIGSIZE = 2100000; // Used for missing DataSource
     static final int SMALLCOL_SIZE_DB2 = 3122;
     static final int SMALLCOL_SIZE_DB2_8K = 7218;
     static final int SMALLCOL_SIZE_DB2_16K = 15410;
@@ -171,7 +158,7 @@ public class DatabaseHashMap extends BackedHashMap {
     //For AS400,default is "QEJBSESSON"
     String as400_collection = null; // 93418
     String collectionName = null; //used in as400 and 0S390
-    String qualifierNameWhenCustomSchemaIsSet = null; //PM27191    
+    String qualifierNameWhenCustomSchemaIsSet = null; //PM27191
     boolean usingAS400DB2 = false;
     boolean usingSybase = false;
     boolean usingDB2 = false; //*87472
@@ -247,7 +234,7 @@ public class DatabaseHashMap extends BackedHashMap {
         getDataSource();
         initDBSettings();
     }
-    
+
     protected DatabaseStoreService getDatabaseStoreService() {
         return this.databaseStoreService;
     }
@@ -339,7 +326,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     smallColSize = dbHandler.getSmallColumnSize();
                     mediumColSize = dbHandler.getMediumColumnSize();
                     largeColSize = dbHandler.getLargeColumnSize();
-                } //HANDLING DERBY BELOW SO AS TO NOT CHANGE THE BEHAVIOR 
+                } //HANDLING DERBY BELOW SO AS TO NOT CHANGE THE BEHAVIOR
                 else {
                     // venkat 89199 increased row size capability
                     if (_smc.getRowSize() == 4) {
@@ -487,7 +474,7 @@ public class DatabaseHashMap extends BackedHashMap {
                 int columnsize = rs1.getInt("COLUMN_SIZE");
                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_TABLE_DEFINITION], "COLUMN_NAME = " + columnname + " COLUMN_SIZE = " + Integer.toString(columnsize));
-                }                
+                }
                 if (columnname.equalsIgnoreCase("SMALL")) {
                     smallColSize = columnsize;
                     smallExists = true;
@@ -530,7 +517,7 @@ public class DatabaseHashMap extends BackedHashMap {
         Connection con = null;
         java.sql.Statement s = null;
 
-        //PK55900 We can pass in true to the getConnection method since this method, 
+        //PK55900 We can pass in true to the getConnection method since this method,
         //createTable, is only called from the initDBSettings method.
         con = getConnection(true);
         if (con == null) {
@@ -553,7 +540,7 @@ public class DatabaseHashMap extends BackedHashMap {
                                             + tableName
                                             + " (id varchar(128) not null, propid varchar(128) not null, appname varchar(128) not null, listenercnt smallint, lastaccess integer, creationtime integer, maxinactivetime integer, username varchar(256), small raw("
                                             + SMALLCOL_SIZE_ORACLE + "), medium long raw, large raw(1))");
-                        } // cmd LI1963 end                 	
+                        } // cmd LI1963 end
                     } else if (usingAS400DB2) {
                         try { //if using AS400, create collection first
                             s.executeUpdate("CREATE COLLECTION " + collectionName);
@@ -589,9 +576,9 @@ public class DatabaseHashMap extends BackedHashMap {
                         if (configTableSpaceName != null && !configTableSpaceName.equals("") && configTableSpaceName.length() != 0)
                             tableSpaceName = " in " + configTableSpaceName;
                         if (usingSolidDB)
-                            s.executeUpdate("create table " 
-                                        + tableName 
-                                        + " (id varchar(128) not null, propid varchar(128) not null, appname varchar(128) not null, listenercnt smallint, lastaccess bigint, creationtime bigint, maxinactivetime integer, username varchar(256), small varchar(" 
+                            s.executeUpdate("create table "
+                                        + tableName
+                                        + " (id varchar(128) not null, propid varchar(128) not null, appname varchar(128) not null, listenercnt smallint, lastaccess bigint, creationtime bigint, maxinactivetime integer, username varchar(256), small varchar("
                                         + smallColSize + "), medium long varchar, large BLOB(2M)) " + tableSpaceName);
                         else
                             s.executeUpdate("create table "
@@ -624,17 +611,17 @@ public class DatabaseHashMap extends BackedHashMap {
                         s.executeUpdate("create unique index sess_index on " + tableName + " (id, propid, appname)");
                         s.executeUpdate("alter table sessions lock datarows");
                     } else if (usingSolidDB) {
-                        s.executeUpdate("create unique index sess_index on " + tableName + " (id, propid, appname)");                        
+                        s.executeUpdate("create unique index sess_index on " + tableName + " (id, propid, appname)");
                     } else if (usingAS400DB2) {
                         mediumColSize = mediumColSize - 2; //d154211
-                        //PK56991: If multiple cluster members startup at the same time the 
+                        //PK56991: If multiple cluster members startup at the same time the
                         // combination of these DDLs can lock up for a substantial duration.
                         // We now execute these only if they do not exist.
                         if (!doesIndexExists(con, "sess_index")) {
                             s.executeUpdate("create unique index " + collectionName + ".sess_index on " + tableName + " (id,propid,appname)"); //tableName is already in the form of "collectionName.tableName"
                             //PK56991 comment out marking table as volatile. The DB2 chief architect on iSeries
                             //team informed that VOLATILE clause is only compatible and improve performance on LUW
-                            //s.executeUpdate("alter table " + tableName + " volatile"); 
+                            //s.executeUpdate("alter table " + tableName + " volatile");
                         } else if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[CREATE_TABLE], "Skip index creation");
                         }
@@ -647,7 +634,7 @@ public class DatabaseHashMap extends BackedHashMap {
                         } else if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[CREATE_TABLE], "Skip index creation");
                         }
-                        //PK56991: We are marking the the session table as volatile if it is not  
+                        //PK56991: We are marking the the session table as volatile if it is not
                         //done yet.
                         if (usingDB2 && !isTableMarkedVolatile(con)) {
                             s.executeUpdate("alter table " + tableName + " volatile");
@@ -699,7 +686,7 @@ public class DatabaseHashMap extends BackedHashMap {
             dataSource = (DataSource) this.getDatabaseStoreService().getDataSourceFactory().createResource(rc);
 
             //            dataSource = (DataSource)SessionMgrComponentImpl.getDataSourceFactory().createResource(null); // direct JNDI lookup
-            endDBContext(); // PK06395/d321615            
+            endDBContext(); // PK06395/d321615
             return dataSource;
 
         } catch (Exception e) {
@@ -839,15 +826,15 @@ public class DatabaseHashMap extends BackedHashMap {
             /*
              * PK71265: Remove the section retrieving attribute rows as session manager
              * will remove the attribute rows in a single query.
-             * 
-             * 
+             *
+             *
              * if (isTraceOn&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
              * LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DO_INVALIDATIONS], "before read of ucom scan results ");
              * }
-             * 
+             *
              * Enumeration enum1 = primaryRows.keys();
-             * 
-             * 
+             *
+             *
              * Hashtable multiRowProps = new Hashtable();
              * while (_smc.isUsingMultirow() && enum1.hasMoreElements()) {
              * scanPropPs = null;
@@ -874,7 +861,7 @@ public class DatabaseHashMap extends BackedHashMap {
              * scanPropPs.close();
              * scanClose = true;
              * }
-             * 
+             *
              * if (isTraceOn&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
              * LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DO_INVALIDATIONS], "after read of ucom scan results, befor commit ");
              * }
@@ -932,7 +919,7 @@ public class DatabaseHashMap extends BackedHashMap {
                          * PK71265 : Rather than removing the associated rows which persists the attributes individually.
                          * We will remove all associated rows in one query for an invalid non-listeners sessions, which
                          * is the same way we handle assoicated rows for invalid listeners sessions
-                         * 
+                         *
                          * Vector vec2 = (Vector) multiRowProps.get(id);
                          * if (isTraceOn&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                          * LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DO_INVALIDATIONS], "delete vector for sub rows " + vec2);
@@ -955,14 +942,14 @@ public class DatabaseHashMap extends BackedHashMap {
                          * LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DO_INVALIDATIONS], "before deleting subrow " + propid + " for session " +
                          * id);
                          * }
-                         * 
+                         *
                          * subDel.executeUpdate();
                          * subDel.close();
                          * subClose = true;
                          * }
                          * }
                          * }
-                         * 
+                         *
                          * }
                          */
                         //PK71265 starts
@@ -1068,7 +1055,7 @@ public class DatabaseHashMap extends BackedHashMap {
             int oldIsolationLevel = 0;
             // to reduce shared locks on select, set auto commit on
 
-            //To reduce the shared locks happening on select, temporarily change isolation level 
+            //To reduce the shared locks happening on select, temporarily change isolation level
             if (usingDB2 || usingDerby) {
                 oldIsolationLevel = nukerCon.getTransactionIsolation();
                 nukerCon.setTransactionIsolation(java.sql.Connection.TRANSACTION_READ_UNCOMMITTED);
@@ -1200,7 +1187,7 @@ public class DatabaseHashMap extends BackedHashMap {
 
     /*
      * Get connection
-     * 
+     *
      * @param fromInit - true if we were called from initDBSettings (this prevents an infinite loop)
      */
     Connection getConnection(boolean fromInit) {
@@ -1224,13 +1211,13 @@ public class DatabaseHashMap extends BackedHashMap {
                 try {
                     tries++;
                     exceptionOccured = false;
-                    //                    
+                    //
                     //		            if (!SessionManagerConfig.is_zOS()) {	  // LIDB2775.25 zOS
                     //                        conn = dataSource.getConnection(dbid, dbpwd);
                     //		            } else {
                     // in liberty profile, depend on data source for user/password
                     conn = dataSource.getConnection(); // LIDB2775.25 zOS
-     
+
                     if (dbHandler != null && !dbHandler.isConnectionValid(conn)) {
                         LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[GET_CONNECTION], "Stale connection detected.");
                         continue;
@@ -1242,7 +1229,7 @@ public class DatabaseHashMap extends BackedHashMap {
                         LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, methodNames[GET_CONNECTION], "Connection-isolation-level" + conn.getTransactionIsolation());
                     }
                     //if we did not successully initialize the database settings due to the database being down on startup, do it now
-                    //fromInit tells us if we came from initDBSettings: We don't want to call this the first time when initDBSettings calls getConnection 
+                    //fromInit tells us if we came from initDBSettings: We don't want to call this the first time when initDBSettings calls getConnection
                     if (!initialized && !fromInit && !tryingToInitialize) {
                         synchronized (this) {
                             tryingToInitialize = true;
@@ -1260,9 +1247,9 @@ public class DatabaseHashMap extends BackedHashMap {
                     //                        com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.session.store.db.DatabaseHashMap.getConnection", "1081", this);
                     //                        if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                     //                            LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[UPDATE_LAST_ACCESS_TIME], "StaleConnectionException");
-                    //                        } 
+                    //                        }
                     //                        continue; // try up to 3 times
-                    //                    } else {                   
+                    //                    } else {
                     //                        exceptionOccured = true;
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[GET_CONNECTION], "CommonMessage.exception", th);
                     //                        break; // bail out now
@@ -1306,7 +1293,7 @@ public class DatabaseHashMap extends BackedHashMap {
             }
         } else if (!uowCoord.isGlobal()) {
             // There is a LocalTransaction, it must be suspended
-            // and a new LocalTransaction begun 
+            // and a new LocalTransaction begun
             if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[SUSPEND_TRANSACTION], "LocalTransaction is active so suspend");
             }
@@ -1334,7 +1321,7 @@ public class DatabaseHashMap extends BackedHashMap {
                 // Suspend the LocalTransaction and return the LocalTransactionCoordinator as an Object
                 suspendedTx[1] = (Object) ltCurrent.suspend();
             }
-            // END: PM56632 
+            // END: PM56632
         }
 
         if (suspendedTx[0] != null || suspendedTx[1] != null)
@@ -1399,7 +1386,7 @@ public class DatabaseHashMap extends BackedHashMap {
 
         Object[] suspendedTx = (Object[]) suspendedTransactions.remove(Thread.currentThread()); // PM56632
         if (suspendedTx != null) {
-            for (int i = suspendedTx.length - 1; i >= 0; i--) { // LTC resume, then global transaction        
+            for (int i = suspendedTx.length - 1; i >= 0; i--) { // LTC resume, then global transaction
                 Object susTrans = suspendedTx[i];
                 if (susTrans != null) {
                     if (susTrans instanceof Transaction) {
@@ -1417,7 +1404,7 @@ public class DatabaseHashMap extends BackedHashMap {
                             com.ibm.ws.ffdc.FFDCFilter.processException(ex, "com.ibm.ws.session.store.db.DatabaseHashMap.resumeGlobalTransaction", "1210", this);
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[RESUME_TRANSACTION], "CommonMessage.exception", ex);
                         }
-                        
+
                     } else if (susTrans instanceof LocalTransactionCoordinator) {
                         if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[RESUME_TRANSACTION], "Resume the suspended Local Transaction");
@@ -1451,7 +1438,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     }
                 }
             }
-        } // PM56632  
+        } // PM56632
 
         if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, methodNames[RESUME_TRANSACTION]);
@@ -1543,7 +1530,7 @@ public class DatabaseHashMap extends BackedHashMap {
             //  or not. JDBC doesn't manadate to implement available().
             //
             // Once, Oracle fixes 1), we can use getBinaryStream() which makes coding easy
-            //       by not creating byte array and then again creating binary stream from it.          
+            //       by not creating byte array and then again creating binary stream from it.
             if (usingOracle) {
                 tmp = oracleGetValue(rs, s);
             } else {
@@ -1608,7 +1595,7 @@ public class DatabaseHashMap extends BackedHashMap {
                      * When fullyMaterializeLobData=false, no data is initially brought over to the client-side with the SELECT, just the locator.
                      * Initially (i.e. before the first read), available() will return 0. There are no data bytes available that don't require a
                      * blocking read (i.e. flow to the engine) to acquire
-                     * 
+                     *
                      * Solution: Calling ResultSet.getBlob() will result into the materialization to the client-side. The subsequent usage of
                      * Blob.length()determines there is any data retrieving from the LARGE Column
                      */
@@ -1621,7 +1608,7 @@ public class DatabaseHashMap extends BackedHashMap {
                             is_large = getBlobData.getBinaryStream();
 
                             if (is_large != null) {
-                                //if (available(is_large)) {    // commented out by PK77100                
+                                //if (available(is_large)) {    // commented out by PK77100
                                 //readSize = is_large.available(); // commented out by PK77100
                                 readSize = getBlobData.length();
                                 bis_large = new BufferedInputStream(is_large);
@@ -1655,7 +1642,7 @@ public class DatabaseHashMap extends BackedHashMap {
         } catch (SQLException se) {
             //            if (isStaleConnectionException(se)) {
             //                com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.getValue", "1408", s);
-            //                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.WARNING, methodClassName, methodNames[GET_VALUE], "StaleConnectionException");                
+            //                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.WARNING, methodClassName, methodNames[GET_VALUE], "StaleConnectionException");
             //            } else {
             com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.getValue", "1411", s);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[GET_VALUE], "DatabaseHashMap.getValueErrBH");
@@ -1722,7 +1709,7 @@ public class DatabaseHashMap extends BackedHashMap {
             //                com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.session.store.db.DatabaseHashMap.updateLastAccessTime", "1472", sess);
             //                if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             //                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[UPDATE_LAST_ACCESS_TIME], "StaleConnectionException");
-            //                }                
+            //                }
             //            } else {
             com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.session.store.db.DatabaseHashMap.updateLastAccessTime", "1476", sess);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[UPDATE_LAST_ACCESS_TIME], "CommonMessage.sessionid", id);
@@ -1764,7 +1751,7 @@ public class DatabaseHashMap extends BackedHashMap {
                      * and then because we haven't updated the lastAccessTime, our invalidator thread invalidates the session.
                      */
                 }
-                                
+
                 s = con.prepareStatement(optUpdatePrimRow);
                 setPSLong(s, 1, nowTime);
                 s.setString(2, id);
@@ -1794,7 +1781,7 @@ public class DatabaseHashMap extends BackedHashMap {
             //               com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.session.store.db.DatabaseHashMap.overQualLastAccessTimeUpdate", "1527", sess);
             //               if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             //                   LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[OVERQUAL_LAST_ACCESS_TIME_UPDATE], "StaleConnectionException");
-            //               }               
+            //               }
             //           } else {
             com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.session.store.db.DatabaseHashMap.overQualLastAccessTimeUpdate", "1531", sess);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[OVERQUAL_LAST_ACCESS_TIME_UPDATE], "CommonMessage.sessionid", id);
@@ -1836,7 +1823,7 @@ public class DatabaseHashMap extends BackedHashMap {
         } catch (Throwable th) {
             //            if (isStaleConnectionException(th)) {
             //                com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.session.store.db.DatabaseHashMap.readFromExternal", "1608", sess);
-            //                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.WARNING, methodClassName, methodNames[READ_FROM_EXTERNAL], "StaleConnectionException");                
+            //                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.WARNING, methodClassName, methodNames[READ_FROM_EXTERNAL], "StaleConnectionException");
             //            } else {
             com.ibm.ws.ffdc.FFDCFilter.processException(th, "com.ibm.ws.session.store.db.DatabaseHashMap.readFromExternal", "1611", sess);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[READ_FROM_EXTERNAL], "DatabaseHashMap.selectAndLockError");
@@ -1942,7 +1929,7 @@ public class DatabaseHashMap extends BackedHashMap {
             //                com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.isPresent", "1709", this);
             //                if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             //                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[IS_PRESENT], "StaleConnectionException");
-            //                }                
+            //                }
             //            } else {
             com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.isPresent", "1715", this);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[IS_PRESENT], "DatabaseHashMap.selectNoUpdateError");
@@ -2030,8 +2017,8 @@ public class DatabaseHashMap extends BackedHashMap {
             //                com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.insertSession", "1797", d2);
             //                if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             //                    LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[INSERT_SESSION], "Duplicate Key Exception");
-            //                }                    
-            //                d2.duplicateIdDetected = true;                
+            //                }
+            //                d2.duplicateIdDetected = true;
             //            } else {
             com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.insertSession", "1803", d2);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[INSERT_SESSION], "DatabaseHashMap.ejbCreateError");
@@ -2097,7 +2084,7 @@ public class DatabaseHashMap extends BackedHashMap {
     ////                rc = true;
     ////            }
     //        }
-    //        return rc;        
+    //        return rc;
     //    }
     /*
      * Build the sql string needed to update the row
@@ -2275,7 +2262,7 @@ public class DatabaseHashMap extends BackedHashMap {
                 }
                 colcnt++;
                 // shouldn't get a -1 time since already stored...
-                // I'm assuming lastAccess has been updated in the session object 
+                // I'm assuming lastAccess has been updated in the session object
                 setPSLong(ps, colcnt, time);
                 d2.setLastWriteLastAccessTime(time);
 
@@ -2333,7 +2320,7 @@ public class DatabaseHashMap extends BackedHashMap {
             //                com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.persistSession", "2094", d2);
             //                if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             //                    LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, methodNames[PERSIST_SESSION], "StaleConnectionException");
-            //                }                
+            //                }
             //            } else {
             com.ibm.ws.ffdc.FFDCFilter.processException(se, "com.ibm.ws.session.store.db.DatabaseHashMap.persistSession", "2099", d2);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[PERSIST_SESSION], "DatabaseHashMap.ejbStoreError");
@@ -2376,8 +2363,8 @@ public class DatabaseHashMap extends BackedHashMap {
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[SERIALIZE_APP_DATA]);
         }
-        // return either the byte array input stream for the app 
-        // data or a vector of byte array input streams if their is a 
+        // return either the byte array input stream for the app
+        // data or a vector of byte array input streams if their is a
         // row for each piece of app data
         ByteArrayOutputStream baos = null;
         ObjectOutputStream oos = null;
@@ -2461,7 +2448,7 @@ public class DatabaseHashMap extends BackedHashMap {
                 //                    if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                 //                        LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[WRITE_CACHED_LAST_ACCESSED_TIMES], "StaleConnectionException");
                 //                    }
-                //                    throw se1;                    
+                //                    throw se1;
                 //                } else {
                 com.ibm.ws.ffdc.FFDCFilter.processException(se1, "com.ibm.ws.session.store.db.DatabaseHashMap.writeCachedLastAccessedTimes", "2109", id);
                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.SEVERE, methodClassName, methodNames[WRITE_CACHED_LAST_ACCESSED_TIMES], "DatabaseHashMap.handleAsyncError");
@@ -2480,7 +2467,7 @@ public class DatabaseHashMap extends BackedHashMap {
 
     /*
      * Get the collection name used by the table
-     * 
+     *
      * AS400 specific code provided by ISeries team
      * Technical contact: Art Smet/Rochestor
      */
@@ -2545,14 +2532,14 @@ public class DatabaseHashMap extends BackedHashMap {
             //
             //                if ((cell == null) || (node == null) || (serverName == null))
             //                    throw new Exception("Unable to retrieve cell, node, or serverName.");
-            //                
+            //
             //                com.ibm.ws.runtime.service.Repository repository = com.ibm.ws.runtime.service.RepositoryFactory.createRepository(System.getProperty("user.install.root") + "/config", cell, node, serverName);
-            //                
+            //
             //                  */
             //                // com.ibm.ws.runtime.service.Repository repository = com.ibm.ws.runtime.service.RepositoryFactory.createRepository(System.getProperty("user.install.root") + "/config", cell, node, serverName);
             //                // PK78174 this instanceof com.ibm.wsspi.runtime.component.WsComponent
             //                Repository repository = (Repository) WsServiceRegistry.getService(this, Repository.class);
-            //                
+            //
             //                if (repository == null)
             //                    throw new Exception("Unable to acquire a reference to the repository.");
             //
@@ -2564,7 +2551,7 @@ public class DatabaseHashMap extends BackedHashMap {
             //                        		throw new Exception("DataSource not configured with JNDI name: " + jndiDSName);
             //                        	}
             //                        }
-            //                    } 
+            //                    }
             //                }
             //            } catch (Exception ex) {
             //                LoggingUtil.SESSION_LOGGER_WAS.logp(Level.WARNING, methodClassName, methodNames[GET_COLLECTION_NAME], "CommonMessage.exception", ex);
@@ -2604,7 +2591,7 @@ public class DatabaseHashMap extends BackedHashMap {
     //        try {
     //            ConfigService service = (ConfigService)ComponentUtil.getService(this, ConfigService.class);
     //            myList = service.getDocumentObjects(service.getScope(level), "resources.xml");
-    //        	
+    //
     //        } catch (Exception ex) {
     //            myList = null;
     //        }
@@ -2617,7 +2604,7 @@ public class DatabaseHashMap extends BackedHashMap {
     //                java.util.List myList2 = myResource.getObjectList(CT_JDBCProvider.FACTORIES_NAME);
     //                for (int j = 0; j < myList2.size(); j++) {
     //                    ConfigObject myResource2 = (ConfigObject)myList2.get(j);
-    //                    if (myResource2.instanceOf(CT_DataSource.URI, CT_DataSource.NAME)) { 
+    //                    if (myResource2.instanceOf(CT_DataSource.URI, CT_DataSource.NAME)) {
     //                        jndiName = myResource2.getString(CT_DataSource.JNDINAME_NAME, CT_DataSource.JNDINAME_DEFAULT);
     //                        if (jndiName != null && jndiName.equals(jndiDSName)) {
     //                        	ConfigObject propertySet = myResource2.getObject(CT_DataSource.PROPERTYSET_NAME);
@@ -2628,13 +2615,13 @@ public class DatabaseHashMap extends BackedHashMap {
     //                                if (propertyName.equals("libraries")) {
     //                                	libs = myResource3.getString(CT_J2EEResourceProperty.VALUE_NAME, CT_J2EEResourceProperty.VALUE_DEFAULT);
     //                                    if (libs != null) libs = libs.trim();
-    //                                    // end LIDB4119-35.01                                        
+    //                                    // end LIDB4119-35.01
     //                                    if (libs != null && !libs.equals("")) {
     //                                        int comma = libs.indexOf(",");
     //                                        //result will be the first library they listed, if any were listed.
     //                                        String result = libs.substring(0, (comma == -1 ? libs.length() : comma)).trim();
     //
-    //                                        //just in case they manually entered nothing or only *LIBL 
+    //                                        //just in case they manually entered nothing or only *LIBL
     //                                        if (result != null && !result.equals("") && !result.equalsIgnoreCase("*LIBL")) {
     //                                            return result;
     //                                        }
@@ -2649,7 +2636,7 @@ public class DatabaseHashMap extends BackedHashMap {
     //            }
     //        }
     //        return null;
-    //    } 
+    //    }
 
     /*
      * No need to read from the large Column since it should never be
@@ -2742,7 +2729,7 @@ public class DatabaseHashMap extends BackedHashMap {
 
         getProp = "select small, medium, large from  " + tableName + "  where id = ? and propid = ? and appname = ? for read only";
 
-        //PK71265 
+        //PK71265
         delPropall = "delete from  " + tableName + " where id = ? and propid <> id and appname = ?";
 
         getPropNotDB2 = "select small, medium, large from  " + tableName + "  where id = ? and propid = ? and appname = ?";
@@ -2847,7 +2834,7 @@ public class DatabaseHashMap extends BackedHashMap {
             if (!_smc.getEnableEOSWrite()) {
                 writeCachedLastAccessedTimes(nukerCon);
             }
-            
+
             //check the value of doDatabaseInval
             if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE,methodClassName, methodNames[PERFORM_INVALIDATION], "doDatabaseInval="+doDatabaseInval);
@@ -2869,7 +2856,7 @@ public class DatabaseHashMap extends BackedHashMap {
                 rs1.close();
                 ps1.close();
                 ps1Closed = true;
-                
+
                 //check the value of rowExists
                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE,methodClassName, methodNames[PERFORM_INVALIDATION], "rowExists="+rowExists);
@@ -2882,7 +2869,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                         LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE,methodClassName, methodNames[PERFORM_INVALIDATION], "lastCheck="+lastCheck+",lastTime="+lastTime+",now="+now);
                     }
-                    
+
                     //if no other server tried to process invalidation within the interval, this will be true
                     //similar to updateNukerTimeStamp, but we have an extra check here to test the last access time hasn't changed
                     //PK30585 - added future time check
@@ -2899,7 +2886,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     }
                 } else {
                     //If we are here means, this is the first time this web module is
-                    //trying to invalidation of sessions					
+                    //trying to invalidation of sessions
                     ps2 = nukerCon.prepareStatement(insForInval);
                     ps2.setString(1, appName);
                     ps2.setString(2, appName);
@@ -2924,7 +2911,7 @@ public class DatabaseHashMap extends BackedHashMap {
                 if (ps2 != null)
                     ps2.close();
                 ps2Closed = true;
-                
+
                 //check the value of doInvals
                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE,methodClassName, methodNames[PERFORM_INVALIDATION], "doInvals="+doInvals);
@@ -2935,7 +2922,7 @@ public class DatabaseHashMap extends BackedHashMap {
                     //Process the non-listener sessions first
                     doInvalidations(nukerCon);
 
-                    //Read in all the sessions with listeners that need to be invalidated                           
+                    //Read in all the sessions with listeners that need to be invalidated
                     Enumeration e = pollForInvalidSessionsWithListeners(nukerCon);
                     processInvalidListeners(e, nukerCon);
 
@@ -3000,7 +2987,7 @@ public class DatabaseHashMap extends BackedHashMap {
                 // check in computeInvalidList
                 if (rc > 0) {
 
-                    // set this flag so that removal from the database is not 
+                    // set this flag so that removal from the database is not
                     // done as part of the sessoin.invalidate call -
                     // we want to do it here with the nukerCon
                     s.nukedByInvalidator = true;
@@ -3025,7 +3012,7 @@ public class DatabaseHashMap extends BackedHashMap {
                  * "if ((now + _smc.getInvalidationCheckInterval() * 1000) >= System.currentTimeMillis()) {"
                  * because we don't want to update this on every invalidation with a listener that is processed.
                  * We'll only update this if we're getting close.
-                 * 
+                 *
                  * Processing Invalidation Listeners could take a long time. We should update the
                  * NukerTimeStamp so that another server in this cluster doesn't kick off invalidation
                  * while we are still processing. We only want to update the time stamp if we are getting
@@ -3122,10 +3109,10 @@ public class DatabaseHashMap extends BackedHashMap {
         //            return;
         //        }
         ////        * A CustomContainerComponentMetaData is a specialized, mutable ContainerComponentMetaData
-        ////        * that allows updating some of the meta-data properties after the meta-data is in-use.  
-        ////        * The values that can be overridden are those that are provided on this interface or 
+        ////        * that allows updating some of the meta-data properties after the meta-data is in-use.
+        ////        * The values that can be overridden are those that are provided on this interface or
         ////        * one of the inner-interfaces.<p>
-        ////        * 
+        ////        *
         ////        * Each encompassing meta-data type has it's own limitations on what may be changed
         ////        * and when.  Following these simple rules will eliminate the majority of any issues:
         ////        * <ul>
@@ -3135,7 +3122,7 @@ public class DatabaseHashMap extends BackedHashMap {
         ////        * <li>When updating meta-data fields, try to make the changes before using any meta-data consumers to avoid any
         ////        *     potential conflicts.
         ////        * </ul>
-        ////        *  
+        ////        *
         ////        * Note:  Any setter methods inherited from ContainerComponentMetaData will apply to the
         ////        * parent (wrapped) ComponentMetaData object.
         //        CustomContainerComponentMetaData gcmd = null;
@@ -3311,7 +3298,7 @@ public class DatabaseHashMap extends BackedHashMap {
         sysKeys = "QSYS2".concat(schemaSeparator).concat("syskeys");
 
         //Keep the following line for future reference
-        //SELECT INDEX_NAME FROM QSYS2.SYSINDEXES  WHERE INDEX_NAME='SESS_INDEX' AND TABLE_NAME='SESSIONS' 
+        //SELECT INDEX_NAME FROM QSYS2.SYSINDEXES  WHERE INDEX_NAME='SESS_INDEX' AND TABLE_NAME='SESSIONS'
         //AND IS_UNIQUE='U' AND TABLE_SCHEMA='KPW51BSSSN'FOR READ ONLY
         sqlQueryIndex = "select index_name from " + sysIndexes + " where Index_Name = '"
                         + indexName.toUpperCase() + "' and " + "Table_Name = '" + noQualifiertblName
@@ -3366,8 +3353,8 @@ public class DatabaseHashMap extends BackedHashMap {
                 closeStatement(ps);
             }
         }
-        //If the session index exists, we will check if the index definition is 
-        //what the session manager would have created 
+        //If the session index exists, we will check if the index definition is
+        //what the session manager would have created
         if (indexExists_iSeries) {
             try {
                 ps1 = con.prepareStatement(sqlQueryCol);
@@ -3389,7 +3376,7 @@ public class DatabaseHashMap extends BackedHashMap {
                         }// end if (extractedColumn......)
                     }// end if (extractedColumn != null)
                 }//end while
-                 //we issue the warning here as if the index exists and any 
+                 //we issue the warning here as if the index exists and any
                  //index column is missing
                 if (counter < 3) {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.WARNING, methodClassName, methodNames[DOES_INDEX_EXISTS_ISERIES], "DatabaseHashMap.IndexIncorrect");
@@ -3417,7 +3404,7 @@ public class DatabaseHashMap extends BackedHashMap {
      * compatiable and improve DB2 performance on Linux, Unix and Windows
      * platforms (LUW) as information provided by Mark Anderson (
      * DB2 chief architect on iSeries)
-     * 
+     *
      * @param con
      * @return
      */

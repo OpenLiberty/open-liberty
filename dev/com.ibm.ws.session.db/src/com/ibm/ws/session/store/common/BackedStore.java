@@ -1,26 +1,13 @@
-/*COPYRIGHT_START***********************************************************
+/*******************************************************************************
+ * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * IBM Confidential OCO Source Material
- * 5724-J08, 5724-I63, 5724-H88, 5724-H89, 5655-N02, 5733-W70 (C) COPYRIGHT International Business Machines Corp. 1997, 2012
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- *
- *   IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
- *   ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- *   PURPOSE. IN NO EVENT SHALL IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR
- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
- *   USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- *   OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
- *   OR PERFORMANCE OF THIS SOFTWARE.
- *
- *  @(#) 1.9 SERV1/ws/code/session.store/src/com/ibm/ws/session/store/common/BackedStore.java, WAS.session, WAS70.SERV1, cf030907.04 7/7/08 09:31:26 [2/17/09 15:35:09]
- *
- * @(#)file   BackedStore.java
- * @(#)version   1.9
- * @(#)date      7/7/08
- *
- *COPYRIGHT_END*************************************************************/
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.store.common;
 
 import java.util.Enumeration;
@@ -182,9 +169,9 @@ public abstract class BackedStore extends MemoryStore {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, methodNames[STOP]);
         }
         inProcessOfStopping = true;
-        
+
         DatabaseStoreService.setCompletedPassivation(false); // 128284
-        //This is only executed for Time-based writes ... not for manual or End-Of-Service writes 
+        //This is only executed for Time-based writes ... not for manual or End-Of-Service writes
         if (_smc.getEnableTimeBasedWrite()) {
             ((BackedHashMap) _sessions).doTimeBasedWrites(true);
         }
@@ -212,9 +199,9 @@ public abstract class BackedStore extends MemoryStore {
                 s.removingSessionFromCache = false;
             }
         }
-        
+
         DatabaseStoreService.setCompletedPassivation(true); // 128284
-        
+
         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, methodNames[STOP]);
         }
@@ -259,7 +246,7 @@ public abstract class BackedStore extends MemoryStore {
      * PK68691
      * removeFromMemory
      * Removes session from Memory if persistence is enabled, otherwise no op
-     * 
+     *
      * @see com.ibm.wsspi.session.IStore#removeFromMemory(java.lang.String)
      */
     public void removeFromMemory(String id) {
@@ -297,7 +284,7 @@ public abstract class BackedStore extends MemoryStore {
     public abstract void remoteInvalidate(String sessionId, boolean backendUpdate);
 
     public abstract BackedSession createSessionObject(String sessionId);
-    
+
     public void updateSessionId(String oldId, ISession newSession) {
         super.updateSessionId(oldId, newSession);
 
@@ -305,12 +292,12 @@ public abstract class BackedStore extends MemoryStore {
         if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_WAS.entering(methodClassName, "updateSessionId", oldId);
             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, "updateSessionId", "New session information: creation time = "
-            + newSession.getCreationTime() + " last access time = " + newSession.getLastAccessedTime() +" maxInactiveInterval = " 
+            + newSession.getCreationTime() + " last access time = " + newSession.getLastAccessedTime() +" maxInactiveInterval = "
             		+ newSession.getMaxInactiveInterval() + " user name = " + newSession.getUserName());
         }
         removeSession(oldId);
         createSessionObject(newSession.getId());
         if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINER))
             LoggingUtil.SESSION_LOGGER_WAS.exiting(methodClassName, "updateSessionId", newSession.getId());
-    } 
+    }
 }

@@ -1,27 +1,13 @@
-/*COPYRIGHT_START***********************************************************
+/*******************************************************************************
+ * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * IBM Confidential OCO Source Material
- * 5724-I63, 5724-H88, 5724-H89, 5655-N02, 5724-J08 (C) COPYRIGHT International Business Machines Corp. 1997, 2012
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- *
- *   IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
- *   ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- *   PURPOSE. IN NO EVENT SHALL IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR
- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
- *   USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- *   OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
- *   OR PERFORMANCE OF THIS SOFTWARE.
- *
- *  @(#) 1.15 SERV1/ws/code/session.store/src/com/ibm/ws/session/store/common/BackedSession.java, WAS.session, WASX.SERV1, ff1146.05 8/30/10 10:39:20 [11/21/11 18:33:09]
- *
- * @(#)file   BackedSession.java
- * @(#)version   1.15
- * @(#)date      8/30/10
- *
- *COPYRIGHT_END*************************************************************/
-
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.store.common;
 
 import java.io.IOException;
@@ -60,9 +46,9 @@ public abstract class BackedSession extends MemorySession {
 
     static protected final int initialCacheId = 1;
 
-    // The swappable data 
+    // The swappable data
     protected Hashtable mSwappableData = null;
-    // The non-swappable data 
+    // The non-swappable data
     protected Hashtable mNonswappableData = null;
     //For logging.
     private static final String methodClassName = "BackedSession";
@@ -109,7 +95,7 @@ public abstract class BackedSession extends MemorySession {
     protected boolean appDataTablesPerThread;
     protected boolean sessionAttributeListener = false;
 
-    //    private EJBSerializer ejbSerializer = null;    
+    //    private EJBSerializer ejbSerializer = null;
     static final short EJB_LOCAL_OBJECT = 1;
     static final short EJB_LOCAL_HOME = 2;
     private static final long serialVersionUID = -6456396236183348328L;
@@ -216,7 +202,7 @@ public abstract class BackedSession extends MemorySession {
 
     /*
      * Method flush
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#flush()
      */
     public synchronized void flush() {
@@ -225,7 +211,7 @@ public abstract class BackedSession extends MemorySession {
 
     /*
      * Method flush(boolean)
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#flush(boolean)
      */
     public synchronized void flush(boolean b) {
@@ -244,7 +230,7 @@ public abstract class BackedSession extends MemorySession {
 
     /*
      * Method setUserName(String)
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#setUserName(java.lang.String)
      */
     public synchronized void setUserName(String userName) {
@@ -265,7 +251,7 @@ public abstract class BackedSession extends MemorySession {
 
     /*
      * Method setMaxInactiveInterval
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#setMaxInactiveInterval(int)
      */
     public synchronized void setMaxInactiveInterval(int interval) {
@@ -288,7 +274,7 @@ public abstract class BackedSession extends MemorySession {
     /*
      * Method setCreationTime
      * <p>
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#setMaxInactiveInterval(int)
      */
     public void setCreationTime(long ct) {
@@ -300,7 +286,7 @@ public abstract class BackedSession extends MemorySession {
 
     /*
      * Method getAttribute
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#getAttribute(java.lang.Object)
      */
     public Object getAttribute(Object name) {
@@ -322,7 +308,7 @@ public abstract class BackedSession extends MemorySession {
 
     /*
      * Method setAttribute
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#setAttribute(java.lang.Object, java.lang.Object)
      */
     public Object setAttribute(Object name, Object value, Boolean newIsListener) {
@@ -344,7 +330,7 @@ public abstract class BackedSession extends MemorySession {
 
     /*
      * Method removeAttribute
-     * 
+     *
      * @see com.ibm.wsspi.session.ISession#removeAttribute(java.lang.Object)
      */
     public Object removeAttribute(Object name) {
@@ -446,7 +432,7 @@ public abstract class BackedSession extends MemorySession {
 
         return getSerializationService().replaceObjectForSerialization(object);
     }
-    
+
     protected abstract UserTransaction getUserTransaction();
 
     private Object resolveObject(Object object) {
@@ -507,7 +493,7 @@ public abstract class BackedSession extends MemorySession {
         }
 
         if (swappable) {
-            // Still want to update lists since whole session may not get written at first EOS 
+            // Still want to update lists since whole session may not get written at first EOS
             if (appDataTablesPerThread) {
                 Thread t = Thread.currentThread();
                 Hashtable sht = (Hashtable) appDataChanges.get(t);
@@ -536,7 +522,7 @@ public abstract class BackedSession extends MemorySession {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[PUT_VALUE_GUTS], "Property is a binding listener: " + pName);
                 }
                 if (!isNew()) { // listenerFlag should be up-to-date for new session
-                    //Read from the database only once 
+                    //Read from the database only once
                     listenerFlag = getListenerFlag();
                     listenerFlagSetInMethod = true;
                 }
@@ -561,7 +547,7 @@ public abstract class BackedSession extends MemorySession {
                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[PUT_VALUE_GUTS], "Property is an Activation listener: " + pName);
                 }
                 if (!isNew() && !listenerFlagSetInMethod) { // listenerFlag should be up-to-date for new session
-                    //Read from the database only once 
+                    //Read from the database only once
                     listenerFlag = getListenerFlag();
                 }
 
@@ -582,7 +568,7 @@ public abstract class BackedSession extends MemorySession {
 
             //if value is removed and then put back, remove it from removalList
             // long term, we may want to check all the threads
-            // We need to remove it from the removals even if new since removals are updated when new 
+            // We need to remove it from the removals even if new since removals are updated when new
 
             if (appDataRemovals != null) {
 
@@ -639,8 +625,8 @@ public abstract class BackedSession extends MemorySession {
             }
             returnValue = resolveObject(returnValue);
         } else {
-            //if this is a new session, don't access the database because 
-            //the session in memory is up-to-date.. 
+            //if this is a new session, don't access the database because
+            //the session in memory is up-to-date..
             if (!isNew()) {
 
                 Thread t = Thread.currentThread();

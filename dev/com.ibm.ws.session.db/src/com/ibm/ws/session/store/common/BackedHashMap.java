@@ -1,26 +1,13 @@
-/*COPYRIGHT_START***********************************************************
+/*******************************************************************************
+ * Copyright (c) 1997, 2012 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * IBM Confidential OCO Source Material
- * 5724-J08, 5724-I63, 5724-H88, 5724-H89, 5655-N02, 5733-W70 (C) COPYRIGHT International Business Machines Corp. 1997, 2012
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- *
- *   IBM DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE, INCLUDING
- *   ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
- *   PURPOSE. IN NO EVENT SHALL IBM BE LIABLE FOR ANY SPECIAL, INDIRECT OR
- *   CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF
- *   USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
- *   OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE
- *   OR PERFORMANCE OF THIS SOFTWARE.
- *
- *  @(#) 1.15 SERV1/ws/code/session.store/src/com/ibm/ws/session/store/common/BackedHashMap.java, WAS.session, WAS70.SERV1, cf050925.09 7/7/08 09:43:14 [6/25/09 08:49:58]
- *
- * @(#)file   BackedHashMap.java
- * @(#)version   1.15
- * @(#)date      7/7/08
- *
- *COPYRIGHT_END*************************************************************/
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.session.store.common;
 
 import java.util.Calendar;
@@ -37,7 +24,7 @@ import com.ibm.ws.session.utils.LRUHashMap;
 import com.ibm.wsspi.session.IStore;
 
 /*
- *  This is the "hashtable" abstract class for persistent sessions.  
+ *  This is the "hashtable" abstract class for persistent sessions.
  *  It extends LURHashMap and is extended by DatabaseHashMap and MTMHashMap.
  *  Extenders must implements the abstract methods at the end of this file.
  */
@@ -310,17 +297,17 @@ public abstract class BackedHashMap extends LRUHashMap {
                         cacheIdUpdate = true;
                     }
                     //If it is Time-based or manual writes, we could have not updated the backend yet.  If we retrieve an
-                    //old version from the backend, have another server update the backend with this version #, then we 
+                    //old version from the backend, have another server update the backend with this version #, then we
                     //update the backend with this version #, both servers could think that they have a valid id in their
-                    //local cache.  We want to do the lastAccessTimes check for endOfService writes so that we don't thrash 
-                    //on a failover.  
+                    //local cache.  We want to do the lastAccessTimes check for endOfService writes so that we don't thrash
+                    //on a failover.
                     //PK47847 allows us to check the lastAccessTimes for !EOS writes.  The customer should be on one machine or have their times set to be identical.
                     //before we always updated the cache ... must maintain behavior
                     if (_smc.getEnableEOSWrite() || _smc.getOptimizeCacheIdIncrements()) {
                         if (lastAccessedTimeOnLocalCopy == lastAccessTimeOnBackendCopy ||
                                 ((lastAccessedTimeOnLocalCopy > lastAccessTimeOnBackendCopy) && _smc.getOptimizeCacheIdIncrements())) {
                             //use the in-memory copy && don't update the cache
-                            //when the lastAccessedTimeOnLocalCopy>lastAccessTimeOnBackendCopy we 
+                            //when the lastAccessedTimeOnLocalCopy>lastAccessTimeOnBackendCopy we
                             //only want to use the in-memory copy (even when using EOS) when the property is set
                             if (isTraceOn && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[RETRIEVE_SESSION], "Using in-memory session instead of retrieved.");
@@ -359,7 +346,7 @@ public abstract class BackedHashMap extends LRUHashMap {
                 rowCount = updateLastAccessTime(sess, nowTime);
             } else {
                 //if this request was served by an another clone on a different
-                //machine then it is possible that nowTime of system is less 
+                //machine then it is possible that nowTime of system is less
                 //than lastaccesstime in session, if there  is time diff between
                 //boxes
                 nowTime = prevLastAccess;
@@ -475,8 +462,8 @@ public abstract class BackedHashMap extends LRUHashMap {
             backedSess.userWriteHit = false;
             backedSess.maxInactWriteHit = false;
             backedSess.listenCntHit = false;
-            // PK32205: Clear appDataChanges and appDataRemovals only if it 
-            // is not a MR configuration. In MR configuration these are 
+            // PK32205: Clear appDataChanges and appDataRemovals only if it
+            // is not a MR configuration. In MR configuration these are
             // appropriately cleared in handlePropertyHits
             if (!_smc.isUsingMultirow()) {
                 if (backedSess.appDataChanges != null)
@@ -687,7 +674,7 @@ public abstract class BackedHashMap extends LRUHashMap {
      * This method ensures that the session is flagged as a listener if the the app
      * has an HttpSessionListener. We need to know so we can call sessionDestroyed
      * at invalidation time.
-     * 
+     *
      * The HTTP_SESSION_BINDING_LISTENER constant is overloaded and used for both
      * HttpSession listener and Binding listener.
      */
@@ -915,13 +902,13 @@ public abstract class BackedHashMap extends LRUHashMap {
 
                 //  English Translation for the test below:
                 //
-                //    If lastWrite is -1 
+                //    If lastWrite is -1
                 //       then the session must have just been read into
                 //       the cache... Don't know when the lastWrite was or
                 //       if something has changed since the read.. Therefore
                 //       do the write.  This shouldn't happen often.
                 //
-                //    If the Write Interval has elapsed and the session has been 
+                //    If the Write Interval has elapsed and the session has been
                 //       changed then do the write. This should be the normal case.
                 //
 
@@ -933,24 +920,24 @@ public abstract class BackedHashMap extends LRUHashMap {
                      * end of commented out code
                      */
 
-                    // Hold synchronized lock while we check if this session is 
+                    // Hold synchronized lock while we check if this session is
                     // executing in the servlet service method.  New request threads
                     // for this session will call the incrementInServiceMethodCount()
                     // method.  That method also does a "synchronized" on the session
-                    // object, therefore guaranteeing that no new requests will update the 
-                    // session object until this write completes. 
+                    // object, therefore guaranteeing that no new requests will update the
+                    // session object until this write completes.
 
                     synchronized (cachedSession) {
 
                         //  Now that we have the session Object locked, check that the
-                        //  session is still valid.  It is possible that the servlet 
-                        //  called the session.invalidate() method under a different 
+                        //  session is still valid.  It is possible that the servlet
+                        //  called the session.invalidate() method under a different
                         //  thread after we got the keys from the cache.  Since
-                        //  sessionData.invalidate() does a sync on the session, it is now 
+                        //  sessionData.invalidate() does a sync on the session, it is now
                         //  safe to check...
-                        //  
-                        //  Also, account for the case where the session was aged out 
-                        //  of the cache after we got the keys above... 
+                        //
+                        //  Also, account for the case where the session was aged out
+                        //  of the cache after we got the keys above...
 
                         //  We will never get here for a Timed Out invalidation since
                         //  the Invalidation time must be at least twice the Write Interval
@@ -988,15 +975,15 @@ public abstract class BackedHashMap extends LRUHashMap {
                                                                         "Do the session Write and update lastWriteTime " + id);
                                 }
 
-                                // It is important to note that lastWriteTime is being 
-                                // updated to the current time (now), though lastAccess may 
+                                // It is important to note that lastWriteTime is being
+                                // updated to the current time (now), though lastAccess may
                                 // contain a value up to Now-WriteInterval.  After this
-                                // write completes it is possible that the Session is 
-                                // used again.  The Write of LastAccess will not take 
+                                // write completes it is possible that the Session is
+                                // used again.  The Write of LastAccess will not take
                                 // place again until WriteInterval elapses again.  So, in order
                                 // for this session not to be inadvertently invalidated
                                 // by a different clone, it is necessary that the invalidation
-                                // time be AT LEAST 2 TIMES the WriteInterval.  This should 
+                                // time be AT LEAST 2 TIMES the WriteInterval.  This should
                                 // be enforced in the GUI.
 
                                 cachedSession.setLastWriteTime(now);
