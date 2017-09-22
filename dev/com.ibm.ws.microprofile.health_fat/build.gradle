@@ -12,19 +12,13 @@
  
 addRequiredLibraries {
     dependencies {
-        //libs 'com.sun.faces:jsf-impl:2.2.14'
         //libs 'org.glassfish:javax.json:1.1'
         libs 'org.apache.johnzon:johnzon-core:1.1.0'
     }
     doLast {
-        println configurations.libs
         copy {
             from configurations.libs 
             into "${buildDir}/autoFVT/lib/"
         }
     }
-}
-
-assemble {
-	dependsOn addRequiredLibraries
 }

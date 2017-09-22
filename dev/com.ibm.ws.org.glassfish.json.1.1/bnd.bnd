@@ -8,10 +8,10 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.apache.johnzon:johnzon-core;1.1.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;${repo;org.glassfish:javax.json;1.1}}!/META-INF/MANIFEST.MF,bnd.overrides
 
 -includeresource: \
-   @${repo;org.apache.johnzon:johnzon-core;1.1.0}!/META-INF/services/*
+   @${repo;org.glassfish:javax.json;1.1}!/org/glassfish/json/*
 
 -buildpath: \
-	org.apache.johnzon:johnzon-core;version=1.1.0
+	org.glassfish:javax.json;version=1.1

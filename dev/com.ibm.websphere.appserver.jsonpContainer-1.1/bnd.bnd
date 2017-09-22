@@ -15,4 +15,5 @@
 publish.feature.resources: **
 
 -dependson: \
-	com.ibm.websphere.javaee.jsonp.1.1;version=latest
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
+	com.ibm.websphere.appserver.jsonpImpl-1.1.0;version=latest
