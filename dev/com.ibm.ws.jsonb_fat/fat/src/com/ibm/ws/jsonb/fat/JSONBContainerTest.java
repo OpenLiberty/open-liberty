@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_YASSON;
+import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -34,10 +33,9 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonbtest.JSONBTestServlet;
-import web.jsonbtest.YassonTestServlet;
+import web.jsonbtest.JohnzonTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
 public class JSONBContainerTest extends FATServletClient {
     private static final String appName = "jsonbapp";
     private static final String SERVLET_PATH = "jsonbapp/JSONBTestServlet";
@@ -45,7 +43,7 @@ public class JSONBContainerTest extends FATServletClient {
     @Server("com.ibm.ws.jsonb.container.fat")
     @TestServlets({
                     @TestServlet(servlet = JSONBTestServlet.class, path = appName + "/JSONBTestServlet"),
-                    @TestServlet(servlet = YassonTestServlet.class, path = appName + "/YassonTestServlet")
+                    @TestServlet(servlet = JohnzonTestServlet.class, path = appName + "/JohnzonTestServlet")
     })
     public static LibertyServer server;
 
@@ -72,7 +70,7 @@ public class JSONBContainerTest extends FATServletClient {
         String found;
         server.resetLogMarks();
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST1: JsonbProvider obtained from declarative services"));
-        assertTrue(found, found.contains(PROVIDER_YASSON));
+        assertTrue(found, found.contains(PROVIDER_JOHNZON));
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST2"));
         assertTrue(found, found.contains("success"));
         assertTrue(found, found.contains("\"Rochester\""));
@@ -91,6 +89,6 @@ public class JSONBContainerTest extends FATServletClient {
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName));
 
         // Run a test to verify that jsonb is still usable
-        runTest(server, SERVLET_PATH, "testJsonbDeserializer&JsonbProvider=" + PROVIDER_YASSON);
+        runTest(server, SERVLET_PATH, "testJsonbDeserializer&JsonbProvider=" + PROVIDER_JOHNZON);
     }
 }

@@ -15,4 +15,8 @@
 publish.feature.resources: *.mf
 
 -dependson: \
-	com.ibm.websphere.javaee.jsonb.1.0;version=latest
+	com.ibm.websphere.appserver.classloading-1.0;version=latest,\
+	com.ibm.websphere.appserver.javax.cdi-1.2;version=latest,\
+	com.ibm.websphere.appserver.jsonp-1.1;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
+	com.ibm.ws.org.eclipse.yasson.1.0;version=latest
