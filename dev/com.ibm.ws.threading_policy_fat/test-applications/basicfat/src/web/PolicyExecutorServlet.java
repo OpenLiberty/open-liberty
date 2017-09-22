@@ -1667,6 +1667,46 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
+    // Attempts the timed and untimed invokeAll operations on a policy executor instance that has been shut down, expecting it to be rejected.
+    public void testInvokeAllAfterShutdown() throws Exception {
+        List<Callable<Integer>> oneTask = Collections.singletonList((Callable<Integer>) new SharedIncrementTask());
+
+        PolicyExecutor executor = provider.create("testInvokeAllAfterShutdown");
+        executor.shutdown();
+
+        try {
+            fail("untimed invokeAll should not be permitted after shutdown. Instead: " + executor.invokeAll(oneTask));
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1202"))
+                throw x;
+        }
+
+        try {
+            fail("timed invokeAll should not be permitted after shutdown. Instead: " + executor.invokeAll(oneTask, 1, TimeUnit.MINUTES));
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1202"))
+                throw x;
+        }
+
+        executor = provider.create("testInvokeAllAfterShutdownNow")
+                        .queueFullAction(QueueFullAction.CallerRuns);
+        executor.shutdownNow();
+
+        try {
+            fail("untimed invokeAll should not be permitted after shutdownNow. Instead: " + executor.invokeAll(oneTask));
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1202"))
+                throw x;
+        }
+
+        try {
+            fail("timed invokeAll should not be permitted after shutdownNow. Instead: " + executor.invokeAll(oneTask, 1, TimeUnit.MINUTES));
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1202"))
+                throw x;
+        }
+    }
+
     // Use invokeAll where one or more tasks must run on the current thread due to the queue being full.
     // To achieve this, we constrain maxConcurrency and maxQueueSize to 1 and supply 4 tasks to invokeAll,
     // where the first task blocks until all others start. This maxConcurrency to be exceeded, which is only
@@ -1751,23 +1791,23 @@ public class PolicyExecutorServlet extends FATServlet {
 
         // Invoke 4 tasks.
         // The first will start running and block.
-        // The second will be enqueued and might be able to start after the interrupt and before it gets canceled.
-        // The third will be forced to run on current thread due to the queue having reached capacity. We will have this task block as well.
+        // The second might be enqueued to global or run on current thread depending on how quickly the first task starts running. We will have this task block.
+        // The third should either never run due to the second task blocking, or will be forced to run on current thread due to the queue having reached capacity. We will have this task block as well.
         // The fourth should never run.
 
-        CountDownLatch beginLatch1and3 = new CountDownLatch(2); // to wait for first and third tasks to start
+        CountDownLatch beginLatch1_and_2or3 = new CountDownLatch(2); // to wait for first and third tasks to start
         CountDownLatch beginLatch4 = new CountDownLatch(1); // to ensure the fourth task never starts
         CountDownLatch blocker = new CountDownLatch(1);
         CountDownLatch unused = new CountDownLatch(0);
         long taskDurationNS = TimeUnit.MINUTES.toNanos(5);
         Collection<CountDownTask> tasks = new ArrayList<CountDownTask>();
-        tasks.add(new CountDownTask(beginLatch1and3, blocker, taskDurationNS));
-        tasks.add(new CountDownTask(unused, unused, 0));
-        tasks.add(new CountDownTask(beginLatch1and3, blocker, taskDurationNS));
+        tasks.add(new CountDownTask(beginLatch1_and_2or3, blocker, taskDurationNS));
+        tasks.add(new CountDownTask(beginLatch1_and_2or3, blocker, taskDurationNS));
+        tasks.add(new CountDownTask(beginLatch1_and_2or3, blocker, taskDurationNS));
         tasks.add(new CountDownTask(beginLatch4, unused, 0));
 
         // interrupt current thread upon seeing that both tasks have started
-        Future<?> interrupterFuture = testThreads.submit(new InterrupterTask(Thread.currentThread(), beginLatch1and3, 5, TimeUnit.MINUTES));
+        Future<?> interrupterFuture = testThreads.submit(new InterrupterTask(Thread.currentThread(), beginLatch1_and_2or3, 5, TimeUnit.MINUTES));
 
         long start = System.nanoTime();
         try {
@@ -1784,8 +1824,7 @@ public class PolicyExecutorServlet extends FATServlet {
 
         interrupterFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
-        List<Runnable> canceledFromQueue = executor.shutdownNow();
-        assertEquals(0, canceledFromQueue.size());
+        executor.shutdownNow();
     }
 
     // Use invokeAll where the group of tasks to invoke is a single task and where it is no tasks at all.
@@ -1939,6 +1978,87 @@ public class PolicyExecutorServlet extends FATServlet {
             SharedIncrementTask task = listWithOneNull.get(i);
             if (task != null)
                 assertEquals("Task #" + i, 0, task.count());
+        }
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Invoke a group of tasks where some of the tasks raise exceptions during execution.
+    // This should not cause invokeAll to return prematurely and all other tasks must be allowed to continue to completion.
+    @Test
+    public void testInvokeAllTasksThatRaiseExceptions() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAllTasksThatRaiseExceptions")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .queueFullAction(QueueFullAction.CallerRuns);
+
+        final CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+
+        final List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+        tasks.add(new CountDownTask(beginLatch, blocker, TimeUnit.MINUTES.toNanos(5))); // run on global pool, will be interrupted by current thread once it begins
+        tasks.add(new CountDownTask(unused, null, 0)); // intentionally cause NullPointerException during execution, could run on current thread or on global pool
+        tasks.add(new CountDownTask(unused, null, 0)); // intentionally cause NullPointerException, will always run on current thread
+        tasks.add(new Callable<Boolean>() { // interrupt the first task, so that it raises InterruptedException
+            @Override
+            public Boolean call() throws Exception {
+                if (!beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS))
+                    return false;
+                ((CountDownTask) tasks.get(0)).executionThreads.peek().interrupt();
+                return true;
+            }
+        });
+        tasks.add(new CountDownTask(unused, null, 0)); // intentionally cause NullPointerException, will always run on current thread
+
+        List<Future<Boolean>> futures = executor.invokeAll(tasks);
+
+        assertEquals(5, futures.size());
+
+        Future<Boolean> future = futures.get(0);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        try {
+            fail("Interrupted task should report failure. Instead: " + future.get());
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof InterruptedException))
+                throw x;
+        }
+
+        future = futures.get(1);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        try {
+            fail("Second task should report NullPointerException. Instead: " + future.get());
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NullPointerException))
+                throw x;
+        }
+
+        future = futures.get(2);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        try {
+            fail("Third task should report NullPointerException. Instead: " + future.get());
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NullPointerException))
+                throw x;
+        }
+
+        future = futures.get(3);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        assertTrue(future.get());
+
+        future = futures.get(4);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        try {
+            fail("Fifth task should report NullPointerException. Instead: " + future.get());
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NullPointerException))
+                throw x;
         }
 
         List<Runnable> canceledFromQueue = executor.shutdownNow();
