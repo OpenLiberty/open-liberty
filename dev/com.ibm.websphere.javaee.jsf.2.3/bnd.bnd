@@ -26,18 +26,18 @@ DynamicImport-Package: com.ibm.ws.jsf.spi, \
                 org.apache.myfaces.spi
   
 Include-Resource: \
-	@lib/myfaces-api-2.3.0-beta.jar!/javax/faces, \
-	@lib/myfaces-api-2.3.0-beta.jar!/META-INF/**
+	@${repo;org.apache.myfaces.core.api;2.3.0.beta;EXACT}!/javax/faces, \
+	@${repo;org.apache.myfaces.core.api;2.3.0.beta;EXACT}!/META-INF/**
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	lib/myfaces-api-2.3.0-beta.jar;version=file, \
+	org.apache.myfaces.core.api;strategy=exact;version=2.3.0.beta,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
-	lib/myfaces-builder-annotations-1.0.9.jar;version=file,\
+	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\
 	com.ibm.websphere.javaee.jstl.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
