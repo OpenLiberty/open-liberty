@@ -2397,6 +2397,183 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
+    // Basic test of timed invokeAny. Submit a group of tasks, of which one raises an exception,
+    // another runs for longer than the timeout, and another completes successfully.
+    // The result of the one that completed successfully should be returned,
+    // and the duration of the invokeAny method should not exceed the timeout.
+    @Test
+    public void testInvokeAnyTimed1Successful() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimed1Successful");
+
+        CountDownLatch beginLatchForBlocker = new CountDownLatch(1);
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+
+        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+        tasks.add(new CountDownTask(unused, null, 0)); // intentionally cause NullPointerException
+        tasks.add(new CountDownTask(beginLatchForBlocker, blocker, TIMEOUT_NS * 2)); // block for longer than the timeout
+        tasks.add(new CountDownTask(unused, beginLatchForBlocker, TIMEOUT_NS / 2)); // should succeed
+
+        long start = System.nanoTime();
+        assertTrue(executor.invokeAny(tasks, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        long duration = System.nanoTime() - start;
+
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks to invokeAny, of which one raises an exception and
+    // another runs for longer than the timeout. TimeoutException should occur.
+    @Test
+    public void testInvokeAnyTimed1TimesOut1Fails() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimed1TimesOut1Fails");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+
+        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+        tasks.add(new CountDownTask(unused, null, 0)); // intentionally cause NullPointerException
+        tasks.add(new CountDownTask(unused, blocker, TIMEOUT_NS * 2)); // block for longer than the timeout
+
+        long start = System.nanoTime();
+        try {
+            fail("Should not return value: " + executor.invokeAny(tasks, 200, TimeUnit.MILLISECONDS));
+        } catch (TimeoutException x) { // pass
+        }
+        long duration = System.nanoTime() - start;
+
+        assertTrue(duration + "ns", duration < TIMEOUT_NS); // higher value used to allow for slowness and pauses in test systems
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks to timed invokeAny, where all fail during execution.
+    // Verify that an ExecutionException is raised which chains one of the failures.
+    @Test
+    public void testInvokeAnyTimedAllFail() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedAllFail");
+
+        final int numTasks = 3;
+
+        List<Callable<Integer>> tasks = new LinkedList<Callable<Integer>>();
+        for (int i = 0; i < numTasks; i++)
+            tasks.add(new MinFinderTaskWithInvokeAll(new int[] {}, 2, 3, executor)); // cause ArrayIndexOutOfBoundsException
+
+        long start = System.nanoTime();
+        try {
+            int result = executor.invokeAny(tasks, TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+            fail("invokeAny should not have result when all tasks fail: " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof ArrayIndexOutOfBoundsException))
+                throw x;
+        }
+        long duration = System.nanoTime() - start;
+
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks to timed invokeAny, where all are able to complete successfully.
+    // Verify that invokeAny returns the result of one of the successful tasks.
+    @Test
+    public void testInvokeAnyTimedAllSuccessful() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedAllSuccessful");
+
+        final int numTasks = 3;
+        AtomicInteger counter = new AtomicInteger();
+
+        List<Callable<Integer>> tasks = new LinkedList<Callable<Integer>>();
+        for (int i = 0; i < numTasks; i++)
+            tasks.add(new SharedIncrementTask(counter));
+
+        long start = System.nanoTime();
+        int result = executor.invokeAny(tasks, TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        long duration = System.nanoTime() - start;
+
+        assertTrue(Integer.toString(result), result >= 1 && result <= numTasks);
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        int count = counter.get();
+        assertTrue(Integer.toString(count), count >= 1 && count <= numTasks);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks to timed invokeAny, where all tasks block and exceed the timeout.
+    // Verify that invokeAny raises TimeoutException.
+    @Test
+    public void testInvokeAnyTimedAllTimeout() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedAllTimeout");
+
+        final int numTasks = 3;
+
+        CountDownLatch unused = new CountDownLatch(0);
+        CountDownLatch blocker = new CountDownLatch(1);
+        List<Callable<Boolean>> tasks = new LinkedList<Callable<Boolean>>();
+        for (int i = 0; i < numTasks; i++)
+            tasks.add(new CountDownTask(unused, blocker, TIMEOUT_NS * 2));
+
+        long start = System.nanoTime();
+        try {
+            boolean result = executor.invokeAny(tasks, 200, TimeUnit.MILLISECONDS);
+            fail("invokeAny should time out, instead: " + result);
+        } catch (TimeoutException x) { // pass
+        }
+        long duration = System.nanoTime() - start;
+
+        assertTrue(duration + "ns", duration < TIMEOUT_NS); // higher value used to allow for slowness and pauses in test systems
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks to timed invokeAny, where there are insufficient queue positions to
+    // enqueue the tasks and the timeout occurs while waiting or a queue position to become available
+    // rather than while running the task.
+    @Test
+    public void testInvokeAnyTimedTimeoutDuringWaitForEnqueue() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedTimeoutDuringWaitForEnqueue")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(4))
+                        .queueFullAction(QueueFullAction.Abort);
+
+        AtomicInteger counter = new AtomicInteger();
+
+        // Submit blocking task to use up the single maxConcurrency permit
+        CountDownLatch unused = new CountDownLatch(0);
+        CountDownLatch blocker = new CountDownLatch(1);
+        Future<Boolean> future1 = executor.submit(new CountDownTask(unused, blocker, TimeUnit.MINUTES.toNanos(5)));
+
+        // Submit another task to use up the single queue position
+        Future<?> future2 = executor.submit((Runnable) new SharedIncrementTask(counter));
+
+        final int numInvokeAnyTasks = 2;
+        List<Callable<Integer>> tasks = new LinkedList<Callable<Integer>>();
+        for (int i = 0; i < numInvokeAnyTasks; i++)
+            tasks.add(new SharedIncrementTask(counter));
+
+        long start = System.nanoTime();
+        try {
+            int result = executor.invokeAny(tasks, 200, TimeUnit.MILLISECONDS);
+            fail("invokeAny should be rejected when unable to submit task, instead: " + result);
+        } catch (RejectedExecutionException x) { // pass
+        }
+        long duration = System.nanoTime() - start;
+
+        assertTrue(duration + "ns", duration < TIMEOUT_NS); // higher value used to allow for slowness and pauses in test systems
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(1, canceledFromQueue.size());
+        assertTrue(future1.isCancelled());
+    }
+
     // Poll isTerminated until the executor terminates while concurrently awaiting termination from another thread.
     // The awaitTermination operation should recognize the state transition that is triggered by invocation of the isTerminated method.
     @Test
