@@ -1,0 +1,12 @@
+-include ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+-nobundles=true
+
+publish.feature.resources: **
+
+-dependson: \
+	com.ibm.websphere.appserver.internal.jms-2.0;version=latest, \
+	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
+	com.ibm.websphere.appserver.jca-1.7;version=latest, \
+	com.ibm.ws.jms20.feature;version=latest
