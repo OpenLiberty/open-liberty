@@ -17,6 +17,8 @@ import java.io.BufferedReader;
 import java.io.StringReader;
 import java.io.CharArrayReader;
 import java.io.PushbackReader;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 /**
  * Tokenizes a stream into JSON tokens.
@@ -268,7 +270,7 @@ public class Tokenizer
         {
             if (-1 != string.indexOf('.'))
             {
-                return Double.valueOf(string);
+                return new BigDecimal(string);
             }
 
             String sign = "";
@@ -280,16 +282,16 @@ public class Tokenizer
 
             if (string.toUpperCase().startsWith("0X"))
             {
-                return Long.valueOf(sign + string.substring(2),16);
+                return new BigInteger(sign + string.substring(2),16);
             }
 
             if (string.equals("0"))
             {
-                return new Long(0);
+                return BigInteger.ZERO;
             }
             else if (string.startsWith("0") && string.length() > 1)
             {
-                return Long.valueOf(sign + string.substring(1),8);
+                return new BigInteger(sign + string.substring(1),8);
             }
 
             /**
@@ -298,11 +300,11 @@ public class Tokenizer
              */
             if (string.indexOf("e") != -1 || string.indexOf("E") != -1)
             {
-                return Double.valueOf(sign + string);
+                return new BigDecimal(sign + string);
             }
             else
             {
-                return Long.valueOf(sign + string,10);
+                return new BigInteger(sign + string,10);
             }
         }
         catch (NumberFormatException e)
@@ -421,7 +423,7 @@ public class Tokenizer
     /**
      * Method to read the next character from the string, keeping track of line/column position.
      * 
-     * @throws IOEXception Thrown when underlying reader throws an error.
+     * @throws IOException Thrown when underlying reader throws an error.
      */
     private void readChar() throws IOException {
         if ('\n' == lastChar)
