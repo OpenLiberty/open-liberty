@@ -303,9 +303,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         try {
             handler = vhost.discriminate(this);
             if (handler == null) {
-                URL landingURL = getLandingURL();
-                if (landingURL != null) {
-                    displayLandingPage(landingURL);
+                InputStream landingPageStream = getLandingPageStream();
+                if (landingPageStream != null) {
+                    displayLandingPage(landingPageStream);
                 } else {
                     String url = this.isc.getRequest().getRequestURI();
 
@@ -413,43 +413,35 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         return this;
     }
 
-    private URL getLandingURL() {
+    private InputStream getLandingPageStream() {
         if (!!!HttpDispatcher.isWelcomePageEnabled())
             return null;
 
         String theURI = this.isc.getRequest().getRequestURI();
-        Bundle bc = FrameworkUtil.getBundle(this.getClass());
-        URL url;
-        if (theURI.equals("/")) {
-            url = bc.getEntry("/OSGI-INF/welcome/index.html");
-        } else {
-            url = bc.getEntry("/OSGI-INF/welcome" + theURI);
-        }
-        return url;
+
+        return WelcomePageHelper.getWelcomePageStream(theURI);
     }
 
-    private URL getNotFoundURL() {
+    private InputStream getNotFoundStream() {
         if (!!!HttpDispatcher.isWelcomePageEnabled())
             return null;
-        Bundle bc = FrameworkUtil.getBundle(this.getClass());
-        URL url = bc.getEntry("/OSGI-INF/notFound/index.html");
-        return url;
+        return WelcomePageHelper.getNotFoundStream();
     }
 
-    private void displayLandingPage(URL url) throws IOException {
-        displayPage(url, StatusCodes.OK);
+    private void displayLandingPage(InputStream in) throws IOException {
+        displayPage(in, StatusCodes.OK);
     }
 
-    private void displayPage(URL url, StatusCodes status) throws IOException {
+    private void displayPage(InputStream inputStream, StatusCodes status) throws IOException {
         HttpOutputStream body = this.response.getBody();
-        InputStream inputStream = getClass().getResourceAsStream(url.getPath());
 
         try {
             if (exists(inputStream)) {
+                String theURI = this.isc.getRequest().getRequestURI();
                 // for OK responses that are not index.html, set the cache-control header to a year
                 // If someone assigns a web-app for the root context, whatever is in that application
                 // should get picked up instead of our welcome page w/o having to clear the cache
-                if (status == StatusCodes.OK && !url.getPath().endsWith(".html")) {
+                if (status == StatusCodes.OK && !theURI.endsWith(".html")) {
                     this.response.setHeader(HttpHeaderKeys.HDR_CACHE_CONTROL.getName(), "max-age=604800");
                 }
 
@@ -472,7 +464,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         boolean addAddress = false;
         if ((s == null) || (s.isEmpty())) {
             if (HttpDispatcher.isWelcomePageEnabled()) {
-                URL notFoundPage = getNotFoundURL();
+                InputStream notFoundPage = getNotFoundStream();
                 try {
                     displayPage(notFoundPage, StatusCodes.NOT_FOUND);
                 } catch (Throwable t) {
