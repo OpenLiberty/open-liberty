@@ -789,6 +789,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         long stop = System.nanoTime() + unit.toNanos(timeout);
         long qWait, remaining;
 
+        if (taskCount == 0) // JavaDoc doesn't specify what to do in this case. Match observed behavior of ThreadPoolExecutor for now.
+            throw new IllegalArgumentException();
+
         // Satisfy requirement of JavaDoc:
         for (Callable<T> task : tasks)
             if (task == null)
