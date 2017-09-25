@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -95,19 +95,19 @@ public class SecurityUtilityScriptTest {
     @Test
     public void testHelp() throws Exception {
         String findString = Pattern.quote("Usage: securityUtility {encode|createSSLCertificate|createLTPAKeys|help} [options]");
-        List<String> usageOutput = getScriptHelpOutput(null);
+        List<String> output = execute(null, new ArrayList<String>());
 
-        assertTrue("Usage Help should contain list of actions. Expected: '" + findString + "' Found: " + usageOutput, findMatchingLine(usageOutput, findString));
+        assertTrue("Usage Help should contain list of actions. Expected: '" + findString + "' Found: " + output, findMatchingLine(output, findString));
 
-        List<String> actionsHelp = getScriptInvalidOutput(null, "invalidaction");
-        assertTrue("Invalid actions help should produce two lines of output which contains invalid task name and usage. Output was: " + actionsHelp, (findMatchingLine(actionsHelp, "Unknown task: invalidaction") && findMatchingLine(actionsHelp, findString)));
+        output = execute(null, Arrays.asList("invalidaction"));
+        assertTrue("Invalid actions help should produce two lines of output which contains invalid task name and usage. Output was: " + output, (findMatchingLine(output, "Unknown task: invalidaction") && findMatchingLine(output, findString)));
 
-        List<String> helpOutput = getScriptHelpOutput(null, "help");
-        assertTrue("Full help should contain encode help. Output was: " + helpOutput, findMatchingLine(helpOutput, "\\s*encode.*"));
+        output = execute(null, Arrays.asList("help"));
+        assertTrue("Full help should contain encode help. Output was: " + output, findMatchingLine(output, "\\s*encode.*"));
+        assertTrue("Usage Help should contain list of actions. Expected: '" + findString + "' Found: " + output, findMatchingLine(output, findString));
 
-        List<String> helpEncodeOutput = execute(null, Arrays.asList("help", "encode"));
-        skipFirstExtraEditCommands(helpEncodeOutput);
-        assertFalse("Help for encode should not contain 'securityUtility'. Output was: " + helpEncodeOutput, helpEncodeOutput.get(0).contains("securityUtility "));
+        output = execute(null, Arrays.asList("help", "encode"));
+        assertFalse("Help for encode should not contain 'Actions'. Output was: " + output, findMatchingLine(output, "Actions:"));
     }
 
     @Test
@@ -348,47 +348,6 @@ public class SecurityUtilityScriptTest {
                 }
             } catch (IOException ex) {
                 throw new Error(ex);
-            }
-        }
-    }
-
-    private List<String> getScriptHelpOutput(List<EnvVar> envVars, String... args) throws IOException, InterruptedException {
-        List<String> output = execute(envVars, Arrays.asList(args));
-        System.out.println("output: " + output.toString());
-        skipFirstExtraEditCommands(output);
-        assertFalse("Help output should contain at least one line", output.isEmpty());
-        assertTrue("Usage line should include server script name. Output was: " + output, output.get(0).contains("securityUtility "));
-
-        return output;
-    }
-
-    private List<String> getScriptInvalidOutput(List<EnvVar> envVars, String... args) throws IOException, InterruptedException {
-        List<String> output = execute(envVars, Arrays.asList(args));
-        System.out.println("output: " + output.toString());
-        skipFirstExtraEditCommands(output);
-        assertFalse("Help output should contain at least one line", output.isEmpty());
-        assertTrue("Invalid-action line should include action name. Output was: " + output, output.get(0).contains("invalidaction"));
-        assertTrue("Usage line should include server script name. Output was: " + output, output.get(1).contains("securityUtility "));
-
-        return output;
-    }
-
-    /**
-     * @param output
-     */
-    void skipFirstExtraEditCommands(List<String> output) {
-        if (output == null || output.isEmpty())
-            return; // do nothing if it's empty
-
-        String entry = output.get(0);
-        while (entry != null) {
-            if (entry.startsWith("tr ") || // tr is a unix edit command, such as "tr -d \r"
-                entry.startsWith("sed ")) { // sed is another command, such as "sed s/'/'"'"'/g"
-                System.out.println("remove extra output: " + entry);
-                output.remove(0);
-                entry = output.isEmpty() ? null : output.get(0);
-            } else {
-                break;
             }
         }
     }
