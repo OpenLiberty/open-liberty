@@ -60,6 +60,18 @@
             
         <AD name="%tcp.soReuseAddr" description="%tcp.soReuseAddr.desc"
             id="soReuseAddr" required="false" type="Boolean" default="true" />
+            
+        <AD name="%tcp.addressIncludeList" description="%tcp.addressIncludeList.desc"
+        	id="addressIncludeList" required="false" type="String" default="" /> 
+        
+        <AD name="%tcp.addressExcludeList" description="%tcp.addressExcludeList.desc"
+        	id="addressExcludeList" required="false" type="String" default="" />
+        	
+        <AD name="%tcp.hostNameIncludeList" description="%tcp.hostNameIncludeList.desc"
+        	id="hostNameIncludeList" required="false" type="String" default="" />
+        	  
+        <AD name="%tcp.hostNameExcludeList" description="%tcp.hostNameExcludeList.desc"
+        	id="hostNameExcludeList" required="false" type="String" default="" />
 
         <AD name="internal" description="internal use only"
             id="service.ranking" required="false" type="Integer" default="0"/>
