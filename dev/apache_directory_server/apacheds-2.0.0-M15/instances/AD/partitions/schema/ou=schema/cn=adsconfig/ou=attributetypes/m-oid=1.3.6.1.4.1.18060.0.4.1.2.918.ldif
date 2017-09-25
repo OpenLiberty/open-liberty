@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.918,ou=attributeTypes,cn=adsconfig,ou=schema
+m-equality: integerMatch
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+creatorsname: uid=admin,ou=system
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.918
+m-name: ads-pwdMaxDelay
+entryUUID: dac3be66-adc0-43b7-ad48-ac8a0a0fcfec
+entryCSN: 20130919081858.206000Z#000000#000#000000
+entryParentId: c27651a1-f4fc-4f73-a257-08b4691776f8
+createTimestamp: 20130919081911.573Z

@@ -27,7 +27,7 @@ WS-TraceGroup: HttpTransport
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 # For each exported package, create (in that package) a package-info.java
-# file, and place an @version javadoc tag in package-level javadoc. 
+# file, and place an @version javadoc tag in package-level javadoc.
 # Append ";provide:=true" if this bundle also provides an implementation
 # for the exported API.
 Export-Package: \
@@ -45,9 +45,9 @@ Export-Package: \
     com.ibm.ws.http.channel.h2internal.exceptions, \
     com.ibm.ws.http.channel.h2internal.hpack, \
     com.ibm.ws.http.channel.h2internal.huffman
-    
+
 Private-Package: \
-    com.ibm.ws.http.*, \
+  com.ibm.ws.http.*, \
 	com.ibm.ws.http.dispatcher*, \
 	com.ibm.ws.http.channel*, \
 	com.ibm.ws.http.logging.internal, \
@@ -57,12 +57,14 @@ Private-Package: \
 -dsannotations: com.ibm.ws.http.channel.internal.inbound.HttpPipelineEventHandler,\
   com.ibm.ws.http.dispatcher.internal.HttpDispatcher,\
   com.ibm.ws.http.internal.DefaultMimeTypesImpl,\
+  com.ibm.ws.http.internal.DefaultWelcomePage,\
   com.ibm.ws.http.internal.EncodingUtilsImpl,\
   com.ibm.ws.http.internal.HttpDateFormatImpl,\
   com.ibm.ws.http.internal.HttpEndpointImpl,\
   com.ibm.ws.http.internal.VirtualHostImpl,\
   com.ibm.ws.http.logging.internal.AccessLogger,\
-  com.ibm.ws.http.internal.HttpProxyRedirect
+  com.ibm.ws.http.internal.HttpProxyRedirect,\
+  com.ibm.ws.http.dispatcher.internal.channel.WelcomePageHelper
 
 Service-Component: \
     com.ibm.ws.http.options; \
@@ -81,6 +83,7 @@ DynamicImport-Package: com.ibm.wsspi.request.probe.bci
 instrument.classesExcludes: \
     **/com/ibm/ws/genericbnf/**, \
     **/com/ibm/ws/http/channel/internal/**, \
+    **/com/ibm/ws/http/channel/h2internal/**, \
     **/com/ibm/ws/http/logging/internal/**, \
     **/com/ibm/wsspi/genericbnf/**, \
     **/com/ibm/wsspi/http/channel/**, \
@@ -95,6 +98,7 @@ instrument.classesExcludes: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
+  com.ibm.ws.kernel.boot.core,\
 	com.ibm.ws.kernel.service,\
 	com.ibm.ws.kernel.boot.nested;version=latest,\
 	com.ibm.ws.timer;version=latest,\

@@ -1,5 +1,10 @@
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
 
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 /*******************************************************************************
  * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -12,6 +17,8 @@ package com.ibm.ws.microprofile.faulttolerance_fat.cdi;
  *******************************************************************************/
 
 import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -39,6 +46,9 @@ public class CircuitBreakerServlet extends FATServlet {
     CircuitBreakerBean bean;
 
     /**
+     * Test the operation of the requestVolumeThreshold on a CircuitBreaker configured on a synchronous service
+     * that is configured with a Timeout.
+     *
      * @throws InterruptedException
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
      */
@@ -71,6 +81,8 @@ public class CircuitBreakerServlet extends FATServlet {
     }
 
     /**
+     * Test the operation of the requestVolumeThreshold on a CircuitBreaker configured on a synchronous service.
+     *
      * @throws InterruptedException
      * @throws ConnectException
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -102,6 +114,247 @@ public class CircuitBreakerServlet extends FATServlet {
 
         String res = bean.serviceB();
         if (!"serviceB: 4".equals(res)) {
+            throw new AssertionError("Bad Result: " + res);
+        }
+    }
+
+    /**
+     * Test the behaviour of an asynchronous service configured with a CircuitBreaker.
+     *
+     * @throws Exception
+     */
+    public void testCBAsync() throws Exception {
+        for (int i = 0; i < 3; i++) {
+            try {
+                bean.serviceC().get();
+                fail("Exception not thrown");
+            } catch (ExecutionException e) {
+                //assertThat("Execution exception cause", e.getCause(), instanceOf(ConnectException.class));
+            }
+        }
+
+        // Circuit should now be open
+
+        try {
+            bean.serviceC();
+            fail("Exception not thrown");
+        } catch (CircuitBreakerOpenException e) {
+            // Expected
+        }
+    }
+
+    /**
+     * Test the behaviour of an asynchronous service configured with a CircuitBreaker and Fallback method.
+     *
+     * @throws Exception
+     */
+    public void testCBAsyncFallback() throws Exception {
+        for (int i = 0; i < 3; i++) {
+            assertThat(bean.serviceD().get(), is("serviceDFallback"));
+        }
+
+        assertThat(bean.getExecutionCounterD(), is(3));
+
+        // Circuit should now be open
+        Future<String> future = bean.serviceD();
+        String result = future.get();
+
+        // CB is open, expect to fall back
+        assertThat(result, is("serviceDFallback"));
+
+        // However, we don't expect the call to have reached the serviceD method
+        assertThat(bean.getExecutionCounterD(), is(3));
+    }
+
+    /**
+     * Test the behaviour of a service configured with a CircuitBreaker and Fallback method. This is the
+     * synchronous version of testCBAsyncFallback.
+     *
+     * @throws Exception
+     */
+    public void testCBSyncFallback() throws Exception {
+        String result = null;
+        for (int i = 0; i < 3; i++) {
+            try {
+                result = bean.serviceE();
+                assertThat(result, is("serviceEFallback"));
+            } catch (ConnectException e) {
+                // We should have fallen back, assert if a ConnectException is thrown
+                throw new AssertionError("ConnectException not expected");
+            } catch (Exception ue) {
+                // We should have fallen back, assert if an unexpected Exception is thrown
+                throw new AssertionError("Unexpected exception " + ue);
+            }
+        }
+
+        // Confirm that the service was called 3 times.
+        assertThat(bean.getExecutionCounterE(), is(3));
+
+        // Circuit should now be open. Attempt to call serviceE once more.
+        try {
+            result = bean.serviceE();
+        } catch (ConnectException e) {
+            // We should have fallen back, assert if a ConnectException is thrown
+            throw new AssertionError("ConnectException not expected");
+        } catch (Exception ue) {
+            // We should have fallen back, assert if an unexpected Exception is thrown
+            throw new AssertionError("Unexpected exception " + ue);
+        }
+
+        // CB is open, expect to fall back
+        assertThat(result, is("serviceEFallback"));
+
+        // However, we don't expect the call to have reached the serviceE method because the Circuit is open
+        // so the counter should not have been further incremented.
+        assertThat(bean.getExecutionCounterE(), is(3));
+    }
+
+    /**
+     * Test the behaviour of a service configured with a CircuitBreaker and Retry annotation. In this test
+     * maxRetries is set sufficiently high that the Circuit will open before maxRetries is reached and
+     * a CircuitBreakerOpenException will be caught.
+     *
+     * @throws Exception
+     */
+    public void testCBSyncRetryCircuitOpens() throws Exception {
+        String result = null;
+
+        try {
+            result = bean.serviceF();
+            throw new AssertionError("serviceF should be retried");
+        } catch (CircuitBreakerOpenException cboe) {
+            // Confirm that the service was called 3 times before this exception was thrown.
+            assertThat(bean.getExecutionCounterF(), is(3));
+        } catch (ConnectException e) {
+            // We should have retried or thrown a CircuitBreakerOpenException, assert if a ConnectException is thrown
+            throw new AssertionError("ConnectException not expected");
+        } catch (Exception ue) {
+            // We should have retried or thrown a CircuitBreakerOpenException, assert if an unexpected Exception is thrown
+            throw new AssertionError("Unexpected exception " + ue);
+        }
+    }
+
+    /**
+     * Test the behaviour of a service configured with a CircuitBreaker and Retry annotation. In this test
+     * maxRetries is set sufficiently low that the Circuit will remain closed after maxRetries is reached and
+     * a ConnectionException will be caught.
+     *
+     * @throws Exception
+     */
+    public void testCBSyncRetryCircuitClosed() throws Exception {
+        String result = null;
+
+        try {
+            result = bean.serviceG();
+            throw new AssertionError("serviceG should be retried");
+        } catch (CircuitBreakerOpenException cboe) {
+            throw new AssertionError("CircuitBreakerOpenException not expected");
+        } catch (ConnectException e) {
+            // Confirm that the service was called 2 times before this exception was thrown.
+            assertThat(bean.getExecutionCounterG(), is(2));
+        } catch (Exception ue) {
+            // We should have retried or thrown a ConnectionException, assert if an unexpected Exception is thrown
+            throw new AssertionError("Unexpected exception " + ue);
+        }
+    }
+
+    /**
+     * The Asynchronous equivalent of testCBSyncRetryCircuitOpens, to test the behaviour of a service configured
+     * with CircuitBreaker, Retry and Asynchronous annotations. In this test maxRetries is set sufficiently high
+     * that the Circuit will open before maxRetries is reached and a CircuitBreakerOpenException will be thrown.
+     *
+     * @throws Exception
+     */
+    public void testCBAsyncRetryCircuitOpens() throws Exception {
+        Future<String> future = null;
+        try {
+            future = bean.serviceH();
+        } catch (Exception ue) {
+            // Assert if an unexpected Exception is thrown
+            throw new AssertionError("Unexpected exception " + ue);
+        }
+
+        try {
+            String result = future.get();
+            throw new AssertionError("serviceH should be retried");
+        } catch (ExecutionException ee) {
+            // The Service will be retried three times. On the third retry a CircuitBreakerOpenException
+            // will be thrown. This will be wrapped by a java.util.ExecutionException and caught here.
+            assertTrue("Cause was not CircuitBreakerOpenException", ee.getCause().toString().contains("CircuitBreakerOpenException"));
+            // Confirm that the service was called 3 times before this exception was thrown.
+            assertThat(bean.getExecutionCounterH(), is(3));
+        } catch (Exception ue) {
+            // We should have retried or thrown an ExecutionException, assert if an unexpected Exception is thrown
+            throw new AssertionError("Unexpected exception " + ue);
+        }
+    }
+
+    /**
+     * The Asynchronous equivalent of testCBSyncRetryCircuitClosed, to test the behaviour of a service configured
+     * with CircuitBreaker, Retry and Asynchronous annotations. In this test maxRetries is set sufficiently low
+     * that the Circuit will remain closed after maxRetries is reached and a ConnectionException will be thrown.
+     *
+     * @throws Exception
+     */
+    public void testCBAsyncRetryCircuitClosed() throws Exception {
+        Future<String> future = null;
+        try {
+            future = bean.serviceI();
+        } catch (Exception ue) {
+            // Assert if an unexpected Exception is thrown
+            throw new AssertionError("Unexpected exception " + ue);
+        }
+
+        try {
+            String result = future.get();
+            throw new AssertionError("serviceI should be retried");
+        } catch (ExecutionException ee) {
+            // The Service will be retried just once. After maxRetries is exceeded a ConnectException
+            // will be thrown. This will be wrapped by a java.util.ExecutionException and caught here.
+            assertTrue("Cause was not ConnectException", ee.getCause().toString().contains("ConnectException"));
+            // Confirm that the service was called 2 times before this exception was thrown.
+            assertThat(bean.getExecutionCounterI(), is(2));
+        } catch (Exception ue) {
+            // We should have retried or thrown a ConnectException, assert if an unexpected Exception is thrown
+            throw new AssertionError("Unexpected exception " + ue);
+        }
+    }
+
+    /**
+     * An adaption of testCBFailureThresholdWithException, to test the CircuitBreaker behaviour is as expected
+     * when the service initially succeeds but then begins to fail.
+     *
+     * @throws InterruptedException
+     * @throws ConnectException
+     */
+    public void testCBFailureThresholdWithRoll() throws InterruptedException, ConnectException {
+
+        // FaultTolerance object with circuit breaker, should fail 3 times
+        for (int i = 0; i < 5; i++) {
+            try {
+                bean.serviceJ();
+                if (i > 1)
+                    throw new AssertionError("ConnectException not caught");
+            } catch (ConnectException e) {
+                if (!e.getMessage().equals("ConnectException: serviceJ exception: " + (i + 1))) {
+                    throw new AssertionError("ConnectException bad message: " + e.getMessage());
+                }
+            }
+        }
+
+        // The service should have failed 3 times in succession, so the Circuit should be Open.
+        try {
+            bean.serviceJ();
+            throw new AssertionError("CircuitBreakerOpenException not caught");
+        } catch (CircuitBreakerOpenException e) {
+            //expected
+        }
+
+        //allow time for the circuit to re-close
+        Thread.sleep(3000);
+
+        String res = bean.serviceJ();
+        if (!"serviceJ: 6".equals(res)) {
             throw new AssertionError("Bad Result: " + res);
         }
     }

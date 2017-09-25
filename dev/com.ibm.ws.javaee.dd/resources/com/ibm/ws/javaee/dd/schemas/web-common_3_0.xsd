@@ -151,6 +151,12 @@
                    type="javaee:message-destinationType"/>
       <xsd:element name="locale-encoding-mapping-list"
                    type="javaee:locale-encoding-mapping-listType"/>
+	  <xsd:element name="default-context-path"
+                   type="javaee:default-context-pathType"/>
+      <xsd:element name="request-character-encoding"
+                   type="javaee:request-encodingType"/>
+      <xsd:element name="response-character-encoding"
+                   type="javaee:response-encodingType"/>             
     </xsd:choice>
   </xsd:group>
 
@@ -1409,6 +1415,81 @@
     </xsd:sequence>
     <xsd:attribute name="id"
                    type="xsd:ID"/>
+  </xsd:complexType>
+  
+  <!-- **************************************************** -->
+  
+   <xsd:complexType name="default-context-pathType">
+    <xsd:annotation>
+      <xsd:documentation>
+        <![CDATA[[
+        The default-context-path provides a default context path of the web application.
+		An empty value for this element must cause the web application to be deployed at the root
+		for the container. Otherwise, the default context path must start with a “/” character but
+		not end with a “/” character. Servlet containers may provide vendor specific configuration
+		options that allows specifying a value that overrides the value specified here.
+        
+        Example: 
+        
+        ...
+        <default-context-path>
+        	/TestContextPath
+        </default-context-path>
+        
+        ]]>
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="javaee:string">
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  <!-- **************************************************** -->
+  
+ 	<xsd:complexType name="request-encodingType">
+	 <xsd:annotation>
+		<xsd:documentation> 
+		 <![CDATA[[
+		The request encoding type provides web module level for the encoding of the request data.
+        Example: 
+        
+        ...
+        <request-character-encoding>
+        	UTF-8
+        </request-character-encoding>
+        
+        ]]>
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="javaee:string">
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+  
+  
+  <!-- **************************************************** -->
+  
+ 	<xsd:complexType name="response-encodingType">
+	 <xsd:annotation>
+		<xsd:documentation> 
+		 <![CDATA[[
+		The response encoding type provides web module level for the encoding of the response data.
+        Example: 
+        
+        ...
+        <response-character-encoding>
+        	UTF-8
+        </response-character-encoding>
+        
+        ]]>
+      </xsd:documentation>
+    </xsd:annotation>
+    <xsd:simpleContent>
+      <xsd:extension base="javaee:string">
+      </xsd:extension>
+    </xsd:simpleContent>
   </xsd:complexType>
 
 

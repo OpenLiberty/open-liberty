@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.20,ou=attributeTypes,cn=apachemeta,ou=schema
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.20
+m-name: m-ruleId
+m-description: The rule ID
+m-syntax: 1.3.6.1.4.1.18060.0.4.0.0.4
+m-equality: ruleIdMatch
+m-usage: USER_APPLICATIONS
+m-singlevalue: FALSE
+m-collective: FALSE
+m-obsolete: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

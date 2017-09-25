@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.8.1.5,ou=attributeTypes,cn=pwdpolicy,ou=schema
+m-equality: integerMatch
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+creatorsname: uid=admin,ou=system
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.42.2.27.8.1.5
+m-name: pwdCheckQuality
+entryUUID: 972ea075-981a-4142-9a82-dcbc12eb0b02
+entryCSN: 20130919081859.072000Z#000000#000#000000
+entryParentId: fb59bad3-7431-4f89-b398-dee1afd6638f
+createTimestamp: 20130919081910.728Z

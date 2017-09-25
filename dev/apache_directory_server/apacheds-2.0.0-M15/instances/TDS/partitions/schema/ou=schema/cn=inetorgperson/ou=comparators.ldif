@@ -1,0 +1,10 @@
+version: 1
+dn: ou=comparators,cn=inetorgperson,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: 7c885708-431d-49b6-ba2b-911bceb5cbd6
+entryCSN: 20130919065345.319000Z#000001#000#000000
+entryParentId: 9ae801e1-6c4b-47f3-a990-8680efcfef9d
+ou: comparators
+createTimestamp: 20130919065353.522Z

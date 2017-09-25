@@ -1,0 +1,10 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.600,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.600
+m-name: ads-dhcpServer
+m-description: The DhcpServer ObjectClass
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-dsBasedServer
+creatorsname: uid=admin,ou=system

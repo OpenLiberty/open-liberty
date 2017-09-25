@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+
 /**
  *
  */
@@ -37,6 +39,10 @@ public class H2Map implements java.util.Map<Object, Object> {
         // get from local map, if not there, try the commonMap
         Object value = localMap.get(key);
         if (value == null) {
+            // don't allow the backing HttpDispatcherLink to be used by this new request/stream, it needs to have it's own
+            if (key.toString().equalsIgnoreCase(HttpDispatcherLink.LINK_ID)) {
+                return null;
+            }
             value = commonMap.get(key);
         }
         return value;

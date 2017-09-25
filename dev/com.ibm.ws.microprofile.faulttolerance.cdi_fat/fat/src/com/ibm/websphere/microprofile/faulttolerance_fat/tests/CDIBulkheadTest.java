@@ -20,7 +20,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.AfterClass;
 import org.junit.ClassRule;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.ws.fat.util.LoggingTest;
@@ -63,10 +62,23 @@ public class CDIBulkheadTest extends LoggingTest {
     }
 
     @Test
-    @Ignore
     public void testSyncBulkheadSmall() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
         getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/bulkhead?testMethod=testSyncBulkheadSmall",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testSyncBulkheadCircuitBreaker() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/bulkhead?testMethod=testSyncBulkheadCircuitBreaker",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testSyncBulkheadFallback() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/bulkhead?testMethod=testSyncBulkheadFallback",
                                          "SUCCESS");
     }
 

@@ -1,0 +1,10 @@
+version: 1
+dn: cn=other,ou=schema
+cn: other
+objectclass: metaSchema
+objectclass: top
+m-dependencies: system
+m-dependencies: core
+m-dependencies: apache
+m-dependencies: apachemeta
+creatorsname: uid=admin,ou=system

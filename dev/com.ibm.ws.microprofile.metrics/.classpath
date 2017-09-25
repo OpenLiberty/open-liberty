@@ -5,5 +5,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="src" path="/com.ibm.websphere.org.eclipse.microprofile.metrics.1.0"/>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

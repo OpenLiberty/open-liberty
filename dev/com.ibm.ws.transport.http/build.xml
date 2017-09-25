@@ -38,6 +38,7 @@
         <include name="**/*.class" />
         <exclude name="**/com/ibm/ws/genericbnf/**" />
         <exclude name="**/com/ibm/ws/http/channel/internal/**" />
+        <exclude name="**/com/ibm/ws/http/channel/h2internal/**" />
         <exclude name="**/com/ibm/ws/http/logging/internal/**" />
         <exclude name="**/com/ibm/wsspi/genericbnf/**" />
         <exclude name="**/com/ibm/wsspi/http/channel/**" />

@@ -72,8 +72,6 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
 
     interface Bridge extends RequestProcessor, Runnable {};
     
-    HttpInboundConnection httpInboundConnection = null;
-
     /**
      * @param name
      * @param parent
@@ -211,7 +209,6 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
      *   the SIP container invokes this method directly */
     public Runnable createRunnableHandler(final IRequest ireq ,final IResponse ires,final HttpInboundConnection inboundConnection) {
 
-        httpInboundConnection = inboundConnection;
         String requestUri = ireq.getRequestURI();
         
         //PI05525
@@ -270,6 +267,7 @@ public class DynamicVirtualHost extends com.ibm.ws.webcontainer.VirtualHost impl
         }
 
         return new Bridge() {
+            HttpInboundConnection httpInboundConnection = inboundConnection;
             public void run() {
                 Exception error = null;
                 try {

@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.916,ou=attributeTypes,cn=adsconfig,ou=schema
+m-equality: booleanMatch
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+creatorsname: uid=admin,ou=system
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.916
+m-name: ads-pwdSafeModify
+entryUUID: 0b190ba6-eaee-42d9-b7d4-02bb3cf03743
+entryCSN: 20130919065344.708000Z#000000#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065353.636Z

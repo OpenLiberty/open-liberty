@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=2.5.6.11,ou=objectClasses,cn=core,ou=schema
+m-must: cn
+m-oid: 2.5.6.11
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2256: an application process
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: applicationProcess
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: seeAlso
+m-may: ou
+m-may: l
+m-may: description

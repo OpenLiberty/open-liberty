@@ -1,0 +1,25 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.1,ou=objectClasses,cn=nis,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 1.3.6.1.1.1.2.1
+m-name: shadowAccount
+m-description: Additional attributes for shadow passwords
+m-supobjectclass: top
+m-must: uid
+entryUUID: 37845ed6-d649-48cf-b7f4-5fbacb7c00a4
+m-may: userPassword
+m-may: shadowLastChange
+m-may: shadowMin
+m-may: shadowMax
+m-may: shadowWarning
+m-may: shadowInactive
+m-may: shadowExpire
+m-may: shadowFlag
+m-may: description
+m-typeobjectclass: AUXILIARY
+entryCSN: 20130919065345.464000Z#000001#000#000000
+entryParentId: 035737fa-66e0-4a13-849d-0c1787cf820f
+createTimestamp: 20130919065352.270Z

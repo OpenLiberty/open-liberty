@@ -1,0 +1,10 @@
+version: 1
+dn: ou=normalizers,cn=dhcp,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: f6306b41-298b-4ab0-8c9f-346e7c7dcfbe
+entryCSN: 20130919081858.671000Z#000001#000#000000
+entryParentId: 46016b49-fa8b-4efa-88df-4cc2c46cdfdf
+ou: normalizers
+createTimestamp: 20130919081908.561Z

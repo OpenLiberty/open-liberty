@@ -14,12 +14,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.channel.internal.HttpTrailerGeneratorImpl;
 import com.ibm.ws.http.channel.internal.outbound.HttpOutputStreamImpl;
 import com.ibm.wsspi.genericbnf.HeaderField;
+import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpResponse;
 import com.ibm.wsspi.http.channel.HttpResponseMessage;
+import com.ibm.wsspi.http.channel.HttpTrailerGenerator;
+import com.ibm.wsspi.http.channel.HttpTrailers;
 import com.ibm.wsspi.http.channel.inbound.HttpInboundServiceContext;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.VersionValues;
@@ -39,7 +43,7 @@ public class HttpResponseImpl implements HttpResponse {
 
     /**
      * Constructor.
-     * 
+     *
      * @param link
      */
     public HttpResponseImpl(HttpDispatcherLink link) {
@@ -48,7 +52,7 @@ public class HttpResponseImpl implements HttpResponse {
 
     /**
      * Constructor.
-     * 
+     *
      * @param link
      */
     public HttpResponseImpl(HttpDispatcherLink link, boolean useEE7Streams) {
@@ -58,7 +62,7 @@ public class HttpResponseImpl implements HttpResponse {
 
     /**
      * Initialize with a new wrapped message.
-     * 
+     *
      * @param context
      */
     public void init(HttpInboundServiceContext context) {
@@ -182,8 +186,7 @@ public class HttpResponseImpl implements HttpResponse {
         if (null == this.body) {
             if (this.useEE7Streams) {
                 this.body = new HttpOutputStreamEE7(this.isc);
-            }
-            else {
+            } else {
                 this.body = new HttpOutputStreamImpl(this.isc);
             }
             this.body.setVirtualConnection(this.connlink.getVirtualConnection());
@@ -298,6 +301,39 @@ public class HttpResponseImpl implements HttpResponse {
     public void reset() {
         this.message.clear();
         this.body.clear();
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.http.HttpResponse#getTrailers()
+     */
+    @Override
+    public void setTrailer(String name, String value) {
+
+        HttpTrailers trailers = message.createTrailers();
+        HeaderKeys key = HttpHeaderKeys.find(name);
+
+        if (trailers.containsDeferredTrailer(key)) {
+            trailers.removeDeferredTrailer(key);
+        }
+
+        HttpTrailerGenerator generator = new HttpTrailerGeneratorImpl(key, value);
+        trailers.setDeferredTrailer(key, generator);
+
+        return;
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.wsspi.http.HttpResponse#writeTrailers()
+     */
+    @Override
+    public void writeTrailers() {
+        HttpTrailers trailers = message.createTrailers();
+        trailers.computeRemainingTrailers();
+
     }
 
 }

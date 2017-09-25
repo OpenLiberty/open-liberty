@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.62,ou=attributeTypes,cn=adsconfig,ou=schema
+m-ordering: integerOrderingMatch
+m-singlevalue: TRUE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.62
+m-description: The number of messages waiting to be processed.
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-name: ads-transportBacklog
+creatorsname: uid=admin,ou=system
+m-equality: integerMatch
+m-length: 0

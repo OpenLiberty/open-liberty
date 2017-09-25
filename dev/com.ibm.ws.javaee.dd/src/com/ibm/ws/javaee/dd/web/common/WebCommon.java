@@ -23,8 +23,7 @@ import com.ibm.ws.javaee.dd.jsp.JSPConfig;
 /**
  *
  */
-public interface WebCommon
-                extends DescriptionGroup, JNDIEnvironmentRefsGroup {
+public interface WebCommon extends DescriptionGroup, JNDIEnvironmentRefsGroup {
 
     /**
      * @return true if &lt;distributable> is specified
@@ -119,4 +118,20 @@ public interface WebCommon
      * @return &lt;locale-encoding-mapping-list>, or null if unspecified
      */
     LocaleEncodingMappingList getLocaleEncodingMappingList();
+
+    /**
+     * @return &lt;locale-encoding-mapping-list>, or null if unspecified
+     */
+    DefaultContextPath getDefaultContextPath();
+
+    /**
+     * @return &lt;request-encoding>
+     */
+    RequestEncoding getRequestEncoding();
+
+    /**
+     * @return &lt;response-encoding>
+     */
+    ResponseEncoding getResponseEncoding();
+
 }

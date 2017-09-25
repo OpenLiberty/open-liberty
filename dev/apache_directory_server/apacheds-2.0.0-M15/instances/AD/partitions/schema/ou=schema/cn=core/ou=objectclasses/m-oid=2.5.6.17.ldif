@@ -1,0 +1,24 @@
+version: 1
+dn: m-oid=2.5.6.17,ou=objectClasses,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-oid: 2.5.6.17
+m-name: groupOfUniqueNames
+m-description: RFC2256: a group of unique names (DN and Unique Identifier)
+m-obsolete: FALSE
+m-supobjectclass: top
+m-must: uniqueMember
+m-must: cn
+entryUUID: 9d46ba0b-8a87-4605-b360-8a07b7306315
+m-may: businessCategory
+m-may: seeAlso
+m-may: owner
+m-may: ou
+m-may: o
+m-may: description
+m-typeobjectclass: STRUCTURAL
+entryCSN: 20130919081858.600000Z#000000#000#000000
+entryParentId: 0472417b-d9d5-4773-adb4-bd63258ecb89
+createTimestamp: 20130919081909.168Z

@@ -44,7 +44,8 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.transaction-1.2, \
- com.ibm.websphere.appserver.javax.servlet-3.1, \
+ com.ibm.websphere.appserver.javax.servlet-3.1; ibm.tolerates:=4.0, \
+ com.ibm.websphere.appserver.javax.jsf-2.2; ibm.tolerates:=2.3, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=com.ibm.ws.org.jboss.weld.2.4.3, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
@@ -53,8 +54,7 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
  com.ibm.ws.cdi.1.2.weld.impl, \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/", \
- com.ibm.ws.cdi.1.2.interfaces, \
- com.ibm.websphere.javaee.jsf.2.2; apiJar=false; location:="dev/api/spec/,lib/"
+ com.ibm.ws.cdi.1.2.interfaces
 -jars=com.ibm.websphere.appserver.thirdparty.cdi; location:="dev/api/third-party/,lib/"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd

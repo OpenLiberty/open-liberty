@@ -25,8 +25,10 @@ package io.astefanutti.metrics.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,6 +43,7 @@ import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
+import javax.enterprise.inject.spi.BeforeShutdown;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
@@ -51,6 +54,7 @@ import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.Nonbinding;
 import javax.interceptor.InterceptorBinding;
 
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Metric;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.annotation.Counted;
@@ -60,6 +64,7 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
 import org.osgi.service.component.annotations.Component;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
+import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 
 @Component(service = WebSphereCDIExtension.class, immediate = true)
 public class MetricsExtension implements Extension, WebSphereCDIExtension {
@@ -73,6 +78,7 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
     private static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {};
 
     private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
+    private final List<String> metricNames = new ArrayList<String>();
 
     private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
@@ -121,11 +127,21 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 // skip producer methods with injection point
                 || hasInjectionPoints(bean.getValue()))
                 continue;
-            registry.register(name.of(bean.getValue()), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()));
+            Metadata metadata = name.metadataOf(bean.getValue());
+            registry.register(metadata.getName(), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), metadata);
+            metricNames.add(metadata.getName());
         }
 
         // Let's clear the collected metric producers
         metrics.clear();
+    }
+
+    private void beforeShutdown(@Observes BeforeShutdown shutdown) {
+        MetricRegistry registry = MetricRegistryFactory.getApplicationRegistry();
+        // Unregister metrics
+        for (String name : metricNames) {
+            registry.remove(name);
+        }
     }
 
     private static <T extends Annotation> void declareAsInterceptorBinding(Class<T> annotation, BeanManager manager, BeforeBeanDiscovery bbd) {

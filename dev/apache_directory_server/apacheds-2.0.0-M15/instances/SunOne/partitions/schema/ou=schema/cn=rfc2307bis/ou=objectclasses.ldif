@@ -1,0 +1,6 @@
+version: 1
+dn: ou=objectClasses,cn=rfc2307bis,ou=schema
+ou: objectClasses
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system

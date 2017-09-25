@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.common.web.WebErrorHandler;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.wsspi.security.tai.TAIResult;
 
@@ -49,7 +48,6 @@ public class ErrorHandlerImpl implements ErrorHandler {
         }
         String errorMessage = getErrorMessage();
         response.setHeader(AUTH_HEADER, errorMessage);
-        writeResponseBody(response, httpErrorCode);
     }
 
     String getErrorMessage() {
@@ -60,13 +58,6 @@ public class ErrorHandlerImpl implements ErrorHandler {
 
     String getRealmMessage() {
         return BEARER;
-    }
-
-    void writeResponseBody(HttpServletResponse response, int httpErrorCode) {
-        WebErrorHandler handler = new WebErrorHandler();
-        String errorHeader = "HTTP Error " + httpErrorCode;
-        String errorMsg = Tr.formatMessage(tc, "MP_JWT_FRONT_END_ERROR");
-        handler.writeErrorHtml(response, errorHeader, errorMsg);
     }
 
 }

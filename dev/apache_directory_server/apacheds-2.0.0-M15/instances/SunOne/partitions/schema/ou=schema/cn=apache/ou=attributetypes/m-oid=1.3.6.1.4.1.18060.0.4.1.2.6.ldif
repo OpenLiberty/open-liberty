@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.6,ou=attributeTypes,cn=apache,ou=schema
+m-collective: FALSE
+m-singlevalue: FALSE
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.6
+m-obsolete: FALSE
+m-description: Index attribute used to track sub level aliases
+m-nousermodification: TRUE
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-syntax: 1.3.6.1.1.16.1
+m-usage: DSA_OPERATION
+m-name: apacheSubAlias
+creatorsname: uid=admin,ou=system
+m-equality: uuidMatch

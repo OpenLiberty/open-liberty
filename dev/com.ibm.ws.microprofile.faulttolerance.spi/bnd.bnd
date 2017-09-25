@@ -20,7 +20,9 @@ Bundle-Description: MicroProfile Fault Tolerance SPI, version ${bVersion}
 
 Import-Package: *
 
-Export-Package: com.ibm.ws.microprofile.faulttolerance.spi
+Export-Package:\
+    com.ibm.ws.microprofile.faulttolerance.spi,\
+    com.ibm.ws.microprofile.faulttolerance.utils
 
 Private-Package: \
     com.ibm.ws.microprofile.faulttolerance.spi.resources
@@ -33,6 +35,8 @@ WS-TraceGroup: FAULTTOLERANCE
 -dsannotations-inherit: true
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+testsrc: test/src
 
 -buildpath: \
 	com.ibm.ws.logging;version=latest,\
@@ -47,4 +51,9 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	org.hamcrest:hamcrest-all;version=1.3
 

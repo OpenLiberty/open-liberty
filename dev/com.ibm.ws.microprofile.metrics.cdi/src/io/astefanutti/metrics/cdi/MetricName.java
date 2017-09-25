@@ -26,6 +26,8 @@ package io.astefanutti.metrics.cdi;
 import javax.enterprise.inject.spi.AnnotatedMember;
 import javax.enterprise.inject.spi.InjectionPoint;
 
+import org.eclipse.microprofile.metrics.Metadata;
+
 /* package-private */ interface MetricName {
 
     String of(InjectionPoint point);
@@ -34,4 +36,11 @@ import javax.enterprise.inject.spi.InjectionPoint;
 
     // TODO: expose an SPI so that external strategies can be provided. For example, Camel CDI could provide a property placeholder resolution strategy.
     String of(String attribute);
+
+    Metadata metadataOf(InjectionPoint point, Class<?> type);
+
+    Metadata metadataOf(AnnotatedMember<?> member, Class<?> type);
+
+    Metadata metadataOf(AnnotatedMember<?> member);
+
 }

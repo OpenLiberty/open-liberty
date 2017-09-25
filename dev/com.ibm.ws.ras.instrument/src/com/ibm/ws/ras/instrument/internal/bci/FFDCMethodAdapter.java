@@ -147,7 +147,7 @@ public class FFDCMethodAdapter extends AbstractRasMethodAdapter<FFDCClassAdapter
                                                                              Type.getType(String.class),
                                                                              Type.getType(String.class),
                                                                              Type.getType(Object.class),
-                                                                             Type.getType(Object[].class) }));
+                                                                             Type.getType(Object[].class) }), false);
     }
 
     @Override

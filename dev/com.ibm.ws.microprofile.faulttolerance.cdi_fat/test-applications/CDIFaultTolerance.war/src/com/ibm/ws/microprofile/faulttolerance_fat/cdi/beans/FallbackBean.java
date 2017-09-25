@@ -10,8 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans;
 
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
+
 import javax.enterprise.context.RequestScoped;
 
+import org.eclipse.microprofile.faulttolerance.Asynchronous;
 import org.eclipse.microprofile.faulttolerance.ExecutionContext;
 import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
@@ -28,6 +32,8 @@ public class FallbackBean {
 
     private int connectCountA = 0;
     private int connectCountB = 0;
+    private int connectCountC = 0;
+    private int connectCountD = 0;
 
     @Fallback(MyFallbackHandler.class)
     public Connection connectA() throws ConnectException {
@@ -37,6 +43,18 @@ public class FallbackBean {
     @Fallback(MyFallbackHandler.class)
     public Connection connectB(String param) throws ConnectException {
         throw new ConnectException("FallbackBean.connectB: " + (++connectCountB));
+    }
+
+    @Asynchronous
+    @Fallback(AsyncFallbackHandler.class)
+    public Future<Connection> connectC() throws ConnectException {
+        throw new ConnectException("FallbackBean.connectC: " + (++connectCountC));
+    }
+
+    @Asynchronous
+    @Fallback(fallbackMethod = "fallbackAsync")
+    public Future<Connection> connectD() throws ConnectException {
+        throw new ConnectException("FallbackBean.connectD: " + (++connectCountD));
     }
 
     public Connection fallback(ExecutionContext executionContext) {
@@ -49,12 +67,29 @@ public class FallbackBean {
         };
     }
 
+    public Future<Connection> fallbackAsync() {
+        return CompletableFuture.completedFuture(new Connection() {
+            @Override
+            public String getData() {
+                return "fallbackAsync";
+            }
+        });
+    }
+
     public int getConnectCountA() {
         return connectCountA;
     }
 
     public int getConnectCountB() {
         return connectCountB;
+    }
+
+    public int getConnectCountC() {
+        return connectCountC;
+    }
+
+    public int getConnectCountD() {
+        return connectCountD;
     }
 
 }

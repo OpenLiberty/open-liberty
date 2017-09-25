@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.42.2.27.4.1.7,ou=attributeTypes,cn=java,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseExactIA5Match
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.26
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.42.2.27.4.1.7
+m-name: javaCodebase
+m-description: URL(s) specifying the location of class definition
+m-obsolete: FALSE
+entryUUID: e3ca4ae3-8945-47e1-9b95-034b6208f8ca
+entryCSN: 20130919081858.901000Z#000001#000#000000
+entryParentId: b6bd9cdf-6973-431e-beae-f51d70d1183a
+createTimestamp: 20130919081909.558Z

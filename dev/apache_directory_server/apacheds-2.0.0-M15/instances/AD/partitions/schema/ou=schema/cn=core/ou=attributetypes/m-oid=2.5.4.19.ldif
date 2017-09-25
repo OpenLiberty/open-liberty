@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=2.5.4.19,ou=attributeTypes,cn=core,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: caseIgnoreMatch
+m-substr: caseIgnoreSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.5.4.19
+m-name: physicalDeliveryOfficeName
+m-description: RFC2256: Physical Delivery Office Name
+m-obsolete: FALSE
+entryUUID: 1b2c374e-a1a2-4d97-a971-8c8da05b5074
+entryCSN: 20130919081858.572000Z#000001#000#000000
+entryParentId: 380762cf-db05-48e1-a596-4becaad7489a
+createTimestamp: 20130919081908.891Z

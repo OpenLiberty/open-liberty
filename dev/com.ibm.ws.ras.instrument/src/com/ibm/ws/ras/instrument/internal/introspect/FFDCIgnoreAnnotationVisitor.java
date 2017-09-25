@@ -25,7 +25,7 @@ public class FFDCIgnoreAnnotationVisitor extends AnnotationVisitor {
     private final Set<Type> ignoredExceptionTypes = new HashSet<Type>();
 
     public FFDCIgnoreAnnotationVisitor(AnnotationVisitor delegate) {
-        super(Opcodes.ASM4, delegate);
+        super(Opcodes.ASM5, delegate);
     }
 
     @Override
@@ -46,7 +46,7 @@ class IgnoredExceptionVisitor extends AnnotationVisitor {
     Set<Type> ignoredExceptionTypes;
 
     IgnoredExceptionVisitor(AnnotationVisitor delegate, Set<Type> ignoredExceptionTypes) {
-        super(Opcodes.ASM4, delegate);
+        super(Opcodes.ASM5, delegate);
         this.ignoredExceptionTypes = ignoredExceptionTypes;
     }
 

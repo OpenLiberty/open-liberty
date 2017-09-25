@@ -1,0 +1,15 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.4,ou=objectClasses,cn=nis,ou=schema
+m-must: cn
+m-must: ipProtocolNumber
+m-oid: 1.3.6.1.1.1.2.4
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: Abstraction of an IP protocol
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: ipProtocol
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: description

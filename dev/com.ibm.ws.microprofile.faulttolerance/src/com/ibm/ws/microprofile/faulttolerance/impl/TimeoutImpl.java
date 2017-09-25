@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.impl.async.QueuedFuture;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 /**
  *
@@ -30,17 +31,20 @@ public class TimeoutImpl {
 
     private static final TraceComponent tc = Tr.register(TimeoutImpl.class);
 
+    private final String id;
     private final TimeoutPolicy timeoutPolicy;
     private final ScheduledExecutorService scheduledExecutorService;
-    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
-    private Future<?> future;
-    private volatile boolean timedout = false;
-    private boolean stopped = false;
-    private volatile long targetEnd;
-    private Runnable timeoutTask;
-    private volatile long start;
 
-    private final String id;
+    //lock must be held whenever reading or writing any of the following properties
+    private final ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+    //=========================================
+    private Future<?> future; //the future which represents the scheduled timeout task
+    private boolean timedout = false; //has the timeout popped?
+    private boolean stopped = false; //has the timeout been stopped?
+    private long start; //what relative nanoTime was the timeout started?
+    private long targetEnd; //what relative nanoTime do we expect the timeout to occur
+    private Runnable timeoutTask; //the task which will be run when the timeout does occur
+    //=========================================
 
     /**
      * @param timeoutPolicy
@@ -76,7 +80,7 @@ public class TimeoutImpl {
     /**
      * This method is run when the timer pops
      */
-    void timeout() {
+    private void timeout() {
         lock.writeLock().lock();
         try {
             //if already stopped, do nothing, otherwise check times and run the timeout task
@@ -238,9 +242,18 @@ public class TimeoutImpl {
         lock.readLock().lock();
         try {
             if (this.timedout) {
+                // Note: this clears the interrupted flag if it was set
+                // Assumption is that the interruption was caused by the Timeout
+                boolean wasInterrupted = Thread.interrupted();
+
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "{0}: Throwing timeout exception", getDescriptor());
+                    if (wasInterrupted) {
+                        Tr.debug(tc, "{0}: Throwing timeout exception", getDescriptor());
+                    } else {
+                        Tr.debug(tc, "{0}: Throwing timeout exception and clearing interrupted flag", getDescriptor());
+                    }
                 }
+
                 throw new TimeoutException(Tr.formatMessage(tc, "timeout.occurred.CWMFT0000E"));
             }
             long now = System.nanoTime();
@@ -277,7 +290,7 @@ public class TimeoutImpl {
     @Trivial
     private void debugRelativeTime(String message) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            FTConstants.debugRelativeTime(tc, getDescriptor(), message, this.start);
+            FTDebug.debugRelativeTime(tc, getDescriptor(), message, this.start);
         }
     }
 
@@ -290,7 +303,7 @@ public class TimeoutImpl {
     @Trivial
     private void debugTime(String message, long nanos) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            FTConstants.debugTime(tc, getDescriptor(), message, nanos);
+            FTDebug.debugTime(tc, getDescriptor(), message, nanos);
         }
     }
 

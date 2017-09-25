@@ -24,5 +24,5 @@ IBM-App-ForceRestart: uninstall, \
  bin/jaxrs/wadl2java, \
  bin/jaxrs/wadl2java.bat, \
  bin/jaxrs/tools/wadl2java.jar
-kind=noship
-edition=full
+kind=beta
+edition=core

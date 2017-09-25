@@ -26,6 +26,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceComponentChangeListener;
+import com.ibm.ws.ras.instrument.internal.main.LibertyJava8WorkaroundRuntimeTransformer;
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
 
 /**
@@ -85,8 +86,10 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         if (instReference != null) {
             inst = context.getService(instReference);
             LibertyRuntimeTransformer.setInstrumentation(inst);
+            LibertyJava8WorkaroundRuntimeTransformer.setInstrumentation(inst);
         } else {
             LibertyRuntimeTransformer.setInstrumentation(null);
+            LibertyJava8WorkaroundRuntimeTransformer.setInstrumentation(null);
         }
 
         // Register an adapter for the RuntimeTransformer to get notifications
@@ -146,6 +149,8 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         @Override
         public void traceComponentUpdated(TraceComponent tc) {
             LibertyRuntimeTransformer.traceStateChanged(tc);
+            //The java8 workaround transformer doesn't need to respond to this since
+            //it's not doing dynamic injection.
         }
     }
 

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
-import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON_JSONP;
+import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_GLASSFISH_JSONP;
+import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_YASSON;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -27,7 +27,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -35,17 +34,16 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import web.jsonbtest.JSONBTestServlet;
-import web.jsonbtest.JohnzonTestServlet;
+import web.jsonbtest.YassonTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
 public class JSONBTest extends FATServletClient {
     private static final String appName = "jsonbapp";
 
     @Server("com.ibm.ws.jsonb.fat")
     @TestServlets({
                     @TestServlet(servlet = JSONBTestServlet.class, path = appName + "/JSONBTestServlet"),
-                    @TestServlet(servlet = JohnzonTestServlet.class, path = appName + "/JohnzonTestServlet")
+                    @TestServlet(servlet = YassonTestServlet.class, path = appName + "/YassonTestServlet")
     })
     public static LibertyServer server;
 
@@ -81,9 +79,9 @@ public class JSONBTest extends FATServletClient {
         // using Johnzon for jsonp and Johnzon for jsonb
         String found;
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST1: JsonbProvider obtained from declarative services"));
-        assertTrue(found, found.contains(PROVIDER_JOHNZON));
+        assertTrue(found, found.contains(PROVIDER_YASSON));
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST1.1: JsonProvider obtained from declarative services"));
-        assertTrue(found, found.contains(PROVIDER_JOHNZON_JSONP));
+        assertTrue(found, found.contains(PROVIDER_GLASSFISH_JSONP));
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST2"));
         assertTrue(found, found.contains("success"));
         assertTrue(found, found.contains("\"Rochester\""));

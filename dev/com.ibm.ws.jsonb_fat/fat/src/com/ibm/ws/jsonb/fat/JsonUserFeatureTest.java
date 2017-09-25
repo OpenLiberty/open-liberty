@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -35,7 +34,6 @@ import componenttest.topology.utils.FATServletClient;
  * Consider if we should move to the JSON-P bucket once that is written.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
 public class JsonUserFeatureTest extends FATServletClient {
 
     @Server("com.ibm.ws.jsonp.container.userfeature.fat")

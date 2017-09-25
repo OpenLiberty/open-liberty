@@ -1,0 +1,10 @@
+version: 1
+dn: m-oid=2.5.17.2,ou=objectClasses,cn=system,ou=schema
+m-oid: 2.5.17.2
+m-obsolete: FALSE
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: collectiveAttributeSubentry
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system

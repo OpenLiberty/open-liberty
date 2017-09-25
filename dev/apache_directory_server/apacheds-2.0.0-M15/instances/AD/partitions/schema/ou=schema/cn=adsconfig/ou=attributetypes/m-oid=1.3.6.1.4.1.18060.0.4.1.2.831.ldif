@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.831,ou=attributeTypes,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: octetStringMatch
+m-ordering: octetStringOrderingMatch
+m-substr: octetStringSubstringsMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.40
+m-singlevalue: TRUE
+m-length: 0
+m-usage: directoryOperation
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.831
+m-name: ads-replCookie
+m-description: cookie sent from the replication provider
+entryUUID: 7dba0951-a821-4f80-91d0-766c9c54760f
+entryCSN: 20130919081858.185000Z#000000#000#000000
+entryParentId: c27651a1-f4fc-4f73-a257-08b4691776f8
+createTimestamp: 20130919081909.196Z

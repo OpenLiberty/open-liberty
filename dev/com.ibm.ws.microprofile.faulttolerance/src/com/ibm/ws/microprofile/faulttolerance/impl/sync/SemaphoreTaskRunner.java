@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.faulttolerance.impl.ExecutionContextImpl;
 import com.ibm.ws.microprofile.faulttolerance.spi.BulkheadPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 /**
  * SemaphoreTaskRunner will try to acquire a semaphore token before running. If it can not then an exception is thrown.
@@ -42,7 +43,7 @@ public class SemaphoreTaskRunner<R> extends SimpleTaskRunner<R> {
         }
         boolean acquired = this.semaphore.tryAcquire();
         if (!acquired) {
-            throw new BulkheadException(Tr.formatMessage(tc, "bulkhead.no.threads.CWMFT0001E", executionContext.getMethod()));
+            throw new BulkheadException(Tr.formatMessage(tc, "bulkhead.no.threads.CWMFT0001E", FTDebug.formatMethod(executionContext.getMethod())));
         }
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

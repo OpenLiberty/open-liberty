@@ -16,6 +16,7 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertThat;
 
 import java.io.IOException;
+import java.util.concurrent.Future;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -82,6 +83,20 @@ public class FallbackServlet extends FATServlet {
         // Fallback method overriden as connectFallback2 in config
         Connection connection = beanWithoutRetry.connectC();
         assertThat(connection.getData(), equalTo("connectFallback2"));
+    }
+
+    public void testFallbackAsync() throws Exception {
+        Future<Connection> future = bean.connectC();
+        Connection connection = future.get();
+        assertThat("Result data", connection.getData(), equalTo("AsyncFallbackHandler: connectC"));
+        assertThat("Call count", bean.getConnectCountC(), equalTo(3));
+    }
+
+    public void testFallbackMethodAsync() throws Exception {
+        Future<Connection> future = bean.connectD();
+        Connection connection = future.get();
+        assertThat("Result data", connection.getData(), equalTo("fallbackAsync"));
+        assertThat("Call count", bean.getConnectCountD(), equalTo(3));
     }
 
 }

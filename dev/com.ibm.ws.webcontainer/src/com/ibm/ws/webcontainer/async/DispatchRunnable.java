@@ -17,6 +17,7 @@ import javax.servlet.DispatcherType;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
+import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.async.ListenerHelper.CheckDispatching;
 import com.ibm.ws.webcontainer.async.ListenerHelper.ExecuteNextRunnable;
 import com.ibm.ws.webcontainer.srt.SRTServletRequestThreadData;

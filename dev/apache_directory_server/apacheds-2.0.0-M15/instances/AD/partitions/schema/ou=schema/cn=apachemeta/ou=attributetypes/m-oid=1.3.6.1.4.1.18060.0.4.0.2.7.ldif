@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.7,ou=attributeTypes,cn=apachemeta,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-equality: nameOrNumericIdMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.38
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.7
+m-name: m-may
+m-description: The list of authorized ATs
+m-obsolete: FALSE
+entryUUID: 7100f163-7496-42de-81ee-54f6ae81898e
+entryCSN: 20130919081858.465000Z#000001#000#000000
+entryParentId: d15ad417-7f57-4a04-9588-51e0a2f4bfd0
+createTimestamp: 20130919081909.240Z

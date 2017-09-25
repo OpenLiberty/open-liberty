@@ -42,19 +42,75 @@ public class CDICircuitBreakerTest extends LoggingTest {
                                          "SUCCESS");
     }
 
+    @Test
+    public void testCBAsync() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsync",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBAsyncFallback() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsyncFallback",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBSyncFallback() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBSyncFallback",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBSyncRetryCircuitOpens() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBSyncRetryCircuitOpens",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBSyncRetryCircuitClosed() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBSyncRetryCircuitClosed",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBAsyncRetryCircuitOpens() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsyncRetryCircuitOpens",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBAsyncRetryCircuitClosed() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBAsyncRetryCircuitClosed",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBFailureThresholdWithRoll() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdWithRoll",
+                                         "SUCCESS");
+    }
+
     /** {@inheritDoc} */
     @Override
     protected SharedServer getSharedServer() {
         return SHARED_SERVER;
     }
-	
-		@BeforeClass
-	public static void setUp() throws Exception {
-		if (!SHARED_SERVER.getLibertyServer().isStarted()) {
-			SHARED_SERVER.getLibertyServer().startServer();
-		}
-		
-	}
+
+    @BeforeClass
+    public static void setUp() throws Exception {
+        if (!SHARED_SERVER.getLibertyServer().isStarted()) {
+            SHARED_SERVER.getLibertyServer().startServer();
+        }
+
+    }
 
     @AfterClass
     public static void tearDown() throws Exception {

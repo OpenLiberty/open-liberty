@@ -1,0 +1,10 @@
+version: 1
+dn: ou=objectClasses,cn=adsconfig,ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsname: uid=admin,ou=system
+entryUUID: b7bdbf3b-4a7c-4ab1-919f-7cc70e45f752
+entryCSN: 20130919081858.069000Z#000000#000#000000
+entryParentId: ae25cda0-bd9b-4911-a9c5-8eeb48f7924e
+ou: objectClasses
+createTimestamp: 20130919081911.588Z

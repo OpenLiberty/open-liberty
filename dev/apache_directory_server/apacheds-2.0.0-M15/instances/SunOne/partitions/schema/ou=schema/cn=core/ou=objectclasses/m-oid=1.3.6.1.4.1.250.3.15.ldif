@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.250.3.15,ou=objectClasses,cn=core,ou=schema
+m-oid: 1.3.6.1.4.1.250.3.15
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: RFC2079: object that contains the URI attribute type
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: labeledURIObject
+m-typeobjectclass: AUXILIARY
+creatorsname: uid=admin,ou=system
+m-may: labeledURI

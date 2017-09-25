@@ -1,0 +1,13 @@
+version: 1
+dn: m-oid=0.9.2342.19200300.100.4.20,ou=objectClasses,cn=cosine,ou=schema
+m-oid: 0.9.2342.19200300.100.4.20
+m-obsolete: FALSE
+m-supobjectclass: organization
+m-supobjectclass: organizationalUnit
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: pilotOrganization
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: buildingName

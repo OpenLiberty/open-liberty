@@ -24,6 +24,8 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.inject.spi.CDI;
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -34,6 +36,8 @@ import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean2;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBean3;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncCallableBean;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncConfigBean;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncThreadContextTestBean;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.Connection;
 
 import componenttest.app.FATServlet;
@@ -53,6 +57,12 @@ public class AsyncServlet extends FATServlet {
 
     @Inject
     AsyncCallableBean callableBean;
+
+    @Inject
+    AsyncConfigBean configBean;
+
+    @Inject
+    AsyncThreadContextTestBean threadContextBean;
 
     public void testAsync(HttpServletRequest request,
                           HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -261,9 +271,29 @@ public class AsyncServlet extends FATServlet {
         long duration = end - start;
 
         // Ensure that this method was executed synchronously
-        assertThat("Call duration", duration, greaterThan(TestConstants.WORK_TIME));
+        assertThat("Call duration", duration, greaterThan(TestConstants.WORK_TIME - TestConstants.TEST_TWEAK_TIME_UNIT));
         assertThat("Call result", future.get(), is(notNullValue()));
         assertThat("Call result", future.get().getData(), equalTo(AsyncBean.CONNECT_A_DATA));
+    }
+
+    public void testAsyncConfig() throws Exception {
+        Future<String> value = configBean.getValue();
+        assertThat(value.get(), is("configuredAsyncValue"));
+    }
+
+    public void testAsyncConfigInjected() throws Exception {
+        Future<String> value = threadContextBean.getConfigValueFromInjectedBean();
+        assertThat(value.get(), is("configuredAsyncValue"));
+    }
+
+    public void testAsyncGetCdi() throws Exception {
+        Future<CDI<Object>> value = threadContextBean.getCdi();
+        assertThat(value.get(), notNullValue());
+    }
+
+    public void testAsyncGetBeanManagerViaJndi() throws Exception {
+        Future<BeanManager> value = threadContextBean.getBeanManagerViaJndi();
+        assertThat(value.get(), notNullValue());
     }
 
 }

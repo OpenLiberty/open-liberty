@@ -141,7 +141,11 @@ public class LibertyJaxRsClientProxyInterceptor extends AbstractPhaseInterceptor
             }
         }
 
-        HTTPClientPolicy clientPolicy = new HTTPClientPolicy();
+        HTTPClientPolicy clientPolicy = httpConduit.getClient();
+        if (clientPolicy == null) {
+            clientPolicy = new HTTPClientPolicy();
+            httpConduit.setClient(clientPolicy);
+        }
         clientPolicy.setProxyServer(host);
         try {
             clientPolicy.setProxyServerPort(iPort);
@@ -174,7 +178,6 @@ public class LibertyJaxRsClientProxyInterceptor extends AbstractPhaseInterceptor
             }
         }
         clientPolicy.setProxyServerType(proxyServerType);
-        httpConduit.setClient(clientPolicy);
 
         ProxyAuthorizationPolicy authPolicy = null;
 

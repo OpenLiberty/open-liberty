@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.6,ou=attributeTypes,cn=apache,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: uuidMatch
+m-syntax: 1.3.6.1.1.16.1
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: TRUE
+m-usage: DSA_OPERATION
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.6
+m-name: apacheSubAlias
+m-description: Index attribute used to track sub level aliases
+m-obsolete: FALSE
+entryUUID: 6cb79f91-87d6-40f3-a925-df13af0ceff2
+entryCSN: 20130919065344.788000Z#000000#000#000000
+entryParentId: 82e8e6b4-db49-43a8-bdcd-8eaf3e877f30
+createTimestamp: 20130919065352.079Z

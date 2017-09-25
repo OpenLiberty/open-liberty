@@ -17,6 +17,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.wsspi.logging.Introspector;
 import com.ibm.wsspi.threading.WSExecutorService;
 
@@ -40,6 +41,9 @@ public class ThreadingIntrospector implements Introspector {
     protected void unsetWSExecutorService(WSExecutorService wses) {
         impl = null;
     }
+
+    @Reference
+    private PolicyExecutorProvider provider;
 
     /*
      * (non-Javadoc)
@@ -74,6 +78,8 @@ public class ThreadingIntrospector implements Introspector {
             ThreadPoolController tpc = impl.threadPoolController;
             tpc.introspect(out);
         }
+        out.println();
+        provider.introspectPolicyExecutors(out);
     }
 
 }

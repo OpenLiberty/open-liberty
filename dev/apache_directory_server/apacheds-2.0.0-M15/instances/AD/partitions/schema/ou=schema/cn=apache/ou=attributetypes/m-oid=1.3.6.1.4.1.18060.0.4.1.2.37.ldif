@@ -1,0 +1,21 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.37,ou=attributeTypes,cn=apache,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.15
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.37
+m-name: subschemaSubentryName
+m-description: the DN of the schema subentry the modification info corresponds t
+ o
+m-obsolete: FALSE
+entryUUID: a71fb943-f965-415c-bbc3-b68701ca8e2d
+entryCSN: 20130919081858.293000Z#000000#000#000000
+entryParentId: 4df5a1ec-ea39-4907-aea4-1e0f3ccbb1c5
+createTimestamp: 20130919081908.614Z

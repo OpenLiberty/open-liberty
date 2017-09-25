@@ -72,6 +72,34 @@ public class CDIAsyncTest extends LoggingTest {
                                          "SUCCESS");
     }
 
+    @Test
+    public void testAsyncConfig() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/async?testMethod=testAsyncConfig",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testAsyncConfigInjected() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/async?testMethod=testAsyncConfigInjected",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testAsyncGetCdi() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/async?testMethod=testAsyncGetCdi",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testAsyncGetBeanManagerViaJndi() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/async?testMethod=testAsyncGetBeanManagerViaJndi",
+                                         "SUCCESS");
+    }
+
     /** {@inheritDoc} */
     @Override
     protected SharedServer getSharedServer() {

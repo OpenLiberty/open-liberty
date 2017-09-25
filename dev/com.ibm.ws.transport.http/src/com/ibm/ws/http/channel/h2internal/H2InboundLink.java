@@ -32,6 +32,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -184,6 +185,8 @@ public class H2InboundLink extends HttpInboundLink {
         }
 
         H2VirtualConnectionImpl h2VC = new H2VirtualConnectionImpl(initialVC);
+        // remove the HttpDispatcherLink from the map, so a new one will be created and used by this new H2 stream
+        h2VC.getStateMap().remove(HttpDispatcherLink.LINK_ID);
         H2HttpInboundLinkWrap link = new H2HttpInboundLinkWrap(httpInboundChannel, h2VC, streamID, this);
         H2StreamProcessor stream = new H2StreamProcessor(streamID, link, this);
 
@@ -194,6 +197,10 @@ public class H2InboundLink extends HttpInboundLink {
         streamTable.put(streamID, stream);
 
         return stream;
+    }
+
+    public TCPConnectionContext getTCPConnectionContext() {
+        return h2MuxTCPConnectionContext;
     }
 
     /**
@@ -245,6 +252,8 @@ public class H2InboundLink extends HttpInboundLink {
 
         Integer streamID = new Integer(1);
         H2VirtualConnectionImpl h2VC = new H2VirtualConnectionImpl(initialVC);
+        // remove the HttpDispatcherLink from the map, so a new one will be created and used by this new H2 stream
+        h2VC.getStateMap().remove(HttpDispatcherLink.LINK_ID);
         H2HttpInboundLinkWrap wrap = new H2HttpInboundLinkWrap(httpInboundChannel, h2VC, streamID, this);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

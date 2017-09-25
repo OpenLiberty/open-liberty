@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.822,ou=attributeTypes,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: booleanMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.7
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.822
+m-name: ads-replRefreshNPersist
+m-description: flag indicating refreshAndPersist mode of replication
+entryUUID: a69f35ce-90d6-4cf7-a2d0-0367a3900614
+entryCSN: 20130919081858.177000Z#000000#000#000000
+entryParentId: c27651a1-f4fc-4f73-a257-08b4691776f8
+createTimestamp: 20130919081910.936Z

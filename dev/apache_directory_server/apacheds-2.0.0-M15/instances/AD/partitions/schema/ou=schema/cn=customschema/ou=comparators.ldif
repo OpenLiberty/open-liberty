@@ -1,0 +1,9 @@
+dn: ou=comparators, cn=customschema, ou=schema
+objectclass: organizationalUnit
+objectclass: top
+creatorsName: 
+entryUUID: 27374eed-322c-4fdf-ab4c-36fbf45780d2
+entryCSN: 20131001134022.007000Z#000000#001#000000
+entryParentId: cba9e093-3f47-44c7-be7b-64d8c3ba2a7b
+ou: comparators
+createTimestamp: 20131001134022.007Z

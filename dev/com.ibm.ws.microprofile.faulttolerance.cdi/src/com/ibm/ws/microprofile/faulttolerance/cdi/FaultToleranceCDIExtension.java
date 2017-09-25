@@ -54,6 +54,8 @@ public class FaultToleranceCDIExtension implements Extension, WebSphereCDIExtens
         beforeBeanDiscovery.addInterceptorBinding(bindingType);
         AnnotatedType<FaultToleranceInterceptor> interceptorType = beanManager.createAnnotatedType(FaultToleranceInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(interceptorType);
+        AnnotatedType<FaultToleranceInterceptor.ExecutorCleanup> executorCleanup = beanManager.createAnnotatedType(FaultToleranceInterceptor.ExecutorCleanup.class);
+        beforeBeanDiscovery.addAnnotatedType(executorCleanup);
     }
 
     public <T> void processAnnotatedType(@Observes @WithAnnotations({ Asynchronous.class, Fallback.class, Timeout.class, CircuitBreaker.class, Retry.class,

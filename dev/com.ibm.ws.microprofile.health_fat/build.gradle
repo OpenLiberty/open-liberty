@@ -8,4 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
+ apply from: '../cnf/gradle/scripts/fat.gradle' 
+ 
+addRequiredLibraries {
+    dependencies {
+        //libs 'org.glassfish:javax.json:1.1'
+        libs 'org.apache.johnzon:johnzon-core:1.1.0'
+    }
+    doLast {
+        copy {
+            from configurations.libs 
+            into "${buildDir}/autoFVT/lib/"
+        }
+    }
+}

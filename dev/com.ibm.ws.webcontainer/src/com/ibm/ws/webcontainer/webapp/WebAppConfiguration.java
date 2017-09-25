@@ -80,6 +80,7 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
 
     private int version;
     private String contextRoot;
+    private boolean isDefaultContextRootUsed;
     // private int sessionTimeout = -1; // negative is no timeout (default)
     private int sessionTimeout = 0; // use the value from the session config if
     // it's not been set in the web.xml
@@ -194,6 +195,9 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     private Map jspCachedLocations = null;
     private String primedSTSHeader = null;
     private boolean enablemultireadofpostdata = false; //MultiRead
+    //since servlet40
+    private String requestEncoding = null;
+    private String responseEncoding = null;
 
     /**
      * Constructor.
@@ -1389,6 +1393,22 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
     public String getContextRoot() {
         return this.contextRoot;
     }
+    
+    /**
+     * 
+     * @param isDefaultContextRootUsed
+     */
+    public void setDefaultContextRootUsed(boolean isDefaultContextRootUsed) {
+        this.isDefaultContextRootUsed = isDefaultContextRootUsed;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public boolean isDefaultContextRootUsed() {
+        return this.isDefaultContextRootUsed;
+    }
 
     /**
      * @param i
@@ -2098,5 +2118,27 @@ public abstract class WebAppConfiguration extends BaseConfiguration implements W
         this.enablemultireadofpostdata = enablemultireadofpostdata;
     }
     //MultiRead End
+
+    public String getModuleRequestEncoding(){
+        return this.requestEncoding;
+    }
+
+    public void setModuleRequestEncoding(String encoding) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "setModuleRequestEncoding", " request encoding [" + encoding +"]");
+        }
+        this.requestEncoding = encoding;
+    }
+    
+    public String getModuleResponseEncoding(){
+        return this.responseEncoding;
+    }
+    
+    public void setModuleResponseEncoding(String encoding) {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.logp(Level.FINE, CLASS_NAME, "setModuleResponseEncoding", " response encoding [" + encoding +"]");
+        }
+        this.responseEncoding = encoding;
+    }
 
 }

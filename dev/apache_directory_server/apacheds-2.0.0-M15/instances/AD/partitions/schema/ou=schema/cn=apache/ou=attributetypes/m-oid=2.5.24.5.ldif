@@ -1,0 +1,20 @@
+version: 1
+dn: m-oid=2.5.24.5,ou=attributeTypes,cn=apache,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: directoryStringFirstComponentMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.1
+m-singlevalue: FALSE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: DIRECTORY_OPERATION
+m-oid: 2.5.24.5
+m-name: entryACI
+m-description: Access control information that applies to a single entry
+m-obsolete: FALSE
+entryUUID: 54a35699-c357-4a77-b0a1-b54616ef4ea9
+entryCSN: 20130919081858.316000Z#000000#000#000000
+entryParentId: 4df5a1ec-ea39-4907-aea4-1e0f3ccbb1c5
+createTimestamp: 20130919081910.580Z

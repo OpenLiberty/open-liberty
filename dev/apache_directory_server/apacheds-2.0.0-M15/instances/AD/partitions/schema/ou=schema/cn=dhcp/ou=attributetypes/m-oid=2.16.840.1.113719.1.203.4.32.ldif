@@ -1,0 +1,22 @@
+version: 1
+dn: m-oid=2.16.840.1.113719.1.203.4.32,ou=attributeTypes,cn=dhcp,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaAttributeType
+objectclass: metaTop
+objectclass: top
+m-equality: distinguishedNameMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.12
+m-singlevalue: TRUE
+m-collective: FALSE
+m-nousermodification: FALSE
+m-usage: USER_APPLICATIONS
+m-oid: 2.16.840.1.113719.1.203.4.32
+m-name: dhcpAssignedToClient
+m-description: This is the distinguished name of a "dhcpClient" that an address 
+ is currently assigned to.  This attribute is only present in the class when the
+  address is leased.
+m-obsolete: FALSE
+entryUUID: c916a546-950c-43ae-a37f-2f40eed8814f
+entryCSN: 20130919081858.840000Z#000000#000#000000
+entryParentId: e4750b4b-8dc1-4318-b657-bba5670b4f0b
+createTimestamp: 20130919081910.179Z

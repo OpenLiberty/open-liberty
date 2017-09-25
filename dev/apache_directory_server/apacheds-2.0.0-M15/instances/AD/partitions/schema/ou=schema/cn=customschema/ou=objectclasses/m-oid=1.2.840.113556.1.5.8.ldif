@@ -1,0 +1,22 @@
+dn: m-oid=1.2.840.113556.1.5.8, ou=objectclasses, cn=customschema, ou=schema
+m-oid: 1.2.840.113556.1.5.8
+creatorsName: 
+m-name: group
+objectclass: metaTop
+objectclass: metaObjectClass
+objectclass: top
+m-description: group object class for AD
+m-supObjectClass: top
+entryUUID: 16998674-4fd3-4d4e-80cf-7eb35f1194cb
+m-must: cn
+m-may: distinguishedName
+m-may: member
+m-may: name
+m-may: objectCategory
+m-may: sAMAccountName
+m-may: objectGUID
+m-may: description
+m-may: memberOf
+entryCSN: 20131001134022.122000Z#000000#001#000000
+entryParentId: ec57ebf4-3eb1-48d8-b664-105f1dcbdb39
+createTimestamp: 20131001134022.123Z

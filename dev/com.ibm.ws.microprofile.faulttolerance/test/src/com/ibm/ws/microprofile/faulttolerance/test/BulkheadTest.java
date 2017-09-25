@@ -264,7 +264,7 @@ public class BulkheadTest {
             ExecutionContext context = executor.newExecutionContext(id, (Method) null, id);
             AsyncTestFunction callable = new AsyncTestFunction(Duration.ofMillis(2000), id);
             try {
-                futures[5] = executor.execute(callable, context);
+                futures[4] = executor.execute(callable, context);
                 System.out.println(System.currentTimeMillis() + " Test " + id + " - submitted");
                 fail("Exception not thrown");
             } catch (BulkheadException e) {

@@ -1,0 +1,18 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.2.303,ou=attributeTypes,cn=adsconfig,ou=schema
+creatorsname: uid=admin,ou=system
+objectclass: metaTop
+objectclass: metaAttributeType
+objectclass: top
+m-equality: integerMatch
+m-ordering: integerOrderingMatch
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.27
+m-singlevalue: TRUE
+m-length: 0
+m-oid: 1.3.6.1.4.1.18060.0.4.1.2.303
+m-name: ads-maxTimeLimit
+m-description: The maximum time before an operation is aborted (in seconds)
+entryUUID: 63ef0660-d2ee-4afa-84f6-5ecdccdc1cf2
+entryCSN: 20130919065344.621000Z#000000#000#000000
+entryParentId: 1794946d-6c63-4ad5-9a2f-b4badd22d42f
+createTimestamp: 20130919065351.700Z

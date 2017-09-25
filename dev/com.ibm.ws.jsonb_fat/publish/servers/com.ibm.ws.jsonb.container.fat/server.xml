@@ -18,11 +18,11 @@
 
 	<include location="../fatTestPorts.xml"/>
 
-    <library id="refImpls">
-      <fileset dir="${shared.resource.dir}/refImpls" includes="*.jar"/>
+    <library id="johnzon">
+      <fileset dir="${shared.resource.dir}/johnzon" includes="*.jar"/>
     </library>
 
-    <bell libraryRef="refImpls"/>
+    <bell libraryRef="johnzon"/>
 
     <application location="jsonbapp.war"/>
 

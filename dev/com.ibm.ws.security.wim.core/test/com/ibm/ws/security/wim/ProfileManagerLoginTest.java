@@ -29,7 +29,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ws.security.wim.adapter.file.FileAdapter;
+import com.ibm.ws.security.wim.adapter.file.TestFileAdapter;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
 import com.ibm.wsspi.security.wim.exception.OperationNotSupportedException;
 import com.ibm.wsspi.security.wim.exception.PasswordCheckFailedException;
@@ -75,7 +75,7 @@ public class ProfileManagerLoginTest {
         fileConfigProps.put(MessageFormat.format("{0}.0.{1}", BaseRepository.BASE_ENTRY, RealmConfig.NAME), "o=defaultWIMFileBasedRealm");
         fileConfigProps.put(BaseRepository.KEY_ID, "InternalFileRepository");
 //        fileConfigProps.put(BaseRepository.REPOSITORY_TYPE, "file");
-        FileAdapter fa = new FileAdapter();
+        TestFileAdapter fa = new TestFileAdapter();
         fa.activate(fileConfigProps, cc);
 
         HashMap<String, Object> configProps = new HashMap<String, Object>();

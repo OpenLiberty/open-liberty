@@ -55,9 +55,27 @@ public class CDITimeoutTest extends LoggingTest {
     }
 
     @Test
+    public void testTimeoutWithFallback() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/timeout?testMethod=testTimeoutWithFallback", "SUCCESS");
+    }
+
+    @Test
     public void testTimeoutZero() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
         getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/timeout?testMethod=testTimeoutZero", "SUCCESS");
+    }
+
+    @Test
+    public void testNonInterruptableTimeout() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/timeout?testMethod=testNonInterruptableTimeout", "SUCCESS");
+    }
+
+    @Test
+    public void testNonInterruptableDoesntTimeout() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/timeout?testMethod=testNonInterruptableDoesntTimeout", "SUCCESS");
     }
 
     /** {@inheritDoc} */

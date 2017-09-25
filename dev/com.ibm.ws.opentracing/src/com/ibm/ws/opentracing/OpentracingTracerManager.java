@@ -43,7 +43,7 @@ public class OpentracingTracerManager {
      *
      * @Return The tracer of the active open tracing context.
      */
-    public static Tracer getTracer() {
+    public static synchronized Tracer getTracer() {
         Tracer tracer = getOpentracingContext().getTracer();
         if (tracer == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -57,11 +57,11 @@ public class OpentracingTracerManager {
                 Tr.error(tc, "OPENTRACING_NO_APPNAME_FOUND_IN_JNDI");
                 serviceName = DEFAULT_SERVICE_NAME;
             }
-            tracer = appNameToTracerMap.get(serviceName);
+            tracer = getTracer(serviceName);
             if (tracer == null) {
                 tracer = OpentracingUserFeatureAccessService.getTracerInstance(serviceName);
-                setTracer(serviceName, tracer);
             }
+            setTracer(serviceName, tracer);
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "OpentracingTracerManager.getTracer() tracer = " + tracer);
@@ -70,8 +70,8 @@ public class OpentracingTracerManager {
     }
 
     @Trivial
-    private static Tracer getTracer(String appName) {
-        return appNameToTracerMap.get(appName);
+    private static Tracer getTracer(String serviceName) {
+        return appNameToTracerMap.get(serviceName);
     }
 
     /**
@@ -85,8 +85,8 @@ public class OpentracingTracerManager {
     }
 
     @Trivial
-    private static void setTracer(String appName, Tracer tracer) {
-        appNameToTracerMap.put(appName, tracer);
+    private static void setTracer(String serviceName, Tracer tracer) {
+        appNameToTracerMap.put(serviceName, tracer);
         setTracer(tracer);
     }
 
@@ -118,7 +118,7 @@ public class OpentracingTracerManager {
      * @return The active open tracing context. This should never be null.
      */
     @Trivial
-    protected static OpentracingContext getOpentracingContext() {
+    private static OpentracingContext getOpentracingContext() {
         return getOpenTracingContextVar().get();
         // Rely on 'initialValue' to supply a non-null open tracing context.
         // There is currently no code which clears the context.

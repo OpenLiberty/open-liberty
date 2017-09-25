@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2016 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,6 @@ import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;
@@ -54,6 +52,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
     /**
      * Indication that the host is an IBM VM.
      */
+    @SuppressWarnings("unused")
     private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9");
 
     /**
@@ -89,7 +88,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
     /**
      * An executor that is responsible for transforming
      */
-    private static ExecutorService retransformExecutor = isHotCodeReplaceBroken() ? Executors.newSingleThreadExecutor() : null;
+   // private static ExecutorService retransformExecutor = isHotCodeReplaceBroken() ? Executors.newSingleThreadExecutor() : null;
 
     /**
      * Indication that hot-code-replace is not available or should not be used.
@@ -104,25 +103,8 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
      * that was left behind.
      */
     private static boolean skipDebugData = false;
-
-    /**
-     * Check to see if we're running on a VM where hot-code-replace is broken.
-     * This should return true on any IBM VM that's not at least JDK6 SR6.
-     *
-     * @return true if redefine out of &lt;clinit&gt; is not supported
-     */
-    private static boolean isHotCodeReplaceBroken() {
-        if (isIBMVirtualMachine) {
-            String runtimeVersion = System.getProperty("java.runtime.version", "unknown-00000000_0000");
-            String timeStamp = runtimeVersion.indexOf("-") != -1 ? runtimeVersion.split("\\-")[1] : "00000000_0000";
-            String dateStamp = timeStamp.indexOf("_") != -1 ? timeStamp.split("_")[0] : "00000000";
-            long numericDate = Long.valueOf(dateStamp);
-            if (numericDate < 20090923L) { // Fixed in 2009-09-23 driver
-                return true;
-            }
-        }
-        return false;
-    }
+    
+    private static final Boolean isJDK8WithHotReplaceBug = LibertyJava8WorkaroundRuntimeTransformer.checkJDK8WithHotReplaceBug() ? Boolean.TRUE :  Boolean.FALSE;
 
     /**
      * Set the {@link java.lang.instrument.Instrumenation} instance to use for
@@ -210,7 +192,14 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         // ASM doesn't provide a way to determine its max supported version, so
         // we hard code the supported version number.
         int classFileVersion = ((bytes[6] & 0xff) << 8) | (bytes[7] & 0xff);
-        return classFileVersion <= Opcodes.V1_7;
+        
+        //Limit bytecode that we transform based on JDK retransform compatibility
+        //If we have issues here, 1.8 classes will be instead handled by a separate
+        //transformer that only does those classes.
+        if (isJDK8WithHotReplaceBug)
+        	return classFileVersion <= Opcodes.V1_7;
+        else
+        	return classFileVersion <= Opcodes.V1_8;
     }
 
     /**
@@ -228,18 +217,18 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             if ((traceClass != null) && (traceClass != LibertyRuntimeTransformer.class)) {
                 LibertyRuntimeTransformer.addTransformer();
                 traceComponentByClass.put(traceClass, new WeakReference<TraceComponent>(traceComponent));
-                if (retransformExecutor == null) {
+                //if (retransformExecutor == null) {
                     retransformClass(traceClass);
-                } else {
-                    // IBM Hot Code Replace Bug:
-                    // Run async on another thread so this thread can return from <clinit>
-                    retransformExecutor.execute(new Runnable() {
-                        @Override
-                        public void run() {
-                            retransformClass(traceClass);
-                        }
-                    });
-                }
+//                } else {
+//                    // IBM Hot Code Replace Bug:
+//                    // Run async on another thread so this thread can return from <clinit>
+//                    retransformExecutor.execute(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            retransformClass(traceClass);
+//                        }
+//                    });
+//                }
             }
         }
     }
@@ -257,14 +246,6 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             Tr.entry(tc, "retransformClass", clazz);
 
         try {
-            // The IBM VM doesn't handle hot-code-replace on a class that's not
-            // completely initialized. Attempt to work around the issue.
-            if (isIBMVirtualMachine && retransformExecutor != null) {
-                String className = clazz.getName();
-                ClassLoader loader = clazz.getClassLoader();
-                Class.forName(className, true, loader);
-            }
-
             instrumentation.retransformClasses(clazz);
         } catch (Throwable t) {
             Tr.error(tc, "INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2", clazz.getName(), t);
@@ -273,7 +254,11 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
         if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.exit(tc, "retransformClass");
     }
-
+    
+    public static byte[] transform(byte[] bytes) throws IOException {
+    	return transform(bytes, true);
+    }
+    
     /**
      * Instrument the class at the current position in the specified input stream.
      *
@@ -283,10 +268,10 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
      * @throws IOException if an error is encountered while reading from
      *             the <code>InputStream</code>
      */
-    public static byte[] transform(byte[] bytes) throws IOException {
+    public static byte[] transform(byte[] bytes, boolean skipIfNotPreprocessed) throws IOException {
         if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.entry(tc, "transform");
-
+        
         ClassReader reader = new ClassReader(bytes);
         ClassWriter writer = new ClassWriter(reader, ClassWriter.COMPUTE_MAXS);
 
@@ -298,7 +283,7 @@ public class LibertyRuntimeTransformer implements ClassFileTransformer {
             visitor = new TraceClassVisitor(visitor, new PrintWriter(sw));
         }
 
-        LibertyTracingClassAdapter tracingClassAdapter = new LibertyTracingClassAdapter(visitor, true);
+        LibertyTracingClassAdapter tracingClassAdapter = new LibertyTracingClassAdapter(visitor, skipIfNotPreprocessed);
         try {
             // Class reader must maintain all metadata information that's present in
             // the class

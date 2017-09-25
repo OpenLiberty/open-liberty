@@ -24,6 +24,7 @@ import java.util.Hashtable;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
+import org.junit.Before;
 import org.junit.Test;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
@@ -41,18 +42,34 @@ import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
 import com.ibm.ws.webcontainer.srt.SRTServletRequest;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
+import com.ibm.wsspi.webcontainer.util.URIMatcherFactory;
 
 public class SRTServletRequestTest {
 
     private final Mockery context = new Mockery();
     final private IRequest request = context.mock(IRequest.class);
     private SRTConnectionContext connContext;
+    final private URIMatcherFactory matcherFactory = context.mock(URIMatcherFactory.class);
+
+    @Before
+    public void setupURIMatcherFactory() {
+        
+        context.checking(new Expectations() {
+            {
+                one(matcherFactory).createURIMatcher(with(any(Boolean.class)));
+            }
+        });
+        
+        // Set the factory that is necessary for the creation of the objects used by this
+        // unit test.
+        SRTServletRequestTest.WebContainer webContainer = new WebContainer();
+        webContainer.setURIMatcherFactory(matcherFactory);
+    }
 
     @Test
-    public void testEncoding() throws Exception {
+    public void testEncoding() throws Exception {        
         connContext = new SRTConnectionContext();
-        context.checking(new Expectations()
-        {
+        context.checking(new Expectations() {
             {
                 atLeast(1).of(request).getContentType();
                 will(onConsecutiveCalls(returnValue("text/html;charset='utf-8';action='foo'"), returnValue("text/html;charset='utf-8';action=foo"),
@@ -87,10 +104,9 @@ public class SRTServletRequestTest {
      * security, so we have no Principal.
      */
     @Test
-    public void getRemoteUser_noIWebAppSecurityCollaborator() throws Exception {
+    public void getRemoteUser_noIWebAppSecurityCollaborator() throws Exception {        
         SRTServletRequest srtReq = new SRTServletRequest(connContext);
-        context.checking(new Expectations()
-        {
+        context.checking(new Expectations() {
             {
                 allowing(request).getRemoteUser();
                 // If security is disabled the internal request will check the value of the
@@ -109,10 +125,9 @@ public class SRTServletRequestTest {
     }
 
     @Test
-    public void getRemoteUser_noIWebAppSecurityCollaborator_mockPrivateHeader() throws Exception {
+    public void getRemoteUser_noIWebAppSecurityCollaborator_mockPrivateHeader() throws Exception {        
         SRTServletRequest srtReq = new SRTServletRequest(connContext);
-        context.checking(new Expectations()
-        {
+        context.checking(new Expectations() {
             {
                 allowing(request).getRemoteUser();
                 // The internal request will check the value of the $WSRU header and return its value
@@ -319,4 +334,21 @@ public class SRTServletRequestTest {
         context.assertIsSatisfied();
         ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().endContext();
     }
+
+    /*
+     * This is an inner class for testing. We needed a way to set the factories necessary
+     * to create the objects used by the unit tests. Since there is no runtime involved here
+     * Declarative Services is never invoked to actually set the factories resulting in NPEs.
+     *
+     * Extending the actual com.ibm.ws.webcontainer.osgi.WebContainer allows us to create
+     * public methods that just call through to the protected methods to set the factories.
+     */
+    private class WebContainer extends com.ibm.ws.webcontainer.osgi.WebContainer {
+
+        @Override
+        public void setURIMatcherFactory(URIMatcherFactory factory) {
+            super.setURIMatcherFactory(factory);
+        }
+    }
+
 }

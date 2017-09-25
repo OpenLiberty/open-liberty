@@ -1,0 +1,14 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.1.3.161,ou=objectClasses,cn=adsconfig,ou=schema
+m-oid: 1.3.6.1.4.1.18060.0.4.1.3.161
+m-name: ads-jdbmIndex
+m-description: A JDBM indexed attribute
+objectclass: top
+objectclass: metaTop
+objectclass: metaObjectClass
+m-supobjectclass: ads-index
+m-may: ads-indexFileName
+m-may: ads-indexWorkingDir
+m-may: ads-indexNumDupLimit
+m-may: ads-indexCacheSize
+creatorsname: uid=admin,ou=system

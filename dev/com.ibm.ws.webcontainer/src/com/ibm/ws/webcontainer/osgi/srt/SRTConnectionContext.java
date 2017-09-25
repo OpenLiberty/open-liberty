@@ -38,8 +38,12 @@ public class SRTConnectionContext extends com.ibm.ws.webcontainer.srt.SRTConnect
   public SRTConnectionContext()
   {
     super();
-    this._dispatchContext = new WebAppDispatcherContext(_request);
-    _request.setWebAppDispatcherContext(_dispatchContext);
+    init();
+  }
+  
+  protected void init() {
+      this._dispatchContext = new WebAppDispatcherContext(_request);
+      _request.setWebAppDispatcherContext(_dispatchContext);
   }
 
 }

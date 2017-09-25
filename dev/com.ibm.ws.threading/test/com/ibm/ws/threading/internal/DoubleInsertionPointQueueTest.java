@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -185,12 +186,15 @@ public class DoubleInsertionPointQueueTest {
     }
 
     private static class RepeatingPollTask implements Callable<Void> {
+        private final CountDownLatch completionLatch;
         private final AtomicBoolean done;
         private final DoubleInsertionPointQueue<Number> q;
         private final AtomicInteger size;
         private final long timeoutMS;
 
-        private RepeatingPollTask(DoubleInsertionPointQueue<Number> q, AtomicBoolean done, AtomicInteger size, long timeoutMS) {
+        private RepeatingPollTask(DoubleInsertionPointQueue<Number> q, AtomicBoolean done,
+                                  AtomicInteger size, long timeoutMS, CountDownLatch completionLatch) {
+            this.completionLatch = completionLatch;
             this.done = done;
             this.q = q;
             this.size = size;
@@ -199,17 +203,25 @@ public class DoubleInsertionPointQueueTest {
 
         @Override
         public Void call() throws Exception {
-            while (!done.get()) {
-                if (timeoutMS == 0) {
-                    if (q.poll() != null)
+            try {
+                while (!done.get()) {
+                    if (timeoutMS == 0) {
+                        if (q.poll() != null)
+                            size.decrementAndGet();
+                    } else if (timeoutMS == Integer.MAX_VALUE) {
+                        q.take();
                         size.decrementAndGet();
-                } else if (timeoutMS == Integer.MAX_VALUE) {
-                    q.take();
-                    size.decrementAndGet();
-                } else {
-                    if (q.poll(timeoutMS, TimeUnit.MILLISECONDS) != null)
-                        size.decrementAndGet();
+                    } else {
+                        if (q.poll(timeoutMS, TimeUnit.MILLISECONDS) != null)
+                            size.decrementAndGet();
+                    }
                 }
+            } catch (InterruptedException x) {
+                x.printStackTrace(System.out);
+                throw x;
+            } finally {
+                if (completionLatch != null)
+                    completionLatch.countDown();
             }
             return null;
         }
@@ -388,16 +400,18 @@ public class DoubleInsertionPointQueueTest {
         final DoubleInsertionPointQueue<Number> q = new DoubleInsertionPointQueue<Number>();
         final AtomicInteger size = new AtomicInteger();
 
+        CountDownLatch latch = new CountDownLatch(2); // to track when 2 canceled tasks end
+
         Future<?>[] f = new Future<?>[10];
         f[0] = testThreads.submit(new RepeatingOfferTask(q, done, size, false));
         f[1] = testThreads.submit(new RepeatingOfferTask(q, done, size, true));
-        f[2] = testThreads.submit(new RepeatingPollTask(q, done, size, 0)); // poll
-        f[3] = testThreads.submit(new RepeatingPollTask(q, done, size, 500)); // poll(timeout)
-        f[4] = testThreads.submit(new RepeatingPollTask(q, done, size, Integer.MAX_VALUE)); // take
+        f[2] = testThreads.submit(new RepeatingPollTask(q, done, size, 0, null)); // poll
+        f[3] = testThreads.submit(new RepeatingPollTask(q, done, size, 500, null)); // poll(timeout)
+        f[4] = testThreads.submit(new RepeatingPollTask(q, done, size, Integer.MAX_VALUE, latch)); // take
         f[5] = testThreads.submit(new RepeatingRemoveTask(q, done, size));
-        f[6] = testThreads.submit(new RepeatingPollTask(q, done, size, 0)); // poll
-        f[7] = testThreads.submit(new RepeatingPollTask(q, done, size, 500)); // poll(timeout)
-        f[8] = testThreads.submit(new RepeatingPollTask(q, done, size, Integer.MAX_VALUE)); // take
+        f[6] = testThreads.submit(new RepeatingPollTask(q, done, size, 0, null)); // poll
+        f[7] = testThreads.submit(new RepeatingPollTask(q, done, size, 500, null)); // poll(timeout)
+        f[8] = testThreads.submit(new RepeatingPollTask(q, done, size, Integer.MAX_VALUE, latch)); // take
         f[9] = testThreads.submit(new RepeatingRemoveTask(q, done, size));
 
         TimeUnit.NANOSECONDS.sleep(durationOfTestNS);
@@ -410,6 +424,8 @@ public class DoubleInsertionPointQueueTest {
                 future.get();
             } catch (CancellationException x) {
             }
+        // Wait for canceled tasks to end
+        assertTrue(latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         assertEquals(q.toString(), size.get(), q.size());
 
@@ -438,13 +454,13 @@ public class DoubleInsertionPointQueueTest {
         Future<?>[] f = new Future<?>[10];
         f[0] = testThreads.submit(new RepeatingOfferTask(q, done, size, false));
         f[1] = testThreads.submit(new RepeatingOfferTask(q, done, size, true));
-        f[2] = testThreads.submit(new RepeatingPollTask(q, done, size, 0));
-        f[3] = testThreads.submit(new RepeatingPollTask(q, done, size, 500));
+        f[2] = testThreads.submit(new RepeatingPollTask(q, done, size, 0, null));
+        f[3] = testThreads.submit(new RepeatingPollTask(q, done, size, 500, null));
         f[4] = testThreads.submit(new RepeatingRemoveTask(q, done, size));
         f[5] = testThreads.submit(new RepeatingOfferTask(q, done, size, false));
         f[6] = testThreads.submit(new RepeatingOfferTask(q, done, size, true));
-        f[7] = testThreads.submit(new RepeatingPollTask(q, done, size, 0));
-        f[8] = testThreads.submit(new RepeatingPollTask(q, done, size, 500));
+        f[7] = testThreads.submit(new RepeatingPollTask(q, done, size, 0, null));
+        f[8] = testThreads.submit(new RepeatingPollTask(q, done, size, 500, null));
         f[9] = testThreads.submit(new RepeatingRemoveTask(q, done, size));
         TimeUnit.NANOSECONDS.sleep(durationOfTestNS);
         done.set(true);

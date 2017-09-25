@@ -1,0 +1,16 @@
+version: 1
+dn: m-oid=1.3.6.1.4.1.18060.0.4.0.2.22,ou=attributeTypes,cn=apachemeta,ou=schema
+objectclass: top
+objectclass: metaTop
+objectclass: metaAttributeType
+m-oid: 1.3.6.1.4.1.18060.0.4.0.2.22
+m-name: m-supDITStructureRule
+m-description: The list of superiors
+m-syntax: 1.3.6.1.4.1.1466.115.121.1.36
+m-equality: supDITStructureRuleMatch
+m-usage: USER_APPLICATIONS
+m-singlevalue: FALSE
+m-collective: FALSE
+m-obsolete: FALSE
+m-nousermodification: FALSE
+creatorsname: uid=admin,ou=system

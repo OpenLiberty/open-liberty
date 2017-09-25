@@ -12,12 +12,14 @@ package com.ibm.ws.microprofile.faulttolerance.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.Future;
 
 import javax.annotation.PreDestroy;
 import javax.annotation.Priority;
+import javax.enterprise.context.Dependent;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.inject.Inject;
 import javax.interceptor.AroundInvoke;
@@ -32,6 +34,8 @@ import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.AsynchronousConfig;
 import com.ibm.ws.microprofile.faulttolerance.cdi.config.BulkheadConfig;
@@ -57,6 +61,11 @@ public class FaultToleranceInterceptor {
     BeanManager beanManager;
 
     private final ConcurrentHashMap<Method, AggregatedFTPolicy> policyCache = new ConcurrentHashMap<>();
+
+    @Inject
+    public FaultToleranceInterceptor(ExecutorCleanup executorCleanup) {
+        executorCleanup.setPolicies(policyCache.values());
+    }
 
     @AroundInvoke
     public Object executeFT(InvocationContext context) throws Throwable {
@@ -196,17 +205,16 @@ public class FaultToleranceInterceptor {
 
     @FFDCIgnore({ ExecutionException.class })
     private Object execute(InvocationContext invocationContext, AggregatedFTPolicy aggregatedFTPolicy) throws Throwable {
-
-        Executor<?> executor = aggregatedFTPolicy.getExecutor();
-
-        Method method = invocationContext.getMethod();
-        Object[] params = invocationContext.getParameters();
-        String id = method.getName(); //TODO does this id need to be better? it's only for debug
-        ExecutionContext executionContext = executor.newExecutionContext(id, method, params);
-
-        //if there is a FaultTolerance Executor then run it, otherwise just call proceed
         Object result = null;
-        if (executor != null) {
+        //if there is a set of FaultTolerance policies then run it, otherwise just call proceed
+        if (aggregatedFTPolicy != null) {
+            Executor<?> executor = aggregatedFTPolicy.getExecutor();
+
+            Method method = invocationContext.getMethod();
+            Object[] params = invocationContext.getParameters();
+            String id = method.getName(); //TODO does this id need to be better? it's only for debug
+            ExecutionContext executionContext = executor.newExecutionContext(id, method, params);
+
             if (aggregatedFTPolicy.isAsynchronous()) {
 
                 Callable<Future<Object>> callable = () -> {
@@ -214,7 +222,12 @@ public class FaultToleranceInterceptor {
                 };
 
                 Executor<Future<Object>> async = (Executor<Future<Object>>) executor;
-                result = async.execute(callable, executionContext);
+                try {
+                    result = async.execute(callable, executionContext);
+                } catch (ExecutionException e) {
+                    throw e.getCause();
+                }
+
             } else {
 
                 Callable<Object> callable = () -> {
@@ -235,11 +248,25 @@ public class FaultToleranceInterceptor {
         return result;
     }
 
-    @PreDestroy
-    public void cleanUpExecutors(InvocationContext ctx) throws Exception {
-        ctx.proceed();
-        policyCache.forEach((k, v) -> {
-            v.close();
-        });
+    @Dependent
+    public static class ExecutorCleanup {
+        private static final TraceComponent tc = Tr.register(ExecutorCleanup.class);
+
+        private Collection<AggregatedFTPolicy> policies;
+
+        public void setPolicies(Collection<AggregatedFTPolicy> policies) {
+            this.policies = policies;
+        }
+
+        @PreDestroy
+        public void cleanUpExecutors() {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Cleaning up executors");
+            }
+
+            policies.forEach((e) -> {
+                e.close();
+            });
+        }
     }
 }

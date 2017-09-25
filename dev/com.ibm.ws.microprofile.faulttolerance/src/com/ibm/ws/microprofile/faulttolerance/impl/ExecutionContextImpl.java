@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.impl.async.QueuedFuture;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 public class ExecutionContextImpl implements FTExecutionContext {
 
@@ -36,6 +37,8 @@ public class ExecutionContextImpl implements FTExecutionContext {
     private volatile long startTime;
 
     private final String id;
+
+    private volatile boolean closed = false;
 
     public ExecutionContextImpl(String id, Method method, Object[] params, TimeoutImpl timeout, CircuitBreakerImpl circuitBreaker, FallbackPolicy fallbackPolicy, RetryImpl retry) {
         this.id = id;
@@ -66,6 +69,9 @@ public class ExecutionContextImpl implements FTExecutionContext {
     *
     */
     public void start() {
+        if (this.closed) {
+            throw new IllegalStateException();
+        }
         this.startTime = System.nanoTime();
         debugRelativeTime("start");
         if (timeout != null) {
@@ -74,6 +80,9 @@ public class ExecutionContextImpl implements FTExecutionContext {
     }
 
     public void start(QueuedFuture<?> future) {
+        if (this.closed) {
+            throw new IllegalStateException();
+        }
         this.startTime = System.nanoTime();
         debugRelativeTime("start");
         if (timeout != null) {
@@ -92,8 +101,11 @@ public class ExecutionContextImpl implements FTExecutionContext {
     }
 
     /**
-    *
-    */
+     * Check if the timeout has "popped". If it has then it will throw a TimeoutException. If not then return the
+     * time remaining, in nanoseconds.
+     *
+     * @return the time remaining on the timeout, in nanoseconds. If there is no timeout then return -1.
+     */
     public long check() {
         debugRelativeTime("check");
         long remaining = -1;
@@ -132,10 +144,6 @@ public class ExecutionContextImpl implements FTExecutionContext {
             timeout.restartOnNewThread(Thread.currentThread());
         }
 
-        if (this.circuitBreaker != null) {
-            this.circuitBreaker.setNested();
-        }
-
         int retriesRemaining = this.retry.getMaxRetries() - this.retries;
         if (this.retry.getMaxDuration() != null) {
             long maxDuration = this.retry.getMaxDuration().toNanos();
@@ -164,10 +172,13 @@ public class ExecutionContextImpl implements FTExecutionContext {
     /** {@inheritDoc} */
     @Override
     public void close() {
-        //TODO might need to do more here
+        //at the moment the only thing that might need to happen is to stop the timeout...
+        //however, if execution has completed normally and as designed, the timeout will already be stopped
+        //one day there might be more things that need closing
         if (this.timeout != null) {
             this.timeout.stop();
         }
+        this.closed = true;
     }
 
     @Override
@@ -185,7 +196,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
     private void debugRelativeTime(String message) {
         //System.out.println(getDescriptor() + " (" + FTConstants.relativeSeconds(startTime, System.nanoTime()) + "): " + message);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            FTConstants.debugRelativeTime(tc, getDescriptor(), message, this.startTime);
+            FTDebug.debugRelativeTime(tc, getDescriptor(), message, this.startTime);
         }
     }
 

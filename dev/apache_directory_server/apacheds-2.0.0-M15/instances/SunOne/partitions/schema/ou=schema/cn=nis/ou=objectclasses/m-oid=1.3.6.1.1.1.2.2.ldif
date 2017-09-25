@@ -1,0 +1,17 @@
+version: 1
+dn: m-oid=1.3.6.1.1.1.2.2,ou=objectClasses,cn=nis,ou=schema
+m-must: cn
+m-must: gidNumber
+m-oid: 1.3.6.1.1.1.2.2
+m-obsolete: FALSE
+m-supobjectclass: top
+m-description: Abstraction of a group of accounts
+objectclass: metaObjectClass
+objectclass: metaTop
+objectclass: top
+m-name: posixGroup
+m-typeobjectclass: STRUCTURAL
+creatorsname: uid=admin,ou=system
+m-may: userPassword
+m-may: memberUid
+m-may: description

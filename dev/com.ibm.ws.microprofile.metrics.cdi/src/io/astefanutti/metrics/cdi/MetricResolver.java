@@ -80,8 +80,9 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
         Metadata metadata = new Metadata(name, this.getType(annotation), this.getUnit(annotation));
         metadata.setDescription(this.getDescription(annotation));
         metadata.setDisplayName(this.getDisplayname(annotation));
-        // TODO: Add tagging
-        //metadata.addTag(this.getTags(annotation));
+        for (String tag : this.getTags(annotation)) {
+            metadata.addTag(tag);
+        }
         return new DoesHaveMetric<>(annotation, name, metadata);
     }
 
@@ -93,8 +94,9 @@ import org.eclipse.microprofile.metrics.annotation.Timed;
             Metadata metadata = new Metadata(name, this.getType(annotation), this.getUnit(annotation));
             metadata.setDescription(this.getDescription(annotation));
             metadata.setDisplayName(this.getDisplayname(annotation));
-            // TODO: Add tagging
-            //metadata.addTag(this.getTags(annotation));
+            for (String tag : this.getTags(annotation)) {
+                metadata.addTag(tag);
+            }
             return new DoesHaveMetric<>(annotation, name, metadata);
         } else if (bean.getSuperclass() != null) {
             return beanResolverOf(element, metric, bean.getSuperclass());

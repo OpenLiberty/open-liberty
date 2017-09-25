@@ -51,29 +51,33 @@ public class H2TCPConnectionContext implements TCPConnectionContext {
         return h2WriteRequestContext;
     }
 
+    // calls which it is ok to use the muxLink, assuming channel code above us needs this connection info for logging type stuff
+
     @Override
     public InetAddress getRemoteAddress() {
-        return null;
+        return muxLink.getTCPConnectionContext().getRemoteAddress();
     }
 
     @Override
     public int getRemotePort() {
-        return 0;
+        return muxLink.getTCPConnectionContext().getRemotePort();
     }
 
     @Override
     public InetAddress getLocalAddress() {
-        return null;
+        return muxLink.getTCPConnectionContext().getLocalAddress();
     }
 
     @Override
     public int getLocalPort() {
-        return 0;
+        return muxLink.getTCPConnectionContext().getLocalPort();
     }
+
+    // Only one SSL context will be used by all streams on a connection
 
     @Override
     public SSLConnectionContext getSSLContext() {
-        return null;
+        return muxLink.getTCPConnectionContext().getSSLContext();
     }
 
 }

@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: An attribute name, or initial parameter name, is null.
+name.is.null.explanation=This is an application error.  The name is null in either context getAttribute(), setAttribute(), getInitParameter(), or setInitParameter().
+name.is.null.useraction=Update the attribute name, or initial parameter name, with a non-null value.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: Failed to set response character encoding: [{0}].
+unsupported.response.encoding.[{0}].explanation=Response encoding specified on the response is not valid. This is an application error.
+unsupported.response.encoding.[{0}].useraction=Review logs to determine whether the specified encoding is a valid encoding.
+
