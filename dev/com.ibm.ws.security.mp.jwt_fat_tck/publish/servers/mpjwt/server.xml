@@ -28,24 +28,6 @@
 	<!-- Automatically expand WAR files and EAR files -->
 	<applicationManager autoExpand="true"/>
 
-    <!-- this is needed but wlp arq harness will add when the test runs --> 
-    <!--
-     <webApplication id="RolesAllowedTest" location="${server.config.dir}/apps/RolesAllowedTest.war" name="rolesAllowedTest">
-       <application-bnd>
-           <security-role name="Token2Role">
-              <group access-id="group:https://server.example.com/group1.2" name="group1.2"/>  
-           </security-role>
-           <security-role name="Group1MappedRole">
-              <group access-id="group:https://server.example.com/group1" name="group1"/>            
-           </security-role>
-           <security-role name="Tester">              
-            <group access-id="group:https://server.example.com/Tester" name="Tester"/>  
-            </security-role>
-            <security-role name="Echoer">
-                <group access-id="group:https://server.example.com/Echoer" name="Echoer"/> 
-            </security-role>
-       </application-bnd> 
-    </webApplication> 
-    -->
+   
 
 </server>
