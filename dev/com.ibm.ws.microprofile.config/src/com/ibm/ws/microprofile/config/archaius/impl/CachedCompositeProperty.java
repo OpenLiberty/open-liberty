@@ -31,9 +31,8 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
 
     private static final TraceComponent tc = Tr.register(CachedCompositeProperty.class);
 
-    private final AtomicStampedReference<T> cache = new AtomicStampedReference<>(null, -1);
+    private final AtomicStampedReference<CachedCompositeValue<T>> cache = new AtomicStampedReference<>(null, -1);
     private final Class<T> type;
-    private final T defaultValue;
     private final CachedCompositePropertyContainer parentContainer;
 
     /**
@@ -43,9 +42,8 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      * @param defaultValue
      * @param parentContainer
      */
-    CachedCompositeProperty(Class<T> type, T defaultValue, CachedCompositePropertyContainer parentContainer) {
+    CachedCompositeProperty(Class<T> type, CachedCompositePropertyContainer parentContainer) {
         this.type = type;
-        this.defaultValue = defaultValue;
         this.parentContainer = parentContainer;
     }
 
@@ -96,14 +94,14 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      *
      * @return
      */
-    @Override
-    public T get() {
+    public CachedCompositeValue<T> getSourced() {
+        boolean fromCache = true;
         int cacheVersion = cache.getStamp();
         int latestVersion = parentContainer.getMasterVersion();
-
+        CachedCompositeValue<T> compositeValue = null;
         if (cacheVersion != latestVersion) {
-            T currentValue = cache.getReference();
-            T newValue = null;
+            CachedCompositeValue<T> currentValue = cache.getReference();
+            CachedCompositeValue<T> newValue = null;
             try {
                 newValue = resolveCurrent();
             } catch (ConfigException e) {
@@ -116,21 +114,41 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
             }
 
             if (cache.compareAndSet(currentValue, newValue, cacheVersion, latestVersion)) {
-                return firstNonNull(newValue, defaultValue);
+                compositeValue = newValue;
+                fromCache = false;
             }
         }
-        return firstNonNull(cache.getReference(), defaultValue);
+        if (fromCache) {
+            compositeValue = cache.getReference();
+        }
+
+        return compositeValue;
     }
 
     /**
-     * Select a non null preferably from two values
+     * Fetch the latest version of the property. If not up to date then resolve to the latest
+     * value, inline.
      *
-     * @param first
-     * @param second
-     * @return first if it is not null else second
+     * TODO: Make resolving property value an offline task
+     *
+     * @return
      */
-    private T firstNonNull(T first, T second) {
-        return first == null ? second : first;
+    @Override
+    public T get() {
+        CachedCompositeValue<T> compositeValue = getSourced();
+
+        T actual = null;
+        if (compositeValue != null) {
+            actual = compositeValue.getValue();
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            if (compositeValue != null) {
+                Tr.debug(tc, "get", "Key={0}, Value={1}, Source={2}", getKey(), compositeValue.getValue(), compositeValue.getSource());
+            } else {
+                Tr.debug(tc, "get", "Key={0} not found", getKey());
+            }
+        }
+        return actual;
     }
 
     /**
@@ -139,14 +157,14 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      * @return
      * @throws Exception
      */
-    protected abstract T resolveCurrent() throws Exception;
+    protected abstract CachedCompositeValue<T> resolveCurrent() throws Exception;
 
     /** {@inheritDoc} */
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
+        //result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
         result = prime * result + type.hashCode();
         return result;
     }
@@ -161,11 +179,6 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
         if (getClass() != obj.getClass())
             return false;
         CachedCompositeProperty<?> other = (CachedCompositeProperty<?>) obj;
-        if (defaultValue == null) {
-            if (other.defaultValue != null)
-                return false;
-        } else if (!defaultValue.equals(other.defaultValue))
-            return false;
         if (type != other.type)
             return false;
         return true;
