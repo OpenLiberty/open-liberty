@@ -11,6 +11,9 @@
 
 package com.ibm.ws.ras.instrument.internal.main;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -55,6 +58,20 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      */
     private final static boolean isIBMVirtualMachine = System.getProperty("java.vm.name", "unknown").contains("IBM J9");
 
+	/**
+	 * Trace instrumentation force. Due to performance concerns with up-front instrumentation of all 1.8 bytecode classes,
+	 * the decision was made to for now only enable diagnostic instrumentation when a bootstrap.properties variable is set
+	 * to signal that they should be transformed up front.
+	*/
+	private static final boolean isJava8TraceEnabled = AccessController.doPrivileged(new PrivilegedAction<Boolean>() {
+        @Override
+        public Boolean run()
+        {
+			Boolean prop = Boolean.getBoolean("com.ibm.ws.ras.instrument.instrumentJava8Trace");
+            return (prop == null ? false : prop.booleanValue());
+        }
+    });
+	
     /** Issue detailed entry/exit trace for class transforms if this is true. */
     private static final boolean detailedTransformTrace = Boolean.getBoolean("com.ibm.ws.logging.instrumentation.detail.enabled");
 
@@ -149,7 +166,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
         instrumentation = inst;
 
         if (instrumentation == null) {
-        } else {
+        } else if (isJava8TraceEnabled) {
         	setInjectAtTransform(true); //We always inject at transform in this workaround transformer. Either all or nothing here.
         }
 
@@ -204,7 +221,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
         if (bytes.length < 8) {
             return false;
         }
-
+		
         // The transform method will be called for all classes, but ASM is only
         // capable of processing some class file format versions.  That's ok
         // because the transformer only modifies classes that have been
@@ -238,7 +255,7 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
      *             the <code>InputStream</code>
      */
     public static byte[] transform(byte[] bytes, boolean skipIfNotPreprocessed) throws IOException {
-        if (detailedTransformTrace && tc.isEntryEnabled())
+		if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.entry(tc, "transform");
         
         
@@ -278,11 +295,9 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
 
     /**
      * {@inheritDoc} <p>
-     * This method will only execute a transformation if we're configured to class
-     * has been explicitly targeted for injection by {@link #traceStateChanged} or
-     * if we're forced to perform transformation against all classes at class
-     * definition because the host JVM doesn't support class retransformation or
-     * class redefinition.
+     * This method will only executes a transformation always, provided
+	 * the particular conditions we're looking for are true. Namely the JDK level and
+	 * custom property to turn on Java8 instrumentation.
      */
     @Override
     public byte[] transform(ClassLoader loader,
@@ -290,11 +305,14 @@ public class LibertyJava8WorkaroundRuntimeTransformer implements ClassFileTransf
                             Class<?> classBeingRedefined,
                             ProtectionDomain protectionDomain,
                             byte[] classfileBuffer) throws IllegalClassFormatException {
-    	
-    	if (detailedTransformTrace && tc.isEntryEnabled())
+     	if (detailedTransformTrace && tc.isEntryEnabled())
             Tr.entry(this, tc, "transform", loader, className, classBeingRedefined, protectionDomain);
 
-        if (classBeingRedefined != null)
+		    	
+		if (!isJava8TraceEnabled)
+			return null; //Look for special trace instrumentation force until JDK bug fully fixed.
+		
+		if (classBeingRedefined != null)
         	return null;
 
         byte[] newClassBytes = null;
