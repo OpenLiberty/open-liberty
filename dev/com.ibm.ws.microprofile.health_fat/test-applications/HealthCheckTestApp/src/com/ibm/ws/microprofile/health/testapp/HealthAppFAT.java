@@ -17,7 +17,7 @@ public class HealthAppFAT implements HealthCheck {
 
         if (count == 1) {
             count++;
-            return HealthCheckResponse.named("testJsonRecieved").up().build();
+            return HealthCheckResponse.named("testJsonReceived").up().build();
         } else if (count == 2) {
             count++;
             return HealthCheckResponse.named("testSingleOutcomeUP").up().build();
