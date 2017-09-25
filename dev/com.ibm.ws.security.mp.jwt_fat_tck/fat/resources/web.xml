@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+		 http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd" version="3.1">
+  
+  
+  <login-config>
+    <auth-method>MP-JWT</auth-method>
+  </login-config>
+  
+ 
+
+  <security-constraint>
+    <display-name>echo restriction</display-name>
+    <web-resource-collection>
+      <web-resource-name>REST Endpoint</web-resource-name>
+      <url-pattern>/endp/echo</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Echoer</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <display-name>echo2 restriction</display-name>
+    <web-resource-collection>
+      <web-resource-name>REST Endpoint2</web-resource-name>
+      <url-pattern>/endp/echo2</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>NoSuchRole</role-name>
+    </auth-constraint>
+  </security-constraint>
+  <security-constraint>
+    <display-name>needsGroup1Mapping restriction</display-name>
+    <web-resource-collection>
+      <web-resource-name>REST needsGroup1Mapping</web-resource-name>
+      <url-pattern>/endp/needsGroup1Mapping</url-pattern>
+    </web-resource-collection>
+    <auth-constraint>
+      <role-name>Group1MappedRole</role-name>
+    </auth-constraint>
+    </security-constraint>
+    
+    <!-- Liberty add  -->
+     <security-constraint>
+    	<display-name>fixme</display-name>
+    	<web-resource-collection>
+      		<web-resource-name>fixme</web-resource-name>
+      		<url-pattern>/endp/getInjectedPrincipal</url-pattern>
+    	</web-resource-collection>  
+    	
+    	 <auth-constraint>
+             <role-name>**</role-name>
+         </auth-constraint>
+    </security-constraint>
+    
+    <!-- Liberty add --> 
+     <security-constraint>
+    	<display-name>fixme2</display-name>
+    	<web-resource-collection>
+      		<web-resource-name>fixme2</web-resource-name>      		
+      		<url-pattern>/endp/echoNeedsToken2Role</url-pattern>
+    	</web-resource-collection> 
+    	 <auth-constraint>
+             <role-name>Token2Role</role-name>
+         </auth-constraint>   
+    </security-constraint>
+    
+  
+  
+  <!-- Liberty add  --> 
+    <security-role>
+       <role-name>Echoer</role-name>      
+   </security-role>
+      <security-role>
+       <role-name>Echoer2</role-name>      
+   </security-role>
+    <security-role>
+       <role-name>Token2Role</role-name>      
+   </security-role>
+    <security-role>
+       <role-name>Tester</role-name>      
+   </security-role>
+   <security-role>
+       <role-name>Group1MappedRole</role-name>        
+   </security-role>
+
+  <!--
+  <context-param>
+    <param-name>resteasy.role.based.security</param-name>
+    <param-value>true</param-value>
+  </context-param>
+  -->
+</web-app>
