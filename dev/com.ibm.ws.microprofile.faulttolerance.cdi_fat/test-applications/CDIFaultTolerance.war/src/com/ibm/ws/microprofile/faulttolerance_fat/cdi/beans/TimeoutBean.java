@@ -18,6 +18,7 @@ import java.util.concurrent.Future;
 import javax.enterprise.context.RequestScoped;
 
 import org.eclipse.microprofile.faulttolerance.Asynchronous;
+import org.eclipse.microprofile.faulttolerance.Fallback;
 import org.eclipse.microprofile.faulttolerance.Retry;
 import org.eclipse.microprofile.faulttolerance.Timeout;
 
@@ -93,9 +94,16 @@ public class TimeoutBean {
         Thread.sleep(2000);
     }
 
+    @Timeout(1000)
+    @Fallback(MyFallbackHandler.class)
+    public Connection connectF() throws InterruptedException, ConnectException {
+        Thread.sleep(5000);
+        throw new ConnectException("connectF");
+    }
+
     /**
      * Used for testing timeout with workloads which are not interruptable
-     * 
+     *
      * @param milliseconds number of milliseconds to busy wait for
      */
     @Timeout(500)
