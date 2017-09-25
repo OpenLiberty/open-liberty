@@ -62,6 +62,20 @@ public class CDIBulkheadTest extends LoggingTest {
     }
 
     @Test
+    public void testAsyncBulkheadSmallConfig() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/asyncbulkhead?testMethod=testAsyncBulkheadSmallConfig",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testAsyncBulkheadSmallClassScopeConfig() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/asyncbulkhead?testMethod=testAsyncBulkheadSmallClassScopeConfig",
+                                         "SUCCESS");
+    }
+
+    @Test
     public void testSyncBulkheadSmall() throws Exception {
         WebBrowser browser = createWebBrowserForTestCase();
         getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/bulkhead?testMethod=testSyncBulkheadSmall",
