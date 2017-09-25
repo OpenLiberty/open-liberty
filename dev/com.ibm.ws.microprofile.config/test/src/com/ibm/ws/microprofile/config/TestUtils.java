@@ -10,7 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+
+import org.eclipse.microprofile.config.Config;
+
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
+import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class TestUtils {
 
@@ -51,5 +57,39 @@ public class TestUtils {
         if (contains) {
             fail("Iterable (" + strb + ") DID contain: " + value);
         }
+    }
+
+    public static void assertContent(Config config, String key1, String value1, String key2) {
+        Iterable<String> keys = config.getPropertyNames();
+
+        assertContains(keys, key1);
+
+        String value = config.getValue(key1, String.class);
+        assertEquals(value1, value);
+
+        assertNotContains(keys, key2);
+    }
+
+    public static void assertValue(Config config, String key1, String value1) {
+        Iterable<String> keys = config.getPropertyNames();
+
+        assertContains(keys, key1);
+
+        String value = config.getValue(key1, String.class);
+        assertEquals(value1, value);
+    }
+
+    /**
+     * @param config
+     * @param string
+     * @param string2
+     * @param string3
+     */
+    public static void assertSource(WebSphereConfig config, String key, String value, String source) {
+        SourcedValue<String> sourcedValue = config.getSourcedValue(key, String.class);
+        String actual = sourcedValue.getValue();
+        assertEquals(value, actual);
+        String actualSource = sourcedValue.getSource();
+        assertEquals(source, actualSource);
     }
 }
