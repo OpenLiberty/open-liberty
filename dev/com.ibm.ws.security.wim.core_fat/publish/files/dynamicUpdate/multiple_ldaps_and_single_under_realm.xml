@@ -1,0 +1,34 @@
+<server description="new server">
+
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<ldapRegistry id="TDS_LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.1.name}" port="${ldap.server.1.port}" ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m">
+		<failoverServers name="failoverLdapServers">
+			<server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
+       	</failoverServers>
+	</ldapRegistry>
+	
+	<ldapRegistry id="AD_LDAP" realm="SampleLdapADRealm" host="${ldap.server.2.name}" port="${ldap.server.2.port}" ignoreCase="true"  baseDN="cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindDN="cn=testuser,cn=users,dc=secfvt2,dc=austin,dc=ibm,dc=com"
+		bindPassword="testuserpwd"
+		ldapType="Microsoft Active Directory"
+		searchTimeout="8m" >
+		<failoverServers name="failoverLdapServers">
+      		<server host="${ldap.server.6.name}" port="${ldap.server.6.port}"/>
+       	</failoverServers>
+	</ldapRegistry>
+    
+    <federatedRepository maxSearchResults="2000" searchTimeOut="400000">
+        <primaryRealm name="defaultWIMFileBasedRealm">
+            <participatingBaseEntry name="o=ibm,c=us"/>
+    	</primaryRealm>
+    </federatedRepository>
+</server>
