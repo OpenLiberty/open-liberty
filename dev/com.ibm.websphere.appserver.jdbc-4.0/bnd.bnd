@@ -16,16 +16,13 @@ Bundle-SymbolicName: com.ibm.websphere.appserver.jdbc-4.0
 publish.feature.resources: **
 
 -dependson: \
+	${javac.bootclasspath.java6}, \
         com.ibm.websphere.appserver.javax.connector.internal-1.6;version=latest, \
         com.ibm.websphere.appserver.jndi-1.0;version=latest, \
         com.ibm.websphere.appserver.transaction-1.1;version=latest, \
 	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
 	com.ibm.websphere.appserver.appLifecycle-1.0;version=latest, \
 	com.ibm.websphere.appserver.connectionManagement-1.0;version=latest, \
-	com.ibm.websphere.appserver.requestProbes-1.0;version=latest
-		
-
--buildpath: \
-	${javac.bootclasspath.java6}, \
+	com.ibm.websphere.appserver.requestProbes-1.0;version=latest, \
 	com.ibm.ws.jdbc;version=latest, \
 	com.ibm.ws.jdbc.4.0.feature;version=latest
