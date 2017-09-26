@@ -101,7 +101,7 @@ public class CFWNetworkConnection implements NetworkConnection
       TCPConnectRequestContext tcpTarget = new TCPConnectRequestContext() {
          /**
           * @return Returns the local address from the target.
-          * @see com.ibm.wsspi.tcp.channel.TCPConnectRequestContext#getLocalAddress()
+          * @see TCPConnectRequestContext#getLocalAddress()
           */
          public InetSocketAddress getLocalAddress()
          {
@@ -109,7 +109,7 @@ public class CFWNetworkConnection implements NetworkConnection
          }
          /**
           * @return Returns the remote address from the target.
-          * @see com.ibm.wsspi.tcp.channel.TCPConnectRequestContext#getRemoteAddress()
+          * @see TCPConnectRequestContext#getRemoteAddress()
           */
          public InetSocketAddress getRemoteAddress()
          {
@@ -117,7 +117,7 @@ public class CFWNetworkConnection implements NetworkConnection
          }
          /**
           * @return Returns the connect timeout from the target.
-          * @see com.ibm.wsspi.tcp.channel.TCPConnectRequestContext#getConnectTimeout()
+          * @see TCPConnectRequestContext#getConnectTimeout()
           */
          public int getConnectTimeout()
          {
@@ -130,7 +130,7 @@ public class CFWNetworkConnection implements NetworkConnection
          /**
           * Called when the connection has successfully connected.
           *
-          * @see com.ibm.wsspi.channel.ConnectionReadyCallback#ready(com.ibm.websphere.channelfw.VirtualConnection)
+          * @see ConnectionReadyCallback#ready(com.ibm.websphere.channelfw.VirtualConnection)
           */
          public void ready(VirtualConnection conn)
          {
@@ -142,7 +142,7 @@ public class CFWNetworkConnection implements NetworkConnection
          /**
           * Called if the connection fails.
           *
-          * @see com.ibm.wsspi.channel.ConnectionReadyCallback#destroy(java.lang.Exception)
+          * @see ConnectionReadyCallback#destroy(java.lang.Exception)
           */
          public void destroy(Exception exception)
          {

@@ -28,8 +28,8 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 @SuppressWarnings("unused")
 public class ConnectorChannel implements InboundChannel, OutboundChannel {
     protected Discriminator discriminatorInstance = null;
-    private Class<?> devSideClass = TCPConnectionContext.class;
-    private Class<?> appSideClass = TCPConnectionContext.class;
+    private final Class<?> devSideClass = TCPConnectionContext.class;
+    private final Class<?> appSideClass = TCPConnectionContext.class;
     protected Class<?> devAddress = null;
     protected Class<?> appAddresses[] = null;
     private Class<?> discType = null;
@@ -40,7 +40,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
 
     /**
      * Constructor.
-     * 
+     *
      * @param cc
      * @param inputDiscType
      * @param inputDiscDataType
@@ -57,28 +57,33 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
         update(cc);
     }
 
+    @Override
     public Class<?> getDiscriminatoryType() {
         return discType;
     }
 
+    @Override
     public Class<?> getDeviceAddress() {
         return devAddress;
     }
 
+    @Override
     public Class<?>[] getApplicationAddress() {
         return appAddresses;
     }
 
     /**
-     * @see com.ibm.wsspi.channel.Channel#bind()
+     * @see Channel#bind()
      */
+    @Override
     public ConnectionLink getConnectionLink(VirtualConnection vc) {
         return new ConnectorChannelLink(vc, this);
     }
 
     /**
-     * @see com.ibm.wsspi.channel.Channel#getDiscriminator()
+     * @see Channel#getDiscriminator()
      */
+    @Override
     public Discriminator getDiscriminator() {
         return discriminatorInstance;
     }
@@ -86,6 +91,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /**
      * @see Channel#getDevSideInterfaceClass()
      */
+    @Override
     public Class<?> getDeviceInterface() {
         return devSideClass;
     }
@@ -93,6 +99,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /**
      * @see Channel#getAppSideInterfaceClass()
      */
+    @Override
     public Class<?> getApplicationInterface() {
         return appSideClass;
     }
@@ -100,6 +107,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /**
      * @see Channel#updateConfig(ChannelData)
      */
+    @Override
     public void update(ChannelData cc) {
         this.config = cc;
     }
@@ -107,6 +115,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /**
      * @see Channel#start()
      */
+    @Override
     public void start() throws ChannelException {
         // nothing to do
     }
@@ -114,6 +123,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /**
      * @see Channel#stop(int)
      */
+    @Override
     public void stop(long millisec) throws ChannelException {
         // nothing to do
     }
@@ -121,6 +131,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /**
      * @see Channel#init()
      */
+    @Override
     public void init() throws ChannelException {
         // nothing to do
     }
@@ -128,6 +139,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /**
      * @see Channel#destroy()
      */
+    @Override
     public void destroy() throws ChannelException {
         // nothing to do
     }
@@ -135,6 +147,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /*
      * @see com.ibm.wsspi.channelfw.Channel#getName()
      */
+    @Override
     public String getName() {
         return this.config.getName();
     }
@@ -142,6 +155,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /*
      * @see com.ibm.wsspi.channelfw.InboundChannel#getDiscriminationProcess()
      */
+    @Override
     public final DiscriminationProcess getDiscriminationProcess() {
         return this.discriminationProcess;
     }
@@ -149,6 +163,7 @@ public class ConnectorChannel implements InboundChannel, OutboundChannel {
     /*
      * @see com.ibm.wsspi.channelfw.InboundChannel#setDiscriminationProcess(com.ibm.wsspi.channelfw.DiscriminationProcess)
      */
+    @Override
     public final void setDiscriminationProcess(DiscriminationProcess dp) {
         this.discriminationProcess = dp;
     }
