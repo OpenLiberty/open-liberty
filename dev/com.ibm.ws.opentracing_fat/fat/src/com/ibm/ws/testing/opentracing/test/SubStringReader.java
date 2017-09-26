@@ -6,6 +6,8 @@ import java.io.Reader;
 /**
  * <p>Sub-string reader.  Used to create a reader on a sub-range of
  * a string.</p>
+ *
+ * <p>This class is not currently used, and is retained for future use.</p>
  */
 public class SubStringReader extends Reader {
 

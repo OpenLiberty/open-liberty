@@ -8,25 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.testing.opentracing.test;
+package com.ibm.ws.testing.opentracing.service;
 
 /**
  * <p>Constants for the open trace test service.  Externally useful constants
  * are consolidated here for easy of use.  It is intended that a copy of these
  * constants will be put in the test code.<p>
  */
-public interface FATOpenTraceConstants {
-    // Packaging constants ...
-    String SERVICE_WAR_NAME = "serviceApp.war";
-    String SERVICE_WAR_BASE_NAME = "serviceApp";
-    String SERVICE_PACKAGE_NAME = "com.ibm.ws.testing.opentracing.service";
-    String SERVICE_CONTEXT_ROOT = "serviceApp"; // Based on the WAR name
-
+public interface FATOpentracingConstants {
     // Service application ...
     String APP_PATH = "rest"; // used in '@ApplicationPath'
     String SERVICE_PATH = "testService"; // used in '@Path'
 
-    // 'getImmediate' and 'getManual' both accept a "response" parameter.
+	// 'getImmediate' and 'getManual' both accept a "response" parameter.
     String GET_IMMEDIATE_PATH = "getImmediate";
     String GET_MANUAL_PATH = "getManual";
     String RESPONSE_PARAM_NAME = "response";

@@ -20,6 +20,9 @@ import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.Response;
 
+/**
+ * <p>General purpose FAT service utilities.</p>
+ */
 public class FATUtilsService {
     // Request utils ...
 

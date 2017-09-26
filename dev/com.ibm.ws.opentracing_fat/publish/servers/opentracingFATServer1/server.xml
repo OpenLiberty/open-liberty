@@ -2,7 +2,8 @@
 
   <featureManager>
     <feature>servlet-3.1</feature>
-    <feature>opentracing-1.0</feature> 
+    <!-- The open tracing feature should be brought in by the open tracing mock feature. -->
+    <!-- <feature>opentracing-1.0</feature> -->
     <feature>opentracingMock-0.30</feature>
     <feature>componenttest-1.0</feature>
   </featureManager>
@@ -13,6 +14,8 @@
     <classloader apiTypeVisibility="spec, ibm-api, third-party"/>
   </application>
 
+  <!-- Turn this on for the FAT: That provides good diagnostics in case -->
+  <!-- of a failure, and means that trace code is tested. -->
   <logging traceSpecification="*=audit:com.ibm.ws.opentracing.*=all"/>
 
 </server>

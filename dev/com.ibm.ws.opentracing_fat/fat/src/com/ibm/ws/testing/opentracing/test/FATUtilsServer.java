@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  *<p>Open tracing FAT utilities.</p>
  */
-public class FATUtilsServer implements FATOpenTraceConstants {
+public class FATUtilsServer implements FATOpentracingConstants {
     // Logging ...
 
     private static final Class<? extends FATUtilsServer> CLASS = FATUtilsServer.class;
