@@ -141,7 +141,7 @@ public class ConnectionReadCompletedCallback implements IOReadCompletedCallback
     * Called by the next channel in the chain when an outstanding read request has completed
     * successfully.
     *
-    * @see com.ibm.wsspi.tcp.channel.TCPReadCompletedCallback#complete(com.ibm.wsspi.channel.framework.VirtualConnection, com.ibm.wsspi.tcp.channel.TCPReadRequestContext)
+    * @see TCPReadCompletedCallback#complete(VirtualConnection, TCPReadRequestContext)
     */
    public void complete(NetworkConnection vc, IOReadRequestContext rctx)
    {	
