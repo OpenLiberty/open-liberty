@@ -41,10 +41,6 @@ public class OpentracingUserFeatureAccessService {
     @Reference
     public void setOpentracingTracerFactory(OpentracingTracerFactory opentracingTracerFactory) {
         OpentracingUserFeatureAccessService.opentracingTracerFactory = opentracingTracerFactory;
-
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
-            Tr.debug(tc, "getTracerInstance", opentracingTracerFactory);
-        }
     }
 
     //
