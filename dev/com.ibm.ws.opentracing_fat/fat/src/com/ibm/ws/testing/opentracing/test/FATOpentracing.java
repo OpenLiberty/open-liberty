@@ -36,18 +36,18 @@ import componenttest.topology.impl.LibertyServerFactory;
  * <p>The test suite:</p>
  *
  * <ul>
- * <li>{@link FATOpenTrace#testImmediate}</li>
- * <li>{@link FATOpenTrace#testManual}</li>
- * <li>{@link FATOpenTrace#testDelayed2}</li>
- * <li>{@link FATOpenTrace#testDelayed4}</li>
- * <li>{@link FATOpenTrace#testDelayed6}</li>
- * <li>{@link FATOpenTrace#testNested0}</li>
- * <li>{@link FATOpenTrace#testNested1Sync}</li>
- * <li>{@link FATOpenTrace#testNested1Async}</li>
- * <li>{@link FATOpenTrace#testNested2Sync}</li>
- * <li>{@link FATOpenTrace#testNested2Async}</li>
- * <li>{@link FATOpenTrace#testNested4Sync}</li>
- * <li>{@link FATOpenTrace#testNested4ASync}</li> *
+ * <li>{@link FATOpentracing#testImmediate}</li>
+ * <li>{@link FATOpentracing#testManual}</li>
+ * <li>{@link FATOpentracing#testDelayed2}</li>
+ * <li>{@link FATOpentracing#testDelayed4}</li>
+ * <li>{@link FATOpentracing#testDelayed6}</li>
+ * <li>{@link FATOpentracing#testNested0}</li>
+ * <li>{@link FATOpentracing#testNested1Sync}</li>
+ * <li>{@link FATOpentracing#testNested1Async}</li>
+ * <li>{@link FATOpentracing#testNested2Sync}</li>
+ * <li>{@link FATOpentracing#testNested2Async}</li>
+ * <li>{@link FATOpentracing#testNested4Sync}</li>
+ * <li>{@link FATOpentracing#testNested4ASync}</li> *
  * </ul>
  *
  * <p>Each test invokes an API within the FAT test service.  Two
@@ -63,19 +63,21 @@ import componenttest.topology.impl.LibertyServerFactory;
  * must contain the expected completed spans.</p>
  *
  * <p>See the several <code>verifySpans</code> methods, for example,
- * {@link FATOpenTrace#verifyImmediateSpans}, each of which describes
+ * {@link FATOpentracing#verifyImmediateSpans}, each of which describes
  * the expected completed spans.</p>
  *
  * <p>The tail of the list of completed spans is examined.  Generally,
  * the list of completed spans must have at least an expected number
  * of spans.  The tail of the completed spans must match the pattern
  * of activity which is performed by the API which was used.</p>
+ *
+ * <p>Search for "***" within comments for specific tested conditions.</p>
  */
 @Mode(TestMode.FULL)
-public class FATOpenTrace implements FATOpenTraceConstants {
+public class FATOpentracing implements FATOpentracingConstants {
     // Logging ...
 
-    private static final Class<? extends FATOpenTrace> CLASS = FATOpenTrace.class;
+    private static final Class<? extends FATOpentracing> CLASS = FATOpentracing.class;
 
     private static void info(String methodName, String text, Object value) {
         System.out.println(CLASS.getSimpleName() + "." + methodName + ": " + text + " [ " + value + " ]");
@@ -89,19 +91,10 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
     // OpenTrace FAT server ...
 
-    /**
-     * <p>The name of the FAT server.  This selects a server directory
-     * beneath "open-liberty/dev/com.ibm.ws.opentracing_fat/publish/servers".</p>
-     *
-     * TODO: This name works with just one server definition, but will need
-     * to be adjusted when more server definitions are present.
-     */
-    private static final String FAT_SERVER_NAME = "FATServer";
-
     private static LibertyServer server;
 
     private static void setUpServer() {
-        server = LibertyServerFactory.getLibertyServer(FAT_SERVER_NAME);
+        server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
     }
 
     private static LibertyServer getServer() {
@@ -146,7 +139,7 @@ public class FATOpenTrace implements FATOpenTraceConstants {
      * <p>Package up the service web module.</p>
      *
      * <p>The service classes are added, per
-     * {@link FATOpenTraceConstants#SERVICE_PACKAGE_NAME}.</p>
+     * {@link FATOpentracingConstants#SERVICE_PACKAGE_NAME}.</p>
      *
      * <p>To make the tracer injection happen, a "beans.xml" must be added.</p>
      *
@@ -166,40 +159,113 @@ public class FATOpenTrace implements FATOpenTraceConstants {
     }
 
     // Parent conditions ...
+    //
+    // These are used by inner class 'ParentCondition' to select completed
+    // spans.
+    //
+    // See method 'verifyNestedSpans2' for a comprehensive example.
 
     public static final String[] GET_IMMEDIATE_CONDITION = new String[] { GET_IMMEDIATE_PATH };
 
     public static final String[] GET_MANUAL_CONDITION = new String[] { GET_MANUAL_PATH };
     public static final String[] MANUAL_CONDITION = new String[] { "manualSpan" };
 
+    /**
+     * <p>Answer the condition for a delayed get.</p>
+     *
+     * <p>Obtained using a method, since the condition depends on the particular
+     * delay of the get.</p>
+     *
+     * @param delay The delay of the completed span.
+     *
+     * @return A string array of conditions for a delayed get.
+     */
     public String[] getDelayedCondition(int delay) {
         return new String[] { GET_DELAYED_PATH, DELAY_PARAM_NAME + "=" + Integer.toString(delay) };
     }
 
+    /**
+     * <p>Answer the condition for a nested get.</p>
+     *
+     * <p>Obtained using a method, since the condition depends on the particular
+     * nesting level of the get.</p>
+     *
+     * @param nestDepth The nesting depth of the completed span.
+     *
+     * @return A string array of conditions for a nested get.
+     */
     public String[] getNestedCondition(int nestDepth) {
         return new String[] { GET_NESTED_PATH, NEST_DEPTH_PARAM_NAME + "=" + Integer.toString(nestDepth) };
     }
 
     // Verification utility ...
 
+    /**
+     * <p>Assertion utility for comparing two values.  Provides a more useful assertion
+     * message to {@link Assert#assertEquals}.</p>
+     *
+     * @param valueName The name of the values which are being compared.
+     * @param expectedValue The expected value.
+     * @param actualValue The actual value.
+     */
     public void assertEq(String valueName, Object expectedValue, Object actualValue) {
         Assert.assertEquals("EQ [ " + valueName + " ]", expectedValue, actualValue);
     }
 
-    public void assertLtEq(String valueName, long lesser, long greater) {
+    /**
+     * <p>Assertion utility for comparing two values with a less-than or equal-to test.
+     * Provides a more useful assertion message to {@link Assert#assertTrue}.</p>
+     *
+     * @param valueName The name of the values which are being compared.
+     * @param lesserValue The expected lesser value.
+     * @param greaterValue The expected greater value.
+     */
+    public void assertLtEq(String valueName, long lesserValue, long greaterValue) {
         Assert.assertTrue(
-                "LT_EQ [ " + valueName + " ] : [ " + Long.toString(lesser) + " ] [ " + greater + " ]",
-                (lesser <= greater));
+                "LT_EQ [ " + valueName + " ] : [ " + Long.toString(lesserValue) + " ] [ " + greaterValue + " ]",
+                (lesserValue <= greaterValue));
     }
 
-    public void assertLt(String valueName, long lesser, long greater) {
+    /**
+     * <p>Assertion utility for comparing two values with a less-than test.
+     * Provides a more useful assertion message to {@link Assert#assertTrue}.</p>
+     *
+     * @param valueName The name of the values which are being compared.
+     * @param lesserValue The expected lesser value.
+     * @param greaterValue The expected greater value.
+     */
+    public void assertLt(String valueName, long lesserValue, long greaterValue) {
         Assert.assertTrue(
-                "LT [ " + valueName + " ] : [ " + Long.toString(lesser) + " ] [ " + greater + " ]",
-                (lesser < greater));
+                "LT [ " + valueName + " ] : [ " + Long.toString(lesserValue) + " ] [ " + greaterValue + " ]",
+                (lesserValue < greaterValue));
     }
 
     // Span verification ...
 
+    /**
+     * <p>Select a span from a completed spans collection.  Select based on a specified
+     * span kind, and specified selection text.</p>
+     *
+     * <p>A subset of the completed spans collection is examined, working from the end
+     * of the collection.</p>
+     *
+     * <p>Selection is current against the operation of the completed span.  See
+     * {@link FATUtilsSpans.CompletedSpan#getOperation()}.  Additional selection
+     * capabilities could be added.</p>
+     *
+     * <p>The first matching span is selected and returned.  No more than one matching
+     * span is expected.  (This is not verified.)</p>
+     *
+     * @param completedSpans The overall collection of completed spans which is to
+     *     be searched.
+     * @param tailSize The number of spans to example, starting from the end of the
+     *     collection of completed spans.
+     * @param spanKind The type of span to select.
+     * @param selectText Text to search for in the operations of the completed spans.
+     *
+     * @return The span which matches the span kind and selection text.  Null if
+     *     no span is selected.
+     */
     public FATUtilsSpans.CompletedSpan findSpan(
         List<FATUtilsSpans.CompletedSpan> completedSpans, int tailSize,
         FATUtilsSpans.SpanKind spanKind, String... selectText) {
@@ -240,24 +306,46 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         return null;
     }
 
+    /**
+     * <p>Verify that a contiguous collection of spans is present as the tail
+     * of a collection of completed spans.</p>
+     *
+     * <p>All of the completed spans of the tail of the spans collection must have
+     * the same span ID (see {@link FATUtilsSpans.CompletedSpan#getTraceId()}, and
+     * exactly one of the spans must be a root span.</p>
+     *
+     * <p>All of the completed spans must have a non-null span ID, trace ID,
+     * and parent ID.  (A span with no parent is assigned "0" as its parent ID.)</p>
+     *
+     * <p>Fail with an assertion error if the verification fails.</p>
+     *
+     * @param completedSpans The overall collection of completed spans which is to
+     *    be examined.
+     * @param expectedSpanCount The number of spans which must be present
+     *    in the spans collection, and which must have the same span ID.
+     */
     public void verifyContiguousSpans(
         List<FATUtilsSpans.CompletedSpan> completedSpans,
-        int minimumSpanCount) {
+        int expectedSpanCount) {
 
         String methodName = "verifyContiguousSpans";
 
+        // *** The expected number of spans must be present. ***
+
         int actualSpanCount = completedSpans.size();
-        assertLtEq("Completed Spans", minimumSpanCount, actualSpanCount);
+        assertLtEq("Completed Spans", expectedSpanCount, actualSpanCount);
 
         int rootCount = 0;
 
         String initialTraceId = null;
 
-        for ( int spanNo = actualSpanCount - minimumSpanCount; spanNo < actualSpanCount; spanNo++ ) {
+        for ( int spanNo = actualSpanCount - expectedSpanCount; spanNo < actualSpanCount; spanNo++ ) {
             FATUtilsSpans.CompletedSpan nextSpan = completedSpans.get(spanNo);
             String nextTraceId = nextSpan.getTraceId();
             String nextSpanId = nextSpan.getSpanId();
             String nextParentId = nextSpan.getParentId();
+
+            // *** The trace, span, and parent IDs of each span cannot be null. ***
 
             Assert.assertNotNull("Trace id", nextTraceId);
             Assert.assertNotNull("Span id", nextSpanId);
@@ -275,7 +363,7 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         }
 
         if ( rootCount != 1 ) {
-            for ( int spanNo = actualSpanCount - minimumSpanCount; spanNo < actualSpanCount; spanNo++ ) {
+            for ( int spanNo = actualSpanCount - expectedSpanCount; spanNo < actualSpanCount; spanNo++ ) {
                 FATUtilsSpans.CompletedSpan nextSpan = completedSpans.get(spanNo);
                 info(methodName,
                     "Span [ " + Integer.toString(spanNo) + " ]" +
@@ -284,12 +372,22 @@ public class FATOpenTrace implements FATOpenTraceConstants {
             }
         }
 
+        // *** Exactly one root span must be present. ***
+
         assertEq("Root spans", Integer.valueOf(1), Integer.valueOf(rootCount));
     }
 
     public static final boolean IS_CONTAINER = true;
     public static final boolean IS_CLIENT = false;
 
+    /**
+     * <p>Build a print string for a selection array.  This is
+     * used for building strings for assertions.</p>
+     *
+     * @param selections An array of strings to convert to a single print string.
+     *
+     * @return A print string for the string array.
+     */
     public static String selectionText(String[] selections) {
         StringBuilder builder = new StringBuilder();
         builder.append("{");
@@ -312,6 +410,20 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         return builder.toString();
     }
 
+    /**
+     * <p>Type used for selecting completed spans.</p>
+     *
+     * <p>Conditions are specified for a pair of spans which are
+     * expected to have a parent-child relationship.</p>
+     *
+     * <p>A null condition may be specified for the parent span,
+     * in which case the child span is expected to be a root span.</p>
+     *
+     * <p>See {@link #findSpan}, which select spans based on the
+     * span kind and selection array as specified by the parent
+     * and child condition information expressed by a parent
+     * condition.</p>
+     */
     public static class ParentCondition {
         public final FATUtilsSpans.SpanKind parentKind;
         public final String[] parentSelection;
@@ -331,6 +443,26 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         }
     }
 
+    /**
+     * <p>Verify the parent-child relationships of a collection of
+     * completed spans against a collection of parent-child relationship
+     * conditions.</p>
+     *
+     * <p>Examine a subset of the spans, starting from the end of the spans
+     * collection.</p>
+     *
+     * <p>For each of the specified parent-child relationship conditions,
+     * select the parent and child spans according to that condition, and
+     * verify that parent ID of the child span is the same as the span ID of
+     * the parent span.</p>
+     *
+     * @param completedSpans The overall collection of spans which is to
+     *     be tested.
+     * @param tailSize The number of spans to examine within the completed
+     *     spans collection.
+     * @param parentConditions Conditions to verify within the completed
+     *     spans collection.
+     */
     public void verifyParents(
             List<FATUtilsSpans.CompletedSpan> completedSpans, int tailSize,
             ParentCondition... parentConditions) {
@@ -338,6 +470,8 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         String methodName = "verifyParents";
 
         for ( ParentCondition parentCondition : parentConditions ) {
+            // *** Verify that a child span was selected.  A child span must always be selected. ***
+
             FATUtilsSpans.CompletedSpan childSpan =
                 findSpan(completedSpans, tailSize,
                          parentCondition.childKind,
@@ -346,6 +480,8 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
             FATUtilsSpans.CompletedSpan parentSpan;
             if ( parentCondition.parentSelection == null ) {
+                // *** When the parent selection is null, verify that the child span is a root span. ***
+
                 parentSpan = null;
 
                 if ( !childSpan.isRoot() ) {
@@ -354,11 +490,15 @@ public class FATOpenTrace implements FATOpenTraceConstants {
                 Assert.assertTrue("Span [ " + selectionText(parentCondition.childSelection) + " ] [ " + childSpan + " ] is root", childSpan.isRoot());
 
             } else {
+                // *** When the parent selection is not null, verify that a parent span was selected. ***
+
                 parentSpan = findSpan(
                     completedSpans, tailSize,
                      parentCondition.parentKind,
                      parentCondition.parentSelection);
                 Assert.assertNotNull("Parent span selection [ " + selectionText(parentCondition.parentSelection) + " ]", parentSpan);
+
+                // *** And verify that the parent ID of the child span matches the span ID of the parent span. ***
 
                 String expectedParentId = parentSpan.getSpanId();
                 String actualParentId = childSpan.getParentId();
@@ -370,11 +510,25 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         }
     }
 
-    public List<FATUtilsSpans.CompletedSpan> getCompletedSpans(String requestPath) throws Exception {
+    /**
+     * <p>Retrieve the completed span state by making a service call to the
+     * opening tracing FAT service.</p>
+     *
+     * @param priorRequestPath The immediately preceding request made to the
+     *     open tracing FAT service.  Used for to match this request within
+     *     the overall flow of FAT service request.
+     *
+     * @return The list of completed spans obtained from the opening tracing FAT
+     *     service.
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
+    public List<FATUtilsSpans.CompletedSpan> getCompletedSpans(String priorRequestPath) throws Exception {
         String methodName = "getCompletedSpans";
 
         String requestUrl = getRequestUrl(GET_TRACER_STATE_PATH);
-        FATLogging.info(CLASS, methodName, "Request", requestPath);
+        FATLogging.info(CLASS, methodName, "Request", priorRequestPath);
 
         List<String> responseLines =
             FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl); // throws Exception
@@ -406,6 +560,19 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
     //
 
+    /**
+     * <p>Verify the spans of a prior request to obtain the tracer state.</p>
+     *
+     * <p>This is tested because it provides a simple, one span collection of
+     * completed spans.</p>
+     *
+     * <p>This is tested, also, because a problem of the parent span ID being
+     * incorrect set was noticed on the completed span information for the
+     * trace state request.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     public void verifyTracerStateEvent() throws Exception {
         List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_IMMEDIATE_PATH);
 
@@ -421,9 +588,19 @@ public class FATOpenTrace implements FATOpenTraceConstants {
     public void verifyTracerStateEvent(FATUtilsSpans.CompletedSpan completedSpan) throws Exception {
         String requestUrl = getRequestUrl(GET_TRACER_STATE_PATH); // throws UnsupportedEncodingException
 
+        // *** The completed span event must be a root span. ***
+
         assertEq("parent", FATUtilsSpans.NULL_PARENT_ID, completedSpan.getParentId());
+
+        // *** The completed span event must be be for a get tracer state request. ***
+
         assertEq("Operation", requestUrl, completedSpan.getOperation());
+
+        // *** The completed span must have valid state and finish times. ***
+
         assertLtEq("Operation time", completedSpan.getStart(), completedSpan.getFinish());
+
+        // *** The tags of the completed span must be as expected for a get tracer state request. ***
 
         verifyTags(completedSpan,
                 FATUtilsSpans.TAG_HTTP_METHOD, "GET",
@@ -445,6 +622,16 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
     // Immediate request tests ...
 
+    /**
+     * <p>Test of a simple, immediate, request.</p>
+     *
+     * <p>Perform an immediate request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testImmediate() throws Exception {
         verifyImmediateService();
@@ -469,8 +656,13 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         // throws Exception
         info(methodName, "Actual Response", actualResponseLines);
 
+        // *** The immediate request is expected to have exactly one line of text. ***
+
         assertEq("Line count",
                  Integer.valueOf(1), Integer.valueOf(actualResponseLines.size()));
+
+        // *** And is expected to have the response text as specified through the request parameter. ***
+
         assertEq("Reponse text",
                  responseText, actualResponseLines.get(0));
     }
@@ -480,7 +672,11 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
         int tailSize = 1;
 
+        // *** The immediate request is expected to generate exactly one completed span. ***
+
         verifyContiguousSpans(completedSpans, tailSize);
+
+        // *** The single completed span must be a root span, and must be for the immediate get. ***
 
         ParentCondition getImmediateCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, null,
@@ -488,6 +684,16 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         verifyParents(completedSpans, tailSize, getImmediateCondition);
     }
 
+    /**
+     * <p>Test of a simple request which contains a single manually generated span..</p>
+     *
+     * <p>Perform  the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testManual() throws Exception {
         verifyManualService();
@@ -512,8 +718,13 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         // throws Exception
         info(methodName, "Actual Response", actualResponseLines);
 
+        // *** The manual request is expected to have exactly one line of text. ***
+
         assertEq("Line count",
                  Integer.valueOf(1), Integer.valueOf(actualResponseLines.size()));
+
+        // *** And is expected to have the response text as specified through the request parameter. ***
+
         assertEq("Reponse text",
                  responseText, actualResponseLines.get(0));
     }
@@ -522,6 +733,8 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_MANUAL_PATH);
 
         int tailSize = 2;
+
+        // *** The manual request is expected to generate exactly two completed spans. ***
 
         verifyContiguousSpans(completedSpans, tailSize);
 
@@ -539,6 +752,18 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
     // Asynchronous request tests ...
 
+    /**
+     * <p>Test of a simple request which has an asynchronous response.</p>
+     *
+     * <p>Test with a delay of two (2) seconds on the response.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testDelayed2() throws Exception {
         verifyDelayedService(2);
@@ -546,6 +771,18 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         verifyTracerStateEvent();
     }
 
+    /**
+     * <p>Test of a simple request which has an asynchronous response.</p>
+     *
+     * <p>Test with a delay of four (4) seconds on the response.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testDelayed4() throws Exception {
         verifyDelayedService(4);
@@ -553,6 +790,18 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         verifyTracerStateEvent();
     }
 
+    /**
+     * <p>Test of a simple request which has an asynchronous response.</p>
+     *
+     * <p>Test with a delay of six (6) seconds on the response.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testDelayed6() throws Exception {
         verifyDelayedService(6);
@@ -578,8 +827,13 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         // throws Exception
         info(methodName, "Actual Response", actualResponseLines);
 
+        // *** The delayed request is expected to have exactly one line of text. ***
+
         assertEq("Line count",
                  Integer.valueOf(1), Integer.valueOf(actualResponseLines.size()));
+
+        // *** And is expected to have the response text as specified through the request parameter. ***
+
         assertEq("Reponse text",
                  responseText, actualResponseLines.get(0));
    }
@@ -588,6 +842,8 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_DELAYED_PATH);
 
         int tailSize = 1;
+
+        // *** The delayed request is expected to generate exactly one completed span. ***
 
         verifyContiguousSpans(completedSpans, tailSize);
 
@@ -599,6 +855,16 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
     // Complex (nested) request tests ...
 
+    /**
+     * <p>Test of a simple request through the nesting service.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testNested0() throws Exception {
         verifyNestedService0();
@@ -608,6 +874,22 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
     //
 
+    /**
+     * <p>Test requests through the nesting service.</p>
+     *
+     * <p>At nesting level 1, call out three times to the delayed service.
+     * Make synchronous (in-order) calls to the delayed service.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * <p>For verification details, see {@link #verifyNestedSpans1}, which examines
+     * the generated completed spans in detail.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testNested1Sync() throws Exception {
         verifyNestedService1(IS_SYNC);
@@ -615,6 +897,23 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         verifyTracerStateEvent();
     }
 
+    /**
+     * <p>Test requests through the nesting service.</p>
+     *
+     * <p>At nesting level 2, the service calls back to itself with the nest level
+     * changed to 1, which then call out three times to the delayed service.  Make
+     * synchronous (in-order) calls to the delayed service.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * <p>For verification details, see {@link #verifyNestedSpans2}, which examines
+     * the generated completed spans in detail.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testNested2Sync() throws Exception {
         verifyNestedService2(IS_SYNC);
@@ -622,6 +921,23 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         verifyTracerStateEvent();
     }
 
+    /**
+     * <p>Test requests through the nesting service.</p>
+     *
+     * <p>At nesting level 4, the service calls back to itself three times,
+     * then calls out three times to the delayed service.  Make synchronous
+     * (in-order) calls to the delayed service.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * <p>For verification details, see {@link #verifyNestedSpans4}, which examines
+     * the generated completed spans in detail.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testNested4Sync() throws Exception {
         verifyNestedService4(IS_SYNC);
@@ -631,6 +947,22 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
     //
 
+    /**
+     * <p>Test requests through the nesting service.</p>
+     *
+     * <p>At nesting level 1, call out three times to the delayed service.
+     * Make asynchronous calls to the delayed service.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * <p>For verification details, see {@link #verifyNestedSpans1}, which examines
+     * the generated completed spans in detail.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testNested1Async() throws Exception {
         verifyNestedService1(IS_ASYNC);
@@ -638,6 +970,23 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         verifyTracerStateEvent();
     }
 
+    /**
+     * <p>Test requests through the nesting service.</p>
+     *
+     * <p>At nesting level 2, the service calls back to itself with the nest level
+     * changed to 1, which then call out three times to the delayed service.
+     * Make asynchronous calls to the delayed service.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * <p>For verification details, see {@link #verifyNestedSpans2}, which examines
+     * the generated completed spans in detail.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testNested2Async() throws Exception {
         verifyNestedService2(IS_ASYNC);
@@ -645,6 +994,23 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         verifyTracerStateEvent();
     }
 
+    /**
+     * <p>Test requests through the nesting service.</p>
+     *
+     * <p>At nesting level 4, the service calls back to itself three times,
+     * then calls out three times to the delayed service.  Make asynchronous
+     * calls to the delayed service.</p>
+     *
+     * <p>Perform the request; verify the results of that request.  Obtain
+     * complete spans for the request, and verify that these are as expected.
+     * Verify that the completed spans request has valid data.</p>
+     *
+     * <p>For verification details, see {@link #verifyNestedSpans4}, which examines
+     * the generated completed spans in detail.</p>
+     *
+     * @throws Exception Thrown if the service request failed, or if the completed
+     *     spans could not be marshalled from the text obtained from the FAT service.
+     */
     @Test
     public void testNested4Async() throws Exception {
         verifyNestedService4(IS_ASYNC);
@@ -687,8 +1053,13 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         // throws Exception
         info(methodName, "Actual Response", actualResponseLines);
 
+        // *** The delayed request is expected to have exactly one line of text. ***
+
         assertEq("Line count",
                  Integer.valueOf(1), Integer.valueOf(actualResponseLines.size()));
+
+        // *** And is expected to have the response text as specified through the request parameter. ***
+
         assertEq("Reponse text",
                  responseText, actualResponseLines.get(0));
     }
@@ -697,6 +1068,8 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
 
         int tailSize = 1;
+
+        // *** The delayed request is expected to generate exactly one completed span. ***
 
         verifyContiguousSpans(completedSpans, tailSize);
 
@@ -740,7 +1113,12 @@ public class FATOpenTrace implements FATOpenTraceConstants {
 
         int tailSize = 7;
 
+        // *** The nested request is expected to generate exactly seven (7) ***
+        // *** completed span (per the preceding comment). ***
+
         verifyContiguousSpans(completedSpans, tailSize);
+
+        // *** A root span for the initial get nested request. ***
 
         String[] getNested1Text = getNestedCondition(1);
         ParentCondition getNested1Condition = new ParentCondition(
@@ -751,6 +1129,9 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         String[] getDelayed4Text = getDelayedCondition(4);
         String[] getDelayed6Text = getDelayedCondition(6);
 
+        // *** A pair of completed spans for the call from root get nested ***
+        // *** request to the two second delay request. ***
+
         ParentCondition getDelay2ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text);
@@ -758,12 +1139,18 @@ public class FATOpenTrace implements FATOpenTraceConstants {
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text,
                 FATUtilsSpans.SpanKind.SERVER, getDelayed2Text);
 
+        // *** A pair of completed spans for the call from root get nested ***
+        // *** request to the four second delay request. ***
+
         ParentCondition getDelay4ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text);
         ParentCondition getDelay4ContainerCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text,
                 FATUtilsSpans.SpanKind.SERVER, getDelayed4Text);
+
+        // *** A pair of completed spans for the call from root get nested ***
+        // *** request to the six second delay request. ***
 
         ParentCondition getDelay6ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
@@ -814,16 +1201,24 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         //   -> TopInFromBelow
         // -> TopOutToAbove
 
-        // Each '*' shows a new span; we expect seven (9) spans to be completed.
+        // Each '*' shows a new span; we expect nine (9) spans to be completed.
 
         int tailSize = 9;
 
+        // *** The nested request is expected to generate exactly nine (9) ***
+        // *** completed span (per the preceding comment). ***
+
         verifyContiguousSpans(completedSpans, tailSize);
+
+        // *** A root span for the initial depth 2 get nested request. ***
 
         String[] getNested2Text = getNestedCondition(2);
         ParentCondition getNested2Condition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, null,
                 FATUtilsSpans.SpanKind.SERVER, getNested2Text);
+
+        // *** A pair of completed spans for the call from nest level 2 ***
+        // *** request to the nest level 1 request. ***
 
         String[] getNested1Text = getNestedCondition(1);
         ParentCondition getNested1ClientCondition = new ParentCondition(
@@ -837,6 +1232,9 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         String[] getDelayed4Text = getDelayedCondition(4);
         String[] getDelayed6Text = getDelayedCondition(6);
 
+        // *** A pair of completed spans for the call from nest level 1 ***
+        // *** request to the two second delay request. ***
+
         ParentCondition getDelay2ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text);
@@ -844,12 +1242,18 @@ public class FATOpenTrace implements FATOpenTraceConstants {
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text,
                 FATUtilsSpans.SpanKind.SERVER, getDelayed2Text);
 
+        // *** A pair of completed spans for the call from nest level 1 ***
+        // *** request to the four second delay request. ***
+
         ParentCondition getDelay4ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text);
         ParentCondition getDelay4ContainerCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text,
                 FATUtilsSpans.SpanKind.SERVER, getDelayed4Text);
+
+        // *** A pair of completed spans for the call from nest level 1 ***
+        // *** request to the six second delay request. ***
 
         ParentCondition getDelay6ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
@@ -911,16 +1315,27 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         //   -> TopInFromBelow
         // -> TopOutToAbove [d=4]
 
-        // Each '*' shows a new span; we expect seven (13) spans to be completed.
+        // Each '*' shows a new span; we expect thirteen (13) spans to be completed.
 
         int tailSize = 13;
 
+        // *** The nested request is expected to generate exactly thirteen (13) ***
+        // *** completed span (per the preceding comment. ***
+
         verifyContiguousSpans(completedSpans, tailSize);
+
+        // *** The completed spans of the nested request have a complex relationship, ***
+        // *** as described by the preceding comment. ***
+
+        // *** A root span for the initial depth 2 get nested request. ***
 
         String[] getNested4Text = getNestedCondition(4);
         ParentCondition getNested4Condition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, null,
                 FATUtilsSpans.SpanKind.SERVER, getNested4Text);
+
+        // *** A pair of completed spans for the call from nest level 4 ***
+        // *** request to the nest level 3 request. ***
 
         String[] getNested3Text = getNestedCondition(3);
         ParentCondition getNested3ClientCondition = new ParentCondition(
@@ -930,6 +1345,9 @@ public class FATOpenTrace implements FATOpenTraceConstants {
                 FATUtilsSpans.SpanKind.CLIENT, getNested3Text,
                 FATUtilsSpans.SpanKind.SERVER, getNested3Text);
 
+        // *** A pair of completed spans for the call from nest level 3 ***
+        // *** request to the nest level 2 request. ***
+
         String[] getNested2Text = getNestedCondition(2);
         ParentCondition getNested2ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested3Text,
@@ -937,6 +1355,9 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         ParentCondition getNested2ContainerCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.CLIENT, getNested2Text,
                 FATUtilsSpans.SpanKind.SERVER, getNested2Text);
+
+        // *** A pair of completed spans for the call from nest level 2 ***
+        // *** request to the nest level 1 request. ***
 
         String[] getNested1Text = getNestedCondition(1);
         ParentCondition getNested1ClientCondition = new ParentCondition(
@@ -950,6 +1371,9 @@ public class FATOpenTrace implements FATOpenTraceConstants {
         String[] getDelayed4Text = getDelayedCondition(4);
         String[] getDelayed6Text = getDelayedCondition(6);
 
+        // *** A pair of completed spans for the call from nest level 1 ***
+        // *** request to the two second delay request. ***
+
         ParentCondition getDelay2ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text);
@@ -957,12 +1381,18 @@ public class FATOpenTrace implements FATOpenTraceConstants {
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text,
                 FATUtilsSpans.SpanKind.SERVER, getDelayed2Text);
 
+        // *** A pair of completed spans for the call from nest level 1 ***
+        // *** request to the four second delay request. ***
+
         ParentCondition getDelay4ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text);
         ParentCondition getDelay4ContainerCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text,
                 FATUtilsSpans.SpanKind.SERVER, getDelayed4Text);
+
+        // *** A pair of completed spans for the call from nest level 1 ***
+        // *** request to the six second delay request. ***
 
         ParentCondition getDelay6ClientCondition = new ParentCondition(
                 FATUtilsSpans.SpanKind.SERVER, getNested1Text,

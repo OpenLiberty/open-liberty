@@ -23,15 +23,71 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONArtifact;
 import com.ibm.json.java.JSONObject;
 
+/**
+ * <p>Utilities for working with instances of {@link FATUtilsSpans.CompletedSpan}.</p>
+ *
+ * <p>Two general sets of utility are provided:</p>
+ *
+ * <p>A representation of a completed span is provided by {@link FATUtilsSpans.CompletedSpan}.</p>
+ *
+ * <p>Code to parse and marshall completed spans is provided, with the input being the JSON
+ * print string obtained from the mock tracer.  The flow is that the mock tracer emits the
+ * collection of all completed spans as its print string, using JSON formatting for the print
+ * string.  The test application provides a service entry which obtains the print string from
+ * the injected tracer, and provides that as a text string as the service response.  The parse
+ * utility code processes the JSON print string and marshalls completed span instances which
+ * should match the original completed spans of the tracer.</p>
+ *
+ * <p>See also {@link FATOpentracing#verifyContiguousSpans(List, int)} and
+ * {@link FATOpentracing#verifyParents(List, int, com.ibm.ws.testing.opentracing.test.FATOpentracing.ParentCondition...)},
+ * which perform detailed validation of completed span data.</p>
+ */
 public class FATUtilsSpans {
+    /**
+     * <p>Low level JSON parsing: Parse a JSON print string into a {@link JSONArtifact}.</p>
+     *
+     * @param source The text which is to be parsed into a {@link JSONArtifact}.
+     *
+     * @return The marshalled JSON artifact.
+     *
+     * @throws IOException Thrown if parsing failed.
+     */
     public static JSONArtifact jsonParse(String source) throws IOException {
-        return jsonParse(source, 0, source.length());
+        return jsonParse(source, 0, source.length()); // 'jsonParse' throws IOException
     }
 
+    /**
+     * <p>Low level JSON parsing: Parse a JSON print string into a {@link JSONArtifact}.</p>
+     *
+     * @param source The text which is to be parsed into a {@link JSONArtifact}.
+     * @param initialSourceOffset The offset at which to begin parsing the JSON
+     *     print string.
+     * @param finalSourceOffset The offset at which to stop parsing the JSON print
+     *     string.
+     *
+     * @return The marshalled JSON artifact.
+     *
+     * @throws IOException Thrown if parsing failed.
+     */
     public static JSONArtifact jsonParse(String source, int initialSourceOffset, int finalSourceOffset) throws IOException {
         return JSON.parse( new SubStringReader(source, initialSourceOffset, finalSourceOffset) ); // throws IOException
     }
 
+    /**
+     * <p>Convert a {@link JSONArtifact} into a {@JSONObject}.  Throw an {@link IOException}
+     * if the JSON artifact is not a JSON object.</p>
+     *
+     * <p>This could be done as a simple type conversion.  This method is provided to generate
+     * more detailed exception text, and to throw an {@link IOException} instead of a
+     * {@link ClassCastException}.</p>
+     *
+     * @param jsonArtifact The JSON artifact which is to be converted into a JSON object.
+     * @param elementType A description of the type of the JSON object which is expected.
+     *
+     * @return The JSON artifact type converted to a JSON object.
+     *
+     * @throws IOException Thrown if the JSON artifact is not a JSON object.
+     */
     private static JSONObject asJSONObject(JSONArtifact jsonArtifact, String elementType) throws IOException {
         if ( jsonArtifact instanceof JSONArray ) {
             throw new IOException("Array received as [ " + elementType + " ] Span JSON text");
@@ -118,7 +174,6 @@ public class FATUtilsSpans {
      * <p>White-space outside of quoted regions is not guaranteed to follow
      * a particular pattern.</p>
      */
-
     public static String toString(List<FATUtilsSpans.CompletedSpan> completedSpans) {
         StringBuilder result = new StringBuilder();
 
@@ -149,6 +204,13 @@ public class FATUtilsSpans {
     public static final String SPAN_KIND_SERVER = "server";
     public static final String SPAN_KIND_CLIENT = "client";
 
+    /**
+     * <p>Enumeration of the types of completed spans which are possible.</p>
+     *
+     * <p>The span type is expected to be stored using tag {@link #TAG_SPAN_KIND},
+     * as either {@link SPAN_KIND_SERVER}, {@link SPAN_KIND_CLIENT}, or unstored
+     * for manually created spans.</p>
+     */
     public static enum SpanKind {
         SERVER(SPAN_KIND_SERVER),
         CLIENT(SPAN_KIND_CLIENT),
@@ -175,32 +237,42 @@ public class FATUtilsSpans {
 
     //
 
+    /**
+     * <p>Fat testing encoding of completed span information.</p>
+     *
+     * <p>Data obtained from the mock tracer is a JSON formatted print
+     * string which encodes an array of completed spans.</p>
+     */
     public static final class CompletedSpan {
-        // Correlation ID shared between spans descending from the same initial
-        // request.
+        /** <p>Correlation ID shared between spans descending from the same initial request.</p> */
         private final String traceId;
-        // The ID of the parent span; 0 if this is an initial request.
+        /** <p>The ID of the parent span; 0 if this is an initial request.</p> */
         private final String parentId;
-        // The span's unique ID.  Never 0.
+        /** <p>he span's unique ID.  Never 0.</p> */
         private final String spanId;
 
-        // Request URL, or the specified value for an explicitly created span.
+        /** <p>Request URL, or the specified value for an explicitly created span.</p> */
         private final String operation;
 
-        // Start time of the span, in MS.
+        /** <p>Start time of the span, in MS.</p> */
         private final long start;
-        // Finish time of the span, in MS.
+        /** <p>Finish time of the span, in MS.</p> */
         private final long finish;
-        // Elapsed time of the span, in MS.
+        /** <p>Elapsed time of the span, in MS.</p> */
         private final long elapsed;
 
-        // Span tags:
-        // The Liberty implementation always stores:
-        //   'span.kind': the request kind (server, client, or null for explicit spans),
-        //   'span.url': the request URL
-        //   'span.httpMethod': the request method
-        //   'span.httpStatus': the request return code
-        //   'span.error': true or false, telling if the request completed with an error
+        /** <p>Span tags:</p>
+         *
+         * <p>The Liberty implementation always stores:</p>
+         *
+         * <ul>
+         * <li>'span.kind': the request kind (server, client, or null for explicit spans),</ul>
+         * <li>'span.url': the request URL</li>
+         * <li>'span.httpMethod': the request method</li>
+         * <li>'span.httpStatus': the request return code</li>
+         * <li>'span.error': true or false, telling if the request completed with an error</li>
+         * </ul>
+         */
         private final Map<String, Object> tags;
 
         //
@@ -213,6 +285,14 @@ public class FATUtilsSpans {
             return parentId;
         }
 
+        /**
+         * <p>Tell if this span is a root span.  A request which arrives to a service
+         * which was not sent while handling a prior request is a root span.</p>
+         *
+         * <p>A root span has the null parent ID, "0".</p>
+         *
+         * @return True or false telling if this is a root span.
+         */
         public boolean isRoot() {
             String useParentId = getParentId();
             return ( (useParentId != null) && useParentId.equals(NULL_PARENT_ID) );
@@ -310,6 +390,19 @@ public class FATUtilsSpans {
 
         //
 
+        /**
+         * <p>Create a completed span using attribute data obtained
+         * from a JSON parse of a completed span print string.</p>
+         *
+         * <p>See {@link #ATTRIBUTE_NAMES} for the names of the expected
+         * attribute values.</p>
+         *
+         * <p>The "tags" value is expected to be a mapping.  Other values
+         * are {@link String} or {@link Number}.</p>
+         *
+         * @param attributeData Attribute data from which to create the
+         *     completed span.
+         */
         @SuppressWarnings("unchecked")
         public CompletedSpan(Map<String, ? extends Object> attributeData) {
             this( (String) attributeData.get("traceId"),
@@ -374,6 +467,14 @@ public class FATUtilsSpans {
 
         private final int hashCode;
 
+        /**
+         * <p>Override of hash code to an implementation based on the completed
+         * span attribute values.</p>
+         *
+         * <p>An override is necessary because {@link #hashCode} was re-implemented.</p>
+         *
+         * @return The integer hash code of this complete span.
+         */
         @Override
         public int hashCode() {
             return hashCode;
@@ -394,6 +495,15 @@ public class FATUtilsSpans {
             return useHashCode;
         }
 
+        /**
+         * <p>Tell if an object is equal to this span.  The object is equal if
+         * it is non-null, is a completed span, and has attribute values equal
+         * to this span's attribute values.</p>
+         *
+         * @param other An object to compare against this span.
+         *
+         * @return True or false telling if the object is equal to this span.
+         */
         @Override
         public boolean equals(Object other) {
             if ( other == null ) {

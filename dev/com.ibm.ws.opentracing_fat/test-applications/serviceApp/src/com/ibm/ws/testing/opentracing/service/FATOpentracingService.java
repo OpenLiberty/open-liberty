@@ -35,10 +35,10 @@ import io.opentracing.Tracer;
  */
 @ApplicationPath("rest") // 'APP_PATH' in the constants
 @Path("testService") // 'SERVICE_PATH' in the constants
-public class FATOpenTraceService extends Application implements FATOpenTraceConstants {
+public class FATOpentracingService extends Application implements FATOpentracingConstants {
     // Trace ...
 
-    private static final String CLASS_NAME = FATOpenTraceService.class.getSimpleName();
+    private static final String CLASS_NAME = FATOpentracingService.class.getSimpleName();
 
     @SuppressWarnings("unused")
     private static void trace(String methodName) {
@@ -257,7 +257,7 @@ public class FATOpenTraceService extends Application implements FATOpenTraceCons
     /** <p>The count of milliseconds in one second.</p> */
     private final int MSEC_IN_SEC = 1000;
 
-    private static final String INNER_CLASS_NAME = FATOpenTraceService.class.getSimpleName() + "$Runnable";
+    private static final String INNER_CLASS_NAME = FATOpentracingService.class.getSimpleName() + "$Runnable";
 
     protected static void innerTraceEnter(
             String methodName,
