@@ -32,4 +32,7 @@ public class TestConstants {
     public static final long WORK_TIME = 5 * TEST_TIME_UNIT;
 
     public static final long EXECUTION_THRESHOLD = WORK_TIME + FUTURE_THRESHOLD;
+
+    //a test timeout used to prevent a test hang when things go wrong
+    public static final long TEST_TIMEOUT = 10 * TEST_TIME_UNIT;
 }

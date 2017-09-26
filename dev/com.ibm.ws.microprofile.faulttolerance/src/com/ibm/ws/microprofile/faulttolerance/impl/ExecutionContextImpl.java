@@ -19,6 +19,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.impl.async.QueuedFuture;
 import com.ibm.ws.microprofile.faulttolerance.spi.FTExecutionContext;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 public class ExecutionContextImpl implements FTExecutionContext {
 
@@ -79,7 +80,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
     }
 
     public void start(QueuedFuture<?> future) {
-        if(this.closed){
+        if (this.closed) {
             throw new IllegalStateException();
         }
         this.startTime = System.nanoTime();
@@ -195,7 +196,7 @@ public class ExecutionContextImpl implements FTExecutionContext {
     private void debugRelativeTime(String message) {
         //System.out.println(getDescriptor() + " (" + FTConstants.relativeSeconds(startTime, System.nanoTime()) + "): " + message);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            FTConstants.debugRelativeTime(tc, getDescriptor(), message, this.startTime);
+            FTDebug.debugRelativeTime(tc, getDescriptor(), message, this.startTime);
         }
     }
 

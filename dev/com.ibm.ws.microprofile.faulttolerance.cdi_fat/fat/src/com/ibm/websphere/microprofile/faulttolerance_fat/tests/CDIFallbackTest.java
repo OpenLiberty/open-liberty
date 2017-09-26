@@ -52,6 +52,18 @@ public class CDIFallbackTest extends LoggingTest {
         getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackMethodConfig", "SUCCESS");
     }
 
+    @Test
+    public void testFallbackAsync() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackAsync", "SUCCESS");
+    }
+
+    @Test
+    public void testFallbackMethodAsync() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/fallback?testMethod=testFallbackMethodAsync", "SUCCESS");
+    }
+
     /** {@inheritDoc} */
     @Override
     protected SharedServer getSharedServer() {

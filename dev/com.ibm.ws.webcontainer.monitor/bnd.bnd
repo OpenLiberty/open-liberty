@@ -21,8 +21,10 @@ Import-Package: \
     javax.servlet; version="[2.6,3)", \
     !*.internal.*,*
 
+Export-Package: \
+	com.ibm.ws.webcontainer.monitor
+
 Private-Package: \
-	com.ibm.ws.webcontainer.monitor, \
 	com.ibm.websphere.webcontainer
 
 Include-Resource: \
@@ -48,4 +50,5 @@ instrument.disabled: true
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.container.service;version=latest
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest

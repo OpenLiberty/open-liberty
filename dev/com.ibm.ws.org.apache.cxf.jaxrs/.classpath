@@ -2,12 +2,5 @@
 <classpath>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="lib/cxf-core-3.1.11.jar" sourcepath="lib/apache-cxf-3.1.11-src.zip"/>
-	<classpathentry kind="lib" path="lib/cxf-rt-frontend-jaxrs-3.1.11.jar" sourcepath="lib/apache-cxf-3.1.11-src.zip"/>
-	<classpathentry kind="lib" path="lib/cxf-rt-rs-client-3.1.11.jar" sourcepath="lib/apache-cxf-3.1.11-src.zip"/>
-	<classpathentry kind="lib" path="lib/cxf-rt-rs-service-description-3.1.11.jar" sourcepath="lib/apache-cxf-3.1.11-src.zip"/>
-	<classpathentry kind="lib" path="lib/cxf-rt-transports-http-3.1.11.jar" sourcepath="lib/apache-cxf-3.1.11-src.zip"/>
-	<classpathentry kind="lib" path="lib/cxf-tools-common-3.1.11.jar" sourcepath="lib/apache-cxf-3.1.11-src.zip"/>
-	<classpathentry kind="lib" path="lib/cxf-tools-wadlto-jaxrs-3.1.11.jar" sourcepath="lib/apache-cxf-3.1.11-src.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

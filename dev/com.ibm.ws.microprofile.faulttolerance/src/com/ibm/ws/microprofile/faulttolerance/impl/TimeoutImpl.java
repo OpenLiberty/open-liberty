@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.microprofile.faulttolerance.impl.async.QueuedFuture;
 import com.ibm.ws.microprofile.faulttolerance.spi.TimeoutPolicy;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 /**
  *
@@ -289,7 +290,7 @@ public class TimeoutImpl {
     @Trivial
     private void debugRelativeTime(String message) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            FTConstants.debugRelativeTime(tc, getDescriptor(), message, this.start);
+            FTDebug.debugRelativeTime(tc, getDescriptor(), message, this.start);
         }
     }
 
@@ -302,7 +303,7 @@ public class TimeoutImpl {
     @Trivial
     private void debugTime(String message, long nanos) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            FTConstants.debugTime(tc, getDescriptor(), message, nanos);
+            FTDebug.debugTime(tc, getDescriptor(), message, nanos);
         }
     }
 

@@ -30,6 +30,7 @@ import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDICircuitBreaker
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIFallbackTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDIRetryTest;
 import com.ibm.websphere.microprofile.faulttolerance_fat.tests.CDITimeoutTest;
+import com.ibm.websphere.microprofile.faulttolerance_fat.validation.ValidationTest;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.SharedServer;
 
@@ -44,6 +45,7 @@ import com.ibm.ws.fat.util.SharedServer;
                 CDIAnnotationsDisabledTest.class,
                 TestMultiModuleConfigLoad.class,
                 TestMultiModuleClassLoading.class,
+                ValidationTest.class,
 })
 public class FATSuite {
 

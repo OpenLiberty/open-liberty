@@ -1,0 +1,24 @@
+<server description="new server">
+
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-1.0</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+	</featureManager>
+
+	<ldapRegistry id="LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.1.name}" port="${ldap.server.1.port}" ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m">
+		<failoverServers name="failoverLdapServers">
+			<server host="${ldap.server.4.name}" port="${ldap.server.4.port}"/>
+       	</failoverServers>
+	</ldapRegistry>
+    
+    <federatedRepository maxSearchResults="2000" searchTimeout="400000ms">
+        <primaryRealm name="defaultWIMFileBasedRealm">
+            <participatingBaseEntry name="o=invalid"/>
+    	</primaryRealm>
+    </federatedRepository>
+</server>

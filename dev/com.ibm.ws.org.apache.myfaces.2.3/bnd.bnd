@@ -75,7 +75,7 @@ instrument.classesExcludes: \
     **/org/**
 
 Include-Resource: \
-  @lib/myfaces-impl-2.3.0-beta.jar!/META-INF/**, \
+  @${repo;org.apache.myfaces.core.impl;2.3.0.beta;EXACT}!/META-INF/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -138,7 +138,7 @@ Import-Package: !com.google.inject, \
  *
 
 -buildpath: \
-	lib/myfaces-impl-2.3.0-beta.jar;version=file,\
+	org.apache.myfaces.core.impl;strategy=exact;version=2.3.0.beta,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
 	com.ibm.ws.jsf.shared;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.3;version=latest,\

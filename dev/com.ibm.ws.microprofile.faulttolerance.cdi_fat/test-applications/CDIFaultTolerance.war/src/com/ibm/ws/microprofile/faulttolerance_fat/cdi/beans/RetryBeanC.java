@@ -56,6 +56,17 @@ public class RetryBeanC {
         throw new ConnectException("RetryBeanC Connect: " + connectCount);
     }
 
+    /**
+     * Set the maxRetries to 1 - which would lead to test failure - but this method's config
+     * will be overridden to 4 in microprofile-config.properties so that the connectCMaxRetries1 method will
+     * be executed the number of times expected by the test.
+     */
+    @Retry(maxRetries = 1)
+    public void connectCMaxRetries1() throws ConnectException {
+        connectCount++;
+        throw new ConnectException("RetryBeanC Connect: " + connectCount);
+    }
+
     public int getConnectCount() {
         return connectCount;
     }

@@ -18,7 +18,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -29,7 +28,6 @@ import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.YassonTestServlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
 public class JSONBInAppTest extends FATServletClient {
     private static final String appName = "jsonbapp";
 
