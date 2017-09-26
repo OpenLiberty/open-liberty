@@ -90,9 +90,7 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      * Fetch the latest version of the property. If not up to date then resolve to the latest
      * value, inline.
      *
-     * TODO: Make resolving property value an offline task
-     *
-     * @return
+     * @return the latest version of the value, either from the cache or the underlying source
      */
     public CachedCompositeValue<T> getSourced() {
         boolean fromCache = true;
@@ -129,9 +127,7 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      * Fetch the latest version of the property. If not up to date then resolve to the latest
      * value, inline.
      *
-     * TODO: Make resolving property value an offline task
-     *
-     * @return
+     * @return the latest version of the value, either from the cache or the underlying source
      */
     @Override
     public T get() {
@@ -159,7 +155,13 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
      */
     protected abstract CachedCompositeValue<T> resolveCurrent() throws Exception;
 
-    /** {@inheritDoc} */
+    /**
+     * CachedCompositeProperty is used by CachedCompositePropertyContainer as a tuple of type and value.
+     * The container wants a one-to-one mapping from type to value but since there are rarely more than
+     * just a couple of types, a Map is too heavy. A List is used instead and the code checks to see if
+     * a type already exists using the equals and hashCode methods of CachedCompositeProperty.
+     * Therefore, only type is used in the calculation of these methods.
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -169,7 +171,9 @@ public abstract class CachedCompositeProperty<T> implements Property<T> {
         return result;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * @see #hashCode()
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
