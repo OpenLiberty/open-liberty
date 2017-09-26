@@ -47,20 +47,13 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
     public static final String SERVER_SPAN_PROP_ID = OpentracingContainerFilter.class.getName() + ".Span";
 
     /** {@inheritDoc} */
-    @Trivial
     @Override
     public void filter(ContainerRequestContext incomingRequestContext) throws IOException {
         String methodName = "filter(incoming)";
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.entry(tc, methodName, incomingRequestContext);
-        }
 
         Tracer tracer = OpentracingTracerManager.getTracer();
         if ( tracer == null ) {
             Tr.error(tc, "OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST");
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-                Tr.exit(tc, methodName);
-            }
             return;
         } else {
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -102,29 +95,17 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
             Tr.debug(tc, methodName + " incomingSpan", newIncomingSpan);
         }
-
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.exit(tc, methodName);
-        }
     }
 
     /** {@inheritDoc} */
-    @Trivial
     @Override
     public void filter(ContainerRequestContext incomingRequestContext,
                        ContainerResponseContext outgoingResponseContext) throws IOException {
-
         String methodName = "filter(outgoing)";
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.entry(tc, methodName, incomingRequestContext, outgoingResponseContext);
-        }
 
         Span incomingSpan = (Span) incomingRequestContext.getProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
         if ( incomingSpan == null ) {
             Tr.error(tc, "OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST");
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-                Tr.exit(tc, methodName);
-            }
             return;
         } else {
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
@@ -149,10 +130,6 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
         } finally {
             incomingSpan.finish();
             incomingRequestContext.removeProperty(OpentracingContainerFilter.SERVER_SPAN_PROP_ID);
-        }
-
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.exit(tc, methodName);
         }
     }
 

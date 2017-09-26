@@ -69,20 +69,13 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
      *
      * @throws IOException Thrown if handling the request failed.
      */
-    @Trivial
     @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
         String methodName = "filter(outgoing)";
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.entry(tc, methodName, clientRequestContext);
-        }
 
         Tracer tracer = OpentracingTracerManager.getTracer();
         if ( tracer == null ) {
             Tr.error(tc, "OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST");
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-                Tr.exit(tc, methodName);
-            }
             return;
         } else {
             if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
@@ -94,7 +87,7 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, methodName + " outgoing URL", outgoingURL);
         }
-        
+
         Tracer.SpanBuilder spanBuilder = tracer.buildSpan(outgoingURL);
 
         spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CLIENT);
@@ -131,10 +124,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
         // Note the use of the span stored under the client property: This is to
         // create the association of the outgoing request to the incoming response.
         clientRequestContext.setProperty(CLIENT_SPAN_PROP_ID, newOutoingSpan);
-
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.exit(tc, methodName);
-        }
     }
 
     /**
@@ -148,14 +137,10 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
      *
      * @throws IOException Thrown if handling the response failed.
      */
-    @Trivial
     @Override
     public void filter(ClientRequestContext clientRequestContext,
                        ClientResponseContext clientResponseContext) throws IOException {
         String methodName = "filter(incoming)";
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.entry(tc, methodName, clientRequestContext, clientResponseContext);
-        }
 
         Span priorOutgoingSpan = (Span) clientRequestContext.getProperty(CLIENT_SPAN_PROP_ID);
         if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
@@ -164,9 +149,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
 
         if ( priorOutgoingSpan == null ) {
             Tr.error(tc, "OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST");
-            if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-                Tr.exit(tc, methodName);
-            }
             return;
         }
 
@@ -188,10 +170,6 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
 
         } finally {
             clientRequestContext.removeProperty(CLIENT_SPAN_PROP_ID);
-        }
-
-        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
-            Tr.exit(tc, methodName);
         }
     }
 
