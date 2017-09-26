@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.TimeoutBean2;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.Connection;
 
@@ -41,6 +42,9 @@ public class TimeoutServlet extends FATServlet {
 
     @Inject
     TimeoutBean bean;
+
+    @Inject
+    TimeoutBean2 classScopedConfigBean;
 
     public void testTimeout(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //should timeout after a second as per default
@@ -147,4 +151,59 @@ public class TimeoutServlet extends FATServlet {
         Thread.sleep(2000); // Wait to ensure that our thread isn't interrupted after the method has finished
     }
 
+    /**
+     * Test method level override of Timeout value on a synchronous service.
+     *
+     * A timeout will not occur unless the configuration overrides the value set on the connectG method.
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void testTimeoutConfig(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //should timeout after a second as per default
+        long start = System.currentTimeMillis();
+        try {
+            bean.connectG();
+            throw new AssertionError("TimeoutException not thrown");
+        } catch (TimeoutException e) {
+            //expected!
+            long timeout = System.currentTimeMillis();
+            long duration = timeout - start;
+            if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+            }
+        } catch (ConnectException e) {
+            throw new ServletException(e);
+        }
+    }
+
+    /**
+     * Test method level override of Timeout value on a synchronous service.
+     *
+     * A timeout will not occur unless the configuration overrides the value set on the classScopedConfigBean.
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     */
+    public void testTimeoutClassScopeConfig(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        //should timeout after a second as per default
+        long start = System.currentTimeMillis();
+        try {
+            classScopedConfigBean.connectA();
+            throw new AssertionError("TimeoutException not thrown");
+        } catch (TimeoutException e) {
+            //expected!
+            long timeout = System.currentTimeMillis();
+            long duration = timeout - start;
+            if (duration > 1000) { //the configured timeout is 500ms, if it takes 1000ms to fail then there is something wrong
+                throw new AssertionError("TimeoutException not thrown quickly enough: " + timeout);
+            }
+        } catch (ConnectException e) {
+            throw new ServletException(e);
+        }
+    }
 }

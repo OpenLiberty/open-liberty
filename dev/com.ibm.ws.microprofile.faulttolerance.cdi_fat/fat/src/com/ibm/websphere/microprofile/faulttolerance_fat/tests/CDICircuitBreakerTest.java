@@ -98,6 +98,27 @@ public class CDICircuitBreakerTest extends LoggingTest {
                                          "SUCCESS");
     }
 
+    @Test
+    public void testCBFailureThresholdConfig() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdConfig",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBFailureThresholdClassScopeConfig() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBFailureThresholdClassScopeConfig",
+                                         "SUCCESS");
+    }
+
+    @Test
+    public void testCBDelayConfig() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/circuitbreaker?testMethod=testCBDelayConfig",
+                                         "SUCCESS");
+    }
+
     /** {@inheritDoc} */
     @Override
     protected SharedServer getSharedServer() {
