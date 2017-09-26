@@ -9,7 +9,7 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion: 1.1
+bVersion: 1.2
 
 Bundle-Name: WebSphere HTTP Transport SPI
 Bundle-Description: WebSphere HTTP Transport SPI, version ${bVersion}
