@@ -28,9 +28,16 @@ task packageOpenLiberty {
     doLast {
         // Create server in order to minify an image that only includes kind=ga features
         String serverName = "packageOpenLiberty"
-        exec {
-            workingDir "${projectDir}/wlp/bin"
-            commandLine "./server", "create", serverName
+		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+		   exec {
+              workingDir "${projectDir}/wlp/bin"
+              commandLine "cmd", "/c", "server", "create", serverName
+           }
+        } else {
+            exec {
+              workingDir "${projectDir}/wlp/bin"
+              commandLine "./server", "create", serverName
+            }
         }
 
         try {
@@ -63,9 +70,16 @@ task packageOpenLiberty {
 
             String archive = "${buildDir}/openliberty.zip"
             delete archive
-            exec {
-                workingDir "${projectDir}/wlp/bin"
-                commandLine "./server", "package", serverName, "--archive=${archive}", "--include=minify"
+			if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+		    exec {
+              workingDir "${projectDir}/wlp/bin"
+              commandLine "cmd", "/c", "server", "package", serverName, "--archive=${archive}", "--include=minify"
+            }
+            } else {
+              exec {
+                 workingDir "${projectDir}/wlp/bin"
+                 commandLine "./server", "package", serverName, "--archive=${archive}", "--include=minify"
+              }
             }
 
             // Postprocess to remove unwanted files
