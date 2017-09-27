@@ -52,7 +52,7 @@ import com.ibm.wsspi.webcontainer.util.IResponseOutput;
  * @ibm-api
  */
 @SuppressWarnings("unchecked")
-public class StoredResponse extends HttpServletResponseWrapper implements StoredResponseCompat, HttpServletResponse, Serializable, IResponseOutput, IExtendedResponse, IOutputStreamObserver
+public class StoredResponse extends HttpServletResponseWrapper implements StoredResponseCompat<CollectionEnumerationHybrid<String>>, HttpServletResponse, Serializable, IResponseOutput, IExtendedResponse, IOutputStreamObserver
 {
   /**
    * Comment for <code>serialVersionUID</code>
@@ -752,7 +752,8 @@ public class StoredResponse extends HttpServletResponseWrapper implements Stored
   // }
   // else return null;
   // }
-  public CollectionEnumerationHybrid<String> getHeaderNames()
+  @Override
+  public final CollectionEnumerationHybrid<String> getHeaderNames()
   {
     CollectionEnumerationHybrid colEnumHybrid = new CollectionEnumerationHybrid<String>();
     Enumeration tempEnum;
