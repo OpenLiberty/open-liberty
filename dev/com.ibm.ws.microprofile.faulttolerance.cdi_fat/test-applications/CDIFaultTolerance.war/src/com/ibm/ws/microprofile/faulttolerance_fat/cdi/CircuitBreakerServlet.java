@@ -31,6 +31,7 @@ import org.eclipse.microprofile.faulttolerance.exceptions.CircuitBreakerOpenExce
 import org.eclipse.microprofile.faulttolerance.exceptions.TimeoutException;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.CircuitBreakerBean;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.CircuitBreakerBean2;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 
 import componenttest.app.FATServlet;
@@ -44,6 +45,9 @@ public class CircuitBreakerServlet extends FATServlet {
 
     @Inject
     CircuitBreakerBean bean;
+
+    @Inject
+    CircuitBreakerBean2 classScopeConfigBean;
 
     /**
      * Test the operation of the requestVolumeThreshold on a CircuitBreaker configured on a synchronous service
@@ -355,6 +359,108 @@ public class CircuitBreakerServlet extends FATServlet {
 
         String res = bean.serviceJ();
         if (!"serviceJ: 6".equals(res)) {
+            throw new AssertionError("Bad Result: " + res);
+        }
+    }
+
+    /**
+     * Test method level override of requestVolumeThreshold on a CircuitBreaker configured on a synchronous service.
+     *
+     * The method annotation has a higher threshold (5) than that provided by configuration where it is set to 3.
+     *
+     * @throws InterruptedException
+     * @throws ConnectException
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    public void testCBFailureThresholdConfig(HttpServletRequest request,
+                                             HttpServletResponse response) throws ServletException, IOException, InterruptedException, ConnectException {
+
+        // FaultTolerance object with circuit breaker, should fail 3 times
+        for (int i = 0; i < 3; i++) {
+            try {
+                bean.serviceK();
+                throw new AssertionError("ConnectException not caught");
+            } catch (ConnectException e) {
+                if (!e.getMessage().equals("ConnectException: serviceK exception: " + (i + 1))) {
+                    throw new AssertionError("ConnectException bad message: " + e.getMessage());
+                }
+            }
+        }
+
+        try {
+            bean.serviceK();
+            throw new AssertionError("CircuitBreakerOpenException not caught");
+        } catch (CircuitBreakerOpenException e) {
+            //expected
+        }
+    }
+
+    /**
+     * Test class level override of requestVolumeThreshold on a CircuitBreaker configured on a synchronous service.
+     *
+     * The class annotation has a higher threshold (5) than that provided by configuration where it is set to 3.
+     *
+     * @throws InterruptedException
+     * @throws ConnectException
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    public void testCBFailureThresholdClassScopeConfig(HttpServletRequest request,
+                                                       HttpServletResponse response) throws ServletException, IOException, InterruptedException, ConnectException {
+
+        // FaultTolerance object with circuit breaker, should fail 3 times
+        for (int i = 0; i < 3; i++) {
+            try {
+                classScopeConfigBean.serviceA();
+                throw new AssertionError("ConnectException not caught");
+            } catch (ConnectException e) {
+                if (!e.getMessage().equals("ConnectException: serviceA exception: " + (i + 1))) {
+                    throw new AssertionError("ConnectException bad message: " + e.getMessage());
+                }
+            }
+        }
+
+        try {
+            classScopeConfigBean.serviceA();
+            throw new AssertionError("CircuitBreakerOpenException not caught");
+        } catch (CircuitBreakerOpenException e) {
+            //expected
+        }
+    }
+
+    /**
+     * Test that the delay param of a CircuitBreaker can be overridden via config
+     *
+     * @throws InterruptedException
+     * @throws ConnectException
+     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+     */
+    public void testCBDelayConfig(HttpServletRequest request,
+                                  HttpServletResponse response) throws ServletException, IOException, InterruptedException, ConnectException {
+
+        // FaultTolerance object with circuit breaker, should fail 3 times
+        for (int i = 0; i < 3; i++) {
+            try {
+                bean.serviceL();
+                throw new AssertionError("ConnectException not caught");
+            } catch (ConnectException e) {
+                if (!e.getMessage().equals("ConnectException: serviceL exception: " + (i + 1))) {
+                    throw new AssertionError("ConnectException bad message: " + e.getMessage());
+                }
+            }
+        }
+
+        try {
+            bean.serviceL();
+            throw new AssertionError("CircuitBreakerOpenException not caught");
+        } catch (CircuitBreakerOpenException e) {
+            //expected
+        }
+
+        //after three seconds, if the config override has not taken effect then the circuit still be open
+        Thread.sleep(3000);
+
+        String res = bean.serviceL();
+        if (!"serviceL: 4".equals(res)) {
             throw new AssertionError("Bad Result: " + res);
         }
     }

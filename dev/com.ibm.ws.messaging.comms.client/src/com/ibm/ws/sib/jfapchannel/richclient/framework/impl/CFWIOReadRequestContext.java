@@ -32,7 +32,7 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
  * underlying TCP channel.
  *
  * @see com.ibm.ws.sib.jfapchannel.framework.IOReadRequestContext
- * @see com.ibm.wsspi.tcp.channel.TCPReadRequestContext
+ * @see TCPReadRequestContext
  *
  * @author Gareth Matthews
  */
@@ -176,7 +176,7 @@ public class CFWIOReadRequestContext extends CFWIOBaseContext implements IOReadR
          /**
           * Called when the read operation completes.
           *
-          * @see com.ibm.wsspi.tcp.channel.TCPReadCompletedCallback#complete(com.ibm.websphere.channelfw.VirtualConnection, com.ibm.wsspi.tcp.channel.TCPReadRequestContext)
+          * @see TCPReadCompletedCallback#complete(com.ibm.websphere.channelfw.VirtualConnection, TCPReadRequestContext)
           */
          public void complete(VirtualConnection vc, TCPReadRequestContext ctx)
          {
@@ -189,7 +189,7 @@ public class CFWIOReadRequestContext extends CFWIOBaseContext implements IOReadR
          /**
           * Called when the read operation fails with an error.
           *
-          * @see com.ibm.wsspi.tcp.channel.TCPReadCompletedCallback#error(com.ibm.websphere.channelfw.VirtualConnection, com.ibm.wsspi.tcp.channel.TCPReadRequestContext, java.io.IOException)
+          * @see TCPReadCompletedCallback#error(com.ibm.websphere.channelfw.VirtualConnection, TCPReadRequestContext, java.io.IOException)
           */
          public void error(VirtualConnection vc, TCPReadRequestContext ctx, IOException ioException)
          {

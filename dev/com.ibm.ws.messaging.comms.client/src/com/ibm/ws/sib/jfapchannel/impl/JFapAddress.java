@@ -73,7 +73,7 @@ public class JFapAddress implements NetworkConnectionTarget
    }
 
    // begin F188491
-   /** @see com.ibm.wsspi.tcp.channel.TCPConnectRequestContext#getConnectTimeout() */
+   /** @see TCPConnectRequestContext#getConnectTimeout() */
    public int getConnectTimeout()                                                                              //PK58698
    {
      if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "getConnectTimeout");
