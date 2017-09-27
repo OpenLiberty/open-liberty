@@ -2718,7 +2718,7 @@ public class PolicyExecutorServlet extends FATServlet {
         CountDownLatch blocker = new CountDownLatch(1);
         CountDownLatch blockerStarted = new CountDownLatch(1);
         Future<Boolean> blockerFuture = executor.submit(new CountDownTask(blockerStarted, blocker, TIMEOUT_NS * 2));
-        //assertTrue(blockerStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(blockerStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         AtomicInteger counter = new AtomicInteger(0);
         List<Callable<Integer>> tasks = Arrays.<Callable<Integer>> asList(new SharedIncrementTask(counter), new SharedIncrementTask(counter));
