@@ -27,17 +27,20 @@ import java.util.concurrent.ScheduledExecutorService;
 
 import org.eclipse.microprofile.config.spi.ConfigSource;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
 import com.ibm.ws.microprofile.config.interfaces.ConfigException;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.netflix.archaius.api.Config;
 import com.netflix.archaius.api.ConfigListener;
 import com.netflix.archaius.api.Decoder;
-import com.netflix.archaius.api.Property;
-import com.netflix.archaius.api.PropertyContainer;
 import com.netflix.archaius.config.AbstractConfig;
+import com.netflix.archaius.exceptions.ParseException;
 
 public class CompositeConfig extends AbstractConfig implements Closeable, ConfigListener {
 
+    private static final TraceComponent tc = Tr.register(CompositeConfig.class);
     private final CopyOnWriteArrayList<PollingDynamicConfig> children = new CopyOnWriteArrayList<PollingDynamicConfig>();
     private final CachedCompositePropertyFactory factory;
 
@@ -110,12 +113,9 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
     /** {@inheritDoc} */
     @Override
     public Object getRawProperty(String key) {
-        for (Config child : children) {
-            if (child.containsKey(key)) {
-                return child.getRawProperty(key);
-            }
-        }
-        return null;
+        CachedCompositeValue<String> rawValue = getRawCompositeValue(key);
+        Object raw = rawValue == null ? null : rawValue.getValue();
+        return raw;
     }
 
     /** {@inheritDoc} */
@@ -179,11 +179,14 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
 
     Set<String> getKeySet() {
         HashSet<String> result = new HashSet<>();
-        for (Config config : children) {
+        for (PollingDynamicConfig config : children) {
             Iterator<String> iter = config.getKeys();
             while (iter.hasNext()) {
                 String key = iter.next();
-                result.add(key);
+                boolean added = result.add(key);
+                if (added && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getKeySet", "Key={0}, Source={1}", key, config.getSourceID());
+                }
             }
         }
         return result;
@@ -214,6 +217,31 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
         return sb.toString();
     }
 
+    public String dump() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+
+        Iterator<String> keyItr = getKeys();
+        while (keyItr.hasNext()) {
+            String key = keyItr.next();
+            sb.append(key);
+            sb.append("=");
+            CachedCompositeValue<String> rawCompositeValue = getRawCompositeValue(key);
+            if (rawCompositeValue == null) {
+                sb.append("null");
+            } else {
+                sb.append(rawCompositeValue);
+            }
+            if (keyItr.hasNext()) {
+                sb.append(",");
+            }
+        }
+
+        sb.append("]");
+        return sb.toString();
+
+    }
+
     /** {@inheritDoc} */
     @Override
     public void close() {
@@ -231,9 +259,52 @@ public class CompositeConfig extends AbstractConfig implements Closeable, Config
      * @return the value as an object of the passed in Type (or a ConversionException)
      */
     protected <T> T getTypedValue(String propertyName, Class<T> propertyType) {
-        PropertyContainer container = this.factory.getProperty(propertyName);
-        Property<T> property = container.asType(propertyType, null);
+        CachedCompositePropertyContainer container = this.factory.getProperty(propertyName);
+        CachedCompositeProperty<T> property = container.asType(propertyType);
         T value = property.get();
+        return value;
+    }
+
+    public <T> CachedCompositeValue<T> getCompositeValue(Class<T> type, String key) {
+        CachedCompositeValue<String> rawProp = getRawCompositeValue(key);
+        if (rawProp == null) {
+            return null;
+        } else {
+            try {
+                T value = getDecoder().decode(type, rawProp.getValue());
+                CachedCompositeValue<T> composite = new CachedCompositeValue<T>(value, rawProp.getSource());
+                return composite;
+            } catch (NumberFormatException nfe) {
+                throw new ParseException("Error parsing value \'" + rawProp.getValue() + "\' for property \'" + key + "\'", nfe);
+            }
+        }
+    }
+
+    /**
+     * @param key
+     * @return
+     */
+    private CachedCompositeValue<String> getRawCompositeValue(String key) {
+        for (PollingDynamicConfig child : children) {
+            if (child.containsKey(key)) {
+                String value = (String) child.getRawProperty(key);
+                String source = child.getSourceID();
+                CachedCompositeValue<String> raw = new CachedCompositeValue<String>(value, source);
+                return raw;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param propertyName
+     * @param propertyType
+     * @return
+     */
+    public <T> SourcedValue<T> getSourcedValue(String propertyName, Class<T> propertyType) {
+        CachedCompositePropertyContainer container = this.factory.getProperty(propertyName);
+        CachedCompositeProperty<T> property = container.asType(propertyType);
+        SourcedValue<T> value = property.getSourced();
         return value;
     }
 }

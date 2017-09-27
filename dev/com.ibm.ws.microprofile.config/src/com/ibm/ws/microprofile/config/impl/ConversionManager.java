@@ -56,51 +56,49 @@ public class ConversionManager {
         Object converted = null;
 
         boolean converterFound = false;
-        if (rawString != null) {
-            if (converters.containsKey(type)) {
-                Converter<?> converter = converters.get(type);
-                if (converter != null) {
-                    converterFound = true;
-                    try {
-                        converted = converter.convert(rawString);
-                    } catch (ConversionException e) {
-                        throw e;
-                    } catch (IllegalArgumentException e) {
-                        throw new ConversionException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter.getClass().getName(), rawString, e));
-                    } catch (Throwable e) {
-                        throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter.getClass().getName(), rawString, e));
-                    }
-
-                    if (converted == null) {
-                        if (TraceComponent.isAnyTracingEnabled()) {
-                            Tr.debug(tc, "The converted value is null. The rawString is " + rawString);
-                        }
-                    }
-
+        if (converters.containsKey(type)) {
+            Converter<?> converter = converters.get(type);
+            if (converter != null) {
+                converterFound = true;
+                try {
+                    converted = converter.convert(rawString);
+                } catch (ConversionException e) {
+                    throw e;
+                } catch (IllegalArgumentException e) {
+                    throw new ConversionException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter.getClass().getName(), rawString, e));
+                } catch (Throwable e) {
+                    throw new ConfigException(Tr.formatMessage(tc, "conversion.exception.CWMCG0007E", converter.getClass().getName(), rawString, e));
                 }
+
+                if (converted == null) {
+                    if (TraceComponent.isAnyTracingEnabled()) {
+                        Tr.debug(tc, "The converted value is null. The rawString is " + rawString);
+                    }
+                }
+
             }
+        }
 
-            if (!converterFound && type instanceof Class) {
-                Class<?> requestedClazz = (Class<?>) type;
+        if (!converterFound && type instanceof Class) {
+            Class<?> requestedClazz = (Class<?>) type;
 
-                if (requestedClazz.isArray()) {
-                    Class<?> arrayType = requestedClazz.getComponentType();
-                    converted = convertArray(rawString, arrayType);
-                    converterFound = true; // convertArray will throw ConverterNotFoundException if it can't find a converter
-                } else {
-                    ConversionStatus<?> cs = convertCompatible(rawString, requestedClazz);
-                    converterFound = cs.isConverterFound();
-                    converted = cs.getConverted();
-                }
+            if (requestedClazz.isArray()) {
+                Class<?> arrayType = requestedClazz.getComponentType();
+                converted = convertArray(rawString, arrayType);
+                converterFound = true; // convertArray will throw ConverterNotFoundException if it can't find a converter
+            } else {
+                ConversionStatus<?> cs = convertCompatible(rawString, requestedClazz);
+                converterFound = cs.isConverterFound();
+                converted = cs.getConverted();
+            }
 
 //                if (converted == null) {
 //                }
 
-                //TODO string constructors (and valueOf methods) work just fine but isn't in this version of the spec
+            //TODO string constructors (and valueOf methods) work just fine but isn't in this version of the spec
 //                if (converted == null) {
 //                    converted = standardStringConstructors(rawString, requestedClazz);
 //                }
-            }
         }
 
         if (!converterFound) {

@@ -220,4 +220,11 @@ public class PollingDynamicConfig extends AbstractConfig implements Closeable {
         return this.id;
     }
 
+    /**
+     * @return the source id
+     */
+    public String getSourceID() {
+        return this.id;
+    }
+
 }

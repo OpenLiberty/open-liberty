@@ -10,19 +10,23 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.interfaces;
 
-import java.io.Closeable;
-
-import org.eclipse.microprofile.config.Config;
-
 /**
  *
  */
-public interface WebSphereConfig extends Config, Closeable {
+public interface SourcedValue<T> {
 
-    public <T> T convertValue(String rawValue, Class<T> type);
+    /**
+     * Get the actual value
+     *
+     * @return the value
+     */
+    public T getValue();
 
-    public String dump();
-
-    public <T> SourcedValue<T> getSourcedValue(String key, Class<T> type);
+    /**
+     * Get the ID of the source that provided the value
+     *
+     * @return the originating source ID
+     */
+    public String getSource();
 
 }
