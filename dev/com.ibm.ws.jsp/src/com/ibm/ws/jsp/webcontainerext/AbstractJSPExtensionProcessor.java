@@ -33,7 +33,7 @@
 // APAR PK80353   Top level JSP throws a 500 when it does not exist instead of 404 when throwMissingJSPException is set 05/08/09      sartoris
 // APAR PK87901   When PrepareJsp requests are processed we must allow access to WEB-INF dir - Jay Sartoris 07/30/2009
 // APAR PM10362   Provide option for tolerateLocaleMismatchForServingFiles in PK81387 code - Anup Aggarwal 04/26/2010
-//
+// APAR PI87565   Avoid creating a ServletConfig if one already exist for a particular jsp - Harold Padilla 09/27/2017
 
 package com.ibm.ws.jsp.webcontainerext;
 
@@ -762,7 +762,14 @@ public abstract class AbstractJSPExtensionProcessor extends com.ibm.ws.webcontai
             }
         }
         jspUri = com.ibm.ws.util.WSUtil.resolveURI(jspUri);
-        IServletConfig sconfig = createConfig(jspUri);
+        
+        WebAppConfig webAppConfig = webapp.getWebAppConfig();
+        IServletConfig sconfig = webAppConfig.getServletInfo(jspUri);
+        
+        if (sconfig != null) //PI87565: If ServletConfig exists, return it. Otherwise, create a new one.
+            return sconfig;
+        
+        sconfig = createConfig(jspUri);
         sconfig.setServletName(jspUri);
         sconfig.setDisplayName(jspUri);
         sconfig.setServletContext(extensionContext);
