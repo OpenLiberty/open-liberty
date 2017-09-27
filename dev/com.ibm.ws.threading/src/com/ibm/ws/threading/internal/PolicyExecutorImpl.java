@@ -601,7 +601,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task);
                 remaining = stop - System.nanoTime();
                 if (remaining <= 0)
-                    throw new RejectedExecutionException("timed out before all tasks could be submitted"); // TODO NLS message for timed out
+                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1204.unable.to.invoke", identifier, taskCount - futures.size(), taskCount, timeout, unit));
                 qWait = maxWaitForEnqueueNS.get();
                 enqueue(taskFuture,
                         qWait < remaining ? qWait : remaining, // limit waiting to lesser of maxWaitForEnqueue and remaining time
@@ -633,7 +633,58 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        throw new UnsupportedOperationException();
+        int taskCount = tasks.size();
+
+        // Special case to run a single task on the current thread if we can acquire a permit, if a permit is required
+        if (taskCount == 1) {
+            boolean useCurrentThread = queueFullAction.get() == QueueFullAction.CallerRuns;
+            boolean havePermit = !useCurrentThread && (useCurrentThread = taskCount > 0 && maxConcurrencyConstraint.tryAcquire());
+            if (useCurrentThread)
+                try {
+                    if (state.get() != State.ACTIVE)
+                        throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
+
+                    PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, tasks.iterator().next());
+
+                    runTask(taskFuture);
+
+                    // raise InterruptedException if current thread is interrupted
+                    taskFuture.throwIfInterrupted();
+
+                    return taskFuture.get();
+                } finally {
+                    // Release the permit that we acquired in order to run tasks on this thread,
+                    if (havePermit) {
+                        maxConcurrencyConstraint.release();
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(PolicyExecutorImpl.this, tc, "core/maxConcurrency available",
+                                     coreConcurrencyAvailable, maxConcurrencyConstraint.availablePermits());
+
+                        // The permit might be needed to run tasks on the global executor,
+                        if (!queue.isEmpty() && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
+                            decrementWithheldConcurrency();
+                            if (acquireCoreConcurrency() > 0)
+                                expediteGlobal(new PollingTask());
+                            else
+                                enqueueGlobal(new PollingTask());
+                        }
+                    }
+                }
+        } else if (taskCount == 0) // JavaDoc doesn't specify what to do in this case. Match observed behavior of ThreadPoolExecutor for now.
+            throw new IllegalArgumentException();
+
+        // Satisfy requirement of JavaDoc:
+        for (Callable<T> task : tasks)
+            if (task == null)
+                throw new NullPointerException();
+
+        // TODO replace temporary code with proper untimed implementation. This will allow some tests to be written in advance,
+        try {
+            return invokeAny(tasks, Long.MAX_VALUE, TimeUnit.NANOSECONDS);
+        } catch (TimeoutException x) {
+            throw new UnsupportedOperationException(x);
+        }
     }
 
     @Override
@@ -664,7 +715,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     break;
 
                 if (remaining <= 0)
-                    throw new RejectedExecutionException("timed out before all tasks could be submitted"); // TODO NLS message for timed out
+                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1204.unable.to.invoke", identifier, taskCount - futures.size(), taskCount, timeout, unit));
                 qWait = maxWaitForEnqueueNS.get();
                 enqueue(taskFuture,
                         qWait < remaining ? qWait : remaining, // limit waiting to lesser of maxWaitForEnqueue and remaining time

@@ -2260,7 +2260,8 @@ public class PolicyExecutorServlet extends FATServlet {
             fail("Timed invokeAll with negative timeout should be rejected. Instead: " +
                  executor.invokeAll(Collections.singletonList(new SharedIncrementTask()), -7, TimeUnit.SECONDS));
         } catch (RejectedExecutionException x) {
-            // TODO check for 'rejected due to timeout' NLS message once we add it
+            if (!x.getMessage().startsWith("CWWKE1204"))
+                throw x;
         }
 
         List<Runnable> canceledFromQueue = executor.shutdownNow();
@@ -2399,7 +2400,7 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
-    // Test invalid parameters for invokeAny. This includes a null task list, an empty task list,
+    // Test invalid parameters for invokeAny. This includes a null task list, an empty task list, null time unit, negative timeout,
     // null as the only element in the task list and null within a list of otherwise valid tasks.
     @Test
     public void testInvokeAnyInvalidParameters() throws Exception {
@@ -2448,6 +2449,92 @@ public class PolicyExecutorServlet extends FATServlet {
             if (task != null)
                 assertEquals("Task #" + i, 0, task.count());
         }
+
+        // Negative timeout
+        try {
+            fail("invokeAny with negative timeout should be rejected. Instead: " +
+                 executor.invokeAny(Collections.<Callable<Integer>> singletonList(new SharedIncrementTask()), -9, TimeUnit.HOURS));
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1204"))
+                throw x;
+        }
+
+        // Null time unit
+        try {
+            fail("invokeAny with null unit should be rejected. Instead: " +
+                 executor.invokeAny(Collections.<Callable<Integer>> singletonList(new SharedIncrementTask()), 18, null));
+        } catch (NullPointerException x) {
+        } // pass
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a single task via untimed invokeAny. If a permit is available or a permit isn't required to run tasks,
+    // then it should run on the caller's thread. Otherwise, it should run on a separate thread.
+    @Test
+    public void testInvokeAnyOfOne() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyOfOne")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .queueFullAction(QueueFullAction.Abort); // require a permit
+
+        Set<Callable<Long>> oneTask = Collections.<Callable<Long>> singleton(new ThreadIdTask());
+        Long curThreadId = Thread.currentThread().getId();
+
+        // Permit is required and available. Task should run on current thread.
+        assertEquals(curThreadId, executor.invokeAny(oneTask));
+
+        // Use up the permit by running a task that will block until the queue capacity drops to 0 (at which point, the invokeAny task was already queued to the global pool)
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        final CountDownLatch noQueueCapacityRemains = new CountDownLatch(1);
+        Future<Boolean> blockerFuture = executor.submit(new CountDownTask(beginLatch, noQueueCapacityRemains, TIMEOUT_NS));
+        assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // TODO Update in future user story. Temporarily use internals while lacking the callback to decrement the above latch once queue capacity is used up.
+        Field f = executor.getClass().getDeclaredField("maxQueueSizeConstraint");
+        f.setAccessible(true);
+        final Semaphore q = (Semaphore) f.get(executor);
+        testThreads.submit(new Callable<Void>() {
+            @Override
+            public Void call() throws InterruptedException {
+                for (long start = System.nanoTime(); q.availablePermits() > 0 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
+                noQueueCapacityRemains.countDown();
+                return null;
+            }
+        });
+
+        // Permit is required and unavailable. Task should be run on global thread pool.
+        assertNotSame(curThreadId, executor.invokeAny(oneTask));
+
+        assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        executor.queueFullAction(QueueFullAction.CallerRuns);
+
+        // Use up the permit
+        blockerFuture = executor.submit(new CountDownTask(new CountDownLatch(0), new CountDownLatch(1), TIMEOUT_NS));
+
+        // Permit is unavailable but not required. Task should run on current thread.
+        assertEquals(curThreadId, executor.invokeAny(oneTask));
+
+        assertTrue(blockerFuture.cancel(true));
+
+        // invokeAny task raises a RuntimeException (subclass) on same thread
+        try {
+            Collection<Callable<Integer>> oneFailingTask = Collections.<Callable<Integer>> singleton(new MinFinderTaskWithInvokeAll(new int[] {}, 2, 0, null));
+            fail("Unexpected result: " + executor.invokeAny(oneFailingTask));
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof ArrayIndexOutOfBoundsException))
+                throw x;
+        }
+
+        // invokeAny task raises InterruptedException on same thread
+        Thread.currentThread().interrupt();
+        try {
+            Collection<Callable<Boolean>> interruptedTask = Collections.<Callable<Boolean>> singleton(new CountDownTask(new CountDownLatch(0), new CountDownLatch(1), TIMEOUT_NS));
+            fail("Unexpected result when interrupted: " + executor.invokeAny(interruptedTask));
+        } catch (InterruptedException x) {
+        } // pass
 
         List<Runnable> canceledFromQueue = executor.shutdownNow();
         assertEquals(0, canceledFromQueue.size());
