@@ -17,7 +17,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  *
  * <p>These tests use completed spans as test data.  The tests
  * generate JSON formatted print strings, following the format
- * used by the open tracing mock tracer, then parse and marshell
+ * used by the open tracing mock tracer, then parse and marshall
  * new completed spans, then verify that the marshalled spans are
  * the same as the initial spans.</p>
  *
