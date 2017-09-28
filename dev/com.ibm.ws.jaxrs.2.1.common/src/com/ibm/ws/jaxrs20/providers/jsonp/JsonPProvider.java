@@ -14,14 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
-import javax.json.JsonArray;
-import javax.json.JsonException;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.JsonStructure;
-import javax.json.JsonWriter;
-import javax.json.spi.JsonProvider;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.ws.rs.Consumes;
 import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
@@ -36,89 +33,177 @@ import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.jaxrs20.component.LibertyJaxRsThreadPoolAdapter;
+import com.ibm.ws.jaxrs20.utils.ReflectUtil;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 
+@SuppressWarnings("rawtypes")
 @Produces({ "application/json", "application/*+json" })
 @Consumes({ "application/json", "application/*+json" })
 @Provider
-public class JsonPProvider implements MessageBodyReader<Object>, MessageBodyWriter<Object> {
+public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
     private final static TraceComponent tc = Tr.register(JsonPProvider.class);
 
-    JsonProvider jsonProvider = null;
+    private final static String[] jsonpClasses = new String[] { "javax.json.Json", "javax.json.JsonArray", "javax.json.JsonException", "javax.json.JsonObject",
+                                                                "javax.json.JsonReader",
+                                                                "javax.json.JsonStructure", "javax.json.JsonWriter" };
 
-    public JsonPProvider(JsonProvider jsonProvider) {
-        this.jsonProvider = jsonProvider;
+    private final static Map<String, Class<?>> jsonpClsMaps = new HashMap<String, Class<?>>();
+    private final static Map<String, Method> jsonpMethodMaps = new HashMap<String, Method>();
+
+    static {
+
+        ClassLoadingService cls = null;
+        ClassLoader cl = null;
+        try {
+            cls = LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getServiceWithException();
+            cl = cls.createThreadContextClassLoader(JsonPProvider.class.getClassLoader());
+        } catch (Throwable t) {
+            cl = JsonPProvider.class.getClassLoader();
+        } finally {
+
+            for (String clsName : jsonpClasses) {
+                Class<?> c = ReflectUtil.loadClass(cl, clsName);
+                if (c != null) {
+                    jsonpClsMaps.put(clsName, c);
+                }
+            }
+            if (cls != null) {
+                cls.destroyThreadContextClassLoader(cl);
+            }
+        }
     }
 
     @Override
-    public long getSize(Object obj, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+    public long getSize(Object arg0, Class arg1, Type arg2, Annotation[] arg3, MediaType arg4) {
+
         return -1;
     }
 
     @Override
-    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return JsonStructure.class.isAssignableFrom(type) ||
-               JsonArray.class.isAssignableFrom(type) ||
-               JsonObject.class.isAssignableFrom(type);
+    public boolean isWriteable(Class type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+
+        return isAssignableFrom(type, "javax.json.JsonStructure") ||
+               isAssignableFrom(type, "javax.json.JsonArray") ||
+               isAssignableFrom(type, "javax.json.JsonObject");
+    }
+
+    /**
+     * @param type
+     * @param isWriteable
+     * @return
+     */
+    private boolean isAssignableFrom(Class type, String parentClass) {
+        if (jsonpClsMaps.containsKey(parentClass)) {
+            return jsonpClsMaps.get(parentClass).isAssignableFrom(type);
+        }
+        return false;
+    }
+
+    private Method getMethod(String className, String methodName, Class[] paramTypes) {
+
+        if (!jsonpClsMaps.containsKey(className)) {
+            return null;
+        }
+
+        Class<?> c = jsonpClsMaps.get(className);
+
+        Method m = null;
+
+        String cachekey = className + "." + methodName;
+
+        if (jsonpMethodMaps.containsKey(cachekey)) {
+            m = jsonpMethodMaps.get(cachekey);
+        } else {
+            m = ReflectUtil.getMethod(c, methodName, paramTypes);
+            jsonpMethodMaps.put(cachekey, m);
+        }
+
+        return m;
     }
 
     @Override
-    public void writeTo(Object obj, Class<?> type, Type genericType, Annotation[] annotations,
-                        MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+    public void writeTo(Object t, Class type, Type genericType, Annotation[] annotations,
+                        MediaType mediaType, MultivaluedMap httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
         if (entityStream == null) {
             throw new IOException("Initialized OutputStream should be provided");
         }
 
-        JsonWriter writer = null;
-        try {
-            writer = this.jsonProvider.createWriter(entityStream);
-            if (writer != null) {
-                writer.write((JsonStructure)obj);
-            }
-        } catch (Throwable e) {
-            //ignore
-        } finally {
-            if (writer != null) {
+        if (jsonpClsMaps.containsKey("javax.json.JsonWriter") && jsonpClsMaps.containsKey("javax.json.Json") && jsonpClsMaps.containsKey("javax.json.JsonStructure")) {
+
+            Class<?> jsonStructureClass = jsonpClsMaps.get("javax.json.JsonStructure");
+
+            Method m = getMethod("javax.json.Json", "createWriter", new Class[] { OutputStream.class });
+            Method m2 = getMethod("javax.json.JsonWriter", "write", new Class[] { jsonStructureClass });
+            Method m3 = getMethod("javax.json.JsonWriter", "close", null);
+
+            if (m != null) {
+                Object writer = null;
                 try {
-                    writer.close();
+                    writer = ReflectUtil.invoke(m, null, new Object[] { entityStream });
+                    if (writer != null) {
+                        ReflectUtil.invoke(m2, writer, new Object[] { t });
+                    }
                 } catch (Throwable e) {
                     //ignore
+                } finally {
+                    if (writer != null) {
+                        try {
+                            ReflectUtil.invoke(m3, writer, null);
+                        } catch (Throwable e) {
+                            //ignore
+                        }
+                    }
                 }
             }
+
         }
-        Tr.debug(tc, "obj=" + obj);
     }
 
     @Override
-    public boolean isReadable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-        return JsonStructure.class.isAssignableFrom(type) ||
-               JsonArray.class.isAssignableFrom(type) ||
-               JsonObject.class.isAssignableFrom(type);
+    public boolean isReadable(Class type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+        return isAssignableFrom(type, "javax.json.JsonStructure") ||
+               isAssignableFrom(type, "javax.json.JsonArray") ||
+               isAssignableFrom(type, "javax.json.JsonObject");
     }
 
     @FFDCIgnore(value = { Throwable.class })
     @Override
-    public Object readFrom(Class<Object> type, Type genericType, Annotation[] annotations,
-                           MediaType mediaType, MultivaluedMap<String, String> httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
+    public Object readFrom(Class arg0, Type genericType, Annotation[] annotations,
+                           MediaType mediaType, MultivaluedMap httpHeaders, InputStream entityStream) throws IOException, WebApplicationException {
         if (entityStream == null) {
             throw new IOException("Initialized InputStream should be provided");
         }
 
-        JsonReader reader = null;
-        try {
-            reader = this.jsonProvider.createReader(entityStream);
-            if (reader != null) {
-                return reader.read();
-            }
-        } catch (Throwable e) {
-            if (JsonException.class.isAssignableFrom(e.getClass())) {
-                throw ExceptionUtils.toBadRequestException(e, null);
-            }
-        } finally {
-            if (reader != null) {
+        if (jsonpClsMaps.containsKey("javax.json.JsonReader") && jsonpClsMaps.containsKey("javax.json.Json") && jsonpClsMaps.containsKey("javax.json.JsonException")) {
+
+            Class<?> jsonException = jsonpClsMaps.get("javax.json.JsonException");
+
+            Method m = getMethod("javax.json.Json", "createReader", new Class[] { InputStream.class });
+            Method m2 = getMethod("javax.json.JsonReader", "read", null);
+            Method m3 = getMethod("javax.json.JsonReader", "close", null);
+
+            if (m != null) {
+                Object reader = null;
                 try {
-                    reader.close();
+                    reader = ReflectUtil.invoke(m, null, new Object[] { entityStream });
+                    if (reader != null) {
+                        return ReflectUtil.invoke(m2, reader, null);
+                    }
                 } catch (Throwable e) {
-                    //ignore
+
+                    if (jsonException.isAssignableFrom(e.getClass())) {
+                        throw ExceptionUtils.toBadRequestException(e, null);
+                    }
+
+                } finally {
+                    if (reader != null) {
+                        try {
+                            ReflectUtil.invoke(m3, reader, null);
+                        } catch (Throwable e) {
+                            //ignore
+                        }
+                    }
                 }
             }
         }
