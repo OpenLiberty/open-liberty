@@ -36,8 +36,7 @@ Service-Component: \
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.ws.wsoc;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.0;version=latest,\
-	com.ibm.ws.cdi.1.2.weld.impl;version=latest,\
+	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.ws.injection.core;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core,\
@@ -46,5 +45,5 @@ Service-Component: \
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.anno;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
