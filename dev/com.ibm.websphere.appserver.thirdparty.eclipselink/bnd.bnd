@@ -101,13 +101,13 @@ DynamicImport-Package: \
 Private-Package: com.ibm.ws.eclipselink.osgi
 
 Include-Resource: \
- @${repo;org.eclipse.persistence.antlr;2.6.4.WAS}!/!META-INF/maven/*, \
- @${repo;org.eclipse.persistence.asm;2.6.4.WAS}!/!META-INF/maven/*, \
- @${repo;org.eclipse.persistence.core;2.6.4.WAS}!/!META-INF/maven/*, \
- @${repo;org.eclipse.persistence.jpa.jpql;2.6.4.WAS}!/!META-INF/maven/*, \
- @${repo;org.eclipse.persistence.jpa.modelgen;2.6.4.WAS}!/!META-INF/maven/*, \
- @${repo;org.eclipse.persistence.jpa;2.6.4.WAS}!/!META-INF/maven/*
-  
+  @${repo;org.eclipse.persistence.antlr;3.2.0.v201302191141;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.asm;5.0.1.v201405080102;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.core;2.6.4.WAS;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.jpql;2.6.4.WAS;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa.modelgen;2.6.4.WAS-v20170831-8e605f1;EXACT}!/!META-INF/maven/*,\
+  @${repo;org.eclipse.persistence.jpa;2.6.4.WAS;EXACT}!/!META-INF/maven/*
+
 
 publish.wlp.jar.suffix: dev/api/third-party
 
@@ -118,7 +118,7 @@ instrument.classesExcludes: \
   org/eclipse/persistence/internal/localization/i18n/*.class
 
 -buildpath: \
-	org.eclipse.persistence.jpa;version=2.6.4.WAS,\
+	org.eclipse.persistence.jpa;version=2.6.4.WAS;strategy=exact,\
 	com.ibm.ws.javax.j2ee:persistence;version=2.1,\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\

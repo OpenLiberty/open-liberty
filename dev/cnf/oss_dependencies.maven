@@ -61,6 +61,7 @@ javax.jms:javax.jms-api:2.0
 javax.json:javax.json-api:1.1
 javax.json.bind:javax.json.bind-api:1.0
 javax.mail:javax.mail-api:1.5.0
+javax.persistence:javax.persistence-api:2.2
 javax.resource:javax.resource-api:1.7
 javax.security.auth.message:javax.security.auth.message-api:1.1
 javax.security.enterprise:javax.security.enterprise-api:1.0-b11
