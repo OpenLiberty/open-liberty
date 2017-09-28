@@ -258,7 +258,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      *
      * @param completedSpans The overall collection of completed spans which is to
      *     be searched.
-     * @param tailSize The number of spans to example, starting from the end of the
+     * @param tailSize The number of spans to examine, starting from the end of the
      *     collection of completed spans.
      * @param spanKind The type of span to select.
      * @param selectText Text to search for in the operations of the completed spans.
