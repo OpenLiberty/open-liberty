@@ -753,7 +753,7 @@ public class StoredResponse extends HttpServletResponseWrapper implements Stored
   // else return null;
   // }
   @Override
-  public final CollectionEnumerationHybrid<String> getHeaderNames()
+  public CollectionEnumerationHybrid<String> getHeaderNames()
   {
     CollectionEnumerationHybrid colEnumHybrid = new CollectionEnumerationHybrid<String>();
     Enumeration tempEnum;
