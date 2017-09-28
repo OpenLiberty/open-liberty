@@ -21,7 +21,6 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
@@ -41,6 +40,8 @@ public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean
 
     private final Class<T> beanClass;
 
+    private final BeanManager beanManager;
+
     public ConfigPropertyBean(BeanManager beanManager, Class<T> beanClass) {
         this(beanManager, beanClass, beanClass);
     }
@@ -48,14 +49,13 @@ public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean
     public ConfigPropertyBean(BeanManager beanManager, Type beanType, Class<T> beanClass) {
         super(beanManager, beanType, ConfigPropertyLiteral.INSTANCE);
         this.beanClass = beanClass;
+        this.beanManager = beanManager;
     }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        CDI<Object> cdi = CDI.current();
-        BeanManager beanManager = cdi.getBeanManager();
         InjectionPoint injectionPoint = getInjectionPoint(beanManager, creationalContext);
 
         // Note the config is cached per thread context class loader
