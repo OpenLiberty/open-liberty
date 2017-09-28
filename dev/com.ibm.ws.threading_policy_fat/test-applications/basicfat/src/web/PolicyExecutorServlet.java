@@ -2400,6 +2400,88 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
+    // Basic test of untimed invokeAny. Submit a group of tasks, of which one raises an exception,
+    // another runs for a long time, and another completes successfully within a short time.
+    // The result of the one that completed successfully should be returned,
+    // and the duration of the invokeAny method should show that it only waited for the first successful task.
+    @Test
+    public void testInvokeAny1Successful() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAny1Successful");
+
+        CountDownLatch beginLatchForBlocker = new CountDownLatch(1);
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+
+        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>();
+        tasks.add(new CountDownTask(beginLatchForBlocker, blocker, TIMEOUT_NS * 2)); // block for longer than the timeout
+        tasks.add(new CountDownTask(unused, null, 0)); // intentionally cause NullPointerException
+        tasks.add(new CountDownTask(unused, beginLatchForBlocker, TIMEOUT_NS)); // should succeed
+
+        long start = System.nanoTime();
+        assertTrue(executor.invokeAny(tasks));
+        long duration = System.nanoTime() - start;
+
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks via untimed invokeAny, where all fail during execution.
+    // Verify that an ExecutionException is raised which chains one of the failures.
+    @Test
+    public void testInvokeAnyAllFail() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyAllFail");
+
+        final int numTasks = 3;
+
+        List<Callable<Integer>> tasks = new LinkedList<Callable<Integer>>();
+        for (int i = 0; i < numTasks; i++)
+            tasks.add(new MinFinderTaskWithInvokeAll(new int[] {}, 1, 2, executor)); // cause ArrayIndexOutOfBoundsException
+
+        long start = System.nanoTime();
+        try {
+            int result = executor.invokeAny(tasks);
+            fail("invokeAny should not have result when all tasks fail: " + result);
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof ArrayIndexOutOfBoundsException))
+                throw x;
+        }
+        long duration = System.nanoTime() - start;
+
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks via untimed invokeAny, where all are able to complete successfully.
+    // Verify that invokeAny returns the result of one of the successful tasks.
+    @Test
+    public void testInvokeAnyAllSuccessful() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyAllSuccessful");
+
+        final int numTasks = 3;
+        AtomicInteger counter = new AtomicInteger();
+
+        List<Callable<Integer>> tasks = new LinkedList<Callable<Integer>>();
+        for (int i = 0; i < numTasks; i++)
+            tasks.add(new SharedIncrementTask(counter));
+
+        long start = System.nanoTime();
+        int result = executor.invokeAny(tasks);
+        long duration = System.nanoTime() - start;
+
+        assertTrue(Integer.toString(result), result >= 1 && result <= numTasks);
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        int count = counter.get();
+        assertTrue(Integer.toString(count), count >= 1 && count <= numTasks);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
     // Test invalid parameters for invokeAny. This includes a null task list, an empty task list, null time unit, negative timeout,
     // null as the only element in the task list and null within a list of otherwise valid tasks.
     @Test
@@ -2411,21 +2493,39 @@ public class PolicyExecutorServlet extends FATServlet {
 
         // Null list of tasks
         try {
-            fail("invokeAny with null list of tasks should be rejected. Instead: " +
+            fail("untimed invokeAny with null list of tasks should be rejected. Instead: " +
+                 executor.invokeAny(null));
+        } catch (NullPointerException x) {
+        } // pass
+
+        try {
+            fail("timed invokeAny with null list of tasks should be rejected. Instead: " +
                  executor.invokeAny(null, TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (NullPointerException x) {
         } // pass
 
         // Empty task list
         try {
-            fail("invokeAny with empty list of tasks should be rejected. Instead: " +
+            fail("untimed invokeAny with empty list of tasks should be rejected. Instead: " +
+                 executor.invokeAny(Collections.<Callable<Object>> emptyList()));
+        } catch (IllegalArgumentException x) {
+        } // pass
+
+        try {
+            fail("timed invokeAny with empty list of tasks should be rejected. Instead: " +
                  executor.invokeAny(Collections.<Callable<Object>> emptyList(), 2, TimeUnit.SECONDS));
         } catch (IllegalArgumentException x) {
         } // pass
 
         // Null first element in list of tasks
         try {
-            fail("invokeAny with null first task should be rejected. Instead: " +
+            fail("untimed invokeAny with null first task should be rejected. Instead: " +
+                 executor.invokeAny(Collections.<Callable<Object>> singletonList(null)));
+        } catch (NullPointerException x) {
+        } // pass
+
+        try {
+            fail("timed invokeAny with null first task should be rejected. Instead: " +
                  executor.invokeAny(Collections.<Callable<Object>> singletonList(null), TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (NullPointerException x) {
         } // pass
@@ -2438,7 +2538,20 @@ public class PolicyExecutorServlet extends FATServlet {
         listWithOneNull.add(null);
         listWithOneNull.add(new SharedIncrementTask());
         try {
-            fail("invokeAny with null task in list among non-nulls should be rejected. Instead: " +
+            fail("untimed invokeAny with null task in list among non-nulls should be rejected. Instead: " +
+                 executor.invokeAny(listWithOneNull));
+        } catch (NullPointerException x) {
+        } // pass
+
+        // Make sure we didn't run any
+        for (int i = 0; i < listWithOneNull.size(); i++) {
+            SharedIncrementTask task = listWithOneNull.get(i);
+            if (task != null)
+                assertEquals("Task #" + i, 0, task.count());
+        }
+
+        try {
+            fail("timed invokeAny with null task in list among non-nulls should be rejected. Instead: " +
                  executor.invokeAny(listWithOneNull, TIMEOUT_NS, TimeUnit.NANOSECONDS));
         } catch (NullPointerException x) {
         } // pass
