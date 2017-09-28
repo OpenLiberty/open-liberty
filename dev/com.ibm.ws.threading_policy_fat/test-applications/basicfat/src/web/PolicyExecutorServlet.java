@@ -18,6 +18,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,6 +43,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -2587,6 +2589,31 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
+    // Submit task via timed invokeAny that interrupts itself in order to test appropriate handling of InterruptedException during execution.
+    // ExecutionException with chained InterruptedException must be raised, rather than InterruptedException being raised directly to caller.
+    // The former is consistent with a task failing and the latter would indicate that the invokeAny operation itself was interrupted.
+    @Test
+    public void testInvokeAnyTimedInterruptRunningTask() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedInterruptRunningTask");
+
+        try {
+            fail("Task should fail during execution and raise exception. Instead: " + executor.invokeAny(Collections.singleton(new Callable<Boolean>() {
+                @Override
+                public Boolean call() throws InterruptedException {
+                    Thread.currentThread().interrupt();
+                    TimeUnit.SECONDS.sleep(1); // raise InterruptedException
+                    return false;
+                }
+            }), TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof InterruptedException))
+                throw x;
+        }
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
     // Submit a group of tasks to timed invokeAny, one of which raises an exception and another of which blocks.
     // Interrupt the invokeAny operation before it completes. Expect InterruptedException.
     @Test
@@ -2650,6 +2677,110 @@ public class PolicyExecutorServlet extends FATServlet {
 
         List<Runnable> canceledFromQueue = executor.shutdownNow();
         assertEquals(0, canceledFromQueue.size()); // third task should have already been canceled upon invokeAny terminating with InterruptedException
+    }
+
+    // Submit a group of tasks via timed invokeAny, where one of the tasks promptly returns a null result, and another returns a non-null result after a delay.
+    // Verify that the result of invokeAny is null. This test verifies that the implementation is not limited to awaiting non-null results, and handles null properly.
+    // Also verifies that the other task ends before it otherwise would have due to the implicit cancel/interrupt upon return of invokeAny.
+    @Test
+    public void testInvokeAnyTimedNullSuccessfulResult() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedNullSuccessfulResult");
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownTask task1 = new CountDownTask(new CountDownLatch(0), blocker, TIMEOUT_NS * 3);
+
+        SharedIncrementTask task2 = new SharedIncrementTask();
+
+        List<Callable<Boolean>> tasks = Arrays.asList(task1, Executors.callable(task2, (Boolean) null));
+
+        assertNull(executor.invokeAny(tasks, TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Another way to verify that task2 completed
+        assertEquals(1, task2.count());
+
+        // Verify that task1 ends prior to when it would have otherwise completed. This is due to cancel/interruption upon return from invokeAny.
+        for (long start = System.nanoTime(); task1.executionThreads.peek() != null && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
+        assertNull(task1.executionThreads.peek());
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks via timed invokeAny. Allow the tasks to be enqueued, but blocked from starting because another thread
+    // holds the only permit against maxConcurrency. Then invoke shutdownNow on the executor, all of the queued tasks should be canceled
+    // without starting, allowing invokeAny to raise a CancellationException before reaching the timeout.
+    @Test
+    public void testInvokeAnyTimedShutdownNowWhileEnqueued() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedShutdownNowWhileEnqueued")
+                        .maxConcurrency(1)
+                        .maxQueueSize(2);
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blockerStarted = new CountDownLatch(1);
+        Future<Boolean> blockerFuture = executor.submit(new CountDownTask(blockerStarted, blocker, TIMEOUT_NS * 2));
+        assertTrue(blockerStarted.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        AtomicInteger counter = new AtomicInteger(0);
+        List<Callable<Integer>> tasks = Arrays.<Callable<Integer>> asList(new SharedIncrementTask(counter), new SharedIncrementTask(counter));
+
+        final CountDownLatch noQueueCapacityRemains = new CountDownLatch(1);
+        // TODO Update in future user story. Temporarily use internals while lacking the callback to decrement the above latch once queue capacity is used up.
+        Field f = executor.getClass().getDeclaredField("maxQueueSizeConstraint");
+        f.setAccessible(true);
+        final Semaphore q = (Semaphore) f.get(executor);
+        testThreads.submit(new Callable<Void>() {
+            @Override
+            public Void call() throws InterruptedException {
+                for (long start = System.nanoTime(); q.availablePermits() > 0 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
+                noQueueCapacityRemains.countDown();
+                return null;
+            }
+        });
+
+        Future<List<Runnable>> shutdownFuture = testThreads.submit(new ShutdownTask(executor, true, new CountDownLatch(0), noQueueCapacityRemains, TIMEOUT_NS));
+
+        // How do we know that tasks made it into the queue? We could see RejectedExecutionException due to not allowing tasks to be queued
+        long start = System.nanoTime();
+        try {
+            fail("Should not succeed after shutdownNow: " + executor.invokeAny(tasks, TIMEOUT_NS * 3, TimeUnit.NANOSECONDS));
+        } catch (CancellationException x) { // pass
+        }
+        long duration = System.nanoTime() - start;
+
+        // invokeAny must return prematurely due to cancel by shutdownNow
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        List<Runnable> canceledFromQueue = shutdownFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(2, canceledFromQueue.size());
+    }
+
+    // Submit a group of tasks via timed invokeAny. Have all of the tasks block and then invoke shutdownNow on the executor.
+    // All of the tasks should be canceled and interrupted, allowing invokeAny to raise a CancellationException before reaching the timeout.
+    @Test
+    public void testInvokeAnyTimedShutdownNowWhileRunning() throws Exception {
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedShutdownNowWhileRunning");
+
+        final int numTasks = 3;
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch allInvokeAnyTasksBeginLatch = new CountDownLatch(numTasks);
+        List<Callable<Boolean>> tasks = new ArrayList<Callable<Boolean>>(numTasks);
+        for (int i = 0; i < numTasks; i++)
+            tasks.add(new CountDownTask(allInvokeAnyTasksBeginLatch, blocker, TIMEOUT_NS * 2));
+
+        Future<List<Runnable>> shutdownFuture = testThreads.submit(new ShutdownTask(executor, true, new CountDownLatch(0), allInvokeAnyTasksBeginLatch, TIMEOUT_NS));
+
+        long start = System.nanoTime();
+        try {
+            fail("Should not succeed after shutdownNow: " + executor.invokeAny(tasks, TIMEOUT_NS * 3, TimeUnit.NANOSECONDS));
+        } catch (CancellationException x) { // pass
+        }
+        long duration = System.nanoTime() - start;
+
+        // invokeAny must return prematurely due to cancel/interrupt by shutdownNow
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        List<Runnable> canceledFromQueue = shutdownFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(0, canceledFromQueue.size());
     }
 
     // Submit a group of tasks to timed invokeAny, where there are insufficient queue positions to
