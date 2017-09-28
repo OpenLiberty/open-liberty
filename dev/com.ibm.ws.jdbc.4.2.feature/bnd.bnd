@@ -11,8 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
+javac.source=1.8
+javac.target=1.8
 
 Bundle-Name: Database Connectivity
 Bundle-SymbolicName: com.ibm.ws.jdbc.4.2.feature

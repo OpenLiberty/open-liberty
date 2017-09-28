@@ -20,7 +20,6 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @ibm-api
  */
-public interface StoredResponseCompat <T extends Enumeration<String> & Collection<String>> extends HttpServletResponse {
-    @Override
-    public T getHeaderNames();
+public interface StoredResponseCompat extends HttpServletResponse {
+	public <T extends Enumeration & Collection> T getHeaderNames();
 }
