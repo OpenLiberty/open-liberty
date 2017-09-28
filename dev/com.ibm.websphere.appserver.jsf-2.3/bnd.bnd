@@ -26,7 +26,7 @@ publish.feature.resources: **
 	com.ibm.ws.org.apache.commons.collections;version=latest, \
 	com.ibm.ws.org.apache.commons.discovery;version=latest, \
 	com.ibm.ws.org.apache.commons.logging;version=latest, \
-	com.ibm.ws.cdi.1.2.interfaces;version=latest, \
+	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.ws.org.apache.commons.digester;version=latest, \
 	com.ibm.ws.jsf.shared;version=latest, \
 	com.ibm.ws.org.apache.myfaces.2.3;version=latest

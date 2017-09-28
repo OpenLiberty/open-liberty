@@ -36,8 +36,9 @@ publish.feature.resources: **
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.org.jboss.logging;version=latest,\
 	com.ibm.ws.org.jboss.classfilewriter;version=latest,\
-	com.ibm.ws.cdi.1.2.weld.impl;version=latest,\
+	com.ibm.ws.cdi.shared.weld;version=latest,\
+	com.ibm.ws.cdi.1.2.weld;version=latest,\
 	com.ibm.websphere.javaee.jstl.1.2;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.appserver.thirdparty.cdi;version=latest

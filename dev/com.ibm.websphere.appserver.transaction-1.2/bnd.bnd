@@ -34,5 +34,5 @@ publish.feature.resources: *.mf
 	com.ibm.rls.jdbc;version=latest, \
 	com.ibm.ws.tx.embeddable;version=latest, \
 	com.ibm.ws.recoverylog;version=latest, \
-	com.ibm.ws.cdi.1.2.interfaces;version=latest, \
+	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.websphere.appserver.spi.transaction;version=latest

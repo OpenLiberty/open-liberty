@@ -29,5 +29,5 @@ publish.feature.resources: **
 	com.ibm.ws.org.apache.commons.discovery;version=latest, \
 	com.ibm.ws.org.apache.commons.codec.1.3;version=latest, \
 	com.ibm.ws.org.apache.commons.logging;version=latest, \
-	com.ibm.ws.cdi.1.2.interfaces;version=latest, \
+	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.ws.org.apache.commons.digester;version=latest

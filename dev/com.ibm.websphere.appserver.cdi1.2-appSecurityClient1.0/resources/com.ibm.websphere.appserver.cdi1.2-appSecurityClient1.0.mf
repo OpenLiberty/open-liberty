@@ -9,7 +9,7 @@ IBM-Process-Types: client,
 IBM-ProductID: com.ibm.websphere.appserver
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.cdi-1.2))",
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.appSecurityClient-1.0))"
-Subsystem-Content: com.ibm.ws.cdi.1.2.client; version="[1.0.0,1.0.200)"
+Subsystem-Content: com.ibm.ws.cdi.client; version="[1.0.0,1.0.200)"
 Subsystem-Description: %description
 Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
 Subsystem-Localization: OSGI-INF/l10n/com.ibm.websphere.appserver.cdi1.2-appSecurityClient1.0
