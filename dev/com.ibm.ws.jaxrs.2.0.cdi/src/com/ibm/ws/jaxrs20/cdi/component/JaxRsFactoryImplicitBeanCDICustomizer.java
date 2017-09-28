@@ -90,7 +90,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
     private final Map<ComponentMetaData, BeanManager> beanManagers = new WeakHashMap<ComponentMetaData, BeanManager>();
 
-    private final Map<ModuleMetaData, Map<Class<?>, ManagedObjectFactory<?>>> managedObjectFactoryCache = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<ModuleMetaData, Map<Class<?>, ManagedObjectFactory<?>>> managedObjectFactoryCache = new ConcurrentHashMap<>();
 
     /*
      * (non-Javadoc)
@@ -246,7 +246,10 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
             ManagedObject<?> oldMO = newContext.put(clazz, newServiceObject);
             if (oldMO != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "getInstanceFromManagedObejct - clobbered " + oldMO + " with " + newServiceObject + " for key " + clazz + " in map " + newContext);
+                // because we are using a ThreadBasedHashMap here, we not actually clobbering data,
+                // but we have the potential for problems as multiple threads are access the same
+                // CDI-managed, per-request resource concurrently.
+                Tr.debug(tc, "getInstanceFromManagedObejct - \"clobbered\" " + oldMO + " with " + newServiceObject + " for key " + clazz + " in map " + newContext);
             }
 
             return (T) newServiceObject.getObject();
@@ -605,8 +608,8 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             if (cache != null) {
                 mof = cache.get(clazz);
             } else {
-                cache = new ConcurrentHashMap<Class<?>, ManagedObjectFactory<?>>();
-                managedObjectFactoryCache.put(mmd, cache);
+                managedObjectFactoryCache.putIfAbsent(mmd, new ConcurrentHashMap<Class<?>, ManagedObjectFactory<?>>());
+                cache = managedObjectFactoryCache.get(mmd);
             }
             if (mof != null) {
                 return mof;
