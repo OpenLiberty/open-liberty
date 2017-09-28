@@ -45,6 +45,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.activation.DataSource;
+import javax.json.spi.JsonProvider;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Application;
@@ -91,6 +92,9 @@ import org.codehaus.jackson.map.SerializationConfig;
 import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
 import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
 import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -228,26 +232,11 @@ public abstract class ProviderFactory {
 
     // Liberty Change for CXF Begin
     private static Object createJsonpProvider() {
-
-        // We can only create the JSON-P provider if the jsonp feature is provisioned. This usually
-        // requires the user to explicitly add the jsonp-1.0 feature in the server.xml (or some feature
-        // that includes it).  The following classloading code checks to see if this bundle can load
-        // (via dynamic import) the JSON-P classes.  If so, then it returns the JSON-P provider.  If not,
-        // it returns null.
-        JsonPProvider provider = null;
-        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-
-            @Override
-            public ClassLoader run() {
-                return ProviderFactory.class.getClassLoader();
-            }
-        });
-        Class<?> c = ProviderFactory.loadClass(cl, JSONPCLASS);
-        if (c != null) {
-            provider = new JsonPProvider();
-        }
-
-        return provider;
+        
+        BundleContext bc = FrameworkUtil.getBundle(ProviderFactory.class).getBundleContext();
+        ServiceReference<JsonProvider> sr = bc.getServiceReference(JsonProvider.class);
+        JsonProvider jsonProvider = (JsonProvider)bc.getService(sr);
+        return new JsonPProvider(jsonProvider);
     }
 
     //JsonPProvider and IBM JSON4J Provider handle
