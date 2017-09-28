@@ -18,24 +18,30 @@ import io.opentracing.Tracer;
  * <p>Open tracing context information: Values associated with an incoming request
  * and which are to be conveyed to child requests.</p>
  *
+ * <p>The context stores an application name and a tracer.</p>
+ *
  * <p>An open tracing context is set by the filter which handles incoming requests,
  * and is accessed by the filter which handles outgoing requests.</p>
  *
  * <p>The current implementation stores the open tracing context in a thread local
  * variable. See {@link OpentracingTracerManager} for more information.</p>
- *
- * <p>One value is stored in the open tracing context: The tracer which is associated with that
- * request.</p>
- *
  */
 public class OpentracingContext {
+    /** <p>The name of the application which is active in the thread.</p> */
+    private String appName;
 
-    /** <p>The trace which is active in the request.</p> */
+    /** <p>The trace which is active in the thread.</p> */
     private Tracer tracer;
 
     @Trivial
-    public void setTracer(Tracer tracer) {
+    public void setTracer(String appName, Tracer tracer) {
+        this.appName = appName;
         this.tracer = tracer;
+    }
+
+    @Trivial
+    public String getAppName() {
+        return appName;
     }
 
     @Trivial

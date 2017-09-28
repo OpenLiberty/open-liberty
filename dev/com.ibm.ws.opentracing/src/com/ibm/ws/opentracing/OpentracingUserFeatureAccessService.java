@@ -16,39 +16,64 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.opentracing.tracer.OpentracingTracerFactory;
 
 import io.opentracing.Tracer;
 
 /**
- * <p>The open tracing filter service.</p>
+ * <p>Tracer factory service.</p>
+ *
+ * <p>This is the service transition from the tracer manager to the service defined tracer
+ * factory.  The expectation is that a tracer factory will be supplied through a user feature,
+ * with the tracer factory handling all details of creating and initializing tracers.  For example,
+ * tracers are expected to connect to a trace event handler -- a server which accepts and collates
+ * trace events.</p>
  */
 @Component(immediate = true, service = { OpentracingUserFeatureAccessService.class })
 public class OpentracingUserFeatureAccessService {
     private static final TraceComponent tc = Tr.register(OpentracingUserFeatureAccessService.class);
 
-    private static OpentracingTracerFactory opentracingTracerFactory = null;
+    //
+
+    private static OpentracingTracerFactory opentracingTracerFactory;
 
     @Reference
-    public void setOpentracingTracerFactory(OpentracingTracerFactory opentracingTracerFActory) {
-        OpentracingUserFeatureAccessService.opentracingTracerFactory = opentracingTracerFActory;
+    public void setOpentracingTracerFactory(OpentracingTracerFactory opentracingTracerFactory) {
+        OpentracingUserFeatureAccessService.opentracingTracerFactory = opentracingTracerFactory;
     }
 
-    public static synchronized Tracer getTracerInstance(String serviceName) {
-        Tracer tracer = null;
-        try {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "OpentracingUserFeatureAccessService.getTracerInstance() Construct Tracer");
-            }
+    //
 
-            tracer = opentracingTracerFactory.newInstance(serviceName);
-            if (tracer == null) {
-                // We could provide our default Tracer here
+    /**
+     * <p>Answer a tracer instance for a named application.</p>
+     *
+     * <p>Invoked from {@link com.ibm.ws.opentracing.OpentracingTracerManager#createTracer(String)}.</p>
+     *
+     * @param appName The name of the application for which to create the tracer instance.
+     *
+     * @return The new tracer.
+     */
+    @Trivial
+    public static Tracer getTracerInstance(String appName) {
+        String prefix = "getTracerInstance";
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Tr.entry(tc, prefix, appName);
+        }
+
+        Tracer tracer;
+        try {
+            tracer = opentracingTracerFactory.newInstance(appName);
+            if ( tracer == null ) {
                 Tr.error(tc, "OPENTRACING_TRACERFACTORY_RETURNED_NULL");
             }
-        } catch (Exception e) {
-            // We could provide our default Tracer here
+        } catch ( Exception e ) {
+            tracer = null;
             Tr.error(tc, "OPENTRACING_COULD_NOT_CREATE_TRACER", e.getMessage());
+        }
+
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Tr.exit(tc, prefix, OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
     }

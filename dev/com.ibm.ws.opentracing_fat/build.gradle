@@ -8,17 +8,21 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.opentracing.cdi;
+apply from: '../cnf/gradle/scripts/fat.gradle'
 
-import javax.enterprise.inject.Produces;
-
-import com.ibm.ws.opentracing.OpentracingTracerManager;
-
-import io.opentracing.Tracer;
-
-public class OpentracingProducerBean {
-    @Produces
-    public Tracer getTracer() {
-        return OpentracingTracerManager.getTracer();
+	
+addRequiredLibraries {
+  doLast {
+    configurations {
+      json
     }
+    dependencies {
+      json 'com.ibm.ws.prereq:json4j:1.0.1.0'
+    }
+    copy {
+      from configurations.json
+      into "${buildDir}/autoFVT/lib/"
+    }
+  }
 }
+
