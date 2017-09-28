@@ -85,6 +85,12 @@ public class CDIRetryTest extends LoggingTest {
         getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryMaxRetriesClassScopeConfig", "SUCCESS");
     }
 
+    @Test
+    public void testRetryMaxRetriesClassLevelConfigForMethodAnnotation() throws Exception {
+        WebBrowser browser = createWebBrowserForTestCase();
+        getSharedServer().verifyResponse(browser, "/CDIFaultTolerance/retry?testMethod=testRetryMaxRetriesClassLevelConfigForMethodAnnotation", "SUCCESS");
+    }
+
     /**
      * Not really related to retry but it's easiest to test it here
      */

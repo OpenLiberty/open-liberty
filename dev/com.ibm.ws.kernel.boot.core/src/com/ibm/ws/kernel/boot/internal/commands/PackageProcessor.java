@@ -373,9 +373,6 @@ public class PackageProcessor implements ArchiveProcessor {
         if (lafilesDir.exists()) {
             DirEntryConfig lafilesDirConfig = new DirEntryConfig(PACKAGE_ARCHIVE_ENTRY_PREFIX + "lafiles", lafilesDir, true, PatternStrategy.IncludePreference);
             entryConfigs.add(lafilesDirConfig);
-        } else if (isJarPackage) {
-            // Output error and stop
-            throw new FileNotFoundException(lafilesDir.toString());
         }
 
         /*

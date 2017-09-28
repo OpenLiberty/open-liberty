@@ -68,6 +68,9 @@ public class DefaultConverters {
     public final static Converter<String> STRING_CONVERTER = v -> v;
 
     public final static Converter<Boolean> BOOLEAN_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         if (v.equalsIgnoreCase("true") || v.equalsIgnoreCase("yes") || v.equalsIgnoreCase("y") || v.equalsIgnoreCase("on") || v.equalsIgnoreCase("1")) {
             return Boolean.TRUE;
         } else {
@@ -75,86 +78,163 @@ public class DefaultConverters {
         }
     };
 
-    public final static Converter<Integer> INTEGER_CONVERTER = Integer::valueOf;
-    public final static Converter<Long> LONG_CONVERTER = Long::valueOf;
-    public final static Converter<Short> SHORT_CONVERTER = Short::valueOf;
-    public final static Converter<Byte> BYTE_CONVERTER = Byte::valueOf;
-    public final static Converter<Double> DOUBLE_CONVERTER = Double::valueOf;
-    public final static Converter<Float> FLOAT_CONVERTER = Float::valueOf;
+    public final static Converter<Integer> INTEGER_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Integer.valueOf(v);
+    };
+    public final static Converter<Long> LONG_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Long.valueOf(v);
+    };
+    public final static Converter<Short> SHORT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Short.valueOf(v);
+    };
+    public final static Converter<Byte> BYTE_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Byte.valueOf(v);
+    };
+    public final static Converter<Double> DOUBLE_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Double.valueOf(v);
+    };
+    public final static Converter<Float> FLOAT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Float.valueOf(v);
+    };
 
-    public final static Converter<BigInteger> BIG_INTEGER_CONVERTER = BigInteger::new;
-    public final static Converter<BigDecimal> BIG_DECIMAL_CONVERTER = BigDecimal::new;
+    public final static Converter<BigInteger> BIG_INTEGER_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new BigInteger(v);
+    };
+    public final static Converter<BigDecimal> BIG_DECIMAL_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new BigDecimal(v);
+    };
 
-    public final static Converter<AtomicInteger> ATOMIC_INTEGER_CONVERTER = s -> new AtomicInteger(Integer.parseInt(s));
-    public final static Converter<AtomicLong> ATOMIC_LONG_CONVERTER = s -> new AtomicLong(Long.parseLong(s));
+    public final static Converter<AtomicInteger> ATOMIC_INTEGER_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new AtomicInteger(Integer.parseInt(v));
+    };
+    public final static Converter<AtomicLong> ATOMIC_LONG_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return new AtomicLong(Long.parseLong(v));
+    };
 
-    public final static Converter<Duration> DURATION_CONVERTER = (String value) -> {
+    public final static Converter<Duration> DURATION_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return Duration.parse(value);
+            return Duration.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<Period> PERIOD_CONVERTER = (String value) -> {
+    public final static Converter<Period> PERIOD_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return Period.parse(value);
+            return Period.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<LocalDateTime> LOCAL_DATE_TIME_CONVERTER = (String value) -> {
+    public final static Converter<LocalDateTime> LOCAL_DATE_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return LocalDateTime.parse(value);
+            return LocalDateTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<LocalDate> LOCAL_DATE_CONVERTER = (String value) -> {
+    public final static Converter<LocalDate> LOCAL_DATE_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return LocalDate.parse(value);
+            return LocalDate.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<LocalTime> LOCAL_TIME_CONVERTER = (String value) -> {
+    public final static Converter<LocalTime> LOCAL_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return LocalTime.parse(value);
+            return LocalTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<OffsetDateTime> OFFSET_DATE_TIME_CONVERTER = (String value) -> {
+    public final static Converter<OffsetDateTime> OFFSET_DATE_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return OffsetDateTime.parse(value);
+            return OffsetDateTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<OffsetTime> OFFSET_TIME_CONVERTER = (String value) -> {
+    public final static Converter<OffsetTime> OFFSET_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return OffsetTime.parse(value);
+            return OffsetTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<ZonedDateTime> ZONED_DATE_TIME_CONVERTER = (String value) -> {
+    public final static Converter<ZonedDateTime> ZONED_DATE_TIME_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return ZonedDateTime.parse(value);
+            return ZonedDateTime.parse(v);
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
     };
 
-    public final static Converter<Instant> INSTANT_CONVERTER = (String value) -> {
+    public final static Converter<Instant> INSTANT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         try {
-            return Instant.from(OffsetDateTime.parse(value));
+            return Instant.from(OffsetDateTime.parse(v));
         } catch (DateTimeException dte) {
             throw new IllegalArgumentException(dte);
         }
@@ -196,33 +276,54 @@ public class DefaultConverters {
         return instant;
     }
 
-    public final static Converter<Currency> CURRENCY_CONVERTER = Currency::getInstance;
+    public final static Converter<Currency> CURRENCY_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return Currency.getInstance(v);
+    };
 
-    public final static Converter<BitSet> BIT_SET_CONVERTER = v -> BitSet.valueOf(DatatypeConverter.parseHexBinary(v));
+    public final static Converter<BitSet> BIT_SET_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return BitSet.valueOf(DatatypeConverter.parseHexBinary(v));
+    };
 
     /**
      * Convert the string to a URI or throw ConvertException if unable to convert
      *
      */
-    public final static Converter<URI> URI_CONVERTER = (String value) -> {
+    public final static Converter<URI> URI_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
         URI uri = null;
         try {
-            uri = new URI(value);
+            uri = new URI(v);
         } catch (URISyntaxException use) {
             throw new IllegalArgumentException(use);
         }
         return uri;
     };
 
-    public final static Converter<ChronoUnit> CHRONO_UNIT_CONVERTER = ChronoUnit::valueOf;
+    public final static Converter<ChronoUnit> CHRONO_UNIT_CONVERTER = v -> {
+        if (v == null) {
+            return null;
+        }
+        return ChronoUnit.valueOf(v);
+    };
 
     /**
      * Convert the string to a URL or throw ConvertException if unable to convert
      */
-    public final static Converter<URL> URL_CONVERTER = (String value) -> {
+    public final static Converter<URL> URL_CONVERTER = (String v) -> {
+        if (v == null) {
+            return null;
+        }
         URL url = null;
         try {
-            url = new URL(value);
+            url = new URL(v);
         } catch (MalformedURLException mfue) {
             throw new IllegalArgumentException(mfue);
         }

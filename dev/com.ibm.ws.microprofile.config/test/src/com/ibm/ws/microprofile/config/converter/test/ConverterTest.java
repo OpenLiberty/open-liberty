@@ -49,6 +49,11 @@ public class ConverterTest {
         System.out.println("String :" + value);
         String converted = DefaultConverters.STRING_CONVERTER.convert(value);
         assertEquals(value, converted);
+
+        value = null;
+        System.out.println("String :" + value);
+        converted = DefaultConverters.STRING_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -89,6 +94,10 @@ public class ConverterTest {
         value = "17";
         converted = DefaultConverters.BOOLEAN_CONVERTER.convert(value);
         assertEquals(Boolean.FALSE, converted);
+
+        value = null;
+        converted = DefaultConverters.BOOLEAN_CONVERTER.convert(value);
+        assertEquals(null, converted);
     }
 
     @Test
@@ -105,6 +114,10 @@ public class ConverterTest {
         value = "" + Integer.MIN_VALUE;
         converted = DefaultConverters.INTEGER_CONVERTER.convert(value);
         assertEquals(new Integer(Integer.MIN_VALUE), converted);
+
+        value = null;
+        converted = DefaultConverters.INTEGER_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -121,6 +134,11 @@ public class ConverterTest {
         System.out.println("Long :" + value);
         converted = DefaultConverters.LONG_CONVERTER.convert(value);
         assertEquals(new Long(Long.MIN_VALUE), converted);
+
+        value = null;
+        System.out.println("Long :" + value);
+        converted = DefaultConverters.LONG_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -137,6 +155,10 @@ public class ConverterTest {
         value = "" + Short.MIN_VALUE;
         converted = DefaultConverters.SHORT_CONVERTER.convert(value);
         assertEquals(new Short(Short.MIN_VALUE), converted);
+
+        value = null;
+        converted = DefaultConverters.SHORT_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -153,6 +175,11 @@ public class ConverterTest {
         System.out.println("Byte :" + value);
         converted = DefaultConverters.BYTE_CONVERTER.convert(value);
         assertEquals(new Byte(Byte.MIN_VALUE), converted);
+
+        value = null;
+        System.out.println("Byte :" + value);
+        converted = DefaultConverters.BYTE_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -169,6 +196,10 @@ public class ConverterTest {
         value = "" + Double.MIN_VALUE;
         converted = DefaultConverters.DOUBLE_CONVERTER.convert(value);
         assertEquals(new Double(Double.MIN_VALUE), converted);
+
+        value = null;
+        converted = DefaultConverters.DOUBLE_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -185,6 +216,11 @@ public class ConverterTest {
         System.out.println("Float :" + value);
         converted = DefaultConverters.FLOAT_CONVERTER.convert(value);
         assertEquals(new Float(Float.MIN_VALUE), converted);
+
+        value = null;
+        System.out.println("Float :" + value);
+        converted = DefaultConverters.FLOAT_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -199,6 +235,11 @@ public class ConverterTest {
         System.out.println("BigInt :" + value);
         converted = DefaultConverters.BIG_INTEGER_CONVERTER.convert(value);
         assertEquals(bigInt, converted);
+
+        value = null;
+        System.out.println("BigInt :" + value);
+        converted = DefaultConverters.BIG_INTEGER_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -214,6 +255,11 @@ public class ConverterTest {
         System.out.println("BigDec :" + value);
         converted = DefaultConverters.BIG_DECIMAL_CONVERTER.convert(value);
         assertEquals(bigDec, converted);
+
+        value = null;
+        System.out.println("BigDec :" + value);
+        converted = DefaultConverters.BIG_DECIMAL_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -229,6 +275,10 @@ public class ConverterTest {
         value = "" + Integer.MIN_VALUE;
         converted = DefaultConverters.ATOMIC_INTEGER_CONVERTER.convert(value);
         assertEquals(Integer.MIN_VALUE, converted.get());
+
+        value = null;
+        converted = DefaultConverters.ATOMIC_INTEGER_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -244,6 +294,10 @@ public class ConverterTest {
         value = "" + Long.MIN_VALUE;
         converted = DefaultConverters.ATOMIC_LONG_CONVERTER.convert(value);
         assertEquals(Long.MIN_VALUE, converted.get());
+
+        value = null;
+        converted = DefaultConverters.ATOMIC_LONG_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -257,6 +311,11 @@ public class ConverterTest {
         System.out.println("Duration :" + value);
         converted = DefaultConverters.DURATION_CONVERTER.convert(value);
         assertEquals(duration, converted);
+
+        value = null;
+        System.out.println("Duration :" + value);
+        converted = DefaultConverters.DURATION_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -270,6 +329,11 @@ public class ConverterTest {
         System.out.println("Period :" + value);
         converted = DefaultConverters.PERIOD_CONVERTER.convert(value);
         assertEquals(period, converted);
+
+        value = null;
+        System.out.println("Period :" + value);
+        converted = DefaultConverters.PERIOD_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -279,6 +343,11 @@ public class ConverterTest {
         System.out.println("LocalDateTime :" + value);
         LocalDateTime converted = DefaultConverters.LOCAL_DATE_TIME_CONVERTER.convert(value);
         assertEquals(localDateTime, converted);
+
+        value = null;
+        System.out.println("LocalDateTime :" + value);
+        converted = DefaultConverters.LOCAL_DATE_TIME_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -288,6 +357,11 @@ public class ConverterTest {
         System.out.println("LocalDate :" + value);
         LocalDate converted = DefaultConverters.LOCAL_DATE_CONVERTER.convert(value);
         assertEquals(localDate, converted);
+
+        value = null;
+        System.out.println("LocalDate :" + value);
+        converted = DefaultConverters.LOCAL_DATE_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -297,6 +371,11 @@ public class ConverterTest {
         System.out.println("LocalTime :" + value);
         LocalTime converted = DefaultConverters.LOCAL_TIME_CONVERTER.convert(value);
         assertEquals(localTime, converted);
+
+        value = null;
+        System.out.println("LocalTime :" + value);
+        converted = DefaultConverters.LOCAL_TIME_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -311,6 +390,10 @@ public class ConverterTest {
         value = offsetDateTime.toString();
         converted = DefaultConverters.OFFSET_DATE_TIME_CONVERTER.convert(value);
         assertEquals(offsetDateTime, converted);
+
+        value = null;
+        converted = DefaultConverters.OFFSET_DATE_TIME_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -325,6 +408,11 @@ public class ConverterTest {
         System.out.println("OffsetTime :" + value);
         converted = DefaultConverters.OFFSET_TIME_CONVERTER.convert(value);
         assertEquals(offsetTime, converted);
+
+        value = null;
+        System.out.println("OffsetTime :" + value);
+        converted = DefaultConverters.OFFSET_TIME_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -334,6 +422,11 @@ public class ConverterTest {
         System.out.println("ZonedDateTime :" + value);
         ZonedDateTime converted = DefaultConverters.ZONED_DATE_TIME_CONVERTER.convert(value);
         assertEquals(zonedDateTime, converted);
+
+        value = null;
+        System.out.println("ZonedDateTime :" + value);
+        converted = DefaultConverters.ZONED_DATE_TIME_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -343,6 +436,11 @@ public class ConverterTest {
         System.out.println("Instant :" + value);
         Instant converted = DefaultConverters.INSTANT_CONVERTER.convert(value);
         assertEquals(instant, converted);
+
+        value = null;
+        System.out.println("Instant :" + value);
+        converted = DefaultConverters.INSTANT_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -352,6 +450,11 @@ public class ConverterTest {
         System.out.println("Currency :" + value);
         Currency converted = DefaultConverters.CURRENCY_CONVERTER.convert(value);
         assertEquals(currency, converted);
+
+        value = null;
+        System.out.println("Currency :" + value);
+        converted = DefaultConverters.CURRENCY_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -366,6 +469,10 @@ public class ConverterTest {
         value = "" + DatatypeConverter.printHexBinary(bitSet.toByteArray());
         converted = DefaultConverters.BIT_SET_CONVERTER.convert(value);
         assertEquals(bitSet, converted);
+
+        value = null;
+        converted = DefaultConverters.BIT_SET_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -375,6 +482,11 @@ public class ConverterTest {
         System.out.println("URI :" + uri);
         URI converted = DefaultConverters.URI_CONVERTER.convert(value);
         assertEquals(uri, converted);
+
+        value = null;
+        System.out.println("URI :" + uri);
+        converted = DefaultConverters.URI_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 
     @Test
@@ -384,5 +496,10 @@ public class ConverterTest {
         System.out.println("URL :" + url);
         URL converted = DefaultConverters.URL_CONVERTER.convert(value);
         assertEquals(url, converted);
+
+        value = null;
+        System.out.println("URL :" + url);
+        converted = DefaultConverters.URL_CONVERTER.convert(value);
+        assertEquals(value, converted);
     }
 }
