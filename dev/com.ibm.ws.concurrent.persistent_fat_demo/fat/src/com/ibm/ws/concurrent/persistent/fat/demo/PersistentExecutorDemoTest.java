@@ -32,6 +32,8 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
+// Change for testing automation tools
+
 /**
  * Tests using the demo app for persistent scheduled executor
  */
