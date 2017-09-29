@@ -77,7 +77,8 @@ public class FrameReadProcessor {
         // call the stream processor to process this stream. For now, don't return from here until the
         // frame has been fully processed.
         int streamId = currentFrame.getStreamId();
-        if (muxLink.isGoAwayInProgress() && streamId > muxLink.getLastStreamToProcess()) {
+        // if (muxLink.isGoAwayInProgress() && streamId > muxLink.getLastStreamToProcess()) {
+        if (muxLink.checkStreamCloseVersusLinkState(streamId)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "GOAWAY previously received and the stream ID for the current frame is greater than the ID indicated in the GOAWAY frame");
             }
@@ -92,17 +93,14 @@ public class FrameReadProcessor {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Stream found, but it was closed and significantly past the close time. stream-id: " + streamId);
             }
-            muxLink.startProcessingGoAway();
             throw new ProtocolException("Stream significantly past close time");
         }
         if (stream == null && streamId < muxLink.getHighestClientStreamId()) {
-            muxLink.startProcessingGoAway();
             throw new ProtocolException("Cannot initialize a stream with an ID lower than one previously created. stream-id: " + streamId);
         }
 
         // Even stream IDs can not originate from the client
         if (stream == null && (streamId != 0) && (streamId % 2 == 0)) {
-            muxLink.startProcessingGoAway();
             throw new ProtocolException("Cannot start a stream from the client with an even numbered ID. stream-id: " + streamId);
         }
 
