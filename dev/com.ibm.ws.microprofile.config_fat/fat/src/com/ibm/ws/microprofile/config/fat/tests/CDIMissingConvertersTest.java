@@ -15,10 +15,18 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.jboss.shrinkwrap.api.Archive;
+
 import com.ibm.ws.fat.util.LoggingTest;
+import com.ibm.ws.fat.util.BuildShrinkWrap;
+import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
+
 import com.ibm.ws.fat.util.SharedServer;
 
 /**
@@ -27,7 +35,12 @@ import com.ibm.ws.fat.util.SharedServer;
 public class CDIMissingConvertersTest extends LoggingTest {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("brokenCDIConfigServer");
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("brokenCDIConfigServer");
+
+    @BuildShrinkWrap
+    public static Archive buildApp() {
+        return SharedShrinkWrapApps.brokenConfigServerApps();
+    }
 
     @Override
     protected SharedServer getSharedServer() {

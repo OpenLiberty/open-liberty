@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.archaius.impl.fat.tests;
+package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,8 +22,7 @@ import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
 /**
  *
  */
-public class DefaultsGetConfigPathWar implements AppConfigTestApp {
-
+public class DefaultsGetConfigProperties implements AppConfigTestApp {
     /** {@inheritDoc} */
     @Override
     public String runTest(HttpServletRequest request) {
@@ -31,11 +30,12 @@ public class DefaultsGetConfigPathWar implements AppConfigTestApp {
         builder.addDefaultSources();
         Config config = builder.build();
         try {
+            TestUtils.assertContains(config, "defaultSources.jar.meta-inf.config.properties", "jarPropertiesDefaultValue");
             TestUtils.assertContains(config, "defaultSources.war.meta-inf.config.properties", "warPropertiesDefaultValue");
-            TestUtils.assertNotContains(config, "warVisibility.war.meta-inf.config.properties");
         } catch (AssertionError e) {
             return "FAILED: " + e.getMessage();
         }
         return "PASSED";
     }
+
 }

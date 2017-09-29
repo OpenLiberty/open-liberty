@@ -1,5 +1,5 @@
-/*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ /*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,92 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.microprofile.config.fat.tests;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 /**
  *
  */
 public class DefaultSourcesTest extends AbstractConfigApiTest {
 
+    private final static String testClassName = "DefaultSourcesTest";
+
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("SimpleConfigSourcesServer");
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("SimpleConfigSourcesServer");
+
+    @BuildShrinkWrap
+    public static Archive buildApp() {
+        String APP_NAME = "defaultSources";
+
+        JavaArchive testAppUtils = SharedShrinkWrapApps.getTestAppUtilsJar();
+
+        JavaArchive defaultSources_jar = ShrinkWrap.create(JavaArchive.class, APP_NAME + ".jar")
+                        .addPackage("com.ibm.ws.microprofile.appConfig.defaultSources.tests")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".jar/resources/META-INF/MANIFEST.MF"), "MANIFEST.MF")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".jar/resources/META-INF/config.properties"), "config.properties")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".jar/resources/META-INF/microprofile-config.json"), "microprofile-config.json")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".jar/resources/META-INF/microprofile-config.properties"),
+                                               "microprofile-config.properties")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".jar/resources/META-INF/microprofile-config.xml"), "microprofile-config.xml");
+
+        JavaArchive earlib_jar = ShrinkWrap.create(JavaArchive.class, "earlib.jar")
+                        .addAsManifestResource(new File("test-applications/earlib.jar/resources/META-INF/config.properties"), "config.properties")
+                        .addAsManifestResource(new File("test-applications/earlib.jar/resources/META-INF/microprofile-config.json"), "microprofile-config.json")
+                        .addAsManifestResource(new File("test-applications/earlib.jar/resources/META-INF/microprofile-config.properties"),
+                                               "microprofile-config.properties")
+                        .addAsManifestResource(new File("test-applications/earlib.jar/resources/META-INF/microprofile-config.xml"), "microprofile-config.xml");
+
+        WebArchive defaultSources_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addAsLibrary(testAppUtils)
+                        .addAsLibrary(defaultSources_jar)
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/config.properties"), "config.properties")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.json"), "microprofile-config.json")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.properties"),
+                                               "microprofile-config.properties")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/microprofile-config.xml"), "microprofile-config.xml")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/web.xml"), "web.xml")
+                        .addAsWebInfResource(new File("test-applications/" + APP_NAME + ".war/resources/WEB-INF/web.xml"), "web.xml");
+
+        WebArchive warVisibility_war = ShrinkWrap.create(WebArchive.class, "warVisibility_" + ".war")
+                        .addAsLibrary(testAppUtils)
+                        .addAsManifestResource(new File("test-applications/warVisibility.war/resources/META-INF/web.xml"), "web.xml")
+                        .addAsManifestResource(new File("test-applications/warVisibility.war/resources/META-INF/microprofile-config.properties"),
+                                               "microprofile-config.properties")
+                        .addAsManifestResource(new File("test-applications/warVisibility.war/resources/META-INF/permissions.xml"), "permissions.xml");
+
+        EnterpriseArchive defaultSources_ear = ShrinkWrap.create(EnterpriseArchive.class, APP_NAME + ".ear")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".ear/resources/META-INF/application.xml"), "application.xml")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".ear/resources/META-INF/microprofile-config.properties"),
+                                               "microprofile-config.properties")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".ear/resources/META-INF/permissions.xml"), "permissions.xml")
+                        .addAsModule(defaultSources_war)
+                        .addAsModule(warVisibility_war)
+                        .addAsLibrary(earlib_jar);
+
+        return defaultSources_ear;
+    }
 
     public DefaultSourcesTest() {
         super("/defaultSources/");

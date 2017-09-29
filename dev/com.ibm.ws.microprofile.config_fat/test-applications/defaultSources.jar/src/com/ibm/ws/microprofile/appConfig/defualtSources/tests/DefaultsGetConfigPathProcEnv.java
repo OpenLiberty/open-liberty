@@ -8,7 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.archaius.impl.fat.tests;
+package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,17 +26,26 @@ import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
 /**
  *
  */
-public class DefaultsGetBuilderWithDefaults implements AppConfigTestApp {
+public class DefaultsGetConfigPathProcEnv implements AppConfigTestApp {
 
     /** {@inheritDoc} */
     @Override
     public String runTest(HttpServletRequest request) {
+        Map<String, String> env = new HashMap(System.getenv());
+        Properties props = System.getProperties();
+
+        //Properties override environment variables.
+        for (Map.Entry<?, ?> entry: props.entrySet()){
+            String key = (String) entry.getKey();
+            String value = (String) entry.getValue();
+            env.put(key, value);
+        }
+
         ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        Config config = builder.addDefaultSources().build();
+        builder.addDefaultSources();
+        Config config = builder.build();
         try {
-            TestUtils.assertContains(config, "defaultSources.jar.meta-inf.config.properties", "jarPropertiesDefaultValue");
-            TestUtils.assertContains(config, "defaultSources.war.meta-inf.config.properties", "warPropertiesDefaultValue");
-            //TODO add sys and env
+            TestUtils.assertContains(config, env);
         } catch (AssertionError e) {
             return "FAILED: " + e.getMessage();
         }
