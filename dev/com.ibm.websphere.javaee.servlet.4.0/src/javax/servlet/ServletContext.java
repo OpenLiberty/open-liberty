@@ -160,4 +160,7 @@ public abstract interface ServletContext {
     public abstract String getResponseCharacterEncoding();
 
     public abstract void setResponseCharacterEncoding(String encoding);
+
+    public abstract ServletRegistration.Dynamic addJspFile(String servletName, String jspFile);
+
 }
