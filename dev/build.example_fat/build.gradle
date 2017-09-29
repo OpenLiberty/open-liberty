@@ -9,7 +9,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 apply from: '../cnf/gradle/scripts/fat.gradle'
-	
+
+// Dummy change that will not be merged
 // Example of pulling down binary dependencies from Artifactory
 addRequiredLibraries {
   doLast {
