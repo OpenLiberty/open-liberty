@@ -633,6 +633,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    @FFDCIgnore(value = { RejectedExecutionException.class })
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
         int taskCount = tasks.size();
 
