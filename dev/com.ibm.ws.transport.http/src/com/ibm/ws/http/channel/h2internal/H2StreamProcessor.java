@@ -305,7 +305,7 @@ public class H2StreamProcessor {
 
             if (direction == Constants.Direction.READ_IN) {
 
-                if (muxLink.isProcessingGoAway() && frame.getStreamId() > muxLink.getLastStreamToProcess()) {
+                if (muxLink.checkStreamCloseVersusLinkState(frame.getStreamId())) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "processNextFrame: " + currentFrame.getFrameType() + " received on stream " + this.myID +
                                      " after a GOAWAY was sent.  " + "This frame will be ignored.");
@@ -779,12 +779,25 @@ public class H2StreamProcessor {
     }
 
     public void sendGOAWAYFrame(Http2Exception e) throws ProtocolException {
-        // the highest-numbered stream initiated by the client.
-        muxLink.startProcessingGoAway();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "sendGOAWAYFrame: " + " :close: H2InboundLink hc: " + muxLink.hashCode());
+        }
+
+        boolean doGoAwayFromHere = muxLink.setStatusLinkToGoAwaySending();
+        if (!doGoAwayFromHere) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "sendGOAWAYFrame: another thread is handling the close" + " :close: H2InboundLink hc: " + muxLink.hashCode());
+            }
+
+            return;
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "sendGOAWAYFrame sending a GOAWAY with Last-Stream-ID " + muxLink.getLastStreamToProcess()
                          + " and exception " + e.toString());
         }
+
         // send out a goaway in response; return the same last stream, for now
         Frame frame = new FrameGoAway(0, e.getMessage().getBytes(), e.getErrorCode(), muxLink.getLastStreamToProcess(), false);
         processNextFrame(frame, Constants.Direction.WRITING_OUT);
@@ -792,9 +805,17 @@ public class H2StreamProcessor {
 
     private void processGOAWAYFrame() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "processGOAWAYFrame entry: begin connection shutdown and send reciprocal GOAWAY to client");
+            Tr.debug(tc, "processGOAWAYFrame entry: begin connection shutdown and send reciprocal GOAWAY to client" + " :close: H2InboundLink hc: " + muxLink.hashCode());
         }
-        muxLink.startProcessingGoAway();
+
+        boolean doGoAwayFromHere = muxLink.setStatusLinkToGoAwaySending();
+        if (!doGoAwayFromHere) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "sendGOAWAYFrame: another thread is handling the close" + " :close: H2InboundLink hc: " + muxLink.hashCode());
+            }
+            return;
+        }
+
         int lastStreamId = ((FrameGoAway) currentFrame).getLastStreamId();
         muxLink.triggerStreamClose(this);
         muxLink.setLastStreamToProcess(lastStreamId);
@@ -809,9 +830,10 @@ public class H2StreamProcessor {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "writeSync caught (logically unexpected) FlowControlException: " + e);
             }
-        }
+        } finally {
 
-        muxLink.goAway(lastStreamId);
+            muxLink.goAway(lastStreamId);
+        }
     }
 
     private void processPINGFrame() {
@@ -1568,22 +1590,22 @@ public class H2StreamProcessor {
             return false;
         }
 
-        // WDW TODO: investigate this for a race condition
-        boolean goAwayInProgress = muxLink.isGoAwayInProgress();
-
-        if (goAwayInProgress && myID > muxLink.getLastStreamToProcess()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "isStreamClosed stream closed; stream: " + myID);
-            }
-            return true;
-        }
         if (state == StreamState.CLOSED) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "isStreamClosed stream closed; stream: " + myID);
             }
             return true;
         }
-        return false;
+
+        boolean rc = muxLink.checkStreamCloseVersusLinkState(myID);
+
+        if (rc == true) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "isStreamClosed stream closed via muxLink check; stream: " + myID);
+            }
+        }
+
+        return rc;
     }
 
     /**
