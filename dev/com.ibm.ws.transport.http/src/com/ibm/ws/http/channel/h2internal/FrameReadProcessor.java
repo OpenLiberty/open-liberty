@@ -77,13 +77,13 @@ public class FrameReadProcessor {
         // call the stream processor to process this stream. For now, don't return from here until the
         // frame has been fully processed.
         int streamId = currentFrame.getStreamId();
-        // if (muxLink.isGoAwayInProgress() && streamId > muxLink.getLastStreamToProcess()) {
-        if (muxLink.checkStreamCloseVersusLinkState(streamId)) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "GOAWAY previously received and the stream ID for the current frame is greater than the ID indicated in the GOAWAY frame");
-            }
-            throw new ProtocolException("Stream ID for current frame is greater than the ID indicated in GOAWAY frame");
-        }
+
+        //if (muxLink.checkStreamCloseVersusLinkState(streamId)) {
+        //    if (tc.isDebugEnabled()) {
+        //        Tr.debug(tc, "GOAWAY previously received and the stream ID for the current frame is greater than the ID indicated in the GOAWAY frame");
+        //    }
+        //    throw new ProtocolException("Stream ID for current frame is greater than the ID indicated in GOAWAY frame");
+        //}
 
         //getStream will return a stream if it's active or in the closed table
         //Null will be returned if it's in neither table, meaning it's new or has already been closed and removed
