@@ -24,6 +24,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Trivial;
 
 import io.opentracing.ActiveSpan;
 import io.opentracing.Span;
@@ -38,10 +39,15 @@ import io.opentracing.tag.Tags;
  * requests and outgoing responses.)</p>
  *
  * <p>Implements both {@link ClientRequestFilter} and {@link ClientResponseFilter}.</p>
+ *
+ * <p>This implementation is stateless.  A single client filter is used by all clients.</p>
  */
 @Component
 public class OpentracingClientFilter implements ClientRequestFilter, ClientResponseFilter {
     private static final TraceComponent tc = Tr.register(OpentracingClientFilter.class);
+
+    //
+
     /**
      * <p>The property used to store the client span ID for the outgoing request.</p>
      *
@@ -65,50 +71,59 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
      */
     @Override
     public void filter(ClientRequestContext clientRequestContext) throws IOException {
-        // Get the Tracer
-        Tracer tracer = OpentracingTracerManager.getTracer();
+        String methodName = "filter(outgoing)";
 
-        // If there is no tracer, then there is nothing the filter can do
-        if (tracer == null) {
+        Tracer tracer = OpentracingTracerManager.getTracer();
+        if ( tracer == null ) {
             Tr.error(tc, "OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST");
             return;
-        }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "ClientRequestContext.filter request. tracer = " + tracer);
+        } else {
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName, OpentracingUtils.getTracerText(tracer));
+            }
         }
 
-        // Use the URL to add data to the Span
         String outgoingURL = clientRequestContext.getUri().toURL().toString();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "ClientRequestContext.filter request. Outgoing URL = " + outgoingURL);
+            Tr.debug(tc, methodName + " outgoing URL", outgoingURL);
         }
 
-        // Set the name of the Span to the outgoing URL
         Tracer.SpanBuilder spanBuilder = tracer.buildSpan(outgoingURL);
 
-        // Add appropriate Tags to the Span
         spanBuilder.withTag(Tags.SPAN_KIND.getKey(), Tags.SPAN_KIND_CLIENT);
         spanBuilder.withTag(Tags.HTTP_URL.getKey(), outgoingURL);
         spanBuilder.withTag(Tags.HTTP_METHOD.getKey(), clientRequestContext.getMethod());
 
-        // Make this Span a child of the Active Span if there is an Active Span
-        ActiveSpan activeSpan = tracer.activeSpan();
-        if (activeSpan != null) {
-            spanBuilder.asChildOf(activeSpan.context());
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "OpentracingClientFilter.filter request. Creating child Span");
-            }
+        ActiveSpan priorIncomingSpan = tracer.activeSpan();
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName + " parent", priorIncomingSpan);
+        }
+        if ( priorIncomingSpan != null ) {
+            spanBuilder.asChildOf(priorIncomingSpan.context());
+        } else {
+            // spanBuilder.ignoreActiveSpan();
+            //
+            // TODO:
+            // The work-around, which is a call 'spanBuilder.ignoreActiveSpan()',
+            // and which is used in the container filter, is not needed here.
+            //
+            // The code is a bit muddled, though, as the mock span defaults to
+            // look for and use the active span as the parent span, which means
+            // the call 'spanBuilder.asChildOf' may not be necessary.
         }
 
-        // Start the Span
-        Span span = spanBuilder.startManual();
+        Span newOutoingSpan = spanBuilder.startManual();
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName + " outgoingSpan", newOutoingSpan);
+        }
 
-        // Inject the Span info into the ougoing header so the info is propagated to the next server
-        tracer.inject(span.context(), Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
+        tracer.inject(
+            newOutoingSpan.context(),
+            Format.Builtin.HTTP_HEADERS, new MultivaluedMapToTextMap(clientRequestContext.getHeaders()));
 
         // Note the use of the span stored under the client property: This is to
         // create the association of the outgoing request to the incoming response.
-        clientRequestContext.setProperty(CLIENT_SPAN_PROP_ID, span);
+        clientRequestContext.setProperty(CLIENT_SPAN_PROP_ID, newOutoingSpan);
     }
 
     /**
@@ -125,46 +140,57 @@ public class OpentracingClientFilter implements ClientRequestFilter, ClientRespo
     @Override
     public void filter(ClientRequestContext clientRequestContext,
                        ClientResponseContext clientResponseContext) throws IOException {
-        Span span = (Span) clientRequestContext.getProperty(OpentracingClientFilter.CLIENT_SPAN_PROP_ID);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "OpentracingClientFilter.filter response. Span =" + span);
+        String methodName = "filter(incoming)";
+
+        Span priorOutgoingSpan = (Span) clientRequestContext.getProperty(CLIENT_SPAN_PROP_ID);
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, methodName, priorOutgoingSpan);
         }
-        if (span == null) {
+
+        if ( priorOutgoingSpan == null ) {
             Tr.error(tc, "OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST");
             return;
         }
 
         try {
-            // Add appropriate Tags to the Span
-            span.setTag(Tags.HTTP_STATUS.getKey(), clientResponseContext.getStatus());
-            if (clientResponseContext.getStatus() >= 400) {
-                span.setTag(Tags.ERROR.getKey(), true);
+            Integer httpStatus = Integer.valueOf(clientResponseContext.getStatus());
+            if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                Tr.debug(tc, methodName + " httpStatus", httpStatus);
             }
 
-            // Finish the Span
-            span.finish();
+            priorOutgoingSpan.setTag(Tags.HTTP_STATUS.getKey(), httpStatus);
+            if ( clientResponseContext.getStatus() >= 400 ) {
+                priorOutgoingSpan.setTag(Tags.ERROR.getKey(), true);
+                if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+                    Tr.debug(tc, methodName + " error", Boolean.TRUE);
+                }
+            }
+
+            priorOutgoingSpan.finish();
+
         } finally {
-            // Clean up
-            clientRequestContext.removeProperty(OpentracingClientFilter.CLIENT_SPAN_PROP_ID);
+            clientRequestContext.removeProperty(CLIENT_SPAN_PROP_ID);
         }
     }
 
     private class MultivaluedMapToTextMap implements TextMap {
         private final MultivaluedMap<String, Object> mvMap;
 
+        @Trivial
         public MultivaluedMapToTextMap(MultivaluedMap<String, Object> mvMap) {
             this.mvMap = mvMap;
         }
 
+        @Trivial
         @Override
         public Iterator<Map.Entry<String, String>> iterator() {
             throw new UnsupportedOperationException();
         }
 
+        @Trivial
         @Override
         public void put(String key, String value) {
             mvMap.add(key, value);
         }
-
     }
 }
