@@ -30,6 +30,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.LockSupport;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -679,12 +680,37 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             if (task == null)
                 throw new NullPointerException();
 
-        // TODO replace temporary code with proper untimed implementation. This will allow some tests to be written in advance,
+        InvokeAnyCompletionTracker tracker = new InvokeAnyCompletionTracker(taskCount);
+        ArrayList<PolicyTaskFutureImpl<T>> futures = new ArrayList<PolicyTaskFutureImpl<T>>(taskCount);
         try {
-            return invokeAny(tasks, Long.MAX_VALUE, TimeUnit.NANOSECONDS);
-        } catch (TimeoutException x) {
-            throw new UnsupportedOperationException(x);
+            // submit all tasks
+            for (Callable<T> task : tasks) {
+                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task, tracker);
+
+                // check if done before enqueuing more tasks
+                if (tracker.hasSuccessfulResult())
+                    break;
+
+                enqueue(taskFuture, maxWaitForEnqueueNS.get(), false); // never run on the current thread because it would prevent timeout
+
+                futures.add(taskFuture);
+            }
+
+            while (!Thread.interrupted())
+                LockSupport.park(tracker);
+        } catch (RejectedExecutionException x) {
+            if (x.getCause() instanceof InterruptedException) {
+                throw (InterruptedException) x.getCause();
+            } else
+                throw x;
+        } finally {
+            T result = tracker.completeInvokeAny(futures);
+            if (result != null || tracker.hasSuccessfulResult())
+                return result;
         }
+
+        // Only reachable if invokeAny was interrupted.
+        throw new InterruptedException();
     }
 
     @Override
