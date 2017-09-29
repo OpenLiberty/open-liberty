@@ -51,10 +51,6 @@ public class H2InboundLink extends HttpInboundLink {
     /** RAS tracing variable */
     private static final TraceComponent tc = Tr.register(H2InboundLink.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-//    public static enum LINK_STATUS {
-//        INIT, OPEN, GOAWAY_IN_PROGRESS, CLOSING_WITH_GOAWAY, CLOSING
-//    };
-
     public static enum LINK_STATUS {
         INIT, OPEN, WAIT_TO_SEND_GOAWAY, GOAWAY_SENDING, CLOSING
     };
@@ -75,12 +71,9 @@ public class H2InboundLink extends HttpInboundLink {
     private H2ConnectionTimeout connTimeout = null;
     Object linkStatusSync = new Object() {};
 
-    //private final boolean processGoAway = false;
-    private int lastStreamToProcess = 0; // the last stream we should handle in the event of a GOAWAY
-
-    // keep track of the highest IDs processed to ensure that stream IDs only increase
+    // keep track of the highest IDs processed
     private int highestClientStreamId = 0;
-    private int highestLocalStreamId = 0;
+    private int highestLocalStreamId = -1; // this moves to 0 when the connection stream is established
 
     boolean connection_preface_sent = false; // empty SETTINGS frame has been sent
     boolean connection_preface_string_rcvd = false; // MAGIC string has been received
@@ -677,7 +670,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
     }
 
-    public void goAway(int lastStreamId) {
+    public void goAway() {
         boolean closeFromHere = false;
         Exception exceptionForCloseFromHere = null;
 
@@ -689,11 +682,6 @@ public class H2InboundLink extends HttpInboundLink {
 
             if (linkStatus == LINK_STATUS.CLOSING) {
                 return;
-            }
-
-            lastStreamToProcess = lastStreamId;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "goAway: last stream to process : " + lastStreamToProcess + " :close: H2InboundLink hc: " + this.hashCode());
             }
 
             if (closeFuture == null) {
@@ -755,29 +743,22 @@ public class H2InboundLink extends HttpInboundLink {
         }
     }
 
-    public boolean checkStreamCloseVersusLinkState(int sID) {
+    public boolean checkIfGoAwaySending() {
 
         synchronized (linkStatusSync) {
 
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "checkStreamCloseVersusLinkState: sID: " + sID + " :linkstatus: " + linkStatus + " H2InboundLink hc: " + this.hashCode());
-            }
-
             if (linkStatus != LINK_STATUS.GOAWAY_SENDING) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "checkifGoAwaySending() returning false :linkstatus: " + linkStatus);
+                }
                 return false;
             }
 
-            if (sID > getLastStreamToProcess()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "checkStreamCloseVersusLinkState: stream ID: " + sID + " is greater than LastStreamToProcess: returning true " + ":close: H2InboundLink hc: "
-                                 + this.hashCode());
-                }
-                return true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "checkifGoAwaySending() returning true :linkstatus: " + linkStatus);
             }
-
-            return false;
+            return true;
         }
-
     }
 
     /*
@@ -823,15 +804,13 @@ public class H2InboundLink extends HttpInboundLink {
                     Tr.debug(tc, "close(vc,e): looking at stream: " + stream.myID);
                 }
 
-                if (stream.myID != 0 && !stream.isHalfClosed() && !stream.isStreamClosed()) {
-                    if (lastStreamToProcess > -1 && stream.myID > lastStreamToProcess) {
-                        continue;
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "close(vc,e): stream not ready to close: " + stream.myID + " :close: H2InboundLink hc: " + this.hashCode());
-                        }
-                        return;
+                if (stream.myID != 0 && !stream.isHalfClosed() && !stream.isStreamClosed() && highestLocalStreamId > -1) {
+                    continue;
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "close(vc,e): stream not ready to close: " + stream.myID + " :close: H2InboundLink hc: " + this.hashCode());
                     }
+                    return;
                 }
             }
 
@@ -886,23 +865,8 @@ public class H2InboundLink extends HttpInboundLink {
 
             try {
 
-                // look for highest number stream in either table for the last stream.
-                H2StreamProcessor stream;
-                for (Integer i : streamTable.keySet()) {
-                    stream = streamTable.get(i);
-                    if (stream.myID > lastStreamToProcess) {
-                        lastStreamToProcess = stream.myID;
-                    }
-                }
-                for (Integer i : closeTable.keySet()) {
-                    stream = closeTable.get(i);
-                    if (stream.myID > lastStreamToProcess) {
-                        lastStreamToProcess = stream.myID;
-                    }
-                }
-
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "H2ConnectionTimeout-run: lastStreamToProcess: " + lastStreamToProcess + " sending GOAWAY Frame" + " :close: H2InboundLink hc: " + hcDebug);
+                    Tr.debug(tc, "H2ConnectionTimeout-run: sending GOAWAY Frame" + " :close: H2InboundLink hc: " + hcDebug);
                 }
 
                 streamTable.get(0).sendGOAWAYFrame(new Http2Exception("the http2 connection has timed out"));
@@ -1035,20 +999,8 @@ public class H2InboundLink extends HttpInboundLink {
         }
     }
 
-    public int getLastStreamToProcess() {
-        return lastStreamToProcess;
-    }
-
-    public void setLastStreamToProcess(int x) {
-        lastStreamToProcess = x;
-    }
-
     public int getHighestClientStreamId() {
         return highestClientStreamId;
-    }
-
-    public void setLastStreamToHighestClientStream() {
-        lastStreamToProcess = highestClientStreamId;
     }
 
 }

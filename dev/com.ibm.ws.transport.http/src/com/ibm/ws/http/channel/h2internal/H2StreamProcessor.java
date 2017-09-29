@@ -258,9 +258,9 @@ public class H2StreamProcessor {
             // if looping to GOAWAY, then load it up now
             if (addFrame == ADDITIONAL_FRAME.GOAWAY) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "processNextFrame: addFrame GOAWAY: highestStreamIDToProcess: " + muxLink.getLastStreamToProcess());
+                    Tr.debug(tc, "processNextFrame: addFrame GOAWAY: HighestClientStreamId: " + muxLink.getHighestClientStreamId());
                 }
-                currentFrame = new FrameGoAway(0, addFrameException.getMessage().getBytes(), addFrameException.getErrorCode(), muxLink.getLastStreamToProcess(), false);
+                currentFrame = new FrameGoAway(0, addFrameException.getMessage().getBytes(), addFrameException.getErrorCode(), muxLink.getHighestClientStreamId(), false);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "processNextFrame: exception encountered.  Sending a GOAWAY frame with the error code " + addFrameException.getErrorString());
                 }
@@ -305,10 +305,10 @@ public class H2StreamProcessor {
 
             if (direction == Constants.Direction.READ_IN) {
 
-                if (muxLink.checkStreamCloseVersusLinkState(frame.getStreamId())) {
+                if (muxLink.checkIfGoAwaySending()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "processNextFrame: " + currentFrame.getFrameType() + " received on stream " + this.myID +
-                                     " after a GOAWAY was sent.  " + "This frame will be ignored.");
+                                     " after a GOAWAY was sent.  This frame will be ignored.");
                     }
                     return;
                 }
@@ -317,7 +317,7 @@ public class H2StreamProcessor {
                 if (isContinuationFrameExpected() && (frameType != FrameTypes.CONTINUATION || !this.continuationExpected)) {
                     addFrame = ADDITIONAL_FRAME.GOAWAY;
                     addFrameException = new ProtocolException("Did not receive the expected continuation frame");
-                    System.out.println("wtlucy: writing exception for mismatched continuation");
+
                     continue;
                 }
 
@@ -497,7 +497,7 @@ public class H2StreamProcessor {
             writeFrameSync();
             this.updateStreamState(StreamState.CLOSED);
             if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
-                muxLink.goAway(muxLink.getLastStreamToProcess());
+                muxLink.goAway();
             }
             return;
         }
@@ -545,10 +545,6 @@ public class H2StreamProcessor {
         this.state = state;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "current stream state for stream " + this.myID + " : " + this.state);
-        }
-
-        if (state == StreamState.CLOSED || state == StreamState.HALF_CLOSED_LOCAL) {
-            muxLink.setLastStreamToProcess(myID);
         }
     }
 
@@ -794,12 +790,12 @@ public class H2StreamProcessor {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "sendGOAWAYFrame sending a GOAWAY with Last-Stream-ID " + muxLink.getLastStreamToProcess()
+            Tr.debug(tc, "sendGOAWAYFrame sending a GOAWAY with Last-Stream-ID " + muxLink.getHighestClientStreamId()
                          + " and exception " + e.toString());
         }
 
-        // send out a goaway in response; return the same last stream, for now
-        Frame frame = new FrameGoAway(0, e.getMessage().getBytes(), e.getErrorCode(), muxLink.getLastStreamToProcess(), false);
+        // send out a GoAway in response;
+        Frame frame = new FrameGoAway(0, e.getMessage().getBytes(), e.getErrorCode(), muxLink.getHighestClientStreamId(), false);
         processNextFrame(frame, Constants.Direction.WRITING_OUT);
     }
 
@@ -818,10 +814,9 @@ public class H2StreamProcessor {
 
         int lastStreamId = ((FrameGoAway) currentFrame).getLastStreamId();
         muxLink.triggerStreamClose(this);
-        muxLink.setLastStreamToProcess(lastStreamId);
 
         // send out a goaway in response; return the same last stream, for now
-        currentFrame = new FrameGoAway(0, new byte[0], 0, muxLink.getLastStreamToProcess(), false);
+        currentFrame = new FrameGoAway(0, new byte[0], 0, muxLink.getHighestClientStreamId(), false);
 
         try {
             writeFrameSync();
@@ -832,7 +827,7 @@ public class H2StreamProcessor {
             }
         } finally {
 
-            muxLink.goAway(lastStreamId);
+            muxLink.goAway();
         }
     }
 
@@ -1597,7 +1592,8 @@ public class H2StreamProcessor {
             return true;
         }
 
-        boolean rc = muxLink.checkStreamCloseVersusLinkState(myID);
+        // boolean rc = muxLink.checkStreamCloseVersusLinkState(myID);
+        boolean rc = muxLink.checkIfGoAwaySending();
 
         if (rc == true) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
