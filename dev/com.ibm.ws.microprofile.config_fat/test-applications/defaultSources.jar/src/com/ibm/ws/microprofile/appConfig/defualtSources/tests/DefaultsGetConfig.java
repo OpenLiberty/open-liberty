@@ -8,13 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.archaius.impl.fat.tests;
+package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.spi.ConfigBuilder;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.AppConfigTestApp;
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
@@ -22,21 +21,19 @@ import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
 /**
  *
  */
-public class DefaultsGetConfigWasSpecific implements AppConfigTestApp {
+public class DefaultsGetConfig implements AppConfigTestApp {
 
     /** {@inheritDoc} */
     @Override
     public String runTest(HttpServletRequest request) {
-        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        builder.addDefaultSources();
-        Config config = builder.build();
+        Config config = ConfigProvider.getConfig();
         try {
-            TestUtils.assertContains(config, "bootstrap.properties.appConfig", "bootstrap.properties.defaultValue");
-            TestUtils.assertContains(config, "server_env_appConfig", "server.env.defaultValue");
-            TestUtils.assertContains(config, "jvm_options_appConfig", "jvm.options.defaultValue");
+            TestUtils.assertContains(config, "defaultSources.jar.meta-inf.config.properties", "jarPropertiesDefaultValue");
+            TestUtils.assertContains(config, "defaultSources.war.meta-inf.config.properties", "warPropertiesDefaultValue");
         } catch (AssertionError e) {
             return "FAILED: " + e.getMessage();
         }
         return "PASSED";
     }
+
 }

@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.archaius.impl.fat.tests;
+package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.ConfigProvider;
+import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 import com.ibm.ws.microprofile.appConfig.test.utils.AppConfigTestApp;
 import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
@@ -21,15 +22,17 @@ import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
 /**
  *
  */
-public class DefaultsGetConfig implements AppConfigTestApp {
+public class DefaultsGetBuilderWithDefaults implements AppConfigTestApp {
 
     /** {@inheritDoc} */
     @Override
     public String runTest(HttpServletRequest request) {
-        Config config = ConfigProvider.getConfig();
+        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
+        Config config = builder.addDefaultSources().build();
         try {
             TestUtils.assertContains(config, "defaultSources.jar.meta-inf.config.properties", "jarPropertiesDefaultValue");
             TestUtils.assertContains(config, "defaultSources.war.meta-inf.config.properties", "warPropertiesDefaultValue");
+            //TODO add sys and env
         } catch (AssertionError e) {
             return "FAILED: " + e.getMessage();
         }

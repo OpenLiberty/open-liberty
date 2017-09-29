@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.archaius.impl.fat.tests;
+package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -22,7 +22,7 @@ import com.ibm.ws.microprofile.appConfig.test.utils.TestUtils;
 /**
  *
  */
-public class DefaultsGetConfigPathJar implements AppConfigTestApp {
+public class DefaultsGetConfigPathEar implements AppConfigTestApp {
 
     /** {@inheritDoc} */
     @Override
@@ -31,10 +31,11 @@ public class DefaultsGetConfigPathJar implements AppConfigTestApp {
         builder.addDefaultSources();
         Config config = builder.build();
         try {
-            TestUtils.assertContains(config, "defaultSources.jar.meta-inf.config.properties", "jarPropertiesDefaultValue");
+            TestUtils.assertContains(config, "defaultSources.earLib.meta-inf.config.properties", "earlibPropertiesDefaultValue");
         } catch (AssertionError e) {
             return "FAILED: " + e.getMessage();
         }
         return "PASSED";
     }
+
 }

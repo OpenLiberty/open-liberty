@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.archaius.impl.fat.tests;
+package com.ibm.ws.microprofile.appConfig.defaultSources.tests;
 
 import javax.servlet.annotation.WebServlet;
 
