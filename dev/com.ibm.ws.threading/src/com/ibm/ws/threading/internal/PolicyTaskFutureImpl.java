@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - PRESUBMIT API and implementation
+ *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.threading.internal;
 
