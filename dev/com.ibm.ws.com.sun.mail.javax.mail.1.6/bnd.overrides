@@ -12,7 +12,12 @@ Include-Resource: \
      @${repo;com.sun.mail.javax.mail;1.6.0}!/META-INF/javamail.default.address.map, \
      @${repo;com.sun.mail.javax.mail;1.6.0}!/META-INF/javamail.default.providers
 
-Import-Package: com.sun.mail;version="[1.6.0,1.6.200)", \
+Import-Package: javax.mail;version="[1.6.0,1.6.200)",  \
+javax.mail.event;version="[1.6.0,1.6.200)", \
+javax.mail.internet;version="[1.6.0,1.6.200)", \
+javax.mail.search;version="[1.6.0,1.6.200)", \
+javax.mail.util;version="[1.6.0,1.6.200)", \
+com.sun.mail;version="[1.6.0,1.6.200)", \
 com.sun.mail.auth;version="[1.6.0,1.6.200)", \
 com.sun.mail.imap;version="[1.6.0,1.6.200)", \
 com.sun.mail.imap.protocol;version="[1.6.0,1.6.200)", \
