@@ -398,8 +398,12 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         Object callbackContext = null;
         thread = Thread.currentThread();
         try {
-            if (callback != null)
+            if (callback != null) {
                 callbackContext = callback.onStart(task, this);
+                if (state.get() == CANCELED)
+                    throw new CancellationException();
+            }
+
             T t;
             if (callable == null) {
                 runnable.run();
@@ -418,7 +422,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 Tr.debug(this, tc, "run", t);
 
             if (callback != null)
-                callback.onEnd(task, this, callbackContext, false, null);
+                callback.onEnd(task, this, callbackContext, 0, null);
         } catch (Throwable x) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "run", x);
@@ -429,7 +433,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             }
 
             if (callback != null)
-                callback.onEnd(task, this, callbackContext, false, null);
+                callback.onEnd(task, this, callbackContext, 0, x); // TODO when callback.onStart cancels, is onEnd(CancellationException) appropriate here?
         } finally {
             thread = null;
             // Prevent accidental interrupt of subsequent operations by awaiting the transition from CANCELING to CANCELED
