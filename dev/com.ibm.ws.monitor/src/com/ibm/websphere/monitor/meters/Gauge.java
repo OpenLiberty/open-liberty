@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ public final class Gauge extends Meter implements GaugeMXBean {
 
     private boolean observedFirstValue = false;
 
-    private boolean bounded = false;
+    private final boolean bounded = false;
 
     long lowerBound = Long.MIN_VALUE;
 
@@ -33,10 +33,12 @@ public final class Gauge extends Meter implements GaugeMXBean {
         super();
     }
 
+    @Override
     public long getCurrentValue() {
         return currentValue.get();
     }
 
+    @Override
     public long getMaximumValue() {
         if (observedFirstValue) {
             return maximumValue.get();
@@ -44,6 +46,7 @@ public final class Gauge extends Meter implements GaugeMXBean {
         return 0;
     }
 
+    @Override
     public long getMinimumValue() {
         if (observedFirstValue) {
             return minimumValue.get();
@@ -84,14 +87,17 @@ public final class Gauge extends Meter implements GaugeMXBean {
         updateMinMax(value);
     }
 
+    @Override
     public long getLowerBound() {
         return lowerBound;
     }
 
+    @Override
     public long getUpperBound() {
         return upperBound;
     }
 
+    @Override
     public boolean isBounded() {
         return bounded;
     }
@@ -119,6 +125,7 @@ public final class Gauge extends Meter implements GaugeMXBean {
         }
     }
 
+    @Override
     public GaugeReading getReading() {
         long current = getCurrentValue();
         long min = Math.min(current, getMinimumValue());
@@ -126,7 +133,12 @@ public final class Gauge extends Meter implements GaugeMXBean {
         return new GaugeReading(current, min, max, bounded, lowerBound, upperBound, getUnit());
     }
 
+    @Override
     public String toString() {
+
+        if (currentValue == null)
+            return "not be initialized";
+
         GaugeReading reading = getReading();
 
         StringBuilder sb = new StringBuilder();

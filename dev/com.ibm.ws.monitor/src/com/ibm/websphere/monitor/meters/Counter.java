@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010 IBM Corporation and others.
+ * Copyright (c) 2010, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -154,7 +154,10 @@ public final class Counter extends com.ibm.websphere.monitor.jmx.Counter impleme
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("current value = ").append(getCurrentValue());
+        if (terminatedThreadOffset == null)
+            sb.append("not be initialized");
+        else
+            sb.append("current value = ").append(getCurrentValue());
         return sb.toString();
     }
 }
