@@ -41,6 +41,7 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
      * function from observing intermediate results. While this adds some
      * overhead, the associated monitor should rarely be contended.
      */
+    @Trivial
     final static class StatsData {
         long count;
         long min;
@@ -353,7 +354,7 @@ public class StatisticsMeter extends com.ibm.websphere.monitor.jmx.StatisticsMet
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(getAggregateStats());
+        sb.append(terminatedThreadStats == null ? "not be initialized" : getAggregateStats());
         return sb.toString();
     }
 
