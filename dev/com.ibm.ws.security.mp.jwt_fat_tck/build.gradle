@@ -8,6 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+task doNothing() {
+  doLast {
+    // project temporarily disabled
+  }
+} 
+
+task buildandrun {
+  // project temporarily disabled
+}
+ 
+/*
 apply from: '../cnf/gradle/scripts/fat.gradle'
 	
 // Pulling down binary dependencies from Artifactory
@@ -39,8 +50,8 @@ addRequiredLibraries {
       from configurations.javax      
       into "${buildDir}/autoFVT/lib/"
       
-      from configurations.jaxrs    
-      into "${buildDir}/autoFVT/lib/"
+    //  from configurations.jaxrs    
+    //  into "${buildDir}/autoFVT/lib/"
       
       from configurations.hamcrest
       into "${buildDir}/autoFVT/lib/"
@@ -55,12 +66,13 @@ addRequiredLibraries {
       into "${buildDir}/autoFVT/lib/"
       
       // use this if you need to test with a new jar not in Artifactory
-      // adjust build.gradle and bnd.bnd to match
-      //from "${projectDir}/fat/lib"
-      //include "*"
-      //into "${buildDir}/autoFVT/lib/"
+      // adjust  bnd.bnd to match
+      from "${projectDir}/fat/lib"
+      include "*"
+      into "${buildDir}/autoFVT/lib/"
     }
     
   }
 }
+*/
 	
