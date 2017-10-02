@@ -60,8 +60,7 @@ public abstract class FATServlet extends HttpServlet {
                 // Use reflection to try invoking various test method signatures:
                 // 1)  method(HttpServletRequest request, HttpServletResponse response)
                 // 2)  method()
-                // 3)  method(PrintWriter output)
-                // 4)  method(Map<String,String[] parameterMap)
+                // 3)  use custom method invocation by calling invokeTest(method, request, response)
                 try {
                     Method mthd = getClass().getMethod(method, HttpServletRequest.class, HttpServletResponse.class);
                     mthd.invoke(this, request, response);
