@@ -43,7 +43,7 @@ com.ibm.ws.jsf.2.3.taglib; \
    provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
    properties:="service.vendor=IBM", \
 com.ibm.ws.myfaces.initializer; \
-     implementation:=org.apache.myfaces.ee6.MyFacesContainerInitializer; \
+     implementation:=org.apache.myfaces.ee.MyFacesContainerInitializer; \
      provide:=javax.servlet.ServletContainerInitializer; \
      properties:="service.vendor=IBM,service.ranking:Integer=101", \
 com.ibm.ws.jsf.2.3.injection.class.list.collaborator; \
@@ -75,7 +75,7 @@ instrument.classesExcludes: \
     **/org/**
 
 Include-Resource: \
-  @${repo;org.apache.myfaces.core.impl;2.3.0.beta;EXACT}!/META-INF/**, \
+  @${repo;org.apache.myfaces.core.impl;2.3.0.SNAPSHOT;EXACT}!/META-INF/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
   META-INF=@src/META-INF
@@ -138,7 +138,7 @@ Import-Package: !com.google.inject, \
  *
 
 -buildpath: \
-	org.apache.myfaces.core.impl;strategy=exact;version=2.3.0.beta,\
+	org.apache.myfaces.core.impl;strategy=exact;version=2.3.0.SNAPSHOT,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
 	com.ibm.ws.jsf.shared;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
@@ -173,3 +173,4 @@ Import-Package: !com.google.inject, \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+
