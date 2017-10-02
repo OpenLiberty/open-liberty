@@ -8,3 +8,42 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+ // Global vars
+ def downloadSrcDir = "${projectDir}/build/source"
+
+ task copySource {
+    doLast {
+        println "downloadSrcDir: downloadSrcDir"
+        configurations {
+            sourceJar
+        }
+
+        dependencies {
+            sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20170928-014425-256:sources'
+        }
+
+        // Copy the dependencies to the com.ibm.ws.org.apache.myfaces.2.3/build/source directory
+        copy {
+            // Creating source directory
+            mkdir(downloadSrcDir)
+
+            // Adding jar to "source"
+            from configurations.sourceJar
+            into downloadSrcDir
+        }
+    }
+ }
+
+ task deleteJars(type:Delete) {
+    println "deleteJars task, deleting " + downloadSrcDir
+    delete(downloadSrcDir)
+ }
+
+ assemble {
+    dependsOn copySource
+ }
+
+ clean {
+    dependsOn deleteJars
+ }
