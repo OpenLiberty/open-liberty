@@ -32,7 +32,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
  * underlying TCP channel.
  *
  * @see com.ibm.ws.sib.jfapchannel.framework.IOWriteRequestContext
- * @see com.ibm.wsspi.tcp.channel.TCPWriteRequestContext
+ * @see TCPWriteRequestContext
  *
  * @author Gareth Matthews
  */
@@ -177,7 +177,7 @@ public class CFWIOWriteRequestContext extends CFWIOBaseContext implements IOWrit
          /**
           * Called when the write operation completes.
           *
-          * @see com.ibm.wsspi.tcp.channel.TCPWriteCompletedCallback#complete(com.ibm.websphere.channelfw.VirtualConnection, com.ibm.wsspi.tcp.channel.TCPWriteRequestContext)
+          * @see TCPWriteCompletedCallback#complete(com.ibm.websphere.channelfw.VirtualConnection, TCPWriteRequestContext)
           */
          public void complete(VirtualConnection vc, TCPWriteRequestContext ctx)
          {

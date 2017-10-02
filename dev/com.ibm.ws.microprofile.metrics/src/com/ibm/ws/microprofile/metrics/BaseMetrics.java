@@ -30,7 +30,7 @@ import com.ibm.ws.microprofile.metrics.impl.SharedMetricRegistries;
 
 public class BaseMetrics {
     private static BaseMetrics baseMetrics = null;
-    private static String BASE = "base";
+    private static String BASE = MetricRegistry.Type.BASE.getName();
     MBeanServer mbs;
     private static Set<String> gcObjectNames = new HashSet<String>();
 

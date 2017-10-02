@@ -26,6 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanB;
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanC;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanD;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.RetryBeanE;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.ConnectException;
 import com.ibm.ws.microprofile.faulttolerance_fat.util.DisconnectException;
 
@@ -43,6 +45,12 @@ public class RetryServlet extends FATServlet {
 
     @Inject
     RetryBeanC beanC;
+
+    @Inject
+    RetryBeanD beanD;
+
+    @Inject
+    RetryBeanE beanE;
 
     public void testRetry(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         //should be retried 3 times as per default
@@ -147,6 +155,61 @@ public class RetryServlet extends FATServlet {
             // Expected
         }
         assertThat(beanC.getConnectCount(), is(6));
+    }
+
+    /**
+     * Test method level override of maxRetries attribute on Retry annotation on a synchronous service.
+     *
+     * The method will not be executed the expected number of times unless the configuration overrides the value
+     * set on the connectCMaxRetries1 method.
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    public void testRetryMaxRetriesConfig(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            beanC.connectCMaxRetries1();
+            fail("Exception not thrown");
+        } catch (ConnectException e) {
+            // Expected
+        }
+        assertThat(beanC.getConnectCount(), is(5));
+    }
+
+    /**
+     * Test class level override of maxRetries attribute on Retry annotation on a synchronous service.
+     *
+     * The method will not be executed the expected number of times unless the configuration overrides the value
+     * set on beanD.
+     *
+     * @param request
+     * @param response
+     * @throws Exception
+     */
+    public void testRetryMaxRetriesClassScopeConfig(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        try {
+            beanD.connectDMaxRetries2();
+            fail("Exception not thrown");
+        } catch (ConnectException e) {
+            // Expected
+        }
+        assertThat(beanD.getConnectCount(), is(5));
+    }
+
+    /**
+     * Test that the Class-level annotation can be overridden by config at the method level
+     *
+     * Retry/maxRetries is set to 6 for this method in the config
+     */
+    public void testRetryMaxRetriesClassLevelConfigForMethodAnnotation() {
+        try {
+            beanE.connect();
+            fail("Exception not thrown");
+        } catch (ConnectException e) {
+            // Expected
+        }
+        assertThat(beanE.getConnectCount(), is(7));
     }
 
 }

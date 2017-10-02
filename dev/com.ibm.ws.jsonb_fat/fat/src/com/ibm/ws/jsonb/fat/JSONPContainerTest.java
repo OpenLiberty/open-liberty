@@ -19,7 +19,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
@@ -32,7 +31,6 @@ import web.jsonptest.JSONPTestServlet;
  * Consider if we should move to the JSON-P bucket once that is written.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 1.8)
 public class JSONPContainerTest extends FATServletClient {
     private static final String SERVLET_PATH = "jsonpapp/JSONPTestServlet";
 

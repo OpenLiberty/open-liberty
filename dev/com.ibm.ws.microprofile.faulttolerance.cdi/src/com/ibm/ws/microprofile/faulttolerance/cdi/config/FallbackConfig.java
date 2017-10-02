@@ -32,6 +32,7 @@ import com.ibm.ws.microprofile.faulttolerance.spi.FallbackHandlerFactory;
 import com.ibm.ws.microprofile.faulttolerance.spi.FallbackPolicy;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceFunction;
 import com.ibm.ws.microprofile.faulttolerance.spi.FaultToleranceProvider;
+import com.ibm.ws.microprofile.faulttolerance.utils.FTDebug;
 
 public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implements Fallback {
 
@@ -70,7 +71,8 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
         String fallbackMethodName = fallbackMethod();
         //If both fallback method and fallback class are set, it is an illegal state.
         if ((fallbackClass != null && fallbackClass != Fallback.DEFAULT.class) && (fallbackMethodName != null && !"".equals(fallbackMethodName))) {
-            throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.policy.conflicts.CWMFT5009E", originalMethod, fallbackClass, fallbackMethodName));
+            throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.policy.conflicts.CWMFT5009E", FTDebug.formatMethod(originalMethod), fallbackClass,
+                                                                         fallbackMethodName));
         } else if (fallbackClass != null && fallbackClass != Fallback.DEFAULT.class) {
             //need to load the fallback class and then find out the method return type
             try {
@@ -91,8 +93,8 @@ public class FallbackConfig extends AbstractAnnotationConfig<Fallback> implement
                 }
 
                 if (!validFallbackHandler) {
-                    throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.policy.invalid.CWMFT5008E", originalMethod, fallbackClass, originalMethodReturnType,
-                                                                                 originalMethod));
+                    throw new FaultToleranceDefinitionException(Tr.formatMessage(tc, "fallback.policy.invalid.CWMFT5008E", FTDebug.formatMethod(originalMethod), fallbackClass,
+                                                                                 originalMethodReturnType, originalMethod.getName()));
                 }
             } catch (NoSuchMethodException e) {
                 //should not happen

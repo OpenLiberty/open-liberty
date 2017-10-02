@@ -28,7 +28,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
  * underlying TCP channel.
  * 
  * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnectionContext
- * @see com.ibm.wsspi.channel.ConnectionLink
+ * @see ConnectionLink
  * 
  * @author Gareth Matthews
  */

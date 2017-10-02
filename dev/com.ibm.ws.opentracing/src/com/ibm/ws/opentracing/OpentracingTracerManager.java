@@ -13,9 +13,6 @@ package com.ibm.ws.opentracing;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.naming.InitialContext;
-import javax.naming.NamingException;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -32,9 +29,74 @@ import io.opentracing.Tracer;
 public class OpentracingTracerManager {
     private static final TraceComponent tc = Tr.register(OpentracingTracerManager.class);
 
-    private static final String DEFAULT_SERVICE_NAME = "com.ibm.ws.opentracing.defaultServiceName";
+    //
 
-    private static Map<String, Tracer> appNameToTracerMap = new HashMap<String, Tracer>();
+    /**
+     * <p>The table of active tracers, keyed on the application name.</p>
+     *
+     * <p>Static: Each application gets exactly one tracer.</p>
+     */
+    private static final Map<String, Tracer> applicationTracers = new HashMap<String, Tracer>();
+    private static class ApplicationTracersLock {
+        // EMPTY
+    }
+    private static final ApplicationTracersLock applicationTracersLock = new ApplicationTracersLock();
+
+    @Trivial
+    private static Tracer getTracer(String appName) {
+        return applicationTracers.get(appName);
+    }
+
+    @Trivial
+    private static Tracer putTracer(String appName, Tracer tracer) {
+        return applicationTracers.put(appName, tracer);
+    }
+
+    @Trivial
+    private static Tracer removeTracer(String appName, Tracer tracer) {
+        return applicationTracers.remove(appName);
+    }
+
+    @Trivial
+    private static Tracer ensureTracer(String appName) {
+        String methodName = "ensureTracer";
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Tr.entry(tc, methodName, appName);
+        }
+
+        Tracer tracer;
+        String tracerCase;
+
+        synchronized ( applicationTracersLock ) {
+            tracer = getTracer(appName);
+            if ( tracer == null ) {
+                tracer = createTracer(appName);
+                putTracer(appName, tracer);
+                tracerCase = "newly created";
+            } else {
+                tracerCase = "previously created";
+            }
+        }
+
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Tr.exit(tc, methodName + " (" + tracerCase + ")", OpentracingUtils.getTracerText(tracer));
+        }
+        return tracer;
+    }
+
+    /**
+     * <p>Have the open tracer factory service create the tracer.  That
+     * bridges to a user feature, which enables user supplied tracer
+     * implementations.</p>
+     *
+     * @param appName The name of the application for which to create a tracer.
+     *
+     * @return The new tracer.
+     */
+    @Trivial
+    private static Tracer createTracer(String appName) {
+        return OpentracingUserFeatureAccessService.getTracerInstance(appName);
+    }
 
     // Open tracing context pass through ...
 
@@ -43,57 +105,46 @@ public class OpentracingTracerManager {
      *
      * @Return The tracer of the active open tracing context.
      */
-    public static synchronized Tracer getTracer() {
-        Tracer tracer = getOpentracingContext().getTracer();
-        if (tracer == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "OpentracingTracerManager.getTracer() Look up Tracer");
-            }
-            String serviceName;
-            try {
-                serviceName = (String) new InitialContext().lookup("java:app/AppName");
-            } catch (NamingException e) {
-                // Should never happen
-                Tr.error(tc, "OPENTRACING_NO_APPNAME_FOUND_IN_JNDI");
-                serviceName = DEFAULT_SERVICE_NAME;
-            }
-            tracer = getTracer(serviceName);
-            if (tracer == null) {
-                tracer = OpentracingUserFeatureAccessService.getTracerInstance(serviceName);
-            }
-            setTracer(serviceName, tracer);
+    @Trivial
+    public static Tracer getTracer() {
+        String methodName = "getTracer";
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Tr.entry(tc, methodName);
         }
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "OpentracingTracerManager.getTracer() tracer = " + tracer);
+
+        OpentracingContext tracerContext = getOpentracingContext();
+        // Should never be null.  The thread local variable provides
+        // a non-null initial value.
+
+        String appName = tracerContext.getAppName();
+        Tracer tracer = tracerContext.getTracer();
+        String tracerCase;
+
+        // The app name and tracer should always be null when requesting
+        // the tracer from a container filter, and should never be null
+        // when requesting the tracer from a client filter.
+
+        if ( tracer != null ) {
+            tracerCase = "previously stored for " + appName;
+
+        } else {
+            appName = OpentracingUtils.lookupAppName();
+            tracer = ensureTracer(appName);
+            tracerContext.setTracer(appName, tracer);
+
+            tracerCase = "newly stored for " + appName;
+        }
+
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled() ) {
+            Thread currentThread = Thread.currentThread();
+            String threadName = currentThread.getName();
+            long threadId = currentThread.getId();
+            Tr.exit(tc,
+                methodName + " (" + tracerCase + ") in (" + threadName + ":" + Long.toString(threadId) + ")",
+                OpentracingUtils.getTracerText(tracer));
         }
         return tracer;
     }
-
-    @Trivial
-    private static Tracer getTracer(String serviceName) {
-        return appNameToTracerMap.get(serviceName);
-    }
-
-    /**
-     * <p>Set the tracer of the active open tracing context.</p>
-     *
-     * @param tracer The tracer to set to the active open tracing context.
-     */
-    @Trivial
-    private static void setTracer(Tracer tracer) {
-        getOpentracingContext().setTracer(tracer);
-    }
-
-    @Trivial
-    private static void setTracer(String serviceName, Tracer tracer) {
-        appNameToTracerMap.put(serviceName, tracer);
-        setTracer(tracer);
-    }
-
-    // Open tracing context storage ...
-
-    /** <p>Storage for the open tracing context variable.</p> */
-    private static final InheritableThreadLocal<OpentracingContext> OPEN_TRACING_CONTEXT_VAR = new OpentracingThreadLocal();
 
     /**
      * <p>Answer the active open tracing context.</p>
@@ -119,20 +170,16 @@ public class OpentracingTracerManager {
      */
     @Trivial
     private static OpentracingContext getOpentracingContext() {
-        return getOpenTracingContextVar().get();
+        return OPEN_TRACING_CONTEXT_VAR.get();
         // Rely on 'initialValue' to supply a non-null open tracing context.
         // There is currently no code which clears the context.
     }
 
-    /**
-     * <p>Answer the thread local variable which stores the open tracing context.</p>
-     *
-     * @return The thread local variable which stores the open tracing context.
-     */
-    @Trivial
-    private static ThreadLocal<OpentracingContext> getOpenTracingContextVar() {
-        return OPEN_TRACING_CONTEXT_VAR;
-    }
+    // Raw open tracing context storage ...
+
+    /** <p>Storage for the open tracing context variable.</p> */
+    private static final ThreadLocal<OpentracingContext>
+        OPEN_TRACING_CONTEXT_VAR = new OpentracingThreadLocal();
 
     /**
      * <p>Class for the open tracing context thread local variable.</p>
@@ -165,5 +212,4 @@ public class OpentracingTracerManager {
             return new OpentracingContext();
         }
     }
-
 }

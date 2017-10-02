@@ -32,7 +32,7 @@ import org.junit.rules.TestRule;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.component.ComponentContext;
 
-import com.ibm.ws.security.wim.adapter.file.FileAdapter;
+import com.ibm.ws.security.wim.adapter.file.TestFileAdapter;
 import com.ibm.wsspi.security.wim.exception.EntityIdentifierNotSpecifiedException;
 import com.ibm.wsspi.security.wim.exception.EntityNotFoundException;
 import com.ibm.wsspi.security.wim.model.Entity;
@@ -118,7 +118,7 @@ public class ProfileManagerGetTest {
 
         fileConfigProps.put(BaseRepository.KEY_ID, "InternalFileRepository");
 //        fileConfigProps.put(BaseRepository.REPOSITORY_TYPE, "file");
-        FileAdapter fa = new FileAdapter();
+        TestFileAdapter fa = new TestFileAdapter();
         fa.activate(fileConfigProps, cc);
         HashMap<String, Object> configProps = new HashMap<String, Object>();
         configProps.put(BaseRepository.KEY_ID, "InternalFileRepository");

@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.microprofile.faulttolerance.exceptions.BulkheadException;
 
 import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBulkheadBean;
+import com.ibm.ws.microprofile.faulttolerance_fat.cdi.beans.AsyncBulkheadBean2;
 
 import componenttest.app.FATServlet;
 
@@ -44,6 +45,8 @@ public class AsyncBulkheadServlet extends FATServlet {
     AsyncBulkheadBean bean2;
     @Inject
     AsyncBulkheadBean bean3;
+    @Inject
+    AsyncBulkheadBean2 bean4;
 
     public void testAsyncBulkheadSmall(HttpServletRequest request,
                                        HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
@@ -137,4 +140,101 @@ public class AsyncBulkheadServlet extends FATServlet {
         }
     }
 
+    /**
+     * Test overriding method level Bulkhead annotation attributes through config.
+     *
+     * The test operates in exactly the same manner as testAsyncBulkheadSmall but assumes that the
+     * Bulkead attributes set on bean1's connectC method are overridden by config.
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws TimeoutException
+     */
+    public void testAsyncBulkheadSmallConfig(HttpServletRequest request,
+                                             HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+        //connectC has a poolSize of 2
+        //first two should be run straight away, in parallel, each around 5 seconds
+        Future<Boolean> future1 = bean1.connectC("One");
+        //These sleep statements are fine tuning to ensure this test functions.
+        //The increments are small enough that it shuld not impact the logic of this test.
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+        Future<Boolean> future2 = bean1.connectC("Two");
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        //next two should wait until the others have finished
+        Future<Boolean> future3 = bean1.connectC("Three");
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+        Future<Boolean> future4 = bean1.connectC("Four");
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        //total time should be just over 10s
+        Thread.sleep((TestConstants.WORK_TIME * 2) + TestConstants.TEST_TIME_UNIT);
+
+        if (!future1.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future1 did not complete properly");
+        }
+        if (!future2.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future2 did not complete properly");
+        }
+        if (!future3.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future3 did not complete properly");
+        }
+        if (!future4.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future4 did not complete properly");
+        }
+
+    }
+
+    /**
+     * Test overriding class level Bulkhead annotation attributes through config.
+     *
+     * The test operates in exactly the same manner as testAsyncBulkheadSmall but assumes that the
+     * Bulkead attributes set on bean4 are overridden by config.
+     *
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @throws InterruptedException
+     * @throws ExecutionException
+     * @throws TimeoutException
+     */
+    public void testAsyncBulkheadSmallClassScopeConfig(HttpServletRequest request,
+                                                       HttpServletResponse response) throws ServletException, IOException, InterruptedException, ExecutionException, TimeoutException {
+        //connectC has a poolSize of 2
+        //first two should be run straight away, in parallel, each around 5 seconds
+        Future<Boolean> future1 = bean4.connectA("One");
+        //These sleep statements are fine tuning to ensure this test functions.
+        //The increments are small enough that it shuld not impact the logic of this test.
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+        Future<Boolean> future2 = bean4.connectA("Two");
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        //next two should wait until the others have finished
+        Future<Boolean> future3 = bean4.connectA("Three");
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+        Future<Boolean> future4 = bean4.connectA("Four");
+        Thread.sleep(TestConstants.TEST_TWEAK_TIME_UNIT);
+
+        //total time should be just over 10s
+        Thread.sleep((TestConstants.WORK_TIME * 2) + TestConstants.TEST_TIME_UNIT);
+
+        if (!future1.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future1 did not complete properly");
+        }
+        if (!future2.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future2 did not complete properly");
+        }
+        if (!future3.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future3 did not complete properly");
+        }
+        if (!future4.get(TestConstants.FUTURE_THRESHOLD, TimeUnit.MILLISECONDS)) {
+            throw new AssertionError("Future4 did not complete properly");
+        }
+
+    }
 }

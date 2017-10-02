@@ -1,0 +1,19 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= jar:${fileuri;${repo;org.eclipse:yasson;1.0.0}}!/META-INF/MANIFEST.MF,bnd.overrides
+
+-includeresource: \
+   @${repo;org.eclipse:yasson;1.0.0}!/org/eclipse/yasson/*,\
+   @${repo;org.eclipse:yasson;1.0.0}!/META-INF/services/javax.json.bind.spi.JsonbProvider,\
+   @${repo;org.eclipse:yasson;1.0.0}!/messages.properties
+
+-buildpath: \
+	org.eclipse:yasson;version=1.0.0

@@ -1,0 +1,51 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Security Test Common
+Bundle-SymbolicName: com.ibm.ws.security.test.common
+Bundle-Description: Common code for security test bundles; version=${bVersion}
+
+WS-TraceGroup: SecurityTestCommon
+
+Export-Package: \
+    com.ibm.ws.security.test.common
+
+Import-Package: \
+    !*.internal.*, \
+    !com.ibm.ws.kernel.boot.cmdline, \
+    *
+
+-buildpath: \
+    com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
+    com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    ../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+    org.jmock:jmock-legacy;version=2.5.0, \
+    cglib:cglib-nodep;version=2.1.0.3, \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+    org.jmock:jmock;strategy=exact;version=2.5.1, \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+    com.ibm.ws.kernel.boot;version=latest
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+    ../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+    org.jmock:jmock-legacy;version=2.5.0, \
+    cglib:cglib-nodep;version=2.1.0.3, \
+    org.hamcrest:hamcrest-all;version=1.3, \
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
+    org.jmock:jmock;strategy=exact;version=2.5.1, \
+    com.ibm.ws.org.objenesis:objenesis;version=1.0, \
+    com.ibm.ws.kernel.boot;version=latest
+

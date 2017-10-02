@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.facade;
 
+import javax.servlet.ServletRegistration;
+
 import com.ibm.ws.webcontainer31.facade.ServletContextFacade31;
 import com.ibm.wsspi.webcontainer.servlet.IServletContext;
 
@@ -71,4 +73,13 @@ public class ServletContextFacade40 extends ServletContextFacade31 {
     public void setResponseCharacterEncoding(String encoding) {
         context.setResponseCharacterEncoding(encoding);
     }
+
+    /**
+     * @see javax.servlet.ServletContext#addJspFile(String servletName, String jspFile)
+     */
+    @Override
+    public ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
+        return context.addJspFile(servletName, jspFile);
+    }
+
 }

@@ -75,6 +75,7 @@ Service-Component: \
 Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer.internalRuntimeExport.*, \
     com.ibm.ws.webcontainer.async*;provide:=true, \
+    com.ibm.ws.webcontainer.core*;provide=true, \
 	com.ibm.ws.webcontainer.osgi*;provide:=true, \
 	com.ibm.ws.webcontainer.resources;provide:=true, \
 	com.ibm.ws.webcontainer.srt*;provide:=true, \
@@ -152,7 +153,8 @@ DynamicImport-Package: com.ibm.websphere.monitor.meters;version="1.0.0", \
  com.ibm.websphere.monitor.jmx;version="1.0.0", \
  com.ibm.ws.jsp.webcontainerext, \
  com.ibm.wsspi.request.probe.bci, \
- com.ibm.wsspi.probeExtension
+ com.ibm.wsspi.probeExtension, \
+ com.ibm.ws.webcontainer.monitor
 
 Include-Resource: \
   @data, \

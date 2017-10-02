@@ -77,7 +77,7 @@ public class JSF22FlowsTests extends FATServletClient {
         myfacesApp = FATSuite.addMyFaces(myfacesApp);
         myfacesApp = (WebArchive) ShrinkHelper.addDirectory(myfacesApp, "test-applications/JSF22FacesFlows/resources/war");
         ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
-        server.addInstalledAppForValidation(MOJARRA_APP);
+        server.addInstalledAppForValidation(MYFACES_APP);
 
         server.startServer(JSF22FlowsTests.class.getSimpleName() + ".log");
     }

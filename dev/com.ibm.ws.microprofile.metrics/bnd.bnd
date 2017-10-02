@@ -38,7 +38,8 @@ Include-Resource: \
     WEB-INF=resources/WEB-INF
     
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.microprofile.metrics.MetricsHandler
+-dsannotations: com.ibm.ws.microprofile.metrics.MetricsHandler,\
+	com.ibm.ws.microprofile.metrics.ApplicationListener
 
 WS-TraceGroup: METRICS
 
@@ -51,12 +52,14 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.api.json;version=latest,\
 	com.ibm.websphere.appserver.spi.httptransport;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.appserver.spi.ssl;version=latest,\
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.websphere.rest.handler;version=latest,\
 	com.ibm.ws.rest.handler;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
 	com.ibm.ws.cdi.1.2.weld.impl;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\

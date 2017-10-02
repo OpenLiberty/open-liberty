@@ -91,7 +91,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
     /**
      * Constructor.
-     * 
+     *
      * @param chanData
      * @throws ChannelException
      */
@@ -135,9 +135,9 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
         int keyType = 0;
         ChannelException e = null;
 
-        // F184719 - If the custom property is set, it is necessary for this to 
+        // F184719 - If the custom property is set, it is necessary for this to
         // be loaded before the access lists are examined. This property name is
-        // not case insensitive as the properties in the set below. 
+        // not case insensitive as the properties in the set below.
 
         if (channelProperties.containsKey(CASE_INSENSITIVE_HOSTNAMES)) {
 
@@ -255,8 +255,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                             //F184719 - Set any defined list  of excluded hostnames to lower casing.
                             if (this.caseInsensitiveHostnames) {
                                 this.hostNameExcludeList = convertToArray(((String) value).toLowerCase());
-                            }
-                            else {
+                            } else {
                                 this.hostNameExcludeList = convertToArray((String) value);
                             }
                         } else {
@@ -341,6 +340,29 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
                     }
                 } else {
                     // outbound only configuration parameters
+                    if (key.equalsIgnoreCase(ADDR_EXC_LIST)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(ADDR_INC_LIST)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(NAME_EXC_LIST)) {
+                        //This is a valid configuration option but outbound channels do not care use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
+
+                    if (key.equalsIgnoreCase(NAME_INC_LIST)) {
+                        //This is a valid configuration option but outbound channels do not use it
+                        //Adding this prevents a message from being output saying it's invalid
+                        continue;
+                    }
                 }
 
                 // PK37541 - move reuse_addr to common config
@@ -937,7 +959,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
     /**
      * Query the work group name for this channel.
-     * 
+     *
      * @return String
      */
     public String getWorkGroupName() {
@@ -970,7 +992,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
     /**
      * Query the hostname for this channel, returning null if it was a wildcard.
-     * 
+     *
      * @return String
      */
     public String getHostname() {
@@ -991,7 +1013,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
      * Returns the number of milliseconds a socket can remain inactive for
      * before it is automatically closed. A negative value indicates that the
      * socket will never be automatically closed.
-     * 
+     *
      * @return int
      */
     protected int getInactivityTimeout() {
@@ -1023,7 +1045,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
     /**
      * Get the port property.
-     * 
+     *
      * @return int
      */
     public int getPort() {
@@ -1032,7 +1054,7 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
 
     /**
      * Query whether the configuration is forcing NIO.
-     * 
+     *
      * @return boolean
      */
     public boolean isNIOOnly() {
@@ -1149,13 +1171,13 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
     /**
      * Query whether this TCP channel is using a dedicated accept thread
      * or sharing that selector with others.
-     * 
+     *
      * @return boolean (false means shared, true means dedicated)
      */
     protected boolean getAcceptThread() {
         return this.acceptThread;
     }
-    
+
     protected boolean getCaseInsensitiveHostnames() {
         return caseInsensitiveHostnames;
     }
@@ -1163,10 +1185,10 @@ public class TCPChannelConfiguration implements TCPConfigConstants, FFDCSelfIntr
     /**
      * Query whether this TCP channel is using going to delay accepting connections until
      * the server is known to be completely started.
-     * 
+     *
      * If set to true, this options will override the acceptThread option, meaning the acceptThread option will be
      * treated as "true" for this endpoint even if it is set to false (which is the default).
-     * 
+     *
      * @return boolean (false means do not wait, true means to wait). false is the default.
      */
     protected boolean getWaitToAccept() {

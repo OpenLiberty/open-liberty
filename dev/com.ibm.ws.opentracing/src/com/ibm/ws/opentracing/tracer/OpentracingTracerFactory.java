@@ -14,10 +14,8 @@ package com.ibm.ws.opentracing.tracer;
 import io.opentracing.Tracer;
 
 /**
- *
+ * <p>Tracer factory interface.</p>
  */
 public interface OpentracingTracerFactory {
-
-    public Tracer newInstance(String serviceName);
-
+    Tracer newInstance(String appName);
 }
