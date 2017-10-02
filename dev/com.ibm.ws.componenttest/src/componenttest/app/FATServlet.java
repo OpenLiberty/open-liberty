@@ -57,12 +57,20 @@ public abstract class FATServlet extends HttpServlet {
             try {
                 before();
 
+                // Use reflection to try invoking various test method signatures:
+                // 1)  method(HttpServletRequest request, HttpServletResponse response)
+                // 2)  method()
+                // 3)  use custom method invocation by calling invokeTest(method, request, response)
                 try {
                     Method mthd = getClass().getMethod(method, HttpServletRequest.class, HttpServletResponse.class);
                     mthd.invoke(this, request, response);
                 } catch (NoSuchMethodException nsme) {
-                    Method mthd = getClass().getMethod(method, (Class<?>[]) null);
-                    mthd.invoke(this);
+                    try {
+                        Method mthd = getClass().getMethod(method, (Class<?>[]) null);
+                        mthd.invoke(this);
+                    } catch (NoSuchMethodException nsme1) {
+                        invokeTest(method, request, response);
+                    }
                 } finally {
                     after();
                 }
@@ -101,4 +109,14 @@ public abstract class FATServlet extends HttpServlet {
      * Override to mimic JUnit's {@code @After} annotation.
      */
     protected void after() throws Exception {}
+
+    /**
+     * Implement this method for custom test invocation, such as specific test method signatures
+     */
+    protected void invokeTest(String method, HttpServletRequest request, HttpServletResponse response) throws Exception {
+        throw new NoSuchMethodException("No such method '" + method + "' found on class "
+                                        + getClass() + " with any of the following signatures:   "
+                                        + method + "(HttpServletRequest, HttpServletResponse)   "
+                                        + method + "()");
+    }
 }

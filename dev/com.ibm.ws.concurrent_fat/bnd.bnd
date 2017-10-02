@@ -8,9 +8,19 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= jar:${fileuri;${repo;org.objectweb.asm.all;5.0.3;LOWEST}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
-instrument.disabled: true
+src: \
+	fat/src,\
+	test-applications/concurrent/src
+
+test.project: true
 
 -buildpath: \
-	org.objectweb.asm.all;version=5.0.3
+  com.ibm.websphere.javaee.ejb.3.2;version=latest,\
+  com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+  com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+  com.ibm.websphere.org.osgi.core;version=latest,\
+  com.ibm.websphere.org.osgi.service.component;version=latest,\
+  com.ibm.wsspi.org.osgi.service.component.annotations;version=latest
