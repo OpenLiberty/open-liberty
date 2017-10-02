@@ -19,7 +19,7 @@ import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.spi.ConfigBuilder;
+import org.eclipse.microprofile.config.ConfigProvider;
 import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
 
 /**
@@ -38,13 +38,10 @@ public class ConfigBean extends AbstractConfigBean<Config> implements Bean<Confi
     /** {@inheritDoc} */
     @Override
     public Config create(CreationalContext<Config> creationalContext) {
-        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        builder.addDiscoveredConverters();
-        builder.addDefaultSources();
-        builder.addDiscoveredSources();
-        Config config = builder.build();
-
-        return config;
+        // Although this is a request scoped bean, this config instance will be cached per classloader, so you don't really get a new config object per request
+        // However, the config object is updated with new values dynamically, so the user shouldn't notice any difference.
+        // This also means that injecting config gives the same result as calling getConfig() in user code
+        return ConfigProvider.getConfig();
     }
 
     /** {@inheritDoc} */
