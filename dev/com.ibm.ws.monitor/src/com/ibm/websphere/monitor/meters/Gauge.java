@@ -137,7 +137,7 @@ public final class Gauge extends Meter implements GaugeMXBean {
     public String toString() {
 
         if (currentValue == null)
-            return "not be initialized";
+            return "is not initialized";
 
         GaugeReading reading = getReading();
 
