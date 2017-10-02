@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ *     IBM Corporation - PRESUBMIT API and implementation
  *******************************************************************************/
 package com.ibm.ws.threading.internal;
 
@@ -39,7 +39,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class);
 
     // state constants
-    private static final int SUBMITTED = 0, RUNNING = 1, SUCCESSFUL = 2, FAILED = 3, CANCELING = 4, CANCELED = 5;
+    private static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, SUCCESSFUL = 3, FAILED = 4, CANCELING = 5, CANCELED = 6;
 
     /**
      * The task, if a Callable. It is wrapped with interceptors, if any.
@@ -67,12 +67,13 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     private final Runnable runnable;
 
     /**
-     * Represents the state of the future, and allows for waiters. Initial state is SUBMITTED.
+     * Represents the state of the future, and allows for waiters. PRESUBMIT state is SUBMITTED.
      * State transitions in one direction only:
-     * SUBMITTED --> CANCELED,
-     * SUBMITTED --> RUNNING --> SUCCESSFUL,
-     * SUBMITTED --> RUNNING --> CANCELING --> CANCELED,
-     * SUBMITTED --> RUNNING --> FAILED.
+     * PRESUBMIT --> CANCELED
+     * PRESUBMIT --> SUBMITTED --> CANCELED,
+     * PRESUBMIT --> SUBMITTED --> RUNNING --> SUCCESSFUL,
+     * PRESUBMIT --> SUBMITTED --> RUNNING --> CANCELING --> CANCELED,
+     * PRESUBMIT --> SUBMITTED --> RUNNING --> FAILED.
      * Always set the result before updating the state, so that get() operations that await state can rely on the result being available.
      */
     private final State state = new State();
@@ -94,7 +95,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
 
     /**
      * Result of the task. Can be a value, an exception, or other indicator (the state distinguishes).
-     * Initialized to the state field as a way of indicating a result is not set. This allows the possibility of null results.
+     * PRESUBMITized to the state field as a way of indicating a result is not set. This allows the possibility of null results.
      */
     private final AtomicReference<Object> result = new AtomicReference<Object>(state);
 
@@ -217,6 +218,10 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             return compareAndSetState(SUBMITTED, RUNNING);
         }
 
+        private boolean setSubmitted() {
+            return compareAndSetState(PRESUBMIT, SUBMITTED);
+        }
+
         @Override
         protected final int tryAcquireShared(int ignored) {
             return getState() > RUNNING ? 1 : -1;
@@ -226,7 +231,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         protected final boolean tryReleaseShared(int newState) {
             int oldState;
             while (!compareAndSetState(oldState = getState(), newState));
-            return oldState == RUNNING || oldState == SUBMITTED;
+            return oldState <= RUNNING;
         }
     }
 
@@ -276,6 +281,16 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     }
 
     /**
+     * Invoked to indicate the task was successfully submitted.
+     * Typically, this means the task has been successfully added to the task queue.
+     * However, it can also mean the task has been accepted to run on the submitter's thread.
+     */
+    @Trivial
+    final void accept() {
+        state.setSubmitted();
+    }
+
+    /**
      * Await completion of the future. Completion could be successful, exceptional, or by cancellation.
      */
     void await() throws InterruptedException {
@@ -300,6 +315,12 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 executor.maxQueueSizeConstraint.release();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "canceled from queue");
+                if (callback != null)
+                    callback.onCancel(task, this, false, false);
+            } else if (state.get() == PRESUBMIT) {
+                state.releaseShared(CANCELED);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "canceled during pre-submit");
                 if (callback != null)
                     callback.onCancel(task, this, false, false);
             } else if (interruptIfRunning) {
@@ -468,6 +489,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         StringBuilder b = new StringBuilder("PolicyTaskFuture@").append(Integer.toHexString(hashCode())).append(" for ").append(task).append(' ');
         int s = state.get();
         switch (s) {
+            case PRESUBMIT:
+                b.append("PRESUBMIT");
+                break;
             case SUBMITTED:
                 b.append("SUBMITTED");
                 break;
