@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyCompletionTracker;
 
 /**
@@ -451,7 +452,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     @Override
     public void execute(Runnable command) {
-        enqueue(new PolicyTaskFutureImpl<Void>(this, command, null), maxWaitForEnqueueNS.get(), null);
+        enqueue(new PolicyTaskFutureImpl<Void>(this, command, null, null), maxWaitForEnqueueNS.get(), null);
     }
 
     /**
@@ -502,7 +503,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             // submit tasks (except the last if we are able to run tasks on the current thread)
             int t = 0, numToSubmitAsync = useCurrentThread ? taskCount - 1 : taskCount;
             for (Callable<T> task : tasks) {
-                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task);
+                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task, null);
                 if (t++ < numToSubmitAsync) {
                     boolean enqueued;
                     if (useCurrentThread)
@@ -599,7 +600,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         try {
             // submit all tasks
             for (Callable<T> task : tasks) {
-                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task);
+                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task, null);
                 remaining = stop - System.nanoTime();
                 if (remaining <= 0)
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1204.unable.to.invoke", identifier, taskCount - futures.size(), taskCount, timeout, unit));
@@ -646,7 +647,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     if (state.get() != State.ACTIVE)
                         throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
 
-                    PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, tasks.iterator().next());
+                    PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, tasks.iterator().next(), null);
 
                     runTask(taskFuture);
 
@@ -686,7 +687,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         try {
             // submit all tasks
             for (Callable<T> task : tasks) {
-                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task, tracker);
+                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task, null, tracker);
 
                 // check if done before enqueuing more tasks
                 if (tracker.hasSuccessfulResult())
@@ -734,7 +735,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         try {
             // submit all tasks
             for (Callable<T> task : tasks) {
-                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task, tracker);
+                PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, task, null, tracker);
                 remaining = stop - System.nanoTime();
 
                 // check if done before enqueuing more tasks
@@ -994,21 +995,35 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     @Override
     public <T> Future<T> submit(Callable<T> task) {
-        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task);
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, null);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }
 
     @Override
-    public <T> Future<T> submit(Runnable task, T result) {
-        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result);
+    public <T> Future<T> submit(Callable<T> task, PolicyTaskCallback callback) {
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, callback);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }
 
     @Override
     public Future<?> submit(Runnable task) {
-        PolicyTaskFutureImpl<?> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, null);
+        PolicyTaskFutureImpl<?> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, null, null);
+        enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
+        return policyTaskFuture;
+    }
+
+    @Override
+    public <T> Future<T> submit(Runnable task, T result) {
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result, null);
+        enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
+        return policyTaskFuture;
+    }
+
+    @Override
+    public <T> Future<T> submit(Runnable task, T result, PolicyTaskCallback callback) {
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result, callback);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }
