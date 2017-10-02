@@ -155,7 +155,7 @@ public final class Counter extends com.ibm.websphere.monitor.jmx.Counter impleme
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (terminatedThreadOffset == null)
-            sb.append("not be initialized");
+            sb.append("is not initialized");
         else
             sb.append("current value = ").append(getCurrentValue());
         return sb.toString();
