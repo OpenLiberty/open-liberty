@@ -27,6 +27,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.PolicyTaskCallback;
 
 /**
  * Allows the policy executor to tie into internal state and other details of a Future implementation.
@@ -44,6 +45,11 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      * The task, if a Callable. It is wrapped with interceptors, if any.
      */
     private final Callable<T> callable;
+
+    /**
+     * Optional callback for life cycle events.
+     */
+    private final PolicyTaskCallback callback;
 
     /**
      * The policy executor instance.
@@ -224,37 +230,49 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         }
     }
 
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback) {
         if (task == null)
             throw new NullPointerException();
         this.callable = executor.globalExecutor.wrap(task);
+        this.callback = callback;
         this.executor = executor;
         this.predefinedResult = null;
         this.runnable = null;
         this.task = task;
         this.tracker = null;
+
+        if (callback != null)
+            callback.onSubmit(task, this);
     }
 
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, InvokeAnyCompletionTracker tracker) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyCompletionTracker tracker) {
         if (task == null)
             throw new NullPointerException();
         this.callable = executor.globalExecutor.wrap(task);
+        this.callback = callback;
         this.executor = executor;
         this.predefinedResult = null;
         this.runnable = null;
         this.task = task;
         this.tracker = tracker;
+
+        if (callback != null)
+            callback.onSubmit(task, this);
     }
 
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback) {
         if (task == null)
             throw new NullPointerException();
         this.callable = null;
+        this.callback = callback;
         this.executor = executor;
         this.predefinedResult = predefinedResult;
         this.runnable = executor.globalExecutor.wrap(task);
         this.task = task;
         this.tracker = null;
+
+        if (callback != null)
+            callback.onSubmit(task, this);
     }
 
     /**
@@ -282,6 +300,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 executor.maxQueueSizeConstraint.release();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "canceled from queue");
+                if (callback != null)
+                    callback.onCancel(task, this, false, false);
             } else if (interruptIfRunning) {
                 state.releaseShared(CANCELING);
                 Thread t = thread;
@@ -293,9 +313,13 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                     }
                 } finally {
                     state.releaseShared(CANCELED);
+                    if (callback != null)
+                        callback.onCancel(task, this, false, true);
                 }
             } else {
                 state.releaseShared(CANCELED);
+                if (callback != null)
+                    callback.onCancel(task, this, false, true);
             }
 
             if (tracker != null && tracker.pending.decrementAndGet() == 0)
@@ -371,8 +395,11 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             return;
         }
 
+        Object callbackContext = null;
         thread = Thread.currentThread();
         try {
+            if (callback != null)
+                callbackContext = callback.onStart(task, this);
             T t;
             if (callable == null) {
                 runnable.run();
@@ -389,6 +416,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "run", t);
+
+            if (callback != null)
+                callback.onEnd(task, this, callbackContext, false, null);
         } catch (Throwable x) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "run", x);
@@ -397,6 +427,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 if (tracker != null && tracker.pending.decrementAndGet() == 0)
                     tracker.notifyInvokeAny();
             }
+
+            if (callback != null)
+                callback.onEnd(task, this, callbackContext, false, null);
         } finally {
             thread = null;
             // Prevent accidental interrupt of subsequent operations by awaiting the transition from CANCELING to CANCELED

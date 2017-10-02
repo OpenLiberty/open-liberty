@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.threading;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
 
 /**
  * <p>Policy executors are backed by the Liberty global thread pool, but allow
@@ -132,4 +134,18 @@ public interface PolicyExecutor extends ExecutorService {
      * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
     PolicyExecutor queueFullAction(QueueFullAction action);
+
+    /**
+     * Submit a Callable task with a callback to be invoked at various points in the task's life cycle.
+     *
+     * @see java.util.concurrent.ExecutorService#submit(java.util.concurrent.Callable)
+     */
+    <T> Future<T> submit(Callable<T> task, PolicyTaskCallback callback);
+
+    /**
+     * Submit a Runnable task with a callback to be invoked at various points in the task's life cycle.
+     *
+     * @see java.util.concurrent.ExecutorService#submit(java.lang.Runnable, java.lang.Object)
+     */
+    <T> Future<T> submit(Runnable task, T result, PolicyTaskCallback callback);
 }
