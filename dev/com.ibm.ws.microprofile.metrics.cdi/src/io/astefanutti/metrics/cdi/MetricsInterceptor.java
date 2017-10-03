@@ -60,10 +60,13 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 
     private final MetricResolver resolver;
 
+    private final MetricsExtension extension;
+
     @Inject
-    private MetricsInterceptor(MetricRegistry registry, MetricResolver resolver) {
+    private MetricsInterceptor(MetricRegistry registry, MetricResolver resolver, MetricsExtension extension) {
         this.registry = registry;
         this.resolver = resolver;
+        this.extension = extension;
     }
 
     @AroundConstruct
@@ -93,6 +96,7 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
                 MetricResolver.Of<Gauge> gauge = resolver.gauge(bean, method);
                 if (gauge.isPresent()) {
                     registry.register(gauge.metricName(), new ForwardingGauge(method, context.getTarget()), gauge.metadata());
+                    extension.addMetricName(gauge.metricName());
                 }
             }
             type = type.getSuperclass();
@@ -103,16 +107,22 @@ import com.ibm.ws.microprofile.metrics.cdi.producer.MetricRegistryFactory;
 
     private <E extends Member & AnnotatedElement> void registerMetrics(Class<?> bean, E element) {
         MetricResolver.Of<Counted> counted = resolver.counted(bean, element);
-        if (counted.isPresent())
+        if (counted.isPresent()) {
             registry.counter(counted.metadata());
+            extension.addMetricName(counted.metadata().getName());
+        }
 
         MetricResolver.Of<Metered> metered = resolver.metered(bean, element);
-        if (metered.isPresent())
+        if (metered.isPresent()) {
             registry.meter(metered.metadata());
+            extension.addMetricName(metered.metadata().getName());
+        }
 
         MetricResolver.Of<Timed> timed = resolver.timed(bean, element);
-        if (timed.isPresent())
+        if (timed.isPresent()) {
             registry.timer(timed.metadata());
+            extension.addMetricName(timed.metadata().getName());
+        }
     }
 
     private static final class ForwardingGauge implements org.eclipse.microprofile.metrics.Gauge<Object> {
