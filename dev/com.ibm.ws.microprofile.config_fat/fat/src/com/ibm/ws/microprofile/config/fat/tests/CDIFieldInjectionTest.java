@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,12 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
+import org.jboss.shrinkwrap.api.Archive;
+
 import com.ibm.ws.fat.util.LoggingTest;
+import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
+import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 /**
  *
@@ -23,7 +29,12 @@ import com.ibm.ws.fat.util.browser.WebBrowser;
 public class CDIFieldInjectionTest extends LoggingTest {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("CDIConfigServer");
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CDIConfigServer");
+
+    @BuildShrinkWrap
+    public static Archive buildApp() {
+        return SharedShrinkWrapApps.cdiConfigServerApps();
+    }
 
     @Override
     protected SharedServer getSharedServer() {
@@ -105,7 +116,7 @@ public class CDIFieldInjectionTest extends LoggingTest {
 
     /**
      * This test is to return null as the key is missing from the config source and the default value was set to "", which should be converted to a null value.
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -115,7 +126,7 @@ public class CDIFieldInjectionTest extends LoggingTest {
 
     /**
      * This is a good test to test the pizza converter functioning correctly. The key exists in the config source and is correctly converted to a pizza object.
-     * 
+     *
      * @throws Exception
      */
     @Test
