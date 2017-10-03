@@ -48,14 +48,13 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 // TODO:
 // Find out how to release LoginToContinue annotation in LoginToContinueIntercepter by the one in FormAuthenticationMechanismDefinition.
 
-
 /**
  * TODO: Add all JSR-375 API classes that can be bean types to api.classes.
- * 
+ *
  * @param <T>
  */
 @Component(service = WebSphereCDIExtension.class,
-           property = { "api.classes=javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;javax.security.enterprise.identitystore.IdentityStore;javax.security.enterprise.identitystore.IdentityStoreHandler;javax.security.enterprise.identitystore.RememberMeIdentityStore" },
+           property = { "api.classes=javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;javax.security.enterprise.identitystore.IdentityStore;javax.security.enterprise.identitystore.IdentityStoreHandler;javax.security.enterprise.identitystore.RememberMeIdentityStore;javax.security.enterprise.SecurityContext" },
            immediate = true)
 public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtension {
 
@@ -121,13 +120,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-//    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
-//        //register the interceptor
-//        AnnotatedType<LoginToContinueInterceptor> interceptorType = beanManager.createAnnotatedType(LoginToContinueInterceptor.class);
-//        beforeBeanDiscovery.addAnnotatedType(interceptorType);
-//        AnnotatedType<FormAuthenticationMechanism> formType = beanManager.createAnnotatedType(FormAuthenticationMechanism.class);
-//        beforeBeanDiscovery.addAnnotatedType(formType);
-//    }
+    public void beforeBeanDiscovery(@Observes BeforeBeanDiscovery beforeBeanDiscovery, BeanManager beanManager) {
+        AnnotatedType<SecurityContextProducer> securityContextProducerType = beanManager.createAnnotatedType(SecurityContextProducer.class);
+        beforeBeanDiscovery.addAnnotatedType(securityContextProducerType);
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "Registering producer." + securityContextProducerType);
+    }
 
     <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (!identityStoreHandlerRegistered) {
@@ -227,7 +225,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, getAnnotatedString(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE));
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION,
                   getAnnotatedString(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION));
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, getAnnotatedBoolean(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN));
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN,
+                  getAnnotatedBoolean(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN));
         return props;
     }
 
