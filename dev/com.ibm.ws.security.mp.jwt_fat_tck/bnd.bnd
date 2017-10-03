@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+#turning this off until it's publicly buildable
+-nobundles=true
+
 src: \
 	fat/src,\
 	fat/resources
