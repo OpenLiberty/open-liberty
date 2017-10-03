@@ -24,14 +24,14 @@ public class CommonConfigUtils {
      * resulting value will be {@code null}.
      */
     public String getConfigAttribute(Map<String, Object> props, String key) {
-        return getConfigAttribute(props, key, null);
+        return getConfigAttributeWithDefaultValue(props, key, null);
     }
 
     /**
      * Returns the value for the configuration attribute matching the key provided. If the value does not exist or is empty, the
      * provided default value will be returned.
      */
-    public String getConfigAttribute(Map<String, Object> props, String key, String defaultValue) {
+    public String getConfigAttributeWithDefaultValue(Map<String, Object> props, String key, String defaultValue) {
         String result = getAndTrimConfigAttribute(props, key);
         if (key != null && result == null) {
             if (defaultValue != null) {
@@ -46,23 +46,47 @@ public class CommonConfigUtils {
      * resulting value will be {@code null} and an error message will be logged.
      */
     public String getRequiredConfigAttribute(Map<String, Object> props, String key) {
-        return getRequiredConfigAttribute(props, key, null);
+        return getRequiredConfigAttributeWithDefaultValueAndConfigId(props, key, null, null);
+    }
+
+    /**
+     * Returns the value for the configuration attribute matching the key provided. If the value does not exist or is empty, the
+     * resulting value will be {@code null} and an error message will be logged.
+     */
+    public String getRequiredConfigAttributeWithDefaultValue(Map<String, Object> props, String key, String defaultValue) {
+        return getRequiredConfigAttributeWithDefaultValueAndConfigId(props, key, defaultValue, null);
+    }
+
+    /**
+     * Returns the value for the configuration attribute matching the key provided. If the value does not exist or is empty, the
+     * resulting value will be {@code null} and an error message will be logged.
+     */
+    public String getRequiredConfigAttributeWithConfigId(Map<String, Object> props, String key, String configId) {
+        return getRequiredConfigAttributeWithDefaultValueAndConfigId(props, key, null, configId);
     }
 
     /**
      * Returns the value for the configuration attribute matching the key provided. If the value does not exist or is empty, the
      * provided default value will be returned. If the default value is also null, an error message will be logged.
      */
-    public String getRequiredConfigAttribute(Map<String, Object> props, String key, String defaultValue) {
+    public String getRequiredConfigAttributeWithDefaultValueAndConfigId(Map<String, Object> props, String key, String defaultValue, String configId) {
         String result = getAndTrimConfigAttribute(props, key);
         if (key != null && result == null) {
             if (defaultValue != null) {
                 result = defaultValue;
             } else {
-                Tr.warning(tc, "CONFIG_REQUIRED_ATTRIBUTE_NULL", new Object[] { key });
+                logMessageForMissingRequiredAttribute(key, configId);
             }
         }
         return result;
+    }
+
+    void logMessageForMissingRequiredAttribute(String key, String configId) {
+        if (configId != null) {
+            Tr.warning(tc, "CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID", new Object[] { key, configId });
+        } else {
+            Tr.warning(tc, "CONFIG_REQUIRED_ATTRIBUTE_NULL", new Object[] { key });
+        }
     }
 
     String getAndTrimConfigAttribute(Map<String, Object> props, String key) {
