@@ -379,6 +379,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         try {
             if (wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS)) {
                 enqueued = queue.offer(policyTaskFuture);
+                policyTaskFuture.accept();
+
                 int w = withheldConcurrency.incrementAndGet();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "withheld concurrency --> " + w);
@@ -401,6 +403,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 if (action == QueueFullAction.Abort)
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1201.queue.full.abort", identifier, maxQueueSize, wait));
                 else if (action == QueueFullAction.CallerRuns) {
+                    policyTaskFuture.accept();
                     runTask(policyTaskFuture);
                     enqueued = false;
                 } else
@@ -513,6 +516,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
                     if (!enqueued) // must immediately return if ran on current thread and was interrupted
                         taskFuture.throwIfInterrupted();
+                } else {
+                    taskFuture.accept();
                 }
                 futures.add(taskFuture);
             }
@@ -648,7 +653,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                         throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
 
                     PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, tasks.iterator().next(), null);
-
+                    taskFuture.accept();
                     runTask(taskFuture);
 
                     // raise InterruptedException if current thread is interrupted
