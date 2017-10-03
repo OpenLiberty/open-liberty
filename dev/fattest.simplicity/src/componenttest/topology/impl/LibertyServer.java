@@ -63,6 +63,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -1653,6 +1657,44 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
+    private void validateTestedFeatures(RemoteFile serverLog) throws Exception {
+        final String m = "validateTestedFeatures";
+        // Load the tested feature data, if it exists
+        File testedFeaturesFile = new File("fat-feature-deps.json");
+        if (!testedFeaturesFile.exists()) {
+            Log.info(c, m, "No tested feature data for this server.  Skipping feature validation");
+            return;
+        }
+
+        // Scrape messages.log to see what features were installed
+        List<String> installedFeaturesRaw = LibertyFileManager.findStringsInFile("CWWKF0012I: .*", serverLog);
+        if (installedFeaturesRaw == null || installedFeaturesRaw.size() == 0)
+            return;
+        Set<String> installedFeatures = new HashSet<String>();
+        for (String f : installedFeaturesRaw)
+            for (String installedFeature : f.substring(0, f.lastIndexOf(']')).substring(f.lastIndexOf('[') + 1).split(","))
+                installedFeatures.add(installedFeature.trim().toLowerCase());
+        Log.info(c, m, "Installed features are: " + installedFeatures);
+
+        // Make sure that any features installed in the server are defined in the fat-feature-deps list
+        JsonArray testedFeaturesJson = Json.createReader(new FileInputStream(testedFeaturesFile)).readArray();
+        Set<String> testedFeatures = new HashSet<String>();
+        testedFeatures.add("timedexit-1.0"); // Manually add timedexit because it's included from an external location
+        for (JsonValue testedFeature : testedFeaturesJson)
+            testedFeatures.add(((JsonString) testedFeature).getString().trim().toLowerCase());
+        for (String installedFeature : installedFeatures) {
+            if (installedFeature.startsWith("usr:"))
+                continue; // Don't need to validate user features
+            if (!testedFeatures.contains(installedFeature))
+                throw new Exception("Installed feature '" + installedFeature +
+                                    "' was not defined in the autoFVT/fat-feature-deps.json file! " +
+                                    "To correct this, add " + installedFeature + " to the 'tested.features' " +
+                                    "property in the bnd.bnd file for this FAT so that an accurate test depdendency " +
+                                    "graph can be generated in the future.");
+        }
+        Log.info(c, m, "Validated that all installed features were present in test dependencies JSON file.");
+    }
+
 /*
  * App Manager messages that tests wait for in the log:
  *
@@ -2034,22 +2076,20 @@ public class LibertyServer implements LogMonitorClient {
             throw serverStartException;
         }
 
-        if (validateApps || validateTimedExit) {
-            // App validation needs the info messages in messages.log
-
-            if (!messagesLog.exists()) {
-                // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
-                Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
-                messagesLog = consoleLog;
-            }
-
-            if (validateTimedExit) {
-                validateTimedExitEnabled(messagesLog);
-            }
-            if (validateApps) {
-                validateAppsLoaded(messagesLog);
-            }
+        if (!messagesLog.exists()) {
+            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
+            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
+            messagesLog = consoleLog;
         }
+
+        // App validation needs the info messages in messages.log
+        if (validateTimedExit) {
+            validateTimedExitEnabled(messagesLog);
+        }
+        if (validateApps) {
+            validateAppsLoaded(messagesLog);
+        }
+        validateTestedFeatures(messagesLog);
     }
 
     protected void validateTimedExitEnabled(RemoteFile messagesLog) throws Exception {
@@ -4766,6 +4806,8 @@ public class LibertyServer implements LogMonitorClient {
             Log.warning(c, message);
             throw new RuntimeException(message);
         }
+
+        validateTestedFeatures(logFile);
 
         return matchingLines;
     }
