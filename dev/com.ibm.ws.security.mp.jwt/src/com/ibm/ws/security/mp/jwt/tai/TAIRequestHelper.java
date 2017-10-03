@@ -37,21 +37,7 @@ public class TAIRequestHelper {
     public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
     public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
     private static final String ACCESS_TOKEN = "access_token";
-
-    //    static public final String KEY_MP_JWT_CONFIG = "microProfileJwtConfig";
-    //    static ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig> microProfileJwtConfigRef = new ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig>(KEY_MP_JWT_CONFIG);
-    //
-    //    public static void setMicroProfileJwtConfigRef(ConcurrentServiceReferenceMap<String, MicroProfileJwtConfig> configRef) {
-    //        microProfileJwtConfigRef = configRef;
-    //    }
-    //
-    //    public MicroProfileJwtConfig getConfig2(String key) {
-    //        return microProfileJwtConfigRef.getService(key);
-    //    }
-    //
-    //    public Iterator<MicroProfileJwtConfig> MicroProfileJwtCongetConfigs2() {
-    //        return microProfileJwtConfigRef.getServices();
-    //    }
+    private static final String AUTHN_TYPE = "MP-JWT";
 
     /**
      * Creates a new {@link MicroProfileJwtTaiRequest} object and sets the object as an attribute in the request object provided.
@@ -86,13 +72,7 @@ public class TAIRequestHelper {
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, request, mpJwtTaiRequest);
         }
-        // 241526 don't process jmx requests with this interceptor
-        if (isJmxConnectorRequest(request)) {
-            if (tc.isDebugEnabled()) {
-                Tr.exit(tc, methodName, false);
-            }
-            return false;
-        }
+
         String loginHint = getLoginHint(request);
         mpJwtTaiRequest = setTaiRequestConfigInfo(request, loginHint, mpJwtTaiRequest);
         boolean result = false;
@@ -124,7 +104,6 @@ public class TAIRequestHelper {
      */
     private boolean isMpJwtSpecifiedInLoginConfig(HttpServletRequest request) {
 
-        String AUTHN_TYPE = "MP-JWT";
         if (request.getAttribute(APPLICATION_AUTH_METHOD) != null) {
             String loginCfg = (String) request.getAttribute(APPLICATION_AUTH_METHOD);
             if (tc.isDebugEnabled()) {
@@ -133,27 +112,14 @@ public class TAIRequestHelper {
             }
             if (!AUTHN_TYPE.equals(loginCfg)) {
                 String msg = Tr.formatMessage(tc, "MPJWT_NOT_FOUND_IN_APPLICATION", new Object[] { AUTHN_TYPE, loginCfg, "ignoreApplicationAuthMethod", "false" });
-                Tr.error(tc, msg);
+                Tr.warning(tc, msg);
             }
             return (AUTHN_TYPE.equals(loginCfg));
         }
         String msg = Tr.formatMessage(tc, "MPJWT_NOT_FOUND_IN_APPLICATION", new Object[] { AUTHN_TYPE, "null", "ignoreApplicationAuthMethod", "false" });
-        Tr.error(tc, msg);
+        Tr.warning(tc, msg);
         return false;
 
-    }
-
-    boolean isJmxConnectorRequest(HttpServletRequest request) {
-        String methodName = "isJmxConnectorRequest";
-        if (tc.isDebugEnabled()) {
-            Tr.entry(tc, methodName, request);
-        }
-        String ctxPath = request.getContextPath();
-        boolean result = "/IBMJMXConnectorREST".equals(ctxPath);
-        if (tc.isDebugEnabled()) {
-            Tr.exit(tc, methodName, result);
-        }
-        return result;
     }
 
     String getLoginHint(HttpServletRequest request) {
