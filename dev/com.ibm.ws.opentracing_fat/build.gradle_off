@@ -10,19 +10,14 @@
  *******************************************************************************/
 apply from: '../cnf/gradle/scripts/fat.gradle'
 
-	
 addRequiredLibraries {
-  doLast {
-    configurations {
-      json
-    }
     dependencies {
-      json 'com.ibm.ws.prereq:json4j:1.0.1.0'
+        libs 'org.glassfish:javax.json:1.1'
     }
-    copy {
-      from configurations.json
-      into "${buildDir}/autoFVT/lib/"
+    doLast {
+        copy {
+            from configurations.libs 
+            into "${buildDir}/autoFVT/lib/"
+        }
     }
-  }
 }
-
