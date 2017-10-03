@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/testAppUtils.jar/src"/>
+	<classpathentry kind="src" path="test-applications/brokenCDIConfig.war/resources"/>
+	<classpathentry kind="src" path="test-applications/brokenCDIConfig.war/src"/>
+	<classpathentry kind="src" path="test-applications/cdiConfig.jar/src"/>
+	<classpathentry kind="src" path="test-applications/cdiConfig.war/resources"/>
+	<classpathentry kind="src" path="test-applications/classLoaders.war/src"/>
+	<classpathentry kind="src" path="test-applications/converters.war/src"/>
+	<classpathentry kind="src" path="test-applications/customSources.war/src"/>
+	<classpathentry kind="src" path="test-applications/defaultSources.jar/src"/>
+	<classpathentry kind="src" path="test-applications/dynamicSources.war/src"/>
+	<classpathentry kind="src" path="test-applications/ordForDefaults.war/src"/>
+	<classpathentry kind="src" path="test-applications/sharedLib.jar/src"/>
+	<classpathentry kind="src" path="test-applications/sharedLibUser.jar/src"/>
+	<classpathentry kind="src" path="test-applications/stress.war/src"/>
+	<classpathentry kind="src" path="test-applications/types.war/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
