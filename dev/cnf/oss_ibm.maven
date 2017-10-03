@@ -39,6 +39,7 @@ com.ibm.ws:geronimo-validation:1.1
 com.ibm.ws.javax.j2ee:prereq.wsdl4j:1.0
 com.ibm.ws.javax.j2ee:jaxrpc:1.0
 com.ibm.ws.javax.j2ee:mail:1.5
+com.ibm.ws:jaxrs-thinclient:9.0.0
 com.ibm.ws.org.apache.yoko:yoko-osgi:1.5.0.3e40e54249
 com.ibm.ws.org.apache.yoko:yoko-util:1.5.0.3e40e54249
 com.ibm.ws.org.apache.yoko:yoko-spec-corba:1.5.0.3e40e54249
