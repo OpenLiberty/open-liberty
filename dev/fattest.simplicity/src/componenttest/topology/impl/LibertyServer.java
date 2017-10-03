@@ -1682,16 +1682,19 @@ public class LibertyServer implements LogMonitorClient {
         testedFeatures.add("timedexit-1.0"); // Manually add timedexit because it's included from an external location
         for (JsonValue testedFeature : testedFeaturesJson)
             testedFeatures.add(((JsonString) testedFeature).getString().trim().toLowerCase());
+        Set<String> untestedFeatures = new HashSet<String>();
         for (String installedFeature : installedFeatures) {
             if (installedFeature.startsWith("usr:"))
                 continue; // Don't need to validate user features
             if (!testedFeatures.contains(installedFeature))
-                throw new Exception("Installed feature '" + installedFeature +
-                                    "' was not defined in the autoFVT/fat-feature-deps.json file! " +
-                                    "To correct this, add " + installedFeature + " to the 'tested.features' " +
-                                    "property in the bnd.bnd file for this FAT so that an accurate test depdendency " +
-                                    "graph can be generated in the future.");
+                untestedFeatures.add(installedFeature);
         }
+        if (!untestedFeatures.isEmpty())
+            throw new Exception("Installed feature(s) " + untestedFeatures +
+                                " were not defined in the autoFVT/fat-feature-deps.json file! " +
+                                "To correct this, add " + untestedFeatures + " to the 'tested.features' " +
+                                "property in the bnd.bnd file for this FAT so that an accurate test depdendency " +
+                                "graph can be generated in the future.");
         Log.info(c, m, "Validated that all installed features were present in test dependencies JSON file.");
     }
 

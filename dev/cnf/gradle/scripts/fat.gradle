@@ -121,6 +121,13 @@ task autoFVT {
       include '*.jar'
       into "${autoFvtDir}/build/lib"
     }
+    
+    // Include JSON-P processor implementation
+    copy {
+      from rootProject.project('com.ibm.ws.org.glassfish.json').buildDir
+      include '*.jar'
+      into "${autoFvtDir}/lib"
+    }
 
     // Copy the DDL files
     // TODO: Consider if this can be removed, it looks like there's only a single project for this rule
@@ -198,7 +205,7 @@ task autoFVT {
       include 'com.ibm.ws.logging.core.jar'
       into "${autoFvtDir}/lib"
     }
-      
+    
     // Copy all non-java app resourecs, such as *.html or *.jsp
     copy {
       includeEmptyDirs = false
