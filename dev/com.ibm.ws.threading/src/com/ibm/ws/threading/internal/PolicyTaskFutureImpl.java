@@ -39,7 +39,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class);
 
     // state constants
-    private static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, SUCCESSFUL = 3, FAILED = 4, CANCELING = 5, CANCELED = 6;
+    private static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, ABORTED = 3, CANCELING = 4, CANCELED = 5, FAILED = 6, SUCCESSFUL = 7;
 
     /**
      * The task, if a Callable. It is wrapped with interceptors, if any.
@@ -70,10 +70,11 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      * Represents the state of the future, and allows for waiters. PRESUBMIT state is SUBMITTED.
      * State transitions in one direction only:
      * PRESUBMIT --> CANCELED
+     * PRESUBMIT --> SUBMITTED --> ABORTED,
      * PRESUBMIT --> SUBMITTED --> CANCELED,
-     * PRESUBMIT --> SUBMITTED --> RUNNING --> SUCCESSFUL,
      * PRESUBMIT --> SUBMITTED --> RUNNING --> CANCELING --> CANCELED,
-     * PRESUBMIT --> SUBMITTED --> RUNNING --> FAILED.
+     * PRESUBMIT --> SUBMITTED --> RUNNING --> FAILED,
+     * PRESUBMIT --> SUBMITTED --> RUNNING --> SUCCESSFUL.
      * Always set the result before updating the state, so that get() operations that await state can rely on the result being available.
      */
     private final State state = new State();
@@ -172,9 +173,12 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 boolean canceled = false;
                 for (PolicyTaskFutureImpl<?> f : futures) {
                     int s = f.state.get();
-                    if (s == FAILED)
-                        throw new ExecutionException((Throwable) f.result.get());
-                    else if (s == CANCELED || s == CANCELING)
+                    if (s == FAILED || s == ABORTED) {
+                        Throwable x = (Throwable) f.result.get();
+                        if (s == ABORTED && f.callback != null)
+                            f.callback.raiseAbortedException(x);
+                        throw new ExecutionException(x);
+                    } else if (s == CANCELED || s == CANCELING)
                         canceled = true;
                 }
                 if (canceled)
@@ -204,7 +208,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     }
 
     /**
-     * Awaitable state. Specifically, allows awaiting the transition from SUBMITTED/RUNNING to a SUCCESSFUL/CANCELING/CANCELED/FAILED state.
+     * Awaitable state. Specifically, allows awaiting the transition from PRESUBMIT/SUBMITTED/RUNNING
+     * to an ABORTED/CANCELING/CANCELED/FAILED/SUCCESSFUL state.
      */
     @Trivial
     private static class State extends AbstractQueuedSynchronizer {
@@ -358,10 +363,18 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get() throws InterruptedException, ExecutionException {
-        state.acquireSharedInterruptibly(1);
-        switch (state.get()) {
+        int s = state.get();
+        if (s <= RUNNING) {
+            state.acquireSharedInterruptibly(1);
+            s = state.get();
+        }
+        switch (s) {
             case SUCCESSFUL:
                 return (T) result.get();
+            case ABORTED:
+                if (callback != null)
+                    callback.raiseAbortedException((Throwable) result.get());
+                // yes, we do mean to fall through here
             case FAILED:
                 throw new ExecutionException((Throwable) result.get());
             case CANCELED:
@@ -375,20 +388,27 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get(long time, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        if (state.tryAcquireSharedNanos(1, unit.toNanos(time)))
-            switch (state.get()) {
-                case SUCCESSFUL:
-                    return (T) result.get();
-                case FAILED:
-                    throw new ExecutionException((Throwable) result.get());
-                case CANCELED:
-                case CANCELING:
-                    throw new CancellationException();
-                default: // should be unreachable
-                    throw new IllegalStateException(Integer.toString(state.get()));
-            }
-        else
-            throw new TimeoutException();
+        int s = state.get();
+        if (s <= RUNNING)
+            if (state.tryAcquireSharedNanos(1, unit.toNanos(time)))
+                s = state.get();
+            else
+                throw new TimeoutException();
+        switch (s) {
+            case SUCCESSFUL:
+                return (T) result.get();
+            case ABORTED:
+                if (callback != null)
+                    callback.raiseAbortedException((Throwable) result.get());
+                // yes, we do mean to fall through here
+            case FAILED:
+                throw new ExecutionException((Throwable) result.get());
+            case CANCELED:
+            case CANCELING:
+                throw new CancellationException();
+            default: // should be unreachable
+                throw new IllegalStateException(Integer.toString(state.get()));
+        }
     }
 
     @Override
@@ -416,45 +436,52 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             return;
         }
 
+        boolean aborted = true;
         Object callbackContext = null;
         thread = Thread.currentThread();
         try {
-            if (callback != null) {
+            if (callback == null)
+                aborted = false;
+            else {
                 callbackContext = callback.onStart(task, this);
-                if (state.get() == CANCELED)
-                    throw new CancellationException();
+                aborted = state.get() == CANCELED;
             }
 
-            T t;
-            if (callable == null) {
-                runnable.run();
-                t = predefinedResult;
-            } else {
-                t = callable.call();
-            }
+            if (!aborted) {
+                T t;
+                if (callable == null) {
+                    runnable.run();
+                    t = predefinedResult;
+                } else {
+                    t = callable.call();
+                }
 
-            if (result.compareAndSet(state, t)) {
-                state.releaseShared(SUCCESSFUL);
-                if (tracker != null && tracker.result.compareAndSet(tracker, t))
-                    tracker.notifyInvokeAny();
-            }
+                if (result.compareAndSet(state, t)) {
+                    state.releaseShared(SUCCESSFUL);
+                    if (tracker != null && tracker.result.compareAndSet(tracker, t))
+                        tracker.notifyInvokeAny();
+                }
 
-            if (trace && tc.isDebugEnabled())
-                Tr.debug(this, tc, "run", t);
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "run", t);
+            }
 
             if (callback != null)
-                callback.onEnd(task, this, callbackContext, 0, null);
+                try {
+                    callback.onEnd(task, this, callbackContext, aborted, 0, null);
+                } catch (Throwable x) {
+                }
         } catch (Throwable x) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "run", x);
             if (result.compareAndSet(state, x)) {
-                state.releaseShared(FAILED);
+                state.releaseShared(aborted ? ABORTED : FAILED);
                 if (tracker != null && tracker.pending.decrementAndGet() == 0)
                     tracker.notifyInvokeAny();
             }
 
             if (callback != null)
-                callback.onEnd(task, this, callbackContext, 0, x); // TODO when callback.onStart cancels, is onEnd(CancellationException) appropriate here?
+                callback.onEnd(task, this, callbackContext, aborted, 0, x);
         } finally {
             thread = null;
             // Prevent accidental interrupt of subsequent operations by awaiting the transition from CANCELING to CANCELED
@@ -468,7 +495,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      */
     @Trivial
     void throwIfInterrupted() throws InterruptedException {
-        if (state.get() == FAILED) {
+        int s = state.get();
+        if (s == FAILED || s == ABORTED) {
             Object x = result.get();
             if (x instanceof InterruptedException) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -498,17 +526,20 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             case RUNNING:
                 b.append("RUNNING");
                 break;
-            case SUCCESSFUL:
-                b.append("SUCCESSFUL");
-                break;
-            case FAILED:
-                b.append("FAILED");
+            case ABORTED:
+                b.append("ABORTED");
                 break;
             case CANCELING:
                 b.append("CANCELING");
                 break;
             case CANCELED:
                 b.append("CANCELED");
+                break;
+            case FAILED:
+                b.append("FAILED");
+                break;
+            case SUCCESSFUL:
+                b.append("SUCCESSFUL");
                 break;
             default:
                 b.append(s); // should be unreachable

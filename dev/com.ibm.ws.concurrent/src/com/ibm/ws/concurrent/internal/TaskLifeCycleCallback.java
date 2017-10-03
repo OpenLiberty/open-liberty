@@ -14,6 +14,7 @@ import java.security.AccessController;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
@@ -112,16 +113,19 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public void onEnd(Object task, Future<?> future, Object startObj, int pending, Throwable failure) {
+    public void onEnd(Object task, Future<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {
         if (pending >= 0 && task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
             if (listener != null) {
-                // notify listener: taskAborted (if canceled while running)
+                // notify listener: taskAborted
                 try {
+                    Throwable x = failure;
                     boolean canceled = future.isCancelled();
-                    if (canceled) {
-                        CancellationException x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
-
+                    if (canceled || aborted) {
+                        if (canceled && !(x instanceof CancellationException))
+                            x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
+                        else if (aborted)
+                            x = new AbortedException(x);
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                             Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
                         listener.taskAborted(future, managedExecutor, task, x);
@@ -153,40 +157,21 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
 
     @Override
     public Object onStart(Object task, Future<?> future) {
-        AbortedException failure = null;
-        try {
-            // EE Concurrency 3.1.6.1: No task submitted to an executor can run if task's component is not started.
-            // ThreadContextDescriptor.taskStarting covers this requirement for us.
-            ArrayList<ThreadContext> contextAppliedToThread = threadContextDescriptor.taskStarting();
+        // EE Concurrency 3.1.6.1: No task submitted to an executor can run if task's component is not started.
+        // ThreadContextDescriptor.taskStarting covers this requirement for us.
+        ArrayList<ThreadContext> contextAppliedToThread = threadContextDescriptor.taskStarting();
 
-            // notify listener: taskStarting
-            if (task instanceof ManagedTask) {
-                ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
-                if (listener != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                        Tr.event(this, tc, "taskStarting", managedExecutor, task);
-                    listener.taskStarting(future, managedExecutor, task);
-                }
-            }
-
-            return contextAppliedToThread;
-        } catch (Error x) {
-            failure = new AbortedException(x);
-            throw x;
-        } catch (RuntimeException x) {
-            failure = new AbortedException(x);
-            throw x;
-        } finally {
-            // notify listener: taskAborted (due to exception from taskStarting)
-            if (failure != null && task instanceof ManagedTask) {
-                ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
-                if (listener != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                        Tr.event(this, tc, "taskAborted", managedExecutor, task, failure);
-                    listener.taskAborted(future, managedExecutor, task, failure);
-                }
+        // notify listener: taskStarting
+        if (task instanceof ManagedTask) {
+            ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
+            if (listener != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                    Tr.event(this, tc, "taskStarting", managedExecutor, task);
+                listener.taskStarting(future, managedExecutor, task);
             }
         }
+
+        return contextAppliedToThread;
     }
 
     @Override
@@ -212,5 +197,10 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
             }
         }
+    }
+
+    @Override
+    public void raiseAbortedException(Throwable x) throws ExecutionException {
+        throw new AbortedException(x);
     }
 }
