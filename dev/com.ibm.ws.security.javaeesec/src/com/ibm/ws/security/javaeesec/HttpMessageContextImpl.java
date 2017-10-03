@@ -10,17 +10,22 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec;
 
+import java.io.IOException;
 import java.security.Principal;
-import java.util.Map;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.security.auth.Subject;
+import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.MessageInfo;
+import javax.security.auth.message.callback.CallerPrincipalCallback;
+import javax.security.auth.message.callback.GroupPrincipalCallback;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -37,8 +42,13 @@ public class HttpMessageContextImpl implements HttpMessageContext {
     private final MessageInfo messageInfo;
     private final Subject clientSubject;
     private final CallbackHandler handler;
-    private final HttpServletRequest request;
-    private final HttpServletResponse response;
+    private HttpServletRequest request;
+    private HttpServletResponse response;
+    private Principal principal = null;
+    private Set<String> groups = Collections.emptySet();
+    private boolean isRegisterSession = false;
+    private AuthenticationParameters authenticationParameters = new AuthenticationParameters();
+    private boolean isAuthenticationRequest = false;
 
     /**
      * @param messageInfo
@@ -53,6 +63,18 @@ public class HttpMessageContextImpl implements HttpMessageContext {
         response = (HttpServletResponse) messageInfo.getResponseMessage();
     }
 
+    /**
+     * @param messageInfo
+     * @param clientSubject
+     * @param handler
+     * @param authenticationParameters
+     */
+    public HttpMessageContextImpl(MessageInfo messageInfo, Subject clientSubject, CallbackHandler handler, AuthenticationParameters authenticationParameters) {
+        this(messageInfo, clientSubject, handler);
+        this.authenticationParameters = authenticationParameters;
+        this.isAuthenticationRequest = true;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -60,8 +82,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public void cleanClientSubject() {
-        // TODO Auto-generated method stub
-
+        // The container will remove container specific contents according to JASPIC (JSR 196) for the ServerAuthModule#cleanSubject.
+        // The mechanism or the message context wrapper must remove mechanism specific contents.
     }
 
     /*
@@ -80,9 +102,14 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#forward(java.lang.String)
      */
     @Override
-    public AuthenticationStatus forward(String arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public AuthenticationStatus forward(String path) {
+        try {
+            RequestDispatcher requestDispatcher = request.getRequestDispatcher(path);
+            requestDispatcher.forward(request, response);
+        } catch (Exception e) {
+            // TODO: Add serviceability message
+        }
+        return AuthenticationStatus.SEND_CONTINUE;
     }
 
     /*
@@ -92,8 +119,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public AuthenticationParameters getAuthParameters() {
-        // TODO Auto-generated method stub
-        return null;
+        return authenticationParameters;
     }
 
     /*
@@ -103,8 +129,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public Principal getCallerPrincipal() {
-        // TODO Auto-generated method stub
-        return null;
+        return principal;
     }
 
     /*
@@ -124,8 +149,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public Set<String> getGroups() {
-        // TODO Auto-generated method stub
-        return null;
+        return groups;
     }
 
     /*
@@ -175,9 +199,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public boolean isAuthenticationRequest() {
-        Map<String, String> msgMap = messageInfo.getMap();
-        boolean isAuthenticate = "authenticate".equalsIgnoreCase(msgMap.get("com.ibm.websphere.jaspi.request"));
-        return isAuthenticate;
+        return isAuthenticationRequest;
     }
 
     /*
@@ -187,9 +209,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public boolean isProtected() {
-        Map<String, String> msgMap = messageInfo.getMap();
-        boolean isProtected = msgMap.get("javax.security.auth.message.MessagePolicy.isMandatory").equalsIgnoreCase("TRUE");
-        return isProtected;
+        return ((String) messageInfo.getMap().get("javax.security.auth.message.MessagePolicy.isMandatory")).equalsIgnoreCase("TRUE");
     }
 
     /*
@@ -199,8 +219,7 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public boolean isRegisterSession() {
-        // TODO Auto-generated method stub
-        return false;
+        return isRegisterSession;
     }
 
     /*
@@ -209,20 +228,11 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#notifyContainerAboutLogin(javax.security.enterprise.identitystore.CredentialValidationResult)
      */
     @Override
-    public AuthenticationStatus notifyContainerAboutLogin(CredentialValidationResult arg0) {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#notifyContainerAboutLogin(java.lang.String, java.util.Set)
-     */
-    @Override
-    public AuthenticationStatus notifyContainerAboutLogin(String arg0, Set<String> arg1) {
-        // TODO Auto-generated method stub
-        return null;
+    public AuthenticationStatus notifyContainerAboutLogin(CredentialValidationResult result) {
+        if (CredentialValidationResult.Status.VALID.equals(result.getStatus())) {
+            return notifyContainerAboutLogin(result.getCallerPrincipal(), result.getCallerGroups());
+        }
+        return AuthenticationStatus.SEND_FAILURE;
     }
 
     /*
@@ -231,9 +241,37 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#notifyContainerAboutLogin(java.security.Principal, java.util.Set)
      */
     @Override
-    public AuthenticationStatus notifyContainerAboutLogin(Principal arg0, Set<String> arg1) {
-        // TODO Auto-generated method stub
-        return null;
+    public AuthenticationStatus notifyContainerAboutLogin(Principal principal, Set<String> groups) {
+        try {
+            this.principal = principal;
+            this.groups = Collections.unmodifiableSet(groups); // Unmodifiable view to avoid corruption
+            Callback[] callbacks = new Callback[2];
+            callbacks[0] = new CallerPrincipalCallback(clientSubject, principal);
+            callbacks[1] = new GroupPrincipalCallback(clientSubject, groups.toArray(new String[] {}));
+            handler.handle(callbacks);
+        } catch (Exception e) {
+            // TODO: Determine if this needs a serviceability message
+        }
+        return AuthenticationStatus.SUCCESS;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#notifyContainerAboutLogin(java.lang.String, java.util.Set)
+     */
+    @Override
+    public AuthenticationStatus notifyContainerAboutLogin(String callername, Set<String> groups) {
+        try {
+            this.groups = Collections.unmodifiableSet(groups); // Unmodifiable view to avoid corruption
+            Callback[] callbacks = new Callback[2];
+            callbacks[0] = new CallerPrincipalCallback(clientSubject, callername);
+            callbacks[1] = new GroupPrincipalCallback(clientSubject, groups.toArray(new String[] {}));
+            handler.handle(callbacks);
+        } catch (Exception e) {
+            // TODO: Determine if this needs a serviceability message
+        }
+        return AuthenticationStatus.SUCCESS;
     }
 
     /*
@@ -242,9 +280,14 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#redirect(java.lang.String)
      */
     @Override
-    public AuthenticationStatus redirect(String arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public AuthenticationStatus redirect(String location) {
+        try {
+            response.sendRedirect(response.encodeURL(location));
+            response.setStatus(HttpServletResponse.SC_FOUND);
+        } catch (IOException e) {
+            // TODO: Determine if this needs a serviceability message
+        }
+        return AuthenticationStatus.SEND_CONTINUE;
     }
 
     /*
@@ -254,8 +297,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public AuthenticationStatus responseNotFound() {
-        // TODO Auto-generated method stub
-        return null;
+        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+        return AuthenticationStatus.SEND_FAILURE;
     }
 
     /*
@@ -265,8 +308,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      */
     @Override
     public AuthenticationStatus responseUnauthorized() {
-        // TODO Auto-generated method stub
-        return null;
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return AuthenticationStatus.SEND_FAILURE;
     }
 
     /*
@@ -275,9 +318,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#setRegisterSession(java.lang.String, java.util.Set)
      */
     @Override
-    public void setRegisterSession(String arg0, Set<String> arg1) {
-        // TODO Auto-generated method stub
-
+    public void setRegisterSession(String callerName, Set<String> groups) {
+        isRegisterSession = true;
     }
 
     /*
@@ -286,9 +328,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#setRequest(javax.servlet.http.HttpServletRequest)
      */
     @Override
-    public void setRequest(HttpServletRequest arg0) {
-        // TODO Auto-generated method stub
-
+    public void setRequest(HttpServletRequest request) {
+        this.request = request;
     }
 
     /*
@@ -297,9 +338,8 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#setResponse(javax.servlet.http.HttpServletResponse)
      */
     @Override
-    public void setResponse(HttpServletResponse arg0) {
-        // TODO Auto-generated method stub
-
+    public void setResponse(HttpServletResponse response) {
+        this.response = response;
     }
 
     /*
@@ -308,9 +348,9 @@ public class HttpMessageContextImpl implements HttpMessageContext {
      * @see javax.security.enterprise.authentication.mechanism.http.HttpMessageContext#withRequest(javax.servlet.http.HttpServletRequest)
      */
     @Override
-    public HttpMessageContext withRequest(HttpServletRequest arg0) {
-        // TODO Auto-generated method stub
-        return null;
+    public HttpMessageContext withRequest(HttpServletRequest request) {
+        this.request = request;
+        return this;
     }
 
 }
