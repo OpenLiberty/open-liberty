@@ -1928,59 +1928,92 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         ByteArrayOutputStream hdrStream = new ByteArrayOutputStream();
 
         try {
-            if (pushBuilder.getQueryString() == null) {
+            if (pushBuilder.getMethod() == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: query string is null ");
+                    Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: method is null ");
                 }
-                throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The query string is null.");
+                throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The method is null.");
             } else {
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, getQueryString(), LiteralIndexType.NOINDEXING));
-                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, getQueryString(), LiteralIndexType.NOINDEXING));
+                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, pushBuilder.getMethod(), LiteralIndexType.NOINDEXING));
+                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.METHOD, pushBuilder.getMethod(), LiteralIndexType.NOINDEXING));
             }
-            if (pushBuilder.getURI() == null) {
+            // path is equal to uri + queryString
+            if (pushBuilder.getPath() == null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: uri is null ");
+                    Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: path is null ");
                 }
-                throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The uri is null.");
+                throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  The path is null.");
             } else {
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, getQueryString(), LiteralIndexType.NOINDEXING));
-                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, getQueryString(), LiteralIndexType.NOINDEXING));
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HTTPRequestMessageImpl.getPath() is " + pushBuilder.getPath());
+                }
+                ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pushBuilder.getPath(), LiteralIndexType.NOINDEXING));
+                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.PATH, pushBuilder.getPath(), LiteralIndexType.NOINDEXING));
             }
 
             ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
             hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.SCHEME, "http", LiteralIndexType.NOINDEXING));
-            HttpOutboundServiceContext osc = (HttpOutboundServiceContext) getServiceContext();
-            ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, osc.getTargetAddress().getHostname(), LiteralIndexType.NOINDEXING));
-            hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, osc.getTargetAddress().getHostname(), LiteralIndexType.NOINDEXING));
+            //HttpOutboundServiceContext osc = (HttpOutboundServiceContext) getServiceContext();
+            //ppStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, osc.getTargetAddress().getHostname(), LiteralIndexType.NOINDEXING));
+            //hdrStream.write(H2Headers.encodeHeader(h2WriteTable, HpackConstants.AUTHORITY, osc.getTargetAddress().getHostname(), LiteralIndexType.NOINDEXING));
+
+            //if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            //    Tr.debug(tc, "HTTPRequestMessageImpl.getURI() got Scheme HTTP and Authority " + osc.getTargetAddress().getHostname());
+            //}
 
             // Add headers
             Set<HeaderField> headerSet = pushBuilder.getHeaders();
             Iterator<HeaderField> hsit = headerSet.iterator();
+            HeaderField hf = null;
             while (hsit.hasNext()) {
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, ((HeaderField) hsit).getName(), ((HeaderField) hsit).asString(), LiteralIndexType.NOINDEXING));
-                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, ((HeaderField) hsit).getName(), ((HeaderField) hsit).asString(), LiteralIndexType.NOINDEXING));
+                hf = hsit.next();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HTTPRequestMessageImpl.getHeaders() " + hf.getName() + " " + hf.asString());
+                }
+                ppStream.write(H2Headers.encodeHeader(h2WriteTable, hf.getName(), hf.asString(), LiteralIndexType.NOINDEXING));
+                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, hf.getName(), hf.asString(), LiteralIndexType.NOINDEXING));
+
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPRequestMessageImpl.getHeaders() got headers");
             }
 
             // Add cookies
-            Set<HttpCookie> cookieSet = pushBuilder.getCookies();
-            Iterator<HttpCookie> ckit = cookieSet.iterator();
-            while (ckit.hasNext()) {
-                ppStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", ((HttpCookie) ckit).getName() + "=" + ((HttpCookie) ckit).toString(),
-                                                      LiteralIndexType.NOINDEXING));
-                hdrStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", ((HttpCookie) ckit).getName() + "=" + ((HttpCookie) ckit).toString(),
-                                                       LiteralIndexType.NOINDEXING));
+            //Set<HttpCookie> cookieSet = pushBuilder.getCookies();
+            //Iterator<HttpCookie> ckit = cookieSet.iterator();
+            //HttpCookie ck = null;
+            //while (ckit.hasNext()) {
+            //    ck = ckit.next();
+            //    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            //        Tr.debug(tc, "HTTPRequestMessageImpl.getCookies() " + ck.getName() + " " + ck.toString());
+            //    }
+            //    ppStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", ck.getName() + "=" + ck.toString(), LiteralIndexType.NOINDEXING));
+            //    hdrStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", ck.getName() + "=" + ck.toString(), LiteralIndexType.NOINDEXING));
+            //    ckit.next();
+            //}
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPRequestMessageImpl.getCookies() got cookies");
             }
 
             // Add optional session id
             if (pushBuilder.getSessionId() != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() " + pushBuilder.getSessionId());
+                }
                 ppStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", "JSESSIONID=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
                 hdrStream.write(H2Headers.encodeHeader(h2WriteTable, "COOKIE: ", "JSESSIONID=" + pushBuilder.getSessionId(), LiteralIndexType.NOINDEXING));
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPRequestMessageImpl.getSessionId() got sessionid");
             }
         }
         // Either IOException from write, or CompressionException from encodeHeader
         catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: There was a problem creating the push_promise header block client");
+                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: There was a problem creating the push_promise header block.");
             }
             throw new Http2PushException("HTTPRequestMessageImpl.pushNewRequest():  Cannot encode the HTTP2 headers.");
         }

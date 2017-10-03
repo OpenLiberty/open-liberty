@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.internal.HttpBaseMessageImpl;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.wsspi.genericbnf.HeaderField;
@@ -212,6 +213,15 @@ public class HttpRequestImpl implements Http2Request {
      */
     @Override
     public void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException {
+
+        try {
+            this.message.pushNewRequest(pushBuilder);
+        } catch (ProtocolException e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+            e.printStackTrace();
+        }
 
     }
 
