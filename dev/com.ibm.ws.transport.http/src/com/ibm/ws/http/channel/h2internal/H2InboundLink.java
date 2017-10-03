@@ -260,7 +260,7 @@ public class H2InboundLink extends HttpInboundLink {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleHTTP2UpgradeRequest, creating stream processor");
         }
-        H2StreamProcessor streamProcessor = new H2StreamProcessor(streamID, wrap, this);
+        H2StreamProcessor streamProcessor = new H2StreamProcessor(streamID, wrap, this, StreamState.HALF_CLOSED_REMOTE);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "handleHTTP2UpgradeRequest, created stream processor : " + streamProcessor);
         }

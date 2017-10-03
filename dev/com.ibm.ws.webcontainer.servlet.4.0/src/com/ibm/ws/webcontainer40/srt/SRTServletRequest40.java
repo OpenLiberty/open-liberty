@@ -74,6 +74,11 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
         // Referrer Headers
         _disallowedPushBuilderHeaders.add(HttpHeaderKeys.HDR_REFERER.getName());
 
+        // HTTP2 headers
+        _disallowedPushBuilderHeaders.add(HttpHeaderKeys.HDR_UPGRADE.getName());
+        _disallowedPushBuilderHeaders.add(HttpHeaderKeys.HDR_HTTP2_SETTINGS.getName());
+        _disallowedPushBuilderHeaders.add(HttpHeaderKeys.HDR_CONNECTION.getName());
+
     }
 
     public SRTServletRequest40(SRTConnectionContext40 context) {
