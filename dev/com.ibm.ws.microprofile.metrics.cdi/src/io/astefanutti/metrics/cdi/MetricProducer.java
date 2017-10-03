@@ -33,6 +33,7 @@ import javax.interceptor.Interceptor;
 import org.eclipse.microprofile.metrics.Counter;
 import org.eclipse.microprofile.metrics.Gauge;
 import org.eclipse.microprofile.metrics.Histogram;
+import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.Meter;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Timer;
@@ -43,8 +44,10 @@ import org.eclipse.microprofile.metrics.Timer;
 /* package-private */ final class MetricProducer {
 
     @Produces
-    private static Counter counter(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.counter(metricName.metadataOf(ip, Counter.class));
+    private static Counter counter(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
+        Metadata metadata = metricName.metadataOf(ip, Counter.class);
+        extension.addMetricName(metadata.getName());
+        return registry.counter(metadata);
     }
 
     @Produces
@@ -61,17 +64,23 @@ import org.eclipse.microprofile.metrics.Timer;
     }
 
     @Produces
-    private static Histogram histogram(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.histogram(metricName.metadataOf(ip, Histogram.class));
+    private static Histogram histogram(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
+        Metadata metadata = metricName.metadataOf(ip, Histogram.class);
+        extension.addMetricName(metadata.getName());
+        return registry.histogram(metadata);
     }
 
     @Produces
-    private static Meter meter(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.meter(metricName.metadataOf(ip, Meter.class));
+    private static Meter meter(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
+        Metadata metadata = metricName.metadataOf(ip, Meter.class);
+        extension.addMetricName(metadata.getName());
+        return registry.meter(metadata);
     }
 
     @Produces
-    private static Timer timer(InjectionPoint ip, MetricRegistry registry, MetricName metricName) {
-        return registry.timer(metricName.metadataOf(ip, Timer.class));
+    private static Timer timer(InjectionPoint ip, MetricRegistry registry, MetricName metricName, MetricsExtension extension) {
+        Metadata metadata = metricName.metadataOf(ip, Timer.class);
+        extension.addMetricName(metadata.getName());
+        return registry.timer(metadata);
     }
 }
