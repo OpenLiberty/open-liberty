@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.tai;
 
@@ -32,6 +32,7 @@ public class TAIRequestHelper {
     public static final String ATTRIBUTE_TAI_REQUEST = "MPJwtTaiRequest";
 
     private static final String Authorization_Header = "Authorization";
+    private static final String APPLICATION_AUTH_METHOD = "com.ibm.ws.security.tai.appAuthType";
     public final static String REQ_METHOD_POST = "POST";
     public final static String REQ_CONTENT_TYPE_NAME = "Content-Type";
     public final static String REQ_CONTENT_TYPE_APP_FORM_URLENCODED = "application/x-www-form-urlencoded";
@@ -94,11 +95,52 @@ public class TAIRequestHelper {
         }
         String loginHint = getLoginHint(request);
         mpJwtTaiRequest = setTaiRequestConfigInfo(request, loginHint, mpJwtTaiRequest);
-        boolean result = mpJwtTaiRequest.hasServices();
+        boolean result = false;
+        boolean ignoreAppAuthMethod = true;
+
+        MicroProfileJwtConfig mpJwtConfig = null;
+        try {
+            mpJwtConfig = mpJwtTaiRequest.getOnlyMatchingConfig();
+        } catch (MpJwtProcessingException e) {
+
+        }
+        if (mpJwtConfig != null) {
+            ignoreAppAuthMethod = mpJwtConfig.ignoreApplicationAuthMethod(); // true by default
+        }
+        if (ignoreAppAuthMethod) {
+            result = mpJwtTaiRequest.hasServices();
+        } else {
+            result = isMpJwtSpecifiedInLoginConfig(request);
+        }
+
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, result);
         }
         return result;
+    }
+
+    /**
+     * @param request
+     */
+    private boolean isMpJwtSpecifiedInLoginConfig(HttpServletRequest request) {
+
+        String AUTHN_TYPE = "MP-JWT";
+        if (request.getAttribute(APPLICATION_AUTH_METHOD) != null) {
+            String loginCfg = (String) request.getAttribute(APPLICATION_AUTH_METHOD);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Auth method = ", loginCfg);
+                Tr.debug(tc, "isMpJwtSpecifiedInLoginConfig ", AUTHN_TYPE.equals(loginCfg));
+            }
+            if (!AUTHN_TYPE.equals(loginCfg)) {
+                String msg = Tr.formatMessage(tc, "MPJWT_NOT_FOUND_IN_APPLICATION", new Object[] { AUTHN_TYPE, loginCfg, "ignoreApplicationAuthMethod", "false" });
+                Tr.error(tc, msg);
+            }
+            return (AUTHN_TYPE.equals(loginCfg));
+        }
+        String msg = Tr.formatMessage(tc, "MPJWT_NOT_FOUND_IN_APPLICATION", new Object[] { AUTHN_TYPE, "null", "ignoreApplicationAuthMethod", "false" });
+        Tr.error(tc, msg);
+        return false;
+
     }
 
     boolean isJmxConnectorRequest(HttpServletRequest request) {

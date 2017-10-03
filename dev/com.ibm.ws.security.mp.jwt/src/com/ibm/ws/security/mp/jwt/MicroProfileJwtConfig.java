@@ -22,4 +22,6 @@ public interface MicroProfileJwtConfig {
 
     public String getGroupNameAttribute();
 
+    public boolean ignoreApplicationAuthMethod();
+
 }
