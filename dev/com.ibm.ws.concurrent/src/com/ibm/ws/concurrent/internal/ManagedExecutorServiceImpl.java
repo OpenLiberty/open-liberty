@@ -58,6 +58,9 @@ import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.ws.threading.PolicyExecutorProvider;
+import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
@@ -180,10 +183,18 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<String> jndiNameRef = new AtomicReference<String>();
 
     /**
+     * TODO Currently this field is only used for prototype usage of policy executor. Need to determine if managed executors can always use a policy executor.
+     */
+    private PolicyExecutor policyExecutor;
+
+    /**
      * Reference to the name of this managed executor service.
      * The name is the jndiName if specified, otherwise the config id.
      */
     final AtomicReference<String> name = new AtomicReference<String>();
+
+    @Reference
+    protected PolicyExecutorProvider policyExecutorProvider;
 
     /**
      * Privileged action to lazily obtain the transaction context provider.
@@ -223,6 +234,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
         execProps.put(WSContextService.TASK_OWNER, xsvcName);
         defaultExecutionProperties.set(execProps);
+
+        // TODO replace this temporary prototype code
+        if ("enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use")))
+            policyExecutor = policyExecutorProvider.create(xsvcName);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -273,6 +288,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Deactivate
     protected void deactivate(ComponentContext context) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            policyExecutor.shutdownNow();
 
         contextSvcRef.deactivate(context);
         tranContextProviderRef.deactivate(context);
@@ -541,6 +560,13 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         Map<String, String> execProps = getExecutionProperties(task);
 
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null) {
+            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return policyExecutor.submit(task, callback);
+        }
+
         ExecutorService execSvc = getExecSvc();
 
         SubmittedTask<T> taskToSubmit = new SubmittedTask<T>(this, task, contextSvc.captureThreadContext(execProps), null);
@@ -560,6 +586,13 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         Map<String, String> execProps = getExecutionProperties(task);
 
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null) {
+            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return policyExecutor.submit(task, result, callback);
+        }
+
         ExecutorService execSvc = getExecSvc();
 
         SubmittedTask<T> taskToSubmit = new SubmittedTask<T>(this, task, contextSvc.captureThreadContext(execProps), result);

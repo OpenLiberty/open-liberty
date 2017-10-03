@@ -431,6 +431,43 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(executor.isTerminated());
     }
 
+    // Verify that it is not possible to cancel tasks that are done.
+    @Test
+    public void testCancelAfterDone() throws Exception {
+        PolicyExecutor executor = provider.create("testCancelAfterDone");
+
+        Future<Integer> successfulFuture = executor.submit((Callable<Integer>) new SharedIncrementTask());
+        assertEquals(Integer.valueOf(1), successfulFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertFalse(successfulFuture.cancel(true));
+        assertFalse(successfulFuture.isCancelled());
+        assertEquals(Integer.valueOf(1), successfulFuture.get(0, TimeUnit.SECONDS));
+        assertTrue(successfulFuture.isDone());
+
+        Future<Integer> unsuccessfulFuture = executor.submit((Callable<Integer>) new SharedIncrementTask(null)); // intentionally cause NullPointerException
+        try {
+            fail("Expecting ExecutionException. Instead: " + unsuccessfulFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NullPointerException))
+                throw x;
+        }
+
+        assertFalse(unsuccessfulFuture.cancel(true));
+        assertFalse(unsuccessfulFuture.isCancelled());
+
+        try {
+            fail("Still expecting ExecutionException. Instead: " + unsuccessfulFuture.get(0, TimeUnit.SECONDS));
+        } catch (ExecutionException x) {
+            if (!(x.getCause() instanceof NullPointerException))
+                throw x;
+        }
+
+        assertTrue(unsuccessfulFuture.isDone());
+
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
     // When queued tasks are canceled, it should immediately free up capacity to allow tasks waiting for enqueue to be enqueued.
     @Test
     public void testCancelQueuedTasks() throws Exception {

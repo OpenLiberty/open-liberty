@@ -34,11 +34,12 @@ public abstract class PolicyTaskCallback {
      * @param task the Callable or Runnable task.
      * @param future the future for the task that has stopped running.
      * @param startObj result, if any, of previous onStart callback.
-     * @param pendingCompletionServices indicates whether any completion services are pending.
-     *            If true, a subsequent onEnd callback will be sent with a false value after the completion services have been processed.
+     * @param pending a positive value indicates that additional work, such as completion services are pending on the task's thread of execution.
+     *            The value 0 indicate that no additional work is pending. A negative value indicates that work that was previously pending is done.
+     *            If positive, a subsequent onEnd callback will be sent with a negative value after the additional work ends.
      * @param failure failure, if any, that occurred while trying to run the task.
      */
-    public void onEnd(Object task, Future<?> future, Object startObj, boolean pendingCompletionServices, Throwable failure) {}
+    public void onEnd(Object task, Future<?> future, Object startObj, int pending, Throwable failure) {}
 
     /**
      * Invoked before a task starts running. This callback is invoked synchronously on the task's thread of execution.
