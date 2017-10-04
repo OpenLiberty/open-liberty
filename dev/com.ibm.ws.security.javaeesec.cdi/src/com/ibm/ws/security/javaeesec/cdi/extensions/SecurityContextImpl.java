@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi.beans;
+package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.security.Principal;
 import java.util.Set;
