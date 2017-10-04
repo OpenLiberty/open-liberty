@@ -213,16 +213,14 @@ public class HttpRequestImpl implements Http2Request {
      */
     @Override
     public void pushNewRequest(Http2PushBuilder pushBuilder) throws Http2PushException {
-
         try {
             this.message.pushNewRequest(pushBuilder);
-        } catch (ProtocolException e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            e.printStackTrace();
-        }
 
+        } catch (Http2PushException he) {
+            throw he;
+        } catch (ProtocolException pe) {
+            throw new Http2PushException(pe.toString());
+        }
     }
 
     /*
