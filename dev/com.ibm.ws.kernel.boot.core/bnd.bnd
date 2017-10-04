@@ -26,7 +26,10 @@ Export-Package: \
 	com.ibm.ws.kernel.productinfo,\
 	com.ibm.ws.kernel.provisioning,\
 	com.ibm.wsspi.kernel.embeddable
-
+	
+Private-Package:\
+    com.ibm.ws.kernel.boot.resources
+	
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
