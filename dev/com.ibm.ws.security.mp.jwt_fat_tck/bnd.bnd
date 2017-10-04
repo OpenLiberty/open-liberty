@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+# uncomment next line if you need to disable building this project
+#-nobundles=true
+
 src: \
 	fat/src,\
 	fat/resources

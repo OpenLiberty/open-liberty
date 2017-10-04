@@ -61,6 +61,7 @@ javax.jms:javax.jms-api:2.0
 javax.json:javax.json-api:1.1
 javax.json.bind:javax.json.bind-api:1.0
 javax.mail:javax.mail-api:1.5.0
+javax.persistence:javax.persistence-api:2.2
 javax.resource:javax.resource-api:1.7
 javax.security.auth.message:javax.security.auth.message-api:1.1
 javax.security.enterprise:javax.security.enterprise-api:1.0-b11
@@ -185,6 +186,12 @@ org.osgi:org.osgi.service.subsystem:1.1.0
 org.osgi:osgi.core:5.0.0
 org.ow2.asm:asm-all:5.0.3
 org.ow2.asm:asm-all:5.2
+org.ow2.asm:asm:6.0
+org.ow2.asm:asm-analysis:6.0
+org.ow2.asm:asm-commons:6.0
+org.ow2.asm:asm-tree:6.0
+org.ow2.asm:asm-util:6.0
+org.ow2.asm:asm-xml:6.0
 org.powermock:powermock-core:1.5
 org.slf4j:slf4j-api:1.7.7
 org.slf4j:slf4j-jdk14:1.7.7
