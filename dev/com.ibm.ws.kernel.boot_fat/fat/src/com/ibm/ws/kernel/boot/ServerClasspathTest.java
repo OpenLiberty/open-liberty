@@ -53,6 +53,12 @@ public class ServerClasspathTest {
         server.stopServer();
     }
 
+	@Test
+	public void testNotARealTest() throws Exception {
+		String x = "testing";
+		assertEquals("This is a no-brainer equals test!", "testing", x);
+	}
+
     @Test
     public void testJvmAppClasspath() throws Exception {
         //TODO: check logs for any packages that are not in the expected packages list
