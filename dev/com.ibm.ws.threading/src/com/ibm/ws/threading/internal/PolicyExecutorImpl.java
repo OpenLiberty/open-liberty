@@ -114,12 +114,18 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     @Trivial
     private static enum State {
-        ACTIVE, // task submit/start/run all possible
-        ENQUEUE_STOPPING, // enqueue is being disabled, submit might be possible, start/run still possible
-        ENQUEUE_STOPPED, // task submit disallowed, start/run still possible
-        TASKS_CANCELING, // task submit disallowed, start/run might be possible, queued and running tasks are being canceled
-        TASKS_CANCELED, // task submit/start disallowed, waiting for all tasks to end
-        TERMINATED // task submit/start/run all disallowed
+        ACTIVE(true), // task submit/start/run all possible
+        ENQUEUE_STOPPING(true), // enqueue is being disabled, submit might be possible, start/run still possible
+        ENQUEUE_STOPPED(true), // task submit disallowed, start/run still possible
+        TASKS_CANCELING(false), // task submit disallowed, start/run might be possible, queued and running tasks are being canceled
+        TASKS_CANCELED(false), // task submit/start disallowed, waiting for all tasks to end
+        TERMINATED(false); // task submit/start/run all disallowed
+
+        boolean canStartTask;
+
+        private State(boolean canStartTask) {
+            this.canStartTask = canStartTask;
+        }
     }
 
     /**
@@ -139,19 +145,16 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         public void run() {
             boolean canRun;
             PolicyTaskFutureImpl<?> next;
-            do {
-                // Check the state to reduce the possibility of removing a queued task that we will not be able to run
-                State currentState = state.get();
-                canRun = currentState == State.ACTIVE || currentState == State.ENQUEUE_STOPPING || currentState == State.ENQUEUE_STOPPED;
-                next = canRun ? queue.poll() : null;
-                if (next == null)
-                    break;
-                else
-                    maxQueueSizeConstraint.release();
-            } while (next.isCancelled());
+            while ((next = (canRun = state.get().canStartTask) ? queue.poll() : null) != null && next.isCancelled()) {
+                maxQueueSizeConstraint.release();
+                if (next.callback != null)
+                    next.callback.onEnd(next.task, next, null, true, 0, null); // aborted, queued task will never run
+            }
 
-            if (next != null)
+            if (next != null) {
+                maxQueueSizeConstraint.release();
                 runTask(next);
+            }
 
             // Release permits against core/maxConcurrency
             if (expedite)
@@ -394,7 +397,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
                 // Check if shutdown occurred since acquiring the permit to enqueue, and if so, try to remove the queued task
                 if (state.get() != State.ACTIVE && queue.remove(policyTaskFuture)) {
-                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
+                    RejectedExecutionException x = new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
+                    if (policyTaskFuture.callback != null)
+                        policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x); // aborted, queued task will never run
+                    throw x;
                 }
             } else if (state.get() == State.ACTIVE) {
                 QueueFullAction action = Boolean.TRUE.equals(callerRunsOverride) ? QueueFullAction.CallerRuns : queueFullAction.get();
@@ -902,13 +908,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             if (providerCreated != null) // the following code only matters when life cycle operations are permitted
                 running.add(future); // intentionally done before checking state to avoid missing cancels on shutdownNow
 
-            State currentState = state.get();
-            if (currentState == State.ACTIVE || currentState == State.ENQUEUE_STOPPING || currentState == State.ENQUEUE_STOPPED) {
+            if (state.get().canStartTask) {
                 future.run();
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "Cancel task due to policy executor state " + currentState);
+                    Tr.debug(this, tc, "Cancel task due to policy executor state " + state);
                 future.cancel(false);
+                if (future.callback != null)
+                    future.callback.onEnd(future.task, future, null, true, 0, null); // aborted, queued task will never run
             }
         } catch (Error x) {
             // auto FFDC
