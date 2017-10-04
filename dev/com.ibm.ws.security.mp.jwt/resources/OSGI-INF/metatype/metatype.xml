@@ -38,7 +38,7 @@
             required="false" type="Boolean"  default="true" />
         <AD id="hostNameVerificationEnabled" name="internal" description="internal use only" required="false" type="Boolean" default="false"/>
         <AD id="clockSkew" name="%clockSkew" description="%clockSkew.desc" required="false" type="String" default="5m" ibm:type="duration" />
-        <AD id="ignoreApplicationAuthMethod" name="%ignoreApplicationAuthMethod"  description="ignoreApplicationAuthMethod.desc"
+        <AD id="ignoreApplicationAuthMethod" name="%ignoreApplicationAuthMethod"  description="%ignoreApplicationAuthMethod.desc"
             required="false" type="Boolean"  default="true" />
     </OCD>
 
