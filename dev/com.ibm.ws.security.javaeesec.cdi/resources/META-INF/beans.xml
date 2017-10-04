@@ -16,7 +16,7 @@
 
 
    <scan>
-        <exclude name="com.ibm.ws.security.javaeesec.cdi.**"/>
+        <exclude name="com.ibm.ws.security.javaeesec.cdi.extensions.**"/>
    </scan>
 
 </beans>

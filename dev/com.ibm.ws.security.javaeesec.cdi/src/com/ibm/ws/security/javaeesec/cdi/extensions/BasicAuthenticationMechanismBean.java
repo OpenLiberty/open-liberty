@@ -8,21 +8,50 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.security.enterprise.identitystore.IdentityStore;
+import javax.enterprise.inject.spi.PassivationCapable;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.enterprise.util.TypeLiteral;
+import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.BasicHttpAuthenticationMechanism;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
  */
-public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
+public class BasicAuthenticationMechanismBean implements Bean<HttpAuthenticationMechanism>, PassivationCapable {
+
+    private final String realmName;
+
+    private final Set<Annotation> qualifiers;
+    private final Type type;
+    private final Set<Type> types;
+    private final String name;
+    private final String id;
+
+    public BasicAuthenticationMechanismBean(String realmName, BeanManager beanManager) {
+        this.realmName = realmName;
+        qualifiers = new HashSet<Annotation>();
+        qualifiers.add(new AnnotationLiteral<Default>() {});
+
+        type = new TypeLiteral<HttpAuthenticationMechanism>() {}.getType();
+        types = Collections.singleton(type);
+        name = this.getClass().getName() + "[" + type + "]";
+        id = beanManager.hashCode() + "#" + this.name;
+    }
 
     /*
      * (non-Javadoc)
@@ -30,9 +59,8 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public IdentityStore create(CreationalContext<IdentityStore> arg0) {
-        // TODO Return the actual DataBaseIdentityStore impl
-        return null;
+    public HttpAuthenticationMechanism create(CreationalContext<HttpAuthenticationMechanism> creationalContext) {
+        return new BasicHttpAuthenticationMechanism(realmName);
     }
 
     /*
@@ -41,9 +69,8 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public void destroy(IdentityStore arg0, CreationalContext<IdentityStore> arg1) {
-        // TODO Auto-generated method stub
-
+    public void destroy(HttpAuthenticationMechanism arg0, CreationalContext<HttpAuthenticationMechanism> creationalContext) {
+        // Nothing to destroy in the BasicHttpAuthenticationMechanism impl.
     }
 
     /*
@@ -53,8 +80,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return name;
     }
 
     /*
@@ -64,8 +90,8 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<Annotation> getQualifiers() {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO Determine if this needs to be immutable
+        return qualifiers;
     }
 
     /*
@@ -75,8 +101,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Class<? extends Annotation> getScope() {
-        // TODO Auto-generated method stub
-        return null;
+        return ApplicationScoped.class;
     }
 
     /*
@@ -86,8 +111,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<Class<? extends Annotation>> getStereotypes() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptySet();
     }
 
     /*
@@ -97,8 +121,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<Type> getTypes() {
-        // TODO Auto-generated method stub
-        return null;
+        return types;
     }
 
     /*
@@ -108,7 +131,6 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public boolean isAlternative() {
-        // TODO Auto-generated method stub
         return false;
     }
 
@@ -119,8 +141,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Class<?> getBeanClass() {
-        // TODO Auto-generated method stub
-        return null;
+        return HttpAuthenticationMechanism.class;
     }
 
     /*
@@ -130,8 +151,8 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<InjectionPoint> getInjectionPoints() {
-        // TODO Auto-generated method stub
-        return null;
+        // TODO: Determine if the bean can be injected into any injection point. Spec mandates programmatic lookup from ServerAuthModule.
+        return Collections.emptySet();
     }
 
     /*
@@ -141,8 +162,23 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public boolean isNullable() {
-        // TODO Auto-generated method stub
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.enterprise.inject.spi.PassivationCapable#getId()
+     */
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    /*
+     * for unittest
+     */
+    protected String getRealmName() {
+        return realmName;
+    }
 }
