@@ -8,20 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.beans;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.inject.Produces;
-import javax.security.enterprise.SecurityContext;
+import javax.annotation.Priority;
+import javax.interceptor.Interceptor;
+import javax.security.enterprise.authentication.mechanism.http.RememberMe;
 
-public class SecurityContextProducer {
+/**
+ * TODO: Determine how it intercepts the HttpAuthenticationMechanism and calls the RememberMeIdentityStore bean provided by the application
+ */
+@RememberMe
+@Interceptor
+@Priority(Interceptor.Priority.PLATFORM_BEFORE)
+public class RememberMeInterceptor {
 
-    @Produces
-    @ApplicationScoped
-    public SecurityContext getSecurityContext() {
-        SecurityContext instance = null;
-        // TODO: Create instance
-        return instance;
-    }
-
+    // TODO: Add @AroundInvoke method
 }

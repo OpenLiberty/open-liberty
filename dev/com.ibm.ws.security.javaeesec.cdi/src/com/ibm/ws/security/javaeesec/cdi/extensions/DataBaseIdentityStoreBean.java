@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -17,12 +17,12 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
-import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.security.enterprise.identitystore.IdentityStore;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
  */
-public class CustomFormAuthenticationMechanismBean implements Bean<HttpAuthenticationMechanism> {
+public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
 
     /*
      * (non-Javadoc)
@@ -30,8 +30,8 @@ public class CustomFormAuthenticationMechanismBean implements Bean<HttpAuthentic
      * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public HttpAuthenticationMechanism create(CreationalContext<HttpAuthenticationMechanism> arg0) {
-        // TODO Return the actual CustomFormAuthenticationMechanism impl
+    public IdentityStore create(CreationalContext<IdentityStore> arg0) {
+        // TODO Return the actual DataBaseIdentityStore impl
         return null;
     }
 
@@ -41,7 +41,7 @@ public class CustomFormAuthenticationMechanismBean implements Bean<HttpAuthentic
      * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public void destroy(HttpAuthenticationMechanism arg0, CreationalContext<HttpAuthenticationMechanism> arg1) {
+    public void destroy(IdentityStore arg0, CreationalContext<IdentityStore> arg1) {
         // TODO Auto-generated method stub
 
     }

@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.authentication.mechanism.http;
+package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import java.io.IOException;
 import java.security.AccessController;
@@ -19,17 +19,19 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import javax.annotation.ManagedBean;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.callback.PasswordValidationCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
@@ -48,28 +50,12 @@ import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
-// TODO: At this point, this class is not used, the equvalent class exists in
-// com.ibm.ws.security.javaeesec.cdi package in order to register the class as
-// a managed bean. 
-
 @Default
 @ApplicationScoped
 @LoginToContinue
 public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
     private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
-
-    private final Properties props;
-
-    /**
-     * @param realmName
-     */
-    public FormAuthenticationMechanism() {
-        this.props = new Properties();
-    }
-    public FormAuthenticationMechanism(Properties props) {
-        this.props = props;
-    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -83,7 +69,6 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         CallbackHandler handler = httpMessageContext.getHandler();
         HttpServletRequest req = httpMessageContext.getRequest();
         HttpServletResponse rsp = httpMessageContext.getResponse();
-        String authHeader = req.getHeader("Authorization");
         String username = req.getParameter("j_username");
         String password = req.getParameter("j_password");
         if (tc.isDebugEnabled()) {
@@ -94,7 +79,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
             if (username != null && password != null) {
                 status = handleFormLogin(username, password, rsp, msgMap, clientSubject, handler);
             } else {
-                status = gotoLoginPage(props, req, rsp);
+                status = AuthenticationStatus.SEND_CONTINUE;
             }
         } else {
             if (username == null || password == null) {
@@ -104,7 +89,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
                     }
                     status = AuthenticationStatus.NOT_DONE;
                 } else {
-                    status = gotoLoginPage(props, req, rsp);
+                    status = AuthenticationStatus.SEND_CONTINUE;
                 }
             } else {
                 status = handleFormLogin(username, password, rsp, msgMap, clientSubject, handler);
@@ -128,37 +113,6 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
 
     }
 
-    private AuthenticationStatus gotoLoginPage(Properties props, HttpServletRequest req, HttpServletResponse rsp) {
-        String loginPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE);
-        boolean useForwardToLogin = getUseForwardToLogin(props);
-        if (useForwardToLogin) {
-            RequestDispatcher rd = req.getRequestDispatcher(loginPage);
-            try {
-                rd.forward(req, rsp);
-            } catch (ServletException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-                e.printStackTrace();
-            }
-        }
-        rsp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-        return AuthenticationStatus.SEND_CONTINUE;
-    }
-
-    private boolean getUseForwardToLogin(Properties props) {
-        //TODO : add EL expression code.
-        Boolean value = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN);
-        if (value != null) {
-            return value.booleanValue();
-        }
-        return false;
-    }
 
     private AuthenticationStatus handleFormLogin(String username, String password, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
                                                  CallbackHandler handler) throws AuthenticationException {

@@ -73,6 +73,13 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
                 authConfigProvider = new AuthProvider(props, providerFactory);
                 providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, "Built-in JSR-375 Bridge Provider");
             } else {
+                if (tc.isDebugEnabled()) {
+                    StringBuffer names = new StringBuffer();
+                    for (Bean<?> authMech : httpAuthMechs) {
+                        names.append(authMech.getBeanClass().getName()).append(", ");
+                    }
+                    Tr.debug(tc, "Multiple HttpAuthenticationMechanism have been registered.  " + names.toString());
+                }
                 // TODO: Issue serviceability message
             }
         } catch (NamingException e) {

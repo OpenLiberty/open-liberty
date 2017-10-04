@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import java.io.IOException;
 import java.security.AccessController;
@@ -31,6 +31,7 @@ import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.callback.PasswordValidationCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
@@ -50,28 +51,15 @@ import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
+//TODO: the code is exactly the same as FormAuthenticationMechanism, so need to be modified.
+
+
 @Default
 @ApplicationScoped
 @LoginToContinue
-public class FormAuthenticationMechanism implements HttpAuthenticationMechanism {
+public class CustomFormAuthenticationMechanism implements HttpAuthenticationMechanism {
 
-    private static final TraceComponent tc = Tr.register(FormAuthenticationMechanism.class);
-    private final Properties props;
-
-    @Inject
-    BeanManager beanManager;
-
-    /**
-     * @param realmName
-     */
-    public FormAuthenticationMechanism() {
-        this.props = new Properties();
-        FormAuthenticationMechanismDefinition famd = this.getClass().getAnnotation(FormAuthenticationMechanismDefinition.class);
-    }
-
-    public FormAuthenticationMechanism(Properties props) {
-        this.props = props;
-    }
+    private static final TraceComponent tc = Tr.register(CustomFormAuthenticationMechanism.class);
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -85,34 +73,26 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         CallbackHandler handler = httpMessageContext.getHandler();
         HttpServletRequest req = httpMessageContext.getRequest();
         HttpServletResponse rsp = httpMessageContext.getResponse();
-        String authHeader = req.getHeader("Authorization");
-        String username = req.getParameter("j_username");
-        String password = req.getParameter("j_password");
+        AuthenticationParameters authParams = httpMessageContext.getAuthParameters();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "j_username : " + username);
+            Tr.debug(tc, "AuthenticationParameters : " + authParams);
         }
-
-        if (httpMessageContext.isAuthenticationRequest()) {
-            if (username != null && password != null) {
-                status = handleFormLogin(username, password, rsp, msgMap, clientSubject, handler);
-            } else {
-                status = gotoLoginPage(props, req, rsp);
+        if (authParams == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No AuthenticationParameters object, redirecting");
             }
+            status = AuthenticationStatus.SEND_CONTINUE;
         } else {
-            if (username == null || password == null) {
-                if (httpMessageContext.isProtected() == false) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "both isAuthenticationRequest and isProtected returns false. returing NOT_DONE,");
-                    }
-                    status = AuthenticationStatus.NOT_DONE;
-                } else {
-                    status = gotoLoginPage(props, req, rsp);
+            UsernamePasswordCredential cred = (UsernamePasswordCredential)authParams.getCredential();
+            if (cred == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "No UsernamePasswordCredential object, redirecting");
                 }
+                status = AuthenticationStatus.SEND_CONTINUE;
             } else {
-                status = handleFormLogin(username, password, rsp, msgMap, clientSubject, handler);
+                status = handleFormLogin(cred, rsp, msgMap, clientSubject, handler);
             }
         }
-
         return status;
     }
 
@@ -130,53 +110,17 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
 
     }
 
-    private AuthenticationStatus gotoLoginPage(Properties props, HttpServletRequest req, HttpServletResponse rsp) {
-        String loginPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE);
-        boolean useForwardToLogin = getUseForwardToLogin(props);
-        if (useForwardToLogin) {
-            RequestDispatcher rd = req.getRequestDispatcher(loginPage);
-            try {
-                rd.forward(req, rsp);
-            } catch (ServletException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-                e.printStackTrace();
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-                // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-                e.printStackTrace();
-            }
-        }
-        rsp.setStatus(HttpServletResponse.SC_MOVED_TEMPORARILY);
-        return AuthenticationStatus.SEND_CONTINUE;
-    }
 
-    private boolean getUseForwardToLogin(Properties props) {
-        //TODO : add EL expression code.
-        Boolean value = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN);
-        if (value != null) {
-            return value.booleanValue();
-        }
-        return false;
-    }
-
-    private AuthenticationStatus handleFormLogin(String username, String password, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
+    private AuthenticationStatus handleFormLogin(UsernamePasswordCredential cred, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
                                                  CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
-        if (username != null && password != null) {
-            UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
-            status = validateUserAndPassword(clientSubject, credential, handler);
-            if (status == AuthenticationStatus.SUCCESS) {
-                msgMap.put("javax.servlet.http.authType", "JASPI_AUTH");
-                rspStatus = HttpServletResponse.SC_OK;
-            } else {
-                // TODO: Audit invalid user or password
-            }
+        status = validateUserAndPassword(clientSubject, cred, handler);
+        if (status == AuthenticationStatus.SUCCESS) {
+            msgMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+            rspStatus = HttpServletResponse.SC_OK;
         } else {
-            // TODO: Determine if serviceability message is needed
+            // TODO: Audit invalid user or password
         }
         rsp.setStatus(rspStatus);
         return status;

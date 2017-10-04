@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;

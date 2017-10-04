@@ -13,6 +13,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
 @TraceOptions(traceGroup = "security", messageBundle = "com.ibm.ws.security.javaeesec.cdi.internal.resources.JavaEESecMessages")
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;

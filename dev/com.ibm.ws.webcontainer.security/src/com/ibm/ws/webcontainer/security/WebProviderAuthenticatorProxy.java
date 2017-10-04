@@ -154,9 +154,10 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                         //
                         // login form successfully processed, add ltpatoken for redirect
                         //
-                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(),
-                                                      webRequest.getHttpServletRequest(),
-                                                      webRequest.getHttpServletResponse());
+// In order to avoid setting LTPAToken2 twice, commented out the following lines.
+//                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(),
+//                                                      webRequest.getHttpServletRequest(),
+//                                                      webRequest.getHttpServletResponse());
                     } else { // not processing a login form
                         // We only want an ltpa token after form login. in all other cases remove it
                         // EXCEPT if the JASPI provider has committed the response

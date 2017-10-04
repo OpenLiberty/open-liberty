@@ -8,12 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -25,52 +26,35 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
-import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.BasicHttpAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContinueProperties;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContinuePropertiesImpl;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
+ *
+ * @param <T>
  */
-public class BasicAuthenticationMechanismBean implements Bean<HttpAuthenticationMechanism>, PassivationCapable {
 
-    private final String realmName;
+public class LoginToContinuePropertiesBean<T> implements Bean<LoginToContinueProperties>, PassivationCapable {
 
     private final Set<Annotation> qualifiers;
     private final Type type;
     private final Set<Type> types;
     private final String name;
     private final String id;
+    private final Properties props;
+    private final Annotation ltc;
 
-    public BasicAuthenticationMechanismBean(String realmName, BeanManager beanManager) {
-        this.realmName = realmName;
+    public LoginToContinuePropertiesBean(BeanManager beanManager, Annotation ltc, Properties props) {
+        this.props = props;
+        this.ltc = ltc;
         qualifiers = new HashSet<Annotation>();
         qualifiers.add(new AnnotationLiteral<Default>() {});
-
-        type = new TypeLiteral<HttpAuthenticationMechanism>() {}.getType();
+        type = new TypeLiteral<LoginToContinueProperties>() {}.getType();
         types = Collections.singleton(type);
         name = this.getClass().getName() + "[" + type + "]";
         id = beanManager.hashCode() + "#" + this.name;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
-     */
-    @Override
-    public HttpAuthenticationMechanism create(CreationalContext<HttpAuthenticationMechanism> creationalContext) {
-        return new BasicHttpAuthenticationMechanism(realmName);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
-     */
-    @Override
-    public void destroy(HttpAuthenticationMechanism arg0, CreationalContext<HttpAuthenticationMechanism> creationalContext) {
-        // Nothing to destroy in the BasicHttpAuthenticationMechanism impl.
     }
 
     /*
@@ -131,6 +115,7 @@ public class BasicAuthenticationMechanismBean implements Bean<HttpAuthentication
      */
     @Override
     public boolean isAlternative() {
+        // TODO Auto-generated method stub
         return false;
     }
 
@@ -141,7 +126,7 @@ public class BasicAuthenticationMechanismBean implements Bean<HttpAuthentication
      */
     @Override
     public Class<?> getBeanClass() {
-        return HttpAuthenticationMechanism.class;
+        return LoginToContinueProperties.class;
     }
 
     /*
@@ -162,6 +147,7 @@ public class BasicAuthenticationMechanismBean implements Bean<HttpAuthentication
      */
     @Override
     public boolean isNullable() {
+        // TODO Auto-generated method stub
         return false;
     }
 
@@ -176,9 +162,23 @@ public class BasicAuthenticationMechanismBean implements Bean<HttpAuthentication
     }
 
     /*
-     * for unittest
+     * (non-Javadoc)
+     *
+     * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
      */
-    protected String getRealmName() {
-        return realmName;
+    @Override
+    public LoginToContinueProperties create(CreationalContext context) {
+        return new LoginToContinuePropertiesImpl(props);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
+     */
+    @Override
+    public void destroy(LoginToContinueProperties instance, CreationalContext<LoginToContinueProperties> context) {
+        // TODO Auto-generated method stub
+
     }
 }

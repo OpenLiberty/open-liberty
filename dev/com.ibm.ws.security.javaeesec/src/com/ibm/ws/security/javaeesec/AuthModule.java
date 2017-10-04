@@ -44,7 +44,6 @@ public class AuthModule implements ServerAuthModule {
     private static final TraceComponent tc = Tr.register(AuthModule.class);
 
     private static Class[] supportedMessageTypes = new Class[] { HttpServletRequest.class, HttpServletResponse.class };
-    public static final String AUTH_PARAMS = "com.ibm.ws.security.javaeesec.auth.params";
 
     private MessagePolicy requestPolicy;
     private CallbackHandler handler;
@@ -140,9 +139,9 @@ public class AuthModule implements ServerAuthModule {
     protected HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
         HttpMessageContextImpl httpMessageContext = null;
         HttpServletRequest request = (HttpServletRequest) messageInfo.getRequestMessage();
-        AuthenticationParameters authParams = (AuthenticationParameters) request.getAttribute(AUTH_PARAMS);
+        AuthenticationParameters authParams = (AuthenticationParameters) request.getAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
         if (authParams != null) {
-            request.removeAttribute(AUTH_PARAMS);
+            request.removeAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
             httpMessageContext = new HttpMessageContextImpl(messageInfo, clientSubject, handler, authParams);
         } else {
             httpMessageContext = new HttpMessageContextImpl(messageInfo, clientSubject, handler);
@@ -184,6 +183,9 @@ public class AuthModule implements ServerAuthModule {
             status = AuthStatus.SEND_FAILURE;
         } else if (AuthenticationStatus.SEND_CONTINUE.equals(authenticationStatus)) {
             status = AuthStatus.SEND_CONTINUE;
+        } else if (AuthenticationStatus.NOT_DONE.equals(authenticationStatus)) {
+            // this is unprotected case.
+            status = AuthStatus.SEND_SUCCESS;
         }
         return status;
     }

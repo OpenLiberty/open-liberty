@@ -8,19 +8,16 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.authentication.mechanism.http;
 
-import javax.annotation.Priority;
-import javax.interceptor.Interceptor;
-import javax.security.enterprise.authentication.mechanism.http.RememberMe;
+import java.util.Properties;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
 /**
- * TODO: Determine how it intercepts the HttpAuthenticationMechanism and calls the RememberMeIdentityStore bean provided by the application
+ *
  */
-@RememberMe
-@Interceptor
-@Priority(Interceptor.Priority.PLATFORM_BEFORE)
-public class RememberMeInterceptor {
-
-    // TODO: Add @AroundInvoke method
+public interface LoginToContinueProperties {
+    public Properties getProperties();
 }
