@@ -264,7 +264,7 @@ public class AuthModuleTest {
 
         mockery.checking(new Expectations() {
             {
-                one(request).removeAttribute(AuthModule.AUTH_PARAMS);
+                one(request).removeAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
             }
         });
 
@@ -316,7 +316,7 @@ public class AuthModuleTest {
     private AuthModuleTest withAuthParams(final AuthenticationParameters authenticationParameters) {
         mockery.checking(new Expectations() {
             {
-                one(request).getAttribute(AuthModule.AUTH_PARAMS);
+                one(request).getAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
                 will(returnValue(authenticationParameters));
             }
         });

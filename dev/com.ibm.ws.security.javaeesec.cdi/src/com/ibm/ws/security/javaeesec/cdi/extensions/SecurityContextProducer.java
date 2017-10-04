@@ -19,7 +19,7 @@ public class SecurityContextProducer {
     @Produces
     @ApplicationScoped
     public SecurityContext getSecurityContext() {
-        SecurityContext instance = null;
+        SecurityContext instance = new SecurityContextImpl();
         // TODO: Create instance
         return instance;
     }
