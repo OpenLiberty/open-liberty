@@ -3,7 +3,7 @@
         <feature>concurrent-1.0</feature>
         <feature>ejbLite-3.2</feature>
         <feature>servlet-3.1</feature>
-        <feature>concurrentinternals-1.0</feature>
+        <feature>usr:concurrentInternals-1.0</feature>
         <feature>componenttest-1.0</feature>
     </featureManager>
 
