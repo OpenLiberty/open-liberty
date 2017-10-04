@@ -10,18 +10,20 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.cdi.component;
 
+import static com.ibm.ws.jaxrs20.utils.CustomizerUtils.createCustomizerKey;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
@@ -87,6 +89,8 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     }
 
     private final Map<ComponentMetaData, BeanManager> beanManagers = new WeakHashMap<ComponentMetaData, BeanManager>();
+
+    private final ConcurrentHashMap<ModuleMetaData, Map<Class<?>, ManagedObjectFactory<?>>> managedObjectFactoryCache = new ConcurrentHashMap<>();
 
     /*
      * (non-Javadoc)
@@ -239,7 +243,14 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Get instance from CDI " + clazz.getName());
             }
-            newContext.put(clazz, newServiceObject);
+
+            ManagedObject<?> oldMO = newContext.put(clazz, newServiceObject);
+            if (oldMO != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                // because we are using a ThreadBasedHashMap here, we not actually clobbering data,
+                // but we have the potential for problems as multiple threads are access the same
+                // CDI-managed, per-request resource concurrently.
+                Tr.debug(tc, "getInstanceFromManagedObejct - \"clobbered\" " + oldMO + " with " + newServiceObject + " for key " + clazz + " in map " + newContext);
+            }
 
             return (T) newServiceObject.getObject();
         } else {
@@ -265,12 +276,8 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             bean = managedObjectFactory.createManagedObject();
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + ", but ignore the FFDC: " + e.toString());
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + ", but ignore the FFDC: ", e);
             }
-        }
-
-        if (bean == null) {
-            return null;
         }
 
         return bean;
@@ -295,7 +302,11 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     public void afterServiceInvoke(Object serviceObject, boolean isSingleton, Object context) {
         @SuppressWarnings("unchecked")
         Map<Class<?>, ManagedObject<?>> newContext = (Map<Class<?>, ManagedObject<?>>) (context);
+
         ManagedObject<?> mo = newContext.get(serviceObject.getClass());
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "afterServiceInvoke mo=" + mo + " isSingleton=" + isSingleton + " newContext={0}", newContext);
+        }
         if (!isSingleton) {
             if (mo != null) {
                 mo.release();
@@ -350,7 +361,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
         EndpointInfo endpointInfo = context.getEndpointInfo();
         Set<ProviderResourceInfo> perRequestProviderAndPathInfos = endpointInfo.getPerRequestProviderAndPathInfos();
         Set<ProviderResourceInfo> singletonProviderAndPathInfos = endpointInfo.getSingletonProviderAndPathInfos();
-        Map<Class<?>, ManagedObject<?>> resourcesManagedbyCDI = new HashMap<Class<?>, ManagedObject<?>>();
+        Map<Class<?>, ManagedObject<?>> resourcesManagedbyCDI = new ThreadBasedHashMap();//HashMap<Class<?>, ManagedObject<?>>();
 
         CXFJaxRsProviderResourceHolder cxfPRHolder = context.getCxfRPHolder();
         for (ProviderResourceInfo p : perRequestProviderAndPathInfos) {
@@ -589,14 +600,27 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
 
     private ManagedObjectFactory<?> getManagedObjectFactory(Class<?> clazz) {
 
+
         ManagedObjectFactory<?> mof = null;
         try {
+            ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
+            Map<Class<?>, ManagedObjectFactory<?>> cache = managedObjectFactoryCache.get(mmd);
+            if (cache != null) {
+                mof = cache.get(clazz);
+            } else {
+                managedObjectFactoryCache.putIfAbsent(mmd, new ConcurrentHashMap<Class<?>, ManagedObjectFactory<?>>());
+                cache = managedObjectFactoryCache.get(mmd);
+            }
+            if (mof != null) {
+                return mof;
+            }
             ManagedObjectService mos = managedObjectServiceRef.getServiceWithException();
             if (mos == null) {
                 return null;
             }
-            ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
+
             mof = mos.createManagedObjectFactory(mmd, clazz, true);
+            cache.put(clazz, mof);
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Successfully to create ManagedObjectFactory for class: " + clazz.getName());
@@ -652,6 +676,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
     public void destroyApplicationScopeResources(JaxRsModuleMetaData jaxRsModuleMetaData) {
 
         for (ModuleMetaData mmd : jaxRsModuleMetaData.getEnclosingModuleMetaDatas()) {
+            managedObjectFactoryCache.remove(mmd);
             Iterator<ComponentMetaData> iter = beanManagers.keySet().iterator();
             while (iter.hasNext()) {
                 ComponentMetaData cmd = iter.next();
@@ -675,7 +700,7 @@ public class JaxRsFactoryImplicitBeanCDICustomizer implements JaxRsFactoryBeanCu
             return;
         }
         @SuppressWarnings("unchecked")
-        Map<Class<?>, ManagedObject<?>> newContext = (Map<Class<?>, ManagedObject<?>>) beanCustomizerContexts.get(Integer.toString(hashCode()));
+        Map<Class<?>, ManagedObject<?>> newContext = (Map<Class<?>, ManagedObject<?>>) beanCustomizerContexts.get(createCustomizerKey(this));
         if (newContext == null) {
             return;
         }
