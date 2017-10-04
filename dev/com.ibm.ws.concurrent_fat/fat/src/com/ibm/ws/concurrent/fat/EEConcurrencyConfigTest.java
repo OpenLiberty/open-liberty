@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.fat;
 
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+
 import java.util.Collections;
 
 import org.junit.AfterClass;
@@ -30,6 +32,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -40,11 +43,11 @@ import componenttest.topology.utils.FATServletClient;
  * so that tests do not interfere with each other.
  */
 @RunWith(FATRunner.class)
-public class EEConcurrencyUtilsFATTest extends FATServletClient {
+public class EEConcurrencyConfigTest extends FATServletClient {
 
     private static final String APP_NAME = "concurrent";
 
-    @Server("com.ibm.ws.concurrent.fat")
+    @Server("concurrent.config.fat")
     public static LibertyServer server;
 
     // Tests can use this to indicate they don't make any config updates and so don't need to have the original config restored
@@ -62,7 +65,7 @@ public class EEConcurrencyUtilsFATTest extends FATServletClient {
                                       "fat.concurrent.ejb",
                                       "fat.concurrent.web");
         savedConfig = server.getServerConfiguration().clone();
-        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/concurrentinternals-1.0.mf");
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/concurrentinternals-1.0.mf");
     }
 
     /**
@@ -108,6 +111,7 @@ public class EEConcurrencyUtilsFATTest extends FATServletClient {
     }
 
     @Test
+    @Mode(FULL)
     public void testCreateNewManagedExecutorService() throws Exception {
         // Add <contextService id="contextSvc1"/>
         ServerConfiguration config = server.getServerConfiguration();
@@ -179,6 +183,7 @@ public class EEConcurrencyUtilsFATTest extends FATServletClient {
     }
 
     @Test
+    @Mode(FULL)
     public void testCreateNewManagedScheduledExecutorService() throws Exception {
         // Add <managedScheduledExecutorService jndiName="concurrent/execSvc1"/> with nested contextService (initially empty)
         ServerConfiguration config = server.getServerConfiguration();
@@ -247,6 +252,7 @@ public class EEConcurrencyUtilsFATTest extends FATServletClient {
     }
 
     @Test
+    @Mode(FULL)
     public void testCreateNewManagedThreadFactory() throws Exception {
         // Add <managedThreadFactory jndiName="concurrent/threadFactory1"/>
         ServerConfiguration config = server.getServerConfiguration();
@@ -305,6 +311,7 @@ public class EEConcurrencyUtilsFATTest extends FATServletClient {
     }
 
     @Test
+    @Mode(FULL)
     public void testCreateManagedExecutorServiceWithNestedContextService() throws Exception {
         // Add <managedExecutorService jndiName="concurrent/execSvc1"> with nested contextService with nested classloaderContext
         ServerConfiguration config = server.getServerConfiguration();
