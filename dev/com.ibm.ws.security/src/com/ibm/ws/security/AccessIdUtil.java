@@ -181,6 +181,28 @@ public final class AccessIdUtil {
     }
 
     /**
+     * Given an accessId and realm name, extract the uniqueId.
+     * 
+     * @param accessId
+     * @param realm
+     * @return The uniqueId for the accessId, or {@code null} if the accessId is invalid
+     */
+    public static String getUniqueId(String accessId, String realm) {
+    
+        if (realm != null) {
+            Pattern pattern = Pattern.compile("([^:]+):(" + Pattern.quote(realm) + ")/(.*)");
+            Matcher m = pattern.matcher(accessId);
+            if (m.matches()) {
+                if (m.group(3).length() > 0) {
+                    return m.group(3);
+                }
+            }
+        }
+        // if there is no match, fall back.
+        return getUniqueId(accessId);
+    }
+
+    /**
      * Checks to see if the specified accessId is complete.
      * 
      * @param accessId
