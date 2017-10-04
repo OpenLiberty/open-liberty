@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.security.DeclareRoles;
+import javax.annotation.security.RolesAllowed;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -127,14 +128,18 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
 
     @Override
     /*
-     * Process only the @DeclareRoles and @LoginConfig annotations
+     * Process only the @DeclareRoles, @RolesAllowed and @LoginConfig annotations
      * The other security annotations are handled by the
      * web container
      */
     public void configureFromAnnotations(WebFragmentInfo webFragmentItem) throws UnableToAdaptException {
         WebAnnotations webAnnotations = configurator.getWebAnnotations();
         FragmentAnnotations fragmentAnnotations = webAnnotations.getFragmentAnnotations(webFragmentItem);
-        processSecurityRoles(webAnnotations, fragmentAnnotations.selectAnnotatedClasses(DeclareRoles.class));
+        int allRolesSize = allRoles.size();
+        processSecurityRoles(webAnnotations, fragmentAnnotations.selectAnnotatedClasses(DeclareRoles.class), "DeclareRoles.class");
+        if (allRolesSize == allRoles.size()) { // there is no DeclareRoles so we need to pick up RolesAllowed
+            processSecurityRoles(webAnnotations, fragmentAnnotations.selectAnnotatedClasses(RolesAllowed.class), "RolesAllowed.class");
+        }
         configureMpJwt(true);
     }
 
@@ -356,23 +361,23 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
     }
 
     /**
-     * Create a list of roles that represent the @DeclareRoles
+     * Create a list of roles that represent the security annotation
      *
      * @param webAnnotations the main link for web module annotation related services
-     * @param securityRoles a list of classes containing the @DeclareRole annotation
+     * @param securityRoles a list of classes containing the security annotation
      */
-    private void processSecurityRoles(WebAnnotations webAnnotations, Set<String> classesWithSecurityRoles) throws UnableToAdaptException {
+    private void processSecurityRoles(WebAnnotations webAnnotations, Set<String> classesWithSecurityRoles, String securityAnnotation) throws UnableToAdaptException {
         for (String classWithSecurityRole : classesWithSecurityRoles) {
             ClassInfo classInfo = webAnnotations.getClassInfo(classWithSecurityRole);
             final String fullyQualifiedClassName = classWithSecurityRole;
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "@DeclareRoles found on class ", fullyQualifiedClassName);
+                Tr.debug(tc, "@" + securityAnnotation.split(".")[0] + " found on class ", fullyQualifiedClassName);
             }
 
-            AnnotationInfo declareRolesAnnotation = classInfo.getAnnotation(DeclareRoles.class);
-            if (declareRolesAnnotation != null) {
-                AnnotationValue value = declareRolesAnnotation.getValue("value");
+            AnnotationInfo rolesAnnotation = classInfo.getAnnotation(securityAnnotation);
+            if (rolesAnnotation != null) {
+                AnnotationValue value = rolesAnnotation.getValue("value");
                 final List<? extends AnnotationValue> roleValues = value.getArrayValue();
                 for (AnnotationValue roleValue : roleValues) {
                     String role = roleValue.getStringValue();
