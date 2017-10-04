@@ -42,7 +42,7 @@ public class TestSpanUtils {
             0L, 1L, 1L,
             null);
 
-        Map<String, Object> oneTag = new HashMap<String, Object>(1);
+        Map<String, String> oneTag = new HashMap<String, String>(1);
         oneTag.put("tag10", "value10");
         FATUtilsSpans.CompletedSpan span1_oneTag = new FATUtilsSpans.CompletedSpan(
             "traceId1", "parentId1", "spanId1",
@@ -50,7 +50,7 @@ public class TestSpanUtils {
             10L, 11L, 1L,
             oneTag);
 
-        Map<String, Object> twoTags = new HashMap<String, Object>(2);
+        Map<String, String> twoTags = new HashMap<String, String>(2);
         twoTags.put("tag20", "value20");
         twoTags.put("tag21", "value21");
         FATUtilsSpans.CompletedSpan span2_twoTags = new FATUtilsSpans.CompletedSpan(
