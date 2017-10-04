@@ -119,13 +119,17 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
             if (listener != null) {
                 // notify listener: taskAborted
                 try {
-                    Throwable x = failure;
+                    Throwable x;
                     boolean canceled = future.isCancelled();
                     if (canceled || aborted) {
-                        if (canceled && !(x instanceof CancellationException))
+                        if (failure instanceof CancellationException)
+                            x = failure;
+                        else if (canceled)
                             x = new CancellationException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
                         else if (aborted)
-                            x = new AbortedException(x);
+                            x = new AbortedException(failure);
+                        else
+                            x = failure;
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                             Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
                         listener.taskAborted(future, managedExecutor, task, x);
