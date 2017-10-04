@@ -701,6 +701,9 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     private static Map<String, Long> createDirectorySnapshot(String path) {
         Map<String, Long> snapshot = new HashMap<String, Long>();
 
+        // this check can be expensive on machines with lots of content in /tmp, don't do it if not requested.
+        if (!ENABLE_TMP_DIR_CHECKING)
+            return snapshot;
         File dir = new File(path);
         File[] childFiles = dir.listFiles(); // will be null if dir is not really a directory
         if (childFiles != null) {
