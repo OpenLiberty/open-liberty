@@ -12,6 +12,7 @@ package com.ibm.ws.testing.opentracing.test;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -213,6 +214,18 @@ public class FATOpentracing implements FATOpentracingConstants {
     }
 
     /**
+     * <p>Assertion utility for comparing two values.  Provides a more useful assertion
+     * message to {@link Assert#assertEquals}.</p>
+     *
+     * @param valueName The name of the values which are being compared.
+     * @param expectedValue The expected value.
+     * @param actualValue The actual value.
+     */
+    public void assertEq(String valueName, int expectedValue, int actualValue) {
+        Assert.assertEquals("EQ [ " + valueName + " ]", expectedValue, actualValue);
+    }
+
+    /**
      * <p>Assertion utility for comparing two values with a less-than or equal-to test.
      * Provides a more useful assertion message to {@link Assert#assertTrue}.</p>
      *
@@ -240,6 +253,34 @@ public class FATOpentracing implements FATOpentracingConstants {
                 (lesserValue < greaterValue));
     }
 
+    /**
+     * <p>Assertion utility for comparing two values with a less-than or equal-to test.
+     * Provides a more useful assertion message to {@link Assert#assertTrue}.</p>
+     *
+     * @param valueName The name of the values which are being compared.
+     * @param lesserValue The expected lesser value.
+     * @param greaterValue The expected greater value.
+     */
+    public void assertLtEq(String valueName, int lesserValue, int greaterValue) {
+        Assert.assertTrue(
+                "LT_EQ [ " + valueName + " ] : [ " + Long.toString(lesserValue) + " ] [ " + greaterValue + " ]",
+                (lesserValue <= greaterValue));
+    }
+
+    /**
+     * <p>Assertion utility for comparing two values with a less-than test.
+     * Provides a more useful assertion message to {@link Assert#assertTrue}.</p>
+     *
+     * @param valueName The name of the values which are being compared.
+     * @param lesserValue The expected lesser value.
+     * @param greaterValue The expected greater value.
+     */
+    public void assertLt(String valueName, int lesserValue, int greaterValue) {
+        Assert.assertTrue(
+                "LT [ " + valueName + " ] : [ " + Long.toString(lesserValue) + " ] [ " + greaterValue + " ]",
+                (lesserValue < greaterValue));
+    }
+    
     // Span verification ...
 
     /**
@@ -522,7 +563,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      *     service.
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     public List<FATUtilsSpans.CompletedSpan> getCompletedSpans(String priorRequestPath) throws Exception {
         String methodName = "getCompletedSpans";
@@ -571,7 +612,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * trace state request.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     public void verifyTracerStateEvent() throws Exception {
         List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_IMMEDIATE_PATH);
@@ -630,7 +671,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * Verify that the completed spans request has valid data.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testImmediate() throws Exception {
@@ -692,7 +733,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * Verify that the completed spans request has valid data.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testManual() throws Exception {
@@ -762,7 +803,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * Verify that the completed spans request has valid data.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testDelayed2() throws Exception {
@@ -781,7 +822,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * Verify that the completed spans request has valid data.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testDelayed4() throws Exception {
@@ -800,7 +841,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * Verify that the completed spans request has valid data.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testDelayed6() throws Exception {
@@ -863,7 +904,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * Verify that the completed spans request has valid data.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testNested0() throws Exception {
@@ -888,7 +929,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * the generated completed spans in detail.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testNested1Sync() throws Exception {
@@ -912,7 +953,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * the generated completed spans in detail.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testNested2Sync() throws Exception {
@@ -936,7 +977,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * the generated completed spans in detail.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testNested4Sync() throws Exception {
@@ -961,7 +1002,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * the generated completed spans in detail.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testNested1Async() throws Exception {
@@ -985,7 +1026,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * the generated completed spans in detail.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testNested2Async() throws Exception {
@@ -1009,7 +1050,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * the generated completed spans in detail.</p>
      *
      * @throws Exception Thrown if the service request failed, or if the completed
-     *     spans could not be marshalled from the text obtained from the FAT service.
+     *     spans could not be marshaled from the text obtained from the FAT service.
      */
     @Test
     public void testNested4Async() throws Exception {
@@ -1293,8 +1334,10 @@ public class FATOpentracing implements FATOpentracingConstants {
     }
 
     public void verifyNestedSpans4() throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
-
+        verifyNestedSpans4( getCompletedSpans(GET_NESTED_PATH) );
+    }
+    
+    public void verifyNestedSpans4(List<FATUtilsSpans.CompletedSpan> completedSpans) throws Exception {
         // -> *TopInFromAbove [d=4]
         //   -> *TopOutToBelow
         //     -> *TopInFromAbove [d=3]
@@ -1320,7 +1363,7 @@ public class FATOpentracing implements FATOpentracingConstants {
         int tailSize = 13;
 
         // *** The nested request is expected to generate exactly thirteen (13) ***
-        // *** completed span (per the preceding comment. ***
+        // *** completed span (per the preceding comment). ***
 
         verifyContiguousSpans(completedSpans, tailSize);
 
@@ -1496,5 +1539,418 @@ public class FATOpentracing implements FATOpentracingConstants {
             useServer.getHostname(),
             useServer.getHttpDefaultPort(),
             requestPath );
+    }
+
+    //
+
+    public static int requestNumber;
+    public static class RequestNumberLock {
+        // EMPTY
+    }
+    public static final RequestNumberLock REQUEST_NUMBER_LOCK = new RequestNumberLock();
+    
+    public static int nextRequestNumber() {
+        synchronized( REQUEST_NUMBER_LOCK ) {
+            return requestNumber++;
+        }
+    }
+
+    public static int getRequestCount() {
+        synchronized( REQUEST_NUMBER_LOCK ) {
+            return requestNumber;
+        }
+    }
+
+    //
+
+    public class RequestSpinner implements Runnable {
+        public RequestSpinner(int planNo, int requestCount) {
+            this.planNo = planNo;
+            this.requestCount = requestCount;
+        }
+
+        private final int planNo;
+
+        public int getPlanNo() {
+            return planNo;
+        }
+
+        private final int requestCount;
+
+        public int getRequestCount() {
+            return requestCount;
+        }
+
+        public void run() {
+            String methodName = "run";
+
+            int useRequestCount = getRequestCount();
+            for ( int requestNo = 0; requestNo < useRequestCount; requestNo++ ) {
+                try {
+                    spin(requestNo); // throws Exception
+                } catch ( Exception e ) {
+                    info(methodName,
+                        "Spin failure at [ " + Integer.toString(planNo) + " ] [ " + Integer.toString(requestNo) + " ]",
+                        e.getMessage());
+                    break;
+                }
+            }
+        }
+
+        public void spin(int localRequestNo) throws Exception {
+            String methodName = "spin";
+
+            int globalRequestNo = nextRequestNumber();
+
+            int nestDepth = 4;
+            String responseText =
+                "nest [ " + Integer.toString(nestDepth) + " ]" +
+                " local [ " + Integer.toString(localRequestNo) + " ]" +
+                " global [ " + Integer.toString(globalRequestNo) + " ]" +
+                " plan [ " + Integer.toString(planNo) + " ]";
+
+            Map<String, Object> requestParms = getNestedParms(nestDepth, IS_ASYNC, responseText);
+
+            String requestUrl = getRequestUrl(GET_NESTED_PATH, requestParms);
+            // throws UnsupportedEncodingException
+
+            info(methodName, "Request URL", requestUrl);
+            info(methodName, "Expected Response", responseText);
+
+            List<String> actualResponseLines =
+                FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
+            // throws Exception
+            info(methodName, "Actual Response", actualResponseLines);
+
+            // *** The request must have the specified response text. ***
+
+            String matchLine = null;
+            for ( String responseLine : actualResponseLines ) {
+                if ( responseLine.contains(responseText) ) {
+                    matchLine = responseLine;
+                    break;
+                }
+            }
+            if ( matchLine == null ) {
+                Assert.assertNotNull("Expected response [ " + responseText + " ]", matchLine);
+            }
+        }
+    }
+
+    public Thread spin(String spinnerName, int planNo, int spinCount) {
+        String methodName = "spin";
+
+        info(methodName, "Launch", spinnerName);
+
+        Runnable spinRunner = new RequestSpinner(planNo, spinCount);
+        Thread spinThread = new Thread(spinRunner, spinnerName);
+        spinThread.start();
+
+        return spinThread;
+    }
+
+    public static final int[] SPIN_TEST_PLAN = { 10, 20, 10, 40, 10 };
+
+    /**
+     * <p>Test span generation for concurrent requests.</p>
+     * 
+     * <p>A single thread is created per entry of {@link #SPIN_TEST_PLAN}.
+     * The entry of the test plan is the number of times the thread performs
+     * a nested get at depth four (4) ({@link FATOpentracingConstants#GET_NESTED_PATH}).</p>
+     * 
+     * @throws Exception Thrown in case of a failure to run the requests.
+     */
+    @Test
+    public void testManyRequests() throws Exception {
+        String methodName = "testManyRequest";
+        info(methodName, "ENTER");
+
+        int expectedTotal = runSpinners();
+
+        // *** All request must have run ***
+
+        assertEq("Expected count of requests", expectedTotal, getRequestCount());
+
+        verifySpinners();
+
+        info(methodName, "RETURN");
+    }
+
+    public int runSpinners() {
+        String methodName = "runSpinners";
+        info(methodName, "ENTER");
+        
+        Thread[] spinners = new Thread[SPIN_TEST_PLAN.length];
+        int expectedTotal = 0;
+
+        for ( int planNo = 0; planNo < SPIN_TEST_PLAN.length; planNo++ ) {
+            int spinCount = SPIN_TEST_PLAN[planNo];
+
+            info(methodName, "Plan", Integer.valueOf(planNo));
+            info(methodName, "Request count", Integer.valueOf(spinCount));
+
+            expectedTotal += spinCount;
+
+            String spinnerName = "Plan [ " + Integer.toString(planNo) + " ] Spin [ " + Integer.toString(spinCount) + " ]";
+            spinners[planNo] = spin(spinnerName, planNo, spinCount);
+        }
+
+        info(methodName, "Total request count", Integer.valueOf(expectedTotal));
+
+        for ( Thread spinner : spinners ) {
+            try {
+                spinner.join(); // InterruptedException
+            } catch ( InterruptedException e ) {
+                info(methodName, "Failed spinner", spinner.getName());
+            }
+        }
+
+        info(methodName, "RETURN");
+        return expectedTotal;
+    }
+
+    public void verifySpinners() throws Exception {
+        String methodName = "verifySpinners";
+
+        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
+        info(methodName, "Completed spans", Integer.valueOf(completedSpans.size()));
+
+        // *** Each plan entry must have a collection of spans. ***
+
+        Map<Integer, SpansForPlan> splitSpans = splitSpans(completedSpans);
+        assertEq("Number of span buckets", SPIN_TEST_PLAN.length, splitSpans.size());
+
+        // *** Verify the completed spans for each entry of the span plan. ***
+
+        for ( Map.Entry<Integer, SpansForPlan> spansEntry : splitSpans.entrySet() ) {
+            Integer planNoInt = spansEntry.getKey(); 
+            int planNo = planNoInt.intValue();
+            SpansForPlan spansForPlan = spansEntry.getValue();
+
+            info(methodName, "Verify plan", planNoInt);
+
+            // *** Each collected plan number must be in the test plan range. ***
+
+            assertLtEq("Plan number", 0, planNo);
+            assertLt("Plan number", planNo, SPIN_TEST_PLAN.length);
+
+            int expectedRequests = SPIN_TEST_PLAN[planNo];
+            info(methodName, "Plan requests", Integer.valueOf(expectedRequests));
+
+            Map<String, List<FATUtilsSpans.CompletedSpan>> spansForAllTraceIds =
+                spansForPlan.getSpansForAllTraceIds();
+
+            int completedRequests = spansForAllTraceIds.size();
+            
+            // *** One trace ID must be recorded for each request made for this test plan entry. ***
+
+            assertEq("Completed requests", expectedRequests, completedRequests); 
+
+            for ( List<FATUtilsSpans.CompletedSpan> spansForTraceId : spansForAllTraceIds.values() ) {
+
+                // *** Each of the span collections for a single trace ID must have exactly one root span. ***
+
+                verifyContiguousSpans( spansForTraceId, spansForTraceId.size() );
+
+                /// *** Each of the span collections for a single trace ID must be a nested 4 spans collection. ***
+
+                verifyNestedSpans4(spansForTraceId);
+            }
+        }
+    }
+
+    /**
+     * <p>Utility class for partitioning completed spans.</p>
+     * 
+     * <p>Each instance will contain the completed spans for a specific
+     * test plan number.</p>
+     * 
+     * <p>Each instance partitions its spans into a separate list based
+     * on the trace IDs of the spans.</p>
+     */
+    public static class SpansForPlan {
+        public SpansForPlan(int planNo) {
+            this.planNo = planNo;
+
+            this.spansForAllTraceIds =
+                new HashMap<String, List<FATUtilsSpans.CompletedSpan>>();
+        }
+
+        //
+
+        private final int planNo;
+
+        public int getPlanNo() {
+            return planNo;
+        }
+
+        //
+
+        private final Map<String, List<FATUtilsSpans.CompletedSpan>> spansForAllTraceIds;
+
+        public Map<String, List<FATUtilsSpans.CompletedSpan>> getSpansForAllTraceIds() {
+            return spansForAllTraceIds;
+        }
+
+        //
+
+        public static final boolean DO_FORCE = true;
+        public static final boolean DO_NOT_FORCE = false;
+
+        /**
+         * <p>Add a span to this completed span bucket.</p>
+         * 
+         * <p>Locate the list for the thread ID of the span, and add the
+         * span to that list.</p>
+         * 
+         * <p>If no list is present for the thread ID of the span, either,
+         * create a new list and add the span to that new list, or, do not
+         * add the span.</p>
+         * 
+         * @param completedSpan The span to add to this span bucket.
+         * @param force Control parameter: Tell if a list is to be created for
+         *     the span if none already exists for the trace ID of the span.
+         * @return True or false according to whether the span was added.
+         *     Always true if the force parameter is true.
+         */
+        public boolean add(FATUtilsSpans.CompletedSpan completedSpan, boolean force) {
+            String traceId = completedSpan.getTraceId();
+            List<FATUtilsSpans.CompletedSpan> spansForTraceId =
+                spansForAllTraceIds.get(traceId);
+
+            if ( spansForTraceId == null ) {
+                if ( !force ) {
+                    return false;
+                } else {
+                    spansForTraceId = new ArrayList<FATUtilsSpans.CompletedSpan>();
+                    spansForAllTraceIds.put(traceId, spansForTraceId);
+                }
+            }
+
+            spansForTraceId.add(completedSpan);
+            return true;
+        }
+    }
+
+    /**
+     * <p>Partition completed spans according to their plan number and their thread ID.</p>
+     * 
+     * <p>The response text which is is provided to the nested request contains the plan number.
+     * The response text is encoded in the nested request URL.  Completed requests for the nested
+     * request are recognizable by the encoded plan text.</p>
+     * 
+     * <p>Partition in two layers: First by plan number; second by thread ID.</p>
+     * 
+     * @param completedSpans The spans which are to be partitioned.
+     * 
+     * @return The spans partitions by plan number and by thread ID.
+     */
+    public Map<Integer, SpansForPlan> splitSpans(List<FATUtilsSpans.CompletedSpan> completedSpans) {
+        String methodName = "splitSpans";
+
+        Map<Integer, SpansForPlan> spansForAllPlans =
+            new HashMap<Integer, SpansForPlan>();
+        List<FATUtilsSpans.CompletedSpan> unknownPlanSpans =
+            new ArrayList<FATUtilsSpans.CompletedSpan>();
+
+        // Add each span into a bucket based on its plan ID.
+
+        int numUnknownPlanSpans = 0;
+        int numKnownPlanSpans = 0;
+        int numUniquePlanSpans = 0;
+
+        for ( FATUtilsSpans.CompletedSpan completedSpan : completedSpans ) {
+            int planNo = getPlanNumber(completedSpan);
+            if ( planNo == UNKNOWN_PLAN_NO ) {
+                unknownPlanSpans.add(completedSpan);
+                numUnknownPlanSpans++;
+
+            } else {
+                Integer planNoInt = Integer.valueOf(planNo);
+
+                SpansForPlan spansForPlan = spansForAllPlans.get(planNoInt);
+                if ( spansForPlan == null ) {
+                    spansForPlan = new SpansForPlan(planNo);
+                    spansForAllPlans.put(planNoInt, spansForPlan);
+                    numUniquePlanSpans++;
+                }
+
+                spansForPlan.add(completedSpan, SpansForPlan.DO_FORCE);
+                numKnownPlanSpans++;
+            }
+        }
+
+        info(methodName, "Unknown Plan Spans", Integer.valueOf(numUnknownPlanSpans));
+        info(methodName, "Known Plan Spans", Integer.valueOf(numKnownPlanSpans));
+        info(methodName, "Unique Plan Spans", Integer.valueOf(numUniquePlanSpans));
+
+        // If the span does not have a URL, it may be associated with
+        // a span for an initial request, which must have a URL.
+        //
+        // We allow some spans to not be associated with a plan.
+
+        int numOrphanSpans = 0;
+        
+        for ( FATUtilsSpans.CompletedSpan completedSpan : unknownPlanSpans ) {
+            boolean orphaned = true;
+            for ( SpansForPlan spansForPlan : spansForAllPlans.values() ) {
+                if ( spansForPlan.add(completedSpan, SpansForPlan.DO_NOT_FORCE) ) {
+                    orphaned = false;
+                    break;
+                }
+            }
+            if ( orphaned ) {
+                numOrphanSpans++;
+            }
+        }
+
+        info(methodName, "Orphan Plan Spans", Integer.valueOf(numOrphanSpans));
+
+        return spansForAllPlans;
+    }
+
+    public static final int UNKNOWN_PLAN_NO = -1;
+
+    public static final String PLAN_PREFIX = "plan+%5B+";
+    public static final String PLAN_SUFFIX = "+%5D";
+
+    public int getPlanNumber(FATUtilsSpans.CompletedSpan completedSpan) {
+        String methodName = "getPlanNumber";
+
+        String spanUrl = completedSpan.getTag(FATUtilsSpans.TAG_HTTP_URL);
+        if ( spanUrl == null ) {
+            return UNKNOWN_PLAN_NO;
+        }
+
+        // Have to take into account URL encoding:
+        // The response text "plan [ 3 ]" encodes as "plan+%5B+3+%5D".
+        // For example:
+        // response=nest+%5B+4+%5D+local+%5B+35+%5D+global+%5B+85+%5D+plan+%5B+3+%5D
+
+        int planStart = spanUrl.indexOf(PLAN_PREFIX);
+        if ( planStart == -1 ) {
+            return UNKNOWN_PLAN_NO;
+        } else {
+            planStart += PLAN_PREFIX.length();
+        }
+
+        int planEnd = spanUrl.indexOf(PLAN_SUFFIX, planStart);
+        if ( planEnd == -1 ) {
+            return UNKNOWN_PLAN_NO;
+        }
+        String planNoText = spanUrl.substring(planStart,  planEnd);
+        int planNo;
+
+        try {
+            planNo = Integer.parseInt(planNoText); // throws NumberFormatException
+        } catch ( NumberFormatException e ) {
+            info(methodName,
+                "Failed to parse plan text [ " + planNoText + " ]" +
+                " from URL [ " + spanUrl + " ]" +
+                "(" + e.getMessage() + ")");
+            throw e;
+        }
+
+        return planNo;
     }
 }

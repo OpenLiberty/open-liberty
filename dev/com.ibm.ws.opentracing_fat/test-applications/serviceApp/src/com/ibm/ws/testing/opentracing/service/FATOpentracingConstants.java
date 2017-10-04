@@ -29,14 +29,15 @@ public interface FATOpentracingConstants {
     String GET_DELAYED_PATH = "getDelayed";
     String DELAY_PARAM_NAME = "delay";
 
-    // 'getNested" add "nestDepth", "async", "host", "port", and "contextRoot" parameters.
+    // 'getNested" add "nestDepth", "async", "host", "port", and "contextRoot"
+    // parameters.
     String GET_NESTED_PATH = "getNested";
     String NEST_DEPTH_PARAM_NAME = "nestDepth";
     String ASYNC_PARAM_NAME = "async";
     String HOST_PARAM_NAME = "host";
     String PORT_PARAM_NAME = "port";
     String CONTEXT_ROOT_PARAM_NAME = "contextRoot";
-
+    
     // Introspection service API ...
     String GET_TRACER_STATE_PATH = "getTracerState";
 }

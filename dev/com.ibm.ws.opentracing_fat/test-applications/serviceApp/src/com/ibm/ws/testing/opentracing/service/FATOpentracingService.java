@@ -223,10 +223,14 @@ public class FATOpentracingService extends Application implements FATOpentracing
     /**
      * <p>Service API: Handle a delayed GET.</p>
      *
+     * <p>The delay time is a count of 100'ths of seconds.  The delay must
+     * be kept somewhat short.  Otherwise, the suite as a whole will take
+     * considerable time.</p>
+     * 
      * @param asyncResponse An asynchronous response used to provide
      *     the response from the delay thread.  This is injected using
      *     {@link Suspended}.
-     * @param delay The count of seconds to delay the response.
+     * @param delay The count of 100'ths of seconds to delay the response.
      *     This is injected as the "delay" query parameter.
      * @param responseText The text to answer by the service request.
      *     This is injected as the "response" query parameter.
@@ -244,7 +248,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
 
         Thread delayThread = new Thread(
             delayResponse(asyncResponse,
-            delay * MSEC_IN_SEC,
+            delay * MSEC_IN_SEC / 100,
             responseText) );
 
         delayThread.start();
