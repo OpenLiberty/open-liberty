@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -238,9 +238,9 @@ public class AutoApplySessionInterceptorTest {
         InvocationContext ic = createInvocationContext(methodName);
         AuthenticationStatus nextInterceptorStatus = AuthenticationStatus.SUCCESS;
         invokesNextInterceptor(ic, nextInterceptorStatus);
-    
+
         AuthenticationStatus status = (AuthenticationStatus) interceptor.interceptValidateRequest(ic);
-    
+
         assertEquals("The AuthenticationStatus must be as returned from the next interceptor.", nextInterceptorStatus, status);
         assertFalse("The javax.servlet.http.registerSession property must not be set in the MessageInfo's map.",
                     Boolean.valueOf((String) messageInfo.getMap().get("javax.servlet.http.registerSession")).booleanValue());
