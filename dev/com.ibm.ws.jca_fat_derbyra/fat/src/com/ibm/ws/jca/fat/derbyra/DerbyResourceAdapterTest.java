@@ -60,7 +60,7 @@ public class DerbyResourceAdapterTest extends FATServletClient {
         rar.as(JavaArchive.class).addPackage("fat.derbyra.resourceadapter");
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/ra.xml"));
         rar.addAsManifestResource(new File("test-resourceadapters/fvt-resourceadapter/resources/META-INF/wlp-ra.xml"));
-        rar.addAsLibrary(new File("publish/servers/com.ibm.ws.jca.fat.derbyra/derby/derby-10.11.1.jar"));
+        rar.addAsLibrary(new File("publish/servers/com.ibm.ws.jca.fat.derbyra/derby/derby-10.11.1.1.jar"));
 
         ShrinkHelper.exportToServer(server, "connectors", rar);
 

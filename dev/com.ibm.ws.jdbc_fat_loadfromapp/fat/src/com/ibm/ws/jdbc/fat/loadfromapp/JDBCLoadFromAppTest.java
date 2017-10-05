@@ -47,7 +47,7 @@ public class JDBCLoadFromAppTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive derbyApp = ShrinkWrap.create(WebArchive.class, "derbyApp.war")
                         .addPackage("web.derby") //
-                        .addAsLibrary(new File("publish/servers/com.ibm.ws.jdbc.fat.loadfromapp/derby/derby-10.11.1.jar")) //
+                        .addAsLibrary(new File("publish/servers/com.ibm.ws.jdbc.fat.loadfromapp/derby/derby-10.11.1.1.jar")) //
                         .addPackage("jdbc.driver.proxy"); // delegates to the Derby JDBC driver
         ShrinkHelper.exportAppToServer(server, derbyApp);
 
