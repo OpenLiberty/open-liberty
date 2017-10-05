@@ -57,6 +57,7 @@ import org.junit.Test;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyExecutor.QueueFullAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
+import com.ibm.ws.threading.PolicyTaskCallback;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
@@ -3632,6 +3633,49 @@ public class PolicyExecutorServlet extends FATServlet {
 
         assertTrue(future.isCancelled());
         assertTrue(future.isDone());
+    }
+
+    // Submit tasks that attempt to get their own result while they are running. The executor should detect this and immediately raise InterruptedException
+    // to prevent a hang or lengthy timeout. This also tests the onSubmit callback, which is one convenient way for a task to obtain its own Future.
+    @Test
+    public void testSelfGet() throws Exception {
+        PolicyExecutor executor = provider.create("testSelfGet");
+
+        // submit
+        SelfGetterTask task = new SelfGetterTask();
+        PolicyTaskCallback callback = task;
+        long start = System.nanoTime();
+        Future<Object> future = executor.submit(task, callback);
+        Object result = future.get(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        assertTrue(result.toString(), result instanceof InterruptedException);
+        long duration = System.nanoTime() - start;
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        // invokeAll
+        SelfGetterTask task0 = new SelfGetterTask();
+        SelfGetterTask task1 = new SelfGetterTask(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        PolicyTaskCallback[] callbacks = new PolicyTaskCallback[] { task0, task1 };
+        start = System.nanoTime();
+        List<Future<Object>> futures = executor.invokeAll(Arrays.asList(task0, task1), callbacks);
+        future = futures.get(0);
+        result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result.toString(), result instanceof InterruptedException);
+        future = futures.get(1);
+        result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result.toString(), result instanceof InterruptedException);
+
+        // TODO invokeAny enable once implemented
+        task0 = new SelfGetterTask(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        task1 = new SelfGetterTask();
+        callbacks = new PolicyTaskCallback[] { task0, task1 };
+        start = System.nanoTime();
+        //result = executor.invokeAny(Arrays.asList(task0, task1), callbacks);
+        duration = System.nanoTime() - start;
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+        //assertTrue(result.toString(), result instanceof InterruptedException);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
     }
 
     // Tests behavior when shutdown occurs while timed invokeAll is submitting and running tasks. Supply a group of 5 tasks to invokeAll.
