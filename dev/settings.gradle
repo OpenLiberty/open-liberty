@@ -70,8 +70,8 @@ def loadBuildProps() {
   }
   
   def fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl=https://repo.maven.apache.org/maven2/;index=${build}/oss_dependencies.maven')
-  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/;index=${build}/oss_ibm.maven')
-  def fetchRepoIBMJava = fetchRepoIBM //Not yet supported to not have this set via gradle.startup.properties
+  def fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;local=~/.ibmdhe/repository;releaseUrl=http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/;index=${build}/oss_ibm.maven')
+  def fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = DummyRepo') //Not yet supported to not have this set via gradle.startup.properties
   def pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublish')
 
   def javaHome = org.gradle.internal.jvm.Jvm.current().getJavaHome()
@@ -112,8 +112,8 @@ def loadBuildProps() {
     def artifactoryExists = true;
     def repoURL = ('https://' + props.getProperty('artifactory.download.server') + '/artifactory/wasliberty-open-liberty')
     def uploadRepoURL = ('https://' + props.getProperty('artifactory.upload.server') + '/artifactory/wasliberty-open-liberty')
-    fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_dependencies.maven')
-    fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_ibm.maven')
+    fetchRepoPublic = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublic;local=~/.ibmartifactory/repository;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_dependencies.maven')
+    fetchRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemoteIBM;local=~/.ibmartifactory/repository;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/oss_ibm.maven')
     fetchRepoIBMJava = ('aQute.bnd.repository.maven.provider.MavenBndRepository;local=~/.ibmjava/repository;name = IBMInternalJava;releaseUrl='+ repoURL +';snapshotUrl='+ repoURL +';index=${build}/ibm_java.maven')
     pushRepoIBM = ('aQute.bnd.repository.maven.provider.MavenBndRepository;name = RemotePublish;releaseUrl='+ uploadRepoURL + matrixParams + ';snapshotUrl='+ uploadRepoURL + matrixParams + ';index=${build}/openliberty.maven')
 
