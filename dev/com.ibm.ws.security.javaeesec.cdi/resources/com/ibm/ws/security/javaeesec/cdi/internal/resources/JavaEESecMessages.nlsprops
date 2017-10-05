@@ -25,3 +25,7 @@ JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is on
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: LoginToContinueProperties bean does not exist. The form login is not enabled. Please make sure that the application is annotated by LoginToContinue annotation.
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=LoginToContinueProperties bean which is required for the form login authentication does not exist.
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Make sure that the application is annotated by LoginToContinue annotation in FormAuthenticationMechanismDefinition or CustomFormAuthenticationMechanismDefinition annotation.
+
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: The supplied credential class {0} is not supported by CustomFormHttpAuthenticationMechanism class. Use either javax.security.enterprise.credential.UsernamePasswordCredential or javax.security.enterprise.credential.BasicAuthenticationCredential for authentication.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=The supplied credential class for the authentication is not supported by CustomFormHttpAuthenticationMechanism class. Use either javax.security.enterprise.credential.UsernamePasswordCredential or javax.security.enterprise.credential.BasicAuthenticationCredential for authentication.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Make sure that the supported credential class is used for Custom Form authentication.

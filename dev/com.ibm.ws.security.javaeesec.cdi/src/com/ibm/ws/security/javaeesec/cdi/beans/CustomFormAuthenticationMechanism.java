@@ -36,6 +36,8 @@ import javax.security.enterprise.authentication.mechanism.http.FormAuthenticatio
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
+import javax.security.enterprise.credential.BasicAuthenticationCredential;
+import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
@@ -83,14 +85,21 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
             }
             status = AuthenticationStatus.SEND_CONTINUE;
         } else {
-            UsernamePasswordCredential cred = (UsernamePasswordCredential)authParams.getCredential();
+            Credential cred = authParams.getCredential();
             if (cred == null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "No UsernamePasswordCredential object, redirecting");
                 }
                 status = AuthenticationStatus.SEND_CONTINUE;
             } else {
-                status = handleFormLogin(cred, rsp, msgMap, clientSubject, handler);
+                if(isSupportedCredential(cred)) {
+                    status = handleFormLogin((UsernamePasswordCredential)cred, rsp, msgMap, clientSubject, handler);
+                } else {
+                    // This is an error condition.
+                    Tr.error(tc, "JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED", cred.getClass().getName());
+                    String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED", cred.getClass().getName());
+                    throw new AuthenticationException(msg);
+                }
             }
         }
         return status;
@@ -111,7 +120,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
     }
 
 
-    private AuthenticationStatus handleFormLogin(UsernamePasswordCredential cred, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
+    private AuthenticationStatus handleFormLogin(@Sensitive UsernamePasswordCredential cred, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
                                                  CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
@@ -249,4 +258,11 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return identityStoreHandler;
     }
 
+    private boolean isSupportedCredential(@Sensitive Credential cred) {
+        if (cred != null && (cred instanceof UsernamePasswordCredential || cred instanceof BasicAuthenticationCredential)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }
