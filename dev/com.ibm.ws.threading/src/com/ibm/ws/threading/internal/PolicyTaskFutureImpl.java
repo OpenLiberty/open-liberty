@@ -49,7 +49,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     /**
      * Optional callback for life cycle events.
      */
-    private final PolicyTaskCallback callback;
+    final PolicyTaskCallback callback;
 
     /**
      * The policy executor instance.
@@ -433,6 +433,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         if (!state.setRunning()) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "unable to run", state.get());
+            if (callback != null)
+                callback.onEnd(task, this, null, true, 0, null); // aborted, queued task will never run
             return;
         }
 
