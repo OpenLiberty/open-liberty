@@ -37,7 +37,7 @@ public class FATSuite {
     @BeforeClass
     public static void setUp() throws Exception {
         // use our cxf jax-rs thin client
-        System.setProperty("javax.ws.rs.client.ClientBuilder", "org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl");
+        //System.setProperty("javax.ws.rs.client.ClientBuilder", "org.apache.cxf.jaxrs.client.spec.ClientBuilderImpl");
     }
 
 }
