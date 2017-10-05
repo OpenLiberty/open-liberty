@@ -21,6 +21,10 @@ src: \
 
 test.project: true
 
+# Declare additional tested features not present in the original server.xml's
+tested.features: \
+  osgiconsole-1.0
+
 -buildpath: \
   com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
   com.ibm.websphere.javaee.ejb.3.2;version=latest,\

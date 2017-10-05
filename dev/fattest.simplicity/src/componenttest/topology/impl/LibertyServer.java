@@ -63,10 +63,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
@@ -92,6 +88,7 @@ import com.ibm.ws.fat.util.ACEScanner;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
+import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
@@ -1657,47 +1654,6 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    private void validateTestedFeatures(RemoteFile serverLog) throws Exception {
-        final String m = "validateTestedFeatures";
-        // Load the tested feature data, if it exists
-        File testedFeaturesFile = new File("fat-feature-deps.json");
-        if (!testedFeaturesFile.exists()) {
-            Log.info(c, m, "No tested feature data for this server.  Skipping feature validation");
-            return;
-        }
-
-        // Scrape messages.log to see what features were installed
-        List<String> installedFeaturesRaw = LibertyFileManager.findStringsInFile("CWWKF0012I: .*", serverLog);
-        if (installedFeaturesRaw == null || installedFeaturesRaw.size() == 0)
-            return;
-        Set<String> installedFeatures = new HashSet<String>();
-        for (String f : installedFeaturesRaw)
-            for (String installedFeature : f.substring(0, f.lastIndexOf(']')).substring(f.lastIndexOf('[') + 1).split(","))
-                installedFeatures.add(installedFeature.trim().toLowerCase());
-        Log.info(c, m, "Installed features are: " + installedFeatures);
-
-        // Make sure that any features installed in the server are defined in the fat-feature-deps list
-        JsonArray testedFeaturesJson = Json.createReader(new FileInputStream(testedFeaturesFile)).readArray();
-        Set<String> testedFeatures = new HashSet<String>();
-        testedFeatures.add("timedexit-1.0"); // Manually add timedexit because it's included from an external location
-        for (JsonValue testedFeature : testedFeaturesJson)
-            testedFeatures.add(((JsonString) testedFeature).getString().trim().toLowerCase());
-        Set<String> untestedFeatures = new HashSet<String>();
-        for (String installedFeature : installedFeatures) {
-            if (installedFeature.startsWith("usr:"))
-                continue; // Don't need to validate user features
-            if (!testedFeatures.contains(installedFeature))
-                untestedFeatures.add(installedFeature);
-        }
-        if (!untestedFeatures.isEmpty())
-            throw new Exception("Installed feature(s) " + untestedFeatures +
-                                " were not defined in the autoFVT/fat-feature-deps.json file! " +
-                                "To correct this, add " + untestedFeatures + " to the 'tested.features' " +
-                                "property in the bnd.bnd file for this FAT so that an accurate test depdendency " +
-                                "graph can be generated in the future.");
-        Log.info(c, m, "Validated that all installed features were present in test dependencies JSON file.");
-    }
-
 /*
  * App Manager messages that tests wait for in the log:
  *
@@ -2092,7 +2048,7 @@ public class LibertyServer implements LogMonitorClient {
         if (validateApps) {
             validateAppsLoaded(messagesLog);
         }
-        validateTestedFeatures(messagesLog);
+        FeatureDependencyProcessor.validateTestedFeatures(this, messagesLog);
     }
 
     protected void validateTimedExitEnabled(RemoteFile messagesLog) throws Exception {
@@ -4773,11 +4729,11 @@ public class LibertyServer implements LogMonitorClient {
                     } else
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
-                        String regexp = it.next();
-                        if (Pattern.compile(regexp).matcher(line).find()) {
-                        it.remove();
-                        break;
-                        }
+                            String regexp = it.next();
+                            if (Pattern.compile(regexp).matcher(line).find()) {
+                                it.remove();
+                                break;
+                            }
                         }
                 }
             }
@@ -4810,7 +4766,7 @@ public class LibertyServer implements LogMonitorClient {
             throw new RuntimeException(message);
         }
 
-        validateTestedFeatures(logFile);
+        FeatureDependencyProcessor.validateTestedFeatures(this, logFile);
 
         return matchingLines;
     }
