@@ -49,7 +49,8 @@ Export-Package: \
 	componenttest.vulnerability;version=1.0.16
 	
 Private-Package: \
-	componenttest.annotation.processor
+	componenttest.annotation.processor,\
+	componenttest.depchain
 
 test.project: true
 
