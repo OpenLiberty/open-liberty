@@ -14,7 +14,6 @@ import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -24,12 +23,9 @@ import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.message.callback.CallerPrincipalCallback;
-import javax.security.auth.message.callback.GroupPrincipalCallback;
 import javax.security.auth.message.callback.PasswordValidationCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
-import javax.security.enterprise.CallerPrincipal;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.credential.BasicAuthenticationCredential;
@@ -68,18 +64,13 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
         Subject clientSubject = httpMessageContext.getClientSubject();
-        @SuppressWarnings("unchecked")
-        Map<String, String> msgMap = httpMessageContext.getMessageInfo().getMap();
-        CallbackHandler handler = httpMessageContext.getHandler();
-        HttpServletRequest req = httpMessageContext.getRequest();
-        HttpServletResponse rsp = httpMessageContext.getResponse();
-        String authHeader = req.getHeader("Authorization");
+        String authHeader = httpMessageContext.getRequest().getHeader("Authorization");
 
         if (httpMessageContext.isAuthenticationRequest()) {
             if (authHeader == null) {
-                status = setChallengeAuthorizationHeader(rsp);
+                status = setChallengeAuthorizationHeader(httpMessageContext.getResponse());
             } else {
-                status = handleAuthorizationHeader(authHeader, rsp, msgMap, clientSubject, handler);
+                status = handleAuthorizationHeader(authHeader, clientSubject, httpMessageContext);
             }
         } else {
             if (authHeader == null) {
@@ -89,10 +80,10 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                     }
                     status = AuthenticationStatus.NOT_DONE;
                 } else {
-                    status = setChallengeAuthorizationHeader(rsp);
+                    status = setChallengeAuthorizationHeader(httpMessageContext.getResponse());
                 }
             } else {
-                status = handleAuthorizationHeader(authHeader, rsp, msgMap, clientSubject, handler);
+                status = handleAuthorizationHeader(authHeader, clientSubject, httpMessageContext);
             }
         }
 
@@ -119,8 +110,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return AuthenticationStatus.SEND_CONTINUE;
     }
 
-    private AuthenticationStatus handleAuthorizationHeader(String authHeader, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
-                                                           CallbackHandler handler) throws AuthenticationException {
+    @SuppressWarnings("unchecked")
+    private AuthenticationStatus handleAuthorizationHeader(String authHeader, Subject clientSubject, HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
         if (authHeader.startsWith("Basic ")) {
@@ -129,9 +120,9 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
             if (isAuthorizationHeaderValid(basicAuthHeader)) { // BasicAuthenticationCredential.isValid does not work
                 BasicAuthenticationCredential basicAuthCredential = new BasicAuthenticationCredential(encodedHeader);
-                status = validateUserAndPassword(clientSubject, basicAuthCredential, handler);
+                status = validateUserAndPassword(clientSubject, basicAuthCredential, httpMessageContext);
                 if (status == AuthenticationStatus.SUCCESS) {
-                    msgMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+                    httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
                     rspStatus = HttpServletResponse.SC_OK;
                 } else {
                     // TODO: Audit invalid user or password
@@ -142,7 +133,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         } else {
             // TODO: Determine if serviceability message is needed
         }
-        rsp.setStatus(rspStatus);
+        httpMessageContext.getResponse().setStatus(rspStatus);
         return status;
     }
 
@@ -162,15 +153,15 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     private AuthenticationStatus validateUserAndPassword(Subject clientSubject, @Sensitive BasicAuthenticationCredential credential,
-                                                         CallbackHandler handler) throws AuthenticationException {
+                                                         HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler();
         if (identityStoreHandler != null) {
-            status = validateWithIdentityStore(clientSubject, credential, identityStoreHandler, handler);
-        } 
+            status = validateWithIdentityStore(clientSubject, credential, identityStoreHandler, httpMessageContext);
+        }
         if (identityStoreHandler == null || status == AuthenticationStatus.NOT_DONE) {
             // If an identity store is not available, fall back to the original user registry.
-            status = validateWithUserRegistry(clientSubject, credential, handler);
+            status = validateWithUserRegistry(clientSubject, credential, httpMessageContext.getHandler());
         }
         return status;
     }
@@ -194,7 +185,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive BasicAuthenticationCredential credential, IdentityStoreHandler identityStoreHandler,
-                                                           CallbackHandler handler) {
+                                                           HttpMessageContext httpMessageContext) {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         CredentialValidationResult result = identityStoreHandler.validate(credential);
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
