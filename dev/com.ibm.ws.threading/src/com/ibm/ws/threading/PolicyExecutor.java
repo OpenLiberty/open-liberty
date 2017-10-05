@@ -10,9 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.threading;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <p>Policy executors are backed by the Liberty global thread pool, but allow
@@ -62,6 +65,26 @@ public interface PolicyExecutor extends ExecutorService {
      * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
     PolicyExecutor coreConcurrency(int core);
+
+    /**
+     * Invokes a group of tasks with a callback per task to be invoked at various points in the task's life cycle.
+     * The first task is paired with the first callback. The second task is paired with the second callback. An so forth.
+     * It is okay to include the same callback at multiple positions or to include null callbacks at some positions.
+     *
+     * @throws ArrayIndexOutOfBoundsException if the size of the callbacks array is less than the number of tasks.
+     * @see java.util.concurrent.ExecutorService#invokeAll(java.util.Collection)
+     */
+    <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException;
+
+    /**
+     * Invokes a group of tasks with a callback per task to be invoked at various points in the task's life cycle.
+     * The first task is paired with the first callback. The second task is paired with the second callback. An so forth.
+     * It is okay to include the same callback at multiple positions or to include null callbacks at some positions.
+     *
+     * @throws ArrayIndexOutOfBoundsException if the size of the callbacks array is less than the number of tasks.
+     * @see java.util.concurrent.ExecutorService#invokeAll(java.util.Collection, long, java.util.concurrent.TimeUnit)
+     */
+    <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks, long timeout, TimeUnit unit) throws InterruptedException;
 
     /**
      * Specifies the maximum number of tasks from this policy executor that can be running

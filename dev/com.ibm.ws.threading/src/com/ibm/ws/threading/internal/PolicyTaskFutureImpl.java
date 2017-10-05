@@ -364,7 +364,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     @Override
     public T get() throws InterruptedException, ExecutionException {
         int s = state.get();
-        if (s <= RUNNING) {
+        if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread()) {
             state.acquireSharedInterruptibly(1);
             s = state.get();
         }
@@ -380,6 +380,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             case CANCELED:
             case CANCELING:
                 throw new CancellationException();
+            case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
+            case PRESUBMIT: // only possible when get() is invoke from onStart, which runs on the submitter's thread and therefore blocks completion
+                throw new InterruptedException(); // TODO message
             default: // should be unreachable
                 throw new IllegalStateException(Integer.toString(state.get()));
         }
@@ -389,7 +392,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     @Override
     public T get(long time, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         int s = state.get();
-        if (s <= RUNNING)
+        if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread())
             if (state.tryAcquireSharedNanos(1, unit.toNanos(time)))
                 s = state.get();
             else
@@ -406,6 +409,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             case CANCELED:
             case CANCELING:
                 throw new CancellationException();
+            case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
+            case PRESUBMIT: // only possible when get() is invoke from onStart, which runs on the submitter's thread and therefore blocks completion
+                throw new InterruptedException(); // TODO message
             default: // should be unreachable
                 throw new IllegalStateException(Integer.toString(state.get()));
         }
