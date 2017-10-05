@@ -39,7 +39,6 @@ Subsystem-Name: JavaServer Faces 2.3
  com.ibm.ws.org.apache.commons.beanutils.1.8.3, \
  com.ibm.ws.org.apache.commons.collections.3.2.1, \
  com.ibm.ws.org.apache.commons.discovery.0.2, \
- com.ibm.ws.org.apache.commons.codec.1.3, \
  com.ibm.ws.org.apache.commons.logging.1.0.3, \
  com.ibm.ws.jsf.shared, \
  com.ibm.ws.cdi.1.2.interfaces, \
