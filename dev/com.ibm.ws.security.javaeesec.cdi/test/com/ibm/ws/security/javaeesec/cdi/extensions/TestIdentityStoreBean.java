@@ -8,10 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.cdi;
+package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,26 +26,25 @@ import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
-import javax.security.enterprise.identitystore.IdentityStoreHandler;
+import javax.security.enterprise.identitystore.IdentityStore;
 
-import com.ibm.ws.security.javaeesec.identitystore.IdentityStoreHandlerImpl;
+import com.ibm.ws.security.javaeesec.identitystore.DummyLdapIdentityStore;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
  */
-public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, PassivationCapable {
-
+public class TestIdentityStoreBean implements Bean<IdentityStore>, PassivationCapable {
     private final Set<Annotation> qualifiers;
     private final Type type;
     private final Set<Type> types;
     private final String name;
     private final String id;
 
-    public IdentityStoreHandlerBean(BeanManager beanManager) {
+    public TestIdentityStoreBean(BeanManager beanManager) {
         qualifiers = new HashSet<Annotation>();
         qualifiers.add(new AnnotationLiteral<Default>() {});
 
-        type = new TypeLiteral<IdentityStoreHandler>() {}.getType();
+        type = new TypeLiteral<IdentityStore>() {}.getType();
         types = Collections.singleton(type);
         name = this.getClass().getName() + "[" + type + "]";
         id = beanManager.hashCode() + "#" + this.name;
@@ -56,8 +56,9 @@ public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, Pas
      * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public IdentityStoreHandler create(CreationalContext<IdentityStoreHandler> creationalContext) {
-        return new IdentityStoreHandlerImpl();
+    public IdentityStore create(CreationalContext<IdentityStore> arg0) {
+        // TODO Return the actual LdapIdentityStore impl
+        return null;
     }
 
     /*
@@ -66,7 +67,10 @@ public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, Pas
      * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public void destroy(IdentityStoreHandler arg0, CreationalContext<IdentityStoreHandler> arg1) {}
+    public void destroy(IdentityStore arg0, CreationalContext<IdentityStore> arg1) {
+        // TODO Auto-generated method stub
+
+    }
 
     /*
      * (non-Javadoc)
@@ -85,7 +89,7 @@ public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, Pas
      */
     @Override
     public Set<Annotation> getQualifiers() {
-        // TODO Determine if this needs to be immutable
+        // TODO Auto-generated method stub
         return qualifiers;
     }
 
@@ -137,7 +141,7 @@ public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, Pas
      */
     @Override
     public Class<?> getBeanClass() {
-        return IdentityStoreHandler.class;
+        return IdentityStore.class;
     }
 
     /*
@@ -147,7 +151,7 @@ public class IdentityStoreHandlerBean implements Bean<IdentityStoreHandler>, Pas
      */
     @Override
     public Set<InjectionPoint> getInjectionPoints() {
-        // TODO: Determine if the bean can be injected into any injection point. Spec mandates programmatic lookup from ServerAuthModule.
+        // TODO Auto-generated method stub
         return Collections.emptySet();
     }
 
