@@ -91,18 +91,9 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     @Override
-    public AuthenticationStatus secureResponse(HttpServletRequest request,
-                                               HttpServletResponse response,
-                                               HttpMessageContext httpMessageContext) throws AuthenticationException {
-        return AuthenticationStatus.SUCCESS;
-    }
-
-    @Override
     public void cleanSubject(HttpServletRequest request,
                              HttpServletResponse response,
-                             HttpMessageContext httpMessageContext) {
-
-    }
+                             HttpMessageContext httpMessageContext) {}
 
     private AuthenticationStatus setChallengeAuthorizationHeader(HttpServletResponse rsp) {
         rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
@@ -111,7 +102,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     @SuppressWarnings("unchecked")
-    private AuthenticationStatus handleAuthorizationHeader(String authHeader, Subject clientSubject, HttpMessageContext httpMessageContext) throws AuthenticationException {
+    private AuthenticationStatus handleAuthorizationHeader(@Sensitive String authHeader, Subject clientSubject,
+                                                           HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
         if (authHeader.startsWith("Basic ")) {
@@ -124,14 +116,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                 if (status == AuthenticationStatus.SUCCESS) {
                     httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.authType", "JASPI_AUTH");
                     rspStatus = HttpServletResponse.SC_OK;
-                } else {
-                    // TODO: Audit invalid user or password
                 }
-            } else {
-                // TODO: Determine if serviceability message is needed
             }
-        } else {
-            // TODO: Determine if serviceability message is needed
         }
         httpMessageContext.getResponse().setStatus(rspStatus);
         return status;
@@ -192,10 +178,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             createLoginHashMap(clientSubject, result);
             status = AuthenticationStatus.SUCCESS;
         } else if (result.getStatus() == CredentialValidationResult.Status.NOT_VALIDATED) {
-            // TODO: error message. no identitystore.
             status = AuthenticationStatus.NOT_DONE;
-        } else {
-            // TODO: Audit invalid user or password
         }
         return status;
     }
@@ -252,7 +235,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             return null;
         PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
 
-            @SuppressWarnings("unchecked")
+            @SuppressWarnings({ "unchecked", "rawtypes" })
             @Override
             public Hashtable<String, Object> run() {
                 Set s = clientSubject.getPrivateCredentials(Hashtable.class);
