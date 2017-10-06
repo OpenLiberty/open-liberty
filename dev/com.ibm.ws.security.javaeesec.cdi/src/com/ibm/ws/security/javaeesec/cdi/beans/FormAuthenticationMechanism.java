@@ -167,7 +167,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
     }
 
     private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive UsernamePasswordCredential credential, IdentityStoreHandler identityStoreHandler,
-                                                           CallbackHandler handler) {
+                                                           CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         CredentialValidationResult result = identityStoreHandler.validate(credential);
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
@@ -182,7 +182,8 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         return status;
     }
 
-    protected void createLoginHashMap(Subject clientSubject, CredentialValidationResult result) {
+    protected void createLoginHashMap(Subject clientSubject, CredentialValidationResult result) throws AuthenticationException {
+        Utils.validateResult(result);
         Hashtable<String, Object> credData = getSubjectCustomData(clientSubject);
         Set<String> groups = result.getCallerGroups();
         String realm = result.getIdentityStoreId();
