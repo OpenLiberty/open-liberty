@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.SecurityService;
@@ -266,7 +267,8 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         return webAuthenticatorRef;
     }
 
-    private String decodeCookieString(String cookieString) {
+    @Sensitive
+    private String decodeCookieString(@Sensitive String cookieString) {
         try {
             return Base64Coder.base64Decode(cookieString);
         } catch (Exception e) {
