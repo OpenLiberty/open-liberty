@@ -101,6 +101,7 @@ org.apache.cxf:cxf-tools-common:3.1.11
 org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.11
 org.apache.derby:derby:10.11.1.1
 org.apache.derby:derbynet:10.11.1.1
+org.apache.directory.server:apacheds-service:2.0.0-M15
 org.apache.felix:org.apache.felix.gogo.command:0.16.0
 org.apache.felix:org.apache.felix.gogo.runtime:0.16.2
 org.apache.felix:org.apache.felix.gogo.shell:0.12.0
