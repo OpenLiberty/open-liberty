@@ -64,8 +64,10 @@ public abstract class PolicyTaskCallback {
      *
      * @param task the Callable or Runnable task.
      * @param future the future for the submitted task.
+     * @param invokeAnyCount this value is always 0 unless invokeAny is used,
+     *            in which case it is the size of the collection submitted to invokeAny excluding any that were canceled upon submit.
      */
-    public void onSubmit(Object task, Future<?> future) {}
+    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {}
 
     /**
      * Invoked to raise an ExecutionException for an aborted task.

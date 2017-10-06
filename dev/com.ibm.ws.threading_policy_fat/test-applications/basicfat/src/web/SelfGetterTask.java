@@ -62,7 +62,7 @@ public class SelfGetterTask extends PolicyTaskCallback implements Callable<Objec
     }
 
     @Override
-    public void onSubmit(Object task, Future<?> future) {
+    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {
         this.future = future;
     }
 }

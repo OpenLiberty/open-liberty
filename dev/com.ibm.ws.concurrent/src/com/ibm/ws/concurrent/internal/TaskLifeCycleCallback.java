@@ -179,7 +179,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public void onSubmit(Object task, Future<?> future) {
+    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {
         // notify listener: taskSubmitted
         if (task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
@@ -197,8 +197,11 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
                         suspendTranContext.taskStopping();
                 }
 
-                if (future.isCancelled())
-                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
+                if (invokeAnyCount <= 1 && future.isCancelled())
+                    if (invokeAnyCount == 1)
+                        throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1112.all.tasks.canceled"));
+                    else
+                        throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", getName(task), managedExecutor.name));
             }
         }
     }

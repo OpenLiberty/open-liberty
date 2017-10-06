@@ -252,7 +252,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.tracker = null;
 
         if (callback != null)
-            callback.onSubmit(task, this);
+            callback.onSubmit(task, this, 0);
     }
 
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyCompletionTracker tracker) {
@@ -267,7 +267,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.tracker = tracker;
 
         if (callback != null)
-            callback.onSubmit(task, this);
+            callback.onSubmit(task, this, tracker.pending.get());
     }
 
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback) {
@@ -282,7 +282,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.tracker = null;
 
         if (callback != null)
-            callback.onSubmit(task, this);
+            callback.onSubmit(task, this, 0);
     }
 
     /**
