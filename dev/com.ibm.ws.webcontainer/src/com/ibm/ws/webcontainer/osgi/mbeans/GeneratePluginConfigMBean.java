@@ -22,6 +22,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.extended.ModuleRuntimeContainer;
 import com.ibm.ws.ffdc.FFDCFilter;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
 import com.ibm.ws.webcontainer.osgi.WebContainer;
@@ -33,7 +34,7 @@ import com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig;
  * WebContainer admin task command class. This contains the subcommands that
  * are valid to call from the admin client.
  */
-public class GeneratePluginConfigMBean extends StandardMBean implements GeneratePluginConfig, com.ibm.websphere.webcontainer.GeneratePluginConfigMBean, PluginUtilityConfigGenerator  {
+public class GeneratePluginConfigMBean extends StandardMBean implements GeneratePluginConfig, com.ibm.websphere.webcontainer.GeneratePluginConfigMBean, PluginUtilityConfigGenerator, ServerQuiesceListener  {
     private static final String DEFAULT_SERVER_NAME = "defaultServer";
     
     private static final TraceComponent tc = Tr.register(GeneratePluginConfigMBean.class);
@@ -49,6 +50,9 @@ public class GeneratePluginConfigMBean extends StandardMBean implements Generate
         
     private Map<String, Object> config = null;
     private BundleContext bundleContext = null;
+    
+    private boolean serverIsStopping = false;
+    private boolean generateInProgress = false;
     /**
      * @return the bundleContext 
      */
@@ -75,6 +79,9 @@ public class GeneratePluginConfigMBean extends StandardMBean implements Generate
      */
     public GeneratePluginConfigMBean() {
         super(GeneratePluginConfig.class, false);
+        generateInProgress = false;
+        serverIsStopping= false;
+
     }
 
     /**
@@ -135,21 +142,34 @@ public class GeneratePluginConfigMBean extends StandardMBean implements Generate
      * @param writeDirectory The directory to write the plugin-cfg.xml file to
      */
     public synchronized void generatePluginConfig(String root, String serverName,boolean utilityRequest, File writeDirectory) {
-        try { 
             
-            PluginGenerator generator = pluginGenerator;
-            if ( generator == null ) {
-                // Process the updated configuration
-                generator = pluginGenerator = new PluginGenerator(this.config, locMgr, bundleContext);
-            }
-            
-            generator.generateXML(root, serverName, (WebContainer) webContainer, smgr, dynVhostMgr, locMgr,utilityRequest, writeDirectory);
-        } catch (Throwable t) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "generatePluginConfig", "server is stopping = " + serverIsStopping);
+        }
+    	try {
+    		// Method is synchronized so only one generate can be in progress at a time.
+    	    generateInProgress = true;
+        	if (!serverIsStopping) {
+    		
+                PluginGenerator generator = pluginGenerator;
+                if ( generator == null ) {
+                    // Process the updated configuration
+                    generator = pluginGenerator = new PluginGenerator(this.config, locMgr, bundleContext);
+                }
+                generator.generateXML(root, serverName, (WebContainer) webContainer, smgr, dynVhostMgr, locMgr,utilityRequest, writeDirectory); 
+        	}   
+         } catch (Throwable t) {
             FFDCFilter.processException(t, getClass().getName(), "generatePluginConfig");
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Error generate plugin xml: " + t.getMessage());
             }
+        } finally {
+       	     generateInProgress = false;
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "generatePluginConfig", "server is stopping = " + serverIsStopping);
+        }
+
     }
 
     /** Required static reference: called before activate */
@@ -250,4 +270,27 @@ public class GeneratePluginConfigMBean extends StandardMBean implements Generate
         return PluginUtilityConfigGenerator.Types.WEBCONTAINER;
     }
     
+    /* (non-Javadoc)
+     * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
+     */
+    @Override
+    public synchronized void serverStopping() {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.entry(tc, "serverStopping", "generate in progress = " + generateInProgress);
+        }
+        serverIsStopping = true;
+        // Wait for up to 20 seconds for plugin generation to complete.
+        for (int  i=0 ; i<40 && generateInProgress; i++) {
+             try {
+                Thread.sleep(500);
+             } catch (InterruptedException e) {
+                // don't bother sleeping again.
+                i=40;
+            }
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+            Tr.exit(tc, "serverStopping");
+        }
+
+    }
 }
