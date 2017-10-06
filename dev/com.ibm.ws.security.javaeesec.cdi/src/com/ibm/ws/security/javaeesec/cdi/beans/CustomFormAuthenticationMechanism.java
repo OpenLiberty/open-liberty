@@ -13,6 +13,7 @@ package com.ibm.ws.security.javaeesec.cdi.beans;
 import java.io.IOException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.Map;
@@ -168,7 +169,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
     }
 
     private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive UsernamePasswordCredential credential, IdentityStoreHandler identityStoreHandler,
-                                                           CallbackHandler handler) {
+                                                           CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         CredentialValidationResult result = identityStoreHandler.validate(credential);
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
@@ -183,7 +184,8 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return status;
     }
 
-    protected void createLoginHashMap(Subject clientSubject, CredentialValidationResult result) {
+    protected void createLoginHashMap(Subject clientSubject, CredentialValidationResult result) throws AuthenticationException {
+        Utils.validateResult(result);
         Hashtable<String, Object> credData = getSubjectCustomData(clientSubject);
         Set<String> groups = result.getCallerGroups();
         String realm = result.getIdentityStoreId();
@@ -265,4 +267,5 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
             return false;
         }
     }
+
 }

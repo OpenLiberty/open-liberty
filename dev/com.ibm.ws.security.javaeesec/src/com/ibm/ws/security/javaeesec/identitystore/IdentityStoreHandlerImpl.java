@@ -56,12 +56,14 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         CredentialValidationResult firstInvalid = null;
         CredentialValidationResult result = CredentialValidationResult.NOT_VALIDATED_RESULT;
         boolean supportGroups = false;
+        boolean isValidated = false;
         if (identityStores.isEmpty()) {
             scanIdentityStores(identityStores);
         }
         if (!identityStores.isEmpty()) {
             for (IdentityStore is : identityStores) {
                 if (is.validationTypes().contains(IdentityStore.ValidationType.VALIDATE)) {
+                    isValidated = true;
                     result = is.validate(credential);
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "validation status : " + result.getStatus() + ", identityStore : " + is);
@@ -84,8 +86,8 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
                 result = new CredentialValidationResult(null, result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
             } else if (firstInvalid != null) {
                 result = firstInvalid;
-            } else if (result == null) {
-                // something funny happened. return NOT_VALIDATED.
+            } else if (!isValidated) {
+                Tr.error(tc, "JAVAEESEC_ERROR_NO_VALIDATION");
                 result = CredentialValidationResult.NOT_VALIDATED_RESULT;
             }
         } else {
@@ -99,7 +101,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return result;
     }
 
-    private Set<String> getGroups(Set<IdentityStore> identityStores, CredentialValidationResult result, boolean supportGroups) {
+    protected Set<String> getGroups(Set<IdentityStore> identityStores, CredentialValidationResult result, boolean supportGroups) {
         Set<String> combinedGroups = new HashSet<String>();
         if (supportGroups) {
             Set<String> groups = result.getCallerGroups();
@@ -133,8 +135,12 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return AccessController.doPrivileged(action);
     }
 
-    private void scanIdentityStores(Set<IdentityStore> identityStores) {
-        Instance<IdentityStore> beanInstances = CDI.current().select(IdentityStore.class);
+    protected CDI getCDI() {
+        return CDI.current();
+    }
+
+    protected void scanIdentityStores(Set<IdentityStore> identityStores) {
+        Instance<IdentityStore> beanInstances = getCDI().select(IdentityStore.class);
         if (beanInstances != null) {
             for (IdentityStore is : beanInstances) {
                 if (tc.isDebugEnabled()) {
@@ -143,9 +149,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
                 identityStores.add(is);
             }
         } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "BeanManager not found.");
-            }
+            Tr.error(tc, "JAVAEESEC_ERROR_NO_IDENTITYSTORES");
         }
         return;
     }
@@ -168,4 +172,8 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             return result;
         }
     };
+
+    protected TreeSet<IdentityStore> getIdentityStores() {
+        return identityStores;
+    }
 }
