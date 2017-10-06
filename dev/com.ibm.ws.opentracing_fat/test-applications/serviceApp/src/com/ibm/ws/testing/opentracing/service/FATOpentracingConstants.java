@@ -17,25 +17,29 @@ package com.ibm.ws.testing.opentracing.service;
  */
 public interface FATOpentracingConstants {
     // Service application ...
-    String APP_PATH = "rest"; // used in '@ApplicationPath'
-    String SERVICE_PATH = "testService"; // used in '@Path'
+    String APP_PATH = "rest"; // used in "@ApplicationPath"
+    String SERVICE_PATH = "testService"; // used in "@Path"
 
-	// 'getImmediate' and 'getManual' both accept a "response" parameter.
+    // "getImmediate" and "getManual" both accept "response"
     String GET_IMMEDIATE_PATH = "getImmediate";
     String GET_MANUAL_PATH = "getManual";
     String RESPONSE_PARAM_NAME = "response";
 
-    // 'getDelayed' adds a 'delay' parameter.
+    // "getDelayed" adds "delay"
     String GET_DELAYED_PATH = "getDelayed";
     String DELAY_PARAM_NAME = "delay";
 
-    // 'getNested" add "nestDepth", "async", "host", "port", and "contextRoot"
-    // parameters.
+    // "getNested" adds "nestDepth", "async",
+    // "host0", "port0", "host1", "port1", and "contextRoot".
     String GET_NESTED_PATH = "getNested";
     String NEST_DEPTH_PARAM_NAME = "nestDepth";
     String ASYNC_PARAM_NAME = "async";
-    String HOST_PARAM_NAME = "host";
-    String PORT_PARAM_NAME = "port";
+    
+    String HOST_PARAM_NAME_EVEN = "host0";
+    String PORT_PARAM_NAME_EVEN = "port0";
+    String HOST_PARAM_NAME_ODD = "host1";
+    String PORT_PARAM_NAME_ODD = "port1";
+
     String CONTEXT_ROOT_PARAM_NAME = "contextRoot";
     
     // Introspection service API ...

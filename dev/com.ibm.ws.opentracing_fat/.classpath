@@ -6,7 +6,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 
 <!--   Edit this for building in a standalone project in eclipse.  The entry paths must be updated according to the local environment.
-
 	<classpathentry kind="lib" path="C:/openLiberty/repos-pub/microprofile/open-liberty/dev/com.ibm.websphere.javaee.jsonp.1.1/build/libs/com.ibm.websphere.javaee.jsonp.1.1.jar"/>
 	<classpathentry kind="lib" path="C:/openLiberty/repos-pub/microprofile/open-liberty/dev/com.ibm.ws.org.osgi.annotation.versioning/build/libs/com.ibm.ws.org.osgi.annotation.versioning.jar"/>
 	<classpathentry kind="lib" path="C:/openLiberty/repos-pub/microprofile/open-liberty/dev/com.ibm.ws.opentracing/build/libs/com.ibm.ws.opentracing.jar"/>
@@ -23,7 +22,7 @@
 	<classpathentry kind="lib" path="C:/openLiberty/repos-pub/microprofile/open-liberty/dev/fattest.simplicity/build/libs/lib/fat.util-1.0.0.jar"/>
 	<classpathentry kind="lib" path="C:/openLiberty/repos-pub/microprofile/open-liberty/dev/fattest.simplicity/build/libs/lib/httpunit-1.5.4.jar"/>
 	<classpathentry kind="lib" path="C:/openLiberty/repos-pub/microprofile/open-liberty/dev/fattest.simplicity/build/libs/lib/public.api-1.0.0.jar"/>
--->
+ -->
 	<classpathentry kind="output" path="bin"/>
 
 </classpath>

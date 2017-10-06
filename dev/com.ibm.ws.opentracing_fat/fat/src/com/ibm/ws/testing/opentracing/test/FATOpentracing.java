@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -90,32 +91,69 @@ public class FATOpentracing implements FATOpentracingConstants {
         FATLogging.info(CLASS, methodName, text);
     }
 
-    // OpenTrace FAT server ...
+    // OpenTrace FAT servers ...
 
-    private static LibertyServer server;
+    private static final LibertyServer[] servers =
+        new LibertyServer[] { null, null };
+    private static final String[] SERVER_NAMES =
+        new String [] { OPENTRACING_FAT_SERVER_NAME_EVEN, OPENTRACING_FAT_SERVER_NAME_ODD };
+    private static final int NUM_SERVERS = SERVER_NAMES.length;
 
-    private static void setUpServer() {
-        server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
+    private static final int SERVER_EVEN = 0;
+    private static final int SERVER_ODD = 1;
+
+    private static void setUpServer(int serverNo) {
+        String methodName = "setUpServer";
+
+        LibertyServer server =
+            (servers[serverNo] = LibertyServerFactory.getLibertyServer( SERVER_NAMES[serverNo] ));
+
+        if ( serverNo == SERVER_ODD ) {
+            // The liberty server for the odd server MUST be informed that it uses
+            // secondary ports.  Liberty servers default their ports to the java
+            // properties for the default HTTP port.  Liberty servers DO NOT look
+            // into the server logs or server configuration to figure out what ports
+            // are actually in use.
+            server.useSecondaryHTTPPort();
+        }
+
+        info(methodName,
+            "Server [ " + Integer.toString(serverNo) + " ]" +
+            " HTTP [ " + server.getHttpDefaultPort() + " ]" +
+            " HTTPS [ " + server.getHttpDefaultSecurePort() + " ]");
     }
 
-    private static LibertyServer getServer() {
-        return server;
+    private static LibertyServer getServer(int serverNo) {
+        return servers[serverNo];
+    }
+    
+    private static String getHostName(int serverNo) {
+        return getServer(serverNo).getHostname();
     }
 
-    private static String getHostName() {
-        return server.getHostname();
+    private static int getPortNumber(int serverNo) {
+        return getServer(serverNo).getHttpDefaultPort(); 
     }
 
-    private static int getPortNumber() {
-        return server.getHttpDefaultPort();
+    private static void startServer(int serverNo) throws Exception {
+        getServer(serverNo).startServer(); // 'startServer' throws Exception
     }
 
-    private static void startServer() throws Exception {
-        getServer().startServer(); // 'startServer' throws Exception
+    private static void stopServer(int serverNo) throws Exception {
+        getServer(serverNo).stopServer(); // 'stopServer' throws Exception
     }
 
-    private static void stopServer() throws Exception {
-        getServer().stopServer(); // 'stopServer' throws Exception
+    private static void exportToServer(int serverNo, WebArchive serviceWar) throws Exception {
+        ShrinkHelper.exportAppToServer( getServer(serverNo), serviceWar );
+        // 'exportAppToServer' throws Exception
+    }
+
+    private static void prepareServer(int serverNo) throws Exception {
+        setUpServer(serverNo);
+
+        WebArchive serviceWar = createServiceWar();
+        exportToServer(serverNo, serviceWar);
+        startServer(serverNo);
     }
 
     // Test setup ...
@@ -124,16 +162,37 @@ public class FATOpentracing implements FATOpentracingConstants {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        setUpServer();
+        showPropertyPorts();
+        
+        for ( int serverNo = 0; serverNo < NUM_SERVERS; serverNo++ ) {
+            prepareServer(serverNo);
+        }
+    }
 
-        WebArchive serviceWar = createServiceWar();
-        exportToServer(serviceWar);
-        startServer();
+    public static void showPropertyPorts() {
+        showProperty("HTTP_default", "0");
+        showProperty("HTTP_default.secure", "0");
+        showProperty("HTTP_secondary", "0");
+        showProperty("HTTP_secondary.secure", "0");
+        showProperty("IIOP", "0");
+    }
+
+    public static void showProperty(String propertyName, String propertyDefault) {
+        String methodName = "showProperty";
+
+        String propertyValue = System.getProperty(propertyName);
+
+        info(methodName,
+             "Property [ " + propertyName + " ]" +
+             " Actual [ " + propertyValue + " ]" +
+             " Default [ " + propertyDefault + " ]"); 
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        stopServer();
+        for ( int serverNo = 0; serverNo < NUM_SERVERS; serverNo++ ) {
+            stopServer(serverNo);
+        }
     }
 
     /**
@@ -152,11 +211,6 @@ public class FATOpentracing implements FATOpentracingConstants {
         serviceWar.addAsWebInfResource(
             new File("test-applications/" + SERVICE_WAR_BASE_NAME + "/resources/beans.xml"));
         return serviceWar;
-    }
-
-    private static void exportToServer(WebArchive serviceWar) throws Exception {
-        ShrinkHelper.exportAppToServer( getServer(), serviceWar );
-        // 'exportAppToServer' throws Exception
     }
 
     // Parent conditions ...
@@ -291,7 +345,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * of the collection.</p>
      *
      * <p>Selection is current against the operation of the completed span.  See
-     * {@link FATUtilsSpans.CompletedSpan#getOperation()}.  Additional selection
+     * {@link FATSpan#getOperation()}.  Additional selection
      * capabilities could be added.</p>
      *
      * <p>The first matching span is selected and returned.  No more than one matching
@@ -307,15 +361,15 @@ public class FATOpentracing implements FATOpentracingConstants {
      * @return The span which matches the span kind and selection text.  Null if
      *     no span is selected.
      */
-    public FATUtilsSpans.CompletedSpan findSpan(
-        List<FATUtilsSpans.CompletedSpan> completedSpans, int tailSize,
-        FATUtilsSpans.SpanKind spanKind, String... selectText) {
+    public FATSpan findSpan(
+        List<FATSpan> completedSpans, int tailSize,
+        FATSpanKind spanKind, String... selectText) {
 
         String methodName = "findSpan";
 
         int numSpans = completedSpans.size();
         for ( int spanNo = numSpans - tailSize; spanNo < numSpans; spanNo++ ) {
-            FATUtilsSpans.CompletedSpan completedSpan = completedSpans.get(spanNo);
+            FATSpan completedSpan = completedSpans.get(spanNo);
             if ( !completedSpan.isSpanKind(spanKind) ) {
                 continue;
             }
@@ -340,7 +394,7 @@ public class FATOpentracing implements FATOpentracingConstants {
         info(methodName, "Total spans: " + Integer.toString(numSpans));
         info(methodName, "Tail size: " + Integer.toString(tailSize));
         for ( int spanNo = numSpans - tailSize; spanNo < numSpans; spanNo++ ) {
-            FATUtilsSpans.CompletedSpan completedSpan = completedSpans.get(spanNo);
+            FATSpan completedSpan = completedSpans.get(spanNo);
             info(methodName, "  [ " + Integer.toString(spanNo) + " ] [ " + completedSpan + " ]");
         }
 
@@ -352,7 +406,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * of a collection of completed spans.</p>
      *
      * <p>All of the completed spans of the tail of the spans collection must have
-     * the same span ID (see {@link FATUtilsSpans.CompletedSpan#getTraceId()}, and
+     * the same span ID (see {@link FATSpan#getTraceId()}, and
      * exactly one of the spans must be a root span.</p>
      *
      * <p>All of the completed spans must have a non-null span ID, trace ID,
@@ -366,7 +420,8 @@ public class FATOpentracing implements FATOpentracingConstants {
      *    in the spans collection, and which must have the same span ID.
      */
     public void verifyContiguousSpans(
-        List<FATUtilsSpans.CompletedSpan> completedSpans,
+        int serverNo,
+        List<FATSpan> completedSpans,
         int expectedSpanCount) {
 
         String methodName = "verifyContiguousSpans";
@@ -381,7 +436,7 @@ public class FATOpentracing implements FATOpentracingConstants {
         String initialTraceId = null;
 
         for ( int spanNo = actualSpanCount - expectedSpanCount; spanNo < actualSpanCount; spanNo++ ) {
-            FATUtilsSpans.CompletedSpan nextSpan = completedSpans.get(spanNo);
+            FATSpan nextSpan = completedSpans.get(spanNo);
             String nextTraceId = nextSpan.getTraceId();
             String nextSpanId = nextSpan.getSpanId();
             String nextParentId = nextSpan.getParentId();
@@ -405,7 +460,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         if ( rootCount != 1 ) {
             for ( int spanNo = actualSpanCount - expectedSpanCount; spanNo < actualSpanCount; spanNo++ ) {
-                FATUtilsSpans.CompletedSpan nextSpan = completedSpans.get(spanNo);
+                FATSpan nextSpan = completedSpans.get(spanNo);
                 info(methodName,
                     "Span [ " + Integer.toString(spanNo) + " ]" +
                     " SpanId [ " + nextSpan.getSpanId() + " ]" +
@@ -466,15 +521,15 @@ public class FATOpentracing implements FATOpentracingConstants {
      * condition.</p>
      */
     public static class ParentCondition {
-        public final FATUtilsSpans.SpanKind parentKind;
+        public final FATSpanKind parentKind;
         public final String[] parentSelection;
 
-        public final FATUtilsSpans.SpanKind childKind;
+        public final FATSpanKind childKind;
         public final String[] childSelection;
 
         public ParentCondition(
-            FATUtilsSpans.SpanKind parentKind, String[] parentSelection,
-            FATUtilsSpans.SpanKind childKind, String[] childSelection) {
+            FATSpanKind parentKind, String[] parentSelection,
+            FATSpanKind childKind, String[] childSelection) {
 
             this.parentKind = parentKind;
             this.parentSelection = parentSelection;
@@ -497,6 +552,8 @@ public class FATOpentracing implements FATOpentracingConstants {
      * verify that parent ID of the child span is the same as the span ID of
      * the parent span.</p>
      *
+     * @param serverNo The number of server from which the spans were
+     *     retrieved.
      * @param completedSpans The overall collection of spans which is to
      *     be tested.
      * @param tailSize The number of spans to examine within the completed
@@ -505,7 +562,8 @@ public class FATOpentracing implements FATOpentracingConstants {
      *     spans collection.
      */
     public void verifyParents(
-            List<FATUtilsSpans.CompletedSpan> completedSpans, int tailSize,
+            int serverNo,
+            List<FATSpan> completedSpans, int tailSize,
             ParentCondition... parentConditions) {
 
         String methodName = "verifyParents";
@@ -513,13 +571,13 @@ public class FATOpentracing implements FATOpentracingConstants {
         for ( ParentCondition parentCondition : parentConditions ) {
             // *** Verify that a child span was selected.  A child span must always be selected. ***
 
-            FATUtilsSpans.CompletedSpan childSpan =
+            FATSpan childSpan =
                 findSpan(completedSpans, tailSize,
                          parentCondition.childKind,
                          parentCondition.childSelection);
             Assert.assertNotNull("Child span selection [ " + selectionText(parentCondition.childSelection) + " ]", childSpan);
 
-            FATUtilsSpans.CompletedSpan parentSpan;
+            FATSpan parentSpan;
             if ( parentCondition.parentSelection == null ) {
                 // *** When the parent selection is null, verify that the child span is a root span. ***
 
@@ -555,6 +613,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      * <p>Retrieve the completed span state by making a service call to the
      * opening tracing FAT service.</p>
      *
+     * @param serverNo The number of the server from which to get the spans.
      * @param priorRequestPath The immediately preceding request made to the
      *     open tracing FAT service.  Used for to match this request within
      *     the overall flow of FAT service request.
@@ -565,10 +624,10 @@ public class FATOpentracing implements FATOpentracingConstants {
      * @throws Exception Thrown if the service request failed, or if the completed
      *     spans could not be marshaled from the text obtained from the FAT service.
      */
-    public List<FATUtilsSpans.CompletedSpan> getCompletedSpans(String priorRequestPath) throws Exception {
+    public List<FATSpan> getCompletedSpans(int serverNo, String priorRequestPath) throws Exception {
         String methodName = "getCompletedSpans";
 
-        String requestUrl = getRequestUrl(GET_TRACER_STATE_PATH);
+        String requestUrl = getRequestUrl(serverNo, GET_TRACER_STATE_PATH);
         FATLogging.info(CLASS, methodName, "Request", priorRequestPath);
 
         List<String> responseLines =
@@ -594,8 +653,8 @@ public class FATOpentracing implements FATOpentracingConstants {
         }
 
         String responseText = builder.toString();
-        List<FATUtilsSpans.CompletedSpan> spans =
-            FATUtilsSpans.parseSpans(responseText); // throws IOException
+        List<FATSpan> spans =
+            FATSpanUtils.parseSpans(responseText); // throws IOException
         return spans;
     }
 
@@ -611,27 +670,33 @@ public class FATOpentracing implements FATOpentracingConstants {
      * incorrect set was noticed on the completed span information for the
      * trace state request.</p>
      *
+     * @param serverNo The number of the server from which to retrieve spans.
+     *
      * @throws Exception Thrown if the service request failed, or if the completed
      *     spans could not be marshaled from the text obtained from the FAT service.
      */
-    public void verifyTracerStateEvent() throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_IMMEDIATE_PATH);
+    public void verifyTracerStateEvent(int serverNo) throws Exception {
+        List<FATSpan> completedSpans =
+            getCompletedSpans(serverNo, GET_IMMEDIATE_PATH);
 
-        verifyTracerStateEvent(completedSpans);
+        verifyTracerStateEvent(serverNo, completedSpans);
 
-        verifyContiguousSpans(completedSpans, 1);
+        verifyContiguousSpans(serverNo, completedSpans, 1);
     }
 
-    public void verifyTracerStateEvent(List<FATUtilsSpans.CompletedSpan> completedSpans) throws Exception {
-        verifyTracerStateEvent( completedSpans.get(completedSpans.size() - 1) );
+    public void verifyTracerStateEvent(
+        int serverNo,
+        List<FATSpan> completedSpans) throws Exception {
+        
+        verifyTracerStateEvent( serverNo, completedSpans.get(completedSpans.size() - 1) );
     }
 
-    public void verifyTracerStateEvent(FATUtilsSpans.CompletedSpan completedSpan) throws Exception {
-        String requestUrl = getRequestUrl(GET_TRACER_STATE_PATH); // throws UnsupportedEncodingException
+    public void verifyTracerStateEvent(int serverNo, FATSpan completedSpan) throws Exception {
+        String requestUrl = getRequestUrl(serverNo, GET_TRACER_STATE_PATH); // throws UnsupportedEncodingException
 
         // *** The completed span event must be a root span. ***
 
-        assertEq("parent", FATUtilsSpans.NULL_PARENT_ID, completedSpan.getParentId());
+        assertEq("parent", FATSpan.NULL_PARENT_ID, completedSpan.getParentId());
 
         // *** The completed span event must be be for a get tracer state request. ***
 
@@ -644,13 +709,13 @@ public class FATOpentracing implements FATOpentracingConstants {
         // *** The tags of the completed span must be as expected for a get tracer state request. ***
 
         verifyTags(completedSpan,
-                FATUtilsSpans.TAG_HTTP_METHOD, "GET",
-                FATUtilsSpans.TAG_HTTP_STATUS_CODE, "200",
-                FATUtilsSpans.TAG_HTTP_URL, requestUrl,
-                FATUtilsSpans.TAG_SPAN_KIND, "server");
+                FATSpan.TAG_HTTP_METHOD, "GET",
+                FATSpan.TAG_HTTP_STATUS_CODE, "200",
+                FATSpan.TAG_HTTP_URL, requestUrl,
+                FATSpan.TAG_SPAN_KIND, "server");
     }
 
-    public void verifyTags(FATUtilsSpans.CompletedSpan completedSpan, String... tagData) {
+    public void verifyTags(FATSpan completedSpan, String... tagData) {
         int numTags = tagData.length / 2;
         for ( int tagNo = 0; tagNo < numTags; tagNo++ ) {
             String tag = tagData[tagNo * 2];
@@ -675,19 +740,19 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testImmediate() throws Exception {
-        verifyImmediateService();
-        verifyImmediateSpans();
-        verifyTracerStateEvent();
+        verifyImmediateService(SERVER_EVEN);
+        verifyImmediateSpans(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
-    public void verifyImmediateService() throws Exception {
+    public void verifyImmediateService(int serverNo) throws Exception {
         String methodName = "verifyImmediateService";
 
         String responseText = "immediate";
         Map<String, Object> requestParms = new HashMap<String, Object>();
         requestParms.put(RESPONSE_PARAM_NAME, responseText);
 
-        String requestUrl = getRequestUrl(GET_IMMEDIATE_PATH, requestParms);
+        String requestUrl = getRequestUrl(serverNo, GET_IMMEDIATE_PATH, requestParms);
 
         info(methodName, "Request URL", requestUrl);
         info(methodName, "Expected Response", responseText);
@@ -708,21 +773,22 @@ public class FATOpentracing implements FATOpentracingConstants {
                  responseText, actualResponseLines.get(0));
     }
 
-    public void verifyImmediateSpans() throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_IMMEDIATE_PATH);
+    public void verifyImmediateSpans(int serverNo) throws Exception {
+        List<FATSpan> completedSpans =
+            getCompletedSpans(serverNo, GET_IMMEDIATE_PATH);
 
         int tailSize = 1;
 
         // *** The immediate request is expected to generate exactly one completed span. ***
 
-        verifyContiguousSpans(completedSpans, tailSize);
+        verifyContiguousSpans(serverNo, completedSpans, tailSize);
 
         // *** The single completed span must be a root span, and must be for the immediate get. ***
 
         ParentCondition getImmediateCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, null,
-                FATUtilsSpans.SpanKind.SERVER, GET_IMMEDIATE_CONDITION);
-        verifyParents(completedSpans, tailSize, getImmediateCondition);
+                FATSpanKind.SERVER, null,
+                FATSpanKind.SERVER, GET_IMMEDIATE_CONDITION);
+        verifyParents(serverNo, completedSpans, tailSize, getImmediateCondition);
     }
 
     /**
@@ -737,19 +803,19 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testManual() throws Exception {
-        verifyManualService();
-        verifyManualSpans();
-        verifyTracerStateEvent();
+        verifyManualService(SERVER_EVEN);
+        verifyManualSpans(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
-    public void verifyManualService() throws Exception {
+    public void verifyManualService(int serverNo) throws Exception {
         String methodName = "verifyManualService";
 
         String responseText = "manualResponse";
         Map<String, Object> requestParms = new HashMap<String, Object>();
         requestParms.put(RESPONSE_PARAM_NAME, responseText);
 
-        String requestUrl = getRequestUrl(GET_MANUAL_PATH, requestParms);
+        String requestUrl = getRequestUrl(serverNo, GET_MANUAL_PATH, requestParms);
 
         info(methodName, "Request URL", requestUrl);
         info(methodName, "Expected Response", responseText);
@@ -770,24 +836,25 @@ public class FATOpentracing implements FATOpentracingConstants {
                  responseText, actualResponseLines.get(0));
     }
 
-    public void verifyManualSpans() throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_MANUAL_PATH);
+    public void verifyManualSpans(int serverNo) throws Exception {
+        List<FATSpan> completedSpans =
+            getCompletedSpans(serverNo, GET_MANUAL_PATH);
 
         int tailSize = 2;
 
         // *** The manual request is expected to generate exactly two completed spans. ***
 
-        verifyContiguousSpans(completedSpans, tailSize);
+        verifyContiguousSpans(serverNo, completedSpans, tailSize);
 
         ParentCondition getManualCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, null,
-                FATUtilsSpans.SpanKind.SERVER, GET_MANUAL_CONDITION);
+            FATSpanKind.SERVER, null,
+            FATSpanKind.SERVER, GET_MANUAL_CONDITION);
         ParentCondition manualCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, GET_MANUAL_CONDITION,
-                FATUtilsSpans.SpanKind.MANUAL, MANUAL_CONDITION);
+            FATSpanKind.SERVER, GET_MANUAL_CONDITION,
+            FATSpanKind.MANUAL, MANUAL_CONDITION);
 
         verifyParents(
-            completedSpans, tailSize,
+            serverNo, completedSpans, tailSize,
             getManualCondition, manualCondition);
     }
 
@@ -807,9 +874,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testDelayed2() throws Exception {
-        verifyDelayedService(2);
-        verifyDelayedSpans(2);
-        verifyTracerStateEvent();
+        verifyDelayedService(SERVER_EVEN, 2);
+        verifyDelayedSpans(SERVER_EVEN, 2);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     /**
@@ -826,9 +893,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testDelayed4() throws Exception {
-        verifyDelayedService(4);
-        verifyDelayedSpans(4);
-        verifyTracerStateEvent();
+        verifyDelayedService(SERVER_EVEN, 4);
+        verifyDelayedSpans(SERVER_EVEN, 4);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     /**
@@ -845,12 +912,12 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testDelayed6() throws Exception {
-        verifyDelayedService(6);
-        verifyDelayedSpans(6);
-        verifyTracerStateEvent();
+        verifyDelayedService(SERVER_EVEN, 6);
+        verifyDelayedSpans(SERVER_EVEN, 6);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
-    public void verifyDelayedService(int delaySec) throws Exception {
+    public void verifyDelayedService(int serverNo, int delaySec) throws Exception {
         String methodName = "verifyDelayedService";
 
         String responseText = "delayed [ " + Integer.toString(delaySec) + " ]";
@@ -858,7 +925,7 @@ public class FATOpentracing implements FATOpentracingConstants {
         requestParms.put(RESPONSE_PARAM_NAME, responseText);
         requestParms.put(DELAY_PARAM_NAME, Integer.valueOf(delaySec));
 
-        String requestUrl = getRequestUrl(GET_DELAYED_PATH, requestParms);
+        String requestUrl = getRequestUrl(serverNo, GET_DELAYED_PATH, requestParms);
 
         info(methodName, "Request URL", requestUrl);
         info(methodName, "Expected Response", responseText);
@@ -879,19 +946,20 @@ public class FATOpentracing implements FATOpentracingConstants {
                  responseText, actualResponseLines.get(0));
    }
 
-    public void verifyDelayedSpans(int delaySec) throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_DELAYED_PATH);
+    public void verifyDelayedSpans(int serverNo, int delaySec) throws Exception {
+        List<FATSpan> completedSpans =
+            getCompletedSpans(serverNo, GET_DELAYED_PATH);
 
         int tailSize = 1;
 
         // *** The delayed request is expected to generate exactly one completed span. ***
 
-        verifyContiguousSpans(completedSpans, tailSize);
+        verifyContiguousSpans(serverNo, completedSpans, tailSize);
 
         ParentCondition getDelayedCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, null,
-                FATUtilsSpans.SpanKind.SERVER, getDelayedCondition(delaySec));
-        verifyParents(completedSpans, tailSize, getDelayedCondition);
+                FATSpanKind.SERVER, null,
+                FATSpanKind.SERVER, getDelayedCondition(delaySec));
+        verifyParents(serverNo, completedSpans, tailSize, getDelayedCondition);
     }
 
     // Complex (nested) request tests ...
@@ -908,9 +976,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testNested0() throws Exception {
-        verifyNestedService0();
-        verifyNestedSpans0();
-        verifyTracerStateEvent();
+        verifyNestedService0(SERVER_EVEN);
+        verifyNestedSpans0(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     //
@@ -933,9 +1001,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testNested1Sync() throws Exception {
-        verifyNestedService1(IS_SYNC);
-        verifyNestedSpans1();
-        verifyTracerStateEvent();
+        verifyNestedService1(SERVER_EVEN, IS_SYNC);
+        verifyNestedSpans1(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     /**
@@ -957,9 +1025,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testNested2Sync() throws Exception {
-        verifyNestedService2(IS_SYNC);
-        verifyNestedSpans2();
-        verifyTracerStateEvent();
+        verifyNestedService2(SERVER_EVEN, IS_SYNC);
+        verifyNestedSpans2(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     /**
@@ -981,9 +1049,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testNested4Sync() throws Exception {
-        verifyNestedService4(IS_SYNC);
-        verifyNestedSpans4();
-        verifyTracerStateEvent();
+        verifyNestedService4(SERVER_EVEN, IS_SYNC);
+        verifyNestedSpans4(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     //
@@ -1006,9 +1074,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testNested1Async() throws Exception {
-        verifyNestedService1(IS_ASYNC);
-        verifyNestedSpans1();
-        verifyTracerStateEvent();
+        verifyNestedService1(SERVER_EVEN, IS_ASYNC);
+        verifyNestedSpans1(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     /**
@@ -1030,9 +1098,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testNested2Async() throws Exception {
-        verifyNestedService2(IS_ASYNC);
-        verifyNestedSpans2();
-        verifyTracerStateEvent();
+        verifyNestedService2(SERVER_EVEN, IS_ASYNC);
+        verifyNestedSpans2(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     /**
@@ -1054,9 +1122,9 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testNested4Async() throws Exception {
-        verifyNestedService4(IS_ASYNC);
-        verifyNestedSpans4();
-        verifyTracerStateEvent();
+        verifyNestedService4(SERVER_EVEN, IS_ASYNC);
+        verifyNestedSpans4(SERVER_EVEN);
+        verifyTracerStateEvent(SERVER_EVEN);
     }
 
     //
@@ -1064,27 +1132,43 @@ public class FATOpentracing implements FATOpentracingConstants {
     public static final boolean IS_ASYNC = true;
     public static final boolean IS_SYNC = false;
 
-    public Map<String, Object> getNestedParms(int nestDepth, boolean async, String responseText) {
+    public static final boolean IS_ALTERNATE = true;
+    public static final boolean IS_NOT_ALTERNATE = false;
+    
+    public Map<String, Object> getNestedParms(
+        int nestDepth,
+        boolean async, boolean alternate,
+        String responseText) {
+
         Map<String, Object> nestedParms = new HashMap<String, Object>();
         nestedParms.put(RESPONSE_PARAM_NAME, responseText);
         nestedParms.put(NEST_DEPTH_PARAM_NAME, Integer.valueOf(nestDepth));
         nestedParms.put(ASYNC_PARAM_NAME, Boolean.valueOf(async));
 
-        nestedParms.put(HOST_PARAM_NAME, getHostName());
-        nestedParms.put(PORT_PARAM_NAME, Integer.valueOf(getPortNumber()));
+        nestedParms.put(HOST_PARAM_NAME_EVEN, getHostName(SERVER_EVEN));
+        nestedParms.put(PORT_PARAM_NAME_EVEN, Integer.valueOf(getPortNumber(SERVER_EVEN)));
+        
+        if ( alternate ) {
+            nestedParms.put(HOST_PARAM_NAME_ODD, getHostName(SERVER_ODD));
+            nestedParms.put(PORT_PARAM_NAME_ODD, Integer.valueOf(getPortNumber(SERVER_ODD)));
+        } else {
+            nestedParms.put(HOST_PARAM_NAME_ODD, getHostName(SERVER_EVEN));
+            nestedParms.put(PORT_PARAM_NAME_ODD, Integer.valueOf(getPortNumber(SERVER_EVEN)));
+        }
+
         nestedParms.put(CONTEXT_ROOT_PARAM_NAME, SERVICE_CONTEXT_ROOT);
         return nestedParms;
     }
 
-    public void verifyNestedService0() throws Exception {
+    public void verifyNestedService0(int serverNo) throws Exception {
         String methodName = "verifyNestedService0";
 
         int nestDepth = 0;
         String responseText = "nested [ " + Integer.toString(nestDepth) + " ]";
 
-        Map<String, Object> requestParms = getNestedParms(nestDepth, IS_SYNC, responseText);
+        Map<String, Object> requestParms = getNestedParms(nestDepth, IS_SYNC, IS_NOT_ALTERNATE, responseText);
 
-        String requestUrl = getRequestUrl(GET_NESTED_PATH, requestParms);
+        String requestUrl = getRequestUrl(serverNo, GET_NESTED_PATH, requestParms);
 
         info(methodName, "Request URL", requestUrl);
         info(methodName, "Expected Response", responseText);
@@ -1105,30 +1189,31 @@ public class FATOpentracing implements FATOpentracingConstants {
                  responseText, actualResponseLines.get(0));
     }
 
-    public void verifyNestedSpans0() throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
+    public void verifyNestedSpans0(int serverNo) throws Exception {
+        List<FATSpan> completedSpans =
+            getCompletedSpans(serverNo, GET_NESTED_PATH);
 
         int tailSize = 1;
 
         // *** The delayed request is expected to generate exactly one completed span. ***
 
-        verifyContiguousSpans(completedSpans, tailSize);
+        verifyContiguousSpans(serverNo, completedSpans, tailSize);
 
         ParentCondition getNestedCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, null,
-                FATUtilsSpans.SpanKind.SERVER, getNestedCondition(0));
-        verifyParents(completedSpans, tailSize, getNestedCondition);
+                FATSpanKind.SERVER, null,
+                FATSpanKind.SERVER, getNestedCondition(0));
+        verifyParents(serverNo, completedSpans, tailSize, getNestedCondition);
     }
 
-    public void verifyNestedService1(boolean async) throws Exception {
+    public void verifyNestedService1(int serverNo, boolean async) throws Exception {
         String methodName = "verifyNestedService1";
 
         int nestDepth = 1;
         String responseText = "nested [ " + Integer.toString(nestDepth) + " ] async [ " + Boolean.toString(async) + " ]";
 
-        Map<String, Object> requestParms = getNestedParms(nestDepth, async, responseText);
+        Map<String, Object> requestParms = getNestedParms(nestDepth, async, IS_NOT_ALTERNATE, responseText);
 
-        String requestUrl = getRequestUrl(GET_NESTED_PATH, requestParms);
+        String requestUrl = getRequestUrl(serverNo, GET_NESTED_PATH, requestParms);
 
         info(methodName, "Request URL", requestUrl);
         info(methodName, "Expected Response", responseText);
@@ -1141,8 +1226,9 @@ public class FATOpentracing implements FATOpentracingConstants {
         // TODO: Verify the lines in detail.
     }
 
-    public void verifyNestedSpans1() throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
+    public void verifyNestedSpans1(int serverNo) throws Exception {
+        List<FATSpan> completedSpans =
+            getCompletedSpans(serverNo, GET_NESTED_PATH);
 
         // -> *TopInFromAbove
         //   -> *TopOutToBelow -> *Delay2InFromAbove -> Delay2OutToAbove -> TopInFromBelow
@@ -1157,14 +1243,14 @@ public class FATOpentracing implements FATOpentracingConstants {
         // *** The nested request is expected to generate exactly seven (7) ***
         // *** completed span (per the preceding comment). ***
 
-        verifyContiguousSpans(completedSpans, tailSize);
+        verifyContiguousSpans(serverNo, completedSpans, tailSize);
 
         // *** A root span for the initial get nested request. ***
 
         String[] getNested1Text = getNestedCondition(1);
         ParentCondition getNested1Condition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, null,
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text);
+                FATSpanKind.SERVER, null,
+                FATSpanKind.SERVER, getNested1Text);
 
         String[] getDelayed2Text = getDelayedCondition(2);
         String[] getDelayed4Text = getDelayedCondition(4);
@@ -1174,49 +1260,49 @@ public class FATOpentracing implements FATOpentracingConstants {
         // *** request to the two second delay request. ***
 
         ParentCondition getDelay2ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed2Text);
         ParentCondition getDelay2ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed2Text);
+            FATSpanKind.CLIENT, getDelayed2Text,
+            FATSpanKind.SERVER, getDelayed2Text);
 
         // *** A pair of completed spans for the call from root get nested ***
         // *** request to the four second delay request. ***
 
         ParentCondition getDelay4ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed4Text);
         ParentCondition getDelay4ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed4Text);
+            FATSpanKind.CLIENT, getDelayed4Text,
+            FATSpanKind.SERVER, getDelayed4Text);
 
         // *** A pair of completed spans for the call from root get nested ***
         // *** request to the six second delay request. ***
 
         ParentCondition getDelay6ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed6Text);
         ParentCondition getDelay6ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed6Text);
+            FATSpanKind.CLIENT, getDelayed6Text,
+            FATSpanKind.SERVER, getDelayed6Text);
 
         verifyParents(
-            completedSpans, tailSize,
+            serverNo, completedSpans, tailSize,
             getNested1Condition,
             getDelay2ClientCondition, getDelay2ContainerCondition,
             getDelay4ClientCondition, getDelay4ContainerCondition,
             getDelay6ClientCondition, getDelay6ContainerCondition);
     }
 
-    public void verifyNestedService2(boolean async) throws Exception {
+    public void verifyNestedService2(int serverNo, boolean async) throws Exception {
         String methodName = "verifyNestedService2";
 
         int nestDepth = 2;
         String responseText = "nested [ " + Integer.toString(nestDepth) + " ] async [ " + Boolean.toString(async) + " ]";
 
-        Map<String, Object> requestParms = getNestedParms(nestDepth, async, responseText);
+        Map<String, Object> requestParms = getNestedParms(nestDepth, async, IS_NOT_ALTERNATE, responseText);
 
-        String requestUrl = getRequestUrl(GET_NESTED_PATH, requestParms);
+        String requestUrl = getRequestUrl(serverNo, GET_NESTED_PATH, requestParms);
 
         info(methodName, "Request URL", requestUrl);
         info(methodName, "Expected Response", responseText);
@@ -1229,8 +1315,9 @@ public class FATOpentracing implements FATOpentracingConstants {
         // TODO: Verify the lines in detail.
     }
 
-    public void verifyNestedSpans2() throws Exception {
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
+    public void verifyNestedSpans2(int serverNo) throws Exception {
+        List<FATSpan> completedSpans =
+            getCompletedSpans(serverNo, GET_NESTED_PATH);
 
         // -> *TopInFromAbove
         //   -> *TopOutToBelow
@@ -1249,25 +1336,25 @@ public class FATOpentracing implements FATOpentracingConstants {
         // *** The nested request is expected to generate exactly nine (9) ***
         // *** completed span (per the preceding comment). ***
 
-        verifyContiguousSpans(completedSpans, tailSize);
+        verifyContiguousSpans(serverNo, completedSpans, tailSize);
 
         // *** A root span for the initial depth 2 get nested request. ***
 
         String[] getNested2Text = getNestedCondition(2);
         ParentCondition getNested2Condition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, null,
-                FATUtilsSpans.SpanKind.SERVER, getNested2Text);
+            FATSpanKind.SERVER, null,
+            FATSpanKind.SERVER, getNested2Text);
 
         // *** A pair of completed spans for the call from nest level 2 ***
         // *** request to the nest level 1 request. ***
 
         String[] getNested1Text = getNestedCondition(1);
         ParentCondition getNested1ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested2Text,
-                FATUtilsSpans.SpanKind.CLIENT, getNested1Text);
+            FATSpanKind.SERVER, getNested2Text,
+            FATSpanKind.CLIENT, getNested1Text);
         ParentCondition getNested1ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getNested1Text,
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text);
+            FATSpanKind.CLIENT, getNested1Text,
+            FATSpanKind.SERVER, getNested1Text);
 
         String[] getDelayed2Text = getDelayedCondition(2);
         String[] getDelayed4Text = getDelayedCondition(4);
@@ -1277,34 +1364,34 @@ public class FATOpentracing implements FATOpentracingConstants {
         // *** request to the two second delay request. ***
 
         ParentCondition getDelay2ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed2Text);
         ParentCondition getDelay2ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed2Text);
+            FATSpanKind.CLIENT, getDelayed2Text,
+            FATSpanKind.SERVER, getDelayed2Text);
 
         // *** A pair of completed spans for the call from nest level 1 ***
         // *** request to the four second delay request. ***
 
         ParentCondition getDelay4ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed4Text);
         ParentCondition getDelay4ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed4Text);
+            FATSpanKind.CLIENT, getDelayed4Text,
+            FATSpanKind.SERVER, getDelayed4Text);
 
         // *** A pair of completed spans for the call from nest level 1 ***
         // *** request to the six second delay request. ***
 
         ParentCondition getDelay6ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed6Text);
         ParentCondition getDelay6ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed6Text);
+            FATSpanKind.CLIENT, getDelayed6Text,
+            FATSpanKind.SERVER, getDelayed6Text);
 
         verifyParents(
-            completedSpans, tailSize,
+            serverNo, completedSpans, tailSize,
             getNested2Condition,
             getNested1ClientCondition, getNested1ContainerCondition,
             getDelay2ClientCondition, getDelay2ContainerCondition,
@@ -1312,15 +1399,15 @@ public class FATOpentracing implements FATOpentracingConstants {
             getDelay6ClientCondition, getDelay6ContainerCondition);
     }
 
-    public void verifyNestedService4(boolean async) throws Exception {
+    public void verifyNestedService4(int serverNo, boolean async) throws Exception {
         String methodName = "verifyNestedService4";
 
         int nestDepth = 4;
         String responseText = "nested [ " + Integer.toString(nestDepth) + " ] async [ " + Boolean.toString(async) + " ]";
 
-        Map<String, Object> requestParms = getNestedParms(nestDepth, async, responseText);
+        Map<String, Object> requestParms = getNestedParms(nestDepth, async, IS_NOT_ALTERNATE, responseText);
 
-        String requestUrl = getRequestUrl(GET_NESTED_PATH, requestParms);
+        String requestUrl = getRequestUrl(serverNo, GET_NESTED_PATH, requestParms);
 
         info(methodName, "Request URL", requestUrl);
         info(methodName, "Expected Response", responseText);
@@ -1333,11 +1420,14 @@ public class FATOpentracing implements FATOpentracingConstants {
         // TODO: Verify the lines in detail.
     }
 
-    public void verifyNestedSpans4() throws Exception {
-        verifyNestedSpans4( getCompletedSpans(GET_NESTED_PATH) );
+    public void verifyNestedSpans4(int serverNo) throws Exception {
+        verifyNestedSpans4( serverNo, getCompletedSpans(serverNo, GET_NESTED_PATH) );
     }
     
-    public void verifyNestedSpans4(List<FATUtilsSpans.CompletedSpan> completedSpans) throws Exception {
+    public void verifyNestedSpans4(
+        int serverNo,
+        List<FATSpan> completedSpans) throws Exception {
+
         // -> *TopInFromAbove [d=4]
         //   -> *TopOutToBelow
         //     -> *TopInFromAbove [d=3]
@@ -1365,7 +1455,7 @@ public class FATOpentracing implements FATOpentracingConstants {
         // *** The nested request is expected to generate exactly thirteen (13) ***
         // *** completed span (per the preceding comment). ***
 
-        verifyContiguousSpans(completedSpans, tailSize);
+        verifyContiguousSpans(serverNo, completedSpans, tailSize);
 
         // *** The completed spans of the nested request have a complex relationship, ***
         // *** as described by the preceding comment. ***
@@ -1374,41 +1464,41 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         String[] getNested4Text = getNestedCondition(4);
         ParentCondition getNested4Condition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, null,
-                FATUtilsSpans.SpanKind.SERVER, getNested4Text);
+            FATSpanKind.SERVER, null,
+            FATSpanKind.SERVER, getNested4Text);
 
         // *** A pair of completed spans for the call from nest level 4 ***
         // *** request to the nest level 3 request. ***
 
         String[] getNested3Text = getNestedCondition(3);
         ParentCondition getNested3ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested4Text,
-                FATUtilsSpans.SpanKind.CLIENT, getNested3Text);
+            FATSpanKind.SERVER, getNested4Text,
+            FATSpanKind.CLIENT, getNested3Text);
         ParentCondition getNested3ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getNested3Text,
-                FATUtilsSpans.SpanKind.SERVER, getNested3Text);
+            FATSpanKind.CLIENT, getNested3Text,
+            FATSpanKind.SERVER, getNested3Text);
 
         // *** A pair of completed spans for the call from nest level 3 ***
         // *** request to the nest level 2 request. ***
 
         String[] getNested2Text = getNestedCondition(2);
         ParentCondition getNested2ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested3Text,
-                FATUtilsSpans.SpanKind.CLIENT, getNested2Text);
+            FATSpanKind.SERVER, getNested3Text,
+            FATSpanKind.CLIENT, getNested2Text);
         ParentCondition getNested2ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getNested2Text,
-                FATUtilsSpans.SpanKind.SERVER, getNested2Text);
+            FATSpanKind.CLIENT, getNested2Text,
+            FATSpanKind.SERVER, getNested2Text);
 
         // *** A pair of completed spans for the call from nest level 2 ***
         // *** request to the nest level 1 request. ***
 
         String[] getNested1Text = getNestedCondition(1);
         ParentCondition getNested1ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested2Text,
-                FATUtilsSpans.SpanKind.CLIENT, getNested1Text);
+            FATSpanKind.SERVER, getNested2Text,
+            FATSpanKind.CLIENT, getNested1Text);
         ParentCondition getNested1ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getNested1Text,
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text);
+            FATSpanKind.CLIENT, getNested1Text,
+            FATSpanKind.SERVER, getNested1Text);
 
         String[] getDelayed2Text = getDelayedCondition(2);
         String[] getDelayed4Text = getDelayedCondition(4);
@@ -1418,34 +1508,34 @@ public class FATOpentracing implements FATOpentracingConstants {
         // *** request to the two second delay request. ***
 
         ParentCondition getDelay2ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed2Text);
         ParentCondition getDelay2ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed2Text);
+            FATSpanKind.CLIENT, getDelayed2Text,
+            FATSpanKind.SERVER, getDelayed2Text);
 
         // *** A pair of completed spans for the call from nest level 1 ***
         // *** request to the four second delay request. ***
 
         ParentCondition getDelay4ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed4Text);
         ParentCondition getDelay4ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed4Text);
+            FATSpanKind.CLIENT, getDelayed4Text,
+            FATSpanKind.SERVER, getDelayed4Text);
 
         // *** A pair of completed spans for the call from nest level 1 ***
         // *** request to the six second delay request. ***
 
         ParentCondition getDelay6ClientCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text);
+            FATSpanKind.SERVER, getNested1Text,
+            FATSpanKind.CLIENT, getDelayed6Text);
         ParentCondition getDelay6ContainerCondition = new ParentCondition(
-                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text,
-                FATUtilsSpans.SpanKind.SERVER, getDelayed6Text);
+            FATSpanKind.CLIENT, getDelayed6Text,
+            FATSpanKind.SERVER, getDelayed6Text);
 
         verifyParents(
-            completedSpans, tailSize,
+            serverNo, completedSpans, tailSize,
             getNested4Condition,
             getNested3ClientCondition, getNested3ContainerCondition,
             getNested2ClientCondition, getNested2ContainerCondition,
@@ -1518,12 +1608,13 @@ public class FATOpentracing implements FATOpentracingConstants {
 
     // Request utilities ...
 
-    private String getRequestUrl(String servicePath)
+    private String getRequestUrl(int serverNo, String servicePath)
         throws UnsupportedEncodingException {
-        return getRequestUrl(servicePath, null); // throws UnsupportedEncodingException
+        return getRequestUrl(serverNo, servicePath, null); // throws UnsupportedEncodingException
     }
 
     private String getRequestUrl(
+        int serverNo, 
         String endpointPath,
         Map<String, Object> serviceParameters) throws UnsupportedEncodingException {
 
@@ -1533,11 +1624,11 @@ public class FATOpentracing implements FATOpentracingConstants {
             serviceParameters);
         // throws UnsupportedEncodingException
 
-        LibertyServer useServer = getServer();
+        LibertyServer server = getServer(serverNo);
 
         return FATUtilsServer.getRequestUrl(
-            useServer.getHostname(),
-            useServer.getHttpDefaultPort(),
+            server.getHostname(),
+            server.getHttpDefaultPort(),
             requestPath );
     }
 
@@ -1564,9 +1655,10 @@ public class FATOpentracing implements FATOpentracingConstants {
     //
 
     public class RequestSpinner implements Runnable {
-        public RequestSpinner(int planNo, int requestCount) {
+        public RequestSpinner(int planNo, int requestCount, boolean alternate) {
             this.planNo = planNo;
             this.requestCount = requestCount;
+            this.alternate = alternate;
         }
 
         private final int planNo;
@@ -1579,6 +1671,12 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         public int getRequestCount() {
             return requestCount;
+        }
+
+        private final boolean alternate;
+        
+        public boolean getAlternate() {
+            return alternate;
         }
 
         public void run() {
@@ -1607,11 +1705,13 @@ public class FATOpentracing implements FATOpentracingConstants {
                 "nest [ " + Integer.toString(nestDepth) + " ]" +
                 " local [ " + Integer.toString(localRequestNo) + " ]" +
                 " global [ " + Integer.toString(globalRequestNo) + " ]" +
-                " plan [ " + Integer.toString(planNo) + " ]";
+                " plan [ " + Integer.toString(planNo) + " ]" +
+                " alt [ " + Boolean.toString(getAlternate()) + " ]";
 
-            Map<String, Object> requestParms = getNestedParms(nestDepth, IS_ASYNC, responseText);
+            Map<String, Object> requestParms =
+                getNestedParms(nestDepth, IS_ASYNC, getAlternate(), responseText);
 
-            String requestUrl = getRequestUrl(GET_NESTED_PATH, requestParms);
+            String requestUrl = getRequestUrl(SERVER_EVEN, GET_NESTED_PATH, requestParms);
             // throws UnsupportedEncodingException
 
             info(methodName, "Request URL", requestUrl);
@@ -1637,12 +1737,12 @@ public class FATOpentracing implements FATOpentracingConstants {
         }
     }
 
-    public Thread spin(String spinnerName, int planNo, int spinCount) {
+    public Thread spin(String spinnerName, int planNo, int spinCount, boolean alternate) {
         String methodName = "spin";
 
         info(methodName, "Launch", spinnerName);
 
-        Runnable spinRunner = new RequestSpinner(planNo, spinCount);
+        Runnable spinRunner = new RequestSpinner(planNo, spinCount, alternate);
         Thread spinThread = new Thread(spinRunner, spinnerName);
         spinThread.start();
 
@@ -1662,21 +1762,50 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     @Test
     public void testManyRequests() throws Exception {
-        String methodName = "testManyRequest";
+        String methodName = "testManyRequests";
         info(methodName, "ENTER");
 
-        int expectedTotal = runSpinners();
+        int initialRequestCount = getRequestCount();
+        int expectedTotal = runSpinners(IS_NOT_ALTERNATE);
+        int finalRequestCount = getRequestCount();
 
         // *** All request must have run ***
 
-        assertEq("Expected count of requests", expectedTotal, getRequestCount());
+        assertEq("Expected count of requests", expectedTotal, (finalRequestCount - initialRequestCount));
 
         verifySpinners();
 
         info(methodName, "RETURN");
     }
 
-    public int runSpinners() {
+    /**
+     * <p>Test span generation for concurrent requests.</p>
+     * 
+     * <p>A single thread is created per entry of {@link #SPIN_TEST_PLAN}.
+     * The entry of the test plan is the number of times the thread performs
+     * a nested get at depth four (4) ({@link FATOpentracingConstants#GET_NESTED_PATH}).</p>
+     * 
+     * @throws Exception Thrown in case of a failure to run the requests.
+     */
+    @Test
+    public void testManyDistrbutedRequests() throws Exception {
+        String methodName = "testManyDistributedRequests";
+        info(methodName, "ENTER");
+
+        int initialRequestCount = getRequestCount();
+        int expectedTotal = runSpinners(IS_ALTERNATE);
+        int finalRequestCount = getRequestCount();        
+
+        // *** All request must have run ***
+
+        assertEq("Expected count of requests", expectedTotal, finalRequestCount - initialRequestCount);
+
+        verifyDistributedSpinners();
+
+        info(methodName, "RETURN");
+    }
+
+    public int runSpinners(boolean isAlternate) {
         String methodName = "runSpinners";
         info(methodName, "ENTER");
         
@@ -1692,7 +1821,7 @@ public class FATOpentracing implements FATOpentracingConstants {
             expectedTotal += spinCount;
 
             String spinnerName = "Plan [ " + Integer.toString(planNo) + " ] Spin [ " + Integer.toString(spinCount) + " ]";
-            spinners[planNo] = spin(spinnerName, planNo, spinCount);
+            spinners[planNo] = spin(spinnerName, planNo, spinCount, isAlternate);
         }
 
         info(methodName, "Total request count", Integer.valueOf(expectedTotal));
@@ -1712,8 +1841,207 @@ public class FATOpentracing implements FATOpentracingConstants {
     public void verifySpinners() throws Exception {
         String methodName = "verifySpinners";
 
-        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
+        List<FATSpan> completedSpans =
+            getCompletedSpans(SERVER_EVEN, GET_NESTED_PATH);
         info(methodName, "Completed spans", Integer.valueOf(completedSpans.size()));
+
+        filterSpans(completedSpans, IS_NOT_ALTERNATE);
+
+        verifySpinners(completedSpans);
+    }
+
+    public void filterSpans(List<FATSpan> completedSpans, boolean isAlternate) {
+        String methodName = "filterSpans";
+
+        info(methodName, "Initial spans", Integer.valueOf(completedSpans.size()));
+
+        Iterator<FATSpan> useCompletedSpans = completedSpans.iterator();
+        while ( useCompletedSpans.hasNext() ) {
+            FATSpan completedSpan = useCompletedSpans.next();
+            if ( isAlternate != isAlternate(completedSpan) ) {
+                useCompletedSpans.remove();
+            }
+        }
+
+        info(methodName, "Final spans", Integer.valueOf(completedSpans.size()));
+    }
+
+    public static final String ALT_PREFIX = "alt+%5B+";
+    public static final String ALT_SUFFIX = "+%5D";
+    public static final String ALT_RESPONSE_TRUE = ALT_PREFIX + Boolean.TRUE.toString() + ALT_SUFFIX;
+    public static final String ALT_RESPONSE_FALSE = ALT_PREFIX + Boolean.FALSE.toString() + ALT_SUFFIX;
+
+    public boolean isAlternate(FATSpan span) {
+        String url = span.getTag(FATSpan.TAG_HTTP_URL);
+        return ( (url != null) && (url.indexOf(ALT_RESPONSE_TRUE) != -1) );
+    }
+
+    public void verifyDistributedSpinners() throws Exception {
+        String methodName = "verifyDistributedSpinners";
+
+        List<FATSpan> completedSpansEven =
+            getCompletedSpans(SERVER_EVEN, GET_NESTED_PATH);
+        info(methodName,
+             "Completed spans (" + SERVER_NAMES[SERVER_EVEN] + ")",
+             Integer.valueOf(completedSpansEven.size()));
+
+        // There will be many completed spans ... pull out only those which are for
+        // the alternating case.
+
+        filterSpans(completedSpansEven, IS_ALTERNATE);
+
+        List<FATSpan> completedSpansOdd =
+            getCompletedSpans(SERVER_ODD, GET_NESTED_PATH);
+        info(methodName,
+             "Completed spans (" + SERVER_NAMES[SERVER_ODD] + ")",
+             Integer.valueOf(completedSpansOdd.size()));
+
+        // There will be many completed spans ... pull out only those which are for
+        // the alternating case.
+
+        filterSpans(completedSpansOdd, IS_ALTERNATE);
+
+        verifyDistributedSpinners(completedSpansEven, completedSpansOdd);
+
+        List<FATSpan> completedSpans =
+            new ArrayList<FATSpan>( completedSpansEven.size() + completedSpansOdd.size() );
+        completedSpans.addAll(completedSpansEven);
+        completedSpans.addAll(completedSpansOdd);
+
+        verifySpinners(completedSpans);
+    }
+
+    public void verifyDistributedSpinners(
+        List<FATSpan> completedSpansEven,
+        List<FATSpan> completedSpansOdd) throws Exception {
+        String methodName = "verifyDistributedSpinners";
+
+        info(methodName, "ENTER");
+
+        for ( FATSpan evenSpan : completedSpansEven ) {
+            validateDistributedSpan(evenSpan, SERVER_EVEN);
+        }
+        for ( FATSpan oddSpan : completedSpansOdd ) {
+            validateDistributedSpan(oddSpan, SERVER_ODD);
+        }
+
+        info(methodName, "RETURN");
+    }
+
+    // Sample trimmed span data, for the alternating case:
+    //
+    // { traceId: 1399, spanId: 1400, parentId: 0,    operation: localhost:8010/getNested?nestDepth=4,    { localhost:8010/getNested?nestDepth=4, server } }
+    //
+    // { traceId: 1399, spanId: 1402, parentId: 1400, operation: localhost:8030/getNested?nestDepth=3,    { localhost:8030/getNested?nestDepth=3, client } }
+    // { traceId: 1399, spanId: 3,    parentId: 1402, operation: localhost:8030/getNested?nestDepth=3,    { localhost:8030/getNested?nestDepth=3, server } }
+    //
+    // { traceId: 1399, spanId: 6,    parentId: 3,    operation: localhost:8010/getNested?nestDepth=2,    { localhost:8010/getNested?nestDepth=2, client } }
+    // { traceId: 1399, spanId: 1403, parentId: 6,    operation: localhost:8010/getNested?nestDepth=2,    { localhost:8010/getNested?nestDepth=2, server } }
+    //
+    // { traceId: 1399, spanId: 1409, parentId: 1403, operation: localhost:8030/getNested?nestDepth=1,    { localhost:8030/getNested?nestDepth=1, client } }
+    // { traceId: 1399, spanId: 12,   parentId: 1409, operation: localhost:8030/getNested?nestDepth=1,    { localhost:8030/getNested?nestDepth=1, server } }
+    //
+    // { traceId: 1399, spanId: 14,   parentId: 12,   operation: localhost:8010/getDelayed?delay=2 [ 2 ], { localhost:8010/getDelayed?delay=2 [ 2 ], client } }
+    // { traceId: 1399, spanId: 1413, parentId: 14,   operation: localhost:8010/getDelayed?delay=2 [ 2 ], { localhost:8010/getDelayed?delay=2 [ 2 ], server } }
+    //
+    // { traceId: 1399, spanId: 15,   parentId: 12,   operation: localhost:8010/getDelayed?delay=4 [ 4 ], { localhost:8010/getDelayed?delay=4 [ 4 ], client } }
+    // { traceId: 1399, spanId: 1414, parentId: 15,   operation: localhost:8010/getDelayed?delay=4 [ 4 ], { localhost:8010/getDelayed?delay=4 [ 4 ], server } }
+    //
+    // { traceId: 1399, spanId: 16,   parentId: 12,   operation: localhost:8010/getDelayed?delay=6 [ 6 ], { localhost:8010/getDelayed?delay=6 [ 6 ], client } }
+    // { traceId: 1399, spanId: 1415, parentId: 16,   operation: localhost:8010/getDelayed?delay=6 [ 6 ], { localhost:8010/getDelayed?delay=6 [ 6 ], server } }
+
+    // Rules:
+    //   Start on an even server with an even nesting depth:
+    //
+    //   getNested: even depth: (even server => server span, odd server -> client span)
+    //              odd depth: (even server -> client span, odd server -> server span)
+    //   getDelayed: (even server -> server span, odd server -> client span)
+
+    public void validateDistributedSpan(FATSpan span, int serverNo) {
+        boolean isEvenServer = ( serverNo == SERVER_EVEN );
+
+        // *** Only server and client spans should be present.  (There should be no manual spans.) ***
+
+        boolean isServerSpan = span.isSpanKind(FATSpanKind.SERVER); 
+        boolean isClientSpan = span.isSpanKind(FATSpanKind.CLIENT);
+        if ( !isServerSpan && !isClientSpan ) {
+            Assert.assertTrue("Must be either server or client [ " + span + " ]", (isServerSpan || isClientSpan) );
+        }
+
+        String url = span.getTag(FATSpan.TAG_HTTP_URL);
+        boolean foundUrl = (url != null);
+        if ( !foundUrl ) {
+            Assert.assertTrue("Found tag [ " + FATSpan.TAG_HTTP_URL + " ] on [ " + span + " ]", foundUrl);
+        }
+
+        @SuppressWarnings("null") // Can't be null, but the compiler doesn't know that the foundUrl assertion must always fail.
+        boolean isNestedGet = url.contains(GET_NESTED_PATH);
+        boolean isDelayedGet = url.contains(GET_DELAYED_PATH);
+
+        // *** Only spans for nested get and delayed get should present. *** 
+
+        if ( !isServerSpan && !isClientSpan ) {
+            Assert.assertTrue("Must be either [ " + GET_NESTED_PATH + " ] or [ " + GET_DELAYED_PATH + " ] [ " + span + " ]", (isNestedGet || isDelayedGet));
+        }
+
+        int nestDepth;
+        if ( !isNestedGet ) {
+            nestDepth = -1; // Unused
+        } else {
+            nestDepth = getNestDepth(url);
+        }
+        boolean isEvenDepth = (nestDepth % 2 == 0);
+
+        boolean shouldBeServerSpan;
+        if ( isNestedGet ) {
+            // even servers receive (in, server) even nesting gets
+            // odd servers receive (in, server), odd nesting gets
+            // even servers send (out, client) odd nesting gets
+            // odd servers send (out, client) even nested request
+            shouldBeServerSpan = ( isEvenServer == isEvenDepth );
+        } else {
+            // (out, client) from nesting 1, which is the odd server
+            // (in, server) only from the even server                
+            shouldBeServerSpan = isEvenServer;
+        }
+
+        // *** The span kind must be correct for the server which generated it. ***
+
+        if ( shouldBeServerSpan != isServerSpan ) {
+            Assert.assertEquals(
+                "Expecting [ " + (shouldBeServerSpan ? FATSpanKind.SERVER : FATSpanKind.CLIENT) + " ] for [ " + span + " ]",
+                Boolean.valueOf(shouldBeServerSpan),
+                Boolean.valueOf(isServerSpan));
+        }
+    }
+
+    public static final String NEST_DEPTH_PREFIX = "nestDepth=";
+    
+    public int getNestDepth(String url) {
+        // "http://localhost:8010/serviceApp/rest/testService/getNested?nestDepth=4"
+        //   "&async=true"
+        //   "&port=8010&response=nested+%5B+4+%5D+async+%5B+true+%5D&host=localhost&contextRoot=serviceApp"
+
+        // *** A nested get must have a depth depth encoded in the request URL. ***
+
+        int depthStart = url.indexOf(NEST_DEPTH_PREFIX);
+        if ( depthStart == -1 ) {
+            assertLtEq("Nested depth attribute location in [ " + url + " ]", 0, depthStart);
+        }
+        depthStart += NEST_DEPTH_PREFIX.length();
+
+        int depthEnd = url.indexOf("&", depthStart);
+        if ( depthEnd == -1 ) {
+            assertLt("Nested depth attribute location in [ " + url + " ]", depthStart, depthEnd);
+        }
+
+        String nestText = url.substring(depthStart, depthEnd);
+
+        return Integer.parseInt(nestText);
+    }
+    
+    public void verifySpinners(List<FATSpan> completedSpans) throws Exception {
+        String methodName = "verifySpinners";
 
         // *** Each plan entry must have a collection of spans. ***
 
@@ -1734,27 +2062,27 @@ public class FATOpentracing implements FATOpentracingConstants {
             assertLtEq("Plan number", 0, planNo);
             assertLt("Plan number", planNo, SPIN_TEST_PLAN.length);
 
-            int expectedRequests = SPIN_TEST_PLAN[planNo];
-            info(methodName, "Plan requests", Integer.valueOf(expectedRequests));
+            int expectedTraceIds = SPIN_TEST_PLAN[planNo];
+            info(methodName, "Plan completed trace IDs", Integer.valueOf(expectedTraceIds));
 
-            Map<String, List<FATUtilsSpans.CompletedSpan>> spansForAllTraceIds =
+            Map<String, List<FATSpan>> spansForAllTraceIds =
                 spansForPlan.getSpansForAllTraceIds();
 
-            int completedRequests = spansForAllTraceIds.size();
+            int completedTraceIds = spansForAllTraceIds.size();
             
             // *** One trace ID must be recorded for each request made for this test plan entry. ***
 
-            assertEq("Completed requests", expectedRequests, completedRequests); 
+            assertEq("Completed trace IDs", expectedTraceIds, completedTraceIds); 
 
-            for ( List<FATUtilsSpans.CompletedSpan> spansForTraceId : spansForAllTraceIds.values() ) {
+            for ( List<FATSpan> spansForTraceId : spansForAllTraceIds.values() ) {
 
                 // *** Each of the span collections for a single trace ID must have exactly one root span. ***
 
-                verifyContiguousSpans( spansForTraceId, spansForTraceId.size() );
+                verifyContiguousSpans( SERVER_EVEN, spansForTraceId, spansForTraceId.size() );
 
                 /// *** Each of the span collections for a single trace ID must be a nested 4 spans collection. ***
 
-                verifyNestedSpans4(spansForTraceId);
+                verifyNestedSpans4(SERVER_EVEN, spansForTraceId);
             }
         }
     }
@@ -1773,7 +2101,7 @@ public class FATOpentracing implements FATOpentracingConstants {
             this.planNo = planNo;
 
             this.spansForAllTraceIds =
-                new HashMap<String, List<FATUtilsSpans.CompletedSpan>>();
+                new HashMap<String, List<FATSpan>>();
         }
 
         //
@@ -1786,9 +2114,9 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         //
 
-        private final Map<String, List<FATUtilsSpans.CompletedSpan>> spansForAllTraceIds;
+        private final Map<String, List<FATSpan>> spansForAllTraceIds;
 
-        public Map<String, List<FATUtilsSpans.CompletedSpan>> getSpansForAllTraceIds() {
+        public Map<String, List<FATSpan>> getSpansForAllTraceIds() {
             return spansForAllTraceIds;
         }
 
@@ -1813,16 +2141,16 @@ public class FATOpentracing implements FATOpentracingConstants {
          * @return True or false according to whether the span was added.
          *     Always true if the force parameter is true.
          */
-        public boolean add(FATUtilsSpans.CompletedSpan completedSpan, boolean force) {
+        public boolean add(FATSpan completedSpan, boolean force) {
             String traceId = completedSpan.getTraceId();
-            List<FATUtilsSpans.CompletedSpan> spansForTraceId =
+            List<FATSpan> spansForTraceId =
                 spansForAllTraceIds.get(traceId);
 
             if ( spansForTraceId == null ) {
                 if ( !force ) {
                     return false;
                 } else {
-                    spansForTraceId = new ArrayList<FATUtilsSpans.CompletedSpan>();
+                    spansForTraceId = new ArrayList<FATSpan>();
                     spansForAllTraceIds.put(traceId, spansForTraceId);
                 }
             }
@@ -1845,13 +2173,13 @@ public class FATOpentracing implements FATOpentracingConstants {
      * 
      * @return The spans partitions by plan number and by thread ID.
      */
-    public Map<Integer, SpansForPlan> splitSpans(List<FATUtilsSpans.CompletedSpan> completedSpans) {
+    public Map<Integer, SpansForPlan> splitSpans(List<FATSpan> completedSpans) {
         String methodName = "splitSpans";
 
         Map<Integer, SpansForPlan> spansForAllPlans =
             new HashMap<Integer, SpansForPlan>();
-        List<FATUtilsSpans.CompletedSpan> unknownPlanSpans =
-            new ArrayList<FATUtilsSpans.CompletedSpan>();
+        List<FATSpan> unknownPlanSpans =
+            new ArrayList<FATSpan>();
 
         // Add each span into a bucket based on its plan ID.
 
@@ -1859,7 +2187,7 @@ public class FATOpentracing implements FATOpentracingConstants {
         int numKnownPlanSpans = 0;
         int numUniquePlanSpans = 0;
 
-        for ( FATUtilsSpans.CompletedSpan completedSpan : completedSpans ) {
+        for ( FATSpan completedSpan : completedSpans ) {
             int planNo = getPlanNumber(completedSpan);
             if ( planNo == UNKNOWN_PLAN_NO ) {
                 unknownPlanSpans.add(completedSpan);
@@ -1891,7 +2219,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         int numOrphanSpans = 0;
         
-        for ( FATUtilsSpans.CompletedSpan completedSpan : unknownPlanSpans ) {
+        for ( FATSpan completedSpan : unknownPlanSpans ) {
             boolean orphaned = true;
             for ( SpansForPlan spansForPlan : spansForAllPlans.values() ) {
                 if ( spansForPlan.add(completedSpan, SpansForPlan.DO_NOT_FORCE) ) {
@@ -1914,10 +2242,10 @@ public class FATOpentracing implements FATOpentracingConstants {
     public static final String PLAN_PREFIX = "plan+%5B+";
     public static final String PLAN_SUFFIX = "+%5D";
 
-    public int getPlanNumber(FATUtilsSpans.CompletedSpan completedSpan) {
+    public int getPlanNumber(FATSpan completedSpan) {
         String methodName = "getPlanNumber";
 
-        String spanUrl = completedSpan.getTag(FATUtilsSpans.TAG_HTTP_URL);
+        String spanUrl = completedSpan.getTag(FATSpan.TAG_HTTP_URL);
         if ( spanUrl == null ) {
             return UNKNOWN_PLAN_NO;
         }

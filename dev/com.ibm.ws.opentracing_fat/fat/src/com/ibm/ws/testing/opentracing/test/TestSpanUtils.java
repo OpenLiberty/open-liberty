@@ -17,13 +17,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  *
  * <p>These tests use completed spans as test data.  The tests
  * generate JSON formatted print strings, following the format
- * used by the open tracing mock tracer, then parse and marshall
- * new completed spans, then verify that the marshalled spans are
+ * used by the open tracing mock tracer, then parse and marshal
+ * new completed spans, then verify that the marshaled spans are
  * the same as the initial spans.</p>
  *
  * <p>If the JSON print string of the mock tracer completed spans
  * changes, these tests, along with the span utilities in
- * {@link FATUtilsSpans} will need to be updated to match.</p>
+ * {@link FATSpanUtils} will need to be updated to match.</p>
  */
 @Mode(TestMode.FULL)
 public class TestSpanUtils {
@@ -33,10 +33,10 @@ public class TestSpanUtils {
      * <p>Three completed spans are generated as test data: A span with no
      * tags, a span with exactly one tag, and a span with exactly two tags.</p>
      */
-    private static List<FATUtilsSpans.CompletedSpan> SPANS;
+    private static List<FATSpan> SPANS;
 
     static {
-        FATUtilsSpans.CompletedSpan span0_noTags = new FATUtilsSpans.CompletedSpan(
+        FATSpan span0_noTags = new FATSpan(
             "traceId0", "parentId0", "spanId0",
             "operation1",
             0L, 1L, 1L,
@@ -44,7 +44,7 @@ public class TestSpanUtils {
 
         Map<String, String> oneTag = new HashMap<String, String>(1);
         oneTag.put("tag10", "value10");
-        FATUtilsSpans.CompletedSpan span1_oneTag = new FATUtilsSpans.CompletedSpan(
+        FATSpan span1_oneTag = new FATSpan(
             "traceId1", "parentId1", "spanId1",
             "operation1",
             10L, 11L, 1L,
@@ -53,13 +53,13 @@ public class TestSpanUtils {
         Map<String, String> twoTags = new HashMap<String, String>(2);
         twoTags.put("tag20", "value20");
         twoTags.put("tag21", "value21");
-        FATUtilsSpans.CompletedSpan span2_twoTags = new FATUtilsSpans.CompletedSpan(
+        FATSpan span2_twoTags = new FATSpan(
             "traceId2", "parentId2", "spanId2",
             "operation2",
             20L, 21L, 1L,
             twoTags);
 
-        SPANS = new ArrayList<FATUtilsSpans.CompletedSpan>(3);
+        SPANS = new ArrayList<FATSpan>(3);
         SPANS.add(span0_noTags);
         SPANS.add(span1_oneTag);
         SPANS.add(span2_twoTags);
@@ -109,8 +109,8 @@ public class TestSpanUtils {
      */
     @Test
     public void testSpans0() throws Exception {
-        FATUtilsSpans.CompletedSpan[] noSpans =
-            new FATUtilsSpans.CompletedSpan[0];
+        FATSpan[] noSpans =
+            new FATSpan[0];
         validateSpans(noSpans); // throws IOException
     }
 
@@ -122,8 +122,8 @@ public class TestSpanUtils {
      */
     @Test
     public void testSpans1() throws Exception {
-        FATUtilsSpans.CompletedSpan[] oneSpan =
-            new FATUtilsSpans.CompletedSpan[] { SPANS.get(0) };
+        FATSpan[] oneSpan =
+            new FATSpan[] { SPANS.get(0) };
         validateSpans(oneSpan); // throws IOException
     }
 
@@ -135,42 +135,42 @@ public class TestSpanUtils {
      */
     @Test
     public void testSpans3() throws Exception {
-        FATUtilsSpans.CompletedSpan[] threeSpans =
-            new FATUtilsSpans.CompletedSpan[] { SPANS.get(0), SPANS.get(1), SPANS.get(2) };
+        FATSpan[] threeSpans =
+            new FATSpan[] { SPANS.get(0), SPANS.get(1), SPANS.get(2) };
         validateSpans(threeSpans); // throws IOException
     }
 
     //
 
     /**
-     * <p>Span validation utility: Obtain the print string for a span, then marshall
+     * <p>Span validation utility: Obtain the print string for a span, then marshal
      * that print string back into a span, then make sure the original span is the same
-     * as the marshalled span.</p>
+     * as the marshaled span.</p>
      *
      * @param span The span which is to be validated.
      *
      * @throws IOException Thrown in case of a failure to parse the print string
      * of the span.
      */
-    public void validateSpan(FATUtilsSpans.CompletedSpan span) throws IOException {
+    public void validateSpan(FATSpan span) throws IOException {
         String spanText = span.toString();
-        FATUtilsSpans.CompletedSpan parsedSpan = FATUtilsSpans.parseSpan(spanText); // throws IOException
+        FATSpan parsedSpan = FATSpanUtils.parseSpan(spanText); // throws IOException
         Assert.assertTrue("Spans are equal", span.equals(parsedSpan));
     }
 
     /**
      * <p>Span validation utility: Generate a print string for the collection of
-     * spans, parse and marshall that print string back into a collection of spans,
+     * spans, parse and marshal that print string back into a collection of spans,
      * then verify that the final and initial collections have the same spans.</p>
      *
      * @param spans The initial collection of spans which is to be validated.
      *
      * @throws IOException Thrown if the print string of the spans cannot be parsed.
      */
-    public void validateSpans(FATUtilsSpans.CompletedSpan[] spans) throws IOException {
+    public void validateSpans(FATSpan[] spans) throws IOException {
         String spansText = toString(spans);
-        List<FATUtilsSpans.CompletedSpan> parsedSpans =
-            FATUtilsSpans.parseSpans(spansText); // throws IOException
+        List<FATSpan> parsedSpans =
+            FATSpanUtils.parseSpans(spansText); // throws IOException
         validateSpans(parsedSpans, spans);
     }
 
@@ -185,8 +185,8 @@ public class TestSpanUtils {
      * @param initialSpans A collection of spans which is to be validated.
      */
     private void validateSpans(
-        List<FATUtilsSpans.CompletedSpan> finalSpans,
-        FATUtilsSpans.CompletedSpan... initialSpans) {
+        List<FATSpan> finalSpans,
+        FATSpan... initialSpans) {
 
         Assert.assertTrue(
             "Parsed spans count [ " + Integer.toString(finalSpans.size()) + " ]" +
@@ -194,8 +194,8 @@ public class TestSpanUtils {
             (finalSpans.size() == initialSpans.length) );
 
         for ( int spanNo = 0; spanNo < initialSpans.length; spanNo++ ) {
-            FATUtilsSpans.CompletedSpan initialSpan = initialSpans[spanNo];
-            FATUtilsSpans.CompletedSpan finalSpan = finalSpans.get(spanNo);
+            FATSpan initialSpan = initialSpans[spanNo];
+            FATSpan finalSpan = finalSpans.get(spanNo);
 
             Assert.assertTrue(
                 "Span [ " + Integer.toString(spanNo) + " ]" +
@@ -228,13 +228,13 @@ public class TestSpanUtils {
      *
      * @return The JSON formatted print string of the spans.
      */
-    private String toString(FATUtilsSpans.CompletedSpan... spans) {
+    private String toString(FATSpan... spans) {
         StringBuffer result = new StringBuffer("{ ");
 
         result.append("\"completedSpans\": [");
 
         String elementPrefix = "\n  ";
-        for ( FATUtilsSpans.CompletedSpan completedSpan : spans ) {
+        for ( FATSpan completedSpan : spans ) {
             result.append(elementPrefix);
             result.append( completedSpan.toString() );
             elementPrefix = ",\n  ";
