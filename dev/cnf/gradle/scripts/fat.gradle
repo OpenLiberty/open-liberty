@@ -249,7 +249,11 @@ task autoFVT {
     }
     if(featureDeps.size() > 0) {
       println "This FAT tests the following features: " + featureDeps
-      new File("${autoFvtDir}/fat-feature-deps.json").write(new groovy.json.JsonBuilder(featureDeps).toPrettyString())
+      def fatDeps = new groovy.json.JsonBuilder()
+      def root = fatDeps { 
+    	  "feature-deps" featureDeps
+      }
+      new File("${autoFvtDir}/fat-metadata.json").write(new groovy.json.JsonBuilder(root).toPrettyString())
     } else {
       println "This FAT does not test any features."
     }
