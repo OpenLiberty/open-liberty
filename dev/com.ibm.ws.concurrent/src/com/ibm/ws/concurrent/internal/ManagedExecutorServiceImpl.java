@@ -141,6 +141,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     final PrivilegedAction<WSContextService> contextSvcAccessor = new PrivilegedAction<WSContextService>() {
         @Override
+        @Trivial
         public WSContextService run() {
             try {
                 return contextSvcRef.getServiceWithException();
@@ -201,6 +202,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     final PrivilegedAction<ThreadContextProvider> tranContextProviderAccessor = new PrivilegedAction<ThreadContextProvider>() {
         @Override
+        @Trivial
         public ThreadContextProvider run() {
             return tranContextProviderRef.getService();
         }
@@ -500,6 +502,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAny(tasks, createCallbacks(tasks));
+
         ExecutorService execSvc = getExecSvc();
 
         Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);
@@ -516,6 +522,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAny(tasks, createCallbacks(tasks), timeout, unit);
+
         ExecutorService execSvc = getExecSvc();
 
         Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);
