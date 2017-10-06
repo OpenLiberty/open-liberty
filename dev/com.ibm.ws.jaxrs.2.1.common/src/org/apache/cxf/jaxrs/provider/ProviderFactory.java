@@ -104,6 +104,7 @@ import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
 import com.ibm.ws.jaxrs20.providers.jsonp.JsonPProvider;
 import com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider;
+import com.ibm.ws.jaxrs20.utils.CustomizerUtils;
 
 public abstract class ProviderFactory {
     private static final TraceComponent tc = Tr.register(ProviderFactory.class);
@@ -1600,7 +1601,7 @@ public abstract class ProviderFactory {
              */
             JaxRsFactoryBeanCustomizer beanCustomizer = InjectionRuntimeContextHelper.findBeanCustomizer(o.getClass(), getBus());
             if (beanCustomizer != null) {
-                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())));
+                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(CustomizerUtils.createCustomizerKey(beanCustomizer)));
 
                 if (proxyObject != null && (proxyObject != o || !proxyObject.equals(o))) {
                     pi.setProvider(proxyObject);
@@ -1608,7 +1609,7 @@ public abstract class ProviderFactory {
             }
 
             if (beanCustomizer != null && DynamicFeature.class.isAssignableFrom(pi.getProvider().getClass())) {
-                Object newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())),
+                Object newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(CustomizerUtils.createCustomizerKey(beanCustomizer)),
                                                                                     null);
                 if (newProviderInstance != null) {
                     pi.setProvider(newProviderInstance);
