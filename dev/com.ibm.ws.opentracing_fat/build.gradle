@@ -21,3 +21,10 @@ addRequiredLibraries {
         }
     }
 }
+
+autoFVT {
+	doLast {
+		// Manually clear out JSON-P 1.0 (automatically added to all FATs) because we want to use JSON-P 1.1
+		delete "${buildDir}/autoFVT/lib/com.ibm.ws.org.glassfish.json.1.0.jar"
+	}
+}

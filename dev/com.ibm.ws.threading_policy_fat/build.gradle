@@ -18,7 +18,19 @@ task copyFeatureBundle {
     }
   }
 }
-      
+
+task copyInternalThreadingBundle {
+  dependsOn copyFeatureBundles
+  doLast {
+    copy {
+      from rootProject.project('com.ibm.ws.threading').buildDir
+      include 'com.ibm.ws.threading.jar'
+      into "${buildDir}/autoFVT/lib"
+    }
+  }
+}
+
 autoFVT {
+  dependsOn copyInternalThreadingBundle
   dependsOn copyFeatureBundle
 }

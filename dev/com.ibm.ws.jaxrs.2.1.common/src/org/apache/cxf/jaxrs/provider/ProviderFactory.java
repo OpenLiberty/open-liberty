@@ -19,7 +19,6 @@
 //https://issues.apache.org/jira/browse/CXF-6307
 package org.apache.cxf.jaxrs.provider;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -44,8 +43,8 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.activation.DataSource;
 import javax.json.spi.JsonProvider;
+import javax.json.bind.spi.JsonbProvider;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Application;
@@ -83,15 +82,7 @@ import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProviderWrapper;
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
@@ -102,6 +93,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.JaxRsConstants;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
+import com.ibm.ws.jaxrs20.providers.jsonb.JsonBProvider;
 import com.ibm.ws.jaxrs20.providers.jsonp.JsonPProvider;
 import com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider;
 import com.ibm.ws.jaxrs20.utils.CustomizerUtils;
@@ -123,7 +115,6 @@ public abstract class ProviderFactory {
     private static final String BUS_PROVIDERS_ALL = "org.apache.cxf.jaxrs.bus.providers";
     private static final String PROVIDER_CACHE_ALLOWED = "org.apache.cxf.jaxrs.provider.cache.allowed";
     private static final String PROVIDER_CACHE_CHECK_ALL = "org.apache.cxf.jaxrs.provider.cache.checkAllCandidates";
-    private static final String JSONPCLASS = "javax.json.Json";
 
     protected Map<NameKey, ProviderInfo<ReaderInterceptor>> readerInterceptors = new NameKeyMap<ProviderInfo<ReaderInterceptor>>(true);
     protected Map<NameKey, ProviderInfo<WriterInterceptor>> writerInterceptors = new NameKeyMap<ProviderInfo<WriterInterceptor>>(true);
@@ -197,7 +188,7 @@ public abstract class ProviderFactory {
                              //new StringProvider<Object>(), // Liberty Change for CXF
                              //new JAXBElementSubProvider(),
                              createJsonpProvider(), // Liberty Change for CXF Begin
-                             createJacksonProvider(),
+                             createJsonbProvider(),
                              new IBMMultipartProvider(), // Liberty Change for CXF End
                              new MultipartProvider());
         Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
@@ -233,15 +224,17 @@ public abstract class ProviderFactory {
 
     // Liberty Change for CXF Begin
     private static Object createJsonpProvider() {
-        
-        BundleContext bc = FrameworkUtil.getBundle(ProviderFactory.class).getBundleContext();
-        ServiceReference<JsonProvider> sr = bc.getServiceReference(JsonProvider.class);
-        JsonProvider jsonProvider = (JsonProvider)bc.getService(sr);
+        JsonProvider jsonProvider = null;
+        Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
+        if(b != null) {
+            BundleContext bc = b.getBundleContext();
+            ServiceReference<JsonProvider> sr = bc.getServiceReference(JsonProvider.class);
+            jsonProvider = (JsonProvider)bc.getService(sr);
+        }
         return new JsonPProvider(jsonProvider);
     }
+    // Liberty Change for CXF End
 
-    //JsonPProvider and IBM JSON4J Provider handle
-    private final static String[] jsonpClasses = new String[] { "javax.json.JsonArray", "javax.json.JsonObject", "javax.json.JsonStructure" };//,
 
     @FFDCIgnore(value = { ClassNotFoundException.class })
     public static Class<?> loadClass(ClassLoader cl, String className) {
@@ -257,44 +250,16 @@ public abstract class ProviderFactory {
 
         return c;
     }
-
-    private static Object createJacksonProvider() {
-
-        JacksonJaxbJsonProvider jacksonjaxbprovider = new JacksonJaxbJsonProviderWrapper();
-        jacksonjaxbprovider.addUntouchable(DataSource.class);//Let DataSourceProvider handle DataSource.class
-        jacksonjaxbprovider.addUntouchable(File.class);
-
-        // Like createJsonpProvider(), this code attempts to load the JSON-P classes to ensure that
-        // the Jackson provider that we want to return will function properly -- this requires that
-        // this class' bundle is able to load the JSON-P classes via dynamic import -- which requires
-        // that the jsonp feature is provisioned.
-        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
-
-            @Override
-            public ClassLoader run() {
-                return ProviderFactory.class.getClassLoader();
-            }
-        });
-
-        for (String clsName : jsonpClasses) { //JsonPProvider and IBM JSON4J Provider handle
-            Class<?> c = ProviderFactory.loadClass(cl, clsName);
-            if (c != null) {
-                jacksonjaxbprovider.addUntouchable(c);
-            }
+    
+    private static Object createJsonbProvider() {
+        JsonbProvider jsonbProvider = null;
+        Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
+        if(b != null) {
+            BundleContext bc = b.getBundleContext();
+            ServiceReference<JsonbProvider> sr = bc.getServiceReference(JsonbProvider.class);
+            jsonbProvider = (JsonbProvider)bc.getService(sr);
         }
-
-        ObjectMapper mapperObject = new ObjectMapper();
-        AnnotationIntrospector annotationIntrospectorPairObject = new AnnotationIntrospector.Pair(new JaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
-
-        SerializationConfig serializationConfig = mapperObject.getSerializationConfig();
-        serializationConfig.setSerializationInclusion(Inclusion.NON_NULL);
-        serializationConfig.setAnnotationIntrospector(annotationIntrospectorPairObject);
-
-        DeserializationConfig deserializationConfig = mapperObject.getDeserializationConfig();
-        deserializationConfig.setAnnotationIntrospector(annotationIntrospectorPairObject);
-
-        jacksonjaxbprovider.setMapper(mapperObject);
-        return jacksonjaxbprovider;
+        return new JsonBProvider(jsonbProvider);
     }
 
     // Liberty Change for CXF End

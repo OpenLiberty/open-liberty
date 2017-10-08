@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.target: 1.8
+javac.source: 1.8
+
 src: \
 	fat/src,\
 	test-applications/jpa21bootstrap/src,\
@@ -20,7 +23,7 @@ test.project: true
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
-# runtime.minimum.java.level: 1.8
+runtime.minimum.java.level: 1.8
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
@@ -28,4 +31,4 @@ test.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
-	org.apache.derby:derby;version=10.11.1
+	org.apache.derby:derby;version=10.11.1.1

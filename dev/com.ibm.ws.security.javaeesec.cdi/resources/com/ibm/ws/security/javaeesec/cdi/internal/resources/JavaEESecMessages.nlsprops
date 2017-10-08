@@ -16,5 +16,12 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1X00 - CWWKS1X99
+# Message prefix block: CWWKS1925 - CWWKS1949
 
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: The application deployment is failed because multiple HttpAuthenticationMechanism implementation are found. The list of classes is {0}. Most likely, this is an application packaging issue. Please make sure that there is only one HttpAuthenticationMechanism implementation in the application.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=The application deployment is failed because more than one HttpAuthenticationMechanism implementation are found. This condition is not allowed.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only one HttpAuthenticationMechanism implementation in the application.
+
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: LoginToContinueProperties bean does not exist. The form login is not enabled. Please make sure that the application is annotated by LoginToContinue annotation.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=LoginToContinueProperties bean which is required for the form login authentication does not exist.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Make sure that the application is annotated by LoginToContinue annotation in FormAuthenticationMechanismDefinition or CustomFormAuthenticationMechanismDefinition annotation.

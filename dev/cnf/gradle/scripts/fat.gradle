@@ -62,9 +62,26 @@ task addRequiredLibraries {
   }
 }
 
+task copyFeatureBundles {
+  shouldRunAfter assemble
+  enabled file("${projectDir}/test-bundles").exists()
+  doLast {
+    file("${buildDir}/buildfiles").eachLine { String line ->
+      if(!line.contains(project.name + ".jar")) {
+        copy {
+          from line
+          into "${buildDir}/autoFVT/publish/files/bundles"
+        }
+      }
+    }
+  }
+}
+
 task autoFVT {
   dependsOn jar
   dependsOn copyMavenLibs
+  dependsOn addRequiredLibraries
+  dependsOn copyFeatureBundles
   enabled new File("${projectDir}/fat").exists()
 
   // For now we are just forcing the autoFVT create every time, this will be fixed
@@ -103,6 +120,13 @@ task autoFVT {
       from buildDir
       include '*.jar'
       into "${autoFvtDir}/build/lib"
+    }
+    
+    // Include JSON-P processor implementation
+    copy {
+      from rootProject.project('com.ibm.ws.org.glassfish.json').buildDir
+      include '*.jar'
+      into "${autoFvtDir}/lib"
     }
 
     // Copy the DDL files
@@ -181,7 +205,7 @@ task autoFVT {
       include 'com.ibm.ws.logging.core.jar'
       into "${autoFvtDir}/lib"
     }
-      
+    
     // Copy all non-java app resourecs, such as *.html or *.jsp
     copy {
       includeEmptyDirs = false
@@ -189,6 +213,45 @@ task autoFVT {
       into "${autoFvtDir}/"
       include 'test-applications/**', 'test-bundles/**', 'test-resourceadapters/**'
       exclude '**/*.java'
+    }
+    
+    // Produce a list of features tested by this FAT
+    def featureDeps = [] as Set
+    // Include features added explictly via bnd.bnd
+    def testedFeatures = bnd('tested.features')
+    if(testedFeatures != null)
+      testedFeatures.split(',').each{ featureDeps.add(it.trim().toLowerCase()) }
+    // Scan publish/ dir for features
+    if(file("${autoFvtDir}/publish/").exists()) {
+      file("${autoFvtDir}/publish/").eachFileRecurse(groovy.io.FileType.FILES) {
+        if(it.name.endsWith('.xml')) {
+          file(it).eachLine { line ->
+            if(line.contains("<feature>")) {
+              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
+              featureDeps.add(feature.trim().toLowerCase())
+            }
+          }
+        }
+      }
+    }
+    // Scan FAT files dir for features
+    if(file("${autoFvtDir}/lib/LibertyFATTestFiles").exists()){
+      file("${autoFvtDir}/lib/LibertyFATTestFiles").eachFileRecurse(groovy.io.FileType.FILES) {
+        if(it.name.endsWith('.xml')) {
+          file(it).eachLine { line ->
+            if(line.contains("<feature>")) {
+              def feature = (line =~ /.*<feature>(.*)<\/feature>.*/)[0][1]
+              featureDeps.add(feature.trim().toLowerCase())
+            }
+          }
+        }
+      }
+    }
+    if(featureDeps.size() > 0) {
+      println "This FAT tests the following features: " + featureDeps
+      new File("${autoFvtDir}/fat-feature-deps.json").write(new groovy.json.JsonBuilder(featureDeps).toPrettyString())
+    } else {
+      println "This FAT does not test any features."
     }
   }
 }
@@ -205,21 +268,6 @@ task zipProjectFVT(type: Zip) {
   baseName project.name
   into project.name + '/build/lib', {from "${distsDir}/autoFVT.zip"}
   into project.name, {from 'build-test.xml'}
-}
-
-task copyFeatureBundles {
-  shouldRunAfter assemble
-  enabled file("${projectDir}/test-bundles").exists()
-  doLast {
-    file("${buildDir}/buildfiles").eachLine { String line ->
-      if(!line.contains(project.name + ".jar")) {
-        copy {
-          from line
-          into "${buildDir}/autoFVT/publish/files/bundles"
-        }
-      }
-    }
-  }
 }
 
 task runfat(type: Exec) {
@@ -249,11 +297,6 @@ compileJava {
 
 assemble {
   dependsOn zipProjectFVT
-}
-
-autoFVT {
-  dependsOn addRequiredLibraries
-  dependsOn copyFeatureBundles
 }
 
 task buildandrun {

@@ -198,9 +198,9 @@ public class PluginGenerator {
 
         // Because this method is synchronized there can become a queue of requests waiting which then don't get started
         // for a significant time period. As a result if the servers is now shutting down skip generation.
-        if (pcd == null || FrameworkState.isStopping()) {
+        if (pcd == null || FrameworkState.isStopping() || container.isServerStopping()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                Tr.exit(tc, "generateXML", (FrameworkState.isStopping() ? "Framework is stopping" : "pcd is null"));
+                Tr.exit(tc, "generateXML", ((FrameworkState.isStopping() || container.isServerStopping()) ? "Server is stopping" : "pcd is null"));
             }
             // add error message in next update
             return;

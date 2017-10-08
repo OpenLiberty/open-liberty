@@ -88,6 +88,7 @@ import com.ibm.ws.fat.util.ACEScanner;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
+import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
@@ -2034,22 +2035,20 @@ public class LibertyServer implements LogMonitorClient {
             throw serverStartException;
         }
 
-        if (validateApps || validateTimedExit) {
-            // App validation needs the info messages in messages.log
-
-            if (!messagesLog.exists()) {
-                // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
-                Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
-                messagesLog = consoleLog;
-            }
-
-            if (validateTimedExit) {
-                validateTimedExitEnabled(messagesLog);
-            }
-            if (validateApps) {
-                validateAppsLoaded(messagesLog);
-            }
+        if (!messagesLog.exists()) {
+            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
+            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
+            messagesLog = consoleLog;
         }
+
+        // App validation needs the info messages in messages.log
+        if (validateTimedExit) {
+            validateTimedExitEnabled(messagesLog);
+        }
+        if (validateApps) {
+            validateAppsLoaded(messagesLog);
+        }
+        FeatureDependencyProcessor.validateTestedFeatures(this, messagesLog);
     }
 
     protected void validateTimedExitEnabled(RemoteFile messagesLog) throws Exception {
@@ -4730,11 +4729,11 @@ public class LibertyServer implements LogMonitorClient {
                     } else
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
-                        String regexp = it.next();
-                        if (Pattern.compile(regexp).matcher(line).find()) {
-                        it.remove();
-                        break;
-                        }
+                            String regexp = it.next();
+                            if (Pattern.compile(regexp).matcher(line).find()) {
+                                it.remove();
+                                break;
+                            }
                         }
                 }
             }
@@ -4766,6 +4765,8 @@ public class LibertyServer implements LogMonitorClient {
             Log.warning(c, message);
             throw new RuntimeException(message);
         }
+
+        FeatureDependencyProcessor.validateTestedFeatures(this, logFile);
 
         return matchingLines;
     }

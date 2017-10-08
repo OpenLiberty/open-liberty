@@ -28,8 +28,8 @@ task packageOpenLiberty {
     doLast {
         // Create server in order to minify an image that only includes kind=ga features
         String serverName = "packageOpenLiberty"
-		if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		   exec {
+        if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+           exec {
               workingDir "${projectDir}/wlp/bin"
               commandLine "cmd", "/c", "server", "create", serverName
            }
@@ -70,8 +70,8 @@ task packageOpenLiberty {
 
             String archive = "${buildDir}/openliberty.zip"
             delete archive
-			if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
-		    exec {
+            if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
+            exec {
               workingDir "${projectDir}/wlp/bin"
               commandLine "cmd", "/c", "server", "package", serverName, "--archive=${archive}", "--include=minify"
             }
@@ -104,16 +104,6 @@ task zipOpenLiberty(type: Zip) {
     from packageDir
     destinationDir distsDir
     version releaseVersion
-    doLast {
-        //TODO: need a better mechanism for 'stowaway properties' that need to be used in future gradle invocations
-        def props = new Properties()
-        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-
-        props.setProperty('zipopenliberty.archivename', archivePath.toString())
-
-        File propsFile = new File("${rootDir}/generated.properties")
-        props.store(propsFile.newWriter(), null)
-    }
 }
 publish.dependsOn zipOpenLiberty
 
@@ -125,6 +115,15 @@ task zipOpenLibertyAll(type: Zip) {
     include 'wlp/**'
     destinationDir distsDir
     version releaseVersion
+    doLast {
+        def props = new Properties()
+        file("${rootDir}/generated.properties").withInputStream { props.load(it) }
+
+        props.setProperty('zipopenliberty.archivename', archivePath.toString())
+
+        File propsFile = new File("${rootDir}/generated.properties")
+        props.store(propsFile.newWriter(), null)
+    }
 }
 
 task copyPropertiesToBuildImage (type:Copy) {
