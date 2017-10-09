@@ -396,12 +396,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 }
 
                 // Check if shutdown occurred since acquiring the permit to enqueue, and if so, try to remove the queued task
-                if (state.get() != State.ACTIVE && queue.remove(policyTaskFuture)) {
-                    RejectedExecutionException x = new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
-                    if (policyTaskFuture.callback != null)
-                        policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x); // aborted, queued task will never run
-                    throw x;
-                }
+                if (state.get() != State.ACTIVE && queue.remove(policyTaskFuture))
+                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
             } else if (state.get() == State.ACTIVE) {
                 QueueFullAction action = Boolean.TRUE.equals(callerRunsOverride) ? QueueFullAction.CallerRuns : queueFullAction.get();
                 if (Boolean.FALSE.equals(callerRunsOverride) && (action == QueueFullAction.CallerRuns || action == QueueFullAction.CallerRunsIfSameExecutor))
@@ -419,18 +415,26 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } catch (InterruptedException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
+            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
+                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
             throw new RejectedExecutionException(x);
         } catch (RejectedExecutionException x) { // redundant with RuntimeException code path, but added to allow FFDCIgnore
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
+            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
+                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
             throw x;
         } catch (RuntimeException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
+            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
+                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
             throw x;
         } catch (Error x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
+            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
+                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
             throw x;
         }
         return enqueued;
