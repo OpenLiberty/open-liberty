@@ -60,6 +60,10 @@ com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.6.2
 com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.6.2
 com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.6.2
 com.ibm.ws.org.codehaus.jackson:jackson-xc:1.6.2
+com.ibm.ws.org.codehaus.jackson:jackson-core-asl:1.9.13
+com.ibm.ws.org.codehaus.jackson:jackson-jaxrs:1.9.13
+com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl:1.9.13
+com.ibm.ws.org.codehaus.jackson:jackson-xc:1.9.13
 com.ibm.ws.org.objenesis:objenesis:1.0
 com.ibm.ws.commons-collections:commons-collections:3.2.1
 com.ibm.ws.commons-fileupload:commons-fileupload:1.2.1

@@ -135,10 +135,10 @@ Private-Package:\
    com.ibm.ws.jaxrs20.*, \
 
 Include-Resource: \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-xc;1.6.2}, \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2}, \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;1.6.2}, \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2}, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-xc;1.9.13}, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.9.13}, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;1.9.13}, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.9.13}, \
   @${repo;org.apache.cxf.cxf-rt-rs-service-description;3.1.11;EXACT}, \
   @${repo;org.apache.cxf.cxf-tools-wadlto-jaxrs;3.1.11;EXACT}, \
   @${repo;org.apache.cxf.cxf-tools-common;3.1.11;EXACT}, \
