@@ -452,8 +452,8 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(blockerRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         // Use up the queue position
-        Callable<Integer> task2 = new SharedIncrementTask();
-        Future<Integer> queuedFuture = executor.submit(task2);
+        Runnable task2 = new SharedIncrementTask();
+        Future<?> queuedFuture = executor.submit(task2);
 
         // abort due to queue at capacity
         Runnable task3 = new SharedIncrementTask();
@@ -530,7 +530,8 @@ public class PolicyExecutorServlet extends FATServlet {
 
         List<Runnable> canceledFromQueue = executor.shutdownNow();
         assertEquals(1, canceledFromQueue.size());
-        assertEquals(queuedFuture, canceledFromQueue.get(0));
+        assertEquals(task2, canceledFromQueue.get(0));
+        assertTrue(queuedFuture.isCancelled());
         assertTrue(blockerFuture.isCancelled());
     }
 
