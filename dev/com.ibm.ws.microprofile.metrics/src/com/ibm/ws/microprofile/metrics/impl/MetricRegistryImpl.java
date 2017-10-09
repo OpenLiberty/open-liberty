@@ -90,6 +90,27 @@ public class MetricRegistryImpl extends MetricRegistry {
         }
     }
 
+    /**
+     * Convert the metric class type into an enum
+     * For MP Metrics 1.0, MetricType.from(Class in) does not support lambdas or proxy classes
+     *
+     * @param in The metric
+     * @return the matching Enum
+     */
+    public static MetricType from(Metric in) {
+        if (Gauge.class.isInstance(in))
+            return MetricType.GAUGE;
+        if (Counter.class.isInstance(in))
+            return MetricType.COUNTER;
+        if (Histogram.class.isInstance(in))
+            return MetricType.HISTOGRAM;
+        if (Meter.class.isInstance(in))
+            return MetricType.METERED;
+        if (Timer.class.isInstance(in))
+            return MetricType.TIMER;
+        return MetricType.INVALID;
+    }
+
     private final ConcurrentMap<String, Metric> metrics;
     private final ConcurrentMap<String, Metadata> metadata;
     private final ConcurrentHashMap<String, ConcurrentLinkedQueue<String>> applicationMap;
@@ -128,7 +149,8 @@ public class MetricRegistryImpl extends MetricRegistry {
      */
     @Override
     public <T extends Metric> T register(String name, T metric) throws IllegalArgumentException {
-        return register(name, metric, new Metadata(name, MetricType.from(metric.getClass())));
+        // For MP Metrics 1.0, MetricType.from(Class in) does not support lambdas or proxy classes
+        return register(name, metric, new Metadata(name, from(metric)));
     }
 
     @Override

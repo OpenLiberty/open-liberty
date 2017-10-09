@@ -11,6 +11,7 @@
 package com.ibm.websphere.simplicity;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -22,12 +23,16 @@ import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Helper utilities for working with the ShrinkWrap APIs.
  */
 public class ShrinkHelper {
+
+    protected static final Class<?> c = ShrinkHelper.class;
 
     /**
      * Export an artifact to servers/$server.getName()/$path/$a.getName() under two directories:
@@ -86,6 +91,7 @@ public class ShrinkHelper {
      * @param printArchiveContents Whether or not to log the contents of the archive being exported
      */
     public static Archive<?> exportArtifact(Archive<?> a, String dest, boolean printArchiveContents) {
+        Log.info(c, "exportArtifact", "Exporting shrinkwrap artifact: " + a.toString() + " to " + dest);
         File outputFile = new File(dest, a.getName());
         outputFile.getParentFile().mkdirs();
         a.as(ZipExporter.class).exportTo(outputFile, true);

@@ -146,3 +146,7 @@ ERROR_CREATING_JWT.useraction=Verify that the specified MicroProfile JWT configu
 MP_JWT_FRONT_END_ERROR=CWWKS5525E: An error was encountered while authenticating a user by using MicroProfile JSON Web Token (JWT).
 MP_JWT_FRONT_END_ERROR.explanation=A problem occurred while authenticating a user. There might have been a connection issue between the application and a third-party service provider, or a problem with authentication data.
 MP_JWT_FRONT_END_ERROR.useraction=Contact the system administrator to resolve the problem.
+
+MPJWT_NOT_FOUND_IN_APPLICATION=CWWKS5526W: The MicroProfile JWT feature cannot perform authentication because it is expecting [{0}] authentication type in the application, but found [{1}]. The [{2}] attribute is set to [{3}]. 
+MPJWT_NOT_FOUND_IN_APPLICATION.explanation=To perform authentication successfully, do one of the following. a) Make sure that the ignoreApplicationAuthMethod attribute is "true" b) loginConfig annotation is set to MP-JWT in the application.
+MPJWT_NOT_FOUND_IN_APPLICATION.useraction=Ensure that the server or application configuration is updated.

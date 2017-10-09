@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+# uncomment next line if you need to disable building this project
+#-nobundles=true
+
 src: \
 	fat/src,\
 	fat/resources
@@ -26,10 +29,11 @@ javac.target: 1.8
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
 # or for devel purposes, files, e.g. fat/lib/com.ibm.jaxrs2.0.thinclient_9.0.jar;version=file,\
+# eg fat/lib/javax.ws.rs-api-2.1.jar;version=file,\
 # BUNDLES HAVE TO BE FIRST, THEN FILES, THEN ARTIFACTORY OBJECTS.
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.ws:jaxrs-thinclient;version=9.0.0,\
+	javax.ws.rs:javax.ws.rs-api;version=2.0,\
 	javax:javaee-api;version=7.0,\
 	org.hamcrest:hamcrest-all;version=1.3,\
 	net.minidev:json-smart;version=1.3.1,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,20 +10,50 @@
  *******************************************************************************/
 package com.ibm.ws.microprofile.config.fat.tests;
 
+import java.io.File;
+
+import org.jboss.shrinkwrap.api.Archive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+
+import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
 
 /**
  *
  */
 public class CustomSourcesTest extends AbstractConfigApiTest {
 
+    private final static String testClassName = "CustomSourcesTest";
+
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("CustomSourcesServer");
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("CustomSourcesServer");
+
+    @BuildShrinkWrap    
+    public static Archive buildApp() {
+        String APP_NAME = "customSources";
+        WebArchive customSources_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.customSources.test")
+                        .addAsLibrary(SharedShrinkWrapApps.getTestAppUtilsJar())
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME
+                                                        + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSourceProvider"),
+                                               "services/org.eclipse.microprofile.config.spi.ConfigSourceProvider")
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
+                                               "services/org.eclipse.microprofile.config.spi.ConfigSource");
+ 
+        return customSources_war;
+    }
 
     public CustomSourcesTest() {
         super("/customSources/");

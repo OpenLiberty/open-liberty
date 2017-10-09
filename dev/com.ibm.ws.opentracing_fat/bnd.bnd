@@ -22,4 +22,4 @@ test.project: true
 	com.ibm.websphere.javaee.servlet.3.1;version=latest, \
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
-	com.ibm.json4j;version=latest
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest

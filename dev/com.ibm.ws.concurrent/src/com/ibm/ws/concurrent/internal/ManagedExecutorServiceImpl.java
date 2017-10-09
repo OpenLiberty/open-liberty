@@ -58,6 +58,9 @@ import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.ws.threading.PolicyExecutorProvider;
+import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
@@ -138,6 +141,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     final PrivilegedAction<WSContextService> contextSvcAccessor = new PrivilegedAction<WSContextService>() {
         @Override
+        @Trivial
         public WSContextService run() {
             try {
                 return contextSvcRef.getServiceWithException();
@@ -180,16 +184,25 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<String> jndiNameRef = new AtomicReference<String>();
 
     /**
+     * TODO Currently this field is only used for prototype usage of policy executor. Need to determine if managed executors can always use a policy executor.
+     */
+    private PolicyExecutor policyExecutor;
+
+    /**
      * Reference to the name of this managed executor service.
      * The name is the jndiName if specified, otherwise the config id.
      */
     final AtomicReference<String> name = new AtomicReference<String>();
+
+    @Reference
+    protected PolicyExecutorProvider policyExecutorProvider;
 
     /**
      * Privileged action to lazily obtain the transaction context provider.
      */
     final PrivilegedAction<ThreadContextProvider> tranContextProviderAccessor = new PrivilegedAction<ThreadContextProvider>() {
         @Override
+        @Trivial
         public ThreadContextProvider run() {
             return tranContextProviderRef.getService();
         }
@@ -223,6 +236,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
         execProps.put(WSContextService.TASK_OWNER, xsvcName);
         defaultExecutionProperties.set(execProps);
+
+        // TODO replace this temporary prototype code
+        if ("enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use")))
+            policyExecutor = policyExecutorProvider.create(xsvcName);
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -273,6 +290,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Deactivate
     protected void deactivate(ComponentContext context) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
+
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            policyExecutor.shutdownNow();
 
         contextSvcRef.deactivate(context);
         tranContextProviderRef.deactivate(context);
@@ -325,6 +346,36 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
             throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1112.all.tasks.canceled"));
 
         return list;
+    }
+
+    /**
+     * Capture context for a list of tasks and create callbacks that apply context and notify the ManagedTaskListener, if any.
+     *
+     * @param tasks collection of tasks.
+     * @return list of callbacks.
+     */
+    private <T> PolicyTaskCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
+        WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+
+        int numTasks = tasks.size();
+        PolicyTaskCallback[] callbacks = new PolicyTaskCallback[numTasks];
+
+        if (numTasks == 1)
+            callbacks[0] = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(getExecutionProperties(tasks.iterator().next())));
+        else {
+            // Thread context capture is expensive, so reuse callbacks when execution properties match
+            Map<Map<String, String>, TaskLifeCycleCallback> execPropsToCallback = new HashMap<Map<String, String>, TaskLifeCycleCallback>();
+            int t = 0;
+            for (Callable<T> task : tasks) {
+                Map<String, String> execProps = getExecutionProperties(task);
+                TaskLifeCycleCallback callback = execPropsToCallback.get(execProps);
+                if (callback == null)
+                    execPropsToCallback.put(execProps, callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps)));
+                callbacks[t++] = callback;
+            }
+        }
+
+        return callbacks;
     }
 
     /** {@inheritDoc} */
@@ -386,6 +437,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @FFDCIgnore(InterruptedException.class)
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAll(tasks, createCallbacks(tasks));
+
         ExecutorService execSvc = getExecSvc();
 
         ArrayList<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, true);
@@ -414,6 +469,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @FFDCIgnore(InterruptedException.class)
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
+
         ExecutorService execSvc = getExecSvc();
 
         ArrayList<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, true);
@@ -443,6 +502,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAny(tasks, createCallbacks(tasks));
+
         ExecutorService execSvc = getExecSvc();
 
         Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);
@@ -459,6 +522,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAny(tasks, createCallbacks(tasks), timeout, unit);
+
         ExecutorService execSvc = getExecSvc();
 
         Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);
@@ -541,6 +608,13 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         Map<String, String> execProps = getExecutionProperties(task);
 
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null) {
+            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return policyExecutor.submit(task, callback);
+        }
+
         ExecutorService execSvc = getExecSvc();
 
         SubmittedTask<T> taskToSubmit = new SubmittedTask<T>(this, task, contextSvc.captureThreadContext(execProps), null);
@@ -560,6 +634,13 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         Map<String, String> execProps = getExecutionProperties(task);
 
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null) {
+            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return policyExecutor.submit(task, result, callback);
+        }
+
         ExecutorService execSvc = getExecSvc();
 
         SubmittedTask<T> taskToSubmit = new SubmittedTask<T>(this, task, contextSvc.captureThreadContext(execProps), result);

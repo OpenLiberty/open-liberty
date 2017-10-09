@@ -26,6 +26,7 @@ import com.ibm.ws.jaxrs20.JaxRsConstants;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer.BeanCustomizerContext;
 import com.ibm.ws.jaxrs20.injection.metadata.InjectionRuntimeContext;
+import com.ibm.ws.jaxrs20.utils.CustomizerUtils;
 
 public abstract class InjectionRuntimeContextHelper {
 
@@ -72,7 +73,7 @@ public abstract class InjectionRuntimeContextHelper {
         }
 
         for (JaxRsFactoryBeanCustomizer beanCustomizer : beanCustomizers) {
-            if (beanCustomizer.isCustomizableBean(c, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())))) {
+            if (beanCustomizer.isCustomizableBean(c, beanCustomizerContexts.get(CustomizerUtils.createCustomizerKey(beanCustomizer)))) {
                 return true;
             }
         }

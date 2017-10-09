@@ -410,6 +410,14 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         try {
             ServerAuthContext authContext = getServerAuthContext(jaspiRequest, provider);
             MessageInfo msgInfo = jaspiRequest.getMessageInfo();
+            // need to add webRequest for the JSR375 provider.
+            if (msgInfo != null) {
+                msgInfo.getMap().put(JaspiConstants.SECURITY_WEB_REQUEST, jaspiRequest.getWebRequest());
+            } else {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "msgInfo object is null.");
+                }
+            }
             setRequestAuthType(jaspiRequest.getHttpServletRequest(), authType);
             if (webSecurityContext != null) {
                 setRunSecureResponse(true, (JaspiAuthContext) webSecurityContext.getJaspiAuthContext());

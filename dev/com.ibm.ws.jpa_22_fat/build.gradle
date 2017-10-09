@@ -22,7 +22,7 @@ addRequiredLibraries {
     }
     // Define G:A:V coordinates of each dependency
     dependencies {
-      derby 'org.apache.derby:derby:10.11.1'
+      derby 'org.apache.derby:derby:10.11.1.1'
     }
     // Copy the dependencies wherever they may be needed
     copy {

@@ -12,6 +12,7 @@
 
 	<featureManager>
 		<feature>servlet-3.1</feature>
+		<feature>jsf-2.2</feature>
 	    <feature>componenttest-1.0</feature>
     </featureManager>
     

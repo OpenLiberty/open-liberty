@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.server;
 
+import static com.ibm.ws.jaxrs20.utils.CustomizerUtils.createCustomizerKey;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -286,7 +288,7 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
 
             Object customizerContext = context.getContextObject();
             if (customizerContext != null) {
-                beanCustomizerContexts.put(Integer.toString(customizer.hashCode()), customizerContext);
+                beanCustomizerContexts.put(createCustomizerKey(customizer), customizerContext);
             }
         }
 
@@ -592,7 +594,7 @@ public class LibertyJaxRsServerFactoryBean extends JAXRSServerFactoryBean {
     }
 
     public Object getBeanCustomizerContext(JaxRsFactoryBeanCustomizer customizer) {
-        return beanCustomizerContexts.get(Integer.toString(customizer.hashCode()));
+        return beanCustomizerContexts.get(createCustomizerKey(customizer));
     }
 
     /**

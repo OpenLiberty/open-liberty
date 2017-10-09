@@ -1,0 +1,47 @@
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.6
+Bundle-Name: JavaMail 1.6 Implementation
+Bundle-SymbolicName: com.ibm.ws.com.sun.mail.javax.mail.1.6
+Bundle-Description: Private JavaMail bundle
+  
+Include-Resource: \
+     @${repo;com.sun.mail.javax.mail;1.6.0}!/META-INF/mailcap, \
+     @${repo;com.sun.mail.javax.mail;1.6.0}!/META-INF/gfprobe-provider.xml, \
+     @${repo;com.sun.mail.javax.mail;1.6.0}!/META-INF/javamail.charset.map, \
+     @${repo;com.sun.mail.javax.mail;1.6.0}!/META-INF/javamail.default.address.map, \
+     @${repo;com.sun.mail.javax.mail;1.6.0}!/META-INF/javamail.default.providers
+
+Import-Package: javax.mail;version="[1.6.0,1.6.200)",  \
+javax.mail.event;version="[1.6.0,1.6.200)", \
+javax.mail.internet;version="[1.6.0,1.6.200)", \
+javax.mail.search;version="[1.6.0,1.6.200)", \
+javax.mail.util;version="[1.6.0,1.6.200)", \
+com.sun.mail;version="[1.6.0,1.6.200)", \
+com.sun.mail.auth;version="[1.6.0,1.6.200)", \
+com.sun.mail.imap;version="[1.6.0,1.6.200)", \
+com.sun.mail.imap.protocol;version="[1.6.0,1.6.200)", \
+com.sun.mail.iap;version="[1.6.0,1.6.200)", \
+com.sun.mail.pop3;version="[1.6.0,1.6.200)", \
+com.sun.mail.smtp;version="[1.6.0,1.6.200)", \
+com.sun.mail.util;version="[1.6.0,1.6.200)", \
+com.sun.mail.util.logging;version="[1.6.0,1.6.200)", \
+com.sun.mail.handlers;version="[1.6.0,1.6.200)"
+
+
+Export-Package: \
+javax.mail, \
+javax.mail.event, \
+javax.mail.internet, \
+javax.mail.search, \
+javax.mail.util, \
+com.sun.mail;version="1.6.0"; thread-context=true, \
+com.sun.mail.auth;version="1.6.0"; thread-context=true, \
+com.sun.mail.imap; thread-context=true, \
+com.sun.mail.imap.protocol; thread-context=true, \
+com.sun.mail.iap; thread-context=true, \
+com.sun.mail.pop3; thread-context=true, \
+com.sun.mail.smtp; thread-context=true, \
+com.sun.mail.util; thread-context=true, \
+com.sun.mail.util.logging; thread-context=true, \
+com.sun.mail.handlers; thread-context=true
