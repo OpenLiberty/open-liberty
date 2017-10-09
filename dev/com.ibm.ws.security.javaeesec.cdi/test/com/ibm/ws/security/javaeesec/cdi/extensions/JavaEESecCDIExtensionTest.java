@@ -162,7 +162,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                exactly(3).of(bn).getBeanClass();
                 will(returnValue(TestIdentityStore.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
@@ -187,7 +187,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                exactly(3).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
@@ -217,13 +217,13 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                exactly(3).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
                 one(pb2).getBean();
                 will(returnValue(bn2));
-                one(bn2).getBeanClass();
+                exactly(2).of(bn2).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn2).getTypes();
                 will(returnValue(types2));
@@ -287,15 +287,15 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                exactly(3).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
                 one(pb2).getBean();
-                will(returnValue(bn));
-                one(bn).getBeanClass();
+                will(returnValue(bn2));
+                exactly(2).of(bn2).getBeanClass();
                 will(returnValue(Object.class));
-                one(bn).getTypes();
+                one(bn2).getTypes();
                 will(returnValue(types2));
                 never(pb3).getBean();
             }
@@ -325,7 +325,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 one(pb).getBean();
                 will(returnValue(bn));
-                one(bn).getBeanClass();
+                exactly(2).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn).getTypes();
                 will(returnValue(types));
@@ -383,7 +383,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 one(pb).getBean();
                 will(returnValue(bn));
-                one(bn).getBeanClass();
+                exactly(2).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn).getTypes();
                 will(returnValue(types));

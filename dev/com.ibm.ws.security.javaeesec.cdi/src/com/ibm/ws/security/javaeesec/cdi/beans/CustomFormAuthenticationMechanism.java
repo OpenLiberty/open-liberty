@@ -54,8 +54,9 @@ import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
-//TODO: the code is exactly the same as FormAuthenticationMechanism, so need to be modified.
-
+// TODO: investigate whether HttpMessageContext.isAuthenticationRequest() needs to be implemented.
+// The current code assumes that all of the call to validateRequest with credential is made programmatically,
+// thus there is no consideration for isAuthenticationRequest, but need to make sure whether that's the case.
 
 @Default
 @ApplicationScoped
@@ -88,10 +89,17 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         } else {
             Credential cred = authParams.getCredential();
             if (cred == null) {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "No UsernamePasswordCredential object, redirecting");
+                if (!httpMessageContext.isAuthenticationRequest() && !httpMessageContext.isProtected()) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "both isAuthenticationRequest and isProtected return false. returing NOT_DONE,");
+                    }
+                    status = AuthenticationStatus.NOT_DONE;
+                } else {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "No UsernamePasswordCredential object, redirecting");
+                    }
+                    status = AuthenticationStatus.SEND_CONTINUE;
                 }
-                status = AuthenticationStatus.SEND_CONTINUE;
             } else {
                 if(isSupportedCredential(cred)) {
                     status = handleFormLogin((UsernamePasswordCredential)cred, rsp, msgMap, clientSubject, handler);
@@ -142,6 +150,8 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler();
         if (identityStoreHandler != null) {
             status = validateWithIdentityStore(clientSubject, credential, identityStoreHandler, handler);
+        } else {
+            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE");
         }
         if (identityStoreHandler == null || status == AuthenticationStatus.NOT_DONE) {
             // If an identity store is not available, fall back to the original user registry.
@@ -253,7 +263,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
 
     private IdentityStoreHandler getIdentityStoreHandler() {
         IdentityStoreHandler identityStoreHandler = null;
-        Instance<IdentityStoreHandler> storeHandlerInstance = CDI.current().select(IdentityStoreHandler.class);
+        Instance<IdentityStoreHandler> storeHandlerInstance = getCDI().select(IdentityStoreHandler.class);
         if (storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {
             identityStoreHandler = storeHandlerInstance.get();
         }
@@ -266,6 +276,10 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         } else {
             return false;
         }
+    }
+
+    protected CDI getCDI() {
+        return CDI.current();
     }
 
 }

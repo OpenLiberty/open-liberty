@@ -37,3 +37,7 @@ JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=If the application provides an Iden
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId is null. Make sure that CredentialValidationResult contains valid UniqueId.
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=UniqueId in the given CredentialValidationResult object is null.
 JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=If the application provides an IdentityStore, make sure that it returns valid UniqueId in CredentialValidationResult.
+
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE=CWWKS1930W: IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml. If the application intends to use an IdentityStore, make sure that it is configured properly.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.explanation=IdentityStoreHandler bean is not found. If the application intends to use an IdentityStore, make sure that it is configured properly.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE.useraction=If the application intends to use an IdentityStore, make sure that it is configured properly.
