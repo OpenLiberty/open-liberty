@@ -32,9 +32,6 @@ public class FATSuite {
         app = app.addAsLibrary(new File("publish/files/mojarra/jsf-api-2.2.14.jar"))
                         .addAsLibrary(new File("publish/files/mojarra/jsf-impl-2.2.14.jar"));
 
-        // TODO-6677: Eventually this library will be auto-added by the jsfContainer-2.2 feature
-        app = app.addAsLibrary(new File("publish/files/mojarra/com.ibm.ws.jsfContainer.2.2.jar"));
-
         return app;
     }
 
@@ -45,9 +42,6 @@ public class FATSuite {
                         .addAsLibrary(new File("publish/files/myfaces/commons-collections-3.2.1.jar"))
                         .addAsLibrary(new File("publish/files/myfaces/commons-logging-1.1.3.jar"))
                         .addAsLibrary(new File("publish/files/myfaces/commons-beanutils-1.8.3.jar"));
-
-        // TODO-6677: Eventually this library will be auto-added by the jsfContainer-2.2 feature
-        app = app.addAsLibrary(new File("publish/files/mojarra/com.ibm.ws.jsfContainer.2.2.jar"));
 
         return app;
     }
