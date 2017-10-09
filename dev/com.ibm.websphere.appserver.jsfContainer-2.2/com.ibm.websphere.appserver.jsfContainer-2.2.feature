@@ -11,6 +11,7 @@ IBM-API-Package: org.jboss.weld; type="internal", \
   org.jboss.weld.context.http; type="internal", \
   org.jboss.weld.jsf; type="internal", \
   org.jboss.weld.exceptions; type="internal"
+-bundles=com.ibm.ws.jsfContainer.classloading
 -features=com.ibm.websphere.appserver.cdi-1.2, \
   com.ibm.websphere.appserver.servlet-3.1, \
   com.ibm.websphere.appserver.javax.validation-1.1, \
