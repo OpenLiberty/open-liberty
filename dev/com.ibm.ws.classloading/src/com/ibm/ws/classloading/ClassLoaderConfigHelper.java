@@ -57,6 +57,7 @@ import com.ibm.wsspi.classloading.ClassLoadingServiceException;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
+import com.ibm.wsspi.library.ApplicationExtensionLibrary;
 import com.ibm.wsspi.library.Library;
 
 /**
@@ -84,6 +85,7 @@ public class ClassLoaderConfigHelper {
 
     private final List<String> sharedLibraries;
     private final List<String> commonLibraries;
+    private final List<String> appExtLibraries;
     private final List<String> classProviders;
 
     private String[] sharedLibrariesPids;
@@ -96,7 +98,7 @@ public class ClassLoaderConfigHelper {
     private final Dictionary<String, Object> classLoaderConfigProps;
 
     @FFDCIgnore(InitWithoutConfig.class)
-    public ClassLoaderConfigHelper(NestedConfigHelper configHelper, ConfigurationAdmin configAdmin) {
+    public ClassLoaderConfigHelper(NestedConfigHelper configHelper, ConfigurationAdmin configAdmin, ClassLoadingService classLoadingSvc) {
         final String methodName = "ClassLoaderConfigHelper(): ";
         Configuration cfg;
         try {
@@ -111,6 +113,7 @@ public class ClassLoaderConfigHelper {
             this.sharedLibraries = Collections.emptyList();
             this.commonLibraries = Collections.emptyList();
             this.classProviders = Collections.emptyList();
+            this.appExtLibraries = resolveAppExtensionLibs(classLoadingSvc);
             return;
         }
 
@@ -127,6 +130,7 @@ public class ClassLoaderConfigHelper {
 
         this.sharedLibrariesPids = (String[]) values.remove(privateLibraryRef);
         this.commonLibrariesPids = (String[]) values.remove(commonLibraryRef);
+        this.appExtLibraries = resolveAppExtensionLibs(classLoadingSvc);
 
         this.sharedLibraries = getIds(configAdmin, sharedLibrariesPids);
         this.commonLibraries = getIds(configAdmin, commonLibrariesPids);
@@ -314,7 +318,9 @@ public class ClassLoaderConfigHelper {
         gwConfig.setApiTypeVisibility(apiTypes);
         if (classLoaderConfigProps != null) {
             // if there is some <classloader> config, we need to read it out of the helper into the gateway and classloader configuration objects
-            config.setSharedLibraries(sharedLibraries);
+            List<String> sharedLibs = new ArrayList<String>(sharedLibraries);
+            sharedLibs.addAll(appExtLibraries);
+            config.setSharedLibraries(sharedLibs);
             config.setCommonLibraries(commonLibraries);
             config.setClassProviders(classProviders);
             processCommonLibraries(classLoadingService, config, this.commonLibrariesPids);
@@ -322,6 +328,10 @@ public class ClassLoaderConfigHelper {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Creating class loader with parent gateway because <classloader> element config found for: " + config.getId());
             return classLoadingService.createTopLevelClassLoader(classPath, gwConfig, config);
+        } else {
+            List<String> sharedLibs = new ArrayList<String>(config.getSharedLibraries());
+            sharedLibs.addAll(appExtLibraries);
+            config.setSharedLibraries(sharedLibs);
         }
         if (tc.isDebugEnabled())
             Tr.debug(tc, "Using common parent with common gateway for: " + config.getId());
@@ -369,5 +379,12 @@ public class ClassLoaderConfigHelper {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "No files found in the global shared library - ignoring global shared library");
         return classLoadingService.createTopLevelClassLoader(classPath, gwConfig, config);
+    }
+
+    private List<String> resolveAppExtensionLibs(ClassLoadingService svc) {
+        List<String> result = new ArrayList<String>();
+        for (ApplicationExtensionLibrary appExtLib : svc.getAppExtLibs())
+            result.add(appExtLib.getReference().id());
+        return result;
     }
 }

@@ -52,6 +52,8 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.url.URLStreamHandlerService;
 
 import com.ibm.websphere.ras.Tr;
@@ -82,6 +84,7 @@ import com.ibm.wsspi.classloading.ResourceProvider;
 import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
 import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
+import com.ibm.wsspi.library.ApplicationExtensionLibrary;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.logging.Introspector;
 
@@ -125,6 +128,16 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
     private final ReferenceQueue<Bundle> collectedBundles = new ReferenceQueue<Bundle>();
     private final ConcurrentServiceReferenceSet<ClassGenerator> generatorRefs = new ConcurrentServiceReferenceSet<ClassGenerator>(REFERENCE_GENERATORS);
     private final ClassGeneratorManager generatorManager = new ClassGeneratorManager(generatorRefs);
+
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected volatile List<ApplicationExtensionLibrary> appExtLibs;
+
+    @Override
+    public List<ApplicationExtensionLibrary> getAppExtLibs() {
+        return Collections.unmodifiableList(appExtLibs);
+    }
 
     /**
      * Mapping from META-INF services file names to the corresponding service provider implementation class name.
