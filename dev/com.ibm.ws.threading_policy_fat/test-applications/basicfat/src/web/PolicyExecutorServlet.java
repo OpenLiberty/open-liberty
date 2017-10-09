@@ -3281,7 +3281,7 @@ public class PolicyExecutorServlet extends FATServlet {
     }
 
     // Submit a group of tasks to timed invokeAny, one of which raises an exception, another of which blocks all others from starting,
-    // another of which it stuck in the queue, and another of which is blocked attempting to get a queue position.
+    // another of which is stuck in the queue, and another of which is blocked attempting to get a queue position.
     // Interrupt the invokeAny operation before it completes. Expect InterruptedException.
     @Test
     public void testInvokeAnyTimedInterruptWaitForEnqueue() throws Exception {
@@ -3295,10 +3295,10 @@ public class PolicyExecutorServlet extends FATServlet {
         CountDownLatch unused = new CountDownLatch(0);
         Collection<CountDownTask> tasks = Arrays.asList(new CountDownTask(beginLatch_1_2, null, 0), // Intentionally fail with NullPointerException
                                                         new CountDownTask(beginLatch_1_2, blocker, TIMEOUT_NS * 2), // block
-                                                        new CountDownTask(unused, unused, 0), // stuck in queue
-                                                        new CountDownTask(unused, unused, 0)); // blocked from entering queue
+                                                        new CountDownTask(unused, blocker, TIMEOUT_NS * 2), // stuck in queue until invokeAny is interrupted
+                                                        new CountDownTask(unused, blocker, TIMEOUT_NS * 2)); // blocked from entering queue until invokeAny is interrupted
 
-        // Interrupt the current thread after both tasks start
+        // Interrupt the current thread after the first two tasks start
         Future<?> interrupterFuture = testThreads.submit(new InterrupterTask(Thread.currentThread(), beginLatch_1_2, TIMEOUT_NS * 2, TimeUnit.NANOSECONDS));
 
         long start = System.nanoTime();
