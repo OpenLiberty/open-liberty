@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.json.JsonArray;
+import javax.json.JsonObject;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
@@ -42,7 +43,7 @@ public class FeatureDependencyProcessor {
     public static void validateTestedFeatures(LibertyServer server, RemoteFile serverLog) throws Exception {
         final String m = "validateTestedFeatures";
         // Load the tested feature data, if it exists
-        File testedFeaturesFile = new File("fat-feature-deps.json");
+        File testedFeaturesFile = new File("fat-metadata.json");
         if (!testedFeaturesFile.exists()) {
             Log.info(c, m, "No tested feature data for this server.  Skipping feature validation");
             return;
@@ -90,7 +91,8 @@ public class FeatureDependencyProcessor {
         final String m = "getTestedFeatures";
 
         JsonProvider provider = new org.glassfish.json.JsonProviderImpl();
-        JsonArray testedFeaturesJson = provider.createReader(new FileInputStream(testedFeaturesFile)).readArray();
+        JsonObject fatMetadata = provider.createReader(new FileInputStream(testedFeaturesFile)).readObject();
+        JsonArray testedFeaturesJson = fatMetadata.getJsonArray("feature-deps");
 
         Set<String> staticTestedFeatures = new HashSet<String>();
         staticTestedFeatures.add("timedexit-1.0"); // Manually add timedexit because it's included from an external location
