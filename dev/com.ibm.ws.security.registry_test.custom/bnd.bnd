@@ -1,0 +1,33 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Custom UserRegistry Sample
+Bundle-Description: Custom UserRegistry Sample, version ${bVersion}
+Bundle-SymbolicName: com.ibm.ws.security.registry.custom.sample
+
+Export-Package: \
+  com.ibm.ws.security.registry.custom.sample;version=1.0.0
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
+#
+# The class is not annotated for DS. Look into annotating the class in the future.
+#
+Service-Component: OSGI-INF/com.ibm.ws.security.registry.custom.xml
+
+-dsannotations: com.ibm.ws.security.registry.custom.sample.FileRegistrySample
+
+-buildpath: \
+  com.ibm.websphere.security;version=latest,\
+  org.osgi.service.component;version=latest
