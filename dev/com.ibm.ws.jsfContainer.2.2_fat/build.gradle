@@ -55,11 +55,5 @@ addRequiredLibraries {
 			from configurations.libs
 			into "${buildDir}/autoFVT/lib"
 		}
-		// TODO-6677: Eventually we will not need to copy the jsfContainer integration jar at build-time
-		copy {
-			from rootProject.project('com.ibm.ws.jsfContainer.2.2').buildDir
-			into "${buildDir}/autoFVT/publish/files/mojarra/"
-			include 'com.ibm.ws.jsfContainer.2.2.jar'
-		}
 	}
 }
