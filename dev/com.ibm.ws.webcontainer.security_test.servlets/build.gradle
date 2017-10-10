@@ -1,0 +1,825 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply plugin: 'war'
+
+/* 
+ * This is where all application ZIP and WARs will be built.
+ */
+def appBuildDir = "${buildDir}/test-application"
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** staticAnnotationMixed.jar
+ ** staticAnnotationMixed.war
+ ** staticAnnotationMixed.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+ 
+task staticAnnotationMixed_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationMixed.jar"
+
+  from ('test-applications/staticAnnotationMixed/resources/') { 
+  	include 'META-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/staticannotationmixed/StaticAnnotationMixedFragment*.class'
+  }
+}
+
+task staticAnnotationMixed_WAR(type: War, dependsOn: staticAnnotationMixed_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationMixed.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/staticAnnotationMixed/resources') { 
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/staticannotationmixed/**/*.class'
+    exclude 'web/staticannotationmixed/StaticAnnotationMixedFragment*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/common/*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "${appBuildDir}/staticAnnotationMixed.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+task staticAnnotationMixed_ZIP(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationMixed.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/staticannotationmixed/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+task staticAnnotationMixed { 
+  dependsOn staticAnnotationMixed_WAR, staticAnnotationMixed_ZIP
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** dynamicAnnotationConflict.jar
+ ** dynamicAnnotationConflict.war
+ ** dynamicAnnotationConflict.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+ 
+task dynamicAnnotationConflict_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationConflict.jar"
+
+  from ('test-applications/dynamicAnnotationConflict/resources/') { 
+  	include 'META-INF/*'
+  }
+  from ('build/classes/java/main') {
+    /* 
+     * With metadata-complete=false, should not matter which classes are 
+     * included in jar. Including servlets 1 and 6, but not 3.
+     */
+    include 'web/dynamicannotationconflict/DynamicAnnotationConflict1.class'
+    include 'web/dynamicannotationconflict/DynamicAnnotationConflict6.class'
+  }
+}
+
+task dynamicAnnotationConflict_WAR(type: War, dependsOn: dynamicAnnotationConflict_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationConflict.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/dynamicAnnotationConflict/resources') { 
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/dynamicannotationconflict/**/*.class'
+    exclude 'web/dynamicannotationconflict/DynamicAnnotationConflict1.class'
+    exclude 'web/dynamicannotationconflict/DynamicAnnotationConflict6.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/common/*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "${appBuildDir}/dynamicAnnotationConflict.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+task dynamicAnnotationConflict_ZIP(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationConflict.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/dynamicannotationconflict/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+task dynamicAnnotationConflict { 
+  dependsOn dynamicAnnotationConflict_WAR, dynamicAnnotationConflict_ZIP
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** metadataCompleteTrueWebXML.jar
+ ** metadataCompleteTrueWebXML.war
+ ** metadataCompleteTrueWebXML.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+ 
+task metadataCompleteTrueWebXML_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebXML.jar"
+
+  from ('test-applications/metadataCompleteTrueWebXML/resources/') { 
+  	include 'META-INF/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/metadatacompletetruewebxml/MetadataCompleteTrueWebXML2.class'
+  }
+}
+
+task metadataCompleteTrueWebXML_WAR(type: War, dependsOn: metadataCompleteTrueWebXML_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebXML.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/metadataCompleteTrueWebXML/resources') { 
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/metadatacompletetruewebxml/**/*.class'
+    exclude 'web/metadatacompletetruewebxml/MetadataCompleteTrueWebXML2.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/common/*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "${appBuildDir}/metadataCompleteTrueWebXML.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+task metadataCompleteTrueWebXML_ZIP(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebXML.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/metadatacompletetruewebxml/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+task metadataCompleteTrueWebXML { 
+  dependsOn metadataCompleteTrueWebXML_WAR, metadataCompleteTrueWebXML_ZIP
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** metadataCompleteTrueWebFragment.jar
+ ** metadataCompleteTrueWebFragment.war
+ ** metadataCompleteTrueWebFragment.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+ 
+task metadataCompleteTrueWebFragment_JAR(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebFragment.jar"
+
+  from ('test-applications/metadataCompleteTrueWebFragment/resources/') { 
+  	include 'META-INF/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/metadatacompletetruewebfragment/MetadataCompleteTrueWebFragment1.class'
+  }
+}
+
+task metadataCompleteTrueWebFragment_WAR(type: War, dependsOn: metadataCompleteTrueWebFragment_JAR) {
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebFragment.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/metadataCompleteTrueWebFragment/resources') { 
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/metadatacompletetruewebfragment/**/*.class'
+    exclude 'web/metadatacompletetruewebfragment/MetadataCompleteTrueWebFragment1.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/common/*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "${appBuildDir}/metadataCompleteTrueWebFragment.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+task metadataCompleteTrueWebFragment_ZIP(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "metadataCompleteTrueWebFragment.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/metadatacompletetruewebfragment/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+task metadataCompleteTrueWebFragment { 
+  dependsOn metadataCompleteTrueWebFragment_WAR, metadataCompleteTrueWebFragment_ZIP
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** webFragmentDeploymentFailureForRunAs1.jar
+ ** webFragmentDeploymentFailureForRunAs2.jar
+ ** webFragmentDeploymentFailureForRunAs.war
+ ** webFragmentDeploymentFailureForRunAs.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+ 
+task webFragmentDeploymentFailureForRunAs_JAR_1(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs1.jar"
+
+  from ('test-applications/webFragmentDeploymentFailureForRunAs/resources/META-INF1') { 
+  	include '*'
+  	into 'META-INF'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforrunas/WebFragmentDeploymentFailureForRunAs.class'
+  }
+}
+
+task webFragmentDeploymentFailureForRunAs_JAR_2(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs2.jar"
+
+  from ('test-applications/webFragmentDeploymentFailureForRunAs/resources/META-INF2') { 
+  	include '*'
+  	into 'META-INF'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforrunas/WebFragmentDeploymentFailureForRunAs.class'
+  }
+}
+
+task webFragmentDeploymentFailureForRunAs_WAR(type: War, dependsOn: [webFragmentDeploymentFailureForRunAs_JAR_1, webFragmentDeploymentFailureForRunAs_JAR_2]) {
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/webFragmentDeploymentFailureForRunAs/resources') { 
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/common/*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "${appBuildDir}/webFragmentDeploymentFailureForRunAs1.jar"
+    include "${appBuildDir}/webFragmentDeploymentFailureForRunAs2.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+task webFragmentDeploymentFailureForRunAs_ZIP(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForRunAs.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforrunas/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+task webFragmentDeploymentFailureForRunAs { 
+  dependsOn webFragmentDeploymentFailureForRunAs_WAR, webFragmentDeploymentFailureForRunAs_ZIP
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** webFragmentDeploymentFailureForAuthConstraint1.jar
+ ** webFragmentDeploymentFailureForAuthConstraint2.jar
+ ** webFragmentDeploymentFailureForAuthConstraint.war
+ ** webFragmentDeploymentFailureForAuthConstraint.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+ 
+task webFragmentDeploymentFailureForAuthConstraint_JAR_1(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint1.jar"
+
+  from ('test-applications/webFragmentDeploymentFailureForAuthConstraint/resources/META-INF1') { 
+  	include '*'
+  	into 'META-INF'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforauthconstraint/WebFragmentDeploymentFailureForAuthConstraint.class'
+  }
+}
+
+task webFragmentDeploymentFailureForAuthConstraint_JAR_2(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint2.jar"
+
+  from ('test-applications/webFragmentDeploymentFailureForAuthConstraint/resources/META-INF2') { 
+  	include '*'
+  	into 'META-INF'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforauthconstraint/WebFragmentDeploymentFailureForAuthConstraint.class'
+  }
+}
+
+task webFragmentDeploymentFailureForAuthConstraint_WAR(type: War, dependsOn: [webFragmentDeploymentFailureForAuthConstraint_JAR_1, webFragmentDeploymentFailureForAuthConstraint_JAR_2]) {
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/webFragmentDeploymentFailureForAuthConstraint/resources') { 
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/common/*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "${appBuildDir}/webFragmentDeploymentFailureForAuthConstraint1.jar"
+    include "${appBuildDir}/webFragmentDeploymentFailureForAuthConstraint2.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+task webFragmentDeploymentFailureForAuthConstraint_ZIP(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForAuthConstraint.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforauthconstraint/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+task webFragmentDeploymentFailureForAuthConstraint { 
+  dependsOn webFragmentDeploymentFailureForAuthConstraint_WAR, webFragmentDeploymentFailureForAuthConstraint_ZIP
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** webFragmentDeploymentFailureForUserDataConstraint1.jar
+ ** webFragmentDeploymentFailureForUserDataConstraint2.jar
+ ** webFragmentDeploymentFailureForUserDataConstraint.war
+ ** webFragmentDeploymentFailureForUserDataConstraint.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+ 
+task webFragmentDeploymentFailureForUserDataConstraint_JAR_1(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint1.jar"
+
+  from ('test-applications/webFragmentDeploymentFailureForUserDataConstraint/resources/META-INF1') { 
+  	include '*'
+  	into 'META-INF'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforuserdataconstraint/WebFragmentDeploymentFailureForUserDataConstraint.class'
+  }
+}
+
+task webFragmentDeploymentFailureForUserDataConstraint_JAR_2(type: Jar, dependsOn: classes) { 
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint2.jar"
+
+  from ('test-applications/webFragmentDeploymentFailureForUserDataConstraint/resources/META-INF2') { 
+  	include '*'
+  	into 'META-INF'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforuserdataconstraint/WebFragmentDeploymentFailureForUserDataConstraint.class'
+  }
+}
+
+task webFragmentDeploymentFailureForUserDataConstraint_WAR(type: War, dependsOn: [webFragmentDeploymentFailureForUserDataConstraint_JAR_1, webFragmentDeploymentFailureForUserDataConstraint_JAR_2]) {
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint.war"
+  classpath = classpath.filter{ false }
+
+  from ('test-applications/webFragmentDeploymentFailureForUserDataConstraint/resources') { 
+  	include 'WEB-INF/*'
+  }
+  from ('build/classes/java/main') { 
+    include 'web/common/*.class'
+    into 'WEB-INF/classes'
+  }
+  from ('build/libs/test-application') { 
+    include "${appBuildDir}/webFragmentDeploymentFailureForUserDataConstraint1.jar"
+    include "${appBuildDir}/webFragmentDeploymentFailureForUserDataConstraint2.jar"
+    into 'WEB-INF/lib'
+  }
+}
+
+task webFragmentDeploymentFailureForUserDataConstraint_ZIP(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "webFragmentDeploymentFailureForUserDataConstraint.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/webfragmentdeploymentfailureforuserdataconstraint/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+task webFragmentDeploymentFailureForUserDataConstraint { 
+  dependsOn webFragmentDeploymentFailureForUserDataConstraint_WAR, webFragmentDeploymentFailureForUserDataConstraint_ZIP
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauth.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauth(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "basicauth.zip"
+  
+  from('test-applications/basicauth/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/basicauth/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** basicauthdeny.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task basicauthdeny(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "basicauthdeny.zip"
+  
+  from('test-applications/basicauthdeny/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/basicauthdeny/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** clientcert.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task clientcert(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "clientcert.zip"
+  
+  from('test-applications/clientcert/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/clientcert/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** delegation.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task delegation(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "delegation.zip"
+  
+  from('test-applications/delegation/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/delegation/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** dynamicAnnotationPure.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task dynamicAnnotationPure(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "dynamicAnnotationPure.zip"
+  
+  from('test-applications/dynamicAnnotationPure/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/dynamicannotationpure/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** formlogin.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task formlogin(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "formlogin.zip"
+  
+  from('test-applications/formlogin/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/formlogin/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** formloginPageSessionFalse.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task formloginPageSessionFalse(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "formloginPageSessionFalse.zip"
+  
+  from('test-applications/formloginPageSessionFalse/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/formloginpagesessionfalse/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** inheritance.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task inheritance(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "inheritance.zip"
+  
+  from('test-applications/inheritance/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/inheritance/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** loginConfigInvalid.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task loginConfigInvalid(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "loginConfigInvalid.zip"
+  
+  from('test-applications/loginConfigInvalid/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/loginconfiginvalid/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** loginConfigNone.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task loginConfigNone(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "loginConfigNone.zip"
+  
+  from('test-applications/loginConfigNone/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/loginconfignone/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** loginConfigNoRealmName.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task loginConfigNoRealmName(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "loginConfigNoRealmName.zip"
+  
+  from('test-applications/loginConfigNoRealmName/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/loginconfignorealmname/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** postParams.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task postParams(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "postParams.zip"
+  
+  from('test-applications/postParams/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/postparams/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** staticAnnotationPure.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task staticAnnotationPure(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationPure.zip"
+  
+  from('test-applications/staticAnnotationPure/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/staticannotationpure/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** staticAnnotationWebXML.zip
+ **
+ ******************************************************************
+ ******************************************************************/
+task staticAnnotationWebXML(type: Zip, dependsOn: classes) {
+  destinationDir file("${appBuildDir}")
+  archiveName "staticAnnotationWebXML.zip"
+  
+  from('test-applications/staticAnnotationWebXML/resources') {
+    include '**/*'
+  }
+  from ('build/classes/java/main') {
+    include 'web/staticannotationwebxml/**/*.class' 
+    include 'web/common/**/*.class'
+    into 'WEB-INF/classes'
+  }
+}
+
+/******************************************************************
+ ******************************************************************
+ **
+ ** Assemble all of the custom build artifacts.
+ **
+ ******************************************************************
+ ******************************************************************/
+assemble {
+
+  dependsOn \
+    basicauth, 
+    basicauthdeny, 
+    clientcert,
+    delegation,
+    dynamicAnnotationConflict, 
+    dynamicAnnotationPure,
+    formlogin,
+    formloginPageSessionFalse,
+    inheritance,
+    loginConfigInvalid,
+    loginConfigNone,
+    loginConfigNoRealmName,
+    metadataCompleteTrueWebFragment,
+    metadataCompleteTrueWebXML,
+    postParams, 
+    staticAnnotationMixed, 
+    staticAnnotationPure,
+    staticAnnotationWebXML,
+    webFragmentDeploymentFailureForAuthConstraint,
+    webFragmentDeploymentFailureForRunAs,
+    webFragmentDeploymentFailureForUserDataConstraint
+    
+}
