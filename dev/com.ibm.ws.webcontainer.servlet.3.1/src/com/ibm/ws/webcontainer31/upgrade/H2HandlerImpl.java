@@ -92,7 +92,13 @@ public class H2HandlerImpl implements H2Handler {
             String value = hsrt.getHeader(key);
             headers.put(key, value);
         }
-        h2ic.handleHTTP2UpgradeRequest(headers);
+        boolean upgraded = h2ic.handleHTTP2UpgradeRequest(headers);
+        if (!upgraded) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "returning: http2 connection initialization failed");
+            }
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
 }

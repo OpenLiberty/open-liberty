@@ -26,16 +26,9 @@ public class H2MuxTCPReadCallback implements TCPReadCompletedCallback {
 
     @Override
     public void complete(VirtualConnection vc, TCPReadRequestContext rrc) {
-
-        try {
-            if (connLink != null) {
-                connLink.processRead(vc, rrc);
-            }
-        } catch (Exception e) {
-            //CMM TODO
-            //Something bad happened, do something about it
+        if (connLink != null) {
+            connLink.processRead(vc, rrc);
         }
-
     }
 
     @Override

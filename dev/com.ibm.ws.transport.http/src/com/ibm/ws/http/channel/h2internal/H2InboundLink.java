@@ -13,6 +13,7 @@ package com.ibm.ws.http.channel.h2internal;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -77,9 +78,7 @@ public class H2InboundLink extends HttpInboundLink {
 
     boolean connection_preface_sent = false; // empty SETTINGS frame has been sent
     boolean connection_preface_string_rcvd = false; // MAGIC string has been received
-    boolean connection_preface_settings_rcvd = false; // empty SETTINGS frame has been received
-    public volatile boolean connection_preface_settings_ack_rcvd = false; // our empty SETTINGS frame has been ACK'd
-    public volatile boolean connection_init_failed = false; // the connection initialization failed
+    public volatile CountDownLatch initLock = new CountDownLatch(1) {};
 
     volatile long initialWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE;
     volatile long connectionReadWindowSize = Constants.SPEC_INITIAL_WINDOW_SIZE; // keep track of how much data the client is allowed to send to the us
@@ -270,6 +269,7 @@ public class H2InboundLink extends HttpInboundLink {
         writeQ.addNewNodeToQ(streamID, Node.ROOT_STREAM_ID, Node.DEFAULT_NODE_PRIORITY, false);
 
         streamTable.put(streamID, streamProcessor);
+        highestClientStreamId = streamID;
 
         // pull the settings header out of the request;
         // process it and apply it to the stream
@@ -377,7 +377,7 @@ public class H2InboundLink extends HttpInboundLink {
         }
     }
 
-    public void processRead(VirtualConnection vc, TCPReadRequestContext rrc) throws ProtocolException {
+    public void processRead(VirtualConnection vc, TCPReadRequestContext rrc) {
 
         boolean readForNewFrame = true;
 
@@ -411,9 +411,8 @@ public class H2InboundLink extends HttpInboundLink {
                 } else {
                     // cancel worked, so reset the link status
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "processRead: cancelled successful, remove closeFuture and reset :linkStatus: to OPEN" + " :close: H2InboundLink hc: " + this.hashCode());
+                        Tr.debug(tc, "processRead: cancelled successful, remove closeFuture" + " :close: H2InboundLink hc: " + this.hashCode());
                     }
-                    linkStatus = LINK_STATUS.OPEN;
                     closeFuture = null;
                     connTimeout = null;
 
@@ -758,6 +757,24 @@ public class H2InboundLink extends HttpInboundLink {
                 Tr.debug(tc, "checkifGoAwaySending() returning true :linkstatus: " + linkStatus);
             }
             return true;
+        }
+    }
+
+    /**
+     * Check to see if the connection is still initializing (in INIT state).  If it is, update the state to OPEN.
+     * @return true if the link status is in INIT state
+     */
+    public boolean checkInitAndOpen() {
+        synchronized (linkStatusSync) {
+            if (linkStatus == LINK_STATUS.INIT)
+            {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "checkInitAndOpen: connection preface completed, set :linkStatus: to OPEN" + " H2InboundLink hc: " + this.hashCode());
+                }
+                linkStatus = LINK_STATUS.OPEN;
+                return true;
+            }
+            return false;
         }
     }
 
