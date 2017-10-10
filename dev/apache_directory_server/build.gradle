@@ -15,7 +15,7 @@ clean {
   }
 }
 
-build.doLast {
+jar.doLast {
   /*
    * Copy the ApacheDS JAR to the ApacheDS service lib directory.
    */

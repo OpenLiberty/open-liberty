@@ -1,0 +1,76 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="new server">
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+		<feature>ldapRegistry-3.0</feature>
+    </featureManager>
+
+	<ldapRegistry id="LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.4.name}" port="${ldap.server.4.port}" ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		name="o=vmm"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m">
+      <ldapEntityType name="Group">
+        <objectClass>groupOfNames</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="OrgContainer">
+        <rdnProperty name="o" objectClass="organization"/>
+        <rdnProperty name="ou" objectClass="organizationalUnit"/>
+        <rdnProperty name="dc" objectClass="domain"/>
+        <rdnProperty name="cn" objectClass="container"/>
+        <objectClass>organization</objectClass>
+        <objectClass>organizationalUnit</objectClass>
+        <objectClass>domain</objectClass>
+        <objectClass>container</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="PersonAccount">
+        <objectClass>inetOrgPerson</objectClass>
+      </ldapEntityType>
+      <groupProperties>
+        <memberAttribute name="member" dummyMember="uid=dummy" objectClass="groupOfNames" scope="direct"/>
+        <dynamicMemberAttribute name="memberURL" objectClass="groupOfURLs"/>
+      </groupProperties>
+      <attributeConfiguration>
+        <attribute name="userPassword" propertyName="password" entityType="PersonAccount"/>
+        <attribute name="krbPrincipalName" propertyName="kerberosId" entityType="PersonAccount"/>
+        <propertiesNotSupported name="homeAddress"/>
+        <propertiesNotSupported name="businessAddress"/>
+      </attributeConfiguration>
+      <loginProperty>mail;cn</loginProperty>
+      <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
+          waitTime="3000ms" preferredSize="3"/>
+      <ldapCache>
+        <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
+        <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
+      </ldapCache>
+      <failoverServers name="failoverLdapServers">
+      	<server host="${ldap.server.1.name}" port="${ldap.server.1.port}"/>
+		<server host="${ldap.server.5.name}" port="${ldap.server.5.port}"/>
+       </failoverServers>
+	</ldapRegistry> 
+
+    <federatedRepository>
+        <primaryRealm name="TDSRealm_URAttrMap3">
+            <participatingBaseEntry name="o=vmm"/>
+            <uniqueUserIdMapping inputProperty="uniqueName" outputProperty="externalName"/>
+        	<userSecurityNameMapping inputProperty="externalName" outputProperty="uid"/>
+        	<userDisplayNameMapping inputProperty="uid" outputProperty="externalName"/>
+        	<uniqueGroupIdMapping inputProperty="externalName" outputProperty="uniqueName"/>
+        	<groupSecurityNameMapping inputProperty="uniqueName" outputProperty="cn"/>
+        	<groupDisplayNameMapping inputProperty="externalName" outputProperty="cn"/>
+        </primaryRealm>
+    </federatedRepository>
+</server>
