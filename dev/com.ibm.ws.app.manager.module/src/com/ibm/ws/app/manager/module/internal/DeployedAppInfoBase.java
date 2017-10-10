@@ -292,7 +292,7 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         this.globalSharedLibrary = factory.getGlobalSharedLibrary();
         this.futureMonitor = factory.getFutureMonitor();
         this.configAdmin = factory.getConfigurationAdmin();
-        this.libraryConfigHelper = new ClassLoaderConfigHelper(getConfigHelper(), configAdmin);
+        this.libraryConfigHelper = new ClassLoaderConfigHelper(getConfigHelper(), configAdmin, classLoadingService);
         this.isDelegateLast = libraryConfigHelper.isDelegateLast();
         this.permissionManager = factory.getPermissionManager();
         try {
