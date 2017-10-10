@@ -17,7 +17,8 @@ src: \
 	test-applications/BeanValidationTests/src,\
 	test-applications/JSF22FacesFlows/src,\
 	test-applications/JSF22CDIFacesFlows/src,\
-	test-applications/JSF22StatelessView/src
+	test-applications/JSF22StatelessView/src,\
+	test-applications/noJsfApp/src
 
 test.project: true
 
