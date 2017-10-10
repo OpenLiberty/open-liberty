@@ -51,6 +51,7 @@ instrument.classesExcludes: com/ibm/ws/security/common/internal/resources/*.clas
 -buildpath: \
 	com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.logging;version=latest, \
+    com.ibm.ws.logging.core;version=latest, \
     com.ibm.websphere.org.osgi.core;version=latest, \
     com.ibm.websphere.org.osgi.service.component;version=latest, \
     com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \

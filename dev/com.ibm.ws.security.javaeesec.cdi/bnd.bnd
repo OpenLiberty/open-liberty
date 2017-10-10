@@ -21,7 +21,8 @@ WS-TraceGroup: \
     JAVAEESEC
 
 Export-Package: \
-    com.ibm.ws.security.javaeesec.cdi
+    com.ibm.ws.security.javaeesec.cdi.extensions, \
+    com.ibm.ws.security.javaeesec.cdi.beans
 
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
  
@@ -29,11 +30,11 @@ Private-Package: \
     com.ibm.ws.security.javaeesec.cdi.internal.resources
 
 -dsannotations: \
-    com.ibm.ws.security.javaeesec.cdi.JavaEESecCDIExtension
+    com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension
 
 -dsannotations-inherit: true
 
-instrument.classesExcludes: com/ibm/ws/security/javaeesec/internal/resources/*.class
+instrument.classesExcludes: com/ibm/ws/security/javaeesec/cdi/internal/resources/*.class
 
 Include-Resource: \
     META-INF=resources/META-INF
@@ -59,7 +60,8 @@ Include-Resource: \
     com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.webcontainer;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.websphere.javaee.cdi.1.2;version=latest
+    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.ws.transport.http;version=latest
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \

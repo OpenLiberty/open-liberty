@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" 
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+  <display-name>DefaultBeanValidation</display-name>
+  <description>This is a web app designed to test default bean validation.</description>
+
+  <!-- SERVLET DEFINITIONS -->
+  <servlet id="Default">
+    <description>Tests Default Bean Validation</description>
+    <display-name>Default BeanValidation Servlet</display-name>
+    <servlet-name>Default BeanValidation Servlet</servlet-name>
+    <servlet-class>defaultbeanvalidation11.web.DefaultBeanValidationServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+  <servlet id="Injection">
+    <description>Tests Default Bean Validation Injection</description>
+    <display-name>Default BeanValidationInjection Servlet</display-name>
+    <servlet-name>Default BeanValidationInjection Servlet</servlet-name>
+    <servlet-class>defaultbeanvalidation11.web.DefaultBeanValidationInjectionServlet</servlet-class>
+    <load-on-startup></load-on-startup>
+  </servlet>
+
+  <!-- SERVLET MAPPINGS -->        
+  <servlet-mapping id="ServletMapping_Default">
+    <servlet-name>Default BeanValidation Servlet</servlet-name>
+    <url-pattern>/DefaultBeanValidation</url-pattern>
+  </servlet-mapping>
+  <servlet-mapping id="ServletMapping_Injection">
+    <servlet-name>Default BeanValidationInjection Servlet</servlet-name>
+    <url-pattern>/DefaultBeanValidationInjection</url-pattern>
+  </servlet-mapping>
+
+  <!-- RESOURCE REFERENCES -->
+
+</web-app>

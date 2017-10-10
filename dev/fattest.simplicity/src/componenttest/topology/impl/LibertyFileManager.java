@@ -165,8 +165,8 @@ public class LibertyFileManager {
      * @return List of Strings which match the pattern. No match results in an empty list.
      * @throws Exception
      */
-    static List<String> findStringsInFile(String regexp,
-                                          RemoteFile fileToSearch) throws Exception {
+    public static List<String> findStringsInFile(String regexp,
+                                                 RemoteFile fileToSearch) throws Exception {
         final String method = "findStringsInFile";
         Log.entering(c, method);
 

@@ -5,6 +5,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.json.spi.JsonProvider;
+import javax.json.bind.spi.JsonbProvider;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
@@ -40,10 +41,13 @@ public class JaxRsProviderFactory implements JaxRsProviderFactoryService {
     // service is available when ProviderFactory sets up the out-of-the-box providers
     @Reference
     private JsonProvider jsonpProvider;
+    
+    // referencing the JsonbProvider OSGI service reference ensures that the implementation
+    // service is available when ProviderFactory sets up the out-of-the-box providers
+    @Reference
+    private JsonbProvider jsonbProvider;
 
     private static JaxRsProviderFactory serviceInstance = null;
-
-
 
     @Override
     public void bindProviders(boolean clientSide, List<Object> providers) {

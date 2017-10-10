@@ -28,6 +28,7 @@ Import-Package: \
 Include-Resource: \
     META-INF=@src/META-INF
   
+# All of this code runs in the application classloader
 instrument.disabled: true
 
 -buildpath: \

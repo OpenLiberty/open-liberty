@@ -57,6 +57,7 @@ import org.junit.Test;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyExecutor.QueueFullAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
+import com.ibm.ws.threading.PolicyTaskCallback;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
@@ -431,6 +432,109 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(executor.isTerminated());
     }
 
+    // Verify that the onEnd(aborted) callback is sent for tasks that abort after they are submitted
+    // but before they start to run. This test covers a task that is aborted to due to exceeding the
+    // maximum queue size and a task that is aborted due to being interrupted while waiting for a
+    // queue position.
+    @Test
+    public void testCallbacksForAbortedTasks() throws Exception {
+        PolicyExecutor executor = provider.create("testCallbacksForAbortedTasks")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .queueFullAction(QueueFullAction.Abort);
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blockerRunning = new CountDownLatch(1);
+
+        // Use up maxConcurrency
+        CountDownTask task1 = new CountDownTask(blockerRunning, blocker, TimeUnit.MINUTES.toNanos(20));
+        Future<Boolean> blockerFuture = executor.submit(task1);
+        assertTrue(blockerRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Use up the queue position
+        Runnable task2 = new SharedIncrementTask();
+        Future<?> queuedFuture = executor.submit(task2);
+
+        // abort due to queue at capacity
+        Runnable task3 = new SharedIncrementTask();
+        ParameterInfoCallback callback = new ParameterInfoCallback();
+        try {
+            fail("Submit should fail with queue at capacity. Instead: " + executor.submit(task3, "Result that should never be returned", callback));
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1201E"))
+                throw x;
+        }
+
+        // task successfully submits
+        assertFalse(callback.isCanceled[ParameterInfoCallback.SUBMIT]);
+        assertFalse(callback.isDone[ParameterInfoCallback.SUBMIT]);
+        assertEquals(task3, callback.task[ParameterInfoCallback.SUBMIT]);
+
+        // task does not start
+        assertNull(callback.future[ParameterInfoCallback.START]);
+        assertNull(callback.task[ParameterInfoCallback.START]);
+
+        // task is not canceled
+        assertNull(callback.future[ParameterInfoCallback.CANCEL]);
+        assertNull(callback.task[ParameterInfoCallback.CANCEL]);
+
+        // task is aborted
+        assertEquals(task3, callback.task[ParameterInfoCallback.END]);
+        assertEquals(callback.future[ParameterInfoCallback.SUBMIT], callback.future[ParameterInfoCallback.END]);
+        assertFalse(callback.isCanceled[ParameterInfoCallback.END]);
+        assertTrue(callback.isDone[ParameterInfoCallback.END]);
+        assertNull(callback.startContext);
+        Object result = callback.result[ParameterInfoCallback.END];
+        if (!(result instanceof RejectedExecutionException))
+            if (result instanceof Throwable)
+                throw new Exception("Unexpected failure. See cause.", (Throwable) result);
+            else
+                fail("result: " + result);
+
+        // interrupt wait for enqueue
+        Callable<Integer> task4 = new SharedIncrementTask();
+        executor.maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
+        Thread.currentThread().interrupt();
+        try {
+            executor.submit(task4, callback = new ParameterInfoCallback());
+        } catch (RejectedExecutionException x) {
+            if (!(x.getCause() instanceof InterruptedException))
+                throw x;
+        }
+
+        // task successfully submits
+        assertFalse(callback.isCanceled[ParameterInfoCallback.SUBMIT]);
+        assertFalse(callback.isDone[ParameterInfoCallback.SUBMIT]);
+        assertEquals(task4, callback.task[ParameterInfoCallback.SUBMIT]);
+
+        // task does not start
+        assertNull(callback.future[ParameterInfoCallback.START]);
+        assertNull(callback.task[ParameterInfoCallback.START]);
+
+        // task is not canceled
+        assertNull(callback.future[ParameterInfoCallback.CANCEL]);
+        assertNull(callback.task[ParameterInfoCallback.CANCEL]);
+
+        // task is aborted
+        assertEquals(task4, callback.task[ParameterInfoCallback.END]);
+        assertEquals(callback.future[ParameterInfoCallback.SUBMIT], callback.future[ParameterInfoCallback.END]);
+        assertFalse(callback.isCanceled[ParameterInfoCallback.END]);
+        assertTrue(callback.isDone[ParameterInfoCallback.END]);
+        assertNull(callback.startContext);
+        result = callback.result[ParameterInfoCallback.END];
+        if (!(result instanceof RejectedExecutionException) || !(((RejectedExecutionException) result).getCause() instanceof InterruptedException))
+            if (result instanceof Throwable)
+                throw new Exception("Unexpected failure. See cause.", (Throwable) result);
+            else
+                fail("result: " + result);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(1, canceledFromQueue.size());
+        assertEquals(task2, canceledFromQueue.get(0));
+        assertTrue(queuedFuture.isCancelled());
+        assertTrue(blockerFuture.isCancelled());
+    }
+
     // Verify that it is not possible to cancel tasks that are done.
     @Test
     public void testCancelAfterDone() throws Exception {
@@ -466,6 +570,157 @@ public class PolicyExecutorServlet extends FATServlet {
 
         executor.shutdown();
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    // Cancel tasks during the onStart callback. Verify that tasks are canceled and do not run, implying that the onStart callback is being invoked.
+    @Test
+    public void testCancelOnStart() throws Exception {
+        PolicyExecutor executor = provider.create("testCancelOnStart");
+
+        AtomicInteger counter = new AtomicInteger();
+        CancellationCallback cancelOnStart = new CancellationCallback("onStart");
+
+        // submit
+        Future<Integer> future = executor.submit((Callable<Integer>) new SharedIncrementTask(counter), cancelOnStart);
+        try {
+            fail("Should not be able to get result of canceled future: " + future.get());
+        } catch (CancellationException x) {
+        } // pass
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+
+        // untimed invokeAll, same thread
+        List<Future<Integer>> futures = executor.invokeAll(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                                           new PolicyTaskCallback[] { cancelOnStart });
+        assertEquals(1, futures.size());
+        future = futures.get(0);
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+        try {
+            fail("Should not be able to get result of canceled untimed invokeAll future: " + future.get());
+        } catch (CancellationException x) {
+        } // pass
+
+        // interrupted status should be cleared
+        assertFalse(Thread.currentThread().isInterrupted());
+
+        // timed invokeAll, different thread
+        futures = executor.invokeAll(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                     new PolicyTaskCallback[] { cancelOnStart },
+                                     TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(1, futures.size());
+        future = futures.get(0);
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+        try {
+            fail("Should not be able to get result of canceled timed invokeAll future: " + future.get());
+        } catch (CancellationException x) {
+        } // pass
+
+        // untimed invokeAny(one task)
+        try {
+            Integer result = executor.invokeAny(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                                new PolicyTaskCallback[] { cancelOnStart });
+            fail("untimed invokeAny task should have canceled on start. Instead result is: " + result);
+        } catch (CancellationException x) {
+        } // pass
+
+        // untimed invokeAny(tasks)
+        try {
+            Integer result = executor.invokeAny(Arrays.asList(new SharedIncrementTask(counter), new SharedIncrementTask(counter)),
+                                                new PolicyTaskCallback[] { cancelOnStart, cancelOnStart });
+            fail("untimed invokeAny tasks should have canceled on start. Instead result is: " + result);
+        } catch (CancellationException x) {
+        } // pass
+
+        // timed invokeAny
+        try {
+            Integer result = executor.invokeAny(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                                new PolicyTaskCallback[] { cancelOnStart },
+                                                TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("timed invokeAny task should have canceled on start. Instead result is: " + result);
+        } catch (CancellationException x) {
+        } // pass
+
+        // None of the tasks should have started
+        assertEquals(0, counter.get());
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
+    }
+
+    // Cancel tasks during the onSubmit callback. Verify that tasks are canceled and do not run, implying that the onSubmit callback is being invoked.
+    @Test
+    public void testCancelOnSubmit() throws Exception {
+        PolicyExecutor executor = provider.create("testCancelOnSubmit");
+
+        AtomicInteger counter = new AtomicInteger();
+        CancellationCallback cancelOnSubmit = new CancellationCallback("onSubmit");
+
+        // submit
+        Future<Integer> future = executor.submit(new SharedIncrementTask(counter), 1, cancelOnSubmit);
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+        try {
+            fail("Should not be able to get result of canceled future: " + future.get());
+        } catch (CancellationException x) {
+        } // pass
+
+        // untimed invokeAll
+        List<Future<Integer>> futures = executor.invokeAll(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                                           new PolicyTaskCallback[] { cancelOnSubmit });
+        assertEquals(1, futures.size());
+        future = futures.get(0);
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+        try {
+            fail("Should not be able to get result of canceled untimed invokeAll future: " + future.get());
+        } catch (CancellationException x) {
+        } // pass
+
+        // timed invokeAll
+        futures = executor.invokeAll(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                     new PolicyTaskCallback[] { cancelOnSubmit },
+                                     TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(1, futures.size());
+        future = futures.get(0);
+        assertTrue(future.isCancelled());
+        assertTrue(future.isDone());
+        try {
+            fail("Should not be able to get result of canceled timed invokeAll future: " + future.get());
+        } catch (CancellationException x) {
+        } // pass
+
+        // untimed invokeAny(one task)
+        try {
+            Integer result = executor.invokeAny(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                                new PolicyTaskCallback[] { cancelOnSubmit });
+            fail("untimed invokeAny task should have canceled on submit. Instead result is: " + result);
+        } catch (CancellationException x) {
+        } // pass
+
+        // untimed invokeAny(tasks)
+        try {
+            Integer result = executor.invokeAny(Arrays.asList(new SharedIncrementTask(counter), new SharedIncrementTask(counter)),
+                                                new PolicyTaskCallback[] { cancelOnSubmit, cancelOnSubmit });
+            fail("untimed invokeAny tasks should have canceled on submit. Instead result is: " + result);
+        } catch (CancellationException x) {
+        } // pass
+
+        // timed invokeAny
+        try {
+            Integer result = executor.invokeAny(Collections.<Callable<Integer>> singleton(new SharedIncrementTask(counter)),
+                                                new PolicyTaskCallback[] { cancelOnSubmit },
+                                                TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("timed invokeAny task should have canceled on submit. Instead result is: " + result);
+        } catch (CancellationException x) {
+        } // pass
+
+        // None of the tasks should have started
+        assertEquals(0, counter.get());
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
     }
 
     // When queued tasks are canceled, it should immediately free up capacity to allow tasks waiting for enqueue to be enqueued.
@@ -3129,7 +3384,7 @@ public class PolicyExecutorServlet extends FATServlet {
     }
 
     // Submit a group of tasks to timed invokeAny, one of which raises an exception, another of which blocks all others from starting,
-    // another of which it stuck in the queue, and another of which is blocked attempting to get a queue position.
+    // another of which is stuck in the queue, and another of which is blocked attempting to get a queue position.
     // Interrupt the invokeAny operation before it completes. Expect InterruptedException.
     @Test
     public void testInvokeAnyTimedInterruptWaitForEnqueue() throws Exception {
@@ -3143,10 +3398,10 @@ public class PolicyExecutorServlet extends FATServlet {
         CountDownLatch unused = new CountDownLatch(0);
         Collection<CountDownTask> tasks = Arrays.asList(new CountDownTask(beginLatch_1_2, null, 0), // Intentionally fail with NullPointerException
                                                         new CountDownTask(beginLatch_1_2, blocker, TIMEOUT_NS * 2), // block
-                                                        new CountDownTask(unused, unused, 0), // stuck in queue
-                                                        new CountDownTask(unused, unused, 0)); // blocked from entering queue
+                                                        new CountDownTask(unused, blocker, TIMEOUT_NS * 2), // stuck in queue until invokeAny is interrupted
+                                                        new CountDownTask(unused, blocker, TIMEOUT_NS * 2)); // blocked from entering queue until invokeAny is interrupted
 
-        // Interrupt the current thread after both tasks start
+        // Interrupt the current thread after the first two tasks start
         Future<?> interrupterFuture = testThreads.submit(new InterrupterTask(Thread.currentThread(), beginLatch_1_2, TIMEOUT_NS * 2, TimeUnit.NANOSECONDS));
 
         long start = System.nanoTime();
@@ -3632,6 +3887,49 @@ public class PolicyExecutorServlet extends FATServlet {
 
         assertTrue(future.isCancelled());
         assertTrue(future.isDone());
+    }
+
+    // Submit tasks that attempt to get their own result while they are running. The executor should detect this and immediately raise InterruptedException
+    // to prevent a hang or lengthy timeout. This also tests the onSubmit callback, which is one convenient way for a task to obtain its own Future.
+    @Test
+    public void testSelfGet() throws Exception {
+        PolicyExecutor executor = provider.create("testSelfGet");
+
+        // submit
+        SelfGetterTask task = new SelfGetterTask();
+        PolicyTaskCallback callback = task;
+        long start = System.nanoTime();
+        Future<Object> future = executor.submit(task, callback);
+        Object result = future.get(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        assertTrue(result.toString(), result instanceof InterruptedException);
+        long duration = System.nanoTime() - start;
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        // invokeAll
+        SelfGetterTask task0 = new SelfGetterTask();
+        SelfGetterTask task1 = new SelfGetterTask(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        PolicyTaskCallback[] callbacks = new PolicyTaskCallback[] { task0, task1 };
+        start = System.nanoTime();
+        List<Future<Object>> futures = executor.invokeAll(Arrays.asList(task0, task1), callbacks);
+        future = futures.get(0);
+        result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result.toString(), result instanceof InterruptedException);
+        future = futures.get(1);
+        result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertTrue(result.toString(), result instanceof InterruptedException);
+
+        // invokeAny
+        task0 = new SelfGetterTask(TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        task1 = new SelfGetterTask();
+        callbacks = new PolicyTaskCallback[] { task0, task1 };
+        start = System.nanoTime();
+        result = executor.invokeAny(Arrays.asList(task0, task1), callbacks);
+        duration = System.nanoTime() - start;
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+        assertTrue(result.toString(), result instanceof InterruptedException);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(0, canceledFromQueue.size());
     }
 
     // Tests behavior when shutdown occurs while timed invokeAll is submitting and running tasks. Supply a group of 5 tasks to invokeAll.

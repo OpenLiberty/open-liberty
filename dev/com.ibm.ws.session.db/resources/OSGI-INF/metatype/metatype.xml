@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2012, 2013 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+    <OCD name="%session.db.config"  
+         description="%session.db.config.desc"
+         id="com.ibm.ws.session.db.config" 
+         ibm:alias="httpSessionDatabase"
+         ibmui:extraProperties="true" 
+         ibmui:localization="OSGI-INF/l10n/metatype"> 
+         
+        <AD id="dataSourceRef" 
+            name="%data.source.ref" 
+            description="%data.source.ref.desc" 
+            required="true" type="String"/>
+            
+        <AD id="dataSourceFactory.target" 
+            name="internal" 
+            description="internal use only" 
+            required="false" type="String" 
+            default="(&amp;(creates.objectClass=javax.sql.DataSource)(id=${dataSourceRef}))" 
+            ibm:final="true"/>
+            
+        <AD id="sessionPersistenceMode" 
+            name="internal" 
+            description="internal use only" 
+            required="false" type="String" default="DATABASE"/>
+            
+        <AD id="tableName" 
+            name="%table.name" 
+            description="%table.name.desc" 
+            required="false" type="String" default="sessions"/>
+            
+        <AD id="useMultiRowSchema" 
+            name="%use.multi.row.schema.name" 
+            description="%use.multi.row.schema.desc" 
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="skipIndexCreation" 
+            name="%skip.index.creation" 
+            description="%skip.index.creation.desc" 
+            required="false" type="Boolean" default="false"/>
+            
+        <!-- ibmui:group=performance -->
+        <AD id="writeFrequency" 
+            name="%write.frequency.name" 
+            description="%write.frequency.desc" 
+            ibmui:group="performance"
+            required="false" type="String"     default="END_OF_SERVLET_SERVICE">
+            <Option label="%write.frequency.eos" value="END_OF_SERVLET_SERVICE"/>
+            <Option	label="%write.frequency.mu"  value="MANUAL_UPDATE"/>
+            <Option label="%write.frequency.tbw" value="TIME_BASED_WRITE"/>
+        </AD>
+        
+        <AD id="writeInterval" 
+            name="%write.interval.name" 
+            description="%write.interval.desc" 
+            ibmui:group="performance"
+            required="false" type="String" ibm:type="duration(s)" default="2m"/>
+            
+        <AD id="writeContents"
+            name="%write.contents.name" 
+            description="%write.contents.desc"
+            ibmui:group="performance" 
+            required="false" type="String"        default="ONLY_UPDATED_ATTRIBUTES">
+            <Option label="%write.contents.updated" value="ONLY_UPDATED_ATTRIBUTES"/>
+            <Option label="%write.contents.all"     value="ALL_SESSION_ATTRIBUTES"/>
+        </AD>
+            
+        <!-- ibmui:group=advanced.performance -->
+        <AD id="scheduleInvalidation" 
+            name="%schedule.invalidation.name" 
+            description="%schedule.invalidation.desc" 
+            ibmui:group="advanced.performance"
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="scheduleInvalidationFirstHour" 
+            name="%schedule.invalidation.first.hour.name" 
+            description="%schedule.invalidation.first.hour.desc" 
+            ibmui:group="advanced.performance"
+            required="false" type="Integer" default="0"/>
+            
+        <AD id="scheduleInvalidationSecondHour" 
+            name="%schedule.invalidation.second.hour.name" 
+            description="%schedule.invalidation.second.hour.desc" 
+            ibmui:group="advanced.performance"
+            required="false" type="Integer" default="0"/>
+            
+        <AD id="noAffinitySwitchBack" 
+            name="%no.affinity.switchBack" 
+            description="%no.affinity.switchBack.desc" 
+            ibmui:group="advanced.performance"
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="useInvalidatedId" 
+            name="%use.invalidated.id" 
+            description="%use.invalidated.id.desc" 
+            ibmui:group="advanced.performance"
+            required="false" type="Boolean" default="true"/>
+            
+        <AD id="onlyCheckInCacheDuringPreInvoke" 
+            name="%only.check.in.cache.during.pre.invoke" 
+            description="%only.check.in.cache.during.pre.invoke.desc" 
+            ibmui:group="advanced.performance"
+            required="false" type="Boolean" default="false"/>
+            
+        <AD id="optimizeCacheIdIncrements" 
+            name="%optimize.cache.id.increments" 
+            description="%optimize.cache.id.increments.desc" 
+            ibmui:group="advanced.performance"
+            required="false" type="Boolean" default="true"/>
+        
+        <!-- ibmui:group=db2 -->
+        <AD id="db2RowSize" 
+            name="%db2.row.size.name" 
+            description="%db2.row.size.desc" 
+            ibmui:group="db2"
+            required="false" type="String"    default="4KB">
+            <Option label="%db2.row.size.4KB"   value="4KB"/>
+            <Option label="%db2.row.size.8KB"   value="8KB"/>
+            <Option	label="%db2.row.size.16KB"  value="16KB"/>
+            <Option	label="%db2.row.size.32KB"  value="32KB"/>
+        </AD>
+        
+        <AD id="tableSpaceName" 
+            name="%table.space.name.name" 
+            description="%table.space.name.desc" 
+            ibmui:group="db2"
+            required="false" type="String" default=""/>
+            
+        <AD id="usingCustomSchemaName" 
+            name="%using.custom.schema.name" 
+            description="%using.custom.schema.name.desc" 
+            ibmui:group="db2"
+            required="false" type="Boolean" default="false"/>
+            
+        <!-- ibmui:group=oracle -->
+        <AD id="useOracleBlob" 
+            name="%use.oracle.blob" 
+            description="%use.oracle.blob.desc" 
+            ibmui:group="oracle"
+            required="false" type="Boolean" default="false"/>
+    </OCD>
+
+    <Designate pid="com.ibm.ws.session.db">
+        <Object ocdref="com.ibm.ws.session.db.config"/>
+    </Designate>
+
+</metatype:MetaData>

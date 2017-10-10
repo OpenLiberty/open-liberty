@@ -16,7 +16,7 @@ addRequiredLibraries {
 			derbyEmbedded
 		}
 		dependencies {
-			derbyEmbedded 'org.apache.derby:derby:10.11.1'
+			derbyEmbedded 'org.apache.derby:derby:10.11.1.1'
 		}
 		copy {
 			from configurations.derbyEmbedded

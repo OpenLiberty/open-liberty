@@ -141,6 +141,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     final PrivilegedAction<WSContextService> contextSvcAccessor = new PrivilegedAction<WSContextService>() {
         @Override
+        @Trivial
         public WSContextService run() {
             try {
                 return contextSvcRef.getServiceWithException();
@@ -201,6 +202,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     final PrivilegedAction<ThreadContextProvider> tranContextProviderAccessor = new PrivilegedAction<ThreadContextProvider>() {
         @Override
+        @Trivial
         public ThreadContextProvider run() {
             return tranContextProviderRef.getService();
         }
@@ -346,6 +348,36 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         return list;
     }
 
+    /**
+     * Capture context for a list of tasks and create callbacks that apply context and notify the ManagedTaskListener, if any.
+     *
+     * @param tasks collection of tasks.
+     * @return list of callbacks.
+     */
+    private <T> PolicyTaskCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
+        WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
+
+        int numTasks = tasks.size();
+        PolicyTaskCallback[] callbacks = new PolicyTaskCallback[numTasks];
+
+        if (numTasks == 1)
+            callbacks[0] = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(getExecutionProperties(tasks.iterator().next())));
+        else {
+            // Thread context capture is expensive, so reuse callbacks when execution properties match
+            Map<Map<String, String>, TaskLifeCycleCallback> execPropsToCallback = new HashMap<Map<String, String>, TaskLifeCycleCallback>();
+            int t = 0;
+            for (Callable<T> task : tasks) {
+                Map<String, String> execProps = getExecutionProperties(task);
+                TaskLifeCycleCallback callback = execPropsToCallback.get(execProps);
+                if (callback == null)
+                    execPropsToCallback.put(execProps, callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps)));
+                callbacks[t++] = callback;
+            }
+        }
+
+        return callbacks;
+    }
+
     /** {@inheritDoc} */
     @Override
     public Object createResource(final ResourceInfo ref) throws Exception {
@@ -405,6 +437,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @FFDCIgnore(InterruptedException.class)
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAll(tasks, createCallbacks(tasks));
+
         ExecutorService execSvc = getExecSvc();
 
         ArrayList<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, true);
@@ -433,6 +469,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @FFDCIgnore(InterruptedException.class)
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
+
         ExecutorService execSvc = getExecSvc();
 
         ArrayList<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, true);
@@ -462,6 +502,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAny(tasks, createCallbacks(tasks));
+
         ExecutorService execSvc = getExecSvc();
 
         Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);
@@ -478,6 +522,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        // TODO replace this temporary prototype code
+        if (policyExecutor != null)
+            return policyExecutor.invokeAny(tasks, createCallbacks(tasks), timeout, unit);
+
         ExecutorService execSvc = getExecSvc();
 
         Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);

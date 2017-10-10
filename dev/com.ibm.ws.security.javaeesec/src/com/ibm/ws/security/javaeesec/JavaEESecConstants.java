@@ -18,4 +18,5 @@ public class JavaEESecConstants {
     public static final String LOGIN_TO_CONTINUE_ERRORPAGE = "errorPage";
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN = "useForwardToLogin";
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION = "useForwardToLoginExpression";
+    public static final String SECURITY_CONTEXT_AUTH_PARAMS = "com.ibm.ws.security.javaeesec.auth.params";
 }

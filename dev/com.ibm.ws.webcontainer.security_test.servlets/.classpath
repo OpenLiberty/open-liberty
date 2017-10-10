@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="build/fat-application-classes/basicauth" path="test-applications/basicauth/src"/>
+	<classpathentry kind="src" path="test-applications/formloginPageSessionFalse/src"/>
+	<classpathentry kind="src" path="test-applications/clientcert/src"/>
+	<classpathentry kind="src" path="test-applications/delegation/src"/>
+	<classpathentry kind="src" path="test-applications/dynamicAnnotationConflict/src"/>
+	<classpathentry kind="src" path="test-applications/dynamicAnnotationPure/src"/>
+	<classpathentry kind="src" output="build/fat-application-classes/formlogin" path="test-applications/formlogin/src"/>
+	<classpathentry kind="src" output="build/fat-application-classes/inheritance" path="test-applications/inheritance/src"/>
+	<classpathentry kind="src" path="test-applications/loginConfigInvalid/src"/>
+	<classpathentry kind="src" path="test-applications/loginConfigNone/src"/>
+	<classpathentry kind="src" path="test-applications/loginConfigNoRealmName/src"/>
+	<classpathentry kind="src" path="test-applications/metadataCompleteTrueWebFragment/src"/>
+	<classpathentry kind="src" path="test-applications/metadataCompleteTrueWebXML/src"/>
+	<classpathentry kind="src" path="test-applications/staticAnnotationMixed/src"/>
+	<classpathentry kind="src" path="test-applications/staticAnnotationPure/src"/>
+	<classpathentry kind="src" path="test-applications/staticAnnotationWebXML/src"/>
+	<classpathentry kind="src" path="test-applications/webFragmentDeploymentFailureForRunAs/src"/>
+	<classpathentry kind="src" path="test-applications/webFragmentDeploymentFailureForAuthConstraint/src"/>
+	<classpathentry kind="src" path="test-applications/webFragmentDeploymentFailureForUserDataConstraint/src"/>
+	<classpathentry kind="src" path="common-classes/src"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test-applications/basicauthdeny/src"/>
+	<classpathentry kind="src" path="test-applications/postParams/src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

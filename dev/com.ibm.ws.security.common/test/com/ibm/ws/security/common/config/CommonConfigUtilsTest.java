@@ -24,6 +24,7 @@ public class CommonConfigUtilsTest extends CommonTestClass {
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.common.*=all");
 
     final static String CWWKS6104W_CONFIG_REQUIRED_ATTRIBUTE_NULL = "CWWKS6104W";
+    final static String CWWKS6105W_CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID = "CWWKS6105W";
 
     CommonConfigUtils utils = new CommonConfigUtils();
 
@@ -66,37 +67,10 @@ public class CommonConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getConfigAttribute_emptyProps_nullKey_defaultValue() {
-        try {
-            String result = utils.getConfigAttribute(new HashMap<String, Object>(), null, "defaultValue");
-            assertNull("Result should have been null but was [" + result + "].", result);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
     public void getConfigAttribute_emptyProps() {
         try {
             String result = utils.getConfigAttribute(new HashMap<String, Object>(), "requiredAttribute");
             assertNull("Result should have been null but was [" + result + "].", result);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getConfigAttribute_emptyProps_defaultValue() {
-        try {
-            String defaultValue = "defaultValue";
-            String result = utils.getConfigAttribute(new HashMap<String, Object>(), "requiredAttribute", defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
 
@@ -114,24 +88,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
 
             String result = utils.getConfigAttribute(props, "requiredAttribute");
             assertNull("Result should have been null but was [" + result + "].", result);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getConfigAttribute_missingKey_defaultValue() {
-        try {
-            String defaultValue = "defaultValue";
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("key1", "value1");
-            props.put("key2", "value2");
-
-            String result = utils.getConfigAttribute(props, "requiredAttribute", defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
 
@@ -162,28 +118,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getConfigAttribute_withKey_valueEmpty_defaultValue() {
-        try {
-            String chosenAttr = "requiredAttribute";
-            String value = "";
-            String defaultValue = "defaultValue";
-
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("key1", "value1");
-            props.put("key2", "value2");
-            props.put(chosenAttr, value);
-
-            String result = utils.getConfigAttribute(props, chosenAttr, defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
     public void getConfigAttribute_withKey_valueWhitespace() {
         try {
             String chosenAttr = "requiredAttribute";
@@ -196,28 +130,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
 
             String result = utils.getConfigAttribute(props, chosenAttr);
             assertNull("Result should have been null but was [" + result + "].", result);
-
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getConfigAttribute_withKey_valueWhitespace_defaultValue() {
-        try {
-            String chosenAttr = "requiredAttribute";
-            String value = " \t\n\r";
-            String defaultValue = "defaultValue";
-
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("key1", "value1");
-            props.put("key2", "value2");
-            props.put(chosenAttr, value);
-
-            String result = utils.getConfigAttribute(props, chosenAttr, defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
 
@@ -247,8 +159,99 @@ public class CommonConfigUtilsTest extends CommonTestClass {
         }
     }
 
+    /******************************************* getConfigAttributeWithDefaultValue *******************************************/
+
     @Test
-    public void getConfigAttribute_withKey_valueNonEmpty_defaultValue() {
+    public void getConfigAttributeWithDefaultValue_emptyProps_nullKey() {
+        try {
+            String result = utils.getConfigAttributeWithDefaultValue(new HashMap<String, Object>(), null, "defaultValue");
+            assertNull("Result should have been null but was [" + result + "].", result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getConfigAttributeWithDefaultValue_emptyProps() {
+        try {
+            String defaultValue = "defaultValue";
+            String result = utils.getConfigAttributeWithDefaultValue(new HashMap<String, Object>(), "requiredAttribute", defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getConfigAttributeWithDefaultValue_missingKey() {
+        try {
+            String defaultValue = "defaultValue";
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+
+            String result = utils.getConfigAttributeWithDefaultValue(props, "requiredAttribute", defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getConfigAttributeWithDefaultValue_withKey_valueEmpty() {
+        try {
+            String chosenAttr = "requiredAttribute";
+            String value = "";
+            String defaultValue = "defaultValue";
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            props.put(chosenAttr, value);
+
+            String result = utils.getConfigAttributeWithDefaultValue(props, chosenAttr, defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getConfigAttributeWithDefaultValue_withKey_valueWhitespace() {
+        try {
+            String chosenAttr = "requiredAttribute";
+            String value = " \t\n\r";
+            String defaultValue = "defaultValue";
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            props.put(chosenAttr, value);
+
+            String result = utils.getConfigAttributeWithDefaultValue(props, chosenAttr, defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getConfigAttributeWithDefaultValue_withKey_valueNonEmpty() {
         try {
             String chosenAttr = "requiredAttribute";
             String value = "Some value";
@@ -259,7 +262,7 @@ public class CommonConfigUtilsTest extends CommonTestClass {
             props.put("key2", "value2");
             props.put(chosenAttr, value);
 
-            String result = utils.getConfigAttribute(props, chosenAttr, defaultValue);
+            String result = utils.getConfigAttributeWithDefaultValue(props, chosenAttr, defaultValue);
             assertEquals("Result should equal the value set in properties (" + value + ") and not the default value (" + defaultValue + ").", value, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
@@ -286,20 +289,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getRequiredConfigAttribute_emptyProps_nullKey_defaultValue() {
-        try {
-            String result = utils.getRequiredConfigAttribute(new HashMap<String, Object>(), null, "defaultValue");
-            assertNull("Result should have been null but was [" + result + "].", result);
-
-            // Shouldn't emit log message for null key
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
     public void getRequiredConfigAttribute_emptyProps() {
         try {
             String attr = "requiredAttribute";
@@ -307,22 +296,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
             assertNull("Result should have been null but was [" + result + "].", result);
 
             verifyMissingRequiredAttributes(outputMgr, attr);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getRequiredConfigAttribute_emptyProps_defaultValue() {
-        try {
-            String defaultValue = "defaultValue";
-            String attr = "requiredAttribute";
-            String result = utils.getRequiredConfigAttribute(new HashMap<String, Object>(), attr, defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
-
-            // Shouldn't emit log message because default value is provided
-            verifyNoLogMessage(outputMgr, MSG_BASE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -341,26 +314,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
             assertNull("Result should have been null but was [" + result + "].", result);
 
             verifyMissingRequiredAttributes(outputMgr, attr);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getRequiredConfigAttribute_missingKey_defaultValue() {
-        try {
-            String defaultValue = "defaultValue";
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("key1", "value1");
-            props.put("key2", "value2");
-            String attr = "requiredAttribute";
-
-            String result = utils.getRequiredConfigAttribute(props, attr, defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
-
-            // Shouldn't emit log message because default value is provided
-            verifyNoLogMessage(outputMgr, MSG_BASE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -389,29 +342,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
     }
 
     @Test
-    public void getRequiredConfigAttribute_withKey_valueEmpty_defaultValue() {
-        try {
-            String chosenAttr = "requiredAttribute";
-            String value = "";
-            String defaultValue = "defaultValue";
-
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("key1", "value1");
-            props.put("key2", "value2");
-            props.put(chosenAttr, value);
-
-            String result = utils.getRequiredConfigAttribute(props, chosenAttr, defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
-
-            // Shouldn't emit log message because default value is provided
-            verifyNoLogMessage(outputMgr, MSG_BASE);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
     public void getRequiredConfigAttribute_withKey_valueWhitespace() {
         try {
             String chosenAttr = "requiredAttribute";
@@ -426,29 +356,6 @@ public class CommonConfigUtilsTest extends CommonTestClass {
             assertNull("Result should have been null but was [" + result + "].", result);
 
             verifyMissingRequiredAttributes(outputMgr, chosenAttr);
-
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    @Test
-    public void getRequiredConfigAttribute_withKey_valueWhitespace_defaultValue() {
-        try {
-            String chosenAttr = "requiredAttribute";
-            String value = " \t\n\r";
-            String defaultValue = "defaultValue";
-
-            Map<String, Object> props = new HashMap<String, Object>();
-            props.put("key1", "value1");
-            props.put("key2", "value2");
-            props.put(chosenAttr, value);
-
-            String result = utils.getRequiredConfigAttribute(props, chosenAttr, defaultValue);
-            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
-
-            // Shouldn't emit log message because default value is provided
-            verifyNoLogMessage(outputMgr, MSG_BASE);
 
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -476,8 +383,106 @@ public class CommonConfigUtilsTest extends CommonTestClass {
         }
     }
 
+    /************************************** getRequiredConfigAttributeWithDefaultValue **************************************/
+
     @Test
-    public void getRequiredConfigAttribute_withKey_defaultValue() {
+    public void getRequiredConfigAttributeWithDefaultValue_emptyProps_nullKey() {
+        try {
+            String result = utils.getRequiredConfigAttributeWithDefaultValue(new HashMap<String, Object>(), null, "defaultValue");
+            assertNull("Result should have been null but was [" + result + "].", result);
+
+            // Shouldn't emit log message for null key
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithDefaultValue_emptyProps() {
+        try {
+            String defaultValue = "defaultValue";
+            String attr = "requiredAttribute";
+            String result = utils.getRequiredConfigAttributeWithDefaultValue(new HashMap<String, Object>(), attr, defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            // Shouldn't emit log message because default value is provided
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithDefaultValue_missingKey() {
+        try {
+            String defaultValue = "defaultValue";
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            String attr = "requiredAttribute";
+
+            String result = utils.getRequiredConfigAttributeWithDefaultValue(props, attr, defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            // Shouldn't emit log message because default value is provided
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithDefaultValue_withKey_valueEmpty() {
+        try {
+            String chosenAttr = "requiredAttribute";
+            String value = "";
+            String defaultValue = "defaultValue";
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            props.put(chosenAttr, value);
+
+            String result = utils.getRequiredConfigAttributeWithDefaultValue(props, chosenAttr, defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            // Shouldn't emit log message because default value is provided
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithDefaultValue_withKey_valueWhitespace() {
+        try {
+            String chosenAttr = "requiredAttribute";
+            String value = " \t\n\r";
+            String defaultValue = "defaultValue";
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            props.put(chosenAttr, value);
+
+            String result = utils.getRequiredConfigAttributeWithDefaultValue(props, chosenAttr, defaultValue);
+            assertEquals("Result should have been set to the default value provided.", defaultValue, result);
+
+            // Shouldn't emit log message because default value is provided
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithDefaultValue_withKey() {
         try {
             String chosenAttr = "requiredAttribute";
             String value = "Some value";
@@ -488,8 +493,125 @@ public class CommonConfigUtilsTest extends CommonTestClass {
             props.put("key2", "value2");
             props.put(chosenAttr, value);
 
-            String result = utils.getRequiredConfigAttribute(props, chosenAttr, defaultValue);
+            String result = utils.getRequiredConfigAttributeWithDefaultValue(props, chosenAttr, defaultValue);
             assertEquals("Result should equal the value set in properties (" + value + ") and not the default value (" + defaultValue + ").", value, result);
+
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /************************************** getRequiredConfigAttributeWithConfigId **************************************/
+
+    @Test
+    public void getRequiredConfigAttributeWithConfigId_emptyProps_nullKey() {
+        try {
+            String configId = RandomUtils.getRandomSelection(null, "", "someConfigId");
+            String result = utils.getRequiredConfigAttributeWithConfigId(new HashMap<String, Object>(), null, configId);
+            assertNull("Result should have been null but was [" + result + "].", result);
+
+            // Shouldn't emit log message for null key
+            verifyNoLogMessage(outputMgr, MSG_BASE);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithConfigId_emptyProps() {
+        try {
+            String configId = RandomUtils.getRandomSelection(null, "", "someConfigId");
+            String attr = "requiredAttribute";
+            String result = utils.getRequiredConfigAttributeWithConfigId(new HashMap<String, Object>(), attr, configId);
+            assertNull("Result should have been null but was [" + result + "].", result);
+
+            verifyMissingRequiredAttributesWithConfigId(outputMgr, attr);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithConfigId_missingKey() {
+        try {
+            String configId = RandomUtils.getRandomSelection(null, "", "someConfigId");
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            String attr = "requiredAttribute";
+
+            String result = utils.getRequiredConfigAttributeWithConfigId(props, attr, configId);
+            assertNull("Result should have been null but was [" + result + "].", result);
+
+            verifyMissingRequiredAttributesWithConfigId(outputMgr, attr);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithConfigId_withKey_valueEmpty() {
+        try {
+            String configId = RandomUtils.getRandomSelection(null, "", "someConfigId");
+            String chosenAttr = "requiredAttribute";
+            String value = "";
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            props.put(chosenAttr, value);
+
+            String result = utils.getRequiredConfigAttributeWithConfigId(props, chosenAttr, configId);
+            assertNull("Result should have been null but was [" + result + "].", result);
+
+            verifyMissingRequiredAttributesWithConfigId(outputMgr, chosenAttr);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithConfigId_withKey_valueWhitespace() {
+        try {
+            String configId = RandomUtils.getRandomSelection(null, "", "someConfigId");
+            String chosenAttr = "requiredAttribute";
+            String value = " \t\n\r";
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            props.put(chosenAttr, value);
+
+            String result = utils.getRequiredConfigAttributeWithConfigId(props, chosenAttr, configId);
+            assertNull("Result should have been null but was [" + result + "].", result);
+
+            verifyMissingRequiredAttributesWithConfigId(outputMgr, chosenAttr);
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void getRequiredConfigAttributeWithConfigId_withKey_valueGood() {
+        try {
+            String configId = RandomUtils.getRandomSelection(null, "", "someConfigId");
+            String chosenAttr = "requiredAttribute";
+            String value = "Some value";
+
+            Map<String, Object> props = new HashMap<String, Object>();
+            props.put("key1", "value1");
+            props.put("key2", "value2");
+            props.put(chosenAttr, value);
+
+            String result = utils.getRequiredConfigAttributeWithConfigId(props, chosenAttr, configId);
+            assertEquals("Value for " + chosenAttr + " property did not match expected value. Properties were: " + props, value, result);
 
             verifyNoLogMessage(outputMgr, MSG_BASE);
 
@@ -811,6 +933,12 @@ public class CommonConfigUtilsTest extends CommonTestClass {
     protected void verifyMissingRequiredAttributes(SharedOutputManager outputMgr, String... attributes) {
         for (String attr : attributes) {
             verifyLogMessageWithInserts(outputMgr, CWWKS6104W_CONFIG_REQUIRED_ATTRIBUTE_NULL, attr);
+        }
+    }
+
+    protected void verifyMissingRequiredAttributesWithConfigId(SharedOutputManager outputMgr, String configId, String... attributes) {
+        for (String attr : attributes) {
+            verifyLogMessageWithInserts(outputMgr, CWWKS6105W_CONFIG_REQUIRED_ATTRIBUTE_NULL_WITH_CONFIG_ID, attr, configId);
         }
     }
 }
