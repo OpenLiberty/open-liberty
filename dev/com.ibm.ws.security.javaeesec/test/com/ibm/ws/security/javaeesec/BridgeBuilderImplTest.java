@@ -97,9 +97,9 @@ public class BridgeBuilderImplTest {
         mockery.checking(new Expectations() {
             {
                 allowing(httpAuthenticationMechanismBean1).getBeanClass();
-                will(returnValue("httpAuthenticationMechanismBean1.class"));
+                will(returnValue(HttpAuthenticationMechanism.class));
                 allowing(httpAuthenticationMechanismBean2).getBeanClass();
-                will(returnValue("httpAuthenticationMechanismBean2.class"));
+                will(returnValue(HttpAuthenticationMechanism.class));
             }
         });
 

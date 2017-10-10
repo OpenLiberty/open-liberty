@@ -223,7 +223,7 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(types));
                 one(pb2).getBean();
                 will(returnValue(bn2));
-                exactly(2).of(bn2).getBeanClass();
+                between(1,2).of(bn2).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn2).getTypes();
                 will(returnValue(types2));
@@ -293,7 +293,7 @@ public class JavaEESecCDIExtensionTest {
                 will(returnValue(types));
                 one(pb2).getBean();
                 will(returnValue(bn2));
-                exactly(2).of(bn2).getBeanClass();
+                between(1,2).of(bn2).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn2).getTypes();
                 will(returnValue(types2));
