@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-fragment xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="..."
+      version="3.0"
+      metadata-complete="true">     
+
+  	<!-- MetadataCompleteTrueWebFragment1 not defined in web.xml or in web-fragment.xml. Servlet and security constraints are defined in static annotations
+         But since metadata-complete=true in web-fragment.xml, servlet and security constraints in static annotations are ignored for MetadataCompleteTrueWebFragment1-->
+
+  	<!-- MetadataCompleteTrueWebFragment2 not defined in web.xml, but defined in web-fragment.xml. Security constraints defined in static annotations
+         Since web fragment jar does NOT contain MetadataCompleteTrueWebFragment2 servlet, security constraints in static annotations take effect -->  	
+	<servlet id="Servlet_2">
+    	<servlet-name>MetadataCompleteTrueWebFragment2</servlet-name>
+    	<display-name>MetadataCompleteTrueWebFragment2</display-name>
+    	<description>MetadataCompleteTrueWebFragment2</description>
+    	<servlet-class>web.metadatacompletetruewebfragment.MetadataCompleteTrueWebFragment2</servlet-class>         
+ 	</servlet>
+  	<servlet-mapping id="ServletMapping_2">
+    	<servlet-name>MetadataCompleteTrueWebFragment2</servlet-name>
+    	<url-pattern>/MetadataCompleteTrueWebFragment2</url-pattern>
+  	</servlet-mapping>  	
+                 
+</web-fragment>
