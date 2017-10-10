@@ -432,6 +432,109 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(executor.isTerminated());
     }
 
+    // Verify that the onEnd(aborted) callback is sent for tasks that abort after they are submitted
+    // but before they start to run. This test covers a task that is aborted to due to exceeding the
+    // maximum queue size and a task that is aborted due to being interrupted while waiting for a
+    // queue position.
+    @Test
+    public void testCallbacksForAbortedTasks() throws Exception {
+        PolicyExecutor executor = provider.create("testCallbacksForAbortedTasks")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .queueFullAction(QueueFullAction.Abort);
+
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch blockerRunning = new CountDownLatch(1);
+
+        // Use up maxConcurrency
+        CountDownTask task1 = new CountDownTask(blockerRunning, blocker, TimeUnit.MINUTES.toNanos(20));
+        Future<Boolean> blockerFuture = executor.submit(task1);
+        assertTrue(blockerRunning.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Use up the queue position
+        Runnable task2 = new SharedIncrementTask();
+        Future<?> queuedFuture = executor.submit(task2);
+
+        // abort due to queue at capacity
+        Runnable task3 = new SharedIncrementTask();
+        ParameterInfoCallback callback = new ParameterInfoCallback();
+        try {
+            fail("Submit should fail with queue at capacity. Instead: " + executor.submit(task3, "Result that should never be returned", callback));
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1201E"))
+                throw x;
+        }
+
+        // task successfully submits
+        assertFalse(callback.isCanceled[ParameterInfoCallback.SUBMIT]);
+        assertFalse(callback.isDone[ParameterInfoCallback.SUBMIT]);
+        assertEquals(task3, callback.task[ParameterInfoCallback.SUBMIT]);
+
+        // task does not start
+        assertNull(callback.future[ParameterInfoCallback.START]);
+        assertNull(callback.task[ParameterInfoCallback.START]);
+
+        // task is not canceled
+        assertNull(callback.future[ParameterInfoCallback.CANCEL]);
+        assertNull(callback.task[ParameterInfoCallback.CANCEL]);
+
+        // task is aborted
+        assertEquals(task3, callback.task[ParameterInfoCallback.END]);
+        assertEquals(callback.future[ParameterInfoCallback.SUBMIT], callback.future[ParameterInfoCallback.END]);
+        assertFalse(callback.isCanceled[ParameterInfoCallback.END]);
+        assertTrue(callback.isDone[ParameterInfoCallback.END]);
+        assertNull(callback.startContext);
+        Object result = callback.result[ParameterInfoCallback.END];
+        if (!(result instanceof RejectedExecutionException))
+            if (result instanceof Throwable)
+                throw new Exception("Unexpected failure. See cause.", (Throwable) result);
+            else
+                fail("result: " + result);
+
+        // interrupt wait for enqueue
+        Callable<Integer> task4 = new SharedIncrementTask();
+        executor.maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
+        Thread.currentThread().interrupt();
+        try {
+            executor.submit(task4, callback = new ParameterInfoCallback());
+        } catch (RejectedExecutionException x) {
+            if (!(x.getCause() instanceof InterruptedException))
+                throw x;
+        }
+
+        // task successfully submits
+        assertFalse(callback.isCanceled[ParameterInfoCallback.SUBMIT]);
+        assertFalse(callback.isDone[ParameterInfoCallback.SUBMIT]);
+        assertEquals(task4, callback.task[ParameterInfoCallback.SUBMIT]);
+
+        // task does not start
+        assertNull(callback.future[ParameterInfoCallback.START]);
+        assertNull(callback.task[ParameterInfoCallback.START]);
+
+        // task is not canceled
+        assertNull(callback.future[ParameterInfoCallback.CANCEL]);
+        assertNull(callback.task[ParameterInfoCallback.CANCEL]);
+
+        // task is aborted
+        assertEquals(task4, callback.task[ParameterInfoCallback.END]);
+        assertEquals(callback.future[ParameterInfoCallback.SUBMIT], callback.future[ParameterInfoCallback.END]);
+        assertFalse(callback.isCanceled[ParameterInfoCallback.END]);
+        assertTrue(callback.isDone[ParameterInfoCallback.END]);
+        assertNull(callback.startContext);
+        result = callback.result[ParameterInfoCallback.END];
+        if (!(result instanceof RejectedExecutionException) || !(((RejectedExecutionException) result).getCause() instanceof InterruptedException))
+            if (result instanceof Throwable)
+                throw new Exception("Unexpected failure. See cause.", (Throwable) result);
+            else
+                fail("result: " + result);
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(1, canceledFromQueue.size());
+        assertEquals(task2, canceledFromQueue.get(0));
+        assertTrue(queuedFuture.isCancelled());
+        assertTrue(blockerFuture.isCancelled());
+    }
+
     // Verify that it is not possible to cancel tasks that are done.
     @Test
     public void testCancelAfterDone() throws Exception {

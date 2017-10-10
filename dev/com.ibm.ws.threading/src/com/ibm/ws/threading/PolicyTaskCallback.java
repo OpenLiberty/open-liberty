@@ -70,16 +70,16 @@ public abstract class PolicyTaskCallback {
     public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {}
 
     /**
-     * Invoked to raise an ExecutionException for an aborted task.
-     * For example, a task is aborted when the onStart callback raises a runtime exception.
+     * Invoked to raise an exception for an aborted task.
+     * For example, a task is aborted when the onStart callback raises a runtime exception
+     * or when the executor is interrupted while waiting to enqueue a task.
      * This method gives the callback the opportunity to use a different exception,
      * such as javax.enteprise.concurrent.AbortedException to distinguish aborted tasks
-     * from tasks that failed during normal execution.
+     * from tasks that failed during normal execution or were rejected for other reasons.
+     * The default implementation of this method does nothing, in which case the policy executor raises RejectedExecutionException.
      *
      * @param x the exception
      * @throws ExecutionException
      */
-    public void raiseAbortedException(Throwable x) throws ExecutionException {
-        throw new ExecutionException(x);
-    }
+    public void raiseAbortedException(Throwable x) throws ExecutionException {}
 }

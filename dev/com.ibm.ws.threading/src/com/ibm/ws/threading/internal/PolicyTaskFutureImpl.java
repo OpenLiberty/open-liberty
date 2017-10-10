@@ -17,6 +17,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -67,8 +68,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     private final Runnable runnable;
 
     /**
-     * Represents the state of the future, and allows for waiters. PRESUBMIT state is SUBMITTED.
+     * Represents the state of the future, and allows for waiters. Initial state is PRESUBMIT.
      * State transitions in one direction only:
+     * PRESUBMIT --> ABORTED
      * PRESUBMIT --> CANCELED
      * PRESUBMIT --> SUBMITTED --> ABORTED,
      * PRESUBMIT --> SUBMITTED --> CANCELED,
@@ -169,15 +171,17 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             Object result = this.result.get();
             if (result != this)
                 return (T) result;
-            else if (allTasksDone) { // cause ExecutionException (preferred) or CancellationException to be raised
+            else if (allTasksDone) { // cause ExecutionException/RejectedExecutionException (preferred) or CancellationException to be raised
                 boolean canceled = false;
                 for (PolicyTaskFutureImpl<?> f : futures) {
                     int s = f.state.get();
-                    if (s == FAILED || s == ABORTED) {
+                    if (s == FAILED)
+                        throw new ExecutionException((Throwable) f.result.get());
+                    else if (s == ABORTED) {
                         Throwable x = (Throwable) f.result.get();
-                        if (s == ABORTED && f.callback != null)
+                        if (f.callback != null)
                             f.callback.raiseAbortedException(x);
-                        throw new ExecutionException(x);
+                        throw new RejectedExecutionException(x);
                     } else if (s == CANCELED || s == CANCELING)
                         canceled = true;
                 }
@@ -286,6 +290,16 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     }
 
     /**
+     * Invoked to abort a task.
+     *
+     * @param cause the cause of the abort.
+     * @return true if the future transitioned to ABORTED state.
+     */
+    final boolean abort(Throwable cause) {
+        return result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
+    }
+
+    /**
      * Invoked to indicate the task was successfully submitted.
      * Typically, this means the task has been successfully added to the task queue.
      * However, it can also mean the task has been accepted to run on the submitter's thread.
@@ -374,7 +388,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             case ABORTED:
                 if (callback != null)
                     callback.raiseAbortedException((Throwable) result.get());
-                // yes, we do mean to fall through here
+                throw new RejectedExecutionException((Throwable) result.get());
             case FAILED:
                 throw new ExecutionException((Throwable) result.get());
             case CANCELED:
@@ -403,7 +417,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             case ABORTED:
                 if (callback != null)
                     callback.raiseAbortedException((Throwable) result.get());
-                // yes, we do mean to fall through here
+                throw new RejectedExecutionException((Throwable) result.get());
             case FAILED:
                 throw new ExecutionException((Throwable) result.get());
             case CANCELED:
