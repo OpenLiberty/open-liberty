@@ -22,6 +22,9 @@ import com.ibm.wsspi.library.Library;
            immediate = true)
 public class JSFLibraryIntegration implements ApplicationExtensionLibrary {
 
+    // Defines a required dependency on the <library> config element with the
+    // id="com.ibm.ws.jsfContainer.2.2" (provided by defaultInstances.xml in this same bundle)
+    // in order to have the referenced Library be automatically applied to app classloaders
     @Reference(target = "(config.displayId=library[com.ibm.ws.jsfContainer.2.2])")
     protected Library lib;
 

@@ -8,14 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.wsspi.library;
+package jsf.container.nojsf.web;
 
-/**
- * A library represented in configuration (e.g. server.xml or defaultInstance.xml) which will be
- * applied to the classloader of every application running on the server.
- */
-public interface ApplicationExtensionLibrary {
+import javax.servlet.annotation.WebServlet;
 
-    Library getReference();
+import componenttest.app.FATServlet;
+import jsf.container.somelib.SomeLibClass;
 
+@SuppressWarnings("serial")
+@WebServlet(urlPatterns = "/TestServlet")
+public class TestServlet extends FATServlet {
+
+    public void testServletWorking() {
+        System.out.println("Servlet is reachable");
+    }
+
+    public void useExternalLib() {
+        new SomeLibClass().printClassloader();
+    }
 }

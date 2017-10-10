@@ -24,8 +24,10 @@ import org.junit.runners.Suite.SuiteClasses;
                 CDIFlowsTests.class,
                 JSF22StatelessViewTests.class,
                 JSF22BeanValidationTests.class,
-                FeatureConflictTest.class
+                FeatureConflictTest.class,
+                ConfigTest.class
 })
+
 public class FATSuite {
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
