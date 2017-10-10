@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="com.ibm.ws.security.registry_test.servlet" default="unittest">
-  <property name="skip.validate.project" value="true" />
-
-  <import file="../ant_build/public_imports/standard_imports.xml"/>
-  <import file="../ant_build/public_imports/unittest_imports.xml"/>
-
-</project>
