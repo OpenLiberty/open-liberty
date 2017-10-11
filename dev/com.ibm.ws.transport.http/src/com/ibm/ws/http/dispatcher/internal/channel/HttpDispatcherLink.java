@@ -13,7 +13,6 @@ package com.ibm.ws.http.dispatcher.internal.channel;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
@@ -21,15 +20,11 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.FrameworkUtil;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.h2internal.H2InboundLink;
-import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundChannel;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundLink;
@@ -1022,10 +1017,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     }
 
     /**
-     * Determine if a map of headers contains an http2 upgrade header
+     * Determine if a map of headers contains an http2 upgrade header.
+     * If it does, upgrade that request and begin processing the header in the http2 engine
+     *
+     * @return false if some error occurred while servicing the upgrade request
      */
     @Override
-    public void handleHTTP2UpgradeRequest(Map<String, String> headers) {
+    public boolean handleHTTP2UpgradeRequest(Map<String, String> headers) {
         HttpInboundLink link = isc.getLink();
         HttpInboundChannel channel = link.getChannel();
         VirtualConnection vc = link.getVirtualConnection();
@@ -1035,10 +1033,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (upgraded) {
             h2Link.startAsyncRead(true);
         } else {
-            h2Link.connection_init_failed = true;
-            h2Link.triggerLinkClose(vc, new ProtocolException("Http2 connection failed to initialize correctly"));
+            return false;
         }
-        return;
+
+        // wait for protocol init on stream 1, where the initial upgrade request is serviced
+        return h2Link.getStream(1).waitForConnectionInit();
     }
 
     public HttpInboundLink getHttpInboundLink2() {
