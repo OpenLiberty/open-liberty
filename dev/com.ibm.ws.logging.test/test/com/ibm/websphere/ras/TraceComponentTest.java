@@ -31,13 +31,9 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import test.NoComClass;
-import test.TestConstants;
-import test.common.SharedOutputManager;
-import test.common.SharedOutputManagerTest;
 
 import com.ibm.ejs.ras.TrLevelConstants;
 import com.ibm.ejs.ras.TraceStateChangeListener;
@@ -46,6 +42,11 @@ import com.ibm.ws.logging.internal.SafeTraceLevelIndexFactory;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.TraceSpecification.TraceElement;
 import com.ibm.ws.logging.internal.WsLogger;
+
+import test.NoComClass;
+import test.TestConstants;
+import test.common.SharedOutputManager;
+import test.common.SharedOutputManagerTest;
 
 @RunWith(JMock.class)
 public class TraceComponentTest {
@@ -128,8 +129,7 @@ public class TraceComponentTest {
             TraceComponent tc = new TraceComponent(myClass);
             tc.setLoggerForCallback(mockListener);
 
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockListener).traceStateChanged();
                 }
@@ -146,6 +146,7 @@ public class TraceComponentTest {
     }
 
     @Test
+    @Ignore
     public void testUseLogger() {
         final String m = "testUseLogger";
         try {
@@ -298,7 +299,7 @@ public class TraceComponentTest {
             System.out.println(m + ": enabled tr components: " + TraceComponent.isAnyTracingEnabled());
 
             PackageIndex<Integer> packageIndex = SafeTraceLevelIndexFactory.createPackageIndex(
-                            "test/properties/test.ras.rawtracelist.properties");
+                                                                                               "test/properties/test.ras.rawtracelist.properties");
 
             changeSpecLevelsAndAssertTraceComponentLevelsNotSensitive(tc, packageIndex);
         } catch (Throwable t) {
@@ -316,8 +317,7 @@ public class TraceComponentTest {
     public void testTraceLevelsSensitiveWithGroups() {
         final String m = "testTraceLevelsSensitiveWithGroups";
         try {
-            TraceComponent tc = new TraceComponent("TraceComponentTest", myClass,
-                            "TraceComponentTestGroup", "TraceComponentTestBundle");
+            TraceComponent tc = new TraceComponent("TraceComponentTest", myClass, "TraceComponentTestGroup", "TraceComponentTestBundle");
 
             Field f = TraceComponent.class.getDeclaredField("fineTraceEnabled");
             f.setAccessible(true);
@@ -329,7 +329,7 @@ public class TraceComponentTest {
             System.out.println(m + ": enabled tr components: " + TraceComponent.isAnyTracingEnabled());
 
             PackageIndex<Integer> packageIndex = SafeTraceLevelIndexFactory.createPackageIndex(
-                            "test/properties/test.groups.ras.rawtracelist.properties");
+                                                                                               "test/properties/test.groups.ras.rawtracelist.properties");
 
             changeSpecLevelsAndAssertTraceComponentLevelsNotSensitive(tc, packageIndex);
         } catch (Throwable t) {
@@ -681,20 +681,20 @@ public class TraceComponentTest {
         }
 
         final UniquifyTest[] tests = {
-                                      new UniquifyTest(new String[0], new String[0]),
-                                      new UniquifyTest(new String[] { "group" }),
-                                      new UniquifyTest(new String[] { null }, new String[0]),
+                                       new UniquifyTest(new String[0], new String[0]),
+                                       new UniquifyTest(new String[] { "group" }),
+                                       new UniquifyTest(new String[] { null }, new String[0]),
 
-                                      new UniquifyTest(new String[] { "group1", "group2" }),
-                                      new UniquifyTest(new String[] { "group", null }, new String[] { "group" }),
-                                      new UniquifyTest(new String[] { null, "group" }, new String[] { "group" }),
-                                      new UniquifyTest(new String[] { "group", "group" }, new String[] { "group" }),
-                                      new UniquifyTest(new String[] { null, null }, new String[0]),
+                                       new UniquifyTest(new String[] { "group1", "group2" }),
+                                       new UniquifyTest(new String[] { "group", null }, new String[] { "group" }),
+                                       new UniquifyTest(new String[] { null, "group" }, new String[] { "group" }),
+                                       new UniquifyTest(new String[] { "group", "group" }, new String[] { "group" }),
+                                       new UniquifyTest(new String[] { null, null }, new String[0]),
 
-                                      new UniquifyTest(new String[] { "group1", "group2", "group3" }),
-                                      new UniquifyTest(new String[] { "group1", null, "group3" }, new String[] { "group1", "group3" }),
-                                      new UniquifyTest(new String[] { "group", "group", "group" }, new String[] { "group" }),
-                                      new UniquifyTest(new String[] { "group1", "group2", "group2" }, new String[] { "group1", "group2" }),
+                                       new UniquifyTest(new String[] { "group1", "group2", "group3" }),
+                                       new UniquifyTest(new String[] { "group1", null, "group3" }, new String[] { "group1", "group3" }),
+                                       new UniquifyTest(new String[] { "group", "group", "group" }, new String[] { "group" }),
+                                       new UniquifyTest(new String[] { "group1", "group2", "group2" }, new String[] { "group1", "group2" }),
         };
 
         for (UniquifyTest test : tests) {
