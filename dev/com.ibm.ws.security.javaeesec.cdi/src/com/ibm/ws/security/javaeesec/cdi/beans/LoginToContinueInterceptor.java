@@ -56,6 +56,7 @@ import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 @Interceptor
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 220)
 public class LoginToContinueInterceptor {
+    private static final String METHOD_TO_INTERCEPT = "validateRequest";
     private static final String CUSTOM_FORM_CLASS = "com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
     @Inject
@@ -65,10 +66,7 @@ public class LoginToContinueInterceptor {
     public Object intercept(InvocationContext ic) throws Exception {
 
         Object result = null;
-        Method method = ic.getMethod();
-        String methodName = method.getName();
-        
-        if ("validateRequest".equals(methodName)) {
+        if (isMethodToIntercept(ic)) {
             // The method signature of validateRequest is as follows:
             // public AuthenticationStatus validateRequest(HttpServletRequest request,
             //                                    HttpServletResponse response,
@@ -88,8 +86,7 @@ public class LoginToContinueInterceptor {
 
                         result = gotoLoginPage(ltcp.getProperties(), req, res, mc);
                     } else if (result.equals(AuthenticationStatus.SUCCESS)) {
-                        String className = method.getDeclaringClass().getName();
-                        boolean isCustom = CUSTOM_FORM_CLASS.equals(className);
+                        boolean isCustom = isCustomForm(ic);
                         // redirect to the original url.
                         postLoginProcess(req, res, isCustom);
                     }
@@ -144,7 +141,7 @@ public class LoginToContinueInterceptor {
         if (value != null) {
             return value.booleanValue();
         }
-        return false;
+        return true;
     }
 
     private void updateFormLoginConfiguration(String loginPage, String errorPage, SecurityMetadata securityMetadata) {
@@ -159,7 +156,7 @@ public class LoginToContinueInterceptor {
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustom) throws IOException, RuntimeException {
         String storedReq = null;
-        WebAppSecurityConfig webAppSecConfig = WebConfigUtils.getWebAppSecurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebSAppSeurityConfig();
         ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
         storedReq = getStoredReq(req, referrerURLHandler);
         // If storedReq(WASReqURL) is bad, RuntimeExceptions are thrown in isReferrerHostValid. These exceptions are not caught here. If we return here, WASReqURL is good.
@@ -197,7 +194,7 @@ public class LoginToContinueInterceptor {
     }
 
     private void setCookies(HttpServletRequest req, HttpServletResponse res) {
-        ReferrerURLCookieHandler referrerURLHandler = WebConfigUtils.getWebAppSecurityConfig().createReferrerURLCookieHandler();
+        ReferrerURLCookieHandler referrerURLHandler = getWebSAppSeurityConfig().createReferrerURLCookieHandler();
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
         String query = req.getQueryString();
         String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
@@ -224,6 +221,24 @@ public class LoginToContinueInterceptor {
         if (!url.startsWith("/"))
             url = "/" + url;
         return contextPath + url;
+    }
+
+    protected boolean isMethodToIntercept(InvocationContext ic) {
+        String methodName = ic.getMethod().getName();
+        return METHOD_TO_INTERCEPT.equals(methodName);
+    }
+    
+    protected boolean isCustomForm(InvocationContext ic) {
+        String className = ic.getMethod().getDeclaringClass().getName();
+        return CUSTOM_FORM_CLASS.equals(className);
+    }
+
+    protected void setProps(Instance<LoginToContinueProperties> ltcpInstance) {
+        this.ltcpInstance = ltcpInstance;
+    }
+
+    protected WebAppSecurityConfig getWebSAppSeurityConfig() {
+        return WebConfigUtils.getWebAppSecurityConfig();
     }
 
 }
