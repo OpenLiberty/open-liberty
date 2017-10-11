@@ -34,7 +34,7 @@ import componenttest.topology.impl.LibertyServer;
 public class FeatureDependencyProcessor {
 
     private static final Class<?> c = FeatureDependencyProcessor.class;
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
 
     // If dependency validation fails, one reason could be an out of date featureList.xml.
     // Allow for the featureList.xml to be recomputed at maximum once per JVM lifespan
