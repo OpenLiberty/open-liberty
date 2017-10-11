@@ -28,6 +28,6 @@ public interface Http2InboundConnection extends HttpInboundConnection {
     /**
      * Determine if a map of headers contains an http2 upgrade header
      */
-    void handleHTTP2UpgradeRequest(Map<String, String> map);
+    boolean handleHTTP2UpgradeRequest(Map<String, String> map);
 
 }
