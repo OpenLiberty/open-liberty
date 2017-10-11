@@ -14,19 +14,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.annotation.Annotation;
 import java.io.IOException;
-import java.util.Set;
 import java.util.HashSet;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.TreeSet;
 
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
-import javax.enterprise.util.TypeLiteral;
 
 import javax.security.auth.message.MessageInfo;
 import javax.security.auth.Subject;
@@ -37,9 +32,7 @@ import javax.security.auth.message.callback.PasswordValidationCallback;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
-import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
-import javax.security.enterprise.CallerPrincipal;
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.CallerOnlyCredential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
@@ -81,7 +74,6 @@ public class CustomFormAuthenticationMechanismTest {
     private HttpServletRequest req;
     private HttpServletResponse res;
     private Subject cs;
-    private Subject ss;
     private CallbackHandler ch;
     private AuthenticationParameters ap;
     private final Map<String, String> mm = new HashMap<String, String>();
