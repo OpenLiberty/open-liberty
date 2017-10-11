@@ -22,19 +22,19 @@ Export-Package: javax.faces.*; version=2.3.0
 
 DynamicImport-Package: com.ibm.ws.jsf.spi, \
                 com.ibm.ws.managedobject, \
-                org.apache.myfaces.cdi.dependent, \
+                org.apache.myfaces.cdi.util, \
                 org.apache.myfaces.spi
   
 Include-Resource: \
-	@${repo;org.apache.myfaces.core.api;2.3.0.beta;EXACT}!/javax/faces, \
-	@${repo;org.apache.myfaces.core.api;2.3.0.beta;EXACT}!/META-INF/**
+	@${repo;org.apache.myfaces.core.api;2.3.0.SNAPSHOT;EXACT}!/javax/faces, \
+	@${repo;org.apache.myfaces.core.api;2.3.0.SNAPSHOT;EXACT}!/META-INF/**
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	org.apache.myfaces.core.api;strategy=exact;version=2.3.0.beta,\
+	org.apache.myfaces.core.api;strategy=exact;version=2.3.0.SNAPSHOT,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\

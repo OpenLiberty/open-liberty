@@ -25,12 +25,12 @@ package io.astefanutti.metrics.cdi;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.enterprise.event.Observes;
 import javax.enterprise.inject.Default;
@@ -78,7 +78,7 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
     private static final AnnotationLiteral<Default> DEFAULT = new AnnotationLiteral<Default>() {};
 
     private final Map<Bean<?>, AnnotatedMember<?>> metrics = new HashMap<>();
-    private final List<String> metricNames = new ArrayList<String>();
+    private final Set<String> metricNames = Collections.synchronizedSortedSet(new TreeSet<String>());
 
     private final MetricsConfigurationEvent configuration = new MetricsConfigurationEvent();
 
@@ -129,7 +129,7 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 continue;
             Metadata metadata = name.metadataOf(bean.getValue());
             registry.register(metadata.getName(), (Metric) getReference(manager, bean.getValue().getBaseType(), bean.getKey()), metadata);
-            metricNames.add(metadata.getName());
+            addMetricName(metadata.getName());
         }
 
         // Let's clear the collected metric producers
@@ -171,5 +171,9 @@ public class MetricsExtension implements Extension, WebSphereCDIExtension {
                 return true;
         }
         return false;
+    }
+
+    public void addMetricName(String name) {
+        metricNames.add(name);
     }
 }

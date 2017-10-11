@@ -1,0 +1,64 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../cnf/gradle/scripts/fat.gradle'
+
+addRequiredLibraries {
+   doLast {
+      
+      /*-------------------------------------------------*
+       * setup property to represent the source of the   *
+       * java mail implementation api                    *
+       *-------------------------------------------------*/
+      /* setup configurations for greenmail */
+      configurations {
+         greenmail
+	 slf4jjdk
+	 slf4japi
+	 javamail
+      }
+
+      /* Define greenmail dependencies */
+      dependencies {
+         greenmail 'com.icegreen:greenmail:1.5.5'
+	 slf4japi 'org.slf4j:slf4j-api:1.7.7'
+	 slf4jjdk 'org.slf4j:slf4j-jdk14:1.7.7'
+	 javamail 'com.sun.mail:javax.mail:1.6.0'
+      }
+
+      /* Copy greeenmail jar to required libs dir */
+      copy {
+         from configurations.greenmail
+	 into "${buildDir}/autoFVT/lib/"
+      }
+
+      /* copy logging API jar to required libs dir
+         Needed by greenmail */
+      copy {
+         from configurations.slf4japi
+	 into "${buildDir}/autoFVT/lib/"
+      }
+
+      /* copy logging IMPL jar to required libs dir
+         Needed by greenmail */
+      copy {
+         from configurations.slf4jjdk
+	 into "${buildDir}/autoFVT/lib/"
+      }
+      
+      /* copy javax.mail jar from repository to 
+         require libs dir                    */
+      copy {
+         from configurations.javamail
+	 into "${buildDir}/autoFVT/lib/"
+     }
+     
+   }
+}

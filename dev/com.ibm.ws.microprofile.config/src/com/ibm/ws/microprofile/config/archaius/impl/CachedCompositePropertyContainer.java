@@ -17,14 +17,9 @@
 
 package com.ibm.ws.microprofile.config.archaius.impl;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Function;
 
-import com.netflix.archaius.api.Property;
-import com.netflix.archaius.api.PropertyContainer;
 import com.netflix.archaius.api.PropertyListener;
 import com.netflix.archaius.property.ListenerManager;
 import com.netflix.archaius.property.ListenerManager.ListenerUpdater;
@@ -42,7 +37,7 @@ import com.netflix.archaius.property.ListenerManager.ListenerUpdater;
  * @author elandau
  *
  */
-public class CachedCompositePropertyContainer implements PropertyContainer {
+public class CachedCompositePropertyContainer {
 
     /**
      * The property name
@@ -105,83 +100,14 @@ public class CachedCompositePropertyContainer implements PropertyContainer {
         return cachedProperty;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public Property<String> asString(final String defaultValue) {
-        return asType(String.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<Integer> asInteger(final Integer defaultValue) {
-        return asType(Integer.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<Long> asLong(final Long defaultValue) {
-        return asType(Long.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<Double> asDouble(final Double defaultValue) {
-        return asType(Double.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<Float> asFloat(final Float defaultValue) {
-        return asType(Float.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<Short> asShort(final Short defaultValue) {
-        return asType(Short.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<Byte> asByte(final Byte defaultValue) {
-        return asType(Byte.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<BigDecimal> asBigDecimal(final BigDecimal defaultValue) {
-        return asType(BigDecimal.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<Boolean> asBoolean(final Boolean defaultValue) {
-        return asType(Boolean.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Property<BigInteger> asBigInteger(final BigInteger defaultValue) {
-        return asType(BigInteger.class, defaultValue);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public <T> Property<T> asType(final Class<T> type, final T defaultValue) {
-        CachedCompositeProperty<T> prop = add(new CachedCompositeProperty<T>(type, defaultValue, this) {
+    public <T> CachedCompositeProperty<T> asType(final Class<T> type) {
+        CachedCompositeProperty<T> prop = add(new CachedCompositeProperty<T>(type, this) {
             @Override
-            protected T resolveCurrent() throws Exception {
-                return config.get(type, key, defaultValue);
+            protected CachedCompositeValue<T> resolveCurrent() throws Exception {
+                return config.getCompositeValue(type, key);
             }
         });
         return prop;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public <T> Property<T> asType(Function<String, T> type, String defaultValue) {
-        //can't implement this at the moment ... and don't need it anyway
-        throw new UnsupportedOperationException();
     }
 
     /**

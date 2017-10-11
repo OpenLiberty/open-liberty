@@ -56,10 +56,10 @@ Private-Package: \
   *.jpa.* \
 
 Import-Package: \
- javax.persistence;version="[1.1.0, 2.2.0)", \
- javax.persistence.criteria;version="[1.1.0, 2.2.0)", \
- javax.persistence.metamodel;version="[1.1.0, 2.2.0)", \
- javax.persistence.spi;version="[1.1.0, 2.2.0)", \
+ javax.persistence;version="[1.1.0, 2.3.0)", \
+ javax.persistence.criteria;version="[1.1.0, 2.3.0)", \
+ javax.persistence.metamodel;version="[1.1.0, 2.3.0)", \
+ javax.persistence.spi;version="[1.1.0, 2.3.0)", \
  !javax.xml.bind.*, \
  *
  

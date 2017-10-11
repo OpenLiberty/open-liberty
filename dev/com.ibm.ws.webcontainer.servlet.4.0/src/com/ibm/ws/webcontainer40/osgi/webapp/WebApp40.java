@@ -15,12 +15,14 @@ import java.util.logging.Level;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.csi.J2EENameFactory;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.metadata.MetaDataService;
+import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.session.SessionManager;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration;
@@ -32,6 +34,7 @@ import com.ibm.ws.webcontainer40.facade.ServletContextFacade40;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 import com.ibm.wsspi.session.ISessionManagerCustomizer;
 import com.ibm.wsspi.webcontainer.RequestProcessor;
+import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 import com.ibm.wsspi.webcontainer.util.EncodingUtils;
 
 public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 implements ServletContext {
@@ -317,6 +320,92 @@ public class WebApp40 extends com.ibm.ws.webcontainer31.osgi.webapp.WebApp31 imp
     @Override
     public WebAppDispatcherContext createDispatchContext() {
         return new com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40(this);
+    }
+
+    @Override
+    public ServletRegistration.Dynamic addJspFile(String servletName, String jspFile) {
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.entering(CLASS_NAME, "addJspFile() : servletName = " + servletName + ", jspFile = " + jspFile);
+        }
+
+        if (initialized) {
+
+            throw new IllegalStateException(liberty_nls.getString("Not.in.servletContextCreated"));
+
+        } else if (withinContextInitOfProgAddListener) {
+
+            throw new UnsupportedOperationException(MessageFormat.format(
+                                                                         nls.getString("Unsupported.op.from.servlet.context.listener"),
+                                                                         new Object[] { "addServlet", lastProgAddListenerInitialized, getApplicationName() })); // PI41941
+
+        } else if (servletName == null || servletName.isEmpty()) {
+
+            throw new IllegalArgumentException();
+
+        }
+
+        // make sure a servlet doesn't already exist
+        IServletConfig sconfig = config.getServletInfo(servletName);
+
+        if (sconfig == null) {
+            try {
+
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.fine(CLASS_NAME + "addJspFile() : create a new servet config");
+                }
+
+                sconfig = this.webExtensionProcessor.createConfig("DYN_" + servletName + "_" + System.currentTimeMillis());
+
+                sconfig.setServletName(servletName);
+                sconfig.setDisplayName(servletName);
+                sconfig.setFileName(jspFile);
+                sconfig.setIsJsp(true);
+                sconfig.setServletContext(this.getFacade());
+
+                // add to the config
+                config.addServletInfo(servletName, sconfig);
+                config.addDynamicServletRegistration(servletName, sconfig);
+
+                sconfig.setServletWrapper(jspAwareCreateServletWrapper(sconfig, servletName));
+
+            } catch (Exception e) {
+                FFDCFilter.processException(e, this.getClass().getName() + ".addJspFile", "14");
+            }
+
+        } else {
+            if (sconfig.isClassDefined() || sconfig.getFileName() != null) {
+                logger.logp(Level.SEVERE, CLASS_NAME, "addJspFile", "servlet.with.same.name.already.exists", new Object[] { servletName });
+                sconfig = null;
+            } else {
+                if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                    logger.fine("addJspFile() : existing empty servlet config found");
+                }
+                sconfig.setFileName(jspFile);
+
+                sconfig.setIsJsp(true);
+                config.addDynamicServletRegistration(servletName, sconfig);
+                sconfig.setServletWrapper(jspAwareCreateServletWrapper(sconfig, servletName));
+
+                // Add any existing mappings, replacing any previous.
+                for (String mapping : sconfig.getMappings()) {
+                    try {
+                        if (requestMapper.exists(mapping))
+                            requestMapper.replaceMapping(mapping, sconfig.getServletWrapper());
+                        else
+                            requestMapper.addMapping(mapping, sconfig.getServletWrapper());
+                    } catch (Exception exc) {
+                        // ignore for now
+                    }
+                }
+            }
+        }
+
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+            logger.exiting(CLASS_NAME, "addJspFile() : ServletRegistraion = " + sconfig);
+        }
+
+        return sconfig;
     }
 
 }

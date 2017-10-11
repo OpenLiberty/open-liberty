@@ -27,7 +27,6 @@ public class AbstractAnnotationConfig<T extends Annotation> {
     private static final TraceComponent tc = Tr.register(AbstractAnnotationConfig.class);
 
     private final Class<T> annotationType;
-    private final String keyPrefix;
     private final T annotation;
     private final Class<?> annotatedClass;
     private final String targetName;
@@ -40,10 +39,8 @@ public class AbstractAnnotationConfig<T extends Annotation> {
     public AbstractAnnotationConfig(Method annotatedMethod, Class<?> annotatedClass, T annotation, Class<T> annotationType) {
         this.annotationType = annotationType;
         if (annotatedMethod == null) {
-            this.keyPrefix = getPropertyKeyPrefix(annotatedClass);
             this.targetName = annotatedClass.getName();
         } else {
-            this.keyPrefix = getPropertyKeyPrefix(annotatedMethod);
             this.targetName = annotatedClass.getName() + "." + annotatedMethod.getName();
         }
         this.annotation = annotation;
@@ -87,20 +84,28 @@ public class AbstractAnnotationConfig<T extends Annotation> {
 
         protected <P> P readConfigValue(Class<P> type) {
             Config mpConfig = ConfigProvider.getConfig(annotatedClass.getClassLoader());
+            P configValue = null;
 
-            String key = getPropertyKey(keyPrefix, parameterName);
-            P configValue = mpConfig.getOptionalValue(key, type).orElse(null);
+            if (annotatedMethod != null) {
+                String key = getPropertyKey(getPropertyKeyPrefix(annotatedMethod), parameterName);
+                configValue = mpConfig.getOptionalValue(key, type).orElse(null);
+            }
 
             if (configValue == null) {
-                key = getPropertyKey("", parameterName);
+                String key = getPropertyKey(getPropertyKeyPrefix(annotatedClass), parameterName);
+                configValue = mpConfig.getOptionalValue(key, type).orElse(null);
+            }
+
+            if (configValue == null) {
+                String key = getPropertyKey("", parameterName);
                 configValue = mpConfig.getOptionalValue(key, type).orElse(null);
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 if (configValue != null) {
-                    Tr.debug(tc, "Found config value for " + getPropertyKey(keyPrefix, parameterName), configValue);
+                    Tr.debug(tc, "Found config value for " + getPropertyKey(targetName, parameterName), configValue);
                 } else {
-                    Tr.debug(tc, "No config value found for " + getPropertyKey(keyPrefix, parameterName));
+                    Tr.debug(tc, "No config value found for " + getPropertyKey(targetName, parameterName));
                 }
             }
 
@@ -135,12 +140,12 @@ public class AbstractAnnotationConfig<T extends Annotation> {
                     result = annotatedClass.getClassLoader().loadClass(configValue);
                 } catch (ClassNotFoundException ex) {
                     throw new FaultToleranceException(Tr.formatMessage(tc, "Cannot load class {0} specified in config for {1}",
-                                                                       configValue, getPropertyKey(keyPrefix, parameterName)));
+                                                                       configValue, getPropertyKey(targetName, parameterName)));
                 }
 
                 if (!parameterClass.isAssignableFrom(result)) {
                     throw new FaultToleranceException(Tr.formatMessage(tc, "Class {0} cannot be assigned to type {1}, as specified in config for {2}",
-                                                                       configValue, parameterClass.getName(), getPropertyKey(keyPrefix, parameterName)));
+                                                                       configValue, parameterClass.getName(), getPropertyKey(targetName, parameterName)));
                 }
             }
 
@@ -178,12 +183,12 @@ public class AbstractAnnotationConfig<T extends Annotation> {
                         result[i] = annotatedClass.getClassLoader().loadClass(configValue[i]);
                     } catch (ClassNotFoundException ex) {
                         throw new FaultToleranceException(Tr.formatMessage(tc, "Cannot load class {0} specified in config for {1}", configValue[i],
-                                                                           getPropertyKey(keyPrefix, parameterName)));
+                                                                           getPropertyKey(targetName, parameterName)));
                     }
 
                     if (!parameterClass.isAssignableFrom(result[i])) {
                         throw new FaultToleranceException(Tr.formatMessage(tc, "Class {0} cannot be assigned to type {1}, as specified in config for {2}",
-                                                                           configValue[i], parameterClass.getName(), getPropertyKey(keyPrefix, parameterName)));
+                                                                           configValue[i], parameterClass.getName(), getPropertyKey(targetName, parameterName)));
                     }
                 }
             }

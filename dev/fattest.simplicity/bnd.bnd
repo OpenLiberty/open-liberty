@@ -26,6 +26,7 @@ Export-Package: \
 	com.ibm.websphere.simplicity.config.context;version=1.0.16,\
 	com.ibm.websphere.simplicity.config.dsprops;version=1.0.16,\
 	com.ibm.websphere.simplicity.config.dsprops.testrules;version=1.0.16,\
+	com.ibm.websphere.simplicity.config.wim;version=1.0.16,\
 	com.ibm.websphere.simplicity.product;version=1.0.16,\
 	com.ibm.websphere.simplicity.wsadmin;version=1.0.16,\
 	com.ibm.websphere.soe_reporting;version=1.0.16,\
@@ -49,18 +50,25 @@ Export-Package: \
 	componenttest.vulnerability;version=1.0.16
 	
 Private-Package: \
-	componenttest.annotation.processor
+	componenttest.annotation.processor,\
+	componenttest.depchain
 
 test.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file,\
 	commons-httpclient:commons-httpclient;version=3.1,\
+	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.componenttest;version=latest,\
 	com.ibm.ws.componenttest:com.ibm.componenttest.common;version=1.0.0,\
 	com.ibm.ws.componenttest:com.ibm.ws.topology.helper;version=1.0.0,\
 	com.ibm.ws.componenttest:provider.api;version=1.0.0,\
 	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	com.ibm.ws.componenttest:fat.util;version=1.0.0,\
+	com.ibm.ws.timedexit.internal;version=latest,\
 	httpunit:httpunit;version=1.5.4,\
     net.sf.jtidy:jtidy;version=9.3.8,\
     org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
@@ -69,7 +77,4 @@ test.project: true
 	org.apache.derby:derbynet;version=10.11.1.1,\
 	org.jmock:jmock;strategy=exact;version=2.5.1,\
 	org.hamcrest:hamcrest-all;version=1.3,\
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file,\
-	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
-	com.ibm.ws.common.encoder;version=latest
+	com.ibm.ws.org.glassfish.json.1.0;version=latest

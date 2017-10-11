@@ -1557,16 +1557,25 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
             success = true;
         } else {
 
+            // we only want to process *.class files
+            List<String> classFilePaths = new ArrayList<String>();
+            for (String path : notification.getPaths()) {
+                if (path.endsWith(".class")) {
+                    classFilePaths.add(path);
+                }
+            }
+
+            if (classFilePaths.isEmpty()) {
+                // no class files to process, we must return true.
+                return true;
+            }
+
             // This classloader is associated with a container that has classes being modified.
             // Success depends on whether we can redefine those classes or not.
             if (redefiner != null && redefiner.canRedefine()) {
                 success = true;
                 Set<ClassDefinition> classesToRedefine = new HashSet<ClassDefinition>();
-                for (String path : notification.getPaths()) {
-                    if (!path.endsWith(".class")) {
-                        // do not attempt to redefine non-class files
-                        continue;
-                    }
+                for (String path : classFilePaths) {
 
                     String className = convertToClassName(path);
                     // We only want to redefine classes that have been loaded.  Unloaded classes
@@ -1603,7 +1612,7 @@ abstract class ContainerClassLoader extends IdentifiedLoader {
                 }
 
             } else {
-                // redefiner is null or cannot redefine classes, so we must return false
+                // classes were changed, but redefiner is null or cannot redefine classes, so we must return false
                 success = false;
             }
         }

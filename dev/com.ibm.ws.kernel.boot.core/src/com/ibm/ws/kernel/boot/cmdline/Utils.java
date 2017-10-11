@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -32,23 +32,7 @@ public class Utils {
     public static File getInstallDir() {
         if (installDir == null) {
             URL url = UtilityMain.class.getProtectionDomain().getCodeSource().getLocation();
-
-            if (url.getProtocol().equals("file")) {
-                // Got the file for the command line launcher, this lives in lib
-                try {
-                    if (url.getAuthority() != null) {
-                        url = new URL("file://" + url.toString().substring("file:".length()));
-                    }
-
-                    File f = new File(url.toURI());
-                    // The parent of the jar is lib, so the parent of the parent is the install.
-                    installDir = f.getParentFile().getParentFile();
-                } catch (MalformedURLException e) {
-                    // Not sure we can get here so ignore.
-                } catch (URISyntaxException e) {
-                    // Not sure we can get here so ignore.
-                }
-            }
+            installDir = getFile(url).getParentFile().getParentFile();
         }
 
         return installDir;
@@ -59,14 +43,14 @@ public class Utils {
         String userDirLoc = null;
 
         // 1st check in environment variable is set.  This is the normal case
-        // when the server is started from the command line.         
+        // when the server is started from the command line.
         if (userDir == null) {
             userDirLoc = System.getenv(BootstrapConstants.ENV_WLP_USER_DIR);
             if (userDirLoc != null) {
                 userDir = new File(userDirLoc);
             } else {
 
-                // PI20344: Check if the Java property is set, which is the normal case when 
+                // PI20344: Check if the Java property is set, which is the normal case when
                 // the server is embedded; i.e. they didn't launch it from the command line.
                 userDirLoc = System.getProperty(BootstrapConstants.ENV_WLP_USER_DIR);
                 if (userDirLoc != null) {
@@ -85,7 +69,7 @@ public class Utils {
     /**
      * Returns directory containing server output directories. A server output
      * directory has server's name as a name and located under this directory.
-     * 
+     *
      * @return instance of the output directory or 'null' if installation directory
      *         can't be determined.
      */
@@ -95,7 +79,7 @@ public class Utils {
 
     /**
      * Returns directory containing server log directories.
-     * 
+     *
      * @return instance of the log directory or 'null' if LOG_DIR is not defined
      */
     public static File getLogDir() {
@@ -103,15 +87,13 @@ public class Utils {
         String logDirLoc = null;
 
         // 1st check in environment variable is set.  This is the normal case
-        // when the server is started from the command line.        
+        // when the server is started from the command line.
         if (logDir == null) {
 
             try {
-                logDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>()
-                {
+                logDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>() {
                     @Override
-                    public String run() throws Exception
-                    {
+                    public String run() throws Exception {
                         return System.getenv(BootstrapConstants.ENV_LOG_DIR);
                     }
                 });
@@ -122,7 +104,7 @@ public class Utils {
             if (logDirLoc != null) {
                 logDir = new File(logDirLoc);
             } else {
-                // PI20344: Check if the Java property is set, which is the normal case when 
+                // PI20344: Check if the Java property is set, which is the normal case when
                 // the server is embedded; i.e. they didn't launch it from the command line.
                 logDirLoc = System.getProperty(BootstrapConstants.ENV_LOG_DIR);
                 if (logDirLoc != null) {
@@ -136,7 +118,7 @@ public class Utils {
     /**
      * Returns directory containing server output directories. A server output
      * directory has server's name as a name and located under this directory.
-     * 
+     *
      * @return instance of the output directory or 'null' if installation directory
      *         can't be determined.
      */
@@ -145,15 +127,13 @@ public class Utils {
         String outputDirLoc = null;
 
         // 1st check in environment variable is set.  This is the normal case
-        // when the server is started from the command line.        
+        // when the server is started from the command line.
         if (outputDir == null) {
 
             try {
-                outputDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>()
-                {
+                outputDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>() {
                     @Override
-                    public String run() throws Exception
-                    {
+                    public String run() throws Exception {
                         return System.getenv(BootstrapConstants.ENV_WLP_OUTPUT_DIR);
                     }
                 });
@@ -164,7 +144,7 @@ public class Utils {
             if (outputDirLoc != null) {
                 outputDir = new File(outputDirLoc);
             } else {
-                // PI20344: Check if the Java property is set, which is the normal case when 
+                // PI20344: Check if the Java property is set, which is the normal case when
                 // the server is embedded; i.e. they didn't launch it from the command line.
                 outputDirLoc = System.getProperty(BootstrapConstants.ENV_WLP_OUTPUT_DIR);
                 if (outputDirLoc != null) {
@@ -188,7 +168,7 @@ public class Utils {
      * Returns server output directory. This directory contains server generated
      * output (logs, the server's workarea, generated files, etc). It corresponds
      * to the value of ${server.output.dir} variable in server.xml configuration file.
-     * 
+     *
      * @param serverName server's name
      * @return instance of the server output directory or 'null' if installation directory
      *         can't be determined.
@@ -201,7 +181,7 @@ public class Utils {
      * Returns server output directory. This directory contains server generated
      * output (logs, the server's workarea, generated files, etc). It corresponds
      * to the value of ${server.output.dir} variable in server.xml configuration file.
-     * 
+     *
      * @param serverName server's name
      * @param isClient true if the current process is client.
      * @return instance of the server output directory or 'null' if installation directory
@@ -222,7 +202,7 @@ public class Utils {
      * Returns server configuration directory. This directory contains server configuration files
      * (bootstrap.properties, server.xml, jvm.options, etc). It correspond to the value of ${server.config.dir}
      * variable in server.xml configuration file.
-     * 
+     *
      * @param serverName server's name
      * @return instance of the server configuration directory or 'null' if installation directory
      *         can't be determined.
@@ -240,7 +220,7 @@ public class Utils {
 
     /**
      * the file path of the %JAVA_HOME%/lib/tools.jar, which is needed when compiling the generated java source code.
-     * 
+     *
      * @return
      * @throws MalformedURLException
      * @throws Exception
@@ -295,7 +275,7 @@ public class Utils {
 
     /**
      * Close the closeable object
-     * 
+     *
      * @param closeable
      */
     public static boolean tryToClose(Closeable closeable) {
@@ -312,7 +292,7 @@ public class Utils {
 
     /**
      * Close the zip file
-     * 
+     *
      * @param zipFile
      * @return
      */
@@ -330,7 +310,7 @@ public class Utils {
 
     /**
      * This method should be called by common install kernel only.
-     * 
+     *
      * @param installDir
      */
     public static void setInstallDir(File installDir) {
@@ -339,10 +319,52 @@ public class Utils {
 
     /**
      * This method should be called by common install kernel only.
-     * 
+     *
      * @param installDir
      */
     public static void setUserDir(File userDir) {
         Utils.userDir = userDir;
+    }
+
+    /**
+     * Duplicated from FileUtils to minimize dependencies of kernel.cmdline jar
+     */
+    private static File getFile(URL url) {
+        String path;
+        try {
+            // The URL for a UNC path is file:////server/path, but the
+            // deprecated File.toURL() as used by java -jar/-cp incorrectly
+            // returns file://server/path/, which has an invalid authority
+            // component.  Rewrite any URLs with an authority ala
+            // http://wiki.eclipse.org/Eclipse/UNC_Paths
+            if (url.getAuthority() != null) {
+                url = new URL("file://" + url.toString().substring("file:".length()));
+            }
+
+            path = new File(url.toURI()).getPath();
+        } catch (MalformedURLException e) {
+            path = null;
+        } catch (URISyntaxException e) {
+            path = null;
+        } catch (IllegalArgumentException e) {
+            path = null;
+        }
+
+        if (path == null) {
+            // If something failed, assume the path is good enough.
+            path = url.getPath();
+        }
+
+        return new File(normalizePathDrive(path));
+    }
+
+    /**
+     * Duplicated from FileUtils to minimize dependencies of kernel.cmdline jar
+     */
+    private static String normalizePathDrive(String path) {
+        if (File.separatorChar == '\\' && path.length() > 1 && path.charAt(1) == ':' && path.charAt(0) >= 'a' && path.charAt(0) <= 'z') {
+            path = Character.toUpperCase(path.charAt(0)) + path.substring(1);
+        }
+        return path;
     }
 }

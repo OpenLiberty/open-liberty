@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServer;
  *                      .run();
  * }
  * </pre>
- * 
+ *
  * <p>
  * This creates a web application containing just {@code MyInvalidClass}, deploys it, checks that it fails to start and that a message containing {@code CWMFT5001E} is found in the
  * log and then undeploys it.
@@ -50,6 +50,7 @@ public class AppValidator {
 
     private static String APP_START_CODE = "CWWKZ000[13]I";
     private static String APP_FAIL_CODE = "CWWKZ000[24]E";
+    private static int appCount = 0;
 
     /**
      * Begin setting up an app validation to run on the given liberty server
@@ -126,8 +127,9 @@ public class AppValidator {
      */
     public void run() {
         try {
+            String archiveName = "testApp-" + (++appCount) + ".war";
             try {
-                WebArchive app = ShrinkWrap.create(WebArchive.class, "testApp.war");
+                WebArchive app = ShrinkWrap.create(WebArchive.class, archiveName);
                 for (Class<?> clazz : classes) {
                     app = app.addClass(clazz);
                 }
@@ -142,7 +144,7 @@ public class AppValidator {
                     assertThat(logLine, Matchers.containsPattern(stringToFind));
                 }
             } finally {
-                server.deleteFileFromLibertyServerRoot("dropins/testApp.war");
+                server.deleteFileFromLibertyServerRoot("dropins/" + archiveName);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);

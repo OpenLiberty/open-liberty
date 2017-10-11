@@ -17,6 +17,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.microprofile.config.impl.AbstractConfig;
 import com.ibm.ws.microprofile.config.impl.SortedSources;
+import com.ibm.ws.microprofile.config.interfaces.SourcedValue;
 import com.ibm.ws.microprofile.config.interfaces.WebSphereConfig;
 
 public class ArchaiusConfigImpl extends AbstractConfig implements WebSphereConfig {
@@ -52,7 +53,19 @@ public class ArchaiusConfigImpl extends AbstractConfig implements WebSphereConfi
 
     /** {@inheritDoc} */
     @Override
+    public <T> SourcedValue<T> getSourcedValue(String propertyName, Class<T> propertyType) {
+        return composite.getSourcedValue(propertyName, propertyType);
+    }
+
+    /** {@inheritDoc} */
+    @Override
     protected Set<String> getKeySet() {
         return composite.getKeySet();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String dump() {
+        return composite.dump();
     }
 }

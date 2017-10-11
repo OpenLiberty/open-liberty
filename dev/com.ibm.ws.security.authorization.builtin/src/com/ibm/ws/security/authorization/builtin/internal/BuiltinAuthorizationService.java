@@ -374,11 +374,12 @@ public class BuiltinAuthorizationService implements AuthorizationService {
                                                         WSCredential wsCred) {
         boolean isGranted = false;
         String[] groupIds = getGroupIds(wsCred);
+        String realmName = getRealmName(wsCred);
         if (groupIds != null && groupIds.length > 0) {
             Collection<String> assignedRoles = new ArrayList<String>();
             // Just include the group name and not the id
             for (int i = 0; i < groupIds.length; i++) {
-                assignedRoles.add(AccessIdUtil.getUniqueId(groupIds[i]));
+                assignedRoles.add(AccessIdUtil.getUniqueId(groupIds[i], realmName));
             }
             isGranted = accessDecisionService.isGranted(resourceName, requiredRoles, assignedRoles, subject);
         }
@@ -534,4 +535,26 @@ public class BuiltinAuthorizationService implements AuthorizationService {
             return !wsCred.isUnauthenticated() && !wsCred.isBasicAuth();
         }
     }
+
+    /**
+     * Get the realm name from the specified credential.
+     * 
+     * @param cred
+     *            the WSCredential to search, must not be null
+     * @return realm name.
+     */
+    private String getRealmName(WSCredential cred) {
+        String realmName = null;
+        if (cred != null) {
+            try {
+                realmName = cred.getRealmName();
+            } catch (Exception e) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Caught exception getting the realm name: " + e);
+                }
+            }
+        }
+        return realmName;
+    }
+
 }

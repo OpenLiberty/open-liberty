@@ -8,3 +8,59 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
+ // Global vars
+ def downloadSrcDir = "${projectDir}/build/source"
+ def downloadJavadocDir = "${projectDir}/build/javadoc"
+
+ task copySource {
+    doLast {
+        println "downloadSrcDir: downloadSrcDir"
+        configurations {
+            sourceJar
+            javadocJar
+        }
+
+        dependencies {
+            sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20170928-014102-260:sources'
+            javadocJar 'org.apache.myfaces.core:myfaces-api:2.3.0-beta:javadoc'
+
+        }
+
+        // Copy the dependencies to the com.ibm.websphere.javaee.jsf.2.3/build/source directory
+        copy {
+            // Creating source directory
+            mkdir(downloadSrcDir)
+
+            // Adding jar to "source"
+            from configurations.sourceJar
+            into downloadSrcDir
+        }
+
+        // Copy the dependencies to the com.ibm.websphere.javaee.jsf.2.3/build/javadoc directory
+        copy {
+            // Creating javadoc directory
+            mkdir(downloadJavadocDir)
+
+            // Adding jar to "javadoc"
+            from configurations.javadocJar
+            into downloadJavadocDir
+        }
+    }
+ }
+
+ task deleteJars(type:Delete) {
+    println "deleteJars task, deleting " + downloadSrcDir
+    delete(downloadSrcDir)
+
+    println "deleteJars task, deleting " + downloadJavadocDir
+    delete(downloadJavadocDir)
+ }
+
+ assemble {
+    dependsOn copySource
+ }
+
+ clean {
+    dependsOn deleteJars
+ }

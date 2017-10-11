@@ -21,4 +21,5 @@ publish.feature.resources: **
 	com.ibm.websphere.appserver.jsp-2.3;version=latest, \
 	com.ibm.websphere.appserver.jsfProvider-2.2.0.Container;version=latest, \
 	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
-	com.ibm.ws.jsfContainer.2.2;version=latest
+	com.ibm.ws.jsfContainer.2.2;version=latest,\
+	com.ibm.ws.jsfContainer.classloading;version=latest

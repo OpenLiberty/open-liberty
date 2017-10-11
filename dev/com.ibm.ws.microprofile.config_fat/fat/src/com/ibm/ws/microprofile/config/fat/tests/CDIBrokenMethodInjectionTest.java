@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,12 +14,17 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.Archive;
 import org.junit.AfterClass;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.ws.fat.util.LoggingTest;
+import com.ibm.ws.fat.util.BuildShrinkWrap;
 import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.fat.util.ShrinkWrapSharedServer;
+import com.ibm.ws.microprofile.config.fat.suite.SharedShrinkWrapApps;
 
 /**
  *
@@ -27,7 +32,12 @@ import com.ibm.ws.fat.util.SharedServer;
 public class CDIBrokenMethodInjectionTest extends LoggingTest {
 
     @ClassRule
-    public static SharedServer SHARED_SERVER = new SharedServer("brokenCDIConfigServer");
+    public static SharedServer SHARED_SERVER = new ShrinkWrapSharedServer("brokenCDIConfigServer");
+
+    @BuildShrinkWrap
+    public static Archive buildApp() {
+        return SharedShrinkWrapApps.brokenConfigServerApps();
+    }
 
     @Override
     protected SharedServer getSharedServer() {

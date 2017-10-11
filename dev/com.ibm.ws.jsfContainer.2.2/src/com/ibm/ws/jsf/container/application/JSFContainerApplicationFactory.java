@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.container.application;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.faces.application.Application;
 import javax.faces.application.ApplicationFactory;
 
@@ -17,11 +20,13 @@ import com.ibm.ws.jsf.container.JSFContainer;
 
 public class JSFContainerApplicationFactory extends ApplicationFactory {
 
+    private static final Logger log = Logger.getLogger("com.ibm.ws.jsf.container.application");
     static final String MOJARRA_APP_FACTORY = "com.sun.faces.application.ApplicationFactoryImpl";
     static final String MYFACES_APP_FACTORY = "org.apache.myfaces.application.ApplicationFactoryImpl";
 
+    private static volatile boolean initialized = false;
+
     private ApplicationFactory delegate;
-    private volatile boolean initialized = false;
 
     public JSFContainerApplicationFactory() {
         // TODO: Find a more elegant way to detect which provider is available.
@@ -36,7 +41,7 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
         } catch (ReflectiveOperationException ignore) {
         }
         if (delegate == null)
-            throw new IllegalStateException("No JSF implementations found.  One of the following ApplicationFactory implementations must be available"
+            throw new IllegalStateException("No JSF implementations found.  One of the following ApplicationFactory implementations must be available: "
                                             + MOJARRA_APP_FACTORY + " or " + MYFACES_APP_FACTORY);
     }
 
@@ -44,8 +49,11 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
     public Application getApplication() {
         Application a = delegate.getApplication();
         if (!initialized) {
-            synchronized (this) {
+            synchronized (JSFContainerApplicationFactory.class) {
                 if (!initialized) {
+                    if (log.isLoggable(Level.FINEST))
+                        log.logp(Level.FINEST, JSFContainerApplicationFactory.class.getName(), "getApplication",
+                                 "Performing first time initialization checks on: " + a);
                     if (JSFContainer.isCDIEnabled())
                         JSFContainer.initializeCDI(a);
                     if (JSFContainer.isBeanValidationEnabled())

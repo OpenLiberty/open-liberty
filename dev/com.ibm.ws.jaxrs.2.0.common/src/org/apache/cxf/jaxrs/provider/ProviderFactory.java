@@ -19,6 +19,8 @@
 //https://issues.apache.org/jira/browse/CXF-6307
 package org.apache.cxf.jaxrs.provider;
 
+import static com.ibm.ws.jaxrs20.utils.CustomizerUtils.createCustomizerKey;
+
 import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -1626,7 +1628,7 @@ public abstract class ProviderFactory {
              */
             JaxRsFactoryBeanCustomizer beanCustomizer = InjectionRuntimeContextHelper.findBeanCustomizer(o.getClass(), getBus());
             if (beanCustomizer != null) {
-                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())));
+                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(createCustomizerKey(beanCustomizer)));
 
                 if (proxyObject != null && (proxyObject != o || !proxyObject.equals(o))) {
                     pi.setProvider(proxyObject);

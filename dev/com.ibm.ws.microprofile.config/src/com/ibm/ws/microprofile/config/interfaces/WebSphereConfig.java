@@ -21,4 +21,8 @@ public interface WebSphereConfig extends Config, Closeable {
 
     public <T> T convertValue(String rawValue, Class<T> type);
 
+    public String dump();
+
+    public <T> SourcedValue<T> getSourcedValue(String key, Class<T> type);
+
 }

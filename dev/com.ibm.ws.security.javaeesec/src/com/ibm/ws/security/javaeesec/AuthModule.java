@@ -11,7 +11,6 @@
 package com.ibm.ws.security.javaeesec;
 
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
@@ -27,6 +26,7 @@ import javax.security.auth.message.MessagePolicy.TargetPolicy;
 import javax.security.auth.message.module.ServerAuthModule;
 import javax.security.enterprise.AuthenticationException;
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.servlet.http.HttpServletRequest;
@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 /*
  * This JASPI authentication module is used as the bridge ServerAuthModule for JSR-375.
@@ -89,9 +88,7 @@ public class AuthModule implements ServerAuthModule {
                                                                                  (HttpServletResponse) messageInfo.getResponseMessage(),
                                                                                  httpMessageContext);
             status = translateValidateRequestStatus(authenticationStatus);
-//            if (authenticationStatus.equals(AuthenticationStatus.SUCCESS)) {
-//                populateSubject(httpMessageContext, clientSubject);
-//            }
+            registerSession(httpMessageContext);
         } catch (Exception e) {
             // TODO: Issue serviceability message.
             e.printStackTrace();
@@ -125,7 +122,9 @@ public class AuthModule implements ServerAuthModule {
 
     @Override
     public void cleanSubject(MessageInfo messageInfo, Subject subject) throws AuthException {
-        // TODO: Call HttpAuthenticationMechanism's cleanSubject.
+        HttpAuthenticationMechanism authMech = getHttpAuthenticationMechanism();
+        HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
+        authMech.cleanSubject((HttpServletRequest) messageInfo.getRequestMessage(), (HttpServletResponse) messageInfo.getResponseMessage(), httpMessageContext);
     }
 
     private HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
@@ -137,18 +136,17 @@ public class AuthModule implements ServerAuthModule {
         return CDI.current();
     }
 
-    private HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
-        HttpMessageContextImpl httpMessageContext = new HttpMessageContextImpl(messageInfo, clientSubject, handler);
+    protected HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
+        HttpMessageContextImpl httpMessageContext = null;
+        HttpServletRequest request = (HttpServletRequest) messageInfo.getRequestMessage();
+        AuthenticationParameters authParams = (AuthenticationParameters) request.getAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
+        if (authParams != null) {
+            request.removeAttribute(JavaEESecConstants.SECURITY_CONTEXT_AUTH_PARAMS);
+            httpMessageContext = new HttpMessageContextImpl(messageInfo, clientSubject, handler, authParams);
+        } else {
+            httpMessageContext = new HttpMessageContextImpl(messageInfo, clientSubject, handler);
+        }
         return httpMessageContext;
-    }
-
-    private void populateSubject(HttpMessageContext httpMessageContext, Subject clientSubject) {
-        // TODO: Get subject information from the HttpMessageContext
-        Hashtable<String, Object> cred = new Hashtable<String, Object>();
-        cred.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, "JSR375:12345");
-        cred.put(AttributeNameConstants.WSCREDENTIAL_USERID, "jaspiuser1");
-        cred.put(AttributeNameConstants.WSCREDENTIAL_PASSWORD, "s3cur1ty");
-        clientSubject.getPrivateCredentials().add(cred);
     }
 
     private AuthStatus translateValidateRequestStatus(AuthenticationStatus authenticationStatus) {
@@ -159,6 +157,13 @@ public class AuthModule implements ServerAuthModule {
             status = translateCommon(authenticationStatus);
         }
         return status;
+    }
+
+    @SuppressWarnings("unchecked")
+    private void registerSession(HttpMessageContext httpMessageContext) {
+        if (httpMessageContext.isRegisterSession()) {
+            httpMessageContext.getMessageInfo().getMap().put("javax.servlet.http.registerSession", Boolean.TRUE.toString());
+        }
     }
 
     private AuthStatus translateSecureResponseStatus(AuthenticationStatus authenticationStatus) {
@@ -178,6 +183,9 @@ public class AuthModule implements ServerAuthModule {
             status = AuthStatus.SEND_FAILURE;
         } else if (AuthenticationStatus.SEND_CONTINUE.equals(authenticationStatus)) {
             status = AuthStatus.SEND_CONTINUE;
+        } else if (AuthenticationStatus.NOT_DONE.equals(authenticationStatus)) {
+            // this is unprotected case.
+            status = AuthStatus.SEND_SUCCESS;
         }
         return status;
     }

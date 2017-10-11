@@ -13,7 +13,14 @@ bVersion=1.0
 
 test.project: true
 
+
 #
-# This is a unique project in that dependencies are defined in build.gradle.
-# This is done so that special handling of the JAR can occur.
+# If the version of ApacheDS should change, the build.gradle file will
+# need to be updated to reflect the version change.
 #
+# We depend on the 2.0.0-M15 version, but that can't be used here since
+# BND complains that it is an invalid version. So instead we use "latest".
+# The latest version is governed by cnf/oss_dependencies.maven.
+#
+-buildpath: \
+	org.apache.directory.server:apacheds-service;version=latest

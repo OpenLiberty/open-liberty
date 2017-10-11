@@ -25,11 +25,11 @@ import com.ibm.ws.jpa.pxml21.Persistence.PersistenceUnit;
  * Provides a concrete implementation of the JaxbPersistence abstraction, representing the
  * <persistence> stanza in a 2.1 version persistence.xml.
  * <p>
- * 
+ *
  * This implementation wraps the JAXB generated class that represent a <persistence> stanza in a 2.1
  * version persistence.xml.
  * <p>
- * 
+ *
  * Get methods on the generated JAXB class which return other JAXB generated classes will instead
  * return either a java primitive or javax.persistence representation of that data or another
  * abstraction interface; allowing the client of this class to be coded independent of the JAXB
@@ -37,63 +37,63 @@ import com.ibm.ws.jpa.pxml21.Persistence.PersistenceUnit;
  * <p>
  **/
 public class JaxbPersistence21 extends JaxbPersistence {
-     private static final String SCHEMA_VERSION = "2.1";
-     private static final String XSD_NAME = "persistence_2_1.xsd";
+    public static final String SCHEMA_VERSION = "2.1";
+    public static final String XSD_NAME = "persistence_2_1.xsd";
 
-     private static final TraceComponent tc = Tr.register(JaxbPersistence21.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
+    private static final TraceComponent tc = Tr.register(JaxbPersistence21.class, JPA_TRACE_GROUP, JPA_RESOURCE_BUNDLE_NAME);
 
-     /** The <persistence-unit>s found in this persistence.xml **/
-     private List<JaxbPUnit> ivPUnits;
+    /** The <persistence-unit>s found in this persistence.xml **/
+    private List<JaxbPUnit> ivPUnits;
 
-     public JaxbPersistence21(JPAPXml pxml) {
-          super(pxml, "com.ibm.ws.jpa.pxml21", XSD_NAME);
-     }
+    public JaxbPersistence21(JPAPXml pxml) {
+        super(pxml, "com.ibm.ws.jpa.pxml21", XSD_NAME);
+    }
 
-     /*
-      * (non-Javadoc)
-      * 
-      * @see com.ibm.ws.jpa.management.JaxbPersistence#setResult(java.lang.Object)
-      */
-     @Override
-     void setResult(Object result) {
-          Persistence p = (Persistence) result;
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.jpa.management.JaxbPersistence#setResult(java.lang.Object)
+     */
+    @Override
+    void setResult(Object result) {
+        Persistence p = (Persistence) result;
 
-          // Obtain the list of <persistence-unit>s and provide an abstraction for them as well.
-          List<PersistenceUnit> pUnits = p.getPersistenceUnit();
+        // Obtain the list of <persistence-unit>s and provide an abstraction for them as well.
+        List<PersistenceUnit> pUnits = p.getPersistenceUnit();
 
-          if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-               Tr.debug(tc,
-                    "JaxbPersistence21.setResult : persistence units : " + ((pUnits == null) ? "null" : pUnits.size()));
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc,
+                     "JaxbPersistence21.setResult : persistence units : " + ((pUnits == null) ? "null" : pUnits.size()));
 
-          if (pUnits != null) {
-               ivPUnits = new ArrayList<JaxbPUnit>(pUnits.size());
-               for (PersistenceUnit pUnit : pUnits) {
-                    ivPUnits.add(new JaxbPUnit21(pUnit));
-               }
-          } else {
-               // Insure an empty list is returned to avoid NPE
-               ivPUnits = new ArrayList<JaxbPUnit>();
-          }
-     }
+        if (pUnits != null) {
+            ivPUnits = new ArrayList<JaxbPUnit>(pUnits.size());
+            for (PersistenceUnit pUnit : pUnits) {
+                ivPUnits.add(new JaxbPUnit21(pUnit));
+            }
+        } else {
+            // Insure an empty list is returned to avoid NPE
+            ivPUnits = new ArrayList<JaxbPUnit>();
+        }
+    }
 
-     /*
-      * (non-Javadoc)
-      * 
-      * @see com.ibm.ws.jpa.management.JaxbPersistence#getPersistenceUnit()
-      */
-     @Override
-     List<JaxbPUnit> getPersistenceUnit() {
-          return ivPUnits;
-     }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.jpa.management.JaxbPersistence#getPersistenceUnit()
+     */
+    @Override
+    List<JaxbPUnit> getPersistenceUnit() {
+        return ivPUnits;
+    }
 
-     /*
-      * (non-Javadoc)
-      * 
-      * @see com.ibm.ws.jpa.management.JaxbPersistence#getVersion()
-      */
-     @Override
-     String getVersion() {
-          return SCHEMA_VERSION;
-     }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.ws.jpa.management.JaxbPersistence#getVersion()
+     */
+    @Override
+    String getVersion() {
+        return SCHEMA_VERSION;
+    }
 
 }

@@ -28,7 +28,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -88,6 +87,7 @@ import com.ibm.ws.fat.util.ACEScanner;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
+import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
@@ -1284,21 +1284,13 @@ public class LibertyServer implements LogMonitorClient {
                 }
 
                 if (output == null) {
+                    // We didn't get a return value from the start script. This is pretty rare, but it's possible for the JVM to miss the output
+                    // from the script and wait forever for a response. When this happens, we test to see if the server was actually started (it
+                    // almost always should be.) If not, we try to start the server again. The chances of both calls failing at the JVM level are
+                    // extraordinarily small.
                     Log.warning(c, "The process that runs the server script did not return. The server may or may not have actually started.");
-                    if (IBM_JVM) {
-                        // Use the IBM dump API if running on an appropriate JDK
-                        // This is probably just going to tell us that we're waiting forever in Process.waitFor(), but
-                        // at least we'll know that.
-                        Class<?> dump = Class.forName("com.ibm.jvm.Dump");
-                        Method javaDump = dump.getMethod("JavaDump", (Class[]) null);
-                        javaDump.invoke(null, (Object[]) null);
-                    } else {
-                        // Otherwise, just dump the stack to figure out where things got hung
-                        Thread.dumpStack();
-                    }
 
-                    // We didn't get a return value from the start script. Call resetStarted() to try to determine whether
-                    // the server is actually running or not.
+                    //Call resetStarted() to try to determine whether the server is actually running or not.
                     int rc = resetStarted();
                     if (rc == 0) {
                         // The server is running, so proceed as if nothing went wrong.
@@ -2034,22 +2026,20 @@ public class LibertyServer implements LogMonitorClient {
             throw serverStartException;
         }
 
-        if (validateApps || validateTimedExit) {
-            // App validation needs the info messages in messages.log
-
-            if (!messagesLog.exists()) {
-                // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
-                Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
-                messagesLog = consoleLog;
-            }
-
-            if (validateTimedExit) {
-                validateTimedExitEnabled(messagesLog);
-            }
-            if (validateApps) {
-                validateAppsLoaded(messagesLog);
-            }
+        if (!messagesLog.exists()) {
+            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
+            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
+            messagesLog = consoleLog;
         }
+
+        // App validation needs the info messages in messages.log
+        if (validateTimedExit) {
+            validateTimedExitEnabled(messagesLog);
+        }
+        if (validateApps) {
+            validateAppsLoaded(messagesLog);
+        }
+        FeatureDependencyProcessor.validateTestedFeatures(this, messagesLog);
     }
 
     protected void validateTimedExitEnabled(RemoteFile messagesLog) throws Exception {
@@ -4730,11 +4720,11 @@ public class LibertyServer implements LogMonitorClient {
                     } else
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
-                        String regexp = it.next();
-                        if (Pattern.compile(regexp).matcher(line).find()) {
-                        it.remove();
-                        break;
-                        }
+                            String regexp = it.next();
+                            if (Pattern.compile(regexp).matcher(line).find()) {
+                                it.remove();
+                                break;
+                            }
                         }
                 }
             }
@@ -4766,6 +4756,8 @@ public class LibertyServer implements LogMonitorClient {
             Log.warning(c, message);
             throw new RuntimeException(message);
         }
+
+        FeatureDependencyProcessor.validateTestedFeatures(this, logFile);
 
         return matchingLines;
     }

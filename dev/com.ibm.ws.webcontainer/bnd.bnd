@@ -52,7 +52,7 @@ Service-Component: \
 	 dynamic:="webAppConnectionCollaborator,webAppSecurityCollaborator,webAppTransactionCollaborator,webAppInvocationCollaborator,webAppInitializationCollaborator", \
    com.ibm.ws.generatePluginConfig;\
      implementation:=com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean;\
-     provide:='javax.management.DynamicMBean,com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig,com.ibm.ws.webserver.plugin.runtime.interfaces.PluginUtilityConfigGenerator';\
+     provide:='javax.management.DynamicMBean,com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig,com.ibm.ws.webserver.plugin.runtime.interfaces.PluginUtilityConfigGenerator,com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener';\
      modified:='modified';\
      locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
      virtualHostMgr=com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager; \
@@ -75,6 +75,7 @@ Service-Component: \
 Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer.internalRuntimeExport.*, \
     com.ibm.ws.webcontainer.async*;provide:=true, \
+    com.ibm.ws.webcontainer.core*;provide=true, \
 	com.ibm.ws.webcontainer.osgi*;provide:=true, \
 	com.ibm.ws.webcontainer.resources;provide:=true, \
 	com.ibm.ws.webcontainer.srt*;provide:=true, \

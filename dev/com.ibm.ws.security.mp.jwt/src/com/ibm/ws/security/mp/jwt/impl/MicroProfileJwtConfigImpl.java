@@ -100,6 +100,9 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig, JwtCons
     public static final String CFG_KEY_CLOCK_SKEW = "clockSkew";
     private long clockSkewMilliSeconds;
 
+    public static final String CFG_KEY_IGNORE_APP_AUTH_METHOD = "ignoreApplicationAuthMethod";
+    protected boolean ignoreApplicationAuthMethod = true;
+
     protected CommonConfigUtils configUtils = new CommonConfigUtils();
 
     @Reference(service = MicroProfileJwtService.class, name = KEY_MP_JWT_SERVICE, cardinality = ReferenceCardinality.MANDATORY)
@@ -157,6 +160,7 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig, JwtCons
         this.trustAliasName = configUtils.getConfigAttribute(props, KEY_TRUSTED_ALIAS);
         this.hostNameVerificationEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, hostNameVerificationEnabled);
         this.tokenReuse = configUtils.getBooleanConfigAttribute(props, CFG_KEY_TOKEN_REUSE, tokenReuse);
+        this.ignoreApplicationAuthMethod = configUtils.getBooleanConfigAttribute(props, CFG_KEY_IGNORE_APP_AUTH_METHOD, ignoreApplicationAuthMethod);
         jwkSet = null; // the jwkEndpoint may have been changed during dynamic update
         consumerUtils = null; // the parameters in consumerUtils may have been changed during dynamic changing
 
@@ -448,6 +452,13 @@ public class MicroProfileJwtConfigImpl implements MicroProfileJwtConfig, JwtCons
     @Override
     public boolean getTokenReuse() {
         return this.tokenReuse;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean ignoreApplicationAuthMethod() {
+        // TODO Auto-generated method stub
+        return this.ignoreApplicationAuthMethod;
     }
 
 }

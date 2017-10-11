@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<web-app id="BasicAuthServlet" version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" metadata-complete="false">
+      <display-name>Dynamic Annotation Pure Test servlets, where constraints from dynamic annotations are used </display-name>                                          
+
+      <listener>
+         <listener-class>web.dynamicannotationpure.listener.ServletRegistrationContextListenerPure</listener-class>
+      </listener>
+            
+<!-- Include test to comment out some run-as since predefining here not needed for Liberty      
+      <servlet>
+         <servlet-name>web.dynamicannotationpure.DynamicAnnotationPure5</servlet-name>
+         <servlet-class>web.dynamicannotationpure.DynamicAnnotationPure5</servlet-class>
+         <run-as>
+            <role-name>Manager</role-name>
+         </run-as>         
+      </servlet>
+-->
+      <servlet>
+         <servlet-name>web.dynamicannotationpure.DynamicAnnotationPure6</servlet-name>
+         <servlet-class>web.dynamicannotationpure.DynamicAnnotationPure6</servlet-class>
+         <run-as>
+            <role-name>Manager</role-name>
+         </run-as>         
+      </servlet>
+
+<!-- Include test to comment out some security-role since predefining here not needed for Liberty      
+      <security-role id="SecurityRole_1">
+         <description>All authenticated users in an enterprise</description>
+         <role-name>AllAuthenticated</role-name>
+      </security-role>
+      <security-role id="SecurityRole_2">
+         <description>Manager users in an enterprise</description>
+         <role-name>Manager</role-name>
+      </security-role>
+-->              
+      <security-role id="SecurityRole_3">
+         <description>Employee users in an enterprise</description>
+         <role-name>Employee</role-name>
+      </security-role>
+      <security-role id="SecurityRole_4">
+         <description>DeclaredManager users in an enterprise</description>
+         <role-name>DeclaredManager</role-name>
+      </security-role>
+      
+</web-app>

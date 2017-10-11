@@ -23,10 +23,8 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
 @Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE)
 public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {
-
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<OpentracingProducerBean> at = bm.createAnnotatedType(OpentracingProducerBean.class);
         bbd.addAnnotatedType(at);
     }
-
 }
