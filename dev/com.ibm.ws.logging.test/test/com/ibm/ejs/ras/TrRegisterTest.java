@@ -27,9 +27,6 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import test.LoggingTestUtils;
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.ras.SharedTr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.ws.logging.internal.TraceSpecification;
@@ -37,6 +34,9 @@ import com.ibm.ws.logging.internal.impl.LoggingFileUtils;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 import com.ibm.wsspi.logprovider.TrService;
+
+import test.LoggingTestUtils;
+import test.common.SharedOutputManager;
 
 /**
  * Test TraceComponent registration methods
@@ -79,14 +79,13 @@ public class TrRegisterTest {
         SharedTr.clearConfig();
 
         final String testBuildDir = System.getProperty("test.buildDir", "generated");
-        final File mFile = new File(testBuildDir + "/logs/messages.log").getAbsoluteFile();
+        final File mFile = new File(testBuildDir + "/trace-logs/messages.log").getAbsoluteFile();
         mFileStream = new FileOutputStream(mFile, true);
-        final File tFile = new File(testBuildDir + "/logs/trace.log").getAbsoluteFile();
+        final File tFile = new File(testBuildDir + "/trace-logs/trace.log").getAbsoluteFile();
         tFileStream = new FileOutputStream(tFile, true);
         // Create one TraceComponent shared by tests below
         // (See TrRegisterTest for exercise of Tr.register)
-        context.checking(new Expectations()
-        {
+        context.checking(new Expectations() {
             {
                 allowing(mockConfig).getTrDelegate();
                 will(returnValue(mockService));
@@ -129,8 +128,7 @@ public class TrRegisterTest {
     public void testRegisterClass() {
         final String m = "testRegisterClass";
         try {
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockService).register(with(any(TraceComponent.class)));
                 }
@@ -155,8 +153,7 @@ public class TrRegisterTest {
         final String m = "testRegisterClassGroup";
 
         try {
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockService).register(with(any(TraceComponent.class)));
                 }
@@ -179,8 +176,7 @@ public class TrRegisterTest {
     public void testRegisterClassGroupBundle() {
         final String m = "testRegisterClassGroupBundle";
         try {
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockService).register(with(any(TraceComponent.class)));
                 }
@@ -204,8 +200,7 @@ public class TrRegisterTest {
     public void testRegisterName() {
         final String m = "testRegisterName";
         try {
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockService).register(with(any(TraceComponent.class)));
                 }
@@ -229,11 +224,11 @@ public class TrRegisterTest {
      * @Test public void testRegisterInvalidName() { final String m =
      * "testRegisterInvalidName"; try { context.checking(new Expectations() {{
      * one (mockService).register(with(any(TraceComponent.class))); }});
-     * 
+     *
      * TraceComponent tc = Tr.register("BadClassName"); // use an invalid class
      * name assertEquals(tc.getTraceClass(), myClass); // Should still end up
      * with this class!
-     * 
+     *
      * String str[] = tc.introspectSelf(); // returns name, group, and bundle
      * assertEquals(str[0], "name = " + myName); // Should still be the name of
      * this class! assertEquals(str[1], "groups = []"); assertEquals(str[2],
@@ -245,8 +240,7 @@ public class TrRegisterTest {
     public void testRegisterNameGroup() {
         final String m = "testRegisterNameGroup";
         try {
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockService).register(with(any(TraceComponent.class)));
                 }
@@ -270,8 +264,7 @@ public class TrRegisterTest {
     public void testRegisterNameGroupBundle() {
         final String m = "testRegisterNameGroupBundle";
         try {
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockService).register(with(any(TraceComponent.class)));
                 }
@@ -295,15 +288,15 @@ public class TrRegisterTest {
      * @Test public void testRegisterDumpable() { final String m =
      * "testRegisterDumpable"; try { context.checking(new Expectations() {{ one
      * (mockService).register(with(any(TraceComponent.class))); }});
-     * 
+     *
      * final TraceComponent tc = Tr.register(myClass); final Dumpable d =
      * context.mock(Dumpable.class);
-     * 
+     *
      * context.checking(new Expectations() {{ never
      * (mockService).registerDumpable(with(same(tc)), with(same(d))); }});
-     * 
+     *
      * Tr.registerDumpable(tc, d);
-     * 
+     *
      * throw new Exception(
      * "registerDumpable did not throw expected UnsupportedOperationException");
      * } catch(UnsupportedOperationException uex) { // Expected exception }

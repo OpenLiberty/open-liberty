@@ -21,13 +21,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import test.LoggingTestUtils;
-import test.common.SharedOutputManager;
-
 import com.ibm.websphere.ras.annotation.TraceOptions;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 import com.ibm.wsspi.logprovider.TrService;
+
+import test.LoggingTestUtils;
+import test.common.SharedOutputManager;
 
 /**
  * Test TraceComponent registration methods using annotations to specify
@@ -57,8 +57,7 @@ public class TrRegisterGroupsTest2 {
         SharedTr.clearConfig();
         // Create one TraceComponent shared by tests below
         // (See TrRegisterTest for exercise of Tr.register)
-        context.checking(new Expectations()
-        {
+        context.checking(new Expectations() {
             {
                 allowing(mockConfig).getTrDelegate();
                 will(returnValue(mockService));
@@ -90,8 +89,7 @@ public class TrRegisterGroupsTest2 {
 
         final String m = "testRegisterClass";
         try {
-            context.checking(new Expectations()
-            {
+            context.checking(new Expectations() {
                 {
                     one(mockService).register(with(any(TraceComponent.class)));
                 }
@@ -102,9 +100,9 @@ public class TrRegisterGroupsTest2 {
 
             String str[] = tc.introspectSelf(); // returns name, group, and
             // bundle
-            assertEquals(str[0], "name = " + myName);
-            assertEquals(str[1], "groups = [multigroup1, multigroup2]");
-            assertEquals(str[2], "bundle = " + "");
+            assertEquals("TraceComponent[" + myName
+                         + "," + myClass
+                         + ",[multigroup1, multigroup2],,null]", str[0]);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
         }

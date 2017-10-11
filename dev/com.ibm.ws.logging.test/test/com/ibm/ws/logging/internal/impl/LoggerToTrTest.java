@@ -22,19 +22,21 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
-
-import test.LoggingTestUtils;
-import test.TestConstants;
-import test.common.SharedOutputManager;
 
 import com.ibm.ws.kernel.boot.logging.LoggerHandlerManager;
 import com.ibm.ws.logging.LoggerHelper;
 import com.ibm.ws.logging.internal.WsLogger;
 
+import test.LoggingTestUtils;
+import test.TestConstants;
+import test.common.SharedOutputManager;
+
 /**
  *
  */
+@Ignore
 public class LoggerToTrTest extends java.util.ListResourceBundle {
     static final Class<?> myClass = LoggerToTrTest.class;
     static final String myName = LoggerToTrTest.class.getName();
@@ -76,14 +78,14 @@ public class LoggerToTrTest extends java.util.ListResourceBundle {
     }
 
     private final static Object[][] resources = {
-                                                 { "testLoggerInfoToTr", "testLoggerInfoToTr" },
-                                                 { "testLoggerConfigToTr", "testLoggerConfigToTr" },
-                                                 { "testLoggerConfigToTr-1", "testLoggerConfigToTr-1" },
-                                                 { "testLoggerSevereToTr", "testLoggerSevereToTr" },
-                                                 { "testLoggerSevereToTr-1", "testLoggerSevereToTr-1" },
-                                                 { "testLoggerInsertSevereToTr", "testLoggerInsertSevereToTr param1 {0} param2 {1}" },
-                                                 { "testWarning", "testWarning" },
-                                                 { "testWarning-1", "testWarning-1" },
+                                                  { "testLoggerInfoToTr", "testLoggerInfoToTr" },
+                                                  { "testLoggerConfigToTr", "testLoggerConfigToTr" },
+                                                  { "testLoggerConfigToTr-1", "testLoggerConfigToTr-1" },
+                                                  { "testLoggerSevereToTr", "testLoggerSevereToTr" },
+                                                  { "testLoggerSevereToTr-1", "testLoggerSevereToTr-1" },
+                                                  { "testLoggerInsertSevereToTr", "testLoggerInsertSevereToTr param1 {0} param2 {1}" },
+                                                  { "testWarning", "testWarning" },
+                                                  { "testWarning-1", "testWarning-1" },
     };
 
     @Test

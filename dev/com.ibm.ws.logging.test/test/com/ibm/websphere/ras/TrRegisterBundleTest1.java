@@ -17,11 +17,11 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.ras.annotation.TraceOptions;
+
 import test.LoggingTestUtils;
 import test.TestConstants;
 import test.common.SharedOutputManager;
-
-import com.ibm.websphere.ras.annotation.TraceOptions;
 
 /**
  * Test TraceComponent registration methods using annotations to specify group
@@ -75,9 +75,9 @@ public class TrRegisterBundleTest1 {
 
             String str[] = tc.introspectSelf(); // returns name, group, and
             // bundle
-            assertEquals(str[0], "name = " + myName);
-            assertEquals(str[1], "groups = []");
-            assertEquals(str[2], "bundle = com.ibm.testBundle");
+            assertEquals("TraceComponent[" + myClass.getName()
+                         + "," + myClass
+                         + ",[],com.ibm.testBundle,null]", str[0]);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
         }

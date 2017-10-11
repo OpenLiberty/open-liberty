@@ -18,11 +18,11 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.ibm.websphere.ras.annotation.TraceOptions;
+
 import test.LoggingTestUtils;
 import test.TestConstants;
 import test.common.SharedOutputManager;
-
-import com.ibm.websphere.ras.annotation.TraceOptions;
 
 /**
  * Test TraceComponent registration methods using annotations to specify group
@@ -79,9 +79,9 @@ public class TrRegisterGroupsTest1 {
             // bundle
 
             assertEquals(tc.getTraceClass(), myClass);
-            assertEquals(str[0], "name = " + myName);
-            assertEquals(str[1], "groups = [singlegroup]");
-            assertEquals(str[2], "bundle = " + "");
+            assertEquals("TraceComponent[" + myName
+                         + "," + myClass
+                         + ",[singlegroup],,null]", str[0]);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(m, t);
         }
