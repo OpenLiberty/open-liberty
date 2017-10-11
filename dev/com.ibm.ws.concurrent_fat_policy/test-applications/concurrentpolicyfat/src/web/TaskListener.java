@@ -26,7 +26,7 @@ class TaskListener implements ManagedTaskListener {
 
     // The following are instructions to perform actions when listener methods run,
     private final Boolean[] cancelMayInterrupt = new Boolean[NUM_EVENTS]; // null means don't cancel
-    private final boolean[] doGet = new boolean[NUM_EVENTS];
+    final boolean[] doGet = new boolean[NUM_EVENTS];
     private final String[] doLookup = new String[NUM_EVENTS];
     private final boolean[] doRethrow = new boolean[NUM_EVENTS];
     private final long[] doSleepNanos = new long[NUM_EVENTS];
@@ -85,7 +85,7 @@ class TaskListener implements ManagedTaskListener {
             s += " " + exception.getClass().getSimpleName();
         if (doLookup[event] != null)
             s += "\r\n lookup " + doLookup[event];
-        if (cancelMayInterrupt != null)
+        if (cancelMayInterrupt[event] != null)
             s += "\r\n cancel " + cancelMayInterrupt[event];
         if (doSleepNanos[event] > 0)
             s += "\r\n sleep " + doSleepNanos[event] + "ns";
