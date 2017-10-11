@@ -357,6 +357,7 @@ subprojects {
       ext.destinationDir = new File(buildDir, "src/${name}/java")
       inputs.files(fileTree(dir: "${projectDir}/resources", include: '**/*.nlsprops')).skipWhenEmpty()
       outputs.dir destinationDir
+      destinationDir.mkdirs()
       doLast {
         copy {
           from "${projectDir}/resources"

@@ -28,6 +28,7 @@ task packageOpenLiberty {
     doLast {
         // Create server in order to minify an image that only includes kind=ga features
         String serverName = "packageOpenLiberty"
+        delete "${projectDir}/wlp/usr/servers/${serverName}"
         if (System.getProperty('os.name').toLowerCase(Locale.ROOT).contains('windows')) {
            exec {
               workingDir "${projectDir}/wlp/bin"
