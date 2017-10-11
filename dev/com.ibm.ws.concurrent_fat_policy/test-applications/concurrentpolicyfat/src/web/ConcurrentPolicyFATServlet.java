@@ -15,20 +15,29 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.Resource;
+import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
 
+import org.junit.After;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -41,6 +50,9 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
 
     // Constants for ManagedTaskListener events, to be used as array indices
     static final int SUBMITTED = 0, ABORTED = 1, STARTING = 2, DONE = 3;
+
+    // Futures to cancel between tests, to reduce the chance of failures in one test method interfering with others
+    private final Set<Future<?>> cancelAfterTest = Collections.newSetFromMap(new ConcurrentHashMap<Future<?>, Boolean>());
 
     // max: 1 + caller threads; maxQueue: 1; wait: 2m and abort
     @Resource(lookup = "java:comp/DefaultManagedExecutorService")
@@ -65,39 +77,105 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
     private TransactionSynchronizationRegistry tranSyncRegistry;
 
     /**
+     * Utility method to validate information recorded by TaskListener for a task that aborts and is rejected upon submit.
+     */
+    private void assertRejected(ManagedExecutorService executor, Object task, TaskListener listener, Class<? extends Throwable> causeClass,
+                                String causeMessagePrefix) throws Exception {
+        // Because submit does not return, the only visibility of the Future is in the ManagedTaskListener events.
+        Future<?> future = listener.future[SUBMITTED];
+        assertNotNull(future);
+        assertEquals(executor, listener.executor[SUBMITTED]);
+        assertEquals(task, listener.task[SUBMITTED]);
+        assertFalse(listener.isCancelled[SUBMITTED]);
+        assertFalse(listener.isDone[SUBMITTED]);
+        if (listener.failure[SUBMITTED] != null)
+            throw new Exception("Unexpected failure, see cause", listener.failure[SUBMITTED]);
+
+        assertFalse(listener.invoked[STARTING]);
+
+        assertEquals(future, listener.future[ABORTED]);
+        assertEquals(executor, listener.executor[ABORTED]);
+        assertEquals(task, listener.task[ABORTED]);
+        assertNotNull(listener.exception[ABORTED]);
+        if (!(listener.exception[ABORTED] instanceof AbortedException))
+            throw new Exception("Unexpected exception for taskAborted, see cause", listener.exception[ABORTED]);
+        if (causeClass == null)
+            assertNull(listener.exception[ABORTED].getCause());
+        else {
+            Throwable cause = listener.exception[ABORTED].getCause();
+            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
+                causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
+                throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", listener.exception[ABORTED]);
+        }
+        assertFalse(listener.isCancelled[ABORTED]);
+        assertTrue(listener.isDone[ABORTED]);
+
+        if (listener.doGet[ABORTED]) {
+            Throwable failure = listener.failure[ABORTED];
+            if (!(failure instanceof AbortedException))
+                throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
+            Throwable cause = failure.getCause();
+            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
+                causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
+                throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", failure);
+        } else {
+            if (listener.failure[ABORTED] != null)
+                throw new Exception("Unexpected failure, see cause", listener.failure[ABORTED]);
+        }
+
+        assertEquals(future, listener.future[DONE]);
+        assertEquals(executor, listener.executor[DONE]);
+        assertEquals(task, listener.task[DONE]);
+        assertNotNull(listener.exception[DONE]);
+        if (!(causeClass.isAssignableFrom(listener.exception[DONE].getClass())))
+            throw new Exception("Unexpected or missing exception for taskDone. See chained exception", listener.exception[DONE]);
+        assertFalse(listener.isCancelled[DONE]);
+        assertTrue(listener.isDone[DONE]);
+
+        if (listener.doGet[DONE]) {
+            Throwable failure = listener.failure[DONE];
+            if (!(failure instanceof AbortedException))
+                throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
+            Throwable cause = failure.getCause();
+            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
+                causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
+                throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", failure);
+        } else {
+            if (listener.failure[DONE] != null)
+                throw new Exception("Unexpected failure, see cause", listener.failure[DONE]);
+        }
+    }
+
+    /**
      * Utility method to validate information recorded by TaskListener for a successful result.
      */
     private <T> void assertSuccess(ManagedExecutorService executor, Future<T> future, Object task, TaskListener listener, T... validResults) throws Exception {
         assertEquals(future, listener.future[SUBMITTED]);
-        assertEquals(future, listener.future[STARTING]);
-        assertEquals(future, listener.future[DONE]);
-
         assertEquals(executor, listener.executor[SUBMITTED]);
-        assertEquals(executor, listener.executor[STARTING]);
-        assertEquals(executor, listener.executor[DONE]);
-
         assertEquals(task, listener.task[SUBMITTED]);
-        assertEquals(task, listener.task[STARTING]);
-        assertEquals(task, listener.task[DONE]);
-
-        assertNull(listener.exception[DONE]);
-
+        assertFalse(listener.isCancelled[SUBMITTED]);
+        assertFalse(listener.isDone[SUBMITTED]);
         if (listener.failure[SUBMITTED] != null)
             throw new Exception("Unexpected failure, see cause", listener.failure[SUBMITTED]);
+
+        assertEquals(future, listener.future[STARTING]);
+        assertEquals(executor, listener.executor[STARTING]);
+        assertEquals(task, listener.task[STARTING]);
+        assertFalse(listener.isCancelled[STARTING]);
+        assertFalse(listener.isDone[STARTING]);
         if (listener.failure[STARTING] != null)
             throw new Exception("Unexpected failure, see cause", listener.failure[STARTING]);
-        if (listener.failure[DONE] != null)
-            throw new Exception("Unexpected failure, see cause", listener.failure[DONE]);
-
-        assertFalse(listener.isCancelled[SUBMITTED]);
-        assertFalse(listener.isCancelled[STARTING]);
-        assertFalse(listener.isCancelled[DONE]);
-
-        assertFalse(listener.isDone[SUBMITTED]);
-        assertFalse(listener.isDone[STARTING]);
-        assertTrue(listener.isDone[DONE]);
 
         assertFalse(listener.invoked[ABORTED]);
+
+        assertEquals(future, listener.future[DONE]);
+        assertEquals(executor, listener.executor[DONE]);
+        assertEquals(task, listener.task[DONE]);
+        assertNull(listener.exception[DONE]);
+        assertFalse(listener.isCancelled[DONE]);
+        assertTrue(listener.isDone[DONE]);
+        if (listener.failure[DONE] != null)
+            throw new Exception("Unexpected failure, see cause", listener.failure[DONE]);
 
         assertEquals(listener.result[DONE], future.get(1, TimeUnit.NANOSECONDS));
 
@@ -105,6 +183,24 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         for (T valid : validResults)
             hasValidResult |= valid == null && listener.result[DONE] == null || valid.equals(listener.result[DONE]);
         assertTrue("unexpected: " + listener.result[DONE], hasValidResult);
+    }
+
+    /**
+     * Cancel futures that are still incomplete when tests methods end, in order to prevent long-running tasks
+     * and queued tasks from interfering with subsequent tests.
+     * Ideally, there should never be any futures left incomplete after successful execution of a test method,
+     * and this should only be needed for when test methods fail and cannot easily clean up.
+     */
+    @After
+    void cancelFuturesAfterTest() {
+        int count = 0;
+        for (Iterator<Future<?>> it = cancelAfterTest.iterator(); it.hasNext();) {
+            Future<?> f = it.next();
+            if (!f.isDone() && f.cancel(true))
+                count++;
+        }
+        if (count > 0)
+            System.out.println("Canceled " + count + " futures after previous test");
     }
 
     /**
@@ -118,6 +214,84 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         assertNotNull(scheduledExecutor2);
         assertNotNull(tran);
         assertNotNull(tranSyncRegistry);
+    }
+
+    /**
+     * Submit a task when the queue is at capacity. Expect the submit to be aborted, with the proper exception raised and ManagedTaskListener taskAborted signal sent.
+     */
+    @Test
+    public void testAbortWhenQueueFull() throws Exception {
+        // Use up maxConcurrency of 1
+        CountingTask blockerTask = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        Future<Integer> blockerTaskFuture = executor1.submit(blockerTask);
+        cancelAfterTest.add(blockerTaskFuture);
+        assertTrue(blockerTask.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Use up maxQueueSize of 1
+        CountingTask queuedTask = new CountingTask(null, null, null, null); // TODO add a listener and test taskAborted on cancel from queue
+        Future<Integer> queuedTaskFuture = executor1.submit(queuedTask);
+        cancelAfterTest.add(queuedTaskFuture);
+
+        // Submit task that aborts due to full queue
+        CountingTask abortedTask = new CountingTask(null, new TaskListener().doLookup("java:module/env/concurrent/executor2ref", ABORTED).doGet(true, ABORTED), null, null);
+        try {
+            Future<Integer> abortedTaskFuture = executor1.submit(abortedTask);
+            cancelAfterTest.add(abortedTaskFuture);
+            fail("Unexpectedly allowed submit: " + abortedTaskFuture);
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1201E"))
+                throw x;
+        }
+
+        assertRejected(executor1, abortedTask, (TaskListener) abortedTask.listener, RejectedExecutionException.class, "CWWKE1201E");
+
+        assertEquals(scheduledExecutor2, ((TaskListener) abortedTask.listener).resultOfLookup[ABORTED]);
+
+        cancelAfterTest.remove(queuedTaskFuture);
+        assertTrue(queuedTaskFuture.cancel(false));
+
+        cancelAfterTest.remove(blockerTaskFuture);
+        assertTrue(blockerTaskFuture.cancel(true));
+    }
+
+    /**
+     * Submit a task when the queue is at capacity. Interrupt it before maxWaitForEnqueue is exceeded. Expect the submit to be aborted,
+     * with the proper exception raised and ManagedTaskListener taskAborted signal sent.
+     */
+    @Test
+    public void testAbortWhenQueueWaitInterrupted() throws Exception {
+        // Use up maxConcurrency of 1
+        CountingTask blockerTask = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        Future<Integer> blockerTaskFuture = defaultExecutor.submit(blockerTask);
+        cancelAfterTest.add(blockerTaskFuture);
+        assertTrue(blockerTask.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Use up maxQueueSize of 1
+        CountingTask queuedTask = new CountingTask(null, null, null, null);
+        Future<Integer> queuedTaskFuture = defaultExecutor.submit(queuedTask);
+        cancelAfterTest.add(queuedTaskFuture);
+
+        // Submit task that aborts due to interrupted wait
+        CountingTask abortedTask = new CountingTask(null, new TaskListener().doLookup("java:comp/env/concurrent/executor1ref", ABORTED).doGet(true, ABORTED), null, null);
+        Thread.currentThread().interrupt();
+        try {
+            Future<Integer> abortedTaskFuture = defaultExecutor.submit(abortedTask);
+            cancelAfterTest.add(abortedTaskFuture);
+            fail("Unexpectedly allowed submit: " + abortedTaskFuture);
+        } catch (RejectedExecutionException x) {
+            if (!(x.getCause() instanceof InterruptedException))
+                throw x;
+        }
+
+        assertRejected(defaultExecutor, abortedTask, (TaskListener) abortedTask.listener, InterruptedException.class, null);
+
+        assertEquals(executor1, ((TaskListener) abortedTask.listener).resultOfLookup[ABORTED]);
+
+        cancelAfterTest.remove(queuedTaskFuture);
+        assertTrue(queuedTaskFuture.cancel(false));
+
+        cancelAfterTest.remove(blockerTaskFuture);
+        assertTrue(blockerTaskFuture.cancel(true));
     }
 
     /**
