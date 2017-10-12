@@ -25,9 +25,8 @@ public class CDIJSFInitializer {
 
     private static final Logger log = Logger.getLogger("com.ibm.ws.jsf.container.cdi");
 
-    public static void initialize(Application application) {
+    public static void initialize(Application application, String appname) {
         try {
-            String appname = InitialContext.doLookup("java:app/AppName");
             BeanManager beanManager = InitialContext.doLookup("java:comp/BeanManager");
             if (beanManager != null) {
                 if (log.isLoggable(Level.FINEST))
