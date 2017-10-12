@@ -75,6 +75,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @Mode(TestMode.FULL)
 public class FATOpentracing implements FATOpentracingConstants {
+    private static final String FEATURE_NAME = "com.ibm.websphere.appserver.opentracingMock-0.30.mf";
+    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock.jar";
     // Logging ...
 
     private static final Class<? extends FATOpentracing> CLASS = FATOpentracing.class;
@@ -93,8 +95,10 @@ public class FATOpentracing implements FATOpentracingConstants {
 
     private static LibertyServer server;
 
-    private static void setUpServer() {
+    private static void setUpServer() throws Exception {
         server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
     }
 
     private static LibertyServer getServer() {
