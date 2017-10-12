@@ -219,5 +219,5 @@ instrument.classesExcludes: com/ibm/ws/jaxws/internal/resources/*.class
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest
