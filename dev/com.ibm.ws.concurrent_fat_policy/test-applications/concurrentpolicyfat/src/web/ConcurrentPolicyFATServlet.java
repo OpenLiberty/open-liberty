@@ -81,8 +81,8 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
      */
     private void assertRejected(ManagedExecutorService executor, Object task, TaskListener listener, Class<? extends Throwable> causeClass,
                                 String causeMessagePrefix) throws Exception {
-        // Because submit does not return, the only visibility of the Future is in the ManagedTaskListener events.
-        Future<?> future = listener.future[SUBMITTED];
+        assertTrue(listener.latch[SUBMITTED].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        Future<?> future = listener.future[SUBMITTED]; // Because submit is unsuccessful, the only visibility of the Future is in the ManagedTaskListener events.
         assertNotNull(future);
         assertEquals(executor, listener.executor[SUBMITTED]);
         assertEquals(task, listener.task[SUBMITTED]);
@@ -91,8 +91,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         if (listener.failure[SUBMITTED] != null)
             throw new Exception("Unexpected failure, see cause", listener.failure[SUBMITTED]);
 
-        assertFalse(listener.invoked[STARTING]);
-
+        assertTrue(listener.latch[ABORTED].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(future, listener.future[ABORTED]);
         assertEquals(executor, listener.executor[ABORTED]);
         assertEquals(task, listener.task[ABORTED]);
@@ -123,6 +122,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
                 throw new Exception("Unexpected failure, see cause", listener.failure[ABORTED]);
         }
 
+        assertTrue(listener.latch[DONE].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(future, listener.future[DONE]);
         assertEquals(executor, listener.executor[DONE]);
         assertEquals(task, listener.task[DONE]);
@@ -144,12 +144,15 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             if (listener.failure[DONE] != null)
                 throw new Exception("Unexpected failure, see cause", listener.failure[DONE]);
         }
+
+        assertFalse(listener.invoked[STARTING]);
     }
 
     /**
      * Utility method to validate information recorded by TaskListener for a successful result.
      */
     private <T> void assertSuccess(ManagedExecutorService executor, Future<T> future, Object task, TaskListener listener, T... validResults) throws Exception {
+        assertTrue(listener.latch[SUBMITTED].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(future, listener.future[SUBMITTED]);
         assertEquals(executor, listener.executor[SUBMITTED]);
         assertEquals(task, listener.task[SUBMITTED]);
@@ -158,6 +161,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         if (listener.failure[SUBMITTED] != null)
             throw new Exception("Unexpected failure, see cause", listener.failure[SUBMITTED]);
 
+        assertTrue(listener.latch[STARTING].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(future, listener.future[STARTING]);
         assertEquals(executor, listener.executor[STARTING]);
         assertEquals(task, listener.task[STARTING]);
@@ -166,8 +170,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         if (listener.failure[STARTING] != null)
             throw new Exception("Unexpected failure, see cause", listener.failure[STARTING]);
 
-        assertFalse(listener.invoked[ABORTED]);
-
+        assertTrue(listener.latch[DONE].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertEquals(future, listener.future[DONE]);
         assertEquals(executor, listener.executor[DONE]);
         assertEquals(task, listener.task[DONE]);
@@ -183,6 +186,8 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         for (T valid : validResults)
             hasValidResult |= valid == null && listener.result[DONE] == null || valid.equals(listener.result[DONE]);
         assertTrue("unexpected: " + listener.result[DONE], hasValidResult);
+
+        assertFalse(listener.invoked[ABORTED]);
     }
 
     /**
