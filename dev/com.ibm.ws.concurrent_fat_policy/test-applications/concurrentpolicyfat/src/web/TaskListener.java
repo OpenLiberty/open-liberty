@@ -10,6 +10,7 @@
  *******************************************************************************/
 package web;
 
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
@@ -26,7 +27,7 @@ class TaskListener implements ManagedTaskListener {
 
     // The following are instructions to perform actions when listener methods run,
     private final Boolean[] cancelMayInterrupt = new Boolean[NUM_EVENTS]; // null means don't cancel
-    private final boolean[] doGet = new boolean[NUM_EVENTS];
+    final boolean[] doGet = new boolean[NUM_EVENTS];
     private final String[] doLookup = new String[NUM_EVENTS];
     private final boolean[] doRethrow = new boolean[NUM_EVENTS];
     private final long[] doSleepNanos = new long[NUM_EVENTS];
@@ -40,6 +41,7 @@ class TaskListener implements ManagedTaskListener {
     final boolean[] invoked = new boolean[NUM_EVENTS];
     final Boolean[] isCancelled = new Boolean[NUM_EVENTS];
     final Boolean[] isDone = new Boolean[NUM_EVENTS];
+    final CountDownLatch[] latch = new CountDownLatch[NUM_EVENTS]; // latch is decremented AFTER populating fields
     final Object[] result = new Object[NUM_EVENTS];
     final Boolean[] resultOfCancel = new Boolean[NUM_EVENTS];
     final Object[] resultOfLookup = new Object[NUM_EVENTS];
@@ -47,6 +49,8 @@ class TaskListener implements ManagedTaskListener {
 
     TaskListener() {
         doGet[ConcurrentPolicyFATServlet.DONE] = true;
+        for (int i = 0; i < NUM_EVENTS; i++)
+            latch[i] = new CountDownLatch(1);
     }
 
     TaskListener cancelMayInterrupt(boolean mayInterrupt, int... events) {
@@ -85,7 +89,7 @@ class TaskListener implements ManagedTaskListener {
             s += " " + exception.getClass().getSimpleName();
         if (doLookup[event] != null)
             s += "\r\n lookup " + doLookup[event];
-        if (cancelMayInterrupt != null)
+        if (cancelMayInterrupt[event] != null)
             s += "\r\n cancel " + cancelMayInterrupt[event];
         if (doSleepNanos[event] > 0)
             s += "\r\n sleep " + doSleepNanos[event] + "ns";
@@ -129,6 +133,8 @@ class TaskListener implements ManagedTaskListener {
                 else
                     throw new RuntimeException(x);
             }
+        } finally {
+            latch[event].countDown();
         }
     }
 
