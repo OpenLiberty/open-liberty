@@ -6,5 +6,5 @@ IBM-Process-Types: server, \
 -features=com.ibm.websphere.appserver.javax.persistence.base-2.2
 -bundles=com.ibm.ws.javaee.persistence.api.2.2
 -jars=com.ibm.websphere.javaee.persistence.2.2; location:=dev/api/spec/
-kind=noship
+kind=beta
 edition=core

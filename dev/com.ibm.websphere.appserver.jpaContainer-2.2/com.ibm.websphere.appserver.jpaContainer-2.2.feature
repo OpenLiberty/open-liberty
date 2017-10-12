@@ -2,7 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.jpaContainer-2.2
 visibility=public
 singleton=true
-kind=noship
+kind=beta
 edition=core
 Subsystem-Name: Java Persistence API Container 2.2
 IBM-ShortName: jpaContainer-2.2
