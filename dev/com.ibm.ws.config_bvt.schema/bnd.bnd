@@ -19,7 +19,7 @@ test.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	fattest.simplicity;version=latest, \
 	com.ibm.ws.componenttest:public.api;version=1.0.0, \
 	com.ibm.websphere.filetransfer;version=latest, \
