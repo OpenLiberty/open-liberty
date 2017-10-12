@@ -11,5 +11,5 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-# Define the bundle for this FAT
+# Define the bundle for this FAT project
 Bundle-SymbolicName: ${basename;${basedir}}
