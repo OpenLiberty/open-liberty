@@ -11,22 +11,15 @@
 -include= ~../cnf/resources/bnd/bundle.props,
 bVersion=1.0
 
-Export-Package: \
-	com.ibm.ws.ras.instrument.annotation,\
-	com.ibm.ws.ras.instrument.internal.bci,\
-	com.ibm.ws.ras.instrument.internal.buildtasks,\
-	com.ibm.ws.ras.instrument.internal.introspect,\
-	com.ibm.ws.ras.instrument.internal.main,\
-	com.ibm.ws.ras.instrument.internal.model,\
-	com.ibm.ws.ras.instrument.internal.xml
-
 instrument.disabled: true
 
 publish.wlp.jar.disabled: true
 
--buildpath: \
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.ras.instrument;version=latest, \
 	com.ibm.ws.org.apache.ant;version=latest,\
 	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-
