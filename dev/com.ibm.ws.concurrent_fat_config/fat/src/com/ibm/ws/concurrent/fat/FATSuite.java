@@ -8,5 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
+package com.ibm.ws.concurrent.fat;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+                EEConcurrencyConfigTest.class
+})
+public class FATSuite {}
