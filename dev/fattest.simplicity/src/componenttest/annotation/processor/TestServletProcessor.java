@@ -18,6 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.servlet.annotation.WebServlet;
+
 import org.junit.Test;
 import org.junit.runners.model.FrameworkField;
 import org.junit.runners.model.FrameworkMethod;
@@ -64,13 +66,35 @@ public class TestServletProcessor {
                 int initialSize = testMethods.size();
                 for (Method method : getTestServletMethods(anno)) {
                     if (method.isAnnotationPresent(Test.class)) {
-                        testMethods.add(new SyntheticServletTest(serverField, anno, method));
+                        testMethods.add(new SyntheticServletTest(serverField, getQueryPath(anno), method));
                     }
                 }
                 Log.info(c, m, "Added " + (testMethods.size() - initialSize) + " test methods from " + anno.servlet());
             }
         }
         return testMethods;
+    }
+
+    private static String getQueryPath(TestServlet anno) {
+        String queryPath = anno.path();
+        if (queryPath != null && !queryPath.isEmpty()) {
+            // If path() is specified, must not specify contextRoot()
+            if (!anno.contextRoot().isEmpty())
+                throw new IllegalArgumentException("For the @TestServlet annotation, either path() or contextRoot() should be specified, but not both!");
+            return queryPath;
+        }
+
+        // Infer queryPath from contextRoot() and @WebServlet annotation
+        WebServlet webServlet = anno.servlet().getAnnotation(WebServlet.class);
+        if (webServlet == null || (webServlet.value().length == 0 && webServlet.urlPatterns().length == 0))
+            throw new IllegalArgumentException("When using @TestServlet.contextRoot(), the referenced HTTPServlet must define a URL path via the @WebServlet annotation");
+
+        queryPath = anno.contextRoot();
+        if (webServlet.value().length > 0)
+            queryPath += webServlet.value()[0];
+        else
+            queryPath += webServlet.urlPatterns()[0];
+        return queryPath.replace("//", "/").replace("*", "");
     }
 
     private static Method[] getTestServletMethods(TestServlet anno) {
