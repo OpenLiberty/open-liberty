@@ -16,7 +16,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                EEConcurrencySpecTest.class,
-                EEConcurrencyConfigTest.class
+                EEConcurrencySpecTest.class
 })
 public class FATSuite {}
