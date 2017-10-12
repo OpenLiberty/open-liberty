@@ -12,20 +12,22 @@ package com.ibm.ws.jsf.container.application;
 
 import org.junit.Test;
 
+import com.ibm.ws.jsf.container.JSFContainer;
+
 public class JSFContainerApplicationFactoryTest {
 
     @Test
     public void verifyMojarraAppFactory() throws ClassNotFoundException {
         // Verify the name of the Mojarra ApplicationFactoryImpl is unchanged,
         // since we can't have a proper compile-time dependency on the class
-        Class.forName(JSFContainerApplicationFactory.MOJARRA_APP_FACTORY);
+        Class.forName(JSFContainer.MOJARRA_APP_FACTORY);
     }
 
     @Test
     public void verifyMyFacesAppFactory() throws ClassNotFoundException {
         // Verify the name of the MyFaces ApplicationFactoryImpl is unchanged,
         // since we can't have a proper compile-time dependency on the class
-        Class.forName(JSFContainerApplicationFactory.MYFACES_APP_FACTORY);
+        Class.forName(JSFContainer.MYFACES_APP_FACTORY);
     }
 
 }
