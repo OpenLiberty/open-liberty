@@ -59,6 +59,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.ws.threading.PolicyExecutor.QueueFullAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -238,8 +239,20 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         defaultExecutionProperties.set(execProps);
 
         // TODO replace this temporary prototype code
-        if ("enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use")))
+        if ("enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use"))) {
             policyExecutor = policyExecutorProvider.create(xsvcName);
+            String maxConcurrency = (String) properties.get("maxConcurrency");
+            if (maxConcurrency != null)
+                policyExecutor.maxConcurrency(Integer.parseInt(maxConcurrency));
+            String maxQueueSize = (String) properties.get("maxQueueSize");
+            if (maxQueueSize != null)
+                policyExecutor.maxQueueSize(Integer.parseInt(maxQueueSize));
+            String maxWaitForEnqueue = (String) properties.get("maxWaitForEnqueue");
+            if (maxWaitForEnqueue != null)
+                policyExecutor.maxWaitForEnqueue(Long.parseLong(maxWaitForEnqueue));
+            String queueFullAction = (String) properties.get("queueFullAction");
+            policyExecutor.queueFullAction("CallerRuns".equals(queueFullAction) ? QueueFullAction.CallerRuns : QueueFullAction.Abort);
+        }
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
