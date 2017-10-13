@@ -6,10 +6,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 2.0
- */
-@org.osgi.annotation.versioning.Version("2.0")
+
+@org.osgi.annotation.versioning.Version("1.0")
 package com.ibm.ws.cdi.utils;
