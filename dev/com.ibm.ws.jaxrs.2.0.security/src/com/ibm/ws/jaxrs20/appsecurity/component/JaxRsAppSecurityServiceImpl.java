@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.appsecurity.component;
 
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.Map;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -30,7 +32,13 @@ public class JaxRsAppSecurityServiceImpl implements JaxRsAppSecurityService {
 
         Cookie ssoCookie;
         try {
-            ssoCookie = WebSecurityHelper.getSSOCookieFromSSOToken();
+            ssoCookie = AccessController.doPrivileged(new PrivilegedExceptionAction<Cookie>() {
+
+                @Override
+                public Cookie run() throws Exception {
+                    return WebSecurityHelper.getSSOCookieFromSSOToken();
+                }
+            });
         } catch (Exception e) {
             throw new ProcessingException(e);
         }
