@@ -48,7 +48,7 @@ import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.BasicHttpAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
 // TODO:
 // Find out how to release LoginToContinue annotation in LoginToContinueIntercepter by the one in FormAuthenticationMechanismDefinition.
 
@@ -96,7 +96,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             // TODO: If I see my annotations, create beans by type. Add more bean types.
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (BasicAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                createBasicAuthenticationMechanismBeanToAdd(beanManager, annotation, annotationType);
                 createHAMPropertiesBeanForBasicToAdd(beanManager, annotation, annotationType);
                 authMechRegistered.add(annotationType);
             } else if (FormAuthenticationMechanismDefinition.class.equals(annotationType) || CustomFormAuthenticationMechanismDefinition.class.equals(annotationType)) {
@@ -162,25 +161,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             if (isIdentityStore(processBean)) {
                 identityStoreRegistered = true;
             }
-        }
-    }
-
-    /**
-     * @param beanManager
-     * @param annotation
-     * @param annotationType
-     */
-    private void createBasicAuthenticationMechanismBeanToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType) {
-        try {
-            Method realmNameMethod = annotationType.getMethod("realmName");
-            String realmName = (String) realmNameMethod.invoke(annotation);
-            BasicAuthenticationMechanismBean bean = new BasicAuthenticationMechanismBean(realmName, beanManager);
-            beansToAdd.add(bean);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-            e.printStackTrace();
         }
     }
 
@@ -292,7 +272,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (PrivilegedActionException e) {
             throw e.getException();
         }
-
     }
 
     /**
@@ -365,34 +344,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return identityStoreRegistered;
     }
 
-//    protected boolean isBasicAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-//        return isAuthMechRegistered(authMechRegistered, BasicAuthenticationMechanismDefinition.class);
-//    }
-//    protected boolean isFormAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-//        return isAuthMechRegistered(authMechRegistered, FormAuthenticationMechanismDefinition.class);
-//    }
-//    protected boolean isCustomFormAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-//        return isAuthMechRegistered(authMechRegistered, CustomFormAuthenticationMechanismDefinition.class);
-//    }
-
-    protected boolean isAuthMechRegistered(Set<Class<?>> authMechRegistered, Class<?> authMech) {
-        if (authMechRegistered.size() == 1 && authMechRegistered.contains(authMech)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected boolean isApplicationAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-        if (authMechRegistered.size() == 1 && !authMechRegistered.contains(BasicAuthenticationMechanismDefinition.class) && !authMechRegistered.contains(FormAuthenticationMechanismDefinition.class) && !authMechRegistered.contains(CustomFormAuthenticationMechanismDefinition.class)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     protected boolean isApplicationAuthMech(Class<?> javaClass) {
-        if (!FormAuthenticationMechanism.class.equals(javaClass) && !CustomFormAuthenticationMechanism.class.equals(javaClass)) {
+        if (!BasicHttpAuthenticationMechanism.class.equals(javaClass) && !FormAuthenticationMechanism.class.equals(javaClass) && !CustomFormAuthenticationMechanism.class.equals(javaClass)) {
             Class<?>[] interfaces = javaClass.getInterfaces();
             for (Class<?> interfaceClass : interfaces) {
                 if (HttpAuthenticationMechanism.class.equals(interfaceClass)) {

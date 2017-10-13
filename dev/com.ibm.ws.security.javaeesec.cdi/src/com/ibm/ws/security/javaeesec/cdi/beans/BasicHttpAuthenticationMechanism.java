@@ -8,18 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.authentication.mechanism.http;
+package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.Properties;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -39,24 +41,40 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
 public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
+    @Inject
+    Instance<HAMProperties> hampInstance;
 
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
-    private final String realmName;
+    private String realmName = null;
     private final String DEFAULT_REALM = "defaultRealm";
 
     /**
-     * @param realmName
+     *
      */
-    public BasicHttpAuthenticationMechanism(String realmName) {
-        this.realmName = realmName;
+    public BasicHttpAuthenticationMechanism() {
+        if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
+            HAMProperties hamp = hampInstance.get();
+            if (hamp != null) {
+                Properties props = hamp.getProperties();
+                if (props != null) {
+                    realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
+                }
+            }
+        }
+        if (realmName == null) {
+            Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
+            realmName = DEFAULT_REALM;
+        }
     }
-
+    
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
                                                 HttpServletResponse response,
@@ -260,6 +278,11 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             identityStoreHandler = storeHandlerInstance.get();
         }
         return identityStoreHandler;
+    }
+
+    // this is for unit test.
+    protected void setProps(Instance<HAMProperties> hampInstance) {
+        this.hampInstance = hampInstance;
     }
 
 }

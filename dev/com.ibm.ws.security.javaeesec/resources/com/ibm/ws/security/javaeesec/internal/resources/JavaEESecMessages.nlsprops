@@ -34,3 +34,7 @@ JAVAEESEC_ERROR_NO_HAM.useraction=Make sure that there is one HttpAuthentication
 JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: HAMProperties object cannot be identified for authentication. Most likely, there is not any HttpAuthenticationMechanism object in the application. Make sure that one HttpAuthenticationMechanism objct is defined.
 JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=HAMProperties object cannot be identified for authentication. It could be there is not any HttpAuthenticationMechanism object defined in the application.
 JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
+
+JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
+JAVAEESEC_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.
+JAVAEESEC_WARNING_NO_REALM_NAME.useraction=If the realm name needs to be set, please set it by using BasicAuthenticationMechanismDefinition annotation in the application.
