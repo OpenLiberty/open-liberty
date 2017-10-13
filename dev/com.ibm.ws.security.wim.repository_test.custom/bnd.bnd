@@ -13,9 +13,11 @@ bVersion=1.0
 
 Bundle-Name: CustomRepository Sample
 Bundle-Description: CustomRepository Sample, version ${bVersion}
-Bundle-SymbolicName: com.ibm.ws.security.wim.repository.custom.sample
 
 Export-Package: com.myorg;version=1.0.0
+
+publish.wlp.jar.disabled: false
+test.project: true
 
 -dsannotations: com.myorg.SampleCustomRepository
 

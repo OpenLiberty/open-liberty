@@ -1,0 +1,74 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="new server">
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+		<feature>ldapRegistry-3.0</feature>
+    </featureManager>
+
+	<ldapRegistry id="LDAP" realm="SampleLdapSUNRealm" host="${ldap.server.13.name}" port="${ldap.server.13.port}" ignoreCase="true"
+		baseDN="dc=rtp,dc=raleigh,dc=ibm,dc=com"
+		ldapType="Sun Java System Directory Server"
+		searchTimeout="8m">
+		
+      <ldapEntityType name="Group" searchFilter="(ObjectClass=ldapsubentry)">
+        <objectClass>ldapsubentry</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="OrgContainer">
+        <rdnProperty name="o" objectClass="organization"/>
+        <rdnProperty name="ou" objectClass="organizationalUnit"/>
+        <rdnProperty name="dc" objectClass="domain"/>
+        <rdnProperty name="cn" objectClass="container"/>
+        <objectClass>organization</objectClass>
+        <objectClass>organizationalUnit</objectClass>
+        <objectClass>domain</objectClass>
+        <objectClass>container</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="PersonAccount">
+        <objectClass>inetOrgPerson</objectClass>
+      </ldapEntityType>
+      <groupProperties>
+        <membershipAttribute name="nsRoleDN" scope="direct"/>
+      </groupProperties>
+      <attributeConfiguration>
+        <attribute name="userPassword" propertyName="password" entityType="PersonAccount" />
+        <attribute name="krbPrincipalName" propertyName="kerberosId" entityType="PersonAccount" />
+        <propertiesNotSupported name="homeAddress"/>
+        <propertiesNotSupported name="businessAddress"/>
+      </attributeConfiguration>
+      <loginProperty>uid</loginProperty>
+      <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
+          waitTime="3000ms" preferredSize="3"/>
+      <ldapCache>
+        <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
+        <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
+      </ldapCache>
+      <failoverServers name="failoverLdapServers">
+      	<server host="${ldap.server.3.name}" port="${ldap.server.3.port}"/>
+       </failoverServers>
+	</ldapRegistry> 
+
+    <federatedRepository>
+        <primaryRealm name="SUNLDAPRealm">
+            <participatingBaseEntry name="dc=rtp,dc=raleigh,dc=ibm,dc=com"/>
+            <uniqueUserIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+        	<userSecurityNameMapping inputProperty="principalName" outputProperty="principalName"/>
+        	<userDisplayNameMapping inputProperty="principalName" outputProperty="principalName"/>
+        	<uniqueGroupIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+        	<groupSecurityNameMapping inputProperty="cn" outputProperty="cn"/>
+        	<groupDisplayNameMapping inputProperty="cn" outputProperty="cn"/>
+        </primaryRealm>
+    </federatedRepository>
+</server>

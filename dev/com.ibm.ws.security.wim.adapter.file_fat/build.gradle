@@ -14,54 +14,56 @@ apply from: '../cnf/gradle/scripts/fat.gradle'
 def autoFvtDir = "${projectDir}/build/libs/autoFVT"
 def publishDir = autoFvtDir + "/publish"
 
-addRequiredLibraries {
-  doLast {
-  
-    /*
-     * Copy libraries necessary for FAT runtime. 
-     */
-    copy {
-      from "${projectDir}/../com.ibm.ws.security.registry/build/libs/com.ibm.ws.security.registry.jar"
-      from "${projectDir}/../com.ibm.ws.security.registry_test.servlet/build/libs/com.ibm.ws.security.registry_test.servlet.jar"
-      into "${autoFvtDir}/lib/"
-    }
+addRequiredLibraries.doLast {
+  /*
+   * Copy libraries necessary for FAT runtime. 
+   */
+  configurations { 
+     fatLibs { }
+  }
+  dependencies { 
+    fatLibs  project(':fattest.simplicity'),
+             project(':com.ibm.ws.security.registry'),
+             project(':com.ibm.ws.security.registry_test.servlet')
+  }
+  copy {
+    from configurations.fatLibs
+    into "${autoFvtDir}/lib/"
   }
 }
 
-autoFVT {
-  doLast {
-    /* 
-     * Copy test.file.adapter bundle to autoFVT files so that it can later be copied to Liberty root 
-     * during test execution. 
-     */
-    copy {
-      from "${projectDir}/../com.ibm.ws.security.wim.adapter.file/build/libs/com.ibm.ws.security.wim.adapter.file.jar"
-      into "${buildDir}/autoFVT/lib/LibertyFATTestFiles"
-      rename "com.ibm.ws.security.wim.adapter.file.jar", "com.ibm.ws.security.wim.adapter.file_1.0.jar"
-    }
+autoFVT.doLast {
+  /* 
+   * Copy test.file.adapter bundle to autoFVT files so that it can later be copied to Liberty root 
+   * during test execution. 
+   */
+  copy {
+    from "${projectDir}/../com.ibm.ws.security.wim.adapter.file/build/libs/com.ibm.ws.security.wim.adapter.file.jar"
+    into "${buildDir}/autoFVT/lib/LibertyFATTestFiles"
+    rename "com.ibm.ws.security.wim.adapter.file.jar", "com.ibm.ws.security.wim.adapter.file_1.0.jar"
+  }
 
-    /*
-     * Copy the local ApacheDS LDAP instances. 
-     */
-    copy {
-      from "${projectDir}/../apache_directory_server/apacheds-2.0.0-M15"
-      into "${buildDir}/autoFVT/apacheds-2.0.0-M15"
-    }
+  /*
+   * Copy the local ApacheDS LDAP instances. 
+   */
+  copy {
+    from "${projectDir}/../apache_directory_server/apacheds-2.0.0-M15"
+    into "${buildDir}/autoFVT/apacheds-2.0.0-M15"
+  }
 
-    /*
-     * Copy the userRegistry WAR into test servers.
-     */
-    def servers = [
-      'com.ibm.ws.security.wim.adapter.file.fat.allURAPIs',
-      'com.ibm.ws.security.wim.adapter.file.fat.multiplerepos',
-      'com.ibm.ws.security.wim.adapter.file.fat.repowithoutid'
-    ]
-    servers.each { server ->
-      copy { 
-        from "${projectDir}/../com.ibm.ws.security.registry_test.servlet/build/libs/test-application"
-        into "${publishDir}/servers/${server}/dropins"
-        include "*.war"
-      }
+  /*
+   * Copy the userRegistry WAR into test servers.
+   */
+  def servers = [
+    'com.ibm.ws.security.wim.adapter.file.fat.allURAPIs',
+    'com.ibm.ws.security.wim.adapter.file.fat.multiplerepos',
+    'com.ibm.ws.security.wim.adapter.file.fat.repowithoutid'
+  ]
+  servers.each { server ->
+    copy { 
+      from "${projectDir}/../com.ibm.ws.security.registry_test.servlet/build/libs/test-application"
+      into "${publishDir}/servers/${server}/dropins"
+      include "*.war"
     }
   }
 }
