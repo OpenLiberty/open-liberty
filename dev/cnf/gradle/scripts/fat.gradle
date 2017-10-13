@@ -103,9 +103,10 @@ task autoFVT {
       include 'jackson*.jar'
     }
 
-    // Copy the ws-junit jar
+    // Copy the com.ibm.ws.junit.extensions jar
     copy {
-      from "${rootDir}/build.sharedResources/lib/ws-junit/ws-junit.jar"
+      from rootProject.project('com.ibm.ws.junit.extensions').buildDir
+      include 'com.ibm.ws.junit.extensions.jar'
       into "${autoFvtDir}/build/lib"
     }
       

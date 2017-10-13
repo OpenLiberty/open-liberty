@@ -192,7 +192,6 @@
 			<fileset dir="${shared.resources}">
 				<include name="junit/old/junit.jar"/>
 				<include name="jmock/2.6.0/jmock-junit4.jar"/>
-				<include name="ws-junit/ws-junit.jar"/>
 			</fileset>
 			
 			<!-- add any libs that may have been added to the server -->
