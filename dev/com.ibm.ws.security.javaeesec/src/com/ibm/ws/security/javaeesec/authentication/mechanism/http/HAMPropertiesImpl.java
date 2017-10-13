@@ -18,6 +18,24 @@ import com.ibm.websphere.ras.TraceComponent;
 /**
  *
  */
-public interface LoginToContinueProperties {
-    public Properties getProperties();
+public class HAMPropertiesImpl implements HAMProperties {
+    private static final TraceComponent tc = Tr.register(HAMPropertiesImpl.class);
+    private final Class implClass;
+    private final Properties props;
+
+    public HAMPropertiesImpl(Class implementationClass, Properties props) {
+        this.implClass = implementationClass;
+        this.props = props;
+    }
+
+    @Override
+    public Class getImplementationClass() {
+        return implClass;
+    }
+
+    @Override
+    public Properties getProperties() {
+        return props;
+    }
+
 }

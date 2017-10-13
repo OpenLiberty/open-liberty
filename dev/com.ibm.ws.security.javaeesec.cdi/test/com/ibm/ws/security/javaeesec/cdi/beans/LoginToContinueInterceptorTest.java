@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.ws.security.jaspi.JaspiConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContinueProperties;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
@@ -73,8 +73,8 @@ public class LoginToContinueInterceptorTest {
     @SuppressWarnings("rawtypes")
     
     private InvocationContext ic;
-    private Instance<LoginToContinueProperties> ltcpi;
-    private LoginToContinueProperties ltcp;
+    private Instance<HAMProperties> hampi;
+    private HAMProperties hamp;
     private LoginToContinueInterceptor ltci;
     private ReferrerURLCookieHandler ruh;
     private WebAppSecurityConfig wasc;
@@ -119,8 +119,8 @@ public class LoginToContinueInterceptorTest {
     @Before
     public void setUp() throws Exception {
         ic = mockery.mock(InvocationContext.class);
-        ltcpi = mockery.mock(Instance.class);
-        ltcp = mockery.mock(LoginToContinueProperties.class);
+        hampi = mockery.mock(Instance.class);
+        hamp = mockery.mock(HAMProperties.class);
         wasc = mockery.mock(WebAppSecurityConfig.class);
         ruh = mockery.mock(ReferrerURLCookieHandler.class);
         hmc = mockery.mock(HttpMessageContext.class);
@@ -162,7 +162,7 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptContinueFormRedirect() throws Exception {
         isInterceptedMethod = true;
-        ltci.setProps(ltcpi);
+        ltci.setProps(hampi);
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
@@ -170,7 +170,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLtcp(ltcp, false, false).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withHamp(hamp, false, false).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE);
 
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(ic));
     }
@@ -182,7 +182,7 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptContinueFormForward() throws Exception {
         isInterceptedMethod = true;
-        ltci.setProps(ltcpi);
+        ltci.setProps(hampi);
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
@@ -190,7 +190,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLtcp(ltcp, false, false).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withHamp(hamp, false, false).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
 
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(ic));
     }
@@ -202,14 +202,14 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptContinueFormDefault() throws Exception {
         isInterceptedMethod = true;
-        ltci.setProps(ltcpi);
+        ltci.setProps(hampi);
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withLtcp(ltcp, false, false).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withHamp(hamp, false, false).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
 
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(ic));
     }
@@ -222,12 +222,12 @@ public class LoginToContinueInterceptorTest {
     public void testInterceptSuccessCustomForm() throws Exception {
         isInterceptedMethod = true;
         isCustomClass = true;
-        ltci.setProps(ltcpi);
+        ltci.setProps(hampi);
         Object expect = AuthenticationStatus.SUCCESS;
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withLtcp(ltcp, false, false).withParams().withReferrer().withGetURL(storedReq, requestUrl);
+        withInvocationContext(expect).withHamp(hamp, false, false).withParams().withReferrer().withGetURL(storedReq, requestUrl);
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(ic));
     }
@@ -239,49 +239,49 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptSuccessForm() throws Exception {
         isInterceptedMethod = true;
-        ltci.setProps(ltcpi);
+        ltci.setProps(hampi);
         Object expect = AuthenticationStatus.SUCCESS;
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withLtcp(ltcp, false, false).withParams().withReferrer().withGetURL(storedReq, requestUrl);
+        withInvocationContext(expect).withHamp(hamp, false, false).withParams().withReferrer().withGetURL(storedReq, requestUrl);
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(ic));
     }
 
 
     /**
-     *  valid method. ambiguous LoginToContinueProperties object.
+     *  valid method. ambiguous HAMProperties object.
      *  Make sure that AuthenticationStatus.SEND_FAILURE is returned along with the error message in the log file.
      */
     @Test
-    public void testInterceptLtcpAmbiguous() throws Exception {
+    public void testInterceptHampAmbiguous() throws Exception {
         isInterceptedMethod = true;
-        ltci.setProps(ltcpi);
-        withLtcp(ltcp, false, true);
+        ltci.setProps(hampi);
+        withHamp(hamp, false, true);
         assertEquals("The SEND_FAILURE should be returned.", AuthenticationStatus.SEND_FAILURE, ltci.intercept(ic));
         assertTrue("CWWKS1926E  message was not logged", outputMgr.checkForStandardErr("CWWKS1926E:"));
     }
 
     /**
-     *  valid method. unsatisified LoginToContinueProperties object.
+     *  valid method. unsatisified HAMProperties object.
      *  Make sure that AuthenticationStatus.SEND_FAILURE is returned along with the error message in the log file.
      */
     @Test
-    public void testInterceptLtcpUnsatisfied() throws Exception {
+    public void testInterceptHampUnsatisfied() throws Exception {
         isInterceptedMethod = true;
-        ltci.setProps(ltcpi);
-        withLtcp(ltcp, true, false);
+        ltci.setProps(hampi);
+        withHamp(hamp, true, false);
         assertEquals("The SEND_FAILURE should be returned.", AuthenticationStatus.SEND_FAILURE, ltci.intercept(ic));
         assertTrue("CWWKS1926E  message was not logged", outputMgr.checkForStandardErr("CWWKS1926E:"));
     }
 
     /**
-     *  valid method. No LoginToContinueProperties object.
+     *  valid method. No HAMProperties object.
      *  Make sure that AuthenticationStatus.SEND_FAILURE is returned along with the error message in the log file.
      */
     @Test
-    public void testInterceptNoLtcp() throws Exception {
+    public void testInterceptNoHamp() throws Exception {
         isInterceptedMethod = true;
         ltci.setProps(null);
         assertEquals("The SEND_FAILURE should be returned.", AuthenticationStatus.SEND_FAILURE, ltci.intercept(ic));
@@ -312,24 +312,24 @@ public class LoginToContinueInterceptorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private LoginToContinueInterceptorTest withLtcp(final LoginToContinueProperties instance, final boolean isUnsatisfied, final boolean isAmbiguous) throws Exception {
+    private LoginToContinueInterceptorTest withHamp(final HAMProperties instance, final boolean isUnsatisfied, final boolean isAmbiguous) throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(ltcpi).isUnsatisfied();
+                one(hampi).isUnsatisfied();
                 will(returnValue(isUnsatisfied));
             }
         });
         if (!isUnsatisfied) {
             mockery.checking(new Expectations() {
                 {
-                    one(ltcpi).isAmbiguous();
+                    one(hampi).isAmbiguous();
                     will(returnValue(isAmbiguous));
                 }
             });
             if (!isAmbiguous) {
                 mockery.checking(new Expectations() {
                     {
-                        one(ltcpi).get();
+                        one(hampi).get();
                         will(returnValue(instance));
                     }
                 });
@@ -356,7 +356,7 @@ public class LoginToContinueInterceptorTest {
         map.put(JaspiConstants.SECURITY_WEB_REQUEST, wr);
         mockery.checking(new Expectations() {
             {
-                one(ltcp).getProperties();
+                one(hamp).getProperties();
                 will(returnValue(props));
                 one(hmc).getMessageInfo();
                 will(returnValue(mi));

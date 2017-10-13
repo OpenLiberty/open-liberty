@@ -46,6 +46,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.security.jaspi.JaspiMessageInfo;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 
 public class AuthModuleTest {
 
@@ -66,6 +67,8 @@ public class AuthModuleTest {
     private HttpServletResponse response;
     private Subject clientSubject;
     private Subject serviceSubject;
+    private Instance<HAMProperties> hampi;
+    private HAMProperties hamp;
 
     @SuppressWarnings("unchecked")
     @Before
@@ -77,6 +80,8 @@ public class AuthModuleTest {
         response = mockery.mock(HttpServletResponse.class);
         clientSubject = new Subject();
         serviceSubject = null;
+        hampi = mockery.mock(Instance.class, "hampi");
+        hamp = mockery.mock(HAMProperties.class);
 
         authModule = new AuthModule() {
             @SuppressWarnings("rawtypes")
@@ -284,10 +289,25 @@ public class AuthModuleTest {
 
     @SuppressWarnings("unchecked")
     private AuthModuleTest withBeanInstance() throws Exception {
+        final Class implClass = String.class;
         mockery.checking(new Expectations() {
             {
-                one(cdi).select(HttpAuthenticationMechanism.class);
+                one(cdi).select(HAMProperties.class);
+                will(returnValue(hampi));
+                one(hampi).isUnsatisfied();
+                will(returnValue(false));
+                one(hampi).isAmbiguous();
+                will(returnValue(false));
+                one(hampi).get();
+                will(returnValue(hamp));
+                one(hamp).getImplementationClass();
+                will(returnValue(implClass));
+                one(cdi).select(implClass);
                 will(returnValue(beanInstance));
+                one(beanInstance).isUnsatisfied();
+                will(returnValue(false));
+                one(beanInstance).isAmbiguous();
+                will(returnValue(false));
             }
         });
         return this;
