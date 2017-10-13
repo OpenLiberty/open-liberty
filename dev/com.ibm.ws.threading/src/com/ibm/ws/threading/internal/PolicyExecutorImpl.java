@@ -403,13 +403,35 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
             } else if (state.get() == State.ACTIVE) {
                 boolean havePermit = false;
-                // TODO implement the path where we acquire a permit in order to run on submit/execute thread (and don't forget to release it)
-                if (Boolean.TRUE.equals(runIfQueueFullOverride) || //
-                    !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull && (havePermit /* = maxConcurrencyConstraint.tryAcquire() TODO enable */)) {
-                    policyTaskFuture.accept();
-                    runTask(policyTaskFuture);
-                    enqueued = false;
-                } else
+                if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
+                    !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
+                                                                   && (!maxConcurrencyAppliesToCallerThread || (havePermit = maxConcurrencyConstraint.tryAcquire())))
+                    try {
+                        policyTaskFuture.accept();
+                        runTask(policyTaskFuture);
+                        enqueued = false;
+                    } finally {
+                        // TODO consolidate duplicate code path for release maxConcurrencyConstraint
+                        Thread.interrupted(); // TODO similar code paths clear the interrupted status after running on current thread. Need to look into whether it is correct to do so
+
+                        if (havePermit) {
+                            maxConcurrencyConstraint.release();
+
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(PolicyExecutorImpl.this, tc, "core/maxConcurrency available",
+                                         coreConcurrencyAvailable, maxConcurrencyConstraint.availablePermits());
+
+                            // The permit might be needed to run tasks on the global executor,
+                            if (!queue.isEmpty() && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
+                                decrementWithheldConcurrency();
+                                if (acquireCoreConcurrency() > 0)
+                                    expediteGlobal(new PollingTask());
+                                else
+                                    enqueueGlobal(new PollingTask());
+                            }
+                        }
+                    }
+                else
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1201.queue.full.abort", identifier, maxQueueSize, wait));
             } else
                 throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
