@@ -12,7 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
 	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest

@@ -12,14 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.appLifecycle-1.0;version=latest, \
-	com.ibm.ws.persistence-1.0;version=latest, \
-	com.ibm.websphere.appserver.contextService-1.0;version=latest, \
-	com.ibm.websphere.appserver.jdbc-4.1;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
 	com.ibm.ws.javaee.platform.defaultresource;version=latest, \
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest, \
 	com.ibm.ws.resource;version=latest, \

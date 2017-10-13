@@ -12,11 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.appmanager-1.0;version=latest, \
-	com.ibm.websphere.appserver.javaeePlatform-6.0;version=latest, \
-	com.ibm.websphere.appserver.managedBeansCore-1.0;version=latest, \
 	com.ibm.ws.app.manager.war;version=latest, \
 	com.ibm.ws.app.manager.ejb;version=latest

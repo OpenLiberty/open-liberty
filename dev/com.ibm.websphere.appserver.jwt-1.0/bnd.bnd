@@ -12,11 +12,13 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-    com.ibm.wsspi.appserver.webBundle-1.0;version=latest, \
-    com.ibm.wsspi.appserver.webBundleSecurity-1.0;version=latest, \
-    com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-    com.ibm.websphere.appserver.httpcommons-1.0;version=latest
-
+	com.ibm.websphere.appserver.api.jwt;version=latest, \
+	com.ibm.ws.security.jwt;version=latest, \
+	com.ibm.ws.security.common;version=latest, \
+	com.ibm.ws.org.apache.commons.codec;version=latest, \
+	com.ibm.ws.org.jose4j;version=latest, \
+	com.ibm.ws.com.google.gson;version=latest, \
+	com.ibm.ws.org.slf4j.api;version=latest, \
+	com.ibm.ws.org.slf4j.jdk14;version=latest, \
+	com.ibm.json4j;version=latest

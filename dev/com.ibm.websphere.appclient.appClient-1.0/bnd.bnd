@@ -12,14 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.injection-1.0;version=latest, \
-	com.ibm.websphere.appclient.client-1.0;version=latest, \
-	com.ibm.websphere.appserver.appmanager-1.0;version=latest, \
-	com.ibm.websphere.appserver.javaeePlatform-7.0;version=latest, \
-	com.ibm.websphere.appserver.iiopclient-1.0;version=latest, \
 	com.ibm.ws.clientcontainer;version=latest, \
 	com.ibm.ws.app.manager.war;version=latest, \
 	com.ibm.ws.app.manager.client;version=latest

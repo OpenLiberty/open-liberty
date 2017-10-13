@@ -12,8 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
 	com.ibm.ws.appclient.boot;version=latest,\
 	com.ibm.ws.appclient.boot.ws-client;version=latest,\

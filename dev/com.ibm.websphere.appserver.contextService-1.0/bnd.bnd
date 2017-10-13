@@ -12,9 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.appLifecycle-1.0;version=latest, \
 	com.ibm.ws.resource;version=latest, \
 	com.ibm.ws.context;version=latest

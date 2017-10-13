@@ -12,14 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.websphere.appserver.jwt-1.0;version=latest, \
-	com.ibm.websphere.appserver.cdi-1.2;version=latest, \
-	com.ibm.websphere.appserver.jsonp-1.0;version=latest, \
-	com.ibm.websphere.appserver.httpcommons-1.0;version=latest, \
 	com.ibm.ws.security.mp.jwt;version=latest, \
 	com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
 	com.ibm.ws.security.mp.jwt.cdi;version=latest, \

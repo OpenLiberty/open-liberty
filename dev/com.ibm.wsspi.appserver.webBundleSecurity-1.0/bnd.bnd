@@ -12,14 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.security-1.0;version=latest, \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
-	com.ibm.websphere.appserver.distributedMap-1.0;version=latest, \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.wsspi.appserver.webBundle-1.0;version=latest, \
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.webcontainer.security;version=latest, \
 	com.ibm.ws.webcontainer.security.feature;version=latest, \

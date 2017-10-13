@@ -12,12 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.org.eclipse.microprofile.config-1.1;version=latest, \
-	com.ibm.websphere.appserver.javax.cdi-1.2;version=latest, \
-	com.ibm.websphere.appserver.javax.annotation-1.2;version=latest, \
 	com.ibm.ws.require.java8;version=latest, \
 	com.ibm.ws.microprofile.config;version=latest, \
 	com.ibm.ws.com.netflix.archaius;version=latest, \

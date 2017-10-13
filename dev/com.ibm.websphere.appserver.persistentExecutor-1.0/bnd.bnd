@@ -11,10 +11,3 @@
 -include= ~../cnf/resources/bnd/liberty-release.props
 
 -nobundles=true
-
-publish.feature.resources: *.mf
-
--dependson: \
-	com.ibm.websphere.appserver.concurrent-1.0;version=latest, \
-	com.ibm.websphere.appserver.persistentExecutorSubset-1.0;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest

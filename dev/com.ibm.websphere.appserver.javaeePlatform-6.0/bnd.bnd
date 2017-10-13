@@ -12,8 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.ws.javaee.version;version=latest, \
 	com.ibm.ws.app.manager.module;version=latest, \
