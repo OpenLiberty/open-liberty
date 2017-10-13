@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /**
- * @version 1.2
+ * @version 1.0
  */
-@org.osgi.annotation.versioning.Version("1.2")
+@org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.impl.resources.CDI")
 package com.ibm.ws.cdi.web.interfaces;
 
