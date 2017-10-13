@@ -59,7 +59,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.ws.threading.PolicyExecutor.QueueFullAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -244,14 +243,18 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
             String maxConcurrency = (String) properties.get("maxConcurrency");
             if (maxConcurrency != null)
                 policyExecutor.maxConcurrency(Integer.parseInt(maxConcurrency));
+            String maxConcurrencyAppliesToCallerThread = (String) properties.get("maxConcurrencyAppliesToCallerThread");
+            if (maxConcurrencyAppliesToCallerThread != null)
+                policyExecutor.maxConcurrencyAppliesToCallerThread(Boolean.parseBoolean(maxConcurrencyAppliesToCallerThread));
             String maxQueueSize = (String) properties.get("maxQueueSize");
             if (maxQueueSize != null)
                 policyExecutor.maxQueueSize(Integer.parseInt(maxQueueSize));
             String maxWaitForEnqueue = (String) properties.get("maxWaitForEnqueue");
             if (maxWaitForEnqueue != null)
                 policyExecutor.maxWaitForEnqueue(Long.parseLong(maxWaitForEnqueue));
-            String queueFullAction = (String) properties.get("queueFullAction");
-            policyExecutor.queueFullAction("CallerRuns".equals(queueFullAction) ? QueueFullAction.CallerRuns : QueueFullAction.Abort);
+            String runIfQueueFull = (String) properties.get("runIfQueueFull");
+            if (runIfQueueFull != null)
+                policyExecutor.runIfQueueFull(Boolean.parseBoolean(runIfQueueFull));
         }
 
         if (trace && tc.isEntryEnabled())
