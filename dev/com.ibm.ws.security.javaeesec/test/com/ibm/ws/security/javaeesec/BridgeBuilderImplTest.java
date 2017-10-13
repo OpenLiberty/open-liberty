@@ -10,15 +10,16 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec;
 
+import static org.junit.Assert.assertTrue;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
-import javax.naming.NamingException;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
@@ -28,8 +29,14 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+
+import test.common.SharedOutputManager;
 
 public class BridgeBuilderImplTest {
 
@@ -44,39 +51,83 @@ public class BridgeBuilderImplTest {
     private BridgeBuilderImpl bridgeBuilder;
     private AuthConfigFactory providerFactory;
     private AuthConfigProvider authConfigProvider;
-    private BeanManager beanManager;
-    private Set<Bean<HttpAuthenticationMechanism>> httpAuthMechs;
+    private CDI cdi;
+    private Instance<HAMProperties> hampi;
+    private Instance<HttpAuthenticationMechanism> hami;
+    private HAMProperties hamp;
+
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @BeforeClass
+    public static void setUpBeforeClass() throws Exception {
+        outputMgr.captureStreams();
+    }
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @AfterClass
+    public static void tearDownAfterClass() throws Exception {
+        outputMgr.dumpStreams();
+        outputMgr.resetStreams();
+        outputMgr.restoreStreams();
+    }
 
     @Before
     public void setUp() throws Exception {
         bridgeBuilder = new BridgeBuilderImplTestDouble();
         providerFactory = mockery.mock(AuthConfigFactory.class);
         authConfigProvider = null;
-        beanManager = mockery.mock(BeanManager.class);
-        httpAuthMechs = new HashSet<Bean<HttpAuthenticationMechanism>>();
+        cdi = mockery.mock(CDI.class);
+        hampi = mockery.mock(Instance.class, "hampi");
+        hamp = mockery.mock(HAMProperties.class);
+        hami = mockery.mock(Instance.class, "hami");
     }
 
     @After
     public void tearDown() throws Exception {
+        outputMgr.resetStreams();
         mockery.assertIsSatisfied();
     }
 
     @Test
-    public void testNoAuthMechDoesNotRegisterProvider() throws Exception {
-        withNoCachedProvider().withBeanManager().doesNotRegisterProvider();
+    public void testNoHAMPropDoesNotRegisterProvider() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).select(HAMProperties.class);
+                will(returnValue(null));
+            }
+        });
+
+        withNoCachedProvider().doesNotRegisterProvider();
 
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
+        assertTrue("CWWKS1913E: message was not logged", outputMgr.checkForStandardErr("CWWKS1913E:"));
+
+    }
+
+    @Test
+    public void testNoAuthMechDoesNotRegisterProvider() throws Exception {
+        withNoCachedProvider().withCDI(String.class, null).doesNotRegisterProvider();
+
+        bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
+        assertTrue("CWWKS1912E: message was not logged", outputMgr.checkForStandardErr("CWWKS1912E:"));
     }
 
     @Test
     public void testOneAuthMechRegistersProvider() throws Exception {
-        Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean = mockery.mock(Bean.class);
-        httpAuthMechs.add(httpAuthenticationMechanismBean);
 
-        withNoCachedProvider().withBeanManager();
+        withNoCachedProvider().withCDI(String.class, hami);
 
         mockery.checking(new Expectations() {
             {
+                one(hami).isUnsatisfied();
+                will(returnValue(false));
+                one(hami).isAmbiguous();
+                will(returnValue(false));
                 one(providerFactory).registerConfigProvider(with(aNonNull(AuthConfigProvider.class)), with("HttpServlet"), with(APP_CONTEXT),
                                                             with(aNonNull(String.class)));
             }
@@ -87,31 +138,19 @@ public class BridgeBuilderImplTest {
 
     @Test
     public void testMoreThanOneAuthMechDoesNotRegisterProvider() throws Exception {
-        final Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean1 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean1");
-        final Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean2 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean2");
-        httpAuthMechs.add(httpAuthenticationMechanismBean1);
-        httpAuthMechs.add(httpAuthenticationMechanismBean2);
 
-        withNoCachedProvider().withBeanManager().doesNotRegisterProvider();
-        // the debug might be enabled, therefore allowing to some invocation which is only invoked when trace is enabled.
+        withNoCachedProvider().withCDI(String.class, hami).doesNotRegisterProvider();
         mockery.checking(new Expectations() {
             {
-                allowing(httpAuthenticationMechanismBean1).getBeanClass();
-                will(returnValue(HttpAuthenticationMechanism.class));
-                allowing(httpAuthenticationMechanismBean2).getBeanClass();
-                will(returnValue(HttpAuthenticationMechanism.class));
+                one(hami).isUnsatisfied();
+                will(returnValue(false));
+                one(hami).isAmbiguous();
+                will(returnValue(true));
             }
         });
 
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
         // TODO: Assert serviceability message is issued.
-    }
-
-    @Test
-    public void testNoBeanManagerDoesNotRegisterProvider() throws Exception {
-        withNoCachedProvider().withNoBeanManager().doesNotRegisterProvider();
-
-        bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
     }
 
     @Test
@@ -142,23 +181,24 @@ public class BridgeBuilderImplTest {
         return this;
     }
 
-    private BridgeBuilderImplTest withBeanManager() throws Exception {
+    private BridgeBuilderImplTest withCDI(final Class implClass, final Instance bean) throws Exception {
+        
         mockery.checking(new Expectations() {
             {
-                allowing(beanManager).getBeans((Type) with(HttpAuthenticationMechanism.class), (Annotation[]) with(Collections.EMPTY_LIST.toArray()));
-                will(returnValue(httpAuthMechs));
+                one(cdi).select(HAMProperties.class);
+                will(returnValue(hampi));
+                one(hampi).isUnsatisfied();
+                will(returnValue(false));
+                one(hampi).isAmbiguous();
+                will(returnValue(false));
+                one(hampi).get();
+                will(returnValue(hamp));
+                one(hamp).getImplementationClass();
+                will(returnValue(implClass));
+                one(cdi).select(implClass);
+                will(returnValue(bean));
             }
         });
-        return this;
-    }
-
-    private BridgeBuilderImplTest withNoBeanManager() throws Exception {
-        bridgeBuilder = new BridgeBuilderImpl() {
-            @Override
-            protected BeanManager getBeanManager() throws NamingException {
-                throw new NamingException();
-            }
-        };
         return this;
     }
 
@@ -175,8 +215,8 @@ public class BridgeBuilderImplTest {
     class BridgeBuilderImplTestDouble extends BridgeBuilderImpl {
 
         @Override
-        protected BeanManager getBeanManager() throws NamingException {
-            return beanManager;
+        protected CDI getCDI() {
+            return cdi;
         }
     }
 }

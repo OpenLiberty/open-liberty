@@ -19,12 +19,20 @@ import org.junit.Test;
 /**
  *
  */
-public class LoginToContinuePropertiesImplTest {
+public class HAMPropertiesImplTest {
 
     @Test
     public void testGetProperties() throws Exception {
         Properties props = new Properties();
-        LoginToContinueProperties ltcp = new LoginToContinuePropertiesImpl(props);
-        assertEquals("It should return the same properties object", props, ltcp.getProperties());
+        HAMProperties hamp = new HAMPropertiesImpl(String.class, props);
+        assertEquals("It should return the same properties object", props, hamp.getProperties());
+    }
+
+    @Test
+    public void testGetImplementationClass() throws Exception {
+        Properties props = new Properties();
+        Class c = String.class;
+        HAMProperties hamp = new HAMPropertiesImpl(c, props);
+        assertEquals("It should return the same implementation class name", c, hamp.getImplementationClass());
     }
 }
