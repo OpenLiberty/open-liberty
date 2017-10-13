@@ -11,36 +11,28 @@
 /**
  *
  */
-package jaxrs21sse.basic;
+package jaxrs21sse.jsonb;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import javax.json.bind.annotation.JsonbProperty;
-import javax.json.bind.annotation.JsonbPropertyOrder;
+public class JsonObject {
 
-@JsonbPropertyOrder({ "description", "id", "cost", "timeStamp" })
-public class JsonbObject {
-
-    static JsonbObject[] JSONB_OBJECTS = new JsonbObject[] {
-                                                             new JsonbObject(7, "shiny", 3.14, new Date()),
-                                                             new JsonbObject(Long.MAX_VALUE, "big", Double.MAX_VALUE, new Date(new Date().getTime() + 10000)),
-                                                             new JsonbObject(Long.MIN_VALUE, "small", Double.MIN_VALUE, new Date(new Date().getTime() - 100000))
+    static JsonObject[] JSON_OBJECTS = new JsonObject[] {
+                                                          new JsonObject(7, "shiny", 3.14, new Date()),
+                                                          new JsonObject(Long.MAX_VALUE, "big", Double.MAX_VALUE, new Date(new Date().getTime() + 10000)),
+                                                          new JsonObject(Long.MIN_VALUE, "small", Double.MIN_VALUE, new Date(new Date().getTime() - 100000))
     };
 
-    @JsonbProperty("Z")
     long id;
-    @JsonbProperty("M")
     String description;
-    @JsonbProperty("Y")
     double cost;
-    @JsonbProperty("B")
     Date timeStamp;
 
-    public JsonbObject() {}
+    public JsonObject() {}
 
-    public JsonbObject(long id, String description, double cost, Date timeStamp) {
+    public JsonObject(long id, String description, double cost, Date timeStamp) {
         this.id = id;
         this.description = description;
         this.cost = cost;
@@ -49,8 +41,8 @@ public class JsonbObject {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof JsonbObject) {
-            JsonbObject other = (JsonbObject) o;
+        if (o instanceof JsonObject) {
+            JsonObject other = (JsonObject) o;
             Instant thisInstant = this.timeStamp.toInstant();
             Instant otherInstant = other.timeStamp.toInstant();
             return (thisInstant.isAfter(otherInstant.minus(10, ChronoUnit.SECONDS)) &&
@@ -62,24 +54,11 @@ public class JsonbObject {
         return false;
     }
 
-    public boolean confirmOrder(String s) {
-        String deliminator = ",";
-        String[] properties = s.split(deliminator);
-        int i = 0;
-        if (properties.length == 4) {
-            return (properties[0].startsWith("{\"M") &&
-                    properties[1].startsWith("\"Z") &&
-                    properties[2].startsWith("\"Y") &&
-                    properties[3].startsWith("\"B"));
-        }
-        return false;
-    }
-
-    public long getId() {
+    public long getLongID() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setLongID(long id) {
         this.id = id;
     }
 

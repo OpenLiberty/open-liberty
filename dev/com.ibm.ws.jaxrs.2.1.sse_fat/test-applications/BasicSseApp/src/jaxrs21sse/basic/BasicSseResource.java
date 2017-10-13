@@ -15,7 +15,6 @@ package jaxrs21sse.basic;
 
 import static jaxrs21sse.basic.JaxbObject.JAXB_OBJECTS;
 import static jaxrs21sse.basic.JsonObject.JSON_OBJECTS;
-import static jaxrs21sse.basic.JsonbObject.JSONB_OBJECTS;
 
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.GET;
@@ -120,41 +119,6 @@ public class BasicSseResource extends Application {
                             Thread.sleep(200);
                         } catch (InterruptedException ex) {
                             BasicSseTestServlet.resourceFailures.add("InterrupedException while sleeping in BasicSseResource.send3JsonEvents");
-                            ex.printStackTrace();
-                        }
-                    }
-
-                }
-                if (!eventSink.isClosed()) {
-                    BasicSseTestServlet.resourceFailures.add("AutoClose in BasicSseResource.send3JsonEvents failed for eventSink");
-                }
-
-            }
-
-        };
-        new Thread(r).start();
-    }
-
-    @GET
-    @Path("/jsonb3")
-    @Produces(MediaType.SERVER_SENT_EVENTS)
-    public void send3JsonbEvents(@Context SseEventSink eventSink, @Context Sse sse) {
-        Runnable r = new Runnable() {
-
-            @Override
-            public void run() {
-                try (SseEventSink sink = eventSink) {
-                    for (int i = 0; i < JSONB_OBJECTS.length; i++) {
-                        OutboundSseEvent event = sse.newEventBuilder()
-                                        .mediaType(MediaType.APPLICATION_JSON_TYPE)
-                                        .data(JsonbObject.class, JSONB_OBJECTS[i])
-                                        .build();
-                        System.out.println("BasicSseResource.send3JsonbEvents() sending: " + JSONB_OBJECTS[i]);
-                        sink.send(event);
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException ex) {
-                            BasicSseTestServlet.resourceFailures.add("InterrupedException while sleeping in BasicSseResource.send3JsonbEvents");
                             ex.printStackTrace();
                         }
                     }
