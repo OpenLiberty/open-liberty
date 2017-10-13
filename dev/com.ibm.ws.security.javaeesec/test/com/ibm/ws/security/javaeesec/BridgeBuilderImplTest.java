@@ -105,6 +105,25 @@ public class BridgeBuilderImplTest {
         withNoCachedProvider().doesNotRegisterProvider();
 
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
+        // No error message for this scenario, since this is normal when an application
+        // is not using HttpAuthMech.
+    }
+
+    @Test
+    public void testUnsatisfiedHAMPropDoesNotRegisterProvider() throws Exception {
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).select(HAMProperties.class);
+                will(returnValue(hampi));
+                one(hampi).isUnsatisfied();
+                will(returnValue(true));
+            }
+        });
+
+        withNoCachedProvider().doesNotRegisterProvider();
+
+        bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
+        // this is an invalid scenario, thus the error message should be shown.
         assertTrue("CWWKS1913E: message was not logged", outputMgr.checkForStandardErr("CWWKS1913E:"));
 
     }
