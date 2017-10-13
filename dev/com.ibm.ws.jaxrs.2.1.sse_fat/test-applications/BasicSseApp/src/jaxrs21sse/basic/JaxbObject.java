@@ -17,12 +17,17 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-public class DataObject {
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
-    static DataObject[] DATA_OBJECTS = new DataObject[] {
-                                                          new DataObject(7, "shiny", 3.14, new Date()),
-                                                          new DataObject(Long.MAX_VALUE, "big", Double.MAX_VALUE, new Date(new Date().getTime() + 10000)),
-                                                          new DataObject(Long.MIN_VALUE, "small", Double.MIN_VALUE, new Date(new Date().getTime() - 100000))
+@XmlRootElement
+public class JaxbObject {
+
+    static JaxbObject[] JAXB_OBJECTS = new JaxbObject[] {
+                                                          new JaxbObject(7, "shiny", 3.14, new Date()),
+                                                          new JaxbObject(Long.MAX_VALUE, "big", Double.MAX_VALUE, new Date(new Date().getTime() + 10000)),
+                                                          new JaxbObject(Long.MIN_VALUE, "small", Double.MIN_VALUE, new Date(new Date().getTime() - 100000))
     };
 
     long id;
@@ -30,9 +35,9 @@ public class DataObject {
     double cost;
     Date timeStamp;
 
-    public DataObject() {}
+    public JaxbObject() {}
 
-    public DataObject(long id, String description, double cost, Date timeStamp) {
+    public JaxbObject(long id, String description, double cost, Date timeStamp) {
         this.id = id;
         this.description = description;
         this.cost = cost;
@@ -41,8 +46,8 @@ public class DataObject {
 
     @Override
     public boolean equals(Object o) {
-        if (o instanceof DataObject) {
-            DataObject other = (DataObject) o;
+        if (o instanceof JaxbObject) {
+            JaxbObject other = (JaxbObject) o;
             Instant thisInstant = this.timeStamp.toInstant();
             Instant otherInstant = other.timeStamp.toInstant();
             return (thisInstant.isAfter(otherInstant.minus(10, ChronoUnit.SECONDS)) &&
@@ -58,6 +63,7 @@ public class DataObject {
         return id;
     }
 
+    @XmlAttribute
     public void setLongID(long id) {
         this.id = id;
     }
@@ -66,6 +72,7 @@ public class DataObject {
         return description;
     }
 
+    @XmlElement
     public void setDescription(String description) {
         this.description = description;
     }
@@ -74,6 +81,7 @@ public class DataObject {
         return cost;
     }
 
+    @XmlElement
     public void setCost(double cost) {
         this.cost = cost;
     }
@@ -82,6 +90,7 @@ public class DataObject {
         return timeStamp;
     }
 
+    @XmlElement
     public void setTimeStamp(Date timeStamp) {
         this.timeStamp = timeStamp;
     }
