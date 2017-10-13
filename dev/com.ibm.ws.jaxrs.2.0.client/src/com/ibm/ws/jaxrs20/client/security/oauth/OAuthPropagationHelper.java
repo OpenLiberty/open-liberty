@@ -21,20 +21,97 @@ import java.util.Set;
 
 import javax.security.auth.Subject;
 
+import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.client.JAXRSClientConstants;
+import com.ibm.ws.jaxrs20.client.MpJwtPropagation;
+import com.ibm.ws.kernel.service.util.JavaInfo;
+import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
+@Component(service = OAuthPropagationHelper.class, name = "OAuthPropagationHelper", immediate = true, property = "service.vendor=IBM")
 public class OAuthPropagationHelper {
     private static final TraceComponent tc = Tr.register(OAuthPropagationHelper.class, JAXRSClientConstants.TR_GROUP, JAXRSClientConstants.TR_RESOURCE_BUNDLE);
     public static final String ISSUED_JWT_TOKEN = "issuedJwt"; // new jwt token
 
+    public static final String MP_JSON_WEB_TOKEN_PROPAGATION = "MpJwtPropagation";
+    protected final static AtomicServiceReference<MpJwtPropagation> MpJsonWebTokenUtilRef = new AtomicServiceReference<MpJwtPropagation>(MP_JSON_WEB_TOKEN_PROPAGATION);
+
+    static private boolean isJdk18Up = (JavaInfo.majorVersion() >= 8);
+
+    @Reference(service = MpJwtPropagation.class, name = MP_JSON_WEB_TOKEN_PROPAGATION, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setMpJwtPropagation(ServiceReference<MpJwtPropagation> ref) {
+        if (isJavaVersionAtLeast18()) {
+            MpJsonWebTokenUtilRef.setReference(ref);
+        }
+    }
+
+    protected void unsetMpJwtPropagation(ServiceReference<MpJwtPropagation> ref) {
+        if (isJavaVersionAtLeast18()) {
+            MpJsonWebTokenUtilRef.unsetReference(ref);
+        }
+    }
+
+    @Activate
+    protected void activate(ComponentContext cc) {
+        if (isJavaVersionAtLeast18()) {
+            MpJsonWebTokenUtilRef.activate(cc);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "MpJwtPropagation service is activated");
+            }
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OAuthPropagationHelper service is activated");
+        }
+    }
+
+    @Modified
+    protected void modified(Map<String, Object> props) {}
+
+    @Deactivate
+    protected void deactivate(ComponentContext cc) {
+        if (isJavaVersionAtLeast18()) {
+            MpJsonWebTokenUtilRef.deactivate(cc);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "MpJwtPropagation service is deactivated");
+            }
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "OAuthPropagationHelper service is activated");
+        }
+    }
+
+    private static boolean isJavaVersionAtLeast18() {
+        return isJdk18Up;
+    }
+
+    public static String getMpJsonWebToken() {
+        if (MpJsonWebTokenUtilRef.getService() != null) {
+            MpJsonWebTokenUtilRef.getService().getJsonWebTokenPrincipal(getRunAsSubject());
+        }
+        else {
+            //Tr.warn - Cannot reach the service that has access to the MicroProfile JWT token. Make sure that the mpJwt feature is included in the server along with the jaxrsClient-2.1
+        }
+        return null;
+    }
+
     /**
      * Get the type of access token which the runAsSubject authenticated
-     * 
+     *
      * @return the Type of Token, such as: Bearer
      */
     public static String getAccessTokenType() {

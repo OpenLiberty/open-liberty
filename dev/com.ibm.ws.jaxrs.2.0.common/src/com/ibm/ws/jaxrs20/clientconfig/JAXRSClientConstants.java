@@ -32,6 +32,7 @@ public class JAXRSClientConstants {
     public final static String LTPA_HANDLER = "com.ibm.ws.jaxrs.client.ltpa.handler";
     public static final String OAUTH_HANDLER = "com.ibm.ws.jaxrs.client.oauth.sendToken";
     public static final String JWT_HANDLER = "com.ibm.ws.jaxrs.client.oidc.sendJwtToken";
+    public static final String MPJWT_HANDLER = "com.ibm.ws.jaxrs.client.sendMpJwtToken";
     public static final String DISABLE_CN_CHECK = "com.ibm.ws.jaxrs.client.disableCNCheck";
     public final static String SAML_HANDLER = "com.ibm.ws.jaxrs.client.saml.sendToken";
 

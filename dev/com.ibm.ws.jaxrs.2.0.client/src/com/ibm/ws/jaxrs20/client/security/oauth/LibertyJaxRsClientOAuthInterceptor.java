@@ -15,10 +15,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.ws.rs.ProcessingException;
-import javax.ws.rs.client.ClientRequestContext;
 
 import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.jaxrs.client.spec.ClientRequestContextImpl;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.phase.AbstractPhaseInterceptor;
 import org.apache.cxf.phase.Phase;
@@ -40,46 +38,58 @@ public class LibertyJaxRsClientOAuthInterceptor extends AbstractPhaseInterceptor
     @Override
     public void handleMessage(Message message) throws Fault {
 
-        //see if ltpa hanlder is used
+        //see if oauth, jwt or mpjwt handlers are used
         Object handleOauth = message.get(JAXRSClientConstants.OAUTH_HANDLER);
         Object handleJwt = message.get(JAXRSClientConstants.JWT_HANDLER);
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Please check if customer is using client configuration property: " + JAXRSClientConstants.OAUTH_HANDLER + " and should be true");
+        Object handleMpJwt = message.get(JAXRSClientConstants.MPJWT_HANDLER);
+
+        if (handleMpJwt != null && "true".equals(handleMpJwt.toString().toLowerCase())) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "The client configuration " + JAXRSClientConstants.MPJWT_HANDLER + " property is set to true ");
+            }
+            handleMpJwtToken(message);
         }
-        if (handleOauth != null || handleJwt != null) {
+        else if (handleOauth != null || handleJwt != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "The client configuration property " + JAXRSClientConstants.OAUTH_HANDLER + " value is " + handleOauth);
             }
             String handler = handleOauth != null ? handleOauth.toString().toLowerCase() : "false";
             String jwtHandler = handleJwt != null ? handleJwt.toString().toLowerCase() : "false";
-            configClientOAuthHandler(message, handler, jwtHandler);
+            handleOAuthTokens(message, handler, jwtHandler);
         }
 
     }
 
-    private void configClientOAuthHandler(Message message, String handleOauth, String jwtHandler) {
+    /**
+     * @param message
+     */
+    private void handleMpJwtToken(Message message) {
+        String mpJwt = OAuthPropagationHelper.getMpJsonWebToken();
+        if (mpJwt != null && !mpJwt.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Got MpJwt token from the subject. Set it on the request" + mpJwt);
+
+                addAuthnHeader(mpJwt, message);
+            }
+        } else {
+            //TODO Tr.warn - [authnToken] attribute in [WebTarget] configuration is set to [mpjwt] but the MicroProfile JWT token is not available. The request will not contain Authorization header with the Bearer token. Check for any warning messages prior to this.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Cannot find MpJwt Token in the WSSubject");
+            }
+        }
+
+    }
+
+    private void handleOAuthTokens(Message message, String handleOauth, String jwtHandler) {
         boolean bOauth = handleOauth.equals("true");
         boolean bJwt = jwtHandler.equals("true");
         if (bOauth || bJwt) {
-            ClientRequestContext reqContext = new ClientRequestContextImpl(message, false);
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Entering LtpaAuthSecurityHandler.handle(" + reqContext + ")");
-            }
-
-            String address = (String) message.get(Message.ENDPOINT_ADDRESS);
-            if (address.startsWith("https")) {
-                // @TODO Not sure if we need this checking??
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "user is using SSL connection");
-                }
-            }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, bOauth ? "About to get a OAuth access token" : "About to get a jwt token");
             }
 
-            // retrieve a ltpa cookie from the Subject in current thread 
+            // retrieve the token from the Subject in current thread
             try {
                 // this interceptor must depend on the appSecurity feature to use WebSecurityHelper.getSSOCookieFromSSOToken()
                 String accessToken = bOauth ? OAuthPropagationHelper.getAccessToken() : OAuthPropagationHelper.getJwtToken();
@@ -88,12 +98,13 @@ public class LibertyJaxRsClientOAuthInterceptor extends AbstractPhaseInterceptor
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Retrieved an OAuth access/jwt token. About to set a request cookie: " + accessToken);
                     }
-                    //Authorization=[Bearer="<accessToken>"] 
-                    @SuppressWarnings("unchecked")
-                    Map<String, List<String>> headers = (Map<String, List<String>>) message
-                                    .get(Message.PROTOCOL_HEADERS);
-                    headers.put("Authorization", Arrays.asList("Bearer " + accessToken));
-                    message.put(Message.PROTOCOL_HEADERS, headers);
+//                    //Authorization=[Bearer="<accessToken>"]
+//                    @SuppressWarnings("unchecked")
+//                    Map<String, List<String>> headers = (Map<String, List<String>>) message
+//                                    .get(Message.PROTOCOL_HEADERS);
+//                    headers.put("Authorization", Arrays.asList("Bearer " + accessToken));
+//                    message.put(Message.PROTOCOL_HEADERS, headers);
+                    addAuthnHeader(accessToken, message);
                 } else { // no user credential available
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Cannot find an OAuth access token out of the WSSubject");
@@ -109,6 +120,17 @@ public class LibertyJaxRsClientOAuthInterceptor extends AbstractPhaseInterceptor
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No client OAuth handler configuration, skip");
             }
+        }
+    }
+
+    private void addAuthnHeader(String token, Message message) {
+        //Authorization=[Bearer="<accessToken>"]
+        @SuppressWarnings("unchecked")
+        Map<String, List<String>> headers = (Map<String, List<String>>) message.get(Message.PROTOCOL_HEADERS);
+        headers.put("Authorization", Arrays.asList("Bearer " + token));
+        message.put(Message.PROTOCOL_HEADERS, headers);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Authorization header with Bearer token is added successfully!!!"); //TODO
         }
     }
 }
