@@ -91,7 +91,7 @@ instrument.taskInjection: false
 
 -buildpath.testjars: ${if;${test.project};\
     ${workspace}/build.sharedResources/lib/junit/old/junit.jar\\;version=file,\
-    ${workspace}/build.sharedResources/lib/ws-junit/ws-junit.jar\\;version=file}
+    com.ibm.ws.junit.extensions\\;version=latest}
     
 # If project contains '_fat' then add FAT infrastrucutre elements to buildpath    
 -buildpath.fattestjars: ${if;${matches;${project};.*_fat.*};\
