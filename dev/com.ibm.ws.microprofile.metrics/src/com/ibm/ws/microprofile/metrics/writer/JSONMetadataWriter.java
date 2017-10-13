@@ -90,31 +90,20 @@ public class JSONMetadataWriter implements OutputWriter {
         return jsonObject;
     }
 
-    @FFDCIgnore({ Exception.class })
     private JSONObject getJsonFromObject(Metadata metadata) {
         JSONObject jsonObject = new JSONObject();
-        try {
+        jsonObject.put("name", sanitizeMetadata(metadata.getName()));
+        jsonObject.put("displayName", sanitizeMetadata(metadata.getDisplayName()));
+        //Check TR.formatMessage for performance impact
+        jsonObject.put("description", Tr.formatMessage(tc, locale, sanitizeMetadata(metadata.getDescription())));
+        jsonObject.put("type", sanitizeMetadata(metadata.getType()));
+        jsonObject.put("unit", sanitizeMetadata(metadata.getUnit()));
+        jsonObject.put("tags", getJsonFromMap(metadata.getTags()));
 
-            jsonObject.put("name", checkString(metadata.getName()));
-
-            jsonObject.put("displayName", checkString(metadata.getDisplayName()));
-
-            //Check TR.formatMessage for performance impact
-            jsonObject.put("description", Tr.formatMessage(tc, locale, checkString(metadata.getDescription())));
-
-            jsonObject.put("type", checkString(metadata.getType()));
-
-            jsonObject.put("unit", checkString(metadata.getUnit()));
-
-            jsonObject.put("tags", getJsonFromMap(metadata.getTags()));
-
-        } catch (Exception e) {
-            Tr.event(tc, "JSON metadata issue: " + e.getMessage());
-        }
         return jsonObject;
     }
 
-    String checkString(String s) {
+    String sanitizeMetadata(String s) {
         if (s == null || s.trim().isEmpty()) {
             return "";
         } else {
