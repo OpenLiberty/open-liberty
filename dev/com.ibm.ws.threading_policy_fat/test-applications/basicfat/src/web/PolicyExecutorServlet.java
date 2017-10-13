@@ -55,7 +55,6 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.ws.threading.PolicyExecutor.QueueFullAction;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.ws.threading.PolicyTaskCallback;
 
@@ -90,7 +89,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testAwaitTerminationOfUnusedExecutor() throws Exception {
         ExecutorService executor1 = provider.create("testAwaitTerminationOfUnusedExecutor-1")
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
         assertFalse(executor1.awaitTermination(0, TimeUnit.MINUTES));
         assertFalse(executor1.isTerminated());
         assertFalse(executor1.isShutdown());
@@ -101,7 +100,7 @@ public class PolicyExecutorServlet extends FATServlet {
 
         ExecutorService executor2 = provider.create("testAwaitTerminationOfUnusedExecutor-2")
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(2))
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .runIfQueueFull(true);
         assertFalse(executor2.awaitTermination(0, TimeUnit.HOURS));
         assertFalse(executor2.isTerminated());
         assertFalse(executor2.isShutdown());
@@ -141,7 +140,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(2)
                         .maxQueueSize(2)
                         .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         Future<Boolean> terminationFuture = testThreads.submit(new TerminationAwaitTask(executor, TimeUnit.MINUTES.toNanos(5)));
         assertFalse(terminationFuture.isDone());
@@ -221,8 +220,7 @@ public class PolicyExecutorServlet extends FATServlet {
         ExecutorService executor = provider.create("testAwaitTerminationWhileActiveThenShutdownNow")
                         .maxConcurrency(2)
                         .maxQueueSize(2)
-                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1));
 
         Future<Boolean> terminationFuture = testThreads.submit(new TerminationAwaitTask(executor, TimeUnit.MINUTES.toNanos(6)));
         assertFalse(terminationFuture.isDone());
@@ -321,8 +319,7 @@ public class PolicyExecutorServlet extends FATServlet {
         ExecutorService executor = provider.create("testAwaitTerminationWhileActiveThenShutdownThenShutdownNow")
                         .maxConcurrency(1)
                         .maxQueueSize(1)
-                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1));
 
         Future<Boolean> terminationFuture = testThreads.submit(new TerminationAwaitTask(executor, TimeUnit.MINUTES.toNanos(7)));
         assertFalse(terminationFuture.isDone());
@@ -440,8 +437,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testCallbacksForAbortedTasks() throws Exception {
         PolicyExecutor executor = provider.create("testCallbacksForAbortedTasks")
                         .maxConcurrency(1)
-                        .maxQueueSize(1)
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxQueueSize(1);
 
         CountDownLatch blocker = new CountDownLatch(1);
         CountDownLatch blockerRunning = new CountDownLatch(1);
@@ -1367,7 +1363,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.HOURS.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         final int numConfigTasks = 6;
         CountDownLatch beginLatch = new CountDownLatch(numConfigTasks + 1);
@@ -1475,7 +1471,7 @@ public class PolicyExecutorServlet extends FATServlet {
         ExecutorService executor = provider.create("testGroupedSubmits")
                         .maxConcurrency(4)
                         .maxQueueSize(nextGroupOn)
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         final CompletionService<Integer> completionSvc = new ExecutorCompletionService<Integer>(executor);
 
@@ -1558,7 +1554,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(2)
                         .maxWaitForEnqueue(0)
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         try {
             fail("First instance should not be usable again after identifier reused " + executor1.submit(new SharedIncrementTask(), null));
@@ -1928,16 +1924,17 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
-    // Use invokeAll where maxQueueSize is constrained to 1 and queueFullAction is Abort and maxConcurrency is unlimited.
+    // Use invokeAll where maxQueueSize is constrained to 1 and runIfQueueFull is false and maxConcurrency is unlimited.
     // Normally, the queue size of 1 would risk having task submissions aborted when tasks are not pulled from the queue
     // for execution quickly enough. However, the fact that the user has specified the untimed invokeAll operation to
     // wait for all tasks to be completed means that the current thread can be used to help complete the tasks in the
-    // even that they cannot be queued, so it is not necessary to resort to the queueFullAction.
+    // event that they cannot be queued, because runIfQueueFull is only for submit/execute and does not apply to invokeAll/Any.
     @Test
     public void testInvokeAllAbortIgnoredWhenConcurrencyUnlimited() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllAbortIgnoredWhenConcurrencyUnlimited")
+                        .maxConcurrencyAppliesToCallerThread(true)
                         .maxQueueSize(1)
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         AtomicInteger counter = new AtomicInteger();
         List<Callable<Integer>> tasks = Arrays.<Callable<Integer>> asList(new SharedIncrementTask(counter), new SharedIncrementTask(counter), new SharedIncrementTask(counter),
@@ -1983,7 +1980,8 @@ public class PolicyExecutorServlet extends FATServlet {
         }
 
         executor = provider.create("testInvokeAllAfterShutdownNow")
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .maxConcurrencyAppliesToCallerThread(false)
+                        .runIfQueueFull(true);
         executor.shutdownNow();
 
         try {
@@ -2003,14 +2001,14 @@ public class PolicyExecutorServlet extends FATServlet {
 
     // Use invokeAll where one or more tasks must run on the current thread due to the queue being full.
     // To achieve this, we constrain maxConcurrency and maxQueueSize to 1 and supply 4 tasks to invokeAll,
-    // where the first task blocks until all others start. This maxConcurrency to be exceeded, which is only
-    // possible due to the CallerRuns queueFullAction.
+    // where the first task blocks until all others start. This causes maxConcurrency to be exceeded, which is only
+    // possible due to the maxConcurrencyAppliesToCallerThread=false property.
     @Test
     public void testInvokeAllCallerRunsWhenQueueFull() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllCallerRunsWhenQueueFull")
                         .maxConcurrency(1)
-                        .maxQueueSize(1)
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxQueueSize(1);
 
         CountDownLatch beginLatch = new CountDownLatch(3);
         CountDownLatch ignore = new CountDownLatch(0);
@@ -2043,8 +2041,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testInvokeAllInterruptedWhileRunningTaskAfterOtherTasksSubmitted() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllInterruptedWhileRunningTaskAfterOtherTasksSubmitted")
-                        .maxConcurrency(2)
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxConcurrency(2);
 
         CountDownLatch beginLatch = new CountDownLatch(2);
         CountDownLatch blocker = new CountDownLatch(1);
@@ -2080,8 +2077,8 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllInterruptedWhileRunningTaskThatCannotBeSubmitted() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllInterruptedWhileRunningTaskThatCannotBeSubmitted")
                         .maxConcurrency(1)
-                        .maxQueueSize(1)
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxQueueSize(1);
 
         // Invoke 4 tasks.
         // The first will start running and block.
@@ -2128,9 +2125,9 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllOfOneAndNone() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllOfOneAndNone")
                         .maxConcurrency(1)
+                        .maxConcurrencyAppliesToCallerThread(true)
                         .maxQueueSize(2)
-                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(10))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(10));
 
         long threadId = Thread.currentThread().getId();
         List<Future<Long>> futures;
@@ -2157,8 +2154,8 @@ public class PolicyExecutorServlet extends FATServlet {
         } catch (InterruptedException x) {
         } // pass
 
-        // If using CallerRuns, we don't need a permit
-        executor.queueFullAction(QueueFullAction.CallerRuns);
+        // If using maxConcurrencyAppliesToCallerThread=false, we don't need a permit
+        executor.maxConcurrencyAppliesToCallerThread(false);
         futures = executor.invokeAll(Collections.singleton(new ThreadIdTask()));
         assertEquals(1, futures.size());
         assertEquals(Long.valueOf(threadId), futures.get(0).get(0, TimeUnit.MINUTES));
@@ -2177,8 +2174,8 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testInvokeAllOnCurrentThread")
                         .coreConcurrency(1)
                         .maxConcurrency(1)
-                        .maxQueueSize(10)
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxConcurrencyAppliesToCallerThread(true)
+                        .maxQueueSize(10);
 
         long threadId = Thread.currentThread().getId();
 
@@ -2198,13 +2195,13 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(0, canceledFromQueue.size());
     }
 
-    // Use invokeAll where all tasks run on the current thread even without a maxConcurrency permit due to the CallerRuns action.
+    // Use invokeAll where all tasks run on the current thread even without a maxConcurrency permit due maxConcurrencyAppliesToCallerThread=false.
     @Test
     public void testInvokeAllOnCurrentThreadCallerRunsWithoutPermit() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllOnCurrentThreadCallerRunsWithoutPermit")
                         .maxConcurrency(1)
-                        .maxQueueSize(10)
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxQueueSize(10);
 
         // Use up the only permit
         CountDownLatch beginLatch = new CountDownLatch(1);
@@ -2237,8 +2234,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllInvalidParameters() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllInvalidParameters")
                         .maxConcurrency(2)
-                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
 
         // Null list of tasks
         try {
@@ -2284,8 +2280,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllTasksThatRaiseExceptions() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTasksThatRaiseExceptions")
                         .maxConcurrency(1)
-                        .maxQueueSize(1)
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .maxQueueSize(1);
 
         final CountDownLatch beginLatch = new CountDownLatch(1);
         CountDownLatch blocker = new CountDownLatch(1);
@@ -2368,9 +2363,9 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testInvokeAllTimed")
                         .coreConcurrency(2)
                         .maxConcurrency(3)
+                        .maxConcurrencyAppliesToCallerThread(true) // meaningless for timed invokeAll, which never runs on caller thread
                         .maxQueueSize(2)
-                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
 
         List<Future<Integer>> futures;
         Future<Integer> future;
@@ -2503,8 +2498,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllTimedInvalidParameters() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimedInvalidParameters")
                         .maxConcurrency(2)
-                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
 
         // Null list of tasks
         try {
@@ -2611,15 +2605,16 @@ public class PolicyExecutorServlet extends FATServlet {
     // Using timed invokeAll where the timeout is much longer than the maxWaitForEnqueue and maxConcurrency is less
     // than the number of tasks submitted, submit several tasks that start and block. Should be rejected waiting
     // for a queue position and all in-progress tasks should cancel before returning from invokeAll.
-    // Rejection should occur even if QueueFullAction is CallerRuns because timed invokeAll disallows having
-    // the caller run tasks such that the timing can be honored.
+    // Rejection should occur even if maxConcurrencyAppliesToCallerThread is false and runIfQueueFull is true
+    // because timed invokeAll disallows having the caller run tasks so that the timing can be honored.
     @Test
     public void testInvokeAllTimedTimeoutWaitForEnqueue() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimedTimeoutWaitForEnqueue")
                         .maxConcurrency(1)
+                        .maxConcurrencyAppliesToCallerThread(false)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(200)
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .runIfQueueFull(true);
 
         List<CountDownTask> blockingTasks = new LinkedList<CountDownTask>();
         CountDownLatch beginLatch = new CountDownLatch(3);
@@ -2654,9 +2649,9 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllTimeoutWaitForEnqueue() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimeoutWaitForEnqueue")
                         .maxConcurrency(1)
+                        .maxConcurrencyAppliesToCallerThread(true)
                         .maxQueueSize(2)
-                        .maxWaitForEnqueue(200)
-                        .queueFullAction(QueueFullAction.Abort); // Avoid CallerRuns so that tasks require separate threads
+                        .maxWaitForEnqueue(200);
 
         // Use up the only maxConcurrency permit to prevent invokeAll from acquiring it and running the tasks on the current thread
         CountDownLatch blockingLatch = new CountDownLatch(1);
@@ -2782,7 +2777,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(500)
-                        .queueFullAction(QueueFullAction.CallerRuns); // must be ignored for invokeAny with multiple tasks
+                        .runIfQueueFull(true); // does not apply to invokeAny/All
 
         // Use up maxConcurrency
         CountDownLatch blocker = new CountDownLatch(1);
@@ -2939,8 +2934,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAnyInvalidParameters() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAnyInvalidParameters")
                         .maxConcurrency(2)
-                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
 
         // Null list of tasks
         try {
@@ -3067,8 +3061,8 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAnyOfOne() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAnyOfOne")
                         .maxConcurrency(1)
-                        .maxQueueSize(1)
-                        .queueFullAction(QueueFullAction.Abort); // require a permit
+                        .maxConcurrencyAppliesToCallerThread(true) // require a permit
+                        .maxQueueSize(1);
 
         Set<Callable<Long>> oneTask = Collections.<Callable<Long>> singleton(new ThreadIdTask());
         Long curThreadId = Thread.currentThread().getId();
@@ -3100,7 +3094,7 @@ public class PolicyExecutorServlet extends FATServlet {
 
         assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
-        executor.queueFullAction(QueueFullAction.CallerRuns);
+        executor.maxConcurrencyAppliesToCallerThread(false);
 
         // Use up the permit
         blockerFuture = executor.submit(new CountDownTask(new CountDownLatch(0), new CountDownLatch(1), TIMEOUT_NS));
@@ -3149,6 +3143,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAnyShutdownNowWhileEnqueued() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAnyShutdownNowWhileEnqueued")
                         .maxConcurrency(1)
+                        .maxConcurrencyAppliesToCallerThread(true)
                         .maxQueueSize(2);
 
         CountDownLatch blocker = new CountDownLatch(1);
@@ -3530,8 +3525,7 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testInvokeAnyTimedTimeoutDuringWaitForEnqueue")
                         .maxConcurrency(1)
                         .maxQueueSize(1)
-                        .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(4))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(4));
 
         AtomicInteger counter = new AtomicInteger();
 
@@ -3651,8 +3645,7 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testMultipleLayersOfInvokeAll")
                         .coreConcurrency(0) // everything could run on the current thread if it needs to
                         .maxConcurrency(3)
-                        .maxQueueSize(4) // just enough to ensure we can cover a 16 element array
-                        .queueFullAction(QueueFullAction.CallerRuns);
+                        .maxQueueSize(4); // just enough to ensure we can cover a 16 element array
 
         int[] array1 = new int[] { 25, 85, 95, 25, 45, 15, 75, 75, 65, 35, 95, 105, 45, 35, 85, 25 };
         System.out.println("Searching for minimum of " + Arrays.toString(array1));
@@ -3676,7 +3669,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .coreConcurrency(8) // just enough to ensure we can cover a 16 element array
                         .maxConcurrency(8)
                         .maxQueueSize(8) // also just enough to ensure we can cover a 16 element array
-                        .queueFullAction(QueueFullAction.Abort); // TODO in the future, this sort of test is a good candidate for CallerRuns
+        ; // TODO in the future, this sort of test is a good candidate for runIfQueueFull=true
 
         int[] array1 = new int[] { 2, 9, 3, 5, 1, 3, 6, 3, 8, 0, 4, 4, 10, 2, 1, 8 };
         System.out.println("Searching for minimum of " + Arrays.toString(array1));
@@ -3943,8 +3936,7 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testShutdownDuringTimedInvokeAll")
                         .maxConcurrency(1)
                         .maxQueueSize(2)
-                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(1));
 
         AtomicInteger completedAfterShutdown = new AtomicInteger();
         CountDownLatch unused = new CountDownLatch(0);
@@ -3979,7 +3971,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testShutdownNowDuringInvokeAll() throws Exception {
         PolicyExecutor executor = provider.create("testShutdownNowDuringInvokeAll")
                         .maxConcurrency(2)
-                        .queueFullAction(QueueFullAction.Abort);
+                        .maxConcurrencyAppliesToCallerThread(true);
 
         CountDownLatch blocker = new CountDownLatch(1);
         CountDownLatch task3BeginLatch = new CountDownLatch(1);
@@ -4031,7 +4023,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(2)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         CountDownLatch beginLatch = new CountDownLatch(3);
         CountDownLatch continueLatch = new CountDownLatch(1);
@@ -4043,16 +4035,15 @@ public class PolicyExecutorServlet extends FATServlet {
         Future<Boolean> future2 = executor.submit(task);
         //This task should be queued since we should be at max concurrency
         Future<Boolean> future3 = executor.submit(task);
-        Future<Boolean> future4 = null;
 
         //Shorten maxWaitForEnqueue so we the test doesn't have to wait long for the timeout
         executor.maxWaitForEnqueue(200);
 
         try {
             //This task should be aborted since the queue should be full, triggering a RejectedExecutionException
-            future4 = executor.submit(task);
+            Future<Boolean> future4 = executor.submit(task);
 
-            fail("The fourth task should have thrown a RejectedExecutionException when attempting to queue");
+            fail("The fourth task should have thrown a RejectedExecutionException when attempting to queue. Instead " + future4);
 
         } catch (RejectedExecutionException x) {
         } //expected
@@ -4082,7 +4073,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         CountDownLatch beginLatch1 = new CountDownLatch(2);
         CountDownLatch continueLatch1 = new CountDownLatch(1);
@@ -4165,12 +4156,12 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
         PolicyExecutor executor2 = provider.create("testMaxConcurrencyMultipleExecutors-2")
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         CountDownLatch beginLatch = new CountDownLatch(3);
         CountDownLatch continueLatch = new CountDownLatch(1);
@@ -4219,7 +4210,7 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testConcurrentUpdateMaxConcurrency")
                         .maxConcurrency(2)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort)
+                        .runIfQueueFull(false)
                         .maxQueueSize(1);
 
         int numSubmitted = 8;
@@ -4328,7 +4319,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(2)
                         .maxQueueSize(-1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         CountDownLatch beginLatch1 = new CountDownLatch(2);
         CountDownLatch continueLatch1 = new CountDownLatch(1);
@@ -4409,7 +4400,6 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testConcurrentUpdateMaxConcurrencyAndSubmit")
                         .maxConcurrency(4)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort)
                         .maxQueueSize(2);
 
         int numSubmitted = 6;
@@ -4494,7 +4484,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(2)
                         .maxQueueSize(2)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         CountDownLatch beginLatch = new CountDownLatch(2);
         CountDownLatch continueLatch = new CountDownLatch(1);
@@ -4576,12 +4566,12 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
         PolicyExecutor executor2 = provider.create("testQueueSizeMultipleExecutors-2")
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         CountDownLatch beginLatch = new CountDownLatch(100);
         CountDownLatch continueLatch = new CountDownLatch(1);
@@ -4627,7 +4617,6 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testConcurrentUpdateMaxQueueSize")
                         .maxConcurrency(2)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort)
                         .maxQueueSize(1);
 
         int numSubmitted = 8;
@@ -4737,7 +4726,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.HOURS.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort);
+                        .runIfQueueFull(false);
 
         CountDownLatch beginLatch1 = new CountDownLatch(50);
         CountDownLatch continueLatch1 = new CountDownLatch(1);
@@ -4783,7 +4772,6 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testMaxQueueSizeAndMaxConcurrencyConcurrentUpdate")
                         .maxConcurrency(2)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort)
                         .maxQueueSize(2);
 
         int numSubmitted = 16;
@@ -4904,7 +4892,6 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyExecutor executor = provider.create("testConcurrentUpdateMaxQueueSizeAndSubmit")
                         .maxConcurrency(6)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(1))
-                        .queueFullAction(QueueFullAction.Abort)
                         .maxQueueSize(2);
 
         int numSubmitted = 6;

@@ -26,33 +26,6 @@ import java.util.concurrent.TimeoutException;
  */
 public interface PolicyExecutor extends ExecutorService {
     /**
-     * Describes the action to take when a task is submitted but there are no positions
-     * available for it in the queue after having exceeded the maxWaitForEnqueue.
-     */
-    public enum QueueFullAction {
-        /**
-         * Reject submission of the task.
-         */
-        Abort,
-
-        /**
-         * The thread invoking submit (or execute or invoke*) attempts to run the task
-         * before returning control.
-         * Caution: this may be unwanted when maxConcurrency is specified because it allows
-         * additional execution beyond what is limited by maxConcurrency.
-         */
-        CallerRuns,
-
-        /**
-         * If the thread on which submit (or execute/invokeAll/invokeAny) is invoked can be identified
-         * as already running a task that was submitted to the same policy executor, then
-         * it attempts to run the task before returning control.
-         * Otherwise, submission of the task is rejected.
-         */
-        CallerRunsIfSameExecutor
-    }
-
-    /**
      * Specifies a core number of tasks that the policy executor should aim to run concurrently
      * by expediting requests to the global thread pool. This is different than a minimum in that
      * no guarantee is made that this many tasks will be running concurrently.
@@ -125,11 +98,25 @@ public interface PolicyExecutor extends ExecutorService {
     PolicyExecutor maxConcurrency(int max);
 
     /**
-     * Specifies the maximum number of submitted tasks that can be queued for execution.
+     * Indicates whether or not to count tasks that run on the caller's thread towards maxConcurrency.
+     * Tasks can run on the caller's thread when using untimed invokeAll, or, if only invoking a single task, untimed invokeAny.
+     * If runIfQueueFull is true, tasks can also run on the caller's thread when using the execute and submit methods.
+     * The default value is false.
+     *
+     * @param applyToCallerThread indicates whether or not tasks that run on the invoking thread count towards maxConcurrency.
+     * @return the executor.
+     * @throws IllegalStateException if the executor has been shut down.
+     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
+     */
+    PolicyExecutor maxConcurrencyAppliesToCallerThread(boolean applyToCallerThread);
+
+    /**
+     * Specifies the maximum number of submitted tasks that can be queued for execution at any given point in time.
      * As tasks are started or canceled, they are removed from the queue. When the queue is
      * at capacity and another task is submitted, the policy executor waits for up to the
      * maxWaitForEnqueue for a queue position to become available, after which, if the queue
-     * is still at capacity, the queueFullAction is applied.
+     * is still at capacity, runIfQueueFull determines whether to attempt running on the current thread
+     * (if permitted by maxConcurrency) or whether to reject the task submission.
      * Applications that submit many tasks over a short period of time might want to use
      * a maximum queue size that is at least as large as the maximum concurrency.
      * The default maxQueueSize is Integer.MAX_VALUE.
@@ -147,12 +134,9 @@ public interface PolicyExecutor extends ExecutorService {
     PolicyExecutor maxQueueSize(int max);
 
     /**
-     * Specifies the maximum number of milliseconds to wait for enqueueing a submitted task.
-     * If unable to enqueue the task within this interval, the task submission is subject to
-     * the queueFullAction. A value of 0 indicates to not wait at all, in which case, if there
-     * is not a queue position available, the queueFullAction is immediately applied.
-     * The default maxWaitForEnqueue is 0.
-     * When maximum wait for enqueue is updated, the update applies to task submits that occur
+     * Specifies the maximum number of milliseconds to wait for enqueuing a submitted task.
+     * The default value of 0 indicates to not wait at all.
+     * When maxWaitForEnqueue is updated, the update applies to task submits that occur
      * after that point. Submits that were already waiting continue to wait per the previously
      * configured value.
      *
@@ -165,21 +149,18 @@ public interface PolicyExecutor extends ExecutorService {
     PolicyExecutor maxWaitForEnqueue(long ms);
 
     /**
-     * Specifies the action to take when a task is submitted but there are no queue positions
-     * available after having exceeded the maxWaitForEnqueue.
-     * Refer to the descriptions of the values possible in the QueueFullAction enumeration.
-     * The default queueFullAction depends on the maxConcurrency.
-     * If maxConcurrency is a positive integer less than Integer.MAX_VALUE, then the default is CallerRunsIfSameExecutor? or Abort? TODO
-     * Otherwise, the default is CallerRuns? TODO
-     * When the queue full action is updated, it applies to the next submit attempt which is
-     * unable to obtain a queue position.
+     * Applies when using the execute or submit methods. Indicates whether or not to run the task on the
+     * caller's thread when the queue is full and the maxWaitForEnqueue has been exceeded.
+     * The default value is false, in which case the task submission is rejected after the maxWaitForEnqueue elapses
+     * instead of running on the caller's thread.
      *
-     * @param action the action to take.
+     * @param runIfFull true to indicate that a task which cannot be queued should run on the thread from which submit or execute is invoked;
+     *            false to abort the task in this case.
      * @return the executor.
      * @throws IllegalStateException if the executor has been shut down.
      * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
-    PolicyExecutor queueFullAction(QueueFullAction action);
+    PolicyExecutor runIfQueueFull(boolean runIfFull);
 
     /**
      * Submit a Callable task with a callback to be invoked at various points in the task's life cycle.
