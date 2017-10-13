@@ -64,22 +64,38 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
             Map<String, String> props = new ConcurrentHashMap<String, String>();
             authConfigProvider = new AuthProvider(props, providerFactory);
             providerFactory.registerConfigProvider(authConfigProvider, JASPIC_LAYER_HTTP_SERVLET, appContext, "Built-in JSR-375 Bridge Provider");
+        } else{
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "HttpAuthenticationMechanism bean is not identified. JSR375 BridgeProvider is not enabled.");
+            }
         }
     }
 
     private boolean isHAMIdentified() {
         boolean result = false;
-        Instance<HAMProperties> hampInstance = getCDI().select(HAMProperties.class);
-        if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
-            Instance<HttpAuthenticationMechanism> beanInstance = getCDI().select(hampInstance.get().getImplementationClass());
-            if (beanInstance != null && !beanInstance.isUnsatisfied() && !beanInstance.isAmbiguous()) {
-                result = true;
+        CDI cdi = getCDI();
+        if (cdi != null) {
+            Instance<HAMProperties> hampInstance = cdi.select(HAMProperties.class);
+            if (hampInstance != null) {
+                if (!hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
+                    Instance<HttpAuthenticationMechanism> beanInstance = getCDI().select(hampInstance.get().getImplementationClass());
+                    if (beanInstance != null && !beanInstance.isUnsatisfied() && !beanInstance.isAmbiguous()) {
+                        result = true;
+                    } else {
+                        Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM");
+                    }
+                } else {
+                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM_PROPS");
+                }
             } else {
-                Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM");
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "HAMProperties is not found. Most likely, there is no HttpAuthenticationMechanism bean.");
+                }
             }
         } else {
-            Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM_PROPS");
-
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "CDI is not found. Most likely, CDI is not enabled, or there is no CDI bean in the application.");
+            }
         }
         return result;
     }
