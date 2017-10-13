@@ -26,26 +26,26 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jaxrs21sse.basic.BasicSseTestServlet;
+import jaxrs21sse.jsonb.SseJsonbTestServlet;
 
 /**
- * This test of basic SSE function.
+ * This test of jsonb SSE function.
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 1.8)
-public class BasicSseTest extends FATServletClient {
-    private static final String SERVLET_PATH = "BasicSseApp/BasicSseTestServlet";
+public class SseJsonbTest extends FATServletClient {
+    private static final String SERVLET_PATH = "SseJsonbApp/SseJsonbTestServlet";
 
-    @Server("com.ibm.ws.jaxrs21.sse.basic")
-    @TestServlet(servlet = BasicSseTestServlet.class, path = SERVLET_PATH)
+    @Server("com.ibm.ws.jaxrs21.sse.jsonb")
+    @TestServlet(servlet = SseJsonbTestServlet.class, path = SERVLET_PATH)
     public static LibertyServer server;
 
-    private static final String appName = "BasicSseApp";
+    private static final String appName = "SseJsonbApp";
 
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war")
-                        .addPackage("jaxrs21sse.basic");
+                        .addPackage("jaxrs21sse.jsonb");
         ShrinkHelper.exportAppToServer(server, app);
 
         server.addInstalledAppForValidation(appName);
@@ -64,23 +64,12 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
-    public void testSimpleDirectTextPlainSse() throws Exception {
-        runTest(server, SERVLET_PATH, "testSimpleDirectTextPlainSse");
-    }
-
-    @Test
-    public void testIntegerSse() throws Exception {
-        runTest(server, SERVLET_PATH, "testIntegerSse");
-    }
-
-    @Test
-    public void testJaxbSse() throws Exception {
-        runTest(server, SERVLET_PATH, "testJaxbSse");
-    }
-
-    @Test
     public void testJsonSse() throws Exception {
         runTest(server, SERVLET_PATH, "testJsonSse");
     }
 
+    @Test
+    public void testJsonbSse() throws Exception {
+        runTest(server, SERVLET_PATH, "testJsonbSse");
+    }
 }
