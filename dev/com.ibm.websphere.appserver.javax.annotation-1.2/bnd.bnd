@@ -12,7 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest

@@ -12,12 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.servlet-3.0;version=latest,\
-	com.ibm.websphere.appserver.ssl-1.0;version=latest,\
-	com.ibm.websphere.appserver.csiv2Client-1.0;version=latest,\
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.credentials;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
@@ -27,6 +22,5 @@ publish.feature.resources: **
 	com.ibm.ws.security.jaas.common;version=latest,\
 	com.ibm.ws.security.registry;version=latest,\
 	com.ibm.websphere.security.impl;version=latest,\
-	com.ibm.websphere.appserver.api.securityClient;version=latest,\
-	com.ibm.ws.security.mp.jwt.proxy;version=latest
-	
+	com.ibm.ws.security.mp.jwt.proxy;version=latest,\
+	com.ibm.websphere.appserver.api.securityClient;version=latest

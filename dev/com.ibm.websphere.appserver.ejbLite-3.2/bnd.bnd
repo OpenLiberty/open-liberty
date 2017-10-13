@@ -12,16 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javaeePlatform-7.0;version=latest, \
-	com.ibm.websphere.appserver.javax.ejb-3.2;version=latest, \
-	com.ibm.websphere.appserver.ejbLiteCore-1.0;version=latest, \
-	com.ibm.websphere.appserver.contextService-1.0;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
-	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
-	com.ibm.websphere.appserver.javax.interceptor-1.2;version=latest, \
 	com.ibm.ws.ejbcontainer.v32;version=latest, \
 	com.ibm.ws.ejbcontainer.timer;version=latest, \
 	com.ibm.ws.ejbcontainer.async;version=latest, \

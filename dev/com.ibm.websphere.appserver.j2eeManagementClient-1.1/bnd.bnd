@@ -12,7 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.websphere.javaee.management.j2ee.1.1

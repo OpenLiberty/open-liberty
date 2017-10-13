@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.channelfw-1.0;version=latest,\
 	com.ibm.ws.ssl;version=latest,\
 	com.ibm.ws.channel.ssl;version=latest,\
 	com.ibm.websphere.security;version=latest,\

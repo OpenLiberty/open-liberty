@@ -12,15 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.ssl-1.0;version=latest, \
-	com.ibm.websphere.appserver.securityInfrastructure-1.0;version=latest, \
-	com.ibm.websphere.appserver.builtinAuthorization-1.0;version=latest, \
-	com.ibm.websphere.appserver.ltpa-1.0;version=latest, \
-	com.ibm.websphere.appserver.builtinAuthentication-1.0;version=latest, \
-	com.ibm.websphere.appserver.basicRegistry-1.0;version=latest, \
 	com.ibm.websphere.security.impl;version=latest, \
 	com.ibm.ws.management.security;version=latest, \
 	com.ibm.ws.security.quickstart;version=latest, \

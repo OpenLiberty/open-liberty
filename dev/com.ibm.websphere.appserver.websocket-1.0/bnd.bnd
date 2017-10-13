@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
 	com.ibm.ws.wsoc;version=latest, \
 	com.ibm.websphere.javaee.websocket.1.0;version=latest, \
 	com.ibm.websphere.appserver.api.wsoc;version=latest

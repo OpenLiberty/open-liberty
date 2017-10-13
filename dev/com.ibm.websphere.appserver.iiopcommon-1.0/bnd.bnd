@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.channelfw-1.0;version=latest, \
 	com.ibm.ws.org.apache.yoko.corba.spec;version=latest, \
 	com.ibm.ws.org.apache.yoko.osgi;version=latest, \
 	com.ibm.ws.org.apache.servicemix.bundles.bcel;version=latest, \

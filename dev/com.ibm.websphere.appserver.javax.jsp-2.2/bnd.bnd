@@ -12,9 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.servlet-3.0;version=latest, \
-	com.ibm.websphere.appserver.javax.el-2.2;version=latest, \
 	com.ibm.websphere.javaee.jsp.2.2;version=latest

@@ -100,9 +100,7 @@ subprojects {
   task publishWLPJars {
     dependsOn jar
     def publishWlpJarDefault = parseBoolean(bnd('test.project', 'false')) ? 'true' : 'false'
-    enabled bnd('publish.feature.resources', '').empty && 
-            bnd('publish.tool.jar', '').empty && 
-            !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
+    enabled bnd('publish.tool.jar', '').empty && !parseBoolean(bnd('publish.wlp.jar.disabled', publishWlpJarDefault))
     inputs.files(fileTree( dir: "${buildDir}", include: '*.jar' )).skipWhenEmpty()
     outputs.dir "${rootDir}/build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib')
     doLast {

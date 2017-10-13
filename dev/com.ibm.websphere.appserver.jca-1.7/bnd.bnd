@@ -12,13 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.connector-1.7;version=latest, \
-	com.ibm.websphere.appserver.javaeePlatform-7.0;version=latest, \
-	com.ibm.websphere.appserver.internal.jca-1.6;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
-	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
 	com.ibm.ws.app.manager.rar;version=latest, \
 	com.ibm.ws.jca.1.7;version=latest

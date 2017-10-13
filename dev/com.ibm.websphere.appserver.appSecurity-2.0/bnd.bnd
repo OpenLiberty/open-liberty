@@ -12,7 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.security-1.0;version=latest
+	com.ibm.ws.security.authentication.tai;version=latest

@@ -12,10 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.security-1.0;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
 	com.ibm.ws.security.csiv2.common;version=latest, \
 	com.ibm.ws.security.csiv2;version=latest

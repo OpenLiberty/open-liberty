@@ -12,7 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.ws.jpa.container.v21.cdi;version=latest

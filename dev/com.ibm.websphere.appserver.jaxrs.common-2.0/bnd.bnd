@@ -12,17 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.injection-1.0;version=latest, \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.mail-1.5;version=latest, \
-	com.ibm.websphere.appserver.globalhandler-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.annotation-1.2;version=latest, \
-	com.ibm.websphere.appserver.json-1.0;version=latest, \
 	com.ibm.websphere.appserver.api.jaxrs20;version=latest, \
 	com.ibm.ws.org.apache.xml.resolver;version=latest, \
 	com.ibm.ws.org.apache.neethi;version=latest, \
