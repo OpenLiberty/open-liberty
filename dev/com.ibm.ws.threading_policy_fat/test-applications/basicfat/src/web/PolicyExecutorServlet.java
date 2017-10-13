@@ -3666,10 +3666,10 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testMultipleLayersOfSubmits() throws Exception {
         ExecutorService executor = provider.create("testMultipleLayersOfSubmits")
-                        .coreConcurrency(8) // just enough to ensure we can cover a 16 element array
-                        .maxConcurrency(8)
-                        .maxQueueSize(8) // also just enough to ensure we can cover a 16 element array
-        ; // TODO in the future, this sort of test is a good candidate for runIfQueueFull=true
+                        .coreConcurrency(8)
+                        .maxConcurrency(8) // just enough to ensure we can cover a 16 element array
+                        .maxQueueSize(3)
+                        .runIfQueueFull(true);
 
         int[] array1 = new int[] { 2, 9, 3, 5, 1, 3, 6, 3, 8, 0, 4, 4, 10, 2, 1, 8 };
         System.out.println("Searching for minimum of " + Arrays.toString(array1));
@@ -3787,6 +3787,73 @@ public class PolicyExecutorServlet extends FATServlet {
         }
 
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    // Verify that tasks submitted via the execute and submit methods run on the caller thread when the queue is full
+    // if runIfQueueFull is set to true, unless maxConcurrencyAppliesToCallerThread is true and maxConcurrency is used up.
+    @Test
+    public void testRunIfQueueFull() throws Exception {
+        PolicyExecutor executor = provider.create("testRunIfQueueFull")
+                        .maxConcurrency(1)
+                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxQueueSize(1)
+                        .runIfQueueFull(true);
+
+        Long currentThreadId = Thread.currentThread().getId();
+
+        // Use up the maxConcurrency permit
+        CountDownLatch blockerBeginLatch = new CountDownLatch(1);
+        CountDownTask blockerTask = new CountDownTask(blockerBeginLatch, new CountDownLatch(1), TIMEOUT_NS * 2);
+        Future<Boolean> blockerTaskFuture = executor.submit(blockerTask);
+
+        // Use up the single queue position
+        assertTrue(blockerBeginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        Future<Integer> queuedTaskFuture = executor.submit(new SharedIncrementTask(), 1);
+
+        // Verify that execute runs immediately on same thread
+        ThreadIdTask task1 = new ThreadIdTask();
+        executor.execute(task1);
+        assertEquals(currentThreadId, task1.threadId.get());
+
+        // Verify that submit(Runnable) runs immediately on same thread
+        ThreadIdTask task2 = new ThreadIdTask();
+        Future<?> future2 = executor.submit((Runnable) task2);
+        assertTrue(future2.isDone());
+        assertFalse(future2.isCancelled());
+        assertEquals(currentThreadId, task2.threadId.get());
+        assertNull(future2.get());
+
+        // Verify that submit(Runnable, result) runs immediately on same thread
+        ThreadIdTask task3 = new ThreadIdTask();
+        Future<String> future3 = executor.submit((Runnable) task3, "3");
+        assertTrue(future3.isDone());
+        assertFalse(future3.isCancelled());
+        assertEquals(currentThreadId, task3.threadId.get());
+        assertEquals("3", future3.get(1, TimeUnit.NANOSECONDS));
+
+        // Verify that submit(Callable) runs immediately on same thread
+        ThreadIdTask task4 = new ThreadIdTask();
+        Future<Long> future4 = executor.submit((Callable<Long>) task4);
+        assertTrue(future4.isDone());
+        assertFalse(future4.isCancelled());
+        assertEquals(currentThreadId, future4.get());
+
+        // Reconfigure so that running on the caller thread requires a permit
+        executor.maxConcurrencyAppliesToCallerThread(true);
+
+        // Shouldn't be able to run on the current thread anymore
+        try {
+            executor.execute(new ThreadIdTask());
+            fail("Task should have been aborted with the queue full, lacking the ability to run on the caller thread.");
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1201E"))
+                throw x;
+        }
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(1, canceledFromQueue.size());
+        assertTrue(queuedTaskFuture.isCancelled());
+        assertTrue(blockerTaskFuture.isCancelled());
     }
 
     // Use a policy executor to submit tasks that await termination of itself.
