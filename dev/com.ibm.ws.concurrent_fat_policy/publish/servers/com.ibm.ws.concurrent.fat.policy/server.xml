@@ -22,18 +22,16 @@
   <variable name="onError" value="FAIL"/>
 
   <!-- TODO remove the internal attribute once managed executors are switched over to using policy executor -->
-  <!-- TODO queueFullAction needs to be removed once runIfQueueFull/maxConcurrencyAppliesToCallerThread are implemented. Until then,
-       queueFullAction only partially approximates the behavior for some scenarios -->
 
   <managedExecutorService id="DefaultManagedExecutorService" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"
-   maxConcurrency="1" maxQueueSize="1" maxWaitForEnqueue="120000" queueFullAction="CallerRuns"/>
+   maxConcurrency="1" maxQueueSize="1" maxWaitForEnqueue="120000"/>
 
   <managedScheduledExecutorService id="DefaultManagedScheduledExecutorService" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"
-   maxConcurrency="2" maxConcurrencyAppliesToCallerThread="true" maxQueueSize="1" queueFullAction="CallerRuns" runIfQueueFull="true"/>
+   maxConcurrency="2" maxConcurrencyAppliesToCallerThread="true" maxQueueSize="1" runIfQueueFull="true"/>
 
   <managedExecutorService id="executor1" jndiName="concurrent/executor1" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"
-   maxConcurrency="1" maxConcurrencyAppliesToCallerThread="true" maxQueueSize="1" maxWaitForEnqueue="0" queueFullAction="Abort"/>
+   maxConcurrency="1" maxConcurrencyAppliesToCallerThread="true" maxQueueSize="1" maxWaitForEnqueue="0" runIfQueueFull="false"/>
 
   <managedScheduledExecutorService jndiName="concurrent/scheduledExecutor2" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"
-   coreConcurrency="1" maxConcurency="2" maxConcurrencyAppliesToCallerThread="false" maxQueueSize="2" queueFullAction="CallerRuns" runIfQueueFull="false"/>
+   coreConcurrency="1" maxConcurency="2" maxConcurrencyAppliesToCallerThread="false" maxQueueSize="2" runIfQueueFull="false"/>
 </server>
