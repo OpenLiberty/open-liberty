@@ -39,6 +39,7 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
+import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.WebRequest;
@@ -194,14 +195,19 @@ public class LoginToContinueInterceptor {
     }
 
     private void setCookies(HttpServletRequest req, HttpServletResponse res) {
-        ReferrerURLCookieHandler referrerURLHandler = getWebSAppSeurityConfig().createReferrerURLCookieHandler();
-        AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
-        String query = req.getQueryString();
-        String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
-        referrerURLHandler.setReferrerURLCookie(req, authResult, originalURL);
-        List<Cookie> cookies = authResult.getCookies();
-        for (Cookie c : cookies) {
-            res.addCookie(c);
+        WebAppSecurityConfig webAppSecConfig = getWebSAppSeurityConfig();
+        if (allowToAddCookieToResponse(webAppSecConfig, req)) {
+            AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
+            PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecConfig);
+            postParameterHelper.save(req, res, authResult);
+            ReferrerURLCookieHandler referrerURLHandler = getWebSAppSeurityConfig().createReferrerURLCookieHandler();
+            String query = req.getQueryString();
+            String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
+            referrerURLHandler.setReferrerURLCookie(req, authResult, originalURL);
+            List<Cookie> cookies = authResult.getCookies();
+            for (Cookie c : cookies) {
+                res.addCookie(c);
+            }
         }
     }
 
@@ -221,6 +227,25 @@ public class LoginToContinueInterceptor {
         if (!url.startsWith("/"))
             url = "/" + url;
         return contextPath + url;
+    }
+
+    /**
+     * This method checks the following conditions:
+     * 1) If SSO requires SSL is true and NOT HTTPs request, returns false.
+     * 2) Otherwise returns true.
+     *
+     * @param req
+     * @return
+     */
+    private boolean allowToAddCookieToResponse(WebAppSecurityConfig webAppSecConfig, HttpServletRequest req) {
+        boolean secureRequest = req.isSecure();
+        if (webAppSecConfig.getSSORequiresSSL() && !secureRequest) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SSO requires SSL. The cookie will not be sent back because the request is not over https.");
+            }
+            return false;
+        }
+        return true;
     }
 
     protected boolean isMethodToIntercept(InvocationContext ic) {

@@ -69,10 +69,21 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         CallbackHandler handler = httpMessageContext.getHandler();
         HttpServletRequest req = httpMessageContext.getRequest();
         HttpServletResponse rsp = httpMessageContext.getResponse();
-        String username = req.getParameter("j_username");
-        String password = req.getParameter("j_password");
+        String username = null;
+        String password = null;
+        // in order to preserve the post parameter, unless the target url is j_security_check, do not read 
+        // j_username and j_password.
+        String method = req.getMethod();
+        String uri = null;
+        if ("POST".equalsIgnoreCase(method)) {
+            uri = req.getRequestURI();
+            if (uri.contains("/j_security_check")) {
+                username = req.getParameter("j_username");
+                password = req.getParameter("j_password");
+            }
+        }
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "j_username : " + username);
+            Tr.debug(tc, "method : " + method + ", URI : " + uri + ", j_username : " + username);
         }
 
         if (httpMessageContext.isAuthenticationRequest()) {
