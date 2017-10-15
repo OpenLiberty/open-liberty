@@ -198,8 +198,10 @@ public class LoginToContinueInterceptor {
         WebAppSecurityConfig webAppSecConfig = getWebSAppSeurityConfig();
         if (allowToAddCookieToResponse(webAppSecConfig, req)) {
             AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
-            PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecConfig);
-            postParameterHelper.save(req, res, authResult);
+            if ("POST".equalsIgnoreCase(req.getMethod())) {
+                PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecConfig);
+                postParameterHelper.save(req, res, authResult, true);
+            }
             ReferrerURLCookieHandler referrerURLHandler = getWebSAppSeurityConfig().createReferrerURLCookieHandler();
             String query = req.getQueryString();
             String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
@@ -265,5 +267,4 @@ public class LoginToContinueInterceptor {
     protected WebAppSecurityConfig getWebSAppSeurityConfig() {
         return WebConfigUtils.getWebAppSecurityConfig();
     }
-
 }
