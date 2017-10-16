@@ -1,0 +1,58 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-SymbolicName: com.ibm.websphere.javaee.cdi.2.0; singleton:=true
+
+Export-Package: javax.decorator; version=2.0, \
+ javax.enterprise.context; version=2.0, \
+ javax.enterprise.context.control; version=2.0, \
+ javax.enterprise.context.spi; version=2.0, \
+ javax.enterprise.event; version=2.0, \
+ javax.enterprise.inject; version=2.0, \
+ javax.enterprise.inject.literal; version=2.0, \
+ javax.enterprise.inject.se; version=2.0, \
+ javax.enterprise.inject.spi; version=2.0, \
+ javax.enterprise.inject.spi.configurator; version=2.0, \
+ javax.enterprise.util; version=2.0, \
+ javax.inject; version=1, \
+
+Import-Package:  javax.el; version="[3.0.0,4.0.0)", \
+ javax.decorator; version=2.0, \
+ javax.enterprise.context; version=2.0, \
+ javax.enterprise.context.control; version=2.0, \
+ javax.enterprise.context.spi; version=2.0, \
+ javax.enterprise.event; version=2.0, \
+ javax.enterprise.inject; version=2.0, \
+ javax.enterprise.inject.literal; version=2.0, \
+ javax.enterprise.inject.se; version=2.0, \
+ javax.enterprise.inject.spi; version=2.0, \
+ javax.enterprise.inject.spi.configurator; version=2.0, \
+ javax.enterprise.util; version=2.0, \
+ javax.inject; version=1, \
+ javax.interceptor;version=1.2
+
+Include-Resource: \
+  @${repo;javax.enterprise:cdi-api;[2.0,3)}!/beans_1_0.xsd, \
+  @${repo;javax.enterprise:cdi-api;[2.0,3)}!/beans_1_1.xsd, \
+  @${repo;javax.enterprise:cdi-api;[2.0,3)}!/beans_2_0.xsd
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+instrument.disabled: true
+
+publish.wlp.jar.suffix: dev/api/spec
+
+-buildpath: \
+	javax.inject:javax.inject;version=1,\
+	javax.enterprise:cdi-api;version=2.0
+	

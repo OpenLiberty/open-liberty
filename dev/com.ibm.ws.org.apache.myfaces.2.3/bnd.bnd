@@ -166,7 +166,7 @@ Import-Package: !com.google.inject, \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.appserver.spi.kernel.service,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

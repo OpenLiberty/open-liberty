@@ -53,7 +53,7 @@ Include-Resource: \
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.websphere.security;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.cdi.1.2.interfaces,\
+    com.ibm.ws.cdi.interfaces,\
     com.ibm.ws.common.encoder;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\

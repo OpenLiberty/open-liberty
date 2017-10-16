@@ -52,9 +52,10 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.jboss.logging.3.3.0, \
  com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
- com.ibm.ws.cdi.1.2.weld.impl, \
+ com.ibm.ws.cdi.shared.weld, \
+ com.ibm.ws.cdi.1.2.weld, \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/", \
- com.ibm.ws.cdi.1.2.interfaces
+ com.ibm.ws.cdi.interfaces
 -jars=com.ibm.websphere.appserver.thirdparty.cdi; location:="dev/api/third-party/,lib/"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd

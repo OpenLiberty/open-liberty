@@ -6,7 +6,7 @@ IBM-App-ForceRestart: install, \
 Subsystem-Version: 1.1.0
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.cdi-1.2))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.transaction-1.2))"
--bundles=com.ibm.ws.cdi.1.2.transaction
+-bundles=com.ibm.ws.cdi.transaction
 IBM-Install-Policy: when-satisfied
 kind=ga
 edition=core

@@ -7,7 +7,7 @@ IBM-License-Agreement: wlp/lafiles/LA
 IBM-ProductID: com.ibm.websphere.appserver
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.cdi-1.2))",
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.servlet-3.1))"
-Subsystem-Content: com.ibm.ws.cdi.1.2.web; version="[1.0.0,1.0.200)",
+Subsystem-Content: com.ibm.ws.cdi.web; version="[1.0.0,1.0.200)",
  com.ibm.websphere.javaee.jsp.2.3; location:="dev/api/spec/,lib/"; version="[1.0.0,1.0.200)"
 Subsystem-Description: %description
 Subsystem-License: http://www.ibm.com/licenses/wlp-featureterms-v1
