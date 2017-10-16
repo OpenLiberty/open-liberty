@@ -1,3 +1,0 @@
-<project name="com.ibm.websphere.appserver.sessionDatabase-1.0" default="build" basedir=".">
-  <import file="../ant_build/public_imports/feature_imports.xml"/>
-</project>
