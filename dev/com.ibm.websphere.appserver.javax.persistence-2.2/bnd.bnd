@@ -12,9 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.persistence.base-2.2;version=latest, \
 	com.ibm.ws.javaee.persistence.api.2.2;version=latest, \
 	com.ibm.websphere.javaee.persistence.2.2;version=latest

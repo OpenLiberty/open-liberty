@@ -8,19 +8,11 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+-include= ~../cnf/resources/bnd/liberty-release.props
 
-Bundle-SymbolicName: com.ibm.websphere.appserver.sessionDatabase-1.0
-
-publish.feature.resources: **
+-nobundles=true
 
 -dependson: \
-	${javac.bootclasspath.java6}, \
-	com.ibm.websphere.appserver.jndi-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.servlet-3.0;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.1;version=latest, \
-	com.ibm.websphere.appserver.jdbc-4.0;version=latest, \
 	com.ibm.websphere.security;version=latest, \
 	com.ibm.ws.session.db;version=latest, \
 	com.ibm.ws.serialization;version=latest, \
