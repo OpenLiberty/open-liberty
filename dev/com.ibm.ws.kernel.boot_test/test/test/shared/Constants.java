@@ -20,7 +20,7 @@ public class Constants {
      * Test data directory: note the space! always test paths with spaces.
      * Dratted windows.
      */
-    private static final String testClassesDir = System.getProperty("test.classesDir", "bin_test");
+    private static final String testClassesDir = System.getProperty("test.classesDir", "bin_test").replace("\\", "/");
     public static final String TEST_DATA_DIR = testClassesDir + "/test data/";
 
     public static final File TEST_DATA_FILE = new File(TEST_DATA_DIR);
@@ -38,7 +38,7 @@ public class Constants {
     public static final File TEST_TMP_ROOT_FILE = new File(TEST_TMP_ROOT);
 
     /** The dist dir containing the real jar file for the bootstrap */
-    private static final String testBuildDir = System.getProperty("test.buildDir", "generated");
+    private static final String testBuildDir = System.getProperty("test.buildDir", "generated").replace("\\", "/");
     public static final String BOOTSTRAP_LIB_DIR = testBuildDir.replace("/com.ibm.ws.kernel.boot_test/", "/com.ibm.ws.kernel.boot/");
 
     public static final String BOOTSTRAP_PUBLISH_DIR = "../com.ibm.ws.kernel.boot/publish/";

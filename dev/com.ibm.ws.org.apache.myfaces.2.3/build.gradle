@@ -36,8 +36,10 @@
  }
 
  task deleteJars(type:Delete) {
-    println "deleteJars task, deleting " + downloadSrcDir
-    delete(downloadSrcDir)
+    doLast {
+    	println "deleteJars task, deleting " + downloadSrcDir
+    	delete(downloadSrcDir)
+    }
  }
 
  assemble {
