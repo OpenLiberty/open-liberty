@@ -151,7 +151,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         if (identityStoreHandler != null) {
             status = validateWithIdentityStore(clientSubject, credential, identityStoreHandler, handler);
         } else {
-            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE");
+            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER");
         }
         if (identityStoreHandler == null || status == AuthenticationStatus.NOT_DONE) {
             // If an identity store is not available, fall back to the original user registry.
