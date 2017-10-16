@@ -79,9 +79,14 @@ public class TrRegisterTest {
         SharedTr.clearConfig();
 
         final String testBuildDir = System.getProperty("test.buildDir", "generated");
-        final File mFile = new File(testBuildDir + "/trace-logs/messages.log").getAbsoluteFile();
+        File traceLogs = new File(testBuildDir + "/trace-logs");
+        String logs = "logs";
+        if (traceLogs.exists()) {
+            logs = "trace-logs";
+        }
+        final File mFile = new File(testBuildDir + "/" + logs + "/messages.log").getAbsoluteFile();
         mFileStream = new FileOutputStream(mFile, true);
-        final File tFile = new File(testBuildDir + "/trace-logs/trace.log").getAbsoluteFile();
+        final File tFile = new File(testBuildDir + "/" + logs + "/trace.log").getAbsoluteFile();
         tFileStream = new FileOutputStream(tFile, true);
         // Create one TraceComponent shared by tests below
         // (See TrRegisterTest for exercise of Tr.register)
