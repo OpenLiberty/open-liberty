@@ -103,7 +103,7 @@ public class JSONMetadataWriter implements OutputWriter {
         return jsonObject;
     }
 
-    String sanitizeMetadata(String s) {
+    private String sanitizeMetadata(String s) {
         if (s == null || s.trim().isEmpty()) {
             return "";
         } else {
