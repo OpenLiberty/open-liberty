@@ -8,7 +8,7 @@ IBM-API-Package: org.eclipse.microprofile.config;  type="stable", \
 	org.eclipse.microprofile.config.spi;  type="stable", \
         org.eclipse.microprofile.config.inject;  type="stable"
 IBM-ShortName: mpConfig-1.1
-Subsystem-Name: MicroProfile Config
+Subsystem-Name: MicroProfile Config 1.1
 -features=com.ibm.websphere.appserver.org.eclipse.microprofile.config-1.1, \
  com.ibm.websphere.appserver.javax.cdi-1.2, \
  com.ibm.websphere.appserver.javax.annotation-1.2
