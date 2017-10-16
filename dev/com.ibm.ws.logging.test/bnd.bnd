@@ -46,3 +46,6 @@ instrument.disabled: true
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	org.eclipse.osgi;version=latest, \
         com.ibm.ws.logging;version=latest
+
+-nojunit: true
+
