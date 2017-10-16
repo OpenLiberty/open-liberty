@@ -2,9 +2,7 @@
 
   <featureManager>
     <feature>servlet-3.1</feature>
-    <!-- The open tracing feature should be brought in by the open tracing mock feature. -->
-    <!-- <feature>opentracing-1.0</feature> -->
-    <feature>opentracingMock-0.30</feature>
+    <feature>usr:opentracingMock-0.30</feature>
     <feature>componenttest-1.0</feature>
   </featureManager>
 

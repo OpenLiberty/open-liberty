@@ -1,4 +1,4 @@
-###############################################################################
+#*******************************************************************************
 # Copyright (c) 2017 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License v1.0
@@ -7,10 +7,9 @@
 #
 # Contributors:
 #     IBM Corporation - initial API and implementation
-################################################################################
-#ISMESSAGEFILE FALSE
-#NLS_ENCODING=UNICODE
-#NLS_MESSAGEFORMAT_NONE
-#
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
-description=This feature provides a Mock implementation of an opentracing Tracer
+# Define the bundle for this FAT project
+Bundle-SymbolicName: ${basename;${basedir}}
