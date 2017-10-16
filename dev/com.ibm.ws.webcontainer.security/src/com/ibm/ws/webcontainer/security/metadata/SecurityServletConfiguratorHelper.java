@@ -184,7 +184,7 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
         ClassInfo ci = annosInfo.getDelayableClassInfo(className);
         boolean isValid = false;
         while (ci != null) {
-            if (ci.getSuperclassName().equals("javax.ws.rs.core.Application")) {
+            if ("javax.ws.rs.core.Application".equals(ci.getSuperclassName())) {
                 isValid = true;
                 break;
             }
