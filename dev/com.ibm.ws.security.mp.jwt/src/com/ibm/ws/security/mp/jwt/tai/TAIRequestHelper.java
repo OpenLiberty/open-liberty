@@ -112,12 +112,16 @@ public class TAIRequestHelper {
             }
             if (!AUTHN_TYPE.equals(loginCfg)) {
                 String msg = Tr.formatMessage(tc, "MPJWT_NOT_FOUND_IN_APPLICATION", new Object[] { AUTHN_TYPE, loginCfg, "ignoreApplicationAuthMethod", "false" });
-                Tr.warning(tc, msg);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "isMpJwtSpecifiedInLoginConfig ", msg);
+                }
             }
             return (AUTHN_TYPE.equals(loginCfg));
         }
         String msg = Tr.formatMessage(tc, "MPJWT_NOT_FOUND_IN_APPLICATION", new Object[] { AUTHN_TYPE, "null", "ignoreApplicationAuthMethod", "false" });
-        Tr.warning(tc, msg);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "isMpJwtSpecifiedInLoginConfig ", msg);
+        }
         return false;
 
     }

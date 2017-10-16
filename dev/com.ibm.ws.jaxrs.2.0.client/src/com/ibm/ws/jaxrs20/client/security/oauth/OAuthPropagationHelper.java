@@ -101,7 +101,7 @@ public class OAuthPropagationHelper {
 
     public static String getMpJsonWebToken() {
         if (MpJsonWebTokenUtilRef.getService() != null) {
-            MpJsonWebTokenUtilRef.getService().getJsonWebTokenPrincipal(getRunAsSubject());
+            return MpJsonWebTokenUtilRef.getService().getJsonWebTokenPrincipal(getRunAsSubject());
         }
         else {
             //Tr.warn - Cannot reach the service that has access to the MicroProfile JWT token. Make sure that the mpJwt feature is included in the server along with the jaxrsClient-2.1
