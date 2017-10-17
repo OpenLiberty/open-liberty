@@ -92,16 +92,23 @@ public class JSONMetadataWriter implements OutputWriter {
 
     private JSONObject getJsonFromObject(Metadata metadata) {
         JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("name", metadata.getName());
-            jsonObject.put("displayName", metadata.getDisplayName());
-            jsonObject.put("description", Tr.formatMessage(tc, locale, metadata.getDescription()));
-            jsonObject.put("type", metadata.getType());
-            jsonObject.put("unit", metadata.getUnit());
-            jsonObject.put("tags", getJsonFromMap(metadata.getTags()));
-        } catch (Exception e) {
-        }
+        jsonObject.put("name", sanitizeMetadata(metadata.getName()));
+        jsonObject.put("displayName", sanitizeMetadata(metadata.getDisplayName()));
+        //Check TR.formatMessage for performance impact
+        jsonObject.put("description", Tr.formatMessage(tc, locale, sanitizeMetadata(metadata.getDescription())));
+        jsonObject.put("type", sanitizeMetadata(metadata.getType()));
+        jsonObject.put("unit", sanitizeMetadata(metadata.getUnit()));
+        jsonObject.put("tags", getJsonFromMap(metadata.getTags()));
+
         return jsonObject;
+    }
+
+    private String sanitizeMetadata(String s) {
+        if (s == null || s.trim().isEmpty()) {
+            return "";
+        } else {
+            return s;
+        }
     }
 
     private JSONObject getJsonFromMap(Map<String, String> map) {
