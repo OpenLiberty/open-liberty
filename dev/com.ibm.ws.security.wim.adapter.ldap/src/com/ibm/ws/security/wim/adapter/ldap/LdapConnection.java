@@ -526,10 +526,8 @@ public class LdapConnection {
                     iNameParser = ctx.getNameParser("");
                 }
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)), e);
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             } finally {
                 releaseDirContext(ctx);
             }
@@ -743,18 +741,14 @@ public class LdapConnection {
                     iPrefPoolSize = (Integer) poolConfig.get((CONFIG_PROP_PREF_POOL_SIZE));
                 }
                 if (iMaxPoolSize != 0 && iMaxPoolSize < iInitPoolSize) {
-                    throw new InvalidInitPropertyException(WIMMessageKey.INIT_POOL_SIZE_TOO_BIG, Tr.formatMessage(
-                                                                                                                  tc,
-                                                                                                                  WIMMessageKey.INIT_POOL_SIZE_TOO_BIG,
-                                                                                                                  WIMMessageHelper.generateMsgParms(Integer.valueOf(iInitPoolSize),
-                                                                                                                                                    Integer.valueOf(iMaxPoolSize))));
+                    String msg = Tr.formatMessage(tc, WIMMessageKey.INIT_POOL_SIZE_TOO_BIG,
+                                                  WIMMessageHelper.generateMsgParms(Integer.valueOf(iInitPoolSize), Integer.valueOf(iMaxPoolSize)));
+                    throw new InvalidInitPropertyException(WIMMessageKey.INIT_POOL_SIZE_TOO_BIG, msg);
                 }
                 if (iMaxPoolSize != 0 && iPrefPoolSize != 0 && iMaxPoolSize < iPrefPoolSize) {
-                    throw new InvalidInitPropertyException(WIMMessageKey.PREF_POOL_SIZE_TOO_BIG, Tr.formatMessage(
-                                                                                                                  tc,
-                                                                                                                  WIMMessageKey.PREF_POOL_SIZE_TOO_BIG,
-                                                                                                                  WIMMessageHelper.generateMsgParms(Integer.valueOf(iInitPoolSize),
-                                                                                                                                                    Integer.valueOf(iMaxPoolSize))));
+                    String msg = Tr.formatMessage(tc, WIMMessageKey.PREF_POOL_SIZE_TOO_BIG,
+                                                  WIMMessageHelper.generateMsgParms(Integer.valueOf(iInitPoolSize), Integer.valueOf(iMaxPoolSize)));
+                    throw new InvalidInitPropertyException(WIMMessageKey.PREF_POOL_SIZE_TOO_BIG, msg);
                 }
                 if (poolConfig.get(CONFIG_PROP_POOL_TIME_OUT) != null) {
                     providedPoolTimeOut = (Long) poolConfig.get((CONFIG_PROP_POOL_TIME_OUT));
@@ -793,24 +787,35 @@ public class LdapConnection {
     }
 
     private void initializeServers(Map<String, Object> configProps) throws WIMException {
-        // Set ldapTimeout
+        /*
+         * Set ldapTimeout
+         */
         if (configProps.containsKey(CONFIG_PROP_SEARCH_TIME_OUT)) {
             long val = Long.parseLong(String.valueOf(configProps.get(CONFIG_PROP_SEARCH_TIME_OUT)));
             iTimeLimit = (int) val;
         }
-        // Set ldapCountLimit
-        if (configProps.containsKey(CONFIG_PROP_SEARCH_COUNT_LIMIT))
-            iCountLimit = Integer.parseInt((String) configProps.get(CONFIG_PROP_SEARCH_COUNT_LIMIT));
 
-        // Set search page size
+        /*
+         * Set ldapCountLimit
+         */
+        if (configProps.containsKey(CONFIG_PROP_SEARCH_COUNT_LIMIT)) {
+            iCountLimit = (int) configProps.get(CONFIG_PROP_SEARCH_COUNT_LIMIT);
+        }
+
+        /*
+         * Set search page size
+         */
         if (configProps.containsKey(CONFIG_PROP_SEARCH_PAGE_SIZE)) {
-            iPageSize = Integer.parseInt((String) configProps.get(CONFIG_PROP_SEARCH_PAGE_SIZE));
+            iPageSize = (int) configProps.get(CONFIG_PROP_SEARCH_PAGE_SIZE);
         } else {
             if (iLdapConfigMgr.getLdapType().startsWith("MICROSOFT ACTIVE DIRECTORY")) {
                 iPageSize = 1000;
             }
         }
-        // Set attribute range step
+
+        /*
+         * Set attribute range step
+         */
         if (configProps.containsKey(CONFIG_PROP_ATTRIBUTE_RANGE_STEP)) {
             iAttrRangeStep = Integer.parseInt((String) configProps.get(CONFIG_PROP_ATTRIBUTE_RANGE_STEP));
         } else {
@@ -896,10 +901,8 @@ public class LdapConnection {
 
             // bindPwd is mandatory
             if (decodedPassword == null || decodedPassword.length() == 0) {
-                throw new MissingInitPropertyException(WIMMessageKey.MISSING_INI_PROPERTY, Tr.formatMessage(
-                                                                                                            tc,
-                                                                                                            WIMMessageKey.MISSING_INI_PROPERTY,
-                                                                                                            WIMMessageHelper.generateMsgParms(CONFIG_PROP_BIND_PASSWORD)));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.MISSING_INI_PROPERTY, WIMMessageHelper.generateMsgParms(CONFIG_PROP_BIND_PASSWORD));
+                throw new MissingInitPropertyException(WIMMessageKey.MISSING_INI_PROPERTY, msg);
             }
             env.put(Context.SECURITY_CREDENTIALS, new ProtectedString(decodedPassword.toCharArray()));
         }
@@ -1139,30 +1142,21 @@ public class LdapConnection {
                     attrs = getAttributesByUniqueName(uniqueName, attrIds, inEntityTypes);
                     dn = LdapHelper.getDNFromAttributes(attrs);
                 } else {
-                    throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, Tr.formatMessage(
-                                                                                                       tc,
-                                                                                                       WIMMessageKey.ENTITY_NOT_FOUND,
-                                                                                                       WIMMessageHelper.generateMsgParms(null)));
+                    String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND, WIMMessageHelper.generateMsgParms(null));
+                    throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, msg);
                 }
             } else {
                 attrs = getAttributesByUniqueName(extId, attrIds, inEntityTypes);
                 dn = LdapHelper.getDNFromAttributes(attrs);
             }
-        }
-        /*
-         * else if (dn != null) {
-         * attrs = checkAttributesCache(dn, attrIds);
-         * }
-         */
-        else if (uniqueName != null) {
+        } else if (uniqueName != null) {
             attrs = getAttributesByUniqueName(uniqueName, attrIds, inEntityTypes);
             dn = LdapHelper.getDNFromAttributes(attrs);
         } else {
-            throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, Tr.formatMessage(
-                                                                                               tc,
-                                                                                               WIMMessageKey.ENTITY_NOT_FOUND,
-                                                                                               WIMMessageHelper.generateMsgParms(null)));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND, WIMMessageHelper.generateMsgParms(null));
+            throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, msg);
         }
+
         String entityType = iLdapConfigMgr.getEntityType(attrs, uniqueName, dn, extId, inEntityTypes);
         uniqueName = getUniqueName(dn, entityType, attrs);
         if (extId == null) {
@@ -1225,10 +1219,8 @@ public class LdapConnection {
                     }
                 }
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             }
         }
         if (uniqueName == null) {
@@ -1272,15 +1264,11 @@ public class LdapConnection {
                     }
                 }
             } catch (NameNotFoundException e) {
-                throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, Tr.formatMessage(
-                                                                                                       tc,
-                                                                                                       WIMMessageKey.LDAP_ENTRY_NOT_FOUND,
-                                                                                                       WIMMessageHelper.generateMsgParms(name, e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_ENTRY_NOT_FOUND, WIMMessageHelper.generateMsgParms(name, e.toString(true)));
+                throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, msg, e);
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             } finally {
                 releaseDirContext(ctx);
             }
@@ -1307,18 +1295,12 @@ public class LdapConnection {
 
             supportRangeAttributes(attributes, name, ctx);
         } catch (NameNotFoundException e) {
-            throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, Tr.formatMessage(
-                                                                                                   tc,
-                                                                                                   WIMMessageKey.LDAP_ENTRY_NOT_FOUND,
-                                                                                                   WIMMessageHelper.generateMsgParms(name, e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_ENTRY_NOT_FOUND, WIMMessageHelper.generateMsgParms(name, e.toString(true)));
+            throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, msg, e);
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                          tc,
-                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
-        }
-
-        finally {
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
+        } finally {
             releaseDirContext(ctx);
         }
         return attributes;
@@ -1623,10 +1605,8 @@ public class LdapConnection {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, METHODNAME + " " + e.toString(true), e);
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                          tc,
-                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         }
 
         return count;
@@ -1658,15 +1638,11 @@ public class LdapConnection {
                     }
                 }
             } catch (NameNotFoundException e) {
-                throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, Tr.formatMessage(
-                                                                                                       tc,
-                                                                                                       WIMMessageKey.LDAP_ENTRY_NOT_FOUND,
-                                                                                                       WIMMessageHelper.generateMsgParms(name, e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_ENTRY_NOT_FOUND, WIMMessageHelper.generateMsgParms(name, e.toString(true)));
+                throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, msg, e);
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             } finally {
                 releaseDirContext(ctx);
             }
@@ -1689,7 +1665,7 @@ public class LdapConnection {
                     NamingEnumeration<SearchResult> neu = null;
                     try {
                         if (tc.isDebugEnabled()) {
-                            Tr.debug(tc, METHODNAME + " Search page " + +pageCount);
+                            Tr.debug(tc, METHODNAME + " Search page: " + pageCount);
                         }
                         if (filterArgs == null) {
                             neu = ctx.search(new LdapName(name), filterExpr, cons);
@@ -1700,13 +1676,24 @@ public class LdapConnection {
                         if ((e instanceof CommunicationException) || (e instanceof ServiceUnavailableException)) {
                             ctx = reCreateDirContext(ctx, e.toString());
 
-                            if (requestControls != null) {
-                                ctx.setRequestControls(new Control[] { requestControls[0], new PagedResultsControl(iPageSize, false) });
+                            /*
+                             * If the cookie is not null, we are recovering from a failure after receiving
+                             * results, so reuse the cookie to begin where we left off.
+                             */
+                            PagedResultsControl pagedResultsControl = null;
+                            if (cookie != null && cookie.length > 0) {
+                                pagedResultsControl = new PagedResultsControl(iPageSize, cookie, false);
                             } else {
-                                ctx.setRequestControls(new Control[] { new PagedResultsControl(iPageSize, false) });
+                                pagedResultsControl = new PagedResultsControl(iPageSize, false);
+                            }
+
+                            if (requestControls != null) {
+                                ctx.setRequestControls(new Control[] { requestControls[0], pagedResultsControl });
+                            } else {
+                                ctx.setRequestControls(new Control[] { pagedResultsControl });
                             }
                             if (tc.isDebugEnabled()) {
-                                Tr.debug(tc, METHODNAME + " Search page " + +pageCount);
+                                Tr.debug(tc, METHODNAME + " Search page (retry): " + pageCount);
                             }
                             if (filterArgs == null) {
                                 neu = ctx.search(new LdapName(name), filterExpr, cons);
@@ -1728,24 +1715,18 @@ public class LdapConnection {
                             PagedResultsResponseControl resCtrl = (PagedResultsResponseControl) resCtrls[0];
                             cookie = resCtrl.getCookie();
                             if (cookie != null && cookie.length > 0) {
-                                ctx.setRequestControls(new Control[] {
-                                                                       new PagedResultsControl(iPageSize, cookie, false)
-                                });
+                                ctx.setRequestControls(new Control[] { new PagedResultsControl(iPageSize, cookie, false) });
                             }
                         }
                     }
                 } while (cookie != null && cookie.length > 0 && count < cons.getCountLimit());
                 return allNeu;
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             } catch (IOException e) {
-                throw new WIMSystemException(WIMMessageKey.GENERIC, Tr.formatMessage(
-                                                                                     tc,
-                                                                                     WIMMessageKey.GENERIC,
-                                                                                     WIMMessageHelper.generateMsgParms(e.toString())));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.GENERIC, WIMMessageHelper.generateMsgParms(e.toString()));
+                throw new WIMSystemException(WIMMessageKey.GENERIC, msg, e);
             } finally {
                 try {
                     ctx.setRequestControls(null);
@@ -1857,10 +1838,10 @@ public class LdapConnection {
 
         } catch (NameNotFoundException e) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_NOT_FOUND, WIMMessageHelper.generateMsgParms(parent));
-            throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, msg);
+            throw new EntityNotFoundException(WIMMessageKey.ENTITY_NOT_FOUND, msg, e);
         } catch (NamingException e) {
             String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg);
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         } finally {
             releaseDirContext(ctx);
         }
@@ -2043,10 +2024,8 @@ public class LdapConnection {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, METHODNAME + " " + e.toString(true));
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                          tc,
-                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         }
         return entities;
     }
@@ -2071,10 +2050,8 @@ public class LdapConnection {
             }
             return ancestorDNs;
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                          tc,
-                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         }
     }
 
@@ -2181,10 +2158,8 @@ public class LdapConnection {
                         try {
                             createContextPool(iInitPoolSize, null);
                         } catch (NamingException e) {
-                            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                                          tc,
-                                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+                            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
                         }
                     }
 
@@ -2224,10 +2199,8 @@ public class LdapConnection {
                         ctx = createDirContext(getEnvironment(URLTYPE_SEQUENCE, getActiveURL()));
                     } catch (NamingException e) {
                         iLiveContexts--;
-                        throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                                      tc,
-                                                                                                      WIMMessageKey.NAMING_EXCEPTION,
-                                                                                                      WIMMessageHelper.generateMsgParms(e.toString(true))));
+                        String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                        throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
                     }
                 } else {
                     // Check
@@ -2282,10 +2255,8 @@ public class LdapConnection {
                             }
                             iLastQueryTime = currentTime;
                         } catch (NamingException e) {
-                            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                                          tc,
-                                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+                            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
                         }
                     }
                 }
@@ -2337,10 +2308,8 @@ public class LdapConnection {
                         Tr.debug(tc, WIMMessageKey.CURRENT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(getActiveURL()));
                 }
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             }
         }
         return ctx;
@@ -2390,10 +2359,8 @@ public class LdapConnection {
                 Tr.debug(tc, WIMMessageKey.CURRENT_LDAP_SERVER, WIMMessageHelper.generateMsgParms(getActiveURL()));
             return ctx;
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                          tc,
-                                                                                          WIMMessageKey.NAMING_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         }
     }
 
@@ -2741,10 +2708,8 @@ public class LdapConnection {
                         iLiveContexts--; //PM95697
                         ctx.close();
                     } catch (NamingException e) {
-                        throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                                      tc,
-                                                                                                      WIMMessageKey.NAMING_EXCEPTION,
-                                                                                                      WIMMessageHelper.generateMsgParms(e.toString(true))));
+                        String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                        throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
                     }
 
                     if (tc.isDebugEnabled()) {
@@ -2782,10 +2747,8 @@ public class LdapConnection {
             try {
                 ctx.close();
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             }
         }
     }
@@ -2822,10 +2785,8 @@ public class LdapConnection {
                     return neu.next();
                 }
             } catch (NamingException e) {
-                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(
-                                                                                              tc,
-                                                                                              WIMMessageKey.NAMING_EXCEPTION,
-                                                                                              WIMMessageHelper.generateMsgParms(e.toString(true))));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+                throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
             }
         }
 
@@ -2878,14 +2839,14 @@ public class LdapConnection {
                 ctx.destroySubcontext(new LdapName(name));
             }
         } catch (ContextNotEmptyException e) {
-            throw new EntityHasDescendantsException(WIMMessageKey.ENTITY_HAS_DESCENDENTS, Tr.formatMessage(tc, WIMMessageKey.ENTITY_HAS_DESCENDENTS,
-                                                                                                           WIMMessageHelper.generateMsgParms(name)));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_HAS_DESCENDENTS, WIMMessageHelper.generateMsgParms(name));
+            throw new EntityHasDescendantsException(WIMMessageKey.ENTITY_HAS_DESCENDENTS, msg, e);
         } catch (NameNotFoundException e) {
-            throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, Tr.formatMessage(tc, WIMMessageKey.LDAP_ENTRY_NOT_FOUND,
-                                                                                                   WIMMessageHelper.generateMsgParms(name, e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.LDAP_ENTRY_NOT_FOUND, WIMMessageHelper.generateMsgParms(name, e.toString(true)));
+            throw new EntityNotFoundException(WIMMessageKey.LDAP_ENTRY_NOT_FOUND, msg, e);
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION,
-                                                                                          WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         } finally {
             releaseDirContext(ctx);
         }
@@ -2914,8 +2875,8 @@ public class LdapConnection {
                 ctx.modifyAttributes(new LdapName(name), mods);
             }
         } catch (NameNotFoundException e) {
-            throw new EntityNotFoundException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION,
-                                                                                               WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new EntityNotFoundException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         } catch (NamingException e) {
             throw e;
         } finally {
@@ -2939,8 +2900,8 @@ public class LdapConnection {
                 ctx.modifyAttributes(new LdapName(name), mod_op, attrs);
             }
         } catch (NameNotFoundException e) {
-            throw new EntityNotFoundException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION,
-                                                                                               WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new EntityNotFoundException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         } catch (NamingException e) {
             throw e;
         }
@@ -2984,13 +2945,14 @@ public class LdapConnection {
                 }
             }
         } catch (NameAlreadyBoundException e) {
-            throw new EntityAlreadyExistsException(WIMMessageKey.ENTITY_ALREADY_EXIST, Tr.formatMessage(tc, WIMMessageKey.ENTITY_ALREADY_EXIST,
-                                                                                                        WIMMessageHelper.generateMsgParms(name)));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.ENTITY_ALREADY_EXIST, WIMMessageHelper.generateMsgParms(name));
+            throw new EntityAlreadyExistsException(WIMMessageKey.ENTITY_ALREADY_EXIST, msg, e);
         } catch (NameNotFoundException e) {
-            throw new EntityNotFoundException(WIMMessageKey.PARENT_NOT_FOUND, Tr.formatMessage(tc, WIMMessageKey.PARENT_NOT_FOUND,
-                                                                                               WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.PARENT_NOT_FOUND, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new EntityNotFoundException(WIMMessageKey.PARENT_NOT_FOUND, msg, e);
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         } finally {
             releaseDirContext(ctx);
         }
@@ -3025,9 +2987,8 @@ public class LdapConnection {
         if (!iWriteToSecondary) {
             String providerURL = getProviderURL(ctx);
             if (!getPrimaryURL().equalsIgnoreCase(providerURL)) {
-                throw new OperationNotSupportedException(WIMMessageKey.WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED, Tr.formatMessage(tc,
-                                                                                                                                WIMMessageKey.WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED,
-                                                                                                                                WIMMessageHelper.generateMsgParms(providerURL)));
+                String msg = Tr.formatMessage(tc, WIMMessageKey.WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED, WIMMessageHelper.generateMsgParms(providerURL));
+                throw new OperationNotSupportedException(WIMMessageKey.WRITE_TO_SECONDARY_SERVERS_NOT_ALLOWED, msg);
             }
         }
     }
@@ -3053,7 +3014,8 @@ public class LdapConnection {
                 ctx.rename(dn, newDn);
             }
         } catch (NamingException e) {
-            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true))));
+            String msg = Tr.formatMessage(tc, WIMMessageKey.NAMING_EXCEPTION, WIMMessageHelper.generateMsgParms(e.toString(true)));
+            throw new WIMSystemException(WIMMessageKey.NAMING_EXCEPTION, msg, e);
         } finally {
             releaseDirContext(ctx);
         }
