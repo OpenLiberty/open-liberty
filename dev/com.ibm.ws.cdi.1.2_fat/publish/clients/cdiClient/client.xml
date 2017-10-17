@@ -1,0 +1,11 @@
+<client>
+	<include location="../fatTestPorts.xml"/>
+    <featureManager>
+        <feature>javaeeClient-7.0</feature>
+    </featureManager>
+    
+   <application id="HelloAppClient" name="HelloAppClient" type="ear" location="HelloAppClient.ear"/>
+   
+   <logging traceSpecification="**=info:JCDI=all:com.ibm.ws.cdi*=all:com.ibm.ws.weld*=all:org.jboss.*=all:Injection=all:org.apache.felix*=all:logservice=all=enabled"/>
+
+</client>
