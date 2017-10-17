@@ -945,19 +945,20 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
+    // This sets state to STOPPED, so ideally would be renamed (which is a pain).
     public JobExecution updateJobExecutionAndInstanceNotSetToServerYet(final long jobExecutionId,
                                                                        final Date updateTime) throws NoSuchJobExecutionException, ExecutionAssignedToServerException {
-        EntityManager em = getPsu().createEntityManager();
+        final EntityManager em = getPsu().createEntityManager();
 
-        final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_AND_INSTANCE_SERVER_NOT_SET,
-                                                                         JobExecutionEntity.class);
-        query.setParameter("batchStatus", BatchStatus.STOPPED);
-        query.setParameter("jobExecId", jobExecutionId);
-        query.setParameter("lastUpdatedTime", updateTime);
         try {
             return new TranRequest<JobExecution>(em) {
                 @Override
                 public JobExecution call() throws ExecutionAssignedToServerException {
+                    final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_AND_INSTANCE_SERVER_NOT_SET,
+                                                                                     JobExecutionEntity.class);
+                    query.setParameter("batchStatus", BatchStatus.STOPPED);
+                    query.setParameter("jobExecId", jobExecutionId);
+                    query.setParameter("lastUpdatedTime", updateTime);
                     JobExecutionEntity execution = entityMgr.find(JobExecutionEntity.class, jobExecutionId, LockModeType.PESSIMISTIC_WRITE);
                     if (execution == null) {
                         throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
@@ -1256,13 +1257,13 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     public JobExecutionEntity getJobExecutionFromJobExecNum(final long jobInstanceId, final int jobExecNum) throws NoSuchJobInstanceException, IllegalArgumentException {
 
         final EntityManager em = getPsu().createEntityManager();
-        final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(
-                                                                         JobExecutionEntity.GET_JOB_EXECUTIONS_BY_JOB_INST_ID_AND_JOB_EXEC_NUM,
-                                                                         JobExecutionEntity.class);
         try {
             JobExecutionEntity exec = new TranRequest<JobExecutionEntity>(em) {
                 @Override
                 public JobExecutionEntity call() {
+                    final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(
+                                                                                     JobExecutionEntity.GET_JOB_EXECUTIONS_BY_JOB_INST_ID_AND_JOB_EXEC_NUM,
+                                                                                     JobExecutionEntity.class);
                     query.setParameter("instanceId", jobInstanceId);
                     query.setParameter("jobExecNum", jobExecNum);
 
@@ -1273,7 +1274,6 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     }
 
                     if (jobExec == null || jobExec.size() == 0) {
-
                         // call this to trigger NoSuchJobInstanceException if instance is completely unknown (as opposed to there being no executions
                         getJobInstance(jobInstanceId);
 
@@ -1314,18 +1314,19 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
     @Override
     public JobExecutionEntity updateJobExecutionServerIdAndRestUrlForStartingJob(final long jobExecutionId) throws NoSuchJobExecutionException, JobStoppedException {
-        EntityManager em = getPsu().createEntityManager();
+        final EntityManager em = getPsu().createEntityManager();
 
-        final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_SERVERID_AND_RESTURL_FOR_STARTING_JOB,
-                                                                         JobExecutionEntity.class);
-
-        query.setParameter("serverId", batchLocationService.getServerId());
-        query.setParameter("restUrl", batchLocationService.getBatchRestUrl());
-        query.setParameter("jobExecId", jobExecutionId);
         try {
             return new TranRequest<JobExecutionEntity>(em) {
                 @Override
                 public JobExecutionEntity call() throws JobStoppedException {
+                    final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_SERVERID_AND_RESTURL_FOR_STARTING_JOB,
+                                                                                     JobExecutionEntity.class);
+
+                    query.setParameter("serverId", batchLocationService.getServerId());
+                    query.setParameter("restUrl", batchLocationService.getBatchRestUrl());
+                    query.setParameter("jobExecId", jobExecutionId);
+
                     JobExecutionEntity execution = entityMgr.find(JobExecutionEntity.class, jobExecutionId, LockModeType.PESSIMISTIC_WRITE);
                     if (execution == null) {
                         throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
@@ -1800,16 +1801,16 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public TopLevelStepInstanceEntity updateStepThreadInstanceWithPartitionPlanSize(StepThreadInstanceKey stepInstanceKey, final int numCurrentPartitions) {
-        EntityManager em = getPsu().createEntityManager();
+    public TopLevelStepInstanceEntity updateStepThreadInstanceWithPartitionPlanSize(final StepThreadInstanceKey stepInstanceKey, final int numCurrentPartitions) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            final TopLevelStepInstanceEntity stepInstance = em.find(TopLevelStepInstanceEntity.class, stepInstanceKey);
-            if (stepInstance == null) {
-                throw new IllegalStateException("No step thread instance found for key = " + stepInstanceKey);
-            }
             return new TranRequest<TopLevelStepInstanceEntity>(em) {
                 @Override
                 public TopLevelStepInstanceEntity call() {
+                    final TopLevelStepInstanceEntity stepInstance = em.find(TopLevelStepInstanceEntity.class, stepInstanceKey);
+                    if (stepInstance == null) {
+                        throw new IllegalStateException("No step thread instance found for key = " + stepInstanceKey);
+                    }
                     stepInstance.setPartitionPlanSize(numCurrentPartitions);
                     return stepInstance;
                 }
@@ -2400,16 +2401,16 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public boolean purgeJobInstanceAndRelatedData(long jobInstanceId) {
-        EntityManager em = getPsu().createEntityManager();
+    public boolean purgeJobInstanceAndRelatedData(final long jobInstanceId) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            final JobInstanceEntity instance = em.find(JobInstanceEntity.class, jobInstanceId);
-            if (instance == null) {
-                throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
-            }
             new TranRequest<Void>(em) {
                 @Override
                 public Void call() {
+                    final JobInstanceEntity instance = em.find(JobInstanceEntity.class, jobInstanceId);
+                    if (instance == null) {
+                        throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
+                    }
                     entityMgr.remove(instance);
                     return null;
                 }
