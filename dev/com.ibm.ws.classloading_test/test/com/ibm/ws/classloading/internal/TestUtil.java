@@ -67,11 +67,13 @@ final class TestUtil {
         return getClassLoadingService(parentClassLoader, GetLibraryAction.NO_LIBS, failResolve, null);
     }
 
-    static synchronized ClassLoadingServiceImpl getClassLoadingService(ClassLoader parentClassLoader, GetLibraryAction getLibraries) throws BundleException, InvalidSyntaxException {
+    static synchronized ClassLoadingServiceImpl getClassLoadingService(ClassLoader parentClassLoader,
+                                                                       GetLibraryAction getLibraries) throws BundleException, InvalidSyntaxException {
         return getClassLoadingService(parentClassLoader, getLibraries, false, null);
     }
 
-    static ClassLoadingServiceImpl getClassLoadingService(ClassLoader parentClassLoader, ComponentContextExpectationProvider expectations) throws BundleException, InvalidSyntaxException {
+    static ClassLoadingServiceImpl getClassLoadingService(ClassLoader parentClassLoader,
+                                                          ComponentContextExpectationProvider expectations) throws BundleException, InvalidSyntaxException {
         return getClassLoadingService(parentClassLoader, null, false, expectations);
     }
 
@@ -196,7 +198,7 @@ final class TestUtil {
 
     public static URL getOtherClassesURL(ClassSource otherSource) throws MalformedURLException {
         URL loc = getTestClassesURL();
-        String mainClassesDir = System.getProperty("main.classesDir", "bin");
+        String mainClassesDir = System.getProperty("main.classesDir", "bin").replace("\\", "/");
         String mainClassesSuffix = mainClassesDir.replaceAll(".*/com.ibm.ws.classloading_test/", "");
         return new URL(loc.toString().replaceAll("classloading_test/.*", "classloading_test.jar" + otherSource + "/" + mainClassesSuffix + "/"));
     }
@@ -208,7 +210,7 @@ final class TestUtil {
 
     /**
      * This returns a URL that points to the classes for this project.
-     * 
+     *
      * @return The URL pointing to the classes for this project
      * @throws MalformedURLException
      */
@@ -235,25 +237,22 @@ final class TestUtil {
         return new URL(loc.toString() + "test.jar");
     }
 
-    public static AppClassLoader createAppClassloader(String id, URL url, boolean parentLast) throws MalformedURLException, FileNotFoundException, BundleException, InvalidSyntaxException {
+    public static AppClassLoader createAppClassloader(String id, URL url,
+                                                      boolean parentLast) throws MalformedURLException, FileNotFoundException, BundleException, InvalidSyntaxException {
         return createAppClassloader(id, url, parentLast, GetLibraryAction.NO_LIBS);
     }
 
-    public static AppClassLoader createAppClassloader(String id, URL url, boolean parentLast, GetLibraryAction getLibraries)
-                    throws MalformedURLException, FileNotFoundException, BundleException, InvalidSyntaxException {
+    public static AppClassLoader createAppClassloader(String id, URL url, boolean parentLast,
+                                                      GetLibraryAction getLibraries) throws MalformedURLException, FileNotFoundException, BundleException, InvalidSyntaxException {
         // find the servlet jar
         URL[] urlsForParentClassLoader = { TestUtil.getServletJarURL() };
         // get a classloader service that thinks it is in a framework
         ClassLoader parentLoader = new URLClassLoader(urlsForParentClassLoader);
         ClassLoadingServiceImpl service = TestUtil.getClassLoadingService(parentLoader, getLibraries);
         // configure up a classloader
-        GatewayConfiguration gwConfig = service.createGatewayConfiguration()
-                        .setApiTypeVisibility(SPEC, API);
-        ClassLoaderConfiguration config = service.createClassLoaderConfiguration()
-                        .setSharedLibraries(getLibraries.getPrivateLibs())
-                        .setCommonLibraries(getLibraries.getCommonLibs())
-                        .setDelegateToParentAfterCheckingLocalClasspath(parentLast)
-                        .setId(service.createIdentity("UnitTest", id));
+        GatewayConfiguration gwConfig = service.createGatewayConfiguration().setApiTypeVisibility(SPEC, API);
+        ClassLoaderConfiguration config = service.createClassLoaderConfiguration().setSharedLibraries(getLibraries.getPrivateLibs()).setCommonLibraries(getLibraries.getCommonLibs()).setDelegateToParentAfterCheckingLocalClasspath(parentLast).setId(service.createIdentity("UnitTest",
+                                                                                                                                                                                                                                                                              id));
 
         Mockery mockery = new Mockery();
         Container containerForURL = buildMockContainer(id, url);

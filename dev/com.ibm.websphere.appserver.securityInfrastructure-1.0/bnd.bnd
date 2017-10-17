@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
 	com.ibm.ws.security.authentication;version=latest, \
 	com.ibm.ws.security.credentials;version=latest, \
 	com.ibm.ws.security.token;version=latest, \
@@ -26,4 +23,3 @@ publish.feature.resources: *.mf
 	com.ibm.ws.management.security;version=latest, \
 	com.ibm.ws.security.ready.service;version=latest, \
 	com.ibm.ws.security.mp.jwt.proxy;version=latest
-	

@@ -24,7 +24,7 @@ Export-Package: \
     com.ibm.ws.security.javaeesec.cdi.extensions, \
     com.ibm.ws.security.javaeesec.cdi.beans
 
-Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
  
 Private-Package: \
     com.ibm.ws.security.javaeesec.cdi.internal.resources
@@ -49,7 +49,8 @@ Include-Resource: \
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.cdi.1.2.interfaces, \
+    com.ibm.ws.cdi.interfaces, \
+    com.ibm.ws.common.encoder;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\
@@ -72,7 +73,7 @@ Include-Resource: \
     org.jmock:jmock-legacy;version=2.5.0, \
     org.objenesis:objenesis;version=1.0, \
     cglib:cglib-nodep;version=2.1.0.3, \
-    com.ibm.ws.cdi.1.2.interfaces, \
+    com.ibm.ws.cdi.interfaces, \
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.el.3.0;version=latest,\

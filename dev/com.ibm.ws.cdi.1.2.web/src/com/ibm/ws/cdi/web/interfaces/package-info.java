@@ -16,4 +16,3 @@
 package com.ibm.ws.cdi.web.interfaces;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
-

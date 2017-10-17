@@ -12,8 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.ws.connectionpool.monitor;version=latest, \
 	com.ibm.websphere.appserver.api.connectionpool;version=latest

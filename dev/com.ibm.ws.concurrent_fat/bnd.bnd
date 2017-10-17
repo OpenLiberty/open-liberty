@@ -15,7 +15,6 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/concurrent/src,\
 	test-applications/concurrentSpec/src,\
 	test-bundles/test.resource/src
 

@@ -13,13 +13,15 @@ bVersion=1.0
 
 Bundle-Name: Custom UserRegistry Sample
 Bundle-Description: Custom UserRegistry Sample, version ${bVersion}
-Bundle-SymbolicName: com.ibm.ws.security.registry.custom.sample
 
 Export-Package: \
   com.ibm.ws.security.registry.custom.sample;version=1.0.0
 
 Include-Resource: \
   OSGI-INF=resources/OSGI-INF
+
+publish.wlp.jar.disabled: false
+test.project: true
 
 #
 # The class is not annotated for DS. Look into annotating the class in the future.

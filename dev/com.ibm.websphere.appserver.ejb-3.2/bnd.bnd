@@ -11,13 +11,3 @@
 -include= ~../cnf/resources/bnd/liberty-release.props
 
 -nobundles=true
-
-publish.feature.resources: **
-
--dependson: \
-	com.ibm.websphere.appserver.ejbPersistentTimer-3.2;version=latest, \
-	com.ibm.websphere.appserver.ejbHome-3.2;version=latest, \
-	com.ibm.websphere.appserver.ejbLite-3.2;version=latest, \
-	com.ibm.websphere.appserver.mdb-3.2;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
-	com.ibm.websphere.appserver.ejbRemote-3.2;version=latest

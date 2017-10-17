@@ -11,9 +11,3 @@
 -include= ~../cnf/resources/bnd/liberty-release.props
 
 -nobundles=true
-
-publish.feature.resources: **
-
--dependson: \
-	com.ibm.websphere.appclient.appClient-1.0;version=latest,\
-	com.ibm.websphere.appserver.clientContainerRemoteSupport-1.0;version=latest

@@ -12,12 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.artifact-1.0;version=latest,\
-	com.ibm.websphere.appserver.javaeedd-1.0;version=latest,\
-	com.ibm.websphere.appserver.anno-1.0;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.javaee.version;version=latest,\

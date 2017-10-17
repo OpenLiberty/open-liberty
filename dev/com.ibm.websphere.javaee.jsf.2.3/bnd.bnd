@@ -18,6 +18,14 @@ javac.source: 1.8
 javac.target: 1.8
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 
+Import-Package: \
+ javax.enterprise.context; version="[1.1.0,3.0.0)", \
+ javax.enterprise.context.spi; version="[1.1.0,3.0.0)", \
+ javax.enterprise.event; version="[1.1.0,3.0.0)", \
+ javax.enterprise.inject; version="[1.1.0,3.0.0)", \
+ javax.enterprise.util; version="[1.1.0,3.0.0)", \
+ *
+
 Export-Package: javax.faces.*; version=2.3.0
 
 DynamicImport-Package: com.ibm.ws.jsf.spi, \

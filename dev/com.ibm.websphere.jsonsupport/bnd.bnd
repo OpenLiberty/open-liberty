@@ -21,8 +21,8 @@ Private-Package: com.ibm.ws.jsonsupport.internal
 Export-Package: \
 	com.ibm.websphere.jsonsupport
 Include-Resource: \
-    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2}, \
-    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2}
+    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2;EXACT}, \
+    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2;EXACT}
 
 instrument.disabled: true
 

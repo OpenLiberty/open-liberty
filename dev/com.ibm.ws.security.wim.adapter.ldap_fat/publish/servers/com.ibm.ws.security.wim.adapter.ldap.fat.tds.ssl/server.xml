@@ -1,0 +1,92 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="new server">
+	<include location="../fatTestPorts.xml"/>
+    <!-- Enable features -->
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>securitylibertyinternals-1.0</feature>
+		<feature>ldapRegistry-3.0</feature>
+    </featureManager>
+
+	<ldapRegistry id="ldap" realm="SampleLdapIDSRealm" host="${ldap.server.4.name}" port="${ldap.server.4.ssl.port}" ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		bindDN="${ldap.server.4.bindDN}"
+		bindPassword="${ldap.server.4.bindPassword}"
+		ldapType="IBM Tivoli Directory Server"
+		sslEnabled="true"
+		sslRef="LDAPSSLSettings"
+		searchTimeout="8m"
+		recursiveSearch="true">
+		
+      <ldapEntityType name="Group">
+        <objectClass>groupOfNames</objectClass>
+        <objectClass>groupOfURLs</objectClass>
+        <objectClass>ibm-nestedGroup</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="OrgContainer">
+        <rdnProperty name="o" objectClass="organization"/>
+        <rdnProperty name="ou" objectClass="organizationalUnit"/>
+        <rdnProperty name="dc" objectClass="domain"/>
+        <rdnProperty name="cn" objectClass="container"/>
+        <objectClass>organization</objectClass>
+        <objectClass>organizationalUnit</objectClass>
+        <objectClass>domain</objectClass>
+        <objectClass>container</objectClass>
+      </ldapEntityType>
+      <ldapEntityType name="PersonAccount">
+        <objectClass>inetOrgPerson</objectClass>
+        <rdnProperty name="cn" objectClass="inetOrgPerson"/>
+      </ldapEntityType>
+      <groupProperties>
+        <memberAttribute name="member" dummyMember="uid=dummy" objectClass="groupOfNames" scope="direct"/>
+        <memberAttribute name="ibm-memberGroup" objectClass="ibm-nestedGroup" scope="direct"/>
+        <dynamicMemberAttribute name="memberURL" objectClass="groupOfURLs"/>
+      </groupProperties>
+      <attributeConfiguration>
+        <attribute name="userPassword" propertyName="password" entityType="PersonAccount"/>
+        <attribute name="krbPrincipalName" propertyName="kerberosId" entityType="PersonAccount"/>
+        <propertiesNotSupported name="homeAddress"/>
+        <propertiesNotSupported name="businessAddress"/>
+      </attributeConfiguration>
+      <loginProperty>uid</loginProperty>
+      <contextPool enabled="true" initialSize="1" maxSize="0" timeout="0ms"
+          waitTime="3000ms" preferredSize="3"/>
+      <ldapCache>
+        <attributesCache size="4000" timeout="1200ms" enabled="true" sizeLimit="2000"/>
+        <searchResultsCache size="2000" timeout="600ms" enabled="true" resultsSizeLimit="1000"/>
+      </ldapCache>
+      <failoverServers name="failoverLdapServers">
+		   <server host="${ldap.server.7.name}" port="${ldap.server.7.ssl.port}"/>
+        </failoverServers>
+	</ldapRegistry> 
+
+    <federatedRepository>
+        <primaryRealm name="TDSSSLRealm">
+            <participatingBaseEntry name="o=ibm,c=us"/>
+            <uniqueUserIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+        	<userSecurityNameMapping inputProperty="principalName" outputProperty="principalName"/>
+        	<userDisplayNameMapping inputProperty="principalName" outputProperty="principalName"/>
+        	<uniqueGroupIdMapping inputProperty="uniqueName" outputProperty="uniqueName"/>
+        	<groupSecurityNameMapping inputProperty="cn" outputProperty="cn"/>
+        	<groupDisplayNameMapping inputProperty="cn" outputProperty="cn"/>
+        </primaryRealm>
+    </federatedRepository>
+    
+    <sslDefault sslRef="DefaultSSLSettings" />
+	<ssl id="LDAPSSLSettings" keyStoreRef="LDAPKeyStore" trustStoreRef="LDAPTrustStore" />
+	<keyStore id="LDAPKeyStore" location="${server.config.dir}/LdapSSLKeyStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
+	<keyStore id="LDAPTrustStore" location="${server.config.dir}/LdapSSLTrustStore.jks" type="JKS" password="{xor}CDo9Hgw=" />
+
+	<ssl id="DefaultSSLSettings" keyStoreRef="defaultKeyStore" />
+	<keyStore id="defaultKeyStore" location="key.jks" type="JKS" password="default" />
+</server>

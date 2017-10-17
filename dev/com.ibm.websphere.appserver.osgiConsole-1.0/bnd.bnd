@@ -12,8 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
 	com.ibm.ws.org.apache.felix.gogo.command;version=latest,\
 	com.ibm.ws.org.eclipse.equinox.console;version=latest,\

@@ -11,16 +11,28 @@
 package web;
 
 import java.util.concurrent.Callable;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * Task that returns the id of the thread on which it runs.
+ * Task that returns the id of the thread on which it runs when used as a Callable.
+ * When used as a Runnable, it stores the id of the thread upon which it most recently ran in the threadId field.
  */
-public class ThreadIdTask implements Callable<Long> {
+public class ThreadIdTask implements Callable<Long>, Runnable {
+    AtomicReference<Long> threadId = new AtomicReference<Long>();
+
     @Override
     public Long call() {
         System.out.println("> call " + toString());
         long threadId = Thread.currentThread().getId();
         System.out.println("< call " + toString() + " " + Long.toHexString(threadId));
         return threadId;
+    }
+
+    @Override
+    public void run() {
+        System.out.println("> run " + toString());
+        long threadId = Thread.currentThread().getId();
+        this.threadId.set(threadId);
+        System.out.println("< run " + toString() + " " + Long.toHexString(threadId));
     }
 }

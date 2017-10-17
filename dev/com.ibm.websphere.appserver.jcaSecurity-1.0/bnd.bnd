@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
 	com.ibm.ws.security.jca;version=latest, \
 	com.ibm.ws.security.auth.data.common;version=latest, \
 	com.ibm.ws.security.credentials;version=latest, \

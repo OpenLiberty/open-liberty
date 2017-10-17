@@ -1,0 +1,76 @@
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
+
+Bundle-Name: weld OSGi bundle
+Bundle-SymbolicName: com.ibm.ws.org.jboss.weld.3.0.1
+Bundle-Description: Weld OSGi Bundle, version 3.0.1.Final
+Implementation-Title: Weld OSGi Bundle
+Bundle-License: http://www.apache.org/licenses/LICENSE-2.0.html
+Implementation-Version: 3.0.1.Final
+Embed-Dependency: *; scope=compile; inline=true
+Specification-Title: JSR-365 Contexts and Dependency Injection for Java
+Specification-Version: 2.0
+DynamicImport-Package: *
+Export-Package: org.jboss.*;version="3.0.1.Final", \
+ org.jboss.weldx.transaction;version="1.0.16"
+Import-Package: javax.annotation;version="1.1",javax.el;version="1.0";re\
+ solution:=optional,javax.faces.application;resolution:=optional,javax.f\
+ aces.context;resolution:=optional,javax.interceptor;version="1.0",javax\
+ .persistence;resolution:=optional,javax.servlet;resolution:=optional,ja\
+ vax.servlet.http;resolution:=optional,javax.transaction;version="1.1";r\
+ esolution:=optional,javax.validation;resolution:=optional,sun.misc;reso\
+ lution:=optional,sun.reflect;resolution:=optional,javax.decorator;versi\
+ on="[2.0,3)",javax.ejb;version="[3.2,4)",javax.enterprise.context;versi\
+ on="[2.0,3)",javax.enterprise.context.control;version="[2.0,3)",javax.e\
+ nterprise.context.spi;version="[2.0,3)",javax.enterprise.event;version=\
+ "[2.0,3)",javax.enterprise.inject;version="[2.0,3)",javax.enterprise.in\
+ ject.spi;version="[2.0,3)",javax.enterprise.inject.spi.configurator;ver\
+ sion="[2.0,3)",javax.enterprise.util;version="[2.0,3)",javax.inject,jav\
+ ax.management,javax.naming,javax.naming.spi,javax.xml.parsers,org.jboss\
+ .classfilewriter;version="[1.1,2)",org.jboss.classfilewriter.code;versi\
+ on="[1.1,2)",org.jboss.classfilewriter.util;version="[1.1,2)",org.jboss\
+ .logging;version="[3.2,4)",org.jboss.weld.bootstrap.api;version="[3.0,4\
+ )",org.jboss.weld.bootstrap.api.helpers;version="[3.0,4)",org.jboss.wel\
+ d.bootstrap.event;version="[3.0,4)",org.jboss.weld.bootstrap.spi;versio\
+ n="[3.0,4)",org.jboss.weld.construction.api;version="[3.0,4)",org.jboss\
+ .weld.context;version="[3.0,4)",org.jboss.weld.context.activator;versio\
+ n="[3.0,4)",org.jboss.weld.context.api;version="[3.0,4)",org.jboss.weld\
+ .context.bound;version="[3.0,4)",org.jboss.weld.context.unbound;version\
+ ="[3.0,4)",org.jboss.weld.ejb.spi;version="[3.0,4)",org.jboss.weld.exce\
+ ptions;version="[3.0,4)",org.jboss.weld.inject;version="[3.0,4)",org.jb\
+ oss.weld.injection.spi;version="[3.0,4)",org.jboss.weld.interceptor.spi\
+ .metadata;version="[3.0,4)",org.jboss.weld.interceptor.util.proxy;versi\
+ on="[3.0,4)",org.jboss.weld.manager.api;version="[3.0,4)",org.jboss.wel\
+ d.resources.spi;version="[3.0,4)",org.jboss.weld.security;version="[3.0\
+ ,4)",org.jboss.weld.security.spi;version="[3.0,4)",org.jboss.weld.seria\
+ lization.spi;version="[3.0,4)",org.jboss.weld.serialization.spi.helpers\
+ ;version="[3.0,4)",org.xml.sax,org.xml.sax.helpers,org.jboss.logging.an\
+ notations;resolution:=optional
+
+Service-Component: \
+  com.ibm.ws.weld.deserializationClassProvider;\
+    implementation:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
+    properties:="service.vendor=IBM,\
+      packages=org.jboss.weld.annotated\
+        |org.jboss.weld.annotated.slim\
+        |org.jboss.weld.annotated.slim.backed\
+        |org.jboss.weld.bean\
+        |org.jboss.weld.bean.builtin\
+        |org.jboss.weld.bean.proxy.util\
+        |org.jboss.weld.context.beanstore\
+        |org.jboss.weld.context.conversation\
+        |org.jboss.weld.context\
+        |org.jboss.weld.ejb\
+        |org.jboss.weld.injection\
+        |org.jboss.weld.injection.attributes\
+        |org.jboss.weld.literal\
+        |org.jboss.weld.manager\
+        |org.jboss.weld.proxy\
+        |org.jboss.weld.serialization\
+        |org.jboss.weld.util.bean"
+
+Include-Resource: \
+  @${repo;org.jboss.weld:weld-osgi-bundle;[3.0.1.Final,4)}!/!META-INF/maven/*
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"

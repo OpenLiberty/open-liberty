@@ -12,11 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.transaction-1.1;version=latest, \
-	com.ibm.websphere.appserver.javax.ejb-3.1;version=latest, \
-	com.ibm.websphere.appserver.managedBeansCore-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.interceptor-1.1;version=latest, \
 	com.ibm.ws.managedbeans;version=latest

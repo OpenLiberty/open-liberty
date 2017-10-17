@@ -26,6 +26,7 @@ import org.osgi.framework.wiring.BundleRevision;
 import org.osgi.framework.wiring.BundleWire;
 import org.osgi.framework.wiring.BundleWiring;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.ArtifactEntry;
 import com.ibm.wsspi.artifact.ArtifactNotifier;
@@ -98,10 +99,11 @@ public class BundleArchive implements ArtifactContainer {
 
     /**
      * This method will return a bundle entry URL for the supplied path, it will test for both a normal entry and a directory entry for it.
-     * 
+     *
      * @param pathAndName The path to the entry
      * @return The URL for the bundle entry
      */
+    @FFDCIgnore(IllegalStateException.class)
     public URL getBundleEntry(Bundle bundleToTest, String pathAndName) {
         try {
             URL bundleEntry = bundleToTest.getEntry(pathAndName);
@@ -122,6 +124,7 @@ public class BundleArchive implements ArtifactContainer {
 
     /** {@inheritDoc} */
     @Override
+    @FFDCIgnore(IllegalStateException.class)
     public Collection<URL> getURLs() {
         try {
             URL u = this.bundle.getEntry("/");
@@ -157,6 +160,7 @@ public class BundleArchive implements ArtifactContainer {
         return this.iterator("/");
     }
 
+    @FFDCIgnore(IllegalStateException.class)
     protected Iterator<ArtifactEntry> iterator(String path) {
         try {
             Enumeration<URL> entryUrls = this.bundle.findEntries(path, "*", false);
@@ -230,7 +234,7 @@ public class BundleArchive implements ArtifactContainer {
 
     /**
      * Method for other classes in this package to get hold of a container factory for creating containers.
-     * 
+     *
      * @return the ContainerFactory
      */
     ArtifactContainerFactory getContainerFactory() {
