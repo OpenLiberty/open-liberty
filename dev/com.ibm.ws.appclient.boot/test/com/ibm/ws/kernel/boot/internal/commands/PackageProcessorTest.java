@@ -34,9 +34,9 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
  *
  */
 public class PackageProcessorTest {
-    static final String TEST_TMP_ROOT = "../com.ibm.ws.appclient.boot_test/build/tmp/";
+    static final String TEST_TMP_ROOT = "../com.ibm.ws.appclient.boot/build/tmp/";
     static final File TEST_TMP_ROOT_FILE = new File(TEST_TMP_ROOT);
-    static final String BOOTSTRAP_LIB_DIR = "../com.ibm.ws.appclient.boot/build/lib/";
+    static final String BOOTSTRAP_LIB_DIR = "../com.ibm.ws.appclient.boot/build/libs/";
 
     /**
      * Mock environment.

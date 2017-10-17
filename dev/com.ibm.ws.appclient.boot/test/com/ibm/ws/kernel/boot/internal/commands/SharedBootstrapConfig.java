@@ -66,7 +66,7 @@ public class SharedBootstrapConfig extends BootstrapConfig {
     }
 
     private static AtomicInteger count = new AtomicInteger(0);
-    static final String TEST_TMP_ROOT = "../com.ibm.ws.appclient.boot_test/build/tmp/";
+    static final String TEST_TMP_ROOT = "../com.ibm.ws.appclient.boot/build/tmp/";
     static final File TEST_TMP_ROOT_FILE = new File(TEST_TMP_ROOT);
 
     private File createTempDirectory(String name) throws IOException {
