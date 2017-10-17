@@ -206,7 +206,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestInvalidCredential() throws Exception {
         CallerOnlyCredential coc = new CallerOnlyCredential(USER1);
-        withMessageContext(ap, ch).withCredential(coc);
+        withMessageContext(ap, ch).withCredential(coc).withBeanInstance(null);
 
         try {
             AuthenticationStatus status = cfam.validateRequest(req, res, hmc);

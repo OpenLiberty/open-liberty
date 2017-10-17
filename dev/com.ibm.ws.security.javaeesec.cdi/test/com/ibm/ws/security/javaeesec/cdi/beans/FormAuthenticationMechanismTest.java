@@ -250,15 +250,9 @@ public class FormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestAuthReqTrueValidIdAndPWNoIdentityStoreHandlerNoCallbackHandler() throws Exception {
-        withMessageContext(null).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null);
+        withMessageContext(null).withUsernamePassword(USER1, PASSWORD1).withAuthenticationRequest(true).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
-        try {
-            AuthenticationStatus status = fam.validateRequest(req, res, hmc);
-            fail("AuthenticationException should be thrown.");
-        } catch (AuthenticationException e) {
-            assertTrue("CWWKS1930W  message was not logged", outputMgr.checkForStandardOut("CWWKS1930W:"));
-            assertEquals("The message should indicate that no callback handler.", "No Callback Handler.", e.getMessage());
-        }
+        AuthenticationStatus status = fam.validateRequest(req, res, hmc);
     }
 
     /**
