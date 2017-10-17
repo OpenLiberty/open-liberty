@@ -12,8 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.ejbCore-1.0;version=latest, \
 	com.ibm.ws.ejbcontainer.session;version=latest

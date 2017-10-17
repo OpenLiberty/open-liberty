@@ -12,16 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.ssl-1.0;version=latest, \
-	com.ibm.websphere.appserver.adminSecurity-1.0;version=latest, \
-	com.ibm.wsspi.appserver.webBundleSecurity-1.0;version=latest, \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.websphere.appserver.httptransport-1.0;version=latest, \
-	com.ibm.websphere.appserver.json-1.0;version=latest, \
-	com.ibm.wsspi.appserver.webBundle-1.0;version=latest, \
 	com.ibm.ws.org.joda.time;version=latest, \
 	com.ibm.websphere.jsonsupport;version=latest, \
 	com.ibm.ws.rest.handler;version=latest, \

@@ -12,7 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
 	com.ibm.ws.jmx.connector.local;version=latest

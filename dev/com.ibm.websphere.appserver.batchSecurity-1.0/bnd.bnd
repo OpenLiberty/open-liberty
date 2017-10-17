@@ -12,9 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.wsspi.appserver.webBundleSecurity-1.0;version=latest, \
 	com.ibm.ws.jbatch.security;version=latest

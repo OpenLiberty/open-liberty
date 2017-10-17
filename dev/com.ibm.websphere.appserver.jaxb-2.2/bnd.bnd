@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest, \
 	com.ibm.ws.org.apache.geronimo.osgi.registry;version=latest, \
 	com.ibm.ws.jaxb.tools;version=latest, \

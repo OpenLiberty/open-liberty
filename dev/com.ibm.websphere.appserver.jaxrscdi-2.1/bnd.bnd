@@ -12,8 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.jndi-1.0;version=latest, \
 	com.ibm.ws.jaxrs.2.0.cdi;version=latest

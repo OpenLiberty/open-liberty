@@ -12,10 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.persistentExecutorSubset-1.0;version=latest, \
-	com.ibm.websphere.appserver.ejbLite-3.2;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
 	com.ibm.ws.ejbcontainer.timer.persistent;version=latest

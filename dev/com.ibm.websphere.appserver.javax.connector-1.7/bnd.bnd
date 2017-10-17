@@ -12,9 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.connector.internal-1.7;version=latest, \
-	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
 	com.ibm.websphere.javaee.connector.1.7;version=latest

@@ -12,13 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.servlet-3.0;version=latest, \
-	com.ibm.websphere.appserver.appSecurity-2.0;version=latest, \
-	com.ibm.websphere.appserver.javaeedd-1.0;version=latest, \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
 	com.ibm.websphere.javaee.jacc.1.5;version=latest, \
 	com.ibm.ws.security.authorization.jacc;version=latest, \
 	com.ibm.ws.security.audit.utils;version=latest, \
