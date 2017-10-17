@@ -18,17 +18,16 @@ import com.ibm.websphere.ras.TraceComponent;
 /**
  *
  */
-public class LoginToContinuePropertiesImpl implements LoginToContinueProperties {
-    private static final TraceComponent tc = Tr.register(LoginToContinuePropertiesImpl.class);
-    private final Properties props;
+public interface HAMProperties {
+    /**
+     * returns the implementation class name of HttpAuthenticationMechansim
+     */
+    public Class getImplementationClass();
 
-    public LoginToContinuePropertiesImpl(Properties props) {
-        this.props = props;
-    }
-
-    @Override
-    public Properties getProperties() {
-        return props;
-    }
-
+    /**
+     * returns the properties which is associated with the implementation class.
+     * For BasicAuthenticationMechanism, "realmName".
+     * For CustomForm and Form AuthenticationMechanism, "errorPage", "loginPage", "useForwardToLogin", "useForwardtoLoginExpression"
+     */
+    public Properties getProperties();
 }

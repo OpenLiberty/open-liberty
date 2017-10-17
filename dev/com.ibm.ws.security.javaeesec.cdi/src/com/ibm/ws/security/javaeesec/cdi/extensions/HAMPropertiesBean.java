@@ -27,8 +27,8 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
 
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContinueProperties;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContinuePropertiesImpl;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMPropertiesImpl;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
@@ -36,7 +36,7 @@ import com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContin
  * @param <T>
  */
 
-public class LoginToContinuePropertiesBean<T> implements Bean<LoginToContinueProperties>, PassivationCapable {
+public class HAMPropertiesBean<T> implements Bean<HAMProperties>, PassivationCapable {
 
     private final Set<Annotation> qualifiers;
     private final Type type;
@@ -44,14 +44,14 @@ public class LoginToContinuePropertiesBean<T> implements Bean<LoginToContinuePro
     private final String name;
     private final String id;
     private final Properties props;
-    private final Annotation ltc;
+    private final Class implClass;
 
-    public LoginToContinuePropertiesBean(BeanManager beanManager, Annotation ltc, Properties props) {
+    public HAMPropertiesBean(BeanManager beanManager, Class implClass,  Properties props) {
+        this.implClass = implClass;
         this.props = props;
-        this.ltc = ltc;
         qualifiers = new HashSet<Annotation>();
         qualifiers.add(new AnnotationLiteral<Default>() {});
-        type = new TypeLiteral<LoginToContinueProperties>() {}.getType();
+        type = new TypeLiteral<HAMProperties>() {}.getType();
         types = Collections.singleton(type);
         name = this.getClass().getName() + "[" + type + "]";
         id = beanManager.hashCode() + "#" + this.name;
@@ -126,7 +126,7 @@ public class LoginToContinuePropertiesBean<T> implements Bean<LoginToContinuePro
      */
     @Override
     public Class<?> getBeanClass() {
-        return LoginToContinueProperties.class;
+        return HAMProperties.class;
     }
 
     /*
@@ -167,8 +167,8 @@ public class LoginToContinuePropertiesBean<T> implements Bean<LoginToContinuePro
      * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public LoginToContinueProperties create(CreationalContext context) {
-        return new LoginToContinuePropertiesImpl(props);
+    public HAMProperties create(CreationalContext<HAMProperties> context) {
+        return new HAMPropertiesImpl(implClass, props);
     }
 
     /*
@@ -177,7 +177,7 @@ public class LoginToContinuePropertiesBean<T> implements Bean<LoginToContinuePro
      * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public void destroy(LoginToContinueProperties instance, CreationalContext<LoginToContinueProperties> context) {
+    public void destroy(HAMProperties instance, CreationalContext<HAMProperties> context) {
         // TODO Auto-generated method stub
 
     }

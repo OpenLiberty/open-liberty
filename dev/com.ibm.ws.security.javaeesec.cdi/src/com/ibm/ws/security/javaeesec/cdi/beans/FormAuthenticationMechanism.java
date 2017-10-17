@@ -69,10 +69,21 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         CallbackHandler handler = httpMessageContext.getHandler();
         HttpServletRequest req = httpMessageContext.getRequest();
         HttpServletResponse rsp = httpMessageContext.getResponse();
-        String username = req.getParameter("j_username");
-        String password = req.getParameter("j_password");
+        String username = null;
+        String password = null;
+        // in order to preserve the post parameter, unless the target url is j_security_check, do not read 
+        // j_username and j_password.
+        String method = req.getMethod();
+        String uri = null;
+        if ("POST".equalsIgnoreCase(method)) {
+            uri = req.getRequestURI();
+            if (uri.contains("/j_security_check")) {
+                username = req.getParameter("j_username");
+                password = req.getParameter("j_password");
+            }
+        }
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "j_username : " + username);
+            Tr.debug(tc, "method : " + method + ", URI : " + uri + ", j_username : " + username);
         }
 
         if (httpMessageContext.isAuthenticationRequest()) {
@@ -113,22 +124,21 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
 
     }
 
-
-    private AuthenticationStatus handleFormLogin(String username, String password, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
+    /**
+     * note that both username and password should not be null.
+     */
+    
+    private AuthenticationStatus handleFormLogin(String username, @Sensitive String password, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
                                                  CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
-        if (username != null && password != null) {
-            UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
-            status = validateUserAndPassword(clientSubject, credential, handler);
-            if (status == AuthenticationStatus.SUCCESS) {
-                msgMap.put("javax.servlet.http.authType", "JASPI_AUTH");
-                rspStatus = HttpServletResponse.SC_OK;
-            } else {
-                // TODO: Audit invalid user or password
-            }
+        UsernamePasswordCredential credential = new UsernamePasswordCredential(username, password);
+        status = validateUserAndPassword(clientSubject, credential, handler);
+        if (status == AuthenticationStatus.SUCCESS) {
+            msgMap.put("javax.servlet.http.authType", "JASPI_AUTH");
+            rspStatus = HttpServletResponse.SC_OK;
         } else {
-            // TODO: Determine if serviceability message is needed
+            // TODO: Audit invalid user or password
         }
         rsp.setStatus(rspStatus);
         return status;
@@ -139,7 +149,9 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler();
         if (identityStoreHandler != null) {
-            status = validateWithIdentityStore(clientSubject, credential, identityStoreHandler, handler);
+            status = validateWithIdentityStore(clientSubject, credential, identityStoreHandler);
+        } else {
+            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER");
         }
         if (identityStoreHandler == null || status == AuthenticationStatus.NOT_DONE) {
             // If an identity store is not available, fall back to the original user registry.
@@ -162,12 +174,15 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
             } catch (Exception e) {
                 throw new AuthenticationException(e.toString());
             }
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "A CallbackHandler object, which is required for validating user id and password, is null.");
+            }
         }
         return status;
     }
 
-    private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive UsernamePasswordCredential credential, IdentityStoreHandler identityStoreHandler,
-                                                           CallbackHandler handler) {
+    private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive UsernamePasswordCredential credential, IdentityStoreHandler identityStoreHandler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         CredentialValidationResult result = identityStoreHandler.validate(credential);
         if (result.getStatus() == CredentialValidationResult.Status.VALID) {
@@ -182,7 +197,8 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
         return status;
     }
 
-    protected void createLoginHashMap(Subject clientSubject, CredentialValidationResult result) {
+    protected void createLoginHashMap(Subject clientSubject, CredentialValidationResult result) throws AuthenticationException {
+        Utils.validateResult(result);
         Hashtable<String, Object> credData = getSubjectCustomData(clientSubject);
         Set<String> groups = result.getCallerGroups();
         String realm = result.getIdentityStoreId();
@@ -250,11 +266,15 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
 
     private IdentityStoreHandler getIdentityStoreHandler() {
         IdentityStoreHandler identityStoreHandler = null;
-        Instance<IdentityStoreHandler> storeHandlerInstance = CDI.current().select(IdentityStoreHandler.class);
-        if (storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {
+        Instance<IdentityStoreHandler> storeHandlerInstance = getCDI().select(IdentityStoreHandler.class);
+        if (storeHandlerInstance != null && storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {
             identityStoreHandler = storeHandlerInstance.get();
         }
         return identityStoreHandler;
+    }
+
+    protected CDI getCDI() {
+        return CDI.current();
     }
 
 }

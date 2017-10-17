@@ -36,6 +36,8 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+
 /*
  * This JASPI authentication module is used as the bridge ServerAuthModule for JSR-375.
  */
@@ -89,7 +91,9 @@ public class AuthModule implements ServerAuthModule {
                                                                                  httpMessageContext);
             status = translateValidateRequestStatus(authenticationStatus);
             registerSession(httpMessageContext);
-        } catch (Exception e) {
+        } catch (AuthException ae) {
+            throw ae;
+        } catch (Exception e) { 
             // TODO: Issue serviceability message.
             e.printStackTrace();
             AuthException authException = new AuthException();
@@ -110,6 +114,8 @@ public class AuthModule implements ServerAuthModule {
                                                                                 (HttpServletResponse) messageInfo.getResponseMessage(),
                                                                                 httpMessageContext);
             status = translateSecureResponseStatus(authenticationStatus);
+        } catch (AuthException ae) {
+            throw ae;
         } catch (AuthenticationException e) {
             // TODO: Issue serviceability message.
             e.printStackTrace();
@@ -127,9 +133,20 @@ public class AuthModule implements ServerAuthModule {
         authMech.cleanSubject((HttpServletRequest) messageInfo.getRequestMessage(), (HttpServletResponse) messageInfo.getResponseMessage(), httpMessageContext);
     }
 
-    private HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
-        Instance<HttpAuthenticationMechanism> beanInstance = getCDI().select(HttpAuthenticationMechanism.class);
-        return beanInstance.get();
+    private HttpAuthenticationMechanism getHttpAuthenticationMechanism() throws AuthException {
+        Instance<HAMProperties> hampInstance = getCDI().select(HAMProperties.class);
+        if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
+            Instance<HttpAuthenticationMechanism> beanInstance = getCDI().select(hampInstance.get().getImplementationClass());
+            if (beanInstance != null && !beanInstance.isUnsatisfied() && !beanInstance.isAmbiguous()) {
+                return beanInstance.get();
+            } else {
+                String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_NO_HAM");
+                throw new AuthException(msg);
+            }
+        } else {
+            String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_NO_HAM_PROPS");
+            throw new AuthException(msg);
+        }
     }
 
     protected CDI getCDI() {
