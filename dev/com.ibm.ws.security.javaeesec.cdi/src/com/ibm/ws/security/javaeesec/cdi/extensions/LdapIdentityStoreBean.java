@@ -12,7 +12,6 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,20 +26,27 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
 import javax.security.enterprise.identitystore.IdentityStore;
+import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
-import com.ibm.ws.security.javaeesec.identitystore.DummyLdapIdentityStore;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.javaeesec.identitystore.LdapIdentityStore;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
  */
 public class LdapIdentityStoreBean implements Bean<IdentityStore>, PassivationCapable {
+
+    private static final TraceComponent tc = Tr.register(LdapIdentityStoreBean.class);
     private final Set<Annotation> qualifiers;
     private final Type type;
     private final Set<Type> types;
     private final String name;
     private final String id;
+    private final LdapIdentityStoreDefinition ldapIdentityStoreDefinition;
 
-    public LdapIdentityStoreBean(BeanManager beanManager) {
+    public LdapIdentityStoreBean(BeanManager beanManager, LdapIdentityStoreDefinition ldapIdentityStoreDefinition) {
+        this.ldapIdentityStoreDefinition = ldapIdentityStoreDefinition;
         qualifiers = new HashSet<Annotation>();
         qualifiers.add(new AnnotationLiteral<Default>() {});
 
@@ -57,8 +63,9 @@ public class LdapIdentityStoreBean implements Bean<IdentityStore>, PassivationCa
      */
     @Override
     public IdentityStore create(CreationalContext<IdentityStore> arg0) {
+        Tr.debug(tc, "~~~create ldap bean");
         // TODO Return the actual LdapIdentityStore impl
-        return new DummyLdapIdentityStore();
+        return new LdapIdentityStore(ldapIdentityStoreDefinition);
     }
 
     /*
