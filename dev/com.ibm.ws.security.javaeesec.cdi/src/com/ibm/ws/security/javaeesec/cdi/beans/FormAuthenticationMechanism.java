@@ -128,7 +128,7 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
      * note that both username and password should not be null.
      */
     
-    private AuthenticationStatus handleFormLogin(String username, String password, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
+    private AuthenticationStatus handleFormLogin(String username, @Sensitive String password, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
                                                  CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
@@ -175,8 +175,9 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
                 throw new AuthenticationException(e.toString());
             }
         } else {
-            // this condition should not happen.
-            throw new AuthenticationException("No Callback Handler.");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "A CallbackHandler object, which is required for validating user id and password, is null.");
+            }
         }
         return status;
     }

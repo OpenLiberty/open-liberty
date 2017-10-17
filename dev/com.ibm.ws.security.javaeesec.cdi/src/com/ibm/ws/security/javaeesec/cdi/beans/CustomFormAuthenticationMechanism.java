@@ -96,19 +96,12 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
                     status = AuthenticationStatus.NOT_DONE;
                 } else {
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "No UsernamePasswordCredential object, redirecting");
+                        Tr.debug(tc, "No Credential object, redirecting");
                     }
                     status = AuthenticationStatus.SEND_CONTINUE;
                 }
             } else {
-                if(isSupportedCredential(cred)) {
-                    status = handleFormLogin((UsernamePasswordCredential)cred, rsp, msgMap, clientSubject, handler);
-                } else {
-                    // This is an error condition.
-                    Tr.error(tc, "JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED", cred.getClass().getName());
-                    String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED", cred.getClass().getName());
-                    throw new AuthenticationException(msg);
-                }
+                status = handleFormLogin(cred, rsp, msgMap, clientSubject, handler);
             }
         }
         return status;
@@ -129,7 +122,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
     }
 
 
-    private AuthenticationStatus handleFormLogin(@Sensitive UsernamePasswordCredential cred, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
+    private AuthenticationStatus handleFormLogin(@Sensitive Credential cred, HttpServletResponse rsp, Map<String, String> msgMap, Subject clientSubject,
                                                  CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
@@ -144,7 +137,7 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return status;
     }
 
-    private AuthenticationStatus validateUserAndPassword(Subject clientSubject, @Sensitive UsernamePasswordCredential credential,
+    private AuthenticationStatus validateUserAndPassword(Subject clientSubject, @Sensitive Credential credential,
                                                          CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         IdentityStoreHandler identityStoreHandler = getIdentityStoreHandler();
@@ -160,25 +153,32 @@ public class CustomFormAuthenticationMechanism implements HttpAuthenticationMech
         return status;
     }
 
-    private AuthenticationStatus validateWithUserRegistry(Subject clientSubject, @Sensitive UsernamePasswordCredential credential,
+    private AuthenticationStatus validateWithUserRegistry(Subject clientSubject, @Sensitive Credential credential,
                                                           CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         if (handler != null) {
-            PasswordValidationCallback pwcb = new PasswordValidationCallback(clientSubject, credential.getCaller(), credential.getPassword().getValue());
-            try {
-                handler.handle(new Callback[] { pwcb });
-                boolean isValidPassword = pwcb.getResult();
-                if (isValidPassword) {
-                    status = AuthenticationStatus.SUCCESS;
+            if (isSupportedCredential(credential)) {
+                PasswordValidationCallback pwcb = new PasswordValidationCallback(clientSubject, ((UsernamePasswordCredential)credential).getCaller(), ((UsernamePasswordCredential)credential).getPassword().getValue());
+                try {
+                    handler.handle(new Callback[] { pwcb });
+                    boolean isValidPassword = pwcb.getResult();
+                    if (isValidPassword) {
+                        status = AuthenticationStatus.SUCCESS;
+                    }
+                } catch (Exception e) {
+                    throw new AuthenticationException(e.toString());
                 }
-            } catch (Exception e) {
-                throw new AuthenticationException(e.toString());
+            } else {
+                // This is an error condition.
+                Tr.error(tc, "JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED", credential.getClass().getName());
+                String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED", credential.getClass().getName());
+                throw new AuthenticationException(msg);
             }
         }
         return status;
     }
 
-    private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive UsernamePasswordCredential credential, IdentityStoreHandler identityStoreHandler,
+    private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive Credential credential, IdentityStoreHandler identityStoreHandler,
                                                            CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         CredentialValidationResult result = identityStoreHandler.validate(credential);
