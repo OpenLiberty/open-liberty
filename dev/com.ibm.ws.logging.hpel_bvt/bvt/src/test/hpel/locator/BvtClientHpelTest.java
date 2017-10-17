@@ -42,21 +42,21 @@ public class BvtClientHpelTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        // There are variations of this constructor: 
+        // There are variations of this constructor:
         // e.g. to specify a log location or an enabled trace spec. Ctrl-Space for suggestions
         outputMgr = SharedOutputManager.getInstance();
-        outputMgr.logTo("../com.ibm.ws.logging.hpel_test/build/bvt-logs");
+        outputMgr.logTo("../com.ibm.ws.logging.hpel_bvt/build/bvt-logs");
         outputMgr.captureStreams();
     }
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -67,7 +67,7 @@ public class BvtClientHpelTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -80,9 +80,9 @@ public class BvtClientHpelTest {
     // The only files in logs should be state, logdata, tracedata, and console.log
     final static String expectedConsole = "console.*\\.log";
     final static String[] expected = { "state/",
-                                      "logdata/",
-                                      "tracedata/",
-                                      expectedConsole
+                                       "logdata/",
+                                       "tracedata/",
+                                       expectedConsole
     };
     // Mask indicating that all expected files were found.
     final static int expectedMask = (1 << expected.length) - 1;
