@@ -178,7 +178,7 @@ public class WSKeyStoreTest {
         props.put("password", "mytestpassword");
 
         final String defaultFileName = LibertyConstants.DEFAULT_OUTPUT_LOCATION + LibertyConstants.DEFAULT_KEY_STORE_FILE;
-        final File projectBuild = new File("../com.ibm.ws.ssl_test/build/tmp/key.jks");
+        final File projectBuild = new File("../com.ibm.ws.ssl/build/tmp/key.jks");
 
         mock.checking(new Expectations() {
             {
