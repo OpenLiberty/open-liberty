@@ -31,7 +31,8 @@ Private-Package: \
     com.ibm.ws.security.javaeesec.internal.resources
 
 -dsannotations: \
-    com.ibm.ws.security.javaeesec.BridgeBuilderImpl
+    com.ibm.ws.security.javaeesec.BridgeBuilderImpl, \
+    com.ibm.ws.security.javaeesec.CDIHelper
 
 -dsannotations-inherit: true
 

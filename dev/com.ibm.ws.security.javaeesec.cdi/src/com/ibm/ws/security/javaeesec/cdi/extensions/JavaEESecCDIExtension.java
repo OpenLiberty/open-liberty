@@ -32,6 +32,7 @@ import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
+
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
@@ -46,9 +47,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
-import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
+
 // TODO:
 // Find out how to release LoginToContinue annotation in LoginToContinueIntercepter by the one in FormAuthenticationMechanismDefinition.
 
@@ -70,7 +72,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private boolean identityStoreRegistered = false;
     private final Annotation loginToContinue = null;
     private final Set<Class<?>> authMechRegistered = new HashSet<Class<?>>();
-
 
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
         if (tc.isDebugEnabled()) Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
@@ -116,6 +117,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         beforeBeanDiscovery.addAnnotatedType(securityContextProducerType);
         AnnotatedType<AutoApplySessionInterceptor> autoApplySessionInterceptorType = beanManager.createAnnotatedType(AutoApplySessionInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(autoApplySessionInterceptorType);
+        AnnotatedType<RememberMeInterceptor> rememberMeInterceptorInterceptorType = beanManager.createAnnotatedType(RememberMeInterceptor.class);
+        beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType);
     }
 
     <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
