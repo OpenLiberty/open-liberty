@@ -36,7 +36,6 @@ import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-@Ignore("Disabled until outbound SSL is supported.")
 public class OutboundSSLLDAPTest {
     private static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.ldap.fat.outbound.ssl");
     private static final Class<?> c = OutboundSSLLDAPTest.class;
