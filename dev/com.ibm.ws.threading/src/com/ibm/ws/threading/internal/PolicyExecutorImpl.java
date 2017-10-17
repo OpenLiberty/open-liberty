@@ -30,7 +30,6 @@ import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.concurrent.locks.LockSupport;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,7 +37,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
-import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyCompletionTracker;
+import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 
 /**
  * Policy executors are backed by the Liberty global thread pool,
@@ -692,38 +691,36 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } else if (taskCount == 0)
             throw new IllegalArgumentException();
 
-        InvokeAnyCompletionTracker tracker = new InvokeAnyCompletionTracker(taskCount);
+        InvokeAnyLatch latch = new InvokeAnyLatch(taskCount);
         ArrayList<PolicyTaskFutureImpl<T>> futures = new ArrayList<PolicyTaskFutureImpl<T>>(taskCount);
         try {
             // create futures in advance, which gives the callback an opportunity to reject
             int t = 0;
             for (Callable<T> task : tasks)
-                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], tracker));
+                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], latch));
 
             // enqueue all tasks
             for (PolicyTaskFutureImpl<T> taskFuture : futures) {
                 // check if done before enqueuing more tasks
-                if (tracker.hasSuccessfulResult())
+                if (latch.getCount() == 0)
                     break;
 
                 enqueue(taskFuture, maxWaitForEnqueueNS.get(), false); // never run on the current thread because it would prevent timeout
             }
 
-            while (!Thread.interrupted())
-                LockSupport.park(tracker);
+            // wait for completion
+            return latch.await(-1, futures);
         } catch (RejectedExecutionException x) {
             if (x.getCause() instanceof InterruptedException) {
                 throw (InterruptedException) x.getCause();
             } else
                 throw x;
+        } catch (TimeoutException x) {
+            throw new RuntimeException(x); // should be unreachable with infinite timeout
         } finally {
-            T result = tracker.completeInvokeAny(futures);
-            if (result != null || tracker.hasSuccessfulResult())
-                return result;
+            for (Future<?> f : futures)
+                f.cancel(true);
         }
-
-        // Only reachable if invokeAny was interrupted.
-        throw new InterruptedException();
     }
 
     // Submit a group of tasks, waiting until the timeout is reached for one to complete successfully or for all to have failed or been canceled.
@@ -739,14 +736,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         if (taskCount == 0) // JavaDoc doesn't specify what to do in this case. Match behavior of untimed invokeAny.
             throw new IllegalArgumentException();
 
-        InvokeAnyCompletionTracker tracker = new InvokeAnyCompletionTracker(taskCount);
+        InvokeAnyLatch latch = new InvokeAnyLatch(taskCount);
         ArrayList<PolicyTaskFutureImpl<T>> futures = new ArrayList<PolicyTaskFutureImpl<T>>(taskCount);
         try {
             // create futures in advance, which gives the callback an opportunity to reject
             int t = 0;
             for (Callable<T> task : tasks) {
                 remaining = stop - System.nanoTime();
-                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], tracker));
+                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], latch));
                 if (remaining <= 0)
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1204.unable.to.invoke", identifier, taskCount - futures.size(), taskCount, timeout, unit));
             }
@@ -756,7 +753,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 remaining = stop - System.nanoTime();
 
                 // check if done before enqueuing more tasks
-                if (tracker.hasSuccessfulResult())
+                if (latch.getCount() == 0)
                     break;
 
                 if (remaining <= 0)
@@ -768,18 +765,16 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             }
 
             // wait for completion
-            TimeUnit.NANOSECONDS.sleep(stop - System.nanoTime());
-
-            throw new TimeoutException();
+            remaining = stop - System.nanoTime();
+            return latch.await(remaining < 0 ? 0 : remaining, futures);
         } catch (RejectedExecutionException x) {
-            if (x.getCause() instanceof InterruptedException) {
+            if (x.getCause() instanceof InterruptedException)
                 throw (InterruptedException) x.getCause();
-            } else
+            else
                 throw x;
         } finally {
-            T result = tracker.completeInvokeAny(futures);
-            if (result != null || tracker.hasSuccessfulResult())
-                return result;
+            for (Future<?> f : futures)
+                f.cancel(true);
         }
     }
 
