@@ -87,12 +87,21 @@ public class BridgeBuilderImplTest {
 
     @Test
     public void testMoreThanOneAuthMechDoesNotRegisterProvider() throws Exception {
-        Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean1 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean1");
-        Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean2 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean2");
+        final Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean1 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean1");
+        final Bean<HttpAuthenticationMechanism> httpAuthenticationMechanismBean2 = mockery.mock(Bean.class, "httpAuthenticationMechanismBean2");
         httpAuthMechs.add(httpAuthenticationMechanismBean1);
         httpAuthMechs.add(httpAuthenticationMechanismBean2);
 
         withNoCachedProvider().withBeanManager().doesNotRegisterProvider();
+        // the debug might be enabled, therefore allowing to some invocation which is only invoked when trace is enabled.
+        mockery.checking(new Expectations() {
+            {
+                allowing(httpAuthenticationMechanismBean1).getBeanClass();
+                will(returnValue(HttpAuthenticationMechanism.class));
+                allowing(httpAuthenticationMechanismBean2).getBeanClass();
+                will(returnValue(HttpAuthenticationMechanism.class));
+            }
+        });
 
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
         // TODO: Assert serviceability message is issued.

@@ -167,7 +167,7 @@ public class LoginToContinuePropertiesBean<T> implements Bean<LoginToContinuePro
      * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public LoginToContinueProperties create(CreationalContext context) {
+    public LoginToContinueProperties create(CreationalContext<LoginToContinueProperties> context) {
         return new LoginToContinuePropertiesImpl(props);
     }
 
