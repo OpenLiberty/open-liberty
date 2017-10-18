@@ -198,7 +198,13 @@ public class RetryServlet extends FATServlet {
     }
 
     /**
-     * Test that the Class-level annotation can be overridden by config at the method level
+     * Test that the Class-level annotation IS NOT be overridden by config at the method level
+     * In issue #186, we planned to allow class level config overrides for method level annotations.
+     * One of the TCK tests specifically tests that such overrides cannot be made and we will revert
+     * the change to line up with the TCK. This behaviour should be revisited in a future release.
+     *
+     * In the meantime, under issue #542, the behaviour was reverted and this test will be reworked to
+     * confirm the original behaviour.
      *
      * Retry/maxRetries is set to 6 for this method in the config
      */
@@ -209,7 +215,7 @@ public class RetryServlet extends FATServlet {
         } catch (ConnectException e) {
             // Expected
         }
-        assertThat(beanE.getConnectCount(), is(7));
+        assertThat(beanE.getConnectCount(), is(3)); // would be 7 if config had overridden
     }
 
 }
