@@ -8,10 +8,10 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jaxrs21sse.basic;
+package jaxrs21sse.jsonb;
 
-import static jaxrs21sse.basic.JaxbObject.JAXB_OBJECTS;
-import static jaxrs21sse.basic.JsonObject.JSON_OBJECTS;
+import static jaxrs21sse.jsonb.JsonObject.JSON_OBJECTS;
+import static jaxrs21sse.jsonb.JsonbObject.JSONB_OBJECTS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -38,8 +38,8 @@ import org.junit.After;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/BasicSseTestServlet")
-public class BasicSseTestServlet extends FATServlet {
+@WebServlet(urlPatterns = "/SseJsonbTestServlet")
+public class SseJsonbTestServlet extends FATServlet {
     static List<String> resourceFailures = new ArrayList<String>();
 
     @After
@@ -58,110 +58,6 @@ public class BasicSseTestServlet extends FATServlet {
         }
     }
 
-    public void testSimpleDirectTextPlainSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-
-        final List<String> receivedEvents = new ArrayList<String>();
-        final CountDownLatch executionLatch = new CountDownLatch(1);
-
-        Client client = ClientBuilder.newClient();
-        int port = req.getServerPort();
-        WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/plain3");
-
-        try (SseEventSource source = SseEventSource.target(target).build()) {
-            System.out.println("client invoking server SSE resource on: " + source);
-            source.register(
-                            new Consumer<InboundSseEvent>() { // event
-
-                                @Override
-                                public void accept(InboundSseEvent t) {
-                                    System.out.println("new plain event: " + t.getId() + " " + t.getName() + " " + t.readData());
-                                    receivedEvents.add(t.readData(String.class));
-                                }
-                            },
-                            new Consumer<Throwable>() {
-
-                                @Override
-                                public void accept(Throwable t) {
-                                    t.printStackTrace();
-                                    fail("Caught unexpected exception: " + t);
-                                }
-                            },
-                            new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    System.out.println("completion runnable executed");
-                                    executionLatch.countDown();
-                                }
-                            });
-
-            source.open();
-            System.out.println("client source open");
-            assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
-
-        } catch (InterruptedException e) {
-            // falls through
-            e.printStackTrace();
-        }
-
-        assertEquals("Received an unexpected number of events", 3, receivedEvents.size());
-        assertEquals("Unexpected event or event out of order", "uno", receivedEvents.get(0));
-        assertEquals("Unexpected event or event out of order", "dos", receivedEvents.get(1));
-        assertEquals("Unexpected event or event out of order", "tres", receivedEvents.get(2));
-    }
-
-    public void testIntegerSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-
-        final List<Integer> receivedEvents = new ArrayList<Integer>();
-        final CountDownLatch executionLatch = new CountDownLatch(1);
-
-        Client client = ClientBuilder.newClient();
-        int port = req.getServerPort();
-        WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/integer3");
-
-        try (SseEventSource source = SseEventSource.target(target).build()) {
-            System.out.println("client invoking server SSE resource on: " + source);
-            source.register(
-                            new Consumer<InboundSseEvent>() { // event
-
-                                @Override
-                                public void accept(InboundSseEvent t) {
-                                    System.out.println("new integer event: " + t.getId() + " " + t.getName() + " " + t.readData());
-                                    receivedEvents.add(t.readData(Integer.class));
-                                }
-                            },
-                            new Consumer<Throwable>() {
-
-                                @Override
-                                public void accept(Throwable t) {
-                                    t.printStackTrace();
-                                    fail("Caught unexpected exception: " + t);
-                                }
-                            },
-                            new Runnable() {
-
-                                @Override
-                                public void run() {
-                                    System.out.println("completion runnable executed");
-                                    executionLatch.countDown();
-                                }
-                            });
-
-            source.open();
-            System.out.println("client source open");
-            assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
-
-        } catch (InterruptedException e) {
-            // falls through
-            e.printStackTrace();
-        }
-
-        assertEquals("Received an unexpected number of events", 3, receivedEvents.size());
-        assertEquals("Unexpected event or event out of order", 1, receivedEvents.get(0).intValue());
-        assertEquals("Unexpected event or event out of order", 2, receivedEvents.get(1).intValue());
-        assertEquals("Unexpected event or event out of order", 3, receivedEvents.get(2).intValue());
-    }
-
     public void testJsonSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
         final List<JsonObject> receivedEvents = new ArrayList<JsonObject>();
@@ -169,7 +65,7 @@ public class BasicSseTestServlet extends FATServlet {
 
         Client client = ClientBuilder.newClient();
         int port = req.getServerPort();
-        WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/json3");
+        WebTarget target = client.target("http://localhost:" + port + "/SseJsonbApp/jsonb/json3");
 
         SseEventSource source = SseEventSource.target(target).build();
         try {
@@ -228,15 +124,16 @@ public class BasicSseTestServlet extends FATServlet {
         assertEquals("Unexpected event or event out of order", JSON_OBJECTS[2], receivedEvents.get(2));
     }
 
-    public void testJaxbSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testJsonbSse(HttpServletRequest req, HttpServletResponse resp) throws Exception {
 
-        final List<JaxbObject> receivedEvents = new ArrayList<JaxbObject>();
+        final List<JsonbObject> receivedEvents = new ArrayList<JsonbObject>();
+        final List<String> receivedEventDetails = new ArrayList<String>();
+
         final CountDownLatch executionLatch = new CountDownLatch(1);
 
         Client client = ClientBuilder.newClient();
         int port = req.getServerPort();
-        System.out.println("port = " + port);
-        WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/jaxb3");
+        WebTarget target = client.target("http://localhost:" + port + "/SseJsonbApp/jsonb/jsonb3");
 
         SseEventSource source = SseEventSource.target(target).build();
         try {
@@ -246,9 +143,11 @@ public class BasicSseTestServlet extends FATServlet {
 
                                 @Override
                                 public void accept(InboundSseEvent t) {
-                                    JaxbObject o = t.readData(JaxbObject.class, MediaType.APPLICATION_XML_TYPE);
-                                    System.out.println("new jaxb event: " + o);
+                                    JsonbObject o = t.readData(JsonbObject.class, MediaType.APPLICATION_JSON_TYPE);
+                                    String s = t.readData();
+                                    System.out.println("new jsonb event: " + o);
                                     receivedEvents.add(o);
+                                    receivedEventDetails.add(s);
                                 }
                             },
                             new Consumer<Throwable>() {
@@ -290,9 +189,12 @@ public class BasicSseTestServlet extends FATServlet {
         }
 
         assertEquals("Received an unexpected number of events", 3, receivedEvents.size());
-        assertEquals("Unexpected event or event out of order", JAXB_OBJECTS[0], receivedEvents.get(0));
-        assertEquals("Unexpected event or event out of order", JAXB_OBJECTS[1], receivedEvents.get(1));
-        assertEquals("Unexpected event or event out of order", JAXB_OBJECTS[2], receivedEvents.get(2));
+        assertEquals("Unexpected event or event out of order", JSONB_OBJECTS[0], receivedEvents.get(0));
+        assertEquals("Unexpected event or event out of order", JSONB_OBJECTS[1], receivedEvents.get(1));
+        assertEquals("Unexpected event or event out of order", JSONB_OBJECTS[2], receivedEvents.get(2));
+        assertTrue("Incorrect Property Order", JSONB_OBJECTS[0].confirmOrder(receivedEventDetails.get(0)));
+        assertTrue("Incorrect Property Order", JSONB_OBJECTS[1].confirmOrder(receivedEventDetails.get(1)));
+        assertTrue("Incorrect Property Order", JSONB_OBJECTS[2].confirmOrder(receivedEventDetails.get(2)));
     }
 
 }
