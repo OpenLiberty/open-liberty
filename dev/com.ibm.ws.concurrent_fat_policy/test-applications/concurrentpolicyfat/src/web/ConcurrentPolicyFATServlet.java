@@ -378,9 +378,9 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
 
         TaskListener listener;
         Future<Integer> future = futures.get(0);
+        assertEquals(Integer.valueOf(1), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(future.isDone());
         assertFalse(future.isCancelled());
-        assertEquals(Integer.valueOf(1), future.get());
         cancelAfterTest.remove(future);
 
         assertSuccess(defaultScheduledExecutor, future = futures.get(1), tasks[1], listener = (TaskListener) tasks[1].listener, 1);
