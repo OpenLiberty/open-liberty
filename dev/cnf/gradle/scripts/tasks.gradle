@@ -205,6 +205,13 @@ subprojects {
           }
         }
       }
+
+      // featureBnd task expects files in build/l10n
+      copy {
+        from "${projectDir}/resources/l10n"
+        into "${projectDir}/build/l10n"
+      }
+
       new File("${rootDir}/build.image/wlp/lib/features").mkdirs()
       new File("${buildDir}/repo").mkdirs()
       fileTree(dir: "${projectDir}", include: '*.feature').visit { featureFile ->
@@ -212,12 +219,13 @@ subprojects {
           return
         }
 
+        // always set createFor && buildType as beta so that ESAs are provided for ga and beta
         ant.featureBnd(bnd: featureFile.name,
                        createESA: "true",
                        dir: "${rootDir}/build.image/wlp",
                        esaDir: "${buildDir}/repo",
-                       createFor: "${bnd.gaOrBeta}",
-                       buildType: "${bnd.gaOrBeta}",
+                       createFor: "beta",
+                       buildType: "beta",
                        junit: "${buildDir}/report/featureChecks.xml") {
           defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
                          licensePath: "${rootDir}/build.image/license",
@@ -471,14 +479,32 @@ subprojects {
 
   publishing {
     publications {
-      // Publish each feature ESA
-      fileTree(dir: "${buildDir}/repo", include: '*.esa').visit { esa ->
-        if (esa.isDirectory()) return
-        def featureName = esa.name.substring(0, esa.name.size()-4);
-        maven(MavenPublication) {
-          artifactId featureName
-          version project.version
-          artifact "${buildDir}/repo/${featureName}" + ".esa"
+      // Publish ESA for each feature that contains kind=ga or kind=beta
+      fileTree(dir: "${projectDir}", include: '*.feature').visit { feature ->
+        if (feature.isDirectory()) {
+          return
+        }
+        String text = feature.getFile().getText()
+        if (text.contains("kind=ga") || text.contains("kind=beta")) {
+          String name = null
+          int index = text.indexOf("symbolicName=")
+          if (index != -1) {
+            int endIndex = text.indexOf("\n", index)
+            if (endIndex == -1) {
+              endIndex = text.length()
+            }
+            // symbolicName= is length 13
+            name = text.substring(index + 13, endIndex)
+            name = name.replaceAll("\\s+","")
+          } else {
+            name = feature.name.substring(0, feature.name.size()-8)
+          }
+
+          maven(MavenPublication) {
+            artifactId name
+            version project.version
+            artifact "${buildDir}/repo/${name}" + ".esa"
+          }
         }
       }
     }
