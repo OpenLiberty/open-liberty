@@ -58,14 +58,15 @@ Service-Component: \
         |org.jboss.weld.bean\
         |org.jboss.weld.bean.builtin\
         |org.jboss.weld.bean.proxy.util\
-        |org.jboss.weld.context.beanstore\
-        |org.jboss.weld.context.conversation\
-        |org.jboss.weld.context\
+        |org.jboss.weld.contexts.beanstore\
+        |org.jboss.weld.contexts.conversation\
+        |org.jboss.weld.contexts\
         |org.jboss.weld.ejb\
         |org.jboss.weld.injection\
         |org.jboss.weld.injection.attributes\
         |org.jboss.weld.literal\
         |org.jboss.weld.manager\
+        |org.jboss.weld.module.ejb\
         |org.jboss.weld.proxy\
         |org.jboss.weld.serialization\
         |org.jboss.weld.util.bean"
