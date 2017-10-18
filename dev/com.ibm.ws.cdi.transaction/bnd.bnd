@@ -22,12 +22,10 @@ Private-Package: \
 
 Import-Package: \
                 org.jboss.weld.transaction.spi; version="[2.4.0,4.0.0)", \
-                javax.enterprise.context; version="[1.1.0,3.0.0)", \
-                javax.enterprise.context.spi; version="[1.1.0,3.0.0)", \
-                javax.enterprise.event; version="[1.1.0,3.0.0)", \
-                javax.enterprise.inject; version="[1.1.0,3.0.0)", \
-                javax.enterprise.inject.spi; version="[1.1.0,3.0.0)", \
-                javax.enterprise.util; version="[1.1.0,3.0.0)", \
+                javax.enterprise.context.*; version="[1.1.0,3.0.0)", \
+                javax.enterprise.event.*; version="[1.1.0,3.0.0)", \
+                javax.enterprise.inject.*; version="[1.1.0,3.0.0)", \
+                javax.enterprise.util.*; version="[1.1.0,3.0.0)", \
                 javax.decorator; version="[1.1.0,3.0.0)", \
                 *
 

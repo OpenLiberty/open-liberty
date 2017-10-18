@@ -10,17 +10,14 @@
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
-Bundle-Name: com.ibm.ws.cdi.jsf
-Bundle-SymbolicName: com.ibm.ws.cdi.jsf
-Bundle-Description: weld JSF, version ${bVersion}
+Bundle-Name: com.ibm.ws.cdi.1.2.jsf
+Bundle-SymbolicName: com.ibm.ws.cdi.1.2.jsf
+Bundle-Description: CDI 1.2 JSF, version ${bVersion}
 
 -dsannotations: com.ibm.ws.cdi.jsf.CDIJSFInitializerImpl
 
 Private-Package: com.ibm.ws.cdi.jsf;version=1.0;thread-context=true
  
-Import-Package: javax.faces.*;version="[1.0,2.4)", \
- *
-
 WS-TraceGroup: JCDI
 
 -buildpath: \
