@@ -35,7 +35,8 @@ DynamicImport-Package: com.ibm.ws.jsf.spi, \
   
 Include-Resource: \
 	@${repo;org.apache.myfaces.core.api;2.3.0.SNAPSHOT;EXACT}!/javax/faces, \
-	@${repo;org.apache.myfaces.core.api;2.3.0.SNAPSHOT;EXACT}!/META-INF/**
+	@${repo;org.apache.myfaces.core.api;2.3.0.SNAPSHOT;EXACT}!/META-INF/**, \
+	META-INF=@src/META-INF
 
 instrument.disabled: true
 

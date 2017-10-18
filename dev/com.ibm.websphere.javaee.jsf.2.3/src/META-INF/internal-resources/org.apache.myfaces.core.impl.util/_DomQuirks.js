@@ -373,14 +373,18 @@ if (_MF_SINGLTN) {
                 return v.value;	//	string
             }
 
-            // this should work on Opera 7, but it's a little on the crashy side
-            if ((node.getAttributeNode) && (node.getAttributeNode(ta))) {
-                return (node.getAttributeNode(ta)).value;	//	string
-            } else if (node.getAttribute(ta)) {
+
+
+            if (node.getAttribute(ta)) {
                 return node.getAttribute(ta);	//	string
             } else if (node.getAttribute(ta.toLowerCase())) {
                 return node.getAttribute(ta.toLowerCase());	//	string
+
             }
+            //there used to be a getAttributeNode check here for really old
+            //browsers, I had to remove it because of a firefox warning
+            //which uses a regexp scan for this method to be deprecated
+
             return null;	//	string
         },
 
