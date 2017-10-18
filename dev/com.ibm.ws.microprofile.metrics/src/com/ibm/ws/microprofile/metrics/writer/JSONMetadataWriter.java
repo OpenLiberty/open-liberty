@@ -111,12 +111,16 @@ public class JSONMetadataWriter implements OutputWriter {
         }
     }
 
-    private JSONObject getJsonFromMap(Map<String, String> map) {
-        JSONObject jsonObject = new JSONObject();
+    private String getJsonFromMap(Map<String, String> map) {
+        if (map == null)
+            return null;
+        StringBuilder tagList = new StringBuilder();
+        String delimiter = "";
         for (Entry<String, String> entry : map.entrySet()) {
-            jsonObject.put(entry.getKey(), entry.getValue());
+            tagList.append(delimiter).append(entry.getKey()).append('=').append(entry.getValue());
+            delimiter = ",";
         }
-        return jsonObject;
+        return tagList.toString();
     }
 
     private void serialize(JSONObject payload) throws IOException {
