@@ -46,6 +46,7 @@ class TaskListener implements ManagedTaskListener {
     final Boolean[] resultOfCancel = new Boolean[NUM_EVENTS];
     final Object[] resultOfLookup = new Object[NUM_EVENTS];
     final Object[] task = new Object[NUM_EVENTS];
+    final long[] threadId = new long[NUM_EVENTS];
 
     TaskListener() {
         doGet[ConcurrentPolicyFATServlet.DONE] = true;
@@ -102,6 +103,7 @@ class TaskListener implements ManagedTaskListener {
         this.future[event] = future;
         this.invoked[event] = true;
         this.task[event] = task;
+        this.threadId[event] = Thread.currentThread().getId();
 
         try {
             futureToString[event] = future.toString();
