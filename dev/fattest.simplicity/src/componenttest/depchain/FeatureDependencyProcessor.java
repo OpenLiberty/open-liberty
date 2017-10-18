@@ -119,6 +119,9 @@ public class FeatureDependencyProcessor {
                 Log.info(c, m, "After auto-feature calculation: " + testedFeatures);
         }
 
+        // In case there were hard-coded features that were not present in the featureList.xml
+        testedFeatures.addAll(staticTestedFeatures);
+
         Log.info(c, m, "Static tested features are:   " + staticTestedFeatures);
         Log.info(c, m, "Computed Tested features are: " + testedFeatures);
         return testedFeatures;
