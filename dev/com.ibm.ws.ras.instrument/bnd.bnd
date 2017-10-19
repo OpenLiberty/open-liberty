@@ -29,11 +29,4 @@ publish.wlp.jar.disabled: true
 	com.ibm.ws.org.objectweb.asm;version=latest,\
 	com.ibm.ws.logging.core;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
-	
--testpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
-	com.ibm.ws.org.apache.ant;version=latest,\
-	com.ibm.ws.org.objectweb.asm;version=latest,\
-	com.ibm.ws.logging.core;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+

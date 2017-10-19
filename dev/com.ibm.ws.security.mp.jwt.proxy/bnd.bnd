@@ -40,7 +40,7 @@ Import-Package: !*.internal.*, *
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-    ../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest, \
     org.jmock:jmock-legacy;version=2.5.0, \
     cglib:cglib-nodep;version=2.1.0.3, \
     org.hamcrest:hamcrest-all;version=1.3, \
