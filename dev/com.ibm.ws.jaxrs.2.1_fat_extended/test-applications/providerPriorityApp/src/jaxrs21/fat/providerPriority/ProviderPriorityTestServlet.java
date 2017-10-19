@@ -44,7 +44,7 @@ public class ProviderPriorityTestServlet extends FATServlet {
     }
 
     @Test
-    public void testProviderPriorities(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+    public void testEntityProviderPriorities(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         MyObject requestObject = new MyObject();
         requestObject.setMyString("hello");
         requestObject.setMyInt(5);
@@ -52,7 +52,7 @@ public class ProviderPriorityTestServlet extends FATServlet {
                         .request(MediaType.TEXT_PLAIN)
                         .put(Entity.text(requestObject));
         response.bufferEntity();
-        System.out.println("testProviderPriorities responseEntity = " + response.readEntity(String.class));
+        System.out.println("testEntityProviderPriorities responseEntity = " + response.readEntity(String.class));
         MyObject responseObject = response.readEntity(MyObject.class);
 
         // check that the response object was not altered during request
@@ -73,41 +73,32 @@ public class ProviderPriorityTestServlet extends FATServlet {
 
     }
 
-/*
- * @Test
- * public void testSubResourcePatchOptions(HttpServletRequest req, HttpServletResponse resp) throws Exception {
- * SubResource.resources.put(1, new SubResource("resource 1 data"));
- *
- * String allowedHeaders = target(req, "patchapp/rest/test/SubResource/1")
- * .request()
- * .options()
- * .getHeaderString("Allow");
- * System.out.println("Allowed headers of subresource are: " + allowedHeaders);
- * assertTrue(allowedHeaders, allowedHeaders.contains("PATCH"));
- * }
- *
- * @Test
- * public void testPatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
- * // TODO use the `patch(...)` isntead if the JAXRS 2.1 EG includes it in spec
- * // otherwise, continue to use `method("PATCH", ...)`
- * String result = target(req, "patchapp/rest/test")
- * .request()
- * .method("PATCH", String.class);
- * assertEquals("patch-success", result);
- * }
- *
- * @Test
- * public void testSubResourcePatch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
- * SubResource.resources.put(2, new SubResource("resource 2 data"));
- *
- * // TODO use the `patch(...)` isntead if the JAXRS 2.1 EG includes it in spec
- * // otherwise, continue to use `method("PATCH", ...)`
- * String result = target(req, "patchapp/rest/test/SubResource/2")
- * .request()
- * .method("PATCH", String.class);
- * assertEquals("PATCH: resource 2 data", result);
- * }
- */
+    @Test
+    public void testExceptionMapperPriorities(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+        // first try an exception mapper for an app-specific exception
+        Response response = target(req, "providerPriorityApp/rest/test/exception/" + MyException.class.getName())
+                        .request(MediaType.TEXT_PLAIN)
+                        .get();
+        response.bufferEntity();
+        System.out.println("testExceptionMapperPriorities status code = " + response.getStatus());
+        System.out.println("testExceptionMapperPriorities responseEntity = " + response.readEntity(String.class));
+        assertEquals("The higher priority ExceptionMapper was not selected", 418, response.getStatus());
+        assertEquals("The response from the ExceptonMapper did not contain the expected entity",
+                     MyHighPriorityMyExceptionMapper.class.getSimpleName(), response.readEntity(String.class));
+
+        // now try an "unexpected" exception
+        response = target(req, "providerPriorityApp/rest/test/exception/" + NullPointerException.class.getName())
+                        .request(MediaType.TEXT_PLAIN)
+                        .get();
+        response.bufferEntity();
+        System.out.println("testExceptionMapperPriorities status code = " + response.getStatus());
+        System.out.println("testExceptionMapperPriorities responseEntity = " + response.readEntity(String.class));
+        assertEquals("The higher priority ExceptionMapper was not selected", 409, response.getStatus());
+        assertEquals("The response from the ExceptonMapper did not contain the expected entity",
+                     MyHighPriorityThrowableMapper.class.getSimpleName(), response.readEntity(String.class));
+
+    }
+
     private WebTarget target(HttpServletRequest request, String path) {
         String base = "http://" + request.getServerName() + ':' + request.getServerPort() + '/';
         return client.target(base + path);
