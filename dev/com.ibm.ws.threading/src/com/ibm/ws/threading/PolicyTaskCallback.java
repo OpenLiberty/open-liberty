@@ -11,7 +11,6 @@
 package com.ibm.ws.threading;
 
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -29,7 +28,7 @@ public abstract class PolicyTaskCallback {
      * @param timedOut indicates if the start timeout elapsed and caused cancellation.
      * @param whileRunning indicates if the task was canceled while running (as opposed to while still queued for execution or just before it started).
      */
-    public void onCancel(Object task, Future<?> future, boolean timedOut, boolean whileRunning) {}
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {}
 
     /**
      * Invoked on the thread of execution of a task after it completes, which could be successfully, exceptionally, or due to cancellation/interrupt.
@@ -44,7 +43,7 @@ public abstract class PolicyTaskCallback {
      *            If positive, a subsequent onEnd callback will be sent with a negative value after the additional work ends.
      * @param failure failure, if any, that occurred while trying to run the task.
      */
-    public void onEnd(Object task, Future<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {}
+    public void onEnd(Object task, PolicyTaskFuture<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {}
 
     /**
      * Invoked before a task starts running. This callback is invoked synchronously on the task's thread of execution.
@@ -54,7 +53,7 @@ public abstract class PolicyTaskCallback {
      * @param future the future for the task that is about to start.
      * @return optional object that will be supplied to onEnd.
      */
-    public Object onStart(Object task, Future<?> future) {
+    public Object onStart(Object task, PolicyTaskFuture<?> future) {
         return null;
     }
 
@@ -67,7 +66,7 @@ public abstract class PolicyTaskCallback {
      * @param invokeAnyCount this value is always 0 unless invokeAny is used,
      *            in which case it is the size of the collection submitted to invokeAny excluding any that were canceled upon submit.
      */
-    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {}
+    public void onSubmit(Object task, PolicyTaskFuture<?> future, int invokeAnyCount) {}
 
     /**
      * Invoked to raise an exception for an aborted task.

@@ -12,11 +12,11 @@ package web;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 
 /**
  * Task which obtains its own Future from a callback and later invokes get() on that Future when it runs.
@@ -24,7 +24,7 @@ import com.ibm.ws.threading.PolicyTaskCallback;
  * The executor should detect this and immediately interrupt the get() operation to prevent hangs.
  */
 public class SelfGetterTask extends PolicyTaskCallback implements Callable<Object> {
-    private Future<?> future;
+    private PolicyTaskFuture<?> future;
     private final long timeout;
     private final TimeUnit unit;
 
@@ -62,7 +62,7 @@ public class SelfGetterTask extends PolicyTaskCallback implements Callable<Objec
     }
 
     @Override
-    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {
+    public void onSubmit(Object task, PolicyTaskFuture<?> future, int invokeAnyCount) {
         this.future = future;
     }
 }
