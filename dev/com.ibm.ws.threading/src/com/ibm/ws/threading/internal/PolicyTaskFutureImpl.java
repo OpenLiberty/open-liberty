@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,6 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 
 /**
  * Allows the policy executor to tie into internal state and other details of a Future implementation.
@@ -35,7 +35,7 @@ import com.ibm.ws.threading.PolicyTaskCallback;
  *
  * @param <T> type of the result.
  */
-public class PolicyTaskFutureImpl<T> implements Future<T> {
+public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class);
 
     // state constants
@@ -60,6 +60,16 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      * Latch for invokeAny futures. Otherwise null.
      */
     private final InvokeAnyLatch latch;
+
+    /**
+     * Nanosecond timestamp when this Future was created.
+     */
+    final long nsAcceptBegin = System.nanoTime();
+
+    /**
+     * Nanosecond timestamps for various points in the task life cycle, initialized to unset (1 less than previous timestamp).
+     */
+    volatile long nsAcceptEnd = nsAcceptBegin - 1, nsQueueEnd = nsAcceptBegin - 2, nsRunEnd = nsAcceptBegin - 3;
 
     /**
      * Predefined result, if any, for Runnable tasks.
@@ -321,6 +331,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      * @return true if the future transitioned to ABORTED state.
      */
     final boolean abort(Throwable cause) {
+        if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
+            nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
         return result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
     }
 
@@ -331,6 +343,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      */
     @Trivial
     final void accept() {
+        nsAcceptEnd = System.nanoTime();
         state.setSubmitted();
     }
 
@@ -356,6 +369,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         if (result.compareAndSet(state, CANCELED)) {
             if (executor.queue.remove(this)) {
                 state.releaseShared(CANCELED);
+                nsRunEnd = nsQueueEnd = System.nanoTime();
                 executor.maxQueueSizeConstraint.release();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "canceled from queue");
@@ -454,6 +468,26 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
             default: // should be unreachable
                 throw new IllegalStateException(Integer.toString(state.get()));
         }
+    }
+
+    @Override
+    public final long getElapsedAcceptTime(TimeUnit unit) {
+        long elapsed = nsAcceptEnd - nsAcceptBegin;
+        return unit.convert(elapsed >= 0 ? elapsed : System.nanoTime() - nsAcceptBegin, TimeUnit.NANOSECONDS);
+    }
+
+    @Override
+    public final long getElapsedQueueTime(TimeUnit unit) {
+        long begin = nsAcceptEnd;
+        long elapsed = nsQueueEnd - begin;
+        return unit.convert(elapsed >= 0 ? elapsed : begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0, TimeUnit.NANOSECONDS);
+    }
+
+    @Override
+    public final long getElapsedRunTime(TimeUnit unit) {
+        long begin = nsQueueEnd;
+        long elapsed = nsRunEnd - begin;
+        return unit.convert(elapsed >= 0 ? elapsed : begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0, TimeUnit.NANOSECONDS);
     }
 
     @Override
