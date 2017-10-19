@@ -43,7 +43,7 @@ com.ibm.ws.jsf.2.3.taglib; \
    provide:='com.ibm.wsspi.jsp.taglib.config.GlobalTagLibConfig'; \
    properties:="service.vendor=IBM", \
 com.ibm.ws.myfaces.initializer; \
-     implementation:=org.apache.myfaces.ee.MyFacesContainerInitializer; \
+     implementation:=com.ibm.ws.jsf.ee.WASMyFacesContainerInitializer; \
      provide:=javax.servlet.ServletContainerInitializer; \
      properties:="service.vendor=IBM,service.ranking:Integer=101", \
 com.ibm.ws.jsf.2.3.injection.class.list.collaborator; \
@@ -87,7 +87,7 @@ Export-Package: !org.apache.myfaces.buildtools.*, \
 org.apache.myfaces.*;version="1.0.17", \
 com.ibm.ws.jsf.cdi, \
 com.ibm.ws.jsf.config.*;thread-context=true;mandatory:="thread-context", \
-com.ibm.ws.jsf.ext, \
+com.ibm.ws.jsf.ee, \
 com.ibm.ws.jsf.spi.*, \
 com.ibm.ws.jsf.extprocessor, \
 org.apache.myfaces.application;thread-context=true;mandatory:="thread-context", \
