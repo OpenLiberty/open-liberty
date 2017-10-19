@@ -62,8 +62,8 @@ public class JPA22BootstrapTest extends FATServletClient {
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/persistence.xml"), "classes/META-INF/persistence.xml")
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
         // Write the WebArchive to 'publish/servers/FATServer/apps/app1.war' and print the contents
-        ShrinkHelper.exportAppToServer(server1, app1);
-
+        ShrinkHelper.exportDropinAppToServer(server1, app1);
+//      ShrinkHelper.exportAppToServer(server1, app1);
         server1.startServer();
     }
 
@@ -71,7 +71,7 @@ public class JPA22BootstrapTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server1.stopServer();
     }
-    
+
 //    @Test
 //    public void testServer1() throws Exception {
 //        FATServletClient.runTest(server1, APP_NAME + "/" + SERVLET, testName.getMethodName());

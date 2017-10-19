@@ -8,18 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jpa;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+package cdi.model;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPA21BootstrapTest.class,
-                JPA22BootstrapTest.class,
-                JPAELInjectionFATTest.class
-})
-public class FATSuite {
+import java.util.List;
 
+public interface LoggingService {
+    public void log(String s);
+
+    public List<String> getAndClearMessages();
 }

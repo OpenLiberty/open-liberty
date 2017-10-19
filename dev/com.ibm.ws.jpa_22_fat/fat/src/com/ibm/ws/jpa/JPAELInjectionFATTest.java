@@ -8,6 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.jpa;
 
 import java.io.File;
@@ -16,39 +17,24 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
+import cdi.web.ELIServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
-import jpa21bootstrap.web.TestJPA21BootstrapServlet;
 
-/**
- * Example Shrinkwrap FAT project:
- * <li> Application packaging is done in the @BeforeClass, instead of ant scripting.
- * <li> Injects servers via @Server annotation. Annotation value corresponds to the
- * server directory name in 'publish/servers/%annotation_value%' where ports get
- * assigned to the LibertyServer instance when the 'testports.properties' does not
- * get used.
- * <li> Specifies an @RunWith(FATRunner.class) annotation. Traditionally this has been
- * added to bytecode automatically by ant.
- * <li> Uses the @TestServlet annotation to define test servlets. Notice that no @Test
- * methods are defined in this class. All of the @Test methods are defined on the test
- * servlet referenced by the annotation, and will be run whenever this test class runs.
- */
 @RunWith(FATRunner.class)
-public class JPA21BootstrapTest extends FATServletClient {
+public class JPAELInjectionFATTest {
+    public static final String APP_NAME = "cdi";
+    public static final String SERVLET = "eli";
 
-    public static final String APP_NAME = "jpa21bootstrap";
-    public static final String SERVLET = "TestJPA21Bootstrap";
-
-    @Server("JPA21FATServer")
-    @TestServlet(servlet = TestJPA21BootstrapServlet.class, path = APP_NAME + "/" + SERVLET)
+    @Server("JPA22FATServer")
+    @TestServlet(servlet = ELIServlet.class, path = APP_NAME + "/" + SERVLET)
     public static LibertyServer server1;
 
     @BeforeClass
@@ -57,13 +43,19 @@ public class JPA21BootstrapTest extends FATServletClient {
         // Include the 'app1.web' package and all of it's java classes and sub-packages
         // Include a simple index.jsp static file in the root of the WebArchive
         WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "jpa21bootstrap.web")
-                        .addPackages(true, "jpa21bootstrap.entity")
+                        .addPackages(true, "cdi.web")
+                        .addPackages(true, "cdi.model")
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/META-INF/persistence.xml"), "classes/META-INF/persistence.xml")
+                        .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/WEB-INF/beans.xml"))
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
         // Write the WebArchive to 'publish/servers/FATServer/apps/app1.war' and print the contents
-        ShrinkHelper.exportAppToServer(server1, app1);
+        ShrinkHelper.exportDropinAppToServer(server1, app1);
+//        ShrinkHelper.exportAppToServer(server1, app1);
 
+        ServerConfiguration sc = server1.getServerConfiguration();
+        sc.getFeatureManager().getFeatures().add("cdi-2.0");
+        server1.updateServerConfiguration(sc);
+        server1.saveServerConfiguration();
         server1.startServer();
     }
 
@@ -71,15 +63,4 @@ public class JPA21BootstrapTest extends FATServletClient {
     public static void tearDown() throws Exception {
         server1.stopServer();
     }
-
-//    @Test
-//    public void testServer1() throws Exception {
-//        FATServletClient.runTest(server1, APP_NAME + "/" + SERVLET, testName.getMethodName());
-//    }
-
-//    @Test
-//    public void verifyArtifactoryDependency() throws Exception {
-//        // Confirm that the example Artifactory dependency was download and is available on the classpath
-//        org.apache.derby.drda.NetworkServerControl.class.getName();
-//    }
 }

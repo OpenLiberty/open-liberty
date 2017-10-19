@@ -27,37 +27,36 @@ import jpa22bootstrap.entity.SimpleTestEntity;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestJPA22Bootstrap")
 public class TestJPA22BootstrapServlet extends FATServlet {
-	@PersistenceContext(unitName="JPAPU")
-	private EntityManager em;
-	
-	@Resource
-	private UserTransaction tx;
-	
-	@Test
-	@Mode(TestMode.LITE)
-	public void bootstrapTest22() throws Exception {
-		System.out.println("STARTING bootstrapTest22...");
-		
-		try {
-			tx.begin();
-			SimpleTestEntity entity = new SimpleTestEntity();
-			entity.setStrData("Foo Bar");
-			em.persist(entity);
-			tx.commit();
-			
-			em.clear();
-			
-			SimpleTestEntity findEntity = em.find(SimpleTestEntity.class, entity.getId());
-			Assert.assertNotNull(findEntity);
-			Assert.assertNotSame(entity, findEntity);
-			Assert.assertEquals(entity.getId(), findEntity.getId());
-		} finally {
-			System.out.println("ENDING bootstrapTest22.");
-		}
-		
-		
-	}
-	
+    @PersistenceContext(unitName = "JPAPU")
+    private EntityManager em;
+
+    @Resource
+    private UserTransaction tx;
+
+    @Test
+    @Mode(TestMode.LITE)
+    public void bootstrapTest22() throws Exception {
+        System.out.println("STARTING bootstrapTest22...");
+
+        try {
+            tx.begin();
+            SimpleTestEntity entity = new SimpleTestEntity();
+            entity.setStrData("Foo Bar");
+            em.persist(entity);
+            tx.commit();
+
+            em.clear();
+
+            SimpleTestEntity findEntity = em.find(SimpleTestEntity.class, entity.getId());
+            Assert.assertNotNull(findEntity);
+            Assert.assertNotSame(entity, findEntity);
+            Assert.assertEquals(entity.getId(), findEntity.getId());
+        } finally {
+            System.out.println("ENDING bootstrapTest22.");
+        }
+
+    }
+
 //    @Test
 //    public void testServer1() throws Exception {
 //        System.out.println("Test is running.");
