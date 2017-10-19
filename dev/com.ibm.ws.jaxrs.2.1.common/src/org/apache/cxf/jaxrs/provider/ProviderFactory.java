@@ -43,8 +43,8 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.json.spi.JsonProvider;
 import javax.json.bind.spi.JsonbProvider;
+import javax.json.spi.JsonProvider;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Application;
@@ -320,7 +320,7 @@ public abstract class ProviderFactory {
         } else if (candidates.size() == 1) {
             return candidates.get(0);
         } else {
-            Collections.sort(candidates, new ClassComparator());
+            Collections.sort(candidates, new PriorityBasedClassComparator());
             return new ContextResolverProxy<T>(candidates);
         }
 
@@ -1021,7 +1021,11 @@ public abstract class ProviderFactory {
             if (result != 0) {
                 return result;
             }
-            return compareCustomStatus(p1, p2);
+            result = compareCustomStatus(p1, p2);
+            if (result != 0) {
+                return result;
+            }
+            return comparePriorityStatus(p1.getProvider().getClass(), p2.getProvider().getClass());
         }
     }
 
@@ -1052,7 +1056,11 @@ public abstract class ProviderFactory {
             if (result != 0) {
                 return result;
             }
-            return compareCustomStatus(p1, p2);
+            result = compareCustomStatus(p1, p2);
+            if (result != 0) {
+                return result;
+            }
+            return comparePriorityStatus(p1.getProvider().getClass(), p2.getProvider().getClass());
         }
     }
 
@@ -1066,6 +1074,13 @@ public abstract class ProviderFactory {
             result = busGlobal1.compareTo(busGlobal2);
         }
         return result;
+    }
+
+
+    private static int comparePriorityStatus(Class<?> cl1, Class<?> cl2) {
+        Integer value1 = AnnotationUtils.getBindingPriority(cl1);
+        Integer value2 = AnnotationUtils.getBindingPriority(cl2);
+        return value1.compareTo(value2);
     }
 
     private static class ContextResolverComparator
@@ -1202,6 +1217,25 @@ public abstract class ProviderFactory {
         @Override
         public int compare(Object em1, Object em2) {
             return compareClasses(expectedCls, em1, em2);
+        }
+    }
+
+    static class PriorityBasedClassComparator extends ClassComparator {
+        PriorityBasedClassComparator() {
+            super();
+        }
+
+        PriorityBasedClassComparator(Class<?> expectedCls) {
+            super(expectedCls);
+        }
+
+        @Override
+        public int compare(Object em1, Object em2) {
+            int result = super.compare(em1, em2);
+            if (result == 0) {
+                result = comparePriorityStatus(em1.getClass(), em2.getClass());
+            }
+            return result;
         }
     }
 
