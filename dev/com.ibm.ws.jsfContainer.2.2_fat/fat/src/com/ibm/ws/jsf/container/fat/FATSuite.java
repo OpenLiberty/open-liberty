@@ -24,15 +24,18 @@ import org.junit.runners.Suite.SuiteClasses;
                 CDIFlowsTests.class,
                 JSF22StatelessViewTests.class,
                 JSF22BeanValidationTests.class,
-                FeatureConflictTest.class,
+                ErrorPathsTest.class,
                 ConfigTest.class
 })
 
 public class FATSuite {
 
+    public static final String MOJARRA_API = "publish/files/mojarra/jsf-api-2.2.14.jar";
+    public static final String MOJARRA_IMPL = "publish/files/mojarra/jsf-impl-2.2.14.jar";
+
     public static WebArchive addMojarra(WebArchive app) throws Exception {
-        app = app.addAsLibrary(new File("publish/files/mojarra/jsf-api-2.2.14.jar"))
-                        .addAsLibrary(new File("publish/files/mojarra/jsf-impl-2.2.14.jar"));
+        app = app.addAsLibrary(new File(MOJARRA_API))
+                        .addAsLibrary(new File(MOJARRA_IMPL));
 
         return app;
     }
