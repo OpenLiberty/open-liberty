@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
 	com.ibm.ws.app.manager.wab;version=latest, \
 	com.ibm.ws.eba.wab.integrator;version=latest, \
 	com.ibm.websphere.appserver.spi.wab.configure;version=latest

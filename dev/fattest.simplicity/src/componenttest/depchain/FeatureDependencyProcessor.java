@@ -45,8 +45,9 @@ public class FeatureDependencyProcessor {
         // Load the tested feature data, if it exists
         File testedFeaturesFile = new File("fat-metadata.json");
         if (!testedFeaturesFile.exists()) {
-            Log.info(c, m, "No tested feature data for this server.  Skipping feature validation");
-            return;
+            Exception noMetadata = new Exception("Unable to locate FAT metadata at: " + testedFeaturesFile.getAbsolutePath());
+            Log.error(c, m, noMetadata);
+            throw noMetadata;
         }
 
         // Scrape messages.log to see what features were installed
@@ -117,6 +118,9 @@ public class FeatureDependencyProcessor {
             if (DEBUG)
                 Log.info(c, m, "After auto-feature calculation: " + testedFeatures);
         }
+
+        // In case there were hard-coded features that were not present in the featureList.xml
+        testedFeatures.addAll(staticTestedFeatures);
 
         Log.info(c, m, "Static tested features are:   " + staticTestedFeatures);
         Log.info(c, m, "Computed Tested features are: " + testedFeatures);

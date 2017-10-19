@@ -12,9 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
 	com.ibm.ws.monitor;version=latest, \
 	com.ibm.websphere.appserver.api.monitor;version=latest

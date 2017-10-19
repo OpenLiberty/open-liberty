@@ -85,6 +85,7 @@ net.sourceforge.htmlunit:htmlunit:2.15
 net.sourceforge.htmlunit:htmlunit:2.27
 net.sourceforge.htmlunit:htmlunit-core-js:2.15
 org.apache.ant:ant:1.9.6
+org.apache.ant:ant-junit:1.9.6
 org.apache.aries.jmx:org.apache.aries.jmx.api:1.1.5
 org.apache.aries.jmx:org.apache.aries.jmx.core.whiteboard:1.1.5
 org.apache.aries.jndi:org.apache.aries.jndi.api:1.1.0

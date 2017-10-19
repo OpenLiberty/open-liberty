@@ -45,7 +45,6 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -86,7 +85,6 @@ public class JavaEESecCDIExtensionTest {
     }
 
     @Test
-    @Ignore("Fails in prototype.")
     public void processAnnotatedTypeNA() {
         final Set<Annotation> aset = new HashSet<Annotation>();
         final InvalidAnnotation ia = getIAInstance();
@@ -95,6 +93,8 @@ public class JavaEESecCDIExtensionTest {
             {
                 one(pat).getAnnotatedType();
                 will(returnValue(at));
+                one(at).getJavaClass();
+                will(returnValue(String.class));
                 one(at).getAnnotations();
                 will(returnValue(aset));
             }
@@ -107,31 +107,6 @@ public class JavaEESecCDIExtensionTest {
     }
 
     @Test
-    @Ignore("Fails in prototype.")
-    public void processAnnotatedTypeBasicAuthMech() {
-        final Set<Annotation> aset = new HashSet<Annotation>();
-        final String realmName = "myRealm";
-        final BasicAuthenticationMechanismDefinition bamd = getBAMDInstance(realmName);
-        aset.add(bamd);
-        context.checking(new Expectations() {
-            {
-                one(pat).getAnnotatedType();
-                will(returnValue(at));
-                one(at).getAnnotations();
-                will(returnValue(aset));
-            }
-        });
-
-        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
-        j3ce.processAnnotatedType(pat, bm);
-        Set<Bean> beans = j3ce.getBeansToAdd();
-        assertEquals("incorrect number of beans in beansToAdd after processAnnotatedType", 1, beans.size());
-
-        assertTrue("incorrect beansToAdd value after processAnnotatedType", beans.iterator().next().getClass().equals(BasicAuthenticationMechanismBean.class));
-    }
-
-    @Test
-    @Ignore("Fails in prototype.")
     public void processAnnotatedTypeLdapIdentityStore() {
         final Set<Annotation> aset = new HashSet<Annotation>();
         final Properties props = new Properties();
@@ -139,6 +114,8 @@ public class JavaEESecCDIExtensionTest {
         aset.add(lisd);
         context.checking(new Expectations() {
             {
+                one(at).getJavaClass();
+                will(returnValue(String.class));
                 one(pat).getAnnotatedType();
                 will(returnValue(at));
                 one(at).getAnnotations();
@@ -162,7 +139,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                between(2,3).of(bn).getBeanClass();
                 will(returnValue(TestIdentityStore.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
@@ -187,7 +164,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                between(2,3).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
@@ -217,13 +194,13 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                between(2,3).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
                 one(pb2).getBean();
                 will(returnValue(bn2));
-                one(bn2).getBeanClass();
+                between(1,2).of(bn2).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn2).getTypes();
                 will(returnValue(types2));
@@ -287,15 +264,15 @@ public class JavaEESecCDIExtensionTest {
             {
                 exactly(2).of(pb).getBean();
                 will(returnValue(bn));
-                exactly(2).of(bn).getBeanClass();
+                between(2,3).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 exactly(2).of(bn).getTypes();
                 will(returnValue(types));
                 one(pb2).getBean();
-                will(returnValue(bn));
-                one(bn).getBeanClass();
+                will(returnValue(bn2));
+                between(1,2).of(bn2).getBeanClass();
                 will(returnValue(Object.class));
-                one(bn).getTypes();
+                one(bn2).getTypes();
                 will(returnValue(types2));
                 never(pb3).getBean();
             }
@@ -325,7 +302,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 one(pb).getBean();
                 will(returnValue(bn));
-                one(bn).getBeanClass();
+                between(1,2).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn).getTypes();
                 will(returnValue(types));
@@ -383,7 +360,7 @@ public class JavaEESecCDIExtensionTest {
             {
                 one(pb).getBean();
                 will(returnValue(bn));
-                one(bn).getBeanClass();
+                between(1,2).of(bn).getBeanClass();
                 will(returnValue(Object.class));
                 one(bn).getTypes();
                 will(returnValue(types));

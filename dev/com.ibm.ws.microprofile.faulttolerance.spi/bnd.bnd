@@ -54,6 +54,6 @@ testsrc: test/src
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.hamcrest:hamcrest-all;version=1.3
 

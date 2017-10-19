@@ -12,9 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.monitor-1.0;version=latest, \
-	com.ibm.websphere.appserver.distributedMap-1.0;version=latest, \
 	com.ibm.ws.dynacache.monitor;version=latest

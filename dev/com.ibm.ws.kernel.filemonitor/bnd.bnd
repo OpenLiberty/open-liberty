@@ -54,7 +54,7 @@ instrument.classesExcludes: com/ibm/ws/kernel/filemonitor/internal/resources/*.c
 	org.jmock:jmock;version=2.6.0, \
 	org.jmock:jmock-junit4;version=2.6.0, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.logging;version=latest, \
 	com.ibm.ws.kernel.service;version=latest, \
 	com.ibm.ws.kernel.boot.logging;version=latest, \

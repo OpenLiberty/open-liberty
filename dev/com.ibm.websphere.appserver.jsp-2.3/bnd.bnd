@@ -12,13 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.jsp-2.3;version=latest, \
-	com.ibm.websphere.appserver.javax.el-3.0;version=latest, \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.websphere.appserver.el-3.0;version=latest, \
 	com.ibm.ws.org.eclipse.jdt.core;version=latest, \
 	com.ibm.websphere.javaee.jstl.1.2;version=latest, \
 	com.ibm.ws.jsp.2.3;version=latest, \

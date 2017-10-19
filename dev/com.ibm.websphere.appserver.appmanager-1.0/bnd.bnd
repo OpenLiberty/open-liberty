@@ -12,12 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.artifact-1.0;version=latest,\
-	com.ibm.websphere.appserver.classloading-1.0;version=latest,\
-	com.ibm.websphere.appserver.appLifecycle-1.0;version=latest,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.ws.app.manager;version=latest,\
 	com.ibm.ws.app.manager.ready;version=latest,\

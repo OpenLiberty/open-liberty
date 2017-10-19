@@ -12,7 +12,7 @@ package com.ibm.ws.threading.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -20,7 +20,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.locks.AbstractQueuedSynchronizer;
 
@@ -58,6 +57,11 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     private final PolicyExecutorImpl executor;
 
     /**
+     * Latch for invokeAny futures. Otherwise null.
+     */
+    private final InvokeAnyLatch latch;
+
+    /**
      * Predefined result, if any, for Runnable tasks.
      */
     private final T predefinedResult;
@@ -92,11 +96,6 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     private volatile Thread thread;
 
     /**
-     * Tracker for invokeAny futures. Otherwise null.
-     */
-    private final InvokeAnyCompletionTracker tracker;
-
-    /**
      * Result of the task. Can be a value, an exception, or other indicator (the state distinguishes).
      * PRESUBMITized to the state field as a way of indicating a result is not set. This allows the possibility of null results.
      */
@@ -121,59 +120,54 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     }
 
     /**
-     * Tracks completion of an invokeAny operation. The invokeAny method follows a pattern of constructing an instance
-     * of this tracker class from its thread of execution and later invoking completeInvokeAny at the end of the operation.
+     * Latch for invokeAny that supports multiple countdown. When a task fails, we count down the latch by 1.
+     * When a task completes successfully, we immediately count down the latch to 0.
      */
-    static class InvokeAnyCompletionTracker {
-        /**
-         * Count of pending tasks that have not completed or been canceled.
-         */
-        private final AtomicInteger pending;
+    static class InvokeAnyLatch extends AbstractQueuedSynchronizer {
+        private static final long serialVersionUID = 1L;
 
         /**
-         * Populated with first successful result. When set to the tracker instance, it means no successful result has been obtained yet.
+         * Populated with first successful result. When set to the latch instance, it means no successful result has been obtained yet.
+         * Set the result prior to counting down to ensure the result is always present to any thread that awaits the countdown to 0.
          */
         private final AtomicReference<Object> result;
 
         /**
-         * Thread of execution for the invokeAny operation.
+         * @param count count of pending tasks that have not completed or been canceled.
          */
-        private Thread thread;
-
-        InvokeAnyCompletionTracker(int numTasks) {
-            pending = new AtomicInteger(numTasks);
+        @Trivial
+        InvokeAnyLatch(int count) {
+            setState(count);
             result = new AtomicReference<Object>(this);
-            thread = Thread.currentThread();
         }
 
         /**
-         * Completes the processing for the invokeAny method for which this tracker was created.
+         * Await completion of the latch and return the result of one of the futures.
          *
-         * @param <T>
-         *
-         * @param futures futures for tasks submitted to invokeAny.
-         * @return result of a task that completed successfully. If none completed successfully or exceptionally or were canceled, then returns null.
-         *         The result should be used in combination with hasSuccessfulResult in order to disambiguate null values.
-         * @throws CancellationException if no task completed successfully or exceptionally but at least one was canceled.
-         * @throws ExecutionException if no task completed successfully but at least one completed exceptionally.
+         * @param timeoutNS maximum number of nanoseconds to wait. -1 to wait without applying a timeout.
+         * @param futures list of futures for tasks submitted to invokeAny
+         * @return result of one of the futures if any are successful before the timeout elapses.
+         * @throws CancellationException if all tasks were canceled.
+         * @throws ExecutionException if all tasks completed, at least one exceptionally or aborted, and none were successful.
+         * @throws InterruptedException if interrupted.
+         * @throws RejectedExecutionException if all tasks completed, at least one aborted, and none were successful.
+         * @throws TimeoutException if the timeout elapses before all tasks complete and no task has completed successfully.
          */
         @SuppressWarnings("unchecked")
-        <T> T completeInvokeAny(ArrayList<PolicyTaskFutureImpl<T>> futures) throws CancellationException, ExecutionException {
-            synchronized (this) {
-                thread = null;
-            }
-
-            boolean allTasksDone = pending.get() == 0;
-            if (!allTasksDone)
-                for (Future<?> f : futures)
-                    f.cancel(true);
+        <T> T await(long timeoutNS, List<PolicyTaskFutureImpl<T>> futures) throws ExecutionException, InterruptedException, TimeoutException {
+            int countdown = getCount();
+            if (countdown > 0)
+                if (timeoutNS < 0)
+                    acquireSharedInterruptibly(countdown);
+                else if (!tryAcquireSharedNanos(countdown, timeoutNS))
+                    throw new TimeoutException();
 
             Object result = this.result.get();
             if (result != this)
                 return (T) result;
-            else if (allTasksDone) { // cause ExecutionException/RejectedExecutionException (preferred) or CancellationException to be raised
+            else { // cause ExecutionException/RejectedExecutionException (preferred) or CancellationException to be raised
                 boolean canceled = false;
-                for (PolicyTaskFutureImpl<?> f : futures) {
+                for (PolicyTaskFutureImpl<T> f : futures) {
                     int s = f.state.get();
                     if (s == FAILED)
                         throw new ExecutionException((Throwable) f.result.get());
@@ -187,27 +181,58 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 }
                 if (canceled)
                     throw new CancellationException();
-            } // else allow original exception to be raised (InterruptedException or TimeoutException)
-            return null;
+                else
+                    throw new IllegalStateException(this + ", " + futures); // should be unreachable
+            }
         }
 
         /**
-         * @return true if a successful result has been recorded, otherwise false.
+         * Count down by 1 if the current count is positive.
+         *
+         * @return true if counted down, otherwise false.
          */
-        boolean hasSuccessfulResult() {
-            return result.get() != this;
+        boolean countDown() {
+            return releaseShared(1);
         }
 
         /**
-         * Interrupts the thread on which invokeAny is running so that it can complete.
+         * Count down the latch to 0 if the specified value can be set as the result.
+         *
+         * @param result successful result for invokeAny
+         * @return true if we set the result and counted down to 0, otherwise false.
          */
-        private synchronized void notifyInvokeAny() {
-            if (thread != null)
-                try {
-                    AccessController.doPrivileged(new InterruptAction(thread));
-                } finally {
-                    thread = null;
-                }
+        boolean countDown(Object result) {
+            return this.result.compareAndSet(this, result) && releaseShared(getState());
+        }
+
+        @Trivial
+        int getCount() {
+            return getState();
+        }
+
+        @Override
+        @Trivial
+        public String toString() {
+            Object r = result.get();
+            return new StringBuilder("InvokeAnyLatch@").append(Integer.toHexString(hashCode())) //
+                            .append(' ').append("count:").append(getState()) //
+                            .append(", result:").append((r == this ? "<empty>" : r)).toString();
+        }
+
+        @Trivial
+        @Override
+        protected final int tryAcquireShared(int ignored) {
+            return getState() > 0 ? -1 : 1;
+        }
+
+        @Trivial
+        @Override
+        protected final boolean tryReleaseShared(int amount) {
+            if (amount < 0)
+                throw new IllegalArgumentException(Integer.toString(amount));
+            int count;
+            while ((count = getState()) > 0 && !compareAndSetState(count, amount > count ? 0 : count - amount));
+            return count > 0 && count <= amount;
         }
     }
 
@@ -250,28 +275,28 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.callable = executor.globalExecutor.wrap(task);
         this.callback = callback;
         this.executor = executor;
+        this.latch = null;
         this.predefinedResult = null;
         this.runnable = null;
         this.task = task;
-        this.tracker = null;
 
         if (callback != null)
             callback.onSubmit(task, this, 0);
     }
 
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyCompletionTracker tracker) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyLatch latch) {
         if (task == null)
             throw new NullPointerException();
         this.callable = executor.globalExecutor.wrap(task);
         this.callback = callback;
         this.executor = executor;
+        this.latch = latch;
         this.predefinedResult = null;
         this.runnable = null;
         this.task = task;
-        this.tracker = tracker;
 
         if (callback != null)
-            callback.onSubmit(task, this, tracker.pending.get());
+            callback.onSubmit(task, this, latch.getCount());
     }
 
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback) {
@@ -280,10 +305,10 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.callable = null;
         this.callback = callback;
         this.executor = executor;
+        this.latch = null;
         this.predefinedResult = predefinedResult;
         this.runnable = executor.globalExecutor.wrap(task);
         this.task = task;
-        this.tracker = null;
 
         if (callback != null)
             callback.onSubmit(task, this, 0);
@@ -362,8 +387,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                     callback.onCancel(task, this, false, true);
             }
 
-            if (tracker != null && tracker.pending.decrementAndGet() == 0)
-                tracker.notifyInvokeAny();
+            if (latch != null)
+                latch.countDown();
 
             return true;
         } else {
@@ -480,8 +505,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
 
                 if (result.compareAndSet(state, t)) {
                     state.releaseShared(SUCCESSFUL);
-                    if (tracker != null && tracker.result.compareAndSet(tracker, t))
-                        tracker.notifyInvokeAny();
+                    if (latch != null)
+                        latch.countDown(t);
                 }
 
                 if (trace && tc.isDebugEnabled())
@@ -498,8 +523,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 Tr.debug(this, tc, "run", x);
             if (result.compareAndSet(state, x)) {
                 state.releaseShared(aborted ? ABORTED : FAILED);
-                if (tracker != null && tracker.pending.decrementAndGet() == 0)
-                    tracker.notifyInvokeAny();
+                if (latch != null)
+                    latch.countDown();
             }
 
             if (callback != null)

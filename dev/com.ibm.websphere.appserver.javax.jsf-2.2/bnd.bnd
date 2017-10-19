@@ -12,7 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.websphere.javaee.jsf.2.2;version=latest

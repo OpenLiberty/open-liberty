@@ -29,8 +29,7 @@ import componenttest.topology.utils.FATServletClient;
 import jaxrs21sse.basic.BasicSseTestServlet;
 
 /**
- * This test for JSON-P is placed in the JSON-B bucket because it is convenient to access the Johnzon library here.
- * Consider if we should move to the JSON-P bucket once that is written.
+ * This test of basic SSE function.
  */
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 1.8)
@@ -70,7 +69,18 @@ public class BasicSseTest extends FATServletClient {
     }
 
     @Test
+    public void testIntegerSse() throws Exception {
+        runTest(server, SERVLET_PATH, "testIntegerSse");
+    }
+
+    @Test
+    public void testJaxbSse() throws Exception {
+        runTest(server, SERVLET_PATH, "testJaxbSse");
+    }
+
+    @Test
     public void testJsonSse() throws Exception {
         runTest(server, SERVLET_PATH, "testJsonSse");
     }
+
 }

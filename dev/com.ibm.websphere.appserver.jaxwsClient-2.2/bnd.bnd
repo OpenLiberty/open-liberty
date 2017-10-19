@@ -12,15 +12,8 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.ws.org.apache.cxf.jaxws;version=latest,\
-	com.ibm.websphere.appserver.injection-1.0;version=latest, \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.mail-1.5;version=latest, \
-	com.ibm.websphere.appserver.jaxb-2.2;version=latest, \
 	com.ibm.ws.org.apache.xml.resolver;version=latest, \
 	com.ibm.ws.org.apache.neethi;version=latest, \
 	com.ibm.ws.javaee.ddmodel.wsbnd;version=latest, \

@@ -12,8 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.ws.timer;version=latest, \
 	com.ibm.ws.channelfw;version=latest, \

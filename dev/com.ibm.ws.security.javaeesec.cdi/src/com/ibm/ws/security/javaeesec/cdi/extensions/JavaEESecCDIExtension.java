@@ -32,8 +32,7 @@ import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
-import javax.enterprise.inject.spi.ProcessBeanAttributes;
-import javax.enterprise.inject.spi.ProcessManagedBean;
+
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
@@ -48,8 +47,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
 
 // TODO:
 // Find out how to release LoginToContinue annotation in LoginToContinueIntercepter by the one in FormAuthenticationMechanismDefinition.
@@ -60,7 +60,7 @@ import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism
  * @param <T>
  */
 @Component(service = WebSphereCDIExtension.class,
-           property = { "api.classes=javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;javax.security.enterprise.identitystore.IdentityStore;javax.security.enterprise.identitystore.IdentityStoreHandler;javax.security.enterprise.identitystore.RememberMeIdentityStore;javax.security.enterprise.SecurityContext;com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContinueProperties" },
+           property = { "api.classes=javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;javax.security.enterprise.identitystore.IdentityStore;javax.security.enterprise.identitystore.IdentityStoreHandler;javax.security.enterprise.identitystore.RememberMeIdentityStore;javax.security.enterprise.SecurityContext;com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties" },
            immediate = true)
 public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtension {
 
@@ -73,7 +73,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Annotation loginToContinue = null;
     private final Set<Class<?>> authMechRegistered = new HashSet<Class<?>>();
 
-
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
         if (tc.isDebugEnabled()) Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         AnnotatedType<T> annotatedType = processAnnotatedType.getAnnotatedType();
@@ -84,6 +83,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 Tr.debug(tc, "Found an application specific HttpAuthenticationMechanism : " + javaClass);
             }
             authMechRegistered.add(javaClass);
+            createHAMPropertiesBeanForApplicationAuthMechToAdd(beanManager, javaClass);
+            // need to create a HAMProperties
         }
         //look at the class level annotations
         Set<Annotation> annotations = annotatedType.getAnnotations();
@@ -96,10 +97,10 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             // TODO: If I see my annotations, create beans by type. Add more bean types.
             Class<? extends Annotation> annotationType = annotation.annotationType();
             if (BasicAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                createBasicAuthenticationMechanismBeanToAdd(beanManager, annotation, annotationType);
+                createHAMPropertiesBeanForBasicToAdd(beanManager, annotation, annotationType);
                 authMechRegistered.add(annotationType);
             } else if (FormAuthenticationMechanismDefinition.class.equals(annotationType) || CustomFormAuthenticationMechanismDefinition.class.equals(annotationType)) {
-                createLoginToContinuePropertiesBeanToAdd(beanManager, annotation, annotationType, annotatedType);
+                createHAMPropertiesBeanForFormToAdd(beanManager, annotation, annotationType);
                 authMechRegistered.add(annotationType);
             } else if (LdapIdentityStoreDefinition.class.equals(annotationType)) {
                 createLdapIdentityStoreBeanToAdd(beanManager, annotation, annotationType);
@@ -116,6 +117,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         beforeBeanDiscovery.addAnnotatedType(securityContextProducerType);
         AnnotatedType<AutoApplySessionInterceptor> autoApplySessionInterceptorType = beanManager.createAnnotatedType(AutoApplySessionInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(autoApplySessionInterceptorType);
+        AnnotatedType<RememberMeInterceptor> rememberMeInterceptorInterceptorType = beanManager.createAnnotatedType(RememberMeInterceptor.class);
+        beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType);
     }
 
     <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
@@ -150,33 +153,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         }
     }
 
-    <T> void processBeanAttributes(@Observes ProcessBeanAttributes processBeanAttributes, BeanManager beanManager) {
-        if (tc.isDebugEnabled()) Tr.debug(tc, "processBeanAttributes : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
-        Set <Type> toBeVetoed = new HashSet<Type>();
-        if (isBasicAuthMechRegistered(authMechRegistered) || isApplicationAuthMechRegistered(authMechRegistered)) {
-            toBeVetoed.add(FormAuthenticationMechanism.class);
-            toBeVetoed.add(CustomFormAuthenticationMechanism.class);
-        } else if (isFormAuthMechRegistered(authMechRegistered)) {
-            toBeVetoed.add(CustomFormAuthenticationMechanism.class);
-        } else {
-            toBeVetoed.add(FormAuthenticationMechanism.class);
-        }
-        if (!toBeVetoed.isEmpty()) {
-            // need to disable managed beans.
-            BeanAttributes<T> attrs = processBeanAttributes.getBeanAttributes();
-            Set<Type> types = attrs.getTypes();
-            for (Type type : types) {
-                for (Type veto : toBeVetoed) {
-                    if (veto.equals(type)) {
-                        processBeanAttributes.veto();
-                        if (tc.isDebugEnabled())
-                            Tr.debug(tc, veto + " is disabled since another HttpAuthorizationMechanism is registered.");
-                    }
-                }
-            }
-        }
-    }
-
     void processBean(@Observes ProcessBean<?> processBean, BeanManager beanManager) {
         if (tc.isDebugEnabled()) Tr.debug(tc, "processBean : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         if (!identityStoreHandlerRegistered) {
@@ -192,15 +168,23 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     /**
+     * @param <T>
      * @param beanManager
      * @param annotation
      * @param annotationType
      */
-    private void createBasicAuthenticationMechanismBeanToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType) {
+    private <T> void createHAMPropertiesBeanForFormToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType) {
         try {
-            Method realmNameMethod = annotationType.getMethod("realmName");
-            String realmName = (String) realmNameMethod.invoke(annotation);
-            BasicAuthenticationMechanismBean bean = new BasicAuthenticationMechanismBean(realmName, beanManager);
+            Method loginToContinueMethod = annotationType.getMethod("loginToContinue");
+            Annotation ltcAnnotation = (Annotation) loginToContinueMethod.invoke(annotation);
+            Properties props = parseLoginToContinue(ltcAnnotation);
+            Class implClass;
+            if (FormAuthenticationMechanismDefinition.class.equals(annotationType)) {
+                implClass = FormAuthenticationMechanism.class;
+            } else {
+                implClass = CustomFormAuthenticationMechanism.class;
+            }
+            HAMPropertiesBean bean = new HAMPropertiesBean(beanManager, implClass, props);
             beansToAdd.add(bean);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -211,18 +195,36 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     /**
-     * @param <T>
      * @param beanManager
      * @param annotation
      * @param annotationType
      */
-    private <T> void createLoginToContinuePropertiesBeanToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType,
-                                                              AnnotatedType<T> annotatedType) {
+    private void createHAMPropertiesBeanForBasicToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType) {
         try {
-            Method loginToContinueMethod = annotationType.getMethod("loginToContinue");
-            Annotation ltcAnnotation = (Annotation) loginToContinueMethod.invoke(annotation);
-            Properties props = parseLoginToContinue(ltcAnnotation);
-            LoginToContinuePropertiesBean bean = new LoginToContinuePropertiesBean(beanManager, ltcAnnotation, props);
+            Method realmNameMethod = annotationType.getMethod("realmName");
+            String realmName = (String) realmNameMethod.invoke(annotation);
+            Properties props = new Properties();
+            props.put(JavaEESecConstants.REALM_NAME, realmName);
+            Class implClass = BasicHttpAuthenticationMechanism.class;
+            HAMPropertiesBean bean = new HAMPropertiesBean(beanManager, implClass, props);
+            beansToAdd.add(bean);
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * @param beanManager
+     * @param annotation
+     * @param annotationType
+     */
+    private void createHAMPropertiesBeanForApplicationAuthMechToAdd(BeanManager beanManager, Class implClass) {
+        try {
+            HAMPropertiesBean bean = new HAMPropertiesBean(beanManager, implClass, null);
             beansToAdd.add(bean);
         } catch (Exception e) {
             // TODO Auto-generated catch block
@@ -273,7 +275,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (PrivilegedActionException e) {
             throw e.getException();
         }
-
     }
 
     /**
@@ -345,34 +346,9 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     protected boolean getIdentityStoreRegistered() {
         return identityStoreRegistered;
     }
-    protected boolean isBasicAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-        return isAuthMechRegistered(authMechRegistered, BasicAuthenticationMechanismDefinition.class);
-    }
-    protected boolean isFormAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-        return isAuthMechRegistered(authMechRegistered, FormAuthenticationMechanismDefinition.class);
-    }
-    protected boolean isCustomFormAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-        return isAuthMechRegistered(authMechRegistered, CustomFormAuthenticationMechanismDefinition.class);
-    }
-
-    protected boolean isAuthMechRegistered(Set<Class<?>> authMechRegistered, Class<?> authMech) {
-        if (authMechRegistered.size() == 1 && authMechRegistered.contains(authMech)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    protected boolean isApplicationAuthMechRegistered(Set<Class<?>> authMechRegistered) {
-        if (authMechRegistered.size() == 1 && !authMechRegistered.contains(BasicAuthenticationMechanismDefinition.class) && !authMechRegistered.contains(FormAuthenticationMechanismDefinition.class) && !authMechRegistered.contains(CustomFormAuthenticationMechanismDefinition.class)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     protected boolean isApplicationAuthMech(Class<?> javaClass) {
-        if (!FormAuthenticationMechanism.class.equals(javaClass) && !CustomFormAuthenticationMechanism.class.equals(javaClass)) {
+        if (!BasicHttpAuthenticationMechanism.class.equals(javaClass) && !FormAuthenticationMechanism.class.equals(javaClass) && !CustomFormAuthenticationMechanism.class.equals(javaClass)) {
             Class<?>[] interfaces = javaClass.getInterfaces();
             for (Class<?> interfaceClass : interfaces) {
                 if (HttpAuthenticationMechanism.class.equals(interfaceClass)) {

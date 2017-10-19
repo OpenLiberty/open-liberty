@@ -12,21 +12,13 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.cdi-1.2;version=latest, \
-	com.ibm.websphere.appserver.servlet-4.0;version=latest, \
-	com.ibm.websphere.appserver.javax.validation-1.1;version=latest, \
-	com.ibm.websphere.appserver.javax.jsf-2.3;version=latest, \
-	com.ibm.websphere.appserver.jsp-2.3;version=latest, \
-	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
-	com.ibm.websphere.appserver.websocket-1.1;version=latest, \
+	com.ibm.ws.org.apache.myfaces.2.3;version=latest, \
 	com.ibm.ws.org.apache.commons.beanutils;version=latest, \
 	com.ibm.ws.org.apache.commons.collections;version=latest, \
 	com.ibm.ws.org.apache.commons.discovery;version=latest, \
 	com.ibm.ws.org.apache.commons.logging;version=latest, \
+	com.ibm.ws.jsf.shared;version=latest, \
 	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.ws.org.apache.commons.digester;version=latest, \
-	com.ibm.ws.jsf.shared;version=latest, \
-	com.ibm.ws.org.apache.myfaces.2.3;version=latest
+	com.ibm.websphere.javaee.websocket.1.1;version=latest

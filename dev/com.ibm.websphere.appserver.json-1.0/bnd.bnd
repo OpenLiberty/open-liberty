@@ -12,8 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
 	com.ibm.websphere.appserver.api.json;version=latest,\
 	com.ibm.json4j;version=latest

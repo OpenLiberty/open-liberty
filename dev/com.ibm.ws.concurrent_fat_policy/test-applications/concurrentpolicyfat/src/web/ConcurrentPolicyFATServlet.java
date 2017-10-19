@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
@@ -58,7 +59,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
     @Resource(lookup = "java:comp/DefaultManagedExecutorService")
     private ManagedExecutorService defaultExecutor;
 
-    // max: 2; maxQueue: 1; wait: 0 and submitter runs
+    // max: 4; maxQueue: 1; wait: 0 and submitter runs requiring permit
     @Resource(lookup = "java:comp/DefaultManagedScheduledExecutorService")
     private ManagedScheduledExecutorService defaultScheduledExecutor;
 
@@ -335,5 +336,72 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         assertTrue("unexpected: " + listener.resultOfLookup[SUBMITTED], listener.resultOfLookup[SUBMITTED] instanceof UserTransaction);
         assertTrue("unexpected: " + listener.resultOfLookup[STARTING], listener.resultOfLookup[STARTING] instanceof UserTransaction);
         assertTrue("unexpected: " + listener.resultOfLookup[DONE], listener.resultOfLookup[DONE] instanceof UserTransaction);
+    }
+
+    /**
+     * When runIfQueueFull is true, it should be possible to submit maxConcurrency number of tasks, even if the maxQueueSize is less
+     * than maxConcurrency because tasks that cannot be enqueued will run on the submitter's thread.
+     */
+    @Test
+    public void testRunWhenQueueFull() throws Exception {
+        CountingTask[] tasks = new CountingTask[4]; // maxConcurrency
+        for (int i = 0; i < 4; i++) {
+            TaskListener listener = i == 0 ? null : new TaskListener().doLookup("java:module/env/concurrent/executor2ref", STARTING, DONE);
+            tasks[i] = new CountingTask(null, listener, null, null);
+        }
+
+        // Occupy the global executor with some other work to increase the chance that tasks submitted to defaultScheduledExecutor
+        // will be unable to queue and run on the submitter's thread.
+        CountingTask blockerTask1 = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        CountingTask blockerTask2 = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        Future<Integer> blockerTask1Future = scheduledExecutor2.submit(blockerTask1);
+        cancelAfterTest.add(blockerTask1Future);
+        Future<Integer> blockerTask2Future = scheduledExecutor2.submit(blockerTask2);
+        cancelAfterTest.add(blockerTask2Future);
+
+        // Submit as many tasks as we have maxConcurrency, even though maxQueueSize is only 1
+        List<Future<Integer>> futures = new ArrayList<Future<Integer>>(4);
+        for (int i = 0; i < 4; i++) {
+            Future<Integer> future = defaultScheduledExecutor.submit(tasks[i]);
+            cancelAfterTest.add(future);
+            futures.add(future);
+        }
+
+        // Any tasks that ran on the current thread should already report being done.
+        long curThreadId = Thread.currentThread().getId();
+        if (((TaskListener) tasks[1].listener).threadId[STARTING] == curThreadId)
+            assertTrue(futures.get(1).isDone());
+        if (((TaskListener) tasks[2].listener).threadId[STARTING] == curThreadId)
+            assertTrue(futures.get(2).isDone());
+        if (((TaskListener) tasks[3].listener).threadId[STARTING] == curThreadId)
+            assertTrue(futures.get(3).isDone());
+
+        TaskListener listener;
+        Future<Integer> future = futures.get(0);
+        assertEquals(Integer.valueOf(1), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        cancelAfterTest.remove(future);
+
+        assertSuccess(defaultScheduledExecutor, future = futures.get(1), tasks[1], listener = (TaskListener) tasks[1].listener, 1);
+        assertEquals(scheduledExecutor2, listener.resultOfLookup[STARTING]);
+        assertEquals(scheduledExecutor2, listener.resultOfLookup[DONE]);
+        cancelAfterTest.remove(future);
+
+        assertSuccess(defaultScheduledExecutor, future = futures.get(2), tasks[2], listener = (TaskListener) tasks[2].listener, 1);
+        assertEquals(scheduledExecutor2, listener.resultOfLookup[STARTING]);
+        assertEquals(scheduledExecutor2, listener.resultOfLookup[DONE]);
+        cancelAfterTest.remove(future);
+
+        assertSuccess(defaultScheduledExecutor, future = futures.get(3), tasks[3], listener = (TaskListener) tasks[3].listener, 1);
+        assertEquals(scheduledExecutor2, listener.resultOfLookup[STARTING]);
+        assertEquals(scheduledExecutor2, listener.resultOfLookup[DONE]);
+        cancelAfterTest.remove(future);
+
+        cancelAfterTest.remove(blockerTask1Future);
+        assertTrue(blockerTask1Future.cancel(true));
+
+        cancelAfterTest.remove(blockerTask2Future);
+        assertTrue(blockerTask2Future.cancel(true));
     }
 }

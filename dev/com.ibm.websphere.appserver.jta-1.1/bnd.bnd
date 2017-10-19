@@ -12,8 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
 	com.ibm.websphere.javaee.transaction.1.1;version=latest, \
 	com.ibm.websphere.appserver.api.transaction;version=latest
