@@ -11,11 +11,14 @@
 package jaxrs21.fat.providerPriority;
 
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @ApplicationPath("/rest")
 @Path("/test")
@@ -23,7 +26,7 @@ public class ProviderPriorityTestApp extends Application {
 
     @Produces(MediaType.TEXT_PLAIN)
     @PUT
-    public MyObject get(MyObject mo1) {
+    public MyObject put(MyObject mo1) {
         MyObject mo2 = new MyObject();
         mo2.setMyString(mo1.getMyString());
         mo2.setMyInt(mo1.getMyInt());
@@ -32,4 +35,12 @@ public class ProviderPriorityTestApp extends Application {
         return mo2;
     }
 
+    @GET
+    @Path("/exception/{throwableClassName}")
+    public Response exception(@PathParam("throwableClassName") String throwableClassName) throws Throwable {
+        Throwable th = (Throwable) Class.forName(throwableClassName).newInstance();
+        System.out.println("ProviderPriorityTestApp exception() throwing:");
+        th.printStackTrace(System.out);
+        throw th;
+    }
 }
