@@ -224,7 +224,7 @@ class ConfigurationStore {
      * Index 2 of returning array contains whether Meta-Type processsing was done
      * or not
      * (if CMConstants.METATYPE_PROCESSED, then yes. if null, then no.)
-     * 
+     *
      * @param pid
      */
     ExtendedConfigurationImpl deserializeConfigurationData(String pid) throws IOException {
