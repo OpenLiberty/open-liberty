@@ -1077,7 +1077,7 @@ public abstract class ProviderFactory {
     }
 
 
-    private static int comparePriorityStatus(Class<?> cl1, Class<?> cl2) {
+    static int comparePriorityStatus(Class<?> cl1, Class<?> cl2) {
         Integer value1 = AnnotationUtils.getBindingPriority(cl1);
         Integer value2 = AnnotationUtils.getBindingPriority(cl2);
         return value1.compareTo(value2);
