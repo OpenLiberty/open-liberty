@@ -117,6 +117,8 @@ org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1
 org.apache.geronimo.specs:geronimo-osgi-registry:1.1
 org.apache.geronimo.specs:geronimo-validation_1.0_spec:1.1
 org.apache.httpcomponents:fluent-hc:4.3.1
+org.apache.httpcomponents.client5:httpclient5:5.0-alpha2
+org.apache.httpcomponents.core5:httpcore5:5.0-alpha4
 org.apache.httpcomponents:httpclient:4.1.2
 org.apache.httpcomponents:httpclient:4.3.1
 org.apache.httpcomponents:httpclient-cache:4.1.2
