@@ -9,4 +9,4 @@ IBM-Install-Policy: when-satisfied
 	com.ibm.websphere.org.eclipse.microprofile.jwt.1.0; location:="dev/api/stable/,lib/",\
 	com.ibm.ws.jaxrs.2.0.client
 kind=noship
-edition=core
+edition=full
