@@ -12,17 +12,48 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
+import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
+import javax.enterprise.inject.Default;
 import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.InjectionPoint;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.enterprise.util.TypeLiteral;
+import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.javaeesec.identitystore.DatabaseIdentityStore;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
  */
-public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
+public class DatabaseIdentityStoreBean implements Bean<IdentityStore> {
+
+    private static final TraceComponent tc = Tr.register(DatabaseIdentityStoreBean.class);
+
+    private final Set<Annotation> qualifiers;
+    private final Type type;
+    private final Set<Type> types;
+    private final String name;
+    private final String id;
+    private final DatabaseIdentityStoreDefinition databaseIdentityStoreDefinition;
+
+    public DatabaseIdentityStoreBean(BeanManager beanManager, DatabaseIdentityStoreDefinition dbIdentityStoreDefinition) {
+        databaseIdentityStoreDefinition = dbIdentityStoreDefinition;
+        qualifiers = new HashSet<Annotation>();
+        qualifiers.add(new AnnotationLiteral<Default>() {});
+        type = new TypeLiteral<IdentityStore>() {}.getType();
+        types = Collections.singleton(type);
+        name = this.getClass().getName() + "[" + type + "]";
+        id = beanManager.hashCode() + "#" + this.name;
+    }
 
     /*
      * (non-Javadoc)
@@ -31,8 +62,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public IdentityStore create(CreationalContext<IdentityStore> arg0) {
-        // TODO Return the actual DataBaseIdentityStore impl
-        return null;
+        return new DatabaseIdentityStore(databaseIdentityStoreDefinition);
     }
 
     /*
@@ -53,8 +83,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public String getName() {
-        // TODO Auto-generated method stub
-        return null;
+        return name;
     }
 
     /*
@@ -64,8 +93,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<Annotation> getQualifiers() {
-        // TODO Auto-generated method stub
-        return null;
+        return qualifiers;
     }
 
     /*
@@ -75,8 +103,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Class<? extends Annotation> getScope() {
-        // TODO Auto-generated method stub
-        return null;
+        return ApplicationScoped.class;
     }
 
     /*
@@ -86,8 +113,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<Class<? extends Annotation>> getStereotypes() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptySet();
     }
 
     /*
@@ -97,8 +123,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<Type> getTypes() {
-        // TODO Auto-generated method stub
-        return null;
+        return types;
     }
 
     /*
@@ -119,8 +144,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Class<?> getBeanClass() {
-        // TODO Auto-generated method stub
-        return null;
+        return IdentityStore.class;
     }
 
     /*
@@ -130,8 +154,7 @@ public class DataBaseIdentityStoreBean implements Bean<IdentityStore> {
      */
     @Override
     public Set<InjectionPoint> getInjectionPoints() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptySet();
     }
 
     /*
