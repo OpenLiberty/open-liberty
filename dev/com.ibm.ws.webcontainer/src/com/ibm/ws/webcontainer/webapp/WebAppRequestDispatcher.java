@@ -1287,7 +1287,22 @@ public class WebAppRequestDispatcher implements RequestDispatcher, WebContainerC
                     castReq.pushParameterStack(); // 249841
                 }
 
-                castReq.aggregateQueryStringParams(QS, dispatcherType != DispatcherType.INCLUDE);
+                // PI81569 Start: We do not want to change the QS in 2 scenarios (setQS should be false in these cases):
+                //              A) this is an include
+                //              B) this is a forward and Custom Property is set and QS is null (we want to keep the original QS)        
+                boolean useOriginalQSInForwardIfNull = WCCustomProperties.USE_ORIGINAL_QS_IN_FORWARD_IF_NULL;
+
+
+                boolean setQS = dispatcherType != DispatcherType.INCLUDE;
+
+                if(useOriginalQSInForwardIfNull){
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { 
+                        logger.logp(Level.FINE, CLASS_NAME, "dispatch", "useOriginalQSInForwardIfNull = true, setQS = " + setQS + ", QS is null = "+ (QS == null)+", dispatcherType = "+dispatcherType);
+                    }
+                    setQS = setQS && !(dispatcherType == DispatcherType.FORWARD && QS == null);
+                }
+
+                castReq.aggregateQueryStringParams(QS, setQS);
 
                 if (dispatcherType == DispatcherType.INCLUDE) {
 
