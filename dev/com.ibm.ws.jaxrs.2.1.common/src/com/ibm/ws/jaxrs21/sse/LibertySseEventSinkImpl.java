@@ -40,6 +40,7 @@ public class LibertySseEventSinkImpl implements SseEventSink {
     private final MessageBodyWriter<OutboundSseEvent> writer;
     private final Message message;
     private final HttpServletResponse response;
+    private volatile boolean closed;
 
     public LibertySseEventSinkImpl(MessageBodyWriter<OutboundSseEvent> writer, Message message) {
         this.writer = writer;
@@ -49,7 +50,6 @@ public class LibertySseEventSinkImpl implements SseEventSink {
         message.getExchange().put(JAXRSUtils.IGNORE_MESSAGE_WRITERS, "true");
     }
 
-    private volatile boolean closed;
     /* (non-Javadoc)
      * @see javax.ws.rs.sse.SseEventSink#close()
      */
