@@ -40,8 +40,7 @@ import com.ibm.ws.security.registry.UserRegistryService;
 /**
  * Subclasses must implement ConfigurationListener as the modified actions appear to be different.
  */
-public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizationTableService implements AuthorizationTableService,
-                UserRegistryChangeListener, AuthorizationTableConfigService, ConfigurationListener {
+public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizationTableService implements AuthorizationTableService, UserRegistryChangeListener, AuthorizationTableConfigService, ConfigurationListener {
     private static final TraceComponent tc = Tr.register(AbstractSecurityAuthorizationTable.class);
 
     public static final String DEFAULT_ROLE_ELEMENT_NAME = "security-role";
@@ -62,8 +61,8 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
     private final Map<String, String> groupToAccessId = new HashMap<String, String>();
     private final Map<String, RoleSet> userToRoles = new HashMap<String, RoleSet>();
     private final Map<String, RoleSet> groupToRoles = new HashMap<String, RoleSet>();
-    private Map<String, RoleSet> accessIdToRoles = new HashMap<String, RoleSet>();
-    private Map<String, Set<String>> explicitAccessIdToRoles = new HashMap<String, Set<String>>();
+    private final Map<String, RoleSet> accessIdToRoles = new HashMap<String, RoleSet>();
+    private final Map<String, Set<String>> explicitAccessIdToRoles = new HashMap<String, Set<String>>();
     protected String roleElementName = getRoleElementName();
     protected boolean populated = false;
     protected Set<SecurityRole> roles = new HashSet<SecurityRole>();
@@ -190,7 +189,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
 
     /**
      * Retrieve the roles, if any, for the given accessId.
-     * 
+     *
      * @param accessId
      * @return a non-null RoleSet
      */
@@ -208,11 +207,11 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
      * update the accessId-to-roles mapping with the result. If the accessId was
      * not found, an empty list is added to the accessId-to-role map. Otherwise,
      * the list contains the set of roles mapped to the accessId.
-     * 
+     *
      * @param accessid the access id of the entity
      * @param resName the name of the application, this is the key used when
      *            updating the accessId-to-roles map
-     * 
+     *
      * @return the updated accessId-to-roles map
      */
     private RoleSet findRolesForAccessId(String accessId) {
@@ -255,7 +254,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
                 return set;
             }
         } else if (AccessIdUtil.isGroupAccessId(accessId)) {
-            // First look for any <group> WITHOUT an explicit access id 
+            // First look for any <group> WITHOUT an explicit access id
             for (String group : groupToRoles.keySet()) {
                 String groupAccessId = groupToAccessId.get(group);
                 if (groupAccessId == null) {
@@ -303,7 +302,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
 
     /**
      * Get the access id for a user by performing a looking up in the user registry.
-     * 
+     *
      * @param userName the user for which to create an access id
      * @return the access id of the userName specified,
      *         otherwise null when a registry error occurs or the entry is not found
@@ -333,7 +332,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
 
     /**
      * Get the access id for a group by performing a looking up in the user registry.
-     * 
+     *
      * @param groupName the user for which to create an access id
      * @return the access id of the groupName specified,
      *         otherwise null when a registry error occurs or the entry is not found
@@ -371,7 +370,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
 
     /**
      * Return the name of the application that this authz table instance is for
-     * 
+     *
      * @return app name
      */
     abstract protected String getApplicationName();
@@ -379,7 +378,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
     /**
      * Return the name of the xml element that defines a security role.
      * The default element is <security-role...>
-     * 
+     *
      * @return element name
      */
     protected String getRoleElementName() {
@@ -388,7 +387,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
 
     /**
      * Return the iterator for the collection of security roles for the application
-     * 
+     *
      * @return security roles iterator
      */
     protected Iterator<SecurityRole> getRoles() {
@@ -405,7 +404,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
             for (String rolePid : rolePids) {
                 pids.add(rolePid);
                 try {
-                    Configuration config = configAdmin.getConfiguration(rolePid);
+                    Configuration config = configAdmin.getConfiguration(rolePid, bundleLocation);
                     roleProps = config.getProperties();
                     roleName = (String) roleProps.get(CFG_KEY_NAME);
                     if (tc.isDebugEnabled()) {
@@ -465,7 +464,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
         Configuration config = null;
         pids.add(roleDefs[0]);
         try {
-            config = configAdmin.getConfiguration(roleDefs[0]);
+            config = configAdmin.getConfiguration(roleDefs[0], bundleLocation);
         } catch (IOException ioe) {
             Tr.error(tc, "AUTHZ_TABLE_INVALID_ROLE_DEFINITION", roleDefs[0]);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -491,7 +490,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.security.authorization.AuthorizationTableService#isAuthzInfoAvailableForApp(java.lang.String)
      */
     @Override
