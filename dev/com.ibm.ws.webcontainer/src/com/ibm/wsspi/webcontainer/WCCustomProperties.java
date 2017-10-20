@@ -301,6 +301,9 @@ public class WCCustomProperties {
 
     public static boolean ENABLE_MULTI_READ_OF_POST_DATA; //MultiRead
     
+    //start 17.0.0.4
+    public static boolean USE_ORIGINAL_QS_IN_FORWARD_IF_NULL; //PI81569
+
     static {
         setCustomPropertyVariables(); //initilizes all the variables
     }
@@ -389,6 +392,7 @@ public class WCCustomProperties {
         WCCustomProperties.FullyQualifiedPropertiesMap.put("encodedispatchedrequesturi", "com.ibm.ws.webcontainer.encodedispatchedrequesturi"); //PI67942
         WCCustomProperties.FullyQualifiedPropertiesMap.put("usemaxrequestsizeformultipart", "com.ibm.ws.webcontainer.usemaxrequestsizeformultipart"); //PI75528
         WCCustomProperties.FullyQualifiedPropertiesMap.put("enablemultireadofpostdata", "com.ibm.ws.webcontainer.enablemultireadofpostdata");
+        WCCustomProperties.FullyQualifiedPropertiesMap.put("useoriginalqsinforwardifnull", "com.ibm.ws.webcontainer.useoriginalqsinforwardifnull"); //PI81569
     }
 
     //some properties require "com.ibm.ws.webcontainer." on the front
@@ -763,7 +767,9 @@ public class WCCustomProperties {
         
         ENABLE_MULTI_READ_OF_POST_DATA = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.enablemultireadofpostdata")).booleanValue(); // MultiRead
 
-  
+        //Start 17.0.0.4
+        USE_ORIGINAL_QS_IN_FORWARD_IF_NULL = Boolean.valueOf(WebContainer.getWebContainerProperties().getProperty("com.ibm.ws.webcontainer.useoriginalqsinforwardifnull")).booleanValue(); //PI81569
+
     }
 
 }
