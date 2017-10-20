@@ -21,6 +21,7 @@ import test.TestConstants;
 
 import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
 import com.ibm.ws.logging.internal.impl.LoggingConstants;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 import com.ibm.wsspi.logprovider.TrService;
@@ -60,8 +61,8 @@ public class SharedTr extends Tr {
     }
 
     public static void clearConfig() {
-        TrConfigurator.loggingConfig.set(null);
-        TrConfigurator.delegate = null;
+        TrConfigurator.loggingConfig.get().set(null);
+        TrConfigurator.delegate = StaticValue.mutateStaticValue(TrConfigurator.delegate, null);
     }
 
     public static TrService getDelegate() {
