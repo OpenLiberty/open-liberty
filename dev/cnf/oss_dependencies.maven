@@ -52,6 +52,7 @@ httpunit:httpunit:1.7
 javax:javaee-api:7.0
 javax.activation:activation:1.1
 javax.annotation:javax.annotation-api:1.2
+javax.annotation:javax.annotation-api:1.3.1
 javax.ejb:javax.ejb-api:3.2
 javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0
 javax.enterprise:cdi-api:1.2
