@@ -30,7 +30,7 @@ public class FeatureConflictTest extends FATServletClient {
 
     @AfterClass
     public static void testCleanup() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKF0033E");
     }
 
     /**

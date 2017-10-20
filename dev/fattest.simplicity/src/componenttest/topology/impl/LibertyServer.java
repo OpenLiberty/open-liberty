@@ -2271,7 +2271,7 @@ public class LibertyServer implements LogMonitorClient {
         List<String> errorsInLogs = new ArrayList<String>();
         try {
             errorsInLogs = this.findStringsInLogs(".*[EW] .*\\d{4}[EW]:.*");
-            if (errorsInLogs != null && !errorsInLogs.isEmpty()) {
+            if (!errorsInLogs.isEmpty()) {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
                 StringBuffer sb = new StringBuffer("Errors/warnings were found in server ");
@@ -2334,10 +2334,10 @@ public class LibertyServer implements LogMonitorClient {
         }
 
         Exception ex = null;
-        if (errorsInLogs != null && !errorsInLogs.isEmpty()) {
+        if (!errorsInLogs.isEmpty()) {
             // There were unexpected errors in logs, print them
             // and set an exception to return
-            StringBuffer sb = new StringBuffer("Errors/warnings were found in server ");
+            StringBuilder sb = new StringBuilder("Errors/warnings were found in server ");
             sb.append(getServerName());
             sb.append(" logs:");
             for (String errorInLog : errorsInLogs) {

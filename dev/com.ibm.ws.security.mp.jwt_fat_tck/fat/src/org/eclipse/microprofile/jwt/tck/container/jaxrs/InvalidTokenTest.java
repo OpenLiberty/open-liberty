@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response;
 import org.eclipse.microprofile.jwt.tck.util.TokenUtils;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -99,6 +100,11 @@ public class InvalidTokenTest extends FATServletClient {
 
         baseURL = "http://localhost:" + server1.getHttpDefaultPort() + "/RolesAllowedTest";
         server1.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server1.stopServer("CWWKS5523E", "CWWKS5524E");
     }
 
     @ExpectedFFDC(value = { "com.ibm.websphere.security.jwt.InvalidClaimException",
