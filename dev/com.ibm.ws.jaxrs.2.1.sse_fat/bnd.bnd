@@ -16,7 +16,8 @@ javac.target: 1.8
 
 src: \
 	fat/src,\
-	test-applications/BasicSseApp/src
+	test-applications/BasicSseApp/src,\
+	test-applications/SseJsonbApp/src
 
 test.project: true
 
@@ -26,4 +27,6 @@ test.project: true
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.jsonb.1.0;version=latest
+	

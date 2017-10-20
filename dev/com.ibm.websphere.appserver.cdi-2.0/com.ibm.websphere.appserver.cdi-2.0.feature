@@ -1,0 +1,65 @@
+-include= ~../cnf/resources/bnd/feature.props
+symbolicName=com.ibm.websphere.appserver.cdi-2.0
+visibility=public
+singleton=true
+IBM-App-ForceRestart: install, \
+ uninstall
+IBM-API-Package: javax.decorator;  type="spec", \
+ javax.enterprise.context;  type="spec", \
+ javax.enterprise.context.spi;  type="spec", \
+ javax.enterprise.event;  type="spec", \
+ javax.enterprise.inject;  type="spec", \
+ javax.enterprise.inject.spi;  type="spec", \
+ javax.enterprise.util;  type="spec", \
+ javax.inject;  type="spec", \
+ javax.interceptor;  type="spec", \
+ javax.transaction;  type="internal", \
+ javax.validation;  type="internal", \
+ org.jboss.weld.el; type="internal", \
+ org.jboss.weld.interceptor.proxy; type="internal", \
+ org.jboss.weld.interceptor.util.proxy; type="internal", \
+ org.jboss.weld.bean; type="internal", \
+ org.jboss.weld.bean.proxy; type="internal", \
+ org.jboss.weld.bean.proxy.util; type="internal", \
+ org.jboss.weld.proxy; type="internal", \
+ org.jboss.weld.security; type="internal", \
+ org.jboss.weld.serialization.spi; type="internal", \
+ org.jboss.weld.context;type="third-party", \
+ org.jboss.weld.context.api;type="third-party", \
+ org.jboss.weld.context.beanstore;type="third-party", \
+ org.jboss.weld.context.bound;type="third-party", \
+ org.jboss.weld.context.conversation;type="third-party"
+IBM-ShortName: cdi-2.0
+Subsystem-Name: Contexts and Dependency Injection 2.0
+-features=com.ibm.websphere.appserver.javax.jsp-2.3, \
+ com.ibm.websphere.appserver.containerServices-1.0, \
+ com.ibm.websphere.appserver.javax.persistence-2.1, \
+ com.ibm.websphere.appserver.javaeePlatform-7.0, \
+ com.ibm.websphere.appserver.javax.ejb-3.2, \
+ com.ibm.websphere.appserver.javax.annotation-1.2, \
+ com.ibm.websphere.appserver.javax.validation-1.1, \
+ com.ibm.websphere.appserver.javaeeCompatible-7.0, \
+ com.ibm.websphere.appserver.javax.interceptor-1.2, \
+ com.ibm.websphere.appserver.javax.cdi-2.0, \
+ com.ibm.websphere.appserver.injection-1.0, \
+ com.ibm.websphere.appserver.classloading-1.0, \
+ com.ibm.websphere.appserver.appmanager-1.0, \
+ com.ibm.websphere.appserver.transaction-1.2, \
+ com.ibm.websphere.appserver.javax.servlet-4.0, \
+ com.ibm.websphere.appserver.javax.jsf-2.3, \
+ com.ibm.websphere.appserver.internal.slf4j-1.7.7
+-bundles=com.ibm.ws.org.jboss.weld.3.0.1, \
+ com.ibm.ws.org.jboss.jdeparser.1.0.0, \
+ com.ibm.ws.managedobject, \
+ com.ibm.ws.org.jboss.logging.3.3.0, \
+ com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
+ com.ibm.ws.cdi.shared.weld, \
+ com.ibm.ws.cdi.2.0.weld, \
+ com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/", \
+ com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/", \
+ com.ibm.ws.cdi.interfaces
+-jars=com.ibm.websphere.appserver.thirdparty.cdi-2.0; location:="dev/api/third-party/,lib/"
+-files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
+ dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
+kind=noship
+edition=core

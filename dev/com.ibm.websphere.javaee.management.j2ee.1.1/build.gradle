@@ -14,8 +14,6 @@ task rmic(type: Exec, dependsOn: compileJava) {
     sourceSets.main.compileClasspath.each {
       rmicClasspath += System.properties['path.separator'] + it
     }  
-    println "-d " + compileJava.destinationDir
-    println "-cp " + rmicClasspath
 	executable "rmic"
 	args "-iiop",  "-d", compileJava.destinationDir, "-classpath", rmicClasspath, "javax.management.j2ee.Management", "javax.management.j2ee.ManagementHome"
 }

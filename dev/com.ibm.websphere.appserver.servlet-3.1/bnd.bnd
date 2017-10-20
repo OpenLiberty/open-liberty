@@ -12,20 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.injection-1.0;version=latest, \
-	com.ibm.websphere.appserver.artifact-1.0;version=latest, \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
-	com.ibm.websphere.appserver.javaeedd-1.0;version=latest, \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
-	com.ibm.websphere.appserver.appmanager-1.0;version=latest, \
-	com.ibm.websphere.appserver.javaeePlatform-7.0;version=latest, \
-	com.ibm.websphere.appserver.anno-1.0;version=latest, \
-	com.ibm.websphere.appserver.httptransport-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.servlet-3.1;version=latest, \
-	com.ibm.websphere.appserver.requestProbes-1.0;version=latest, \
 	com.ibm.ws.app.manager.war;version=latest, \
 	com.ibm.ws.managedobject;version=latest, \
 	com.ibm.ws.org.apache.commons.io.1.4;version=latest, \

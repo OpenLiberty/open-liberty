@@ -48,12 +48,12 @@ testsrc: test/src
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
         com.ibm.websphere.org.osgi.core;version=latest,\
         com.ibm.websphere.org.osgi.service.component;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.org.eclipse.microprofile.faulttolerance.1.0;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.hamcrest:hamcrest-all;version=1.3
 

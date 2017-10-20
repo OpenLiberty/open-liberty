@@ -45,10 +45,9 @@ Import-Package: !com.ibm.ws.beanvalidation, *
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.apache.commons.lang3.3.5;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-	com.ibm.ws.org.apache.bval.1.1.0;version=latest,\
-	com.ibm.ws.cdi.1.2.weld.impl;version=latest
+	com.ibm.ws.org.apache.bval.1.1.0;version=latest

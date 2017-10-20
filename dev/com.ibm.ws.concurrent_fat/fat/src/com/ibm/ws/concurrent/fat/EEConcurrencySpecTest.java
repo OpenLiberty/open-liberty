@@ -56,8 +56,6 @@ public class EEConcurrencySpecTest extends FATServletClient {
     @Test
     public void testDemo() throws Exception {
         FATServletClient.runTest(server, APP_NAME + "/demo", "testOneTimeScheduledTask&interval=1");
-        //runInServlet("concurrentbvt/demo?test=testOneTimeScheduledTask&interval=1");
-
         Assert.assertNotNull("Timed out waiting for message: 'One-time task looked up this value: 100'",
                              server.waitForStringInLog("One-time task looked up this value: 100"));
     }

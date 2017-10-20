@@ -55,6 +55,7 @@ javax.annotation:javax.annotation-api:1.2
 javax.ejb:javax.ejb-api:3.2
 javax.enterprise.concurrent:javax.enterprise.concurrent-api:1.0
 javax.enterprise:cdi-api:1.2
+javax.enterprise:cdi-api:2.0
 javax.inject:javax.inject:1
 javax.interceptor:javax.interceptor-api:1.2
 javax.jms:javax.jms-api:2.0
@@ -84,6 +85,7 @@ net.sourceforge.htmlunit:htmlunit:2.15
 net.sourceforge.htmlunit:htmlunit:2.27
 net.sourceforge.htmlunit:htmlunit-core-js:2.15
 org.apache.ant:ant:1.9.6
+org.apache.ant:ant-junit:1.9.6
 org.apache.aries.jmx:org.apache.aries.jmx.api:1.1.5
 org.apache.aries.jmx:org.apache.aries.jmx.core.whiteboard:1.1.5
 org.apache.aries.jndi:org.apache.aries.jndi.api:1.1.0
@@ -115,6 +117,8 @@ org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.1
 org.apache.geronimo.specs:geronimo-osgi-registry:1.1
 org.apache.geronimo.specs:geronimo-validation_1.0_spec:1.1
 org.apache.httpcomponents:fluent-hc:4.3.1
+org.apache.httpcomponents.client5:httpclient5:5.0-alpha2
+org.apache.httpcomponents.core5:httpcore5:5.0-alpha4
 org.apache.httpcomponents:httpclient:4.1.2
 org.apache.httpcomponents:httpclient:4.3.1
 org.apache.httpcomponents:httpclient-cache:4.1.2
@@ -163,6 +167,7 @@ org.jboss.shrinkwrap:shrinkwrap-api:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
 org.jboss.weld:weld-osgi-bundle:2.4.3.Final
+org.jboss.weld:weld-osgi-bundle:3.0.1.Final
 org.jmock:jmock:2.5.1
 org.jmock:jmock-junit4:2.5.1
 org.jsoup:jsoup:1.7.2

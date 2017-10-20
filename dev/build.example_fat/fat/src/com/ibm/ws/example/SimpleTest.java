@@ -43,7 +43,7 @@ public class SimpleTest extends FATServletClient {
     public static final String APP_NAME = "app1";
 
     @Server("FATServer")
-    @TestServlet(servlet = TestServletA.class, path = APP_NAME + "/TestServletA")
+    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
 
     @BeforeClass

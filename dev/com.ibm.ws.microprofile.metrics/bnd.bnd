@@ -60,8 +60,6 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest,\
-	com.ibm.ws.cdi.1.2.weld.impl;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\

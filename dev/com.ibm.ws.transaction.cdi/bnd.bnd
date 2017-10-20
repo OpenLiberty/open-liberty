@@ -19,6 +19,15 @@ Include-Resource: META-INF=resources/META-INF
 
 WS-TraceGroup: Transaction
 
+Import-Package: \
+ javax.enterprise.context; version="[1.1.0,3.0.0)", \
+ javax.enterprise.context.spi; version="[1.1.0,3.0.0)", \
+ javax.enterprise.event; version="[1.1.0,3.0.0)", \
+ javax.enterprise.inject; version="[1.1.0,3.0.0)", \
+ javax.enterprise.inject.spi; version="[1.1.0,3.0.0)", \
+ javax.enterprise.util; version="[1.1.0,3.0.0)", \
+ *
+
 Export-Package: \
  com.ibm.tx.jta.cdi,\
  com.ibm.tx.jta.cdi.interceptors
@@ -39,7 +48,7 @@ Export-Package: \
 	com.ibm.ws.tx.embeddable;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.tx.util;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest, \
+	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

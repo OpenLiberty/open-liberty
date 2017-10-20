@@ -12,15 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.artifact-1.0;version=latest, \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
-	com.ibm.websphere.appserver.javaeedd-1.0;version=latest, \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
-	com.ibm.websphere.appserver.anno-1.0;version=latest, \
-	com.ibm.websphere.appserver.internal.slf4j-1.7.7;version=latest, \
 	com.ibm.ws.jndi.url.contexts;version=latest, \
 	com.ibm.ws.org.apache.aries.jndi.core;version=latest, \
 	com.ibm.ws.org.apache.aries.jndi.api;version=latest, \

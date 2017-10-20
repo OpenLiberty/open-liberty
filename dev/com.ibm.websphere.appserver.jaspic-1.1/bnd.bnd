@@ -12,11 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.appSecurity-2.0;version=latest, \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
 	com.ibm.websphere.javaee.jaspic.1.1;version=latest, \
 	com.ibm.ws.security.jaspic;version=latest, \
 	com.ibm.websphere.appserver.spi.jaspic;version=latest

@@ -60,5 +60,5 @@ instrument.classesExcludes: com/ibm/ws/beanvalidation/resources/nls/*.class
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	com.ibm.ws.kernel.boot;version=latest

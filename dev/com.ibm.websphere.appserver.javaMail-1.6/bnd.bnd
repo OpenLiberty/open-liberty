@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.mail-1.6;version=latest, \
 	com.ibm.ws.javamail.1.6;version=latest, \
 	com.ibm.websphere.javaee.mail.1.6;version=latest, \
 	com.ibm.websphere.appserver.thirdparty.mail-1.6;version=latest

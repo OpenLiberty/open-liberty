@@ -159,7 +159,7 @@
 			<fileset dir="${junit_jar}">
 				<include name="junit.jar"/>
 				<include name="jmock-junit4.jar"/>
-				<include name="ws-junit.jar"/>
+				<include name="com.ibm.ws.junit.extensions-*.jar"/>
 			</fileset>
 			
 			<!-- add any libs that may have been added to the server -->

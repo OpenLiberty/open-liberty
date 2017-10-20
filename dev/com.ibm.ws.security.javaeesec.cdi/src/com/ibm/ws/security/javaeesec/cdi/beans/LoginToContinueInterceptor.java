@@ -36,9 +36,10 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.jaspi.JaspiConstants;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.LoginToContinueProperties;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
+import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
 import com.ibm.ws.webcontainer.security.WebRequest;
@@ -56,28 +57,26 @@ import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 @Interceptor
 @Priority(Interceptor.Priority.PLATFORM_BEFORE + 220)
 public class LoginToContinueInterceptor {
+    private static final String METHOD_TO_INTERCEPT = "validateRequest";
     private static final String CUSTOM_FORM_CLASS = "com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
     @Inject
-    Instance<LoginToContinueProperties> ltcpInstance;
+    Instance<HAMProperties> hampInstance;
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
 
         Object result = null;
-        Method method = ic.getMethod();
-        String methodName = method.getName();
-        
-        if ("validateRequest".equals(methodName)) {
+        if (isMethodToIntercept(ic)) {
             // The method signature of validateRequest is as follows:
             // public AuthenticationStatus validateRequest(HttpServletRequest request,
             //                                    HttpServletResponse response,
             //                                    HttpMessageContext httpMessageContext) throws AuthenticationException {
 
-            LoginToContinueProperties ltcp = null;
-            if (ltcpInstance != null && !ltcpInstance.isUnsatisfied() && !ltcpInstance.isAmbiguous()) {
-                ltcp = ltcpInstance.get();
-                if (ltcp != null) {
+            HAMProperties hamp = null;
+            if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
+                hamp = hampInstance.get();
+                if (hamp != null) {
                     result = ic.proceed();
                     Object[] params = ic.getParameters();
                     HttpServletRequest req = (HttpServletRequest) params[0];
@@ -86,10 +85,9 @@ public class LoginToContinueInterceptor {
                         // need to redirect.
                         HttpMessageContext mc = (HttpMessageContext) params[2];
 
-                        result = gotoLoginPage(ltcp.getProperties(), req, res, mc);
+                        result = gotoLoginPage(hamp.getProperties(), req, res, mc);
                     } else if (result.equals(AuthenticationStatus.SUCCESS)) {
-                        String className = method.getDeclaringClass().getName();
-                        boolean isCustom = CUSTOM_FORM_CLASS.equals(className);
+                        boolean isCustom = isCustomForm(ic);
                         // redirect to the original url.
                         postLoginProcess(req, res, isCustom);
                     }
@@ -144,7 +142,7 @@ public class LoginToContinueInterceptor {
         if (value != null) {
             return value.booleanValue();
         }
-        return false;
+        return true;
     }
 
     private void updateFormLoginConfiguration(String loginPage, String errorPage, SecurityMetadata securityMetadata) {
@@ -159,7 +157,7 @@ public class LoginToContinueInterceptor {
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustom) throws IOException, RuntimeException {
         String storedReq = null;
-        WebAppSecurityConfig webAppSecConfig = WebConfigUtils.getWebAppSecurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebSAppSeurityConfig();
         ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
         storedReq = getStoredReq(req, referrerURLHandler);
         // If storedReq(WASReqURL) is bad, RuntimeExceptions are thrown in isReferrerHostValid. These exceptions are not caught here. If we return here, WASReqURL is good.
@@ -197,14 +195,21 @@ public class LoginToContinueInterceptor {
     }
 
     private void setCookies(HttpServletRequest req, HttpServletResponse res) {
-        ReferrerURLCookieHandler referrerURLHandler = WebConfigUtils.getWebAppSecurityConfig().createReferrerURLCookieHandler();
-        AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
-        String query = req.getQueryString();
-        String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
-        referrerURLHandler.setReferrerURLCookie(req, authResult, originalURL);
-        List<Cookie> cookies = authResult.getCookies();
-        for (Cookie c : cookies) {
-            res.addCookie(c);
+        WebAppSecurityConfig webAppSecConfig = getWebSAppSeurityConfig();
+        if (allowToAddCookieToResponse(webAppSecConfig, req)) {
+            AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
+            if ("POST".equalsIgnoreCase(req.getMethod())) {
+                PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecConfig);
+                postParameterHelper.save(req, res, authResult, true);
+            }
+            ReferrerURLCookieHandler referrerURLHandler = getWebSAppSeurityConfig().createReferrerURLCookieHandler();
+            String query = req.getQueryString();
+            String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
+            referrerURLHandler.setReferrerURLCookie(req, authResult, originalURL);
+            List<Cookie> cookies = authResult.getCookies();
+            for (Cookie c : cookies) {
+                res.addCookie(c);
+            }
         }
     }
 
@@ -226,4 +231,40 @@ public class LoginToContinueInterceptor {
         return contextPath + url;
     }
 
+    /**
+     * This method checks the following conditions:
+     * 1) If SSO requires SSL is true and NOT HTTPs request, returns false.
+     * 2) Otherwise returns true.
+     *
+     * @param req
+     * @return
+     */
+    private boolean allowToAddCookieToResponse(WebAppSecurityConfig webAppSecConfig, HttpServletRequest req) {
+        boolean secureRequest = req.isSecure();
+        if (webAppSecConfig.getSSORequiresSSL() && !secureRequest) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "SSO requires SSL. The cookie will not be sent back because the request is not over https.");
+            }
+            return false;
+        }
+        return true;
+    }
+
+    protected boolean isMethodToIntercept(InvocationContext ic) {
+        String methodName = ic.getMethod().getName();
+        return METHOD_TO_INTERCEPT.equals(methodName);
+    }
+    
+    protected boolean isCustomForm(InvocationContext ic) {
+        String className = ic.getMethod().getDeclaringClass().getName();
+        return CUSTOM_FORM_CLASS.equals(className);
+    }
+
+    protected void setProps(Instance<HAMProperties> hampInstance) {
+        this.hampInstance = hampInstance;
+    }
+
+    protected WebAppSecurityConfig getWebSAppSeurityConfig() {
+        return WebConfigUtils.getWebAppSecurityConfig();
+    }
 }

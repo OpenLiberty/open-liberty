@@ -12,12 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.javax.ejb-3.2;version=latest, \
-	com.ibm.websphere.appserver.iiopcommon-1.0;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
 	com.ibm.ws.management.j2ee;version=latest, \
 	com.ibm.ws.management.j2ee.mbeans;version=latest, \
 	com.ibm.websphere.javaee.management.j2ee.1.1;version=latest, \

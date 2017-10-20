@@ -209,12 +209,11 @@ public final class FreePool implements JCAPMIHelper {
                     Tr.debug(this, tc, "Waiters: total time waiter were in queue: " + (pm.waitersEndedTime - pm.waitersStartedTime));
                 }
             }
-
-            ConnectionWaitTimeoutException cwte = new ConnectionWaitTimeoutException("Connection not available got  InterruptedException while waiting");
-            pm.activeRequest.decrementAndGet();
+            ResourceAllocationException throwMe = new ResourceAllocationException(ie.getMessage()); 
+            throwMe.initCause(ie);
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-                Tr.exit(this, tc, "queueRequest", cwte);
-            throw cwte;
+                Tr.exit(this, tc, "queueRequest", throwMe);
+            throw throwMe;
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

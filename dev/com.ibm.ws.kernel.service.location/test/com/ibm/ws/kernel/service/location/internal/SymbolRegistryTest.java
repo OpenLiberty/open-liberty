@@ -42,7 +42,7 @@ public class SymbolRegistryTest {
      * Test data directory: note the space! always test paths with spaces. Dratted
      * windows.
      */
-    public static final String TEST_DATA_DIR = "../com.ibm.ws.kernel.service_test/unittest/test data";
+    public static final String TEST_DATA_DIR = "../com.ibm.ws.kernel.service.location/test/test data";
 
     static SharedOutputManager outputMgr;
     static InternalWsResource fileRes;

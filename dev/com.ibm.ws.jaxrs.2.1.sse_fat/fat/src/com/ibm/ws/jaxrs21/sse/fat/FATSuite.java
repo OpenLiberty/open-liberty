@@ -20,5 +20,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
                 AlwaysPassesTest.class, // so we report at least 1 test on java 7 builds
                 BasicSseTest.class,
+                SseJsonbTest.class,
 })
 public class FATSuite {}

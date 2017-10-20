@@ -72,6 +72,6 @@ Service-Component: \
         |org.jboss.weld.util.bean"
 
 Include-Resource: \
-  @${repo;org.jboss.weld:weld-osgi-bundle;2.4.3.Final}!/!META-INF/maven/*
+  @${repo;org.jboss.weld:weld-osgi-bundle;[2.4.3.Final,3)}!/!META-INF/maven/*
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"

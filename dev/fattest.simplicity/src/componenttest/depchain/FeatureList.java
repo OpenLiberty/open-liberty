@@ -35,16 +35,18 @@ public class FeatureList {
         // If fat-featureList.xml doesn't exist already, generate it
         Log.info(c, m, "fatFeatureList.xml not found.  Need to generate.");
         String featureListJar = findRunnableJar(server.getInstallRoot());
-        Process featureListProc = Runtime.getRuntime().exec("java -jar " + featureListJar + " " + featureList.getAbsolutePath());
+        Process featureListProc = new ProcessBuilder("java", "-jar", featureListJar, featureList.getAbsolutePath())
+                        .redirectErrorStream(true)
+                        .start();
         int rc = featureListProc.waitFor();
         String cmdOutput;
         try (Scanner s = new Scanner(featureListProc.getInputStream()).useDelimiter("\\A")) {
             cmdOutput = s.hasNext() ? s.next() : "";
         }
         if (rc != 0) {
-            Log.info(c, m, "Got non-zero return code " + rc + " from running featureList generation:");
-            Log.info(c, m, cmdOutput);
-            throw new Exception(cmdOutput);
+            Exception e = new Exception(cmdOutput);
+            Log.error(c, m, e, "Got non-zero return code " + rc + " from running " + featureList.getAbsolutePath() + " generation:");
+            throw e;
         }
         return featureList;
     }

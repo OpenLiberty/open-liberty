@@ -21,8 +21,8 @@ Private-Package: com.ibm.ws.jsonsupport.internal
 Export-Package: \
 	com.ibm.websphere.jsonsupport
 Include-Resource: \
-    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2}, \
-    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2}
+    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2;EXACT}, \
+    @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2;EXACT}
 
 instrument.disabled: true
 
@@ -35,7 +35,7 @@ instrument.disabled: true
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1

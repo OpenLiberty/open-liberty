@@ -12,9 +12,5 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
-	com.ibm.websphere.appserver.iiopclient-1.0;version=latest, \
 	com.ibm.ws.clientcontainer.remote.common;version=latest

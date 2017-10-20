@@ -25,13 +25,14 @@ Export-Package: \
     com.ibm.ws.security.javaeesec.authentication.mechanism.http, \
     com.ibm.ws.security.javaeesec.identitystore
 
-Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
+Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
  
 Private-Package: \
     com.ibm.ws.security.javaeesec.internal.resources
 
 -dsannotations: \
-    com.ibm.ws.security.javaeesec.BridgeBuilderImpl
+    com.ibm.ws.security.javaeesec.BridgeBuilderImpl, \
+    com.ibm.ws.security.javaeesec.CDIHelper
 
 -dsannotations-inherit: true
 
@@ -53,8 +54,7 @@ Include-Resource: \
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.websphere.security;version=latest,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.cdi.1.2.interfaces,\
-    com.ibm.ws.common.encoder;version=latest,\
+    com.ibm.ws.cdi.interfaces,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\
@@ -66,7 +66,7 @@ Include-Resource: \
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
-    ../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file,\
+    com.ibm.ws.junit.extensions;version=latest,\
     org.hamcrest:hamcrest-all;version=1.3,\
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
     org.jmock:jmock;strategy=exact;version=2.5.1,\

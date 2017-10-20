@@ -19,6 +19,7 @@ import com.ibm.wsspi.http.HttpCookie;
  * Implemented by the webcontainer for creating push requests.
  */
 public interface Http2PushBuilder {
+    String getMethod();
 
     Set<HeaderField> getHeaders();
 
@@ -29,5 +30,7 @@ public interface Http2PushBuilder {
     String getQueryString();
 
     String getSessionId();
+
+    String getPath();
 
 }
