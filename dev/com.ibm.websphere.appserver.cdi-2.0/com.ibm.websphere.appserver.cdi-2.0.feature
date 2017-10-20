@@ -33,7 +33,7 @@ IBM-ShortName: cdi-2.0
 Subsystem-Name: Contexts and Dependency Injection 2.0
 -features=com.ibm.websphere.appserver.javax.jsp-2.3, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.javax.persistence-2.2; ibm.tolerates:=2.1, \
+ com.ibm.websphere.appserver.javax.persistence-2.2, \
  com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.javax.ejb-3.2, \
  com.ibm.websphere.appserver.javax.annotation-1.2, \

@@ -31,7 +31,7 @@ runtime.minimum.java.level: 1.8
 #      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
 -buildpath: \
     com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.2;version=latest,\
 	org.apache.derby:derby;version=10.11.1.1
