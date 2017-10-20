@@ -83,5 +83,5 @@ com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:2.7.1.WAS-7bb6ff
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:2.7.1.WAS-7bb6ff9
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:2.7.1.WAS-7bb6ff9
 com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:2.7.1.WAS-7bb6ff9
-com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20170928-014102-260
-com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20170928-014425-256
+com.ibm.ws.org.apache.myfaces.core:myfaces-api:2.3.0-20171016-074050-275
+com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20171016-074423-270
