@@ -73,6 +73,7 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
     private volatile Map<String, Object> properties;
 
     private final Set<String> pids = new HashSet<String>();
+    private String bundleLocation;
 
     /**
      * Constructs the JsMEConfig object based upon the Map and Activates various
@@ -149,7 +150,8 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
             SibTr.entry(tc, "initialize", new Object[] { context, properties });
         }
         this.properties = properties;
-
+        this.bundleLocation = context.getBundleContext().getBundle().getLocation();
+        
         // populate filestore
         SIBFileStore filestore = new SIBFileStoreImpl();
         populateFileStore(properties, filestore, configAdmin);
@@ -232,7 +234,7 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
                 pids.add(destinationPid);
                 Configuration config = null;
                 try {
-                    config = configAdmin.getConfiguration(destinationPid);
+                    config = configAdmin.getConfiguration(destinationPid, bundleLocation);
                 } catch (IOException e) {
                     SibTr.exception(tc, e);
                     FFDCFilter.processException(e, this.getClass().getName(), "369", this);
@@ -459,7 +461,7 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
                 pids.add(aliasDestinationPid);
                 Configuration config = null;
                 try {
-                    config = configAdmin.getConfiguration(aliasDestinationPid);
+                    config = configAdmin.getConfiguration(aliasDestinationPid, bundleLocation);
                 } catch (IOException e) {
                     SibTr.exception(tc, e);
                     FFDCFilter.processException(e, this.getClass().getName(), "561", this);
@@ -567,7 +569,7 @@ public class JsMainAdminServiceImpl extends JsMainAdminService {
             pids.add(sFileStore[0]);
             Configuration config = null;
             try {
-                config = configAdmin.getConfiguration(sFileStore[0]);
+                config = configAdmin.getConfiguration(sFileStore[0], bundleLocation);
             } catch (IOException e) {
                 SibTr.exception(tc, e);
                 FFDCFilter.processException(e, this.getClass().getName(), "671", this);

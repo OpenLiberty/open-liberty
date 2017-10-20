@@ -34,13 +34,13 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.authorization.FeatureAuthorizationTableService;
 import com.ibm.ws.security.authorization.RoleSet;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
+
+import test.common.SharedOutputManager;
 
 /**
  * This class tests the authorization table for a feature web bundle.
@@ -183,7 +183,7 @@ public class FeatureAuthorizationTableTest {
 
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.feature.FeatureAuthorizationTable#getFeatureAuthorizationId()}.
-     * 
+     *
      */
     @Test
     public void getFeatureAuthorizationId() {
@@ -193,7 +193,7 @@ public class FeatureAuthorizationTableTest {
 
     /**
      * Test method for {@link com.ibm.ws.webcontainer.security.feature.FeatureAuthorizationTable#getApplicationName()()}.
-     * 
+     *
      */
     @Test
     public void getApplicationName() {
@@ -228,9 +228,9 @@ public class FeatureAuthorizationTableTest {
 
         mock.checking(new Expectations() {
             {
-                one(ca).getConfiguration(KEY_PID1);
+                one(ca).getConfiguration(KEY_PID1, null);
                 will(returnValue(cfg1));
-                one(ca).getConfiguration(KEY_PID2);
+                one(ca).getConfiguration(KEY_PID2, null);
                 will(returnValue(cfg2));
 
                 allowing(cfg1).getProperties();
@@ -238,9 +238,9 @@ public class FeatureAuthorizationTableTest {
                 allowing(cfg2).getProperties();
                 will(returnValue(roleProps2));
 
-                one(ca).getConfiguration(KEY_USER_PID1);
+                one(ca).getConfiguration(KEY_USER_PID1, null);
                 will(returnValue(userConfig1));
-                one(ca).getConfiguration(KEY_USER_PID2);
+                one(ca).getConfiguration(KEY_USER_PID2, null);
                 will(returnValue(userConfig2));
 
                 allowing(userConfig1).getProperties();
@@ -308,9 +308,9 @@ public class FeatureAuthorizationTableTest {
 
         mock.checking(new Expectations() {
             {
-                one(ca).getConfiguration(KEY_PID1);
+                one(ca).getConfiguration(KEY_PID1, null);
                 will(returnValue(cfg1));
-                one(ca).getConfiguration(KEY_PID2);
+                one(ca).getConfiguration(KEY_PID2, null);
                 will(returnValue(cfg2));
 
                 allowing(cfg1).getProperties();
@@ -318,9 +318,9 @@ public class FeatureAuthorizationTableTest {
                 allowing(cfg2).getProperties();
                 will(returnValue(roleProps2));
 
-                one(ca).getConfiguration(KEY_USER_PID1);
+                one(ca).getConfiguration(KEY_USER_PID1, null);
                 will(returnValue(userConfig1));
-                one(ca).getConfiguration(KEY_USER_PID2);
+                one(ca).getConfiguration(KEY_USER_PID2, null);
                 will(returnValue(userConfig2));
 
                 allowing(userConfig1).getProperties();
@@ -400,9 +400,9 @@ public class FeatureAuthorizationTableTest {
 
         mock.checking(new Expectations() {
             {
-                one(ca).getConfiguration(KEY_PID1);
+                one(ca).getConfiguration(KEY_PID1, null);
                 will(returnValue(cfg1));
-                one(ca).getConfiguration(KEY_PID2);
+                one(ca).getConfiguration(KEY_PID2, null);
                 will(returnValue(cfg2));
 
                 allowing(cfg1).getProperties();
@@ -410,9 +410,9 @@ public class FeatureAuthorizationTableTest {
                 allowing(cfg2).getProperties();
                 will(returnValue(roleProps2));
 
-                one(ca).getConfiguration(KEY_GROUP_PID1);
+                one(ca).getConfiguration(KEY_GROUP_PID1, null);
                 will(returnValue(groupConfig1));
-                one(ca).getConfiguration(KEY_GROUP_PID2);
+                one(ca).getConfiguration(KEY_GROUP_PID2, null);
                 will(returnValue(groupConfig2));
 
                 allowing(groupConfig1).getProperties();
