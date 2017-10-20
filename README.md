@@ -24,7 +24,9 @@ You can download released versions and nightly build artifacts from: https://www
     git clone https://github.com/OpenLiberty/sample-mpconf.git
     cd sample-mpconf
     mvn clean package -P start
-    
+
+Use `mvn liberty:stop-server` to stop the running servers.
+
 ### Open Liberty Guides
 Visit the [OpenLiberty website](https://openliberty.io/guides/) for a number of step by step guides.
 
@@ -39,7 +41,7 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 2. Run a gradle build.
 
     ```cd open-liberty/dev```
-    
+
     ```./gradlew cnf:initialize```
 
     ```./gradlew assemble```
@@ -47,18 +49,18 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 3. Run the unit or FAT tests.
 
    ```./gradlew test``` for unit tests
-   
+
    ```./gradlew buildandrun``` for FAT tests
-   
+
    **NOTE:** ```./gradlew build``` runs assemble and test targets
-   
+
 4. Perform a local release
 
     ```./gradlew releaseNeeded```
-    
+
     **NOTE:** This task releases all projects to the local releaseRepo.
     The final openliberty zip can be found in
-    
+
     ```open-liberty\dev\cnf\release\dev\openliberty\<version>\openliberty-xxx.zip```
 
 5. Go [Open issues](https://github.com/OpenLiberty/open-liberty/issues), [Review existing contributions](https://github.com/OpenLiberty/open-liberty/pulls), or [Submit fixes](https://github.com/OpenLiberty/open-liberty/blob/master/CONTRIBUTING.md).
@@ -67,4 +69,3 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/master/CONTR
 1. [Open Liberty group.io](https://groups.io/g/openliberty)
 2. [OpenLibertyIO on Twitter](https://twitter.com/OpenLibertyIO)
 3. [open-liberty tag on stackoverflow](https://stackoverflow.com/questions/tagged/open-liberty)
-
