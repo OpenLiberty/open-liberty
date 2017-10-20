@@ -147,6 +147,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             boolean canRun;
             PolicyTaskFutureImpl<?> next;
             while ((next = (canRun = state.get().canStartTask) ? queue.poll() : null) != null && next.isCancelled()) {
+                next.nsRunEnd = next.nsQueueEnd = System.nanoTime();
                 maxQueueSizeConstraint.release();
                 if (next.callback != null)
                     next.callback.onEnd(next.task, next, null, true, 0, null); // aborted, queued task will never run
@@ -398,8 +399,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 }
 
                 // Check if shutdown occurred since acquiring the permit to enqueue, and if so, try to remove the queued task
-                if (state.get() != State.ACTIVE && queue.remove(policyTaskFuture))
+                if (state.get() != State.ACTIVE && queue.remove(policyTaskFuture)) {
+                    policyTaskFuture.nsRunEnd = policyTaskFuture.nsQueueEnd = System.nanoTime();
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
+                }
             } else if (state.get() == State.ACTIVE) {
                 boolean havePermit = false;
                 if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
@@ -918,6 +921,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      */
     void runTask(PolicyTaskFutureImpl<?> future) {
         try {
+            future.nsQueueEnd = System.nanoTime();
             if (providerCreated != null) // the following code only matters when life cycle operations are permitted
                 running.add(future); // intentionally done before checking state to avoid missing cancels on shutdownNow
 
@@ -935,6 +939,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } catch (RuntimeException x) {
             // auto FFDC
         } finally {
+            future.nsRunEnd = System.nanoTime();
             if (providerCreated != null)
                 running.remove(future);
         }

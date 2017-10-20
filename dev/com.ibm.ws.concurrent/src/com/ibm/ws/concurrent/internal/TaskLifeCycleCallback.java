@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.enterprise.concurrent.AbortedException;
@@ -26,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
@@ -74,7 +74,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public void onCancel(Object task, Future<?> future, boolean timedOut, boolean whileRunning) {
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {
         // Tasks that are canceled while running have the taskAborted notification sent on the thread of execution instead.
 
         // notify listener: taskAborted (if task was canceled before it started)
@@ -113,7 +113,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public void onEnd(Object task, Future<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {
+    public void onEnd(Object task, PolicyTaskFuture<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {
         if (pending >= 0 && task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
             if (listener != null) {
@@ -160,7 +160,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public Object onStart(Object task, Future<?> future) {
+    public Object onStart(Object task, PolicyTaskFuture<?> future) {
         // EE Concurrency 3.1.6.1: No task submitted to an executor can run if task's component is not started.
         // ThreadContextDescriptor.taskStarting covers this requirement for us.
         ArrayList<ThreadContext> contextAppliedToThread = threadContextDescriptor.taskStarting();
@@ -179,7 +179,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {
+    public void onSubmit(Object task, PolicyTaskFuture<?> future, int invokeAnyCount) {
         // notify listener: taskSubmitted
         if (task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();

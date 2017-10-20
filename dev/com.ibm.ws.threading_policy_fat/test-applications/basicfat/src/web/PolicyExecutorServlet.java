@@ -57,6 +57,7 @@ import org.junit.Test;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
@@ -464,6 +465,9 @@ public class PolicyExecutorServlet extends FATServlet {
         // task successfully submits
         assertFalse(callback.isCanceled[ParameterInfoCallback.SUBMIT]);
         assertFalse(callback.isDone[ParameterInfoCallback.SUBMIT]);
+        assertTrue(callback.nsAccept[ParameterInfoCallback.SUBMIT] >= 0);
+        assertEquals(0, callback.nsQueue[ParameterInfoCallback.SUBMIT]);
+        assertEquals(0, callback.nsRun[ParameterInfoCallback.SUBMIT]);
         assertEquals(task3, callback.task[ParameterInfoCallback.SUBMIT]);
 
         // task does not start
@@ -479,6 +483,9 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(callback.future[ParameterInfoCallback.SUBMIT], callback.future[ParameterInfoCallback.END]);
         assertFalse(callback.isCanceled[ParameterInfoCallback.END]);
         assertTrue(callback.isDone[ParameterInfoCallback.END]);
+        assertTrue(callback.nsAccept[ParameterInfoCallback.END] >= callback.nsAccept[ParameterInfoCallback.SUBMIT]);
+        assertEquals(0, callback.nsQueue[ParameterInfoCallback.END]);
+        assertEquals(0, callback.nsRun[ParameterInfoCallback.END]);
         assertNull(callback.startContext);
         Object result = callback.result[ParameterInfoCallback.END];
         if (!(result instanceof RejectedExecutionException))
@@ -501,6 +508,9 @@ public class PolicyExecutorServlet extends FATServlet {
         // task successfully submits
         assertFalse(callback.isCanceled[ParameterInfoCallback.SUBMIT]);
         assertFalse(callback.isDone[ParameterInfoCallback.SUBMIT]);
+        assertTrue(callback.nsAccept[ParameterInfoCallback.SUBMIT] >= 0);
+        assertEquals(0, callback.nsQueue[ParameterInfoCallback.SUBMIT]);
+        assertEquals(0, callback.nsRun[ParameterInfoCallback.SUBMIT]);
         assertEquals(task4, callback.task[ParameterInfoCallback.SUBMIT]);
 
         // task does not start
@@ -512,10 +522,20 @@ public class PolicyExecutorServlet extends FATServlet {
         assertNull(callback.task[ParameterInfoCallback.CANCEL]);
 
         // task is aborted
+        PolicyTaskFuture<?> future = callback.future[ParameterInfoCallback.SUBMIT]; // Submit was rejected, so the only access we have to the Future is from the previous callback
         assertEquals(task4, callback.task[ParameterInfoCallback.END]);
-        assertEquals(callback.future[ParameterInfoCallback.SUBMIT], callback.future[ParameterInfoCallback.END]);
+        assertEquals(future, callback.future[ParameterInfoCallback.END]);
         assertFalse(callback.isCanceled[ParameterInfoCallback.END]);
         assertTrue(callback.isDone[ParameterInfoCallback.END]);
+        long nsAccept = callback.nsAccept[ParameterInfoCallback.END];
+        long musAccept = TimeUnit.NANOSECONDS.toMicros(nsAccept);
+        long msAccept = TimeUnit.NANOSECONDS.toMillis(nsAccept);
+        assertTrue(nsAccept >= callback.nsAccept[ParameterInfoCallback.SUBMIT]);
+        assertEquals(0, callback.nsQueue[ParameterInfoCallback.END]);
+        assertEquals(0, callback.nsRun[ParameterInfoCallback.END]);
+        assertEquals(nsAccept, future.getElapsedAcceptTime(TimeUnit.NANOSECONDS));
+        assertEquals(musAccept, future.getElapsedAcceptTime(TimeUnit.MICROSECONDS));
+        assertEquals(msAccept, future.getElapsedAcceptTime(TimeUnit.MILLISECONDS));
         assertNull(callback.startContext);
         result = callback.result[ParameterInfoCallback.END];
         if (!(result instanceof RejectedExecutionException) || !(((RejectedExecutionException) result).getCause() instanceof InterruptedException))

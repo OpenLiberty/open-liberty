@@ -10,9 +10,8 @@
  *******************************************************************************/
 package web;
 
-import java.util.concurrent.Future;
-
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 
 /**
  * Callback that cancels tasks on submit or on start.
@@ -31,14 +30,14 @@ public class CancellationCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public Object onStart(Object task, Future<?> future) {
+    public Object onStart(Object task, PolicyTaskFuture<?> future) {
         if ("onStart".equals(whenToCancel))
             System.out.println("CancellationCallback.onStart " + task.toString() + " canceled? " + future.cancel(interrupt));
         return null;
     }
 
     @Override
-    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {
+    public void onSubmit(Object task, PolicyTaskFuture<?> future, int invokeAnyCount) {
         if ("onSubmit".equals(whenToCancel))
             System.out.println("CancellationCallback.onSubmit " + task.toString() + " canceled? " + future.cancel(interrupt));
     }
