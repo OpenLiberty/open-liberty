@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 
 /**
@@ -503,22 +504,24 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Trivial
     public final <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        return invokeAll(tasks, null);
+        return (List) invokeAll(tasks, null);
     }
 
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Trivial
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-        return invokeAll(tasks, null, timeout, unit);
+        return (List) invokeAll(tasks, null, timeout, unit);
     }
 
     // Submit and run tasks and return list of completed (possibly canceled) tasks.
     // Because this method is not timed, tasks can run on the current thread if maxConcurrencyAppliesToCallerThread is false or a permit is available.
     @FFDCIgnore(value = { RejectedExecutionException.class })
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException {
+    public <T> List<PolicyTaskFuture<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Determine if we need a permit to run one or more of the tasks on the current thread, and if so, acquire it,
@@ -593,8 +596,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     f.cancel(true);
         }
 
-        @SuppressWarnings("unchecked")
-        List<Future<T>> list = List.class.cast(futures);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        List<PolicyTaskFuture<T>> list = (List) futures;
         return list;
     }
 
@@ -602,7 +605,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     // Because this method is timed, tasks will never run on the invoker's current thread.
     @FFDCIgnore(value = { RejectedExecutionException.class })
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks, long timeout, TimeUnit unit) throws InterruptedException {
+    public <T> List<PolicyTaskFuture<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks, long timeout,
+                                                   TimeUnit unit) throws InterruptedException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         int taskCount = tasks.size();
@@ -647,8 +651,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     f.cancel(true);
         }
 
-        @SuppressWarnings("unchecked")
-        List<Future<T>> list = List.class.cast(futures);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        List<PolicyTaskFuture<T>> list = (List) futures;
         return list;
     }
 
@@ -931,6 +935,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Cancel task due to policy executor state " + state);
                 future.cancel(false);
+                future.nsRunEnd = System.nanoTime();
                 if (future.callback != null)
                     future.callback.onEnd(future.task, future, null, true, 0, null); // aborted, queued task will never run
             }
@@ -939,7 +944,6 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } catch (RuntimeException x) {
             // auto FFDC
         } finally {
-            future.nsRunEnd = System.nanoTime();
             if (providerCreated != null)
                 running.remove(future);
         }
@@ -1031,7 +1035,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
-    public <T> Future<T> submit(Callable<T> task, PolicyTaskCallback callback) {
+    public <T> PolicyTaskFuture<T> submit(Callable<T> task, PolicyTaskCallback callback) {
         PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, callback);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
@@ -1052,7 +1056,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
-    public <T> Future<T> submit(Runnable task, T result, PolicyTaskCallback callback) {
+    public <T> PolicyTaskFuture<T> submit(Runnable task, T result, PolicyTaskCallback callback) {
         PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result, callback);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;

@@ -12,37 +12,48 @@ package web;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.ws.threading.PolicyTaskCallback;
 
 /**
  * Task that submits another task.
  * This is useful when we are expecting the task submission to be blocked for a period of time,
  * such as when the queue is full and a maxWaitForEnqueue is configured or the queue full action is
  * one of the caller runs options.
- * 
+ *
  * @param <T>
  */
 public class SubmitterTask<T> implements Callable<Future<T>> {
     private long awaitContinueNanos;
     private CountDownLatch beginLatch;
     private CountDownLatch continueLatch;
-    private final ExecutorService executor;
+    private final PolicyExecutor executor;
     private final Callable<?> callable;
+    private final PolicyTaskCallback callback;
 
-    public SubmitterTask(ExecutorService executor, Callable<T> callable) {
+    public SubmitterTask(PolicyExecutor executor, Callable<T> callable) {
         this.executor = executor;
         this.callable = callable;
+        this.callback = null;
     }
 
-    public SubmitterTask(ExecutorService executor, Callable<T> callable, CountDownLatch beginLatch, CountDownLatch continueLatch, long awaitContinueNanos) {
+    public SubmitterTask(PolicyExecutor executor, Callable<T> callable, CountDownLatch beginLatch, CountDownLatch continueLatch, long awaitContinueNanos) {
         this.awaitContinueNanos = awaitContinueNanos;
         this.beginLatch = beginLatch;
         this.continueLatch = continueLatch;
         this.executor = executor;
         this.callable = callable;
+        this.callback = null;
+    }
+
+    public SubmitterTask(PolicyExecutor executor, Callable<T> callable, PolicyTaskCallback callback) {
+        this.executor = executor;
+        this.callable = callable;
+        this.callback = callback;
     }
 
     @Override
@@ -54,7 +65,7 @@ public class SubmitterTask<T> implements Callable<Future<T>> {
             if (continueLatch != null && !continueLatch.await(awaitContinueNanos, TimeUnit.NANOSECONDS))
                 throw new TimeoutException();
             @SuppressWarnings("unchecked")
-            Future<T> future = (Future<T>) executor.submit(callable);
+            Future<T> future = (Future<T>) (callback == null ? executor.submit(callable) : executor.submit(callable, callback));
             System.out.println("< call " + toString() + " " + future);
             return future;
         } catch (RuntimeException x) {
