@@ -16,7 +16,6 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import cdi.web.ELIServlet;
 import componenttest.annotation.Server;
@@ -29,30 +28,18 @@ public class JPAELInjectionFATTest {
     public static final String APP_NAME = "cdi";
     public static final String SERVLET = "eli";
 
-    @Server("JPA22FATServer")
+    @Server("CDIFatServer")
     @TestServlet(servlet = ELIServlet.class, path = APP_NAME + "/" + SERVLET)
     public static LibertyServer server1;
 
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server1, APP_NAME, "cdi.web", "cdi.model");
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getFeatureManager().getFeatures().add("cdi-2.0");
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
         server1.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server1.stopServer();
-
-        server1.deleteFileFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
-
-        ServerConfiguration sc = server1.getServerConfiguration();
-        sc.getFeatureManager().getFeatures().remove("cdi-2.0");
-        server1.updateServerConfiguration(sc);
-        server1.saveServerConfiguration();
     }
 }

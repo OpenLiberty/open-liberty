@@ -36,14 +36,11 @@ public class JPA22BootstrapTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         ShrinkHelper.defaultDropinApp(server1, APP_NAME, "jpa22bootstrap.web", "jpa22bootstrap.entity");
-
         server1.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server1.stopServer();
-
-        server1.deleteFileFromLibertyServerRoot("dropins/" + APP_NAME + ".war");
     }
 }

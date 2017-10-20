@@ -70,7 +70,7 @@ public class ELIServlet extends FATServlet {
 
         insert("circle", "A round widget");
 
-        List<String> searchMessages = createMessageList(new String[] { "postConstruct", "prePersist", "postPersist" });
+        List<String> searchMessages = createMessageList(new String[] { "prePersist", "postPersist" });
         boolean[] foundMessages = new boolean[searchMessages.size()];
         boolean[] orderCorrect = new boolean[searchMessages.size() - 1];
 
@@ -319,6 +319,7 @@ public class ELIServlet extends FATServlet {
 
         if (firstTest) {
             list.add("injection");
+            list.add("postConstruct");
             firstTest = false;
         }
 

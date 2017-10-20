@@ -8,11 +8,12 @@
     Contributors:
         IBM Corporation - initial API and implementation
  -->
-<server description="new server">
+<server description="CDI Fat Server">
 
 	<featureManager>
-		<feature>servlet-3.1</feature>
-		<feature>jpa-2.1</feature>
+	    <feature>cdi-2.0</feature>
+		<feature>jpa-2.2</feature>
+		<feature>servlet-4.0</feature>
 	    <feature>componenttest-1.0</feature>
     </featureManager>
     
