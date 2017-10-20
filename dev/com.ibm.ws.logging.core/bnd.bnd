@@ -20,6 +20,7 @@ Export-Package: \
 	com.ibm.ws.ffdc,\
 	com.ibm.ws.ffdc.annotation,\
 	com.ibm.ws.kernel.provisioning.packages,\
+	com.ibm.ws.staticvalue,\
 	com.ibm.ws.logging,\
 	com.ibm.ws.logging.internal,\
 	com.ibm.wsspi.logging,\
