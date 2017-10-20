@@ -224,13 +224,19 @@ public abstract class ProviderFactory {
 
     // Liberty Change for CXF Begin
     private static Object createJsonpProvider() {
-        JsonProvider jsonProvider = null;
-        Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
-        if(b != null) {
-            BundleContext bc = b.getBundleContext();
-            ServiceReference<JsonProvider> sr = bc.getServiceReference(JsonProvider.class);
-            jsonProvider = (JsonProvider)bc.getService(sr);
-        }
+        JsonProvider jsonProvider = AccessController.doPrivileged(new PrivilegedAction<JsonProvider>(){
+
+            @Override
+            public JsonProvider run() {
+                Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
+                if(b != null) {
+                    BundleContext bc = b.getBundleContext();
+                    ServiceReference<JsonProvider> sr = bc.getServiceReference(JsonProvider.class);
+                    return (JsonProvider)bc.getService(sr);
+                }
+                return null;
+            }});
+        
         return new JsonPProvider(jsonProvider);
     }
     // Liberty Change for CXF End
@@ -252,13 +258,19 @@ public abstract class ProviderFactory {
     }
     
     private static Object createJsonbProvider() {
-        JsonbProvider jsonbProvider = null;
-        Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
-        if(b != null) {
-            BundleContext bc = b.getBundleContext();
-            ServiceReference<JsonbProvider> sr = bc.getServiceReference(JsonbProvider.class);
-            jsonbProvider = (JsonbProvider)bc.getService(sr);
-        }
+        JsonbProvider jsonbProvider = AccessController.doPrivileged(new PrivilegedAction<JsonbProvider>(){
+
+            @Override
+            public JsonbProvider run() {
+                Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
+                if(b != null) {
+                    BundleContext bc = b.getBundleContext();
+                    ServiceReference<JsonbProvider> sr = bc.getServiceReference(JsonbProvider.class);
+                    return (JsonbProvider)bc.getService(sr);
+                }
+                return null;
+            }});
+        
         return new JsonBProvider(jsonbProvider);
     }
 
