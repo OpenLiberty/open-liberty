@@ -29,6 +29,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
@@ -90,6 +91,7 @@ public class FeatureAuthorizationTableTest {
     private final Configuration userConfig2 = mock.mock(Configuration.class, "userConfig2");
     private final Configuration groupConfig1 = mock.mock(Configuration.class, "groupConfig1");
     private final Configuration groupConfig2 = mock.mock(Configuration.class, "groupConfig2");
+    private final BundleContext bc = mock.mock(BundleContext.class);
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -144,6 +146,9 @@ public class FeatureAuthorizationTableTest {
     public void setUp() throws Exception {
         mock.checking(new Expectations() {
             {
+                allowing(cc).getBundleContext();
+                will(returnValue(bc));
+                allowing(bc).getBundle();
                 allowing(cc).locateService(KEY_FEATURE_SECURITY_AUTHZ_SERVICE, fatsr);
                 will(returnValue(fats));
                 allowing(cc).locateService(KEY_SECURITY_SERVICE, securityServiceRef);
@@ -228,9 +233,9 @@ public class FeatureAuthorizationTableTest {
 
         mock.checking(new Expectations() {
             {
-                one(ca).getConfiguration(KEY_PID1, null);
+                one(ca).getConfiguration(KEY_PID1, "");
                 will(returnValue(cfg1));
-                one(ca).getConfiguration(KEY_PID2, null);
+                one(ca).getConfiguration(KEY_PID2, "");
                 will(returnValue(cfg2));
 
                 allowing(cfg1).getProperties();
@@ -238,9 +243,9 @@ public class FeatureAuthorizationTableTest {
                 allowing(cfg2).getProperties();
                 will(returnValue(roleProps2));
 
-                one(ca).getConfiguration(KEY_USER_PID1, null);
+                one(ca).getConfiguration(KEY_USER_PID1, "");
                 will(returnValue(userConfig1));
-                one(ca).getConfiguration(KEY_USER_PID2, null);
+                one(ca).getConfiguration(KEY_USER_PID2, "");
                 will(returnValue(userConfig2));
 
                 allowing(userConfig1).getProperties();
@@ -308,9 +313,9 @@ public class FeatureAuthorizationTableTest {
 
         mock.checking(new Expectations() {
             {
-                one(ca).getConfiguration(KEY_PID1, null);
+                one(ca).getConfiguration(KEY_PID1, "");
                 will(returnValue(cfg1));
-                one(ca).getConfiguration(KEY_PID2, null);
+                one(ca).getConfiguration(KEY_PID2, "");
                 will(returnValue(cfg2));
 
                 allowing(cfg1).getProperties();
@@ -318,9 +323,9 @@ public class FeatureAuthorizationTableTest {
                 allowing(cfg2).getProperties();
                 will(returnValue(roleProps2));
 
-                one(ca).getConfiguration(KEY_USER_PID1, null);
+                one(ca).getConfiguration(KEY_USER_PID1, "");
                 will(returnValue(userConfig1));
-                one(ca).getConfiguration(KEY_USER_PID2, null);
+                one(ca).getConfiguration(KEY_USER_PID2, "");
                 will(returnValue(userConfig2));
 
                 allowing(userConfig1).getProperties();
@@ -400,9 +405,9 @@ public class FeatureAuthorizationTableTest {
 
         mock.checking(new Expectations() {
             {
-                one(ca).getConfiguration(KEY_PID1, null);
+                one(ca).getConfiguration(KEY_PID1, "");
                 will(returnValue(cfg1));
-                one(ca).getConfiguration(KEY_PID2, null);
+                one(ca).getConfiguration(KEY_PID2, "");
                 will(returnValue(cfg2));
 
                 allowing(cfg1).getProperties();
@@ -410,9 +415,9 @@ public class FeatureAuthorizationTableTest {
                 allowing(cfg2).getProperties();
                 will(returnValue(roleProps2));
 
-                one(ca).getConfiguration(KEY_GROUP_PID1, null);
+                one(ca).getConfiguration(KEY_GROUP_PID1, "");
                 will(returnValue(groupConfig1));
-                one(ca).getConfiguration(KEY_GROUP_PID2, null);
+                one(ca).getConfiguration(KEY_GROUP_PID2, "");
                 will(returnValue(groupConfig2));
 
                 allowing(groupConfig1).getProperties();
@@ -480,9 +485,9 @@ public class FeatureAuthorizationTableTest {
 
         mock.checking(new Expectations() {
             {
-                one(ca).getConfiguration(KEY_PID1);
+                one(ca).getConfiguration(KEY_PID1, "");
                 will(returnValue(cfg1));
-                one(ca).getConfiguration(KEY_PID2);
+                one(ca).getConfiguration(KEY_PID2, "");
                 will(returnValue(cfg2));
 
                 allowing(cfg1).getProperties();
@@ -490,9 +495,9 @@ public class FeatureAuthorizationTableTest {
                 allowing(cfg2).getProperties();
                 will(returnValue(roleProps2));
 
-                one(ca).getConfiguration(KEY_GROUP_PID1);
+                one(ca).getConfiguration(KEY_GROUP_PID1, "");
                 will(returnValue(groupConfig1));
-                one(ca).getConfiguration(KEY_GROUP_PID2);
+                one(ca).getConfiguration(KEY_GROUP_PID2, "");
                 will(returnValue(groupConfig2));
 
                 allowing(groupConfig1).getProperties();

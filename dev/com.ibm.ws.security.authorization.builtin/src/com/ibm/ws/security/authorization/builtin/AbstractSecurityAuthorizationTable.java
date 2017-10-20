@@ -416,7 +416,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
                     }
                     continue;
                 }
-                SecurityRole role = new SecurityRoleImpl(configAdmin, roleName, roleProps, pids);
+                SecurityRole role = new SecurityRoleImpl(configAdmin, bundleLocation, roleName, roleProps, pids);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Adding role", role);
                 }
@@ -477,7 +477,7 @@ public abstract class AbstractSecurityAuthorizationTable extends BaseAuthorizati
             return;
         }
 
-        SecurityRole role = new SecurityRoleImpl(configAdmin, roleName, config.getProperties(), pids);
+        SecurityRole role = new SecurityRoleImpl(configAdmin, bundleLocation, roleName, config.getProperties(), pids);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Adding role", role);
         }
