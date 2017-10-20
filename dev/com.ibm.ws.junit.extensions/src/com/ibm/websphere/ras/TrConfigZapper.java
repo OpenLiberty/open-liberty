@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -17,8 +17,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.concurrent.Callable;
 
 import com.ibm.ws.logging.internal.impl.LogProviderConfigImpl;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.logging.TextFileOutputStreamFactory;
 import com.ibm.wsspi.logprovider.TrService;
 
@@ -94,16 +96,22 @@ public class TrConfigZapper extends TrConfigurator {
      */
     public static void revert() {
         stop();
-        delegate = null;
-        loggingConfig.set(null);
+        delegate = StaticValue.mutateStaticValue(delegate, null);
+        loggingConfig.get().set(null);
     }
 
     public TrService getTrDelegate() {
-        return delegate;
+        return delegate.get();
     }
 
-    public void setTrDelegate(TrService newDelegate) {
-        delegate = newDelegate;
+    public void setTrDelegate(final TrService newDelegate) {
+        Callable<TrService> c = new Callable<TrService>() {
+            @Override
+            public TrService call() throws Exception {
+                return newDelegate;
+            }
+        };
+        delegate = StaticValue.mutateStaticValue(delegate, c);
     }
 
 }
