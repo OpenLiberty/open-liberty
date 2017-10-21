@@ -12,9 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
-	com.ibm.ws.jaxrs.2.0.client;version=latest, \
-	com.ibm.ws.security.mp.jwt.propagation;version=latest
+    com.ibm.websphere.org.eclipse.microprofile.jwt.1.0;version=latest, \
+    com.ibm.ws.security.mp.jwt.propagation;version=latest, \
+    com.ibm.ws.jaxrs.2.0.client

@@ -27,7 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxrs20.client.MpJwtPropagation;
 
 /*
- * This is a utility service for MicroProfile JsonWebToken in a subject
+ * This is a utility service to retrieve MicroProfile JsonWebToken in a subject
  */
 @Component(service = MpJwtPropagation.class, name = "MpJwtPropagation", immediate = true, property = "service.vendor=IBM")
 public class MpJwtPropagationImpl implements MpJwtPropagation {
