@@ -46,7 +46,7 @@ public interface PolicyTaskFuture<T> extends Future<T> {
 
     /**
      * Computes the estimated interval of time during which task execution and processing related to task execution occurs.
-     * This includes the processing of callbacks such as onStart/onEnd. A positive interval can be computed even if the task does
+     * This includes the processing of the onStart callback. A positive interval can be computed even if the task does
      * end up executing, for example, if the onStart callback cancels it. The value returned is an estimate.
      * No guarantee is made that the same exact value will be returned for subsequent invocations.
      *

@@ -512,6 +512,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         if (!state.setRunning()) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "unable to run", state.get());
+            nsRunEnd = System.nanoTime();
             if (callback != null)
                 callback.onEnd(task, this, null, true, 0, null); // aborted, queued task will never run
             return;
@@ -547,6 +548,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     Tr.debug(this, tc, "run", t);
             }
 
+            nsRunEnd = System.nanoTime();
             if (callback != null)
                 try {
                     callback.onEnd(task, this, callbackContext, aborted, 0, null);
@@ -561,6 +563,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     latch.countDown();
             }
 
+            nsRunEnd = System.nanoTime();
             if (callback != null)
                 callback.onEnd(task, this, callbackContext, aborted, 0, x);
         } finally {

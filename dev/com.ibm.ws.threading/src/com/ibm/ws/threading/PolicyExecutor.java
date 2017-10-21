@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -49,7 +48,7 @@ public interface PolicyExecutor extends ExecutorService {
      * @throws ArrayIndexOutOfBoundsException if the size of the callbacks array is less than the number of tasks.
      * @see java.util.concurrent.ExecutorService#invokeAll(java.util.Collection)
      */
-    <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException;
+    <T> List<PolicyTaskFuture<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException;
 
     /**
      * Submits and invokes a group of tasks with a callback per task to be invoked at various points in the task's life cycle.
@@ -59,7 +58,7 @@ public interface PolicyExecutor extends ExecutorService {
      * @throws ArrayIndexOutOfBoundsException if the size of the callbacks array is less than the number of tasks.
      * @see java.util.concurrent.ExecutorService#invokeAll(java.util.Collection, long, java.util.concurrent.TimeUnit)
      */
-    <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks, long timeout, TimeUnit unit) throws InterruptedException;
+    <T> List<PolicyTaskFuture<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks, long timeout, TimeUnit unit) throws InterruptedException;
 
     /**
      * Submits and awaits successful completion of any task within a group of tasks.
@@ -167,12 +166,12 @@ public interface PolicyExecutor extends ExecutorService {
      *
      * @see java.util.concurrent.ExecutorService#submit(java.util.concurrent.Callable)
      */
-    <T> Future<T> submit(Callable<T> task, PolicyTaskCallback callback);
+    <T> PolicyTaskFuture<T> submit(Callable<T> task, PolicyTaskCallback callback);
 
     /**
      * Submit a Runnable task with a callback to be invoked at various points in the task's life cycle.
      *
      * @see java.util.concurrent.ExecutorService#submit(java.lang.Runnable, java.lang.Object)
      */
-    <T> Future<T> submit(Runnable task, T result, PolicyTaskCallback callback);
+    <T> PolicyTaskFuture<T> submit(Runnable task, T result, PolicyTaskCallback callback);
 }
