@@ -163,7 +163,7 @@ public class SecurityContextProviderImpl implements ThreadContextProvider {
 
     /**
      * Use the config admin service to get the name for a given service reference
-     * 
+     *
      * @param ref the service reference string
      * @return the name or null if there were problems
      */
@@ -177,7 +177,7 @@ public class SecurityContextProviderImpl implements ThreadContextProvider {
                 config = AccessController.doPrivileged(new PrivilegedExceptionAction<Configuration>() {
                     @Override
                     public Configuration run() throws IOException {
-                        return configAdmin.getConfiguration(ref);
+                        return configAdmin.getConfiguration(ref, configAdminRef.getReference().getBundle().getLocation());
                     }
                 });
             } catch (PrivilegedActionException paex) {
