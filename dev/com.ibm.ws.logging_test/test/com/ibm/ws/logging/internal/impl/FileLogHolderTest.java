@@ -31,6 +31,7 @@ import test.common.SharedOutputManager;
 import test.common.TestFile;
 
 import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
+import com.ibm.ws.logging.utils.FileLogHolder;
 
 /**
  *
@@ -58,7 +59,7 @@ public class FileLogHolderTest {
 
     /**
      * Test method for
-     * {@link com.ibm.ws.logging.internal.impl.FileLogHolder#createFileLogHolder(com.ibm.ws.logging.internal.impl.FileLogHolder, java.lang.String, java.io.File, java.lang.String, int, long)}
+     * {@link com.ibm.ws.logging.utils.FileLogHolder#createFileLogHolder(com.ibm.ws.logging.utils.FileLogHolder, java.lang.String, java.io.File, java.lang.String, int, long)}
      * .
      */
     @Test
