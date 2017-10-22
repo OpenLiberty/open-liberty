@@ -36,7 +36,7 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.jaspi.JaspiConstants;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
@@ -61,7 +61,7 @@ public class LoginToContinueInterceptor {
     private static final String CUSTOM_FORM_CLASS = "com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
     @Inject
-    Instance<HAMProperties> hampInstance;
+    Instance<ModulePropertiesProvider> mppInstance;
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
@@ -73,10 +73,10 @@ public class LoginToContinueInterceptor {
             //                                    HttpServletResponse response,
             //                                    HttpMessageContext httpMessageContext) throws AuthenticationException {
 
-            HAMProperties hamp = null;
-            if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
-                hamp = hampInstance.get();
-                if (hamp != null) {
+            ModulePropertiesProvider mpp = null;
+            if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
+                mpp = mppInstance.get();
+                if (mpp != null) {
                     result = ic.proceed();
                     Object[] params = ic.getParameters();
                     HttpServletRequest req = (HttpServletRequest) params[0];
@@ -84,8 +84,7 @@ public class LoginToContinueInterceptor {
                     if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
                         // need to redirect.
                         HttpMessageContext mc = (HttpMessageContext) params[2];
-
-                        result = gotoLoginPage(hamp.getProperties(), req, res, mc);
+                        result = gotoLoginPage(mpp.getAuthMechProperties(ic.getTarget().getClass().getSuperclass()), req, res, mc);
                     } else if (result.equals(AuthenticationStatus.SUCCESS)) {
                         boolean isCustom = isCustomForm(ic);
                         // redirect to the original url.
@@ -260,8 +259,8 @@ public class LoginToContinueInterceptor {
         return CUSTOM_FORM_CLASS.equals(className);
     }
 
-    protected void setProps(Instance<HAMProperties> hampInstance) {
-        this.hampInstance = hampInstance;
+    protected void setProps(Instance<ModulePropertiesProvider> mppInstance) {
+        this.mppInstance = mppInstance;
     }
 
     protected WebAppSecurityConfig getWebSAppSeurityConfig() {

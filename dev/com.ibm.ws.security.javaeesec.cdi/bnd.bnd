@@ -51,7 +51,9 @@ Include-Resource: \
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.adaptable.module;version=latest,\
     com.ibm.ws.cdi.interfaces;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.common.encoder;version=latest,\
     com.ibm.ws.container.service.compat;version=latest,\
     com.ibm.ws.logging;version=latest,\

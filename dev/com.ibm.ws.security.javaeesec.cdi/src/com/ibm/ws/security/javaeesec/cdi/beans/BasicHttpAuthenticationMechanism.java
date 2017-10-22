@@ -41,8 +41,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
@@ -52,11 +52,31 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     @Inject
-    private HAMProperties hamp;
+    Instance<ModulePropertiesProvider> mppInstance;
 
     private String realmName = null;
     private final String DEFAULT_REALM = "defaultRealm";
 
+    /**
+     *
+     */
+    public BasicHttpAuthenticationMechanism() {
+        if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
+            ModulePropertiesProvider mpp = mppInstance.get();
+            if (mpp != null) {
+                Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
+                if (props != null) {
+                    realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
+                }
+            }
+        }
+        if (realmName == null) {
+            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
+            realmName = DEFAULT_REALM;
+        }
+    }
+
+>>>>>>> add multiple module support.
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
                                                 HttpServletResponse response,
@@ -293,8 +313,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     // this is for unit test.
-    protected void setProps(HAMProperties hamp) {
-        this.hamp = hamp;
+    protected void setProps(Instance<ModulePropertiesProvider> mppInstance) {
+        this.mppInstance = mppInstance;
     }
 
 }
