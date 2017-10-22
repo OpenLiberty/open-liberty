@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector \ubc0f bluemixLogCollector\ub294 \ubb38\uc790 \ubc0f \uc22b\uc790\ub85c \uad6c\uc131\ub41c \ud558\ub098\uc758 \ub2e8\uc5b4\uac00 \ud3ec\ud568\ub420 \uc218 \uc788\ub294 \ud0dc\uadf8\ub97c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ub2e4\uc74c \ud0dc\uadf8\ub294 \ubb34\uc2dc\ub429\ub2c8\ub2e4. {0}
+TAGS_FILTERING_WARNING.explanation= \ubb34\uc2dc\ub418\ub294 \ud0dc\uadf8\uc5d0\ub294 \uacf5\ubc31, \ub300\uc2dc \ub610\ub294 \ubc31\uc2ac\ub798\uc2dc \ubb38\uc790\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc2b5\ub2c8\ub2e4.
+TAGS_FILTERING_WARNING.userAction= \ud574\ub2f9 \ud0dc\uadf8\uc5d0\uc11c \uacf5\ubc31, \ub300\uc2dc \ub610\ub294 \ubc31\uc2ac\ub798\uc2dc \ubb38\uc790\ub97c \uc81c\uac70\ud558\uc2ed\uc2dc\uc624.
+
+SSLREF_NOTFOUND=TRAS4302E: logstashCollector \ub610\ub294 bluemixLogCollector\uc758 sslRef \uc18d\uc131\uc774 \uc9c0\uc815\ub418\uc9c0 \uc54a\uac70\ub098 sslRef ID\ub97c \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SSLREF_NOTFOUND.explanation=logstashCollector \ub610\ub294 bluemixLogCollector \uae30\ub2a5\uc5d0 \ub300\ud55c SSL \uad6c\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+SSLREF_NOTFOUND.userAction=SSL \uad6c\uc131\uc744 \uc791\uc131\ud558\uace0 logstashCollector \uc694\uc18c \ub610\ub294 bluemixLogCollector \uc694\uc18c\uc758 sslRef \uc18d\uc131\uc744 \uc0ac\uc6a9\ud558\uc5ec ID\ub97c \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.

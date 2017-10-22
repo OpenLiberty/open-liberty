@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: Sk\u0142adniki logstashCollector i bluemixLogCollector mog\u0105 u\u017cywa\u0107 znacznik\u00f3w, kt\u00f3re zawieraj\u0105 pojedyncze s\u0142owo sk\u0142adaj\u0105ce si\u0119 z liter i cyfr. Zostan\u0105 zignorowane nast\u0119puj\u0105ce znaczniki: {0}.
+TAGS_FILTERING_WARNING.explanation= Ignorowane znaczniki zawieraj\u0105 znak spacji, my\u015blnik lub uko\u015bnik odwrotny.
+TAGS_FILTERING_WARNING.userAction= Usu\u0144 znaki spacji, my\u015blniki i uko\u015bniki odwrotne z tych znacznik\u00f3w.
+
+SSLREF_NOTFOUND=TRAS4302E: Nie okre\u015blono atrybutu sslRef elementu logstashCollector lub bluemixLogCollector albo nie mo\u017cna znale\u017a\u0107 identyfikatora atrybutu sslRef.
+SSLREF_NOTFOUND.explanation=Nie znaleziono konfiguracji protoko\u0142u SSL dla funkcji logstashCollector lub bluemixLogCollector.
+SSLREF_NOTFOUND.userAction=Utw\u00f3rz konfiguracj\u0119 protoko\u0142u SSL i okre\u015bl identyfikator przy u\u017cyciu atrybutu sslRef w elemencie logstashCollector lub elemencie bluemixLogCollector.

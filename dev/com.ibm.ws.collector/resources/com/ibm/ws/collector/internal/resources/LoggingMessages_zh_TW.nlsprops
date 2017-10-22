@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: logstashCollector \u548c bluemixLogCollector \u53ef\u4ee5\u4f7f\u7528\u53ea\u5305\u542b\u4e00\u500b\u55ae\u5b57\uff08\u7531\u5b57\u6bcd\u548c\u6578\u5b57\u7d44\u6210\uff09\u7684\u6a19\u7c64\u3002\u5c07\u5ffd\u7565\u4e0b\u5217\u6a19\u7c64\uff1a{0}
+TAGS_FILTERING_WARNING.explanation= \u5ffd\u7565\u7684\u6a19\u7c64\u5305\u542b\u7a7a\u683c\u3001\u6a6b\u7dda\u6216\u53cd\u659c\u7dda\u5b57\u5143\u3002
+TAGS_FILTERING_WARNING.userAction= \u8acb\u79fb\u9664\u9019\u4e9b\u6a19\u7c64\u4e2d\u7684\u7a7a\u683c\u3001\u6a6b\u7dda\u6216\u53cd\u659c\u7dda\u5b57\u5143\u3002
+
+SSLREF_NOTFOUND=TRAS4302E: \u672a\u6307\u5b9a logstashCollector \u6216 bluemixLogCollector \u7684 sslRef \u5c6c\u6027\uff0c\u6216\u8005\u627e\u4e0d\u5230 sslRef ID\u3002
+SSLREF_NOTFOUND.explanation=\u627e\u4e0d\u5230 logstashCollector \u6216 bluemixLogCollector \u7279\u6027\u7684 SSL \u914d\u7f6e\u3002
+SSLREF_NOTFOUND.userAction=\u8acb\u5efa\u7acb SSL \u914d\u7f6e\uff0c\u4e26\u5728 logstashCollector \u5143\u7d20\u6216 bluemixLogCollector \u5143\u7d20\u4e2d\uff0c\u4f7f\u7528 sslRef \u5c6c\u6027\u4f86\u6307\u5b9a ID\u3002

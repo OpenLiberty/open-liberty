@@ -1,0 +1,3 @@
+<project name="com.ibm.ws.collector" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+</project>

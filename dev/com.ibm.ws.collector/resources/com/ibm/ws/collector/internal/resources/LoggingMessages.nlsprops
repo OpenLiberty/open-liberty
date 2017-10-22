@@ -1,0 +1,25 @@
+# IBM Confidential OCO Source Material
+# 5639-D57 (C) COPYRIGHT International Business Machines Corp. 2016
+# The source code for this program is not published or otherwise divested
+# of its trade secrets, irrespective of what has been deposited with the
+# U.S. Copyright Office.
+# This message file is not a runtime message file. LogViewer uses parts of the file for console messages, and the client processes contain error messages.
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#CMVCPATHNAME com.ibm.ws.collector/resources/com/ibm/ws/collector/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+
+
+# Use message block TRAS4301 - TRAS4350 for new messages that start December 1, 2016.
+TAGS_FILTERING_WARNING=TRAS4301W: The logstashCollector and bluemixLogCollector can use tags that can contain a single word that consists of letters and numbers. The following tags are ignored: {0}
+TAGS_FILTERING_WARNING.explanation= The ignored tags contain space, dash, or backslash characters.
+TAGS_FILTERING_WARNING.userAction= Remove the space, dash, or backslash characters from these tags.
+
+SSLREF_NOTFOUND=TRAS4302E: The sslRef attribute of logstashCollector or bluemixLogCollector is not specified, or the sslRef ID cannot be found.
+SSLREF_NOTFOUND.explanation=No SSL configuration is found for logstashCollector or bluemixLogCollector feature.
+SSLREF_NOTFOUND.userAction=Create an SSL configuration, and specify the ID using the sslRef attribute in the logstashCollector element or bluemixLogCollector element.
