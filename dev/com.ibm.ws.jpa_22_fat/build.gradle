@@ -16,6 +16,7 @@ addRequiredLibraries {
     def server21Dir = "${buildDir}/autoFVT/publish/servers/JPA21FATServer"
     def server22Dir = "${buildDir}/autoFVT/publish/servers/JPA22FATServer"
     def cdiServerDir = "${buildDir}/autoFVT/publish/servers/CDIFatServer"
+    def server22InjectionDir = "${buildDir}/autoFVT/publish/servers/JPA22InjectionServer"
     def server22QueryDir = "${buildDir}/autoFVT/publish/servers/JPA22QueryServer"
     def server22TimeAPIDir = "${buildDir}/autoFVT/publish/servers/JPA22TimeAPIServer"
 
@@ -47,6 +48,10 @@ addRequiredLibraries {
     copy {
       from configurations.derby
       into server22TimeAPIDir + "/derby"
+    }
+    copy {
+      from configurations.derby
+      into server22InjectionDir + "/derby"
     }
   }
 }
