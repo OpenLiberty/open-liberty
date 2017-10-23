@@ -61,6 +61,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
      *
      */
     public BasicHttpAuthenticationMechanism() {
+        Instance<ModulePropertiesProvider> mppInstance = getCDI().select(ModulePropertiesProvider.class);
         if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
             ModulePropertiesProvider mpp = mppInstance.get();
             if (mpp != null) {
@@ -312,9 +313,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
-    // this is for unit test.
-    protected void setProps(Instance<ModulePropertiesProvider> mppInstance) {
-        this.mppInstance = mppInstance;
+    protected CDI getCDI() {
+        return CDI.current();
     }
 
 }
