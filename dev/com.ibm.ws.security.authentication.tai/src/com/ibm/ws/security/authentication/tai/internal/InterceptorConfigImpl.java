@@ -67,6 +67,8 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     private volatile TAIServiceImpl taiService = null;
 
+    private String bundleLocation;
+
     public InterceptorConfigImpl() {}
 
     public InterceptorConfigImpl(Map<String, Object> props) {
@@ -75,6 +77,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         configAdminRef.activate(cc);
+        this.bundleLocation = cc.getBundleContext().getBundle().getLocation();
         processConfig(props);
     }
 
@@ -141,7 +144,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
             Configuration[] configList = configAdmin.listConfigurations(FilterUtils.createPropertyFilter("service.pid", pid));
             if (configList != null && configList.length > 0) {
                 //bind the config to this bundle so no one else can steal it
-                config = configAdmin.getConfiguration(pid);
+                config = configAdmin.getConfiguration(pid, bundleLocation);
             }
         } catch (InvalidSyntaxException e) {
         } catch (IOException e) {
@@ -233,7 +236,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.security.tai.TrustAssociationInterceptor#isTargetInterceptor(javax.servlet.http.HttpServletRequest)
      */
     @Override
@@ -243,7 +246,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.security.tai.TrustAssociationInterceptor#negotiateValidateandEstablishTrust(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
@@ -253,7 +256,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.security.tai.TrustAssociationInterceptor#initialize(java.util.Properties)
      */
     @Override
@@ -263,7 +266,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.security.tai.TrustAssociationInterceptor#getVersion()
      */
     @Override
@@ -273,7 +276,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.security.tai.TrustAssociationInterceptor#getType()
      */
     @Override
@@ -283,7 +286,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.wsspi.security.tai.TrustAssociationInterceptor#cleanup()
      */
     @Override
@@ -291,7 +294,7 @@ public class InterceptorConfigImpl implements TrustAssociationInterceptor, Confi
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.ConfigurationListener#configurationEvent(org.osgi.service.cm.ConfigurationEvent)
      */
     @Override
