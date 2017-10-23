@@ -42,12 +42,21 @@ public class ModulePropertiesUtils {
     }
 
     public String getJ2EEModuleName() {
-        return getComponentMetaData().getModuleMetaData().getJ2EEName().getModule();
+        ComponentMetaData cmd = getComponentMetaData();
+        if (cmd != null) {
+            return cmd.getModuleMetaData().getJ2EEName().getModule();
+        } else {
+            return null;
+        }
     }
 
     public String getJ2EEApplicationName() {
         ComponentMetaData cmd = getComponentMetaData();
-        return cmd.getJ2EEName().getApplication();
+        if (cmd != null) {
+            return cmd.getJ2EEName().getApplication();
+        } else {
+            return null;
+        }
     }
 
     public boolean isOneHttpAuthenticationMechanism(CDI cdi) {
