@@ -112,11 +112,16 @@ public class Metadata {
      * </p>
      */
     private HashMap<String, String> tags = new HashMap<String, String>();
-
+    
     /**
      * The environment variable used to pass in global tags.
      */
     public static final String GLOBAL_TAGS_VARIABLE = "MP_METRICS_TAGS";
+    
+    /**
+     * The value of the global tags environment variable
+     */
+    private static final String GLOBAL_TAGS_FROM_ENV = System.getenv(GLOBAL_TAGS_VARIABLE);
     
     /**
      * Defines if the metric can have multiple objects and needs special
@@ -124,9 +129,7 @@ public class Metadata {
      * <p/>
      */
     Metadata() {
-        String globalTagsFromEnv = System.getenv(GLOBAL_TAGS_VARIABLE);
-
-        addTags(globalTagsFromEnv);
+        addTags(GLOBAL_TAGS_FROM_ENV);
     }
 
     /**
