@@ -4,7 +4,7 @@ Subsystem-Content: com.ibm.websphere.appserver.opentracing-1.0; type="osgi.subsy
  com.ibm.ws.opentracing.mock; version="[1.0.0,1.0.200)"
 Subsystem-License: https://www.eclipse.org/legal/epl-v10.html
 Subsystem-ManifestVersion: 1
-Subsystem-SymbolicName: com.ibm.websphere.appserver.opentracingMock-0.30; visibility:=public; singleton:=true
+Subsystem-SymbolicName: com.ibm.ws.opentracing.mock-0.30; visibility:=public; singleton:=true
 Subsystem-Type: osgi.subsystem.feature
 Subsystem-Version: 1.0.0
 
