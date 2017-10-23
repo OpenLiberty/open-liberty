@@ -19,7 +19,8 @@ src: \
 	test-applications/cdi/src,\
 	test-applications/jpa21bootstrap/src,\
 	test-applications/jpa22bootstrap/src,\
-	test-applications/jpa22query/src
+	test-applications/jpa22query/src,\
+	test-applications/jpa22timeapi
 
 test.project: true
 
