@@ -11,8 +11,8 @@
 <server description="new server">
 
 	<featureManager>
-		<feature>servlet-3.1</feature>
 		<feature>jpa-2.2</feature>
+		<feature>servlet-4.0</feature>
 	    <feature>componenttest-1.0</feature>
     </featureManager>
     
@@ -26,8 +26,6 @@
     <library id="DerbyLib" fat.modify="true">
     	<fileset dir="${server.config.dir}/derby" includes="*.jar"/>
     </library>
-    
-    <application location="jpa22bootstrap.war" />
 
     <javaPermission codebase="${server.config.dir}derby/derby.jar" className="java.security.AllPermission"/>
 </server>

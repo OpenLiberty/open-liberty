@@ -15,6 +15,7 @@ addRequiredLibraries {
   doLast {
     def server21Dir = "${buildDir}/autoFVT/publish/servers/JPA21FATServer"
     def server22Dir = "${buildDir}/autoFVT/publish/servers/JPA22FATServer"
+    def cdiServerDir = "${buildDir}/autoFVT/publish/servers/CDIFatServer"
     
     // Define dependency groups
     configurations {
@@ -32,6 +33,10 @@ addRequiredLibraries {
     copy {
       from configurations.derby
       into server21Dir + "/derby"
+    }
+    copy {
+      from configurations.derby
+      into cdiServerDir + "/derby"
     }
   }
 }
