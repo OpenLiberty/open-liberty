@@ -20,31 +20,31 @@
 
 # 0: JSF provider type (will be either MOJARRA or MYFACES)
 # 1: application name
-jsf.container.init=JSFG0100I: Initialized Liberty JSF integrations for JSF provider {0} on application {1}
-jsf.container.init.explanation=Liberty JSF integrations have been initialized for the indicated application, which will allow CDI and JSF integrations to function.
-jsf.container.init.useraction=Informational message.  No user action needed.
+jsf.container.init=JSFG0100I: Liberty initialized JSF integrations for JSF provider {0} on application {1}.
+jsf.container.init.explanation=Liberty JSF integrations are initialized for the indicated application, which allows CDI and JSF integrations to function.
+jsf.container.init.useraction=Informational message. No user action needed.
 
 # 0: application name
 # 1: required ApplicationFactory implementations
-jsf.container.no.jsf.impl=JSFG101E: No JSF implementations found in application {0}. A JSF implementation containing one of the following javax.faces.application.ApplicationFactory implementations must be available to the application: {1}
-jsf.container.no.jsf.impl.explanation=Liberty JSF integrations are only supported for a specific set of third-party JSF implementations.  One of the listed ApplicationFactory implementations must be available to the indicated application.
-jsf.container.no.jsf.impl.useraction=Include either the Apache MyFaces or the Mojarra JSF implementation inside of the indicated application.  Alternatively, if you would like to use the default JSF implementation provided by Liberty (Apache MyFaces), use the jsf-2.2 feature instead of jsfContainer-2.2.
+jsf.container.no.jsf.impl=JSFG101E: No JSF implementations were found in application {0}. A JSF implementation that contains one of the following javax.faces.application.ApplicationFactory implementations must be available to the application {1}.
+jsf.container.no.jsf.impl.explanation=Liberty JSF integrations are only supported for a specific set of third-party JSF implementations. One of the listed ApplicationFactory implementations must be available to the indicated application.
+jsf.container.no.jsf.impl.useraction=Include either the Apache MyFaces or the Mojarra JSF implementation inside of the indicated application. Alternatively, if you would like to use the default JSF implementation that is provided by Liberty, Apache MyFaces, use the jsf-2.2 feature instead of jsfContainer-2.2.
 
 # 0: application name
-jsf.container.no.app.name=JSFG0102E: Unable to obtain application name from JSF application {0}
-jsf.container.no.app.name.explanation=Registration of an application with JSF Container requires the application name to be available by performing a JNDI lookup of 'java:app/AppName'.
-jsf.container.no.app.name.useraction=Verify that the jndi-1.0 feature is enabled, and ensure performing a JNDI lookup such as InitialContext.doLookup("java:app/AppName") works from within the application.
-
-# 0: application name
-# 1: expected JSF spec API version range
-# 2: actual JSF spec API version used in app
-jsf.container.bad.spec.api.version=JSFG0103E: The JSF specification API version available to application {0} should be within the version range {1} but was {2}
-jsf.container.bad.spec.api.version.explanation=The version of jsfContainer enabled must correspond to the same JSF API version packaged within the indicated application.
-jsf.container.bad.spec.api.version.useraction=Ensure that the JSF API packaged within the indicated application corresponds to the version of jsfContainer enabled.  Liberty determines the version of the JSF API by checking the 'Specification-Version' manifest attribute of the jar that contains a JSF API class.
+jsf.container.no.app.name=JSFG0102E: Liberty is unable to obtain the application name from the JSF application {0} by using JNDI.
+jsf.container.no.app.name.explanation=Registration of an application with the Liberty JSF Container requires the application name to be available by performing a JNDI lookup of "java:app/AppName".
+jsf.container.no.app.name.useraction=Verify that the jndi-1.0 feature is enabled and ensure that performing a JNDI lookup, such as InitialContext.doLookup("java:app/AppName"), works from within the application.
 
 # 0: application name
 # 1: expected JSF spec API version range
 # 2: actual JSF spec API version used in app
-jsf.container.bad.impl.version=JSFG0104E: The JSF implementation version available to application {0} should be within the version range {1} but was {2}
-jsf.container.bad.impl.version.explanation=The version of jsfContainer enabled must correspond to the same JSF implementation version packaged within the indicated application.
-jsf.container.bad.impl.version.useraction=Ensure that the JSF implementation packaged within the indicated application corresponds to the version of jsfContainer enabled.  Liberty determines the version of the JSF implementation by checking the 'Specification-Version' manifest attribute of the jar that contains the MyFaces or Mojarra ApplicationFactory class.
+jsf.container.bad.spec.api.version=JSFG0103E: The JSF specification API version available to application {0} is {2}, but it needs to be within the version range {1}. Ensure that the JSF API that is packaged within the indicated application corresponds to the version of jsfContainer that is enabled. Liberty determines the version of the JSF API by checking the Specification-Version manifest attribute of the .jar file that contains a JSF API class.
+jsf.container.bad.spec.api.version.explanation=The version of jsfContainer that is enabled must correspond to the same JSF API version packaged within the indicated application.
+jsf.container.bad.spec.api.version.useraction=Ensure that the JSF API that is packaged within the indicated application corresponds to the version of jsfContainer that is enabled. Liberty determines the version of the JSF API by checking the Specification-Version manifest attribute of the .jar file that contains a JSF API class.
+
+# 0: application name
+# 1: expected JSF spec API version range
+# 2: actual JSF spec API version used in app
+jsf.container.bad.impl.version=JSFG0104E: The JSF implementation version available to application {0} is {2}, but it needs to be within the version range {1}. Ensure that the JSF implementation that is packaged within the indicated application corresponds to the version of jsfContainer that is enabled. Liberty determines the version of the JSF implementation by checking the Specification-Version manifest attribute of the .jar file that contains the MyFaces or Mojarra ApplicationFactory class.
+jsf.container.bad.impl.version.explanation=The version of jsfContainer that is enabled must correspond to the same JSF implementation version packaged within the indicated application.
+jsf.container.bad.impl.version.useraction=Ensure that the JSF implementation that is packaged within the indicated application corresponds to the version of jsfContainer that is enabled. Liberty determines the version of the JSF implementation by checking the Specification-Version manifest attribute of the .jar file that contains the MyFaces or Mojarra ApplicationFactory class.

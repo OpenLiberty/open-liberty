@@ -18,7 +18,6 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -44,12 +43,6 @@ public class ErrorPathsTest extends FATServletClient {
     @Server("jsf.container.2.2_fat.errorpaths")
     public static LibertyServer server;
 
-    @After
-    public void afterEach() throws Exception {
-        if (server.isStarted())
-            server.stopServer();
-    }
-
     /**
      * Verify that the jsf-2.2 and jsfContainer-2.2 features cannot be loaded at the same time
      */
@@ -64,7 +57,7 @@ public class ErrorPathsTest extends FATServletClient {
                                                     ".* com.ibm.websphere.appserver.jsfProvider-2.2.0.[MyFaces|Container]" +
                                                     ".* com.ibm.websphere.appserver.jsfProvider-2.2.0.[MyFaces|Container].*"));
         } finally {
-            server.stopServer();
+            server.stopServer("CWWKF0033E");
             server.updateServerConfiguration(originalConfig);
         }
     }
@@ -93,7 +86,11 @@ public class ErrorPathsTest extends FATServletClient {
         setAppInConfig(JSF_APP_BAD_API);
 
         server.startServer(testName.getMethodName() + ".log");
-        assertNotNull(server.waitForStringInLog(".*JSFG0103E:.*"));
+        try {
+            assertNotNull(server.waitForStringInLog(".*JSFG0103E:.*", 5000));
+        } finally {
+            server.stopServer(".*"); // lots of stuff will go wrong in this error path test
+        }
     }
 
     /**
@@ -120,7 +117,11 @@ public class ErrorPathsTest extends FATServletClient {
         setAppInConfig(JSF_APP_BAD_IMPL);
 
         server.startServer(testName.getMethodName() + ".log");
-        assertNotNull(server.waitForStringInLog(".*JSFG0104E:.*"));
+        try {
+            assertNotNull(server.waitForStringInLog(".*JSFG0104E:.*", 5000));
+        } finally {
+            server.stopServer(".*"); // lots of stuff will go wrong in this error path test
+        }
     }
 
     private static void setAppInConfig(String appName) throws Exception {
