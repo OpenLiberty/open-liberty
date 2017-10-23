@@ -75,7 +75,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @Mode(TestMode.FULL)
 public class FATOpentracing implements FATOpentracingConstants {
-    private static final String FEATURE_NAME = "com.ibm.websphere.appserver.opentracingMock-0.30.mf";
+    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-0.30.mf";
     private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock.jar";
     // Logging ...
 
