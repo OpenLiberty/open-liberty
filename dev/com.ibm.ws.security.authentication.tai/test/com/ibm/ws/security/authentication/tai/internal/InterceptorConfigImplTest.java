@@ -103,6 +103,7 @@ public class InterceptorConfigImplTest {
         final Map<String, Object> props = createInterceptorDefaultProps(true);
         mock.checking(new Expectations() {
             {
+                allowing(cc).getBundleContext();
                 allowing(cc).locateService(KEY_CONFIGURATION_ADMIN, configAdminRef);
                 will(returnValue(configAdmin));
 
@@ -129,6 +130,8 @@ public class InterceptorConfigImplTest {
 
         mock.checking(new Expectations() {
             {
+                allowing(cc).getBundleContext();
+
                 allowing(cc).locateService(KEY_CONFIGURATION_ADMIN, configAdminRef);
                 will(returnValue(configAdmin));
 
