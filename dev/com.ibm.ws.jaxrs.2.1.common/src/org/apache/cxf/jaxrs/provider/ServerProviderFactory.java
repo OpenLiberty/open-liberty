@@ -628,6 +628,9 @@ public final class ServerProviderFactory extends ProviderFactory {
             if (result == 0 && defaultComp) {
                 result = compareCustomStatus(p1, p2);
             }
+            if (result == 0) {
+                result = comparePriorityStatus(p1.getOldProvider().getClass(), p2.getOldProvider().getClass());
+            }
             return result;
 
         }

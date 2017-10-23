@@ -21,20 +21,20 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jaxrs21.fat.patch.PatchTestServlet;
+import jaxrs21.fat.providerPriority.ProviderPriorityTestServlet;
 
 @RunWith(FATRunner.class)
-public class PatchTest extends FATServletClient {
+public class ProviderPriorityTest extends FATServletClient {
 
-    private static final String appName = "patchapp";
+    private static final String appName = "providerPriorityApp";
 
-    @Server("jaxrs21.fat.patch")
-    @TestServlet(servlet = PatchTestServlet.class, contextRoot = appName)
+    @Server("jaxrs21.fat.providerPriority")
+    @TestServlet(servlet = ProviderPriorityTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, appName, "jaxrs21.fat.patch");
+        ShrinkHelper.defaultDropinApp(server, appName, "jaxrs21.fat.providerPriority");
         server.startServer();
     }
 
