@@ -168,11 +168,18 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         // notify listener: taskStarting
         if (task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
-            if (listener != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                    Tr.event(this, tc, "taskStarting", managedExecutor, task);
-                listener.taskStarting(future, managedExecutor, task);
-            }
+            if (listener != null)
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                        Tr.event(this, tc, "taskStarting", managedExecutor, task);
+                    listener.taskStarting(future, managedExecutor, task);
+                } catch (Error x) {
+                    threadContextDescriptor.taskStopping(contextAppliedToThread);
+                    throw x;
+                } catch (RuntimeException x) {
+                    threadContextDescriptor.taskStopping(contextAppliedToThread);
+                    throw x;
+                }
         }
 
         return contextAppliedToThread;

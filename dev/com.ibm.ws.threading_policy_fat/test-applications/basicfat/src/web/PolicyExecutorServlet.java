@@ -1574,6 +1574,64 @@ public class PolicyExecutorServlet extends FATServlet {
     }
 
     /**
+     * Submit a task that fails during onSubmit by raising a RuntimeException subclass. The task submission must be aborted and elapsed queue/run times must be 0.
+     */
+    public void testFailOnSubmit() throws Exception {
+        PolicyExecutor executor = provider.create("testFailOnSubmit");
+
+        SharedIncrementTask task = new SharedIncrementTask();
+        FailingCallback callback = new FailingCallback();
+        callback.failureClass[FailingCallback.SUBMIT] = IllegalArgumentException.class;
+        try {
+            executor.submit(task, 1, callback);
+            fail("Exception during onSubmit should have prevented task from submitting");
+        } catch (IllegalArgumentException x) {
+        } // pass
+
+        // onSubmit callback
+        PolicyTaskFuture<?> future = callback.future[FailingCallback.SUBMIT];
+        assertNotNull(future);
+        assertFalse(callback.isDone[FailingCallback.SUBMIT]);
+        assertFalse(callback.isCanceled[FailingCallback.SUBMIT]);
+        assertEquals(task, callback.task[FailingCallback.SUBMIT]);
+        long nsAccept1 = callback.nsAccept[FailingCallback.SUBMIT];
+        assertTrue(nsAccept1 >= 0);
+        assertEquals(0, callback.nsQueue[FailingCallback.SUBMIT]);
+        assertEquals(0, callback.nsRun[FailingCallback.SUBMIT]);
+
+        // onEnd callback
+        assertEquals(future, callback.future[FailingCallback.END]);
+        assertTrue(callback.isDone[FailingCallback.END]);
+        assertFalse(callback.isCanceled[FailingCallback.END]);
+        assertEquals(task, callback.task[FailingCallback.END]);
+        long nsAccept2 = callback.nsAccept[FailingCallback.END];
+        assertTrue(nsAccept1 + "ns, " + nsAccept2 + "ns", nsAccept2 >= nsAccept1);
+        assertEquals(0, callback.nsQueue[FailingCallback.END]);
+        assertEquals(0, callback.nsRun[FailingCallback.END]);
+        Object result = callback.result[FailingCallback.END];
+        if (!(result instanceof Throwable))
+            fail("Unexpected result " + result);
+        Throwable x = (Throwable) result;
+        if (!(x instanceof RejectedExecutionException))
+            throw new Exception("Unexpected exception, see cause", x);
+        if (!(x.getCause() instanceof IllegalArgumentException))
+            throw new Exception("Unexpected cause, see chained exceptions", x);
+
+        assertEquals(nsAccept2, future.getElapsedAcceptTime(TimeUnit.NANOSECONDS));
+        assertEquals(0, future.getElapsedQueueTime(TimeUnit.NANOSECONDS));
+        assertEquals(0, future.getElapsedRunTime(TimeUnit.NANOSECONDS));
+
+        // should not receive onStart or onCancel callback
+        assertNull(callback.future[FailingCallback.START]);
+        assertNull(callback.future[FailingCallback.CANCEL]);
+
+        assertEquals(0, task.count());
+
+        List<Runnable> tasksCanceledFromQueue = executor.shutdownNow();
+        assertEquals(0, tasksCanceledFromQueue.size());
+    }
+
+    /**
      * Submit multiple tasks at once, waiting for some to complete before scheduling another group of tasks, and so forth.
      */
     @Test
@@ -1906,8 +1964,10 @@ public class PolicyExecutorServlet extends FATServlet {
         CountDownTask task1 = new CountDownTask(beginLatch, continueLatch, TimeUnit.HOURS.toNanos(4));
 
         // Submit a task and wait for it to start
-        Future<Boolean> future1 = executor.submit(task1);
+        PolicyTaskFuture<Boolean> future1 = (PolicyTaskFuture<Boolean>) executor.submit(task1);
         assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.MILLISECONDS));
+        long millis1 = future1.getElapsedRunTime(TimeUnit.MILLISECONDS);
+        assertTrue(millis1 >= 0);
 
         // Submit a task which will be stuck in the queue waiting for the first task before it can get a thread to run on
         AtomicInteger count = new AtomicInteger();
@@ -1932,6 +1992,9 @@ public class PolicyExecutorServlet extends FATServlet {
         assertFalse(future1.isDone());
         assertFalse(future2.isDone());
 
+        long millis2 = future1.getElapsedRunTime(TimeUnit.MILLISECONDS);
+        assertTrue(millis1 + "ms, " + millis2 + "ms", millis2 - millis1 >= 900);
+
         // Also interrupt the executing task
         Thread executionThread = task1.executionThreads.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertNotNull(executionThread);
@@ -1944,6 +2007,8 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(future2.isDone());
 
         // Task1 should be completed with exception, but not canceled
+        long nanos3 = future1.getElapsedRunTime(TimeUnit.NANOSECONDS);
+        assertTrue(nanos3 + "ns, " + millis2 + "ms", TimeUnit.NANOSECONDS.toMillis(nanos3) >= millis2);
         assertFalse(future1.isCancelled());
         assertTrue(future1.isDone());
         try {
@@ -1952,6 +2017,7 @@ public class PolicyExecutorServlet extends FATServlet {
             if (!(x.getCause() instanceof InterruptedException))
                 throw x;
         }
+        assertEquals(nanos3, future1.getElapsedRunTime(TimeUnit.NANOSECONDS));
 
         // Wait for the task that was submitted to the test's fixed thread pool to complete, if it hasn't done so already
         assertNull(interrupterFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
@@ -2769,7 +2835,10 @@ public class PolicyExecutorServlet extends FATServlet {
 
         // Use up the only maxConcurrency permit to prevent invokeAll from acquiring it and running the tasks on the current thread
         CountDownLatch blockingLatch = new CountDownLatch(1);
-        Future<Boolean> blockerFuture = executor.submit(new CountDownTask(new CountDownLatch(1), blockingLatch, TimeUnit.MINUTES.toNanos(10)));
+        PolicyTaskFuture<Boolean> blockerFuture = (PolicyTaskFuture<Boolean>) executor
+                        .submit(new CountDownTask(new CountDownLatch(1), blockingLatch, TimeUnit.MINUTES.toNanos(10)));
+        long millis1 = blockerFuture.getElapsedRunTime(TimeUnit.MILLISECONDS);
+        assertTrue(millis1 >= 0);
 
         AtomicInteger counter = new AtomicInteger();
         List<Callable<Integer>> blockedTasks = Arrays.<Callable<Integer>> asList(new SharedIncrementTask(counter),
@@ -2792,6 +2861,11 @@ public class PolicyExecutorServlet extends FATServlet {
         // Allow the blocking task to complete.
         blockingLatch.countDown();
         assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Elapsed run time of successful task
+        long nanos2 = blockerFuture.getElapsedRunTime(TimeUnit.NANOSECONDS);
+        assertTrue(millis1 + "ms, " + nanos2 + "ns", TimeUnit.NANOSECONDS.toMillis(nanos2) - millis1 > 100);
+        assertEquals(nanos2, blockerFuture.getElapsedRunTime(TimeUnit.NANOSECONDS));
 
         // None of the invokeAll tasks should run and increment the counter because they
         // should have been canceled before any started upon rejection of invokeAll.

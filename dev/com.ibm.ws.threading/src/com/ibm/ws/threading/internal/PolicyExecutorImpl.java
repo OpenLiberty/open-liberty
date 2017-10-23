@@ -424,26 +424,22 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } catch (InterruptedException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw new RejectedExecutionException(x);
         } catch (RejectedExecutionException x) { // redundant with RuntimeException code path, but added to allow FFDCIgnore
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw x;
         } catch (RuntimeException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw x;
         } catch (Error x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw x;
         }
         return enqueued;
@@ -934,8 +930,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Cancel task due to policy executor state " + state);
-                future.cancel(false);
                 future.nsRunEnd = System.nanoTime();
+                future.cancel(false);
                 if (future.callback != null)
                     future.callback.onEnd(future.task, future, null, true, 0, null); // aborted, queued task will never run
             }

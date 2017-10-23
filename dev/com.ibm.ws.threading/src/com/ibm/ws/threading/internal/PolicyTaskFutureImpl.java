@@ -291,7 +291,15 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         this.task = task;
 
         if (callback != null)
-            callback.onSubmit(task, this, 0);
+            try {
+                callback.onSubmit(task, this, 0);
+            } catch (Error x) {
+                abort(x);
+                throw x;
+            } catch (RuntimeException x) {
+                abort(x);
+                throw x;
+            }
     }
 
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyLatch latch) {
@@ -306,7 +314,15 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         this.task = task;
 
         if (callback != null)
-            callback.onSubmit(task, this, latch.getCount());
+            try {
+                callback.onSubmit(task, this, latch.getCount());
+            } catch (Error x) {
+                abort(x);
+                throw x;
+            } catch (RuntimeException x) {
+                abort(x);
+                throw x;
+            }
     }
 
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback) {
@@ -321,7 +337,15 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         this.task = task;
 
         if (callback != null)
-            callback.onSubmit(task, this, 0);
+            try {
+                callback.onSubmit(task, this, 0);
+            } catch (Error x) {
+                abort(x);
+                throw x;
+            } catch (RuntimeException x) {
+                abort(x);
+                throw x;
+            }
     }
 
     /**
@@ -333,7 +357,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     final boolean abort(Throwable cause) {
         if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
             nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
-        return result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
+        boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
+        if (aborted && callback != null)
+            callback.onEnd(task, this, null, true, 0, cause);
+        return aborted;
     }
 
     /**
@@ -368,8 +395,8 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     public boolean cancel(boolean interruptIfRunning) {
         if (result.compareAndSet(state, CANCELED)) {
             if (executor.queue.remove(this)) {
-                state.releaseShared(CANCELED);
                 nsRunEnd = nsQueueEnd = System.nanoTime();
+                state.releaseShared(CANCELED);
                 executor.maxQueueSizeConstraint.release();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "canceled from queue");
@@ -529,7 +556,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 aborted = state.get() == CANCELED;
             }
 
-            if (!aborted) {
+            if (aborted)
+                nsRunEnd = System.nanoTime();
+            else {
                 T t;
                 if (callable == null) {
                     runnable.run();
@@ -537,6 +566,8 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 } else {
                     t = callable.call();
                 }
+
+                nsRunEnd = System.nanoTime();
 
                 if (result.compareAndSet(state, t)) {
                     state.releaseShared(SUCCESSFUL);
@@ -548,7 +579,6 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     Tr.debug(this, tc, "run", t);
             }
 
-            nsRunEnd = System.nanoTime();
             if (callback != null)
                 try {
                     callback.onEnd(task, this, callbackContext, aborted, 0, null);
@@ -557,13 +587,15 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         } catch (Throwable x) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "run", x);
+
+            nsRunEnd = System.nanoTime();
+
             if (result.compareAndSet(state, x)) {
                 state.releaseShared(aborted ? ABORTED : FAILED);
                 if (latch != null)
                     latch.countDown();
             }
 
-            nsRunEnd = System.nanoTime();
             if (callback != null)
                 callback.onEnd(task, this, callbackContext, aborted, 0, x);
         } finally {
