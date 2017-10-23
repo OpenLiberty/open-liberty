@@ -48,7 +48,6 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 @Default
 @ApplicationScoped
 public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
-
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     @Inject
@@ -60,24 +59,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     /**
      *
      */
-    public BasicHttpAuthenticationMechanism() {
-        Instance<ModulePropertiesProvider> mppInstance = getCDI().select(ModulePropertiesProvider.class);
-        if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
-            ModulePropertiesProvider mpp = mppInstance.get();
-            if (mpp != null) {
-                Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
-                if (props != null) {
-                    realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
-                }
-            }
-        }
-        if (realmName == null) {
-            Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
-            realmName = DEFAULT_REALM;
-        }
-    }
+    public BasicHttpAuthenticationMechanism() {}
 
->>>>>>> add multiple module support.
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
                                                 HttpServletResponse response,
@@ -124,7 +107,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     @SuppressWarnings("unchecked")
     private AuthenticationStatus setChallengeAuthorizationHeader(HttpMessageContext httpMessageContext) {
         HttpServletResponse rsp = httpMessageContext.getResponse();
-        rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
+        rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
         rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
 
@@ -311,6 +294,29 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             }
         }
         return status;
+    }
+
+    private String getRealmName() {
+        if (realmName == null) {
+            if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
+                ModulePropertiesProvider mpp = mppInstance.get();
+                if (mpp != null) {
+                    Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
+                    if (props != null) {
+                        realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
+                    }
+                }
+            }
+            if (realmName == null) {
+                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
+                realmName = DEFAULT_REALM;
+            }
+        }
+        return realmName;
+    }
+
+    protected void setMPPInstance(Instance<ModulePropertiesProvider> mppInstance) {
+        this.mppInstance = mppInstance;
     }
 
     protected CDI getCDI() {

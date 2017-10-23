@@ -259,7 +259,7 @@ public class LoginToContinueInterceptor {
         return CUSTOM_FORM_CLASS.equals(className);
     }
 
-    protected void setProps(Instance<ModulePropertiesProvider> mppInstance) {
+    protected void setMPPInstance(Instance<ModulePropertiesProvider> mppInstance) {
         this.mppInstance = mppInstance;
     }
 

@@ -97,10 +97,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Set<Class<?>> authMechRegistered = new HashSet<Class<?>>();
     private final Map<String, ModuleProperties> moduleMap = new HashMap<String, ModuleProperties>(); // map of module name and list of authmechs.
 
-    public JavaEESecCDIExtension() {
-        initModuleMap();
-    }
-
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
         if (tc.isDebugEnabled())
             Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
@@ -547,14 +543,19 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
 
     private Map<String, ModuleProperties> getModuleMap() {
+        if (moduleMap.isEmpty()) {
+            initModuleMap();
+        }
         return moduleMap;
     }
 
     protected void initModuleMap() {
         if (moduleMap.isEmpty()) {
             List<String> wml = getWebModuleList();
-            for(String name : wml) {
-                moduleMap.put(name, new ModuleProperties());
+            if (wml != null) {
+                for(String name : wml) {
+                    moduleMap.put(name, new ModuleProperties());
+                }
             }
         }
     }
