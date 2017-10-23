@@ -69,7 +69,7 @@ public class JPA22BootstrapTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWWJP9991W");
     }
     
 //    @Test

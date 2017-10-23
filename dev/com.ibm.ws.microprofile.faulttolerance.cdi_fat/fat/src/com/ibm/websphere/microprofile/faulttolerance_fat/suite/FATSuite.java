@@ -70,7 +70,8 @@ public class FATSuite {
     @AfterClass
     public static void shutdownMultiModuleServer() throws Exception {
         if (MULTI_MODULE_SERVER.getLibertyServer().isStarted()) {
-            MULTI_MODULE_SERVER.getLibertyServer().stopServer();
+            MULTI_MODULE_SERVER.getLibertyServer().stopServer("CWMFT50[01][0-9]E.*badMethod",
+                                                              "CWMFT5019W.*badMethod");
         }
     }
 

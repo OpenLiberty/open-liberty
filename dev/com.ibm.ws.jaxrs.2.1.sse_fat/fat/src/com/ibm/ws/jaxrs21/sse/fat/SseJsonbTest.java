@@ -54,7 +54,7 @@ public class SseJsonbTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1102W");
     }
 
     @After

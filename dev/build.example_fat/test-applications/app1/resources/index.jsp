@@ -21,7 +21,7 @@
 		        for (Method m : servletClass.getMethods()) {
 		            String methodName = m.getName();
 		            if (methodName.startsWith("test")) {
-		            	%> <li> Invoke test method: <a href="${pageContext.request.contextPath}/<%=servlet%>?test=<%= methodName %>"> <%= methodName %> </a> </li><%
+		            	%> <li> Invoke test method: <a href="${pageContext.request.contextPath}/<%=servlet%>?testMethod=<%= methodName %>"> <%= methodName %> </a> </li><%
 		            }
 		       	}
 		    	%> </UL> <%
