@@ -16,6 +16,8 @@
 #NLS_MESSAGEFORMAT_VAR
 # -------------------------------------------------------------------------------------------------
 
+# JSFG0100-JSFG0199 reserved for jsfContainer-2.X features
+
 jsf.warn.myfaces.listener.for.ri.app=JSFG0851W: Sun RI 1.2 JSF Implementation is detected for webapp {0} but a MyFaces StartupServletContextListener is also registered.
 jsf.warn.myfaces.listener.for.ri.app.explanation=A listener was found that does not match the JSF implementation that is in use.
 jsf.warn.myfaces.listener.for.ri.app.useraction=Remove the StartupServletContextListener or use the corresponding JSF implementation.
