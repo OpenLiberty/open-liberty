@@ -18,6 +18,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -901,6 +902,8 @@ public class ProbeManagerImpl implements MonitorManager {
                     //Annotation[][] parameterAnnotations = method.getParameterAnnotations();
                     //Annotation[][] parameterAnnotations = listener.getparameterannotations();//Performance Improvement
                     Object[] args = listener.getdefaultvalues();
+                    if (args != null)
+                        args = Arrays.copyOf(args, args.length);
                     boolean validated = listener.isValidated();
                     ArrayList<Integer> annList = listener.getAnnotationsList();
                     for (int i = 0; i < parameterTypes.length; i++) {
