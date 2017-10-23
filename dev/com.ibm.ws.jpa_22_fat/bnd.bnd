@@ -18,7 +18,8 @@ src: \
 	fat/src,\
 	test-applications/cdi/src,\
 	test-applications/jpa21bootstrap/src,\
-	test-applications/jpa22bootstrap/src
+	test-applications/jpa22bootstrap/src,\
+	test-applications/jpa22query/src
 
 test.project: true
 
