@@ -23,6 +23,8 @@
  **********************************************************************/
 package org.eclipse.microprofile.metrics;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -121,8 +123,13 @@ public class Metadata {
     /**
      * The value of the global tags environment variable
      */
-    private static final String GLOBAL_TAGS_FROM_ENV = System.getenv(GLOBAL_TAGS_VARIABLE);
-    
+    private static final String GLOBAL_TAGS_FROM_ENV = AccessController.doPrivileged(new PrivilegedAction<String>() {
+		@Override
+		public String run() {
+			return System.getenv(GLOBAL_TAGS_VARIABLE);
+		}
+    });
+        		
     /**
      * Defines if the metric can have multiple objects and needs special
      * treatment or if it is a singleton.
