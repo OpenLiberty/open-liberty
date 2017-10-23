@@ -18,7 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 JPA21BootstrapTest.class,
                 JPA22BootstrapTest.class,
-                JPAELInjectionFATTest.class
+                JPAELInjectionFATTest.class,
+                JPA22QueryTest.class
 })
 public class FATSuite {
 

@@ -9,14 +9,15 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 apply from: '../cnf/gradle/scripts/fat.gradle'
-	
+
 // Example of pulling down binary dependencies from Artifactory
 addRequiredLibraries {
   doLast {
     def server21Dir = "${buildDir}/autoFVT/publish/servers/JPA21FATServer"
     def server22Dir = "${buildDir}/autoFVT/publish/servers/JPA22FATServer"
     def cdiServerDir = "${buildDir}/autoFVT/publish/servers/CDIFatServer"
-    
+    def server22QueryDir = "${buildDir}/autoFVT/publish/servers/JPA22QueryServer"
+
     // Define dependency groups
     configurations {
       derby
@@ -38,6 +39,9 @@ addRequiredLibraries {
       from configurations.derby
       into cdiServerDir + "/derby"
     }
+    copy {
+      from configurations.derby
+      into server22QueryDir + "/derby"
+    }
   }
 }
-	
