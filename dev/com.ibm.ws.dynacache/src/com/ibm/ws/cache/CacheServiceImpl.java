@@ -72,7 +72,7 @@ import com.ibm.wsspi.resource.ResourceInfo;
 @Component(service = { CacheService.class, ResourceFactory.class, ServletContainerInitializer.class }, configurationPid = "com.ibm.ws.cache",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
            property = {
-                       ResourceFactory.CREATES_OBJECT_CLASS + "=com.ibm.websphere.cache.DistributedObjectCache", "service.vendor=IBM" })
+                        ResourceFactory.CREATES_OBJECT_CLASS + "=com.ibm.websphere.cache.DistributedObjectCache", "service.vendor=IBM" })
 public class CacheServiceImpl implements CacheService, ResourceFactory, ServletContextListener, ServletContainerInitializer {
     /**  */
     private static final String DISK_CACHE_ALIAS = "diskCache";
@@ -118,6 +118,8 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
 
     private final AtomicReference<VariableRegistry> variableRegistryRef = new AtomicReference<VariableRegistry>(null);
 
+    private String bundleLocation;
+
     // --------------------------------------------------------------
     // The passed config is a base cache config object from WAS ;L runtime
     // --------------------------------------------------------------
@@ -134,6 +136,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
             ServerCache.setCacheServiceEarly(this);
             ServerCache.coreCacheEnabled = true;
 
+            this.bundleLocation = context.getBundleContext().getBundle().getLocation();
             config = parsePropertiesFromOSGiConfigAdmin(properties);
             addCacheInstanceConfig(config, false);
             CacheProviderLoaderImpl.getInstance().addCacheProvider(this);
@@ -263,7 +266,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
                 ExternalCacheGroup ecg = new CacheConfig.ExternalCacheGroup();
 
                 try {
-                    cacheGroupMetaTypeConfig = configAdminRef.get().getConfiguration(cacheGroupPID);
+                    cacheGroupMetaTypeConfig = configAdminRef.get().getConfiguration(cacheGroupPID, bundleLocation);
                     cacheGroupProperties = cacheGroupMetaTypeConfig.getProperties();
                     if (null != cacheGroupProperties) {
                         if (cacheGroupProperties.get("member") instanceof String[]) {
@@ -271,7 +274,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
                             if (null != pids) {
                                 for (String pid : pids) {
                                     try {
-                                        Configuration memberConfig = configAdminRef.get().getConfiguration(pid);
+                                        Configuration memberConfig = configAdminRef.get().getConfiguration(pid, bundleLocation);
                                         Dictionary<String, Object> memberProperties = memberConfig.getProperties();
 
                                         ExternalCacheGroupMember ecgm = new CacheConfig.ExternalCacheGroupMember();
@@ -312,7 +315,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
             for (String pid : diskPIDs) {
                 try {
                     config.enableDiskOffload = true;
-                    Configuration diskMetaTypeConfig = configAdminRef.get().getConfiguration(pid);
+                    Configuration diskMetaTypeConfig = configAdminRef.get().getConfiguration(pid, bundleLocation);
                     diskProperties = diskMetaTypeConfig.getProperties();
                     if (null != diskProperties) {
                         Enumeration<String> keysEnum = diskProperties.keys();
@@ -457,7 +460,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
                     String[] diskPIDs = (String[]) configuration.getProperties().get("disk");
                     if (null != diskPIDs) {
                         for (String diskPID : diskPIDs) {
-                            Configuration diskConfig = configAdminRef.get().getConfiguration(diskPID);
+                            Configuration diskConfig = configAdminRef.get().getConfiguration(diskPID, bundleLocation);
                             if (tc.isDebugEnabled())
                                 Tr.debug(tc, "\t Deleting OSGi Configuration ", diskConfig.getProperties());
                             diskConfig.delete();
@@ -467,14 +470,14 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
                     String[] cacheGroupPIDs = (String[]) configuration.getProperties().get("cacheGroup");
                     if (null != cacheGroupPIDs) {
                         for (String cacheGroupPID : cacheGroupPIDs) {
-                            Configuration cacheGroupMetaTypeConfig = configAdminRef.get().getConfiguration(cacheGroupPID);
+                            Configuration cacheGroupMetaTypeConfig = configAdminRef.get().getConfiguration(cacheGroupPID, bundleLocation);
                             Dictionary<String, Object> cacheGroupProperties = cacheGroupMetaTypeConfig.getProperties();
                             if (null != cacheGroupProperties) {
                                 if (cacheGroupProperties.get("member") instanceof String[]) {
                                     String[] pids = (String[]) cacheGroupProperties.get("member");
                                     if (null != pids) {
                                         for (String pid : pids) {
-                                            Configuration memberConfig = configAdminRef.get().getConfiguration(pid);
+                                            Configuration memberConfig = configAdminRef.get().getConfiguration(pid, bundleLocation);
                                             if (tc.isDebugEnabled())
                                                 Tr.debug(tc, "\t Deleting OSGi Configuration ", memberConfig.getProperties());
                                             memberConfig.delete();
@@ -704,7 +707,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
     // -----------------------------------------------------------------
     /**
      * Get the list of cache config for servlet cache instances
-     * 
+     *
      * @return the list of cache config
      */
     @Override
@@ -723,7 +726,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
 
     /**
      * Get the list of cache config for object cache instances
-     * 
+     *
      * @return the list of cache config
      */
     @Override
@@ -875,7 +878,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
 
     /**
      * Declarative Services method for unsetting the shared library service reference
-     * 
+     *
      * @param ref
      *            reference to the service
      */
@@ -979,7 +982,7 @@ public class CacheServiceImpl implements CacheService, ResourceFactory, ServletC
              * URL url = new URL(file);
              * urls.add(url);
              * }
-             * 
+             *
              * for (Enumeration<URL> resources = urls.elements(); resources.hasMoreElements();) {
              * URL url = resources.nextElement();
              * if (!processedUrls.contains(url))
