@@ -11,10 +11,12 @@
 
 package com.ibm.websphere.event;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Pattern;
 
 import com.ibm.ws.event.internal.TopicData;
+import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  * Representation of a topic to be used by event sources.
@@ -30,7 +32,12 @@ public final class Topic {
 
     // Double nesting of the atomic reference since we're forced to expose the
     // reference itself - and that needs memory model compliance too
-    final AtomicReference<AtomicReference<TopicData>> topicDataReference = new AtomicReference<AtomicReference<TopicData>>(new AtomicReference<TopicData>());
+    final StaticValue<AtomicReference<AtomicReference<TopicData>>> topicDataReference = StaticValue.createStaticValue(new Callable<AtomicReference<AtomicReference<TopicData>>>() {
+        @Override
+        public AtomicReference<AtomicReference<TopicData>> call() throws Exception {
+            return new AtomicReference<AtomicReference<TopicData>>(new AtomicReference<TopicData>());
+        }
+    });
 
     public Topic(String name) {
         validateTopic(name);
@@ -53,22 +60,25 @@ public final class Topic {
 
     // TODO: Hide the topicData from code outside the bundle
     public TopicData getTopicData() {
-        return topicDataReference.get().get();
+        return topicDataReference.get().get().get();
     }
 
     // TODO: Hide the topicData from code outside the bundle
     public void setTopicDataReference(AtomicReference<TopicData> topicDataReference) {
-        this.topicDataReference.set(topicDataReference);
+        this.topicDataReference.get().set(topicDataReference);
     }
 
+    @Override
     public String toString() {
         return name;
     }
 
+    @Override
     public int hashCode() {
         return name.hashCode();
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof Topic) {
             Topic that = (Topic) o;
