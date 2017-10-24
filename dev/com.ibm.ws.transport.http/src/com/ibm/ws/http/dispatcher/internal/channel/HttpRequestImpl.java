@@ -266,4 +266,15 @@ public class HttpRequestImpl implements Http2Request {
             return true;
         return false;
     }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see com.ibm.wsspi.http.HttpRequest#isPushSupported()
+     */
+    @Override
+    public boolean isPushSupported() {
+        // TODO Auto-generated method stub
+        return message.isPushSupported();
+    }
 }
