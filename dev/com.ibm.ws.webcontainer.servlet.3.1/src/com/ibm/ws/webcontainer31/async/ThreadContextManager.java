@@ -156,6 +156,24 @@ public class ThreadContextManager {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "popContextData");
         }
+        
+        // If we pushed thread context onto the thread, be sure to reset it before
+        // taking it off.
+        if (this.originalCD != null) {
+          //Each producer service of the Transfer service is accessed in order to get the thread context data
+          Iterator<ITransferContextService> TransferIterator = com.ibm.ws.webcontainer.osgi.WebContainer.getITransferContextServices();
+          if (TransferIterator != null) {
+            while(TransferIterator.hasNext()){
+              ITransferContextService tcs = TransferIterator.next();
+              if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                  Tr.debug(tc, "Calling resetState on: " + tcs);
+              }
+              tcs.resetState();
+            }
+          }
+        }
+        
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Restoring the current thread's class loader");
         }
