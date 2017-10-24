@@ -19,84 +19,91 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name="TimeAPI_ENT")
+@Table(name = "TimeAPI_ENT")
 public class TimeAPIEntity {
-	@Id @GeneratedValue private long id;
-	
-	@Basic private java.time.LocalDate localDate;
-	@Basic private java.time.LocalDateTime localDateTime;
-	@Basic private java.time.LocalTime localTime;
-	@Basic private java.time.OffsetTime offsetTime;
-	@Basic private java.time.OffsetDateTime offsetDateTime;
-	
-	@Version private long version;
-	
-	public TimeAPIEntity() {
-		
-	}
+    @Id
+    @GeneratedValue
+    private long id;
 
-	public long getId() {
-		return id;
-	}
+    @Basic
+    private java.time.LocalDate localDate;
+    @Basic
+    private java.time.LocalDateTime localDateTime;
+    @Basic
+    private java.time.LocalTime localTime;
+    @Basic
+    private java.time.OffsetTime offsetTime;
+    @Basic
+    private java.time.OffsetDateTime offsetDateTime;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Version
+    private long version;
 
-	public java.time.LocalDate getLocalDate() {
-		return localDate;
-	}
+    public TimeAPIEntity() {
 
-	public void setLocalDate(java.time.LocalDate localDate) {
-		this.localDate = localDate;
-	}
+    }
 
-	public java.time.LocalDateTime getLocalDateTime() {
-		return localDateTime;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public void setLocalDateTime(java.time.LocalDateTime localDateTime) {
-		this.localDateTime = localDateTime;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public java.time.LocalTime getLocalTime() {
-		return localTime;
-	}
+    public java.time.LocalDate getLocalDate() {
+        return localDate;
+    }
 
-	public void setLocalTime(java.time.LocalTime localTime) {
-		this.localTime = localTime;
-	}
+    public void setLocalDate(java.time.LocalDate localDate) {
+        this.localDate = localDate;
+    }
 
-	public java.time.OffsetTime getOffsetTime() {
-		return offsetTime;
-	}
+    public java.time.LocalDateTime getLocalDateTime() {
+        return localDateTime;
+    }
 
-	public void setOffsetTime(java.time.OffsetTime offsetTime) {
-		this.offsetTime = offsetTime;
-	}
+    public void setLocalDateTime(java.time.LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
+    }
 
-	public java.time.OffsetDateTime getOffsetDateTime() {
-		return offsetDateTime;
-	}
+    public java.time.LocalTime getLocalTime() {
+        return localTime;
+    }
 
-	public void setOffsetDateTime(java.time.OffsetDateTime offsetDateTime) {
-		this.offsetDateTime = offsetDateTime;
-	}
+    public void setLocalTime(java.time.LocalTime localTime) {
+        this.localTime = localTime;
+    }
 
-	public long getVersion() {
-		return version;
-	}
+    public java.time.OffsetTime getOffsetTime() {
+        return offsetTime;
+    }
 
-	public void setVersion(long version) {
-		this.version = version;
-	}
+    public void setOffsetTime(java.time.OffsetTime offsetTime) {
+        this.offsetTime = offsetTime;
+    }
 
-	@Override
-	public String toString() {
-		return "TimeAPIEntity [id=" + id + ", localDate=" + localDate + ", localDateTime=" + localDateTime
-				+ ", localTime=" + localTime + ", offsetTime=" + offsetTime + ", offsetDateTime=" + offsetDateTime
-				+ ", version=" + version + "]";
-	}
-	
-	
+    public java.time.OffsetDateTime getOffsetDateTime() {
+        return offsetDateTime;
+    }
+
+    public void setOffsetDateTime(java.time.OffsetDateTime offsetDateTime) {
+        this.offsetDateTime = offsetDateTime;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return "TimeAPIEntity [id=" + id + ", localDate=" + localDate + ", localDateTime=" + localDateTime
+               + ", localTime=" + localTime + ", offsetTime=" + offsetTime + ", offsetDateTime=" + offsetDateTime
+               + ", version=" + version + "]";
+    }
+
 }

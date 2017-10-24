@@ -19,69 +19,71 @@ import javax.persistence.Table;
 import javax.persistence.Version;
 
 @Entity
-@Table(name="Q_EMP")
+@Table(name = "Q_EMP")
 public class Employee {
-	@Id
-	@GeneratedValue
-	private long id;
-	
-	@Basic private String lastName;
-	@Basic private String firstName;
-	
-	@Basic private int salary;
-	
-	@Version
-	private long version;
-	
-	public Employee() {
-		
-	}
+    @Id
+    @GeneratedValue
+    private long id;
 
-	public long getId() {
-		return id;
-	}
+    @Basic
+    private String lastName;
+    @Basic
+    private String firstName;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    @Basic
+    private int salary;
 
-	public String getLastName() {
-		return lastName;
-	}
+    @Version
+    private long version;
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+    public Employee() {
 
-	public String getFirstName() {
-		return firstName;
-	}
+    }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+    public long getId() {
+        return id;
+    }
 
-	public int getSalary() {
-		return salary;
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
 
-	public void setSalary(int salary) {
-		this.salary = salary;
-	}
+    public String getLastName() {
+        return lastName;
+    }
 
-	public long getVersion() {
-		return version;
-	}
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-	public void setVersion(long version) {
-		this.version = version;
-	}
+    public String getFirstName() {
+        return firstName;
+    }
 
-	@Override
-	public String toString() {
-		return "Employee [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", salary=" + salary
-				+ ", version=" + version + "]";
-	}
-	
-	
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
+
+    public void setSalary(int salary) {
+        this.salary = salary;
+    }
+
+    public long getVersion() {
+        return version;
+    }
+
+    public void setVersion(long version) {
+        this.version = version;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee [id=" + id + ", lastName=" + lastName + ", firstName=" + firstName + ", salary=" + salary
+               + ", version=" + version + "]";
+    }
+
 }

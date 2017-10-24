@@ -34,48 +34,48 @@ import jpa22timeapi.entity.TimeAPIEntity;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestJPAAPI")
 public class JPATimeAPITestServlet extends FATServlet {
-	@PersistenceContext(unitName="JPAPU")
-	private EntityManager em;
-	
-	@Resource
-	private UserTransaction tx;
-	
-	@Test
-	@Mode(TestMode.LITE)
-	public void testJPA22TimeAPI() throws Exception {
-		final String testName = "testJPA22TimeAPI";		
-		System.out.println("STARTING " + testName + " ...");
-		
-		try {
-			java.time.LocalDate localDate = LocalDate.now();
-			java.time.LocalDateTime localDateTime = LocalDateTime.now();
-			java.time.LocalTime localTime = LocalTime.now();
-			java.time.OffsetTime offsetTime = OffsetTime.now();
-			java.time.OffsetDateTime offsetDateTime = OffsetDateTime.now();
-			
-			TimeAPIEntity timeEntity = new TimeAPIEntity();
-			timeEntity.setLocalDate(localDate);
-			timeEntity.setLocalDateTime(localDateTime);
-			timeEntity.setLocalTime(localTime);
-			timeEntity.setOffsetDateTime(offsetDateTime);
-			timeEntity.setOffsetTime(offsetTime);
-			
-			tx.begin();
-			em.persist(timeEntity);
-			tx.commit();
-			
-			em.clear();
-			
-			TimeAPIEntity findEntity = em.find(TimeAPIEntity.class, timeEntity.getId());
-			Assert.assertNotNull(findEntity);
-			
-			Assert.assertEquals(localDate, findEntity.getLocalDate());
-			Assert.assertEquals(localDateTime, findEntity.getLocalDateTime());
-			Assert.assertEquals(localTime, findEntity.getLocalTime());
-			Assert.assertEquals(offsetTime, findEntity.getOffsetTime());
-			Assert.assertEquals(offsetDateTime, findEntity.getOffsetDateTime());
-		} finally {
-			System.out.println("ENDING " + testName);
-		}
-	}
+    @PersistenceContext(unitName = "JPAPU")
+    private EntityManager em;
+
+    @Resource
+    private UserTransaction tx;
+
+    @Test
+    @Mode(TestMode.LITE)
+    public void testJPA22TimeAPI() throws Exception {
+        final String testName = "testJPA22TimeAPI";
+        System.out.println("STARTING " + testName + " ...");
+
+        try {
+            java.time.LocalDate localDate = LocalDate.now();
+            java.time.LocalDateTime localDateTime = LocalDateTime.now();
+            java.time.LocalTime localTime = LocalTime.now();
+            java.time.OffsetTime offsetTime = OffsetTime.now();
+            java.time.OffsetDateTime offsetDateTime = OffsetDateTime.now();
+
+            TimeAPIEntity timeEntity = new TimeAPIEntity();
+            timeEntity.setLocalDate(localDate);
+            timeEntity.setLocalDateTime(localDateTime);
+            timeEntity.setLocalTime(localTime);
+            timeEntity.setOffsetDateTime(offsetDateTime);
+            timeEntity.setOffsetTime(offsetTime);
+
+            tx.begin();
+            em.persist(timeEntity);
+            tx.commit();
+
+            em.clear();
+
+            TimeAPIEntity findEntity = em.find(TimeAPIEntity.class, timeEntity.getId());
+            Assert.assertNotNull(findEntity);
+
+            Assert.assertEquals(localDate, findEntity.getLocalDate());
+            Assert.assertEquals(localDateTime, findEntity.getLocalDateTime());
+            Assert.assertEquals(localTime, findEntity.getLocalTime());
+            Assert.assertEquals(offsetTime, findEntity.getOffsetTime());
+            Assert.assertEquals(offsetDateTime, findEntity.getOffsetDateTime());
+        } finally {
+            System.out.println("ENDING " + testName);
+        }
+    }
 }
