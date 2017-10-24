@@ -40,6 +40,6 @@ public class JPAELInjectionFATTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWWJP9991W"); // From Eclipselink drop-and-create tables option
     }
 }
