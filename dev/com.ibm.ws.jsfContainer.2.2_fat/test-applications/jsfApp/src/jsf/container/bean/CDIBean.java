@@ -14,7 +14,9 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
 import javax.ejb.EJB;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
@@ -27,12 +29,17 @@ public class CDIBean implements Serializable {
     @EJB
     TestEJB ejb;
 
+    @Resource
+    ManagedExecutorService defaultExec;
+
     @PostConstruct
     public void start() {
         System.out.println("CDIBean postConstruct called");
         this.data += ":PostConstructCalled:";
-        ejb.verifyPostConstruct();
-        this.data += ":EJB-injected:";
+        if (ejb != null && ejb.verifyPostConstruct())
+            this.data += ":EJB-injected:";
+        if (defaultExec != null)
+            this.data += ":Resource-injected:";
         System.out.println("CDIBean data is: " + data);
     }
 

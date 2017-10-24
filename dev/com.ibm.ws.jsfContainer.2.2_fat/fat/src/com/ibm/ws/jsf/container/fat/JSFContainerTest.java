@@ -56,11 +56,12 @@ public class JSFContainerTest extends FATServletClient {
     public void testCDIBean_Mojarra() throws Exception {
         HttpUtils.findStringInReadyUrl(server, '/' + MOJARRA_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
-                                       ":CDIBean::PostConstructCalled::EJB-injected:");
+                                       ":CDIBean::PostConstructCalled::EJB-injected::Resource-injected:");
     }
 
     @Test
     public void testJSFBean_Mojarra() throws Exception {
+        // Note that Mojarra does not support injecting @EJB into a JSF @ManagedBean
         HttpUtils.findStringInReadyUrl(server, '/' + MOJARRA_APP + "/TestBean.jsf",
                                        "JSF Bean value:",
                                        ":JSFBean::PostConstructCalled:");
@@ -70,13 +71,13 @@ public class JSFContainerTest extends FATServletClient {
     public void testCDIBean_MyFaces() throws Exception {
         HttpUtils.findStringInReadyUrl(server, '/' + MYFACES_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
-                                       ":CDIBean::PostConstructCalled::EJB-injected:");
+                                       ":CDIBean::PostConstructCalled::EJB-injected::Resource-injected:");
     }
 
     @Test
     public void testJSFBean_MyFaces() throws Exception {
         HttpUtils.findStringInReadyUrl(server, '/' + MYFACES_APP + "/TestBean.jsf",
                                        "JSF Bean value:",
-                                       ":JSFBean::PostConstructCalled:");
+                                       ":JSFBean::PostConstructCalled::EJB-injected:");
     }
 }
