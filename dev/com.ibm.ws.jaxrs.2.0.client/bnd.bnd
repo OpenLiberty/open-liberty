@@ -41,7 +41,8 @@ Service-Component: \
      deactivate:=deactivate; \
      properties:="service.vendor=IBM"
  
- -dsannotations: com.ibm.ws.jaxrs20.client.component.*
+ -dsannotations: com.ibm.ws.jaxrs20.client.component.*, \
+ 	com.ibm.ws.jaxrs20.client.security.oauth.OAuthPropagationHelper
 
 instrument.classesExcludes: com/ibm/ws/jaxrs20/client/internal/resources/*.class
     
