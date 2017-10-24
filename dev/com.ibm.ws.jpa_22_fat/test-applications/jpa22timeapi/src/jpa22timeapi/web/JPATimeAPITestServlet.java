@@ -27,8 +27,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import jpa22timeapi.entity.TimeAPIEntity;
 
 @SuppressWarnings("serial")
@@ -41,41 +39,33 @@ public class JPATimeAPITestServlet extends FATServlet {
     private UserTransaction tx;
 
     @Test
-    @Mode(TestMode.LITE)
     public void testJPA22TimeAPI() throws Exception {
-        final String testName = "testJPA22TimeAPI";
-        System.out.println("STARTING " + testName + " ...");
+        java.time.LocalDate localDate = LocalDate.now();
+        java.time.LocalDateTime localDateTime = LocalDateTime.now();
+        java.time.LocalTime localTime = LocalTime.now();
+        java.time.OffsetTime offsetTime = OffsetTime.now();
+        java.time.OffsetDateTime offsetDateTime = OffsetDateTime.now();
 
-        try {
-            java.time.LocalDate localDate = LocalDate.now();
-            java.time.LocalDateTime localDateTime = LocalDateTime.now();
-            java.time.LocalTime localTime = LocalTime.now();
-            java.time.OffsetTime offsetTime = OffsetTime.now();
-            java.time.OffsetDateTime offsetDateTime = OffsetDateTime.now();
+        TimeAPIEntity timeEntity = new TimeAPIEntity();
+        timeEntity.setLocalDate(localDate);
+        timeEntity.setLocalDateTime(localDateTime);
+        timeEntity.setLocalTime(localTime);
+        timeEntity.setOffsetDateTime(offsetDateTime);
+        timeEntity.setOffsetTime(offsetTime);
 
-            TimeAPIEntity timeEntity = new TimeAPIEntity();
-            timeEntity.setLocalDate(localDate);
-            timeEntity.setLocalDateTime(localDateTime);
-            timeEntity.setLocalTime(localTime);
-            timeEntity.setOffsetDateTime(offsetDateTime);
-            timeEntity.setOffsetTime(offsetTime);
+        tx.begin();
+        em.persist(timeEntity);
+        tx.commit();
 
-            tx.begin();
-            em.persist(timeEntity);
-            tx.commit();
+        em.clear();
 
-            em.clear();
+        TimeAPIEntity findEntity = em.find(TimeAPIEntity.class, timeEntity.getId());
+        Assert.assertNotNull(findEntity);
 
-            TimeAPIEntity findEntity = em.find(TimeAPIEntity.class, timeEntity.getId());
-            Assert.assertNotNull(findEntity);
-
-            Assert.assertEquals(localDate, findEntity.getLocalDate());
-            Assert.assertEquals(localDateTime, findEntity.getLocalDateTime());
-            Assert.assertEquals(localTime, findEntity.getLocalTime());
-            Assert.assertEquals(offsetTime, findEntity.getOffsetTime());
-            Assert.assertEquals(offsetDateTime, findEntity.getOffsetDateTime());
-        } finally {
-            System.out.println("ENDING " + testName);
-        }
+        Assert.assertEquals(localDate, findEntity.getLocalDate());
+        Assert.assertEquals(localDateTime, findEntity.getLocalDateTime());
+        Assert.assertEquals(localTime, findEntity.getLocalTime());
+        Assert.assertEquals(offsetTime, findEntity.getOffsetTime());
+        Assert.assertEquals(offsetDateTime, findEntity.getOffsetDateTime());
     }
 }
