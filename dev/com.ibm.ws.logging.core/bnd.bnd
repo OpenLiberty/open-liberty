@@ -24,7 +24,9 @@ Export-Package: \
 	com.ibm.ws.logging,\
 	com.ibm.ws.logging.internal,\
 	com.ibm.wsspi.logging,\
-	com.ibm.wsspi.logprovider
+	com.ibm.wsspi.logprovider,\
+	com.ibm.wsspi.collector.manager,\
+	com.ibm.ws.collector.manager.internal.buffer,\
 
 instrument.disabled: true
 
