@@ -16,6 +16,7 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -53,6 +54,9 @@ import com.ibm.ws.jaxrs20.client.security.oauth.LibertyJaxRsClientOAuthIntercept
 import com.ibm.ws.jaxrs20.client.security.saml.PropagationHandler;
 import com.ibm.ws.jaxrs20.client.util.JaxRSClientUtil;
 import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  *
@@ -61,13 +65,14 @@ public class JAXRSClientImpl extends ClientImpl {
     private static final TraceComponent tc = Tr.register(JAXRSClientImpl.class);
 
     protected boolean closed;
-    protected Set<WebClient> baseClients = new HashSet<WebClient>();
+    protected Set<WebClient> baseClients = new HashSet<>();
     protected boolean hasSSLConfigInfo = false;
     private TLSConfiguration secConfig = null;
     //Defect 202957 move busCache from ClientMetaData to JAXRSClientImpl
     //Before this change, all the WebTarget has same url in a web module share a bus
     //After this change, all the WebTarget has same url in a JAXRSClientImpl share a bus
-    private final Map<String, LibertyApplicationBus> busCache = new ConcurrentHashMap<String, LibertyApplicationBus>();
+    private static final Map<String, LibertyApplicationBus> busCache = new ConcurrentHashMap<>();
+    private static final Map<String, List<JAXRSClientImpl>> clientsPerModule = new HashMap<>();
 
     /**
      * @param config
@@ -128,6 +133,16 @@ public class JAXRSClientImpl extends ClientImpl {
                 Tr.debug(tc, "<init> failed to find and install declared providers ", ex);
             }
         }
+
+        String moduleName = getModuleName();
+        synchronized (clientsPerModule) {
+            List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
+            if (clients == null) {
+                clients = new ArrayList<>();
+                clientsPerModule.put(moduleName, clients);
+            }
+            clients.add(this);
+        }
     }
 
     /**
@@ -175,7 +190,8 @@ public class JAXRSClientImpl extends ClientImpl {
         LibertyApplicationBus bus;
         //202957 same url use same bus, add a lock to busCache to ensure only one bus will be created in concurrent mode.
         //ConcurrentHashMap can't ensure that.
-        String id = JaxRSClientUtil.convertURItoBusId(uri.toString());
+        String moduleName = getModuleName();
+        String id = moduleName + JaxRSClientUtil.convertURItoBusId(uri.toString());
         synchronized (busCache) {
             bus = busCache.get(id);
             if (bus == null) {
@@ -222,10 +238,24 @@ public class JAXRSClientImpl extends ClientImpl {
             wc.close();
 
         }
-        for (LibertyApplicationBus bus : busCache.values()) {
-            bus.shutdown(false);
+
+        String moduleName = getModuleName();
+        synchronized (clientsPerModule) {
+            List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
+
+            if (clients != null) { // the only way this isn't null is if the same client was closed twice
+                clients.remove(this);
+                if (clients.isEmpty()) {
+                    for (String id : busCache.keySet()) {
+                        if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
+                            busCache.remove(id).shutdown(false);
+                        }
+                    }
+                    clientsPerModule.remove(moduleName);
+                }
+            }
         }
-        busCache.clear();
+
         baseClients = null;
     }
 
@@ -244,5 +274,16 @@ public class JAXRSClientImpl extends ClientImpl {
             return super.property(name, new ProtectedString(value.toString().toCharArray()));
         }
         return super.property(name, value);
+    }
+
+    private String getModuleName() {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (cmd != null) {
+            ModuleMetaData mmd = cmd.getModuleMetaData();
+            if (mmd != null) {
+                return mmd.getName() + ":";
+            }
+        }
+        return "unknown:";
     }
 }
