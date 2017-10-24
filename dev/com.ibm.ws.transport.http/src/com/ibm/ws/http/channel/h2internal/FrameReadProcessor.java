@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.h2internal;
 
+import java.util.Arrays;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -20,11 +22,13 @@ import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.frames.Frame;
 import com.ibm.ws.http.channel.h2internal.frames.FrameFactory;
 import com.ibm.ws.http.channel.h2internal.frames.FrameRstStream;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 
 public class FrameReadProcessor {
 
-    private static final TraceComponent tc = Tr.register(FrameReadProcessor.class);
+    /** RAS tracing variable */
+    private static final TraceComponent tc = Tr.register(FrameReadProcessor.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     /** starting size of the pending buffer array */
     private static final int BUFFER_ARRAY_INITIAL_SIZE = 10;
@@ -382,6 +386,16 @@ public class FrameReadProcessor {
     public boolean checkConnectionPreface() throws FrameSizeException {
         byte[] value = grabNextBytes(24);
         String valueString = new String(value);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "checkConnectionPreface: processNextFrame-:  stream: 0 frame type: Magic Preface  direction: "
+                         + Direction.READ_IN
+                         + " H2InboundLink hc: " + muxLink.hashCode());
+            if (value != null) {
+                Tr.debug(tc, "checkConnectionPreface: Preface String: " + Arrays.toString(valueString.getBytes()));
+            }
+        }
+
         return valueString.equals("PRI * HTTP/2.0\r\n\r\nSM\r\n\r\n");
     }
 
