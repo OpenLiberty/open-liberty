@@ -33,8 +33,6 @@ import cdi.model.ConvertableWidget;
 import cdi.model.LoggingService;
 import cdi.model.Widget;
 import componenttest.app.FATServlet;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = { "/eli" })
@@ -61,11 +59,7 @@ public class ELIServlet extends FATServlet {
      * 4) Order of invocation is: Injection, then PrePersist, then PostPersist.
      */
     @Test
-    @Mode(TestMode.LITE)
     public void testInjectionOccursBeforePostConstructAndInsertionCallbacks() throws Exception {
-        final String TNAME = "testInjectionOccursBeforePostConstructAndInsertionCallbacks";
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().enter");
-
         List<String> loggerMessages = null;
         em.clear();
 
@@ -100,16 +94,10 @@ public class ELIServlet extends FATServlet {
         for (int index = 0; index < orderCorrect.length; index++) {
             Assert.assertTrue("Callback order incorrect at index: " + index, orderCorrect[index]);
         }
-
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().exit");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testInjectionOccursBeforeInsertAndFindCallbacks() throws Exception {
-        final String TNAME = "testInjectionOccursBeforeInsertAndFindCallbacks";
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().enter");
-
         List<String> loggerMessages = null;
         em.clear();
 
@@ -163,16 +151,10 @@ public class ELIServlet extends FATServlet {
         for (int index = 0; index < searchMessages.size(); index++) {
             Assert.assertTrue("Failed to find: \"" + searchMessages.get(index) + "\"", foundMessages[index]);
         }
-
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().exit");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testInjectionOccursBeforeInsertAndUpdateCallbacks() throws Exception {
-        final String TNAME = "testInjectionOccursBeforeInsertAndUpdateCallbacks";
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().enter");
-
         List<String> loggerMessages = null;
         em.clear();
 
@@ -236,16 +218,10 @@ public class ELIServlet extends FATServlet {
         for (int index = 0; index < orderCorrect.length; index++) {
             Assert.assertTrue("Callback order incorrect at index: " + index, orderCorrect[index]);
         }
-
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().exit");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testInjectionOccursBeforeInsertAndRemoveCallbacks() throws Exception {
-        final String TNAME = "testInjectionOccursBeforeInsertAndRemoveCallbacks";
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().enter");
-
         List<String> loggerMessages = null;
         em.clear();
 
@@ -309,16 +285,10 @@ public class ELIServlet extends FATServlet {
         for (int index = 0; index < orderCorrect.length; index++) {
             Assert.assertTrue("Callback order incorrect at index: " + index, orderCorrect[index]);
         }
-
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().exit");
     }
 
     @Test
-    @Mode(TestMode.LITE)
     public void testConverterCDIInjection() throws Exception {
-        final String TNAME = "testConverterCDIInjection";
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().enter");
-
         List<String> loggerMessages = null;
         em.clear();
 
@@ -377,8 +347,6 @@ public class ELIServlet extends FATServlet {
         for (int index = 0; index < searchMessages.size(); index++) {
             Assert.assertTrue("Failed to find: \"" + searchMessages.get(index) + "\"", foundMessages[index]);
         }
-
-        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().exit");
     }
 
     // Support methods

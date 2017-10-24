@@ -20,8 +20,6 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import jpa22bootstrap.entity.SimpleTestEntity;
 
 @SuppressWarnings("serial")
@@ -34,49 +32,18 @@ public class TestJPA22BootstrapServlet extends FATServlet {
     private UserTransaction tx;
 
     @Test
-    @Mode(TestMode.LITE)
     public void bootstrapTest22() throws Exception {
-        System.out.println("STARTING bootstrapTest22...");
+        tx.begin();
+        SimpleTestEntity entity = new SimpleTestEntity();
+        entity.setStrData("Foo Bar");
+        em.persist(entity);
+        tx.commit();
 
-        try {
-            tx.begin();
-            SimpleTestEntity entity = new SimpleTestEntity();
-            entity.setStrData("Foo Bar");
-            em.persist(entity);
-            tx.commit();
+        em.clear();
 
-            em.clear();
-
-            SimpleTestEntity findEntity = em.find(SimpleTestEntity.class, entity.getId());
-            Assert.assertNotNull(findEntity);
-            Assert.assertNotSame(entity, findEntity);
-            Assert.assertEquals(entity.getId(), findEntity.getId());
-        } finally {
-            System.out.println("ENDING bootstrapTest22.");
-        }
-
+        SimpleTestEntity findEntity = em.find(SimpleTestEntity.class, entity.getId());
+        Assert.assertNotNull(findEntity);
+        Assert.assertNotSame(entity, findEntity);
+        Assert.assertEquals(entity.getId(), findEntity.getId());
     }
-
-//    @Test
-//    public void testServer1() throws Exception {
-//        System.out.println("Test is running.");
-//    }
-//
-//    @Test
-//    @Mode(TestMode.LITE)
-//    public void liteTest() throws Exception {
-//        System.out.println("LITE test is running.");
-//    }
-//
-//    @Test
-//    @Mode(TestMode.FULL)
-//    public void testFull() throws Exception {
-//        System.out.println("This test should only run in Full or higher mode!");
-//    }
-//
-//    @Test
-//    @Mode(TestMode.QUARANTINE)
-//    public void testQuarantine() throws Exception {
-//        System.out.println("This test should only run in Quarantine mode!");
-//    }
 }
