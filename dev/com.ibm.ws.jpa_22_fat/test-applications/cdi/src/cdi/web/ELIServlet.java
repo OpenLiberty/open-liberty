@@ -29,6 +29,7 @@ import javax.transaction.UserTransaction;
 import org.junit.Assert;
 import org.junit.Test;
 
+import cdi.model.ConvertableWidget;
 import cdi.model.LoggingService;
 import cdi.model.Widget;
 import componenttest.app.FATServlet;
@@ -307,6 +308,74 @@ public class ELIServlet extends FATServlet {
         }
         for (int index = 0; index < orderCorrect.length; index++) {
             Assert.assertTrue("Callback order incorrect at index: " + index, orderCorrect[index]);
+        }
+
+        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().exit");
+    }
+
+    @Test
+    @Mode(TestMode.LITE)
+    public void testConverterCDIInjection() throws Exception {
+        final String TNAME = "testConverterCDIInjection";
+        svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().enter");
+
+        List<String> loggerMessages = null;
+        em.clear();
+
+        tx.begin();
+        ConvertableWidget newEntity = new ConvertableWidget();
+        newEntity.setDescription("A widget with 20 sides.");
+        newEntity.setName("Icosahedron");
+        newEntity.setNumberOfSides(20);
+        em.persist(newEntity);
+        tx.commit();
+
+        List<String> searchMessages = createMessageList(new String[] { "convertToDatabaseColumn" });
+        boolean[] foundMessages = new boolean[searchMessages.size()];
+        loggerMessages = logger.getAndClearMessages();
+
+        for (String msg : loggerMessages) {
+            if ("injection failed".equalsIgnoreCase(msg)) {
+                Assert.fail("Injection failed to occur before some callback method");
+            }
+
+            for (int index = 0; index < searchMessages.size(); index++) {
+                if (msg.indexOf(searchMessages.get(index)) >= 0) {
+                    foundMessages[index] = true;
+                }
+            }
+        }
+
+        for (int index = 0; index < searchMessages.size(); index++) {
+            Assert.assertTrue("Failed to find: \"" + searchMessages.get(index) + "\"", foundMessages[index]);
+        }
+
+        em.clear();
+
+        ConvertableWidget findEntity = em.find(ConvertableWidget.class, newEntity.getId());
+        Assert.assertNotNull(findEntity);
+        Assert.assertEquals(20, findEntity.getNumberOfSides());
+        Assert.assertEquals("Icosahedron", findEntity.getName());
+        Assert.assertEquals("A widget with 20 sides.", findEntity.getDescription());
+
+        searchMessages = createMessageList(new String[] { "convertToEntityAttribute" });
+        foundMessages = new boolean[searchMessages.size()];
+        loggerMessages = logger.getAndClearMessages();
+
+        for (String msg : loggerMessages) {
+            if ("injection failed".equalsIgnoreCase(msg)) {
+                Assert.fail("Injection failed to occur before some callback method");
+            }
+
+            for (int index = 0; index < searchMessages.size(); index++) {
+                if (msg.indexOf(searchMessages.get(index)) >= 0) {
+                    foundMessages[index] = true;
+                }
+            }
+        }
+
+        for (int index = 0; index < searchMessages.size(); index++) {
+            Assert.assertTrue("Failed to find: \"" + searchMessages.get(index) + "\"", foundMessages[index]);
         }
 
         svLogger.logp(Level.INFO, CLASS_NAME, TNAME, TNAME + "().exit");

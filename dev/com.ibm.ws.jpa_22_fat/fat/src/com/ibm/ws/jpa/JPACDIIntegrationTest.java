@@ -24,7 +24,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
-public class JPAELInjectionFATTest {
+public class JPACDIIntegrationTest {
     public static final String APP_NAME = "cdi";
     public static final String SERVLET = "eli";
 

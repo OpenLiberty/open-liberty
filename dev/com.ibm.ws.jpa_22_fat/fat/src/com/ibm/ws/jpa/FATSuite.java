@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 JPA21BootstrapTest.class,
                 JPA22BootstrapTest.class,
-                JPAELInjectionFATTest.class,
+                JPACDIIntegrationTest.class,
                 JPA22QueryTest.class,
                 JPA22Injection.class,
                 JPA22TimeAPITest.class
