@@ -90,8 +90,14 @@ public class WASMyFacesContainerInitializer extends MyFacesContainerInitializer 
         
         Boolean mappingAdded = (Boolean) servletContext.getAttribute(MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
         if (mappingAdded != null && mappingAdded) {
-            // add the myfaces lifecycle listener; this is necessary since we removed
-            // startupservletcontextlistener registration from myfaces_core.tld
+            /** 
+             * Add the myfaces lifecycle listener; this is necessary since the StartupServletContextListener registration 
+             * was moved from the myfaces_core.tld to a web-fragment. 
+             * 
+             * Currently, Liberty does not pick that web-fragment up, which is ok since we don't want every 
+             * application on the server to be JSF enabled. The JSFExtensionFactory will add the listener for applications 
+             * that define a FacesServlet and we'll add the listener here for applications that have a FacesServlet defined dynamically. 
+             */
             addLifecycleListener(servletContext);
             
             log.log(Level.INFO, "Added StartupServletContextListener to the servlet context");
