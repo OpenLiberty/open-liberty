@@ -28,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.sse.InboundSseEvent;
@@ -295,4 +296,65 @@ public class BasicSseTestServlet extends FATServlet {
         assertEquals("Unexpected event or event out of order", JAXB_OBJECTS[2], receivedEvents.get(2));
     }
 
+    public void testSseWithRX(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+
+        String[] nameData = new String[] { "John", "Jacob", "Jingleheimer", "Schmidt" };
+        final List<String> receivedEvents = new ArrayList<String>();
+        final CountDownLatch executionLatch = new CountDownLatch(1);
+
+        Client client = ClientBuilder.newClient();
+        int port = req.getServerPort();
+        WebTarget postTarget = client.target("http://localhost:" + port + "/BasicSseApp/basic/postPort");
+        postTarget.request().post(Entity.xml(String.valueOf(port)));
+
+        WebTarget nameTarget = client.target("http://localhost:" + port + "/BasicSseApp/basic/postName");
+        for (int i = 0; i < nameData.length; i++) {
+            nameTarget.request().rx().post(Entity.xml(nameData[i]));
+        }
+
+        WebTarget target = client.target("http://localhost:" + port + "/BasicSseApp/basic/rx");
+        SseEventSource.Builder sseBuilder = SseEventSource.target(target);
+        SseEventSource source = sseBuilder.build();
+
+        try {
+            System.out.println("testSseWithRX:client invoking server SSE resource on: " + source);
+            source.register(
+                            new Consumer<InboundSseEvent>() { // event
+
+                                @Override
+                                public void accept(InboundSseEvent t) {
+                                    System.out.println("testSseWithRX: new event: " + t.readData());
+                                    receivedEvents.add(t.readData(String.class));
+                                }
+                            },
+                            new Consumer<Throwable>() {
+
+                                @Override
+                                public void accept(Throwable t) {
+                                    t.printStackTrace();
+                                    fail("Caught unexpected exception: " + t);
+                                }
+                            },
+                            new Runnable() {
+
+                                @Override
+                                public void run() {
+                                    System.out.println("testSseWithRX: completion runnable executed");
+                                    executionLatch.countDown();
+                                }
+                            });
+
+            source.open();
+            System.out.println("testSseWithRX: client source open");
+            assertTrue("Completion listener runnable was not executed", executionLatch.await(30, TimeUnit.SECONDS));
+
+        } catch (InterruptedException e) {
+            // falls through
+            e.printStackTrace();
+        } finally {
+            source.close();
+        }
+        assertEquals("Received an unexpected number of events", nameData.length, receivedEvents.size());
+        System.out.println("testSseWithRX: " + receivedEvents + " that's my name too");
+    }
 }
