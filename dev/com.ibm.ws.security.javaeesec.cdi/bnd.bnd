@@ -30,7 +30,8 @@ Private-Package: \
     com.ibm.ws.security.javaeesec.cdi.internal.resources
 
 -dsannotations: \
-    com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension
+    com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension,\
+    com.ibm.ws.security.javaeesec.cdi.extensions.SecurityContextHelper
 
 -dsannotations-inherit: true
 
@@ -52,9 +53,12 @@ Include-Resource: \
     com.ibm.wsspi.org.osgi.service.component.annotations,\
     com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.ws.common.encoder;version=latest,\
+    com.ibm.ws.container.service.compat;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\
+    com.ibm.ws.security.authorization;version=latest,\
+    com.ibm.ws.security.credentials;version=latest,\
     com.ibm.ws.security.jaspic.1.1;version=latest,\
     com.ibm.ws.security.javaeesec.1.0;version=latest,\
     com.ibm.ws.webcontainer.security;version=latest,\
