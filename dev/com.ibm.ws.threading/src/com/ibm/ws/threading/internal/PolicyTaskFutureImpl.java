@@ -64,7 +64,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     /**
      * Nanosecond timestamp when this Future was created.
      */
-    final long nsAcceptBegin = System.nanoTime();
+    private final long nsAcceptBegin = System.nanoTime();
 
     /**
      * Nanosecond timestamps for various points in the task life cycle, initialized to unset (1 less than previous timestamp).
@@ -365,12 +365,15 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     /**
      * Invoked to indicate the task was successfully submitted.
-     * Typically, this means the task has been successfully added to the task queue.
-     * However, it can also mean the task has been accepted to run on the submitter's thread.
+     *
+     * @param runOnSubmitter true if accepted to run immediately on the submitter's thread. False if accepted to the queue.
      */
     @Trivial
-    final void accept() {
-        nsAcceptEnd = System.nanoTime();
+    final void accept(boolean runOnSubmitter) {
+        long time;
+        nsAcceptEnd = time = System.nanoTime();
+        if (runOnSubmitter)
+            nsQueueEnd = time;
         state.setSubmitted();
     }
 
@@ -403,6 +406,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 if (callback != null)
                     callback.onCancel(task, this, false, false);
             } else if (state.get() == PRESUBMIT) {
+                nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
                 state.releaseShared(CANCELED);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "canceled during pre-submit");

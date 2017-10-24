@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
@@ -34,6 +35,7 @@ import javax.annotation.Resource;
 import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
+import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.TransactionSynchronizationRegistry;
 import javax.transaction.UserTransaction;
@@ -41,6 +43,7 @@ import javax.transaction.UserTransaction;
 import org.junit.After;
 import org.junit.Test;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
@@ -51,6 +54,8 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
 
     // Constants for ManagedTaskListener events, to be used as array indices
     static final int SUBMITTED = 0, ABORTED = 1, STARTING = 2, DONE = 3;
+
+    static final int MIGHT_START = -1, NOT_STARTED = 0, STARTED = 1;
 
     // Futures to cancel between tests, to reduce the chance of failures in one test method interfering with others
     private final Set<Future<?>> cancelAfterTest = Collections.newSetFromMap(new ConcurrentHashMap<Future<?>, Boolean>());
@@ -78,6 +83,73 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
     private TransactionSynchronizationRegistry tranSyncRegistry;
 
     /**
+     * Utility method to validate information recorded by TaskListener for a task that is canceled.
+     */
+    private void assertCanceled(ManagedExecutorService executor, Future<?> future, Object task, TaskListener listener, int expectStart) throws Exception {
+        assertTrue(listener.latch[SUBMITTED].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        if (future == null)
+            future = listener.future[SUBMITTED];
+        else
+            assertEquals(future, listener.future[SUBMITTED]);
+        assertNotNull(future);
+        assertEquals(executor, listener.executor[SUBMITTED]);
+        assertEquals(task, listener.task[SUBMITTED]);
+        assertFalse(listener.isCancelled[SUBMITTED]);
+        assertFalse(listener.isDone[SUBMITTED]);
+        if (listener.failure[SUBMITTED] != null)
+            throw new Exception("Unexpected failure, see cause", listener.failure[SUBMITTED]);
+
+        assertTrue(listener.latch[ABORTED].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(future, listener.future[ABORTED]);
+        assertEquals(executor, listener.executor[ABORTED]);
+        assertEquals(task, listener.task[ABORTED]);
+        assertNotNull(listener.exception[ABORTED]);
+        if (!(listener.exception[ABORTED] instanceof CancellationException))
+            throw new Exception("Unexpected exception for taskAborted, see cause", listener.exception[ABORTED]);
+        assertTrue(listener.isCancelled[ABORTED]);
+        assertTrue(listener.isDone[ABORTED]);
+
+        if (listener.doGet[ABORTED]) {
+            Throwable failure = listener.failure[ABORTED];
+            if (!(failure instanceof CancellationException))
+                throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
+        } else {
+            if (listener.failure[ABORTED] != null)
+                throw new Exception("Unexpected failure, see cause", listener.failure[ABORTED]);
+        }
+
+        assertTrue(listener.latch[DONE].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(future, listener.future[DONE]);
+        assertEquals(executor, listener.executor[DONE]);
+        assertEquals(task, listener.task[DONE]);
+        assertNull(listener.exception[DONE]);
+        assertTrue(listener.isCancelled[DONE]);
+        assertTrue(listener.isDone[DONE]);
+
+        if (listener.doGet[DONE]) {
+            Throwable failure = listener.failure[DONE];
+            if (!(failure instanceof CancellationException))
+                throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
+        } else {
+            if (listener.failure[DONE] != null)
+                throw new Exception("Unexpected failure, see cause", listener.failure[DONE]);
+        }
+
+        if (expectStart == NOT_STARTED)
+            assertFalse(listener.invoked[STARTING]);
+        else if (expectStart == STARTED || expectStart == MIGHT_START && listener.latch[STARTING].getCount() == 0) {
+            assertTrue(listener.latch[STARTING].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+            assertEquals(future, listener.future[STARTING]);
+            assertEquals(executor, listener.executor[STARTING]);
+            assertEquals(task, listener.task[STARTING]);
+            assertFalse(listener.isCancelled[STARTING]);
+            assertFalse(listener.isDone[STARTING]);
+            if (listener.failure[STARTING] != null)
+                throw new Exception("Unexpected failure, see cause", listener.failure[STARTING]);
+        }
+    }
+
+    /**
      * Utility method to validate information recorded by TaskListener for a task that aborts and is rejected upon submit.
      */
     private void assertRejected(ManagedExecutorService executor, Object task, TaskListener listener, Class<? extends Throwable> causeClass,
@@ -103,7 +175,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             assertNull(listener.exception[ABORTED].getCause());
         else {
             Throwable cause = listener.exception[ABORTED].getCause();
-            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
+            if (cause == null || !causeClass.equals(cause.getClass()) ||
                 causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
                 throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", listener.exception[ABORTED]);
         }
@@ -115,7 +187,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             if (!(failure instanceof AbortedException))
                 throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
             Throwable cause = failure.getCause();
-            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
+            if (cause == null || !causeClass.equals(cause.getClass()) ||
                 causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
                 throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", failure);
         } else {
@@ -138,7 +210,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             if (!(failure instanceof AbortedException))
                 throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
             Throwable cause = failure.getCause();
-            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
+            if (cause == null || !causeClass.equals(cause.getClass()) ||
                 causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
                 throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", failure);
         } else {
@@ -207,6 +279,27 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         }
         if (count > 0)
             System.out.println("Canceled " + count + " futures after previous test");
+    }
+
+    /**
+     * Utility method to reflectively invoke internal method getElapsedAcceptTime on a Future
+     */
+    private static long getElapsedAcceptTime(Future<?> f, TimeUnit unit) throws Exception {
+        return (Long) f.getClass().getMethod("getElapsedAcceptTime", TimeUnit.class).invoke(f, unit);
+    }
+
+    /**
+     * Utility method to reflectively invoke internal method getElapsedQueueTime on a Future
+     */
+    private static long getElapsedQueueTime(Future<?> f, TimeUnit unit) throws Exception {
+        return (Long) f.getClass().getMethod("getElapsedQueueTime", TimeUnit.class).invoke(f, unit);
+    }
+
+    /**
+     * Utility method to reflectively invoke internal method getElapsedRunTime on a Future
+     */
+    private static long getElapsedRunTime(Future<?> f, TimeUnit unit) throws Exception {
+        return (Long) f.getClass().getMethod("getElapsedRunTime", TimeUnit.class).invoke(f, unit);
     }
 
     /**
@@ -298,6 +391,53 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
 
         cancelAfterTest.remove(blockerTaskFuture);
         assertTrue(blockerTaskFuture.cancel(true));
+    }
+
+    /**
+     * Attempt to submit 2 tasks via invokeAll where the second task's ManagedTaskListener fails during taskSubmitted
+     * (force a NamingException by looking up an invalid name). Expect the first task, although submitted, to be canceled
+     * when invokeAll is rejected.
+     */
+    @ExpectedFFDC("java.lang.RuntimeException")
+    @Test
+    public void testFailInvokeAllOnSecondSubmit() throws Exception {
+        TaskListener listener0 = new TaskListener();
+        TaskListener listener1 = new TaskListener().doLookup("concurrent/DoesNotExist", SUBMITTED).doRethrow(true, SUBMITTED);
+        List<CountingTask> tasks = Arrays.asList(new CountingTask(null, listener0, null, null),
+                                                 new CountingTask(null, listener1, null, null));
+
+        try {
+            List<Future<Integer>> futures = scheduledExecutor2.invokeAll(tasks, TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Should not be able to submit a group of tasks when one fails taskSubmitted. " + futures);
+        } catch (RuntimeException x) {
+            if (!RuntimeException.class.equals(x.getClass()) // exactly match what the ManagedTaskListener raises
+                || !(x.getCause() instanceof NamingException))
+                throw new Exception("Missing or unexpected cause or chained exception, see chained exceptions", x);
+        }
+
+        // First task submits successfully but is canceled before it starts.
+        assertCanceled(scheduledExecutor2, null, tasks.get(0), listener0, NOT_STARTED);
+
+        // Second task fails to submit and is immediately aborted.
+        listener1.failure[SUBMITTED] = null; // failure on submit intentional, suppress to avoid issue during validation
+        assertRejected(scheduledExecutor2, tasks.get(1), listener1, RuntimeException.class, "javax.naming.NameNotFoundException: concurrent/DoesNotExist");
+
+        // invokeAll doesn't return, but we can access the Futures from the ManagedTaskListeners
+        Future<?> future0 = listener0.future[SUBMITTED];
+        Future<?> future1 = listener1.future[SUBMITTED];
+
+        long time;
+
+        assertTrue((time = getElapsedAcceptTime(future0, TimeUnit.NANOSECONDS)) + "ns", time >= 0);
+        assertEquals(time, getElapsedAcceptTime(future0, TimeUnit.NANOSECONDS));
+        assertTrue((time = getElapsedQueueTime(future0, TimeUnit.NANOSECONDS)) + "ns", time >= 0);
+        assertEquals(time, getElapsedQueueTime(future0, TimeUnit.NANOSECONDS));
+        assertEquals(0, getElapsedRunTime(future0, TimeUnit.NANOSECONDS));
+
+        assertTrue((time = getElapsedAcceptTime(future1, TimeUnit.NANOSECONDS)) + "ns", time >= 0);
+        assertEquals(time, getElapsedAcceptTime(future1, TimeUnit.NANOSECONDS));
+        assertEquals(0, getElapsedQueueTime(future1, TimeUnit.NANOSECONDS));
+        assertEquals(0, getElapsedRunTime(future1, TimeUnit.NANOSECONDS));
     }
 
     /**

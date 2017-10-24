@@ -156,6 +156,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
             if (next != null) {
                 maxQueueSizeConstraint.release();
+                next.nsQueueEnd = System.nanoTime();
                 runTask(next);
             }
 
@@ -386,7 +387,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         try {
             if (wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS)) {
                 enqueued = queue.offer(policyTaskFuture);
-                policyTaskFuture.accept();
+                policyTaskFuture.accept(false);
 
                 int w = withheldConcurrency.incrementAndGet();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -410,7 +411,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
                                                                    && (!maxConcurrencyAppliesToCallerThread || (havePermit = maxConcurrencyConstraint.tryAcquire())))
                     try {
-                        policyTaskFuture.accept();
+                        policyTaskFuture.accept(true);
                         runTask(policyTaskFuture);
                         enqueued = false;
                     } finally {
@@ -546,7 +547,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     if (!enqueued) // must immediately return if ran on current thread and was interrupted
                         taskFuture.throwIfInterrupted();
                 } else {
-                    taskFuture.accept();
+                    taskFuture.accept(true);
                 }
 
             // run on current thread if possible
@@ -559,6 +560,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                             throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
                     } else if (!taskFuture.isDone() && currentState.canStartTask && queue.remove(taskFuture)) {
                         maxQueueSizeConstraint.release();
+                        taskFuture.nsQueueEnd = System.nanoTime();
                     } else {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "no longer in queue", taskFuture);
@@ -680,7 +682,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                         throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
 
                     PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, tasks.iterator().next(), callbacks == null ? null : callbacks[0]);
-                    taskFuture.accept();
+                    taskFuture.accept(true);
                     runTask(taskFuture);
 
                     // raise InterruptedException if current thread is interrupted
@@ -921,7 +923,6 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      */
     void runTask(PolicyTaskFutureImpl<?> future) {
         try {
-            future.nsQueueEnd = System.nanoTime();
             if (providerCreated != null) // the following code only matters when life cycle operations are permitted
                 running.add(future); // intentionally done before checking state to avoid missing cancels on shutdownNow
 

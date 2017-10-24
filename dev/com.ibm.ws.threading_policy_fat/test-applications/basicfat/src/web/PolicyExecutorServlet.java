@@ -2112,7 +2112,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testInvokeAllAbortIgnoredWhenConcurrencyUnlimited() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllAbortIgnoredWhenConcurrencyUnlimited")
-                        .maxConcurrencyAppliesToCallerThread(true)
+                        .maxConcurrencyAppliesToCallerThread(false)
                         .maxQueueSize(1)
                         .runIfQueueFull(false);
 
@@ -2133,6 +2133,15 @@ public class PolicyExecutorServlet extends FATServlet {
         }
 
         assertEquals(15, sum);
+
+        // Elapsed time for task that runs on current thread
+        PolicyTaskFuture<Integer> future = (PolicyTaskFuture<Integer>) futures.get(4);
+        long time;
+        assertTrue((time = future.getElapsedAcceptTime(TimeUnit.NANOSECONDS)) + "ns", time >= 0);
+        assertEquals(time, future.getElapsedAcceptTime(TimeUnit.NANOSECONDS)); // consistent value when repeated
+        assertEquals(0, future.getElapsedQueueTime(TimeUnit.NANOSECONDS));
+        assertTrue((time = future.getElapsedRunTime(TimeUnit.NANOSECONDS)) + "ns", time >= 0);
+        assertEquals(time, future.getElapsedRunTime(TimeUnit.NANOSECONDS)); // consistent value when repeated
 
         List<Runnable> canceledFromQueue = executor.shutdownNow();
         assertEquals(0, canceledFromQueue.size());
