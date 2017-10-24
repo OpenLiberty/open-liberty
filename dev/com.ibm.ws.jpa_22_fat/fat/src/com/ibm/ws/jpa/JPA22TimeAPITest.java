@@ -26,21 +26,21 @@ import jpa22timeapi.web.JPATimeAPITestServlet;
 
 @RunWith(FATRunner.class)
 public class JPA22TimeAPITest extends FATServletClient {
-	public static final String APP_NAME = "jpa22timeapi";
+    public static final String APP_NAME = "jpa22timeapi";
     public static final String SERVLET = "TestJPAAPI";
-    
+
     @Server("JPA22TimeAPIServer")
     @TestServlet(servlet = JPATimeAPITestServlet.class, path = APP_NAME + "/" + SERVLET)
     public static LibertyServer server1;
-    
+
     @BeforeClass
     public static void setUp() throws Exception {
-    		ShrinkHelper.defaultApp(server1, APP_NAME, "jpa22timeapi.web", "jpa22timeapi.entity");
-    		server1.startServer();
+        ShrinkHelper.defaultApp(server1, APP_NAME, "jpa22timeapi.web", "jpa22timeapi.entity");
+        server1.startServer();
     }
-    
+
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWWJP9991W"); // From Eclipselink drop-and-create tables option
     }
 }
