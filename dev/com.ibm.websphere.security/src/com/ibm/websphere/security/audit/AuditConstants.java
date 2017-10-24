@@ -24,8 +24,8 @@ public class AuditConstants {
     static public final String SIGN = "sign";
     static public final String ENCRYPT_ALIAS = "encryptAlias";
     static public final String ENCRYPT_KEYSTORE_REF = "encryptKeyStoreRef";
-    static public final String SIGNER_ALIAS = "signerAlias";
-    static public final String SIGNER_KEYSTORE_REF = "signerKeyStoreRef";
+    static public final String SIGNING_ALIAS = "signingAlias";
+    static public final String SIGNING_KEYSTORE_REF = "signingKeyStoreRef";
     static public final String WRAP_BEHAVIOR = "wrapBehavior";
     static public final String LOG_DIRECTORY = "logDirectory";
     static public final String EVENTS = "events";
