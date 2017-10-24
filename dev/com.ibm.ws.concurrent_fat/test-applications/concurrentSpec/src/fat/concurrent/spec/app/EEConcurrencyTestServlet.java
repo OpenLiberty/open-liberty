@@ -10,6 +10,8 @@
  *******************************************************************************/
 package fat.concurrent.spec.app;
 
+import static org.junit.Assert.assertEquals;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -63,6 +65,7 @@ import org.junit.Test;
 import com.ibm.wsspi.uow.UOWManager;
 import com.ibm.wsspi.uow.UOWManagerFactory;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 import fat.concurrent.spec.app.TaskListener.CancelType;
 
@@ -770,6 +773,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
     /**
      * Have ManagedTask.getExecutionProperties and ManagedTask.getManagedTaskListener raise exceptions.
      */
+    @ExpectedFFDC("java.lang.IllegalMonitorStateException") // intentionally raised by test case's ManagedTask implementation
     @Test
     public void testFailManagedTask() throws Exception {
         ManagedCounterTask task = new ManagedCounterTask();
@@ -1134,6 +1138,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
     /**
      * See what happens when ManagedTaskListener.taskAborted raises an error
      */
+    @ExpectedFFDC("java.lang.ArithmeticException") // Test case's ManagedTaskListener intentionally raises this error
     @Test
     public void testFailTaskAborted() throws Throwable {
         TaskListener listener = new TaskListener(true);
@@ -1218,6 +1223,16 @@ public class EEConcurrencyTestServlet extends FATServlet {
         } catch (ArithmeticException x) {
         } // pass
 
+        // Wait for events to be processed so that they don't cause unexpected FFDCs during other tests
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskSubmitted, event.type);
+
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskAborted, event.type);
+
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskDone, event.type);
+
         // Also test with the cancel during taskStarting
 
         listener = new TaskListener(true);
@@ -1294,10 +1309,21 @@ public class EEConcurrencyTestServlet extends FATServlet {
         try {
             Integer result = mxsvcNoContext.invokeAny(Collections.singleton(managedCallable));
             throw new Exception("invokeAny: expect task to be rejected when canceled during taskStarting. Result: " + result);
-        } catch (ExecutionException x) {
-            if (!(x.getCause() instanceof ArithmeticException))
-                throw new Exception("invokeAny: unexpected cause for ExecutionException", x);
-        }
+        } catch (CancellationException x) { // task was canceled, it did not start executing and throw an exception
+        } // pass
+
+        // Wait for events to be processed so that they don't cause unexpected FFDCs during other tests
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskSubmitted, event.type);
+
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskStarting, event.type);
+
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskAborted, event.type);
+
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskDone, event.type);
     }
 
     /**
@@ -1607,6 +1633,16 @@ public class EEConcurrencyTestServlet extends FATServlet {
         result = mxsvcNoContext.invokeAny(Collections.singleton(managedCallable));
         if (!Integer.valueOf(1).equals(result))
             throw new Exception("invokeAny: incorrect result for task: " + result);
+
+        // Wait for events to be processed so that they don't cause unexpected FFDCs during other tests
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskSubmitted, event.type);
+
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskStarting, event.type);
+
+        event = listener.events.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        assertEquals(TaskEvent.Type.taskDone, event.type);
     }
 
     /**
@@ -2117,6 +2153,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
     /**
      * See what happens when ManagedTaskListener.taskSubmitted raises an error
      */
+    @ExpectedFFDC("java.lang.ArithmeticException") // Test case's ManagedTaskListener intentionally raises this error
     @Test
     public void testFailTaskSubmitted() throws Exception {
         TaskListener listener = new TaskListener();
@@ -3688,7 +3725,7 @@ public class EEConcurrencyTestServlet extends FATServlet {
         try {
             Integer result = xsvcDefault.invokeAny(tasks);
             throw new Exception("invokeAny should not return result (" + result + ") when all tasks are canceled.");
-        } catch (ExecutionException x) {
+        } catch (CancellationException x) { // tasks were canceled, they did not start executing and throw an exception
         } // pass
 
         // invokeAny/task2: taskSubmitted
