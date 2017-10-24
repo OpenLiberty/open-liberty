@@ -11,6 +11,8 @@
 package com.ibm.ws.jsf.ee;
 
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.faces.application.ResourceDependencies;
 import javax.faces.application.ResourceDependency;
@@ -79,14 +81,21 @@ import com.ibm.ws.jsf.shared.JSFConstants.JSFImplEnabled;
         Validator.class
     })
 public class WASMyFacesContainerInitializer extends MyFacesContainerInitializer {
+    
+    private static final Logger log = Logger.getLogger(WASMyFacesContainerInitializer.class.getName());
 
     @Override
     public void onStartup(Set<Class<?>> clazzes, ServletContext servletContext) throws ServletException {
         super.onStartup(clazzes, servletContext);
         
-        // add the myfaces lifecycle listener; this is necessary since we removed
-        // startupservletcontextlistener registration from myfaces_core.tld
-        addLifecycleListener(servletContext);
+        Boolean mappingAdded = (Boolean) servletContext.getAttribute(MyFacesContainerInitializer.FACES_SERVLET_ADDED_ATTRIBUTE);
+        if (mappingAdded != null && mappingAdded) {
+            // add the myfaces lifecycle listener; this is necessary since we removed
+            // startupservletcontextlistener registration from myfaces_core.tld
+            addLifecycleListener(servletContext);
+            
+            log.log(Level.INFO, "Added StartupServletContextListener to the servlet context");
+        }
     }
     
     private void addLifecycleListener(ServletContext servletContext) {
