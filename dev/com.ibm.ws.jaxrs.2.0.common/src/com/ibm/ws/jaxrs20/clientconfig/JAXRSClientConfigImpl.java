@@ -146,6 +146,14 @@ public class JAXRSClientConfigImpl implements JAXRSClientConfig {
                 result = JAXRSClientConstants.OAUTH_HANDLER;
                 break;
             }
+            if (valueLower.equals("mpjwt")) {
+                result = JAXRSClientConstants.MPJWT_HANDLER;
+                break;
+            }
+            if (valueLower.equals("jwt")) {
+                result = JAXRSClientConstants.JWT_HANDLER;
+                break;
+            }
             if (valueLower.equals("ltpa")) {
                 result = JAXRSClientConstants.LTPA_HANDLER;
             }
