@@ -9,9 +9,10 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-	<featureManager>
-		<feature>jsfContainer-2.2</feature>
-	    <feature>componenttest-1.0</feature>
+    <featureManager>
+        <feature>jsfContainer-2.2</feature>
+        <feature>ejbLite-3.2</feature>
+	<feature>componenttest-1.0</feature>
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>

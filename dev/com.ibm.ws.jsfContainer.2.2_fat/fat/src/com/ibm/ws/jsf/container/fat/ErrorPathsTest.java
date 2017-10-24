@@ -87,7 +87,7 @@ public class ErrorPathsTest extends FATServletClient {
 
         server.startServer(testName.getMethodName() + ".log");
         try {
-            assertNotNull(server.waitForStringInLog(".*JSFG0103E:.*", 5000));
+            assertNotNull(server.waitForStringInLog(".*JSFG0103E:.*"));
         } finally {
             server.stopServer(".*"); // lots of stuff will go wrong in this error path test
         }
@@ -118,7 +118,7 @@ public class ErrorPathsTest extends FATServletClient {
 
         server.startServer(testName.getMethodName() + ".log");
         try {
-            assertNotNull(server.waitForStringInLog(".*JSFG0104E:.*", 5000));
+            assertNotNull(server.waitForStringInLog(".*JSFG0104E:.*"));
         } finally {
             server.stopServer(".*"); // lots of stuff will go wrong in this error path test
         }

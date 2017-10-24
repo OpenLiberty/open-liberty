@@ -25,6 +25,7 @@ test.project: true
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\

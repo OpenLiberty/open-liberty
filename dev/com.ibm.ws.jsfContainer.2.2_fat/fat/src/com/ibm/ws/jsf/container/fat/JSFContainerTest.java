@@ -10,9 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -38,15 +35,12 @@ public class JSFContainerTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive mojarraApp = ShrinkWrap.create(WebArchive.class, MOJARRA_APP + ".war")
-                        .addPackages(true, "jsf.container")
-                        .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"));
+        WebArchive mojarraApp = ShrinkHelper.buildDefaultApp(MOJARRA_APP, "jsf.container.bean");
         mojarraApp = FATSuite.addMojarra(mojarraApp);
         ShrinkHelper.exportToServer(server, "dropins", mojarraApp);
 
-        WebArchive myfacesApp = ShrinkWrap.create(WebArchive.class, MYFACES_APP + ".war")
-                        .addPackages(true, "jsf.container")
-                        .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"));
+        WebArchive myfacesApp = ShrinkHelper.buildDefaultApp(MYFACES_APP, "jsf.container.bean");
+        ShrinkHelper.addDirectory(myfacesApp, "test-applications/" + MOJARRA_APP + "/resources");
         mojarraApp = FATSuite.addMyFaces(myfacesApp);
         ShrinkHelper.exportToServer(server, "dropins", myfacesApp);
 
@@ -62,7 +56,7 @@ public class JSFContainerTest extends FATServletClient {
     public void testCDIBean_Mojarra() throws Exception {
         HttpUtils.findStringInReadyUrl(server, '/' + MOJARRA_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
-                                       ":CDIBean::PostConstructCalled:");
+                                       ":CDIBean::PostConstructCalled::EJB-injected:");
     }
 
     @Test
@@ -76,7 +70,7 @@ public class JSFContainerTest extends FATServletClient {
     public void testCDIBean_MyFaces() throws Exception {
         HttpUtils.findStringInReadyUrl(server, '/' + MYFACES_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
-                                       ":CDIBean::PostConstructCalled:");
+                                       ":CDIBean::PostConstructCalled::EJB-injected:");
     }
 
     @Test
