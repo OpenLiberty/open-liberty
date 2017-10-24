@@ -24,9 +24,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.webcontainer.async.AsyncContextImpl;
 import com.ibm.ws.webcontainer.webapp.WebApp;
+import com.ibm.ws.webcontainer31.async.listener.ReadListenerRunnable;
 import com.ibm.ws.webcontainer31.osgi.listener.RegisterEventListenerProvider;
 import com.ibm.ws.webcontainer31.osgi.osgi.WebContainerConstants;
 import com.ibm.ws.webcontainer31.osgi.webapp.WebApp31;
+import com.ibm.ws.webcontainer31.srt.SRTInputStream31;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedResponse;
@@ -184,6 +186,39 @@ public class AsyncContext31Impl extends AsyncContextImpl implements AsyncContext
         return readListenerRunning;
     }
     
+    /**
+     * A read listener has been set on the SRTInputStream and we will set it up to do its
+     * first read on another thread.
+     */
+    public void startReadListener(ThreadContextManager tcm, SRTInputStream31 inputStream) throws Exception{
+        try {
+            ReadListenerRunnable rlRunnable = new ReadListenerRunnable(tcm, inputStream, this);
+            this.setReadListenerRunning(true);
+            com.ibm.ws.webcontainer.osgi.WebContainer.getExecutorService().execute(rlRunnable);
+        
+            // The read listener will now be invoked on another thread.  Call pre-join to
+            // notify interested components that this will be happening.  It's possible that
+            // the read listener may run before the pre-join is complete, and callers need to
+            // be able to cope with that.
+            notifyITransferContextPreProcessWorkState();
+        } catch (Exception e) {
+            this.setReadListenerRunning(false);
+            throw e;
+        }
+    }
+
+    /**
+     * A read listener has been previously set on the SRTInputStream and we are out of data
+     * to pass to it.  An async read has been scheduled and we must prepare for the read to
+     * complete on another thrad.
+     */
+    public void continueReadListener() {
+        // The read listener will be invoked on another thread when more data is available.  
+        // Call pre-join to notify interested components that this will be happening.  It's 
+        // possible that the read listener may run before the pre-join is complete, and 
+        // callers need to be able to cope with that.
+        notifyITransferContextPreProcessWorkState();
+    }
     
     @Override
     public boolean runComplete() {
