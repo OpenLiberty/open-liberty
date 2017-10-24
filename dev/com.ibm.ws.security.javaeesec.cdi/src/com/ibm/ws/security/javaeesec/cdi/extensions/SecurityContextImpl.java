@@ -103,17 +103,14 @@ public class SecurityContextImpl implements SecurityContext {
         //Get the caller principal from the caller subject
         Subject callerSubject = getCallerSubject();
 
-        if (callerSubject == null) {
-            return null;
-        }
-
-        //Get the prinicipals by type
         if (callerSubject != null) {
+            //Get the prinicipals by type
             Set<T> principals = callerSubject.getPrincipals(arg0);
             return principals;
         }
 
         return null;
+
     }
 
     /*
@@ -137,21 +134,17 @@ public class SecurityContextImpl implements SecurityContext {
 
         AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
         if (authService != null) {
-            Subject callerSubject = getCallerSubject();
+            Subject callerSubject = null;
             String appName = getApplicationName();
             List<String> roles = new ArrayList<String>();
             roles.add(role);
-
-            if (callerSubject == null) {
-                return false;
-            }
 
             return authService.isAuthorized(appName, roles, callerSubject);
         }
         return false;
     }
 
-    protected Subject getCallerSubject() {
+    private Subject getCallerSubject() {
         Subject callerSubject = null;
         try {
             callerSubject = WSSubject.getRunAsSubject();
@@ -166,7 +159,7 @@ public class SecurityContextImpl implements SecurityContext {
         return callerSubject;
     }
 
-    protected String getApplicationName() {
+    private String getApplicationName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return cmd.getJ2EEName().getApplication();
     }
