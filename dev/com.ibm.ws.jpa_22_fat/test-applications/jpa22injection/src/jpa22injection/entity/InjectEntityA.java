@@ -7,37 +7,37 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="Inject_Ent_A")
+@Table(name = "Inject_Ent_A")
 public class InjectEntityA {
-	@Id
-	@GeneratedValue
-	private long id;
-	
-	@Basic
-	private String strData;
-	
-	public InjectEntityA() {
-		
-	}
+    @Id
+    @GeneratedValue
+    private long id;
 
-	public long getId() {
-		return id;
-	}
+    @Basic
+    private String strData;
 
-	public void setId(long id) {
-		this.id = id;
-	}
+    public InjectEntityA() {
 
-	public String getStrData() {
-		return strData;
-	}
+    }
 
-	public void setStrData(String strData) {
-		this.strData = strData;
-	}
+    public long getId() {
+        return id;
+    }
 
-	@Override
-	public String toString() {
-		return "InjectEntityA [id=" + id + ", strData=" + strData + "]";
-	}
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public String getStrData() {
+        return strData;
+    }
+
+    public void setStrData(String strData) {
+        this.strData = strData;
+    }
+
+    @Override
+    public String toString() {
+        return "InjectEntityA [id=" + id + ", strData=" + strData + "]";
+    }
 }

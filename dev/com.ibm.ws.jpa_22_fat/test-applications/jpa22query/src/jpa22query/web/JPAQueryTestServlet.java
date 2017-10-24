@@ -33,91 +33,92 @@ import jpa22query.entity.Employee;
 
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/TestJPA22Query")
-public class JPAQueryTestServlet  extends FATServlet {
-	@PersistenceContext(unitName="JPAPU")
-	private EntityManager em;
-	
-	@Resource
-	private UserTransaction tx;
-	
-	private static boolean tablesSetup = false;
-	
+public class JPAQueryTestServlet extends FATServlet {
+    @PersistenceContext(unitName = "JPAPU")
+    private EntityManager em;
+
+    @Resource
+    private UserTransaction tx;
+
+    private static boolean tablesSetup = false;
+
     private synchronized void setupTables() throws ServletException {
-    		if (tablesSetup) return;
-    		
-		try {
-			tx.begin();
-			
-			Employee emp1 = new Employee();
-			emp1.setFirstName("John");
-			emp1.setLastName("Doe");
-			emp1.setSalary(10000);
-			em.persist(emp1);
-			
-			Employee emp2 = new Employee();
-			emp2.setFirstName("Jane");
-			emp2.setLastName("Doe");
-			emp2.setSalary(20000);
-			em.persist(emp2);
-			
-			Employee emp3 = new Employee();
-			emp3.setFirstName("Joe");
-			emp3.setLastName("Cool");
-			emp3.setSalary(5000);
-			em.persist(emp3);
-			
-			tx.commit();
-		} catch (Exception e) {
-			throw new ServletException(e);
-		}
-		
-		tablesSetup = true;
+        if (tablesSetup)
+            return;
+
+        try {
+            tx.begin();
+
+            Employee emp1 = new Employee();
+            emp1.setFirstName("John");
+            emp1.setLastName("Doe");
+            emp1.setSalary(10000);
+            em.persist(emp1);
+
+            Employee emp2 = new Employee();
+            emp2.setFirstName("Jane");
+            emp2.setLastName("Doe");
+            emp2.setSalary(20000);
+            em.persist(emp2);
+
+            Employee emp3 = new Employee();
+            emp3.setFirstName("Joe");
+            emp3.setLastName("Cool");
+            emp3.setSalary(5000);
+            em.persist(emp3);
+
+            tx.commit();
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+
+        tablesSetup = true;
     }
-	
+
     @SuppressWarnings({ "rawtypes", "unchecked" })
-	@Test
-	@Mode(TestMode.LITE)
-	public void testJPA22QueryStream() throws Exception {
-		final String testName = "testJPA22QueryStream";
-		
-		System.out.println("STARTING " + testName + " ...");
-		
-		setupTables();
-		
-		try {
-			String qStr = "SELECT e FROM Employee e";
-			Query q = em.createQuery(qStr);
-			Stream empStream = q.getResultStream();
-			
-			final AtomicInteger ai = new AtomicInteger(0);
-			empStream.forEach( t -> ai.set(ai.get() + ((Employee) t).getSalary()));
-			
-			Assert.assertEquals(ai.get(), 35000);
-		} finally {
-			System.out.println("ENDING " + testName);
-		}
-	}
-    
-	@Test
-	@Mode(TestMode.LITE)
-	public void testJPA22TypedQueryStream() throws Exception {
-		final String testName = "testJPA22TypedQueryStream";
-		
-		System.out.println("STARTING " + testName + " ...");
-		
-		setupTables();
-		
-		try {
-			String qStr = "SELECT e FROM Employee e";
-			TypedQuery<Employee> tQuery = em.createQuery(qStr, Employee.class);
-			Stream<Employee> empStream = tQuery.getResultStream();
-			
-			final AtomicInteger ai = new AtomicInteger(0);
-			empStream.forEach( t -> ai.set(ai.get() + t.getSalary()));
-			
-			Assert.assertEquals(ai.get(), 35000);
-		} finally {
-			System.out.println("ENDING " + testName);
-		}
-	}
+    @Test
+    @Mode(TestMode.LITE)
+    public void testJPA22QueryStream() throws Exception {
+        final String testName = "testJPA22QueryStream";
+
+        System.out.println("STARTING " + testName + " ...");
+
+        setupTables();
+
+        try {
+            String qStr = "SELECT e FROM Employee e";
+            Query q = em.createQuery(qStr);
+            Stream empStream = q.getResultStream();
+
+            final AtomicInteger ai = new AtomicInteger(0);
+            empStream.forEach(t -> ai.set(ai.get() + ((Employee) t).getSalary()));
+
+            Assert.assertEquals(ai.get(), 35000);
+        } finally {
+            System.out.println("ENDING " + testName);
+        }
+    }
+
+    @Test
+    @Mode(TestMode.LITE)
+    public void testJPA22TypedQueryStream() throws Exception {
+        final String testName = "testJPA22TypedQueryStream";
+
+        System.out.println("STARTING " + testName + " ...");
+
+        setupTables();
+
+        try {
+            String qStr = "SELECT e FROM Employee e";
+            TypedQuery<Employee> tQuery = em.createQuery(qStr, Employee.class);
+            Stream<Employee> empStream = tQuery.getResultStream();
+
+            final AtomicInteger ai = new AtomicInteger(0);
+            empStream.forEach(t -> ai.set(ai.get() + t.getSalary()));
+
+            Assert.assertEquals(ai.get(), 35000);
+        } finally {
+            System.out.println("ENDING " + testName);
+        }
+    }
 }
