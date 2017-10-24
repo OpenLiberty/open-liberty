@@ -12,7 +12,6 @@ package com.ibm.ws.jaxrs21.sse.fat;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -54,13 +53,7 @@ public class SseJsonbTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKE1102W");
-    }
-
-    @After
-    public void after() throws Exception {
-        //sleep to give connections time to clean up???
-        Thread.sleep(5000);
+        server.stopServer();
     }
 
     @Test

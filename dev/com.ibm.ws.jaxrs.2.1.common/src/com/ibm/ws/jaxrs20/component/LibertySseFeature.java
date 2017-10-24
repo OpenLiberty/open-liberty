@@ -10,48 +10,31 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.component;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-import org.apache.cxf.Bus;
-import org.apache.cxf.endpoint.Server;
-import org.apache.cxf.feature.AbstractFeature;
-import org.apache.cxf.feature.Feature;
-import org.apache.cxf.jaxrs.provider.ServerProviderFactory;
 import org.apache.cxf.jaxrs.sse.SseContextProvider;
 import org.osgi.service.component.annotations.Component;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister;
 import com.ibm.ws.jaxrs21.sse.LibertySseEventSinkContextProvider;
 
 /**
- * This feature is a DS service, allowing it to be auto registered via
- * the JaxRsWebEndpointConfigurator. It extends CXF's SseFeature, but
- * also provides additional configuration that is more specific to
- * Liberty.
+ * This class registers the SSE providers - specifically the
+ * <code>LibertySseEventSinkContextProvider</code> and
+ * <code>SseContextProvider</code>.
  */
 @Component(immediate = true)
-public class LibertySseFeature extends AbstractFeature implements Feature {
-    @SuppressWarnings("unused")
-    private final static TraceComponent tc = Tr.register(LibertySseFeature.class);
-
-    public LibertySseFeature() {
-        super();
-    }
+public class LibertySseFeature implements JaxRsProviderRegister {
 
     /* (non-Javadoc)
-     * @see org.apache.cxf.feature.Feature#initialize(org.apache.cxf.endpoint.Server, org.apache.cxf.Bus)
+     * @see com.ibm.ws.jaxrs20.providers.api.JaxRsProviderRegister#installProvider(boolean, java.util.List, java.util.Set)
      */
     @Override
-    public void initialize(Server server, Bus bus) {
-        List<Object> providers = new ArrayList<>();
-
-        providers.add(new LibertySseEventSinkContextProvider());
-        providers.add(new SseContextProvider());
-
-        ((ServerProviderFactory)server.getEndpoint().get(ServerProviderFactory.class
-                                                         .getName())).setUserProviders(providers);
+    public void installProvider(boolean clientSide, List<Object> providers, Set<String> features) {
+        if (!clientSide) {
+            providers.add(new LibertySseEventSinkContextProvider());
+            providers.add(new SseContextProvider());
+        }
     }
-
 }
