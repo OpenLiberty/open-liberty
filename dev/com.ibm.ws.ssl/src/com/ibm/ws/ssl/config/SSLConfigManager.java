@@ -43,6 +43,7 @@ import com.ibm.websphere.ssl.SSLException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ssl.JSSEProviderFactory;
 import com.ibm.ws.ssl.internal.LibertyConstants;
+import com.ibm.ws.ssl.internal.SSLConfigValidator;
 import com.ibm.ws.ssl.provider.AbstractJSSEProvider;
 
 /**
@@ -86,6 +87,8 @@ public class SSLConfigManager {
 
     private Map<String, String> aliasPIDs = null; // map LDAP ssl ref, example com.ibm.ws.ssl.repertoire_102 to LDAPSettings. Issue 876
 
+    SSLConfigValidator validator = new SSLConfigValidator();
+
     /**
      * Private constructor, use getInstance().
      */
@@ -105,9 +108,13 @@ public class SSLConfigManager {
     /***
      * This method parses the configuration.
      *
-     * @param properties
-     * @param reinitialize
-     * @param transportSecurityEnabled
+     * @param map Global SSL configuration properties, most likely injected from SSLComponent
+     * @param repertoires Map of ID-indexed repertoire properties
+     * @param keystores Map of ID-indexed WSKeySTore objects
+     * @param reinitialize Boolean flag to indicate if the configuration should be re-loaded
+     * @param isServer Boolean flag to indiciate if the code is running within a server process
+     * @param transportSecurityEnabled Boolean flag to indicate if the transportSecurity-1.0 feature is enabled
+     * @param aliasPIDs Map of OSGi PID-indexed repertoire IDs
      * @throws Exception
      ***/
     public synchronized void initializeSSL(Map<String, Object> map,
@@ -248,6 +255,8 @@ public class SSLConfigManager {
         }
 
         checkURLHostNameVerificationProperty(reinitialize);
+
+        validator.validate(map, repertoires, keystores);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Total Number of SSLConfigs: " + sslConfigMap.size());
@@ -428,16 +437,16 @@ public class SSLConfigManager {
 
         String enabledCiphers = getSystemProperty(Constants.SSLPROP_ENABLED_CIPHERS);
         if (enabledCiphers != null && 0 < enabledCiphers.length()) {
-	    //Removing extra white space
-	    StringBuffer buf = new StringBuffer();
-	    String[] ciphers = enabledCiphers.split("\\s+");
-	    for (int i=0; i < ciphers.length; i++) {
-		buf.append(ciphers[i]);
-		buf.append(" ");
-	    }
-	    enabledCiphers = buf.toString().trim();
+            //Removing extra white space
+            StringBuffer buf = new StringBuffer();
+            String[] ciphers = enabledCiphers.split("\\s+");
+            for (int i = 0; i < ciphers.length; i++) {
+                buf.append(ciphers[i]);
+                buf.append(" ");
+            }
+            enabledCiphers = buf.toString().trim();
             sslprops.setProperty(Constants.SSLPROP_ENABLED_CIPHERS, enabledCiphers);
-	}
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "Saving SSLConfig." + sslprops.toString());
@@ -1708,5 +1717,9 @@ public class SSLConfigManager {
 
     public String getPossibleActualID(String aliasPID) {
         return aliasPIDs == null ? null : aliasPIDs.get(aliasPID);
+    }
+
+    public void setConfigValidator(SSLConfigValidator validator) {
+        this.validator = validator;
     }
 }
