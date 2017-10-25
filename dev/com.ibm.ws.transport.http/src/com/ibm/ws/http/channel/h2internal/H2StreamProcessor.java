@@ -150,7 +150,14 @@ public class H2StreamProcessor {
         }
         this.frameType = FrameTypes.SETTINGS;
         try {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "completeConnectionPreface processNextFrame-:  stream: " + myID + " frame type: " + currentFrame.getFrameType().toString() + " direction: "
+                             + Direction.WRITING_OUT
+                             + " H2InboundLink hc: " + muxLink.hashCode());
+            }
+
             this.writeFrameSync();
+
         } catch (FlowControlException e) {
             // FlowControlException can only occur writing DATA frames
         }
@@ -158,7 +165,14 @@ public class H2StreamProcessor {
             // the user has changed the max connection read window, so we'll update that now
             currentFrame = new FrameWindowUpdate(0, (int) muxLink.maxReadWindowSize, false);
             try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "completeConnectionPreface processNextFrame-:  stream: " + myID + " frame type: " + currentFrame.getFrameType().toString() + " direction: "
+                                 + Direction.WRITING_OUT
+                                 + " H2InboundLink hc: " + muxLink.hashCode());
+                }
+
                 this.writeFrameSync();
+
             } catch (FlowControlException e) {
                 // FlowControlException can only occur writing DATA frames
             }
@@ -170,7 +184,8 @@ public class H2StreamProcessor {
         // Make it easy to follow frame processing in the trace by searching for "processNextFrame-" to see all fraame processing
         boolean doDebugWhile = false;
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "processNextFrame-entry:  stream: " + myID + " frame type: " + frame.getFrameType().toString() + " direction: " + direction.toString());
+            Tr.debug(tc, "processNextFrame-entry:  stream: " + myID + " frame type: " + frame.getFrameType().toString() + " direction: " + direction.toString()
+                         + " H2InboundLink hc: " + muxLink.hashCode());
         }
         if (isStreamClosed()) {
             // Handle Read or Write while the stream is closed.
@@ -496,13 +511,25 @@ public class H2StreamProcessor {
     }
 
     private void readWriteTransitionState(Constants.Direction direction) throws Http2Exception {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "readWriteTransitionState: entry: frame type: " + currentFrame.getFrameType() + " state: " + state);
+        }
+
         if (currentFrame.getFrameType() == FrameTypes.GOAWAY
             || currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
+
             writeFrameSync();
             this.updateStreamState(StreamState.CLOSED);
+
             if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
                 muxLink.goAway();
             }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "readWriteTransitionState: return: state: " + state);
+            }
+
             return;
         }
         switch (state) {
@@ -538,6 +565,11 @@ public class H2StreamProcessor {
                 break;
 
         }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "readWriteTransitionState: exit: state: " + state);
+        }
+
     }
 
     /**
@@ -602,6 +634,19 @@ public class H2StreamProcessor {
                 muxLink.triggerStreamClose(this);
                 updateStreamState(StreamState.CLOSED);
 
+            } else if (frameType == FrameTypes.HEADERS || frameType == FrameTypes.CONTINUATION) {
+                if (currentFrame.flagEndHeadersSet()) {
+                    setContinuationFrameExpected(false);
+                    //if (currentFrame.flagEndStreamSet()) {
+                    //    endStream = true;
+                    // updateStreamState(StreamState.CLOSED);
+                    //}
+                } else {
+                    setContinuationFrameExpected(true);
+                    //if (currentFrame.flagEndStreamSet()) {
+                    //    endStream = true;
+                    //}
+                }
             }
         } else if (currentFrame.getFrameType() == FrameTypes.RST_STREAM) {
             endStream = true;
@@ -631,7 +676,7 @@ public class H2StreamProcessor {
     }
 
     /**
-     * Helper method to process a SETTINGS frame received from the client.  Since the protocol utilizes SETTINGS frames for
+     * Helper method to process a SETTINGS frame received from the client. Since the protocol utilizes SETTINGS frames for
      * initialization, some special logic is needed.
      */
     private void processSETTINGSFrame() {
@@ -666,7 +711,14 @@ public class H2StreamProcessor {
             currentFrame.setAckFlag();
 
             try {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "completeConnectionPreface processNextFrame-:  stream: " + myID + " frame type: " + currentFrame.getFrameType().toString() + " direction: "
+                                 + Direction.WRITING_OUT
+                                 + " H2InboundLink hc: " + muxLink.hashCode());
+                }
+
                 writeFrameSync();
+
             } catch (FlowControlException e) {
                 // FlowControlException cannot occur for FrameTypes.SETTINGS, so do nothing here but debug
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
