@@ -3,7 +3,7 @@ package com.ibm.ws.cdi12.fat.tests;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.custom.junit.runner.Mode;
@@ -12,7 +12,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class CDI12WebServicesTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12WebServicesServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12WebServicesServer");
 
     /*
      * (non-Javadoc)
@@ -20,7 +20,7 @@ public class CDI12WebServicesTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

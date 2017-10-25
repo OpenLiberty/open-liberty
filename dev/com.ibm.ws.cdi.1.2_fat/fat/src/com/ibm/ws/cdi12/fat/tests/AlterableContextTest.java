@@ -14,7 +14,7 @@ package com.ibm.ws.cdi12.fat.tests;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.custom.junit.runner.Mode;
@@ -30,11 +30,11 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class AlterableContextTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12AlterableContextServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12AlterableContextServer");
 
     /** {@inheritDoc} */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         // TODO Auto-generated method stub
         return SHARED_SERVER;
     }

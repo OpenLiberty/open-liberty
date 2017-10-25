@@ -17,7 +17,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
@@ -31,7 +31,7 @@ public class CDI12ExtensionTest extends LoggingTest {
 
     // @ClassRule
     // Create the server.
-    public static ShrinkWrapServer EXTENSION_SERVER = new ShrinkWrapServer("cdi12RuntimeExtensionServer");
+    public static ShutDownSharedServer EXTENSION_SERVER = new ShutDownSharedServer("cdi12RuntimeExtensionServer");
     public static String INSTALL_USERBUNDLE = "cdi.helloworld.extension_1.0.0";
     public static String INSTALL_USERFEATURE = "cdi.helloworld.extension";
 
@@ -44,7 +44,7 @@ public class CDI12ExtensionTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return EXTENSION_SERVER;
     }
 

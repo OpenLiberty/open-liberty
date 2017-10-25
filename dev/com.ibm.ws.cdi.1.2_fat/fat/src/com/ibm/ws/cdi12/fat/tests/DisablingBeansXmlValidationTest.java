@@ -14,7 +14,7 @@ package com.ibm.ws.cdi12.fat.tests;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.custom.junit.runner.Mode;
@@ -24,7 +24,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 public class DisablingBeansXmlValidationTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12NoBeansXmlValidationServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12NoBeansXmlValidationServer");
 
     /*
      * (non-Javadoc)
@@ -32,7 +32,7 @@ public class DisablingBeansXmlValidationTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

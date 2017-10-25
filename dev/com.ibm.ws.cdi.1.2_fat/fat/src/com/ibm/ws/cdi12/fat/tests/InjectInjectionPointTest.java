@@ -15,7 +15,7 @@ import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.annotation.AllowedFFDC;
@@ -23,7 +23,7 @@ import componenttest.annotation.AllowedFFDC;
 public class InjectInjectionPointTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12InjectInjectionPointServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12InjectInjectionPointServer");
 
     /*
      * (non-Javadoc)
@@ -31,7 +31,7 @@ public class InjectInjectionPointTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

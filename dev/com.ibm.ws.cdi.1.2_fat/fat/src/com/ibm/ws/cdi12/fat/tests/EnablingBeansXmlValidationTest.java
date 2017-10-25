@@ -17,7 +17,7 @@ import static org.junit.Assert.fail;
 import org.junit.AfterClass;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.annotation.ExpectedFFDC;
@@ -63,7 +63,7 @@ public class EnablingBeansXmlValidationTest extends LoggingTest {
      * @see com.ibm.ws.fat.util.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
 
         return null;
     }

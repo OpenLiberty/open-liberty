@@ -27,7 +27,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.ProgramOutput;
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
@@ -70,12 +70,12 @@ import componenttest.topology.impl.LibertyClientFactory;
 public class VisTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("visTestServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("visTestServer");
 
     public static Logger LOG = Logger.getLogger(VisTest.class.getName());
 
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

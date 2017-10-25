@@ -13,17 +13,15 @@ package com.ibm.ws.cdi12.fat.tests;
 
 import java.net.MalformedURLException;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 import com.ibm.ws.fat.util.browser.WebResponse;
+import com.ibm.xtq.common.utils.Assert;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -33,7 +31,7 @@ public class ConversationFilterTest extends LoggingTest {
     private static LibertyServer server;
 
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return null;
     }
 
@@ -41,10 +39,6 @@ public class ConversationFilterTest extends LoggingTest {
     public static void setUp() throws Exception {
         server = LibertyServerFactory.getStartedLibertyServer("conversationFilterServer");
         server.waitForStringInLogUsingMark("CWWKZ0001I.*Application appConversationFilter started");
-
-        for (Archive archive : ShrinkWrapServer.getAppsForServer("conversationFilterServer")) {
-            ShrinkHelper.exportDropinAppToServer(server, archive);
-        }
     }
 
     @Test

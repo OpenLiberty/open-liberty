@@ -1,15 +1,11 @@
 package com.ibm.ws.cdi12.fat.tests.implicit;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 
@@ -27,14 +23,6 @@ public class ImplicitBeanArchiveTest extends LoggingTest {
 
     @ClassRule
     public static final TestRule startAndStopServerRule = ServerRules.startAndStopAutomatically(server);
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        for (Archive archive : ShrinkWrapServer.getAppsForServer("cdi12ImplicitServer")) {
-            ShrinkHelper.exportDropinAppToServer(server, archive);
-        }
-
-    }
 
     @Rule
     public final TestRule runAll = TestRules.runAllUsingTestNames(server).usingApp("implicitBeanArchive").andServlet("");

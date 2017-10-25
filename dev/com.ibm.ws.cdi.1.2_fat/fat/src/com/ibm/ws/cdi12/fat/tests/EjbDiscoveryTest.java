@@ -18,7 +18,7 @@ import static org.junit.Assert.assertThat;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 /**
@@ -27,10 +27,10 @@ import com.ibm.ws.fat.util.LoggingTest;
 public class EjbDiscoveryTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12EjbDiscoveryServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12EjbDiscoveryServer");
 
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 
