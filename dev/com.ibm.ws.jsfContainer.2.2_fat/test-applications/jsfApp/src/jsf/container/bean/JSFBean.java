@@ -14,6 +14,7 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.bean.ManagedBean;
 
@@ -23,10 +24,16 @@ public class JSFBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private String data = ":" + getClass().getSimpleName() + ":";
 
+    // Mojarra does not support @EJB, but MyFaces does
+    @EJB
+    TestEJB ejb;
+
     @PostConstruct
     public void start() {
         System.out.println("JSFBean postConstruct called");
         this.data += ":PostConstructCalled:";
+        if (ejb != null && ejb.verifyPostConstruct())
+            this.data += ":EJB-injected:";
         System.out.println("JSFBean data is: " + data);
     }
 

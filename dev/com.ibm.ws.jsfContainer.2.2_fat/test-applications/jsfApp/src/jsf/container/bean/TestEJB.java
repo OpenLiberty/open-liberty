@@ -13,21 +13,18 @@ package jsf.container.bean;
 import javax.annotation.PostConstruct;
 import javax.ejb.Stateless;
 
-import junit.framework.Assert;
-
 @Stateless
 public class TestEJB {
 
-    protected static boolean postConstructCalled;
+    protected boolean postConstructCalled;
 
     @PostConstruct
     public void postConstruct() {
         postConstructCalled = true;
     }
 
-    public void verifyPostConstruct() {
-        if (!postConstructCalled)
-            Assert.assertTrue("postConstruct() has not been called!", postConstructCalled);
+    public boolean verifyPostConstruct() {
+        return postConstructCalled;
     }
 
 }

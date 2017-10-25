@@ -67,9 +67,7 @@ public class ErrorPathsTest extends FATServletClient {
      * manifest header in the JSF API jar
      */
     @Test
-    @AllowedFFDC({ "java.lang.StackOverflowError", // Mojarra happens to call getApplication() while getting an error message, so tolerate but don't expect this behavior
-                   "java.lang.RuntimeException",
-                   "java.lang.NullPointerException" })
+    @AllowedFFDC
     public void testBadApiVersion() throws Exception {
         // Build test app with that has JSF spec API Specification-Version of 2.1
         JavaArchive badApiJar = ShrinkWrap.create(JavaArchive.class)
@@ -98,9 +96,7 @@ public class ErrorPathsTest extends FATServletClient {
      * manifest header in the JSF impl jar
      */
     @Test
-    @AllowedFFDC({ "java.lang.StackOverflowError", // Mojarra happens to call getApplication() while getting an error message, so tolerate but don't expect this behavior
-                   "java.lang.RuntimeException",
-                   "java.lang.NullPointerException" })
+    @AllowedFFDC
     public void testBadImplVersion() throws Exception {
         // Build test app with that has JSF spec API Specification-Version of 2.1
         JavaArchive badImplJar = ShrinkWrap.create(JavaArchive.class)
