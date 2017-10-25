@@ -20,6 +20,7 @@ import java.io.PrintWriter;
 import java.io.Writer;
 import java.lang.instrument.Instrumentation;
 import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -515,11 +516,17 @@ public class FrameworkManager {
         PlatformMBeanServerBuilder.addPlatformMBeanServerBuilderListener(new PlatformMBeanServerBuilderListener() {
             @Override
             @FFDCIgnore(IllegalStateException.class)
-            public void platformMBeanServerCreated(MBeanServerPipeline pipeline) {
+            public void platformMBeanServerCreated(final MBeanServerPipeline pipeline) {
                 if (pipeline != null) {
-                    Hashtable<String, String> svcProps = new Hashtable<String, String>();
+                    final Hashtable<String, String> svcProps = new Hashtable<String, String>();
                     try {
-                        systemContext.registerService(MBeanServerPipeline.class.getName(), pipeline, svcProps);
+                        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                            @Override
+                            public Void run() {
+                                systemContext.registerService(MBeanServerPipeline.class.getName(), pipeline, svcProps);
+                                return null;
+                            }
+                        });
                     } catch (IllegalStateException ise) { /* This instance of the system bundle is no longer valid. Ignore it. */
                     }
                 }
