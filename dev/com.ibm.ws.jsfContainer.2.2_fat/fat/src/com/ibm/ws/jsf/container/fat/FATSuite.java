@@ -34,21 +34,11 @@ public class FATSuite {
     public static final String MOJARRA_IMPL = "publish/files/mojarra/jsf-impl-2.2.14.jar";
 
     public static WebArchive addMojarra(WebArchive app) throws Exception {
-        app = app.addAsLibrary(new File(MOJARRA_API))
-                        .addAsLibrary(new File(MOJARRA_IMPL));
-
-        return app;
+        return app.addAsLibraries(new File("publish/files/mojarra/").listFiles());
     }
 
     public static WebArchive addMyFaces(WebArchive app) throws Exception {
-        app = app.addAsLibrary(new File("publish/files/myfaces/myfaces-api-2.2.12.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/myfaces-impl-2.2.12.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-digester-1.8.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-collections-3.2.1.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-logging-1.1.3.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-beanutils-1.8.3.jar"));
-
-        return app;
+        return app.addAsLibraries(new File("publish/files/myfaces/").listFiles());
     }
 
 }

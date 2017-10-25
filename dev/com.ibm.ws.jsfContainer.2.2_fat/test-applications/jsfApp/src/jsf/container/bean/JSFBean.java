@@ -25,13 +25,14 @@ public class JSFBean implements Serializable {
 
     @PostConstruct
     public void start() {
-        System.out.println("TestBean postConstruct called");
+        System.out.println("JSFBean postConstruct called");
         this.data += ":PostConstructCalled:";
+        System.out.println("JSFBean data is: " + data);
     }
 
     @PreDestroy
     public void stop() {
-        System.out.println("TestBean preDestroy called.");
+        System.out.println("JSFBean preDestroy called.");
     }
 
     public void setData(String newData) {
