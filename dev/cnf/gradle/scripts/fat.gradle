@@ -317,14 +317,14 @@ assemble {
 }
 
 build {
-  // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
+  // Skip out on 'build' unless top-level gradle invocation contains "fat"
   if(!buildFatEnabled) {
     enabled = false;
     dependsOn = [];
   }
 }
 
-task buildfat {
+buildfat {
   dependsOn build
 }
 
