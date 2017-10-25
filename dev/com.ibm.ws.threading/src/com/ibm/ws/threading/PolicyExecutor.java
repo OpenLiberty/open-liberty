@@ -162,6 +162,20 @@ public interface PolicyExecutor extends ExecutorService {
     PolicyExecutor runIfQueueFull(boolean runIfFull);
 
     /**
+     * Specifies a number of milliseconds, starting at task submit, after which a task should not start. The default value of -1 means no timeout.
+     * Execution property com.ibm.ws.concurrent.START_TIMEOUT_NANOS overrides on a per-task basis.
+     * Note that if both maxWaitForEnqueue and startTimeout are enabled, the startTimeout should be configured larger than the maxWaitForEnqueue
+     * such that remains possible to start tasks after they have waited for a queue position.
+     *
+     * @param ms number of milliseconds beyond which a task should not start.
+     * @return the executor.
+     * @throws IllegalArgumentException if value is negative (other than -1) or too large to convert to a nanosecond <code>long</code> value.
+     * @throws IllegalStateException if the executor has been shut down.
+     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
+     */
+    PolicyExecutor startTimeout(long ms);
+
+    /**
      * Submit a Callable task with a callback to be invoked at various points in the task's life cycle.
      *
      * @see java.util.concurrent.ExecutorService#submit(java.util.concurrent.Callable)

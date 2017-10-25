@@ -4297,6 +4297,60 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
+    // Submit a task that gets queued but times out (due to startTimeout) before it can run.
+    @Test
+    public void testStartTimeout() throws Exception {
+        PolicyExecutor executor = provider.create("testStartTimeout")
+                        .maxConcurrency(1)
+                        .startTimeout(300);
+        // Use up maxConcurrency so that no other tasks can start
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+        CountDownTask blockerTask = new CountDownTask(unused, blocker, TIMEOUT_NS * 2);
+        PolicyTaskFuture<Boolean> blockerFuture = (PolicyTaskFuture<Boolean>) executor.submit(blockerTask);
+
+        // Assume that we can get a task to submit in under 300ms if we try enough times, even if test infrastructure that we are running on is very slow and suffers delays
+        AtomicInteger counter = new AtomicInteger();
+        PolicyTaskFuture<Integer> future = null;
+        for (int i = 0; i < 20 && future == null; i++)
+            try {
+                future = (PolicyTaskFuture<Integer>) executor.submit(new SharedIncrementTask(counter), 1);
+            } catch (RejectedExecutionException x) {
+            } // pass - timed out too soon TODO check exception message to confirm
+        assertNotNull(future);
+
+        // Wait just long enough to time out the queued task
+        long delayMS = 300 - future.getElapsedAcceptTime(TimeUnit.MILLISECONDS) - future.getElapsedQueueTime(TimeUnit.MILLISECONDS) + 2;
+        if (delayMS > 0)
+            assertFalse(blocker.await(delayMS, TimeUnit.MILLISECONDS));
+
+        // Let the blocking task finish so that the queued task can attempt to run
+        blocker.countDown();
+
+        // Task must aborted due to start timeout
+        try {
+            Integer result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Task should be been aborted, instead result is: " + result);
+        } catch (RejectedExecutionException x) {
+            // TODO check the message of the cause exception once we add it
+        } // pass - aborted due to timeout
+
+        // Task must have 0 run time, and its queue time must stop changing after abort
+        long queueTimeNS = future.getElapsedQueueTime(TimeUnit.NANOSECONDS);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        assertEquals(0, future.getElapsedRunTime(TimeUnit.NANOSECONDS));
+        assertEquals(queueTimeNS, future.getElapsedQueueTime(TimeUnit.NANOSECONDS));
+
+        // Additional testing for the measured run time of the blocker task
+        assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        long runTimeMS = blockerFuture.getElapsedRunTime(TimeUnit.MILLISECONDS);
+        assertTrue(runTimeMS + "ms, " + delayMS + "ms", runTimeMS >= delayMS);
+        assertEquals(runTimeMS, blockerFuture.getElapsedRunTime(TimeUnit.MILLISECONDS));
+
+        assertEquals(Collections.EMPTY_LIST, executor.shutdownNow());
+    }
+
     //Ensure that a policy executor can be obtained from the injected provider
     @Test
     public void testGetPolicyExecutor() throws Exception {

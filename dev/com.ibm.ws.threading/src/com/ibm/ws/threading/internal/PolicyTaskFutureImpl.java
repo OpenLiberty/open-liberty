@@ -64,12 +64,17 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     /**
      * Nanosecond timestamp when this Future was created.
      */
-    private final long nsAcceptBegin = System.nanoTime();
+    final long nsAcceptBegin = System.nanoTime();
 
     /**
      * Nanosecond timestamps for various points in the task life cycle, initialized to unset (1 less than previous timestamp).
      */
     volatile long nsAcceptEnd = nsAcceptBegin - 1, nsQueueEnd = nsAcceptBegin - 2, nsRunEnd = nsAcceptBegin - 3;
+
+    /**
+     * Nanosecond timestamp by which the task must start. A value of <code>nsAcceptBegin - 1</code> indicates startTimeout is not enabled.
+     */
+    final long nsStartBy;
 
     /**
      * Predefined result, if any, for Runnable tasks.
@@ -280,13 +285,14 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     }
 
     @FFDCIgnore(RejectedExecutionException.class)
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, long startTimeoutNS) {
         if (task == null)
             throw new NullPointerException();
         this.callable = executor.globalExecutor.wrap(task);
         this.callback = callback;
         this.executor = executor;
         this.latch = null;
+        this.nsStartBy = nsAcceptBegin + startTimeoutNS;
         this.predefinedResult = null;
         this.runnable = null;
         this.task = task;
@@ -307,13 +313,14 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     }
 
     @FFDCIgnore(RejectedExecutionException.class)
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyLatch latch) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, long startTimeoutNS, InvokeAnyLatch latch) {
         if (task == null)
             throw new NullPointerException();
         this.callable = executor.globalExecutor.wrap(task);
         this.callback = callback;
         this.executor = executor;
         this.latch = latch;
+        this.nsStartBy = nsAcceptBegin + startTimeoutNS;
         this.predefinedResult = null;
         this.runnable = null;
         this.task = task;
@@ -334,13 +341,14 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     }
 
     @FFDCIgnore(RejectedExecutionException.class)
-    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback) {
+    PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback, long startTimeoutNS) {
         if (task == null)
             throw new NullPointerException();
         this.callable = null;
         this.callback = callback;
         this.executor = executor;
         this.latch = null;
+        this.nsStartBy = nsAcceptBegin + startTimeoutNS;
         this.predefinedResult = predefinedResult;
         this.runnable = executor.globalExecutor.wrap(task);
         this.task = task;
