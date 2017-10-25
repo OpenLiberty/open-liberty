@@ -49,10 +49,11 @@ public abstract class FATServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("BEGIN " + request.getRequestURL() + '?' + request.getQueryString());
-
-        PrintWriter writer = response.getWriter();
         String method = request.getParameter(TEST_METHOD);
+
+        System.out.println(">>> BEGIN: " + method);
+        System.out.println("Request URL: " + request.getRequestURL() + '?' + request.getQueryString());
+        PrintWriter writer = response.getWriter();
         if (method != null && method.length() > 0) {
             try {
                 before();
@@ -97,7 +98,7 @@ public abstract class FATServlet extends HttpServlet {
         writer.flush();
         writer.close();
 
-        System.out.println("END");
+        System.out.println("<<< END:   " + method);
     }
 
     /**

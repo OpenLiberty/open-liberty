@@ -22,4 +22,4 @@ test.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest
+	com.ibm.websphere.javaee.validation.2.0;version=latest
