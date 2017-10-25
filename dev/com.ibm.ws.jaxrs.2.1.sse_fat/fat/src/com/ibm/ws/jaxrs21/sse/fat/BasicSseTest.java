@@ -76,4 +76,9 @@ public class BasicSseTest extends FATServletClient {
         runTest(server, SERVLET_PATH, "testJsonSse");
     }
 
+    @Test
+    public void testSseWithRX() throws Exception {
+        runTest(server, SERVLET_PATH, "testSseWithRX");
+    }
+
 }
