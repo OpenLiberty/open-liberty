@@ -255,6 +255,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
             String runIfQueueFull = (String) properties.get("runIfQueueFull");
             if (runIfQueueFull != null)
                 policyExecutor.runIfQueueFull(Boolean.parseBoolean(runIfQueueFull));
+            String startTimeout = (String) properties.get("startTimeout");
+            if (startTimeout != null)
+                policyExecutor.startTimeout(Long.parseLong(startTimeout));
         }
 
         if (trace && tc.isEntryEnabled())
