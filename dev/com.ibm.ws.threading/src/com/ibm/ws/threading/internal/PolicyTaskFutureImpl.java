@@ -279,6 +279,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         }
     }
 
+    @FFDCIgnore(RejectedExecutionException.class)
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback) {
         if (task == null)
             throw new NullPointerException();
@@ -296,12 +297,16 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             } catch (Error x) {
                 abort(x);
                 throw x;
+            } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
+                abort(x);
+                throw x;
             } catch (RuntimeException x) {
                 abort(x);
                 throw x;
             }
     }
 
+    @FFDCIgnore(RejectedExecutionException.class)
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyLatch latch) {
         if (task == null)
             throw new NullPointerException();
@@ -319,12 +324,16 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             } catch (Error x) {
                 abort(x);
                 throw x;
+            } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
+                abort(x);
+                throw x;
             } catch (RuntimeException x) {
                 abort(x);
                 throw x;
             }
     }
 
+    @FFDCIgnore(RejectedExecutionException.class)
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback) {
         if (task == null)
             throw new NullPointerException();
@@ -340,6 +349,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             try {
                 callback.onSubmit(task, this, 0);
             } catch (Error x) {
+                abort(x);
+                throw x;
+            } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
                 abort(x);
                 throw x;
             } catch (RuntimeException x) {
