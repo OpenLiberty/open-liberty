@@ -24,6 +24,7 @@ Export-Package: \
   com.ibm.ws.beanvalidation.accessor
 
 Import-Package: \
+  javax.validation.*;version="[1.0,3)",\
   *
  
 Private-Package: \
