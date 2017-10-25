@@ -170,7 +170,7 @@ import com.ibm.ws.fat.util.FatLogHandler;
 })
 public class FATSuite {
     
-    private static final Logger LOG = Logger.getLogger(SharedServer.class.getName());
+    private static final Logger LOG = Logger.getLogger(FATSuite.class.getName());
     private static Map<String,List<Archive>> serversToApps = new HashMap<String,List<Archive>>();
 
     static{
@@ -1261,15 +1261,15 @@ WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTe
     }
     
     private static void exportAppToServer(String serverName, Archive archive){
-        exportAppToServer(serverName, Archive, "/dropins");
+        exportAppToServer(serverName, archive, "/dropins");
     }
 
     private static void exportAppToServer(String serverName, Archive archive, String path){
 
-        String destinationPath = "publish/servers/" + getServerName() + path;
+        String destinationPath = "publish/servers/" + serverName + path;
         LOG.info("exporting archive " + archive.toString() + " to " + destinationPath);
 
-        ShrinkHelper.exportArtifact(archive, dropinsPath);
+        ShrinkHelper.exportArtifact(archive, destinationPath);
 
     }
 
