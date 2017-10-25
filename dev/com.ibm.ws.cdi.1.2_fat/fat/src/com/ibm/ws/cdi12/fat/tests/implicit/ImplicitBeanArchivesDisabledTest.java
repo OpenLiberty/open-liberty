@@ -15,7 +15,7 @@ import org.junit.AfterClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 public class ImplicitBeanArchivesDisabledTest extends LoggingTest {
@@ -26,7 +26,7 @@ public class ImplicitBeanArchivesDisabledTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12DisableImplicitBeanArchiveServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12DisableImplicitBeanArchiveServer");
 
     /*
      * (non-Javadoc)
@@ -34,7 +34,7 @@ public class ImplicitBeanArchivesDisabledTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

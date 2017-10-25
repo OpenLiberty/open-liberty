@@ -11,17 +11,13 @@
  */
 package com.ibm.ws.cdi12.fat.tests;
 
-import org.jboss.shrinkwrap.api.Archive;
-import org.junit.Assert;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.custom.junit.runner.Mode;
@@ -44,16 +40,8 @@ public class WithAnnotationsTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return null;
-    }
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        for (Archive archive : ShrinkWrapServer.getAppsForServer("cdi12WithAnnotationsServer")) {
-            ShrinkHelper.exportDropinAppToServer(server, archive);
-        }
-
     }
 
     @ClassRule

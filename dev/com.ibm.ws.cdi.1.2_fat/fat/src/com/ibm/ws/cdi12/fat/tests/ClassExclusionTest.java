@@ -14,7 +14,7 @@ package com.ibm.ws.cdi12.fat.tests;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.custom.junit.runner.Mode;
@@ -31,7 +31,7 @@ public class ClassExclusionTest extends LoggingTest {
 
     @ClassRule
     // Create the server.
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12ClassExclusionTestServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12ClassExclusionTestServer");
 
     /*
      * (non-Javadoc)
@@ -39,7 +39,7 @@ public class ClassExclusionTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

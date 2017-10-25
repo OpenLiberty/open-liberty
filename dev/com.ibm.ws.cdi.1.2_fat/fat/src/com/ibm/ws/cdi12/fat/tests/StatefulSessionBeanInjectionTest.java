@@ -3,7 +3,7 @@ package com.ibm.ws.cdi12.fat.tests;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
@@ -15,7 +15,7 @@ import componenttest.annotation.ExpectedFFDC;
 public class StatefulSessionBeanInjectionTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12StatefulSessionBeanServer");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12StatefulSessionBeanServer");
 
     /*
      * (non-Javadoc)
@@ -23,7 +23,7 @@ public class StatefulSessionBeanInjectionTest extends LoggingTest {
      * @see com.ibm.ws.fat.LoggingTest#getSharedServer()
      */
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

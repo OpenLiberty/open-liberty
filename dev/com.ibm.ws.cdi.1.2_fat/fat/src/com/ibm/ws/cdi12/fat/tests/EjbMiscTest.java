@@ -16,7 +16,7 @@ import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
@@ -29,10 +29,10 @@ import componenttest.custom.junit.runner.Mode;
 public class EjbMiscTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer SHARED_SERVER = new ShrinkWrapServer("cdi12EJB32Server");
+    public static ShutDownSharedServer SHARED_SERVER = new ShutDownSharedServer("cdi12EJB32Server");
 
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return SHARED_SERVER;
     }
 

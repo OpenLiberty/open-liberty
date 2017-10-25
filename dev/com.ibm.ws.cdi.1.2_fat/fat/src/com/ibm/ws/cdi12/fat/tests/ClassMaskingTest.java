@@ -14,7 +14,7 @@ package com.ibm.ws.cdi12.fat.tests;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
+import com.ibm.ws.cdi12.suite.ShutDownSharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 
 import componenttest.topology.impl.LibertyServer;
@@ -32,10 +32,10 @@ import componenttest.topology.utils.HttpUtils;
 public class ClassMaskingTest extends LoggingTest {
 
     @ClassRule
-    public static ShrinkWrapServer server = new ShrinkWrapServer("cdi12ClassMasking");
+    public static ShutDownSharedServer server = new ShutDownSharedServer("cdi12ClassMasking");
 
     @Override
-    protected ShrinkWrapServer getSharedServer() {
+    protected ShutDownSharedServer getSharedServer() {
         return server;
     }
 

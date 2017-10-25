@@ -11,14 +11,10 @@
  */
 package com.ibm.ws.cdi12.fat.tests;
 
-import org.jboss.shrinkwrap.api.Archive;
 import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.cdi12.suite.ShrinkWrapServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebBrowser;
@@ -54,14 +50,6 @@ public class PassivationBeanTests extends LoggingTest {
 
         this.verifyResponse(wb, "/transientReferenceInSessionPersist/PassivationCapability.jsp",
                             new String[] { "Reused", "PASSED", "destroy" });
-    }
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        for (Archive archive : ShrinkWrapServer.getAppsForServer("cdi12PassivationServer")) {
-            ShrinkHelper.exportDropinAppToServer(SHARED_SERVER.getLibertyServer(), archive);
-        }
-
     }
 
     @Override
