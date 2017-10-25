@@ -42,7 +42,7 @@ public class TCPFactoryConfiguration implements FFDCSelfIntrospectable {
 
     private Map<Object, Object> commonProperties = null;
 
-    private static int maxKeysPerSelector = 500;
+    private static int maxKeysPerSelector = 1000;
     private static long channelSelectorIdleTimeout = 300000L; // use msec in code
     private static long channelSelectorWaitToTerminate = 10000L; // use msec in code
 
@@ -63,7 +63,7 @@ public class TCPFactoryConfiguration implements FFDCSelfIntrospectable {
 
     /**
      * Constructor.
-     * 
+     *
      * @param properties
      * @throws ChannelFactoryException
      */
@@ -287,7 +287,7 @@ public class TCPFactoryConfiguration implements FFDCSelfIntrospectable {
 
     /**
      * Access the TCP communication class to use (NIO, AIO, etc)
-     * 
+     *
      * @return String
      */
     public static String getCommClass(boolean asyncIOEnabled) {
