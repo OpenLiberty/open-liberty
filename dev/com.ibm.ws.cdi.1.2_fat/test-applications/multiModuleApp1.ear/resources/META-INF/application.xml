@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<application xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	id="Application_ID" version="6"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/application_6.xsd">
+    
+  <display-name>multiModuleApp1</display-name>
+  <module id="multiModuleAppWeb1">
+    <web>
+      <web-uri>multiModuleAppWeb1.war</web-uri>
+      <context-root>/multiModuleAppWeb1</context-root>
+    </web>
+  </module>
+  
+  <module id="multiModuleAppWeb2">
+    <web>
+      <web-uri>multiModuleAppWeb2.war</web-uri>
+      <context-root>/multiModuleAppWeb2</context-root>
+    </web>
+  </module>
+</application>
+

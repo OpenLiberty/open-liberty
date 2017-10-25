@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+      version="3.0">
+    <display-name>BasicJSF</display-name>
+	<!--<listener>
+		<listener-class>org.apache.webbeans.servlet.WebBeansConfigurationListener</listener-class>
+		<listener-class>com.ibm.ws.webbeans.services.JCDIWebListener.java</listener-class>
+	</listener>-->
+	
+	<context-param>
+		<description>
+		The default suffix for extension-mapped resources that contain JSF components.
+Default is '.jsp'.</description>
+		<param-name>javax.faces.DEFAULT_SUFFIX</param-name>
+		<param-value>.xhtml</param-value>
+	</context-param>
+	
+	<servlet>
+		<servlet-name>Faces Servlet</servlet-name>
+		<servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>
+		*.faces</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Faces Servlet</servlet-name>
+		<url-pattern>
+		/faces/*</url-pattern>
+	</servlet-mapping>
+	
+</web-app>

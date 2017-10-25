@@ -1,0 +1,13 @@
+<server description="Server for testing JSF on CDI">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>cdi-1.2</feature>
+        <feature>jsf-2.2</feature>
+        <feature>jsp-2.3</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+</server>
