@@ -423,14 +423,33 @@ class RestoreViewExecutor extends PhaseExecutor
                 {
                     matchPort = (serverPort == port);
                 }
-                if (serverHost.equals(host) &&  matchPort && path.contains(appContextPath))
+                boolean isStrictJsf2OriginHeaderAppPath = 
+                                MyfacesConfig.getCurrentInstance(ectx).isStrictJsf2OriginHeaderAppPath();
+                if (!path.equals(""))
                 {
-                    // Referer Header match
+                    if (serverHost.equals(host) && matchPort && path.contains(appContextPath))
+                    {
+                        // Referer Header match
+                    }
+                    else
+                    {
+                        // Referer Header does not match
+                        return false;
+                    }
                 }
                 else
                 {
-                    // Referer Header does not match
-                    return false;
+                    if (serverHost.equals(host) && matchPort && !isStrictJsf2OriginHeaderAppPath)
+                    {
+                        // Origin Header match and 
+                        // STRICT_JSF_2_ORIGIN_HEADER_APP_PATH property is set to false (default)
+                        // Because we don't want to strictly follow JSF 2.x spec
+                    }
+                    else
+                    {
+                        // Origin Header does not match
+                        return false;
+                    }
                 }
             }
             // In theory path = appContextPath + servletPath + pathInfo. 
