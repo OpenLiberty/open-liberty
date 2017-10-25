@@ -22,8 +22,7 @@
     </featureManager>
     
     <include location="../fatTestPorts.xml"/>
-    
-    <application location="beanManagerLookupApp.war" />
 
+    <application location="builtinAnnoLiteralsApp.war" />
     <logging traceSpecification="JCDI=all=enabled:logservice=all=enabled:*=info=enabled"/>
 </server>
