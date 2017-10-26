@@ -152,6 +152,7 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
      *
      */
     protected void configureMpJwt(boolean doFeatureCheck) {
+
         if (doFeatureCheck && !MpJwtHelper.isMpJwtFeatureActive()) {
             return;
         }
@@ -181,7 +182,16 @@ public class SecurityServletConfiguratorHelper implements ServletConfiguratorHel
         // we have an annotation and no DD, so check it out
         String className = annotatedClasses.iterator().next();
         ClassInfo ci = annosInfo.getDelayableClassInfo(className);
-        if (!ci.getSuperclassName().equals("javax.ws.rs.core.Application")) {
+        boolean isValid = false;
+        while (ci != null) {
+            if ("javax.ws.rs.core.Application".equals(ci.getSuperclassName())) {
+                isValid = true;
+                break;
+            }
+            ci = ci.getSuperclass();
+        }
+        ci = annosInfo.getDelayableClassInfo(className);
+        if (!isValid) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "loginConfig annotation  found, but on wrong class, " + ci.getSuperclassName() + ", return");
             }
