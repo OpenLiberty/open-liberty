@@ -10,11 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.container;
 
-import java.util.logging.Logger;
-
 public class JSFContainer {
-
-    private static final Logger log = Logger.getLogger("com.ibm.ws.jsf.container");
 
     public static final String MOJARRA_APP_FACTORY = "com.sun.faces.application.ApplicationFactoryImpl";
     public static final String MYFACES_APP_FACTORY = "org.apache.myfaces.application.ApplicationFactoryImpl";
@@ -39,6 +35,9 @@ public class JSFContainer {
         }
     }
 
+    /**
+     * Try to load the given class. If the class is not found, null is returned.
+     */
     public static Class<?> tryLoad(String className) {
         try {
             return Class.forName(className, false, JSFContainer.class.getClassLoader());

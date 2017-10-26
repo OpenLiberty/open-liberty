@@ -255,6 +255,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
             String runIfQueueFull = (String) properties.get("runIfQueueFull");
             if (runIfQueueFull != null)
                 policyExecutor.runIfQueueFull(Boolean.parseBoolean(runIfQueueFull));
+            String startTimeout = (String) properties.get("startTimeout");
+            if (startTimeout != null)
+                policyExecutor.startTimeout(Long.parseLong(startTimeout));
         }
 
         if (trace && tc.isEntryEnabled())
@@ -451,11 +454,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
     /** {@inheritDoc} */
     @FFDCIgnore(InterruptedException.class)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
         // TODO replace this temporary prototype code
         if (policyExecutor != null)
-            return policyExecutor.invokeAll(tasks, createCallbacks(tasks));
+            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks));
 
         ExecutorService execSvc = getExecSvc();
 
@@ -483,11 +487,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
     /** {@inheritDoc} */
     @FFDCIgnore(InterruptedException.class)
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
         // TODO replace this temporary prototype code
         if (policyExecutor != null)
-            return policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
+            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
 
         ExecutorService execSvc = getExecSvc();
 

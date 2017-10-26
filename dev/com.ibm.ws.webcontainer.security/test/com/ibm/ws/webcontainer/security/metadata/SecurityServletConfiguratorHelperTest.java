@@ -214,9 +214,9 @@ public class SecurityServletConfiguratorHelperTest {
                 one(webAnnotations).getInfoStore();
                 will(returnValue(infoStore));
 
-                one(infoStore).getDelayableClassInfo("FooClass");
+                allowing(infoStore).getDelayableClassInfo("FooClass");
                 will(returnValue(classInfo));
-                one(classInfo).getSuperclassName();
+                allowing(classInfo).getSuperclassName();
                 will(returnValue("javax.ws.rs.core.Application"));
                 one(classInfo).getAnnotation(annoName);
                 will(returnValue(annoInfo));

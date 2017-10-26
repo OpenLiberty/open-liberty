@@ -17,6 +17,8 @@ src: \
 
 test.project: true
 
+runtime.minimum.java.level: 1.8
+
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\

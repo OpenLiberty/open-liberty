@@ -14,6 +14,9 @@ import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+import javax.annotation.Resource;
+import javax.ejb.EJB;
+import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Named;
 
@@ -23,15 +26,26 @@ public class CDIBean implements Serializable {
     private static final long serialVersionUID = 1L;
     private String data = ":" + getClass().getSimpleName() + ":";
 
+    @EJB
+    TestEJB ejb;
+
+    @Resource
+    ManagedExecutorService defaultExec;
+
     @PostConstruct
     public void start() {
-        System.out.println("TestBean postConstruct called");
+        System.out.println("CDIBean postConstruct called");
         this.data += ":PostConstructCalled:";
+        if (ejb != null && ejb.verifyPostConstruct())
+            this.data += ":EJB-injected:";
+        if (defaultExec != null)
+            this.data += ":Resource-injected:";
+        System.out.println("CDIBean data is: " + data);
     }
 
     @PreDestroy
     public void stop() {
-        System.out.println("TestBean preDestroy called.");
+        System.out.println("CDIBean preDestroy called.");
     }
 
     public void setData(String newData) {

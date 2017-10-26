@@ -296,15 +296,39 @@ task runfat(type: Exec) {
   }
 }
 
+def buildFatEnabled = true; // TODO set this to false once build machines have been updated
+gradle.startParameter.taskNames.each {
+	if(it.contains("fat")) {
+		buildFatEnabled = true;
+	}
+}
+
 compileJava {
   dependsOn cleanFat
 }
 
 assemble {
   dependsOn zipProjectFVT
+  // Skip out on 'assemble' unless top-level gradle invocation contains "fat"
+  if(!buildFatEnabled) {
+    enabled = false;
+    dependsOn = [];
+  }
+}
+
+build {
+  // Skip out on 'build' unless top-level gradle invocation contains "fat"
+  if(!buildFatEnabled) {
+    enabled = false;
+    dependsOn = [];
+  }
+}
+
+buildfat {
+  dependsOn build
 }
 
 task buildandrun {
-  dependsOn build
+  dependsOn buildfat
   dependsOn runfat
 }

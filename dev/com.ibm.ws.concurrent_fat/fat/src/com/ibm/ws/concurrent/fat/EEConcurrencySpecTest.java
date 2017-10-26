@@ -50,7 +50,7 @@ public class EEConcurrencySpecTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKC1101E", "CWWKC1102E", "CWWKC1103E");
     }
 
     @Test

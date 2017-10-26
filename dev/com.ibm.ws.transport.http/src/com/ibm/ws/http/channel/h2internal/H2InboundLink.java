@@ -467,6 +467,9 @@ public class H2InboundLink extends HttpInboundLink {
             }
 
         } finally {
+
+            boolean doRead = false;
+
             // we are done processing this read
             synchronized (linkStatusSync) {
 
@@ -479,11 +482,14 @@ public class H2InboundLink extends HttpInboundLink {
                 if ((linkStatus != LINK_STATUS.CLOSING) && (linkStatus != LINK_STATUS.GOAWAY_SENDING)) {
 
                     readLinkStatus = READ_LINK_STATUS.READ_OUTSTANDING;
-
-                    // read for a new frame
-                    startAsyncRead(readForNewFrame);
-
+                    doRead = true;
                 }
+            }
+
+            if (doRead) {
+                // read for a new frame
+                // read outside of synchronized to avoid thread deadlock
+                startAsyncRead(readForNewFrame);
             }
         }
     }
@@ -761,13 +767,13 @@ public class H2InboundLink extends HttpInboundLink {
     }
 
     /**
-     * Check to see if the connection is still initializing (in INIT state).  If it is, update the state to OPEN.
+     * Check to see if the connection is still initializing (in INIT state). If it is, update the state to OPEN.
+     *
      * @return true if the link status is in INIT state
      */
     public boolean checkInitAndOpen() {
         synchronized (linkStatusSync) {
-            if (linkStatus == LINK_STATUS.INIT)
-            {
+            if (linkStatus == LINK_STATUS.INIT) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "checkInitAndOpen: connection preface completed, set :linkStatus: to OPEN" + " H2InboundLink hc: " + this.hashCode());
                 }

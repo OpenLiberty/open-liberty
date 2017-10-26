@@ -11,8 +11,12 @@
 package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import javax.security.auth.Subject;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.SecurityContext;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
@@ -21,13 +25,22 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.WSSecurityException;
+import com.ibm.websphere.security.auth.WSSubject;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.security.authentication.principals.WSPrincipal;
+import com.ibm.ws.security.authorization.AuthorizationService;
+import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 /**
  *
  */
 public class SecurityContextImpl implements SecurityContext {
     private static final TraceComponent tc = Tr.register(SecurityContextImpl.class);
+
+    private final SubjectManager subjectManager = null;
 
     /*
      * (non-Javadoc)
@@ -60,7 +73,23 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public Principal getCallerPrincipal() {
-        // TODO Auto-generated method stub
+
+        Subject callerSubject = getCallerSubject();
+
+        if (callerSubject == null) {
+            return null;
+        }
+
+        Set<Principal> principals = callerSubject.getPrincipals();
+        if (principals.size() > 0) {
+            for (Iterator iterator = principals.iterator(); iterator.hasNext();) {
+                Principal principal = (Principal) iterator.next();
+                if (principal instanceof WSPrincipal)
+                    return principal;
+            }
+            // There is no WSPrincipal so just return first one
+            return principals.iterator().next();
+        }
         return null;
     }
 
@@ -71,8 +100,17 @@ public class SecurityContextImpl implements SecurityContext {
      */
     @Override
     public <T extends Principal> Set<T> getPrincipalsByType(Class<T> arg0) {
-        // TODO Auto-generated method stub
+        //Get the caller principal from the caller subject
+        Subject callerSubject = getCallerSubject();
+
+        if (callerSubject != null) {
+            //Get the prinicipals by type
+            Set<T> principals = callerSubject.getPrincipals(arg0);
+            return principals;
+        }
+
         return null;
+
     }
 
     /*
@@ -92,9 +130,38 @@ public class SecurityContextImpl implements SecurityContext {
      * @see javax.security.enterprise.SecurityContext#isCallerInRole(java.lang.String)
      */
     @Override
-    public boolean isCallerInRole(String arg0) {
-        // TODO Auto-generated method stub
+    public boolean isCallerInRole(String role) {
+
+        AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
+        if (authService != null) {
+            Subject callerSubject = null;
+            String appName = getApplicationName();
+            List<String> roles = new ArrayList<String>();
+            roles.add(role);
+
+            return authService.isAuthorized(appName, roles, callerSubject);
+        }
         return false;
+    }
+
+    private Subject getCallerSubject() {
+        Subject callerSubject = null;
+        try {
+            callerSubject = WSSubject.getRunAsSubject();
+            if (callerSubject == null) {
+                callerSubject = WSSubject.getCallerSubject();
+            }
+        } catch (WSSecurityException wse) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Exception getting Subject", wse);
+            }
+        }
+        return callerSubject;
+    }
+
+    private String getApplicationName() {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        return cmd.getJ2EEName().getApplication();
     }
 
 }

@@ -24,28 +24,21 @@ import org.junit.runners.Suite.SuiteClasses;
                 CDIFlowsTests.class,
                 JSF22StatelessViewTests.class,
                 JSF22BeanValidationTests.class,
-                FeatureConflictTest.class,
+                ErrorPathsTest.class,
                 ConfigTest.class
 })
 
 public class FATSuite {
 
-    public static WebArchive addMojarra(WebArchive app) throws Exception {
-        app = app.addAsLibrary(new File("publish/files/mojarra/jsf-api-2.2.14.jar"))
-                        .addAsLibrary(new File("publish/files/mojarra/jsf-impl-2.2.14.jar"));
+    public static final String MOJARRA_API = "publish/files/mojarra/jsf-api-2.2.14.jar";
+    public static final String MOJARRA_IMPL = "publish/files/mojarra/jsf-impl-2.2.14.jar";
 
-        return app;
+    public static WebArchive addMojarra(WebArchive app) throws Exception {
+        return app.addAsLibraries(new File("publish/files/mojarra/").listFiles());
     }
 
     public static WebArchive addMyFaces(WebArchive app) throws Exception {
-        app = app.addAsLibrary(new File("publish/files/myfaces/myfaces-api-2.2.12.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/myfaces-impl-2.2.12.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-digester-1.8.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-collections-3.2.1.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-logging-1.1.3.jar"))
-                        .addAsLibrary(new File("publish/files/myfaces/commons-beanutils-1.8.3.jar"));
-
-        return app;
+        return app.addAsLibraries(new File("publish/files/myfaces/").listFiles());
     }
 
 }

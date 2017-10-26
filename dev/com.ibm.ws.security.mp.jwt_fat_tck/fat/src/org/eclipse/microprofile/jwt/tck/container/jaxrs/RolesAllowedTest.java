@@ -36,6 +36,7 @@ import org.eclipse.microprofile.jwt.Claims;
 import org.eclipse.microprofile.jwt.tck.util.TokenUtils;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -114,6 +115,11 @@ public class RolesAllowedTest extends FATServletClient {
 
         baseURL = "http://localhost:" + server1.getHttpDefaultPort() + "/RolesAllowedTest";
         server1.startServer();
+    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server1.stopServer("CWWKS552[2-4]E");
     }
 
     @BeforeClass

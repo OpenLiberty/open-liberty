@@ -23,6 +23,7 @@ import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * A wrapper class that offers convenience methods for retrieving configuration
@@ -348,6 +349,7 @@ class LdapIdentityStoreDefinitionWrapper {
      *            either be a literal String or an EL expression.
      * @return The String value.
      */
+    @FFDCIgnore(ELException.class)
     private String processString(String name, String value) {
         String result;
 

@@ -37,6 +37,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 
 /**
@@ -102,6 +103,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      */
     private final CountDownLatch shutdownNowLatch = new CountDownLatch(1);
 
+    private volatile long startTimeout = -1;
+
     /**
      * Policy executor state, which transitions in one direction only. See constants for possible states.
      */
@@ -146,16 +149,22 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         public void run() {
             boolean canRun;
             PolicyTaskFutureImpl<?> next;
-            while ((next = (canRun = state.get().canStartTask) ? queue.poll() : null) != null && next.isCancelled()) {
-                next.nsRunEnd = next.nsQueueEnd = System.nanoTime();
+            while ((next = (canRun = state.get().canStartTask) ? queue.poll() : null) != null) {
                 maxQueueSizeConstraint.release();
-                if (next.callback != null)
-                    next.callback.onEnd(next.task, next, null, true, 0, null); // aborted, queued task will never run
-            }
-
-            if (next != null) {
-                maxQueueSizeConstraint.release();
-                runTask(next);
+                long nsQueueEnd = System.nanoTime();
+                if (next.isCancelled()) {
+                    next.nsRunEnd = next.nsQueueEnd = nsQueueEnd;
+                    if (next.callback != null)
+                        next.callback.onEnd(next.task, next, null, true, 0, null); // aborted, queued task will never run
+                } else if (next.nsStartBy == next.nsAcceptBegin - 1 // never times out, or
+                           || next.nsStartBy - nsQueueEnd > 0) { // have time remaining
+                    next.nsQueueEnd = nsQueueEnd;
+                    runTask(next);
+                    break;
+                } else { // timed out
+                    next.nsRunEnd = next.nsQueueEnd = nsQueueEnd;
+                    next.abort(new IllegalStateException("Task did not start within " + (nsQueueEnd - next.nsAcceptBegin) + " ns")); // TODO NLS message for startTimeout
+                }
             }
 
             // Release permits against core/maxConcurrency
@@ -164,11 +173,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             maxConcurrencyConstraint.release();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(PolicyExecutorImpl.this, tc, "core/maxConcurrency available",
-                         coreConcurrencyAvailable, maxConcurrencyConstraint.availablePermits(), canRun);
+                Tr.debug(PolicyExecutorImpl.this, tc, "core/maxConcurrency available", coreConcurrencyAvailable, maxConcurrencyConstraint.availablePermits(), canRun);
 
             // Avoid reschedule if we are in a state that disallows starting tasks or if no withheld tasks remain
-            if (canRun && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
+            if (canRun && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire())
+
+            {
                 decrementWithheldConcurrency();
                 if (acquireCoreConcurrency() > 0)
                     expediteGlobal(GlobalPoolTask.this);
@@ -201,6 +211,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 throw new RuntimeException(x);
             }
         }
+
     }
 
     /**
@@ -383,9 +394,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private boolean enqueue(PolicyTaskFutureImpl<?> policyTaskFuture, long wait, Boolean runIfQueueFullOverride) {
         boolean enqueued;
         try {
+            // TODO purge timed out tasks and retry if we cannot immediately acquire a permit
             if (wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS)) {
                 enqueued = queue.offer(policyTaskFuture);
-                policyTaskFuture.accept();
+                policyTaskFuture.accept(false);
 
                 int w = withheldConcurrency.incrementAndGet();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -405,11 +417,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 }
             } else if (state.get() == State.ACTIVE) {
                 boolean havePermit = false;
-                if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
-                    !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
-                                                                   && (!maxConcurrencyAppliesToCallerThread || (havePermit = maxConcurrencyConstraint.tryAcquire())))
+                if (policyTaskFuture.nsStartBy != policyTaskFuture.nsAcceptBegin - 1 // start timeout enabled, and
+                    && System.nanoTime() - policyTaskFuture.nsStartBy >= 0) // timed out per the startTimeout
+                    throw new RejectedExecutionException("Task did not start within " + (System.nanoTime() - policyTaskFuture.nsAcceptBegin) + " ns"); // TODO NLS message for startTimeout
+                else if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
+                         !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
+                                                                        && (!maxConcurrencyAppliesToCallerThread || (havePermit = maxConcurrencyConstraint.tryAcquire())))
                     try {
-                        policyTaskFuture.accept();
+                        policyTaskFuture.accept(true);
                         runTask(policyTaskFuture);
                         enqueued = false;
                     } finally {
@@ -423,26 +438,22 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } catch (InterruptedException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw new RejectedExecutionException(x);
         } catch (RejectedExecutionException x) { // redundant with RuntimeException code path, but added to allow FFDCIgnore
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw x;
         } catch (RuntimeException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw x;
         } catch (Error x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            if (policyTaskFuture.abort(x) && policyTaskFuture.callback != null)
-                policyTaskFuture.callback.onEnd(policyTaskFuture.task, policyTaskFuture, null, true, 0, x);
+            policyTaskFuture.abort(x);
             throw x;
         }
         return enqueued;
@@ -473,7 +484,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     @Override
     public void execute(Runnable command) {
-        enqueue(new PolicyTaskFutureImpl<Void>(this, command, null, null), maxWaitForEnqueueNS.get(), null);
+        enqueue(new PolicyTaskFutureImpl<Void>(this, command, null, null, startTimeout), maxWaitForEnqueueNS.get(), null);
     }
 
     /**
@@ -503,22 +514,24 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Trivial
     public final <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        return invokeAll(tasks, null);
+        return (List) invokeAll(tasks, null);
     }
 
     @Override
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     @Trivial
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-        return invokeAll(tasks, null, timeout, unit);
+        return (List) invokeAll(tasks, null, timeout, unit);
     }
 
     // Submit and run tasks and return list of completed (possibly canceled) tasks.
     // Because this method is not timed, tasks can run on the current thread if maxConcurrencyAppliesToCallerThread is false or a permit is available.
     @FFDCIgnore(value = { RejectedExecutionException.class })
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException {
+    public <T> List<PolicyTaskFuture<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Determine if we need a permit to run one or more of the tasks on the current thread, and if so, acquire it,
@@ -531,7 +544,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             // create futures in advance, which gives the callback an opportunity to reject
             int t = 0;
             for (Callable<T> task : tasks)
-                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++]));
+                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], startTimeout));
 
             // enqueue tasks (except the last if we are able to run tasks on the current thread)
             int numToSubmitAsync = useCurrentThread ? taskCount - 1 : taskCount;
@@ -547,7 +560,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     if (!enqueued) // must immediately return if ran on current thread and was interrupted
                         taskFuture.throwIfInterrupted();
                 } else {
-                    taskFuture.accept();
+                    taskFuture.accept(true);
                 }
 
             // run on current thread if possible
@@ -560,13 +573,22 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                             throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
                     } else if (!taskFuture.isDone() && currentState.canStartTask && queue.remove(taskFuture)) {
                         maxQueueSizeConstraint.release();
+                        taskFuture.nsQueueEnd = System.nanoTime();
                     } else {
                         if (trace && tc.isDebugEnabled())
                             Tr.debug(this, tc, "no longer in queue", taskFuture);
                         continue; // other thread could already be processing the task, or it could be cancelled
                     }
 
-                    runTask(taskFuture);
+                    if (taskFuture.nsStartBy == taskFuture.nsAcceptBegin - 1 // never times out, or
+                        || taskFuture.nsStartBy - taskFuture.nsQueueEnd > 0) // have time remaining
+                        runTask(taskFuture);
+                    else { // timed out
+                        taskFuture.nsRunEnd = taskFuture.nsQueueEnd;
+                        RejectedExecutionException x = new RejectedExecutionException("Task did not start within " + (taskFuture.nsQueueEnd - taskFuture.nsAcceptBegin) + "ns"); // TODO NLS message for startTimeout
+                        taskFuture.abort(x);
+                        throw x;
+                    }
 
                     // must immediately return if current thread is interrupted
                     taskFuture.throwIfInterrupted();
@@ -593,8 +615,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     f.cancel(true);
         }
 
-        @SuppressWarnings("unchecked")
-        List<Future<T>> list = List.class.cast(futures);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        List<PolicyTaskFuture<T>> list = (List) futures;
         return list;
     }
 
@@ -602,7 +624,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     // Because this method is timed, tasks will never run on the invoker's current thread.
     @FFDCIgnore(value = { RejectedExecutionException.class })
     @Override
-    public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks, long timeout, TimeUnit unit) throws InterruptedException {
+    public <T> List<PolicyTaskFuture<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks, long timeout,
+                                                   TimeUnit unit) throws InterruptedException {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         int taskCount = tasks.size();
@@ -614,7 +637,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             // create futures in advance, which gives the callback an opportunity to reject
             int t = 0;
             for (Callable<T> task : tasks)
-                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++]));
+                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], startTimeout));
 
             // enqueue all tasks
             for (PolicyTaskFutureImpl<T> taskFuture : futures) {
@@ -647,8 +670,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     f.cancel(true);
         }
 
-        @SuppressWarnings("unchecked")
-        List<Future<T>> list = List.class.cast(futures);
+        @SuppressWarnings({ "rawtypes", "unchecked" })
+        List<PolicyTaskFuture<T>> list = (List) futures;
         return list;
     }
 
@@ -679,8 +702,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     if (state.get() != State.ACTIVE)
                         throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
 
-                    PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, tasks.iterator().next(), callbacks == null ? null : callbacks[0]);
-                    taskFuture.accept();
+                    // startTimeout does not apply because the task starts immediately
+                    PolicyTaskFutureImpl<T> taskFuture = new PolicyTaskFutureImpl<T>(this, tasks.iterator().next(), callbacks == null ? null : callbacks[0], -1);
+                    taskFuture.accept(true);
                     runTask(taskFuture);
 
                     // raise InterruptedException if current thread is interrupted
@@ -700,7 +724,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             // create futures in advance, which gives the callback an opportunity to reject
             int t = 0;
             for (Callable<T> task : tasks)
-                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], latch));
+                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], startTimeout, latch));
 
             // enqueue all tasks
             for (PolicyTaskFutureImpl<T> taskFuture : futures) {
@@ -746,7 +770,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             int t = 0;
             for (Callable<T> task : tasks) {
                 remaining = stop - System.nanoTime();
-                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], latch));
+                futures.add(new PolicyTaskFutureImpl<T>(this, task, callbacks == null ? null : callbacks[t++], startTimeout, latch));
                 if (remaining <= 0)
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1204.unable.to.invoke", identifier, taskCount - futures.size(), taskCount, timeout, unit));
             }
@@ -921,7 +945,6 @@ public class PolicyExecutorImpl implements PolicyExecutor {
      */
     void runTask(PolicyTaskFutureImpl<?> future) {
         try {
-            future.nsQueueEnd = System.nanoTime();
             if (providerCreated != null) // the following code only matters when life cycle operations are permitted
                 running.add(future); // intentionally done before checking state to avoid missing cancels on shutdownNow
 
@@ -930,6 +953,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "Cancel task due to policy executor state " + state);
+                future.nsRunEnd = System.nanoTime();
                 future.cancel(false);
                 if (future.callback != null)
                     future.callback.onEnd(future.task, future, null, true, 0, null); // aborted, queued task will never run
@@ -939,7 +963,6 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } catch (RuntimeException x) {
             // auto FFDC
         } finally {
-            future.nsRunEnd = System.nanoTime();
             if (providerCreated != null)
                 running.remove(future);
         }
@@ -1024,36 +1047,52 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public PolicyExecutor startTimeout(long ms) {
+        if (providerCreated == null)
+            throw new UnsupportedOperationException();
+
+        if (ms < -1 || ms > TimeUnit.NANOSECONDS.toMillis(Long.MAX_VALUE))
+            throw new IllegalArgumentException(Long.toString(ms));
+
+        if (state.get() != State.ACTIVE)
+            throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "startTimeout", identifier));
+
+        startTimeout = TimeUnit.MILLISECONDS.toNanos(ms);
+
+        return this;
+    }
+
+    @Override
     public <T> Future<T> submit(Callable<T> task) {
-        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, null);
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, null, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }
 
     @Override
-    public <T> Future<T> submit(Callable<T> task, PolicyTaskCallback callback) {
-        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, callback);
+    public <T> PolicyTaskFuture<T> submit(Callable<T> task, PolicyTaskCallback callback) {
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, callback, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }
 
     @Override
     public Future<?> submit(Runnable task) {
-        PolicyTaskFutureImpl<?> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, null, null);
+        PolicyTaskFutureImpl<?> policyTaskFuture = new PolicyTaskFutureImpl<Void>(this, task, null, null, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }
 
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
-        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result, null);
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result, null, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }
 
     @Override
-    public <T> Future<T> submit(Runnable task, T result, PolicyTaskCallback callback) {
-        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result, callback);
+    public <T> PolicyTaskFuture<T> submit(Runnable task, T result, PolicyTaskCallback callback) {
+        PolicyTaskFutureImpl<T> policyTaskFuture = new PolicyTaskFutureImpl<T>(this, task, result, callback, startTimeout);
         enqueue(policyTaskFuture, maxWaitForEnqueueNS.get(), null);
         return policyTaskFuture;
     }

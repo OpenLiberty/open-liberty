@@ -9,8 +9,6 @@
       <feature>appSecurity-2.0</feature>
     </featureManager>
 
-    <application location="derbyApp.war"/>
-
     <include optional="true" location="../fatTestPorts.xml"/>
 
     <variable name="onError" value="FAIL"/>

@@ -28,6 +28,7 @@ public interface PolicyTaskFuture<T> extends Future<T> {
      * if the onSubmit callback cancels it. Note that accepts for multiple tasks can overlap, especially if the
      * invokeAll/invokeAny methods are used to submit groups of tasks. The value returned is an estimate.
      * No guarantee is made that the same exact value will be returned for subsequent invocations.
+     * The computed value is based on nanosecond timestamps and is therefore not valid for intervals larger than 292 years.
      *
      * @param unit time unit.
      * @return interval of time in the requested unit.
@@ -38,6 +39,7 @@ public interface PolicyTaskFuture<T> extends Future<T> {
      * Computes the estimated duration of time that the task spends in the queue awaiting execution.
      * A small positive interval can be returned even if the task bypasses the queue and runs on the submitter's thread.
      * The value returned is an estimate. No guarantee is made that the same exact value will be returned for subsequent invocations.
+     * The computed value is based on nanosecond timestamps and is therefore not valid for intervals larger than 292 years.
      *
      * @param unit time unit.
      * @return duration of time in the requested unit.
@@ -46,9 +48,10 @@ public interface PolicyTaskFuture<T> extends Future<T> {
 
     /**
      * Computes the estimated interval of time during which task execution and processing related to task execution occurs.
-     * This includes the processing of callbacks such as onStart/onEnd. A positive interval can be computed even if the task does
+     * This includes the processing of the onStart callback. A positive interval can be computed even if the task does
      * end up executing, for example, if the onStart callback cancels it. The value returned is an estimate.
      * No guarantee is made that the same exact value will be returned for subsequent invocations.
+     * The computed value is based on nanosecond timestamps and is therefore not valid for intervals larger than 292 years.
      *
      * @param unit time unit.
      * @return interval of time in the requested unit.
