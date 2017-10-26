@@ -51,7 +51,7 @@ public class TAIMappingHelper {
         decodedTokenPayload = decodedPayload;
         config = clientConfig;
         if (decodedTokenPayload != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, config.getUserNameAttribute(), config.getGroupNameAttribute(), false);
+            claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
             setUsername();
         }
         if (tc.isDebugEnabled()) {
@@ -66,7 +66,7 @@ public class TAIMappingHelper {
         }
         jwtPrincipal = createJwtPrincipal(jwtToken);
         String issuer = getIssuer(jwtPrincipal);
-        if (issuer != null) {
+        if (issuer != null && !config.getMapToUserRegistry()) {
             customProperties = populateCustomProperties(issuer);
         }
         if (tc.isDebugEnabled()) {
