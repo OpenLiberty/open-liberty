@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -28,6 +27,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 
 /**
  * Allows the policy executor to tie into internal state and other details of a Future implementation.
@@ -35,7 +35,7 @@ import com.ibm.ws.threading.PolicyTaskCallback;
  *
  * @param <T> type of the result.
  */
-public class PolicyTaskFutureImpl<T> implements Future<T> {
+public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class);
 
     // state constants
@@ -60,6 +60,16 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      * Latch for invokeAny futures. Otherwise null.
      */
     private final InvokeAnyLatch latch;
+
+    /**
+     * Nanosecond timestamp when this Future was created.
+     */
+    private final long nsAcceptBegin = System.nanoTime();
+
+    /**
+     * Nanosecond timestamps for various points in the task life cycle, initialized to unset (1 less than previous timestamp).
+     */
+    volatile long nsAcceptEnd = nsAcceptBegin - 1, nsQueueEnd = nsAcceptBegin - 2, nsRunEnd = nsAcceptBegin - 3;
 
     /**
      * Predefined result, if any, for Runnable tasks.
@@ -269,6 +279,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         }
     }
 
+    @FFDCIgnore(RejectedExecutionException.class)
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback) {
         if (task == null)
             throw new NullPointerException();
@@ -281,9 +292,21 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.task = task;
 
         if (callback != null)
-            callback.onSubmit(task, this, 0);
+            try {
+                callback.onSubmit(task, this, 0);
+            } catch (Error x) {
+                abort(x);
+                throw x;
+            } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
+                abort(x);
+                throw x;
+            } catch (RuntimeException x) {
+                abort(x);
+                throw x;
+            }
     }
 
+    @FFDCIgnore(RejectedExecutionException.class)
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Callable<T> task, PolicyTaskCallback callback, InvokeAnyLatch latch) {
         if (task == null)
             throw new NullPointerException();
@@ -296,9 +319,21 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.task = task;
 
         if (callback != null)
-            callback.onSubmit(task, this, latch.getCount());
+            try {
+                callback.onSubmit(task, this, latch.getCount());
+            } catch (Error x) {
+                abort(x);
+                throw x;
+            } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
+                abort(x);
+                throw x;
+            } catch (RuntimeException x) {
+                abort(x);
+                throw x;
+            }
     }
 
+    @FFDCIgnore(RejectedExecutionException.class)
     PolicyTaskFutureImpl(PolicyExecutorImpl executor, Runnable task, T predefinedResult, PolicyTaskCallback callback) {
         if (task == null)
             throw new NullPointerException();
@@ -311,7 +346,18 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         this.task = task;
 
         if (callback != null)
-            callback.onSubmit(task, this, 0);
+            try {
+                callback.onSubmit(task, this, 0);
+            } catch (Error x) {
+                abort(x);
+                throw x;
+            } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
+                abort(x);
+                throw x;
+            } catch (RuntimeException x) {
+                abort(x);
+                throw x;
+            }
     }
 
     /**
@@ -321,16 +367,25 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
      * @return true if the future transitioned to ABORTED state.
      */
     final boolean abort(Throwable cause) {
-        return result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
+        if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
+            nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
+        boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
+        if (aborted && callback != null)
+            callback.onEnd(task, this, null, true, 0, cause);
+        return aborted;
     }
 
     /**
      * Invoked to indicate the task was successfully submitted.
-     * Typically, this means the task has been successfully added to the task queue.
-     * However, it can also mean the task has been accepted to run on the submitter's thread.
+     *
+     * @param runOnSubmitter true if accepted to run immediately on the submitter's thread. False if accepted to the queue.
      */
     @Trivial
-    final void accept() {
+    final void accept(boolean runOnSubmitter) {
+        long time;
+        nsAcceptEnd = time = System.nanoTime();
+        if (runOnSubmitter)
+            nsQueueEnd = time;
         state.setSubmitted();
     }
 
@@ -355,6 +410,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     public boolean cancel(boolean interruptIfRunning) {
         if (result.compareAndSet(state, CANCELED)) {
             if (executor.queue.remove(this)) {
+                nsRunEnd = nsQueueEnd = System.nanoTime();
                 state.releaseShared(CANCELED);
                 executor.maxQueueSizeConstraint.release();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
@@ -362,6 +418,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 if (callback != null)
                     callback.onCancel(task, this, false, false);
             } else if (state.get() == PRESUBMIT) {
+                nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
                 state.releaseShared(CANCELED);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(this, tc, "canceled during pre-submit");
@@ -457,6 +514,26 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
     }
 
     @Override
+    public final long getElapsedAcceptTime(TimeUnit unit) {
+        long elapsed = nsAcceptEnd - nsAcceptBegin;
+        return unit.convert(elapsed >= 0 ? elapsed : System.nanoTime() - nsAcceptBegin, TimeUnit.NANOSECONDS);
+    }
+
+    @Override
+    public final long getElapsedQueueTime(TimeUnit unit) {
+        long begin = nsAcceptEnd;
+        long elapsed = nsQueueEnd - begin;
+        return unit.convert(elapsed >= 0 ? elapsed : begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0, TimeUnit.NANOSECONDS);
+    }
+
+    @Override
+    public final long getElapsedRunTime(TimeUnit unit) {
+        long begin = nsQueueEnd;
+        long elapsed = nsRunEnd - begin;
+        return unit.convert(elapsed >= 0 ? elapsed : begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0, TimeUnit.NANOSECONDS);
+    }
+
+    @Override
     public boolean isCancelled() {
         int s = state.get();
         return s == CANCELED || s == CANCELING;
@@ -478,6 +555,7 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         if (!state.setRunning()) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "unable to run", state.get());
+            nsRunEnd = System.nanoTime();
             if (callback != null)
                 callback.onEnd(task, this, null, true, 0, null); // aborted, queued task will never run
             return;
@@ -494,7 +572,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 aborted = state.get() == CANCELED;
             }
 
-            if (!aborted) {
+            if (aborted)
+                nsRunEnd = System.nanoTime();
+            else {
                 T t;
                 if (callable == null) {
                     runnable.run();
@@ -502,6 +582,8 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
                 } else {
                     t = callable.call();
                 }
+
+                nsRunEnd = System.nanoTime();
 
                 if (result.compareAndSet(state, t)) {
                     state.releaseShared(SUCCESSFUL);
@@ -521,6 +603,9 @@ public class PolicyTaskFutureImpl<T> implements Future<T> {
         } catch (Throwable x) {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "run", x);
+
+            nsRunEnd = System.nanoTime();
+
             if (result.compareAndSet(state, x)) {
                 state.releaseShared(aborted ? ABORTED : FAILED);
                 if (latch != null)

@@ -76,7 +76,7 @@ public class MultipleChecksTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWMH0051W");
     }
 
     @Test
@@ -107,9 +107,9 @@ public class MultipleChecksTest {
         assertEquals(3, checks.size());
 
         Set<String> checkObjNames = new HashSet<String>(checks.size());
-        checkObjNames.add((String) ((JsonObject) checks.get(0)).getString("name"));
-        checkObjNames.add((String) ((JsonObject) checks.get(1)).getString("name"));
-        checkObjNames.add((String) ((JsonObject) checks.get(2)).getString("name"));
+        checkObjNames.add(((JsonObject) checks.get(0)).getString("name"));
+        checkObjNames.add(((JsonObject) checks.get(1)).getString("name"));
+        checkObjNames.add(((JsonObject) checks.get(2)).getString("name"));
 
         assertTrue(checkObjNames.contains("testMultipeUPChecks1"));
         assertTrue(checkObjNames.contains("testMultipeUPChecks2"));
@@ -149,9 +149,9 @@ public class MultipleChecksTest {
         assertEquals(3, checks.size());
 
         Set<String> checkObjNames = new HashSet<String>(checks.size());
-        checkObjNames.add((String) ((JsonObject) checks.get(0)).getString("name"));
-        checkObjNames.add((String) ((JsonObject) checks.get(1)).getString("name"));
-        checkObjNames.add((String) ((JsonObject) checks.get(2)).getString("name"));
+        checkObjNames.add(((JsonObject) checks.get(0)).getString("name"));
+        checkObjNames.add(((JsonObject) checks.get(1)).getString("name"));
+        checkObjNames.add(((JsonObject) checks.get(2)).getString("name"));
 
         assertTrue(checkObjNames.contains("testMultipeDOWNChecks1"));
         assertTrue(checkObjNames.contains("testMultipeUPChecks2"));

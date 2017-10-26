@@ -11,7 +11,6 @@
 package com.ibm.websphere.simplicity;
 
 import java.io.File;
-import java.util.logging.Logger;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.jboss.shrinkwrap.api.ArchivePath;
@@ -95,7 +94,8 @@ public class ShrinkHelper {
         File outputFile = new File(dest, a.getName());
         outputFile.getParentFile().mkdirs();
         a.as(ZipExporter.class).exportTo(outputFile, true);
-        System.out.println(a.toString(printArchiveContents));
+        if (printArchiveContents)
+            Log.info(ShrinkHelper.class, "exportArtifact", a.toString(true));
         return a;
     }
 

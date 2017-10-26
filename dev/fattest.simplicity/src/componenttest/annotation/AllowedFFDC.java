@@ -19,6 +19,13 @@ import java.lang.annotation.Retention;
  */
 @Retention(RUNTIME)
 public @interface AllowedFFDC {
-    String[] value();
+
+    public static final String ALL_FFDC = "ALL_FFDC";
+
+    /**
+     * A string array fully-qualified FFDC exception class names.
+     * If no value is specified, any FFDCs are allowed.
+     */
+    String[] value() default { ALL_FFDC };
 
 }

@@ -198,7 +198,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 	com.ibm.ws.webservices.handler;version=latest,\
 	com.ibm.ws.javaee.dd.common;version=latest,\
 	com.ibm.websphere.javaee.mail.1.5;version=latest,\
-	com.ibm.websphere.javaee.jsonp.1.0,\
+	com.ibm.websphere.javaee.jsonp.1.1,\
 	com.ibm.websphere.javaee.jsonb.1.0,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
@@ -214,7 +214,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.hamcrest:hamcrest-all;version=1.3, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \

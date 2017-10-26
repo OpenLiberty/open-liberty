@@ -57,7 +57,7 @@ test.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file,\
+	com.ibm.ws.junit.extensions;version=latest,\
 	commons-httpclient:commons-httpclient;version=3.1,\
 	com.ibm.websphere.javaee.jsonp.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\

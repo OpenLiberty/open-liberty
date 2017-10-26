@@ -20,7 +20,7 @@
         }
 
         dependencies {
-            sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20170928-014425-256:sources'
+            sourceJar 'com.ibm.ws.org.apache.myfaces.core:myfaces-impl:2.3.0-20171016-074423-270:sources'
         }
 
         // Copy the dependencies to the com.ibm.ws.org.apache.myfaces.2.3/build/source directory

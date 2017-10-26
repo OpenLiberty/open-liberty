@@ -17,7 +17,9 @@ import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -25,18 +27,18 @@ import javax.enterprise.event.Observes;
 import javax.enterprise.inject.spi.AfterBeanDiscovery;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanAttributes;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.BeforeBeanDiscovery;
 import javax.enterprise.inject.spi.DeploymentException;
 import javax.enterprise.inject.spi.Extension;
 import javax.enterprise.inject.spi.ProcessAnnotatedType;
 import javax.enterprise.inject.spi.ProcessBean;
-import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
+import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import javax.security.enterprise.identitystore.IdentityStore;
+import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 
@@ -46,9 +48,10 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
-import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
+import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
+
 // TODO:
 // Find out how to release LoginToContinue annotation in LoginToContinueIntercepter by the one in FormAuthenticationMechanismDefinition.
 
@@ -71,9 +74,9 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Annotation loginToContinue = null;
     private final Set<Class<?>> authMechRegistered = new HashSet<Class<?>>();
 
-
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
-        if (tc.isDebugEnabled()) Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         AnnotatedType<T> annotatedType = processAnnotatedType.getAnnotatedType();
 
         Class<?> javaClass = annotatedType.getJavaClass();
@@ -116,10 +119,13 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         beforeBeanDiscovery.addAnnotatedType(securityContextProducerType);
         AnnotatedType<AutoApplySessionInterceptor> autoApplySessionInterceptorType = beanManager.createAnnotatedType(AutoApplySessionInterceptor.class);
         beforeBeanDiscovery.addAnnotatedType(autoApplySessionInterceptorType);
+        AnnotatedType<RememberMeInterceptor> rememberMeInterceptorInterceptorType = beanManager.createAnnotatedType(RememberMeInterceptor.class);
+        beforeBeanDiscovery.addAnnotatedType(rememberMeInterceptorInterceptorType);
     }
 
     <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
-        if (tc.isDebugEnabled()) Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         if (authMechRegistered.size() > 1) {
             // if multiple authmech is regsitered, set error condition.
             StringBuffer names = new StringBuffer();
@@ -151,7 +157,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     void processBean(@Observes ProcessBean<?> processBean, BeanManager beanManager) {
-        if (tc.isDebugEnabled()) Tr.debug(tc, "processBean : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "processBean : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         if (!identityStoreHandlerRegistered) {
             if (isIdentityStoreHandler(processBean)) {
                 identityStoreHandlerRegistered = true;
@@ -243,7 +250,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, getAnnotatedString(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE));
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION,
                   getAnnotatedString(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION));
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, getAnnotatedBoolean(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN));
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN,
+                  getAnnotatedBoolean(ltcAnnotation, ltcAnnotationType, JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN));
         return props;
     }
 
@@ -281,7 +289,16 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
      */
     private void createLdapIdentityStoreBeanToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType) {
         try {
-            LdapIdentityStoreBean bean = new LdapIdentityStoreBean(beanManager);
+            Map<String, Object> identityStoreProperties = new HashMap<String, Object>();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "JavaEESec.createLdapISBeanToAdd");
+            Method[] methods = annotationType.getMethods();
+            for (Method m : methods) {
+                Tr.debug(tc, m.getName());
+                if (!m.getName().equals("equals"))
+                    identityStoreProperties.put(m.getName(), m.invoke(annotation));
+            }
+            LdapIdentityStoreBean bean = new LdapIdentityStoreBean(beanManager, getInstanceOfAnnotation(identityStoreProperties));
             beansToAdd.add(bean);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "registering the default LdapIdentityStore.");
@@ -291,6 +308,140 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
+    }
+
+    private LdapIdentityStoreDefinition getInstanceOfAnnotation(final Map<String, Object> overrides) {
+        LdapIdentityStoreDefinition annotation = new LdapIdentityStoreDefinition() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return null;
+            }
+
+            @Override
+            public String bindDn() {
+                return (overrides != null && overrides.containsKey("bindDn")) ? (String) overrides.get("bindDn") : "";
+            }
+
+            @Override
+            public String bindDnPassword() {
+                return (overrides != null && overrides.containsKey("bindDnPassword")) ? (String) overrides.get("bindDnPassword") : "";
+            }
+
+            @Override
+            public String callerBaseDn() {
+                return (overrides != null && overrides.containsKey("callerBaseDn")) ? (String) overrides.get("callerBaseDn") : "";
+            }
+
+            @Override
+            public String callerNameAttribute() {
+                return (overrides != null && overrides.containsKey("callerNameAttribute")) ? (String) overrides.get("callerNameAttribute") : "uid";
+            }
+
+            @Override
+            public String callerSearchBase() {
+                return (overrides != null && overrides.containsKey("callerSearchBase")) ? (String) overrides.get("callerSearchBase") : "";
+            }
+
+            @Override
+            public String callerSearchFilter() {
+                return (overrides != null && overrides.containsKey("callerSearchFilter")) ? (String) overrides.get("callerSearchFilter") : "";
+
+            }
+
+            @Override
+            public LdapSearchScope callerSearchScope() {
+                return (overrides != null && overrides.containsKey("callerSearchScope")) ? (LdapSearchScope) overrides.get("callerSearchScope") : LdapSearchScope.SUBTREE;
+            }
+
+            @Override
+            public String callerSearchScopeExpression() {
+                return (overrides != null && overrides.containsKey("callerSearchScopeExpression")) ? (String) overrides.get("callerSearchScopeExpression") : "";
+            }
+
+            @Override
+            public String groupMemberAttribute() {
+                return (overrides != null && overrides.containsKey("groupMemberAttribute")) ? (String) overrides.get("groupMemberAttribute") : "member";
+            }
+
+            @Override
+            public String groupMemberOfAttribute() {
+                return (overrides != null && overrides.containsKey("groupMemberOfAttribute")) ? (String) overrides.get("groupMemberOfAttribute") : "memberOf";
+            }
+
+            @Override
+            public String groupNameAttribute() {
+                return (overrides != null && overrides.containsKey("groupNameAttribute")) ? (String) overrides.get("groupNameAttribute") : "cn";
+            }
+
+            @Override
+            public String groupSearchBase() {
+                return (overrides != null && overrides.containsKey("groupSearchBase")) ? (String) overrides.get("groupSearchBase") : "";
+            }
+
+            @Override
+            public String groupSearchFilter() {
+                return (overrides != null && overrides.containsKey("groupSearchFilter")) ? (String) overrides.get("groupSearchFilter") : "";
+            }
+
+            @Override
+            public LdapSearchScope groupSearchScope() {
+                return (overrides != null && overrides.containsKey("groupSearchScope")) ? (LdapSearchScope) overrides.get("groupSearchScope") : LdapSearchScope.SUBTREE;
+            }
+
+            @Override
+            public String groupSearchScopeExpression() {
+                return (overrides != null && overrides.containsKey("groupSearchScopeExpression")) ? (String) overrides.get("groupSearchScopeExpression") : "";
+            }
+
+            @Override
+            public int maxResults() {
+                return (overrides != null && overrides.containsKey("maxResults")) ? (Integer) overrides.get("maxResults") : 1000;
+            }
+
+            @Override
+            public String maxResultsExpression() {
+                return (overrides != null && overrides.containsKey("maxResultsExpression")) ? (String) overrides.get("maxResultsExpression") : "";
+            }
+
+            @Override
+            public int priority() {
+                return (overrides != null && overrides.containsKey("priority")) ? (Integer) overrides.get("priority") : 80;
+            }
+
+            @Override
+            public String priorityExpression() {
+                return (overrides != null && overrides.containsKey("priorityExpression")) ? (String) overrides.get("priorityExpression") : "";
+            }
+
+            @Override
+            public int readTimeout() {
+                return (overrides != null && overrides.containsKey("readTimeout")) ? (Integer) overrides.get("readTimeout") : 0;
+            }
+
+            @Override
+            public String readTimeoutExpression() {
+                return (overrides != null && overrides.containsKey("readTimeoutExpression")) ? (String) overrides.get("readTimeoutExpression") : "";
+            }
+
+            @Override
+            public String url() {
+                return (overrides != null && overrides.containsKey("url")) ? (String) overrides.get("url") : "";
+            }
+
+            @Override
+            public ValidationType[] useFor() {
+                return (overrides != null && overrides.containsKey("useFor")) ? (ValidationType[]) overrides.get("useFor") : new ValidationType[] { ValidationType.PROVIDE_GROUPS,
+                                                                                                                                                    ValidationType.VALIDATE };
+            }
+
+            @Override
+            public String useForExpression() {
+                return (overrides != null && overrides.containsKey("useForExpression")) ? (String) overrides.get("useForExpression") : "";
+            }
+        };
+
+        return annotation;
     }
 
     protected boolean isIdentityStoreHandler(ProcessBean<?> processBean) {
@@ -345,7 +496,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     protected boolean isApplicationAuthMech(Class<?> javaClass) {
-        if (!BasicHttpAuthenticationMechanism.class.equals(javaClass) && !FormAuthenticationMechanism.class.equals(javaClass) && !CustomFormAuthenticationMechanism.class.equals(javaClass)) {
+        if (!BasicHttpAuthenticationMechanism.class.equals(javaClass) && !FormAuthenticationMechanism.class.equals(javaClass)
+            && !CustomFormAuthenticationMechanism.class.equals(javaClass)) {
             Class<?>[] interfaces = javaClass.getInterfaces();
             for (Class<?> interfaceClass : interfaces) {
                 if (HttpAuthenticationMechanism.class.equals(interfaceClass)) {

@@ -12,7 +12,6 @@ package com.ibm.ws.jaxrs21.sse.fat;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,12 +56,6 @@ public class BasicSseTest extends FATServletClient {
         server.stopServer();
     }
 
-    @After
-    public void after() throws Exception {
-        //sleep to give connections time to clean up???
-        Thread.sleep(5000);
-    }
-
     @Test
     public void testSimpleDirectTextPlainSse() throws Exception {
         runTest(server, SERVLET_PATH, "testSimpleDirectTextPlainSse");
@@ -81,6 +74,11 @@ public class BasicSseTest extends FATServletClient {
     @Test
     public void testJsonSse() throws Exception {
         runTest(server, SERVLET_PATH, "testJsonSse");
+    }
+
+    @Test
+    public void testSseWithRX() throws Exception {
+        runTest(server, SERVLET_PATH, "testSseWithRX");
     }
 
 }

@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.RejectedExecutionException;
 
 import javax.enterprise.concurrent.AbortedException;
@@ -25,7 +24,9 @@ import javax.enterprise.concurrent.ManagedTaskListener;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyTaskCallback;
+import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.wsspi.threadcontext.ThreadContext;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
@@ -73,8 +74,9 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         return taskName == null ? task.toString() : taskName;
     }
 
+    @FFDCIgnore({ Error.class, RuntimeException.class }) // No need for FFDC, error is logged instead
     @Override
-    public void onCancel(Object task, Future<?> future, boolean timedOut, boolean whileRunning) {
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {
         // Tasks that are canceled while running have the taskAborted notification sent on the thread of execution instead.
 
         // notify listener: taskAborted (if task was canceled before it started)
@@ -92,10 +94,12 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                         Tr.event(this, tc, "taskAborted", managedExecutor, task, x);
                     listener.taskAborted(future, managedExecutor, task, x);
-                } catch (RuntimeException x) {
+                } catch (Error x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
                     failure = x;
                     throw x;
-                } catch (Error x) {
+                } catch (RuntimeException x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
                     failure = x;
                     throw x;
                 } finally {
@@ -103,6 +107,12 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                             Tr.event(this, tc, "taskDone", managedExecutor, task, failure);
                         listener.taskDone(future, managedExecutor, task, failure);
+                    } catch (Error x) {
+                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                        throw x;
+                    } catch (RuntimeException x) {
+                        Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                        throw x;
                     } finally {
                         if (suspendTranContext != null)
                             suspendTranContext.taskStopping();
@@ -112,8 +122,9 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         }
     }
 
+    @FFDCIgnore(Throwable.class) // No need for FFDC given that an error is already logged
     @Override
-    public void onEnd(Object task, Future<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {
+    public void onEnd(Object task, PolicyTaskFuture<?> future, Object startObj, boolean aborted, int pending, Throwable failure) {
         if (pending >= 0 && task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
             if (listener != null) {
@@ -159,8 +170,9 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         }
     }
 
+    @FFDCIgnore({ Error.class, RuntimeException.class }) // No need for FFDC, error is logged instead
     @Override
-    public Object onStart(Object task, Future<?> future) {
+    public Object onStart(Object task, PolicyTaskFuture<?> future) {
         // EE Concurrency 3.1.6.1: No task submitted to an executor can run if task's component is not started.
         // ThreadContextDescriptor.taskStarting covers this requirement for us.
         ArrayList<ThreadContext> contextAppliedToThread = threadContextDescriptor.taskStarting();
@@ -168,18 +180,27 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
         // notify listener: taskStarting
         if (task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();
-            if (listener != null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
-                    Tr.event(this, tc, "taskStarting", managedExecutor, task);
-                listener.taskStarting(future, managedExecutor, task);
-            }
+            if (listener != null)
+                try {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
+                        Tr.event(this, tc, "taskStarting", managedExecutor, task);
+                    listener.taskStarting(future, managedExecutor, task);
+                } catch (Error x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                    threadContextDescriptor.taskStopping(contextAppliedToThread);
+                    throw x;
+                } catch (RuntimeException x) {
+                    Tr.error(tc, "CWWKC1102.listener.failed", getName(task), managedExecutor.name, x);
+                    threadContextDescriptor.taskStopping(contextAppliedToThread);
+                    throw x;
+                }
         }
 
         return contextAppliedToThread;
     }
 
     @Override
-    public void onSubmit(Object task, Future<?> future, int invokeAnyCount) {
+    public void onSubmit(Object task, PolicyTaskFuture<?> future, int invokeAnyCount) {
         // notify listener: taskSubmitted
         if (task instanceof ManagedTask) {
             ManagedTaskListener listener = ((ManagedTask) task).getManagedTaskListener();

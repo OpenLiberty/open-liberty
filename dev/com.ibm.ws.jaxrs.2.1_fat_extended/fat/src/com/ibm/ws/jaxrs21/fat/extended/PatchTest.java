@@ -28,7 +28,7 @@ public class PatchTest extends FATServletClient {
 
     private static final String appName = "patchapp";
 
-    @Server("jaxrs21.fat")
+    @Server("jaxrs21.fat.patch")
     @TestServlet(servlet = PatchTestServlet.class, contextRoot = appName)
     public static LibertyServer server;
 

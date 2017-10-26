@@ -11,7 +11,10 @@
 package app1.web;
 
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -19,12 +22,25 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/TestServletA")
+@WebServlet("/TestServletA")
 public class TestServletA extends FATServlet {
 
+    // By extending FATServlet and using @TestServlet in the client side test class, @Test annotations
+    // can be added directly to the test servlet.
+    // In this test servlet, each @Test method is invoked in its own HTTP GET request.
+
     @Test
-    public void testServer1() throws Exception {
-        System.out.println("Test is running.");
+    public void basicTest() throws Exception {
+        System.out.println("Test is running in an HttpServlet");
+        Assert.assertTrue("Can also use JUnit assertions", true);
+    }
+
+    @Test
+    public void testHttpServletRequest(HttpServletRequest request, HttpServletResponse resp) throws Exception {
+        System.out.println("You can also use thee (HttpServletRequest, HttpServletResponse) signature " +
+                           " on a test method if you need to access the underlying HTTP request/response");
+        System.out.println("Got HTTP params: " + request.getParameterMap());
+        resp.getWriter().println("Running test method 'testHttpServletRequest'");
     }
 
     @Test

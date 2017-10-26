@@ -33,6 +33,7 @@ import org.apache.cxf.jaxrs.utils.ExceptionUtils;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.component.LibertyJaxRsThreadPoolAdapter;
 import com.ibm.ws.jaxrs20.utils.ReflectUtil;
+import com.ibm.wsspi.classloading.ClassLoadingService;
 
 @SuppressWarnings("rawtypes")
 @Produces({ "application/json", "application/*+json" })
@@ -48,8 +49,8 @@ public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
     private final static Map<String, Method> jsonpMethodMaps = new HashMap<String, Method>();
 
     static {
-
-        ClassLoader cl = LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getServiceWithException().createThreadContextClassLoader(JsonPProvider.class.getClassLoader());
+        ClassLoadingService clSvc = LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getService();
+        ClassLoader cl = clSvc == null ? Thread.currentThread().getContextClassLoader() : clSvc.createThreadContextClassLoader(JsonPProvider.class.getClassLoader());
 
         for (String clsName : jsonpClasses) {
             Class<?> c = ReflectUtil.loadClass(cl, clsName);
@@ -57,7 +58,8 @@ public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
                 jsonpClsMaps.put(clsName, c);
             }
         }
-        LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getServiceWithException().destroyThreadContextClassLoader(cl);
+        if (clSvc != null)
+            clSvc.destroyThreadContextClassLoader(cl);
     }
 
     @Override
@@ -132,7 +134,7 @@ public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
                         ReflectUtil.invoke(m2, writer, new Object[] { t });
                     }
                 } catch (Throwable e) {
-                    //ignore 
+                    //ignore
                 } finally {
                     if (writer != null) {
                         try {

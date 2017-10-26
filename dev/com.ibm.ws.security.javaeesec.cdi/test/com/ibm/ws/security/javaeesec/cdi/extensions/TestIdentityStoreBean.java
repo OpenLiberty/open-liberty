@@ -12,7 +12,6 @@ package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -27,8 +26,6 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
 import javax.security.enterprise.identitystore.IdentityStore;
-
-import com.ibm.ws.security.javaeesec.identitystore.DummyLdapIdentityStore;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.

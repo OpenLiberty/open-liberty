@@ -52,7 +52,7 @@ public class HealthCheckExceptionTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWMH0050E.*HealthCheckExceptionAppFAT");
     }
 
     @Test

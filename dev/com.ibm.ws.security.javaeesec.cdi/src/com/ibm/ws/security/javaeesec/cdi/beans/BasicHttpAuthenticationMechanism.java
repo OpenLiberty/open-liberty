@@ -41,8 +41,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
@@ -65,7 +65,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             if (hamp != null) {
                 Properties props = hamp.getProperties();
                 if (props != null) {
-                    realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
+                    realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
                 }
             }
         }
@@ -74,7 +74,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             realmName = DEFAULT_REALM;
         }
     }
-    
+
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
                                                 HttpServletResponse response,
@@ -215,6 +215,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         credData.put(AttributeNameConstants.WSCREDENTIAL_REALM, realm);
         credData.put(AttributeNameConstants.WSCREDENTIAL_USERID, result.getCallerPrincipal().getName());
         credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, result.getCallerUniqueId());
+        credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:" + realm + "/" + result.getCallerUniqueId());
 
         credData.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
         if (groups != null && !groups.isEmpty()) {

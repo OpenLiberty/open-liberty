@@ -45,7 +45,9 @@ public class WebFragmentDDParser extends DDParser {
             throw new ParseException(missingDeploymentDescriptorVersion());
         }
 
-        if (maxVersion == 31)
+        if (maxVersion == 40)
+            runtimeVersion = 80;
+        else if (maxVersion == 31)
             runtimeVersion = 70;
         else
             runtimeVersion = 60; //Servlet-3.0 is the earliest Liberty runtime spec.
@@ -60,6 +62,12 @@ public class WebFragmentDDParser extends DDParser {
             if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
                 version = WebApp.VERSION_3_1;
                 eePlatformVersion = 70;
+                return new WebFragmentType(getDeploymentDescriptorPath());
+            }
+        } else if ((maxVersion >= 40) && "4.0".equals(vers)) {
+            if ("http://xmlns.jcp.org/xml/ns/javaee".equals(namespace)) {
+                version = WebApp.VERSION_4_0;
+                eePlatformVersion = 80;
                 return new WebFragmentType(getDeploymentDescriptorPath());
             }
         }

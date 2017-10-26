@@ -11,6 +11,8 @@
 package com.ibm.ws.jaxrs20.client;
 
 import java.net.URI;
+import java.security.AccessController;
+import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -85,8 +87,15 @@ public class JAXRSClientImpl extends ClientImpl {
         }
 
         try {
-            Bundle b = FrameworkUtil.getBundle(JAXRSClientImpl.class);
-            BundleContext bc = b == null ? null : b.getBundleContext();
+            BundleContext bc = AccessController.doPrivileged(new PrivilegedExceptionAction<BundleContext>() {
+
+                @Override
+                public BundleContext run() throws Exception {
+                    Bundle b = FrameworkUtil.getBundle(JAXRSClientImpl.class);
+                    return b == null ? null : b.getBundleContext();
+                }
+            });
+
             if (bc != null) {
                 final List<Object> providers = new ArrayList<>();
                 // we don't send feature list for client APIs

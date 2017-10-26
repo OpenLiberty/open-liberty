@@ -30,7 +30,8 @@ Private-Package: \
     com.ibm.ws.security.javaeesec.cdi.internal.resources
 
 -dsannotations: \
-    com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension
+    com.ibm.ws.security.javaeesec.cdi.extensions.JavaEESecCDIExtension,\
+    com.ibm.ws.security.javaeesec.cdi.extensions.SecurityContextHelper
 
 -dsannotations-inherit: true
 
@@ -41,6 +42,7 @@ Include-Resource: \
 
 -buildpath: \
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+    com.ibm.websphere.javaee.el.3.0;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
     com.ibm.websphere.javaee.security.1.0;version=latest,\
@@ -49,11 +51,14 @@ Include-Resource: \
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
-    com.ibm.ws.cdi.interfaces, \
+    com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.ws.common.encoder;version=latest,\
+    com.ibm.ws.container.service.compat;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\
+    com.ibm.ws.security.authorization;version=latest,\
+    com.ibm.ws.security.credentials;version=latest,\
     com.ibm.ws.security.jaspic.1.1;version=latest,\
     com.ibm.ws.security.javaeesec.1.0;version=latest,\
     com.ibm.ws.webcontainer.security;version=latest,\
@@ -66,14 +71,14 @@ Include-Resource: \
 
 -testpath: \
     ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-    ../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+    com.ibm.ws.junit.extensions;version=latest, \
     org.hamcrest:hamcrest-all;version=1.3, \
     org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
     org.jmock:jmock;strategy=exact;version=2.5.1, \
     org.jmock:jmock-legacy;version=2.5.0, \
     org.objenesis:objenesis;version=1.0, \
     cglib:cglib-nodep;version=2.1.0.3, \
-    com.ibm.ws.cdi.interfaces, \
+    com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.el.3.0;version=latest,\

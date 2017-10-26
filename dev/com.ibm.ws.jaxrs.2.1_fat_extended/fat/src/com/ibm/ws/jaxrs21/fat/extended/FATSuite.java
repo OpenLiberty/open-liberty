@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                PatchTest.class
+                PatchTest.class,
+                ProviderPriorityTest.class
 })
 public class FATSuite {}
