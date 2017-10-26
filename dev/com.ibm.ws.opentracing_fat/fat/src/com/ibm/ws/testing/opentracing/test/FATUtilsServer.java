@@ -140,6 +140,7 @@ public class FATUtilsServer implements FATOpentracingConstants {
         URL url = new URL(requestUrl); // throws MalformedURLException
 
         HttpURLConnection connection = (HttpURLConnection) url.openConnection(); // throws IOException
+
         try {
             connection.setDoInput(true);
             connection.setDoOutput(true);

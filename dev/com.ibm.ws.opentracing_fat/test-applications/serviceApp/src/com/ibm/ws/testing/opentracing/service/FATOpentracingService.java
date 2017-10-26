@@ -223,10 +223,14 @@ public class FATOpentracingService extends Application implements FATOpentracing
     /**
      * <p>Service API: Handle a delayed GET.</p>
      *
+     * <p>The delay time is a count of 100'ths of seconds.  The delay must
+     * be kept somewhat short.  Otherwise, the suite as a whole will take
+     * considerable time.</p>
+     * 
      * @param asyncResponse An asynchronous response used to provide
      *     the response from the delay thread.  This is injected using
      *     {@link Suspended}.
-     * @param delay The count of seconds to delay the response.
+     * @param delay The count of 100'ths of seconds to delay the response.
      *     This is injected as the "delay" query parameter.
      * @param responseText The text to answer by the service request.
      *     This is injected as the "response" query parameter.
@@ -244,7 +248,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
 
         Thread delayThread = new Thread(
             delayResponse(asyncResponse,
-            delay * MSEC_IN_SEC,
+            delay * MSEC_IN_SEC / 100,
             responseText) );
 
         delayThread.start();
@@ -325,8 +329,10 @@ public class FATOpentracingService extends Application implements FATOpentracing
      * <p>A nesting depth of greater than one causes an call to the nesting service with
      * the depth reduced by one (1).</p>
      *
-     * @param hostName The host to which to make nested requests.
-     * @param portNumber The port ot which to make nested requests.
+     * @param hostName0 The host to which to make even nested requests.
+     * @param portNumber0 The port ot which to make even nested requests.
+     * @param hostName1 The host to which to make odd nested requests.
+     * @param portNumber1 The port ot which to make odd nested requests.
      * @param nestDepth The depth of nesting to use when implementing the request.
      * @param responseText Test to answer from the request.  This is modified for
      *     nested requests.
@@ -337,8 +343,10 @@ public class FATOpentracingService extends Application implements FATOpentracing
     @Path(GET_NESTED_PATH)
     @Produces(MediaType.TEXT_HTML)
     public String getNested(
-            @QueryParam(HOST_PARAM_NAME) String hostName,
-            @QueryParam(PORT_PARAM_NAME) int portNumber,
+            @QueryParam(HOST_PARAM_NAME_EVEN) String hostName0,
+            @QueryParam(PORT_PARAM_NAME_EVEN) int portNumber0,
+            @QueryParam(HOST_PARAM_NAME_ODD) String hostName1,
+            @QueryParam(PORT_PARAM_NAME_ODD) int portNumber1,
             @QueryParam(NEST_DEPTH_PARAM_NAME) int nestDepth,
             @QueryParam(ASYNC_PARAM_NAME) boolean async,
             @QueryParam(CONTEXT_ROOT_PARAM_NAME) String contextRoot,
@@ -347,7 +355,8 @@ public class FATOpentracingService extends Application implements FATOpentracing
 
         String methodName = "getNested";
         traceEnter(methodName);
-        trace(methodName, "HostName", hostName, "PortNumber", Integer.valueOf(portNumber));
+        trace(methodName, "HostName0", hostName0, "PortNumber0", Integer.valueOf(portNumber0));
+        trace(methodName, "HostName1", hostName1, "PortNumber1", Integer.valueOf(portNumber1));
         trace(methodName, "ContextRoot", contextRoot);
         trace(methodName, "NestDepth", Integer.valueOf(nestDepth));
         trace(methodName, "Async", Boolean.valueOf(async));
@@ -359,10 +368,17 @@ public class FATOpentracingService extends Application implements FATOpentracing
             finalResponse = responseText;
 
         } else if ( nestDepth > 1 ) {
+            int nextNestDepth = nestDepth - 1;
+            boolean nextDepthIsEven = (nextNestDepth % 2) == 0;
+            String nextHostName = (nextDepthIsEven ? hostName0 : hostName1);
+            int nextPortNumber = (nextDepthIsEven ? portNumber0 : portNumber1);
+
             Map<String, Object> nestParameters  = new HashMap<String, Object>();
-            nestParameters.put(HOST_PARAM_NAME, hostName);
-            nestParameters.put(PORT_PARAM_NAME, Integer.valueOf(portNumber));
-            nestParameters.put(NEST_DEPTH_PARAM_NAME, Integer.valueOf(nestDepth - 1));
+            nestParameters.put(HOST_PARAM_NAME_EVEN, hostName0);
+            nestParameters.put(PORT_PARAM_NAME_EVEN, Integer.valueOf(portNumber0));
+            nestParameters.put(HOST_PARAM_NAME_ODD, hostName1);
+            nestParameters.put(PORT_PARAM_NAME_ODD, Integer.valueOf(portNumber1));
+            nestParameters.put(NEST_DEPTH_PARAM_NAME, Integer.valueOf(nextNestDepth));
             nestParameters.put(ASYNC_PARAM_NAME, Boolean.valueOf(async));
             nestParameters.put(CONTEXT_ROOT_PARAM_NAME, contextRoot);
             nestParameters.put(RESPONSE_PARAM_NAME, responseText);
@@ -372,13 +388,18 @@ public class FATOpentracingService extends Application implements FATOpentracing
                 APP_PATH, SERVICE_PATH, GET_NESTED_PATH, nestParameters);
                 // throws UnsupportedEncodingException
 
-            String requestUrl = FATUtilsService.getRequestUrl(hostName, portNumber, requestPath);
+            String requestUrl = FATUtilsService.getRequestUrl(nextHostName, nextPortNumber, requestPath);
 
             Response nestedResponse = FATUtilsService.invoke(requestUrl);
 
             finalResponse = nestedResponse.readEntity(String.class);
 
         } else {
+            // int nextNestDepth = 0;
+            // boolean nextDepthIsEven = true;
+            String nextHostName = hostName0;
+            int nextPortNumber = portNumber0;
+
             Map<String, Object> delay2Parameters  = new HashMap<String, Object>();
             delay2Parameters.put(DELAY_PARAM_NAME, Integer.valueOf(2));
             delay2Parameters.put(RESPONSE_PARAM_NAME, responseText + " [ 2 ]");
@@ -388,7 +409,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
                 APP_PATH, SERVICE_PATH, GET_DELAYED_PATH,
                 delay2Parameters);
                 // throws UnsupportedEncodingException
-            String delay2Url = FATUtilsService.getRequestUrl(hostName, portNumber, delay2Path);
+            String delay2Url = FATUtilsService.getRequestUrl(nextHostName, nextPortNumber, delay2Path);
 
             Map<String, Object> delay4Parameters  = new HashMap<String, Object>();
             delay4Parameters.put(DELAY_PARAM_NAME, Integer.valueOf(4));
@@ -399,7 +420,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
                 APP_PATH, SERVICE_PATH, GET_DELAYED_PATH,
                 delay4Parameters);
                 // throws UnsupportedEncodingException
-            String delay4Url = FATUtilsService.getRequestUrl(hostName, portNumber, delay4Path);
+            String delay4Url = FATUtilsService.getRequestUrl(nextHostName, nextPortNumber, delay4Path);
 
 
             Map<String, Object> delay6Parameters  = new HashMap<String, Object>();
@@ -411,7 +432,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
                 APP_PATH, SERVICE_PATH, GET_DELAYED_PATH,
                 delay6Parameters);
                 // throws UnsupportedEncodingException
-            String delay6Url = FATUtilsService.getRequestUrl(hostName, portNumber, delay6Path);
+            String delay6Url = FATUtilsService.getRequestUrl(nextHostName, nextPortNumber, delay6Path);
 
             String response2;
             String response4;

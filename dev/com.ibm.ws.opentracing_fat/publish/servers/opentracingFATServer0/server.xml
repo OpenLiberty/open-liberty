@@ -1,4 +1,4 @@
-<server description="openTracingServer1">
+<server description="openTracingServer0">
 
   <featureManager>
     <feature>servlet-3.1</feature>
@@ -7,7 +7,6 @@
     <feature>opentracingMock-0.30</feature>
     <feature>componenttest-1.0</feature>
   </featureManager>
-
 
   <!-- START: Imported and modified fatTestPorts. -->
 
@@ -20,23 +19,16 @@
 
   <httpEndpoint id="defaultHttpEndpoint"
                 host="*"
-                httpPort="${bvt.prop.HTTP_secondary}"
-                httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+                httpPort="${bvt.prop.HTTP_default}"
+                httpsPort="${bvt.prop.HTTP_default.secure}"/>
 
-  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.secondary}">
-    <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secondary.secure}" sslRef="defaultSSLConfig"/>
+  <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}">
+    <iiopsOptions  iiopsPort="${bvt.prop.IIOP.secure}" sslRef="defaultSSLConfig"/>
   </iiopEndpoint>
 
-  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms.1}" wasJmsSSLPort="${bvt.prop.jms.1.ssl}" />
+  <wasJmsEndpoint host="localhost" wasJmsPort="${bvt.prop.jms.0}" wasJmsSSLPort="${bvt.prop.jms.0.ssl}" />
 
   <!-- END: Imported and modified fatTestPorts. -->
-
-  <!-- This server must use a different port than is used by openTracingServer0. -->
-
-  <httpEndpoint id="defaultHttpEndpoint"
-                host="*"
-                httpPort="${bvt.prop.HTTP_secondary}"
-                httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
 
   <application location="serviceApp.war">
     <classloader apiTypeVisibility="spec, ibm-api, third-party"/>
