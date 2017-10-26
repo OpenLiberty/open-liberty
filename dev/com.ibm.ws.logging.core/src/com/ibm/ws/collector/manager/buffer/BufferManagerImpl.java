@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.collector.manager.internal.buffer;
+package com.ibm.ws.collector.manager.buffer;
 
 import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,10 +18,15 @@ import java.util.concurrent.TimeUnit;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.collector.manager.BufferManager;
+import com.ibm.wsspi.collector.manager.Handler;
 
 public class BufferManagerImpl extends BufferManager {
 
     private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);
+    
+    
+    //DYKC
+    private Handler myLogHandler = null;
 
     private final String sourceId;
     /* Map to keep track of the next event for a handler */
@@ -34,6 +39,12 @@ public class BufferManagerImpl extends BufferManager {
 
     @Override
     public void add(Object event) {
+    	
+    	//DYKC
+    	if ( myLogHandler != null) {
+    		//myLogHandler.writeToLog(event);
+    	}
+    	
         if (event == null)
             throw new NullPointerException();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -94,6 +105,11 @@ public class BufferManagerImpl extends BufferManager {
         handlerEventMap.remove(handlerId);
     }
 
+    
+    public void setSyncrohnizedHandler(Handler handler){
+    	myLogHandler = handler;
+    }
+    
     public static class HandlerStats {
 
         private final String handlerId;
@@ -159,5 +175,7 @@ public class BufferManagerImpl extends BufferManager {
                 lostEventsForTrace = 0;
             }
         }
+        
+        
     }
 }

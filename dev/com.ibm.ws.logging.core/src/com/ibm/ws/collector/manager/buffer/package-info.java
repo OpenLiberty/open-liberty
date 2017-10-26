@@ -15,12 +15,9 @@
  * Issue       Date        Name     Description
  * ----------- ----------- -------- ------------------------------------
  */
-/**
- * @version 1.0.16
- */
-@org.osgi.annotation.versioning.Version("1.0.16")
+@org.osgi.annotation.versioning.Version("1.0")
 @TraceOptions(traceGroup = "collectorManager", messageBundle = "com.ibm.ws.collector.manager.internal.resources.LoggingMessages")
-package com.ibm.ws.collector.manager.internal.buffer;
+package com.ibm.ws.collector.manager.buffer;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
 

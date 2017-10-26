@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.collector.manager.internal.buffer;
+package com.ibm.ws.collector.manager.buffer;
 
 import java.util.ArrayList;
 import java.util.Collections;

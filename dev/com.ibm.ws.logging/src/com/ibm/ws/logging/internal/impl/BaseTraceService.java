@@ -26,6 +26,7 @@ import com.ibm.websphere.logging.WsLevel;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TruncatableThrowable;
+import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.kernel.boot.logging.LoggerHandlerManager;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
@@ -34,7 +35,9 @@ import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.WsLogRecord;
+import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.utils.FileLogHolder;
+import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
@@ -169,6 +172,10 @@ public class BaseTraceService implements TrService {
     private final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     private final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
 
+    //DYKC
+    private LogSource ls = null;
+    private SpecialHandler sh = null;
+
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
         boolean needsToOutputInternalPackageMarker = false;
@@ -203,13 +210,42 @@ public class BaseTraceService implements TrService {
      */
     @Override
     public void init(LogProviderConfig config) {
+        System.out.println("BaseTraceService.java = BEGIN INIT");
         update(config);
 
         registerLoggerHandlerSingleton();
-
+        ////////////////////////////////////////////////////////////////////////////////////////////
         // Capture System.out/.err after registerLoggerHandler has initialized
         // LogManager, which might print errors due to misconfiguration.
         captureSystemStreams();
+
+        //Create the pipeline
+        //0. Router?
+        //Going to have to do some weird stuff where Router still gets started by [LO]
+        //1. create log source data
+
+        ls = new LogSource();
+        //2. create BufferManager
+        BufferManagerImpl bmi = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.message");
+        System.out.println("BaseTraceService.java = created BufferManager + " + bmi.toString());
+        ls.setBufferManager(bmi); //set Buffer Manager into Source
+        //3. Crate Super Special Hanlder
+        sh = SpecialHandler.getInstance();
+        sh.setLogSource(ls);
+        sh.setFileLogHolder(messagesLog);
+
+        //Will the Special handler be our special objet
+        //Special wrapper object?
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        System.out.println("BaseTraceService.java = FINISHED INIT");
+    }
+
+    @Override
+    public Source getLogSource() {
+        if (ls == null)
+            return null;
+        System.out.println("BaseTraceService.java = returning a logSoruce");
+        return ls;
     }
 
     protected void registerLoggerHandlerSingleton() {
@@ -269,7 +305,7 @@ public class BaseTraceService implements TrService {
         if (hideMessageids.size() > 0) {
             Tr.info(TraceSpecification.getTc(), "MESSAGES_CONFIGURED_HIDDEN_2", new Object[] { hideMessageids });
         }
-
+        //need to set Handler with FLH (and BTF (formatter)
     }
 
     /**
@@ -502,6 +538,9 @@ public class BaseTraceService implements TrService {
             retMe &= internalMsgRouter.route(routedMessage);
         } else {
             earlierMessages.add(routedMessage);
+            if (ls != null) {
+                ls.publish(routedMessage);
+            }
         }
         return retMe;
     }
@@ -568,8 +607,10 @@ public class BaseTraceService implements TrService {
                 return;
             }
 
-            // messages.log
-            messagesLog.writeRecord(messageLogFormat);
+            // messages.log  //send directly.
+            //messagesLog.writeRecord(messageLogFormat);
+            //if not configured - ta da
+            sh.writeToLogNormal(messageLogFormat);
 
             // console.log
             if (detailLog == systemOut) {
@@ -739,6 +780,7 @@ public class BaseTraceService implements TrService {
                 ((FileLogHolder) traceLog).releaseFile();
             }
         }
+
     }
 
     private FileLogHeader newFileLogHeader(boolean trace) {
@@ -939,4 +981,5 @@ public class BaseTraceService implements TrService {
         }
         return txt;
     }
+
 }

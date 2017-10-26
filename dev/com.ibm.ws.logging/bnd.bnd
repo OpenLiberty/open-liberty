@@ -36,6 +36,10 @@ Export-Package: \
  com.ibm.ws.logging;provide:=true, \
  com.ibm.ws.ras.instrument.annotation, \
  com.ibm.ws.logging.internal, \
+ com.ibm.wsspi.collector.manager, \
+ com.ibm.ws.collector.manager.buffer, \
+ com.ibm.ws.logging.utils, \
+ com.ibm.ws.logging.source, \
  com.ibm.wsspi.logging;provide:=true
 
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *

@@ -26,7 +26,7 @@ import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.collector.manager.internal.buffer.BufferManagerImpl;
+import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
@@ -86,6 +86,7 @@ public class CollectorManagerImpl implements CollectorManager {
      * When a source is bound, handle all pending subscriptions for the source.
      */
     public synchronized void setSource(Source source) {
+        System.out.println("CollectorManagerIMPL - setting source... top kek-------------------------");
         String sourceId = CollectorManagerUtils.getSourceId(source);
         SourceManager srcMgr = null;
         if (!sourceMgrs.containsKey(sourceId)) {
@@ -296,6 +297,7 @@ public class CollectorManagerImpl implements CollectorManager {
         //Create the BufferManager Service and store the ServiceRegistration into a Map so that the service can be unregistered later.
         bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
         buffMgrRegistration = bundleContext.registerService(BufferManager.class.getName(), bufferMgr, props);
+        //bundleContext.
         activeBuffMgrServices.put(sourceId, buffMgrRegistration);
     }
 

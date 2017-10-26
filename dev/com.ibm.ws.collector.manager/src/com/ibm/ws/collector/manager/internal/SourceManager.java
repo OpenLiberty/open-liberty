@@ -14,7 +14,7 @@ package com.ibm.ws.collector.manager.internal;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.ibm.ws.collector.manager.internal.buffer.BufferManagerImpl;
+import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.Source;

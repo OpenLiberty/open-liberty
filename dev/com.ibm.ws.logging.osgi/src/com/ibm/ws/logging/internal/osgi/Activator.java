@@ -18,6 +18,7 @@ import java.util.Hashtable;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.util.tracker.ServiceTracker;
@@ -26,8 +27,10 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceComponentChangeListener;
+import com.ibm.ws.logging.utils.HandlerUtils;
 import com.ibm.ws.ras.instrument.internal.main.LibertyJava8WorkaroundRuntimeTransformer;
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
+import com.ibm.wsspi.collector.manager.Source;
 
 /**
  * Activator for the RAS/FFDC bundle.
@@ -112,7 +115,33 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         // 3. track LogHandler services and inject them into the MessageRouter
         msgRouter = new MessageRouterConfigurator(context);
         traceRouter = new TraceRouterConfigurator(context);
+        
+        System.out.println("Activator - Going to set Log Source");
+        Source ls = HandlerUtils.retrieveLogSource();
+        ls.getLocation();
+        System.out.println("Activator - I got a Log Source");
+        
+    	Dictionary<String, String> props = new Hashtable<String, String>();
+    	props.put("service.vendor", "IBM");
+    	props.put("id", "ANALYTICSLOGSOURCE");
+    	context.registerService(Source.class.getName(), ls, props);
+        
+    	
+		ServiceReference<Source>[] servRefs;
+		try {
+			servRefs = (ServiceReference<Source>[]) context.getServiceReferences(Source.class.getName(), null);
+			System.out.println("Activator - Source.class.getName()" + Source.class.getName());
+			if (servRefs != null) {
+				for (ServiceReference<Source> servRef : servRefs) {
+					// setWsTraceHandler(servRef);
+					System.out.println("Gotem");
+				}
+			}
 
+		} catch (InvalidSyntaxException e) {
+			System.out.println("aw shucks");
+			e.printStackTrace();
+		}
     }
 
     /**

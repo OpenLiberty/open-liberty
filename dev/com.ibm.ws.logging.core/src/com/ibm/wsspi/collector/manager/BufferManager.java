@@ -11,7 +11,7 @@
  */
 package com.ibm.wsspi.collector.manager;
 
-import com.ibm.ws.collector.manager.internal.buffer.Buffer;
+import com.ibm.ws.collector.manager.buffer.Buffer;
 
 /**
  * Buffer manager is a wrapper around the actual buffer, it controls access to the buffer.

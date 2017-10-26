@@ -24,6 +24,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
+import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
@@ -40,9 +41,17 @@ public class LogSource implements Source, WsLogHandler {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
     }
 
+    /**
+     *
+     */
+    public LogSource() {
+        System.out.println("LogSource.java - Creating LogSource VERSION 2.0");
+    }
+
     private final AtomicLong seq = new AtomicLong();
 
     protected void activate(Map<String, Object> configuration) {
+        System.out.println("LogSource.java - Activating LogSource");
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }
@@ -60,6 +69,7 @@ public class LogSource implements Source, WsLogHandler {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Setting buffer manager " + this);
         }
+        System.out.println("LogSource.java - setting Buffermanger " + bufferMgr.toString());
         this.bufferMgr = bufferMgr;
     }
 
@@ -86,6 +96,7 @@ public class LogSource implements Source, WsLogHandler {
     /** {@inheritDoc} */
     @Override
     public String getLocation() {
+        System.out.println("LogSource.java - HELLOWORLD");
         return location;
     }
 
@@ -93,13 +104,23 @@ public class LogSource implements Source, WsLogHandler {
     @Override
     @Trivial
     public void publish(RoutedMessage routedMessage) {
+        //DYKC
+//        BufferedWriter bw;
+//        try {
+//            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("C:\\SourcePublishOutputFile.txt", true)));
+//            bw.write("LogSource.java - RoutedMessage message " + routedMessage.getFormattedVerboseMsg() + "\n");
+//            bw.close();
+//        } catch (IOException e1) {
+//            e1.printStackTrace();
+//        }
+
         //Publish the message if it is not coming from a handler thread
-        if (!ThreadLocalHandler.get()) {
-            LogRecord logRecord = routedMessage.getLogRecord();
-            if (logRecord != null && bufferMgr != null) {
-                bufferMgr.add(parse(routedMessage, logRecord));
-            }
-        }
+//        if (!ThreadLocalHandler.get()) {
+//            LogRecord logRecord = routedMessage.getLogRecord();
+//            if (logRecord != null && bufferMgr != null) {
+//                bufferMgr.add(parse(routedMessage, logRecord));
+//            }
+//        }
     }
 
     public MessageLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {
