@@ -542,6 +542,14 @@ public class MyfacesConfig
     @JSFWebConfigParam(since="2.2.9", defaultValue="false", expectedValues="true,false", group="EL")
     protected static final String SUPPORT_EL_3_IMPORT_HANDLER = "org.apache.myfaces.SUPPORT_EL_3_IMPORT_HANDLER";
     public final static boolean SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT = false;
+    
+    /**
+     * This parameter specifies whether or not the Origin header app path should be checked 
+     */
+    @JSFWebConfigParam(since="2.3", defaultValue="false", expectedValues="true,false")
+    protected static final String STRICT_JSF_2_ORIGIN_HEADER_APP_PATH = 
+            "org.apache.myfaces.STRICT_JSF_2_ORIGIN_HEADER_APP_PATH";
+    public final static boolean STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT = false;
 
     private boolean _prettyHtml;
     private boolean _detectJavascript;
@@ -585,6 +593,7 @@ public class MyfacesConfig
     private Integer _numberOfFlashTokensInSession;
     private Integer _numberOfFacesFlowClientWindowIdsInSession;
     private boolean _supportEL3ImportHandler;
+    private boolean _strictJsf2OriginHeaderAppPath;
 
     private static final boolean TOMAHAWK_AVAILABLE;
     private static final boolean MYFACES_IMPL_AVAILABLE;
@@ -696,7 +705,8 @@ public class MyfacesConfig
         setNumberOfFlashTokensInSession(
                 (INIT_PARAM_NUMBER_OF_VIEWS_IN_SESSION_DEFAULT / 
                         INIT_PARAM_NUMBER_OF_SEQUENTIAL_VIEWS_IN_SESSION_DEFAULT)+1);
-        setSupportEL3ImportHandler(SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT);                        
+        setSupportEL3ImportHandler(SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT);
+        setStrictJsf2OriginHeaderAppPath(STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT);
     }
 
     private static MyfacesConfig createAndInitializeMyFacesConfig(ExternalContext extCtx)
@@ -894,7 +904,11 @@ public class MyfacesConfig
                         
         myfacesConfig.setSupportEL3ImportHandler(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
                        SUPPORT_EL_3_IMPORT_HANDLER, 
-                       SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT));                        
+                       SUPPORT_EL_3_IMPORT_HANDLER_DEFAULT));
+        
+        myfacesConfig.setStrictJsf2OriginHeaderAppPath(WebConfigParamUtils.getBooleanInitParameter(extCtx, 
+                        STRICT_JSF_2_ORIGIN_HEADER_APP_PATH, 
+                        STRICT_JSF_2_ORIGIN_HEADER_APP_PATH_DEFAULT));
         
         if (TOMAHAWK_AVAILABLE)
         {
@@ -1549,5 +1563,15 @@ public class MyfacesConfig
     public void setSupportEL3ImportHandler(boolean supportEL3ImportHandler)
     {
         this._supportEL3ImportHandler = supportEL3ImportHandler;
+    }
+    
+    public boolean isStrictJsf2OriginHeaderAppPath()
+    {
+        return _strictJsf2OriginHeaderAppPath;
+    }
+    
+    public void setStrictJsf2OriginHeaderAppPath(boolean strictJsf2OriginHeaderAppPath)
+    {
+        this._strictJsf2OriginHeaderAppPath = strictJsf2OriginHeaderAppPath;
     }
 }
