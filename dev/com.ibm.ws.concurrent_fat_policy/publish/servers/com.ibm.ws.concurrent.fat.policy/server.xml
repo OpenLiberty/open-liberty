@@ -33,7 +33,7 @@
    maxConcurrency="1" maxConcurrencyAppliesToCallerThread="true" maxQueueSize="1" maxWaitForEnqueue="0" runIfQueueFull="false"/>
 
   <managedScheduledExecutorService jndiName="concurrent/scheduledExecutor2" contextServiceRef="jeeMetadataOnly" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"
-   coreConcurrency="1" maxConcurency="2" maxConcurrencyAppliesToCallerThread="false" maxQueueSize="2" runIfQueueFull="false"/>
+   coreConcurrency="1" maxConcurrency="2" maxConcurrencyAppliesToCallerThread="false" maxQueueSize="2" runIfQueueFull="false"/>
 
   <contextService id="jeeMetadataOnly">
     <jeeMetadataContext/>

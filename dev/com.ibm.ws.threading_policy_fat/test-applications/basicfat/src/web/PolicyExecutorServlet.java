@@ -3516,7 +3516,8 @@ public class PolicyExecutorServlet extends FATServlet {
     // Verify that invokeAny returns the result of one of the successful tasks.
     @Test
     public void testInvokeAnyTimedAllSuccessful() throws Exception {
-        PolicyExecutor executor = provider.create("testInvokeAnyTimedAllSuccessful");
+        PolicyExecutor executor = provider.create("testInvokeAnyTimedAllSuccessful")
+                        .startTimeout(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
 
         final int numTasks = 3;
         AtomicInteger counter = new AtomicInteger();

@@ -67,11 +67,27 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
      * @param task the task.
      * @return the task name.
      */
+    @Override
     @Trivial
-    final String getName(Object task) {
+    public final String getName(Object task) {
         Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
         String taskName = execProps == null ? null : execProps.get(ManagedTask.IDENTITY_NAME);
         return taskName == null ? task.toString() : taskName;
+    }
+
+    @Override
+    @Trivial
+    public final long getStartTimeout(long defaultStartTimeoutNS) {
+        Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
+        String value = execProps == null ? null : execProps.get("com.ibm.ws.concurrent.START_TIMEOUT_NANOS");
+        try {
+            long ns = value == null ? defaultStartTimeoutNS : Long.parseLong(value);
+            if (ns < -1)
+                throw new IllegalArgumentException("com.ibm.ws.concurrent.START_TIMEOUT_NANOS: " + value);
+            return ns;
+        } catch (NumberFormatException x) {
+            throw new IllegalArgumentException("com.ibm.ws.concurrent.START_TIMEOUT_NANOS: " + value);
+        }
     }
 
     @FFDCIgnore({ Error.class, RuntimeException.class }) // No need for FFDC, error is logged instead
