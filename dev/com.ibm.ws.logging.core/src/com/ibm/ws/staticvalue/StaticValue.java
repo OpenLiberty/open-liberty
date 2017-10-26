@@ -214,4 +214,8 @@ public abstract class StaticValue<T> {
     T initialize(ThreadGroup g, Callable<T> initializer) {
         return null;
     }
+
+    public String toString() {
+        return "StaticValue[" + get() + "]";
+    }
 }
