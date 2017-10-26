@@ -29,6 +29,7 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.javaeesec.CDIHelper;
 
 @Default
 @ApplicationScoped
@@ -139,16 +140,30 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return CDI.current();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void scanIdentityStores(Set<IdentityStore> identityStores) {
-        Instance<IdentityStore> beanInstances = getCDI().select(IdentityStore.class);
-        if (beanInstances != null) {
-            for (IdentityStore is : beanInstances) {
+        CDI cdi = getCDI();
+        Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
+        if (identityStoreInstances != null) {
+            for (IdentityStore identityStore : identityStoreInstances) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore : " + is + ", validationTypes : " + is.validationTypes() + ", priority : " + is.priority());
+                    Tr.debug(tc, "IdentityStore : " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
                 }
-                identityStores.add(is);
+                identityStores.add(identityStore);
             }
-        } else {
+        }
+
+        // If the mechanism is from the extension, then the identity stores from the application need to be found using the app's bean manager.
+        if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStore : " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                }
+                identityStores.add(identityStore);
+            }
+        }
+
+        if (identityStores.isEmpty()) {
             Tr.error(tc, "JAVAEESEC_ERROR_NO_IDENTITYSTORES");
         }
         return;
