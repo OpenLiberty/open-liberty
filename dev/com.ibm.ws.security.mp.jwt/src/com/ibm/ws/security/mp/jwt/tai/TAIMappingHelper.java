@@ -66,7 +66,9 @@ public class TAIMappingHelper {
         }
         jwtPrincipal = createJwtPrincipal(jwtToken);
         String issuer = getIssuer(jwtPrincipal);
-        if (issuer != null && !config.getMapToUserRegistry()) {
+        if (config.getMapToUserRegistry()) {
+            customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
+        } else if (issuer != null) {
             customProperties = populateCustomProperties(issuer);
         }
         if (tc.isDebugEnabled()) {

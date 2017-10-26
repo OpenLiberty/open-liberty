@@ -180,6 +180,7 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                 username = userId;
                 uniqueUserId = ret;
                 setUpTemporarySubject();
+                addJsonWebToken(temporarySubject);
                 updateSharedState();
                 return true;
             }
