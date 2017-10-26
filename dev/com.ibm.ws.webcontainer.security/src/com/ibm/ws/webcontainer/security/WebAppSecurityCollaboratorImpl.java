@@ -595,12 +595,11 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         }
         validateWebReply(webSecurityContext, webReply);
 
-/*
- * if (webReply.getStatusCode() == HttpServletResponse.SC_OK && (webRequest.isUnprotectedURI() || webRequest.isProviderSpecialUnprotectedURI())) {
- * AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_SUCCESS);
- * Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
- * }
- */
+        if (webReply.getStatusCode() == HttpServletResponse.SC_OK && byPassedAuthRequest) {
+            AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, receivedSubject, AuditEvent.CRED_TYPE_BASIC, null, AuditEvent.OUTCOME_SUCCESS);
+            Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(webReply.getStatusCode()));
+        }
+
         webReply.writeResponse(resp);
     }
 
