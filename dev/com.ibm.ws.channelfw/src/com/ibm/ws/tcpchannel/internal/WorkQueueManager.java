@@ -40,7 +40,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospectable {
     private static final TraceComponent tc = Tr.register(WorkQueueManager.class, TCPChannelMessageConstants.TCP_TRACE_NAME, TCPChannelMessageConstants.TCP_BUNDLE);
 
-    protected int maxChannelSelectorsPerFlow = 100;
+    protected int maxChannelSelectorsPerFlow = 200;
 
     protected SocketRWChannelSelector[] readInbound = null;
     protected SocketRWChannelSelector[] readOutbound = null;
@@ -65,10 +65,8 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
     protected static final int CS_NULL = -1;
     protected static final int CS_DELETE_IN_PROGRESS = -2;
 
-    protected final Object findOpenIndexSync = new Object()
-    {};
-    protected final Object shutdownSync = new Object()
-    {};
+    protected final Object findOpenIndexSync = new Object() {};
+    protected final Object shutdownSync = new Object() {};
 
     protected int maxKeysPerSelector;
 
@@ -238,7 +236,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
 
     /**
      * Introspect this object for FFDC output.
-     * 
+     *
      * @return List<String>
      */
     public List<String> introspect() {
@@ -280,7 +278,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
      * Processes the request. If the request is already associated with
      * a work queue - send it there. Otherwise round robin requests
      * amongst our set of queues.
-     * 
+     *
      * @param req
      * @param options
      * @return VirtualConnections
@@ -319,7 +317,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
     }
 
     /**
-     * 
+     *
      */
     protected void shutdown() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -347,7 +345,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
     }
 
     /**
-     * 
+     *
      * @param channelCounts
      * @param CS
      */
@@ -545,7 +543,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
         TCPConnLink conn = req.getTCPConnLink();
         SocketIOChannel ioChannel = conn.getSocketIOChannel();
         if (ioChannel == null || conn.isClosed()) {
-            // connection is closed, framework is stopping, or 
+            // connection is closed, framework is stopping, or
             // the channel has been destroyed (ioChannel set to null)
             if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
                 Tr.exit(tc, "attemptIO", "Closed");
@@ -641,7 +639,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
              * // a SocketException: Resource temporarily unavailable exception. If we
              * simply
              * // put this back in the selector, we will re-try again
-             * 
+             *
              * if ((e.getMessage()!= null) &&
              * (e.getMessage().startsWith(TEMP_IO_ERROR))) {
              * // (TO DO)this exception shouldn't happen. We should get successful io
@@ -652,7 +650,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
              * try {
              * queueIO(req);
              * } catch (IOException x) {
-             * 
+             *
              * if ((x.getMessage()!= null) &&
              * (x.getMessage().startsWith(TEMP_IO_ERROR))) {
              * if ((req.isRequestTypeRead()) && (((TCPReadRequestContextImpl)
@@ -706,7 +704,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
 
     /**
      * Dispatches requests to workrer threds, or notifies waiting thread.
-     * 
+     *
      * @param req
      * @param ioe
      * @return boolean, true if request was dispatched
@@ -729,7 +727,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
 
     /**
      * Dispatch a work item.
-     * 
+     *
      * @param worker
      * @return boolean, true if dispatched
      */
@@ -753,7 +751,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
 
     /**
      * This method is called when work must be added to the connect selector.
-     * 
+     *
      * @param connectInfo
      */
     protected void queueConnectForSelector(ConnectInfo connectInfo) {
@@ -781,7 +779,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
      * thread pool
      * in the SyncWorkQueueManager. This will allow these threads to have
      * WSTHreadLocal.
-     * 
+     *
      * @param sr
      * @param threadType
      * @param number
@@ -800,7 +798,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
      * (2) a getConnection from the pool is required because the original resulted
      * in having to wait for a free slot in the pool.
      * (3) the error callback needs to be called because a connect failed.
-     * 
+     *
      * @param ci
      * @return boolean
      */
@@ -909,7 +907,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
 
     /**
      * Main worker thread routine.
-     * 
+     *
      * @param req
      * @param ioe
      */
@@ -946,7 +944,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
                 }
             }
         } catch (Throwable t) {
-            // Only issue an FFDC if the framework is up/valid.. 
+            // Only issue an FFDC if the framework is up/valid..
             if (FrameworkState.isValid()) {
                 FFDCFilter.processException(t, getClass().getName(), "workerRun(req)", new Object[] { this, req, ioe });
             }
@@ -964,7 +962,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
                 }
                 attemptConnectWork(connInfo);
             } catch (Throwable t) {
-                // Only issue an FFDC if the framework is up/valid.. 
+                // Only issue an FFDC if the framework is up/valid..
                 if (FrameworkState.isValid()) {
                     FFDCFilter.processException(t, getClass().getName(), "workerRun(conn)", new Object[] { this, connInfo });
                 }
@@ -978,7 +976,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
     /**
      * This is the entry point where work is added to the connect work list.
      * As a result, a separate thread from the caller will do the work.
-     * 
+     *
      * @param work
      *            information about the connect
      * @return true if request was dispatched, false if not
@@ -1029,7 +1027,7 @@ public class WorkQueueManager implements ChannelTermination, FFDCSelfIntrospecta
 
         /**
          * Constructor.
-         * 
+         *
          * @param _sr
          * @param _threadType
          * @param _number
