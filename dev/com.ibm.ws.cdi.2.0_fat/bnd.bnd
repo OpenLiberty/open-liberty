@@ -19,11 +19,16 @@ test.project: true
 
 # To define a global minimum java level for the FAT, use the following property.
 # If unspecified, the default value is ${javac.source}
-# runtime.minimum.java.level: 1.8
+runtime.minimum.java.level: 1.8
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
+javac.source: 1.8
+javac.target: 1.8
 
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
 # had this in buildpath -> org.apache.derby:derbynet;version=10.11.1.1
 -buildpath: \
-	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest
+	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest

@@ -11,9 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: com.ibm.ws.cdi.ejb
-Bundle-SymbolicName: com.ibm.ws.cdi.ejb
-Bundle-Description: CDI EJB, version ${bVersion}
+Bundle-Name: com.ibm.ws.cdi.1.2.ejb
+Bundle-SymbolicName: com.ibm.ws.cdi.1.2.ejb
+Bundle-Description: CDI 1.2 EJB, version ${bVersion}
 
 -dsannotations: com.ibm.ws.cdi.ejb.liberty.EjbEndpointServiceImpl,\
   com.ibm.ws.cdi.ejb.impl.EjbSecurityContextStore,\

@@ -6,9 +6,11 @@ IBM-App-ForceRestart: install, \
  uninstall
 IBM-API-Package: javax.decorator;  type="spec", \
  javax.enterprise.context;  type="spec", \
+ javax.enterprise.context.control;  type="spec", \
  javax.enterprise.context.spi;  type="spec", \
  javax.enterprise.event;  type="spec", \
  javax.enterprise.inject;  type="spec", \
+ javax.enterprise.inject.literal;  type="spec", \
  javax.enterprise.inject.spi;  type="spec", \
  javax.enterprise.util;  type="spec", \
  javax.inject;  type="spec", \

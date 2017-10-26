@@ -19,8 +19,8 @@ Bundle-Description: CDI JNDI, version ${bVersion}
                 com.ibm.ws.cdi.jndi.liberty.BeanManagerObjectFactoryInfo
 
 Import-Package: \
-                javax.enterprise.inject.spi;version="[1.1,3)", \
-                *
+ javax.enterprise.inject.spi; version="[1.1.0,3.0.0)", \
+ *
 
 Private-Package: com.ibm.ws.cdi.jndi.liberty
 

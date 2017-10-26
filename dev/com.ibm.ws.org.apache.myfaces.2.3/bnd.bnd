@@ -162,7 +162,7 @@ Import-Package: !com.google.inject, \
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\

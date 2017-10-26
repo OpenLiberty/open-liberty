@@ -19,9 +19,6 @@ Bundle-Description:cdi 2.0 weld impl, version ${bVersion}
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils
                 
-Import-Package: org.jboss.weld.*;version="[3.0.1,4)", \
-                *
- 
 WS-TraceGroup: JCDI
 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
