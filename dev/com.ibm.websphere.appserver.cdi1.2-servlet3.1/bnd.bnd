@@ -12,6 +12,8 @@
 
 -nobundles=true
 
+publish.feature.resources: **
+
 -dependson: \
 	com.ibm.ws.cdi.1.2.web;version=latest, \
 	com.ibm.websphere.javaee.jsp.2.3;version=latest
