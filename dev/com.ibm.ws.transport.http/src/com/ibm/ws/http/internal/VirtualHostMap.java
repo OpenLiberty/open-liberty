@@ -91,7 +91,7 @@ public class VirtualHostMap {
      */
     public synchronized static void addVirtualHost(final VirtualHostConfig oldConfig, final VirtualHostConfig newConfig) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Add virtual host: " + newConfig.getVirtualHost(), oldConfig, newConfig, defaultHost.get(), alternateHostSelector);
+            Tr.event(tc, "Add virtual host: " + newConfig.getVirtualHost(), oldConfig, newConfig, defaultHost.get(), alternateHostSelector.get());
         }
 
         // If the "default/catch-all-ness" of the host was modified,
@@ -841,9 +841,9 @@ public class VirtualHostMap {
      */
     protected synchronized static void dump(PrintStream ps) {
         ps.println("Default host: " + defaultHost.get());
-        ps.println("Alternate hosts: " + (alternateHostSelector != null));
-        if (alternateHostSelector != null)
-            ps.println(alternateHostSelector);
+        ps.println("Alternate hosts: " + (alternateHostSelector.get() != null));
+        if (alternateHostSelector.get() != null)
+            ps.println(alternateHostSelector.get());
     }
 
 }
