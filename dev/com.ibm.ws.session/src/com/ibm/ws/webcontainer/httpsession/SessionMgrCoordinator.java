@@ -139,7 +139,7 @@ public class SessionMgrCoordinator {
             }
             this.smgrRegistration.unregister();
             this.smgrRegistration = null;
-            SessionMgrComponentImpl.INSTANCE.compareAndSet(this.smgr, null);
+            SessionMgrComponentImpl.INSTANCE.get().compareAndSet(this.smgr, null);
             this.smgr = null;
         } else {
             if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
@@ -214,7 +214,7 @@ public class SessionMgrCoordinator {
         }
         this.smgrRegistration = newSmgrRegistration;
         this.smgr = newSmgr;
-        SessionMgrComponentImpl.INSTANCE.set(this.smgr);
+        SessionMgrComponentImpl.INSTANCE.get().set(this.smgr);
         if (TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINER)) {
             LoggingUtil.SESSION_LOGGER_CORE.exiting(CLASS_NAME, "registerSessionManager");
         }

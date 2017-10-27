@@ -34,7 +34,7 @@ public class SessionInvalidatorWithThreadPool implements ITimer{
         _invalInterval = interval;
         
         /*Get reference to ScheduledExecutorService from SessionMgrComponentImpl*/
-        _scheduler = SessionMgrComponentImpl.INSTANCE.get().getScheduledExecutorService();
+        _scheduler = SessionMgrComponentImpl.INSTANCE.get().get().getScheduledExecutorService();
         
         _invalTask = new InvalidationTask(store);
         
