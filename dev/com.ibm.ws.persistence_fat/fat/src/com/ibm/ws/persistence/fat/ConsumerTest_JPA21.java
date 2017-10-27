@@ -12,7 +12,6 @@
 package com.ibm.ws.persistence.fat;
 
 import org.junit.AfterClass;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
@@ -52,12 +51,5 @@ public class ConsumerTest_JPA21 extends FATServletClient {
         server.stopServer("WTRN0074E");
         server.deleteFileFromLibertyInstallRoot("lib/com.ibm.ws.persistence.consumer.jar");
         server.uninstallSystemFeature(FEATURE_NAME);
-    }
-
-    @Before
-    public void before() throws Exception {
-        if (!server.isStarted()) {
-            server.startServer();
-        }
     }
 }
