@@ -62,7 +62,7 @@ public class ConsumerServlet extends FATServlet {
         }
     }
 
-    public long testPersist() throws Exception {
+    private long testPersist() throws Exception {
         _ut.begin();
         long personId = consumer.persistPerson(false, 10);
         _ut.commit();
@@ -104,7 +104,7 @@ public class ConsumerServlet extends FATServlet {
     /**
      * This is arguably an invalid test. It will only work on platforms that support unicode.
      */
-    public void testPersistUnicodeUnspecifiedFilter() throws Exception {
+    private void testPersistUnicodeUnspecifiedFilter() throws Exception {
         consumer.updateUnicodeConfig(null);
         try {
             _ut.begin();
@@ -171,7 +171,7 @@ public class ConsumerServlet extends FATServlet {
         }
     }
 
-    public void testPersistNullString() throws Exception {
+    private void testPersistNullString() throws Exception {
         _ut.begin();
         long personId = consumer.persistPerson(false, 10, null);
         _ut.commit();
@@ -187,7 +187,7 @@ public class ConsumerServlet extends FATServlet {
         }
     }
 
-    public void testPersistEmptyString() throws Exception {
+    private void testPersistEmptyString() throws Exception {
         _ut.begin();
         long personId = consumer.persistPerson(false, 10, "");
         _ut.commit();
