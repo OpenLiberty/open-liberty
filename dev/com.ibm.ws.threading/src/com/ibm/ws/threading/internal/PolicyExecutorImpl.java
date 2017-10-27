@@ -394,8 +394,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         try {
             // TODO purge timed out tasks and retry if we cannot immediately acquire a permit
             if (wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS)) {
-                enqueued = queue.offer(policyTaskFuture);
                 policyTaskFuture.accept(false);
+                enqueued = queue.offer(policyTaskFuture);
 
                 int w = withheldConcurrency.incrementAndGet();
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
