@@ -13,8 +13,6 @@ package com.ibm.ws.persistence.fat;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -39,9 +37,6 @@ public class ConsumerTest_JPA22 extends FATServletClient {
     @Server("com.ibm.ws.persistence.consumer.jpa22")
     @TestServlet(servlet = ConsumerServlet.class, path = APP_NAME)
     public static LibertyServer server;
-
-    @Rule
-    public final TestName testName = new TestName();
 
     @BeforeClass
     public static void beforeClass() throws Exception {
