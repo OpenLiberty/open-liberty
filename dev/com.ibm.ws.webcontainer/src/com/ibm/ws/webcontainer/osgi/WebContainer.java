@@ -18,10 +18,12 @@ import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
@@ -57,6 +59,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.version.ServletVersion;
 import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.webcontainer.SessionRegistry;
 import com.ibm.ws.webcontainer.async.AsyncContextFactory;
@@ -223,7 +226,13 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     private static final int DEFAULT_MAX_VERSION = 30;
     private ServiceReference<ServletVersion> versionRef;
     
-    private static boolean serverStopping = false;
+    private static StaticValue<AtomicBoolean> serverStopping = StaticValue.createStaticValue(new Callable<AtomicBoolean>() {
+        @Override
+        public AtomicBoolean call() throws Exception {
+            return new AtomicBoolean();
+        }
+    });
+
     private int modulesStarting=0;
     
     // Servlet 4.0
@@ -311,14 +320,14 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     
     
     public static void setServerStopping(boolean serverStop) {
-        serverStopping = serverStop;
+        serverStopping.get().set(serverStop);
     }
     
     public static boolean isServerStopping() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "serverStopping = " + serverStopping );
         }    
-       return serverStopping;
+       return serverStopping.get().get();
     }
     
     public void waitForApplicationInitialization(){
