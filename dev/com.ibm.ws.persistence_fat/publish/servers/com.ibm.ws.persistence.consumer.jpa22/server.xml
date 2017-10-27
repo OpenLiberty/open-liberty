@@ -1,0 +1,33 @@
+<server>
+    <include location="../fatTestPorts.xml" />
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>jpa-2.2</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>consumer-1.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+
+    <jpa defaultJtaDataSourceJndiName="consumerdsNonTxDs"
+        defaultNonJtaDataSourceJndiName="consumerdsNonTxDs" />
+        
+    <jdbcDriver id="derby">
+        <library>
+            <fileset dir="${shared.resource.dir}/derby" includes="*.jar" />
+        </library>
+    </jdbcDriver>
+
+    <dataSource id="consumerJtaDs" jndiName="consumerJtaDs" jdbcDriverRef="derby">
+        <properties databaseName="memory:consumer" createDatabase="create" />
+    </dataSource>
+    <dataSource id="consumerdsNonTxDs" jndiName="consumerdsNonTxDs" jdbcDriverRef="derby" transactional="false">
+        <properties databaseName="memory:consumer" createDatabase="create" />
+    </dataSource>
+    <dataSource id="privDs" jndiName="privDs" jdbcDriverRef="derby" transactional="false">
+        <properties databaseName="memory:consumer" createDatabase="create" />
+    </dataSource>    
+    
+    <consumer inmemMappingFile="inmem-orm.xml" staticMappingFile="static-orm.xml" createTables="true"/>
+</server>
