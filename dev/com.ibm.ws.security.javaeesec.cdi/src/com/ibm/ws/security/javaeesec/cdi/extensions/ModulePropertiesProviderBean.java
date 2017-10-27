@@ -30,7 +30,6 @@ import javax.enterprise.util.TypeLiteral;
 import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProviderImpl;
-import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.

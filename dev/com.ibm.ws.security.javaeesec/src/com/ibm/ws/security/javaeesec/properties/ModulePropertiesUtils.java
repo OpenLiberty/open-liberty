@@ -67,7 +67,6 @@ public class ModulePropertiesUtils {
         return false;
     }
 
-
     public HttpAuthenticationMechanism getHttpAuthenticationMechanism(CDI cdi) {
         HttpAuthenticationMechanism ham = null;
         if (cdi != null) {
@@ -83,7 +82,7 @@ public class ModulePropertiesUtils {
                                 hami = cdi.select(implClassList.get(0));
                                 if (hami != null && !hami.isUnsatisfied() && !hami.isAmbiguous()) {
                                     if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "HAM set by HAMProperties: " + hami);
+                                        Tr.debug(tc, "HAM set by ModuleProperties: " + hami);
                                     }
                                     ham = hami.get();
                                 } else {
@@ -97,7 +96,7 @@ public class ModulePropertiesUtils {
                                     hami = cdi.select(clz);
                                     if (hami != null && !hami.isUnsatisfied() && !hami.isAmbiguous()) {
                                         if (tc.isDebugEnabled()) {
-                                            Tr.debug(tc, "HAM set by HAMProperties: " + hami);
+                                            Tr.debug(tc, "HAMs set by ModuleProperties: " + hami);
                                         }
                                         ham = hami.get();
                                         count++;
@@ -137,6 +136,4 @@ public class ModulePropertiesUtils {
     protected ComponentMetaData getComponentMetaData() {
         return ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
     }
-    
-    
 }

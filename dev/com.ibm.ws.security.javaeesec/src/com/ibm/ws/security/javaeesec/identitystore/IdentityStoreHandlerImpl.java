@@ -84,7 +84,10 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             // at this point, result contains the result of the last IdentityStore.
             if (result != null && result.getStatus() == CredentialValidationResult.Status.VALID) {
                 Set<String> groups = getGroups(identityStores, result, supportGroups);
-                result = new CredentialValidationResult(null, result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStore ID : " + result.getIdentityStoreId() + ", CallerPrincipal : " + (result.getCallerPrincipal() != null ? result.getCallerPrincipal().getName() : "null") +  ", CallerDN : " + result.getCallerDn() + ", CallerUniqueId : " + result.getCallerUniqueId() + ", Groups : " +  groups);
+                }
+                result = new CredentialValidationResult(result.getIdentityStoreId(), result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
             } else if (firstInvalid != null) {
                 result = firstInvalid;
             } else if (!isValidated) {

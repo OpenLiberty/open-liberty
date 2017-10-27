@@ -51,7 +51,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
     @Inject
-    Instance<ModulePropertiesProvider> mppInstance;
+    ModulePropertiesProvider mpp;
 
     private String realmName = null;
     private final String DEFAULT_REALM = "defaultRealm";
@@ -81,13 +81,17 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     private void setRealmName() {
-        Properties props = hamp.getProperties();
-        if (realmName == null && props != null) {
-            realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
-        }
-        if (realmName == null || realmName.trim().isEmpty()) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
-            realmName = DEFAULT_REALM;
+        if (realmName == null) {
+            if (mpp != null) {
+                Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
+                if (props != null) {
+                    realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
+                }
+            }
+            if (realmName == null) {
+                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
+                realmName = DEFAULT_REALM;
+            }
         }
     }
 
@@ -107,7 +111,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     @SuppressWarnings("unchecked")
     private AuthenticationStatus setChallengeAuthorizationHeader(HttpMessageContext httpMessageContext) {
         HttpServletResponse rsp = httpMessageContext.getResponse();
-        rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + getRealmName() + "\"");
+        rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
         rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
         httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
 
@@ -296,31 +300,8 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
-    private String getRealmName() {
-        if (realmName == null) {
-            if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
-                ModulePropertiesProvider mpp = mppInstance.get();
-                if (mpp != null) {
-                    Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
-                    if (props != null) {
-                        realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
-                    }
-                }
-            }
-            if (realmName == null) {
-                Tr.warning(tc, "JAVAEESEC_CDI_WARNING_NO_REALM_NAME");
-                realmName = DEFAULT_REALM;
-            }
-        }
-        return realmName;
-    }
-
-    protected void setMPPInstance(Instance<ModulePropertiesProvider> mppInstance) {
-        this.mppInstance = mppInstance;
-    }
-
-    protected CDI getCDI() {
-        return CDI.current();
+    protected void setMPP(ModulePropertiesProvider mpp) {
+        this.mpp = mpp;
     }
 
 }
