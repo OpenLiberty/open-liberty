@@ -25,7 +25,7 @@ import org.junit.runners.Suite.SuiteClasses;
                 JSF22StatelessViewTests.class,
                 JSF22BeanValidationTests.class,
                 ErrorPathsTest.class,
-                ConfigTest.class
+                ClassloadingTest.class
 })
 
 public class FATSuite {

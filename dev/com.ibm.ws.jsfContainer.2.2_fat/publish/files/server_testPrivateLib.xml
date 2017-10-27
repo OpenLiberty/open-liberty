@@ -25,6 +25,10 @@
     <application location="noJsfApp.war">
     	<classloader privateLibraryRef="somelib"/>
     </application>
+    
+    <enterpriseApplication location="jsfEarApp.ear">
+    	<classloader privateLibraryRef="somelib"/>
+    </enterpriseApplication>
 
     <library id="somelib">
        <fileset dir="${server.config.dir}/lib" includes="someLib.jar"/>
