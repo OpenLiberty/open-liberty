@@ -148,15 +148,14 @@ src: \
 	test-bundles/cdi.helloworld.extension/src,\
 	test-applications/deltaspikeTest.war/src
 
-javac.source: 1.8
-javac.target: 1.8
+javac.source: 1.7
+javac.target: 1.7
 	
 test.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.org.eclipse.microprofile.config.1.1;version=latest,\
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.security;version=latest,\
 	com.ibm.websphere.security;version=latest,\

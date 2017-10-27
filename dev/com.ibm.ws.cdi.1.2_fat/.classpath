@@ -141,33 +141,6 @@
 	<classpathentry kind="lib" path="/build.sharedResources/lib/hamcrest-all.jar"/>
 	<classpathentry kind="src" path="/fattest.simplicity"/>
 	<classpathentry kind="src" path="/com.ibm.ws.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.apache.commons.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.interceptor.1.2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jsf.2.2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.ejb.3.2"/>
-	<classpathentry kind="src" path="/com.ibm.ws.cdi.1.2.weld.impl"/>
-	<classpathentry kind="src" path="/com.ibm.ws.cdi.1.2.interfaces"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jms.2.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.security"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.cdi.1.2"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.servlet.3.1"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.connector.1.7"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.validation.1.1"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.el.3.0"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.jsp.2.3"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.javaee.websocket.1.1"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-cdictrl-api-1.5.0.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-cdictrl-weld-1.5.0.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-core-api-1.5.0.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-core-impl-1.5.0.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-scheduler-module-api-1.5.0.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-scheduler-module-impl-1.5.0.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/quartz-2.2.1.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/slf4j-api-1.7.7.jar"/>
-	<classpathentry kind="lib" path="test-applications/deltaspikeTest.war/resources/WEB-INF/lib/slf4j-jdk14-1.7.7.jar"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="output" path="bin"/>
