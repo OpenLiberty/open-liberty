@@ -25,3 +25,5 @@ publish.wlp.jar.suffix: dev/api/third-party
 
 -buildpath: \
 	com.ibm.ws.org.jboss.weld.3.0.1;version=latest
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"

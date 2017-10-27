@@ -24,3 +24,5 @@
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.websphere.appserver.thirdparty.cdi-2.0;version=latest
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
