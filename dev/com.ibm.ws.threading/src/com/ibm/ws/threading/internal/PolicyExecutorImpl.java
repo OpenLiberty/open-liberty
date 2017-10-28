@@ -392,8 +392,31 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private boolean enqueue(PolicyTaskFutureImpl<?> policyTaskFuture, long wait, Boolean runIfQueueFullOverride) {
         boolean enqueued;
         try {
-            // TODO purge timed out tasks and retry if we cannot immediately acquire a permit
-            if (wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS)) {
+            boolean haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
+
+            if (!haveQueuePermit && state.get() == State.ACTIVE) {
+                // look for a timed-out task that can be purged to make room for this request
+                long now = System.nanoTime(), nextTimeout = now; // means unset
+                for (Iterator<PolicyTaskFutureImpl<?>> it = queue.iterator(); !haveQueuePermit && it.hasNext();) {
+                    PolicyTaskFutureImpl<?> future = it.next();
+                    long startBy = future.nsStartBy;
+                    if (startBy != future.nsAcceptBegin - 1)
+                        if (now - startBy >= 0) { // found a task in the queue that has timed out
+                            if (queue.remove(future)) { // can't use iterator.remove - it doesn't tell us whether it actually removed anything
+                                future.nsRunEnd = future.nsQueueEnd = System.nanoTime();
+                                future.abort(new IllegalStateException("Task did not start within " + (future.nsQueueEnd - future.nsAcceptBegin) + " ns")); // TODO NLS message for startTimeout
+                                // Release and re-acquire is needed to preserve correctness of shutdown logic
+                                maxQueueSizeConstraint.release();
+                                haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
+                            } // else another thread removed it first, possibly to run it. Keep trying...
+                        } else if (nextTimeout - startBy > 0 || nextTimeout == now)
+                            nextTimeout = startBy;
+                }
+                if (!haveQueuePermit) // TODO if wait > 0, can use nextTimeout (if != now) to wait in multiple stages
+                    haveQueuePermit = wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS);
+            }
+
+            if (haveQueuePermit) {
                 policyTaskFuture.accept(false);
                 enqueued = queue.offer(policyTaskFuture);
 
@@ -414,19 +437,20 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
                 }
             } else if (state.get() == State.ACTIVE) {
-                boolean havePermit = false;
+                boolean haveConcurrencyPermit = false;
                 if (policyTaskFuture.nsStartBy != policyTaskFuture.nsAcceptBegin - 1 // start timeout enabled, and
                     && System.nanoTime() - policyTaskFuture.nsStartBy >= 0) // timed out per the startTimeout
                     throw new RejectedExecutionException("Task did not start within " + (System.nanoTime() - policyTaskFuture.nsAcceptBegin) + " ns"); // TODO NLS message for startTimeout
                 else if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
                          !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
-                                                                        && (!maxConcurrencyAppliesToCallerThread || (havePermit = maxConcurrencyConstraint.tryAcquire())))
+                                                                        && (!maxConcurrencyAppliesToCallerThread
+                                                                            || (haveConcurrencyPermit = maxConcurrencyConstraint.tryAcquire())))
                     try {
                         policyTaskFuture.accept(true);
                         runTask(policyTaskFuture);
                         enqueued = false;
                     } finally {
-                        if (havePermit)
+                        if (haveConcurrencyPermit)
                             transferOrReleasePermit();
                     }
                 else
@@ -1066,7 +1090,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         if (state.get() != State.ACTIVE)
             throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "startTimeout", identifier));
 
-        startTimeout = TimeUnit.MILLISECONDS.toNanos(ms);
+        startTimeout = ms == -1 ? -1 /* disabled */ : TimeUnit.MILLISECONDS.toNanos(ms);
 
         return this;
     }
