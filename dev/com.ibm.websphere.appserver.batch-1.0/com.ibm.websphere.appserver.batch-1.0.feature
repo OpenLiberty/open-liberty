@@ -14,7 +14,7 @@ IBM-API-Package: javax.batch.api; type="spec", \
  javax.inject;  type="spec"
 IBM-ShortName: batch-1.0
 Subsystem-Name: Batch API 1.0
--features=com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=8.0,\
+-features=com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=2.0,\
  com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
  com.ibm.ws.persistence-1.0, \
