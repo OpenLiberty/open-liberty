@@ -29,6 +29,7 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.javaeesec.CDIHelper;
 
 @Default
 @ApplicationScoped
@@ -83,7 +84,10 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             // at this point, result contains the result of the last IdentityStore.
             if (result != null && result.getStatus() == CredentialValidationResult.Status.VALID) {
                 Set<String> groups = getGroups(identityStores, result, supportGroups);
-                result = new CredentialValidationResult(null, result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStore ID : " + result.getIdentityStoreId() + ", CallerPrincipal : " + (result.getCallerPrincipal() != null ? result.getCallerPrincipal().getName() : "null") +  ", CallerDN : " + result.getCallerDn() + ", CallerUniqueId : " + result.getCallerUniqueId() + ", Groups : " +  groups);
+                }
+                result = new CredentialValidationResult(result.getIdentityStoreId(), result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
             } else if (firstInvalid != null) {
                 result = firstInvalid;
             } else if (!isValidated) {
@@ -139,16 +143,30 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return CDI.current();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void scanIdentityStores(Set<IdentityStore> identityStores) {
-        Instance<IdentityStore> beanInstances = getCDI().select(IdentityStore.class);
-        if (beanInstances != null) {
-            for (IdentityStore is : beanInstances) {
+        CDI cdi = getCDI();
+        Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
+        if (identityStoreInstances != null) {
+            for (IdentityStore identityStore : identityStoreInstances) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore : " + is + ", validationTypes : " + is.validationTypes() + ", priority : " + is.priority());
+                    Tr.debug(tc, "IdentityStore : " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
                 }
-                identityStores.add(is);
+                identityStores.add(identityStore);
             }
-        } else {
+        }
+
+        // If the mechanism is from the extension, then the identity stores from the application need to be found using the app's bean manager.
+        if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStore : " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                }
+                identityStores.add(identityStore);
+            }
+        }
+
+        if (identityStores.isEmpty()) {
             Tr.error(tc, "JAVAEESEC_ERROR_NO_IDENTITYSTORES");
         }
         return;

@@ -14,7 +14,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
@@ -27,8 +27,9 @@ import javax.enterprise.inject.spi.PassivationCapable;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.enterprise.util.TypeLiteral;
 
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMPropertiesImpl;
+import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProviderImpl;
 
 /**
  * TODO: Determine if this bean can be PassivationCapable.
@@ -36,22 +37,20 @@ import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties
  * @param <T>
  */
 
-public class HAMPropertiesBean<T> implements Bean<HAMProperties>, PassivationCapable {
+public class ModulePropertiesProviderBean<T> implements Bean<ModulePropertiesProvider>, PassivationCapable {
 
     private final Set<Annotation> qualifiers;
     private final Type type;
     private final Set<Type> types;
     private final String name;
     private final String id;
-    private final Properties props;
-    private final Class implClass;
+    private final Map<String, ModuleProperties> moduleMap;
 
-    public HAMPropertiesBean(BeanManager beanManager, Class implClass,  Properties props) {
-        this.implClass = implClass;
-        this.props = props;
+    public ModulePropertiesProviderBean(BeanManager beanManager, Map<String, ModuleProperties> moduleMap) {
+        this.moduleMap = moduleMap;
         qualifiers = new HashSet<Annotation>();
         qualifiers.add(new AnnotationLiteral<Default>() {});
-        type = new TypeLiteral<HAMProperties>() {}.getType();
+        type = new TypeLiteral<ModulePropertiesProvider>() {}.getType();
         types = Collections.singleton(type);
         name = this.getClass().getName() + "[" + type + "]";
         id = beanManager.hashCode() + "#" + this.name;
@@ -126,7 +125,7 @@ public class HAMPropertiesBean<T> implements Bean<HAMProperties>, PassivationCap
      */
     @Override
     public Class<?> getBeanClass() {
-        return HAMProperties.class;
+        return ModulePropertiesProvider.class;
     }
 
     /*
@@ -167,8 +166,8 @@ public class HAMPropertiesBean<T> implements Bean<HAMProperties>, PassivationCap
      * @see javax.enterprise.context.spi.Contextual#create(javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public HAMProperties create(CreationalContext<HAMProperties> context) {
-        return new HAMPropertiesImpl(implClass, props);
+    public ModulePropertiesProvider create(CreationalContext<ModulePropertiesProvider> context) {
+        return new ModulePropertiesProviderImpl(moduleMap);
     }
 
     /*
@@ -177,8 +176,8 @@ public class HAMPropertiesBean<T> implements Bean<HAMProperties>, PassivationCap
      * @see javax.enterprise.context.spi.Contextual#destroy(java.lang.Object, javax.enterprise.context.spi.CreationalContext)
      */
     @Override
-    public void destroy(HAMProperties instance, CreationalContext<HAMProperties> context) {
-        // TODO Auto-generated method stub
-
+    public void destroy(ModulePropertiesProvider instance, CreationalContext<ModulePropertiesProvider> context) {
+        // There is anything cleaning up.
     }
+
 }

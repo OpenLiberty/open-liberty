@@ -41,3 +41,20 @@ JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=If the application provides an Ide
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml. IdentityStoreHandler bean is created when there is at least one IdentityStore bean. If the application intends to use an IdentityStore, make sure that it is configured properly. 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=IdentityStoreHandler bean is not found. If the application intends to use an IdentityStore, make sure that it is configured properly. IdentityStoreHandler bean is created when there is at least one IdentityStore bean.
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=If the application intends to use an IdentityStore, make sure that it is configured properly.
+
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The application deployment was failed because login-config element is found in web.xml of application {0} module {1}. Make sure removing login-config element from web.xml in order to enable HttpAuthenticationMechanism annotation.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment was failed because login-config element is found in web.xml. This is an error condition.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Make sure removing login-config element from web.xml in order to enable HttpAuthenticationMechanism annotation.
+
+JAVAEESEC_CDI_INFO_NO_HTTPAUTHMECH=CWWKS1932I: The HttpAuthenticationMechanism bean was not found in the module {0}, the original login mechanism will be used.
+JAVAEESEC_CDI_INFO_NO_HTTPAUTHMECH.explanation=This is the information that the deployed application does not bundle or activate HttpAuthenticationMechansim bean.
+JAVAEESEC_CDI_INFO_NO_HTTPAUTHMECH.useraction=No action is requried if the application does not bundle or annotate for enabling HttpAuthenticationMechanism bean. Or make surse that the application is configured properly.
+
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1933W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=If the realm name needs to be set, please set it by using BasicAuthenticationMechanismDefinition annotation in the application.
+
+JAVAEESEC_CDI_ERROR_NO_MODULE=CWWKS1934E: The Web module {0} is not found in the application {1}. the HttpAuthenticationMechanism bean is not enabled.
+JAVAEESEC_CDI_ERROR_NO_MODULE.explanation=The Web module which is computed by the class which is either implement HttpAuthenticationMechanism interface, or some of HttpAuthenticationMechnism annotations is not found. As a result, HttpAuthenticationMechanism bean is not enabled.
+JAVAEESEC_CDI_ERROR_NO_MODULE.useraction=Make sure that the application packaging is correct.
+ 

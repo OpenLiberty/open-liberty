@@ -14,8 +14,11 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.enterprise.inject.Instance;
@@ -34,7 +37,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 
 import test.common.SharedOutputManager;
 
@@ -52,9 +55,11 @@ public class BridgeBuilderImplTest {
     private AuthConfigFactory providerFactory;
     private AuthConfigProvider authConfigProvider;
     private CDI cdi;
-    private Instance<HAMProperties> hampi;
+    private Instance<ModulePropertiesProvider> mppi;
     private Instance<HttpAuthenticationMechanism> hami;
-    private HAMProperties hamp;
+    private HttpAuthenticationMechanism ham;
+    private ModulePropertiesProvider mpp;
+    private Iterator itl;
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance();
 
@@ -82,9 +87,11 @@ public class BridgeBuilderImplTest {
         providerFactory = mockery.mock(AuthConfigFactory.class);
         authConfigProvider = null;
         cdi = mockery.mock(CDI.class);
-        hampi = mockery.mock(Instance.class, "hampi");
-        hamp = mockery.mock(HAMProperties.class);
+        mppi = mockery.mock(Instance.class, "mppi");
+        mpp = mockery.mock(ModulePropertiesProvider.class);
         hami = mockery.mock(Instance.class, "hami");
+        ham = mockery.mock(HttpAuthenticationMechanism.class, "ham");
+        itl = mockery.mock(Iterator.class, "itl");
     }
 
     @After
@@ -94,10 +101,17 @@ public class BridgeBuilderImplTest {
     }
 
     @Test
-    public void testNoHAMPropDoesNotRegisterProvider() throws Exception {
+    public void testNoModulePropDoesNotRegisterProvider() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(cdi).select(HAMProperties.class);
+                one(cdi).select(HttpAuthenticationMechanism.class);
+                will(returnValue(hami));
+                one(hami).iterator();
+                will(returnValue(itl));
+                exactly(3).of(itl).hasNext();
+                will(onConsecutiveCalls(returnValue(true), returnValue(true), returnValue(false)));
+                allowing(itl).next();
+                one(cdi).select(ModulePropertiesProvider.class);
                 will(returnValue(null));
             }
         });
@@ -110,12 +124,19 @@ public class BridgeBuilderImplTest {
     }
 
     @Test
-    public void testUnsatisfiedHAMPropDoesNotRegisterProvider() throws Exception {
+    public void testUnsatisfiedModulePropDoesNotRegisterProvider() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(cdi).select(HAMProperties.class);
-                will(returnValue(hampi));
-                one(hampi).isUnsatisfied();
+                one(cdi).select(HttpAuthenticationMechanism.class);
+                will(returnValue(hami));
+                one(hami).iterator();
+                will(returnValue(itl));
+                exactly(3).of(itl).hasNext();
+                will(onConsecutiveCalls(returnValue(true), returnValue(true), returnValue(false)));
+                allowing(itl).next();
+                one(cdi).select(ModulePropertiesProvider.class);
+                will(returnValue(mppi));
+                one(mppi).isUnsatisfied();
                 will(returnValue(true));
             }
         });
@@ -130,7 +151,7 @@ public class BridgeBuilderImplTest {
 
     @Test
     public void testNoAuthMechDoesNotRegisterProvider() throws Exception {
-        withNoCachedProvider().withCDI(String.class, null).doesNotRegisterProvider();
+        withNoCachedProvider().withCDInoHAM().doesNotRegisterProvider();
 
         bridgeBuilder.buildBridgeIfNeeded(APP_CONTEXT, providerFactory);
         assertTrue("CWWKS1912E: message was not logged", outputMgr.checkForStandardErr("CWWKS1912E:"));
@@ -139,7 +160,7 @@ public class BridgeBuilderImplTest {
     @Test
     public void testOneAuthMechRegistersProvider() throws Exception {
 
-        withNoCachedProvider().withCDI(String.class, hami);
+        withNoCachedProvider().withCDI();
 
         mockery.checking(new Expectations() {
             {
@@ -147,6 +168,8 @@ public class BridgeBuilderImplTest {
                 will(returnValue(false));
                 one(hami).isAmbiguous();
                 will(returnValue(false));
+                one(hami).get();
+                will(returnValue(ham));
                 one(providerFactory).registerConfigProvider(with(aNonNull(AuthConfigProvider.class)), with("HttpServlet"), with(APP_CONTEXT),
                                                             with(aNonNull(String.class)));
             }
@@ -158,7 +181,7 @@ public class BridgeBuilderImplTest {
     @Test
     public void testMoreThanOneAuthMechDoesNotRegisterProvider() throws Exception {
 
-        withNoCachedProvider().withCDI(String.class, hami).doesNotRegisterProvider();
+        withNoCachedProvider().withCDI().doesNotRegisterProvider();
         mockery.checking(new Expectations() {
             {
                 one(hami).isUnsatisfied();
@@ -200,22 +223,59 @@ public class BridgeBuilderImplTest {
         return this;
     }
 
-    private BridgeBuilderImplTest withCDI(final Class implClass, final Instance bean) throws Exception {
-        
+    private BridgeBuilderImplTest withCDI() throws Exception {
+        final List<Class> clist = new ArrayList<Class>();
+        final Class dummy = String.class;
+        clist.add(dummy);
+
         mockery.checking(new Expectations() {
             {
-                one(cdi).select(HAMProperties.class);
-                will(returnValue(hampi));
-                one(hampi).isUnsatisfied();
+                one(cdi).select(ModulePropertiesProvider.class);
+                will(returnValue(mppi));
+                one(mppi).isUnsatisfied();
                 will(returnValue(false));
-                one(hampi).isAmbiguous();
+                one(mppi).isAmbiguous();
                 will(returnValue(false));
-                one(hampi).get();
-                will(returnValue(hamp));
-                one(hamp).getImplementationClass();
-                will(returnValue(implClass));
-                one(cdi).select(implClass);
-                will(returnValue(bean));
+                one(cdi).select(HttpAuthenticationMechanism.class);
+                will(returnValue(hami));
+                one(hami).iterator();
+                will(returnValue(itl));
+                exactly(3).of(itl).hasNext();
+                will(onConsecutiveCalls(returnValue(true), returnValue(true), returnValue(false)));
+                allowing(itl).next();
+                one(mppi).get();
+                will(returnValue(mpp));
+                one(mpp).getAuthMechClassList();
+                will(returnValue(clist));
+                one(cdi).select(dummy);
+                will(returnValue(hami));
+            }
+        });
+        return this;
+    }
+
+    private BridgeBuilderImplTest withCDInoHAM() throws Exception {
+        final List<Class> clist = new ArrayList<Class>();
+
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).select(ModulePropertiesProvider.class);
+                will(returnValue(mppi));
+                one(mppi).isUnsatisfied();
+                will(returnValue(false));
+                one(mppi).isAmbiguous();
+                will(returnValue(false));
+                one(cdi).select(HttpAuthenticationMechanism.class);
+                will(returnValue(hami));
+                one(hami).iterator();
+                will(returnValue(itl));
+                exactly(3).of(itl).hasNext();
+                will(onConsecutiveCalls(returnValue(true), returnValue(true), returnValue(false)));
+                allowing(itl).next();
+                one(mppi).get();
+                will(returnValue(mpp));
+                one(mpp).getAuthMechClassList();
+                will(returnValue(clist));
             }
         });
         return this;
