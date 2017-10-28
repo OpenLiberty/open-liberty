@@ -24,9 +24,8 @@ Import-Package: \
   org.apache.cxf.*;version="[3.0.2,4)", \
   com.ibm.websphere.*, \
   javax.ws.rs.*, \
-  javax.validation;version="[1.0,2)", \
-  javax.validation.executable.*;resolution:=optional;version="[1.0,2)", \
-  javax.validation.*;version="[1.0,2)", \
+  javax.validation.*;version="[1.0,3)", \
+  javax.validation.executable.*;resolution:=optional;version="[1.0,3)", \
   com.ibm.ws.jaxrs20.api, \
   com.ibm.ws.jaxrs20.api.*, \
   com.ibm.ws.ffdc, \

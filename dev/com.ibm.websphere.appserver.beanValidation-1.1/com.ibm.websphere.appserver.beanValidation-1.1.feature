@@ -14,13 +14,14 @@ IBM-API-Package: javax.validation; type="spec", \
  javax.validation.spi; type="spec",\
  com.ibm.ws.beanvalidation.accessor; type="internal"
 IBM-ShortName: beanValidation-1.1
+# TODO-EE8 remove EE8 toleration when we have beanValidation-2.0
 Subsystem-Name: Bean Validation 1.1
 -features=com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:=2.0, \
  com.ibm.websphere.appserver.beanValidationCore-1.0, \
  com.ibm.websphere.appserver.javax.validation-1.1, \
  com.ibm.websphere.appserver.el-3.0, \
  com.ibm.websphere.appserver.transaction-1.2, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0, \
+ com.ibm.websphere.appserver.javaeeCompatible-7.0; ibm.tolerates:=8.0, \
  com.ibm.websphere.appserver.javax.interceptor-1.2, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=com.ibm.ws.org.apache.commons.weaver.1.1, \

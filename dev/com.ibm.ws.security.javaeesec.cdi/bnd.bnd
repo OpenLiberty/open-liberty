@@ -47,7 +47,7 @@ Include-Resource: \
     com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
     com.ibm.websphere.javaee.security.1.0;version=latest,\
     com.ibm.websphere.security;version=latest,\
-    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
@@ -66,7 +66,7 @@ Include-Resource: \
     com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.webcontainer;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.ws.transport.http;version=latest
 
 -testpath: \
@@ -80,7 +80,6 @@ Include-Resource: \
     cglib:cglib-nodep;version=2.1.0.3, \
     com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.el.3.0;version=latest,\
     com.ibm.ws.security.javaeesec.1.0;version=latest,\
     com.ibm.ws.kernel.boot;version=latest, \

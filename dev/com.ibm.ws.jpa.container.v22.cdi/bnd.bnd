@@ -24,7 +24,7 @@ Private-Package: com.ibm.ws.jpa.container.v22.cdi.internal
 -buildpath: \
 	com.ibm.ws.jpa.container.core;version=latest,\
 	com.ibm.websphere.javaee.persistence.2.2;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.cdi.interfaces;version=latest

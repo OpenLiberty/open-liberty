@@ -34,6 +34,6 @@ instrument.classesExcludes: com/ibm/ws/cdi/jms/resources/*.class
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jms.2.0;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest
