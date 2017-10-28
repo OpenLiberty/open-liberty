@@ -75,7 +75,6 @@ public class LoginToContinueInterceptorTest {
     @SuppressWarnings("rawtypes")
     
     private InvocationContext ic;
-    private Instance<ModulePropertiesProvider> mppi;
     private ModulePropertiesProvider mpp;
     private LoginToContinueInterceptor ltci;
     private ReferrerURLCookieHandler ruh;
@@ -121,7 +120,6 @@ public class LoginToContinueInterceptorTest {
     @Before
     public void setUp() throws Exception {
         ic = mockery.mock(InvocationContext.class);
-        mppi = mockery.mock(Instance.class);
         mpp = mockery.mock(ModulePropertiesProvider.class);
         wasc = mockery.mock(WebAppSecurityConfig.class);
         ruh = mockery.mock(ReferrerURLCookieHandler.class);
@@ -164,7 +162,7 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptContinueFormRedirect() throws Exception {
         isInterceptedMethod = true;
-        ltci.setMPPInstance(mppi);
+        ltci.setMPP(mpp);
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
@@ -172,7 +170,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withMpp(mpp, false, false).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE);
 
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(ic));
     }
@@ -184,7 +182,7 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptContinueFormForward() throws Exception {
         isInterceptedMethod = true;
-        ltci.setMPPInstance(mppi);
+        ltci.setMPP(mpp);
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
@@ -192,7 +190,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withMpp(mpp, false, false).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
 
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(ic));
     }
@@ -204,14 +202,14 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptContinueFormDefault() throws Exception {
         isInterceptedMethod = true;
-        ltci.setMPPInstance(mppi);
+        ltci.setMPP(mpp);
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withMpp(mpp, false, false).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE);
 
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(ic));
     }
@@ -224,12 +222,12 @@ public class LoginToContinueInterceptorTest {
     public void testInterceptSuccessCustomForm() throws Exception {
         isInterceptedMethod = true;
         isCustomClass = true;
-        ltci.setMPPInstance(mppi);
+        ltci.setMPP(mpp);
         Object expect = AuthenticationStatus.SUCCESS;
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withMpp(mpp, false, false).withParams().withReferrer().withGetURL(storedReq, requestUrl);
+        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl);
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(ic));
     }
@@ -241,42 +239,16 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptSuccessForm() throws Exception {
         isInterceptedMethod = true;
-        ltci.setMPPInstance(mppi);
+        ltci.setMPP(mpp);
         Object expect = AuthenticationStatus.SUCCESS;
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withMpp(mpp, false, false).withParams().withReferrer().withGetURL(storedReq, requestUrl);
+        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl);
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(ic));
     }
 
-
-    /**
-     *  valid method. ambiguous ModulePropertiesProvider object.
-     *  Make sure that AuthenticationStatus.SEND_FAILURE is returned along with the error message in the log file.
-     */
-    @Test
-    public void testInterceptMppAmbiguous() throws Exception {
-        isInterceptedMethod = true;
-        ltci.setMPPInstance(mppi);
-        withMpp(mpp, false, true);
-        assertEquals("The SEND_FAILURE should be returned.", AuthenticationStatus.SEND_FAILURE, ltci.intercept(ic));
-        assertTrue("CWWKS1926E  message was not logged", outputMgr.checkForStandardErr("CWWKS1926E:"));
-    }
-
-    /**
-     *  valid method. unsatisified ModulePropertiesProvider object.
-     *  Make sure that AuthenticationStatus.SEND_FAILURE is returned along with the error message in the log file.
-     */
-    @Test
-    public void testInterceptMppUnsatisfied() throws Exception {
-        isInterceptedMethod = true;
-        ltci.setMPPInstance(mppi);
-        withMpp(mpp, true, false);
-        assertEquals("The SEND_FAILURE should be returned.", AuthenticationStatus.SEND_FAILURE, ltci.intercept(ic));
-        assertTrue("CWWKS1926E  message was not logged", outputMgr.checkForStandardErr("CWWKS1926E:"));
-    }
 
     /**
      *  valid method. No ModulePropertiesProvider object.
@@ -285,7 +257,7 @@ public class LoginToContinueInterceptorTest {
     @Test
     public void testInterceptNoMpp() throws Exception {
         isInterceptedMethod = true;
-        ltci.setMPPInstance(null);
+        ltci.setMPP(null);
         assertEquals("The SEND_FAILURE should be returned.", AuthenticationStatus.SEND_FAILURE, ltci.intercept(ic));
         assertTrue("CWWKS1926E  message was not logged", outputMgr.checkForStandardErr("CWWKS1926E:"));
     }
@@ -310,33 +282,6 @@ public class LoginToContinueInterceptorTest {
                 will(returnValue(result));
             }
         });
-        return this;
-    }
-
-    @SuppressWarnings("unchecked")
-    private LoginToContinueInterceptorTest withMpp(final ModulePropertiesProvider instance, final boolean isUnsatisfied, final boolean isAmbiguous) throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(mppi).isUnsatisfied();
-                will(returnValue(isUnsatisfied));
-            }
-        });
-        if (!isUnsatisfied) {
-            mockery.checking(new Expectations() {
-                {
-                    one(mppi).isAmbiguous();
-                    will(returnValue(isAmbiguous));
-                }
-            });
-            if (!isAmbiguous) {
-                mockery.checking(new Expectations() {
-                    {
-                        one(mppi).get();
-                        will(returnValue(instance));
-                    }
-                });
-            }
-        }
         return this;
     }
 
