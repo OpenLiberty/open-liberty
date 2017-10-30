@@ -296,10 +296,16 @@ task runfat(type: Exec) {
   }
 }
 
-def buildFatEnabled = true; // TODO set this to false once build machines have been updated
-gradle.startParameter.taskNames.each {
-	if(it.contains("fat")) {
-		buildFatEnabled = true;
+// Building a FAT is disabled by default, and enabled only when the gradle command contains "fat"
+// For example './gradlew buildfat' (to build all FATs) or './gradlew build.example_fat:buildandrun'
+def buildFatEnabled = false;
+if(gradle.startParameter.getCurrentDir().getAbsolutePath().contains("_fat")) {
+	buildFatEnabled = true;
+} else {
+	gradle.startParameter.taskNames.each {
+		if(it.contains("fat")) {
+			buildFatEnabled = true;
+		}
 	}
 }
 

@@ -434,6 +434,7 @@ subprojects {
   
   task buildfat {
 	  // A no-op task for regular projects which FATs will override
+	  group = "build"
   }
 
   sourceSets {
