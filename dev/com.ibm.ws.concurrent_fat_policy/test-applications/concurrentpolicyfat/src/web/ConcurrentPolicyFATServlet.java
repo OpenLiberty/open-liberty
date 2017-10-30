@@ -23,6 +23,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
@@ -49,6 +50,9 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/ConcurrentPolicyFATServlet")
 public class ConcurrentPolicyFATServlet extends FATServlet {
+    // Execution property name for start timeout
+    static final String START_TIMEOUT_NANOS = "com.ibm.ws.concurrent.START_TIMEOUT_NANOS";
+
     // Maximum number of nanoseconds to wait for a task to finish.
     static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(1);
 
@@ -150,7 +154,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
     }
 
     /**
-     * Utility method to validate information recorded by TaskListener for a task that aborts and is rejected upon submit.
+     * Utility method to validate information recorded by TaskListener for a task that aborts and is rejected before starting.
      */
     private void assertRejected(ManagedExecutorService executor, Object task, TaskListener listener, Class<? extends Throwable> causeClass,
                                 String causeMessagePrefix) throws Exception {
@@ -543,5 +547,80 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
 
         cancelAfterTest.remove(blockerTask2Future);
         assertTrue(blockerTask2Future.cancel(true));
+    }
+
+    // Submit a group of tasks to timed invokeAny, where all tasks exceed the startTimeout.
+    // Verify that invokeAny raises TimeoutException.
+    @Test
+    public void testStartTimeoutInvokeAny() throws Exception {
+        // Use up maxConcurrency of 2
+        final CountDownLatch blockerLatch = new CountDownLatch(1);
+        CountDownLatch blockersStartedLatch = new CountDownLatch(2);
+        CountingTask blockerTask1 = new CountingTask(null, null, blockersStartedLatch, blockerLatch);
+        CountingTask blockerTask2 = new CountingTask(null, null, blockersStartedLatch, blockerLatch);
+        Future<Integer> blockerTaskFuture1 = scheduledExecutor2.submit(blockerTask1);
+        cancelAfterTest.add(blockerTaskFuture1);
+        Future<Integer> blockerTaskFuture2 = scheduledExecutor2.submit(blockerTask2);
+        cancelAfterTest.add(blockerTaskFuture2);
+        assertTrue(blockersStartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // 2 tasks with small startTimeout values
+        final TaskListener listener1 = new TaskListener();
+        final TaskListener listener2 = new TaskListener();
+        CountingTask task1 = new CountingTask(null, listener1, null, null);
+        CountingTask task2 = new CountingTask(null, listener2, null, null);
+        task1.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(201)));
+        task2.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(202)));
+        List<CountingTask> tasks = Arrays.asList(task1, task2);
+
+        // Another task blocks for queue time to exceed 250ms and then releases the blockerLatch so that the
+        // invokeAny tasks can attempt to run after they have timed out.
+        Future<Void> unblockerFuture = executor1.submit(new Callable<Void>() {
+            @Override
+            public Void call() throws Exception {
+                assertTrue(listener1.latch[SUBMITTED].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                assertTrue(listener2.latch[SUBMITTED].await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+                for (long start = System.nanoTime(); System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(100))
+                    if (getElapsedQueueTime(listener1.future[SUBMITTED], TimeUnit.NANOSECONDS) > 0 &&
+                        getElapsedQueueTime(listener2.future[SUBMITTED], TimeUnit.NANOSECONDS) > 0) {
+                        TimeUnit.MILLISECONDS.sleep(250); // more than enough for the start timeout to elapse for both tasks
+                        blockerLatch.countDown();
+                        return null;
+                    }
+                throw new Exception("Tasks not queued in reasonable amount of time");
+            }
+        });
+        cancelAfterTest.add(unblockerFuture);
+
+        // invokeAny - both tasks will time out before they can start
+        try {
+            Integer result = scheduledExecutor2.invokeAny(tasks, TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("invokeAny should fail when all tasks abort due to start timeout, instead: " + result);
+        } catch (AbortedException x) {
+            // pass
+        }
+
+        // ensure there were no failures
+        unblockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        cancelAfterTest.remove(unblockerFuture);
+
+        assertEquals(Integer.valueOf(1), blockerTaskFuture1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        cancelAfterTest.remove(blockerTaskFuture1);
+
+        assertEquals(Integer.valueOf(1), blockerTaskFuture2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        cancelAfterTest.remove(blockerTaskFuture2);
+
+        long runTime1 = getElapsedRunTime(blockerTaskFuture1, TimeUnit.MILLISECONDS);
+        assertTrue(runTime1 + "ms", runTime1 >= 250);
+        long runTime2 = getElapsedRunTime(blockerTaskFuture2, TimeUnit.MILLISECONDS);
+        assertTrue(runTime2 + "ms", runTime2 >= 250);
+
+        // ManagedTaskListener events should be consistent with an aborted task
+        assertRejected(scheduledExecutor2, task1, listener1, IllegalStateException.class, null); // TODO test for message prefix once message is added
+        assertRejected(scheduledExecutor2, task2, listener2, IllegalStateException.class, null); // TODO test for message prefix once message is added
+
+        // Neither task reports any run time
+        assertEquals(0, getElapsedRunTime(listener1.future[SUBMITTED], TimeUnit.NANOSECONDS));
+        assertEquals(0, getElapsedRunTime(listener2.future[SUBMITTED], TimeUnit.NANOSECONDS));
     }
 }

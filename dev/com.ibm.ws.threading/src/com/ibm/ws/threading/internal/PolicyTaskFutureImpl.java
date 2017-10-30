@@ -378,8 +378,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
             nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
         boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
-        if (aborted && callback != null)
-            callback.onEnd(task, this, null, true, 0, cause);
+        try {
+            if (aborted && callback != null)
+                callback.onEnd(task, this, null, true, 0, cause);
+        } finally {
+            if (latch != null)
+                latch.countDown();
+        }
         return aborted;
     }
 
@@ -416,47 +421,49 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     @Override
     public boolean cancel(boolean interruptIfRunning) {
-        if (result.compareAndSet(state, CANCELED)) {
-            if (executor.queue.remove(this)) {
-                nsRunEnd = nsQueueEnd = System.nanoTime();
-                state.releaseShared(CANCELED);
-                executor.maxQueueSizeConstraint.release();
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "canceled from queue");
-                if (callback != null)
-                    callback.onCancel(task, this, false, false);
-            } else if (state.get() == PRESUBMIT) {
-                nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
-                state.releaseShared(CANCELED);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "canceled during pre-submit");
-                if (callback != null)
-                    callback.onCancel(task, this, false, false);
-            } else if (interruptIfRunning) {
-                state.releaseShared(CANCELING);
-                Thread t = thread;
-                try {
-                    if (t != null) {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "interrupting " + t);
-                        AccessController.doPrivileged(new InterruptAction(t));
+        if (result.compareAndSet(state, CANCELED))
+            try {
+                if (executor.queue.remove(this)) {
+                    nsRunEnd = nsQueueEnd = System.nanoTime();
+                    state.releaseShared(CANCELED);
+                    executor.maxQueueSizeConstraint.release();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "canceled from queue");
+                    if (callback != null)
+                        callback.onCancel(task, this, false, false);
+                } else if (state.get() == PRESUBMIT) {
+                    nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
+                    state.releaseShared(CANCELED);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "canceled during pre-submit");
+                    if (callback != null)
+                        callback.onCancel(task, this, false, false);
+                } else if (interruptIfRunning) {
+                    state.releaseShared(CANCELING);
+                    Thread t = thread;
+                    try {
+                        if (t != null) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "interrupting " + t);
+                            AccessController.doPrivileged(new InterruptAction(t));
+                        }
+                    } finally {
+                        state.releaseShared(CANCELED);
+                        if (callback != null)
+                            callback.onCancel(task, this, false, true);
                     }
-                } finally {
+                } else {
                     state.releaseShared(CANCELED);
                     if (callback != null)
                         callback.onCancel(task, this, false, true);
                 }
-            } else {
-                state.releaseShared(CANCELED);
-                if (callback != null)
-                    callback.onCancel(task, this, false, true);
+
+                return true;
+            } finally {
+                if (latch != null)
+                    latch.countDown();
             }
-
-            if (latch != null)
-                latch.countDown();
-
-            return true;
-        } else {
+        else {
             // Prevent premature return from cancel that would allow subsequent isCanceled/isDone to return false
             while (result.get() == state)
                 Thread.yield();
