@@ -14,5 +14,4 @@
 
 -dependson: \
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
-	com.ibm.websphere.appserver.javaeeCompatible-8.0;version=latest,\
 	com.ibm.ws.org.eclipse.yasson.1.0;version=latest

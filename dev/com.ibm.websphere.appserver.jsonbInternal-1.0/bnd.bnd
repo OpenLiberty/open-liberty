@@ -11,7 +11,3 @@
 -include= ~../cnf/resources/bnd/liberty-release.props
 
 -nobundles=true
-
--dependson: \
-  com.ibm.websphere.appserver.jsonbImpl-1.0.0;version=latest,\
-  com.ibm.websphere.appserver.jsonbImpl-1.0.1;version=latest

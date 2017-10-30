@@ -13,9 +13,6 @@
 -nobundles=true
 
 -dependson: \
-	com.ibm.websphere.appserver.cdi-2.0;version=latest, \
-	com.ibm.websphere.appserver.jaspic-1.1;version=latest, \
-	com.ibm.websphere.appserver.servlet-4.0;version=latest, \
 	com.ibm.websphere.javaee.security.1.0;version=latest, \
 	com.ibm.ws.security.javaeesec;version=latest, \
 	com.ibm.ws.security.javaeesec.cdi;version=latest

@@ -14,5 +14,4 @@
 
 -dependson: \
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
-	com.ibm.websphere.appserver.javaeeCompatible-8.0;version=latest,\
 	com.ibm.ws.org.glassfish.json.1.1
