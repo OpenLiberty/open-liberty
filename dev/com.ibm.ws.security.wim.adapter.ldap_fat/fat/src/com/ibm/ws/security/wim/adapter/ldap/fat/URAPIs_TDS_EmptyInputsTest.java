@@ -75,7 +75,7 @@ public class URAPIs_TDS_EmptyInputsTest {
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
         try {
-            server.stopServer();
+            server.stopServer("CWIML4541E");
         } finally {
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
         }

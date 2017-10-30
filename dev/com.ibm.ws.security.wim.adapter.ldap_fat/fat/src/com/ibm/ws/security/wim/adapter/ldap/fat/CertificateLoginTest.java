@@ -84,7 +84,7 @@ public class CertificateLoginTest {
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        myServer.stopServer();
+        myServer.stopServer("CWIML4538E");
     }
 
     /**

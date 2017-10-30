@@ -19,13 +19,21 @@ import com.ibm.websphere.simplicity.config.ConfigElement;
  * Configuration for the following nested elements:
  *
  * <ul>
+ * <li>activedLdapFilterProperties</li>
  * <li>ldapRegistry --> activedFilters</li>
+ * <li>customLdapFilterProperties</li>
  * <li>ldapRegistry --> customFilters</li>
+ * <li>domino50LdapFilterProperties</li>
  * <li>ldapRegistry --> domino50Filters</li>
+ * <li>edirectoryLdapFilterProperties</li>
  * <li>ldapRegistry --> edirectoryFilters</li>
+ * <li>idsLdapFilterProperties</li>
  * <li>ldapRegistry --> idsFilters</li>
+ * <li>iplanetLdapFilterProperties</li>
  * <li>ldapRegistry --> iplanetFilters</li>
+ * <li>netscapeLdapFilterProperties</li>
  * <li>ldapRegistry --> netscapeFilters</li>
+ * <li>securewayLdapFilterProperties</li>
  * <li>ldapRegistry --> securewayFilters</li>
  * </ul>
  */
