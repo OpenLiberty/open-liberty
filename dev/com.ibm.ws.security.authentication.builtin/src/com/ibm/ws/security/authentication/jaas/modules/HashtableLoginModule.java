@@ -62,6 +62,11 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
                                                         AuthenticationConstants.INTERNAL_ASSERTION_KEY,
                                                         AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
 
+    private final String[] userIdOnlyProperties = { AttributeNameConstants.WSCREDENTIAL_USERID,
+                                                    AuthenticationConstants.INTERNAL_ASSERTION_KEY };
+
+    private final String[] jsonWebTokenProperties = { AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN };
+
     private boolean uniquedIdAndSecurityNameLogin = false;
     private boolean useIdAndPasswordLogin = false;
     private boolean userIdNoPasswordLogin = false;
@@ -146,13 +151,13 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         if (customPropertiesFromSubject) {
             Object value = customProperties.get(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
             assertion = (Boolean) (value != null ? value : Boolean.FALSE);
-            removeInternalAssertionHashtable(customProperties);
+            removeInternalAssertionHashtable(customProperties, userIdOnlyProperties);
         } else {
             String[] hashtableInternalProperty = { AuthenticationConstants.INTERNAL_ASSERTION_KEY };
             Hashtable<String, ?> internalProperties = subjectHelper.getHashtableFromSubject(subject, hashtableInternalProperty);
             if (internalProperties != null && !internalProperties.isEmpty()) {
                 assertion = Boolean.TRUE;
-                removeInternalAssertionHashtable(internalProperties);
+                removeInternalAssertionHashtable(internalProperties, userIdOnlyProperties);
             }
         }
         if (assertion.booleanValue()) {
@@ -312,8 +317,11 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         }
     }
 
-    private void addJsonWebToken(Subject subject) throws Exception {
-        MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
+    private void addJsonWebToken(Subject subject) {
+        if (customProperties != null && customProperties.get(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN) != null) {
+            MpJwtHelper.addJsonWebToken(subject, customProperties, AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
+            removeInternalAssertionHashtable(customProperties, jsonWebTokenProperties);
+        }
     }
 
     private void setUpTemporarySubject() throws Exception {
@@ -390,12 +398,12 @@ public class HashtableLoginModule extends ServerCommonLoginModule implements Log
         return true;
     }
 
-    private void removeInternalAssertionHashtable(Hashtable<String, ?> props) {
+    private void removeInternalAssertionHashtable(Hashtable<String, ?> props, String propNames[]) {
         Set<Object> publicCredentials = subject.getPublicCredentials();
         publicCredentials.remove(props);
-        props.remove(AuthenticationConstants.INTERNAL_ASSERTION_KEY);
-        props.remove(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN);
-        props.remove(AttributeNameConstants.WSCREDENTIAL_USERID);
+        for (String propName : propNames) {
+            props.remove(propName);
+        }
         if (!props.isEmpty()) {
             publicCredentials.add(props);
         }
