@@ -8,11 +8,8 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/liberty-release.props
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
 
--nobundles=true
-
--dependson: \
-    com.ibm.ws.require.java8;version=latest, \
-    com.ibm.ws.opentracing.mock;version=latest, \
-    com.ibm.ws.opentracing.cdi;version=latest
+# Define the bundle for this FAT
+Bundle-SymbolicName: ${basename;${basedir}}
