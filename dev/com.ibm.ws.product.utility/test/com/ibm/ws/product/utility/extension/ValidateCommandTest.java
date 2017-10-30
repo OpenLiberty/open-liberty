@@ -13,7 +13,6 @@ package com.ibm.ws.product.utility.extension;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -97,14 +96,7 @@ public class ValidateCommandTest {
         wlpDir = new File(uniqueTestDir, "wlp");
         setupMocking();
 
-        // Reflectively amend the Utils class to set the current WLP dir as the installDir field.
-        try {
-            Field getInstallField = Utils.class.getDeclaredField("installDir");
-            getInstallField.setAccessible(true);
-            getInstallField.set(null, wlpDir);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Utils.setInstallDir(wlpDir);
 
         libDir = new File(wlpDir, "lib");
         binDir = new File(wlpDir, "bin");

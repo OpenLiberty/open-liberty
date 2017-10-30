@@ -23,11 +23,16 @@ import java.util.Properties;
 
 import com.ibm.ws.kernel.boot.LaunchException;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  * File utilities required by the bootstrapping code.
  */
 public class KernelUtils {
+    // NOTE: only libDir is multiplexed with StaticValue
+    // The launch statics are not used with liberty boot and
+    // do not need multiplexing
+
     /**
      * File representing the launch location.
      *
@@ -47,7 +52,7 @@ public class KernelUtils {
      *
      * @see {@link #getBootstrapJar()}
      */
-    private static File libDir = null;
+    private static StaticValue<File> libDir = StaticValue.createStaticValue(null);
 
     /**
      * The location of the launch jar is only obtained once.
@@ -72,13 +77,13 @@ public class KernelUtils {
         if (domain != null)
             source = domain.getCodeSource();
         if (domain == null || source == null) {
-            throw new LaunchException("Can not automatically set the security manager. Please use a policy file.",
-                            MessageFormat.format(BootstrapConstants.messages.getString("error.secPermission"), (Object[]) null));
+            throw new LaunchException("Can not automatically set the security manager. Please use a policy file.", MessageFormat.format(BootstrapConstants.messages.getString("error.secPermission"),
+                                                                                                                                        (Object[]) null));
         }
         URL home = source.getLocation();
         if (!home.getProtocol().equals("file"))
-            throw new LaunchException("Launch location is not a local file (launch location=" + home + ")",
-                            MessageFormat.format(BootstrapConstants.messages.getString("error.unsupportedLaunch"), home));
+            throw new LaunchException("Launch location is not a local file (launch location=" + home
+                                      + ")", MessageFormat.format(BootstrapConstants.messages.getString("error.unsupportedLaunch"), home));
         return home;
     }
 
@@ -95,16 +100,16 @@ public class KernelUtils {
      * @return a File representing the location of the launching jar
      */
     public static File getBootstrapLibDir() {
-        if (libDir == null) {
-            libDir = getBootstrapJar().getParentFile();
+        if (libDir.get() == null) {
+            libDir = StaticValue.mutateStaticValue(libDir, new Utils.FileInitializer(getBootstrapJar().getParentFile()));
         }
-        return libDir;
+        return libDir.get();
     }
 
     public static void setBootStrapLibDir(File libDir) {
         // For liberty boot we need to be able to set the lib dir
         // explicitly because the boot jar will not be located in lib
-        KernelUtils.libDir = libDir;
+        KernelUtils.libDir = StaticValue.mutateStaticValue(KernelUtils.libDir, new Utils.FileInitializer(libDir));
     }
 
     public static void cleanStart(File workareaFile) {
