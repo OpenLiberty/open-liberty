@@ -150,6 +150,11 @@ public interface HttpRequest {
      */
     HttpInputStream getBody();
 
+    /*
+     * Are push request supported? is push reques
+     */
+    boolean isPushSupported();
+
     /**
      * Initiate a Push request
      *
