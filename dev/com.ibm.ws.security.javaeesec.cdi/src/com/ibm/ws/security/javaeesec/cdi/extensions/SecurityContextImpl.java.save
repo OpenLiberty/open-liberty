@@ -29,7 +29,6 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authorization.AuthorizationService;
 import com.ibm.ws.security.context.SubjectManager;
-import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -40,6 +39,10 @@ public class SecurityContextImpl implements SecurityContext {
     private static final TraceComponent tc = Tr.register(SecurityContextImpl.class);
 
     private final SubjectManager subjectManager = null;
+
+    SecurityContextImpl() {
+        SubjectManager subjectManager = new SubjectManager();
+    }
 
     /*
      * (non-Javadoc)
@@ -73,11 +76,9 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public Principal getCallerPrincipal() {
 
-        Subject callerSubject = getCallerSubject();
-
-        if (callerSubject == null) {
-            return null;
-        }
+        //Get the caller principal from the caller subject
+        Subject callerSubject = null;
+        callerSubject = subjectManager.getCallerSubject();
 
         Set<Principal> principals = callerSubject.getPrincipals();
         if (principals.size() > 0) {
@@ -98,18 +99,18 @@ public class SecurityContextImpl implements SecurityContext {
      * @see javax.security.enterprise.SecurityContext#getPrincipalsByType(java.lang.Class)
      */
     @Override
-    public <T extends Principal> Set<T> getPrincipalsByType(Class<T> type) {
+    public <T extends Principal> Set<T> getPrincipalsByType(Class<T> arg0) {
         //Get the caller principal from the caller subject
-        Subject callerSubject = getCallerSubject();
+        Subject callerSubject = null;
+        callerSubject = subjectManager.getCallerSubject();
 
+        //Get the prinicipals by type
         if (callerSubject != null) {
-            //Get the prinicipals by type
-            Set<T> principals = callerSubject.getPrincipals(type);
+            Set<T> principals = callerSubject.getPrincipals(arg0);
             return principals;
         }
 
         return null;
-
     }
 
     /*
@@ -131,32 +132,18 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public boolean isCallerInRole(String role) {
 
-        Subject callerSubject = getCallerSubject();
         AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
         if (authService != null) {
             String appName = getApplicationName();
             List<String> roles = new ArrayList<String>();
             roles.add(role);
 
-            return authService.isAuthorized(appName, roles, callerSubject);
+            return authService.isAuthorized(appName, roles, subjectManager.getCallerSubject());
         }
         return false;
     }
 
-    private Subject getCallerSubject() {
-        SubjectManagerService subjectManagerService = SecurityContextHelper.getSubjectManagerService();
-        if (subjectManagerService != null) {
-            Subject callerSubject = null;
-
-            callerSubject = subjectManagerService.getInvocationSubject();
-            if (callerSubject == null)
-                callerSubject = subjectManagerService.getCallerSubject();
-            return callerSubject;
-        }
-        return null;
-    }
-
-    private String getApplicationName() {
+    protected String getApplicationName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return cmd.getJ2EEName().getApplication();
     }
