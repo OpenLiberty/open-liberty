@@ -395,25 +395,38 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             boolean haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
 
             if (!haveQueuePermit && state.get() == State.ACTIVE) {
-                // look for a timed-out task that can be purged to make room for this request
                 long now = System.nanoTime(), nextTimeout = now; // means unset
-                for (Iterator<PolicyTaskFutureImpl<?>> it = queue.iterator(); !haveQueuePermit && it.hasNext();) {
-                    PolicyTaskFutureImpl<?> future = it.next();
-                    long startBy = future.nsStartBy;
-                    if (startBy != future.nsAcceptBegin - 1)
-                        if (now - startBy >= 0) { // found a task in the queue that has timed out
-                            if (queue.remove(future)) { // can't use iterator.remove - it doesn't tell us whether it actually removed anything
-                                future.nsRunEnd = future.nsQueueEnd = System.nanoTime();
-                                future.abort(new IllegalStateException("Task did not start within " + (future.nsQueueEnd - future.nsAcceptBegin) + " ns")); // TODO NLS message for startTimeout
-                                // Release and re-acquire is needed to preserve correctness of shutdown logic
-                                maxQueueSizeConstraint.release();
-                                haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
-                            } // else another thread removed it first, possibly to run it. Keep trying...
-                        } else if (nextTimeout - startBy > 0 || nextTimeout == now)
-                            nextTimeout = startBy;
-                }
-                if (!haveQueuePermit) // TODO if wait > 0, can use nextTimeout (if != now) to wait in multiple stages
-                    haveQueuePermit = wait <= 0 ? maxQueueSizeConstraint.tryAcquire() : maxQueueSizeConstraint.tryAcquire(wait, TimeUnit.NANOSECONDS);
+                long waitEnd = wait > 0 ? now + wait : now;
+                do {
+                    // look for a timed-out task that can be purged to make room for this request
+                    for (Iterator<PolicyTaskFutureImpl<?>> it = queue.iterator(); !haveQueuePermit && it.hasNext();) {
+                        PolicyTaskFutureImpl<?> future = it.next();
+                        long startBy = future.nsStartBy;
+                        if (startBy != future.nsAcceptBegin - 1)
+                            if (now - startBy >= 0) { // found a task in the queue that has timed out
+                                if (queue.remove(future)) { // can't use iterator.remove - it doesn't tell us whether it actually removed anything
+                                    future.nsRunEnd = future.nsQueueEnd = System.nanoTime();
+                                    future.abort(new IllegalStateException("Task did not start within " + (future.nsQueueEnd - future.nsAcceptBegin) + " ns")); // TODO NLS message for startTimeout
+                                    // Release and re-acquire is needed to preserve correctness of shutdown logic
+                                    maxQueueSizeConstraint.release();
+                                    haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
+                                } // else another thread removed it first, possibly to run it. Keep trying...
+                            } else if (nextTimeout - startBy > 0 || nextTimeout == now)
+                                nextTimeout = startBy;
+                    }
+                    if (!haveQueuePermit) {
+                        long remain = waitEnd - System.nanoTime();
+                        if (remain > 0) {
+                            // wait incrementally in smallest of: { remaining time, next expected timeout, 1 second }
+                            long w = nextTimeout == now || nextTimeout - now > remain ? remain : nextTimeout - now;
+                            w = w < TimeUnit.SECONDS.toNanos(1) ? w : TimeUnit.SECONDS.toNanos(1);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                                Tr.debug(this, tc, "incremental wait for enqueue of " + w + "ns");
+                            haveQueuePermit = maxQueueSizeConstraint.tryAcquire(w, TimeUnit.NANOSECONDS);
+                            nextTimeout = now = System.nanoTime();
+                        }
+                    }
+                } while (!haveQueuePermit && waitEnd - now > 0);
             }
 
             if (haveQueuePermit) {

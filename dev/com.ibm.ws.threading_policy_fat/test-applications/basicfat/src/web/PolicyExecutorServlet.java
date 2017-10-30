@@ -4443,6 +4443,63 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(Collections.EMPTY_LIST, executor.shutdownNow());
     }
 
+    // Submit a task that gets queued but times out (due to startTimeout) while in the queue
+    // due to another submit that is waiting for enqueue.
+    @Test
+    public void testStartTimeoutWhenAnotherTaskWaitsForEnqueue() throws Exception {
+        PolicyExecutor executor = provider.create("testStartTimeoutWhenAnotherTaskWaitsForEnqueue")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
+
+        // Use up maxConcurrency so that no other tasks can start
+        CountDownLatch blocker = new CountDownLatch(1);
+        CountDownLatch unused = new CountDownLatch(0);
+        CountDownTask blockerTask = new CountDownTask(unused, blocker, TIMEOUT_NS * 2);
+        PolicyTaskFuture<Boolean> blockerFuture = (PolicyTaskFuture<Boolean>) executor.submit(blockerTask);
+
+        Callable<Integer> task1 = new SharedIncrementTask();
+        Callable<Integer> task2 = new SharedIncrementTask();
+
+        // Put a task with start timeout of 400ms into the queue
+        executor.startTimeout(400);
+        PolicyTaskFuture<Integer> future1 = executor.submit(task1, null);
+
+        // Disable start timeout and immediately submit another task.
+        // It is only possible to submit because the previous task times out of the queue while we are waiting.
+        executor.startTimeout(-1);
+        PolicyTaskFuture<Integer> future2 = executor.submit(task2, null);
+        long acceptTime2 = future2.getElapsedAcceptTime(TimeUnit.NANOSECONDS);
+        assertTrue(acceptTime2 + "ns", acceptTime2 >= 0);
+
+        assertTrue(future1.isDone());
+        assertFalse(future1.isCancelled());
+        long queueTime1 = future1.getElapsedQueueTime(TimeUnit.NANOSECONDS);
+        assertTrue(queueTime1 + "ns", queueTime1 >= 0);
+        assertEquals(0, future1.getElapsedRunTime(TimeUnit.NANOSECONDS));
+        try {
+            Integer result = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Task 1 should be been aborted, instead result is: " + result);
+        } catch (RejectedExecutionException x) {
+            // TODO check the message of the cause exception once we add it
+        } // pass - aborted due to timeout
+
+        assertFalse(future2.isDone());
+
+        // Allow tasks to run
+        blocker.countDown();
+
+        assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(1), future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(acceptTime2, (long) future2.getElapsedAcceptTime(TimeUnit.NANOSECONDS));
+        long queueTime2 = future2.getElapsedQueueTime(TimeUnit.NANOSECONDS);
+        assertTrue(queueTime2 + "ns", queueTime2 >= 0);
+        long runTime2 = future2.getElapsedRunTime(TimeUnit.NANOSECONDS);
+        assertTrue(runTime2 + "ns", runTime2 >= 0);
+
+        assertEquals(Collections.EMPTY_LIST, executor.shutdownNow());
+    }
+
     //Ensure that a policy executor can be obtained from the injected provider
     @Test
     public void testGetPolicyExecutor() throws Exception {
