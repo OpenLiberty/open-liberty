@@ -300,6 +300,9 @@ goto:eof
   if exist "%JAVA_HOME%\lib\modules" (
     call:mergeJVMOptions "%WLP_INSTALL_DIR%\lib\platform\java\java9.options"
   )
+  
+  set JVM_OPTIONS=!JVM_OPTIONS!%JVM_TEMP_OPTIONS%
+  
 goto:eof
 
 @REM

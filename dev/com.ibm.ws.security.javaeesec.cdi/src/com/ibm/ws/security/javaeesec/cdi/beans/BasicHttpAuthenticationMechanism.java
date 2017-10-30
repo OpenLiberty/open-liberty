@@ -48,32 +48,14 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 @Default
 @ApplicationScoped
 public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
-    @Inject
-    Instance<HAMProperties> hampInstance;
 
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
+    @Inject
+    private HAMProperties hamp;
+
     private String realmName = null;
     private final String DEFAULT_REALM = "defaultRealm";
-
-    /**
-     *
-     */
-    public BasicHttpAuthenticationMechanism() {
-        if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
-            HAMProperties hamp = hampInstance.get();
-            if (hamp != null) {
-                Properties props = hamp.getProperties();
-                if (props != null) {
-                    realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
-                }
-            }
-        }
-        if (realmName == null) {
-            Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
-            realmName = DEFAULT_REALM;
-        }
-    }
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request,
@@ -81,51 +63,60 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
                                                 HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
 
+        setRealmName();
         Subject clientSubject = httpMessageContext.getClientSubject();
         String authHeader = httpMessageContext.getRequest().getHeader("Authorization");
 
-        if (httpMessageContext.isAuthenticationRequest()) {
-            if (authHeader == null) {
-                status = setChallengeAuthorizationHeader(httpMessageContext.getResponse());
-            } else {
-                status = handleAuthorizationHeader(authHeader, clientSubject, httpMessageContext);
-            }
+        if (authHeader == null) {
+            status = handleNoAuthorizationHeader(httpMessageContext);
         } else {
-            if (authHeader == null) {
-                if (httpMessageContext.isProtected() == false) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "both isAuthenticationRequest and isProtected returns false. returing NOT_DONE,");
-                    }
-                    status = AuthenticationStatus.NOT_DONE;
-                } else {
-                    status = setChallengeAuthorizationHeader(httpMessageContext.getResponse());
-                }
-            } else {
-                status = handleAuthorizationHeader(authHeader, clientSubject, httpMessageContext);
-            }
+            status = handleAuthorizationHeader(authHeader, clientSubject, httpMessageContext);
         }
 
         return status;
     }
 
-    @Override
-    public void cleanSubject(HttpServletRequest request,
-                             HttpServletResponse response,
-                             HttpMessageContext httpMessageContext) {}
+    private void setRealmName() {
+        Properties props = hamp.getProperties();
+        if (realmName == null && props != null) {
+            realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
+        }
+        if (realmName == null || realmName.trim().isEmpty()) {
+            Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
+            realmName = DEFAULT_REALM;
+        }
+    }
 
-    private AuthenticationStatus setChallengeAuthorizationHeader(HttpServletResponse rsp) {
+    private AuthenticationStatus handleNoAuthorizationHeader(HttpMessageContext httpMessageContext) {
+        AuthenticationStatus status;
+        if (httpMessageContext.isAuthenticationRequest() == false && httpMessageContext.isProtected() == false) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "both isAuthenticationRequest and isProtected returns false. returing NOT_DONE,");
+            }
+            status = AuthenticationStatus.NOT_DONE;
+        } else {
+            status = setChallengeAuthorizationHeader(httpMessageContext);
+        }
+        return status;
+    }
+
+    @SuppressWarnings("unchecked")
+    private AuthenticationStatus setChallengeAuthorizationHeader(HttpMessageContext httpMessageContext) {
+        HttpServletResponse rsp = httpMessageContext.getResponse();
         rsp.setHeader("WWW-Authenticate", "Basic realm=\"" + realmName + "\"");
         rsp.setStatus(HttpServletResponse.SC_UNAUTHORIZED); // 401
+        httpMessageContext.getMessageInfo().getMap().put(AttributeNameConstants.WSCREDENTIAL_REALM, realmName);
+
         return AuthenticationStatus.SEND_CONTINUE;
     }
 
     @SuppressWarnings("unchecked")
-    private AuthenticationStatus handleAuthorizationHeader(@Sensitive String authHeader, Subject clientSubject,
+    private AuthenticationStatus handleAuthorizationHeader(@Sensitive String authorizationHeader, Subject clientSubject,
                                                            HttpMessageContext httpMessageContext) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
         int rspStatus = HttpServletResponse.SC_FORBIDDEN;
-        if (authHeader.startsWith("Basic ")) {
-            String encodedHeader = authHeader.substring(6);
+        if (authorizationHeader.startsWith("Basic ")) {
+            String encodedHeader = authorizationHeader.substring(6);
             String basicAuthHeader = decodeCookieString(encodedHeader);
 
             if (isAuthorizationHeaderValid(basicAuthHeader)) { // BasicAuthenticationCredential.isValid does not work
@@ -170,6 +161,119 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
+    @SuppressWarnings("unchecked")
+    private IdentityStoreHandler getIdentityStoreHandler() {
+        IdentityStoreHandler identityStoreHandler = null;
+        Instance<IdentityStoreHandler> storeHandlerInstance = getCDI().select(IdentityStoreHandler.class);
+        if (storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {
+            identityStoreHandler = storeHandlerInstance.get();
+        }
+        return identityStoreHandler;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected CDI getCDI() {
+        return CDI.current();
+    }
+
+    private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive BasicAuthenticationCredential credential, IdentityStoreHandler identityStoreHandler,
+                                                           HttpMessageContext httpMessageContext) {
+        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
+        CredentialValidationResult result = identityStoreHandler.validate(credential);
+        if (result.getStatus() == CredentialValidationResult.Status.VALID) {
+            setLoginHashtable(clientSubject, result);
+            status = AuthenticationStatus.SUCCESS;
+        } else if (result.getStatus() == CredentialValidationResult.Status.NOT_VALIDATED) {
+            status = AuthenticationStatus.NOT_DONE;
+        }
+        return status;
+    }
+
+    private void setLoginHashtable(Subject clientSubject, CredentialValidationResult result) {
+        Hashtable<String, Object> subjectHashtable = getSubjectHashtable(clientSubject);
+        String callerPrincipalName = result.getCallerPrincipal().getName();
+        String callerUniqueId = result.getCallerUniqueId();
+        String realm = result.getIdentityStoreId();
+        realm = realm != null ? realm : realmName;
+        String uniqueId = callerUniqueId != null ? callerUniqueId : callerPrincipalName;
+
+        setCommonAttributes(subjectHashtable, realm, callerPrincipalName);
+        setUniqueId(subjectHashtable, realm, uniqueId);
+        setGroups(subjectHashtable, result.getCallerGroups());
+    }
+
+    private void setCommonAttributes(Hashtable<String, Object> subjectHashtable, String realm, String callerPrincipalName) {
+        subjectHashtable.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_REALM, realm);
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_USERID, callerPrincipalName);
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, callerPrincipalName);
+    }
+
+    private void setUniqueId(Hashtable<String, Object> subjectHashtable, String realm, String uniqueId) {
+        subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:" + realm + "/" + uniqueId);
+    }
+
+    private void setGroups(Hashtable<String, Object> subjectHashtable, Set<String> groups) {
+        if (groups != null && !groups.isEmpty()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Adding groups found in an identitystore", groups);
+            }
+            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, new ArrayList<String>(groups));
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No group  found in an identitystore");
+            }
+            subjectHashtable.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, new ArrayList<String>());
+        }
+    }
+
+    private Hashtable<String, Object> getSubjectHashtable(final Subject clientSubject) {
+        Hashtable<String, Object> subjectHashtable = getSubjectExistingHashtable(clientSubject);
+        if (subjectHashtable == null) {
+            subjectHashtable = createNewSubjectHashtable(clientSubject);
+        }
+        return subjectHashtable;
+    }
+
+    private Hashtable<String, Object> getSubjectExistingHashtable(final Subject clientSubject) {
+        if (clientSubject == null) {
+            return null;
+        }
+
+        PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
+
+            @SuppressWarnings({ "unchecked", "rawtypes" })
+            @Override
+            public Hashtable<String, Object> run() {
+                Set hashtables = clientSubject.getPrivateCredentials(Hashtable.class);
+                if (hashtables == null || hashtables.isEmpty()) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Subject has no Hashtable with custom credentials, return null.");
+                    }
+                    return null;
+                } else {
+                    Hashtable hashtable = (Hashtable) hashtables.iterator().next();
+                    return hashtable;
+                }
+            }
+        };
+        Hashtable<String, Object> cred = AccessController.doPrivileged(action);
+        return cred;
+    }
+
+    private Hashtable<String, Object> createNewSubjectHashtable(final Subject clientSubject) {
+        PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
+
+            @Override
+            public Hashtable<String, Object> run() {
+                Hashtable<String, Object> newCred = new Hashtable<String, Object>();
+                clientSubject.getPrivateCredentials().add(newCred);
+                return newCred;
+            }
+        };
+        return AccessController.doPrivileged(action);
+    }
+
     private AuthenticationStatus validateWithUserRegistry(Subject clientSubject, @Sensitive BasicAuthenticationCredential credential,
                                                           CallbackHandler handler) throws AuthenticationException {
         AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
@@ -188,102 +292,9 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
-    private AuthenticationStatus validateWithIdentityStore(Subject clientSubject, @Sensitive BasicAuthenticationCredential credential, IdentityStoreHandler identityStoreHandler,
-                                                           HttpMessageContext httpMessageContext) {
-        AuthenticationStatus status = AuthenticationStatus.SEND_FAILURE;
-        CredentialValidationResult result = identityStoreHandler.validate(credential);
-        if (result.getStatus() == CredentialValidationResult.Status.VALID) {
-            createLoginHashMap(clientSubject, result);
-            status = AuthenticationStatus.SUCCESS;
-        } else if (result.getStatus() == CredentialValidationResult.Status.NOT_VALIDATED) {
-            status = AuthenticationStatus.NOT_DONE;
-        }
-        return status;
-    }
-
-    protected void createLoginHashMap(Subject clientSubject, CredentialValidationResult result) {
-        Hashtable<String, Object> credData = getSubjectCustomData(clientSubject);
-        Set<String> groups = result.getCallerGroups();
-        String realm = result.getIdentityStoreId();
-        if (realm == null) {
-            if (realmName != null) {
-                realm = realmName;
-            } else {
-                realm = DEFAULT_REALM;
-            }
-        }
-        credData.put(AttributeNameConstants.WSCREDENTIAL_REALM, realm);
-        credData.put(AttributeNameConstants.WSCREDENTIAL_USERID, result.getCallerPrincipal().getName());
-        credData.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, result.getCallerUniqueId());
-        credData.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, "user:" + realm + "/" + result.getCallerUniqueId());
-
-        credData.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
-        if (groups != null && !groups.isEmpty()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Adding groups found in an identitystore", groups);
-            }
-            credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, new ArrayList<String>(groups));
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "No group  found in an identitystore");
-            }
-            credData.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, new ArrayList<String>());
-        }
-        return;
-    }
-
-    protected Hashtable<String, Object> getSubjectCustomData(final Subject clientSubject) {
-        Hashtable<String, Object> cred = getCustomCredentials(clientSubject);
-        if (cred == null) {
-            PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
-
-                @Override
-                public Hashtable<String, Object> run() {
-                    Hashtable<String, Object> newCred = new Hashtable<String, Object>();
-                    clientSubject.getPrivateCredentials().add(newCred);
-                    return newCred;
-                }
-            };
-            cred = AccessController.doPrivileged(action);
-        }
-        return cred;
-    }
-
-    protected Hashtable<String, Object> getCustomCredentials(final Subject clientSubject) {
-        if (clientSubject == null)
-            return null;
-        PrivilegedAction<Hashtable<String, Object>> action = new PrivilegedAction<Hashtable<String, Object>>() {
-
-            @SuppressWarnings({ "unchecked", "rawtypes" })
-            @Override
-            public Hashtable<String, Object> run() {
-                Set s = clientSubject.getPrivateCredentials(Hashtable.class);
-                if (s == null || s.isEmpty()) {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Subject has no Hashtable with custom credentials, return null.");
-                    return null;
-                } else {
-                    Hashtable t = (Hashtable) s.iterator().next();
-                    return t;
-                }
-            }
-        };
-        Hashtable<String, Object> cred = AccessController.doPrivileged(action);
-        return cred;
-    }
-
-    private IdentityStoreHandler getIdentityStoreHandler() {
-        IdentityStoreHandler identityStoreHandler = null;
-        Instance<IdentityStoreHandler> storeHandlerInstance = CDI.current().select(IdentityStoreHandler.class);
-        if (storeHandlerInstance.isUnsatisfied() == false && storeHandlerInstance.isAmbiguous() == false) {
-            identityStoreHandler = storeHandlerInstance.get();
-        }
-        return identityStoreHandler;
-    }
-
     // this is for unit test.
-    protected void setProps(Instance<HAMProperties> hampInstance) {
-        this.hampInstance = hampInstance;
+    protected void setProps(HAMProperties hamp) {
+        this.hamp = hamp;
     }
 
 }

@@ -20,6 +20,26 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public abstract class PolicyTaskCallback {
     /**
+     * Returns the name of the task, which, for example, might be reported in exception messages or messages that are logged.
+     *
+     * @param task the Callable or Runnable task.
+     * @return the default implementation invokes toString on the task object.
+     */
+    public String getName(Object task) {
+        return task.toString();
+    }
+
+    /**
+     * Allows for an override of the default start timeout, which is provided as a parameter.
+     *
+     * @param defaultStartTimeoutNS the default start timeout (in nanoseconds) that is configured on the policy executor. -1 indicates no timeout.
+     * @return the default implementation returns the default start timeout in nanoseconds.
+     */
+    public long getStartTimeout(long defaultStartTimeoutNS) {
+        return defaultStartTimeoutNS;
+    }
+
+    /**
      * Invoked when a task's future is canceled.
      * This callback is invoked synchronously on the thread that cancels the task.
      *
