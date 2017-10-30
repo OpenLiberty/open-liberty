@@ -20,7 +20,7 @@ Export-Package: \
   persistence_fat.persistence.test;version=1.0
 
 Import-Package: \
-  javax.persistence;jpa="2.1";consumer="persistenceService",\
+  javax.persistence;consumer="persistenceService",\
   org.apache.commons.io*;version=1.4;packageType="was_internal",\
   *
   
