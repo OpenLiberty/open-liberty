@@ -20,7 +20,8 @@ addRequiredLibraries {
 		}
 		copy {
 			from configurations.derbyEmbedded
-			into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.concurrent.persistent.fat.demo/derby/"
+			into "${buildDir}/autoFVT/publish/shared/resources/derby/"
 		}
 	}
 }
+	

@@ -8,19 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
-addRequiredLibraries {
-	doLast {
-		configurations {
-			derbyEmbedded
-		}
-		dependencies {
-			derbyEmbedded 'org.apache.derby:derby:10.11.1.1'
-		}
-		copy {
-			from configurations.derbyEmbedded
-			into "${buildDir}/autoFVT/publish/servers/com.ibm.ws.concurrent.persistent.fat.demo/derby/"
-		}
-	}
-}
+package com.ibm.ws.concurrent.fat.db;
+
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
+
+@RunWith(Suite.class)
+@SuiteClasses({
+                ConcurrentDBTest.class,
+})
+public class FATSuite {}

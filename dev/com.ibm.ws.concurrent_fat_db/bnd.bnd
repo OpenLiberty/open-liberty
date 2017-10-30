@@ -13,13 +13,12 @@ bVersion=1.0
 
 src: \
 	fat/src,\
-	test-applications/persistentdemo/src
+	test-applications/concurrentdbtest/src
 
 test.project: true
 
 -buildpath: \
-	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.ws.concurrent.persistent;version=latest
+	com.ibm.websphere.javaee.transaction.1.1;version=latest
