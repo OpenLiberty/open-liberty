@@ -16,7 +16,8 @@ src: \
   test-applications/patchapp/src,\
   test-applications/providerPriorityApp/src,\
   test-applications/classSubResApp/src,\
-  test-applications/cdiApp/src
+  test-applications/cdiApp/src,\
+  test-applications/jsonbapp/src,\
 
 fat.project: true
 
@@ -28,5 +29,6 @@ javac.target: 1.8
   com.ibm.websphere.javaee.cdi.2.0;version=latest,\
   com.ibm.websphere.javaee.jaxrs.2.1;version=latest,\
   com.ibm.websphere.javaee.jsonb.1.0,\
+  com.ibm.websphere.javaee.jsonp.1.1,\
   com.ibm.websphere.javaee.servlet.3.1;version=latest,\
   com.ibm.ws.cdi.interfaces;version=latest
