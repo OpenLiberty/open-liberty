@@ -12,5 +12,7 @@
 
 -nobundles=true
 
+publish.feature.resources: **
+
 -dependson: \
 	com.ibm.ws.messaging.jms.2.0.cdi;version=latest

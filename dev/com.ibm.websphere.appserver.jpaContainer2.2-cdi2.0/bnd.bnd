@@ -12,6 +12,9 @@
 
 -nobundles=true
 
+publish.feature.resources: **
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 -dependson: \
-	com.ibm.ws.cdi.1.2.web;version=latest, \
-	com.ibm.websphere.javaee.jsp.2.3;version=latest
+	com.ibm.ws.jpa.container.v22.cdi;version=latest

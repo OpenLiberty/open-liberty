@@ -12,5 +12,7 @@
 
 -nobundles=true
 
+publish.feature.resources: **
+
 -dependson: \
 	com.ibm.ws.cdi.1.2.jsf;version=latest

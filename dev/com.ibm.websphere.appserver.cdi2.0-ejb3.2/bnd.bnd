@@ -12,5 +12,7 @@
 
 -nobundles=true
 
+publish.feature.resources: **
+
 -dependson: \
 	com.ibm.ws.cdi.2.0.ejb;version=latest
