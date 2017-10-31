@@ -161,6 +161,8 @@ import org.apache.myfaces.view.facelets.tag.jsf.TagHandlerDelegateFactoryImpl;
 import org.apache.myfaces.view.facelets.tag.ui.DebugPhaseListener;
 import org.apache.myfaces.webapp.ManagedBeanDestroyerListener;
 
+import com.ibm.ws.jsf.extprocessor.JSFExtensionFactory;
+
 /**
  * Configures everything for a given context. The FacesConfigurator is independent of the concrete implementations that
  * lie behind FacesConfigUnmarshaller and FacesConfigDispenser.
@@ -927,6 +929,8 @@ public class FacesConfigurator
                 }
             }
         }
+        
+        JSFExtensionFactory.initializeCDI(application);
         
         this.setApplication(application);
     }
