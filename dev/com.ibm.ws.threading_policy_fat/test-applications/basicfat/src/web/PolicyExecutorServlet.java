@@ -4357,7 +4357,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxQueueSize(3);
         // Use up maxConcurrency so that no other tasks can start
         CountDownLatch blocker = new CountDownLatch(1);
-        CountDownLatch blockerStarted = new CountDownLatch(0);
+        CountDownLatch blockerStarted = new CountDownLatch(1);
         CountDownTask blockerTask = new CountDownTask(blockerStarted, blocker, TIMEOUT_NS * 2);
         PolicyTaskFuture<Boolean> blockerFuture = (PolicyTaskFuture<Boolean>) executor.submit(blockerTask);
 
