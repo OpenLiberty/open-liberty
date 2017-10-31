@@ -213,7 +213,7 @@ public class SessionTest {
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see com.ibm.wsspi.http.HttpRequest#getTrailerNames()
          */
         @Override
@@ -224,7 +224,7 @@ public class SessionTest {
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see com.ibm.wsspi.http.HttpRequest#getTrailer(java.lang.String)
          */
         @Override
@@ -235,22 +235,11 @@ public class SessionTest {
 
         /*
          * (non-Javadoc)
-         *
+         * 
          * @see com.ibm.wsspi.http.HttpRequest#isTrailersReady()
          */
         @Override
         public boolean isTrailersReady() {
-            // TODO Auto-generated method stub
-            return false;
-        }
-
-        /*
-         * (non-Javadoc)
-         * 
-         * @see com.ibm.wsspi.http.HttpRequest#isPushSupported()
-         */
-        @Override
-        public boolean isPushSupported() {
             // TODO Auto-generated method stub
             return false;
         }

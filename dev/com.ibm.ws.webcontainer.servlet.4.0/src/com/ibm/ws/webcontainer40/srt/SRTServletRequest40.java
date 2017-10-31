@@ -240,14 +240,6 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
             logger.entering(CLASS_NAME, methodName, "this -> " + this);
         }
 
-        IRequest40 iRequest = (IRequest40) getIRequest();
-        if (!iRequest.getHttpRequest().isPushSupported()) {
-            if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) { //306998.15
-                logger.logp(Level.FINE, CLASS_NAME, methodName, "push not supported");
-            }
-            return null;
-        }
-
         String sessionID = null;
         if (_sessionCreated)
             sessionID = getSession(false).getId();
