@@ -32,6 +32,7 @@ Export-Package: \
  com.ibm.websphere.ras.annotation;provide:=true, \
  com.ibm.ws.ffdc;provide:=true, \
  com.ibm.ws.ffdc.annotation;provide:=true, \
+ com.ibm.ws.staticvalue;provide:=true, \
  com.ibm.ws.logging;provide:=true, \
  com.ibm.ws.ras.instrument.annotation, \
  com.ibm.ws.logging.internal, \

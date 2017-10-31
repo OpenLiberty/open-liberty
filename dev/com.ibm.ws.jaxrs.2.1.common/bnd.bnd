@@ -29,7 +29,7 @@ cxf-tools-wadlto-jaxrs=cxf-tools-wadlto-jaxrs-3.2.0-20170814.175516-496.jar
 Bundle-Name: JAX-RS 2.1 Engine
 Bundle-SymbolicName: com.ibm.ws.jaxrs.2.1.common
 Bundle-Description: IBM JAX-RS 2.1 engine; version=${bVersion}
-Bundle-ClassPath:  ., lib/${cxf-core}, lib/${cxf-rt-frontend-jaxrs}, lib/${cxf-rt-rs-client}, lib/${cxf-rt-rs-sse},lib/${cxf-rt-transports-http}, lib/${cxf-tools-common}, lib/${cxf-tools-wadlto-jaxrs}, lib/${cxf-rt-rs-service-description}, \
+
 
 # jaxrs-2.1 is part of EE8 and therefore requires java 1.8
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
@@ -44,7 +44,6 @@ WS-TraceGroup: JAXRS
    org.apache.cxf.*;version=3.2.0-SNAPSHOT, \
    
 Export-Package: \
-	META-INF.cxf,\
 	com.ibm.ws.jaxrs20,\
 	com.ibm.ws.jaxrs20.api;provide=true,\
 	com.ibm.ws.jaxrs20.bus,\
@@ -160,18 +159,19 @@ Private-Package:\
    com.ibm.ws.jaxrs20.*, \
 
 Include-Resource: \
-  lib/${cxf-core}=${repo;org.apache.cxf.cxf-core;3.2.0.SNAPSHOT;EXACT}, \
-  lib/${cxf-rt-frontend-jaxrs}=${repo;org.apache.cxf.cxf-rt-frontend-jaxrs;3.2.0.SNAPSHOT;EXACT}, \
-  lib/${cxf-rt-rs-client}=${repo;org.apache.cxf.cxf-rt-rs-client;3.2.0.SNAPSHOT;EXACT}, \
-  lib/${cxf-rt-transports-http}=${repo;org.apache.cxf.cxf-rt-transports-http;3.2.0.SNAPSHOT;EXACT}, \
-  lib/${cxf-tools-common}=${repo;org.apache.cxf.cxf-tools-common;3.2.0.SNAPSHOT;EXACT}, \
-  lib/${cxf-tools-wadlto-jaxrs}=${repo;org.apache.cxf.cxf-tools-wadlto-jaxrs;3.2.0.SNAPSHOT;EXACT}, \
-  lib/${cxf-rt-rs-service-description}=${repo;org.apache.cxf.cxf-rt-rs-service-description;3.2.0.SNAPSHOT;EXACT}, \
-  lib/${cxf-rt-rs-sse}=${repo;org.apache.cxf.cxf-rt-rs-sse;3.2.0.SNAPSHOT;EXACT}, \
-  org/apache/cxf=${bin}/org/apache/cxf
+	@${repo;org.apache.cxf.cxf-rt-rs-sse;3.2.0.SNAPSHOT;EXACT}, \
+	@${repo;org.apache.cxf.cxf-rt-rs-service-description;3.2.0.SNAPSHOT;EXACT}, \
+	@${repo;org.apache.cxf.cxf-tools-wadlto-jaxrs;3.2.0.SNAPSHOT;EXACT}, \
+	@${repo;org.apache.cxf.cxf-tools-common;3.2.0.SNAPSHOT;EXACT}, \
+	@${repo;org.apache.cxf.cxf-rt-transports-http;3.2.0.SNAPSHOT;EXACT}, \
+	@${repo;org.apache.cxf.cxf-rt-rs-client;3.2.0.SNAPSHOT;EXACT}, \
+	@${repo;org.apache.cxf.cxf-rt-frontend-jaxrs;3.2.0.SNAPSHOT;EXACT}, \
+	@${repo;org.apache.cxf.cxf-core;3.2.0.SNAPSHOT;EXACT}, \
+	META-INF=resources/META-INF, \
+  	org/apache/cxf=${bin}/org/apache/cxf
 
 -dsannotations: com.ibm.ws.jaxrs20.component.*, \
- com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
+ 	com.ibm.ws.jaxrs20.clientconfig.JAXRSClientConfigImpl, \
  	com.ibm.ws.jaxrs20.providers.customexceptionmapper.CustomExceptionMapperRegister, \
  	com.ibm.ws.jaxrs20.providers.security.SecurityAnnoProviderRegister
 
