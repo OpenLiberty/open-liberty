@@ -109,7 +109,12 @@ subprojects {
         into "${rootDir}/build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib')
         include bnd('publish.wlp.jar.include', '*.jar')
         if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
-          rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
+          if ((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty)) {
+            rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
+          }
+          else {
+			rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
+          }
         }
       }
     }
