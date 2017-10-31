@@ -549,6 +549,106 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         assertTrue(blockerTask2Future.cancel(true));
     }
 
+    // Submit a task that exceeds its start timeout.  Verify that Future.get returns an AbortedException after the timeout elapses.
+    @Test
+    public void testStartTimeoutFutureGet() throws Exception {
+        // Use up maxConcurrency of 1
+        CountDownLatch blockerLatch = new CountDownLatch(1);
+        CountDownLatch blockerStartedLatch = new CountDownLatch(1);
+        CountingTask blockerTask = new CountingTask(null, null, blockerStartedLatch, blockerLatch);
+        Future<Integer> blockerTaskFuture = defaultExecutor.submit(blockerTask);
+        cancelAfterTest.add(blockerTaskFuture);
+        assertTrue(blockerStartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Submit a task that will be unable to start
+        TaskListener listener1 = new TaskListener();
+        CountingTask task1 = new CountingTask(null, listener1, null, null);
+        task1.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(251)));
+        Future<Integer> future1 = defaultExecutor.submit(task1);
+        try {
+            Integer result = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+            fail("Task 1 should have aborted due to startTimeout. Instead, result is: " + result);
+        } catch (AbortedException x) {
+            if (x.getCause() == null || x.getCause().getMessage() == null || !x.getCause().getMessage().startsWith("CWWKE1205E"))
+                throw x;
+        }
+        assertTrue(future1.isDone());
+        assertFalse(future1.isCancelled());
+
+        // Submit another task that will be unable to start
+        TaskListener listener2 = new TaskListener();
+        CountingTask task2 = new CountingTask(null, listener2, null, null);
+        task2.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(252)));
+        Future<Integer> future2 = defaultExecutor.submit(task1);
+        try {
+            Integer result = future2.get();
+            fail("Task 2 should have aborted due to startTimeout. Instead, result is: " + result);
+        } catch (AbortedException x) {
+            if (x.getCause() == null || x.getCause().getMessage() == null || !x.getCause().getMessage().startsWith("CWWKE1205E"))
+                throw x;
+        }
+        assertTrue(future2.isDone());
+        assertFalse(future2.isCancelled());
+
+        blockerLatch.countDown();
+        assertEquals(Integer.valueOf(1), blockerTaskFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        cancelAfterTest.remove(blockerTaskFuture);
+    }
+
+    // Submit a group of tasks to timed invokeAll, where all tasks exceed the startTimeout.
+    // Verify that invokeAll returns once the tasks time out, rather than after the larger timeout that was supplied to invokeAll.
+    @Test
+    public void testStartTimeoutInvokeAll() throws Exception {
+        // Use up maxConcurrency of 1
+        CountDownLatch blockerLatch = new CountDownLatch(1);
+        CountDownLatch blockerStartedLatch = new CountDownLatch(1);
+        CountingTask blockerTask = new CountingTask(null, null, blockerStartedLatch, blockerLatch);
+        Future<Integer> blockerTaskFuture = defaultExecutor.submit(blockerTask);
+        cancelAfterTest.add(blockerTaskFuture);
+        assertTrue(blockerStartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // 2 tasks with small startTimeout values
+        TaskListener listener1 = new TaskListener();
+        TaskListener listener2 = new TaskListener();
+        CountingTask task1 = new CountingTask(null, listener1, null, null);
+        CountingTask task2 = new CountingTask(null, listener2, null, null);
+        task1.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(301)));
+        task2.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(302)));
+        List<CountingTask> tasks = Arrays.asList(task1, task2);
+
+        // invoke tasks - should end after the start timeouts, well before the timeout supplied to invokeAll
+        long start = System.nanoTime();
+        List<Future<Integer>> futures = defaultExecutor.invokeAll(tasks, 5, TimeUnit.SECONDS); // TODO TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        long duration = System.nanoTime() - start;
+        assertTrue(duration + "ns", duration < TIMEOUT_NS);
+
+        Future<Integer> future = futures.get(0);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        try {
+            Integer result = future.get(0, TimeUnit.SECONDS);
+            fail("Task 1 should have aborted due to startTimeout. Instead, result is: " + result);
+        } catch (AbortedException x) {
+            if (x.getCause() == null || x.getCause().getMessage() == null || !x.getCause().getMessage().startsWith("CWWKE1205E"))
+                throw x;
+        }
+
+        future = futures.get(1);
+        assertTrue(future.isDone());
+        assertFalse(future.isCancelled());
+        try {
+            Integer result = future.get(0, TimeUnit.SECONDS);
+            fail("Task 2 should have aborted due to startTimeout. Instead, result is: " + result);
+        } catch (AbortedException x) {
+            if (x.getCause() == null || x.getCause().getMessage() == null || !x.getCause().getMessage().startsWith("CWWKE1205E"))
+                throw x;
+        }
+
+        blockerLatch.countDown();
+        assertEquals(Integer.valueOf(1), blockerTaskFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        cancelAfterTest.remove(blockerTaskFuture);
+    }
+
     // Submit a group of tasks to timed invokeAny, where all tasks exceed the startTimeout.
     // Verify that invokeAny raises TimeoutException.
     @Test
@@ -597,7 +697,8 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             Integer result = scheduledExecutor2.invokeAny(tasks, TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("invokeAny should fail when all tasks abort due to start timeout, instead: " + result);
         } catch (AbortedException x) {
-            // pass
+            if (x.getCause() == null || x.getCause().getMessage() == null || !x.getCause().getMessage().startsWith("CWWKE1205E"))
+                throw x;
         }
 
         // ensure there were no failures
@@ -616,8 +717,8 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         assertTrue(runTime2 + "ms", runTime2 >= 250);
 
         // ManagedTaskListener events should be consistent with an aborted task
-        assertRejected(scheduledExecutor2, task1, listener1, IllegalStateException.class, null); // TODO test for message prefix once message is added
-        assertRejected(scheduledExecutor2, task2, listener2, IllegalStateException.class, null); // TODO test for message prefix once message is added
+        assertRejected(scheduledExecutor2, task1, listener1, IllegalStateException.class, "CWWKE1205E");
+        assertRejected(scheduledExecutor2, task2, listener2, IllegalStateException.class, "CWWKE1205E");
 
         // Neither task reports any run time
         assertEquals(0, getElapsedRunTime(listener1.future[SUBMITTED], TimeUnit.NANOSECONDS));
