@@ -21,6 +21,8 @@
     <application location="jsfApp.war"/>
 
     <application location="noJsfApp.war"/>
+    
+    <enterpriseApplication location="jsfEarApp.ear"/>
 
     <library id="global">
        <fileset dir="${server.config.dir}/lib" includes="someLib.jar"/>

@@ -10,7 +10,10 @@
  *******************************************************************************/
 package com.ibm.ws.jsf.container.fat;
 
+import java.io.File;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
@@ -27,9 +30,10 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-public class ConfigTest extends FATServletClient {
+public class ClassloadingTest extends FATServletClient {
 
     public static final String JSF_APP = "jsfApp";
+    public static final String JSF_EAR_APP = "jsfEarApp";
     public static final String NO_JSF_APP = "noJsfApp";
 
     @Server("jsf.container.2.2_fat.config")
@@ -45,6 +49,13 @@ public class ConfigTest extends FATServletClient {
 
         // Build test app with just a test servlet (i.e. no JSF usage)
         ShrinkHelper.defaultApp(server, NO_JSF_APP, "jsf.container.nojsf.web");
+
+        // Build test WAR in EAR application with JSF API+impl in WAR
+        EnterpriseArchive jsfEarApp = ShrinkWrap.create(EnterpriseArchive.class, JSF_EAR_APP + ".ear")
+                        .addAsModule(ShrinkHelper.buildDefaultApp(JSF_EAR_APP, "jsf.container.bean", "jsf.container.nojsf.web")
+                                        .addAsWebResource(new File("test-applications/jsfApp/resources/TestBean.xhtml"))
+                                        .addAsLibraries(new File("publish/files/mojarra/").listFiles()));
+        ShrinkHelper.exportAppToServer(server, jsfEarApp);
 
         // Create some jar that we can use as a library
         JavaArchive libJar = ShrinkWrap.create(JavaArchive.class, "someLib.jar")
@@ -76,7 +87,7 @@ public class ConfigTest extends FATServletClient {
         server.setServerConfigurationFile("server_" + testName.getMethodName() + ".xml");
         server.startServer(testName.getMethodName() + ".log");
 
-        // Verify that basic JSF works
+        // Verify that basic JSF works in a WAR
         HttpUtils.findStringInReadyUrl(server, '/' + JSF_APP + "/TestBean.jsf",
                                        "CDI Bean value:",
                                        ":CDIBean::PostConstructCalled:");
@@ -84,9 +95,21 @@ public class ConfigTest extends FATServletClient {
                                        "JSF Bean value:",
                                        ":JSFBean::PostConstructCalled:");
 
-        // Verify non-JSF functionality works in JSF app
+        // Verify that basic JSF works in an EAR
+        HttpUtils.findStringInReadyUrl(server, '/' + JSF_EAR_APP + "/TestBean.jsf",
+                                       "CDI Bean value:",
+                                       ":CDIBean::PostConstructCalled:");
+        HttpUtils.findStringInReadyUrl(server, '/' + JSF_EAR_APP + "/TestBean.jsf",
+                                       "JSF Bean value:",
+                                       ":JSFBean::PostConstructCalled:");
+
+        // Verify non-JSF functionality works in JSF-enabled WAR app
         FATServletClient.runTest(server, JSF_APP + "/TestServlet", "testServletWorking");
         FATServletClient.runTest(server, JSF_APP + "/TestServlet", "useExternalLib");
+
+        // Verify non-JSF functionality works in JSF-enabled EAR app
+        FATServletClient.runTest(server, JSF_EAR_APP + "/TestServlet", "testServletWorking");
+        FATServletClient.runTest(server, JSF_EAR_APP + "/TestServlet", "useExternalLib");
 
         // Verify that using a non-JSF app works
         FATServletClient.runTest(server, NO_JSF_APP + "/TestServlet", "testServletWorking");

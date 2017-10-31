@@ -101,7 +101,8 @@ class WARDeployedAppInfo extends DeployedAppInfoBase {
 
             ClassLoaderConfiguration clCfg = cls.createClassLoaderConfiguration()
                             .setId(cls.createIdentity("WebModule", j2eeAppName + "#" + j2eeModuleName))
-                            .setProtectionDomain(protectionDomain);
+                            .setProtectionDomain(protectionDomain)
+			    .setIncludeAppExtensions(true);
 
             return createTopLevelClassLoader(containers, gwCfg, clCfg);
         } else {

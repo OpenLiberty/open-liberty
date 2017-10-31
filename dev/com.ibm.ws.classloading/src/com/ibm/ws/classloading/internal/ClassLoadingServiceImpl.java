@@ -134,11 +134,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
                policyOption = ReferencePolicyOption.GREEDY)
     protected volatile List<ApplicationExtensionLibrary> appExtLibs;
 
-    @Override
-    public List<ApplicationExtensionLibrary> getAppExtLibs() {
-        return Collections.unmodifiableList(appExtLibs);
-    }
-
     /**
      * Mapping from META-INF services file names to the corresponding service provider implementation class name.
      */
@@ -270,7 +265,13 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     @Override
     public AppClassLoader createTopLevelClassLoader(List<Container> classPath, GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig) {
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).setClassPath(classPath).configure(gwConfig).configure(clConfig).create();
+        if (clConfig.getIncludeAppExtensions())
+            addAppExtensionLibs(clConfig);
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .setClassPath(classPath)
+                        .configure(gwConfig)
+                        .configure(clConfig)
+                        .create();
 
         this.rememberBundle(result.getBundle());
         return result;
@@ -278,12 +279,22 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
 
     @Override
     public AppClassLoader createBundleAddOnClassLoader(List<File> classPath, ClassLoader gwClassLoader, ClassLoaderConfiguration clConfig) {
-        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).setSharedLibPath(classPath).configure(createGatewayConfiguration()).useBundleAddOnLoader(gwClassLoader).configure(clConfig).create();
+        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .setSharedLibPath(classPath)
+                        .configure(createGatewayConfiguration())
+                        .useBundleAddOnLoader(gwClassLoader)
+                        .configure(clConfig)
+                        .create();
     }
 
     @Override
     public AppClassLoader createChildClassLoader(List<Container> classPath, ClassLoaderConfiguration config) {
-        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).setClassPath(classPath).configure(config).create();
+        if (config.getIncludeAppExtensions())
+            addAppExtensionLibs(config);
+        return new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .setClassPath(classPath)
+                        .configure(config)
+                        .create();
     }
 
     @Override
@@ -381,9 +392,13 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
             }
         }
 
-        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager).configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN
-                                                                                                                                                                                                                 + ": "
-                                                                                                                                                                                                                 + lib.id()).setDynamicImportPackage("*").setApiTypeVisibility(apiTypeVisibility)).configure(clsCfg).onCreate(listenForLibraryChanges(lib.id())).getCanonical();
+        AppClassLoader result = new ClassLoaderFactory(bundleContext, digraph, classloaders, aclStore, resourceProviders, redefiner, generatorManager)
+                        .configure(createGatewayConfiguration().setApplicationName(SHARED_LIBRARY_DOMAIN + ": " + lib.id())
+                                        .setDynamicImportPackage("*")
+                                        .setApiTypeVisibility(apiTypeVisibility))
+                        .configure(clsCfg)
+                        .onCreate(listenForLibraryChanges(lib.id()))
+                        .getCanonical();
 
         this.rememberBundle(result.getBundle());
         return result;
@@ -545,7 +560,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
          * Always create a new TCCL to handle features being added/removed
          */
 
-        GatewayConfiguration gwConfig = this.createGatewayConfiguration().setApplicationName("ThreadContextClassLoader").setDynamicImportPackage("*;thread-context=\"true\"").setDelegateToSystem(false);
+        GatewayConfiguration gwConfig = this.createGatewayConfiguration()
+                        .setApplicationName("ThreadContextClassLoader")
+                        .setDynamicImportPackage("*;thread-context=\"true\"")
+                        .setDelegateToSystem(false);
         ClassLoaderConfiguration clConfig = this.createClassLoaderConfiguration().setId(createIdentity("Thread Context", key));
         GatewayBundleFactory gatewayBundleFactory = new GatewayBundleFactory(bundleContext, digraph, classloaders);
         GatewayClassLoader aug = gatewayBundleFactory.createGatewayBundleClassLoader(gwConfig, clConfig, resourceProviders);
@@ -741,5 +759,10 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService, Clas
                 out.println("    " + ste.toString());
             }
         }
+    }
+
+    private void addAppExtensionLibs(ClassLoaderConfiguration config) {
+        for (ApplicationExtensionLibrary appExt : appExtLibs)
+            config.addSharedLibraries(appExt.getReference().id());
     }
 }

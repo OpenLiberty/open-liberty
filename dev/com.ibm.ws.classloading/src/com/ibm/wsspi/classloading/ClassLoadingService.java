@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Map;
 
 import com.ibm.wsspi.adaptable.module.Container;
-import com.ibm.wsspi.library.ApplicationExtensionLibrary;
 import com.ibm.wsspi.library.Library;
 
 /**
@@ -199,10 +198,4 @@ public interface ClassLoadingService {
      * @param protectionDomainMap
      */
     void setSharedLibraryProtectionDomains(Map<String, ProtectionDomain> protectionDomainMap);
-
-    /**
-     * Returns a list of Libraries that are attached to application classloaders
-     * without configuration, for the purposes of providing application extensions
-     */
-    List<ApplicationExtensionLibrary> getAppExtLibs();
 }
