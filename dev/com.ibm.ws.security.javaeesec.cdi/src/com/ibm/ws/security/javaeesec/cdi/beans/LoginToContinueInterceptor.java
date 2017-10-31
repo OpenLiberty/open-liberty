@@ -14,10 +14,18 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import javax.annotation.Priority;
+import javax.el.ELProcessor;
 import javax.enterprise.inject.Instance;
+<<<<<<< HEAD
 import javax.enterprise.inject.spi.CDI;
+=======
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.inject.Inject;
+>>>>>>> support multiple modules
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -35,8 +43,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.genericbnf.PasswordNullifier;
 import com.ibm.ws.security.jaspi.JaspiConstants;
+import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
@@ -60,7 +69,8 @@ public class LoginToContinueInterceptor {
     private static final String METHOD_TO_INTERCEPT = "validateRequest";
     private static final String CUSTOM_FORM_CLASS = "com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
-    HAMProperties hamp = null;
+    @Inject
+    Instance<ModulePropertiesProvider> mppInstance;
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
@@ -72,21 +82,27 @@ public class LoginToContinueInterceptor {
             //                                    HttpServletResponse response,
             //                                    HttpMessageContext httpMessageContext) throws AuthenticationException {
 
-            hamp = getHAMProperties();
-            if (hamp != null) {
-                result = ic.proceed();
-                Object[] params = ic.getParameters();
-                HttpServletRequest req = (HttpServletRequest) params[0];
-                HttpServletResponse res = (HttpServletResponse) params[1];
-                if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
-                    // need to redirect.
-                    HttpMessageContext mc = (HttpMessageContext) params[2];
-
-                    result = gotoLoginPage(hamp.getProperties(), req, res, mc);
-                } else if (result.equals(AuthenticationStatus.SUCCESS)) {
-                    boolean isCustom = isCustomForm(ic);
-                    // redirect to the original url.
-                    postLoginProcess(req, res, isCustom);
+            ModulePropertiesProvider mpp = null;
+            if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
+                mpp = mppInstance.get();
+                if (mpp != null) {
+                    result = ic.proceed();
+                    Object[] params = ic.getParameters();
+                    HttpServletRequest req = (HttpServletRequest) params[0];
+                    HttpServletResponse res = (HttpServletResponse) params[1];
+                    if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
+                        // need to redirect.
+                        HttpMessageContext mc = (HttpMessageContext) params[2];
+                        result = gotoLoginPage(mpp.getAuthMechProperties(ic.getTarget().getClass().getSuperclass()), req, res, mc);
+                    } else if (result.equals(AuthenticationStatus.SUCCESS)) {
+                        boolean isCustom = isCustomForm(ic);
+                        // redirect to the original url.
+                        postLoginProcess(req, res, isCustom);
+                    }
+                } else {
+                    // return error since properties are not available.
+                    Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
+                    result = AuthenticationStatus.SEND_FAILURE;
                 }
             } else {
                 Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
@@ -129,12 +145,21 @@ public class LoginToContinueInterceptor {
     }
 
     private boolean getUseForwardToLogin(Properties props) {
-        //TODO : add EL expression code.
-        Boolean value = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN);
-        if (value != null) {
-            return value.booleanValue();
+        String useForwardExpression = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION);
+        Boolean result = true;
+        if (useForwardExpression != null && !useForwardExpression.isEmpty()) {
+            ELProcessor elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
+            result = (Boolean) elProcessor.eval(useForwardExpression);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "result of elProcessor.eval : " + result);
+            
+        } else {
+            Boolean value = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN);
+            if (value != null) {
+                result = value;
+            }
         }
-        return true;
+        return result.booleanValue();
     }
 
     private void updateFormLoginConfiguration(String loginPage, String errorPage, SecurityMetadata securityMetadata) {
@@ -252,20 +277,15 @@ public class LoginToContinueInterceptor {
         return CUSTOM_FORM_CLASS.equals(className);
     }
 
-    @SuppressWarnings("rawtypes")
-    protected CDI getCDI() {
-        return CDI.current();
-    }
-
-    protected HAMProperties getHAMProperties() {
-        Instance<HAMProperties> hamPropertiesInstance = getCDI().select(HAMProperties.class);
-        if (hamPropertiesInstance != null) {
-            return hamPropertiesInstance.get();
-        }
-        return null;
+    protected void setMPPInstance(Instance<ModulePropertiesProvider> mppInstance) {
+        this.mppInstance = mppInstance;
     }
 
     protected WebAppSecurityConfig getWebSAppSeurityConfig() {
         return WebConfigUtils.getWebAppSecurityConfig();
+    }
+
+    protected ELProcessor getELProcessorWithAppModuleBeanManagerELResolver() {
+        return CDIHelper.getELProcessor();
     }
 }

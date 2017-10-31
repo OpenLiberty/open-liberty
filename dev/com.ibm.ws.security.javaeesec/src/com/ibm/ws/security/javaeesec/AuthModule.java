@@ -13,7 +13,6 @@ package com.ibm.ws.security.javaeesec;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
@@ -35,7 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
 /*
  * This JASPI authentication module is used as the bridge ServerAuthModule for JSR-375.
@@ -49,6 +48,7 @@ public class AuthModule implements ServerAuthModule {
     private MessagePolicy requestPolicy;
     private CallbackHandler handler;
     private Map<String, String> options;
+    private ModulePropertiesUtils mpu = ModulePropertiesUtils.getInstance();
 
     @Override
     public Class[] getSupportedMessageTypes() {
@@ -83,7 +83,7 @@ public class AuthModule implements ServerAuthModule {
         AuthStatus status = AuthStatus.SEND_FAILURE;
 
         try {
-            HttpAuthenticationMechanism authMech = getHttpAuthenticationMechanism();
+            HttpAuthenticationMechanism authMech = mpu.getHttpAuthenticationMechanism(getCDI());
             HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, clientSubject);
             AuthenticationStatus authenticationStatus = authMech.validateRequest((HttpServletRequest) messageInfo.getRequestMessage(),
                                                                                  (HttpServletResponse) messageInfo.getResponseMessage(),
@@ -107,14 +107,12 @@ public class AuthModule implements ServerAuthModule {
         AuthStatus status = AuthStatus.SEND_FAILURE;
         // TODO: Determine if HttpMessageContext and HttpAuthenticationMechanism must have been cached in the MessageInfo
         try {
-            HttpAuthenticationMechanism authMech = getHttpAuthenticationMechanism();
+            HttpAuthenticationMechanism authMech = mpu.getHttpAuthenticationMechanism(getCDI());
             HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
             AuthenticationStatus authenticationStatus = authMech.secureResponse((HttpServletRequest) messageInfo.getRequestMessage(),
                                                                                 (HttpServletResponse) messageInfo.getResponseMessage(),
                                                                                 httpMessageContext);
             status = translateSecureResponseStatus(authenticationStatus);
-        } catch (AuthException ae) {
-            throw ae;
         } catch (AuthenticationException e) {
             // TODO: Issue serviceability message.
             e.printStackTrace();
@@ -127,29 +125,9 @@ public class AuthModule implements ServerAuthModule {
 
     @Override
     public void cleanSubject(MessageInfo messageInfo, Subject subject) throws AuthException {
-        HttpAuthenticationMechanism authMech = getHttpAuthenticationMechanism();
+        HttpAuthenticationMechanism authMech = mpu.getHttpAuthenticationMechanism(getCDI());
         HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
         authMech.cleanSubject((HttpServletRequest) messageInfo.getRequestMessage(), (HttpServletResponse) messageInfo.getResponseMessage(), httpMessageContext);
-    }
-
-    private HttpAuthenticationMechanism getHttpAuthenticationMechanism() throws AuthException {
-        Instance<HAMProperties> hampInstance = getCDI().select(HAMProperties.class);
-        if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
-            Instance<HttpAuthenticationMechanism> beanInstance = getCDI().select(hampInstance.get().getImplementationClass());
-            if (beanInstance != null && !beanInstance.isUnsatisfied() && !beanInstance.isAmbiguous()) {
-                return beanInstance.get();
-            } else {
-                String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_NO_HAM");
-                throw new AuthException(msg);
-            }
-        } else {
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_NO_HAM_PROPS");
-            throw new AuthException(msg);
-        }
-    }
-
-    protected CDI getCDI() {
-        return CDI.current();
     }
 
     protected HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
@@ -203,5 +181,9 @@ public class AuthModule implements ServerAuthModule {
             status = AuthStatus.SUCCESS;
         }
         return status;
+    }
+
+    protected CDI getCDI() {
+        return CDI.current();
     }
 }

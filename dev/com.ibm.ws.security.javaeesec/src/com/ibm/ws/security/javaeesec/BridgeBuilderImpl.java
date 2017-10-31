@@ -32,7 +32,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.jaspi.BridgeBuilderService;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
 @Component(service = { BridgeBuilderService.class },
            name = "com.ibm.ws.security.javaeesec",
@@ -44,6 +44,7 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
     private static final TraceComponent tc = Tr.register(BridgeBuilderImpl.class);
 
     private static final String JASPIC_LAYER_HTTP_SERVLET = "HttpServlet";
+    private ModulePropertiesUtils mpu = ModulePropertiesUtils.getInstance();
 
     @Activate
     protected void activate(ComponentContext cc) {}
@@ -75,23 +76,7 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
         boolean result = false;
         CDI cdi = getCDI();
         if (cdi != null) {
-            Instance<HAMProperties> hampInstance = cdi.select(HAMProperties.class);
-            if (hampInstance != null) {
-                if (!hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
-                    Instance<HttpAuthenticationMechanism> beanInstance = getCDI().select(hampInstance.get().getImplementationClass());
-                    if (beanInstance != null && !beanInstance.isUnsatisfied() && !beanInstance.isAmbiguous()) {
-                        result = true;
-                    } else {
-                        Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM");
-                    }
-                } else {
-                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM_PROPS");
-                }
-            } else {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "HAMProperties is not found. Most likely, there is no HttpAuthenticationMechanism bean.");
-                }
-            }
+            result =  mpu.isOneHttpAuthenticationMechanism(cdi);
         } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "CDI is not found. Most likely, CDI is not enabled, or there is no CDI bean in the application.");

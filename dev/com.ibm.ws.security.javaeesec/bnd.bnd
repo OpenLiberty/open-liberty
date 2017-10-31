@@ -22,7 +22,7 @@ WS-TraceGroup: \
 
 Export-Package: \
     com.ibm.ws.security.javaeesec, \
-    com.ibm.ws.security.javaeesec.authentication.mechanism.http, \
+    com.ibm.ws.security.javaeesec.properties, \
     com.ibm.ws.security.javaeesec.identitystore
 
 Import-Package: !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
@@ -56,7 +56,8 @@ Include-Resource: \
     com.ibm.wsspi.org.osgi.service.component.annotations,\
     com.ibm.ws.cdi.interfaces,\
     com.ibm.ws.common.encoder;version=latest,\
-	com.ibm.ws.kernel.service;version=latest, \
+    com.ibm.ws.kernel.service;version=latest, \
+    com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\
