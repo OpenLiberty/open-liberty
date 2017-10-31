@@ -212,13 +212,16 @@ public class RememberMeInterceptorTest {
         final HttpAuthenticationMechanism mechanismWithELExpresssion = new TestHttpAuthenticationMechanismWithRememberMeELExpressions();
         final RememberMe rememberMe = mechanismWithELExpresssion.getClass().getAnnotation(RememberMe.class);
 
+        final String isRememberMeExpression = rememberMe.isRememberMeExpression();
+        final String cookieSecureOnlyExpression = rememberMe.cookieSecureOnlyExpression();
+
         mockery.checking(new Expectations() {
             {
                 one(elProcessor).defineBean("httpMessageContext", httpMessageContext);
                 one(elProcessor).defineBean("self", mechanismWithELExpresssion);
-                one(elProcessor).eval(rememberMe.isRememberMeExpression());
+                one(elProcessor).eval(isRememberMeExpression.substring(2, isRememberMeExpression.length() - 1));
                 will(returnValue(Boolean.TRUE));
-                exactly(2).of(elProcessor).eval(rememberMe.cookieSecureOnlyExpression());
+                exactly(2).of(elProcessor).eval(cookieSecureOnlyExpression.substring(2, cookieSecureOnlyExpression.length() - 1));
                 will(returnValue(Boolean.TRUE));
                 one(elProcessor).eval(rememberMe.cookieMaxAgeSecondsExpression());
                 will(returnValue(Integer.valueOf(600)));
@@ -497,7 +500,7 @@ public class RememberMeInterceptorTest {
     }
 
     @RememberMe(cookieHttpOnlyExpression = "mybean.httpOnly", cookieMaxAgeSecondsExpression = "mybean.maxAge",
-                cookieSecureOnlyExpression = "mybean.secureOnly", isRememberMeExpression = "mybean.rememberMe")
+                cookieSecureOnlyExpression = "#{mybean.secureOnly}", isRememberMeExpression = "${mybean.rememberMe}")
     private class TestHttpAuthenticationMechanismWithRememberMeELExpressions implements HttpAuthenticationMechanism {
         @Override
         public AuthenticationStatus validateRequest(HttpServletRequest arg0, HttpServletResponse arg1, HttpMessageContext arg2) throws AuthenticationException {
