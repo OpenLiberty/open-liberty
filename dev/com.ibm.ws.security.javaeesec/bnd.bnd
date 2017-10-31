@@ -44,12 +44,12 @@ Include-Resource: \
 -buildpath: \
     com.ibm.websphere.appserver.spi.kernel.service,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.websphere.javaee.el.3.0;version=latest,\
     com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
     com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
     com.ibm.websphere.javaee.security.1.0;version=latest,\
-    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.websphere.security;version=latest,\

@@ -38,7 +38,7 @@ publish.wlp.jar.suffix: dev/api/spec
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	org.apache.myfaces.buildtools:myfaces-builder-annotations;version=1.0.9,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.websphere.javaee.jstl.1.2;version=latest,\
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest, \
