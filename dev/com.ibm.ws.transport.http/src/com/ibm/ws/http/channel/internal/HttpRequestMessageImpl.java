@@ -1874,6 +1874,45 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         return getServiceContext().getStartNanoTime();
     }
 
+    /*
+     * isPushSupported
+     * - called by WebContainer to determine whether or not push_promise is supported
+     *
+     */
+    @Override
+    public boolean isPushSupported() {
+
+        // Find the existing H2 connection and stream so we can use them to send the
+        // push_promise frame to the client.
+        HttpInboundServiceContext isc = (HttpInboundServiceContext) getServiceContext();
+        HttpInboundLink link = ((HttpInboundServiceContextImpl) isc).getLink();
+
+        if (!(link instanceof H2HttpInboundLinkWrap)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: This is not an HTTP2 connection, push() was ignored.");
+            }
+            return false;
+        }
+
+        if ((((H2HttpInboundLinkWrap) link).muxLink == null) ||
+            (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings() == null)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
+            }
+            return false;
+        }
+
+        // Don't send the push_promise frame if the client doesn't want it
+        if (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings().getEnablePush() != 1) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): The client does not accept push_promise frames, push() was ignored.");
+            }
+            return false;
+        }
+
+        return true;
+    }
+
     /**
      * pushNewRequest
      * - called by WebContainer when a servlet determines that a push_promise is needed
@@ -1892,33 +1931,13 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             Tr.entry(tc, "HTTPRequestMessageImpl.pushNewRequest(): pushNewRequest() started " + this);
         }
 
+        if (!isPushSupported())
+            return;
+
         // Find the existing H2 connection and stream so we can use them to send the
         // push_promise frame to the client.
         HttpInboundServiceContext isc = (HttpInboundServiceContext) getServiceContext();
         HttpInboundLink link = ((HttpInboundServiceContextImpl) isc).getLink();
-
-        if (!(link instanceof H2HttpInboundLinkWrap)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): Error: This is not an HTTP2 connection, push() was ignored.");
-            }
-            return;
-        }
-
-        if ((((H2HttpInboundLinkWrap) link).muxLink == null) ||
-            (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings() == null)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): The H2HttpInboundLinkWrap muxlink is null, push() was ignored.");
-            }
-            return;
-        }
-
-        // Don't send the push_promise frame if the client doesn't want it
-        if (((H2HttpInboundLinkWrap) link).muxLink.getConnectionSettings().getEnablePush() != 1) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "HTTPRequestMessageImpl.pushNewRequest(): The client does not accept push_promise frames, push() was ignored.");
-            }
-            return;
-        }
 
         H2HeaderTable h2WriteTable = ((H2HttpInboundLinkWrap) link).muxLink.getWriteTable();
 
