@@ -579,7 +579,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         TaskListener listener2 = new TaskListener();
         CountingTask task2 = new CountingTask(null, listener2, null, null);
         task2.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(252)));
-        Future<Integer> future2 = defaultExecutor.submit(task1);
+        Future<Integer> future2 = defaultExecutor.submit(task2);
         try {
             Integer result = future2.get();
             fail("Task 2 should have aborted due to startTimeout. Instead, result is: " + result);
@@ -618,7 +618,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
 
         // invoke tasks - should end after the start timeouts, well before the timeout supplied to invokeAll
         long start = System.nanoTime();
-        List<Future<Integer>> futures = defaultExecutor.invokeAll(tasks, 5, TimeUnit.SECONDS); // TODO TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
+        List<Future<Integer>> futures = defaultExecutor.invokeAll(tasks, TIMEOUT_NS * 2, TimeUnit.NANOSECONDS);
         long duration = System.nanoTime() - start;
         assertTrue(duration + "ns", duration < TIMEOUT_NS);
 
