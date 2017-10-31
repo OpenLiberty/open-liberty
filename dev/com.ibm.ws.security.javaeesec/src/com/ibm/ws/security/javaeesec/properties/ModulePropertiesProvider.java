@@ -8,26 +8,28 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.authentication.mechanism.http;
+package com.ibm.ws.security.javaeesec.properties;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 
 /**
  *
  */
-public interface HAMProperties {
+public interface ModulePropertiesProvider {
     /**
-     * returns the implementation class name of HttpAuthenticationMechansim
+     * returns the ModuleProperties which is associated with the current ModuleMetaData.
      */
-    public Class getImplementationClass();
+    public ModuleProperties getModuleProperties();
+    
+    /**
+     * returns the list of AuthenticationMechanisms which is associated with the current ModuleMetaData.
+     */
+    public List<Class> getAuthMechClassList();
 
     /**
-     * returns the properties which is associated with the implementation class.
-     * For BasicAuthenticationMechanism, "realmName".
-     * For CustomForm and Form AuthenticationMechanism, "errorPage", "loginPage", "useForwardToLogin", "useForwardtoLoginExpression"
+     * returns the Properties of AuthenticationMechanisms.
      */
-    public Properties getProperties();
+    public Properties getAuthMechProperties(Class authMech);
 }
