@@ -76,8 +76,6 @@ import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
-// TODO:
-// Find out how to release LoginToContinue annotation in LoginToContinueIntercepter by the one in FormAuthenticationMechanismDefinition.
 
 /**
  * TODO: Add all JSR-375 API classes that can be bean types to api.classes.
@@ -661,8 +659,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             list = new ArrayList<String>();
             for(ModuleMetaData mmd : mmds) {
                 if (mmd instanceof WebModuleMetaData) {
-//                    WebAppConfig wac = ((WebModuleMetaData)mmd).getConfiguration();
-//                    String moduleName = wac.getModuleName();
                     String j2eeModuleName = mmd.getJ2EEName().getModule();
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "j2ee module name  : " + j2eeModuleName);

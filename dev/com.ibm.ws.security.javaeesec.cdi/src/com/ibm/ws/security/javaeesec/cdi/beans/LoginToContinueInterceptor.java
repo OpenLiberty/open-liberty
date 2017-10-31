@@ -70,7 +70,7 @@ public class LoginToContinueInterceptor {
     private static final String CUSTOM_FORM_CLASS = "com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
     @Inject
-    Instance<ModulePropertiesProvider> mppInstance;
+    ModulePropertiesProvider mpp;
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
@@ -81,28 +81,19 @@ public class LoginToContinueInterceptor {
             // public AuthenticationStatus validateRequest(HttpServletRequest request,
             //                                    HttpServletResponse response,
             //                                    HttpMessageContext httpMessageContext) throws AuthenticationException {
-
-            ModulePropertiesProvider mpp = null;
-            if (mppInstance != null && !mppInstance.isUnsatisfied() && !mppInstance.isAmbiguous()) {
-                mpp = mppInstance.get();
-                if (mpp != null) {
-                    result = ic.proceed();
-                    Object[] params = ic.getParameters();
-                    HttpServletRequest req = (HttpServletRequest) params[0];
-                    HttpServletResponse res = (HttpServletResponse) params[1];
-                    if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
-                        // need to redirect.
-                        HttpMessageContext mc = (HttpMessageContext) params[2];
-                        result = gotoLoginPage(mpp.getAuthMechProperties(ic.getTarget().getClass().getSuperclass()), req, res, mc);
-                    } else if (result.equals(AuthenticationStatus.SUCCESS)) {
-                        boolean isCustom = isCustomForm(ic);
-                        // redirect to the original url.
-                        postLoginProcess(req, res, isCustom);
-                    }
-                } else {
-                    // return error since properties are not available.
-                    Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
-                    result = AuthenticationStatus.SEND_FAILURE;
+            if (mpp != null) {
+                result = ic.proceed();
+                Object[] params = ic.getParameters();
+                HttpServletRequest req = (HttpServletRequest) params[0];
+                HttpServletResponse res = (HttpServletResponse) params[1];
+                if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
+                    // need to redirect.
+                    HttpMessageContext mc = (HttpMessageContext) params[2];
+                    result = gotoLoginPage(mpp.getAuthMechProperties(ic.getTarget().getClass().getSuperclass()), req, res, mc);
+                } else if (result.equals(AuthenticationStatus.SUCCESS)) {
+                    boolean isCustom = isCustomForm(ic);
+                    // redirect to the original url.
+                    postLoginProcess(req, res, isCustom);
                 }
             } else {
                 Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
@@ -277,8 +268,8 @@ public class LoginToContinueInterceptor {
         return CUSTOM_FORM_CLASS.equals(className);
     }
 
-    protected void setMPPInstance(Instance<ModulePropertiesProvider> mppInstance) {
-        this.mppInstance = mppInstance;
+    protected void setMPP(ModulePropertiesProvider mpp) {
+        this.mpp = mpp;
     }
 
     protected WebAppSecurityConfig getWebSAppSeurityConfig() {
