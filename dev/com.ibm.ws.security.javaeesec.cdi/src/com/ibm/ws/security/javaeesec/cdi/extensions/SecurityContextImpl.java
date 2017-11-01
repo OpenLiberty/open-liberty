@@ -25,12 +25,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.WSSecurityException;
-import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authorization.AuthorizationService;
 import com.ibm.ws.security.context.SubjectManager;
+import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
@@ -99,13 +98,13 @@ public class SecurityContextImpl implements SecurityContext {
      * @see javax.security.enterprise.SecurityContext#getPrincipalsByType(java.lang.Class)
      */
     @Override
-    public <T extends Principal> Set<T> getPrincipalsByType(Class<T> arg0) {
+    public <T extends Principal> Set<T> getPrincipalsByType(Class<T> type) {
         //Get the caller principal from the caller subject
         Subject callerSubject = getCallerSubject();
 
         if (callerSubject != null) {
             //Get the prinicipals by type
-            Set<T> principals = callerSubject.getPrincipals(arg0);
+            Set<T> principals = callerSubject.getPrincipals(type);
             return principals;
         }
 
@@ -132,9 +131,9 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public boolean isCallerInRole(String role) {
 
+        Subject callerSubject = getCallerSubject();
         AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
         if (authService != null) {
-            Subject callerSubject = null;
             String appName = getApplicationName();
             List<String> roles = new ArrayList<String>();
             roles.add(role);
@@ -145,18 +144,16 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     private Subject getCallerSubject() {
-        Subject callerSubject = null;
-        try {
-            callerSubject = WSSubject.getRunAsSubject();
-            if (callerSubject == null) {
-                callerSubject = WSSubject.getCallerSubject();
-            }
-        } catch (WSSecurityException wse) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception getting Subject", wse);
-            }
+        SubjectManagerService subjectManagerService = SecurityContextHelper.getSubjectManagerService();
+        if (subjectManagerService != null) {
+            Subject callerSubject = null;
+
+            callerSubject = subjectManagerService.getInvocationSubject();
+            if (callerSubject == null)
+                callerSubject = subjectManagerService.getCallerSubject();
+            return callerSubject;
         }
-        return callerSubject;
+        return null;
     }
 
     private String getApplicationName() {
