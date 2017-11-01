@@ -160,7 +160,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
             for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore form module: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                    Tr.debug(tc, "IdentityStore from module: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
                 }
                 identityStores.add(identityStore);
             }

@@ -63,8 +63,6 @@ public class LdapIdentityStoreBean implements Bean<IdentityStore>, PassivationCa
      */
     @Override
     public IdentityStore create(CreationalContext<IdentityStore> arg0) {
-        Tr.debug(tc, "~~~create ldap bean");
-        // TODO Return the actual LdapIdentityStore impl
         return new LdapIdentityStore(ldapIdentityStoreDefinition);
     }
 
