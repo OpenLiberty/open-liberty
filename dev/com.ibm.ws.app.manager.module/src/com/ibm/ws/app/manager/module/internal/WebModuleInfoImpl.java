@@ -26,10 +26,10 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 public class WebModuleInfoImpl extends ExtendedModuleInfoImpl implements ExtendedWebModuleInfo {
 
     /** The context root for this web module */
-    private final String contextRoot;
+    private String contextRoot;
 
     /** Field to check whether Default Context Root is being used */
-    private boolean isDefaultContextRootUsed;
+    private String defaultContextRoot;
 
     /**
      * Creates a new instance of a web module with the class loader set to <code>null</code>
@@ -42,27 +42,43 @@ public class WebModuleInfoImpl extends ExtendedModuleInfoImpl implements Extende
                              Container moduleContainer, Entry altDDEntry, List<ContainerInfo> moduleClassesContainers,
                              ModuleClassLoaderFactory classLoaderFactory) throws UnableToAdaptException {
         super(appInfo, moduleName, path, moduleContainer, altDDEntry, moduleClassesContainers, classLoaderFactory, ContainerInfo.Type.WEB_MODULE, WebModuleInfo.class);
-        this.isDefaultContextRootUsed = false;
         this.contextRoot = contextRoot;
     }
 
     /** {@inheritDoc} */
     @Override
     public String getContextRoot() {
+        //tWAS doesn't check the ibm-web-ext when deployed in an ear
+        //however, there is a liberty test, testContextRootWarInEar_Ext, which verifies this behavior
+        //since this could be considered a config related change, we can be different than tWAS and we don't want to break backward compatibility with Liberty 85
+        // Note that the context root setup needs to happen here on the first call to getContextRoot(). Otherwise config overrides from server.xml will
+        // not be available.
+        if (this.contextRoot == null) {
+            this.contextRoot = ContextRootUtil.getContextRoot(getContainer());
+
+            if (contextRoot == null) {
+                contextRoot = ContextRootUtil.getContextRoot(defaultContextRoot);
+            }
+
+        }
         return this.contextRoot;
     }
 
     /**
-     * Sets to true if the default context root is being used, otherwise sets false
+     * Sets the default context root name
      */
-    public void setDefaultContextRootUsed(boolean isDefaultContextRootUsed) {
-        this.isDefaultContextRootUsed = isDefaultContextRootUsed;
+    public void setDefaultContextRoot(String defaultContextRoot) {
+        this.defaultContextRoot = defaultContextRoot;
     }
 
     /** {@inheritDoc} */
     @Override
     public boolean isDefaultContextRootUsed() {
-        return this.isDefaultContextRootUsed;
+        /**
+         * If the module name is equal to the default context root,
+         * it means that the default context root is being used.
+         */
+        return getName().equals(defaultContextRoot);
     }
 
 }

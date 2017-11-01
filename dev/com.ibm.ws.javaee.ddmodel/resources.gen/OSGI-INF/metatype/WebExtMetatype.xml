@@ -22,7 +22,7 @@ localization="OSGI-INF/l10n/metatype">
     <AD id="mime-filter" description="%WebExtMetatype.mime-filter.desc" name="%WebExtMetatype.mime-filter.name" type="String" required="false" ibm:type="pid" cardinality="2147483647" ibm:reference="com.ibm.ws.javaee.dd.webext.MimeFilter"/>
     <AD id="resource-ref" description="%WebExtMetatype.resource-ref.desc" name="%WebExtMetatype.resource-ref.name" type="String" required="false" ibm:type="pid" cardinality="2147483647" ibm:reference="com.ibm.ws.javaee.dd.commonext.ResourceRef"/>
     <AD id="default-error-page" description="%WebExtMetatype.default-error-page.desc" name="%WebExtMetatype.default-error-page.name" type="String" required="false" cardinality="0"/>
-    <AD id="context-root" description="%WebExtMetatype.context-root.desc" name="%WebExtMetatype.context-root.name" type="String" required="false" cardinality="0"/>
+    <AD id="context-root" description="%WebExtMetatype.context-root.desc" name="%WebExtMetatype.context-root.name" type="String" required="false" cardinality="0" ibm:type="pid" ibm:flat="true" ibm:reference="com.ibm.ws.javaee.dd.webext.ContextRoot"/>
     <AD id="autoload-filters" description="%WebExtMetatype.autoload-filters.desc" name="%WebExtMetatype.autoload-filters.name" type="Boolean" required="false" cardinality="0"/>
     <AD id="auto-encode-requests" description="%WebExtMetatype.auto-encode-requests.desc" name="%WebExtMetatype.auto-encode-requests.name" type="Boolean" required="false" cardinality="0"/>
     <AD id="auto-encode-responses" description="%WebExtMetatype.auto-encode-responses.desc" name="%WebExtMetatype.auto-encode-responses.name" type="Boolean" required="false" cardinality="0"/>
@@ -48,6 +48,13 @@ localization="OSGI-INF/l10n/metatype">
 
 <Designate factoryPid="com.ibm.ws.javaee.dd.webext.WebExt">
      <Object ocdref="com.ibm.ws.javaee.dd.webext.WebExt"/>
+</Designate>
+
+<OCD id="com.ibm.ws.javaee.dd.webext.ContextRoot" name="%webextmetatype.name" description="%webextmetatype.desc">
+	<AD id="uri" type="String" name="internal" description="internal" required="True" cardinality="0"/>
+</OCD>
+<Designate factoryPid="com.ibm.ws.javaee.dd.webext.ContextRoot">
+     <Object ocdref="com.ibm.ws.javaee.dd.webext.ContextRoot"/>
 </Designate>
 
 </metatype:MetaData>

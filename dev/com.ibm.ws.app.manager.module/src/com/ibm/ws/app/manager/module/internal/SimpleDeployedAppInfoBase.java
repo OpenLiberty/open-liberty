@@ -309,7 +309,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
          * The explicitly specified context root from application.xml, web
          * extension, or server configuration.
          */
-        public final String contextRoot;
+        public String contextRoot;
         public String defaultContextRoot;
 
         public WebModuleContainerInfo(ModuleHandler moduleHandler, List<ModuleMetaDataExtender> moduleMetaDataExtenders,
@@ -319,6 +319,7 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
                                       String contextRoot) throws UnableToAdaptException {
             super(moduleHandler, moduleMetaDataExtenders, nestedModuleMetaDataFactories, moduleContainer, altDDEntry, moduleURI, ContainerInfo.Type.WEB_MODULE, moduleClassesInfo, WebApp.class);
             getWebModuleClassesInfo(moduleContainer);
+
             this.contextRoot = contextRoot;
             this.defaultContextRoot = moduleName;
         }
@@ -333,22 +334,10 @@ public abstract class SimpleDeployedAppInfoBase implements DeployedAppInfo {
         public ExtendedModuleInfoImpl createModuleInfoImpl(ApplicationInfo appInfo,
                                                            ModuleClassLoaderFactory moduleClassLoaderFactory) throws MetaDataException {
             try {
-                String contextRoot = this.contextRoot;
-                /** Field to verify if Default Context Root is being used */
-                boolean isDefaultContextRootUsed = false;
-                if (contextRoot == null) {
-                    /**
-                     * If the module name is equal to the default context root,
-                     * it means that the default context root is being used.
-                     */
-                    if (moduleName.equals(defaultContextRoot)) {
-                        isDefaultContextRootUsed = true;
-                    }
-                    contextRoot = ContextRootUtil.getContextRoot(defaultContextRoot);
-                }
-                WebModuleInfoImpl webModuleInfo = new WebModuleInfoImpl(appInfo, moduleName, name, contextRoot, container, altDDEntry, classesContainerInfo, moduleClassLoaderFactory);
+
+                WebModuleInfoImpl webModuleInfo = new WebModuleInfoImpl(appInfo, moduleName, name, this.contextRoot, container, altDDEntry, classesContainerInfo, moduleClassLoaderFactory);
                 /** Set the Default Context Root information to the web module info */
-                webModuleInfo.setDefaultContextRootUsed(isDefaultContextRootUsed);
+                webModuleInfo.setDefaultContextRoot(defaultContextRoot);
                 return webModuleInfo;
             } catch (UnableToAdaptException e) {
                 FFDCFilter.processException(e, getClass().getName(), "createModuleInfo", this);
