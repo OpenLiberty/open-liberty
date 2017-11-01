@@ -58,7 +58,9 @@
         <AD id="searchTimeout" name="%searchTimeout" description="%searchTimeout.desc"
             required="false" type="String" ibm:type="duration" default="1m"/>
         <AD id="searchCountLimit" name="internal" description="internal use only"
-            required="false" type="String"/> 
+            required="false" type="Integer"/>
+        <AD id="searchPageSize" name="internal" description="internal use only"
+            required="false" type="Integer"/>
         <AD id="connectTimeout" name="%connectTimeout" description="%connectTimeout.desc"
             required="false" type="String" ibm:type="duration" default="1m"/>
         <AD id="failoverServers" name="%ldap.failoverServers" description="%ldap.failoverServers.desc"

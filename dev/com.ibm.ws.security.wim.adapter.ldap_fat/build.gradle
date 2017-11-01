@@ -110,6 +110,7 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.adapter.ldap.fat.multipleldaps',
     'com.ibm.ws.security.wim.adapter.ldap.fat.realm.mapping',
     'com.ibm.ws.security.wim.adapter.ldap.fat.referral',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.search.paging',
     'com.ibm.ws.security.wim.adapter.ldap.fat.searchbase',
     'com.ibm.ws.security.wim.adapter.ldap.fat.sun',
     'com.ibm.ws.security.wim.adapter.ldap.fat.sun.attrMappingVar4',
