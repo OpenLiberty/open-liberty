@@ -87,7 +87,7 @@ public class SSLConfigManager {
 
     private Map<String, String> aliasPIDs = null; // map LDAP ssl ref, example com.ibm.ws.ssl.repertoire_102 to LDAPSettings. Issue 876
 
-    SSLConfigValidator validator = new SSLConfigValidator();
+    private SSLConfigValidator validator = new SSLConfigValidator();
 
     /**
      * Private constructor, use getInstance().
