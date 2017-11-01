@@ -104,7 +104,7 @@
 		<!-- Made the plural ldapEntityTypes to ldapEntityType for consumability -->				
 		<AD id="ldapEntityType" name="%ldapEntityType" description="%ldapEntityType.desc"
 			  	required="false" type="String" cardinality="2147483347" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.entityType"/>
-		<AD id="groupProperties" name="internal" description="internal use only" 
+		<AD id="groupProperties" name="%groupProperties" description="%groupProperties.desc" 
 			    	required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.groupConfiguration"/>
 		<AD id="attributeConfiguration" name="%attributeConfiguration" description="%attributeConfiguration.desc"
 		     	required="false" type="String" ibm:flat="true"  ibm:type="pid" ibm:reference="com.ibm.ws.security.wim.adapter.ldap.attributeConfiguration"/>
