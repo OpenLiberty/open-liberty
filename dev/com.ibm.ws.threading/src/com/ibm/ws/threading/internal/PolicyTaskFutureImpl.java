@@ -485,6 +485,15 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     @Override
     public boolean cancel(boolean interruptIfRunning) {
+        if (nsStartBy != nsAcceptBegin - 1 // has a start timeout
+            && state.get() < RUNNING // not started yet
+            && System.nanoTime() - nsStartBy > 0) // start timeout has elapsed
+            abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
+                                                             executor.identifier,
+                                                             getTaskName(),
+                                                             System.nanoTime() - nsAcceptBegin,
+                                                             nsStartBy - nsAcceptBegin)));
+
         if (result.compareAndSet(state, CANCELED))
             try {
                 if (executor.queue.remove(this)) {
@@ -616,7 +625,17 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     @Override
     public boolean isDone() {
-        return state.get() > RUNNING;
+        int s = state.get();
+        return s > RUNNING // already done
+               || nsStartBy != nsAcceptBegin - 1 // has a start timeout
+                  && s < RUNNING // not started yet
+                  && System.nanoTime() - nsStartBy > 0 // start timeout has elapsed
+                  && (abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
+                                                                       executor.identifier,
+                                                                       getTaskName(),
+                                                                       System.nanoTime() - nsAcceptBegin,
+                                                                       nsStartBy - nsAcceptBegin)))
+                      || state.get() > RUNNING);
     }
 
     /**
