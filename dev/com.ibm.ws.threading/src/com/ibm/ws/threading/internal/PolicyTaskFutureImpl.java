@@ -39,7 +39,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class);
 
     // state constants
-    private static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, ABORTED = 3, CANCELING = 4, CANCELED = 5, FAILED = 6, SUCCESSFUL = 7;
+    static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, ABORTED = 3, CANCELING = 4, CANCELED = 5, FAILED = 6, SUCCESSFUL = 7;
+
+    // timeout constant
+    private static final int TIMEOUT = -1;
 
     /**
      * The task, if a Callable. It is wrapped with interceptors, if any.
@@ -379,8 +382,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
         boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
         try {
-            if (aborted && callback != null)
-                callback.onEnd(task, this, null, true, 0, cause);
+            if (aborted) {
+                if (nsQueueEnd == nsAcceptBegin - 2) // currently unset
+                    nsRunEnd = nsQueueEnd = System.nanoTime();
+                if (callback != null)
+                    callback.onEnd(task, this, null, true, 0, cause);
+            }
         } finally {
             if (latch != null)
                 latch.countDown();
@@ -404,19 +411,76 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     /**
      * Await completion of the future. Completion could be successful, exceptional, or by cancellation.
+     *
+     * @return state of the task after awaiting completion.
      */
-    void await() throws InterruptedException {
-        if (state.get() <= RUNNING)
-            state.acquireSharedInterruptibly(1);
+    int await() throws InterruptedException {
+        int s = state.get();
+        if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread()) {
+            if (s == RUNNING || nsStartBy == nsAcceptBegin - 1) { // already started or no start timeout
+                state.acquireSharedInterruptibly(1);
+                s = state.get();
+            } else { // wait for up to the start timeout, then continue waiting if task has started
+                long nsGetBegin = System.nanoTime();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "await start timeout for " + (nsStartBy - nsGetBegin) + "ns");
+                state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
+                s = state.get();
+                if (s == SUBMITTED) { // attempt to abort the task
+                    abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
+                                                                     System.nanoTime() - nsAcceptBegin,
+                                                                     nsStartBy - nsAcceptBegin)));
+                    s = state.get();
+                }
+                if (s == RUNNING) { // continue waiting
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "await completion");
+                    state.acquireSharedInterruptibly(1);
+                    s = state.get();
+                }
+            }
+        }
+        return s;
     }
 
     /**
      * Await completion of the future. Completion could be successful, exceptional, or by cancellation.
      *
-     * @return true if completed before the specified interval elapses, otherwise false.
+     * @return either the state of the task after awaiting completion, or, if a TimeoutException would be raised by Future.get then the TIMEOUT constant.
      */
-    boolean await(long time, TimeUnit unit) throws InterruptedException {
-        return state.get() > RUNNING || state.tryAcquireSharedNanos(1, unit.toNanos(time));
+    int await(long time, TimeUnit unit) throws InterruptedException {
+        int s = state.get();
+        if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread()) {
+            long nsGetBegin, maxWaitNS = unit.toNanos(time);
+            if (s == RUNNING // already started
+                || nsStartBy == nsAcceptBegin - 1 // no start timeout
+                || nsStartBy - (nsGetBegin = System.nanoTime()) > maxWaitNS) { // remaining start timeout exceeds the requested max wait
+                if (state.tryAcquireSharedNanos(1, maxWaitNS))
+                    s = state.get();
+                else
+                    s = TIMEOUT;
+            } else { // first wait for up to the start timeout
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "await start timeout for " + (nsStartBy - nsGetBegin) + "ns");
+                state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
+                s = state.get();
+                if (s == SUBMITTED) { // attempt to abort the task
+                    abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
+                                                                     System.nanoTime() - nsAcceptBegin,
+                                                                     nsStartBy - nsAcceptBegin)));
+                    s = state.get();
+                }
+                if (s == RUNNING) { // wait for the remainder of the timeout supplied to get
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "await remainder of timeout");
+                    if (state.tryAcquireSharedNanos(1, maxWaitNS - (System.nanoTime() - nsGetBegin)))
+                        s = state.get();
+                    else
+                        s = TIMEOUT;
+                }
+            }
+        }
+        return s;
     }
 
     @Override
@@ -474,12 +538,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get() throws InterruptedException, ExecutionException {
-        int s = state.get();
-        if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread()) {
-            state.acquireSharedInterruptibly(1);
-            s = state.get();
-        }
-        switch (s) {
+        switch (await()) {
             case SUCCESSFUL:
                 return (T) result.get();
             case ABORTED:
@@ -502,13 +561,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     @SuppressWarnings("unchecked")
     @Override
     public T get(long time, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        int s = state.get();
-        if (s == SUBMITTED || s == RUNNING && thread != Thread.currentThread())
-            if (state.tryAcquireSharedNanos(1, unit.toNanos(time)))
-                s = state.get();
-            else
-                throw new TimeoutException();
-        switch (s) {
+        switch (await(time, unit)) {
             case SUCCESSFUL:
                 return (T) result.get();
             case ABORTED:
@@ -520,6 +573,8 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             case CANCELED:
             case CANCELING:
                 throw new CancellationException();
+            case TIMEOUT:
+                throw new TimeoutException();
             case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
             case PRESUBMIT: // only possible when get() is invoke from onStart, which runs on the submitter's thread and therefore blocks completion
                 throw new InterruptedException(); // TODO message
@@ -546,6 +601,11 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         long begin = nsQueueEnd;
         long elapsed = nsRunEnd - begin;
         return unit.convert(elapsed >= 0 ? elapsed : begin - nsAcceptBegin > 0 ? System.nanoTime() - begin : 0, TimeUnit.NANOSECONDS);
+    }
+
+    @Trivial
+    final String getTaskName() {
+        return callback == null ? task.toString() : callback.getName(task);
     }
 
     @Override
