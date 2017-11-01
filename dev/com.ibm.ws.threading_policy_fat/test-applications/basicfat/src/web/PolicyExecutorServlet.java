@@ -4342,7 +4342,7 @@ public class PolicyExecutorServlet extends FATServlet {
         // Additional testing for the measured run time of the blocker task
         assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         long runTimeMS = blockerFuture.getElapsedRunTime(TimeUnit.MILLISECONDS);
-        assertTrue(runTimeMS + "ms, " + delayMS + "ms", runTimeMS >= delayMS);
+        assertTrue(runTimeMS + "ms, " + delayMS + "ms", runTimeMS >= delayMS - 100); // tolerate lack of millisecond precision
         assertEquals(runTimeMS, blockerFuture.getElapsedRunTime(TimeUnit.MILLISECONDS));
 
         assertEquals(Collections.EMPTY_LIST, executor.shutdownNow());
