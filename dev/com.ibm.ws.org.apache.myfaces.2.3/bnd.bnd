@@ -23,8 +23,7 @@ app-resources= \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider | \
   META-INF/services/org.apache.myfaces.spi.AnnotationProvider | \
   META-INF/services/org.apache.myfaces.spi.InjectionProvider | \
-  META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \
-  META-INF/services/javax.faces.application.ApplicationFactory
+  META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider
 javac.source: 1.8
 javac.target: 1.8
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
@@ -86,7 +85,7 @@ Include-Resource: \
 Export-Package: !org.apache.myfaces.buildtools.*, \
 org.apache.myfaces.*;version="1.0.17", \
 com.ibm.ws.jsf.cdi, \
-com.ibm.ws.jsf.config.*;thread-context=true;mandatory:="thread-context", \
+com.ibm.ws.jsf.config.*, \
 com.ibm.ws.jsf.ee, \
 com.ibm.ws.jsf.spi.*, \
 com.ibm.ws.jsf.extprocessor, \
