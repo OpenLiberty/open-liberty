@@ -123,6 +123,19 @@ public class ModulePropertiesUtils {
         return ham;
     }
 
+    public boolean isImmediateEval(String elExpression) {
+        if (elExpression != null) {
+            return elExpression.startsWith("#{");
+        }
+        return false;
+    }
+
+    public String extractExpression(String elExpression) {
+        if (elExpression != null && (elExpression.startsWith("#{") || elExpression.startsWith("${")) && elExpression.endsWith("}")) {
+            return elExpression.substring(2, elExpression.length() -1);
+        }
+        return elExpression;
+    }
 
     private int countSize(Instance<?> instance) {
         int count = 0;
