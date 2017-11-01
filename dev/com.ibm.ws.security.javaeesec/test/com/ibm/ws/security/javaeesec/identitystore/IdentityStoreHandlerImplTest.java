@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -68,6 +69,8 @@ public class IdentityStoreHandlerImplTest {
     private final String GROUP2B = "group2b";
     private final String GROUP3A = "group3a";
     private final String GROUP3B = "group3b";
+    private final String MODULE_NAME_A = "moduleA";
+    private final String MODULE_NAME_B = "moduleB";
     private IdentityStoreHandlerImpl ish;
     private BeanManager beanManager;
     @SuppressWarnings("rawtypes")
@@ -82,6 +85,7 @@ public class IdentityStoreHandlerImplTest {
 
     private CDIService cdiService;
     private CDIHelperTestWrapper cdiHelperTestWrapper;
+    private String moduleName;
 
 //    private HttpAuthenticationMechanism httpAuthenticationMechanism;
 //    private HttpServletRequest request;
@@ -143,6 +147,9 @@ public class IdentityStoreHandlerImplTest {
             protected CDI getCDI() {
                 return cdi;
             }
+            protected String getModuleName() {
+                return moduleName;
+            }
         };
     }
 
@@ -159,9 +166,9 @@ public class IdentityStoreHandlerImplTest {
      */
     @Test
     public void testValidate1ValidateGroup2Group3Group() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().with1ValidateAndGroup2Group3Group().with1stValidateAndGroup2Group3Group();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
@@ -181,9 +188,9 @@ public class IdentityStoreHandlerImplTest {
      */
     @Test
     public void testValidate1NotValidated2Error3NotValidated() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withAllValidateAndGroup().with1NotValidated2Error3NotValidated();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be INVALID.", CredentialValidationResult.INVALID_RESULT, result);
@@ -195,9 +202,9 @@ public class IdentityStoreHandlerImplTest {
      */
     @Test
     public void testValidateAllNotValidated() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withAllValidateAndGroup().withAllNotValidated();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be INVALID.", CredentialValidationResult.NOT_VALIDATED_RESULT, result);
@@ -209,9 +216,9 @@ public class IdentityStoreHandlerImplTest {
      */
     @Test
     public void testValidateAllError() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withAllValidateAndGroup().withAllError();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be INVALID.", CredentialValidationResult.INVALID_RESULT, result);
@@ -224,9 +231,9 @@ public class IdentityStoreHandlerImplTest {
      */
     @Test
     public void testValidate1Error2Novalidate3ValidateGroup() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withAllValidateAndGroup().with3rdValidateAndGroup1Error2NoValidate();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
@@ -245,9 +252,9 @@ public class IdentityStoreHandlerImplTest {
      */
     @Test
     public void testValidate1Novalidate2Novalidate3ValidateGroup() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withAllValidateAndGroup().with3rdValidateAndGroup();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
@@ -267,9 +274,9 @@ public class IdentityStoreHandlerImplTest {
      */
     @Test
     public void testValidate1ValidateGroup2Validate3Validate() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withAllValidateAndGroup().with1stValidateAndGroup();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
@@ -284,9 +291,9 @@ public class IdentityStoreHandlerImplTest {
 
     @Test
     public void testValidateNoIdentityStoreSupportsValidation() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withNoValidationSupport();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be NOT_VALIDATED_RESULT.", CredentialValidationResult.NOT_VALIDATED_RESULT, result);
@@ -295,9 +302,9 @@ public class IdentityStoreHandlerImplTest {
 
     @Test
     public void testValidateNoIdentityStore() throws Exception {
+        moduleName = MODULE_NAME_A;
         withoutBeanInstance();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
+        ish.clearIdentityStoreMap();
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be NT_VALIDATED_RESULT.", CredentialValidationResult.NOT_VALIDATED_RESULT, result);
@@ -306,10 +313,10 @@ public class IdentityStoreHandlerImplTest {
 
     @Test
     public void testScanIdentityStoresValid() throws Exception {
+        moduleName = MODULE_NAME_A;
         withBeanInstance().withNoValidationSupport();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        iss.clear();
-        ish.scanIdentityStores(iss);
+        ConcurrentHashMap<String, Set<IdentityStore>> ism = new ConcurrentHashMap<String, Set<IdentityStore>>();
+        Set<IdentityStore> iss = ish.getIdentityStores(ism);
         assertEquals("Two identityStores should be placed", 3, iss.size());
         Iterator<IdentityStore> itr = iss.iterator();
         assertEquals("identityStore1 should be placed at the first", is1, itr.next());
@@ -319,9 +326,10 @@ public class IdentityStoreHandlerImplTest {
 
     @Test
     public void testScanIdentityStoresNoIdentityStore() throws Exception {
+        moduleName = MODULE_NAME_A;
         withoutBeanInstance();
-        TreeSet<IdentityStore> iss = ish.getIdentityStores();
-        ish.scanIdentityStores(iss);
+        ConcurrentHashMap<String, Set<IdentityStore>> ism = new ConcurrentHashMap<String, Set<IdentityStore>>();
+        Set<IdentityStore> iss = ish.getIdentityStores(ism);
         assertEquals("no identityStores should be placed", 0, iss.size());
         assertTrue("Expected error message was not logged", outputMgr.checkForStandardErr("CWWKS1910E:"));
     }
