@@ -26,17 +26,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
-import com.ibm.ws.cdi.interfaces.SecurityContextStore;
+import com.ibm.ws.cdi.internal.interfaces.SecurityContextStore;
 import com.ibm.ws.security.authentication.UnauthenticatedSubjectService;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * Class stores web context information for real-time extraction of state data.
  */
-@Component(
-                name = "com.ibm.ws.cdi.FallbackContextStore",
-                immediate = true,
-                property = { "service.vendor=IBM", "service.ranking:Integer=-1" })
+@Component(name = "com.ibm.ws.cdi.security.fallback.FallbackContextStore", immediate = true, property = { "service.vendor=IBM", "service.ranking:Integer=-1" })
 public class FallbackContextStore implements SecurityContextStore {
 
     private static final TraceComponent tc = Tr.register(FallbackContextStore.class);
