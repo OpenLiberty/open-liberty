@@ -33,7 +33,7 @@ public class PolicyExecutorTest {
         PolicyExecutor executor = provider.create("testCoreConcurrencyConfiguration");
 
         try {
-            executor.coreConcurrency(-2);
+            executor.expedite(-2);
             fail("Should reject negative core concurrency.");
         } catch (IllegalArgumentException x) {
             if (!x.getMessage().contains("-2"))
@@ -42,14 +42,14 @@ public class PolicyExecutorTest {
 
         executor.maxConcurrency(10);
         try {
-            executor.coreConcurrency(12);
+            executor.expedite(12);
             fail("Should reject core concurrency set greater than max concurrency.");
         } catch (IllegalArgumentException x) {
             if (!x.getMessage().contains("12"))
                 throw x;
         }
 
-        executor.coreConcurrency(10);
+        executor.expedite(10);
         try {
             executor.maxConcurrency(5);
             fail("Should reject max concurrency set less than core concurrency.");
@@ -59,12 +59,12 @@ public class PolicyExecutorTest {
         }
 
         executor.maxConcurrency(Integer.MAX_VALUE);
-        executor.coreConcurrency(Integer.MAX_VALUE);
+        executor.expedite(Integer.MAX_VALUE);
 
-        executor.coreConcurrency(-1);
+        executor.expedite(-1);
         executor.maxConcurrency(-1);
 
-        executor.coreConcurrency(0);
+        executor.expedite(0);
 
         executor.shutdownNow();
     }

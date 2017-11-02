@@ -49,14 +49,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     private static final TraceComponent tc = Tr.register(PolicyExecutorImpl.class);
 
     /**
-     * Use this lock to make a consistent update to both coreConcurrency and coreConcurrencyAvailable,
+     * Use this lock to make a consistent update to both expedite and expeditesAvailable,
      * maxConcurrency and maxConcurrencyConstraint, and to maxQueueSize and maxQueueSizeConstraint.
      */
     private final Integer configLock = new Integer(0); // new instance required to avoid sharing
 
-    private int coreConcurrency;
+    private int expedite;
 
-    private final AtomicInteger coreConcurrencyAvailable = new AtomicInteger();
+    private final AtomicInteger expeditesAvailable = new AtomicInteger();
 
     ExecutorServiceImpl globalExecutor;
 
@@ -64,9 +64,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     private int maxConcurrency;
 
-    private volatile boolean maxConcurrencyAppliesToCallerThread;
-
     private final ReduceableSemaphore maxConcurrencyConstraint = new ReduceableSemaphore(0, false);
+
+    private volatile MaxPolicy maxPolicy = MaxPolicy.loose;
 
     private int maxQueueSize;
 
@@ -168,18 +168,18 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 }
             }
 
-            // Release permits against core/maxConcurrency
+            // Release permits against expedited/maxConcurrency
             if (expedite)
-                coreConcurrencyAvailable.incrementAndGet();
+                expeditesAvailable.incrementAndGet();
             maxConcurrencyConstraint.release();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(PolicyExecutorImpl.this, tc, "core/maxConcurrency available", coreConcurrencyAvailable, maxConcurrencyConstraint.availablePermits(), canRun);
+                Tr.debug(PolicyExecutorImpl.this, tc, "expedites/maxConcurrency available", expeditesAvailable, maxConcurrencyConstraint.availablePermits(), canRun);
 
             // Avoid reschedule if we are in a state that disallows starting tasks or if no withheld tasks remain
             if (canRun && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
                 decrementWithheldConcurrency();
-                if (acquireCoreConcurrency() > 0)
+                if (acquireExpedite() > 0)
                     expediteGlobal(GlobalPoolTask.this);
                 else
                     enqueueGlobal(GlobalPoolTask.this);
@@ -245,15 +245,15 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     /**
-     * Attempt to acquire a core concurrency permit, which involves decrementing the available core concurrency.
-     * Only allow decrement of a positive value, and otherwise indicate there is no available core concurrency.
+     * Attempt to acquire a permit to expedite, which involves decrementing the available expedites.
+     * Only allow decrement of a positive value, and otherwise indicate there are no available expedites.
      *
-     * @return amount of available core concurrency at the time we acquired it. 0 if none remains and we did not get a permit.
+     * @return number of available expedites at the time we acquired a permit. 0 if none remains and we did not get a permit.
      */
-    private int acquireCoreConcurrency() {
-        int cca;
-        while ((cca = coreConcurrencyAvailable.get()) > 0 && !coreConcurrencyAvailable.compareAndSet(cca, cca - 1));
-        return cca; // returning the value rather than true/false will enable better debug
+    private int acquireExpedite() {
+        int a;
+        while ((a = expeditesAvailable.get()) > 0 && !expeditesAvailable.compareAndSet(a, a - 1));
+        return a; // returning the value rather than true/false will enable better debug
     }
 
     @Override
@@ -320,34 +320,34 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
-    public PolicyExecutor coreConcurrency(int core) {
+    public PolicyExecutor expedite(int num) {
         if (providerCreated == null)
             throw new UnsupportedOperationException();
 
-        if (core == -1)
-            core = Integer.MAX_VALUE;
-        else if (core < 0)
-            throw new IllegalArgumentException(Integer.toString(core));
+        if (num == -1)
+            num = Integer.MAX_VALUE;
+        else if (num < 0)
+            throw new IllegalArgumentException(Integer.toString(num));
 
-        int cca;
+        int a;
         synchronized (configLock) {
-            if (core > maxConcurrency)
-                throw new IllegalArgumentException(Integer.toString(core));
+            if (num > maxConcurrency)
+                throw new IllegalArgumentException(Integer.toString(num));
 
             if (state.get() != State.ACTIVE)
-                throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "coreConcurrency", identifier));
+                throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "expedite", identifier));
 
-            cca = coreConcurrencyAvailable.addAndGet(core - coreConcurrency);
-            coreConcurrency = core;
+            a = expeditesAvailable.addAndGet(num - expedite);
+            expedite = num;
         }
 
-        // Expedite as many of the remaining tasks as the available maxConcurrency permits and increased coreConcurrency
+        // Expedite as many of the remaining tasks as the available maxConcurrency permits and increased expedites
         // will allow. We are choosing not to revoke GlobalPoolTasks that have already been enqueued as non-expedited,
-        // which means we do not guarantee an increased coreConcurrency to fully go into effect immediately.
-        // Any reduction to coreConcurrency is handled gradually, as expedited GlobalPoolTasks complete.
-        if (cca > 0) {
-            while (cca-- > 0 && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire())
-                if (acquireCoreConcurrency() > 0) {
+        // which means we do not guarantee an increase in expedites to fully go into effect immediately.
+        // Any reduction to expedites is handled gradually, as expedited GlobalPoolTasks complete.
+        if (a > 0) {
+            while (a-- > 0 && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire())
+                if (acquireExpedite() > 0) {
                     decrementWithheldConcurrency();
                     expediteGlobal(new GlobalPoolTask());
                 } else {
@@ -441,7 +441,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     Tr.debug(this, tc, "withheld concurrency --> " + w);
                 if (maxConcurrencyConstraint.tryAcquire()) {
                     decrementWithheldConcurrency();
-                    if (acquireCoreConcurrency() > 0)
+                    if (acquireExpedite() > 0)
                         expediteGlobal(new GlobalPoolTask());
                     else
                         enqueueGlobal(new GlobalPoolTask());
@@ -461,7 +461,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                                                                           policyTaskFuture.nsStartBy - policyTaskFuture.nsAcceptBegin));
                 else if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
                          !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
-                                                                        && (!maxConcurrencyAppliesToCallerThread
+                                                                        && (maxPolicy == MaxPolicy.loose
                                                                             || (haveConcurrencyPermit = maxConcurrencyConstraint.tryAcquire())))
                     try {
                         policyTaskFuture.accept(true);
@@ -517,7 +517,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 maxConcurrencyConstraint.release();
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "core/maxConcurrency available", coreConcurrencyAvailable, maxConcurrencyConstraint.availablePermits());
+                    Tr.debug(this, tc, "expedites/maxConcurrency available", expeditesAvailable, maxConcurrencyConstraint.availablePermits());
             }
         }
     }
@@ -530,9 +530,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     /**
      * Expedite a task to the global executor.
      * Prereq: maxConcurrencyConstraint permit must already be acquired and
-     * coreConcurrencyAvailable must already be decremented to reflect the task being expedited to global.
+     * expeditesAvailable must already be decremented to reflect the task being expedited to global.
      * If unsuccessful in expediting to global, this method releases the maxConcurrencyConstraint permit
-     * and increments coreConcurrencyAvailable.
+     * and increments expeditesAvailable.
      *
      * @param globalTask task that can execute tasks that are queued to the policy executor.
      */
@@ -544,11 +544,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             submitted = true;
         } finally {
             if (!submitted) {
-                int cca = coreConcurrencyAvailable.incrementAndGet();
+                int cca = expeditesAvailable.incrementAndGet();
                 maxConcurrencyConstraint.release();
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "core/maxConcurrency available", cca, maxConcurrencyConstraint.availablePermits());
+                    Tr.debug(this, tc, "expedites/maxConcurrency available", cca, maxConcurrencyConstraint.availablePermits());
             }
         }
     }
@@ -568,7 +568,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     // Submit and run tasks and return list of completed (possibly canceled) tasks.
-    // Because this method is not timed, tasks can run on the current thread if maxConcurrencyAppliesToCallerThread is false or a permit is available.
+    // Because this method is not timed, tasks can run on the current thread if maxPolicy=loose or a permit is available.
     @FFDCIgnore(value = { RejectedExecutionException.class })
     @Override
     public <T> List<PolicyTaskFuture<T>> invokeAll(Collection<? extends Callable<T>> tasks, PolicyTaskCallback[] callbacks) throws InterruptedException {
@@ -577,7 +577,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         // Determine if we need a permit to run one or more of the tasks on the current thread, and if so, acquire it,
         int taskCount = tasks.size();
         boolean havePermit = false;
-        boolean useCurrentThread = !maxConcurrencyAppliesToCallerThread || (havePermit = taskCount > 0 && maxConcurrencyConstraint.tryAcquire());
+        boolean useCurrentThread = maxPolicy == MaxPolicy.loose || (havePermit = taskCount > 0 && maxConcurrencyConstraint.tryAcquire());
 
         List<PolicyTaskFutureImpl<T>> futures = new ArrayList<PolicyTaskFutureImpl<T>>(taskCount);
         try {
@@ -745,7 +745,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         // Special case to run a single task on the current thread if we can acquire a permit, if a permit is required
         if (taskCount == 1) {
             boolean havePermit = false;
-            if (!maxConcurrencyAppliesToCallerThread || (havePermit = maxConcurrencyConstraint.tryAcquire())) // use current thread
+            if (maxPolicy == MaxPolicy.loose || (havePermit = maxConcurrencyConstraint.tryAcquire())) // use current thread
                 try {
                     if (state.get() != State.ACTIVE)
                         throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1202.submit.after.shutdown", identifier));
@@ -902,7 +902,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             throw new IllegalArgumentException(Integer.toString(max));
 
         synchronized (configLock) {
-            if (max < coreConcurrency)
+            if (max < expedite)
                 throw new IllegalArgumentException(Integer.toString(max));
 
             if (state.get() != State.ACTIVE)
@@ -925,14 +925,17 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
-    public PolicyExecutor maxConcurrencyAppliesToCallerThread(boolean applyToCallerThread) {
+    public PolicyExecutor maxPolicy(MaxPolicy policy) {
         if (providerCreated == null)
             throw new UnsupportedOperationException();
 
-        if (state.get() != State.ACTIVE)
-            throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxConcurrencyAppliesToCallerThread", identifier));
+        if (policy == null)
+            throw new NullPointerException();
 
-        maxConcurrencyAppliesToCallerThread = applyToCallerThread;
+        if (state.get() != State.ACTIVE)
+            throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxPolicy", identifier));
+
+        maxPolicy = policy;
 
         return this;
     }
@@ -1160,13 +1163,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         maxConcurrencyConstraint.release();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "core/maxConcurrency available",
-                     coreConcurrencyAvailable, maxConcurrencyConstraint.availablePermits());
+            Tr.debug(this, tc, "expedites/maxConcurrency available",
+                     expeditesAvailable, maxConcurrencyConstraint.availablePermits());
 
         // The permit might be needed to run tasks on the global executor,
         if (!queue.isEmpty() && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
             decrementWithheldConcurrency();
-            if (acquireCoreConcurrency() > 0)
+            if (acquireExpedite() > 0)
                 expediteGlobal(new GlobalPoolTask());
             else
                 enqueueGlobal(new GlobalPoolTask());
@@ -1177,15 +1180,15 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         final String INDENT = "  ";
         final String DOUBLEINDENT = INDENT + INDENT;
         out.println(identifier);
-        out.println(INDENT + "coreConcurrency = " + coreConcurrency);
-        out.println(INDENT + "maxConcurrency = " + maxConcurrency + (maxConcurrencyAppliesToCallerThread ? " + caller threads" : ""));
+        out.println(INDENT + "expedite = " + expedite);
+        out.println(INDENT + "maxConcurrency = " + maxConcurrency + " (" + maxPolicy + ')');
         out.println(INDENT + "maxQueueSize = " + maxQueueSize);
         out.println(INDENT + "maxWaitForEnqueue = " + TimeUnit.NANOSECONDS.toMillis(maxWaitForEnqueueNS.get()) + " ms");
         out.println(INDENT + "runIfQueueFull = " + runIfQueueFull);
         int numRunningThreads, numRunningPrioritizedThreads;
         synchronized (configLock) {
             numRunningThreads = maxConcurrency - maxConcurrencyConstraint.availablePermits();
-            numRunningPrioritizedThreads = coreConcurrency - coreConcurrencyAvailable.get();
+            numRunningPrioritizedThreads = expedite - expeditesAvailable.get();
         }
         out.println(INDENT + "Total Enqueued to Global Executor = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
         out.println(INDENT + "withheldConcurrency = " + withheldConcurrency.get());
