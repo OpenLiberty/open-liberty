@@ -20,6 +20,7 @@ import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -135,6 +136,23 @@ public class ShrinkHelper {
             app = app.addPackages(p.endsWith(".*"), p);
         if (new File("test-applications/" + appName + "/resources/").exists())
             app = (WebArchive) addDirectory(app, "test-applications/" + appName + "/resources/");
+        return app;
+    }
+
+    /**
+     * Builds a JavaArchive (JAR) with the default format, which assumes all resources are at:
+     * 'test-applications/$appName/resources/`
+     *
+     * @param name The name of the jar. The '.jar' file extension is assumed
+     * @param packages A list of java packages to add to the application.
+     * @return a JavaArchive representing the JAR created
+     */
+    public static JavaArchive buildJavaArchive(String name, String... packages) throws Exception {
+        JavaArchive app = ShrinkWrap.create(JavaArchive.class, name + ".jar");
+        for (String p : packages)
+            app = app.addPackages(p.endsWith(".*"), p);
+        if (new File("test-applications/" + name + "/resources/").exists())
+            app = (JavaArchive) addDirectory(app, "test-applications/" + name + "/resources/");
         return app;
     }
 

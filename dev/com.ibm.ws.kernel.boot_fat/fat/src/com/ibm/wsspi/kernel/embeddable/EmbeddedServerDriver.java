@@ -193,7 +193,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
                 Log.error(c, CURRENT_METHOD_NAME, t);
             }
             try {
-                //[AUDIT   ] CWWKF0012I: The server installed the following features: [jsp-2.2, productA:prodtest-1.0, timedexit-1.0, servlet-3.0].
+                //[AUDIT   ] CWWKF0012I: The server installed the following features: [jsp-2.2, productA:prodtest-1.0, timedexit-1.0, servlet-3.1].
                 Assert.assertTrue("No indication that the product extension feature productA:prodtest-1.0 was installed",
                                   isProductExtensionInstalled(serverConsoleOutput, "productA:prodtest-1.0"));
             } catch (Throwable t) {
@@ -279,7 +279,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
                 failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
                 Log.error(c, CURRENT_METHOD_NAME, t);
             }
-            // [AUDIT   ] CWWKF0012I: The server installed the following features: [jsp-2.2, productA:prodtest-1.0, productB:prodtestb-1.0, timedexit-1.0, servlet-3.0].
+            // [AUDIT   ] CWWKF0012I: The server installed the following features: [jsp-2.2, productA:prodtest-1.0, productB:prodtestb-1.0, timedexit-1.0, servlet-3.1].
             try {
                 Assert.assertTrue("No indication that the product extension feature productA:prodtest-1.0 was installed",
                                   isProductExtensionInstalled(serverConsoleOutput, "productA:prodtest-1.0"));
