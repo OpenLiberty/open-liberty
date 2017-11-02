@@ -39,6 +39,7 @@ public class LiteralParser_Test {
     @Test public void testChar_tooLongUnclosed()                                { expectNotToParse("'x\\"); }
 
     // double tests
+    @Test public void testDouble_0D()                                           { expectToParse(0D, "0D"); }
     @Test public void testDouble_leadingDot()                                   { expectToParse(.1, ".1"); }
     @Test public void testDouble_decimal()                                      { expectToParse(0.1, "0.1"); }
     @Test public void testDouble_trailingDot()                                  { expectToParse(0., "0."); }
@@ -59,6 +60,7 @@ public class LiteralParser_Test {
     @Test public void testDouble_minNormalDouble()                              { expectToParse(Double.MIN_NORMAL, "" + Double.MIN_NORMAL); }
 
     // float tests
+    @Test public void testFloat_0F()                                            { expectToParse(0F, "0F"); }
     @Test public void testFloat_leadingDot()                                    { expectToParse(.1f, ".1f"); }
     @Test public void testFloat_decimal()                                       { expectToParse(0.1f, "0.1f"); }
     @Test public void testFloat_trailingDot()                                   { expectToParse(0.f, "0.f"); }
@@ -101,6 +103,7 @@ public class LiteralParser_Test {
     @Test public void testIntBinary_underscores()                               { expectToParse(5, "0b01__0____1"); }
 
     // long tests: denary
+    @Test public void testLong_0L()                                             { expectToParse(0L, "0L"); }
     @Test public void testLong_1l()                                             { expectToParse(1L, "1l"); }
     @Test public void testLong_12345L()                                         { expectToParse(12345L, "12345L"); }
     @Test public void testLong_maxInt()                                         { expectToParse(Long.MAX_VALUE, Long.MAX_VALUE + "l"); }
