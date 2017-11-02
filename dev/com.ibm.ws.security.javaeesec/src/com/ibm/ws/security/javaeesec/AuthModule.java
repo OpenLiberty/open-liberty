@@ -90,8 +90,6 @@ public class AuthModule implements ServerAuthModule {
                                                                                  httpMessageContext);
             status = translateValidateRequestStatus(authenticationStatus);
             registerSession(httpMessageContext);
-        } catch (AuthException ae) {
-            throw ae;
         } catch (Exception e) {
             // TODO: Issue serviceability message.
             e.printStackTrace();
@@ -128,6 +126,10 @@ public class AuthModule implements ServerAuthModule {
         HttpAuthenticationMechanism authMech = mpu.getHttpAuthenticationMechanism(getCDI());
         HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
         authMech.cleanSubject((HttpServletRequest) messageInfo.getRequestMessage(), (HttpServletResponse) messageInfo.getResponseMessage(), httpMessageContext);
+    }
+
+    protected CDI getCDI() {
+        return CDI.current();
     }
 
     protected HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
@@ -181,9 +183,5 @@ public class AuthModule implements ServerAuthModule {
             status = AuthStatus.SUCCESS;
         }
         return status;
-    }
-
-    protected CDI getCDI() {
-        return CDI.current();
     }
 }
