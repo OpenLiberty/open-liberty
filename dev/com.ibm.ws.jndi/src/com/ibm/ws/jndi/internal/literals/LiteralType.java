@@ -151,7 +151,7 @@ enum LiteralType {
             }
         }
     },
-    LONG_DENARY("[+-]?[1-9](?:_*[0-9]){0,18}[Ll]") {
+    LONG_DENARY("[+-]?(0|[1-9](?:_*[0-9]){0,18})[Ll]") {
         @Override
         Object parse(String s) {
             s = s.replaceAll("_*", "").replaceAll("[Ll]$", "");
