@@ -14,10 +14,16 @@ Bundle-Name: com.ibm.ws.cdi.1.2.jsf
 Bundle-SymbolicName: com.ibm.ws.cdi.1.2.jsf
 Bundle-Description: CDI 1.2 JSF, version ${bVersion}
 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
 -dsannotations: com.ibm.ws.cdi.jsf.CDIJSFInitializerImpl
 
 Private-Package: com.ibm.ws.cdi.jsf;version=1.0;thread-context=true
- 
+
+Import-Package: \
+  com.ibm.ws.cdi.internal.interfaces, \
+  *
+
 WS-TraceGroup: JCDI
 
 -buildpath: \
@@ -26,7 +32,8 @@ WS-TraceGroup: JCDI
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.ws.session;version=latest,\
-	com.ibm.ws.cdi.shared.weld;version=latest,\
+	com.ibm.ws.cdi.weld;version=latest,\
+	com.ibm.ws.cdi.internal;version=latest, \
 	com.ibm.websphere.appserver.thirdparty.cdi;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
