@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.testing.opentracing.service;
 
+import com.ibm.ws.opentracing.cdi.Traced;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -60,6 +61,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
             value2Name + " [ " + value2 + " ]");
     }
 
+    @Traced
     private static void traceEnterReturn(String methodName, String valueName, Object value) {
         System.out.println(CLASS_NAME + "." + methodName + " ENTER / RETURN " + valueName + " [ " + value + " ]");
     }
@@ -193,6 +195,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
      *
      * @return The response text as plain text.
      */
+    @Traced
     @GET
     @Path(GET_IMMEDIATE_PATH)
     @Produces(MediaType.TEXT_PLAIN)
