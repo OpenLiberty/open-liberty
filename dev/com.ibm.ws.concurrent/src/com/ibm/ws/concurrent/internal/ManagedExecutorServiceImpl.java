@@ -59,6 +59,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.ws.threading.PolicyExecutor.MaxPolicy;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
@@ -245,7 +246,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
                 policyExecutor.maxConcurrency(Integer.parseInt(maxConcurrency));
             String maxConcurrencyAppliesToCallerThread = (String) properties.get("maxConcurrencyAppliesToCallerThread");
             if (maxConcurrencyAppliesToCallerThread != null)
-                policyExecutor.maxConcurrencyAppliesToCallerThread(Boolean.parseBoolean(maxConcurrencyAppliesToCallerThread));
+                policyExecutor.maxPolicy(Boolean.parseBoolean(maxConcurrencyAppliesToCallerThread) ? MaxPolicy.strict : MaxPolicy.loose);
             String maxQueueSize = (String) properties.get("maxQueueSize");
             if (maxQueueSize != null)
                 policyExecutor.maxQueueSize(Integer.parseInt(maxQueueSize));
