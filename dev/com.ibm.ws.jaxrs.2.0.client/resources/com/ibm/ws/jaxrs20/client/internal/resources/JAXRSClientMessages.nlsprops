@@ -49,9 +49,9 @@ failed_run_as_subject=CWWKW0706E: An exception occurred while attempting to get 
 failed_run_as_subject.explanation=An exception occurred while getting the RunAsSubject.
 failed_run_as_subject.useraction=Make sure the server is configured and started properly.
 
-warn_missing_mpjwt_token=CWWKW0707W: The [{0}] attribute in the [{1}] configuration is set to [{2}], but the MicroProfile JSON Web Token(JWT) is not available. The request does not contain an Authorization header with the token.
-warn_missing_mpjwt_token.explanation=The runtime failed to find the MicroProfile JWT token in the runAs subject. This error usually indicates a problem with the authentication. Make sure that there are no errors encountered while authenticating a user.
-warn_missing_mpjwt_token.useraction=Check the user action for any prior errors that the server has logged.
+warn_missing_mpjwt_token=CWWKW0707W: The [{0}] attribute in the [{1}] configuration is set to [{2}], but the MicroProfile JSON Web Token (JWT) is not available. The request does not contain an Authorization header with the token.
+warn_missing_mpjwt_token.explanation=The runtime failed to find the MicroProfile JWT in the runAs subject. This error usually indicates a problem with the authentication. Make sure that no errors are encountered while the MicroProfile JWT feature authenticates a user.
+warn_missing_mpjwt_token.useraction=Check the user action for any prior errors that the server logged.
 
 warn_mpjwt_prop_service_notavail=CWWKW0708W: The MicroProfile JWT Propagation service is not available. The runtime cannot access the token to include it in the Authorization header.
 warn_mpjwt_prop_service_notavail.explanation=The MicroProfile JWT Propagation service requires mpJwt-1.0 feature. 
