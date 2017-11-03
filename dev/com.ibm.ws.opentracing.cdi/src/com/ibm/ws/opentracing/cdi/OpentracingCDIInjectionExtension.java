@@ -26,5 +26,9 @@ public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, 
     void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
         AnnotatedType<OpentracingProducerBean> at = bm.createAnnotatedType(OpentracingProducerBean.class);
         bbd.addAnnotatedType(at);
+        AnnotatedType<Traced> bindingType = bm.createAnnotatedType(Traced.class);
+        bbd.addInterceptorBinding(bindingType);
+        AnnotatedType<TracedInterceptor> interceptorType = bm.createAnnotatedType(TracedInterceptor.class);
+        bbd.addAnnotatedType(interceptorType);
     }
 }
