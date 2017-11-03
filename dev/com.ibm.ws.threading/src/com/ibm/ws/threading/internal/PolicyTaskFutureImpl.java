@@ -304,13 +304,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             try {
                 callback.onSubmit(task, this, 0);
             } catch (Error x) {
-                abort(x);
+                abort(false, x);
                 throw x;
             } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
-                abort(x);
+                abort(false, x);
                 throw x;
             } catch (RuntimeException x) {
-                abort(x);
+                abort(false, x);
                 throw x;
             }
     }
@@ -332,13 +332,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             try {
                 callback.onSubmit(task, this, latch.getCount());
             } catch (Error x) {
-                abort(x);
+                abort(false, x);
                 throw x;
             } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
-                abort(x);
+                abort(false, x);
                 throw x;
             } catch (RuntimeException x) {
-                abort(x);
+                abort(false, x);
                 throw x;
             }
     }
@@ -360,13 +360,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             try {
                 callback.onSubmit(task, this, 0);
             } catch (Error x) {
-                abort(x);
+                abort(false, x);
                 throw x;
             } catch (RejectedExecutionException x) { // same as RuntimeException, but ignore FFDC
-                abort(x);
+                abort(false, x);
                 throw x;
             } catch (RuntimeException x) {
-                abort(x);
+                abort(false, x);
                 throw x;
             }
     }
@@ -374,10 +374,13 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     /**
      * Invoked to abort a task.
      *
+     * @param removeFromQueue indicates whether we should first remove the task from the executor's queue.
      * @param cause the cause of the abort.
      * @return true if the future transitioned to ABORTED state.
      */
-    final boolean abort(Throwable cause) {
+    final boolean abort(boolean removeFromQueue, Throwable cause) {
+        if (removeFromQueue && executor.queue.remove(this))
+            executor.maxQueueSizeConstraint.release();
         if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
             nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
         boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
@@ -427,9 +430,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
-                                                                     System.nanoTime() - nsAcceptBegin,
-                                                                     nsStartBy - nsAcceptBegin)));
+                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
+                                                                           System.nanoTime() - nsAcceptBegin,
+                                                                           nsStartBy - nsAcceptBegin)));
                     s = state.get();
                 }
                 if (s == RUNNING) { // continue waiting
@@ -465,9 +468,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
-                                                                     System.nanoTime() - nsAcceptBegin,
-                                                                     nsStartBy - nsAcceptBegin)));
+                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
+                                                                           System.nanoTime() - nsAcceptBegin,
+                                                                           nsStartBy - nsAcceptBegin)));
                     s = state.get();
                 }
                 if (s == RUNNING) { // wait for the remainder of the timeout supplied to get
@@ -485,6 +488,15 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     @Override
     public boolean cancel(boolean interruptIfRunning) {
+        if (nsStartBy != nsAcceptBegin - 1 // has a start timeout
+            && state.get() < RUNNING // not started yet
+            && System.nanoTime() - nsStartBy > 0) // start timeout has elapsed
+            abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
+                                                                   executor.identifier,
+                                                                   getTaskName(),
+                                                                   System.nanoTime() - nsAcceptBegin,
+                                                                   nsStartBy - nsAcceptBegin)));
+
         if (result.compareAndSet(state, CANCELED))
             try {
                 if (executor.queue.remove(this)) {
@@ -616,7 +628,17 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
 
     @Override
     public boolean isDone() {
-        return state.get() > RUNNING;
+        int s = state.get();
+        return s > RUNNING // already done
+               || nsStartBy != nsAcceptBegin - 1 // has a start timeout
+                  && s < RUNNING // not started yet
+                  && System.nanoTime() - nsStartBy > 0 // start timeout has elapsed
+                  && (abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
+                                                                             executor.identifier,
+                                                                             getTaskName(),
+                                                                             System.nanoTime() - nsAcceptBegin,
+                                                                             nsStartBy - nsAcceptBegin)))
+                      || state.get() > RUNNING);
     }
 
     /**

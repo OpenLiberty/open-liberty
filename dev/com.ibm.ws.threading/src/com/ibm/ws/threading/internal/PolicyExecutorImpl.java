@@ -163,8 +163,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     break;
                 } else { // timed out
                     next.nsRunEnd = next.nsQueueEnd = nsQueueEnd;
-                    next.abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", identifier, next.getTaskName(),
-                                                                          nsQueueEnd - next.nsAcceptBegin, next.nsStartBy - next.nsAcceptBegin)));
+                    next.abort(false, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", identifier, next.getTaskName(),
+                                                                                 nsQueueEnd - next.nsAcceptBegin, next.nsStartBy - next.nsAcceptBegin)));
                 }
             }
 
@@ -407,8 +407,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                             if (now - startBy >= 0) { // found a task in the queue that has timed out
                                 if (queue.remove(future)) { // can't use iterator.remove - it doesn't tell us whether it actually removed anything
                                     future.nsRunEnd = future.nsQueueEnd = System.nanoTime();
-                                    future.abort(new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", identifier, future.getTaskName(),
-                                                                                            future.nsQueueEnd - future.nsAcceptBegin, future.nsStartBy - future.nsAcceptBegin)));
+                                    future.abort(false, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", identifier, future.getTaskName(),
+                                                                                                   future.nsQueueEnd - future.nsAcceptBegin,
+                                                                                                   future.nsStartBy - future.nsAcceptBegin)));
                                     // Release and re-acquire is needed to preserve correctness of shutdown logic
                                     maxQueueSizeConstraint.release();
                                     haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
@@ -477,22 +478,22 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         } catch (InterruptedException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            policyTaskFuture.abort(x);
+            policyTaskFuture.abort(false, x);
             throw new RejectedExecutionException(x);
         } catch (RejectedExecutionException x) { // redundant with RuntimeException code path, but added to allow FFDCIgnore
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            policyTaskFuture.abort(x);
+            policyTaskFuture.abort(false, x);
             throw x;
         } catch (RuntimeException x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            policyTaskFuture.abort(x);
+            policyTaskFuture.abort(true, x);
             throw x;
         } catch (Error x) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "enqueue", x);
-            policyTaskFuture.abort(x);
+            policyTaskFuture.abort(true, x);
             throw x;
         }
         return enqueued;
@@ -630,7 +631,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                         RejectedExecutionException x = new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", identifier, taskFuture.getTaskName(),
                                                                                                        taskFuture.nsQueueEnd - taskFuture.nsAcceptBegin,
                                                                                                        taskFuture.nsStartBy - taskFuture.nsAcceptBegin));
-                        taskFuture.abort(x);
+                        taskFuture.abort(false, x);
                         throw x;
                     }
 

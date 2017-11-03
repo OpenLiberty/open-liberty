@@ -595,6 +595,43 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         cancelAfterTest.remove(blockerTaskFuture);
     }
 
+    // Submit a task that exceeds its start timeout.  Verify that status methods on Future such as isDone are consistent with
+    // an aborted task once the start timeout elapses.
+    @Test
+    public void testStartTimeoutFutureStatusMethods() throws Exception {
+        // Use up maxConcurrency of 1
+        CountDownLatch blockerLatch = new CountDownLatch(1);
+        CountDownLatch blockerStartedLatch = new CountDownLatch(1);
+        CountingTask blockerTask = new CountingTask(null, null, blockerStartedLatch, blockerLatch);
+        Future<Integer> blockerTaskFuture = defaultExecutor.submit(blockerTask);
+        cancelAfterTest.add(blockerTaskFuture);
+        assertTrue(blockerStartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Submit a task that will timeout per its startTimeout. Verify that isDone returns true.
+        TaskListener listener1 = new TaskListener();
+        CountingTask task1 = new CountingTask(null, listener1, null, null);
+        task1.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(151)));
+        Future<Integer> future1 = defaultExecutor.submit(task1);
+        TimeUnit.MILLISECONDS.sleep(200); // let it time out
+        assertTrue(future1.isDone());
+        String s = future1.toString();
+        assertTrue(s, s.contains("ABORTED"));
+
+        // Submit another task that will timeout per its startTimeout. Verify it cannot be canceled because it has aborted.
+        TaskListener listener2 = new TaskListener();
+        CountingTask task2 = new CountingTask(null, listener2, null, null);
+        task2.getExecutionProperties().put(START_TIMEOUT_NANOS, Long.toString(TimeUnit.MILLISECONDS.toNanos(152)));
+        Future<Integer> future2 = defaultExecutor.submit(task2);
+        TimeUnit.MILLISECONDS.sleep(200); // let it time out
+        assertFalse(future2.cancel(true));
+        s = future2.toString();
+        assertTrue(s, s.contains("ABORTED"));
+
+        blockerLatch.countDown();
+        assertEquals(Integer.valueOf(1), blockerTaskFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        cancelAfterTest.remove(blockerTaskFuture);
+    }
+
     // Submit a group of tasks to timed invokeAll, where all tasks exceed the startTimeout.
     // Verify that invokeAll returns once the tasks time out, rather than after the larger timeout that was supplied to invokeAll.
     @Test
