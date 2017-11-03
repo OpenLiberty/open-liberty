@@ -56,7 +56,10 @@ public class IdentityStoreHandlerImplTest {
     };
 
     private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
+    private final String IS_ID = "identityStoreID";
     private final String USER1 = "user1";
+    private final String USER1_DN = "user1dn";
+    private final String USER1_UID = "user1uid";
     private final String USER2 = "user2";
     private final String USER3 = "user3";
     private final String GROUP1A = "group1a";
@@ -118,7 +121,7 @@ public class IdentityStoreHandlerImplTest {
         is3 = mockery.mock(IdentityStore.class, "IS3");
         group1.add(GROUP1A);
         group1.add(GROUP1B);
-        result1 = new CredentialValidationResult(new CallerPrincipal("user1"), group1);
+        result1 = new CredentialValidationResult(IS_ID, new CallerPrincipal(USER1), USER1_DN, USER1_UID,  group1);
         group2.add(GROUP2A);
         group2.add(GROUP2B);
         group3.add(GROUP3A);
@@ -162,7 +165,10 @@ public class IdentityStoreHandlerImplTest {
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
-        assertEquals("CallerPrincipal name should be user1", USER1, result.getCallerPrincipal().getName());
+        assertEquals("CallerPrincipal name should be " + USER1, USER1, result.getCallerPrincipal().getName());
+        assertEquals("IdentityStore name should be " + IS_ID, IS_ID, result.getIdentityStoreId());
+        assertEquals("CallerUniqueId name should be " + USER1_UID, USER1_UID, result.getCallerUniqueId());
+        assertEquals("CallerDn name should be " + USER1_DN, USER1_DN, result.getCallerDn());
         Set<String> groups = result.getCallerGroups();
         assertTrue("Size of the group should be 6", groups.size() == 6);
         assertTrue("The contents of the groups are not valid.", groups.contains(GROUP1A) && groups.contains(GROUP1B) && groups.contains(GROUP2A) && groups.contains(GROUP2B)
@@ -224,7 +230,10 @@ public class IdentityStoreHandlerImplTest {
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
-        assertEquals("CallerPrincipal name should be user1", USER1, result.getCallerPrincipal().getName());
+        assertEquals("CallerPrincipal name should be " + USER1, USER1, result.getCallerPrincipal().getName());
+        assertEquals("IdentityStore name should be " + IS_ID, IS_ID, result.getIdentityStoreId());
+        assertEquals("CallerUniqueId name should be " + USER1_UID, USER1_UID, result.getCallerUniqueId());
+        assertEquals("CallerDn name should be " + USER1_DN, USER1_DN, result.getCallerDn());
         Set<String> groups = result.getCallerGroups();
         assertTrue("Size of the group should be two", groups.size() == 2);
         assertTrue("group1a and group1b should be in the groups", groups.contains(GROUP1A) && groups.contains(GROUP1B));
@@ -242,7 +251,10 @@ public class IdentityStoreHandlerImplTest {
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
-        assertEquals("CallerPrincipal name should be user1", USER1, result.getCallerPrincipal().getName());
+        assertEquals("CallerPrincipal name should be " + USER1, USER1, result.getCallerPrincipal().getName());
+        assertEquals("IdentityStore name should be " + IS_ID, IS_ID, result.getIdentityStoreId());
+        assertEquals("CallerUniqueId name should be " + USER1_UID, USER1_UID, result.getCallerUniqueId());
+        assertEquals("CallerDn name should be " + USER1_DN, USER1_DN, result.getCallerDn());
         Set<String> groups = result.getCallerGroups();
         assertTrue("Size of the group should be two", groups.size() == 2);
         assertTrue("group1a and group1b should be in the groups", groups.contains(GROUP1A) && groups.contains(GROUP1B));
@@ -261,7 +273,10 @@ public class IdentityStoreHandlerImplTest {
         UsernamePasswordCredential cred = new UsernamePasswordCredential("user1", "security");
         CredentialValidationResult result = ish.validate(cred);
         assertEquals("The result shuld be VALID.", CredentialValidationResult.Status.VALID, result.getStatus());
-        assertEquals("CallerPrincipal name should be user1", USER1, result.getCallerPrincipal().getName());
+        assertEquals("CallerPrincipal name should be " + USER1, USER1, result.getCallerPrincipal().getName());
+        assertEquals("IdentityStore name should be " + IS_ID, IS_ID, result.getIdentityStoreId());
+        assertEquals("CallerUniqueId name should be " + USER1_UID, USER1_UID, result.getCallerUniqueId());
+        assertEquals("CallerDn name should be " + USER1_DN, USER1_DN, result.getCallerDn());
         Set<String> groups = result.getCallerGroups();
         assertTrue("Size of the group should be two", groups.size() == 2);
         assertTrue("group1a and group1b should be in the groups", groups.contains(GROUP1A) && groups.contains(GROUP1B));
