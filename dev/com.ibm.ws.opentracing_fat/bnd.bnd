@@ -29,6 +29,7 @@ tested.features: opentracing-1.0
 	com.ibm.websphere.javaee.jaxrs.2.1;version=latest, \
 	com.ibm.websphere.javaee.cdi.1.2;version=latest, \
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest, \
+	io.opentracing:opentracing-api;version=0.30.0, \
 	io.opentracing:opentracing-mock;version=0.30.0, \
     io.opentracing:opentracing-util;version=0.30.0, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
