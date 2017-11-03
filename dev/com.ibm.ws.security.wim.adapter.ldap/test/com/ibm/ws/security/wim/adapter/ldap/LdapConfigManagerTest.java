@@ -64,8 +64,11 @@ public class LdapConfigManagerTest {
     @Test
     public void testGetAttributeName() {
         LdapEntity ldapEnt = new LdapEntity("PersonAccount");
-        String attribute = ldapConfigManager.getAttributeName(ldapEnt, "userAccountControl:1.2.840.113556.1.4.803");
-        assertEquals("userAccountControl:1.2.840.113556.1.4.803", attribute);
+        String testAttribute = "userAccountControl:1.2.840.113556.1.4.803:=2";
+        assertEquals(testAttribute, ldapConfigManager.getAttributeName(ldapEnt, testAttribute));
+
+        testAttribute = "memberof:1.2.840.113556.1.4.1941:=CN=vmmgroup4,CN=Users,DC=secfvt2,DC=austin,DC=ibm,DC=com";
+        assertEquals(testAttribute, ldapConfigManager.getAttributeName(ldapEnt, testAttribute));
     }
 
     @Test

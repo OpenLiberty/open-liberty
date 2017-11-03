@@ -78,7 +78,7 @@ public class FATTestIDSwithSSLTrustOnly {
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
         try {
-            server.stopServer();
+            server.stopServer("CWIML4529E", "CWIMK0004E", "CWPKI0041W");
         } finally {
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
         }
