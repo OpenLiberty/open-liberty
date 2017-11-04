@@ -91,7 +91,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
      * Parse the data by colon.
      * Make sure that there are three colons, and algorithm is one of supported ones
      * and the 2nd param can be converted to the integer.
-     * 
+     *
      * @param hashedPassword
      * @return
      */
@@ -172,7 +172,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
     public byte[] generate(String algorithm, int iterations, int keySize, byte[] salt, @Sensitive char[] password) throws RuntimeException {
         SecretKey secretKey;
         try {
-            PBEKeySpec keySpec = new PBEKeySpec(password, salt, iterations, keySize * 16);
+            PBEKeySpec keySpec = new PBEKeySpec(password, salt, iterations, keySize * 8);
             SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
             secretKey = skf.generateSecret(keySpec);
         } catch (NoSuchAlgorithmException e) {
@@ -183,4 +183,23 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
         return secretKey.getEncoded();
     }
 
+    protected String getAlgorithmString(int index) {
+        return SUPPORTED_ALGORITHMS.get(index);
+    }
+
+    protected int getAlgorithm() {
+        return generateAlgorithm;
+    }
+
+    protected int getIterations() {
+        return generateIterations;
+    }
+
+    protected int getSaltSize() {
+        return generateSaltSize;
+    }
+
+    protected int getKeySize() {
+        return generateKeySize;
+    }
 }
