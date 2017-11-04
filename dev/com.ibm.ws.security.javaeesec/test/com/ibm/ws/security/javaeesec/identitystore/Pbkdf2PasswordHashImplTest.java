@@ -38,6 +38,8 @@ public class Pbkdf2PasswordHashImplTest {
     private static final int MINIMUM_SALTSIZE = 16;
     private static final int MINIMUM_KEYSIZE = 16;
 
+    private static final int INDEX_SHA512 = 3; // offset in SUPPORTED_ALGORITHMS
+
     private static final String SHA224 = "PBKDF2WithHmacSHA224";
     private static final String SHA256 = "PBKDF2WithHmacSHA256";
     private static final String SHA384 = "PBKDF2WithHmacSHA384";
@@ -52,6 +54,22 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         pphi.initialize(params);
         assertTrue("Hash parameters is not set as the default.", verifyFields(pphi, DEFAULT_ALGORITHM, DEFAULT_ITERATIONS, DEFAULT_SALTSIZE, DEFAULT_KEYSIZE));
+    }
+
+    @Test
+    public void testInitializeSetValues() throws Exception {
+
+        Map<String, String> params = new HashMap<String, String>();
+        params.put(PARAM_ALGORITHM, SHA512);
+        int ITERATIONS = 9999;
+        int SALTSIZE = 128;
+        int KEYSIZE = 512;
+        params.put(PARAM_ITERATIONS, String.valueOf(ITERATIONS));
+        params.put(PARAM_SALTSIZE, String.valueOf(SALTSIZE));
+        params.put(PARAM_KEYSIZE, String.valueOf(KEYSIZE));
+        Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
+        pphi.initialize(params);
+        assertTrue("Hash parameters is not set as the default.", verifyFields(pphi, INDEX_SHA512, ITERATIONS, SALTSIZE, KEYSIZE));
     }
 
     @Test

@@ -69,8 +69,8 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
      */
     @Override
     public String generate(@Sensitive char[] password) {
-        byte[] salt = generateSalt(generateSaltSize);
         try {
+            byte[] salt = generateSalt(generateSaltSize);
             byte[] outputBytes = generate(SUPPORTED_ALGORITHMS.get(generateAlgorithm), generateIterations, generateKeySize, salt, password);
             return format(SUPPORTED_ALGORITHMS.get(generateAlgorithm), generateIterations, salt, outputBytes);
         } catch (Exception e) {
@@ -138,18 +138,20 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
      * If the value is invalid, set as default.
      */
     protected void parseParams(Map<String, String> params) {
-        generateAlgorithm = indexOf(SUPPORTED_ALGORITHMS, params.get(PARAM_ALGORITHM), DEFAULT_ALGORITHM);
+        generateAlgorithm = indexOf(PARAM_ALGORITHM, SUPPORTED_ALGORITHMS, params.get(PARAM_ALGORITHM), DEFAULT_ALGORITHM);
         generateIterations = parseInt(PARAM_ITERATIONS, params.get(PARAM_ITERATIONS), DEFAULT_ITERATIONS, MINIMUM_ITERATIONS);
         generateSaltSize = parseInt(PARAM_SALTSIZE, params.get(PARAM_SALTSIZE), DEFAULT_SALTSIZE, MINIMUM_SALTSIZE);
         generateKeySize = parseInt(PARAM_KEYSIZE, params.get(PARAM_KEYSIZE), DEFAULT_KEYSIZE, MINIMUM_KEYSIZE);
     }
 
-    private int indexOf(List<String> list, String value, int defaultIndex) {
+    private int indexOf(String name, List<String> list, String value, int defaultIndex) {
         int output = defaultIndex;
         if (value != null) {
             int index = SUPPORTED_ALGORITHMS.indexOf(value);
             if (index >= 0) {
                 output = index;
+            } else {
+                Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name, SUPPORTED_ALGORITHMS.get(defaultIndex));
             }
         }
         return output;
