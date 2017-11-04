@@ -68,23 +68,35 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
      * (non-Javadoc)
      */
     @Override
-    public String generate(@Sensitive char[] password) throws RuntimeException {
+    public String generate(@Sensitive char[] password) {
         byte[] salt = generateSalt(generateSaltSize);
-        byte[] outputBytes = generate(SUPPORTED_ALGORITHMS.get(generateAlgorithm), generateIterations, generateKeySize, salt, password);
-        return format(SUPPORTED_ALGORITHMS.get(generateAlgorithm), generateIterations, salt, outputBytes);
+        try {
+            byte[] outputBytes = generate(SUPPORTED_ALGORITHMS.get(generateAlgorithm), generateIterations, generateKeySize, salt, password);
+            return format(SUPPORTED_ALGORITHMS.get(generateAlgorithm), generateIterations, salt, outputBytes);
+        } catch (Exception e) {
+            Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_EXCEPTION", e);
+        }
+        return null;
     }
 
     /*
      * (non-Javadoc)
      */
     @Override
-    public boolean verify(char[] password, String hashedPassword) throws RuntimeException {
-        String[] items = parseData(hashedPassword);
-        byte[] originalHash = Base64Coder.base64DecodeString(items[3]);
-        byte[] salt = Base64Coder.base64DecodeString(items[2]);
-        byte[] calculatedHash = generate(items[0], Integer.parseInt(items[1]), originalHash.length, salt, password);
-
-        return Arrays.equals(originalHash, calculatedHash);
+    public boolean verify(char[] password, String hashedPassword) {
+        try {
+            String[] items = parseData(hashedPassword);
+            byte[] originalHash = Base64Coder.base64DecodeString(items[3]);
+            byte[] salt = Base64Coder.base64DecodeString(items[2]);
+            byte[] calculatedHash = generate(items[0], Integer.parseInt(items[1]), originalHash.length, salt, password);
+            return Arrays.equals(originalHash, calculatedHash);
+        } catch (RuntimeException re) {
+            Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA");
+        } catch (Exception e) {
+            // an error was occured while processing the password hash verification.
+            Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_EXCEPTION", e);
+        }
+        return false;
     }
 
     /**
@@ -98,29 +110,38 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
     private String[] parseData(String hashedPassword) throws RuntimeException {
         // <algorithm>:<iterations>:<base64(salt)>:<base64(hash)>
         String[] items = hashedPassword.split(":");
-        String msg = null;
         if (items.length == 4) {
             if (SUPPORTED_ALGORITHMS.contains(items[0])) {
                 try {
                     Integer.parseInt(items[1]);
                     return items; // good.
                 } catch (Exception e) {
-                    msg = "invalid format";
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "invalid format: the iternations is not a number : " + items[1]);
+                    }
                 }
             } else {
-                msg = "invalid algorithm";
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "invalid format: the hash algorithm is not supported : " + items[0]);
+                }
+            }
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "invalid format: the number of the elements is not 4 but " + items.length);
             }
         }
-        //TODO: make sure to translate the message
-        msg = "invalid format";
-        throw new RuntimeException(msg);
+        throw new RuntimeException();
     }
 
+    /**
+     * Parse the parameters. If the value is less than minimum, the value will be set as minimum..
+     * If the value is invalid, set as default.
+     */
     protected void parseParams(Map<String, String> params) {
         generateAlgorithm = indexOf(SUPPORTED_ALGORITHMS, params.get(PARAM_ALGORITHM), DEFAULT_ALGORITHM);
-        generateIterations = parseInt(params.get(PARAM_ITERATIONS), DEFAULT_ITERATIONS, MINIMUM_ITERATIONS);
-        generateSaltSize = parseInt(params.get(PARAM_SALTSIZE), DEFAULT_SALTSIZE, MINIMUM_SALTSIZE);
-        generateKeySize = parseInt(params.get(PARAM_KEYSIZE), DEFAULT_KEYSIZE, MINIMUM_KEYSIZE);
+        generateIterations = parseInt(PARAM_ITERATIONS, params.get(PARAM_ITERATIONS), DEFAULT_ITERATIONS, MINIMUM_ITERATIONS);
+        generateSaltSize = parseInt(PARAM_SALTSIZE, params.get(PARAM_SALTSIZE), DEFAULT_SALTSIZE, MINIMUM_SALTSIZE);
+        generateKeySize = parseInt(PARAM_KEYSIZE, params.get(PARAM_KEYSIZE), DEFAULT_KEYSIZE, MINIMUM_KEYSIZE);
     }
 
     private int indexOf(List<String> list, String value, int defaultIndex) {
@@ -134,21 +155,17 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
         return output;
     }
 
-    private int parseInt(String value, int defaultValue, int minimumValue) {
+    private int parseInt(String name, String value, int defaultValue, int minimumValue) {
         int output = defaultValue;
         if (value != null) {
             try {
                 output = Integer.parseInt(value);
                 if (output < minimumValue) {
-                    // TODO: implement error message.
-                    System.out.println("param error. less than minimum value, change it to the minimum");
-//                    Tr.error(tc, );
+                    Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name, minimumValue);
                     output = minimumValue;
                 }
             } catch (NumberFormatException e) {
-                // TODO: implement error message.
-                System.out.println("param error.");
-//                Tr.error(tc, );
+                Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name, defaultValue);
             }
         }
         return output;
@@ -169,17 +186,11 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
         return sb.toString();
     }
 
-    public byte[] generate(String algorithm, int iterations, int keySize, byte[] salt, @Sensitive char[] password) throws RuntimeException {
+    public byte[] generate(String algorithm, int iterations, int keySize, byte[] salt, @Sensitive char[] password) throws NoSuchAlgorithmException, InvalidKeySpecException {
         SecretKey secretKey;
-        try {
-            PBEKeySpec keySpec = new PBEKeySpec(password, salt, iterations, keySize * 8);
-            SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
-            secretKey = skf.generateSecret(keySpec);
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
-        } catch (InvalidKeySpecException e) {
-            throw new RuntimeException(e);
-        }
+        PBEKeySpec keySpec = new PBEKeySpec(password, salt, iterations, keySize * 8);
+        SecretKeyFactory skf = SecretKeyFactory.getInstance(algorithm);
+        secretKey = skf.generateSecret(keySpec);
         return secretKey.getEncoded();
     }
 

@@ -38,3 +38,15 @@ JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Make sure that there is one HttpAuthenti
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=If the realm name needs to be set, please set it by using BasicAuthenticationMechanismDefinition annotation in the application.
+
+JAVAEESEC_ERROR_PASSWORDHASH_EXCEPTION=CWWKS1915E: An error was reported while processing the password verification. Make sure that Java runtime is configured properly. The error is {0}.
+JAVAEESEC_ERROR_PASSWORDHASH_EXCEPTION.explanation=An error was reported while processing the password verification. Most likely, this is due to Java runtime configuration, or Java runtime does not support the specified algorithm.
+JAVAEESEC_ERROR_PASSWORDHASH_EXCEPTION.useraction=Review the error message for the detailed cause of the error.
+
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1916E: The password verification failed because the format of the hashed password data is invalid. Most likely the original password was hashed by using a different algorithm. Make sure that the password was hashed correctly.
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA.explanation=The password verification failed because the format of the hashed password data is invalid. Most likely the original password was hashed by using a different algorithm. Make sure that the password was hashed correctly.
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Make sure that the password was hashed by the algorithm which this hash verification supports.
+
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1917E: The value {0} of the configuration parameter {1} is invalid. {2} is used instead.
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=The value of the configuration parameter is not valid. the value is ignored and the predefined value will be used.
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Make sure that the configuration parameter is set correctly.
