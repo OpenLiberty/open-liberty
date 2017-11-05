@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
@@ -46,7 +47,7 @@ import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
  * to be controlled independently of the global thread pool.
  */
 public class PolicyExecutorImpl implements PolicyExecutor {
-    private static final TraceComponent tc = Tr.register(PolicyExecutorImpl.class);
+    private static final TraceComponent tc = Tr.register(PolicyExecutorImpl.class, "concurrencyPolicy");
 
     /**
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
@@ -1170,6 +1171,71 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         if (!queue.isEmpty() && withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
             decrementWithheldConcurrency();
             if (acquireExpedite() > 0)
+                expediteGlobal(new GlobalPoolTask());
+            else
+                enqueueGlobal(new GlobalPoolTask());
+        }
+    }
+
+    // Used by OSGi components (concurrencyPolicy) to initialize and update configuration.
+    @Override
+    public void updateConfig(Map<String, Object> props) {
+        final long maxMS = TimeUnit.NANOSECONDS.toMillis(Long.MAX_VALUE);
+
+        Object v;
+        int u_expedite = (Integer) props.get("expedite");
+        int u_max = null == (v = props.get("max")) ? Integer.MAX_VALUE : (Integer) v;
+        MaxPolicy u_maxPolicy = MaxPolicy.valueOf((String) props.get("maxPolicy"));
+        int u_maxQueueSize = null == (v = props.get("maxQueueSize")) ? Integer.MAX_VALUE : (Integer) v;
+        long u_maxWaitForEnqueue = (Long) props.get("maxWaitForEnqueue");
+        boolean u_runIfQueueFull = (Boolean) props.get("runIfQueueFull");
+        long u_startTimeout = null == (v = props.get("startTimeout")) ? -1l : (Long) v;
+
+        // Validation that cannot be performed by metatype:
+        if (u_expedite > u_max)
+            throw new IllegalArgumentException(u_expedite + " > " + u_max);
+
+        if (u_maxWaitForEnqueue < 0 || u_maxWaitForEnqueue > maxMS)
+            throw new IllegalArgumentException(Long.toString(u_maxWaitForEnqueue));
+
+        if (u_startTimeout < -1 || u_startTimeout > maxMS)
+            throw new IllegalArgumentException(Long.toString(u_startTimeout));
+
+        for (long current = maxWaitForEnqueueNS.get(); current != -1; current = maxWaitForEnqueueNS.get())
+            if (maxWaitForEnqueueNS.compareAndSet(current, TimeUnit.MILLISECONDS.toNanos(u_maxWaitForEnqueue)))
+                break;
+
+        maxPolicy = u_maxPolicy;
+        runIfQueueFull = u_runIfQueueFull;
+        startTimeout = TimeUnit.MILLISECONDS.toNanos(u_startTimeout);
+
+        int a;
+        synchronized (configLock) {
+            a = expeditesAvailable.addAndGet(u_expedite - expedite);
+            expedite = u_expedite;
+
+            int increase = u_max - maxConcurrency;
+            if (increase > 0)
+                maxConcurrencyConstraint.release(increase);
+            else if (increase < 0)
+                maxConcurrencyConstraint.reducePermits(-increase);
+            maxConcurrency = u_max;
+
+            increase = u_maxQueueSize - maxQueueSize;
+            if (increase > 0)
+                maxQueueSizeConstraint.release(increase);
+            else if (increase < 0)
+                maxQueueSizeConstraint.reducePermits(-increase);
+            maxQueueSize = u_max;
+        }
+
+        // Expedite as many of the remaining tasks as the available maxConcurrency permits and increased expedites
+        // will allow. We are choosing not to revoke GlobalPoolTasks that have already been enqueued as non-expedited,
+        // which means we do not guarantee an increase in expedites to fully go into effect immediately.
+        // Any reduction to expedites is handled gradually, as expedited GlobalPoolTasks complete.
+        while (withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
+            decrementWithheldConcurrency();
+            if (a-- > 0)
                 expediteGlobal(new GlobalPoolTask());
             else
                 enqueueGlobal(new GlobalPoolTask());

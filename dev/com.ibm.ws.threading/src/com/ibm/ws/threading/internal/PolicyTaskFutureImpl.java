@@ -36,7 +36,7 @@ import com.ibm.ws.threading.PolicyTaskFuture;
  * @param <T> type of the result.
  */
 public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
-    private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class);
+    private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class, "concurrencyPolicy");
 
     // state constants
     static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, ABORTED = 3, CANCELING = 4, CANCELED = 5, FAILED = 6, SUCCESSFUL = 7;
@@ -384,17 +384,16 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         if (nsAcceptEnd == nsAcceptBegin - 1) // currently unset
             nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
         boolean aborted = result.compareAndSet(state, cause) && state.releaseShared(ABORTED);
-        try {
-            if (aborted) {
+        if (aborted)
+            try {
                 if (nsQueueEnd == nsAcceptBegin - 2) // currently unset
                     nsRunEnd = nsQueueEnd = System.nanoTime();
                 if (callback != null)
                     callback.onEnd(task, this, null, true, 0, cause);
+            } finally {
+                if (latch != null)
+                    latch.countDown();
             }
-        } finally {
-            if (latch != null)
-                latch.countDown();
-        }
         return aborted;
     }
 

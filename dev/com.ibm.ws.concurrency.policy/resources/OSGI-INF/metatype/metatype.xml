@@ -17,11 +17,18 @@
   <Object ocdref="com.ibm.ws.concurrency.policy.concurrencyPolicy"/>
  </Designate>
 
- <OCD id="com.ibm.ws.concurrency.policy.concurrencyPolicy" name="internal" description="internal use only">
-  <AD id="expedite"          type="Integer" min="0" max="2000000000" default="0" required="false" name="internal" description="internal use only"/>
-  <AD id="max"               type="Integer" min="1" max="2000000000" required="false" name="internal" description="internal use only"/>
-  <AD id="maxQueueSize"      type="Integer" min="1" max="2000000000" required="false" name="internal" description="internal use only"/>
-  <!-- ... TODO this section is a placeholder. Need to add all of the configuration element/attributes here and mark them as beta-only for now -->
+ <!-- TODO switch from internal to beta, and have translatable names/descriptions -->
+ <OCD id="com.ibm.ws.concurrency.policy.concurrencyPolicy" ibm:alias="concurrencyPolicy" name="internal" description="internal use only">
+  <AD id="expedite"          type="Integer" default="0" min="0" name="internal" description="internal use only"/>
+  <AD id="max"               type="Integer" required="false" min="1" name="internal" description="internal use only"/>
+  <AD id="maxPolicy"         type="String"  default="loose" name="internal" description="internal use only">
+   <Option value="loose"        label="internal"/>
+   <Option value="strict"       label="internal"/>
+  </AD>
+  <AD id="maxQueueSize"      type="Integer" required="false" min="1" name="internal" description="internal use only"/>
+  <AD id="maxWaitForEnqueue" type="String"  ibm:type="duration" default="0" name="internal" description="internal use only"/>
+  <AD id="runIfQueueFull"    type="Boolean" default="false" name="internal" description="internal use only"/>
+  <AD id="startTimeout"      type="String"  ibm:type="duration" required="false" name="internal" description="internal use only"/>
  </OCD>
 
 </metatype:MetaData>

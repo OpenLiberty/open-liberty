@@ -19,6 +19,8 @@ Bundle-Description: Provides concurrencyPolicy configuration from which you can 
 
 WS-TraceGroup: concurrencyPolicy
 
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 Export-Package: \
     com.ibm.ws.concurrency.policy;provide:=true
 

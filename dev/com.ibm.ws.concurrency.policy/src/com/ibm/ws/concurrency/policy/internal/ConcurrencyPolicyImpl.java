@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrency.policy.internal;
 
-import java.util.Dictionary;
+import java.util.Map;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -39,17 +39,9 @@ public class ConcurrencyPolicyImpl implements ConcurrencyPolicy {
     private PolicyExecutor executor;
 
     @Activate
-    protected void activate(ComponentContext context) {
-        Dictionary<String, Object> props = context.getProperties();
+    protected void activate(ComponentContext context, Map<String, Object> props) {
         executor = provider.create((String) props.get("config.displayId"));
-        Integer i;
-        if (null != (i = (Integer) props.get("expedite")))
-            executor.expedite(i);
-        if (null != (i = (Integer) props.get("max")))
-            executor.maxConcurrency(i);
-        if (null != (i = (Integer) props.get("maxQueueSize")))
-            executor.maxQueueSize(i);
-        // TODO configure all properties
+        executor.updateConfig(props);
     }
 
     @Deactivate
@@ -66,7 +58,7 @@ public class ConcurrencyPolicyImpl implements ConcurrencyPolicy {
     }
 
     @Modified
-    protected void modified(ComponentContext context) {
-        // TODO
+    protected void modified(ComponentContext context, Map<String, Object> props) {
+        executor.updateConfig(props);
     }
 }
