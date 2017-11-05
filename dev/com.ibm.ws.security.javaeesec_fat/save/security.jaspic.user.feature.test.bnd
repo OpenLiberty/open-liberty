@@ -1,0 +1,32 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+#This file defines the security jaspic user feature bundle
+
+Bundle-Name:WebSphere JASPI Provider User Defined Feature
+Bundle-SymbolicName: security.jaspi.user.feature.test
+Bundle-Description: WebSphere JASPI Provider User Defined Feature, version ${bVersion}.
+
+Export-Package: \
+  com.ibm.ws.security.jaspi.test;thread-context=true, \
+  user.feature
+
+Private-Package: com.ibm.ws.common.internal.encoder
+
+Service-Component: \
+    com.ibm.ws.security.jaspic.user.feature.test; \
+    implementation:=user.feature.JaspiProviderService; \
+    provide:=com.ibm.wsspi.security.jaspi.ProviderService; \
+    configuration-policy:=ignore; \
+	immediate:=true; \
+    properties:="prop1=value1, prop2=value2, prop3=value3, provider.name=bob, group.name=JASPIGroup"
