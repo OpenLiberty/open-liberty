@@ -56,6 +56,7 @@ Include-Resource: \
     com.ibm.wsspi.org.osgi.service.component.annotations,\
     com.ibm.ws.cdi.interfaces,\
     com.ibm.ws.common.encoder;version=latest,\
+	com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\

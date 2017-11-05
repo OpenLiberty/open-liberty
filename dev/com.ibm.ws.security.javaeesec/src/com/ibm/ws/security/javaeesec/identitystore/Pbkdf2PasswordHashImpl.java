@@ -83,7 +83,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
      * (non-Javadoc)
      */
     @Override
-    public boolean verify(char[] password, String hashedPassword) {
+    public boolean verify(@Sensitive char[] password, String hashedPassword) {
         try {
             String[] items = parseData(hashedPassword);
             byte[] originalHash = Base64Coder.base64DecodeString(items[3]);
