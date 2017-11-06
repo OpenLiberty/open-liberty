@@ -17,6 +17,7 @@
 package com.ibm.jbatch.container.controller.impl;
 
 import java.io.PrintWriter;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Date;
@@ -30,6 +31,13 @@ import javax.batch.operations.JobExecutionNotMostRecentException;
 import javax.batch.operations.JobRestartException;
 import javax.batch.operations.JobStartException;
 import javax.batch.runtime.BatchStatus;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Node;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 import com.ibm.jbatch.container.IExecutionElementController;
 import com.ibm.jbatch.container.context.impl.MetricImpl;
@@ -38,6 +46,8 @@ import com.ibm.jbatch.container.execution.impl.RuntimePartitionExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution.StopLock;
+import com.ibm.jbatch.container.jsl.ModelSerializer;
+import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadInstanceKey;
@@ -844,6 +854,11 @@ public abstract class BaseStepControllerImpl implements IExecutionElementControl
                                                                                                getJobInstanceId(),
                                                                                                getJobExecutionId() },
                                                logger);
+            ModelSerializer<Step> ms = ModelSerializerFactory.createStepModelSerializer();
+            String xml = ms.serializeModel(step);
+            String prettyXml = formatXML(xml);
+            JoblogUtil.logToJobLogAndTraceOnly(Level.INFO, "display.resolved.jsl", new Object[] { "partition", prettyXml }, logger);
+
         }
 
         @Override
@@ -1018,6 +1033,25 @@ public abstract class BaseStepControllerImpl implements IExecutionElementControl
         StringWriter sw = new StringWriter();
         t.printStackTrace(new PrintWriter(sw));
         return sw.toString();
+    }
+
+    private String formatXML(String input) {
+        String returnString;
+        try {
+            final InputSource src = new InputSource(new StringReader(input));
+            final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src).getDocumentElement();
+            final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+            final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+            final LSSerializer writer = impl.createLSSerializer();
+            writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
+            writer.getDomConfig().setParameter("xml-declaration", false); /* skip XML declare */
+            returnString = writer.writeToString(document);
+            return returnString;
+        } catch (Exception e) {
+            // Oh well, just return it as one line
+            returnString = input;
+        }
+        return returnString;
     }
 
 }
