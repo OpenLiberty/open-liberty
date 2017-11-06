@@ -14,7 +14,6 @@ IBM-API-Package: javax.decorator;  type="spec", \
  javax.inject;  type="spec", \
  javax.interceptor;  type="spec", \
  javax.transaction;  type="internal", \
- javax.validation;  type="internal", \
  org.jboss.weld.el; type="internal", \
  org.jboss.weld.interceptor.proxy; type="internal", \
  org.jboss.weld.interceptor.util.proxy; type="internal", \
