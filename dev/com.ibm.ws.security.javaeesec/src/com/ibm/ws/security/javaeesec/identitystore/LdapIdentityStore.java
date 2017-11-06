@@ -42,6 +42,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Liberty's LDAP {@link IdentityStore} implementation.
@@ -82,9 +83,6 @@ public class LdapIdentityStore implements IdentityStore {
      * @throws NamingException If there was a failure to bind to the LDAP server.
      */
     private DirContext bind(String bindDn, @Sensitive String bindPw) throws NamingException {
-        Tr.debug(tc, "bindDn: ", bindDn);
-        //Tr.debug(tc, "bindPw: ", bindPw);
-
         Hashtable<Object, Object> env = new Hashtable<Object, Object>();
         String url = this.idStoreDefinition.getUrl();
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
@@ -111,7 +109,7 @@ public class LdapIdentityStore implements IdentityStore {
             }
 
             env.put(Context.SECURITY_PRINCIPAL, bindDn);
-            env.put(Context.SECURITY_CREDENTIALS, decodedBindPw.toCharArray());
+            env.put(Context.SECURITY_CREDENTIALS, decodedBindPw);
         }
 
         /*
@@ -237,16 +235,30 @@ public class LdapIdentityStore implements IdentityStore {
 //                }
             }
 
-            //TODO: storeId, host:port
-            return new CredentialValidationResult(null, user, userDn, userDn, groups);
+            //TODO: storeId, host:port currently
+            String url = idStoreDefinition.getUrl();
+            url = url.replaceFirst("(?i)ldaps?:\\/\\/", "");
+            if (url.endsWith("/")) {
+                url = url.substring(0, url.length() - 1);
+            }
+            return new CredentialValidationResult(url, user, userDn, userDn, groups);
         }
 
         return CredentialValidationResult.INVALID_RESULT;
     }
 
+    @FFDCIgnore(InvalidNameException.class)
     private String getUserDn(String user, String filter, SearchControls controls) {
-        //check for dn
+        //check if user is a valid DN
         String userDn = null;
+        try {
+            userDn = new LdapName(user).toString();
+        } catch (InvalidNameException e) {
+
+        }
+        if (userDn != null) {
+            return userDn;
+        }
         String searchBase = idStoreDefinition.getCallerSearchBase();
         if (searchBase == null || searchBase.isEmpty()) {
             userDn = idStoreDefinition.getCallerNameAttribute() + "=" + user + idStoreDefinition.getCallerBaseDn();

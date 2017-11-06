@@ -128,7 +128,7 @@ public class EmbeddedServerMergeProductExtensionTest {
         assertTrue("Products Extensions were not added via env", !!!server.findStringsInLogs("CWWKE0940I:.*prodA.*com.ibm.producta.*products2/productA").isEmpty());
 
         // Verify that both prodA and prodB have their features added
-        // "CWWKF0012I: The server installed the following features: [servlet-3.0, jsp-2.2, timedexit-1.0, prodA:prodA-1.0, prodB:prodB-1.0]."
+        // "CWWKF0012I: The server installed the following features: [servlet-3.1, jsp-2.2, timedexit-1.0, prodA:prodA-1.0, prodB:prodB-1.0]."
         assertTrue("Products Extensions features not added", !!!server.findStringsInLogs("CWWKF0012I:.*prodA:prodA-1.0.*prodB:prodB-1.0").isEmpty());
 
         Log.exiting(c, METHOD_NAME);
@@ -163,7 +163,7 @@ public class EmbeddedServerMergeProductExtensionTest {
         assertTrue("Products Extensions were added via SPI", server.findStringsInLogs("CWWKE0108I:.*").isEmpty());
 
         // Verify that both prodA and prodB have their features added
-        // "CWWKF0012I: The server installed the following features: [servlet-3.0, jsp-2.2, timedexit-1.0, prodA:prodA-1.0, prodB:prodB-1.0]."
+        // "CWWKF0012I: The server installed the following features: [servlet-3.1, jsp-2.2, timedexit-1.0, prodA:prodA-1.0, prodB:prodB-1.0]."
         assertTrue("Products Extensions features not added", !!!server.findStringsInLogs("CWWKF0012I:.*prodA:prodA-1.0.*prodB:prodB-1.0").isEmpty());
 
         Log.exiting(c, METHOD_NAME);
@@ -204,7 +204,7 @@ public class EmbeddedServerMergeProductExtensionTest {
         assertTrue("Products Extensions were not added via SPI", !!!server.findStringsInLogs("CWWKE0108I:.*prodA.*com.ibm.producta.*products3/productA").isEmpty());
 
         // Verify that both prodA and prodB have their features added
-        // "CWWKF0012I: The server installed the following features: [servlet-3.0, jsp-2.2, timedexit-1.0, prodA:prodA-1.0, prodB:prodB-1.0]."
+        // "CWWKF0012I: The server installed the following features: [servlet-3.1, jsp-2.2, timedexit-1.0, prodA:prodA-1.0, prodB:prodB-1.0]."
         assertTrue("Products Extensions features not added", !!!server.findStringsInLogs("CWWKF0012I:.*prodA:prodA-1.0.*prodB:prodB-1.0").isEmpty());
 
         Log.exiting(c, METHOD_NAME);

@@ -15,8 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.wim.adapter.urbridge.URBridge;
 import com.ibm.wsspi.security.wim.exception.InitializationException;
@@ -30,13 +28,11 @@ class UserRegistryWrapper implements RepositoryWrapper {
     private static final String KEY_REGISTRY = "userRegistry";
     private final Map<String, String> baseEntries;
     private final String baseEntry;
-    private URBridge urBridge;
-    private final UserRegistry userRegistry;
+    private final URBridge urBridge;
 
     public UserRegistryWrapper(UserRegistry ur, ConfigManager configManager) throws InitializationException {
         String realm = ur.getRealm();
         this.baseEntry = "o=" + realm;
-        this.userRegistry = ur;
         Map<String, Object> properties = new HashMap<String, Object>();
         properties.put(KEY_REGISTRY, ur);
         properties.put(VMMService.KEY_ID, realm);
@@ -44,15 +40,11 @@ class UserRegistryWrapper implements RepositoryWrapper {
         baseEntries = Collections.singletonMap(baseEntry, realm);
 
         urBridge = new URBridge(properties, ur, configManager);
-
     }
 
     @Override
     public void clear() {
-        if (urBridge != null) {
-            urBridge.stopCacheThreads();
-        }
-        urBridge = null; ///???????
+        /* Do nothing. */
     }
 
     @Override
@@ -71,34 +63,12 @@ class UserRegistryWrapper implements RepositoryWrapper {
         return Collections.singleton(urBridge.getRealm());
     }
 
-    public UserRegistry getUserRegistry() {
-        return userRegistry;
-    }
-
     @Override
     public int isUniqueNameForRepository(String uniqueName, boolean isDn) {
         if (baseEntry.equals(uniqueName))
             return Integer.MAX_VALUE;
-        if (isUserInRealm(uniqueName))
+        if (urBridge.isEntityInRealm(uniqueName))
             return 0;
         return -1;
-    }
-
-    @FFDCIgnore(Exception.class)
-    private boolean isUserInRealm(String uniqueName) {
-        try {
-            SearchResult result = userRegistry.getUsers(uniqueName, 1);
-            if (result != null && result.getList().size() > 0)
-                return true;
-        } catch (Exception e) {
-        }
-
-        try {
-            SearchResult result = userRegistry.getGroups(uniqueName, 1);
-            if (result != null && result.getList().size() > 0)
-                return true;
-        } catch (Exception e) {
-        }
-        return false;
     }
 }
