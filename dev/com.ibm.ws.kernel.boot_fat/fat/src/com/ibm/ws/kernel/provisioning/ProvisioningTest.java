@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -325,7 +326,7 @@ public class ProvisioningTest {
         found = !server.findStringsInLogsAndTrace(regex).isEmpty();
         assertTrue(getBundleAndVersionName(V100) + " should have been started.", found);
 
-        server.stopServer();
+        server.stopServer("CWWKE0060W");
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -362,7 +363,7 @@ public class ProvisioningTest {
         found = !server.findStringsInLogsAndTrace(regex).isEmpty();
         assertTrue(getBundleAndVersionName(V101APAR1) + " should have been started.", found);
 
-        server.stopServer();
+        server.stopServer("CWWKE0060W");
 
         Log.exiting(c, METHOD_NAME);
     }
@@ -619,11 +620,11 @@ public class ProvisioningTest {
                 //copy a marker file into the work area so we can see if it gets cleaned
                 fpServer.copyFileToLibertyServerRoot("workarea", "marker");
                 //specify that we don't want a clean start from the test framework
-                //because we want it to happen automatically 
+                //because we want it to happen automatically
                 fpServer.startServer(name.getMethodName() + "_console.log", false);
                 boolean markerExists = fpServer.fileExistsInLibertyServerRoot("workarea/marker");
                 assertFalse("The workarea marker file existed when it should not have, the server did not automatically clean start when the server fingerprint changed after the server had been started "
-                                            + n + " times",
+                            + n + " times",
                             markerExists);
             } finally {
                 mockRemoveFix();
@@ -637,7 +638,7 @@ public class ProvisioningTest {
     /**
      * APAR 117401: prove that the server gets clean started when service is applied
      * For one previous server start
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -648,7 +649,7 @@ public class ProvisioningTest {
     /**
      * APAR 117401: prove that the server gets clean started when service is applied
      * For multiple previous server starts
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -658,7 +659,7 @@ public class ProvisioningTest {
 
     /**
      * APAR 117401: validate that the start is warm (not clean) when no service has been applied
-     * 
+     *
      * @throws Exception
      */
     @Test
@@ -683,7 +684,7 @@ public class ProvisioningTest {
 
     /**
      * Make sure that a server restart causes the server state directory to clear.
-     * 
+     *
      * @throws Exception
      */
     @Test
