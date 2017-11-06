@@ -27,13 +27,13 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: No IdentityStore object supports the u
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=None of the IdentityStore object supports the user validation, therefore the security code does not authenticate the user.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Make sure that at least one IdentityStore supports the user validation.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: HttpAuthenticationMechanism object cannot be identified for the module {0} in the application {1}. Make sure that there is one HttpAuthenticationMechanism in the application.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism object for the {0} module in the {1} application was not found. Make sure that the module contains a HttpAuthenticationMechanism object.
 JAVAEESEC_ERROR_NO_HAM.explanation=HttpAuthenticationMechanism object cannot be identified for authentication. It could be there is no object, or multiple objects which corresponds the specified condition. Make sure that there is one HttpAuthenticationMechanism in the application.
 JAVAEESEC_ERROR_NO_HAM.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
 
-JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: ModuleProperties object cannot be identified for authentication of the application {0}. Most likely, there is not any HttpAuthenticationMechanism object in the application. Make sure that one HttpAuthenticationMechanism object for each modules is defined.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=ModuleProperties object cannot be identified for authentication. It could be there is not any HttpAuthenticationMechanism object defined in the application.
-JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: The ModuleProperties object for authenticating the {0} application cannot be found, likely because the application does not contain a HttpAuthenticationMechanism object. Make sure that one HttpAuthenticationMechanism object is defined for each module.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=The ModuleProperties object, which is required to authenticate the application, cannot be identified. This error typically results from a HttpAuthenticationMechanism object not being defined in the application.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Make sure that each module in the application contains a HttpAuthenticationMechanism object.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.
@@ -50,10 +50,6 @@ JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Make sure that the c
 JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1917E: The hashed data is invalid. {0}
 JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA.explanation=The hashed value in the database is not valid.
 JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Make sure that the hashed data in the database was hashed by the hash algorithm which PasswordHash implementation class supports.
-
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1918E: Multiple HttpAuthenticationMechanism implementation are found for the module {0} in the application {1}. The list of classes is {2}. Most likely, this is an application packaging issue. Make sure that there is only one HttpAuthenticationMechanism implementation in each modules.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=More than one HttpAuthenticationMechanism implementation are found. Only one HttpAuthenticationMechanism is allowed in each modules.
-JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only one HttpAuthenticationMechanism implementation in each modules.
 
 #The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
 JAVAEESEC_INVALID_ITERATION=The iterations {0} is not a number.
