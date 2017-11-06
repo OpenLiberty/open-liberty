@@ -42,10 +42,10 @@ JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: IdentityStoreHandler
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=IdentityStoreHandler bean is not found. If the application intends to use an IdentityStore, make sure that it is configured properly. IdentityStoreHandler bean is created when there is at least one IdentityStore bean.
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=If the application intends to use an IdentityStore, make sure that it is configured properly.
 
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The application deployment failed because login-config element is found in web.xml of application {0} module {1}. Make sure removing login-config element from web.xml in order to enable HttpAuthenticationMechanism annotation.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment failed because login-config element is found in web.xml. This is an error condition.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=Make sure removing login-config element from web.xml in order to enable HttpAuthenticationMechanism annotation.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The application deployment failed because a login-config element was found in the web.xml file for the {0} module in the {1} application. To enable the HttpAuthenticationMechanism annotation, remove the login-config element from the web.xml file.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment failed because both the login-config element and the HttpAuthenticationMechanism annotation are defined. Only one of these authentication mechanisms can be used in your application.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction= To enable the HttpAuthenticationMechanism annotation, remove the login-config element from the web.xml file.
 
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.
-JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=If the realm name needs to be set, set it by using BasicAuthenticationMechanismDefinition annotation in the application.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: The realm name for basic authentication is not set, so the default value, defaultRealm, was used.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Because realm name for the basic authentication is not defined, the realm name was set to the default value of defaultRealm.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=To set the realm name, define it on a BasicAuthenticationMechanismDefinition annotation in the application.

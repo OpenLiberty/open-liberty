@@ -96,6 +96,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     private final Annotation loginToContinue = null;
     private final Set<Class<?>> authMechRegistered = new HashSet<Class<?>>();
     private final Map<String, ModuleProperties> moduleMap = new HashMap<String, ModuleProperties>(); // map of module name and list of authmechs.
+    private final List<LdapIdentityStoreDefinition> ldapDefinitionList = new ArrayList<LdapIdentityStoreDefinition>();
 
     public <T> void processAnnotatedType(@Observes ProcessAnnotatedType<T> processAnnotatedType, BeanManager beanManager) {
         if (tc.isDebugEnabled())
@@ -335,16 +336,27 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 if (!m.getName().equals("equals"))
                     identityStoreProperties.put(m.getName(), m.invoke(annotation));
             }
-            LdapIdentityStoreBean bean = new LdapIdentityStoreBean(beanManager, getInstanceOfAnnotation(identityStoreProperties));
-            beansToAdd.add(bean);
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "registering the default LdapIdentityStore.");
+            LdapIdentityStoreDefinition ldapDefinition = getInstanceOfAnnotation(identityStoreProperties);
+            if (!containsLdapDefinition(ldapDefinition, ldapDefinitionList)) {
+                ldapDefinitionList.add(ldapDefinition);
+                LdapIdentityStoreBean bean = new LdapIdentityStoreBean(beanManager, ldapDefinition);
+                beansToAdd.add(bean);
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "registering the default LdapIdentityStore.");
+            } else {
+                if (tc.isDebugEnabled())
+                    Tr.debug(tc, "the same annotation exists, skip registering..");
+            }
         } catch (Exception e) {
             // TODO Auto-generated catch block
             // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
             // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
+    }
+
+    private boolean containsLdapDefinition(LdapIdentityStoreDefinition ldapDefinition, List<LdapIdentityStoreDefinition> ldapDefinitionList) {
+        return false;
     }
 
     private LdapIdentityStoreDefinition getInstanceOfAnnotation(final Map<String, Object> overrides) {
@@ -477,9 +489,50 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             public String useForExpression() {
                 return (overrides != null && overrides.containsKey(JavaEESecConstants.USE_FOR_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.USE_FOR_EXPRESSION) : "";
             }
+
         };
 
         return annotation;
+    }
+
+    protected boolean equalsLdapDefinition(final LdapIdentityStoreDefinition lisd1, final LdapIdentityStoreDefinition lisd2) {
+        return lisd1.bindDn().equals(lisd2.bindDn()) &&
+               lisd1.bindDnPassword().equals(lisd2.bindDnPassword()) &&
+               lisd1.callerBaseDn().equals(lisd2.callerBaseDn()) &&
+               lisd1.callerNameAttribute().equals(lisd2.callerNameAttribute()) &&
+               lisd1.callerSearchBase().equals(lisd2.callerSearchBase()) &&
+               lisd1.callerSearchFilter().equals(lisd2.callerSearchFilter()) &&
+               lisd1.callerSearchScope().equals(lisd2.callerSearchScope()) &&
+               lisd1.callerSearchScopeExpression().equals(lisd2.callerSearchScopeExpression()) &&
+               lisd1.groupMemberAttribute().equals(lisd2.groupMemberAttribute()) &&
+               lisd1.groupMemberOfAttribute().equals(lisd2.groupMemberOfAttribute()) &&
+               lisd1.groupNameAttribute().equals(lisd2.groupNameAttribute()) &&
+               lisd1.groupSearchBase().equals(lisd2.groupSearchBase()) &&
+               lisd1.groupSearchFilter().equals(lisd2.groupSearchFilter()) &&
+               lisd1.groupSearchScope().equals(lisd2.groupSearchScope()) &&
+               lisd1.groupSearchScopeExpression().equals(lisd2.groupSearchScopeExpression()) &&
+               (lisd1.maxResults() == lisd2.maxResults()) &&
+               lisd1.maxResultsExpression().equals(lisd2.maxResultsExpression()) &&
+               (lisd1.priority() == lisd2.priority()) &&
+               lisd1.priorityExpression().equals(lisd2.priorityExpression()) &&
+               (lisd1.readTimeout() == lisd2.readTimeout()) &&
+               lisd1.readTimeoutExpression().equals(lisd2.readTimeoutExpression()) &&
+               lisd1.url().equals(lisd2.url()) &&
+               equalsUseFor(lisd1.useFor(), lisd2.useFor()) &&
+               lisd1.useForExpression().equals.(lisd2.useForExpression());
+    }
+
+    protected boolean equalsUseFor(ValidationType[] vt1, ValidationType[] vt2) {
+        if (vt1 == vt2) {
+            return true;
+        } else if ((vt1.length == vt2.length) && (vt1.lengtih ==1)) {
+            return vt1[0] == vt2[0];
+        } else {
+            List<ValidationType> list1 = Arrays.asList(vt1);
+            List<ValidationType> list2 = Arrays.asList(vt2);
+            return (list1.contains(ValidationType.PROVIDE_GROUPS) == list2.contains(ValidationType.PROVIDE_GROUPS)) &&
+                   (list1.contains(ValidationType.VALIDATE) == list2.contains(ValidationType.VALIDATE))
+        }
     }
 
     /**
@@ -683,8 +736,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                         if (lc != null  && !lc.isAuthenticationMethodDefaulted()) {
                             String appName = mmd.getJ2EEName().getApplication();
                             String j2eeModuleName = mmd.getJ2EEName().getModule();
-                            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", appName, j2eeModuleName);
-                            Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", appName, j2eeModuleName);
+                            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);
+                            Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);
 //                            throw new DeploymentException(msg);
                         }
                     }
