@@ -1235,7 +1235,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         // Any reduction to expedites is handled gradually, as expedited GlobalPoolTasks complete.
         while (withheldConcurrency.get() > 0 && maxConcurrencyConstraint.tryAcquire()) {
             decrementWithheldConcurrency();
-            if (a-- > 0)
+            if (a-- > 0 && acquireExpedite() > 0)
                 expediteGlobal(new GlobalPoolTask());
             else
                 enqueueGlobal(new GlobalPoolTask());
