@@ -36,7 +36,7 @@ import com.ibm.ws.threading.PolicyTaskFuture;
  * @param <T> type of the result.
  */
 public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
-    private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class, "concurrencyPolicy");
+    private static final TraceComponent tc = Tr.register(PolicyTaskFutureImpl.class, "concurrencyPolicy", "com.ibm.ws.threading.internal.resources.ThreadingMessages");
 
     // state constants
     static final int PRESUBMIT = 0, SUBMITTED = 1, RUNNING = 2, ABORTED = 3, CANCELING = 4, CANCELED = 5, FAILED = 6, SUCCESSFUL = 7;

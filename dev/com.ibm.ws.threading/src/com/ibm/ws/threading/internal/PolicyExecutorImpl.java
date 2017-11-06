@@ -47,7 +47,7 @@ import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
  * to be controlled independently of the global thread pool.
  */
 public class PolicyExecutorImpl implements PolicyExecutor {
-    private static final TraceComponent tc = Tr.register(PolicyExecutorImpl.class, "concurrencyPolicy");
+    private static final TraceComponent tc = Tr.register(PolicyExecutorImpl.class, "concurrencyPolicy", "com.ibm.ws.threading.internal.resources.ThreadingMessages");
 
     /**
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
