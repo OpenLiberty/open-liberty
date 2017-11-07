@@ -1207,7 +1207,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         maxPolicy = u_maxPolicy;
         runIfQueueFull = u_runIfQueueFull;
-        startTimeout = TimeUnit.MILLISECONDS.toNanos(u_startTimeout);
+        startTimeout = u_startTimeout == -1 ? -1 : TimeUnit.MILLISECONDS.toNanos(u_startTimeout);
 
         int a;
         synchronized (configLock) {
