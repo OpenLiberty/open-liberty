@@ -131,8 +131,12 @@ public class ShrinkHelper {
      */
     public static WebArchive buildDefaultApp(String appName, String... packages) throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war");
-        for (String p : packages)
-            app = app.addPackages(p.endsWith(".*"), p);
+        for (String p : packages) {
+            if (p.endsWith(".*"))
+                app = app.addPackages(true, p.replace(".*", ""));
+            else
+                app = app.addPackages(false, p);
+        }
         if (new File("test-applications/" + appName + "/resources/").exists())
             app = (WebArchive) addDirectory(app, "test-applications/" + appName + "/resources/");
         return app;
