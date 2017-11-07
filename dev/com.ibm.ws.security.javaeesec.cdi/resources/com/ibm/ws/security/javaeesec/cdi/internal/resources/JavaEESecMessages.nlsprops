@@ -44,7 +44,7 @@ JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=If the application in
 
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The application deployment failed because a login-config element was found in the web.xml file for the {0} module in the {1} application. To enable the HttpAuthenticationMechanism annotation, remove the login-config element from the web.xml file.
 JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment failed because both the login-config element and the HttpAuthenticationMechanism annotation are defined. Only one of these authentication mechanisms can be used in your application.
-JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction= To enable the HttpAuthenticationMechanism annotation, remove the login-config element from the web.xml file.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=To enable the HttpAuthenticationMechanism annotation, remove the login-config element from the web.xml file.
 
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: The realm name for basic authentication is not set, so the default value, defaultRealm, was used.
 JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Because realm name for the basic authentication is not defined, the realm name was set to the default value of defaultRealm.
