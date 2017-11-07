@@ -17,7 +17,7 @@ import java.util.Properties;
 
 import javax.annotation.Priority;
 import javax.enterprise.inject.Instance;
-import javax.inject.Inject;
+import javax.enterprise.inject.spi.CDI;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -60,8 +60,7 @@ public class LoginToContinueInterceptor {
     private static final String METHOD_TO_INTERCEPT = "validateRequest";
     private static final String CUSTOM_FORM_CLASS = "com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
-    @Inject
-    Instance<HAMProperties> hampInstance;
+    HAMProperties hamp = null;
 
     @AroundInvoke
     public Object intercept(InvocationContext ic) throws Exception {
@@ -73,28 +72,21 @@ public class LoginToContinueInterceptor {
             //                                    HttpServletResponse response,
             //                                    HttpMessageContext httpMessageContext) throws AuthenticationException {
 
-            HAMProperties hamp = null;
-            if (hampInstance != null && !hampInstance.isUnsatisfied() && !hampInstance.isAmbiguous()) {
-                hamp = hampInstance.get();
-                if (hamp != null) {
-                    result = ic.proceed();
-                    Object[] params = ic.getParameters();
-                    HttpServletRequest req = (HttpServletRequest) params[0];
-                    HttpServletResponse res = (HttpServletResponse) params[1];
-                    if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
-                        // need to redirect.
-                        HttpMessageContext mc = (HttpMessageContext) params[2];
+            hamp = getHAMProperties();
+            if (hamp != null) {
+                result = ic.proceed();
+                Object[] params = ic.getParameters();
+                HttpServletRequest req = (HttpServletRequest) params[0];
+                HttpServletResponse res = (HttpServletResponse) params[1];
+                if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
+                    // need to redirect.
+                    HttpMessageContext mc = (HttpMessageContext) params[2];
 
-                        result = gotoLoginPage(hamp.getProperties(), req, res, mc);
-                    } else if (result.equals(AuthenticationStatus.SUCCESS)) {
-                        boolean isCustom = isCustomForm(ic);
-                        // redirect to the original url.
-                        postLoginProcess(req, res, isCustom);
-                    }
-                } else {
-                    // return error since properties are not available.
-                    Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
-                    result = AuthenticationStatus.SEND_FAILURE;
+                    result = gotoLoginPage(hamp.getProperties(), req, res, mc);
+                } else if (result.equals(AuthenticationStatus.SUCCESS)) {
+                    boolean isCustom = isCustomForm(ic);
+                    // redirect to the original url.
+                    postLoginProcess(req, res, isCustom);
                 }
             } else {
                 Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
@@ -260,8 +252,17 @@ public class LoginToContinueInterceptor {
         return CUSTOM_FORM_CLASS.equals(className);
     }
 
-    protected void setProps(Instance<HAMProperties> hampInstance) {
-        this.hampInstance = hampInstance;
+    @SuppressWarnings("rawtypes")
+    protected CDI getCDI() {
+        return CDI.current();
+    }
+
+    protected HAMProperties getHAMProperties() {
+        Instance<HAMProperties> hamPropertiesInstance = getCDI().select(HAMProperties.class);
+        if (hamPropertiesInstance != null) {
+            return hamPropertiesInstance.get();
+        }
+        return null;
     }
 
     protected WebAppSecurityConfig getWebSAppSeurityConfig() {

@@ -51,8 +51,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
-    @Inject
-    private HAMProperties hamp;
+    private HAMProperties hamp = null;
 
     private String realmName = null;
     private final String DEFAULT_REALM = "defaultRealm";
@@ -77,9 +76,12 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     private void setRealmName() {
-        Properties props = hamp.getProperties();
-        if (realmName == null && props != null) {
-            realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
+        hamp = getHAMProperties();
+        if (hamp != null) {
+            Properties props = hamp.getProperties();
+            if (realmName == null && props != null) {
+                realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
+            }
         }
         if (realmName == null || realmName.trim().isEmpty()) {
             Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
@@ -292,9 +294,11 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
-    // this is for unit test.
-    protected void setProps(HAMProperties hamp) {
-        this.hamp = hamp;
+    protected HAMProperties getHAMProperties() {
+        Instance<HAMProperties> hamPropertiesInstance = getCDI().select(HAMProperties.class);
+        if (hamPropertiesInstance != null) {
+            return hamPropertiesInstance.get();
+        }
+        return null;
     }
-
 }
