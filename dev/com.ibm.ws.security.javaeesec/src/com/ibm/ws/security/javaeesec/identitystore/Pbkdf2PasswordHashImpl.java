@@ -81,7 +81,19 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
     public boolean verify(@Sensitive char[] password, String hashedPassword) {
         String[] items = parseData(hashedPassword);
         byte[] originalHash = Base64Coder.base64DecodeString(items[3]);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "original Hash length : " + (originalHash != null?originalHash.length:"null"));
+        }
+        if (originalHash == null) {
+            throw new RuntimeException("hash value is null.");
+        }
         byte[] salt = Base64Coder.base64DecodeString(items[2]);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "original Salt length : " + (salt != null?salt.length:"null"));
+        }
+        if (salt == null) {
+            throw new RuntimeException("salt value is null.");
+        }
         byte[] calculatedHash = generate(items[0], Integer.parseInt(items[1]), originalHash.length, salt, password);
         return Arrays.equals(originalHash, calculatedHash);
     }
@@ -117,7 +129,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
                 Tr.debug(tc, "invalid format: the number of the elements is not 4 but " + items.length);
             }
         }
-        throw new RuntimeException();
+        throw new RuntimeException("Invalid hashedPassword");
     }
 
     /**
@@ -125,26 +137,29 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
      * If the value is invalid, set as default.
      */
     protected void parseParams(Map<String, String> params) {
-        generateAlgorithm = indexOf(PARAM_ALGORITHM, SUPPORTED_ALGORITHMS, params.get(PARAM_ALGORITHM));
-        generateIterations = parseInt(PARAM_ITERATIONS, params.get(PARAM_ITERATIONS), MINIMUM_ITERATIONS);
-        generateSaltSize = parseInt(PARAM_SALTSIZE, params.get(PARAM_SALTSIZE), MINIMUM_SALTSIZE);
-        generateKeySize = parseInt(PARAM_KEYSIZE, params.get(PARAM_KEYSIZE), MINIMUM_KEYSIZE);
+        generateAlgorithm = indexOf(PARAM_ALGORITHM, DEFAULT_ALGORITHM, SUPPORTED_ALGORITHMS, params.get(PARAM_ALGORITHM));
+        generateIterations = parseInt(PARAM_ITERATIONS, params.get(PARAM_ITERATIONS), DEFAULT_ITERATIONS, MINIMUM_ITERATIONS);
+        generateSaltSize = parseInt(PARAM_SALTSIZE, params.get(PARAM_SALTSIZE), DEFAULT_SALTSIZE, MINIMUM_SALTSIZE);
+        generateKeySize = parseInt(PARAM_KEYSIZE, params.get(PARAM_KEYSIZE), DEFAULT_KEYSIZE, MINIMUM_KEYSIZE);
     }
 
-    private int indexOf(String name, List<String> list, String value) {
+    private int indexOf(String name, int defaultValue, List<String> list, String value) {
+        int output = defaultValue;
         if (value != null) {
             int index = SUPPORTED_ALGORITHMS.indexOf(value);
             if (index >= 0) {
-                return index;
+                output = index;
+            } else {
+                Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
+                String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
+                throw new RuntimeException(msg);
             }
         }
-        Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-        String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-        throw new RuntimeException(msg);
+        return output;
     }
 
-    private int parseInt(String name, String value, int minimumValue) {
-        int output;
+    private int parseInt(String name, String value, int defaultValue, int minimumValue) {
+        int output = defaultValue;
         if (value != null) {
             try {
                 output = Integer.parseInt(value);
@@ -158,10 +173,6 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
                 String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
                 throw new RuntimeException(msg);
             }
-        } else {
-            Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-            String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-            throw new RuntimeException(msg);
         }
         return output;
     }

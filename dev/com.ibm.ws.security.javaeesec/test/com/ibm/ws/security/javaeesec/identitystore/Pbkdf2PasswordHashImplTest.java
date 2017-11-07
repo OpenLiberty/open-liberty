@@ -12,6 +12,7 @@ package com.ibm.ws.security.javaeesec.identitystore;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.fail;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -114,9 +115,13 @@ public class Pbkdf2PasswordHashImplTest {
         Map<String, String> params = new HashMap<String, String>();
         params.put(PARAM_ALGORITHM, INVALID_ALGORITHM);
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-        pphi.initialize(params);
-        assertTrue("Hash parameters are not set as the default.", verifyFields(pphi, INDEX_SHA256, DEFAULT_ITERATIONS, DEFAULT_SALTSIZE, DEFAULT_KEYSIZE));
-        assertTrue("CWWKS1917E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1917E:.*" + INVALID_ALGORITHM + ".*" + PARAM_ALGORITHM + ".*" + SHA256 + ".*"));
+        try {
+            pphi.initialize(params);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_ALGORITHM + ".*" + PARAM_ALGORITHM + ".*"));
+            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+        }
     }
 
     @Test
@@ -126,10 +131,13 @@ public class Pbkdf2PasswordHashImplTest {
         String INVALID_ITERATIONS = "NotANumber";
         params.put(PARAM_ITERATIONS, INVALID_ITERATIONS);
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-        pphi.initialize(params);
-        assertTrue("Hash parameters are not set as the default.", verifyFields(pphi, INDEX_SHA256, DEFAULT_ITERATIONS, DEFAULT_SALTSIZE, DEFAULT_KEYSIZE));
-        // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
-        assertTrue("CWWKS1917E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1917E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
+        try {
+            pphi.initialize(params);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
+            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+        }
     }
 
     @Test
@@ -139,10 +147,13 @@ public class Pbkdf2PasswordHashImplTest {
         String INVALID_SALTSIZE = "NotANumber";
         params.put(PARAM_SALTSIZE, INVALID_SALTSIZE);
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-        pphi.initialize(params);
-        assertTrue("Hash parameters are not set as the default.", verifyFields(pphi, INDEX_SHA256, DEFAULT_ITERATIONS, DEFAULT_SALTSIZE, DEFAULT_KEYSIZE));
-        // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
-        assertTrue("CWWKS1917E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1917E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*" + DEFAULT_SALTSIZE + ".*"));
+        try {
+            pphi.initialize(params);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*"));
+            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+        }
     }
 
     @Test
@@ -152,10 +163,13 @@ public class Pbkdf2PasswordHashImplTest {
         String INVALID_KEYSIZE = "NotANumber";
         params.put(PARAM_KEYSIZE, INVALID_KEYSIZE);
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-        pphi.initialize(params);
-        assertTrue("Hash parameters are not set as the default.", verifyFields(pphi, INDEX_SHA256, DEFAULT_ITERATIONS, DEFAULT_SALTSIZE, DEFAULT_KEYSIZE));
-        // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
-        assertTrue("CWWKS1917E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1917E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*" + DEFAULT_KEYSIZE + ".*"));
+        try {
+            pphi.initialize(params);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*"));
+            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+        }
     }
 
     @Test
@@ -165,10 +179,14 @@ public class Pbkdf2PasswordHashImplTest {
         String INVALID_ITERATIONS = "3";
         params.put(PARAM_ITERATIONS, INVALID_ITERATIONS);
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-        pphi.initialize(params);
-        assertTrue("Hash parameters are not set as the minimum.", verifyFields(pphi, INDEX_SHA256, MINIMUM_ITERATIONS, DEFAULT_SALTSIZE, DEFAULT_KEYSIZE));
-        // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
-        assertTrue("CWWKS1917E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1917E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
+        try {
+            pphi.initialize(params);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
+            assertTrue("CWWKS1916E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1916E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
+            assertTrue("CWWKS1916E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1916E:"));
+        }
     }
 
     @Test
@@ -178,10 +196,13 @@ public class Pbkdf2PasswordHashImplTest {
         String INVALID_SALTSIZE = "5";
         params.put(PARAM_SALTSIZE, INVALID_SALTSIZE);
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-        pphi.initialize(params);
-        assertTrue("Hash parameters are not set as the minimum.", verifyFields(pphi, INDEX_SHA256, DEFAULT_ITERATIONS, MINIMUM_SALTSIZE, DEFAULT_KEYSIZE));
-        // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
-        assertTrue("CWWKS1917E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1917E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*" + MINIMUM_SALTSIZE + ".*"));
+        try {
+            pphi.initialize(params);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("CWWKS1916E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1916E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*" + MINIMUM_SALTSIZE + ".*"));
+            assertTrue("CWWKS1916E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1916E:"));
+        }
     }
 
     @Test
@@ -191,10 +212,13 @@ public class Pbkdf2PasswordHashImplTest {
         String INVALID_KEYSIZE = "8";
         params.put(PARAM_KEYSIZE, INVALID_KEYSIZE);
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
-        pphi.initialize(params);
-        assertTrue("Hash parameters are not set as the default.", verifyFields(pphi, INDEX_SHA256, DEFAULT_ITERATIONS, DEFAULT_SALTSIZE, MINIMUM_KEYSIZE));
-        // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
-        assertTrue("CWWKS1917E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1917E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*" + MINIMUM_KEYSIZE + ".*"));
+        try {
+            pphi.initialize(params);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("CWWKS1916E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1916E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*" + MINIMUM_KEYSIZE + ".*"));
+            assertTrue("CWWKS1916E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1916E:"));
+        }
     }
 
 
@@ -259,8 +283,12 @@ public class Pbkdf2PasswordHashImplTest {
         Map<String, String> params = new HashMap<String, String>();
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         pphi.initialize(params);
-        assertFalse("Hashed value should not match", pphi.verify(password, INVALID_VALUE));
-        assertTrue("CWWKS1916E: is not logged.", outputMgr.checkForStandardErr("CWWKS1916E:"));
+        try {
+            pphi.verify(password, INVALID_VALUE);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("Invalid message is not set in RuntimeException.", re.getMessage().contains("Invalid"));
+        }
     }
     @Test
     public void testVerifyInvalidAlgorithm() throws Exception {
@@ -270,8 +298,12 @@ public class Pbkdf2PasswordHashImplTest {
         Map<String, String> params = new HashMap<String, String>();
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         pphi.initialize(params);
-        assertFalse("Hashed value should not match", pphi.verify(password, INVALID_VALUE));
-        assertTrue("CWWKS1916E: is not logged.", outputMgr.checkForStandardErr("CWWKS1916E:"));
+        try {
+            pphi.verify(password, INVALID_VALUE);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("Invalid message is not set in RuntimeException.", re.getMessage().contains("Invalid"));
+        }
     }
 
     @Test
@@ -282,8 +314,12 @@ public class Pbkdf2PasswordHashImplTest {
         Map<String, String> params = new HashMap<String, String>();
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         pphi.initialize(params);
-        assertFalse("Hashed value should not match", pphi.verify(password, INVALID_VALUE));
-        assertTrue("CWWKS1916E: is not logged.", outputMgr.checkForStandardErr("CWWKS1916E:"));
+        try {
+            pphi.verify(password, INVALID_VALUE);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("Invalid message is not set in RuntimeException.", re.getMessage().contains("Invalid"));
+        }
     }
 
     @Test
@@ -294,8 +330,12 @@ public class Pbkdf2PasswordHashImplTest {
         Map<String, String> params = new HashMap<String, String>();
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         pphi.initialize(params);
-        assertFalse("Hashed value should not match", pphi.verify(password, INVALID_VALUE));
-        assertTrue("CWWKS1916E: is not logged.", outputMgr.checkForStandardErr("CWWKS1916E:"));
+        try {
+            pphi.verify(password, INVALID_VALUE);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("Invalid cause is not set in RuntimeException.", re.getMessage().contains("salt"));
+        }
     }
 
     @Test
@@ -306,8 +346,12 @@ public class Pbkdf2PasswordHashImplTest {
         Map<String, String> params = new HashMap<String, String>();
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         pphi.initialize(params);
-        assertFalse("Hashed value should not match", pphi.verify(password, INVALID_VALUE));
-        assertTrue("CWWKS1916E: is not logged.", outputMgr.checkForStandardErr("CWWKS1916E:"));
+        try {
+            pphi.verify(password, INVALID_VALUE);
+            fail("A RuntimeException should throw.");
+        } catch (RuntimeException re) {
+            assertTrue("Invalid cause is not set in RuntimeException.", re.getMessage().contains("hash"));
+        }
     }
 
 //-------------------- support methods ----------------------
