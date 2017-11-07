@@ -12,11 +12,14 @@ package com.ibm.ws.threading;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import com.ibm.websphere.ras.annotation.Trivial;
 
 /**
  * <p>Policy executors are backed by the Liberty global thread pool, but allow
@@ -31,6 +34,7 @@ public interface PolicyExecutor extends ExecutorService {
     /**
      * A policy for enforcing maximum concurrency.
      */
+    @Trivial
     public enum MaxPolicy {
         /**
          * Maximum concurrency is loosely enforced, in that tasks are allowed to run on the submitter's thread without counting against maximum concurrency.
@@ -208,4 +212,12 @@ public interface PolicyExecutor extends ExecutorService {
      * @see java.util.concurrent.ExecutorService#submit(java.lang.Runnable, java.lang.Object)
      */
     <T> PolicyTaskFuture<T> submit(Runnable task, T result, PolicyTaskCallback callback);
+
+    /**
+     * Update the configuration of this instance, either initially or as a modification.
+     * This method is appropriate for configuration-based OSGi service components (concurrencyPolicy).
+     *
+     * @param props key/value pairs containing the already-validated configuration.
+     */
+    void updateConfig(Map<String, Object> props);
 }

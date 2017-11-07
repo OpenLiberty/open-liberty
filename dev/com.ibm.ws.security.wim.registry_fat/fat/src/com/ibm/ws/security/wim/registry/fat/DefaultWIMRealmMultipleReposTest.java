@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 public class DefaultWIMRealmMultipleReposTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.registry.fat.DefaultWIMRealmMultipleRepos");
     private static final Class<?> c = DefaultWIMRealmMultipleReposTest.class;
