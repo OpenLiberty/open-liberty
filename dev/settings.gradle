@@ -78,7 +78,6 @@ def loadBuildProps() {
   props.setProperty('java.home', javaHome.getAbsolutePath())
 
   //scrape java.home JARs in jre/lib
-	
   FileTree jdkLibs = fileTree(System.properties['java.home'])
 
   //bin is needed for IBM JDKs
@@ -90,15 +89,13 @@ def loadBuildProps() {
   def jdkLibString = ""
   Boolean isFirstPass = true;
   
-  jdkLibs.each {File file -> 
-  
-
-  if (isFirstPass) {
-     jdkLibString = jdkLibString + file + ";version=file;boot=true"
-  } else {
-     jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
-  }
-	 isFirstPass = false;
+  jdkLibs.each { File file ->
+    if (isFirstPass) {
+      jdkLibString = jdkLibString + file + ";version=file;boot=true"
+    } else {
+      jdkLibString = jdkLibString + ", " + file + ";version=file;boot=true"
+    }
+    isFirstPass = false;
   }
 
   props.setProperty('javac.bootclasspath.1.4', jdkLibString)
