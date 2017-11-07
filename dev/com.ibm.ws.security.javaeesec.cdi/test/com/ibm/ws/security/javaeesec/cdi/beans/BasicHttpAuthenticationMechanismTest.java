@@ -643,8 +643,13 @@ public class BasicHttpAuthenticationMechanismTest {
     private BasicHttpAuthenticationMechanismTest setModulePropertiesProvider(final String realmName) {
         final Properties props = new Properties();
         props.put(JavaEESecConstants.REALM_NAME, realmName);
+        final Instance<ModulePropertiesProvider> mppi = mockery.mock(Instance.class, "mppi");
         mockery.checking(new Expectations() {
             {
+                one(cdi).select(ModulePropertiesProvider.class);
+                will(returnValue(mppi));
+                one(mppi).get();
+                will(returnValue(mpp));
                 one(mpp).getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
                 will(returnValue(props));
             }

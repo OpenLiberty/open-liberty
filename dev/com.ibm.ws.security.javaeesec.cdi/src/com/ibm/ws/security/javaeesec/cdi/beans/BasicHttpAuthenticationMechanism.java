@@ -21,7 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -48,8 +47,7 @@ import com.ibm.wsspi.security.token.AttributeNameConstants;
 @Default
 @ApplicationScoped
 public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
-    @Inject
-    ModulePropertiesProvider mpp;
+    ModulePropertiesProvider mpp = null;
 
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
 
@@ -76,6 +74,7 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     private void setRealmName() {
+        mpp = getModulePropertiesProvider();
         if (mpp != null) {
             Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
             if (props != null) {
@@ -291,6 +290,14 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
             }
         }
         return status;
+    }
+
+    protected ModulePropertiesProvider getModulePropertiesProvider() {
+        Instance<ModulePropertiesProvider> modulePropertiesProivderInstance = getCDI().select(ModulePropertiesProvider.class);
+        if (modulePropertiesProivderInstance != null) {
+            return modulePropertiesProivderInstance.get();
+        }
+        return null;
     }
 
     // this is for unit test.

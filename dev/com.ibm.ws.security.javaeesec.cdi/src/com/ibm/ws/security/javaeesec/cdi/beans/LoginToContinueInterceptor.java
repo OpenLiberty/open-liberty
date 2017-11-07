@@ -20,13 +20,9 @@ import javax.annotation.Priority;
 import javax.annotation.PostConstruct;
 import javax.el.ELProcessor;
 import javax.enterprise.inject.Instance;
-<<<<<<< HEAD
-import javax.enterprise.inject.spi.CDI;
-=======
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.inject.Inject;
->>>>>>> support multiple modules
+import javax.enterprise.inject.spi.CDI;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
@@ -70,14 +66,14 @@ import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 public class LoginToContinueInterceptor {
     private static final String METHOD_TO_INTERCEPT = "validateRequest";
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
-    @Inject
-    ModulePropertiesProvider mpp;
+    ModulePropertiesProvider mpp = null;
     private boolean resolved = false;
     private boolean isForward = true;
     private String elForward = null;
 
     @PostConstruct
     public void initialize (InvocationContext ic) {
+        mpp = getModulePropertiesProvider();
         if (mpp != null) {
             Class hamClass = getTargetClass(ic);
             initializeUseForwardToLogin(mpp.getAuthMechProperties(hamClass), isCustomHAM(hamClass));
@@ -312,6 +308,20 @@ public class LoginToContinueInterceptor {
     protected boolean isCustomHAM(Class className) {
         return !(CustomFormAuthenticationMechanism.class.equals(className) || FormAuthenticationMechanism.class.equals(className));
     }
+
+    protected ModulePropertiesProvider getModulePropertiesProvider() {
+        Instance<ModulePropertiesProvider> modulePropertiesProivderInstance = getCDI().select(ModulePropertiesProvider.class);
+        if (modulePropertiesProivderInstance != null) {
+            return modulePropertiesProivderInstance.get();
+        }
+        return null;
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected CDI getCDI() {
+        return CDI.current();
+    }
+
 
     protected void setMPP(ModulePropertiesProvider mpp) {
         this.mpp = mpp;
