@@ -38,7 +38,7 @@ import componenttest.topology.utils.LDAPUtils;
  * Test dynamic change to the server configuration.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 public class DynamicUpdateTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.core.fat.dynamic");

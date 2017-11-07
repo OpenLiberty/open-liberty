@@ -39,7 +39,7 @@ import componenttest.topology.utils.LDAPUtils;
  * and doesn't match any known repository. The expectation is that no calls will succeed.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 public class InvalidBaseEntryInRealmTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.core.fat.invalidBaseEntryInRealm");

@@ -40,7 +40,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 public class WithRepoConfiguredWithoutIDTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.file.fat.repowithoutid");
     private static final Class<?> c = WithRepoConfiguredWithoutIDTest.class;
