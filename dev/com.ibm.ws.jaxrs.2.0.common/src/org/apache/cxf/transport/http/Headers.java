@@ -77,7 +77,7 @@ public class Headers {
     //Liberty Change for CXF End
 
     private static final List<String> SENSITIVE_HEADERS = Arrays.asList("Authorization", "Proxy-Authorization");
-    private static final List<String> SENSITIVE_HEADER_MARKER = Arrays.asList("***");
+    private static final List<Object> SENSITIVE_HEADER_MARKER = Arrays.asList((Object) "***");
     private static final String ALLOW_LOGGING_SENSITIVE_HEADERS = "allow.logging.sensitive.headers";
     /**
      * Known HTTP headers whose values have to be represented as individual HTTP headers
