@@ -78,6 +78,8 @@ public class LoginToContinueInterceptorTest {
     
     private InvocationContext ici, icm;
     private ModulePropertiesProvider mpp;
+    private Instance<ModulePropertiesProvider> mppi;
+    
     private LoginToContinueInterceptor ltci;
     private ReferrerURLCookieHandler ruh;
     private WebAppSecurityConfig wasc;
@@ -89,6 +91,7 @@ public class LoginToContinueInterceptorTest {
     private SecurityMetadata smd;
     private RequestDispatcher rd;
     private ELProcessor elp, elpi, elpm;
+    private CDI cdi;
 
     private boolean isInterceptedMethod = false;
     private Class hamClass = null;
@@ -128,6 +131,7 @@ public class LoginToContinueInterceptorTest {
         ici = mockery.mock(InvocationContext.class, "ici");
         icm = mockery.mock(InvocationContext.class, "icm");
         mpp = mockery.mock(ModulePropertiesProvider.class);
+        mppi = mockery.mock(Instance.class, "mppi");
         wasc = mockery.mock(WebAppSecurityConfig.class);
         ruh = mockery.mock(ReferrerURLCookieHandler.class);
         hmc = mockery.mock(HttpMessageContext.class);
@@ -139,6 +143,7 @@ public class LoginToContinueInterceptorTest {
         res = mockery.mock(HttpServletResponse.class);
         elpi = mockery.mock(ELProcessor.class, "elpi");
         elpm = mockery.mock(ELProcessor.class, "elpm");
+        cdi = mockery.mock(CDI.class);
 
         ltci = new LoginToContinueInterceptor() {
             @Override
@@ -165,6 +170,11 @@ public class LoginToContinueInterceptorTest {
              protected ELProcessor getELProcessorWithAppModuleBeanManagerELResolver() {
                  return elp;
              }
+
+            @Override
+            protected CDI getCDI() {
+                return cdi;
+            }
         };
     }
 
@@ -173,10 +183,6 @@ public class LoginToContinueInterceptorTest {
         mockery.assertIsSatisfied();
         outputMgr.resetStreams();
     }
-
-
-
-
 
     /**
      *  initialize with no EL.
@@ -390,7 +396,6 @@ public class LoginToContinueInterceptorTest {
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP();
-
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
     }
@@ -483,6 +488,10 @@ public class LoginToContinueInterceptorTest {
     private LoginToContinueInterceptorTest withInitProps(final Properties props) throws Exception {
         mockery.checking(new Expectations() {
             {
+                one(cdi).select(ModulePropertiesProvider.class);
+                will(returnValue(mppi));
+                one(mppi).get();
+                will(returnValue(mpp));
                 one(mpp).getAuthMechProperties(with(any(Class.class)));
                 will(returnValue(props));
             }
@@ -529,6 +538,10 @@ public class LoginToContinueInterceptorTest {
         map.put(JaspiConstants.SECURITY_WEB_REQUEST, wr);
         mockery.checking(new Expectations() {
             {
+                one(cdi).select(ModulePropertiesProvider.class);
+                will(returnValue(mppi));
+                one(mppi).get();
+                will(returnValue(mpp));
                 // when trace is enabled, number of invocation would change, therefore it is set as 1 to 3.
                 between(1,3).of(mpp).getAuthMechProperties(with(any(Class.class)));
                 will(returnValue(props));

@@ -18,6 +18,7 @@ import static org.junit.Assert.assertTrue;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -49,6 +50,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import test.common.SharedOutputManager;
 
 public class JavaEESecCDIExtensionTest {
@@ -408,6 +410,9 @@ public class JavaEESecCDIExtensionTest {
         assertFalse("incorrect result.", j3ce.isIdentityStore(pb));
     }
 
+
+// TODO: need to add tests for equalsLdapDefinition params.
+
     public @interface InvalidAnnotation {}
 
     private InvalidAnnotation getIAInstance() {
@@ -722,4 +727,143 @@ public class JavaEESecCDIExtensionTest {
         };
         return ann;
     }
+
+
+    private LdapIdentityStoreDefinition getLdapDefinitionForEqualsTest(final Map<String, Object> overrides) {
+        LdapIdentityStoreDefinition annotation = new LdapIdentityStoreDefinition() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return null;
+            }
+
+            @Override
+            public String bindDn() {
+                return (overrides != null && overrides.containsKey("bindDn")) ? (String) overrides.get("bindDn") : "";
+            }
+
+            @Override
+            public String bindDnPassword() {
+                return (overrides != null && overrides.containsKey("bindDnPassword")) ? (String) overrides.get("bindDnPassword") : "";
+            }
+
+            @Override
+            public String callerBaseDn() {
+                return (overrides != null && overrides.containsKey("callerBaseDn")) ? (String) overrides.get("callerBaseDn") : "";
+            }
+
+            @Override
+            public String callerNameAttribute() {
+                return (overrides != null && overrides.containsKey("callerNameAttribute")) ? (String) overrides.get("callerNameAttribute") : "uid";
+            }
+
+            @Override
+            public String callerSearchBase() {
+                return (overrides != null && overrides.containsKey("callerSearchBase")) ? (String) overrides.get("callerSearchBase") : "";
+            }
+
+            @Override
+            public String callerSearchFilter() {
+                return (overrides != null && overrides.containsKey("callerSearchFilter")) ? (String) overrides.get("callerSearchFilter") : "";
+
+            }
+
+            @Override
+            public LdapSearchScope callerSearchScope() {
+                return (overrides != null && overrides.containsKey("callerSearchScope")) ? (LdapSearchScope) overrides.get("callerSearchScope") : LdapSearchScope.SUBTREE;
+            }
+
+            @Override
+            public String callerSearchScopeExpression() {
+                return (overrides != null && overrides.containsKey("callerSearchScopeExpression")) ? (String) overrides.get("callerSearchScopeExpression") : "";
+            }
+
+            @Override
+            public String groupMemberAttribute() {
+                return (overrides != null && overrides.containsKey("groupMemberAttribute")) ? (String) overrides.get("groupMemberAttribute") : "member";
+            }
+
+            @Override
+            public String groupMemberOfAttribute() {
+                return (overrides != null && overrides.containsKey("groupMemberOfAttribute")) ? (String) overrides.get("groupMemberOfAttribute") : "memberOf";
+            }
+
+            @Override
+            public String groupNameAttribute() {
+                return (overrides != null && overrides.containsKey("groupNameAttribute")) ? (String) overrides.get("groupNameAttribute") : "cn";
+            }
+
+            @Override
+            public String groupSearchBase() {
+                return (overrides != null && overrides.containsKey("groupSearchBase")) ? (String) overrides.get("groupSearchBase") : "";
+            }
+
+            @Override
+            public String groupSearchFilter() {
+                return (overrides != null && overrides.containsKey("groupSearchFilter")) ? (String) overrides.get("groupSearchFilter") : "";
+            }
+
+            @Override
+            public LdapSearchScope groupSearchScope() {
+                return (overrides != null && overrides.containsKey("groupSearchScope")) ? (LdapSearchScope) overrides.get("groupSearchScope") : LdapSearchScope.SUBTREE;
+            }
+
+            @Override
+            public String groupSearchScopeExpression() {
+                return (overrides != null && overrides.containsKey("groupSearchScopeExpression")) ? (String) overrides.get("groupSearchScopeExpression") : "";
+            }
+
+            @Override
+            public int maxResults() {
+                return (overrides != null && overrides.containsKey("maxResults")) ? (Integer) overrides.get("maxResults") : 1000;
+            }
+
+            @Override
+            public String maxResultsExpression() {
+                return (overrides != null && overrides.containsKey("maxResultsExpression")) ? (String) overrides.get("maxResultsExpression") : "";
+            }
+
+            @Override
+            public int priority() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY)) ? (Integer) overrides.get(JavaEESecConstants.PRIORITY) : 80;
+            }
+
+            @Override
+            public String priorityExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.PRIORITY_EXPRESSION) : "";
+            }
+
+            @Override
+            public int readTimeout() {
+                return (overrides != null && overrides.containsKey("readTimeout")) ? (Integer) overrides.get("readTimeout") : 0;
+            }
+
+            @Override
+            public String readTimeoutExpression() {
+                return (overrides != null && overrides.containsKey("readTimeoutExpression")) ? (String) overrides.get("readTimeoutExpression") : "";
+            }
+
+            @Override
+            public String url() {
+                return (overrides != null && overrides.containsKey("url")) ? (String) overrides.get("url") : "";
+            }
+
+            @Override
+            public ValidationType[] useFor() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.USE_FOR)) ? (ValidationType[]) overrides.get(JavaEESecConstants.USE_FOR) : new ValidationType[] { ValidationType.PROVIDE_GROUPS,
+                                                                                                                                                                      ValidationType.VALIDATE };
+            }
+
+            @Override
+            public String useForExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.USE_FOR_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.USE_FOR_EXPRESSION) : "";
+            }
+
+        };
+
+        return annotation;
+    }
+
+
 }
