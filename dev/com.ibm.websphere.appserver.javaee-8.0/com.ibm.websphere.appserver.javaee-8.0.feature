@@ -10,7 +10,6 @@ Subsystem-Name: Java EE Full Platform 8.0
   com.ibm.websphere.appserver.appClientSupport-1.0,\
   com.ibm.websphere.appserver.concurrent-1.0,\
   com.ibm.websphere.appserver.jacc-1.5,\
-  com.ibm.websphere.appserver.jaspic-1.1,\
   com.ibm.websphere.appserver.javaMail-1.6,\
   com.ibm.websphere.appserver.jaxws-2.2,\
   com.ibm.websphere.appserver.jca-1.7,\
