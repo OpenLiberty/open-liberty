@@ -85,14 +85,18 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             Tr.debug(tc, "original Hash length : " + (originalHash != null?originalHash.length:"null"));
         }
         if (originalHash == null) {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "JAVAEESEC_INVALID_HASH_VALUE"));
+            String message = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA", Tr.formatMessage(tc, "JAVAEESEC_INVALID_HASH_VALUE"));
+            Tr.error(tc, message);
+            throw new IllegalArgumentException(message);
         }
         byte[] salt = Base64Coder.base64DecodeString(items[2]);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "original Salt length : " + (salt != null?salt.length:"null"));
         }
         if (salt == null) {
-            throw new IllegalArgumentException(Tr.formatMessage(tc, "JAVAEESEC_INVALID_SALT_VALUE"));
+            String message = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA", Tr.formatMessage(tc, "JAVAEESEC_INVALID_SALT_VALUE"));
+            Tr.error(tc, message);
+            throw new IllegalArgumentException(message);
         }
         byte[] calculatedHash = generate(items[0], Integer.parseInt(items[1]), originalHash.length, salt, password);
         return Arrays.equals(originalHash, calculatedHash);
@@ -134,6 +138,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             }
         }
         String message = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA", error);
+        Tr.error(tc, message);
         throw new IllegalArgumentException(message);
     }
 
