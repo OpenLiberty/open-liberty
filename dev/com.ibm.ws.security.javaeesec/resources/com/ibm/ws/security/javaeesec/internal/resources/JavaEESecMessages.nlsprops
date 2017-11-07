@@ -43,9 +43,9 @@ JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1915E: The value {0} of the conf
 JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=The value of the configuration parameter is not valid.
 JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Make sure that the configuration parameter is set correctly.
 
-JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1916E: The value {0} of the configuration parameter {1} is fewer than the minimum value {2}.
-JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=The value of the configuration parameter is fewer than the minimum value.
-JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Make sure that the configuration parameter is equal or grater than the minimum value.
+JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1916E: The value {0} of the configuration parameter {1} is less than the minimum value {2}.
+JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=The value of the configuration parameter is less than the minimum value.
+JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Make sure that the configuration parameter value is equal to or greater than the minimum value.
 
 JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1917E: The hashed data is invalid. {0}
 JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA.explanation=The hashed value in the database is not valid.
