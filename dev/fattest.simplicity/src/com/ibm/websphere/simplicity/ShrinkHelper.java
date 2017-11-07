@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -42,6 +43,16 @@ public class ShrinkHelper {
         String serverDir = "publish/servers/" + server.getServerName();
         exportArtifact(a, serverDir + '/' + path);
         server.copyFileToLibertyServerRoot(serverDir + "/" + path, path, a.getName());
+    }
+
+    /**
+     * Export an artifact to clients/$client.getName()/$path/$a.getName() under two directories:
+     * autoFVT/publish/... and wlp/usr/...
+     */
+    public static void exportToClient(LibertyClient client, String path, Archive<?> a) throws Exception {
+        String clientDir = "publish/clients/" + client.getClientName();
+        exportArtifact(a, clientDir + '/' + path);
+        client.copyFileToLibertyClientRoot(clientDir + "/" + path, path, a.getName());
     }
 
     /**

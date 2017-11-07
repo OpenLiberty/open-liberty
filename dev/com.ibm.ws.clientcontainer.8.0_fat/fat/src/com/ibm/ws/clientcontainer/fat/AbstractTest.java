@@ -25,8 +25,6 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyClientFactory;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.impl.LibertyServerFactory;
 
 public abstract class AbstractTest {
     @ClassRule
@@ -34,8 +32,8 @@ public abstract class AbstractTest {
 
     protected String testClientName = "com.ibm.ws.clientcontainer.fat.ClientContainerClient";
     protected LibertyClient client = LibertyClientFactory.getLibertyClient(getClientName());
-    protected String testServerName = "com.ibm.ws.clientcontainer.fat.ClientContainerServer";
-    protected LibertyServer server = LibertyServerFactory.getLibertyServer(getServerName());
+    // protected String testServerName = "com.ibm.ws.clientcontainer.fat.ClientContainerServer";
+    //protected LibertyServer server = LibertyServerFactory.getLibertyServer(getServerName());
 
     @Rule
     public TestName name = new TestName();
@@ -45,11 +43,7 @@ public abstract class AbstractTest {
     }
 
     protected ProgramOutput startProcess(boolean isClient) throws Exception {
-        if (isClient) {
-            return client.startClient();
-        } else {
-            return server.startServer();
-        }
+        return client.startClient();
     }
 
     protected void startProcessWithArgs(List<String> args) throws Exception {
@@ -70,14 +64,14 @@ public abstract class AbstractTest {
     }
 
     protected void stopProcess(boolean isClient) throws Exception {
-        if (isClient) {
-            // nothing to do
-        } else {
-            // stop server.
-            if (server.isStarted()) {
-                server.stopServer("CWWk*");
-            }
-        }
+//        if (isClient) {
+//            // nothing to do
+//        } else {
+//            // stop server.
+//            if (server.isStarted()) {
+//                server.stopServer("CWWk*");
+//            }
+//        }
     }
 
     protected void assertStartMessages() {
@@ -97,7 +91,7 @@ public abstract class AbstractTest {
                           client.waitForStringInCopiedLog("CWWKF0035I:.*" + testClientName));
         } else {
             // assert server start messages
-            assertNotNull("FAIL: Did not receive smarter planet message:CWWKF0011I", server.waitForStringInLog("CWWKF0011I"));
+            //assertNotNull("FAIL: Did not receive smarter planet message:CWWKF0011I", server.waitForStringInLog("CWWKF0011I"));
         }
     }
 
@@ -114,6 +108,7 @@ public abstract class AbstractTest {
     }
 
     protected String getServerName() {
-        return testServerName;
+        return "";
+        //return testServerName;
     }
 }

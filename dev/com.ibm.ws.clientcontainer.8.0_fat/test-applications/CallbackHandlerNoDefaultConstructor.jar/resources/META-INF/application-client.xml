@@ -2,6 +2,6 @@
 <!DOCTYPE application-client PUBLIC "-//Sun Microsystems, Inc.//DTD J2EE Application Client 1.2//EN"  "http://java.sun.com/j2ee/dtds/application-client_1_2.dtd">
    <application-client id="Application-client_ID">
       <display-name>HelloApplicationClient</display-name>
-      <callback-handler>com.ibm.ws.clientcontainer.fat.MyWSCallbackHandlerNoDefaultConstructorImpl
+      <callback-handler>com.ibm.ws.clientcontainer.CallbackHandlerNoDefaultConstructor.test.MyWSCallbackHandlerNoDefaultConstructorImpl
       </callback-handler>
    </application-client>

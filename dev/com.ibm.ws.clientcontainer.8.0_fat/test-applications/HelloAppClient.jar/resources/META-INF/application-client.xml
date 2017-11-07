@@ -6,13 +6,13 @@
          <lifecycle-callback-method>postConstruct</lifecycle-callback-method>
       </post-construct>	      
       <post-construct>
-         <lifecycle-callback-class>com.ibm.ws.clientcontainer.fat.MyWSCallbackHandlerImpl</lifecycle-callback-class>
+         <lifecycle-callback-class>com.ibm.ws.clientcontainer.HelloAppClient.test.MyWSCallbackHandlerImpl</lifecycle-callback-class>
          <lifecycle-callback-method>postConstruct</lifecycle-callback-method>
       </post-construct>	
       <pre-destroy>
-         <lifecycle-callback-class>com.ibm.ws.clientcontainer.fat.MyWSCallbackHandlerImpl</lifecycle-callback-class>
+         <lifecycle-callback-class>com.ibm.ws.clientcontainer.HelloAppClient.test.MyWSCallbackHandlerImpl</lifecycle-callback-class>
          <lifecycle-callback-method>preDestroy</lifecycle-callback-method>
       </pre-destroy>
-      <callback-handler>com.ibm.ws.clientcontainer.fat.MyWSCallbackHandlerImpl
+      <callback-handler>com.ibm.ws.clientcontainer.HelloAppClient.test.MyWSCallbackHandlerImpl
       </callback-handler>
    </application-client>
