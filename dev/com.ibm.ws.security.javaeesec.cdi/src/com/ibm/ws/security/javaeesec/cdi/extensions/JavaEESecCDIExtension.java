@@ -19,6 +19,7 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -356,6 +357,11 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     private boolean containsLdapDefinition(LdapIdentityStoreDefinition ldapDefinition, List<LdapIdentityStoreDefinition> ldapDefinitionList) {
+        for(LdapIdentityStoreDefinition lisd : ldapDefinitionList) {
+            if (equalsLdapDefinition(ldapDefinition, lisd)) {
+                return true;
+            }
+        }
         return false;
     }
 
@@ -519,19 +525,19 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                lisd1.readTimeoutExpression().equals(lisd2.readTimeoutExpression()) &&
                lisd1.url().equals(lisd2.url()) &&
                equalsUseFor(lisd1.useFor(), lisd2.useFor()) &&
-               lisd1.useForExpression().equals.(lisd2.useForExpression());
+               lisd1.useForExpression().equals(lisd2.useForExpression());
     }
 
     protected boolean equalsUseFor(ValidationType[] vt1, ValidationType[] vt2) {
         if (vt1 == vt2) {
             return true;
-        } else if ((vt1.length == vt2.length) && (vt1.lengtih ==1)) {
+        } else if ((vt1.length == vt2.length) && (vt1.length ==1)) {
             return vt1[0] == vt2[0];
         } else {
             List<ValidationType> list1 = Arrays.asList(vt1);
             List<ValidationType> list2 = Arrays.asList(vt2);
             return (list1.contains(ValidationType.PROVIDE_GROUPS) == list2.contains(ValidationType.PROVIDE_GROUPS)) &&
-                   (list1.contains(ValidationType.VALIDATE) == list2.contains(ValidationType.VALIDATE))
+                   (list1.contains(ValidationType.VALIDATE) == list2.contains(ValidationType.VALIDATE));
         }
     }
 
