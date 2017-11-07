@@ -178,6 +178,7 @@ public abstract class AbstractHTTPDestination
 
                 if (authBytes == null) {
                     throw new Base64Exception(new Throwable("Invalid Base64 data."));
+                }
 
                 String authDecoded = decodeBasicAuthWithIso8859
                     ? new String(authBytes, StandardCharsets.ISO_8859_1) : new String(authBytes);

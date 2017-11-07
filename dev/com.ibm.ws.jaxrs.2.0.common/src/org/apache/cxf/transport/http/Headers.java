@@ -119,8 +119,9 @@ public class Headers {
         String version = Version.getCurrentVersion();
         return name + "/" + version;
     }
-    static String toString(Map<String, List<String>> headers, boolean logSensitiveHeaders) {
-        Map<String, List<String>> filteredHeaders = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+
+    static String toString(Map<String, List<Object>> headers, boolean logSensitiveHeaders) {
+        Map<String, List<Object>> filteredHeaders = new TreeMap<String, List<Object>>(String.CASE_INSENSITIVE_ORDER);
         filteredHeaders.putAll(headers);
         if (!logSensitiveHeaders) {
             for (String filteredKey : SENSITIVE_HEADERS) {
@@ -310,14 +311,14 @@ public class Headers {
      * @param headers The Message protocol headers.
      */
     static void logProtocolHeaders(Level level,
-                                   Map<String, List<String>> headersMap,
+                                   Map<String, List<Object>> headersMap,
                                    boolean logSensitiveHeaders) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            for (Map.Entry<String, List<String>> entry : headersMap.entrySet()) {
+            for (Map.Entry<String, List<Object>> entry : headersMap.entrySet()) {
                 String key = entry.getKey();
                 boolean sensitive = !logSensitiveHeaders && SENSITIVE_HEADERS.contains(key);
-                List<String> headerList = sensitive ? SENSITIVE_HEADER_MARKER : entry.getValue();
-                for (String value : headerList) {
+                List<Object> headerList = sensitive ? SENSITIVE_HEADER_MARKER : entry.getValue();
+                for (Object value : headerList) {
                     Tr.debug(tc, key + ": "
                                  + (value == null ? "<null>" : value.toString()));
                 }
@@ -366,7 +367,9 @@ public class Headers {
         }
 
         transferProtocolHeadersToURLConnection(connection);
-        logProtocolHeaders(Level.FINE, headers, logSensitiveHeaders());
+
+        Map<String, List<Object>> theHeaders = CastUtils.cast(headers);
+        logProtocolHeaders(Level.FINE, theHeaders, logSensitiveHeaders());
     }
 
     public String determineContentType() {
@@ -455,7 +458,8 @@ public class Headers {
             headers.put(Message.CONTENT_TYPE, Collections.singletonList(req.getContentType()));
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Request Headers: " + toString(headers,
+            Map<String, List<Object>> theHeaders = CastUtils.cast(headers);
+            Tr.debug(tc, "Request Headers: " + toString(theHeaders,
                                                                logSensitiveHeaders()));
         }
     }
