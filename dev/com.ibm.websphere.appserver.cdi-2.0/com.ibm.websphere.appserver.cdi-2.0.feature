@@ -12,6 +12,7 @@ IBM-API-Package: javax.decorator;  type="spec", \
  javax.enterprise.inject;  type="spec", \
  javax.enterprise.inject.literal;  type="spec", \
  javax.enterprise.inject.spi;  type="spec", \
+ javax.enterprise.inject.spi.configurator;  type="spec", \
  javax.enterprise.util;  type="spec", \
  javax.inject;  type="spec", \
  javax.interceptor;  type="spec", \

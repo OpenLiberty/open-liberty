@@ -8,17 +8,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package interceptionFactoryApp.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.inject.Vetoed;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                BeanManagerLookupTest.class,
-                InterceptionFactoryTest.class,
-})
-public class FATSuite {
+@Vetoed
+public class Thing {
 
+    public String hello() {
+        return "hello";
+    }
 }
