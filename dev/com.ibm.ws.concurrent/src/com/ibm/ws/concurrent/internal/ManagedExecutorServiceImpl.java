@@ -12,7 +12,6 @@ package com.ibm.ws.concurrent.internal;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
@@ -56,7 +55,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
@@ -67,7 +65,6 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.resource.ResourceFactory;
 import com.ibm.wsspi.resource.ResourceInfo;
-import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
@@ -178,12 +175,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<Map<String, String>> defaultExecutionProperties = new AtomicReference<Map<String, String>>();
 
     /**
-     * Reference to the (unmanaged) executor service for this managed executor service.
-     */
-    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    volatile ExecutorService executorService;
-
-    /**
      * Count of futures. In combination with FUTURE_PURGE_INTERVAL, this determines when to purge completed futures from the list.
      */
     volatile int futureCount;
@@ -200,15 +191,15 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<String> jndiNameRef = new AtomicReference<String>();
 
     /**
+     * Executor that runs tasks against the general concurrency policy for this managed executor.
+     */
+    private volatile PolicyExecutor policyExecutor;
+
+    /**
      * Reference to the name of this managed executor service.
      * The name is the jndiName if specified, otherwise the config id.
      */
     final AtomicReference<String> name = new AtomicReference<String>();
-
-    /**
-     * Executor that runs tasks against the general concurrency policy for this managed executor.
-     */
-    private volatile PolicyExecutor policyExecutor;
 
     /**
      * Privileged action to lazily obtain the transaction context provider.
@@ -220,9 +211,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
             return tranContextProviderRef.getService();
         }
     };
-
-    // TODO temporary code that gates whether or not to use a policy executor
-    private boolean usePolicyExecutor;
 
     /**
      * Reference to the transaction context provider.
@@ -252,9 +240,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         execProps.put(WSContextService.DEFAULT_CONTEXT, WSContextService.UNCONFIGURED_CONTEXT_TYPES);
         execProps.put(WSContextService.TASK_OWNER, xsvcName);
         defaultExecutionProperties.set(execProps);
-
-        // TODO replace this temporary prototype code
-        usePolicyExecutor = "enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use"));
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "activate");
@@ -306,10 +291,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     protected void deactivate(ComponentContext context) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // TODO replace this temporary prototype code - only cancel tasks that were submitted by this managed executor instead of shutting down the whole executor
-        if (policyExecutor != null)
-            policyExecutor.shutdownNow();
-
         contextSvcRef.deactivate(context);
         tranContextProviderRef.deactivate(context);
 
@@ -329,46 +310,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /**
-     * Capture context for a list of tasks.
-     *
-     * @param tasks collection of tasks to contextualize.
-     * @param invokeAll indicates if all tasks must be submitted.
-     * @return contextualized tasks.
-     */
-    private <T> ArrayList<SubmittedTask<T>> contextualize(Collection<? extends Callable<T>> tasks, boolean invokeAll) {
-        WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
-
-        // Thread context capture is expensive, so reuse captured context when execution properties match
-        Map<Map<String, String>, ThreadContextDescriptor> execPropsToThreadContext = new HashMap<Map<String, String>, ThreadContextDescriptor>();
-
-        ArrayList<SubmittedTask<T>> list = new ArrayList<SubmittedTask<T>>(tasks.size());
-        for (Callable<T> task : tasks) {
-            Map<String, String> execProps = getExecutionProperties(task);
-            ThreadContextDescriptor threadContextDescriptor = execPropsToThreadContext.get(execProps);
-            if (threadContextDescriptor == null)
-                execPropsToThreadContext.put(execProps, threadContextDescriptor = contextSvc.captureThreadContext(execProps));
-
-            SubmittedTask<T> taskToSubmit = new SubmittedTask<T>(this, task, threadContextDescriptor, null);
-            if (taskToSubmit.future.isCancelled())
-                if (invokeAll)
-                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", taskToSubmit.getName(), name));
-                else
-                    continue; // skip this task because it was canceled
-            list.add(taskToSubmit);
-        }
-
-        if (list.isEmpty() && !tasks.isEmpty())
-            throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1112.all.tasks.canceled"));
-
-        return list;
-    }
-
-    /**
      * Capture context for a list of tasks and create callbacks that apply context and notify the ManagedTaskListener, if any.
      *
      * @param tasks collection of tasks.
      * @return list of callbacks.
      */
+    @SuppressWarnings("unchecked")
     private <T> PolicyTaskCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
 
@@ -449,111 +396,29 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /** {@inheritDoc} */
-    @FFDCIgnore(InterruptedException.class)
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
-        // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks));
-
-        ExecutorService execSvc = getExecSvc();
-
-        ArrayList<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, true);
-
-        List<Future<T>> futures;
-        try {
-            futures = execSvc.invokeAll(tasksToSubmit);
-        } catch (InterruptedException x) {
-            for (SubmittedTask<T> task : tasksToSubmit)
-                if (!task.future.isDone())
-                    task.future.cancel(true);
-            throw x;
-        }
-
-        ArrayList<Future<T>> futureList = new ArrayList<Future<T>>(tasksToSubmit.size());
-        int index = 0;
-        for (Future<T> future : futures) {
-            SubmittedTask<T> submittedTask = tasksToSubmit.get(index++);
-            submittedTask.future.set(future);
-            futureList.add(submittedTask.future);
-        }
-        return futureList;
+        return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks));
     }
 
     /** {@inheritDoc} */
-    @FFDCIgnore(InterruptedException.class)
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
-        // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
-
-        ExecutorService execSvc = getExecSvc();
-
-        ArrayList<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, true);
-
-        List<Future<T>> futures;
-        try {
-            futures = execSvc.invokeAll(tasksToSubmit, timeout, unit);
-        } catch (InterruptedException x) {
-            for (SubmittedTask<T> task : tasksToSubmit)
-                if (!task.future.isDone())
-                    task.future.cancel(true);
-            throw x;
-        }
-
-        ArrayList<Future<T>> futureList = new ArrayList<Future<T>>(tasksToSubmit.size());
-        int index = 0;
-        for (Future<T> future : futures) {
-            SubmittedTask<T> submittedTask = tasksToSubmit.get(index++);
-            submittedTask.future.set(future);
-            if (!submittedTask.future.isDone())
-                submittedTask.future.cancel(true);
-            futureList.add(submittedTask.future);
-        }
-        return futureList;
+        return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
     }
 
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
-        // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return policyExecutor.invokeAny(tasks, createCallbacks(tasks));
-
-        ExecutorService execSvc = getExecSvc();
-
-        Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);
-
-        try {
-            return execSvc.invokeAny(tasksToSubmit);
-        } finally {
-            for (SubmittedTask<T> task : tasksToSubmit)
-                if (!task.future.isDone())
-                    task.future.cancel(true);
-        }
+        return policyExecutor.invokeAny(tasks, createCallbacks(tasks));
     }
 
     /** {@inheritDoc} */
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
-        // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return policyExecutor.invokeAny(tasks, createCallbacks(tasks), timeout, unit);
-
-        ExecutorService execSvc = getExecSvc();
-
-        Collection<SubmittedTask<T>> tasksToSubmit = contextualize(tasks, false);
-
-        try {
-            return execSvc.invokeAny(tasksToSubmit, timeout, unit);
-        } finally {
-            for (SubmittedTask<T> task : tasksToSubmit)
-                if (!task.future.isDone())
-                    task.future.cancel(true);
-        }
+        return policyExecutor.invokeAny(tasks, createCallbacks(tasks), timeout, unit);
     }
 
     /** {@inheritDoc} */
@@ -630,62 +495,33 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Future<T> submit(Callable<T> task) {
         Map<String, String> execProps = getExecutionProperties(task);
 
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
 
-        // TODO replace this temporary prototype code
-        if (usePolicyExecutor) {
-            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-            return policyExecutor.submit(task, callback);
-        }
-
-        ExecutorService execSvc = getExecSvc();
-
-        SubmittedTask<T> taskToSubmit = new SubmittedTask<T>(this, task, contextSvc.captureThreadContext(execProps), null);
-        if (taskToSubmit.future.isCancelled())
-            throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", taskToSubmit.getName(), name));
-
-        taskToSubmit.future.set(execSvc.submit((Callable<T>) taskToSubmit));
-
-        if (futures.add(taskToSubmit.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
+        PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+        Future<T> future = policyExecutor.submit(task, callback);
+        if (futures.add(future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
-        return taskToSubmit.future;
+        return future;
     }
 
     /** {@inheritDoc} */
+    @SuppressWarnings("unchecked")
     @Override
     public <T> Future<T> submit(Runnable task, T result) {
         Map<String, String> execProps = getExecutionProperties(task);
 
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
 
-        // TODO replace this temporary prototype code
-        if (usePolicyExecutor) {
-            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-            return policyExecutor.submit(task, result, callback);
-        }
-
-        ExecutorService execSvc = getExecSvc();
-
-        SubmittedTask<T> taskToSubmit = new SubmittedTask<T>(this, task, contextSvc.captureThreadContext(execProps), result);
-        if (taskToSubmit.future.isCancelled())
-            throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKC1110.task.canceled", taskToSubmit.getName(), name));
-
-        taskToSubmit.future.set(execSvc.submit(taskToSubmit, result));
-
-        if (futures.add(taskToSubmit.future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
+        PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+        Future<T> future = policyExecutor.submit(task, result, callback);
+        if (futures.add(future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
             purgeFutures();
-        return taskToSubmit.future;
-    }
-
-    private ExecutorService getExecSvc() {
-        ExecutorService execSvc = this.executorService;
-        if (execSvc == null)
-            throw new RejectedExecutionException();
-        return execSvc;
+        return future;
     }
 
     /** {@inheritDoc} */

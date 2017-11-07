@@ -31,20 +31,18 @@
     <jeeMetadataContext/>
   </contextService>
 
-  <!-- TODO remove the internal attribute once managed executors are switched over to using policy executor -->
+  <managedExecutorService id="DefaultManagedExecutorService"/>
 
-  <managedExecutorService id="DefaultManagedExecutorService" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"/>
-
-  <managedScheduledExecutorService id="DefaultManagedScheduledExecutorService" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only">
+  <managedScheduledExecutorService id="DefaultManagedScheduledExecutorService">
    <concurrencyPolicy expedite="0" max="4" maxPolicy="strict" maxQueueSize="1" runIfQueueFull="true"/>
   </managedScheduledExecutorService>
 
-  <managedExecutorService id="executor1" jndiName="concurrent/executor1" contextServiceRef="jeeMetadataOnly" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only">
+  <managedExecutorService id="executor1" jndiName="concurrent/executor1" contextServiceRef="jeeMetadataOnly">
    <concurrencyPolicy max="1" maxPolicy="strict" maxQueueSize="1" maxWaitForEnqueue="0" runIfQueueFull="false"/>
   </managedExecutorService>
 
-  <managedScheduledExecutorService jndiName="concurrent/scheduledExecutor2" concurrencyPolicyRef="normal" contextServiceRef="jeeMetadataOnly" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"/>
+  <managedScheduledExecutorService jndiName="concurrent/scheduledExecutor2" concurrencyPolicyRef="normal" contextServiceRef="jeeMetadataOnly"/>
 
-  <managedExecutorService id="executor2" jndiName="concurrent/executor2" concurrencyPolicyRef="normal" longRunningPolicyRef="longrunning" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"/>
+  <managedExecutorService id="executor2" jndiName="concurrent/executor2" concurrencyPolicyRef="normal" longRunningPolicyRef="longrunning"/>
 
 </server>
