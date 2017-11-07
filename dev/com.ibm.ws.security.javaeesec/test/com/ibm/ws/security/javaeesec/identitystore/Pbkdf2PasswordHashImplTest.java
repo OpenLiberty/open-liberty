@@ -117,10 +117,10 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         try {
             pphi.initialize(params);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
             assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_ALGORITHM + ".*" + PARAM_ALGORITHM + ".*"));
-            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+            assertTrue("CWWKS1915E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1915E:"));
         }
     }
 
@@ -133,10 +133,10 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         try {
             pphi.initialize(params);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
             assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
-            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+            assertTrue("CWWKS1915E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1915E:"));
         }
     }
 
@@ -149,10 +149,10 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         try {
             pphi.initialize(params);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
             assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*"));
-            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+            assertTrue("CWWKS1915E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1915E:"));
         }
     }
 
@@ -165,10 +165,10 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         try {
             pphi.initialize(params);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
             assertTrue("CWWKS1915E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1915E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*"));
-            assertTrue("CWWKS1915E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1915E:"));
+            assertTrue("CWWKS1915E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1915E:"));
         }
     }
 
@@ -181,11 +181,11 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         try {
             pphi.initialize(params);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
             // no default number check since the the value is more than a thousand of which format might be different if the locale is other than English.
             assertTrue("CWWKS1916E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1916E:.*" + INVALID_ITERATIONS + ".*" + PARAM_ITERATIONS + ".*"));
-            assertTrue("CWWKS1916E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1916E:"));
+            assertTrue("CWWKS1916E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1916E:"));
         }
     }
 
@@ -198,10 +198,10 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         try {
             pphi.initialize(params);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
             assertTrue("CWWKS1916E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1916E:.*" + INVALID_SALTSIZE + ".*" + PARAM_SALTSIZE + ".*" + MINIMUM_SALTSIZE + ".*"));
-            assertTrue("CWWKS1916E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1916E:"));
+            assertTrue("CWWKS1916E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1916E:"));
         }
     }
 
@@ -214,10 +214,10 @@ public class Pbkdf2PasswordHashImplTest {
         Pbkdf2PasswordHashImpl pphi = new Pbkdf2PasswordHashImpl();
         try {
             pphi.initialize(params);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
             assertTrue("CWWKS1916E: is not logged, or the error string is not included in the message.", outputMgr.checkForStandardErr("CWWKS1916E:.*" + INVALID_KEYSIZE + ".*" + PARAM_KEYSIZE + ".*" + MINIMUM_KEYSIZE + ".*"));
-            assertTrue("CWWKS1916E: message is not set in the RuntimeException.", re.getMessage().contains("CWWKS1916E:"));
+            assertTrue("CWWKS1916E: message is not set in the IllegalArgumentException.", re.getMessage().contains("CWWKS1916E:"));
         }
     }
 
@@ -285,9 +285,9 @@ public class Pbkdf2PasswordHashImplTest {
         pphi.initialize(params);
         try {
             pphi.verify(password, INVALID_VALUE);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
-            assertTrue("Invalid message is not set in RuntimeException.", re.getMessage().contains("Invalid"));
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
+            assertTrue("CWWKS1917E message is not set in IllegalArgumentException.", re.getMessage().contains("CWWKS1917E"));
         }
     }
     @Test
@@ -300,9 +300,9 @@ public class Pbkdf2PasswordHashImplTest {
         pphi.initialize(params);
         try {
             pphi.verify(password, INVALID_VALUE);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
-            assertTrue("Invalid message is not set in RuntimeException.", re.getMessage().contains("Invalid"));
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
+            assertTrue("CWWKS1917E message is not set in IllegalArgumentException.", re.getMessage().contains("CWWKS1917E"));
         }
     }
 
@@ -316,9 +316,9 @@ public class Pbkdf2PasswordHashImplTest {
         pphi.initialize(params);
         try {
             pphi.verify(password, INVALID_VALUE);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
-            assertTrue("Invalid message is not set in RuntimeException.", re.getMessage().contains("Invalid"));
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
+            assertTrue("CWWKS1917E message is not set in IllegalArgumentException.", re.getMessage().contains("CWWKS1917E"));
         }
     }
 
@@ -332,9 +332,9 @@ public class Pbkdf2PasswordHashImplTest {
         pphi.initialize(params);
         try {
             pphi.verify(password, INVALID_VALUE);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
-            assertTrue("Invalid cause is not set in RuntimeException.", re.getMessage().contains("salt"));
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
+            assertTrue("Invalid cause is not set in IllegalArgumentException.", re.getMessage().contains("salt"));
         }
     }
 
@@ -348,9 +348,9 @@ public class Pbkdf2PasswordHashImplTest {
         pphi.initialize(params);
         try {
             pphi.verify(password, INVALID_VALUE);
-            fail("A RuntimeException should throw.");
-        } catch (RuntimeException re) {
-            assertTrue("Invalid cause is not set in RuntimeException.", re.getMessage().contains("hash"));
+            fail("A IllegalArgumentException should throw.");
+        } catch (IllegalArgumentException re) {
+            assertTrue("Invalid cause is not set in IllegalArgumentException.", re.getMessage().contains("hash"));
         }
     }
 

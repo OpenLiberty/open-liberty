@@ -85,14 +85,14 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             Tr.debug(tc, "original Hash length : " + (originalHash != null?originalHash.length:"null"));
         }
         if (originalHash == null) {
-            throw new RuntimeException("hash value is null.");
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "JAVAEESEC_INVALID_HASH_VALUE"));
         }
         byte[] salt = Base64Coder.base64DecodeString(items[2]);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "original Salt length : " + (salt != null?salt.length:"null"));
         }
         if (salt == null) {
-            throw new RuntimeException("salt value is null.");
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "JAVAEESEC_INVALID_SALT_VALUE"));
         }
         byte[] calculatedHash = generate(items[0], Integer.parseInt(items[1]), originalHash.length, salt, password);
         return Arrays.equals(originalHash, calculatedHash);
@@ -106,35 +106,39 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
      * @param hashedPassword
      * @return
      */
-    private String[] parseData(String hashedPassword) throws RuntimeException {
+    private String[] parseData(String hashedPassword) throws IllegalArgumentException {
         // <algorithm>:<iterations>:<base64(salt)>:<base64(hash)>
         String[] items = hashedPassword.split(":");
+        String error = null;
         if (items.length == 4) {
             if (SUPPORTED_ALGORITHMS.contains(items[0])) {
                 try {
                     Integer.parseInt(items[1]);
                     return items; // good.
                 } catch (Exception e) {
+                    error = Tr.formatMessage(tc, "JAVAEESEC_INVALID_ITERATION", items[1]);
                     if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "invalid format: the iternations is not a number : " + items[1]);
+                        Tr.debug(tc, "Invalid format: the iterations is not a number : " + items[1]);
                     }
                 }
             } else {
+                error = Tr.formatMessage(tc, "JAVAEESEC_INVALID_ALGORITHM", items[0]);
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "invalid format: the hash algorithm is not supported : " + items[0]);
+                    Tr.debug(tc, "Invalid format: the hash algorithm is not supported : " + items[0]);
                 }
             }
         } else {
+            error = Tr.formatMessage(tc, "JAVAEESEC_INVALID_ELEMENTS", items.length);
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "invalid format: the number of the elements is not 4 but " + items.length);
+                Tr.debug(tc, "Invalid format: the number of the elements is not 4 but " + items.length);
             }
         }
-        throw new RuntimeException("Invalid hashedPassword");
+        String message = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA", error);
+        throw new IllegalArgumentException(message);
     }
 
     /**
-     * Parse the parameters. If the value is less than minimum, the value will be set as minimum..
-     * If the value is invalid, set as default.
+     * Parse the parameters. If the value is not set, set the default, if the value is invalid, throw InvalidArgumentException
      */
     protected void parseParams(Map<String, String> params) {
         generateAlgorithm = indexOf(PARAM_ALGORITHM, DEFAULT_ALGORITHM, SUPPORTED_ALGORITHMS, params.get(PARAM_ALGORITHM));
@@ -152,7 +156,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             } else {
                 Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
                 String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-                throw new RuntimeException(msg);
+                throw new IllegalArgumentException(msg);
             }
         }
         return output;
@@ -166,12 +170,12 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
                 if (output < minimumValue) {
                     Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM", value, name, minimumValue);
                     String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM", value, name, minimumValue);
-                    throw new RuntimeException(msg);
+                    throw new IllegalArgumentException(msg);
                 }
             } catch (NumberFormatException e) {
                 Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
                 String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-                throw new RuntimeException(msg);
+                throw new IllegalArgumentException(msg);
             }
         }
         return output;
