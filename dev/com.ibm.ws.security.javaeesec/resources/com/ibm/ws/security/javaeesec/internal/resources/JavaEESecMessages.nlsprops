@@ -38,3 +38,22 @@ JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Make sure that there is one HttpAuthenti
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.
 JAVAEESEC_WARNING_NO_REALM_NAME.useraction=If the realm name needs to be set, please set it by using BasicAuthenticationMechanismDefinition annotation in the application.
+
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1915E: The value {0} of the configuration parameter {1} is invalid.
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=The value of the configuration parameter is not valid.
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Make sure that the configuration parameter is set correctly.
+
+JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1916E: The value {0} of the configuration parameter {1} is less than the minimum value {2}.
+JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=The value of the configuration parameter is less than the minimum value.
+JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Make sure that the configuration parameter value is equal to or greater than the minimum value.
+
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1917E: The hashed data is invalid. {0}
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA.explanation=The hashed value in the database is not valid.
+JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Make sure that the hashed data in the database was hashed by the hash algorithm which PasswordHash implementation class supports.
+
+#The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
+JAVAEESEC_INVALID_ITERATION=The iterations {0} is not a number.
+JAVAEESEC_INVALID_ALGORITHM=The hash algorithm {0} is not supported.
+JAVAEESEC_INVALID_ELEMENTS=The number of the elements {0} is not 4.
+JAVAEESEC_INVALID_HASH_VALUE=The hash value is not encoded properly.
+JAVAEESEC_INVALID_SALT_VALUE=The salt value is not encoded properly.
