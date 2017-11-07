@@ -151,7 +151,7 @@ public final class InjectionUtils {
         }
         return getDeclaredField(cls.getSuperclass(), fieldName);
     }
-    
+
     public static boolean isConcreteClass(Class<?> cls) {
         return !cls.isInterface() && !Modifier.isAbstract(cls.getModifiers());
     }
@@ -329,7 +329,7 @@ public final class InjectionUtils {
      * E.g. if type is <code>String.class</code>, then <code>String.class</code>
      * is returned. If type is <code>List&lt;String&gt;</code>, then
      * <code>List.class</code> is returned.
-     * 
+     *
      * @param type the type to return the class type for
      * @return the class type of type
      */
@@ -488,6 +488,10 @@ public final class InjectionUtils {
             //pass empty string to boxed number type will result in 404
             return null;
         }
+        if (Boolean.class == pClass) {
+            // allow == checks for Boolean object
+            pClass = (Class<T>) Boolean.TYPE;
+        }
         if (pClass.isPrimitive()) {
             try {
                 @SuppressWarnings("unchecked")
@@ -521,7 +525,7 @@ public final class InjectionUtils {
             throw ex;
         } catch (Exception ex) {
             Throwable t = getOrThrowActualException(ex);
-            Tr.error(tc, new org.apache.cxf.common.i18n.Message("CLASS_CONSTRUCTOR_FAILURE",
+            Tr.warning(tc, new org.apache.cxf.common.i18n.Message("CLASS_CONSTRUCTOR_FAILURE",
                             BUNDLE,
                             pClass.getName()).toString());
             Response r = JAXRSUtils.toResponse(HttpUtils.getParameterFailureStatus(pType));
@@ -612,7 +616,7 @@ public final class InjectionUtils {
                     break;
                 }
             } catch (Exception ex) {
-                // If it is enum and the method name is "fromValue" then don't throw 
+                // If it is enum and the method name is "fromValue" then don't throw
                 // the exception immediately but try the next factory method
                 factoryMethodEx = ex;
                 if (!cls.isEnum() || !"fromValue".equals(mName)) {
@@ -622,7 +626,7 @@ public final class InjectionUtils {
         }
         if (factoryMethodEx != null) {
             Throwable t = getOrThrowActualException(factoryMethodEx);
-            Tr.error(tc, new org.apache.cxf.common.i18n.Message("CLASS_VALUE_OF_FAILURE",
+            Tr.warning(tc, new org.apache.cxf.common.i18n.Message("CLASS_VALUE_OF_FAILURE",
                             BUNDLE,
                             cls.getName()).toString());
             throw new WebApplicationException(t, HttpUtils.getParameterFailureStatus(pType));
@@ -908,7 +912,7 @@ public final class InjectionUtils {
                 }
 
                 // Split multivaluedmap value list contents into separate multivaluedmap instances
-                // whose list contents are only 1 level deep, for example: 
+                // whose list contents are only 1 level deep, for example:
                 //    {a=[C1, C2], b=[790, 791]}
                 // becomes these 2 separate multivaluedmap instances:
                 //    {a=[C1], b=[790]} and {a=[C2], b=[791]}
@@ -973,7 +977,7 @@ public final class InjectionUtils {
                                                       MultivaluedMap<String, String> values,
                                                       boolean isbean, boolean decoded,
                                                       ParameterType pathParam, Message message) {
-        //CHECKSTYLE:ON    
+        //CHECKSTYLE:ON
         Class<?> type = getCollectionType(rawType);
 
         Class<?> realType = null;
@@ -1051,7 +1055,7 @@ public final class InjectionUtils {
         return newValues;
     }
 
-    // 
+    //
     //CHECKSTYLE:OFF
     public static Object createParameterObject(List<String> paramValues,
                                                Class<?> paramType,
@@ -1061,7 +1065,7 @@ public final class InjectionUtils {
                                                boolean decoded,
                                                ParameterType pathParam,
                                                Message message) {
-        //CHECKSTYLE:ON    
+        //CHECKSTYLE:ON
 
         if (paramValues == null) {
             if (defaultValue != null) {
@@ -1126,7 +1130,7 @@ public final class InjectionUtils {
             proxy = (ThreadLocalProxy<T>) Proxy.newProxyInstance(loader,
                                                                  new Class[] { type, ThreadLocalProxy.class },
                                                                  new ProxyInvocationHandler(new ThreadLocalMessageContext()));
-// Liberty Change for CXF Begin       
+// Liberty Change for CXF Begin
         }
 
         if (proxy == null && isServletApiContext(type.getName())) {
@@ -1161,9 +1165,9 @@ public final class InjectionUtils {
         }
         if (proxyClassName != null) {
             try {
-                // Liberty Change for CXF Begin        	
+                // Liberty Change for CXF Begin
                 return (ThreadLocalProxy<?>) InjectionUtils.class.getClassLoader().loadClass(proxyClassName).newInstance();
-                // Liberty Change for CXF Begin               
+                // Liberty Change for CXF Begin
             } catch (Throwable t) {
                 throw new RuntimeException(t);
             }
@@ -1253,7 +1257,7 @@ public final class InjectionUtils {
         }
     }
 
-    // Liberty Change for CXF Begin   
+    // Liberty Change for CXF Begin
     @SuppressWarnings("unchecked")
     public static void injectManagedObjectContextField(AbstractResourceInfo cri,
                                                        Field f, Object o, Object value) {
@@ -1658,7 +1662,7 @@ public final class InjectionUtils {
 
     /**
      * Hack to generate a type class for collection object.
-     * 
+     *
      * @param targetObject
      * @return
      */
@@ -1721,7 +1725,7 @@ public final class InjectionUtils {
         else {
 
             // when a method has been invoked it is still possible that either an ExceptionMapper
-            // or a ResponseHandler filter overrides a response entity; if it happens then 
+            // or a ResponseHandler filter overrides a response entity; if it happens then
             // the Type is the class of the response object, unless this new entity is assignable
             // to invoked.getReturnType(); same applies to the case when a method returns Response
 
@@ -1761,7 +1765,7 @@ public final class InjectionUtils {
                 }
             }
         }
-            
+
         if (type == null || type == Object.class) {
             type = paramCls;
         }
