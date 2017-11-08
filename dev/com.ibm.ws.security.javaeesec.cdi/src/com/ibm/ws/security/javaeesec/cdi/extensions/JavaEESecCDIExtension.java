@@ -528,7 +528,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                lisd1.useForExpression().equals(lisd2.useForExpression());
     }
 
-    protected boolean equalsUseFor(ValidationType[] vt1, ValidationType[] vt2) {
+    private boolean equalsUseFor(ValidationType[] vt1, ValidationType[] vt2) {
         if (vt1 == vt2) {
             return true;
         } else if ((vt1.length == vt2.length) && (vt1.length ==1)) {
