@@ -17,7 +17,7 @@ import com.ibm.ws.javaee.ddmodel.DDParser;
 
 /**
  * This test will check if parsing faces-config.xml is correct and validate them.
- * 
+ *
  */
 public class JSFAppTest extends JSFAppTestBase {
 
@@ -296,6 +296,62 @@ public class JSFAppTest extends JSFAppTestBase {
               "<factory>" +
               "<flow-handler-factory>com.ibm.blah.TestFlowHandlerFactoryImpl</flow-handler-factory>" +
               "</factory>" +
+              "</faces-config>");
+    }
+
+    /**
+     * test client-window-factory
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testJSF23_ClientWindowFactory() throws Exception {
+        parse(jsf23() +
+              "<factory>" +
+              "<client-window-factory>com.ibm.blah.TestClientWindowFactoryImpl</client-window-factory>" +
+              "</factory>" +
+              "</faces-config>");
+    }
+
+    /**
+     * test search-expression-context-factory
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testJSF23_SearchExpressionContextKitFactory() throws Exception {
+        parse(jsf23() +
+              "<factory>" +
+              "<search-expression-context-factory>com.ibm.blah.TestClientWindowFactoryImpl</search-expression-context-factory>" +
+              "</factory>" +
+              "</faces-config>");
+    }
+
+    /**
+     * test search-expression-handler
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testJSF23_SearchExpressionHandler() throws Exception {
+        parse(jsf23() +
+              "<application>" +
+              "<search-expression-handler>com.ibm.blah.SearchExpressionHandlerImpl</search-expression-handler>" +
+              "</application>" +
+              "</faces-config>");
+    }
+
+    /**
+     * test search-keyword-resolver
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testJSF23_SearchKeywordResolver() throws Exception {
+        parse(jsf23() +
+              "<application>" +
+              "<search-keyword-resolver>com.ibm.blah.SearchKeywordResolverImpl</search-keyword-resolver>" +
+              "</application>" +
               "</faces-config>");
     }
 }

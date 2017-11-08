@@ -28,8 +28,14 @@ import com.ibm.wsspi.artifact.overlay.OverlayContainer;
 public class JSFAppTestBase extends DDTestBase {
     protected boolean isWarModule = false;
 
+    private static final String JSF22FacesConfigVersion = "2.2";
+
     protected FacesConfig parse(final String xml) throws Exception {
-        return parseJSFApp(xml, FacesConfig.VERSION_2_2);
+        if (xml.contains(JSF22FacesConfigVersion)) {
+            return parseJSFApp(xml, FacesConfig.VERSION_2_2);
+        } else {
+            return parseJSFApp(xml, FacesConfig.VERSION_2_3);
+        }
     }
 
     FacesConfig parseJSFApp(final String xml, final int maxVersion) throws Exception {
@@ -81,6 +87,15 @@ public class JSFAppTestBase extends DDTestBase {
                " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
                " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_2.xsd\"" +
                " version=\"2.2\"" +
+               ">";
+    }
+
+    protected static final String jsf23() {
+        return "<faces-config" +
+               " xmlns=\"http://xmlns.jcp.org/xml/ns/javaee\"" +
+               " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"" +
+               " xsi:schemaLocation=\"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-facesconfig_2_3.xsd\"" +
+               " version=\"2.3\"" +
                ">";
     }
 
