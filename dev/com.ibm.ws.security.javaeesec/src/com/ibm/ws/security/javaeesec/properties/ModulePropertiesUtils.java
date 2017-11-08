@@ -12,6 +12,7 @@ package com.ibm.ws.security.javaeesec.properties;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
 
@@ -23,6 +24,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
+import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 
@@ -35,7 +37,7 @@ public class ModulePropertiesUtils {
 
     private static ModulePropertiesUtils self = new ModulePropertiesUtils();
 
-    private ModulePropertiesUtils() {}
+    protected ModulePropertiesUtils() {}
 
     public static ModulePropertiesUtils getInstance() {
         return self;
@@ -59,65 +61,50 @@ public class ModulePropertiesUtils {
         }
     }
 
-    public boolean isOneHttpAuthenticationMechanism(CDI cdi) {
-        HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(cdi);
+    public boolean isHttpAuthenticationMechanism() {
+        HttpAuthenticationMechanism ham = getHttpAuthenticationMechanism(false);
         if (ham != null) {
             return true;
         }
         return false;
     }
 
+    public HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
+        return getHttpAuthenticationMechanism(true);
+    }
 
-    public HttpAuthenticationMechanism getHttpAuthenticationMechanism(CDI cdi) {
+    private HttpAuthenticationMechanism getHttpAuthenticationMechanism(boolean logError) {
         HttpAuthenticationMechanism ham = null;
+        CDI cdi = getCDI();
         if (cdi != null) {
-            Instance<HttpAuthenticationMechanism> hami = cdi.select(HttpAuthenticationMechanism.class);
-            if (hami != null) {
-                int size = countSize(hami);
-                if (size > 0) {
-                    Instance<ModulePropertiesProvider> mppi = cdi.select(ModulePropertiesProvider.class);
-                    if (mppi != null) {
-                        if (!mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
-                            List<Class> implClassList = mppi.get().getAuthMechClassList();
-                            if (implClassList.size() == 1) {
-                                hami = cdi.select(implClassList.get(0));
-                                if (hami != null && !hami.isUnsatisfied() && !hami.isAmbiguous()) {
-                                    if (tc.isDebugEnabled()) {
-                                        Tr.debug(tc, "HAM set by HAMProperties: " + hami);
-                                    }
-                                    ham = hami.get();
-                                } else {
-                                    Tr.error(tc, "JAVAEESEC_ERROR_NO_MPP");
-                                }
-                            } else {
-                                // more than one. do some additional work.
-                                StringBuffer sb = new StringBuffer();
-                                int count = 0;
-                                for(Class clz : implClassList) {
-                                    hami = cdi.select(clz);
-                                    if (hami != null && !hami.isUnsatisfied() && !hami.isAmbiguous()) {
-                                        if (tc.isDebugEnabled()) {
-                                            Tr.debug(tc, "HAM set by HAMProperties: " + hami);
-                                        }
-                                        ham = hami.get();
-                                        count++;
-                                        sb.append(hami).append(" ");
-                                    }
-                                }
-                                if (count == 0) {
-                                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
-                                } else if (count > 1) {
-                                    ham = null;
-                                    Tr.error(tc, "JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS", getJ2EEModuleName(), getJ2EEApplicationName(), sb.toString());
-                                }
+            Instance<ModulePropertiesProvider> mppi = cdi.select(ModulePropertiesProvider.class);
+            if (mppi != null && !mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
+                List<Class> implClassList = mppi.get().getAuthMechClassList();
+                if (implClassList.size() == 1) {
+                    Instance<HttpAuthenticationMechanism> hami = cdi.select(implClassList.get(0));
+                    if (hami != null && !hami.isUnsatisfied() && !hami.isAmbiguous()) {
+                        if (tc.isDebugEnabled()) {
+                            Tr.debug(tc, "HAM from the current CDI : " + hami);
+                        }
+                        ham = hami.get();
+                    } else if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+                        // try module level.
+                        Set<HttpAuthenticationMechanism> hams = CDIHelper.getBeansFromCurrentModule(implClassList.get(0));
+                        if (hams.size() == 1) {
+                            ham = hams.iterator().next();
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "HAM from the module BeanManager : " + ham);
                             }
-                        } else {
-                            Tr.error(tc, "JAVAEESEC_ERROR_NO_MODULE_PROPS", getJ2EEApplicationName());
                         }
                     }
+                    if (ham == null) {
+                        Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
+                    }
                 } else {
-                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
+                    Tr.error(tc, "JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS", getJ2EEModuleName(), getJ2EEApplicationName(), implClassList);
                 }
+            } else if (logError) {
+                Tr.error(tc, "JAVAEESEC_ERROR_NO_MODULE_PROPS", getJ2EEApplicationName());
             }
         }
         return ham;
@@ -137,19 +124,11 @@ public class ModulePropertiesUtils {
         return elExpression;
     }
 
-    private int countSize(Instance<?> instance) {
-        int count = 0;
-        Iterator iterator = instance.iterator();
-        while(iterator.hasNext()) {
-            iterator.next();
-            count++;
-        }
-        return count;
+    protected CDI getCDI() {
+        return CDI.current();
     }
 
     protected ComponentMetaData getComponentMetaData() {
         return ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
     }
-    
-    
 }
