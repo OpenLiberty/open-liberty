@@ -32,6 +32,10 @@ import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.webcontainer.security.metadata.MatchResponse;
+import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
+import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
  *
@@ -118,8 +122,41 @@ public class SecurityContextImpl implements SecurityContext {
      * @see javax.security.enterprise.SecurityContext#hasAccessToWebResource(java.lang.String, java.lang.String[])
      */
     @Override
-    public boolean hasAccessToWebResource(String arg0, String... arg1) {
-        // TODO Auto-generated method stub
+    public boolean hasAccessToWebResource(String resource, String... methods) {
+
+        String appName = getApplicationName();
+        SecurityMetadata securityMetadata = getSecurityMetadata();
+        SecurityConstraintCollection collection = securityMetadata.getSecurityConstraintCollection();
+
+        if (null != collection) {
+            AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
+            Subject callerSubject = getCallerSubject();
+
+            for (String method : methods) {
+                MatchResponse matchResponse = collection.getMatchResponse(resource, method);
+
+                if (matchResponse.equals(MatchResponse.NO_MATCH_RESPONSE)) {
+                    // not match responses,  continue to the next method
+                    continue;
+                }
+
+                if (matchResponse.isAccessPrecluded()) {
+                    //This methods access is precluded proceed to next method
+                    continue;
+                }
+
+                List<String> roles = matchResponse.getRoles();
+
+                if (roles != null && !roles.isEmpty()) {
+                    if (authService.isAuthorized(appName, roles, callerSubject)) {
+                        return true;
+                    }
+                } else {
+                    // there are no roles and access is not precluded the user has access
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -159,6 +196,14 @@ public class SecurityContextImpl implements SecurityContext {
     private String getApplicationName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return cmd.getJ2EEName().getApplication();
+    }
+
+    private SecurityMetadata getSecurityMetadata() {
+        SecurityMetadata secMetadata = null;
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
+        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        return secMetadata;
     }
 
 }
