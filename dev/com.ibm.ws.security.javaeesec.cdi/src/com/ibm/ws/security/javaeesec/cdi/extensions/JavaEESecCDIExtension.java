@@ -56,7 +56,6 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
@@ -73,7 +72,6 @@ import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
 
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.container.service.metadata.ModuleMetaDataListener;
 import com.ibm.ws.container.service.metadata.MetaDataException;
 import com.ibm.ws.container.service.metadata.MetaDataEvent;
 import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
@@ -83,10 +81,10 @@ import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
  *
  * @param <T>
  */
-@Component(service = { WebSphereCDIExtension.class, ApplicationStateListener.class, ModuleMetaDataListener.class},
+@Component(service = { WebSphereCDIExtension.class},
            property = { "api.classes=javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;javax.security.enterprise.identitystore.IdentityStore;javax.security.enterprise.identitystore.IdentityStoreHandler;javax.security.enterprise.identitystore.RememberMeIdentityStore;javax.security.enterprise.SecurityContext;com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider" },
            immediate = true)
-public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtension, ApplicationStateListener, ModuleMetaDataListener {
+public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtension {
 
     private static final TraceComponent tc = Tr.register(JavaEESecCDIExtension.class);
 
@@ -795,65 +793,4 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return moduleName;
     }
 
-
-
-    /**
-     * Notification that an application is starting.
-     * 
-     * @param appInfo The ApplicationInfo of the app
-     */
-    @Override
-    public void applicationStarting(ApplicationInfo appInfo) throws StateChangeException {
-        String appName = appInfo.getDeploymentName();
-    }
-    /**
-     * Notification that an application has started.
-     * 
-     * @param appInfo The ApplicationInfo of the app
-     */
-    @Override
-    public void applicationStarted(ApplicationInfo appInfo) throws StateChangeException {
-        String appName = appInfo.getDeploymentName();
-    }
-
-    /**
-     * Notification that an application is stopping.
-     * 
-     * @param appInfo The ApplicationInfo of the app
-     */
-    @Override
-    public void applicationStopping(ApplicationInfo appInfo) {
-        String appName = appInfo.getDeploymentName();
-    }
-
-    /**
-     * Notification that an application has stopped.
-     * 
-     * @param appInfo The ApplicationInfo of the app
-     */
-    @Override
-    public void applicationStopped(ApplicationInfo appInfo) {
-        String appName = appInfo.getDeploymentName();
-    }
-
-    /**
-     * Notification that the metadata for a module has been created.
-     * 
-     * @param event the event, with {@link MetaDataEvent#getMetaData} returning {@link DeployedMod}
-     */
-    @Override
-    public void moduleMetaDataCreated(MetaDataEvent<ModuleMetaData> event) throws MetaDataException {
-        ModuleMetaData mmd = event.getMetaData();
-        if (mmd instanceof WebModuleMetaData) {
-            parseWMMD((WebModuleMetaData)mmd);
-        }
-    }
-    /**
-     * Notification that the metadata for a module has been destroyed. This event might be fired without a corresponding {@link #moduleMetaDataCreated} event if an error occurred
-     * while creating the metadata.
-     * 
-     * @param event the event
-     */
-    @Override
-    public void moduleMetaDataDestroyed(MetaDataEvent<ModuleMetaData> event) {}
 }
