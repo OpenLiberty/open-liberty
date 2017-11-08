@@ -14,6 +14,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/beanManagerLookupApp/src,\
+	test-applications/interceptionFactoryApp/src,\
 	test-applications/builtinAnnoLiteralsApp/src
 
 test.project: true
@@ -33,4 +34,7 @@ javac.target: 1.8
 # had com.ibm.websphere.javaee.cdi.1.2;version=latest
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.cdi.2.0;version=latest
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
+	com.ibm.websphere.javaee.interceptor.1.2;version=latest
+	

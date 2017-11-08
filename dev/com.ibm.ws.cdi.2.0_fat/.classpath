@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/interceptionFactoryApp/src"/>
 	<classpathentry kind="src" path="test-applications/beanManagerLookupApp/src"/>
 	<classpathentry kind="src" path="test-applications/builtinAnnoLiteralsApp/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
