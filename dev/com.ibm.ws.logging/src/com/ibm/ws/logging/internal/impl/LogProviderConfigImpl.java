@@ -101,6 +101,12 @@ public class LogProviderConfigImpl implements LogProviderConfig {
     /** True if java.lang.instrument is available for trace. */
     private final boolean javaLangInstrument;
 
+    /** The server name. */
+    private final String serverName;
+
+    /** The wlp user dir name. */
+    private final String wlpUsrDir;
+
     /**
      * Initial configuration of BaseTraceService from TrServiceConfig.
      *
@@ -141,6 +147,9 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         javaLangInstrument = Boolean.parseBoolean(config.get("java.lang.instrument"));
 
+        serverName = config.get("wlp.server.name");
+
+        wlpUsrDir = config.get("wlp.user.dir");
     }
 
     /**
@@ -303,6 +312,14 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
     public FFDCSummaryPolicy getFfdcSummaryPolicy() {
         return ffdcSummaryPolicy;
+    }
+
+    public String getServerName() {
+        return serverName;
+    }
+
+    public String getWlpUsrDir() {
+        return wlpUsrDir;
     }
 
     /**

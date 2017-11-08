@@ -10,6 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.impl;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
+
+import com.ibm.ws.collector.CollectorConstants;
+import com.ibm.ws.collector.CollectorJsonUtils;
+import com.ibm.ws.collector.Formatter;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.MessageLogData;
@@ -20,14 +29,34 @@ import com.ibm.wsspi.collector.manager.Handler;
 /**
  *
  */
-public class SpecialHandler implements Handler {
+public class SpecialHandler implements Handler, Formatter {
 
     private TraceWriter myTRW;
     private BaseTraceFormatter myBTF;
     public static SpecialHandler mySpecialHandler;
     private LogSource ls;
+    private String serverHostName = null;
+    private String wlpUserDir = null;
+    private String serverName = null;
 
-    private SpecialHandler() {}
+    private SpecialHandler() {
+        //gather necessary information/data for JSONIFYING
+
+        //hostname -> localhost
+        try {
+            serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                @Override
+                public String run() throws UnknownHostException {
+                    return InetAddress.getLocalHost().getHostName();
+                }
+            });
+
+        } catch (PrivilegedActionException pae) {
+            serverHostName = "";
+        }
+
+        //
+    }
 
     public static synchronized SpecialHandler getInstance() {
         if (mySpecialHandler == null) {
@@ -107,15 +136,28 @@ public class SpecialHandler implements Handler {
     public void writeToLog(Object event) {
         MessageLogData mld = (MessageLogData) event;
         //String messageLogFormat = myBTF.formatMessage(logRecord); //mld.getMessage();
-
-        myTRW.writeRecord("");
+        formatEvent("source", "", event, null, 1000);
+        ///myTRW.writeRecord("");
     }
 
     public void writeToLogNormal(String messageLogFormat) {
-        // MessageLogData mld = (MessageLogData) event;
-        // String messageLogFormat = myBTF.formatMessage(logRecord); //mld.getMessage();
-        System.out.println("hey");
         myTRW.writeRecord(messageLogFormat);
+    }
+
+    @Override
+    public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, CollectorConstants.MESSAGES_LOG_EVENT_TYPE, serverName, wlpUserDir, serverHostName, "1.0", tags,
+                                                         maxFieldLength);
+        myTRW.writeRecord(jsonStr);
+        return null;
+    }
+
+    public void setServername(String serverName) {
+        this.serverName = serverName;
+    }
+
+    public void setWlpUserDir(String wlpUserDir) {
+        this.wlpUserDir = wlpUserDir;
     }
 
 }
