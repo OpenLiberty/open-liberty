@@ -199,6 +199,8 @@ subprojects {
       kind = "ga"
     } else if (text.contains("kind=beta")) {
       kind = "beta"
+    } else if (text.contains("kind=noship")) {
+      kind = "noship"
     }
     String name = null
     int index = text.indexOf("symbolicName=")
