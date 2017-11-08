@@ -20,12 +20,16 @@ import static org.junit.Assert.fail;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
@@ -33,6 +37,8 @@ import componenttest.topology.utils.LDAPUtils;
 /**
  * Test dynamic change to the server configuration.
  */
+@RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class DynamicUpdateTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.core.fat.dynamic");
@@ -91,7 +97,7 @@ public class DynamicUpdateTest {
         Log.info(c, "tearDown", "Stopping the server...");
 
         try {
-            server.stopServer();
+            server.stopServer("CWIML1018E", "CWIML4538E");
         } finally {
             server.removeInstalledAppForValidation("userRegistry");
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");

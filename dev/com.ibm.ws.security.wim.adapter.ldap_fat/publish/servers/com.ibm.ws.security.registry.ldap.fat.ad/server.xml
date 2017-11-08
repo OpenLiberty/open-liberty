@@ -31,7 +31,7 @@
 	</ldapRegistry>
 	
 	<activedLdapFilterProperties id="myactivedfilters"
-			userFilter="(&amp;(sAMAccountName=%v)(objectclass=user)(!(userAccountControl:1.2.840.113556.1.4.803:=2)))"
+			userFilter="(&amp;(sAMAccountName=%v)(objectclass=user))"
 			groupFilter="(&amp;(cn=%v)(objectclass=group))"
 			userIdMap="user:sAMAccountName"
 			groupIdMap="*:cn"

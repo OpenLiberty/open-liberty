@@ -109,7 +109,12 @@ subprojects {
         into "${rootDir}/build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib')
         include bnd('publish.wlp.jar.include', '*.jar')
         if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
-          rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
+          if ((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty)) {
+            rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
+          }
+          else {
+			rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.${qualifier}.jar"
+          }
         }
       }
     }
@@ -182,10 +187,42 @@ subprojects {
     }
   }
 
+  def featureFiles = fileTree(dir: "${projectDir}", include: '*.feature')
+  def featureToAttributes = [:]
+  featureFiles.visit {
+    if (it.isDirectory()) { return }
+
+    def attributes = [:]
+    String text = it.getFile().getText()
+    String kind = null
+    if (text.contains("kind=ga")) {
+      kind = "ga"
+    } else if (text.contains("kind=beta")) {
+      kind = "beta"
+    }
+    String name = null
+    int index = text.indexOf("symbolicName=")
+    if (index != -1) {
+      int endIndex = text.indexOf("\n", index)
+      if (endIndex == -1) {
+        endIndex = text.length()
+      }
+
+      name = text.substring(index + "symbolicName=".length(), endIndex)
+      name = name.replaceAll("\\s+", "")
+    } else {
+      name = it.name.substring(0, it.name.size()-8)
+    }
+
+    attributes["name"] = name
+    attributes["kind"] = kind
+    featureToAttributes[it] = attributes
+  }
+
   task publishFeatureResources {
     dependsOn jar
     dependsOn copyMavenLibs
-    inputs.files(fileTree(dir: "${projectDir}", include: '*.feature')).skipWhenEmpty()
+    inputs.files(featureFiles).skipWhenEmpty()
     outputs.dir "${rootDir}/build.image/wlp/lib/features"
     outputs.dir "${buildDir}/repo"
     doLast {
@@ -206,51 +243,77 @@ subprojects {
         }
       }
 
+      ant.taskdef(resource: 'com/ibm/ws/wlp/repository/default.properties') {
+        classpath {
+          fileset(dir: "${rootDir}/cnf/lib/") {
+            include(name: "wlp-generateRepositoryContent.jar")
+          }
+          fileset(dir: "${rootDir}/cnf/mavenlibs") {
+            include(name: "org.apache.aries.util-*.jar")
+            include(name: "jsoup-*.jar")
+          }
+        }
+      }
+
       // featureBnd task expects files in build/l10n
       copy {
         from "${projectDir}/resources/l10n"
         into "${projectDir}/build/l10n"
       }
 
-      new File("${rootDir}/build.image/wlp/lib/features").mkdirs()
-      new File("${buildDir}/repo").mkdirs()
-      fileTree(dir: "${projectDir}", include: '*.feature').visit { featureFile ->
-        if (featureFile.isDirectory()) { 
-          return
-        }
+      file("${rootDir}/build.image/wlp/lib/features").mkdirs()
+      file("${buildDir}/repo").mkdirs()
 
-        // always set createFor && buildType as beta so that ESAs are provided for ga and beta
-        ant.featureBnd(bnd: featureFile.name,
-                       createESA: "true",
-                       dir: "${rootDir}/build.image/wlp",
-                       esaDir: "${buildDir}/repo",
-                       createFor: "beta",
-                       buildType: "beta",
-                       junit: "${buildDir}/report/featureChecks.xml") {
-          defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
-                         licensePath: "${rootDir}/build.image/license",
-                         version: "${bnd.libertyRelease}",
-                         licenseType: "EPL",
-                         displayVersion: "OpenLiberty")
-          edition(baseEdition: "beta")
-          edition(baseEdition: "core",
-                  validEditions: "")
-          edition(baseEdition: "base",
-                  validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
-          edition(baseEdition: "nd",
-                  validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
-          edition(baseEdition: "zos",
-                  validEditions: "zOS")
-          edition(baseEdition: "bluemix",
-                  validEditions: "BLUEMIX")
-          edition(baseEdition: "full")
-          edition(baseEdition: "unsupported")
+      featureToAttributes.each { file, attr ->
+        if (attr["kind"] != null) {
+          String createFor = attr["kind"]
+          String buildType = attr["kind"]
+          String version = ("beta".equals(attr["kind"]) ? bnd.libertyBetaVersion : bnd.libertyServiceVersion)
+
+          ant.featureBnd(bnd: file.getPath(),
+                         createESA: "true",
+                         dir: "${rootDir}/build.image/wlp",
+                         esaDir: "${buildDir}/repo",
+                         createFor: createFor,
+                         buildType: buildType,
+                         junit: "${buildDir}/report/featureChecks.xml") {
+            defaultEdition(licenseURL: "https://www.eclipse.org/legal/epl-v10.html",
+                           licensePath: "${rootDir}/build.image/license",
+                           version: version,
+                           licenseType: "EPL",
+                           displayVersion: "OpenLiberty")
+            edition(baseEdition: "beta")
+            edition(baseEdition: "core",
+                    validEditions: "")
+            edition(baseEdition: "base",
+                    validEditions: "BASE,BASE_ILAN,DEVELOPERS,EXPRESS,ND,zOS")
+            edition(baseEdition: "nd",
+                    validEditions: "BASE_ILAN,DEVELOPERS,ND,zOS")
+            edition(baseEdition: "zos",
+                    validEditions: "zOS")
+            edition(baseEdition: "bluemix",
+                    validEditions: "BLUEMIX")
+            edition(baseEdition: "full")
+            edition(baseEdition: "unsupported")
+          }
+
+          delete "${buildDir}/repo/description.html"
+          ant.generateEsaDescriptionHtml(featureManifestFile: ant.properties['feature.manifest.file'],
+                  descriptionHtmlOutputFile: "${buildDir}/repo/description.html",
+                  generateKnowledgeCentreLinks: "true",
+                  licenseType: "EPL")
+          ant.zip(destfile: "${buildDir}/repo/${attr["name"]}.esa.metadata.zip") {
+            fileset(dir: "${buildDir}/repo", includes: "description.html")
+          }
+
         }
       }
+
       copy {
         from "${projectDir}/resources/l10n"
         into "${rootDir}/build.image/wlp/lib/features/l10n"
       }
+
     }
   }
 
@@ -433,7 +496,8 @@ subprojects {
   }
   
   task buildfat {
-	  // A no-op task for regular projects which FATs will override
+      // A no-op task for regular projects which FATs will override
+      group = "build"
   }
 
   sourceSets {
@@ -483,34 +547,19 @@ subprojects {
 
   publishing {
     publications {
-      // Publish ESA for each feature that contains kind=ga or kind=beta
-      fileTree(dir: "${projectDir}", include: '*.feature').visit { feature ->
-        if (feature.isDirectory()) {
-          return
-        }
-        String text = feature.getFile().getText()
-        if (text.contains("kind=ga") || text.contains("kind=beta")) {
-          String name = null
-          int index = text.indexOf("symbolicName=")
-          if (index != -1) {
-            int endIndex = text.indexOf("\n", index)
-            if (endIndex == -1) {
-              endIndex = text.length()
-            }
-            // symbolicName= is length 13
-            name = text.substring(index + 13, endIndex)
-            name = name.replaceAll("\\s+","")
-          } else {
-            name = feature.name.substring(0, feature.name.size()-8)
-          }
 
+      // Publish ESA for each feature that contains kind=ga or kind=beta
+      featureToAttributes.each { file, attr ->
+        if ("ga".equals(attr["kind"]) || "beta".equals(attr["kind"])) {
           maven(MavenPublication) {
-            artifactId name
+            artifactId attr["name"]
             version project.version
-            artifact "${buildDir}/repo/${name}" + ".esa"
+            artifact source: "${buildDir}/repo/" + attr["name"] + ".esa", extension: 'esa'
+            artifact source: "${buildDir}/repo/" + attr["name"] + ".esa.metadata.zip", extension: 'esa.metadata.zip'
           }
         }
       }
+
     }
   }
   

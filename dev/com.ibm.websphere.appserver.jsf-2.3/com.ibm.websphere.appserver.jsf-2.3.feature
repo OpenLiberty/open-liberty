@@ -29,12 +29,12 @@ IBM-API-Package: javax.faces; type="spec", \
  javax.faces.webapp; type="spec"
 IBM-ShortName: jsf-2.3
 Subsystem-Name: JavaServer Faces 2.3
--features=com.ibm.websphere.appserver.javax.cdi-1.2; ibm.tolerates:="2.0", \
+-features=com.ibm.websphere.appserver.javax.cdi-2.0, \
  com.ibm.websphere.appserver.servlet-4.0, \
- com.ibm.websphere.appserver.javax.validation-1.1, \
+ com.ibm.websphere.appserver.javax.validation-2.0, \
  com.ibm.websphere.appserver.javax.jsf-2.3, \
  com.ibm.websphere.appserver.jsp-2.3, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0
+ com.ibm.websphere.appserver.javaeeCompatible-8.0
 -bundles=com.ibm.ws.org.apache.myfaces.2.3, \
  com.ibm.ws.org.apache.commons.beanutils.1.8.3, \
  com.ibm.ws.org.apache.commons.collections.3.2.1, \

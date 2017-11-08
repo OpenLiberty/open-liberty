@@ -13,4 +13,4 @@
 -nobundles=true
 
 -dependson: \
-	com.ibm.ws.cdi.ejb;version=latest
+	com.ibm.ws.cdi.2.0.ejb;version=latest

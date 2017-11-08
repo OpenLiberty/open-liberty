@@ -60,6 +60,7 @@ public class LdapRegistry extends ConfigElement {
     private LdapFilters securewayFilters;
     private Boolean sslEnabled;
     private String sslRef;
+    private Integer searchPageSize; // PRIVATE
 
     /**
      * @return the activedFilters
@@ -269,6 +270,13 @@ public class LdapRegistry extends ConfigElement {
      */
     public Boolean getReuseConnection() {
         return reuseConnection;
+    }
+
+    /**
+     * @return the searchPageSize
+     */
+    public Integer getSearchPageSize() {
+        return searchPageSize;
     }
 
     /**
@@ -547,6 +555,14 @@ public class LdapRegistry extends ConfigElement {
     @XmlAttribute(name = "reuseConnection")
     public void setReuseConnection(Boolean reuseConnection) {
         this.reuseConnection = reuseConnection;
+    }
+
+    /**
+     * @param searchPageSize the searchPageSize to set
+     */
+    @XmlAttribute(name = "searchPageSize")
+    public void setSearchPageSize(Integer searchPageSize) {
+        this.searchPageSize = searchPageSize;
     }
 
     /**

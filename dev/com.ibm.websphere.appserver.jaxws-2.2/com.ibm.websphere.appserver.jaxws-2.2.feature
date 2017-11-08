@@ -26,10 +26,10 @@ IBM-ShortName: jaxws-2.2
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 Subsystem-Name: Java Web Services 2.2
 -features=com.ibm.websphere.appserver.injection-1.0, \
- com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:=3.1; apiJar=false, \
+ com.ibm.websphere.appserver.javax.servlet-3.0; ibm.tolerates:="3.1, 4.0"; apiJar=false, \
  com.ibm.websphere.appserver.containerServices-1.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
- com.ibm.websphere.appserver.javax.mail-1.5, \
+ com.ibm.websphere.appserver.javax.mail-1.5; ibm.tolerates:=1.6, \
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.jaxb-2.2
 -bundles=com.ibm.ws.jaxws.wsat, \

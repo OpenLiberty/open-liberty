@@ -55,10 +55,9 @@ WS-TraceGroup: JCDI
         com.ibm.ws.resource;version=latest,\
         com.ibm.ws.serialization;version=latest,\
         com.ibm.ws.cdi.shared.weld;version=latest,\
-        com.ibm.websphere.appserver.thirdparty.cdi-2.0;version=latest,\
         com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-        com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
         com.ibm.ws.webcontainer.servlet.4.0;version=latest,\
+        com.ibm.ws.webcontainer.servlet.3.1;version=latest,\
         com.ibm.ws.javaee.dd;version=latest,\
         com.ibm.websphere.appserver.spi.kernel.service,\
         com.ibm.websphere.appserver.spi.logging,\

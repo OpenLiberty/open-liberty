@@ -15,6 +15,10 @@ instrument.disabled: true
 
 publish.wlp.jar.disabled: true
 
+Import-Package: \
+  javax.validation.*;version="[1.0,3)",\
+  *
+
 -buildpath: \
 	com.ibm.websphere.javaee.validation.1.0;version=latest,\
 	com.ibm.ws.logging.core,\

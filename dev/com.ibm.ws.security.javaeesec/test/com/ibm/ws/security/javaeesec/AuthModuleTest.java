@@ -173,6 +173,16 @@ public class AuthModuleTest {
     }
 
     @Test
+    public void testValidateRequestWithNotDone() throws Exception {
+        setNormalPathExpectations().authMechValidatesRequest(AuthenticationStatus.NOT_DONE);
+        initializeModule();
+        MessageInfo messageInfo = createMessageInfo(true);
+
+        AuthStatus status = authModule.validateRequest(messageInfo, clientSubject, serviceSubject);
+        assertEquals("The AuthStatus must be SUCCESS.", AuthStatus.SUCCESS, status);
+    }
+
+    @Test
     public void testValidateRequestWithAuthenticationException() throws Exception {
         setNormalPathExpectations().authMechValidateRequestThrowsException();
         initializeModule();

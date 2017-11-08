@@ -24,6 +24,8 @@ import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.PasswordHash;
 
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+
 /**
  * A wrapper class that offers convenience methods for retrieving configuration
  * from an {@link DatabaseIdentityStoreDefinition} instance.
@@ -178,6 +180,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      *            either be a literal String or an EL expression.
      * @return The String value.
      */
+    @FFDCIgnore(ELException.class)
     private String processString(String name, String value) {
         String result;
 
@@ -187,7 +190,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
             if (obj instanceof String) {
                 result = (String) obj;
             } else {
-                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to an String value.");
+                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String value.");
             }
         } catch (ELException e) {
             result = value;

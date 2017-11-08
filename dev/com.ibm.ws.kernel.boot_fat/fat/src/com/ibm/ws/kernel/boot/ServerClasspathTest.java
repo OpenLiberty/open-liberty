@@ -15,9 +15,12 @@ import static org.junit.Assert.assertEquals;
 import java.util.Iterator;
 import java.util.List;
 
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServer;
@@ -45,6 +48,8 @@ public class ServerClasspathTest {
 
     @BeforeClass
     public static void before() throws Exception {
+        JavaArchive archive = ShrinkHelper.buildJavaArchive("checkJvmAppClasspath", "com.ibm.ws.kernel.boot.app.classpath");
+        ShrinkHelper.exportAppToServer(server, archive);
         server.startServer();
     }
 

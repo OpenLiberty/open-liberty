@@ -41,7 +41,8 @@ Service-Component: \
      deactivate:=deactivate; \
      properties:="service.vendor=IBM"
  
- -dsannotations: com.ibm.ws.jaxrs20.client.component.*
+ -dsannotations: com.ibm.ws.jaxrs20.client.component.*, \
+ 	com.ibm.ws.jaxrs20.client.security.oauth.OAuthPropagationHelper
 
 instrument.classesExcludes: com/ibm/ws/jaxrs20/client/internal/resources/*.class
     
@@ -55,6 +56,7 @@ instrument.classesExcludes: com/ibm/ws/jaxrs20/client/internal/resources/*.class
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.artifact.overlay;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.webcontainer.security;version=latest,\
 	com.ibm.websphere.javaee.jaxrs.2.0;version=latest,\

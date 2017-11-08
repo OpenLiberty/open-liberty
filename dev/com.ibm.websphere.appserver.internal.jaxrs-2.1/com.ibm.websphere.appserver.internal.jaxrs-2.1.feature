@@ -7,13 +7,13 @@ IBM-App-ForceRestart: uninstall, \
 Subsystem-Name: Internal Java RESTful Services 2.1
 -features=com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.servlet-3.1, \
+ com.ibm.websphere.appserver.servlet-4.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
- com.ibm.websphere.appserver.javax.mail-1.5, \
+ com.ibm.websphere.appserver.javax.mail-1.6, \
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
  com.ibm.websphere.appserver.json-1.0, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0
+ com.ibm.websphere.appserver.javaeeCompatible-8.0
 -bundles=com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
  com.ibm.ws.org.apache.xml.resolver.1.2, \
  com.ibm.ws.org.apache.neethi.3.0.2, \

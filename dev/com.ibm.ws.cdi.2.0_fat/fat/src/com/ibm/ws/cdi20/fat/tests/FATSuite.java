@@ -17,6 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 BeanManagerLookupTest.class,
+                InterceptionFactoryTest.class,
+                BuiltinAnnoLiteralsTest.class,
 })
 public class FATSuite {
 

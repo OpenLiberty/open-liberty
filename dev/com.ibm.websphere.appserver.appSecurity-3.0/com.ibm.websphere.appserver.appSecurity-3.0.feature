@@ -8,9 +8,9 @@ IBM-API-Package: javax.security.enterprise; type="spec", \
 IBM-ShortName: appSecurity-3.0
 #IBM-SPI-Package:
 Subsystem-Name: Application Security 3.0
--features=com.ibm.websphere.appserver.cdi-1.2, \
+-features=com.ibm.websphere.appserver.cdi-2.0, \
  com.ibm.websphere.appserver.jaspic-1.1, \
- com.ibm.websphere.appserver.servlet-3.0; ibm.tolerates:=3.1
+ com.ibm.websphere.appserver.servlet-4.0
 -bundles=com.ibm.websphere.javaee.security.1.0; location:=dev/api/spec/, \
  com.ibm.ws.security.javaeesec.1.0, \
  com.ibm.ws.security.javaeesec.cdi

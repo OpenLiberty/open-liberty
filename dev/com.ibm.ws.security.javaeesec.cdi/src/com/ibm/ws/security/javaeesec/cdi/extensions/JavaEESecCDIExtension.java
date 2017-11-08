@@ -37,10 +37,13 @@ import javax.security.enterprise.authentication.mechanism.http.BasicAuthenticati
 import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
+import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
+import javax.security.enterprise.identitystore.PasswordHash;
+import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -51,9 +54,6 @@ import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
-
-// TODO:
-// Find out how to release LoginToContinue annotation in LoginToContinueIntercepter by the one in FormAuthenticationMechanismDefinition.
 
 /**
  * TODO: Add all JSR-375 API classes that can be bean types to api.classes.
@@ -78,6 +78,9 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         if (tc.isDebugEnabled())
             Tr.debug(tc, "processAnnotatedType : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         AnnotatedType<T> annotatedType = processAnnotatedType.getAnnotatedType();
+
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "processAnnotatedType : annotation : " + annotatedType);
 
         Class<?> javaClass = annotatedType.getJavaClass();
         if (isApplicationAuthMech(javaClass)) {
@@ -107,9 +110,9 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             } else if (LdapIdentityStoreDefinition.class.equals(annotationType)) {
                 createLdapIdentityStoreBeanToAdd(beanManager, annotation, annotationType);
                 identityStoreRegistered = true;
-//            } else if (DatabaseIdentityStoreDefinition.class.equals(annotationType)) {
-//                createdatabaseIdentityStoreBeanToAdd(beanManager, annotation, annotationType);
-//                identityStoreRegistered = true;
+            } else if (DatabaseIdentityStoreDefinition.class.equals(annotationType)) {
+                createDatabaseIdentityStoreBeanToAdd(beanManager, annotation, annotationType);
+                identityStoreRegistered = true;
             }
         }
     }
@@ -406,12 +409,12 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
             @Override
             public int priority() {
-                return (overrides != null && overrides.containsKey("priority")) ? (Integer) overrides.get("priority") : 80;
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY)) ? (Integer) overrides.get(JavaEESecConstants.PRIORITY) : 80;
             }
 
             @Override
             public String priorityExpression() {
-                return (overrides != null && overrides.containsKey("priorityExpression")) ? (String) overrides.get("priorityExpression") : "";
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.PRIORITY_EXPRESSION) : "";
             }
 
             @Override
@@ -431,17 +434,45 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
             @Override
             public ValidationType[] useFor() {
-                return (overrides != null && overrides.containsKey("useFor")) ? (ValidationType[]) overrides.get("useFor") : new ValidationType[] { ValidationType.PROVIDE_GROUPS,
-                                                                                                                                                    ValidationType.VALIDATE };
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.USE_FOR)) ? (ValidationType[]) overrides.get(JavaEESecConstants.USE_FOR) : new ValidationType[] { ValidationType.PROVIDE_GROUPS,
+                                                                                                                                                                      ValidationType.VALIDATE };
             }
 
             @Override
             public String useForExpression() {
-                return (overrides != null && overrides.containsKey("useForExpression")) ? (String) overrides.get("useForExpression") : "";
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.USE_FOR_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.USE_FOR_EXPRESSION) : "";
             }
         };
 
         return annotation;
+    }
+
+    /**
+     * @param beanManager
+     * @param annotation
+     * @param annotationType
+     */
+    private void createDatabaseIdentityStoreBeanToAdd(BeanManager beanManager, Annotation annotation, Class<? extends Annotation> annotationType) {
+        try {
+            Map<String, Object> identityStoreProperties = new HashMap<String, Object>();
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "JavaEESec.createDatabaseIdentityStoreBeanToAdd");
+            Method[] methods = annotationType.getMethods();
+            for (Method m : methods) {
+                Tr.debug(tc, m.getName());
+                if (!m.getName().equals("equals"))
+                    identityStoreProperties.put(m.getName(), m.invoke(annotation));
+            }
+            DatabaseIdentityStoreBean bean = new DatabaseIdentityStoreBean(beanManager, getInstanceOfDBAnnotation(identityStoreProperties));
+            beansToAdd.add(bean);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "registering the default DatabaseIdentityStore.");
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "unexpected", e);
+            }
+        }
     }
 
     protected boolean isIdentityStoreHandler(ProcessBean<?> processBean) {
@@ -506,5 +537,66 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             }
         }
         return false;
+    }
+
+    private DatabaseIdentityStoreDefinition getInstanceOfDBAnnotation(final Map<String, Object> overrides) {
+        DatabaseIdentityStoreDefinition annotation = new DatabaseIdentityStoreDefinition() {
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return null;
+            }
+
+            @Override
+            public String callerQuery() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.CALLER_QUERY)) ? (String) overrides.get(JavaEESecConstants.CALLER_QUERY) : "";
+            }
+
+            @Override
+            public String dataSourceLookup() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.DS_LOOKUP)) ? (String) overrides.get(JavaEESecConstants.DS_LOOKUP) : JavaEESecConstants.DEFAULT_DS_NAME;
+            }
+
+            @Override
+            public String groupsQuery() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.GROUPS_QUERY)) ? (String) overrides.get(JavaEESecConstants.GROUPS_QUERY) : "";
+            }
+
+            @Override
+            public Class<? extends PasswordHash> hashAlgorithm() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.PWD_HASH_ALGORITHM)) ? (Class<? extends PasswordHash>) overrides.get(JavaEESecConstants.PWD_HASH_ALGORITHM) : Pbkdf2PasswordHash.class;
+            }
+
+            @Override
+            public String[] hashAlgorithmParameters() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.PWD_HASH_PARAMETERS)) ? (String[]) overrides.get(JavaEESecConstants.PWD_HASH_PARAMETERS) : new String[] {};
+            }
+
+            @Override
+            public int priority() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY)) ? (Integer) overrides.get(JavaEESecConstants.PRIORITY) : 70;
+            }
+
+            @Override
+            public String priorityExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.PRIORITY_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.PRIORITY_EXPRESSION) : "";
+            }
+
+            @Override
+            public ValidationType[] useFor() {
+                return (overrides != null
+                        && overrides.containsKey(JavaEESecConstants.USE_FOR)) ? (ValidationType[]) overrides.get(JavaEESecConstants.USE_FOR) : new ValidationType[] { ValidationType.PROVIDE_GROUPS,
+                                                                                                                                                                      ValidationType.VALIDATE };
+            }
+
+            @Override
+            public String useForExpression() {
+                return (overrides != null && overrides.containsKey(JavaEESecConstants.USE_FOR_EXPRESSION)) ? (String) overrides.get(JavaEESecConstants.USE_FOR_EXPRESSION) : "";
+            }
+        };
+        return annotation;
     }
 }

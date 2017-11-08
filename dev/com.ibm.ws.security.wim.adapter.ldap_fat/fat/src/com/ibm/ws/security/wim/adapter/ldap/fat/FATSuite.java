@@ -68,7 +68,8 @@ import org.junit.runners.Suite.SuiteClasses;
                 ContextPoolTimeoutTest.class,
                 VMMAPIs_TDSLDAPTest.class,
                 OutboundSSLLDAPTest.class,
-                URAPIs_PropertiesNotSupportedTest.class
+                URAPIs_PropertiesNotSupportedTest.class,
+                SearchPagingTest.class
 })
 public class FATSuite extends CommonLocalLDAPServerSuite {
 

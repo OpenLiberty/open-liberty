@@ -51,11 +51,11 @@
 
  task deleteJars(type:Delete) {
     doLast {
-	    println "deleteJars task, deleting " + downloadSrcDir
-	    delete(downloadSrcDir)
-	
-	    println "deleteJars task, deleting " + downloadJavadocDir
-	    delete(downloadJavadocDir)
+        println "deleteJars task, deleting " + downloadSrcDir
+        file(downloadSrcDir).deleteDir()
+
+        println "deleteJars task, deleting " + downloadJavadocDir
+        file(downloadJavadocDir).deleteDir()
     }
  }
 

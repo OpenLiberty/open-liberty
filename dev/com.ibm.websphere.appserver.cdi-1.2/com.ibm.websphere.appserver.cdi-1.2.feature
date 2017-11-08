@@ -14,7 +14,6 @@ IBM-API-Package: javax.decorator;  type="spec", \
  javax.inject;  type="spec", \
  javax.interceptor;  type="spec", \
  javax.transaction;  type="internal", \
- javax.validation;  type="internal", \
  org.jboss.weld.el; type="internal", \
  org.jboss.weld.interceptor.proxy; type="internal", \
  org.jboss.weld.interceptor.util.proxy; type="internal", \
@@ -44,8 +43,8 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.appmanager-1.0, \
  com.ibm.websphere.appserver.transaction-1.2, \
- com.ibm.websphere.appserver.javax.servlet-3.1; ibm.tolerates:=4.0, \
- com.ibm.websphere.appserver.javax.jsf-2.2; ibm.tolerates:=2.3, \
+ com.ibm.websphere.appserver.javax.servlet-3.1, \
+ com.ibm.websphere.appserver.javax.jsf-2.2, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=com.ibm.ws.org.jboss.weld.2.4.3, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \

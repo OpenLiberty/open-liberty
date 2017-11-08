@@ -324,10 +324,10 @@ public class H2StreamProcessor {
 
             if (direction == Constants.Direction.READ_IN) {
 
-                if (muxLink.checkIfGoAwaySending()) {
+                if (muxLink.checkIfGoAwaySendingOrClosing()) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "processNextFrame: " + currentFrame.getFrameType() + " received on stream " + this.myID +
-                                     " after a GOAWAY was sent.  This frame will be ignored.");
+                                     " after a GOAWAY was sent or Closing invoked.  This frame will be ignored.");
                     }
                     return;
                 }
@@ -523,7 +523,7 @@ public class H2StreamProcessor {
             this.updateStreamState(StreamState.CLOSED);
 
             if (currentFrame.getFrameType() == FrameTypes.GOAWAY) {
-                muxLink.goAway();
+                muxLink.closeConnectionLink(null);
             }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -876,7 +876,6 @@ public class H2StreamProcessor {
             return;
         }
 
-        int lastStreamId = ((FrameGoAway) currentFrame).getLastStreamId();
         muxLink.triggerStreamClose(this);
 
         // send out a goaway in response; return the same last stream, for now
@@ -891,7 +890,7 @@ public class H2StreamProcessor {
             }
         } finally {
 
-            muxLink.goAway();
+            muxLink.closeConnectionLink(null);
         }
     }
 
@@ -1063,8 +1062,6 @@ public class H2StreamProcessor {
 
     /*
      * Send an artificially created H2 request from a push_promise up to the WebContainer
-     * TODO There may be a problem here, since a RST_STREAM frame can come in on the reserved PP
-     * stream
      */
     public void sendRequestToWc(FrameHeaders frame) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -1639,8 +1636,7 @@ public class H2StreamProcessor {
             return true;
         }
 
-        // boolean rc = muxLink.checkStreamCloseVersusLinkState(myID);
-        boolean rc = muxLink.checkIfGoAwaySending();
+        boolean rc = muxLink.checkIfGoAwaySendingOrClosing();
 
         if (rc == true) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -1672,19 +1668,6 @@ public class H2StreamProcessor {
         System.arraycopy(a, 0, concatenated, 0, aLen);
         System.arraycopy(b, 0, concatenated, aLen, bLen);
         return concatenated;
-    }
-
-    /**
-     * @param frame to check
-     * @return true if the passed frame is an HTTP2 control frame
-     */
-    private boolean isControlFrame(Frame frame) {
-        FrameTypes type = frame.getFrameType();
-        if (type == FrameTypes.GOAWAY || type == FrameTypes.RST_STREAM || type == FrameTypes.SETTINGS
-            || type == FrameTypes.WINDOW_UPDATE || type == FrameTypes.PING || type == FrameTypes.PRIORITY) {
-            return true;
-        }
-        return false;
     }
 
     protected void setCloseTime(long x) {

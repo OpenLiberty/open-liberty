@@ -29,6 +29,7 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.javaeesec.CDIHelper;
 
 @Default
 @ApplicationScoped
@@ -83,7 +84,10 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
             // at this point, result contains the result of the last IdentityStore.
             if (result != null && result.getStatus() == CredentialValidationResult.Status.VALID) {
                 Set<String> groups = getGroups(identityStores, result, supportGroups);
-                result = new CredentialValidationResult(null, result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStore ID : " + result.getIdentityStoreId() + ", CallerPrincipal : " + (result.getCallerPrincipal() != null ? result.getCallerPrincipal().getName() : "null") +  ", CallerDN : " + result.getCallerDn() + ", CallerUniqueId : " + result.getCallerUniqueId() + ", Groups : " +  groups);
+                }
+                result = new CredentialValidationResult(result.getIdentityStoreId(), result.getCallerPrincipal(), result.getCallerDn(), result.getCallerUniqueId(), groups);
             } else if (firstInvalid != null) {
                 result = firstInvalid;
             } else if (!isValidated) {
@@ -139,33 +143,49 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         return CDI.current();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void scanIdentityStores(Set<IdentityStore> identityStores) {
-        Instance<IdentityStore> beanInstances = getCDI().select(IdentityStore.class);
-        if (beanInstances != null) {
-            for (IdentityStore is : beanInstances) {
+        CDI cdi = getCDI();
+        Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
+        if (identityStoreInstances != null) {
+            for (IdentityStore identityStore : identityStoreInstances) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore : " + is + ", validationTypes : " + is.validationTypes() + ", priority : " + is.priority());
+                    Tr.debug(tc, "IdentityStore from extension: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
                 }
-                identityStores.add(is);
+                identityStores.add(identityStore);
             }
-        } else {
+        }
+
+        // If the mechanism is from the extension, then the identity stores from the application need to be found using the app's bean manager.
+        if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
+            for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "IdentityStore from module: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                }
+                identityStores.add(identityStore);
+            }
+        }
+
+        if (identityStores.isEmpty()) {
             Tr.error(tc, "JAVAEESEC_ERROR_NO_IDENTITYSTORES");
+        }
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Number of identityStore : " + identityStores.size());
         }
         return;
     }
 
     private final static Comparator<IdentityStore> priorityComparator = new Comparator<IdentityStore>() {
         // Sort priority in ascending order
-        // Comparator returning 0 should leave elements in list alone, preserving original order.
+        // Comparator returns 0 if both objects are identical.
         @Override
         public int compare(IdentityStore o1, IdentityStore o2) {
-            int result = 0;
-            int p1 = o1.priority();
-            int p2 = o2.priority();
-            if (p1 < p2)
+            int result =1;
+            if (o1.equals(o2)) {
+                result = 0;
+            } else if (o1.priority() < o2.priority()) {
                 result = -1;
-            else if (p1 > p2)
-                result = 1;
+            }
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "compare", new Object[] { o1, o2, result, this });
             }

@@ -17,6 +17,8 @@ import java.net.ServerSocket;
 import java.util.List;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.directory.api.ldap.codec.controls.search.pagedSearch.PagedResultsFactory;
+import org.apache.directory.api.ldap.codec.standalone.StandaloneLdapApiService;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.exception.LdapInvalidDnException;
@@ -56,6 +58,15 @@ public class EmbeddedApacheDS {
 
     /** The name for this server instance. */
     private final String name;
+
+    static {
+        /*
+         * Set the following property to enable paged searches. See the following for details:
+         *
+         * https://issues.apache.org/jira/browse/DIRSERVER-1917
+         */
+        System.setProperty(StandaloneLdapApiService.CONTROLS_LIST, PagedResultsFactory.class.getName());
+    }
 
     /**
      * Creates a new instance of EmbeddedADS. It initializes the directory
@@ -308,8 +319,12 @@ public class EmbeddedApacheDS {
      * @throws Exception
      */
     public void startServer() throws Exception {
+        startServer(getOpenPort());
+    }
+
+    public void startServer(int port) throws Exception {
         this.server = new LdapServer();
-        this.server.setTransports(new TcpTransport(getOpenPort()));
+        this.server.setTransports(new TcpTransport(port));
         this.server.setDirectoryService(this.service);
         this.server.start();
         System.out.println("The server '" + this.name + "' is running on TCP port: " + server.getPort());

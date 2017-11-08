@@ -6,10 +6,13 @@ IBM-App-ForceRestart: install, \
  uninstall
 IBM-API-Package: javax.decorator;  type="spec", \
  javax.enterprise.context;  type="spec", \
+ javax.enterprise.context.control;  type="spec", \
  javax.enterprise.context.spi;  type="spec", \
  javax.enterprise.event;  type="spec", \
  javax.enterprise.inject;  type="spec", \
+ javax.enterprise.inject.literal;  type="spec", \
  javax.enterprise.inject.spi;  type="spec", \
+ javax.enterprise.inject.spi.configurator;  type="spec", \
  javax.enterprise.util;  type="spec", \
  javax.inject;  type="spec", \
  javax.interceptor;  type="spec", \
@@ -37,8 +40,8 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
  com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.javax.ejb-3.2, \
  com.ibm.websphere.appserver.javax.annotation-1.2, \
- com.ibm.websphere.appserver.javax.validation-1.1, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0, \
+ com.ibm.websphere.appserver.javax.validation-2.0, \
+ com.ibm.websphere.appserver.javaeeCompatible-8.0, \
  com.ibm.websphere.appserver.javax.interceptor-1.2, \
  com.ibm.websphere.appserver.javax.cdi-2.0, \
  com.ibm.websphere.appserver.injection-1.0, \

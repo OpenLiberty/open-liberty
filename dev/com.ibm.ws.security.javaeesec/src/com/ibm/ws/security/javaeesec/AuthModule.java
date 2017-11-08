@@ -35,7 +35,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-
 import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 
 /*
@@ -93,7 +92,7 @@ public class AuthModule implements ServerAuthModule {
             registerSession(httpMessageContext);
         } catch (AuthException ae) {
             throw ae;
-        } catch (Exception e) { 
+        } catch (Exception e) {
             // TODO: Issue serviceability message.
             e.printStackTrace();
             AuthException authException = new AuthException();
@@ -201,8 +200,7 @@ public class AuthModule implements ServerAuthModule {
         } else if (AuthenticationStatus.SEND_CONTINUE.equals(authenticationStatus)) {
             status = AuthStatus.SEND_CONTINUE;
         } else if (AuthenticationStatus.NOT_DONE.equals(authenticationStatus)) {
-            // this is unprotected case.
-            status = AuthStatus.SEND_SUCCESS;
+            status = AuthStatus.SUCCESS;
         }
         return status;
     }

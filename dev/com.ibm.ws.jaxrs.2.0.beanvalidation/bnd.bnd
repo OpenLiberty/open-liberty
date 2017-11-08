@@ -20,13 +20,15 @@ WS-TraceGroup: JAXRS
 # jaxrs-2.0-beanValidation is part of EE7 and therefore requires java 1.7 
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))" 
 
+# Technically we should never have allowed javax.validation packages at the 1.0 version
+# but to maintain backwards compatibility we will allow it 
 Import-Package: \
   org.apache.cxf.*;version="[3.0.2,4)", \
   com.ibm.websphere.*, \
   javax.ws.rs.*, \
-  javax.validation;version="[1.0,2)", \
-  javax.validation.executable.*;resolution:=optional;version="[1.0,2)", \
-  javax.validation.*;version="[1.0,2)", \
+  javax.validation;version="[1.0,2.1)", \
+  javax.validation.executable.*;resolution:=optional;version="[1.1,2.1)", \
+  javax.validation.*;version="[1.0,2.1)", \
   com.ibm.ws.jaxrs20.api, \
   com.ibm.ws.jaxrs20.api.*, \
   com.ibm.ws.ffdc, \

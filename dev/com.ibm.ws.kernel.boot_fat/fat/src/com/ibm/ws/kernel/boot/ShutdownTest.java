@@ -25,7 +25,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -38,8 +40,9 @@ public class ShutdownTest {
     LibertyServer server;
 
     @Before
-    public void before() {
+    public void before() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.shutdown.fat");
+        ShrinkHelper.defaultApp(server, "shutdownfat", "com.ibm.ws.kernel.boot.fat");
     }
 
     @After
