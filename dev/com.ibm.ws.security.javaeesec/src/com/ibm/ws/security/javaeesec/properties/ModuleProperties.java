@@ -19,16 +19,13 @@ import com.ibm.websphere.ras.TraceComponent;
 
 public class ModuleProperties {
     private Map<Class, Properties> authMechMap;
-    private Map<Class, Properties> identityStoreMap;
 
-    public ModuleProperties(Map<Class, Properties> authMechMap, Map<Class, Properties> identityStoreMap) {
+    public ModuleProperties(Map<Class, Properties> authMechMap) {
         this.authMechMap = authMechMap;
-        this.identityStoreMap = identityStoreMap;
     }
 
     public ModuleProperties() {
         authMechMap = new HashMap<Class, Properties>();
-        identityStoreMap = new HashMap<Class, Properties>();
     }
 
     public Map<Class, Properties> getAuthMechMap() {
@@ -41,17 +38,4 @@ public class ModuleProperties {
     public Properties putToAuthMechMap(Class className, Properties props) {
         return authMechMap.put(className, props);
     }
-
-    public Map<Class, Properties> getIdentityStoreMap() {
-        return identityStoreMap;
-    }
-
-    public Properties getFormIdentityStoreMap(Class className) {
-        return identityStoreMap.get(className);
-    }
-
-    public Properties putToIdentityStoreMap(Class className, Properties props) {
-        return identityStoreMap.put(className, props);
-    }
-
 }
