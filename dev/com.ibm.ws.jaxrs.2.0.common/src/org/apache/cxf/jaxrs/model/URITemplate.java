@@ -25,6 +25,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -49,6 +50,8 @@ public final class URITemplate {
     private static final String CHARACTERS_TO_ESCAPE = ".*+$()";
     private static final String SLASH = "/";
     private static final String SLASH_QUOTE = "/;";
+    private static final int MAX_URI_TEMPLATE_CACHE_SIZE = Integer.getInteger("org.apache.cxf.jaxrs.max_uri_template_cache_size", 2000);
+    private static final Map<String, URITemplate> URI_TEMPLATE_CACHE = new ConcurrentHashMap<String, URITemplate>();
 
     private final String template;
     private final List<String> variables = new ArrayList<String>();
@@ -348,15 +351,26 @@ public final class URITemplate {
 
     public static URITemplate createTemplate(String pathValue, List<Parameter> params) {
         if (pathValue == null) {
-            return new URITemplate("/", params);
-        }
-
-        if (!pathValue.startsWith("/")) {
+            pathValue = "/";
+        } else if (!pathValue.startsWith("/")) {
             pathValue = "/" + pathValue;
         }
-
-        return new URITemplate(pathValue, params);
+        return createExactTemplate(pathValue, params);
     }
+
+    public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {
+        URITemplate template = URI_TEMPLATE_CACHE.get(pathValue);
+        if (template == null) {
+            template = new URITemplate(pathValue, params);
+            if (URI_TEMPLATE_CACHE.size() >= MAX_URI_TEMPLATE_CACHE_SIZE) {
+                URI_TEMPLATE_CACHE.clear();
+            }
+            URI_TEMPLATE_CACHE.put(pathValue, template);
+        }
+        return template;
+    }
+
+
     // Liberty Change end
 
     public static int compareTemplates(URITemplate t1, URITemplate t2) {

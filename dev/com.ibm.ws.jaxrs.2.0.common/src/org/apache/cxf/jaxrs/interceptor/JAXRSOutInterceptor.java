@@ -87,6 +87,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
 
     }
 
+    @SuppressWarnings("resource") // Response shouldn't be closed here
     private void processResponse(ServerProviderFactory providerFactory, Message message) {
 
         if (isResponseAlreadyHandled(message)) {
@@ -436,7 +437,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
         if (!firstTry || headers.containsKey(HttpHeaders.DATE)) {
             return;
         }
-// Liberty Change for CXF Begin		
+// Liberty Change for CXF Begin
 //        SimpleDateFormat format = HttpUtils.getHttpDateFormat();
         headers.putSingle(HttpHeaders.DATE, CachedTime.getCachedTime().getTimeAsString(-1));
 //Liberty Change for CXF End
@@ -480,7 +481,7 @@ public class JAXRSOutInterceptor extends AbstractOutDatabindingInterceptor {
     // TODO : Pushing the filter processing and copying response headers into say
     // PRE-LOGICAl and PREPARE_SEND interceptors will most likely be a good thing
     // however JAX-RS MessageBodyWriters are also allowed to add response headers
-    // which is reason why a MultipartMap parameter in MessageBodyWriter.writeTo 
+    // which is reason why a MultipartMap parameter in MessageBodyWriter.writeTo
     // method is modifiable. Thus we do need to know if the initial copy has already
     // occurred: for now we will just use to ensure the correct status is set
     private boolean isResponseHeadersCopied(Message message) {
