@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.ejb.liberty;
+package com.ibm.ws.cdi.ejb.interceptor.liberty;
 
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -27,7 +27,7 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
  * Interface to process an EJB module
  */
 
-@Component(name = "com.ibm.ws.cdi.ejb.EjbEndpointService", immediate = true, property = { "service.vendor=IBM", "service.ranking:Integer=100" })
+@Component(name = "com.ibm.ws.cdi.ejb.interceptor.liberty.EjbEndpointService", immediate = true, property = { "service.vendor=IBM", "service.ranking:Integer=100" })
 public class EjbEndpointServiceImpl extends AbstractEjbEndpointService implements EjbEndpointService {
 
     public void activate(ComponentContext cc) {
