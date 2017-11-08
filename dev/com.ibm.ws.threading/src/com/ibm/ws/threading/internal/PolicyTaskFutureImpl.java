@@ -57,7 +57,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     /**
      * The policy executor instance.
      */
-    private final PolicyExecutorImpl executor;
+    final PolicyExecutorImpl executor;
 
     /**
      * Latch for invokeAny futures. Otherwise null.
