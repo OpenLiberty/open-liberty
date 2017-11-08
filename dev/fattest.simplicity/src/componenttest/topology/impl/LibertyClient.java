@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2015 IBM Corporation and others.
+ * Copyright (c) 2011, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -1802,6 +1802,20 @@ public class LibertyClient {
         LibertyFileManager.copyFileIntoLiberty(machine, path, localFileToCopy.getName(), relPathTolocalFile, false, clientRoot);
     }
 
+    /**
+     * Copies a file into the ${client.config.dir} of a Liberty Client.
+     *
+     * @param fromDir The directory of the file to copy.
+     * @param toDir Any extra path beyond ${client.config.dir} for the destination.
+     *            For example, for a destination of ${client.config.dir}/test/ you would use toClientDir=test
+     * @param fileName The name of the file to copy. The file name will be unchanged form source to dest
+     */
+    public void copyFileToLibertyClientRoot(String fromDir, String toDir, String fileName) throws Exception {
+        if (toDir == null)
+            toDir = "";
+        copyFileToLibertyClientRootUsingTmp(clientRoot + "/" + toDir, (fromDir + "/" + fileName));
+    }
+
     public void copyFileToLibertyClientRoot(String fileName) throws Exception {
         copyFileToLibertyClientRootUsingTmp(clientRoot, (pathToAutoFVTTestFiles + "/" + fileName));
     }
@@ -3171,11 +3185,11 @@ public class LibertyClient {
                     } else
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
-                        String regexp = it.next();
-                        if (Pattern.compile(regexp).matcher(line).find()) {
-                        it.remove();
-                        break;
-                        }
+                            String regexp = it.next();
+                            if (Pattern.compile(regexp).matcher(line).find()) {
+                                it.remove();
+                                break;
+                            }
                         }
                 }
             }
