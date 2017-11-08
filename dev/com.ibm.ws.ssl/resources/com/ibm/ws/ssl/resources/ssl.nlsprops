@@ -605,6 +605,6 @@ ssl.defaultKeyStore.expected.CWPKI0817W=CWPKI0817W: The default SSL configuratio
 ssl.defaultKeyStore.expected.CWPKI0817W.explanation=The default SSL configuration expects the default keystore element, which does not exist.
 ssl.defaultKeyStore.expected.CWPKI0817W.useraction=Review the configuration and either add the missing keystore, or change the default SSL configuration to use a different keystore.
 #--------------------------------------------------------------------------------------------------
-ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E=CWPKI0818E: The default SSL configuration references a <keyStore> element with an id value of {0} which does not exist in the configuration or whose definition is missing a password. Either define a keystore with id {0} or update the <ssl id="defaultSSLConfig" keyStoreRef="{0}" /> to reference an existing keystore.
+ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E=CWPKI0818E: The default SSL configuration references a <keyStore> element with an id value of {0}, which does not exist in the configuration or whose definition is missing a password. Either define a keystore with id {0} or update the <ssl id="defaultSSLConfig" keyStoreRef="{0}" /> to reference an existing keystore.
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.explanation=The default SSL configuration expects a keystore element, which does not exist.
 ssl.defaultSSLConfig.noSuchKeyStore.CWPKI0818E.useraction=Review the configuration and either change the configuration to reference an existing keystore, or define the referenced keystore.
