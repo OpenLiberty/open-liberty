@@ -17,7 +17,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -46,22 +49,11 @@ import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import test.common.SharedOutputManager;
 
 public class JavaEESecCDIExtensionTest {
-    static final SharedOutputManager outputMgr = SharedOutputManager.getInstance();
-    /**
-     * Using the test rule will drive capture/restore and will dump on error..
-     * Notice this is not a static variable, though it is being assigned a value we
-     * allocated statically. -- the normal-variable-ness is for before/after processing
-     */
-    @Rule
-    public TestRule managerRule = outputMgr;
 
     private final Mockery context = new JUnit4Mockery();
     private final ProcessAnnotatedType pat = context.mock(ProcessAnnotatedType.class, "pat1");
@@ -412,6 +404,80 @@ public class JavaEESecCDIExtensionTest {
 
 
 // TODO: need to add tests for equalsLdapDefinition params.
+    @Test
+    public void equalsLdapDefinitionStrings() {
+        String KEY[] = {"bindDn", "bindDnPassword", "callerBaseDn", "callerNameAttribute", "callerSearchBase", "callerSearchFilter", "callerSearchScopeExpression", "groupMemberAttribute", "groupMemberOfAttribute", "groupNameAttribute", "groupSearchBase", "groupSearchFilter", "groupSearchScopeExpression", "maxResultsExpression", JavaEESecConstants.PRIORITY_EXPRESSION, "readTimeoutExpression", "url", JavaEESecConstants.USE_FOR_EXPRESSION};
+        List<String> KEYS = Arrays.asList(KEY);
+        String VALUE1="value1";
+        String VALUE2="value2";
+        for (String key : KEYS) {
+            equalsLdapDefinitionTest(key, VALUE1, VALUE2);
+        }
+    }
+
+    @Test
+    public void equalsLdapDefinitionIntegers() {
+        String KEY[] = {"maxResults", JavaEESecConstants.PRIORITY, "readTimeout"};
+        List<String> KEYS = Arrays.asList(KEY);
+        Integer VALUE1= new Integer(10);
+        Integer VALUE2= new Integer(20);
+        for (String key : KEYS) {
+            equalsLdapDefinitionTest(key, VALUE1, VALUE2);
+        }
+    }
+
+    @Test
+    public void equalsLdapDefinitionSearchScope() {
+        String KEY[] = {"callerSearchScope", "groupSearchScope"};
+        List<String> KEYS = Arrays.asList(KEY);
+        LdapSearchScope VALUE1= LdapSearchScope.SUBTREE;
+        LdapSearchScope VALUE2= LdapSearchScope.ONE_LEVEL;
+        for (String key : KEYS) {
+            equalsLdapDefinitionTest(key, VALUE1, VALUE2);
+        }
+    }
+
+    @Test
+    public void equalsLdapDefinitionUseFor() {
+        String key = JavaEESecConstants.USE_FOR;
+
+        ValidationType[] vt1= { ValidationType.PROVIDE_GROUPS };
+        ValidationType[] vt2= { ValidationType.VALIDATE };
+        equalsLdapDefinitionTest(key, vt1, vt2);
+
+        vt1= { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE };
+        vt2= { ValidationType.PROVIDE_GROUPS };
+        equalsLdapDefinitionTest(key, vt1, vt2);
+
+        vt1= { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE };
+        vt2= { ValidationType.PROVIDE_GROUPS};
+        equalsLdapDefinitionTest(key, vt1, vt2);
+
+        vt1= { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE };
+        vt2= { ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS };
+        LdapIdentityStoreDefinition lisd1, lisd2;
+        Map map1 = new HashMap<String, Object>();
+        map1.put(key, vt1);
+        Map map2 = new HashMap<String, Object>();
+        map2.put(key, vt2);
+        lisd1 = getLdapDefinitionForEqualsTest(map1);
+        lisd2 = getLdapDefinitionForEqualsTest(map2);
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
+        assertFalse("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd2));
+    }
+
+    private void equalsLdapDefinitionTest(String key, Object value1, Object value2) {
+        LdapIdentityStoreDefinition lisd1, lisd2;
+        Map map1 = new HashMap<String, Object>();
+        map1.put(key, value1);
+        Map map2 = new HashMap<String, Object>();
+        map2.put(key, value2);
+        lisd1 = getLdapDefinitionForEqualsTest(map1);
+        lisd2 = getLdapDefinitionForEqualsTest(map2);
+        JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
+        assertTrue("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd1));
+        assertFalse("the result should be false.", j3ce.equalsLdapDefinition(lisd1, lisd2));
+    }
 
     public @interface InvalidAnnotation {}
 
