@@ -121,7 +121,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /**
      * Reference to the (unmanaged) executor service for this managed executor service.
      */
-    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     volatile ExecutorService executorService;
 
     /**
@@ -529,6 +528,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         contextSvcRef.setReference(ref);
     }
 
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(service.pid=com.ibm.ws.threading)")
+    protected void setExecutorService(ExecutorService svc) {
+        executorService = svc;
+    }
+
     /**
      * Declarative Services method for setting the transaction context provider service reference
      *
@@ -635,6 +639,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.unsetReference(ref);
     }
+
+    protected void unsetExecutorService(ExecutorService svc) {}
 
     /**
      * Declarative Services method for unsetting the transaction context provider service reference
