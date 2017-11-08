@@ -116,6 +116,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         msgRouter = new MessageRouterConfigurator(context);
         traceRouter = new TraceRouterConfigurator(context);
         
+        //DYCK
         System.out.println("Activator - Going to set Log Source");
         Source ls = HandlerUtils.retrieveLogSource();
         ls.getLocation();

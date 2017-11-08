@@ -38,6 +38,7 @@ public class SpecialHandler implements Handler, Formatter {
     private String serverHostName = null;
     private String wlpUserDir = null;
     private String serverName = null;
+    private final int MAXFIELDLENGTH = -1;
 
     private SpecialHandler() {
         //gather necessary information/data for JSONIFYING
@@ -144,10 +145,14 @@ public class SpecialHandler implements Handler, Formatter {
         myTRW.writeRecord(messageLogFormat);
     }
 
+    // need to somehow get the source*
+    // location was memory
+    // source is name of source.
+    //   How will this special handler identify other... data source types?
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
         String jsonStr = CollectorJsonUtils.jsonifyEvent(event, CollectorConstants.MESSAGES_LOG_EVENT_TYPE, serverName, wlpUserDir, serverHostName, "1.0", tags,
-                                                         maxFieldLength);
+                                                         MAXFIELDLENGTH);
         myTRW.writeRecord(jsonStr);
         return null;
     }
