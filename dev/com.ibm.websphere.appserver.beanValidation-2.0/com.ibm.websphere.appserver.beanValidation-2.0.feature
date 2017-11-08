@@ -26,5 +26,5 @@ Subsystem-Name: Bean Validation 2.0
 -bundles=com.ibm.ws.org.apache.commons.weaver.1.1, \
  com.ibm.ws.beanvalidation.v11, \
  com.ibm.ws.org.apache.bval.1.1.0
-kind=noship
-edition=full
+kind=beta
+edition=core
