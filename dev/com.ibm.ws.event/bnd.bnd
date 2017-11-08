@@ -46,7 +46,8 @@ Import-Package: \
 	com.ibm.wsspi.org.osgi.service.event;version=latest,\
 	com.ibm.wsspi.org.osgi.service.log;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.logging.core;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3, \

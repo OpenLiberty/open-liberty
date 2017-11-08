@@ -26,8 +26,6 @@ import com.ibm.ws.kernel.boot.internal.KernelUtils;
 public class TestUtils {
     private static AtomicInteger count = new AtomicInteger(0);
     static Field bootJarField = null;
-    static Field bootLibDirField = null;
-    static Field utilsInstallDirField = null;
 
     public static File findBuiltKernelBundle() {
         File root = new File(Constants.BOOTSTRAP_LIB_DIR);
@@ -54,19 +52,11 @@ public class TestUtils {
     }
 
     public static void setKernelUtilsBootstrapLibDir(File bootLibDir) throws Exception {
-        if (bootLibDirField == null) {
-            bootLibDirField = KernelUtils.class.getDeclaredField("libDir");
-            bootLibDirField.setAccessible(true);
-        }
-        bootLibDirField.set(null, bootLibDir);
+        KernelUtils.setBootStrapLibDir(bootLibDir);
     }
 
     public static void setUtilsInstallDir(File installDir) throws Exception {
-        if (utilsInstallDirField == null) {
-            utilsInstallDirField = Utils.class.getDeclaredField("installDir");
-            utilsInstallDirField.setAccessible(true);
-        }
-        utilsInstallDirField.set(null, installDir);
+        Utils.setInstallDir(installDir);
     }
 
     public static File createTempFile(String name, String suffix) throws IOException {

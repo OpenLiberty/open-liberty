@@ -548,7 +548,7 @@ public class BinaryLogTest {
 
         int exitValue = p.exitValue();
         if (exitValue != 0) {
-            throw new IOException(command.get(0) + " failed (" + exitValue + "): " + output);
+            throw new IOException(command.get(0) + " failed (" + exitValue + "): " + output + " ERROR: " + error);
         }
 
         List[] returnList = new List[2];
