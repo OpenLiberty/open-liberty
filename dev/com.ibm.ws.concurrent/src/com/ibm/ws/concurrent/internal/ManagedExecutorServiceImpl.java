@@ -15,7 +15,6 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,7 +36,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -48,13 +46,10 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.metatype.annotations.AttributeDefinition;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.bnd.metatype.annotation.Ext;
 import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
@@ -71,64 +66,10 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-interface BaseManagedExecutorServiceConfig {
-
-    @AttributeDefinition(required = false, name = "%jndiName", description = "%jndiName.desc")
-    @Ext.Unique("jndiName")
-    String jndiName();
-
-    @AttributeDefinition(required = false, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC)
-    String config_displayId();
-}
-
-interface FullManagedExecutorServiceConfig extends BaseManagedExecutorServiceConfig {
-    @AttributeDefinition(cardinality = 1, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "defaultConcurrencyPolicy")
-    @Ext.ReferencePid("com.ibm.ws.concurrency.policy.concurrencyPolicy")
-    String concurrencyPolicyRef();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(service.pid=${concurrencyPolicyRef})")
-    @Ext.Final
-    String ConcurrencyPolicy_target();
-
-    @AttributeDefinition(cardinality = 1, name = "%contextServiceRef", description = "%contextServiceRef.desc", defaultValue = "DefaultContextService")
-    @Ext.ReferencePid("com.ibm.ws.context.service")
-    String contextServiceRef();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(service.pid=${contextServiceRef})")
-    @Ext.Final
-    String ContextService_target();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(service.pid=com.ibm.ws.threading)")
-    @Ext.Final
-    String executorService_target();
-
-    // TODO use reference minimum cardinality without default value if we prefer to default to the ${concurrencyPolicyRef}
-    @AttributeDefinition(cardinality = 1, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "defaultConcurrencyPolicy")
-    @Ext.ReferencePid("com.ibm.ws.concurrency.policy.concurrencyPolicy")
-    String longRunningPolicyRef();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(service.pid=${longRunningPolicyRef})")
-    @Ext.Final
-    String LongRunningPolicy_target();
-
-    @AttributeDefinition(required = false, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "-1000")
-    int service_ranking();
-
-    @AttributeDefinition(required = false, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC)
-    String javaCompDefaultName();
-}
-
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.concurrent.managedExecutorService", name = "%managedExecutorService", description = "%managedExecutorService.desc",
-                       localization = Ext.LOCALIZATION)
-@Ext.Alias("managedExecutorService")
-@Ext.SupportExtensions
-interface ManagedExecutorServiceConfig extends FullManagedExecutorServiceConfig {}
-
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService" })
-@DSExt.ConfigureWithInterfaces
 public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
@@ -234,18 +175,13 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @param context DeclarativeService defined/populated component context
      */
     @Activate
-    protected void activate(ComponentContext context, BaseManagedExecutorServiceConfig config) {
-        Dictionary<String, ?> properties = context.getProperties();
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", properties);
-
+    protected void activate(ComponentContext context, Map<String, Object> properties) {
         contextSvcRef.activate(context);
         tranContextProviderRef.activate(context);
 
-        String jndiName = config.jndiName();
+        String jndiName = (String) properties.get("jndiName");
         jndiNameRef.set(jndiName);
-        String xsvcName = jndiName == null ? config.config_displayId() : jndiName;
+        String xsvcName = jndiName == null ? (String) properties.get("config.displayId") : jndiName;
         name.set(xsvcName);
 
         Map<String, String> execProps = new TreeMap<String, String>();
@@ -255,9 +191,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
         // TODO replace this temporary prototype code
         usePolicyExecutor = "enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use"));
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "activate");
     }
 
     /*
@@ -265,14 +198,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @param context DeclarativeService defined/populated component context
      */
     @Modified
-    protected void modified(final ComponentContext context, BaseManagedExecutorServiceConfig config) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "modified", config);
-
-        String jndiName = config.jndiName();
+    protected void modified(final ComponentContext context, Map<String, Object> properties) {
+        String jndiName = (String) properties.get("jndiName");
         String oldJNDIName = jndiNameRef.getAndSet(jndiName);
-        String xsvcName = jndiName == null ? config.config_displayId() : jndiName;
+        String xsvcName = jndiName == null ? (String) properties.get("config.displayId") : jndiName;
         name.set(xsvcName);
 
         Map<String, String> execProps = new TreeMap<String, String>();
@@ -293,9 +222,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
                 applications.removeAll(members);
                 appCoord.recycleApplications(members);
             }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "modified");
     }
 
     /**
@@ -307,7 +233,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // TODO replace this temporary prototype code - only cancel tasks that were submitted by this managed executor instead of shutting down the whole executor
-        if (policyExecutor != null)
+        if (usePolicyExecutor)
             policyExecutor.shutdownNow();
 
         contextSvcRef.deactivate(context);
