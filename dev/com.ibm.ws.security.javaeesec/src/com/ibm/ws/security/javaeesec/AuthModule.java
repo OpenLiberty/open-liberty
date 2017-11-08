@@ -13,7 +13,6 @@ package com.ibm.ws.security.javaeesec;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.AuthException;
@@ -48,7 +47,6 @@ public class AuthModule implements ServerAuthModule {
     private MessagePolicy requestPolicy;
     private CallbackHandler handler;
     private Map<String, String> options;
-    private ModulePropertiesUtils mpu = ModulePropertiesUtils.getInstance();
 
     @Override
     public Class[] getSupportedMessageTypes() {
@@ -83,7 +81,7 @@ public class AuthModule implements ServerAuthModule {
         AuthStatus status = AuthStatus.SEND_FAILURE;
 
         try {
-            HttpAuthenticationMechanism authMech = mpu.getHttpAuthenticationMechanism(getCDI());
+            HttpAuthenticationMechanism authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
             HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, clientSubject);
             AuthenticationStatus authenticationStatus = authMech.validateRequest((HttpServletRequest) messageInfo.getRequestMessage(),
                                                                                  (HttpServletResponse) messageInfo.getResponseMessage(),
@@ -105,7 +103,7 @@ public class AuthModule implements ServerAuthModule {
         AuthStatus status = AuthStatus.SEND_FAILURE;
         // TODO: Determine if HttpMessageContext and HttpAuthenticationMechanism must have been cached in the MessageInfo
         try {
-            HttpAuthenticationMechanism authMech = mpu.getHttpAuthenticationMechanism(getCDI());
+            HttpAuthenticationMechanism authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
             HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
             AuthenticationStatus authenticationStatus = authMech.secureResponse((HttpServletRequest) messageInfo.getRequestMessage(),
                                                                                 (HttpServletResponse) messageInfo.getResponseMessage(),
@@ -123,13 +121,9 @@ public class AuthModule implements ServerAuthModule {
 
     @Override
     public void cleanSubject(MessageInfo messageInfo, Subject subject) throws AuthException {
-        HttpAuthenticationMechanism authMech = mpu.getHttpAuthenticationMechanism(getCDI());
+        HttpAuthenticationMechanism authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
         HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
         authMech.cleanSubject((HttpServletRequest) messageInfo.getRequestMessage(), (HttpServletResponse) messageInfo.getResponseMessage(), httpMessageContext);
-    }
-
-    protected CDI getCDI() {
-        return CDI.current();
     }
 
     protected HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
@@ -143,6 +137,10 @@ public class AuthModule implements ServerAuthModule {
             httpMessageContext = new HttpMessageContextImpl(messageInfo, clientSubject, handler);
         }
         return httpMessageContext;
+    }
+
+    protected ModulePropertiesUtils getModulePropertiesUtils() {
+        return ModulePropertiesUtils.getInstance();
     }
 
     private AuthStatus translateValidateRequestStatus(AuthenticationStatus authenticationStatus) {
@@ -184,4 +182,5 @@ public class AuthModule implements ServerAuthModule {
         }
         return status;
     }
+
 }

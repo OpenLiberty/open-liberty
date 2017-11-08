@@ -44,7 +44,6 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
     private static final TraceComponent tc = Tr.register(BridgeBuilderImpl.class);
 
     private static final String JASPIC_LAYER_HTTP_SERVLET = "HttpServlet";
-    private ModulePropertiesUtils mpu = ModulePropertiesUtils.getInstance();
 
     @Activate
     protected void activate(ComponentContext cc) {}
@@ -60,7 +59,7 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
             return;
         }
 
-        if (isHAMIdentified()) {
+        if (getModulePropertiesUtils().isHttpAuthenticationMechanism()) {
             // Create AuthConfigProvider, AuthConfig, AuthContext, and ServerAuthModule bridge.
             Map<String, String> props = new ConcurrentHashMap<String, String>();
             authConfigProvider = new AuthProvider(props, providerFactory);
@@ -72,21 +71,8 @@ public class BridgeBuilderImpl implements BridgeBuilderService {
         }
     }
 
-    private boolean isHAMIdentified() {
-        boolean result = false;
-        CDI cdi = getCDI();
-        if (cdi != null) {
-            result =  mpu.isOneHttpAuthenticationMechanism(cdi);
-        } else {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "CDI is not found. Most likely, CDI is not enabled, or there is no CDI bean in the application.");
-            }
-        }
-        return result;
-    }
-
-    protected CDI getCDI() {
-        return CDI.current();
+    protected ModulePropertiesUtils getModulePropertiesUtils() {
+        return ModulePropertiesUtils.getInstance();
     }
 
 }

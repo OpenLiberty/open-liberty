@@ -254,7 +254,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         if (moduleMap.containsKey(moduleName)) {
             ModuleProperties mp = moduleMap.get(moduleName);
             mp.putToAuthMechMap(implClass, null);
-            if (tc.isDebugEnabled()) Tr.debug(tc, "found the module in the map.");
+            if (tc.isDebugEnabled()) Tr.debug(tc, "found the module in the map. " + mp);
         } else {
             for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
                 entry.getValue().putToAuthMechMap(implClass, null);
