@@ -17,18 +17,17 @@
   <Object ocdref="com.ibm.ws.concurrency.policy.concurrencyPolicy"/>
  </Designate>
 
- <!-- TODO switch from internal to beta, and have translatable names/descriptions -->
- <OCD id="com.ibm.ws.concurrency.policy.concurrencyPolicy" ibm:alias="concurrencyPolicy" name="internal" description="internal use only">
-  <AD id="expedite"          type="Integer" default="0" min="0" name="internal" description="internal use only"/>
-  <AD id="max"               type="Integer" required="false" min="1" name="internal" description="internal use only"/>
-  <AD id="maxPolicy"         type="String"  default="loose" name="internal" description="internal use only">
-   <Option value="loose"        label="internal"/>
-   <Option value="strict"       label="internal"/>
+ <OCD id="com.ibm.ws.concurrency.policy.concurrencyPolicy" ibm:alias="concurrencyPolicy" ibm:beta="true" name="%concurrencyPolicy" description="%concurrencyPolicy.desc">
+  <AD id="expedite"          type="Integer" default="0" min="0" name="%expedite" description="%expedite.desc"/>
+  <AD id="max"               type="Integer" required="false" min="1" name="%max" description="%max.desc"/>
+  <AD id="maxPolicy"         type="String"  default="loose" name="%maxPolicy" description="%maxPolicy.desc">
+   <Option value="loose"        label="%maxPolicy.loose.desc"/>
+   <Option value="strict"       label="%maxPolicy.strict.desc"/>
   </AD>
-  <AD id="maxQueueSize"      type="Integer" required="false" min="1" name="internal" description="internal use only"/>
-  <AD id="maxWaitForEnqueue" type="String"  ibm:type="duration" default="0" name="internal" description="internal use only"/>
-  <AD id="runIfQueueFull"    type="Boolean" default="false" name="internal" description="internal use only"/>
-  <AD id="startTimeout"      type="String"  ibm:type="duration" required="false" name="internal" description="internal use only"/>
+  <AD id="maxQueueSize"      type="Integer" required="false" min="1" name="%maxQueueSize" description="%maxQueueSize.desc"/>
+  <AD id="maxWaitForEnqueue" type="String"  ibm:type="duration" default="0" name="%maxWaitForEnqueue" description="%maxWaitForEnqueue.desc"/>
+  <AD id="runIfQueueFull"    type="Boolean" default="false" name="%runIfQueueFull" description="%runIfQueueFull.desc"/>
+  <AD id="startTimeout"      type="String"  ibm:type="duration" required="false" name="%startTimeout" description="%startTimeout.desc"/>
  </OCD>
 
 </metatype:MetaData>

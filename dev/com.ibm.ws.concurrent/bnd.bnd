@@ -55,12 +55,6 @@ Service-Component:\
   com.ibm.ws.concurrent.internal.ManagedExecutorServiceImpl,\
   com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceImpl
 
--dsannotations-options:inherit,felixExtensions
-
--metatypeannotations: \
-  com.ibm.ws.concurrent.internal.ManagedExecutorServiceConfig,\
-  com.ibm.ws.concurrent.internal.ManagedScheduledExecutorServiceConfig
-
 instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 
 -buildpath: \
@@ -74,7 +68,6 @@ instrument.classesExcludes: com/ibm/ws/concurrent/resources/*.class
 	com.ibm.ws.concurrency.policy;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.context;version=latest,\
-	com.ibm.ws.org.apache.felix.scr;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.resource;version=latest,\
 	com.ibm.ws.threading;version=latest,\
