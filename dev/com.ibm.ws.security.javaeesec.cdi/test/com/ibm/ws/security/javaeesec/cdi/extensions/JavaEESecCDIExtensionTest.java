@@ -42,6 +42,7 @@ import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
+import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 import javax.security.enterprise.identitystore.PasswordHash;
 
 import org.jmock.Expectations;
@@ -441,29 +442,18 @@ public class JavaEESecCDIExtensionTest {
     public void equalsLdapDefinitionUseFor() {
         String key = JavaEESecConstants.USE_FOR;
 
-        ValidationType[] vt1= { ValidationType.PROVIDE_GROUPS };
-        ValidationType[] vt2= { ValidationType.VALIDATE };
-        equalsLdapDefinitionTest(key, vt1, vt2);
+        equalsLdapDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS }, new ValidationType[] { ValidationType.VALIDATE });
+        equalsLdapDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE }, new ValidationType[] { ValidationType.PROVIDE_GROUPS });
+        equalsLdapDefinitionTest(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE }, new ValidationType[] { ValidationType.PROVIDE_GROUPS});
 
-        vt1= { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE };
-        vt2= { ValidationType.PROVIDE_GROUPS };
-        equalsLdapDefinitionTest(key, vt1, vt2);
-
-        vt1= { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE };
-        vt2= { ValidationType.PROVIDE_GROUPS};
-        equalsLdapDefinitionTest(key, vt1, vt2);
-
-        vt1= { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE };
-        vt2= { ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS };
-        LdapIdentityStoreDefinition lisd1, lisd2;
         Map map1 = new HashMap<String, Object>();
-        map1.put(key, vt1);
+        map1.put(key, new ValidationType[] { ValidationType.PROVIDE_GROUPS, ValidationType.VALIDATE });
         Map map2 = new HashMap<String, Object>();
-        map2.put(key, vt2);
-        lisd1 = getLdapDefinitionForEqualsTest(map1);
-        lisd2 = getLdapDefinitionForEqualsTest(map2);
+        map2.put(key, new ValidationType[] { ValidationType.VALIDATE, ValidationType.PROVIDE_GROUPS });
+        LdapIdentityStoreDefinition lisd1 = getLdapDefinitionForEqualsTest(map1);
+        LdapIdentityStoreDefinition lisd2 = getLdapDefinitionForEqualsTest(map2);
         JavaEESecCDIExtension j3ce = new JavaEESecCDIExtension();
-        assertFalse("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd2));
+        assertTrue("the result should be true.", j3ce.equalsLdapDefinition(lisd1, lisd2));
     }
 
     private void equalsLdapDefinitionTest(String key, Object value1, Object value2) {
