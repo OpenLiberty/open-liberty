@@ -44,9 +44,6 @@ import com.ibm.wsspi.threadcontext.WSContextService;
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
 public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
-    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
-    volatile ExecutorService executorService;
-
     /**
      * Reference to the (unmanaged) scheduled executor service for this managed scheduled executor service.
      */
@@ -150,6 +147,13 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(service.pid=com.ibm.ws.threading)")
+    @Trivial
+    protected void setExecutorService(ExecutorService svc) {
+        super.setExecutorService(svc);
+    }
+
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
     @Trivial
     protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
@@ -166,6 +170,12 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Trivial
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         super.unsetContextService(ref);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetExecutorService(ExecutorService svc) {
+        super.unsetExecutorService(svc);
     }
 
     @Override
