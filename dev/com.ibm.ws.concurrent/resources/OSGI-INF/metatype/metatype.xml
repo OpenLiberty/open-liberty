@@ -46,7 +46,6 @@
   <AD id="ConcurrencyPolicy.target"           type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
   <AD id="contextServiceRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
   <AD id="ContextService.target"              type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
-  <AD id="executorService.target"             type="String"  ibm:final="true" default="(service.pid=com.ibm.ws.threading)" name="internal" description="internal use only"/>
   <AD id="javaCompDefaultName"                type="String"  required="false" name="internal" description="internal use only" />
   <AD id="jndiName"                           type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
   <!-- TODO to switch longRunningPolicyRef's default to be the concurrencyPolicyRef, will need to make optional, taking advantage of reference minimum cardinality, and have no value by default -->
@@ -66,7 +65,6 @@
   <AD id="ConcurrencyPolicy.target"           type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
   <AD id="contextServiceRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
   <AD id="ContextService.target"              type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
-  <AD id="executorService.target"             type="String"  ibm:final="true" default="(service.pid=com.ibm.ws.threading)" name="internal" description="internal use only"/>
   <AD id="javaCompDefaultName"                type="String"  required="false" name="internal" description="internal use only" />
   <AD id="jndiName"                           type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
   <!-- TODO to switch longRunningPolicyRef's default to be the concurrencyPolicyRef, will need to make optional, taking advantage of reference minimum cardinality, and have no value by default -->
