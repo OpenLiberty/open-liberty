@@ -44,7 +44,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * with unique users.
  */
 @RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
+@Mode(TestMode.LITE)
 public class MultipleReposTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.file.fat.multiplerepos");
     private static final Class<?> c = MultipleReposTest.class;

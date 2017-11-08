@@ -14,7 +14,8 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/beanManagerLookupApp/src,\
-	test-applications/interceptionFactoryApp/src
+	test-applications/interceptionFactoryApp/src,\
+	test-applications/builtinAnnoLiteralsApp/src
 
 test.project: true
 
@@ -30,6 +31,7 @@ javac.target: 1.8
 # Dependencies may be local bundles (e.g. com.ibm.websphere.javaee.servlet.3.1)
 #      or binaries from Artifactory (e.g. org.apache.derby:derbynet)
 # had this in buildpath -> org.apache.derby:derbynet;version=10.11.1.1
+# had com.ibm.websphere.javaee.cdi.1.2;version=latest
 -buildpath: \
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
