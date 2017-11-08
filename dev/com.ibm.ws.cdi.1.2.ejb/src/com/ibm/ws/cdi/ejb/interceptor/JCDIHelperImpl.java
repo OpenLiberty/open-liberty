@@ -11,24 +11,24 @@
 package com.ibm.ws.cdi.ejb.interceptor;
 
 import com.ibm.websphere.csi.J2EEName;
+import com.ibm.ws.cdi.ejb.impl.EJBCDIInterceptorWrapper;
 import com.ibm.ws.ejbcontainer.JCDIHelper;
 
 public class JCDIHelperImpl implements JCDIHelper {
 
-    private final Class<?> ejbInterceptor;
+    private final Class<?> ejbInterceptor = EJBCDIInterceptorWrapper.class;
+    private final Class<?> firstEJBInterceptor = WeldSessionBeanInterceptorWrapper.class;
 
-    public JCDIHelperImpl(Class<?> ejbInterceptor) {
-        this.ejbInterceptor = ejbInterceptor;
-    }
+    public static final JCDIHelper INSTANCE = new JCDIHelperImpl();
 
     @Override
     public Class<?> getFirstEJBInterceptor(J2EEName j2eeName, Class<?> ejbImpl) {
-        return WeldSessionBeanInterceptorWrapper.class;
+        return this.firstEJBInterceptor;
     }
 
     @Override
     public Class<?> getEJBInterceptor(J2EEName j2eeName, Class<?> ejbImpl) {
-        return ejbInterceptor;
+        return this.ejbInterceptor;
     }
 
 }

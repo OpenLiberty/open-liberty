@@ -20,7 +20,10 @@ Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 javac.source: 1.8
 javac.target: 1.8
 
--dsannotations: com.ibm.ws.cdi.ejb.security.EjbSecurityContextStore
+-dsannotations: com.ibm.ws.cdi.ejb.interceptor.liberty.EjbEndpointServiceImpl,\
+  com.ibm.ws.cdi.ejb.security.EjbSecurityContextStore,\
+  com.ibm.ws.cdi.ejb.interceptor.liberty.JCDIHelperFactoryImpl
+
 
 Service-Component: \
  com.ibm.ws.cdi.2.0.ejb.deserializationClassProvider;\
@@ -28,10 +31,12 @@ Service-Component: \
     provide:=com.ibm.ws.serialization.DeserializationClassProvider;\
     properties:="service.vendor=IBM,\
       packages=com.ibm.ws.cdi.ejb.interceptor\
+              |com.ibm.ws.cdi.ejb.interceptor.liberty\
               |com.ibm.ws.cdi.ejb.security"
 
-Export-Package: \
+Private-Package: \
   com.ibm.ws.cdi.ejb.interceptor,\
+  com.ibm.ws.cdi.ejb.interceptor.liberty,\
   com.ibm.ws.cdi.ejb.security
 
 Import-Package: \
@@ -59,4 +64,5 @@ instrument.classesExcludes: com/ibm/ws/cdi/ejb/impl/resources/*.class
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.jboss.weld.3.0.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest, \
+	com.ibm.ws.cdi.ejb.common;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

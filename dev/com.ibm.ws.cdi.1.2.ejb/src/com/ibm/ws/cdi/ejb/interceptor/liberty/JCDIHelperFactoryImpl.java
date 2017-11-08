@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.ejb.liberty;
+package com.ibm.ws.cdi.ejb.interceptor.liberty;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -18,7 +18,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.CDIServiceUtils;
-import com.ibm.ws.cdi.ejb.impl.EJBCDIInterceptorWrapper;
 import com.ibm.ws.cdi.ejb.interceptor.JCDIHelperImpl;
 import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.ejbcontainer.JCDIHelper;
@@ -26,7 +25,7 @@ import com.ibm.ws.ejbcontainer.osgi.JCDIHelperFactory;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 
-@Component(name = "com.ibm.ws.cdi.ejb.liberty.JCDIHelperFactoryImpl", property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.ejb.interceptor.liberty.JCDIHelperFactoryImpl", property = { "service.vendor=IBM" })
 public class JCDIHelperFactoryImpl implements JCDIHelperFactory {
 
     private static final TraceComponent tc = Tr.register(JCDIHelperFactoryImpl.class);
@@ -55,7 +54,7 @@ public class JCDIHelperFactoryImpl implements JCDIHelperFactory {
 
             ModuleMetaData moduleMetaData = CDIServiceUtils.getModuleMetaData(container);
             if (cdiRuntime != null && cdiRuntime.isModuleCDIEnabled(moduleMetaData)) {
-                returnValue = new JCDIHelperImpl(EJBCDIInterceptorWrapper.class);;
+                returnValue = JCDIHelperImpl.INSTANCE;
             }
         } catch (CDIException e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
