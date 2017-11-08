@@ -25,6 +25,8 @@ public interface FacesConfig extends DeploymentDescriptor {
 
     static final int VERSION_2_2 = 22;
 
+    static final int VERSION_2_3 = 23;
+
     /**
      * @return version="..." attribute value
      */
