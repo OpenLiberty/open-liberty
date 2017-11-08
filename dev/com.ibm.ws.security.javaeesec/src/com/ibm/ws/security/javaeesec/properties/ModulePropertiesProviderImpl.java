@@ -23,7 +23,6 @@ import com.ibm.websphere.ras.TraceComponent;
 public class ModulePropertiesProviderImpl implements ModulePropertiesProvider {
     private static final TraceComponent tc = Tr.register(ModulePropertiesProviderImpl.class);
     private Map<String, ModuleProperties> moduleMap;
-    private ModulePropertiesUtils mpu = ModulePropertiesUtils.getInstance();
 
     public ModulePropertiesProviderImpl(Map<String, ModuleProperties> moduleMap) {
         this.moduleMap = moduleMap;
@@ -31,7 +30,7 @@ public class ModulePropertiesProviderImpl implements ModulePropertiesProvider {
 
     @Override
     public ModuleProperties getModuleProperties() {
-        return moduleMap.get(mpu.getJ2EEModuleName());
+        return moduleMap.get(getModulePropertiesUtils().getJ2EEModuleName());
     }
 
     @Override
@@ -54,8 +53,8 @@ public class ModulePropertiesProviderImpl implements ModulePropertiesProvider {
         return props;
     }
 
-    // this is for unittest
-    protected void setModulePropertiesUtils(ModulePropertiesUtils mpu) {
-        this.mpu = mpu;
+    protected ModulePropertiesUtils getModulePropertiesUtils() {
+        return ModulePropertiesUtils.getInstance();
     }
+
 }
