@@ -154,6 +154,13 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     }
 
     @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
+    @Trivial
+    protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
+        super.setLongRunningPolicy(svc);
+    }
+
+    @Override
     @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
     @Trivial
     protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
@@ -176,6 +183,12 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
     @Trivial
     protected void unsetExecutorService(ExecutorService svc) {
         super.unsetExecutorService(svc);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
+        super.unsetLongRunningPolicy(svc);
     }
 
     @Override
