@@ -41,11 +41,10 @@ Private-Package: \
 
 Import-Package: \
   com.ibm.ws.cdi.internal.interfaces, \
+  com.ibm.ws.cdi.ejb.resources, \
   *
 
 WS-TraceGroup: JCDI
-
-instrument.classesExcludes: com/ibm/ws/cdi/ejb/impl/resources/*.class
 
 -buildpath: \
         com.ibm.ws.cdi.weld;version=latest, \

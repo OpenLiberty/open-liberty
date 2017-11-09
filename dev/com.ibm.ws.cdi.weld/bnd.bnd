@@ -56,6 +56,7 @@ Import-Package: !org.scannotation.archiveiterator, \
                 javax.enterprise.inject; version="[1.1.0,3.0.0)", \
                 javax.enterprise.inject.spi; version="[1.1.0,3.0.0)", \
                 com.ibm.ws.cdi.internal.interfaces, \
+                com.ibm.ws.cdi.internal.resources, \
                 org.jboss.weld;version="[2.4,4)",\
                 org.jboss.weld.annotated.enhanced;version="[2.4,4)",\
                 org.jboss.weld.bootstrap;version="[2.4,4)",\
@@ -84,8 +85,6 @@ Include-Resource: \
   OSGI-INF=resources/OSGI-INF
   
 WS-TraceGroup: JCDI
-
-instrument.classesExcludes: com/ibm/ws/cdi/impl/resources/*.class
 
 -buildpath.bootclasspath: \
 	com.ibm.websphere.javaee.annotation.1.2;version=latest;boot=true,\
