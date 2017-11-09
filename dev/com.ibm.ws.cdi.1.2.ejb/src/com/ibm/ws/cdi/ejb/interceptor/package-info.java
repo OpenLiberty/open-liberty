@@ -12,7 +12,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
-@TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi12.ejb.resources.CDI")
+@TraceOptions(traceGroup = "JCDI", messageBundle = "com.ibm.ws.cdi.ejb.resources.CDIEJB")
 package com.ibm.ws.cdi.ejb.interceptor;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
