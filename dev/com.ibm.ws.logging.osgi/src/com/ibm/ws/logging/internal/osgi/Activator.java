@@ -43,6 +43,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
     private ServiceTracker<EventAdmin, EventAdmin> eventAdminTracker;
     private MessageRouterConfigurator msgRouter;
     private TraceRouterConfigurator traceRouter;
+    private CollectorManagerConfigurator cmConfigurator; //DYKC
 
     private LoggingConfigurationService logCfgService;
 
@@ -116,33 +117,8 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         msgRouter = new MessageRouterConfigurator(context);
         traceRouter = new TraceRouterConfigurator(context);
         
-        //DYCK
-        System.out.println("Activator - Going to set Log Source");
-        Source ls = HandlerUtils.retrieveLogSource();
-        ls.getLocation();
-        System.out.println("Activator - I got a Log Source");
-        
-    	Dictionary<String, String> props = new Hashtable<String, String>();
-    	props.put("service.vendor", "IBM");
-    	props.put("id", "ANALYTICSLOGSOURCE");
-    	context.registerService(Source.class.getName(), ls, props);
-        
-    	
-		ServiceReference<Source>[] servRefs;
-		try {
-			servRefs = (ServiceReference<Source>[]) context.getServiceReferences(Source.class.getName(), null);
-			System.out.println("Activator - Source.class.getName()" + Source.class.getName());
-			if (servRefs != null) {
-				for (ServiceReference<Source> servRef : servRefs) {
-					// setWsTraceHandler(servRef);
-					System.out.println("Gotem");
-				}
-			}
-
-		} catch (InvalidSyntaxException e) {
-			System.out.println("aw shucks");
-			e.printStackTrace();
-		}
+        //DYKC-CollectorManagerConfigurator, maybe a better name?
+        cmConfigurator = new CollectorManagerConfigurator(context);
     }
 
     /**

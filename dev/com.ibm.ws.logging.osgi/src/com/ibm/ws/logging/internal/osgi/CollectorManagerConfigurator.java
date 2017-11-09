@@ -1,0 +1,134 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+package com.ibm.ws.logging.internal.osgi;
+
+import java.util.Dictionary;
+import java.util.Hashtable;
+
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceEvent;
+import org.osgi.framework.ServiceListener;
+import org.osgi.framework.ServiceReference;
+
+import com.ibm.ws.logging.utils.HandlerUtils;
+import com.ibm.wsspi.collector.manager.CollectorManager;
+import com.ibm.wsspi.collector.manager.Source;
+
+
+public class CollectorManagerConfigurator {
+
+    /**
+     * A reference to the OSGI bundle framework.
+     */
+    private BundleContext bundleContext = null;
+    private HandlerUtils myHandlerUtils = null;
+    /**
+     * The ServiceListener interface. Invoked by OSGI whenever a ServiceReference changes state.
+     * Receives WsLogHandler events and passes them along to WsTraceRouterImpl.
+     */
+    private final ServiceListener collectorManagerListener = new ServiceListener() {
+        @Override
+        @SuppressWarnings("unchecked")
+        public void serviceChanged(ServiceEvent event) {
+            switch (event.getType()) {
+                case ServiceEvent.REGISTERED:
+                	setCollectorManagerHandler((ServiceReference<CollectorManager>) event.getServiceReference());
+                    break;
+                case ServiceEvent.UNREGISTERING:
+                    unsetCollectorManagerHandler((ServiceReference<CollectorManager>) event.getServiceReference());
+                    break;
+                default:
+                    break;
+            }
+        }
+    };
+
+    /**
+     * First, this guy registers itself as a ServiceListener, listening specifically for
+     * CollectorManager services. Second, it scans the current set services looking for any CollectorManager
+     * services that are already active.
+     * 
+     * @param context The BundleContext.
+     */
+    public CollectorManagerConfigurator(BundleContext context) {
+    	myHandlerUtils = HandlerUtils.getInstance();
+        bundleContext = context;
+
+        try {
+            // Register ServiceListeners, to be informed when new CollectorManager services are registered.
+            bundleContext.addServiceListener(collectorManagerListener, "(" + Constants.OBJECTCLASS + "=com.ibm.wsspi.collector.manager.CollectorManager)");
+
+            processInitialCollectorManagerServices();
+
+        } catch (InvalidSyntaxException ise) {
+            // This should really never happen.  Blow up if it does.
+            throw new RuntimeException(ise);
+        }
+    }
+
+    protected void setCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
+    	System.out.println("WEEEEEEEEEEEEE GOT OURSELVES A COLLECTOR MANAGER");
+        //After obtaining a collectorManager... or rather, knowing a collectorManager is available
+    	//We will need to obtain the logsource, etc, and register them
+    	//DYKC-temp do only for log for now.
+    	
+        System.out.println("CollectorManagerConfigurator.java - Going to set Log Source");
+        Source logSource = myHandlerUtils.getLogSource();
+        logSource.getLocation();
+        System.out.println("CollectorManagerConfigurator.java - I got a Log Source " + logSource);
+        
+    	Dictionary<String, String> props = new Hashtable<String, String>();
+    	props.put("service.vendor", "IBM");
+    	props.put("id", "ANALYTICSLOGSOURCE");
+    	bundleContext.registerService(Source.class.getName(), logSource, props);
+        
+    	
+    	//DYKC- Testing to see if the service is just registered... Is registered.
+		ServiceReference<Source>[] servRefs;
+		try {
+			servRefs = (ServiceReference<Source>[]) bundleContext.getServiceReferences(Source.class.getName(), null);
+			System.out.println("Activator - Source.class.getName() " + Source.class.getName());
+			if (servRefs != null) {
+				for (ServiceReference<Source> servRef : servRefs) {
+					// setWsTraceHandler(servRef);
+					System.out.println("Gotem");
+				}
+			}
+
+		} catch (InvalidSyntaxException e) {
+			System.out.println("aw shucks");
+			e.printStackTrace();
+		}
+    }
+
+
+    protected void unsetCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
+        //do nothing
+    }
+
+    /**
+     * Search for and add any LogHandler ServiceReferences that were already started
+     * by the time we registered our ServiceListener.
+     */
+    @SuppressWarnings("unchecked")
+    protected void processInitialCollectorManagerServices() throws InvalidSyntaxException {
+        ServiceReference<CollectorManager>[] servRefs = (ServiceReference<CollectorManager>[])
+                        bundleContext.getServiceReferences(CollectorManager.class.getName(), null);
+
+        if (servRefs != null) {
+            for (ServiceReference<CollectorManager> servRef : servRefs) {
+            	setCollectorManagerHandler(servRef);
+            }
+        }
+    }
+}

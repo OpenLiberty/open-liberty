@@ -37,6 +37,7 @@ import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.utils.FileLogHolder;
+import com.ibm.ws.logging.utils.HandlerUtils;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.logging.LogHandler;
 import com.ibm.wsspi.logging.MessageRouter;
@@ -173,9 +174,10 @@ public class BaseTraceService implements TrService {
     private final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
 
     //DYKC
-    private volatile LogSource ls = null;
-    private volatile SpecialHandler sh = null;
-    private volatile BufferManagerImpl bmi;
+    private volatile LogSource logSource = null;
+    private volatile SpecialHandler messageLogHandler = null;
+    private volatile BufferManagerImpl logConduit;
+    private volatile HandlerUtils handlerUtils = null;
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -215,41 +217,18 @@ public class BaseTraceService implements TrService {
         update(config);
 
         registerLoggerHandlerSingleton();
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Capture System.out/.err after registerLoggerHandler has initialized
         // LogManager, which might print errors due to misconfiguration.
         captureSystemStreams();
-
-        //TODO: Only startup pipeline; if we are actually creating BaseTraceService.
-
-        //Create the pipeline
-        //MIGHT NEED TO MAKE IT all of it IN THE INITIALIZE THING, SYNCHRONIZED
-        //0. Router?
-        //Going to have to do some weird stuff where Router still gets started by [LO]
-        //1. create log source data
-
-//        ls = new LogSource();
-//        //2. create BufferManager
-//        BufferManagerImpl bmi = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.message");
-//        System.out.println("BaseTraceService.java = created BufferManager + " + bmi.toString());
-//        ls.setBufferManager(bmi); //set Buffer Manager into Source
-        //3. Crate Super Special Hanlder // scratch that make handler first
-        //        sh = SpecialHandler.getInstance();
-        //        sh.setLogSource(ls);
-        //        sh.setFileLogHolder(messagesLog);
-
-        //Will the Special handler be our special objet
-        //Special wrapper object?
-        ////////////////////////////////////////////////////////////////////////////////////////////
         System.out.println("BaseTraceService.java = FINISHED INIT");
     }
 
     @Override
     public Source getLogSource() {
-        if (ls == null)
+        if (logSource == null)
             return null;
         System.out.println("BaseTraceService.java = returning a logSoruce");
-        return ls;
+        return logSource;
     }
 
     protected void registerLoggerHandlerSingleton() {
@@ -291,6 +270,9 @@ public class BaseTraceService implements TrService {
         consoleLogLevel = trConfig.getConsoleLogLevel();
         copySystemStreams = trConfig.copySystemStreams();
         hideMessageids = trConfig.getMessagesToHide();
+        //DYKC
+        String serverName = trConfig.getServerName();
+        String wlpUserDir = trConfig.getWlpUsrDir();
         //add hideMessageIds to log header. This is printed when its configured in bootstrap.properties
         if (hideMessageids.size() > 0) {
             logHeader = logHeader.concat("Suppressed message ids: " + hideMessageids).concat((LoggingConstants.nl));
@@ -309,23 +291,26 @@ public class BaseTraceService implements TrService {
         if (hideMessageids.size() > 0) {
             Tr.info(TraceSpecification.getTc(), "MESSAGES_CONFIGURED_HIDDEN_2", new Object[] { hideMessageids });
         }
-        //need to set Handler with FLH (and BTF (formatter)
 
-        System.out.println("BaseTraceService.java - Trying to get a serverName " + trConfig.getServerName());
-        System.out.println("BaseTraceService.java - Trying to get a wlp.user.dir " + trConfig.getWlpUsrDir());
-        //DYKC temporary solution, need an interface + singleton
-        if (ls == null)
-            ls = new LogSource();
-        if (bmi == null)
-            bmi = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.message");
-        System.out.println("BaseTraceService.java = created BufferManager + " + bmi.toString());
-        ls.setBufferManager(bmi); //set Buffer Manager into Source
-        if (sh == null) {
-            sh = SpecialHandler.getInstance();
-            sh.setLogSource(ls);
-            sh.setFileLogHolder(messagesLog);
-            ls.setHandler(sh);
+        //DYKC how to avoid other basetraceServicegys from starting this up as well in other 'updates'
+        //Both HPEL and JSR47 rely on this.
+        if (handlerUtils == null) {
+            handlerUtils = HandlerUtils.getInstance();
+            logSource = handlerUtils.getLogSource();
+            logConduit = handlerUtils.getLogConduit();
         }
+        System.out.println("BASE TRACE SERVICE LogConduit is = " + logConduit.toString());
+        System.out.println("BASE TRACE SERVICE logSource is = " + logSource.toString());
+        if (messageLogHandler == null) {
+            messageLogHandler = SpecialHandler.getInstance();
+            messageLogHandler.setLogSource(logSource);
+            messageLogHandler.setFileLogHolder(messagesLog);
+            messageLogHandler.setServername(serverName);
+            messageLogHandler.setWlpUserDir(wlpUserDir);
+            logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
+
+        }
+        handlerUtils.setHandler(messageLogHandler);
     }
 
     /**
@@ -494,7 +479,7 @@ public class BaseTraceService implements TrService {
         // Tee to messages.log (always)
         String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
         //messagesLog.writeRecord(message); //DYKC
-        sh.writeToLogNormal("SYSTEM OUT ME" + message);
+        messageLogHandler.writeToLogNormal("SYSTEM OUT ME" + message);
         invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
 
         if (detailLog == systemOut) {
@@ -560,8 +545,8 @@ public class BaseTraceService implements TrService {
         } else {
             earlierMessages.add(routedMessage);
             //DYKC
-            if (ls != null) {
-                ls.publish(routedMessage);
+            if (logSource != null) {
+                logSource.publish(routedMessage);
             }
         }
         return retMe;
@@ -633,7 +618,7 @@ public class BaseTraceService implements TrService {
             // messages.log  //send directly.
             //messagesLog.writeRecord(messageLogFormat);
             //if not configured - ta da
-            sh.writeToLogNormal(messageLogFormat);
+            messageLogHandler.writeToLogNormal(messageLogFormat);
 
             // console.log
             if (detailLog == systemOut) {

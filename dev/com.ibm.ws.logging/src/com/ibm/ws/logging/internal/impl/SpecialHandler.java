@@ -38,12 +38,11 @@ public class SpecialHandler implements Handler, Formatter {
     private String serverHostName = null;
     private String wlpUserDir = null;
     private String serverName = null;
-    private final int MAXFIELDLENGTH = -1;
+    private final int MAXFIELDLENGTH = -1; //Unlimited field length
 
     private SpecialHandler() {
-        //gather necessary information/data for JSONIFYING
-
-        //hostname -> localhost
+        // this.serverName = serverName;
+        //this.wlpUserDir = wlpUserDir;
         try {
             serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                 @Override
@@ -55,8 +54,6 @@ public class SpecialHandler implements Handler, Formatter {
         } catch (PrivilegedActionException pae) {
             serverHostName = "";
         }
-
-        //
     }
 
     public static synchronized SpecialHandler getInstance() {
