@@ -8,19 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package asyncEventsApp.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                InterceptionFactoryTest.class,
-                BuiltinAnnoLiteralsTest.class,
-})
-public class FATSuite {
+/**
+ *
+ */
+public class CakeArrival {
+    public List<CakeReport> getCakeReports() {
+        return cakes;
+    }
 
+    public void addCake(String cakeObserver, long tid) {
+        System.out.println("addCake - " + cakeObserver + ", tid - " + tid);
+        CakeReport report = new CakeReport(cakeObserver, tid);
+        this.cakes.add(report);
+    }
+
+    private List<CakeReport> cakes = new CopyOnWriteArrayList<>();
 }

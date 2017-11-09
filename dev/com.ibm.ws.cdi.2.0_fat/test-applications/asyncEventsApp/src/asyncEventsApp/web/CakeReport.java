@@ -8,19 +8,29 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package asyncEventsApp.web;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+public class CakeReport {
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                InterceptionFactoryTest.class,
-                BuiltinAnnoLiteralsTest.class,
-})
-public class FATSuite {
+    private String cakeObserver = null;
+    private long tid;
 
+    public CakeReport(String obs, long tid) {
+        this.cakeObserver = obs;
+        this.tid = tid;
+    }
+
+    /**
+     * @return the cakeObserver
+     */
+    public String getCakeObserver() {
+        return cakeObserver;
+    }
+
+    /**
+     * @return the tid
+     */
+    public long getTid() {
+        return tid;
+    }
 }
