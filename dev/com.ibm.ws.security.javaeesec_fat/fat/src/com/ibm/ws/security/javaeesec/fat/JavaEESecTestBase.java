@@ -40,213 +40,15 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 
 import componenttest.topology.impl.LibertyServer;
 
 public class JavaEESecTestBase {
 
-    public static final String DEFAULT_REALM = "JaspiRealm";
-    //Value of JASPI_GROUP must match group.name property passed in provider bnd.bnd.
-    public static final String JASPI_GROUP = "JASPIGroup";
-
-    public static final String DEFAULT_BASICAUTH_SERVLET_NAME = "ServletName: JASPIBasicAuthServlet";
-    public static final String DEFAULT_FORMLOGIN_SERVLET_NAME = "ServletName: JASPIFormLoginServlet";
-    public static final String DEFAULT_REGISTRATION_SERVLET_NAME = "ServletName: JASPIRegistrationTestServlet";
-
-    public static final String DEFAULT_CALLBACK_SERVLET_NAME = "ServletName: JASPICallbackTestBasicAuthServlet";
-    public static final String DEFAULT_CALLBACK_FORMLOGIN_SERVLET_NAME = "ServletName: JASPICallbackTestFormLoginServlet";
-    public static final String DEFAULT_CALLBACK_FORM_LOGIN_PAGE = "/JASPICallbackTestFormLoginServlet/j_security_check";
-
-    public static final String DEFAULT_SERVLET30_NAME = "ServletName: JASPIServlet30";
-    public static final String NO_NAME_VALIDATION = "NONE";
-    public static final String DEFAULT_BASIC_REGISTRATION = "/JASPIBasic";
-    public static final String DEFAULT_FORM_REGISTRATION = "/JASPIForm";
-    public static final String DEFAULT_FORM_LOGIN_PAGE = "/JASPIFormLoginServlet/j_security_check";
-
-    public static final String AUTH_TYPE_BASIC = "BASIC";
-    public static final String AUTH_TYPE_FORM = "FORM";
-
-    public static final String DEFAULT_APP = "JavaEESecBasicAuthServlet";
-    public static final String DEFAULT_REGISTRATION_APP = "JASPIRegistrationTestServlet";
-    public static final String DEFAULT_FORM_APP = "JASPIFormLoginServlet";
-    public static final String DEFAULT_SERVLET30_APP = "JASPIServlet30";
-    public static final String DEFAULT_CALLBACK_APP = "JASPICallbackTestBasicAuthServlet";
-    public static final String DEFAULT_CALLBACK_FORM_APP = "JASPICallbackTestFormLoginServlet";
-    public static final String DEFAULT_WRAPPING_APP = "JASPIWrappingServlet";
-
-    public final static String FORM_LOGIN_PAGE = "Form Login Page";
-    public final static String FORM_LOGOUT_PAGE = "Form Logout Page";
-    public final static String LOGIN_ERROR_PAGE = "Form Login Error Page";
-    public final static String FORM_LOGIN_JASPI_PAGE = "Form Login Page For Include and Forward";
-
-    public final static String ALL_CALLBACKS = "?PVCB=YES&CPCB=YES&GPCB=YES";
-    public final static String CPCB_PRINCIPAL_CALLBACK = "?PVCB=NO&CPCB=YES&GPCB=NO&cpcbType=JASPI_PRINCIPAL";
-    public final static String MANUAL_CALLBACK = "?PVCB=MANUAL&CPCB=NO&GPCB=NO";
-    public final static String PVCB_CALLBACK = "?PVCB=YES&CPCB=NO&GPCB=NO";
-    public final static String NO_CALLBACKS = "?PVCB=NO&CPCB=NO&GPCB=NO";
-    public final static String CPCB_CALLBACK = "?PVCB=NO&CPCB=YES&GPCB=NO";
-    public final static String GPCB_CALLBACK = "?PVCB=NO&CPCB=NO&GPCB=YES";
-    public final static String CPCBGPCB_CALLBACK = "?PVCB=NO&CPCB=YES&GPCB=YES";
-    public final static String PVCBGPCB_CALLBACK = "?PVCB=YES&CPCB=NO&GPCB=YES";
-    public final static String CPCB_CALLBACK_DESCR = "PVCB=NO&CPCB=YES&GPCB=NO";
-    public final static String GPCB_CALLBACK_DESCR = "PVCB=NO&CPCB=NO&GPCB=YES";
-    public final static String ALL_CALLBACK_DESCR = "PVCB=YES&CPCB=YES&GPCB=YES";
-    public final static String CPCBGPCB_CALLBACK_DESCR = "PVCB=NO&CPCB=YES&GPCB=YES";
-    public final static String PVCB_CALLBACK_DESCR = "PVCB=YES&CPCB=NO&GPCB=NO";
-
-    public static final String DEFAULT_APP_CONTEXT = "default_host " + DEFAULT_APP;
-    public static final String TEST_APP1_CONTEXT = "testApp1Context";
-    public static final String TEST_APP2_CONTEXT = "testApp2Context";
-    public static final String PROFILE_SERVLET_MSG_LAYER = "HttpServlet";
-
-    protected final String DEFAULT_JASPI_PROVIDER = "bob";
-
-    protected final String DEFAULT_PROVIDER_CLASS = "com.ibm.ws.security.jaspi.test.AuthProvider";
-    protected final String PERSISTENT_PROVIDER_CLASS = "com.ibm.ws.security.jaspi.test.AuthProvider_1";
-    protected final String REGISTER = "?REGISTER";
-    protected final String GET = "?GET";
-    protected final String REMOVE = "?REMOVE";
-    protected final String REGISTERINVALIDCLASS = "?REGISTERINVALIDCLASS";
-    protected final String REMOVEINVALID = "?REMOVEINVALID";
-
-    // Audit record
-    protected final String DEFAULT_PROVIDER_AUDIT = "class com.ibm.ws.security.jaspi.test.AuthProvider";
-    protected static String BASICAUTH_PROTECTED_URI = "/JASPIBasicAuthServlet" + DEFAULT_BASIC_REGISTRATION;
-    protected static String BASICAUTH_UNPROTECTED_URI = "/JASPIBasicAuthServlet/JASPIUnprotected";
-
-    // Jaspi test users
-    protected final String javaeesec_basicRoleGroup = "group1";
-    protected final String javaeesec_basicRoleUser = "jaspiuser1";
-    protected final String javaeesec_basicRoleLDAPUser = "jaspildapuser1";
-    protected final String javaeesec_basicRolePwd = "s3cur1ty";
-    protected final String javaeesec_basicRoleGroupUser = "jaspiuser2";
-    protected final String javaeesec_basicRoleGroupPwd = "s3cur1ty";
-    protected final String javaeesec_basicRoleUserPrincipal = "jaspiuser6";
-    protected final String javaeesec_formRoleGroup = "group3";
-    protected final String javaeesec_formRoleUser = "jaspiuser3";
-    protected final String javaeesec_formRolePwd = "s3cur1ty";
-    protected final String javaeesec_formRoleGroupUser = "jaspiuser5";
-    protected final String javaeesec_formRoleGroupPwd = "s3cur1ty";
-    protected final String jaspi_noRoleUser = "jaspiuser4";
-    protected final String jaspi_noRolePwd = "s3cur1ty";
-    protected final String jaspi_servlet30User = "jaspiuser1";
-    protected final String jaspi_servlet30UserPwd = "s3cur1ty";
-    protected final String jaspi_invalidUser = "invalidUserName";
-    protected final String jaspi_invalidPwd = "invalidPassword";
-    protected final String jaspi_notInRegistryNotInRoleUser = "jaspiUser100";
-    protected final String jaspi_notInRegistryNotInRolePwd = "jaspiUser100Pwd";
-    protected final String jaspi_notInRegistryInBasicRoleUser = "jaspiuser101";
-    protected final String jaspi_notInRegistryInBasicRolePwd = "jaspiuser101Pwd";
-    protected final String jaspi_notInRegistryInFormRoleUser = "jaspiuser102";
-    protected final String jaspi_notInRegistryInFormRolePwd = "jaspiuser102Pwd";
-
-    // Jaspi roles
-    protected final String BasicRole = "javaeesec_basic";
-    protected final String FormRole = "javaeesec_form";
-
-    // Values to be verified in servlet response
-
-    protected static final String RESPONSE_AUTHENTICATION_FAILED = "AuthenticationFailed";
-    protected static final String RESPONSE_AUTHORIZATION_FAILED = "AuthorizationFailed";
-
-    protected final String jaspiValidateRequest = "JASPI validateRequest called with auth provider=";
-    protected final String jaspiSecureResponse = "JASPI secureResponse called with auth provider=";
-    protected final String userRegistryRealm = "JaspiRealm";
-    protected final String isAuthenticatedTrue = "isAuthenticated: true";
-    protected final String isAuthenticatedFalse = "isAuthenticated: false";
-    protected final String getRemoteUserFound = "getRemoteUser: ";
-    protected final String getUserPrincipalFound = "getUserPrincipal().getName(): ";
-    protected final String getUserPrincipalFoundJaspiPrincipal = "getUserPrincipal: com.ibm.ws.security.jaspi.test.AuthModule$JASPIPrincipal";
-    protected final String getRemoteUserNull = "getRemoteUser: null";
-    protected final String getUserPrincipalNull = "getUserPrincipal: null";
-    protected final String getAuthTypeBasic = "getAuthType: BASIC";
-    protected final String getAuthTypeJaspi = "getAuthType: JASPI_AUTH";
-    protected final String getAuthTypeForm = "getAuthType: FORM";
-    protected final String getAuthTypeNull = "getAuthType: null";
-    protected final String getRunAsSubjectNull = "RunAsSubject: null";
-    protected final String isManadatoryFalse = "isManadatory=false";
-    protected final String isManadatoryTrue = "isManadatory=true";
-    protected final String requestIsWrapped = "The httpServletRequest has been wrapped by httpServletRequestWrapper.";
-    protected final String responseIsWrapped = "The httpServletRestponse has been wrapped by httpServletResponseWrapper.";
-
-    protected final String messageLayerRuntime = "null";
-    protected final String messageLayerDefault = "HttpServlet";
-    protected final String appContext = "default_host /";
-    protected final String appContextRuntime = "null";
-    protected final String isPersistentTrue = "true";
-    protected final String isPersistentFalse = "false";
-    protected final String providerClass = "Provider class: ";
-    protected final String providerClassDefault = "Provider class: com.ibm.ws.security.jaspi.test.AuthProvider";
-
-    // Values to be verified in messages
-    protected static final String MSG_JASPI_AUTHENTICATION_FAILED = "CWWKS1652A:.*";
-    protected static final String PROVIDER_AUTHENTICATION_FAILED = "Invalid user or password";
-    protected static final String MSG_AUTHORIZATION_FAILED = "CWWKS9104A:.*";
-    protected static final String MSG_JACC_AUTHORIZATION_FAILED = "CWWKS9124A:.*";
-
-    protected static final String MSG_JASPI_PROVIDER_ACTIVATED = "CWWKS1653I";
-    protected static final String MSG_JASPI_PROVIDER_DEACTIVATED = "CWWKS1654I";
-
-    protected static final String MSG_JACC_SERVICE_STARTING = "CWWKS2850I";
-    protected static final String MSG_JACC_SERVICE_STARTED = "CWWKS2851I";
-
-    protected static final String EXCEPTION_JAVA_LANG_SECURITY = "java.lang.SecurityException";
-    protected final String SERVLET_EXCEPTION = "javax.servlet.ServletException";
-    protected final String SERVLET_EXCEPTION_JASPI_LOGIN = "javax.servlet.ServletException: The login method may not be invoked while JASPI authentication is active.";
-
-    // Jaspi server.xml files
-    protected static final String SERVLET_SECURITY_NOJASPI_SERVER_XML = "dynamicSecurityFeature/servlet31_appSecurity20_noJaspi.xml";
-    protected static final String SERVLET_SECURITY_JASPI_SERVER_XML = "dynamicSecurityFeature/servlet31_appSecurity20_withJaspi.xml";
-
-    // Jaspi helper methods
-    protected static void verifyServerStarted(LibertyServer server) {
-        assertNotNull("FeatureManager did not report update was complete",
-                      server.waitForStringInLogUsingMark("CWWKF0008I"));
-        assertNotNull("Security service did not report it was ready",
-                      server.waitForStringInLogUsingMark("CWWKS0008I"));
-    }
-
-    protected static void verifyServerUpdated(LibertyServer server) {
-        assertNotNull("Feature update wasn't complete",
-                      server.waitForStringInLogUsingMark("CWWKF0008I"));
-        assertNotNull("The server configuration wasn't updated.",
-                      server.waitForStringInLogUsingMark("CWWKG0017I:.*"));
-
-    }
-
-    protected static void verifyServerUpdatedWithJaspi(LibertyServer server) {
-        verifyServerUpdated(server);
-        assertNotNull("The JASPI user feature did not report it was ready",
-                      server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                      server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-1.0"));
-    }
-
-    protected static void verifyServerStartedWithJaspiFeatureAndJacc(LibertyServer server) {
-        verifyServerStartedWithJaspiFeature(server);
-        assertNotNull("JACC feature did not report it was starting", server.waitForStringInLog(MSG_JACC_SERVICE_STARTING));
-        assertNotNull("JACC feature did not report it was ready", server.waitForStringInLog(MSG_JACC_SERVICE_STARTED));
-
-    }
-
-    protected static void verifyServerRemovedJaspi(LibertyServer server) {
-        verifyServerUpdated(server);
-        assertNotNull("The JASPI user feature did not report it was ready",
-                      server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_DEACTIVATED));
-    }
-
-    protected static void verifyServerStartedWithJaspiFeature(LibertyServer server) {
-        verifyServerStarted(server);
-        assertNotNull("The JASPI user feature did not report it was ready",
-                      server.waitForStringInLogUsingMark(MSG_JASPI_PROVIDER_ACTIVATED));
-        assertNotNull("The feature manager did not report the JASPI provider is included in features.",
-                      server.waitForStringInLogUsingMark("CWWKF0012I.*" + "usr:jaspicUserTestFeature-1.0"));
-
-    }
-
     // Values to be set by the child class
     protected LibertyServer server;
-    protected Class<?> logClass;
+    protected static Class<?> logClass;
 
     protected JavaEESecTestBase(LibertyServer server, Class<?> logClass) {
         this.server = server;
@@ -381,7 +183,7 @@ public class JavaEESecTestBase {
      */
 
     public void getFormLoginPage(HttpClient httpclient, String url, String providerName) throws Exception {
-        String formTitle = FORM_LOGIN_PAGE;
+        String formTitle = Constants.FORM_LOGIN_PAGE;
         getFormLoginPage(httpclient, url, providerName, formTitle);
     }
 
@@ -425,11 +227,11 @@ public class JavaEESecTestBase {
      * @throws Exception
      */
 
-    public String executeFormLogin(HttpClient httpclient, String url, String username, String password) throws Exception {
-        return executeFormLogin(httpclient, url, username, password, null);
+    public String executeFormLogin(HttpClient httpclient, String url, String username, String password, boolean redirect) throws Exception {
+        return executeFormLogin(httpclient, url, username, password, redirect, null);
     }
 
-    public String executeFormLogin(HttpClient httpclient, String url, String username, String password, String description) throws Exception {
+    public String executeFormLogin(HttpClient httpclient, String url, String username, String password, boolean redirect, String description) throws Exception {
         String methodName = "executeFormLogin";
         Log.info(logClass, methodName, "Submitting Login form (POST) =  " + url + " username =" + username + " password=" + password + " description=" + description);
 
@@ -449,16 +251,23 @@ public class JavaEESecTestBase {
 
         EntityUtils.consume(response.getEntity());
 
-        // Verify redirect to servlet
-        int status = response.getStatusLine().getStatusCode();
-        assertTrue("Form login did not result in redirect: " + status, status == HttpServletResponse.SC_MOVED_TEMPORARILY);
+        String location = "No Redirect";
+        if (redirect) {
+            // Verify redirect to servlet
+            int status = response.getStatusLine().getStatusCode();
+            assertTrue("Form login did not result in redirect: " + status, status == HttpServletResponse.SC_MOVED_TEMPORARILY);
+            Header header = response.getFirstHeader("Location");
 
-        Header header = response.getFirstHeader("Location");
+            location = header.getValue();
+            Log.info(logClass, methodName, "Redirect location:  " + location);
 
-        String location = header.getValue();
-        Log.info(logClass, methodName, "Redirect location:  " + location);
+            Log.info(logClass, methodName, "Modified Redirect location:  " + location);
+        } else {
+            // Verify we got a 200 from the servlet
+            int status = response.getStatusLine().getStatusCode();
+            assertTrue("Form login did not result in redirect: " + status, status == HttpServletResponse.SC_OK);
+        }
 
-        Log.info(logClass, methodName, "Modified Redirect location:  " + location);
         return location;
     }
 
@@ -495,7 +304,7 @@ public class JavaEESecTestBase {
                 return content;
             } else if (expectedStatusCode == 401) {
                 assertTrue("Response was not the expected error page: "
-                           + LOGIN_ERROR_PAGE, content.contains(LOGIN_ERROR_PAGE));
+                           + Constants.LOGIN_ERROR_PAGE, content.contains(Constants.LOGIN_ERROR_PAGE));
                 return null;
             } else {
                 return null;
@@ -508,27 +317,27 @@ public class JavaEESecTestBase {
 
     protected void verifyJaspiAuthenticationProcessedByProvider(String response, String jaspiProvider, String servletName) {
         Log.info(logClass, "verifyJaspiAuthenticationProcessedByProvider", "Verify response contains Servlet name and JASPI authentication processed");
-        if (servletName != NO_NAME_VALIDATION)
+        if (servletName != Constants.NO_NAME_VALIDATION)
             mustContain(response, servletName);
         verifyJaspiAuthenticationUsed(response, jaspiProvider);
     }
 
     protected void verifyJaspiAuthenticationProcessedOnFormLoginError(String response, String jaspiProvider) {
         Log.info(logClass, "verifyJaspiAuthenticationProcessedByProvider", "Verify response shows Login Error Page and JASPI processed validateRequest");
-        mustContain(response, LOGIN_ERROR_PAGE);
+        mustContain(response, Constants.LOGIN_ERROR_PAGE);
         verifyJaspiAuthenticationProcessedValidateRequestInMessageLog();
     }
 
     protected void verifyJaspiAuthenticationUsed(String response, String jaspiProvider) {
         Log.info(logClass, "verifyJaspiAuthenticationUsed", "Verify response shows JASPI validateRequest and secureResponse called");
-        mustContain(response, jaspiValidateRequest + jaspiProvider);
-        mustContain(response, jaspiSecureResponse + jaspiProvider);
+        mustContain(response, Constants.jaspiValidateRequest + jaspiProvider);
+        mustContain(response, Constants.jaspiSecureResponse + jaspiProvider);
     }
 
     protected void verifyJaspiRequestAndResponseWrapping(String response) {
         Log.info(logClass, "verifyJaspiRequestAndResponseWrapping", "Verify JASPI request and response have been wrapped.");
-        mustContain(response, requestIsWrapped);
-        mustContain(response, responseIsWrapped);
+        mustContain(response, Constants.requestIsWrapped);
+        mustContain(response, Constants.responseIsWrapped);
         responseMustBeWrapped(response, "SCIProgrammaticRequestFilter");
         responseMustBeWrapped(response, "SCLProgrammaticRequestFilter");
         responseMustBeWrapped(response, "DeclaredRequestFilter");
@@ -542,8 +351,8 @@ public class JavaEESecTestBase {
 
     protected void verifyNoJaspiAuthentication(String response, String jaspiProvider) {
         Log.info(logClass, "verifyJaspiAuthenticationProcessedByProvider", "Verify response does NOT show calls to JASPI validateRequest and secureRespone");
-        mustNotContain(response, jaspiValidateRequest + jaspiProvider);
-        mustNotContain(response, jaspiSecureResponse + jaspiProvider);
+        mustNotContain(response, Constants.jaspiValidateRequest + jaspiProvider);
+        mustNotContain(response, Constants.jaspiSecureResponse + jaspiProvider);
     }
 
     private void mustContain(String response, String target) {
@@ -559,38 +368,40 @@ public class JavaEESecTestBase {
     }
 
     protected void verifyAuthenticatedResponse(String response, String getAuthType, String getUserPrincipal, String getRemoteUser) {
-        Log.info(logClass, "verifyAuthenticatedResponse", "Verify response shows:  " + isAuthenticatedTrue + " ," + getUserPrincipal + " , "
+        Log.info(logClass, "verifyAuthenticatedResponse", "Verify response shows:  " + Constants.isAuthenticatedTrue + " ," + getUserPrincipal + " , "
                                                           + getRemoteUser);
-        mustContain(response, isAuthenticatedTrue);
+        mustContain(response, Constants.isAuthenticatedTrue);
         mustContain(response, getAuthType);
         verifyUserResponse(response, getUserPrincipal, getRemoteUser);
     }
 
     protected void verifyUnauthenticatedResponse(String response) {
-        Log.info(logClass, "verifyUnautenticatedResponse", "Verify response shows: " + isAuthenticatedFalse + getAuthTypeNull + getRemoteUserNull + getUserPrincipalNull);
-        mustContain(response, isAuthenticatedFalse);
-        mustContain(response, getAuthTypeNull);
-        verifyUserResponse(response, getUserPrincipalNull, getRemoteUserNull);
+        Log.info(logClass, "verifyUnautenticatedResponse",
+                 "Verify response shows: " + Constants.isAuthenticatedFalse + Constants.getAuthTypeNull + Constants.getRemoteUserNull + Constants.getUserPrincipalNull);
+        mustContain(response, Constants.isAuthenticatedFalse);
+        mustContain(response, Constants.getAuthTypeNull);
+        verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
     }
 
     protected void verifyLogoutResponse(String response) {
-        Log.info(logClass, "verifyLogoutResponse", "Verify response shows: " + getAuthTypeNull + getUserPrincipalNull + getRemoteUserNull + getRunAsSubjectNull);
-        mustContain(response, getAuthTypeNull);
-        verifyUserResponse(response, getUserPrincipalNull, getRemoteUserNull);
-        mustContain(response, getRunAsSubjectNull);
+        Log.info(logClass, "verifyLogoutResponse",
+                 "Verify response shows: " + Constants.getAuthTypeNull + Constants.getUserPrincipalNull + Constants.getRemoteUserNull + Constants.getRunAsSubjectNull);
+        mustContain(response, Constants.getAuthTypeNull);
+        verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
+        mustContain(response, Constants.getRunAsSubjectNull);
         verifyJaspiLogoutProcessedCleanSubjectInMessageLog();
     }
 
     protected void verifyUnauthenticatedResponseInMessageLog() {
-        Log.info(logClass, "verifyUnautenticatedResponseInMessageLog", "Verify messages.log contains unauthenticated results:  " + isAuthenticatedFalse + ", "
-                                                                       + getUserPrincipalNull
-                                                                       + " , " + getRemoteUserNull);
-        assertNotNull("Servlet authenticate call did not return " + isAuthenticatedFalse + " as expected in messages.log.",
-                      server.waitForStringInLogUsingMark(isAuthenticatedFalse));
-        assertNotNull("Servlet getUserPrincipal call did not return " + getUserPrincipalNull + " as expected in messages.log.",
-                      server.waitForStringInLogUsingMark(getUserPrincipalNull));
-        assertNotNull("Servlet getRemoteUser call did not return " + getRemoteUserNull + " as expected in messages.log.",
-                      server.waitForStringInLogUsingMark(getRemoteUserNull));
+        Log.info(logClass, "verifyUnautenticatedResponseInMessageLog", "Verify messages.log contains unauthenticated results:  " + Constants.isAuthenticatedFalse + ", "
+                                                                       + Constants.getUserPrincipalNull
+                                                                       + " , " + Constants.getRemoteUserNull);
+        assertNotNull("Servlet authenticate call did not return " + Constants.isAuthenticatedFalse + " as expected in messages.log.",
+                      server.waitForStringInLogUsingMark(Constants.isAuthenticatedFalse));
+        assertNotNull("Servlet getUserPrincipal call did not return " + Constants.getUserPrincipalNull + " as expected in messages.log.",
+                      server.waitForStringInLogUsingMark(Constants.getUserPrincipalNull));
+        assertNotNull("Servlet getRemoteUser call did not return " + Constants.getRemoteUserNull + " as expected in messages.log.",
+                      server.waitForStringInLogUsingMark(Constants.getRemoteUserNull));
     }
 
     protected void verifyJaspiAuthenticationProcessedInMessageLog() {
@@ -674,13 +485,13 @@ public class JavaEESecTestBase {
     }
 
     protected void verifyResponseAuthenticationFailed(String response) {
-        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + RESPONSE_AUTHENTICATION_FAILED);
-        mustContain(response, RESPONSE_AUTHENTICATION_FAILED);
+        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + Constants.RESPONSE_AUTHENTICATION_FAILED);
+        mustContain(response, Constants.RESPONSE_AUTHENTICATION_FAILED);
     }
 
     protected void verifyResponseAuthorizationFailed(String response) {
-        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + RESPONSE_AUTHORIZATION_FAILED);
-        mustContain(response, RESPONSE_AUTHORIZATION_FAILED);
+        Log.info(logClass, "verifyUserResponse", "Verify response contains: " + Constants.RESPONSE_AUTHORIZATION_FAILED);
+        mustContain(response, Constants.RESPONSE_AUTHORIZATION_FAILED);
     }
 
     protected void verifyExceptionResponse(String response, String exception) {
@@ -719,16 +530,16 @@ public class JavaEESecTestBase {
     }
 
     protected void verifyRuntimeProviderRegistration(String response, String providerClass) {
-        mustContain(response, messageLayerRuntime);
-        mustContain(response, appContextRuntime);
-        mustContain(response, isPersistentFalse);
+        mustContain(response, Constants.messageLayerRuntime);
+        mustContain(response, Constants.appContextRuntime);
+        mustContain(response, Constants.isPersistentFalse);
         mustContain(response, "class " + providerClass);
     }
 
     protected void verifyPersistentProviderInformation(String response, String msgLayer, String appContext, String providerClass) {
         mustContain(response, msgLayer);
         mustContain(response, appContext);
-        mustContain(response, isPersistentTrue);
+        mustContain(response, Constants.isPersistentTrue);
         mustContain(response, providerClass);
     }
 

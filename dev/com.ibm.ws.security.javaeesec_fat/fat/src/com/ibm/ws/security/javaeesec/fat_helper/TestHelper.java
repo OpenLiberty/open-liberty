@@ -1,60 +1,44 @@
-package com.ibm.ws.security.javaeesec.fat;
+/*
+* IBM Confidential
+*
+* OCO Source Materials
+*
+* WLP Copyright IBM Corp. 2017
+*
+* The source code for this program is not published or otherwise divested
+* of its trade secrets, irrespective of what has been deposited with the
+* U.S. Copyright Office.
+*/
+package com.ibm.ws.security.javaeesec.fat_helper;
 
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.rules.TestName;
-import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.apacheds.EmbeddedApacheDS;
-import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
-import com.ibm.ws.security.javaeesec.fat_singleIS.HttpAuthenticationMechanismSingleISTest;
 
-import componenttest.annotation.MinimumJavaLevel;
-import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.OnlyRunInJava7Rule;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.impl.LibertyServerFactory;
 
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2017
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
 /**
- * Test Description:
+ *
  */
-@MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
-@RunWith(FATRunner.class)
-@Mode(TestMode.FULL)
-public class HttpAuthenticationMechanismTest extends HttpAuthenticationMechanismSingleISTest {
-
+public class TestHelper {
+    public static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
+    protected static Class<?> logClass = TestHelper.class;
+//    protected String queryString = "/JavaEESecBasicAuthServlet/JavaEESecBasic";
+    protected static String[] warList = { "JavaEESecBasicAuthServlet.war", "JavaEESecAnnotatedBasicAuthServlet.war", "JavaEEsecBasicAuthServletMultipleIS.war" };
+    protected static String urlBase;
+    protected static String JAR_NAME = "JavaEESecBase.jar";
     private static EmbeddedApacheDS ldapServer = null;
 
-    @Rule
-    public TestName name = new TestName();
+    protected static DefaultHttpClient httpclient;
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        // if (!OnlyRunInJava7Rule.IS_JAVA_7_OR_HIGHER)
-        // return; // skip the test setup
+    public static void commonSetup() throws Exception {
 
         setupldapServer();
 
-//        LDAPUtils.addLDAPVariables(myServer);
-//        myServer.installUserBundle("security.jaspi.user.feature.test_1.0");
-//        myServer.installUserFeature("jaspicUserTestFeature-1.0");
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.basic");
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecAnnotatedBasicAuthServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.annotatedbasic");
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuth.war", true, JAR_NAME, false, "web.jar.base", "web.war.formlogin");
@@ -62,19 +46,15 @@ public class HttpAuthenticationMechanismTest extends HttpAuthenticationMechanism
         myServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/javaeesecinternals-1.0.mf");
 
         myServer.startServer(true);
-//        myServer.addInstalledAppForValidation(DEFAULT_APP);
-//        verifyServerStartedWithJaspiFeature(myServer);
+
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
 
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
+    public static void commonTeardown() throws Exception {
         if (!OnlyRunInJava7Rule.IS_JAVA_7_OR_HIGHER)
             return; // skip the test teardown
         myServer.stopServer();
-//        myServer.uninstallUserBundle("security.jaspi.user.feature.test_1.0");
-//        myServer.uninstallUserFeature("jaspicUserTestFeature-1.0");
 
         if (ldapServer != null) {
             try {
@@ -84,21 +64,6 @@ public class HttpAuthenticationMechanismTest extends HttpAuthenticationMechanism
             }
         }
 
-    }
-
-    @Before
-    public void setupConnection() {
-        httpclient = new DefaultHttpClient();
-    }
-
-    @After
-    public void cleanupConnection() {
-        httpclient.getConnectionManager().shutdown();
-    }
-
-    @Override
-    protected String getCurrentTestName() {
-        return name.getMethodName();
     }
 
     private static void setupldapServer() throws Exception {
@@ -119,5 +84,13 @@ public class HttpAuthenticationMechanismTest extends HttpAuthenticationMechanism
         entry.add("userPassword", "s3cur1ty");
         ldapServer.add(entry);
 
+    }
+
+    public static String getURLBase() {
+        return urlBase;
+    }
+
+    public static DefaultHttpClient getHttpClient() {
+        return httpclient;
     }
 }
