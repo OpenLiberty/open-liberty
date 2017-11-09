@@ -55,8 +55,6 @@ import org.osgi.service.component.annotations.Component;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
-import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
-import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
@@ -67,14 +65,7 @@ import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
 import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
-import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
-import com.ibm.wsspi.webcontainer.webapp.WebAppConfig;
-
-import com.ibm.ws.runtime.metadata.ModuleMetaData;
-import com.ibm.ws.container.service.metadata.MetaDataException;
-import com.ibm.ws.container.service.metadata.MetaDataEvent;
-import com.ibm.wsspi.webcontainer.servlet.IServletConfig;
 
 /**
  * TODO: Add all JSR-375 API classes that can be bean types to api.classes.
@@ -152,7 +143,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     <T> void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager) {
         if (tc.isDebugEnabled()) Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         try {
-            verifyNoLoginConfigration();
+            verifyConfiguration();
             if (!identityStoreHandlerRegistered) {
                 if (identityStoreRegistered) {
                     beansToAdd.add(new IdentityStoreHandlerBean(beanManager));
@@ -273,6 +264,15 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             mp.getAuthMechMap().put(implClass, props);
             moduleMap.put(moduleName, mp);
         }
+    }
+
+    private Map<Class, Properties> getAuthMechs(String moduleName) {
+        Map<Class, Properties> authMechs = null;
+        Map<String, ModuleProperties> moduleMap = getModuleMap();
+        if (moduleMap.containsKey(moduleName)) {
+            authMechs = moduleMap.get(moduleName).getAuthMechMap();
+        }
+        return authMechs;
     }
 
     /**
@@ -727,27 +727,54 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         return list;
     }
 
-    // TODO: need to support multiple modules which contains non JSR375 authmech.
-    private void verifyNoLoginConfigration() throws DeploymentException {
+    /**
+      * make sure that there is one HAM for each modules, and if there is a HAM in a module, make sure there is no login configuration in web.xml.
+     **/
+    private void verifyConfiguration() throws DeploymentException {
         List<ModuleMetaData> mmds = getModuleMetaDataList();
         if (mmds != null) {
             for(ModuleMetaData mmd : mmds) {
                 if (mmd instanceof WebModuleMetaData) {
-                    parseWMMD((WebModuleMetaData)mmd);
-                    SecurityMetadata smd = (SecurityMetadata)((WebModuleMetaData)mmd).getSecurityMetaData();
-                    if (smd != null) {
-                        LoginConfiguration lc =  smd.getLoginConfiguration();
-                        if (lc != null  && !lc.isAuthenticationMethodDefaulted()) {
+                    String j2eeModuleName = mmd.getJ2EEName().getModule();
+                    Map<Class, Properties> authMechs = getAuthMechs(j2eeModuleName);
+                    if (authMechs != null && !authMechs.isEmpty()) {
+                        // make sure that only one HAM.
+                        if (authMechs.size() != 1) {
                             String appName = mmd.getJ2EEName().getApplication();
-                            String j2eeModuleName = mmd.getJ2EEName().getModule();
-                            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);
-                            Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);
-//                            throw new DeploymentException(msg);
+                            String authMechNames = getAuthMechNames(authMechs);
+                            Tr.error(tc, "JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS", j2eeModuleName, appName, authMechNames);
+                            String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS", j2eeModuleName, appName, authMechNames);
+                            throw new DeploymentException(msg);
+                        }
+                    
+                        SecurityMetadata smd = (SecurityMetadata)((WebModuleMetaData)mmd).getSecurityMetaData();
+                        if (smd != null) {
+                            LoginConfiguration lc =  smd.getLoginConfiguration();
+                            if (lc != null  && !lc.isAuthenticationMethodDefaulted()) {
+                                String appName = mmd.getJ2EEName().getApplication();
+                                String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);
+                                Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS", j2eeModuleName, appName);
+                                throw new DeploymentException(msg);
+                            }
                         }
                     }
                 }
             }
         }
+    }
+
+    private String getAuthMechNames(Map<Class, Properties> authMechs) {
+        StringBuffer result = new StringBuffer();
+        boolean first = true;
+        for (Class authMech : authMechs.keySet()) {
+            if (first) {
+                first = false;
+            } else {
+                result.append(", ");
+            }
+            result.append(authMech.getName());
+        }
+        return result.toString();
     }
 
     private String getApplicationName() {
@@ -761,21 +788,6 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
 
     protected List<ModuleMetaData> getModuleMetaDataList() {
         return ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().getModuleMetaDataList();
-    }
-
-    private void parseWMMD(WebModuleMetaData wmmd) {
-        WebAppConfig wac = wmmd.getConfiguration();
-        String j2eeModuleName = wmmd.getJ2EEName().getModule();
-        String appName = wac.getApplicationName();
-        String ctxRoot = wac.getContextRoot();
-        List<Class<?>> classes = wac.getClassesToScan();
-
-        Iterator<IServletConfig> itr = wac.getServletInfos();
-        
-        while(itr.hasNext()) {
-            IServletConfig isc = itr.next();
-            String className = isc.getClassName();
-        }
     }
 
     private String getModuleFromClass(Class<?> klass) {
