@@ -9,33 +9,47 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package com.ibm.ws.jpa.jpa22;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import cdi.web.ELIServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
-import jpa22query.web.JPAQueryTestServlet;
 
+/**
+ * Test cases for verifying JPA + CDI integration, by using the application-server provided
+ * BeanManager with JPA EntityListeners and Converters.
+ *
+ */
 @RunWith(FATRunner.class)
-public class JPA22QueryTest extends FATServletClient {
-    public static final String APP_NAME = "jpa22query";
-    public static final String SERVLET = "TestJPA22Query";
+public class JPACDIIntegrationTest {
+    public static final String APP_NAME = "cdi";
+    public static final String SERVLET = "eli";
 
-    @Server("JPA22QueryServer")
-    @TestServlet(servlet = JPAQueryTestServlet.class, path = APP_NAME + "/" + SERVLET)
+    @Server("CDIFatServer")
+    @TestServlet(servlet = ELIServlet.class, path = APP_NAME + "/" + SERVLET)
     public static LibertyServer server1;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server1, APP_NAME, "jpa22query.web", "jpa22query.entity");
+        final String resPath = "test-applications/jpa22/" + APP_NAME + "/resources/";
+
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
+        app.addPackage("cdi.web");
+        app.addPackage("cdi.model");
+        ShrinkHelper.addDirectory(app, resPath);
+        ShrinkHelper.exportAppToServer(server1, app);
+        server1.addInstalledAppForValidation(APP_NAME);
+
         server1.startServer();
     }
 

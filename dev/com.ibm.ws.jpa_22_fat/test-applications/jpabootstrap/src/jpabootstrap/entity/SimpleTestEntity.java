@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package jpa22bootstrap.entity;
+package jpabootstrap.entity;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;
