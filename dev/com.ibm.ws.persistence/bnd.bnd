@@ -20,8 +20,8 @@ WS-TraceGroup: persistenceservice
 Export-Package: com.ibm.wsspi.persistence
 Private-Package: com.ibm.wsspi.persistence.*
 
-Import-Package: javax.persistence;version="[2.1,3)"; consumer=persistenceService, \
- javax.persistence.spi;version="[2.1,3)"; consumer=persistenceService, \
+Import-Package: javax.persistence;version="[2.1,3)"; jpa=2.1; consumer=persistenceService, \
+ javax.persistence.spi;version="[2.1,3)"; jpa=2.1; consumer=persistenceService, \
  *
 
 Junk-Import-Package: com.ibm.tx.jta;version="[2.0,3)", \
