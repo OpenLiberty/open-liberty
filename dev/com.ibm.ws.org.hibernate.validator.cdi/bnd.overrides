@@ -18,18 +18,6 @@ Private-Package: \
 -dsannotations: \
   com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyHibernateValidatorExtension
 
-#Service-Component: \
-#  com.ibm.ws.org.hibernate.validator.cdi.cdiextension; \
-#    implementation:=org.hibernate.validator.cdi.ValidationExtension; \
-#    provide:='com.ibm.ws.cdi.extension.WebSphereCDIExtension'; \
-#    immediate:=true; \
-#    properties:=\
-#      "service.vendor=IBM,\
-#       api.classes=\
-#         javax.validation.Validator;\
-#         javax.validation.ValidatorFactory;\
-#         org.hibernate.validator.cdi.HibernateValidator"
-        
 Include-Resource: \
   @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/services/*,\
   @${repo;org.hibernate.validator:hibernate-validator-cdi;6.0.4.Final}!/META-INF/services/*

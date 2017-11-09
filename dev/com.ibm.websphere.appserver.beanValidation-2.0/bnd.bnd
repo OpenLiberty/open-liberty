@@ -16,4 +16,5 @@
   com.ibm.websphere.javaee.validation.2.0,\
   com.ibm.websphere.appserver.beanValidationCDI-2.0,\
   com.ibm.ws.beanvalidation.v11;version=latest,\
-  com.ibm.ws.org.hibernate.validator;version=latest
+  com.ibm.ws.org.hibernate.validator;version=latest,\
+  com.ibm.ws.org.hibernate.validator.cdi;version=latest
