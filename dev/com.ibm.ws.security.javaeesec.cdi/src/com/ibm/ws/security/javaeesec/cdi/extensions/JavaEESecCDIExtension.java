@@ -618,13 +618,10 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     protected boolean isApplicationAuthMech(Class<?> javaClass) {
-        if (!BasicHttpAuthenticationMechanism.class.equals(javaClass) && !FormAuthenticationMechanism.class.equals(javaClass)
-            && !CustomFormAuthenticationMechanism.class.equals(javaClass)) {
-            Class<?>[] interfaces = javaClass.getInterfaces();
-            for (Class<?> interfaceClass : interfaces) {
-                if (HttpAuthenticationMechanism.class.equals(interfaceClass)) {
-                    return true;
-                }
+        if (HttpAuthenticationMechanism.class.isAssignableFrom((Class<?>)javaClass)) {
+            if (!BasicHttpAuthenticationMechanism.class.equals(javaClass) && !FormAuthenticationMechanism.class.equals(javaClass)
+                && !CustomFormAuthenticationMechanism.class.equals(javaClass) && !HttpAuthenticationMechanism.class.equals(javaClass)) {
+                return true;
             }
         }
         return false;
