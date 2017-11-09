@@ -13,6 +13,7 @@ package asyncEventsApp.web;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -53,8 +54,12 @@ public class AsyncEventsServlet extends FATServlet {
 
         List<CakeReport> cakeReportList = newCake.getCakeReports();
         CakeReport cakeReport = null;
-        if (!cakeReportList.isEmpty())
-            cakeReport = cakeReportList.get(0);
+        if (!cakeReportList.isEmpty()) {
+            if (cakeReportList.size() == 1)
+                cakeReport = cakeReportList.get(0);
+            else
+                fail("Unexpected number of cake reports - " + cakeReportList.size());
+        }
 
         assertNotNull("No cake report from sync observer", cakeReport);
         assertTrue("Unexpected cake observer - " + cakeReport.getCakeObserver(), cakeReport.getCakeObserver().equals("syncCakeObserver"));
@@ -79,8 +84,12 @@ public class AsyncEventsServlet extends FATServlet {
 
         List<CakeReport> cakeReportList = futureCake.getCakeReports();
         CakeReport cakeReport = null;
-        if (!cakeReportList.isEmpty())
-            cakeReport = cakeReportList.get(0);
+        if (!cakeReportList.isEmpty()) {
+            if (cakeReportList.size() == 1)
+                cakeReport = cakeReportList.get(0);
+            else
+                fail("Unexpected number of cake reports - " + cakeReportList.size());
+        }
 
         assertNotNull("No cake report from async observer", cakeReport);
         assertTrue("Unexpected cake observer - " + cakeReport.getCakeObserver(), cakeReport.getCakeObserver().equals("asyncCakeObserver"));
