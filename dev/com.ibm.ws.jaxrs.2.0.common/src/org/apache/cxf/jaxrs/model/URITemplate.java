@@ -358,6 +358,10 @@ public final class URITemplate {
         return createExactTemplate(pathValue, params);
     }
 
+    public static URITemplate createExactTemplate(String pathValue) {
+        return createExactTemplate(pathValue, Collections.<Parameter> emptyList());
+    }
+
     public static URITemplate createExactTemplate(String pathValue, List<Parameter> params) {
         URITemplate template = URI_TEMPLATE_CACHE.get(pathValue);
         if (template == null) {
