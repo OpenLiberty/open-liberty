@@ -27,13 +27,13 @@ JAVAEESEC_ERROR_NO_VALIDATION=CWWKS1911E: No IdentityStore object supports the u
 JAVAEESEC_ERROR_NO_VALIDATION.explanation=None of the IdentityStore object supports the user validation, therefore the security code does not authenticate the user.
 JAVAEESEC_ERROR_NO_VALIDATION.useraction=Make sure that at least one IdentityStore supports the user validation.
 
-JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: HttpAuthenticationMechanism object cannot be identified for authentication. Make sure that there is one HttpAuthenticationMechanism in the application.
+JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism object for the {0} module in the {1} application was not found. Make sure that the module contains a HttpAuthenticationMechanism object.
 JAVAEESEC_ERROR_NO_HAM.explanation=HttpAuthenticationMechanism object cannot be identified for authentication. It could be there is no object, or multiple objects which corresponds the specified condition. Make sure that there is one HttpAuthenticationMechanism in the application.
 JAVAEESEC_ERROR_NO_HAM.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
 
-JAVAEESEC_ERROR_NO_HAM_PROPS=CWWKS1913E: HAMProperties object cannot be identified for authentication. Most likely, there is not any HttpAuthenticationMechanism object in the application. Make sure that one HttpAuthenticationMechanism objct is defined.
-JAVAEESEC_ERROR_NO_HAM_PROPS.explanation=HAMProperties object cannot be identified for authentication. It could be there is not any HttpAuthenticationMechanism object defined in the application.
-JAVAEESEC_ERROR_NO_HAM_PROPS.useraction=Make sure that there is one HttpAuthenticationMechanism in the application.
+JAVAEESEC_ERROR_NO_MODULE_PROPS=CWWKS1913E: The ModuleProperties object for authenticating the {0} application cannot be found, likely because the application does not contain a HttpAuthenticationMechanism object. Make sure that one HttpAuthenticationMechanism object is defined for each module.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.explanation=The ModuleProperties object, which is required to authenticate the application, cannot be identified. This error typically results from a HttpAuthenticationMechanism object not being defined in the application.
+JAVAEESEC_ERROR_NO_MODULE_PROPS.useraction=Make sure that each module in the application contains a HttpAuthenticationMechanism object.
 
 JAVAEESEC_WARNING_NO_REALM_NAME=CWWKS1914W: The realm name for the basic authentication is not set, the value defaultRealm is being used.
 JAVAEESEC_WARNING_NO_REALM_NAME.explanation=The realm name for the basic authentication is not set, the default value defaultRealm is being used.

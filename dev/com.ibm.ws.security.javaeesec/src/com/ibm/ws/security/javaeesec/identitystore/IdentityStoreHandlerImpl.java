@@ -13,6 +13,7 @@ package com.ibm.ws.security.javaeesec.identitystore;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +31,11 @@ import javax.security.enterprise.identitystore.IdentityStoreHandler;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.javaeesec.CDIHelper;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
+//TODO to be removed
+import javax.security.enterprise.credential.BasicAuthenticationCredential;
+import javax.security.enterprise.credential.UsernamePasswordCredential;
+
 
 @Default
 @ApplicationScoped
@@ -39,7 +45,8 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
     /**
      * list of identityStore sorted by priority. the first is the highest and the last is the lowest.
      */
-    private final TreeSet<IdentityStore> identityStores = new TreeSet<IdentityStore>(priorityComparator);
+//    private final TreeSet<IdentityStore> identityStores = new TreeSet<IdentityStore>(priorityComparator);
+    private final ConcurrentHashMap<String, Set<IdentityStore>> identityStoreMap = new ConcurrentHashMap<String, Set<IdentityStore>>();
 
     public IdentityStoreHandlerImpl() {}
 
@@ -50,7 +57,7 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
      */
     @Override
     public CredentialValidationResult validate(Credential credential) {
-        return validate(identityStores, credential);
+        return validate(getIdentityStores(identityStoreMap), credential);
     }
 
     public CredentialValidationResult validate(Set<IdentityStore> identityStores, Credential credential) {
@@ -58,9 +65,6 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         CredentialValidationResult result = CredentialValidationResult.NOT_VALIDATED_RESULT;
         boolean supportGroups = false;
         boolean isValidated = false;
-        if (identityStores.isEmpty()) {
-            scanIdentityStores(identityStores);
-        }
         if (!identityStores.isEmpty()) {
             for (IdentityStore is : identityStores) {
                 if (is.validationTypes().contains(IdentityStore.ValidationType.VALIDATE)) {
@@ -144,6 +148,18 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
+    protected Set<IdentityStore> getIdentityStores(ConcurrentHashMap<String, Set<IdentityStore>> identityStoreMap) {
+        String moduleName = getModuleName();
+        Set<IdentityStore> stores = identityStoreMap.get(moduleName);
+        if (stores == null) {
+            stores = new TreeSet<IdentityStore>(priorityComparator);
+            scanIdentityStores(stores);
+            identityStoreMap.put(moduleName, stores);
+        }
+        return stores;
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     protected void scanIdentityStores(Set<IdentityStore> identityStores) {
         CDI cdi = getCDI();
         Instance<IdentityStore> identityStoreInstances = cdi.select(IdentityStore.class);
@@ -155,12 +171,11 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
                 identityStores.add(identityStore);
             }
         }
-
         // If the mechanism is from the extension, then the identity stores from the application need to be found using the app's bean manager.
         if (cdi.getBeanManager().equals(CDIHelper.getBeanManager()) == false) {
             for (IdentityStore identityStore : CDIHelper.getBeansFromCurrentModule(IdentityStore.class)) {
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "IdentityStore from module: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
+                    Tr.debug(tc, "IdentityStore form module: " + identityStore + ", validationTypes : " + identityStore.validationTypes() + ", priority : " + identityStore.priority());
                 }
                 identityStores.add(identityStore);
             }
@@ -193,7 +208,13 @@ public class IdentityStoreHandlerImpl implements IdentityStoreHandler {
         }
     };
 
-    protected TreeSet<IdentityStore> getIdentityStores() {
-        return identityStores;
+    protected String getModuleName() {
+        return ModulePropertiesUtils.getInstance().getJ2EEModuleName();
     }
+
+    protected void clearIdentityStoreMap() {
+        identityStoreMap.clear();
+    }
+
+
 }

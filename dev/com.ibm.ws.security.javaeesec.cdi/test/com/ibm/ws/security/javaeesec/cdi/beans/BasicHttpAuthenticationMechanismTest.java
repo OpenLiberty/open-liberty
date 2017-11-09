@@ -42,8 +42,7 @@ import com.ibm.ws.security.authentication.AuthenticationConstants;
 import com.ibm.ws.security.authentication.utility.SubjectHelper;
 import com.ibm.ws.security.jaspi.JaspiMessageInfo;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMPropertiesImpl;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 public class BasicHttpAuthenticationMechanismTest {
@@ -57,7 +56,7 @@ public class BasicHttpAuthenticationMechanismTest {
     private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
 
     private BasicHttpAuthenticationMechanism mechanism;
-    private final String realmName = "My Basic Realm";
+    private String realmName;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpMessageContext httpMessageContext;
@@ -71,6 +70,7 @@ public class BasicHttpAuthenticationMechanismTest {
     private Set<String> groups;
     private CredentialValidationResult validResult;
     private CallbackHandler callbackHandler;
+    private ModulePropertiesProvider mpp;
 
     @Before
     public void setUp() {
@@ -82,6 +82,7 @@ public class BasicHttpAuthenticationMechanismTest {
                 return cdi;
             }
         };
+        realmName = "My Basic Realm";
         request = mockery.mock(HttpServletRequest.class);
         response = mockery.mock(HttpServletResponse.class);
         httpMessageContext = mockery.mock(HttpMessageContext.class);
@@ -93,23 +94,8 @@ public class BasicHttpAuthenticationMechanismTest {
         groups = new HashSet<String>();
         validResult = new CredentialValidationResult(callerPrincipal, groups);
         callbackHandler = mockery.mock(CallbackHandler.class);
-    }
-
-    @SuppressWarnings("unchecked")
-    private BasicHttpAuthenticationMechanismTest withHAMProperties(final String realmName) {
-        Properties props = new Properties();
-        props.put(JavaEESecConstants.REALM_NAME, realmName);
-        final HAMProperties hamp = new HAMPropertiesImpl(BasicHttpAuthenticationMechanism.class, props);
-        final Instance<HAMProperties> hampi = mockery.mock(Instance.class, "hampi");
-        mockery.checking(new Expectations() {
-            {
-                one(cdi).select(HAMProperties.class);
-                will(returnValue(hampi));
-                one(hampi).get();
-                will(returnValue(hamp));
-            }
-        });
-        return this;
+        mpp = mockery.mock(ModulePropertiesProvider.class);
+        mechanism.setMPP(mpp);
     }
 
     @After
@@ -120,7 +106,7 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequest() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
         assertSubjectContents(realmName, principalName);
     }
@@ -131,7 +117,7 @@ public class BasicHttpAuthenticationMechanismTest {
         String callerUniqueId = "callerUniqueId";
         validResult = new CredentialValidationResult(storeId, callerPrincipal, "callerDn", callerUniqueId, groups);
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
         assertSubjectContents(storeId, callerUniqueId);
     }
@@ -139,14 +125,14 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAndUnprotectedResource() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestAuthenticatePath() throws Exception {
         authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
         assertSubjectContents(realmName, principalName);
     }
@@ -154,35 +140,35 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthenticatePathAndUnprotectedResource() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(validResult);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestWithInvalidResult() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestWithInvalidResultAndUnprotectedResource() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithInvalidResult() throws Exception {
         authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithInvalidResultAndUnprotectedResource() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.INVALID_RESULT);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
@@ -190,7 +176,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithAuthorizationHeaderWithoutValue() throws Exception {
         String badAuthzHeader = "Basic ";
         preInvokePathForProtectedResource(badAuthzHeader);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
@@ -198,7 +184,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithAuthorizationHeaderWithSingleBlankValue() throws Exception {
         String badAuthzHeader = "Basic  ";
         preInvokePathForProtectedResource(badAuthzHeader);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
@@ -206,7 +192,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithAuthorizationHeaderWithMultipleBlanksValue() throws Exception {
         String badAuthzHeader = "Basic     ";
         preInvokePathForProtectedResource(badAuthzHeader);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
@@ -214,7 +200,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithAuthorizationHeaderWithoutColon() throws Exception {
         String badAuthzHeader = "Basic " + Base64Coder.base64Encode("headerWithoutColon");
         preInvokePathForProtectedResource(badAuthzHeader);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
@@ -222,7 +208,7 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithAuthorizationHeaderWithoutUser() throws Exception {
         String badAuthzHeader = "Basic " + Base64Coder.base64Encode(":headerWithoutUser");
         preInvokePathForProtectedResource(badAuthzHeader);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
@@ -230,21 +216,21 @@ public class BasicHttpAuthenticationMechanismTest {
     public void testValidateRequestWithAuthorizationHeaderWithoutPassword() throws Exception {
         String badAuthzHeader = "Basic " + Base64Coder.base64Encode("headerWithoutPassword:");
         preInvokePathForProtectedResource(badAuthzHeader);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestWithoutAuthorizationHeader() throws Exception {
         preInvokePathForProtectedResource(null);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertMechanismChallenges();
     }
 
     @Test
     public void testValidateRequestWithoutAuthorizationHeaderAndUnprotectedResource() throws Exception {
         preInvokePathForUnprotectedResource(null).doesNotChallengeAuthorizationHeader();
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
 
         AuthenticationStatus status = mechanism.validateRequest(request, response, httpMessageContext);
         assertEquals("The AuthenticationStatus must be AuthenticationStatus.NOT_DONE.", AuthenticationStatus.NOT_DONE, status);
@@ -253,49 +239,54 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthenticatePathWithoutAuthorizationHeader() throws Exception {
         authenticatePathForProtectedResource(null);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertMechanismChallenges();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithoutAuthorizationHeaderAndUnprotectedResource() throws Exception {
         authenticatePathForUnprotectedResource(null);
-        withHAMProperties(realmName);
+        setModulePropertiesProvider(realmName);
         assertMechanismChallenges();
     }
 
     @Test
     public void testValidateRequestFallbackToRegistry() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestFallbackToRegistryInvalidUser() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAndUnprotectedResourceFallbackToRegistry() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathFallbackToRegistry() throws Exception {
         authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
 
         assertValidateRequestSUCCESS();
     }
@@ -303,7 +294,8 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthenticatePathFallbackToRegistryInvalidUser() throws Exception {
         authenticatePathForProtectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
 
         assertValidateRequestFAILURE();
     }
@@ -311,7 +303,8 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthenticatePathAndUnprotectedResourceFallbackToRegistry() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
 
         assertValidateRequestSUCCESS();
     }
@@ -319,7 +312,8 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequestAuthenticatePathAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withIdentityStoreHandlerResult(CredentialValidationResult.NOT_VALIDATED_RESULT);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
 
         assertValidateRequestFAILURE();
     }
@@ -327,112 +321,128 @@ public class BasicHttpAuthenticationMechanismTest {
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedFallbackToRegistry() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousFallbackToRegistry() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedFallbackToRegistryInvalidUser() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousFallbackToRegistryInvalidUser() throws Exception {
         preInvokePathForProtectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistry() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistry() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
         preInvokePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedFallbackToRegistry() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousFallbackToRegistry() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedFallbackToRegistryInvalidUser() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousFallbackToRegistryInvalidUser() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistry() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistry() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(true).withHAMProperties(realmName);
+        withRegistryPathExpectations(true);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestSUCCESS();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerUnsatisfiedAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(true, false);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
     @Test
     public void testValidateRequestAuthenticatePathWithIdentityStoreHandlerAmbiguousAndUnprotectedResourceFallbackToRegistryInvalidUser() throws Exception {
         authenticatePathForUnprotectedResource(authzHeader).withoutIdentityStoreHandler(false, true);
-        withRegistryPathExpectations(false).withHAMProperties(realmName);
+        withRegistryPathExpectations(false);
+        setModulePropertiesProvider(realmName);
         assertValidateRequestFAILURE();
     }
 
@@ -625,6 +635,23 @@ public class BasicHttpAuthenticationMechanismTest {
         mockery.checking(new Expectations() {
             {
                 one(response).setStatus(responseStatus);
+            }
+        });
+        return this;
+    }
+
+    private BasicHttpAuthenticationMechanismTest setModulePropertiesProvider(final String realmName) {
+        final Properties props = new Properties();
+        props.put(JavaEESecConstants.REALM_NAME, realmName);
+        final Instance<ModulePropertiesProvider> mppi = mockery.mock(Instance.class, "mppi");
+        mockery.checking(new Expectations() {
+            {
+                one(cdi).select(ModulePropertiesProvider.class);
+                will(returnValue(mppi));
+                one(mppi).get();
+                will(returnValue(mpp));
+                one(mpp).getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
+                will(returnValue(props));
             }
         });
         return this;

@@ -13,6 +13,6 @@
  */
 @org.osgi.annotation.versioning.Version("1.0.0")
 @TraceOptions(traceGroup = "security", messageBundle = "com.ibm.ws.security.javaeesec.internal.resources.JavaEESecMessages")
-package com.ibm.ws.security.javaeesec.authentication.mechanism.http;
+package com.ibm.ws.security.javaeesec.properties;
 
 import com.ibm.websphere.ras.annotation.TraceOptions;
