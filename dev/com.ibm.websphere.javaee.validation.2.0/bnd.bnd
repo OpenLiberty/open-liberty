@@ -18,20 +18,9 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 Export-Package: \
 	javax.validation.*;version=2.0
 
-Import-Package: !org.apache.geronimo.osgi.registry.api, \
-  !org.osgi.framework, \
-  !org.osgi.util.tracker
-
-Private-Package: org.apache.geronimo.osgi.locator
-
-# NOTE: We are intentionally including javax.validation 1.1 API for now
-#       until we get a 2.0 provider in a workable state
-Include-Resource: \
-  @${repo;org.apache.geronimo.specs.geronimo-validation_1.1_spec;1.0.0.SNAPSHOT}!/META-INF/NOTICE
-
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	org.apache.geronimo.specs.geronimo-validation_1.1_spec;version=1.0.0.SNAPSHOT
+	javax.validation:validation-api;version=2.0.0.Final 

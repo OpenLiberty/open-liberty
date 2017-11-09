@@ -8,12 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/liberty-release.props
+-include= jar:${fileuri;${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--nobundles=true
-
--dependson: \
-  com.ibm.websphere.javaee.validation.2.0,\
-  com.ibm.websphere.appserver.beanValidationCDI-2.0,\
-  com.ibm.ws.beanvalidation.v11;version=latest,\
-  com.ibm.ws.org.hibernate.validator;version=latest
+-buildpath: org.hibernate.validator:hibernate-validator;version=6.0.4.Final

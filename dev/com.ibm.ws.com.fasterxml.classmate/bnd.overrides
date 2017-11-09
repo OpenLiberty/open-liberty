@@ -1,0 +1,22 @@
+-include= ~../cnf/resources/bnd/rejar.props
+
+bVersion=1.0
+
+Bundle-Name: ClassMate
+Bundle-SymbolicName: com.ibm.ws.com.fasterxml.classmate.1.3.1
+Bundle-Description: Library for introspecting types with full generic information including resolving of field and method types; version=1.3.1
+
+Private-Package: \
+  com.fasterxml.classmate.util.*
+
+Import-Package: \
+  *
+
+Export-Package: \
+  com.fasterxml.classmate;version="1.3.1", \
+  com.fasterxml.classmate.members;version="1.3.1", \
+  com.fasterxml.classmate.types;version="1.3.1", \
+  com.fasterxml.classmate.util;version="1.3.1"
+
+#Include-Resource: \
+#  @${repo;com.fasterxml:classmate;1.3.1}!/!META-INF/*
