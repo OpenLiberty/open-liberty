@@ -11,23 +11,18 @@
 package com.ibm.ws.logging.utils;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
-import com.ibm.ws.logging.internal.impl.SpecialHandler;
+import com.ibm.ws.logging.internal.impl.MessageLogHandler;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.wsspi.collector.manager.Handler;
 
 public class HandlerUtils implements CollectorManagerBootStrap {
     public static HandlerUtils myHandlerUtils;
-    private SpecialHandler baseTraceServiceJSONHandler;
+    private MessageLogHandler baseTraceServiceJSONHandler;
     private LogSource logSource = null;
     private TraceSource traceSource = null;
     private BufferManagerImpl logConduit = null;
     private BufferManagerImpl traceConduit = null;
-
-    public static LogSource retrieveLogSource() {
-        SpecialHandler baseTraceServiceJSONHandler = SpecialHandler.getInstance();
-        return baseTraceServiceJSONHandler.getLogSource();
-    }
 
     /**
      * Create LogSource, TraceSource and their respective conduits.
@@ -94,7 +89,7 @@ public class HandlerUtils implements CollectorManagerBootStrap {
      */
     @Override
     public void setHandler(Handler handler) {
-        this.baseTraceServiceJSONHandler = (SpecialHandler) handler;
+        this.baseTraceServiceJSONHandler = (MessageLogHandler) handler;
     }
 
 }

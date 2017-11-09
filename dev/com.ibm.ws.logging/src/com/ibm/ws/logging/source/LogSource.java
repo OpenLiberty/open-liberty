@@ -24,7 +24,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
-import com.ibm.ws.logging.internal.impl.SpecialHandler;
+import com.ibm.ws.logging.internal.impl.MessageLogHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
@@ -39,7 +39,7 @@ public class LogSource implements Source, WsLogHandler {
     static Pattern messagePattern;
 
     //DYKC-temp
-    private SpecialHandler sh = null;
+    private MessageLogHandler sh = null;
 
     static {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
@@ -100,7 +100,6 @@ public class LogSource implements Source, WsLogHandler {
     /** {@inheritDoc} */
     @Override
     public String getLocation() {
-        System.out.println("LogSource.java - HELLOWORLD");
         return location;
     }
 
@@ -108,17 +107,6 @@ public class LogSource implements Source, WsLogHandler {
     @Override
     @Trivial
     public void publish(RoutedMessage routedMessage) {
-        //System.out.println("LogSource.java - publish");
-        //DYKC
-//        BufferedWriter bw;
-//        try {
-//            bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("C:\\SourcePublishOutputFile.txt", true)));
-//            bw.write("LogSource.java - RoutedMessage message " + routedMessage.getFormattedVerboseMsg() + "\n");
-//            bw.close();
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
-//        }
-
         //Publish the message if it is not coming from a handler thread
         //if (!ThreadLocalHandler.get()) {
         LogRecord logRecord = routedMessage.getLogRecord();
@@ -132,7 +120,7 @@ public class LogSource implements Source, WsLogHandler {
     }
 
     //DYKC - temp
-    public void setHandler(SpecialHandler sh) {
+    public void setHandler(MessageLogHandler sh) {
         this.sh = sh;
     }
 

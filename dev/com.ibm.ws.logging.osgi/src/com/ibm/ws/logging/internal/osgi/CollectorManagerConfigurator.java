@@ -20,6 +20,7 @@ import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
+import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.logging.utils.HandlerUtils;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Source;
@@ -76,44 +77,52 @@ public class CollectorManagerConfigurator {
         }
     }
 
+    private Dictionary<String,String> returnProps(){
+    	Dictionary<String, String> serviceProperties = new Hashtable<String, String>();
+    	serviceProperties.put("service.vendor", "IBM");
+    	serviceProperties.put("id", "ANALYTICSLOGSOURCE");
+    	return serviceProperties;
+    }
+    
     protected void setCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
-    	System.out.println("WEEEEEEEEEEEEE GOT OURSELVES A COLLECTOR MANAGER");
-        //After obtaining a collectorManager... or rather, knowing a collectorManager is available
-    	//We will need to obtain the logsource, etc, and register them
-    	//DYKC-temp do only for log for now.
-    	
-        System.out.println("CollectorManagerConfigurator.java - Going to set Log Source");
+   	
+        System.out.println("CollectorManagerConfigurator.java - setCollectorManagerHandler()");
         Source logSource = myHandlerUtils.getLogSource();
-        logSource.getLocation();
+        Source traceSource = myHandlerUtils.getTraceSource();
         System.out.println("CollectorManagerConfigurator.java - I got a Log Source " + logSource);
+        System.out.println("CollectorManagerConfigurator.java - I got a Trace Source " + traceSource);
         
-    	Dictionary<String, String> props = new Hashtable<String, String>();
-    	props.put("service.vendor", "IBM");
-    	props.put("id", "ANALYTICSLOGSOURCE");
-    	bundleContext.registerService(Source.class.getName(), logSource, props);
+
+    	bundleContext.registerService(Source.class.getName(), logSource, returnProps());
+    	bundleContext.registerService(Source.class.getName(), traceSource, returnProps());
         
+    	BufferManagerImpl logConduit = myHandlerUtils.getLogConduit();
+    	BufferManagerImpl traceConduit = myHandlerUtils.getTraceConduit();
+    	
+    	
+    	//DYKC-TODO Need to do something regarding setting BufferManager/Conduit into CollectorManager?!?
+    	//i.e. register it?
+    	
     	
     	//DYKC- Testing to see if the service is just registered... Is registered.
-		ServiceReference<Source>[] servRefs;
-		try {
-			servRefs = (ServiceReference<Source>[]) bundleContext.getServiceReferences(Source.class.getName(), null);
-			System.out.println("Activator - Source.class.getName() " + Source.class.getName());
-			if (servRefs != null) {
-				for (ServiceReference<Source> servRef : servRefs) {
-					// setWsTraceHandler(servRef);
-					System.out.println("Gotem");
-				}
-			}
-
-		} catch (InvalidSyntaxException e) {
-			System.out.println("aw shucks");
-			e.printStackTrace();
-		}
+//		ServiceReference<Source>[] servRefs;
+//		try {
+//			servRefs = (ServiceReference<Source>[]) bundleContext.getServiceReferences(Source.class.getName(), null);
+//			System.out.println("CollectorManagerConfigurator.java - Source.class.getName() " + Source.class.getName());
+//			if (servRefs != null) {
+//				for (ServiceReference<Source> servRef : servRefs) {
+//					System.out.println("Gotem");
+//				}
+//			}
+//
+//		} catch (InvalidSyntaxException e) {
+//			e.printStackTrace();
+//		}
     }
 
 
     protected void unsetCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
-        //do nothing
+        //do nothing, we want to keep LogSource and TraceSource and conduit actively registered?
     }
 
     /**

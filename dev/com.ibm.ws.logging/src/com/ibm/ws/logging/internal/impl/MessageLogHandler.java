@@ -20,8 +20,8 @@ import com.ibm.ws.collector.CollectorConstants;
 import com.ibm.ws.collector.CollectorJsonUtils;
 import com.ibm.ws.collector.Formatter;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
-import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.MessageLogData;
+import com.ibm.ws.logging.source.TraceLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
@@ -29,20 +29,17 @@ import com.ibm.wsspi.collector.manager.Handler;
 /**
  *
  */
-public class SpecialHandler implements Handler, Formatter {
+public class MessageLogHandler implements Handler, Formatter {
 
-    private TraceWriter myTRW;
-    private BaseTraceFormatter myBTF;
-    public static SpecialHandler mySpecialHandler;
-    private LogSource ls;
+    private TraceWriter myTraceWriter;
     private String serverHostName = null;
     private String wlpUserDir = null;
     private String serverName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
 
-    private SpecialHandler() {
-        // this.serverName = serverName;
-        //this.wlpUserDir = wlpUserDir;
+    public MessageLogHandler(String serverName, String wlpUserDir) {
+        this.serverName = serverName;
+        this.wlpUserDir = wlpUserDir;
         try {
             serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                 @Override
@@ -56,66 +53,30 @@ public class SpecialHandler implements Handler, Formatter {
         }
     }
 
-    public static synchronized SpecialHandler getInstance() {
-        if (mySpecialHandler == null) {
-            mySpecialHandler = new SpecialHandler();
-        }
-        return mySpecialHandler;
-    }
+//    public static synchronized MessageLogHandler getInstance() {
+//        if (mySpecialHandler == null) {
+//            mySpecialHandler = new MessageLogHandler();
+//        }
+//        return mySpecialHandler;
+//    }
 
-    public void setLogSource(LogSource ls) {
-        if (ls == null) {
-            System.out.println("SpecialHandler - setLogSource: ls is null");
-        } else {
-            System.out.println("SpecialHandler - setLogSource: SETTING LS");
-            this.ls = ls;
-        }
-
-    }
-
-    public LogSource getLogSource() {
-        if (ls == null)
-            System.out.println("SpecialHandler - getLogSource: ls is null");
-        return ls;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.collector.manager.Handler#getHandlerName()
-     */
     @Override
     public String getHandlerName() {
         // TODO Auto-generated method stub
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.collector.manager.Handler#init(com.ibm.wsspi.collector.manager.CollectorManager)
-     */
     @Override
     public void init(CollectorManager collectorManager) {
         // TODO Auto-generated method stub
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.collector.manager.Handler#setBufferManager(java.lang.String, com.ibm.wsspi.collector.manager.BufferManager)
-     */
     @Override
     public void setBufferManager(String sourceId, BufferManager bufferMgr) {
         System.out.println("Specialhandler.java - settingBuffermanager from " + bufferMgr.toString());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.collector.manager.Handler#unsetBufferManager(java.lang.String, com.ibm.wsspi.collector.manager.BufferManager)
-     */
     @Override
     public void unsetBufferManager(String sourceId, BufferManager bufferMgr) {
         // TODO Auto-generated method stub
@@ -124,34 +85,39 @@ public class SpecialHandler implements Handler, Formatter {
 
     ///DYKC
     public void setFileLogHolder(TraceWriter trw) {
-        myTRW = trw;
+        myTraceWriter = trw;
     }
 
-    public void setBaseTraceFormatter(BaseTraceFormatter btf) {
-        myBTF = btf;
-    }
-
+    /*
+     * Call by Conduit/BMI to write to log as JSON
+     */
     public void writeToLog(Object event) {
-        MessageLogData mld = (MessageLogData) event;
-        //String messageLogFormat = myBTF.formatMessage(logRecord); //mld.getMessage();
-        formatEvent("source", "", event, null, 1000);
-        ///myTRW.writeRecord("");
+        String evensourcetType = getSourceTypeFromDataOjbect(event);
+        String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+        myTraceWriter.writeRecord(messageOutput);
     }
 
+    private String getSourceTypeFromDataOjbect(Object event) {
+        if (event instanceof MessageLogData) {
+            return CollectorConstants.MESSAGES_LOG_EVENT_TYPE;
+        } else if (event instanceof TraceLogData) {
+            return CollectorConstants.TRACE_LOG_EVENT_TYPE;
+        } else
+            return "";
+    }
+
+    /*
+     * Direct Call by BTS to write straight to Log.
+     */
     public void writeToLogNormal(String messageLogFormat) {
-        myTRW.writeRecord(messageLogFormat);
+        myTraceWriter.writeRecord(messageLogFormat);
     }
 
-    // need to somehow get the source*
-    // location was memory
-    // source is name of source.
-    //   How will this special handler identify other... data source types?
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
         String jsonStr = CollectorJsonUtils.jsonifyEvent(event, CollectorConstants.MESSAGES_LOG_EVENT_TYPE, serverName, wlpUserDir, serverHostName, "1.0", tags,
                                                          MAXFIELDLENGTH);
-        myTRW.writeRecord(jsonStr);
-        return null;
+        return jsonStr;
     }
 
     public void setServername(String serverName) {

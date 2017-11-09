@@ -11,8 +11,6 @@
  */
 package com.ibm.ws.collector;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
@@ -71,13 +69,11 @@ public class CollectorJsonUtils {
             return jsonifyMessageLogEvent(serverHostName, wlpUserDir, serverName, (MessageLogData) event, isHigherVer, tags, maxFieldLength);
         } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
             return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, (TraceLogData) event, isHigherVer, tags, maxFieldLength);
-        } 
+        }
         return "";
     }
 
     //Date date = new Date(HCGCData.getTime());
-
-
 
     public static String jsonifyMessageLogEvent(String hostName, String wlpUserDir, String serverName, MessageLogData messageLogData, boolean isHigherVer, String[] tags,
                                                 int maxFieldLength) {

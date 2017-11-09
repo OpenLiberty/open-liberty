@@ -36,6 +36,7 @@ import com.ibm.ws.logging.internal.PackageProcessor;
 import com.ibm.ws.logging.internal.TraceSpecification;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.source.LogSource;
+import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.FileLogHolder;
 import com.ibm.ws.logging.utils.HandlerUtils;
 import com.ibm.wsspi.collector.manager.Source;
@@ -175,8 +176,10 @@ public class BaseTraceService implements TrService {
 
     //DYKC
     private volatile LogSource logSource = null;
-    private volatile SpecialHandler messageLogHandler = null;
+    private volatile TraceSource traceSource = null;
+    private volatile MessageLogHandler messageLogHandler = null;
     private volatile BufferManagerImpl logConduit;
+    private volatile BufferManagerImpl traceConduit;
     private volatile HandlerUtils handlerUtils = null;
 
     /** Flags for suppressing traceback output to the console */
@@ -292,25 +295,27 @@ public class BaseTraceService implements TrService {
             Tr.info(TraceSpecification.getTc(), "MESSAGES_CONFIGURED_HIDDEN_2", new Object[] { hideMessageids });
         }
 
-        //DYKC how to avoid other basetraceServicegys from starting this up as well in other 'updates'
-        //Both HPEL and JSR47 rely on this.
+        //DYKC how to avoid other BTS from starting this up due to 'updates' calls in HPEL and JSR47.
+        // If we don't have a handlerUtils, we definitely need one.
+        //
         if (handlerUtils == null) {
             handlerUtils = HandlerUtils.getInstance();
-            logSource = handlerUtils.getLogSource();
-            logConduit = handlerUtils.getLogConduit();
-        }
-        System.out.println("BASE TRACE SERVICE LogConduit is = " + logConduit.toString());
-        System.out.println("BASE TRACE SERVICE logSource is = " + logSource.toString());
-        if (messageLogHandler == null) {
-            messageLogHandler = SpecialHandler.getInstance();
-            messageLogHandler.setLogSource(logSource);
-            messageLogHandler.setFileLogHolder(messagesLog);
-            messageLogHandler.setServername(serverName);
-            messageLogHandler.setWlpUserDir(wlpUserDir);
-            logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
 
+            logSource = handlerUtils.getLogSource();
+            traceSource = handlerUtils.getTraceSource();
+
+            logConduit = handlerUtils.getLogConduit();
+            traceConduit = handlerUtils.getTraceConduit();
+
+            System.out.println("BASE TRACE SERVICE LogConduit is = " + logConduit.toString());
+            System.out.println("BASE TRACE SERVICE logSource is = " + logSource.toString());
         }
-        handlerUtils.setHandler(messageLogHandler);
+        if (messageLogHandler == null) {
+            messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
+            messageLogHandler.setFileLogHolder(messagesLog);
+            logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
+            handlerUtils.setHandler(messageLogHandler);
+        }
     }
 
     /**
