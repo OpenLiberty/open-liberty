@@ -9,8 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package com.ibm.ws.jpa.jpa22;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
@@ -24,6 +26,10 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jpa22timeapi.web.JPATimeAPITestServlet;
 
+/**
+ * Test cases for verifying that java.time JDK 8 APIs are persistent-capable in a JPA application.
+ *
+ */
 @RunWith(FATRunner.class)
 public class JPA22TimeAPITest extends FATServletClient {
     public static final String APP_NAME = "jpa22timeapi";
@@ -35,7 +41,15 @@ public class JPA22TimeAPITest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server1, APP_NAME, "jpa22timeapi.web", "jpa22timeapi.entity");
+        final String resPath = "test-applications/jpa22/" + APP_NAME + "/resources/";
+
+        WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
+        app.addPackage("jpa22timeapi.web");
+        app.addPackage("jpa22timeapi.entity");
+        ShrinkHelper.addDirectory(app, resPath);
+        ShrinkHelper.exportAppToServer(server1, app);
+        server1.addInstalledAppForValidation(APP_NAME);
+
         server1.startServer();
     }
 
