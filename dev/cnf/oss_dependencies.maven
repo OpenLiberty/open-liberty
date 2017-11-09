@@ -2,7 +2,13 @@
 #javax.inject:javax.inject:1.0.0
 #org.apache.geronimo.specs:geronimo-jta_1.1_spec:1.1.2
 #org.apache.geronimo.specs:geronimo-validation_1.1_spec:1.0
+biz.aQute.bnd:biz.aQute.bnd:3.5.0
 biz.aQute.bnd:biz.aQute.bnd.annotation:3.3.0
+
+biz.aQute.bnd:biz.aQute.bnd.annotation:3.5.0
+
+
+biz.aQute.bnd:org.osgi.impl.bundle.repoindex.cli:3.5.0
 com.fasterxml.jackson.core:jackson-annotations:2.2.3
 com.fasterxml.jackson.core:jackson-core:2.2.3
 com.fasterxml.jackson.core:jackson-databind:2.2.3
