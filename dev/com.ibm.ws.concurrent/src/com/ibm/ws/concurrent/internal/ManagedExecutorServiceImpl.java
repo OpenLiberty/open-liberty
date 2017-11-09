@@ -55,7 +55,6 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
@@ -140,6 +139,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<String> jndiNameRef = new AtomicReference<String>();
 
     /**
+     * Reference to the executor that runs tasks according to the long running concurrency policy for this managed executor.
+     */
+    final AtomicReference<PolicyExecutor> longRunningPolicyExecutorRef = new AtomicReference<PolicyExecutor>();
+
+    /**
      * Reference to the name of this managed executor service.
      * The name is the jndiName if specified, otherwise the config id.
      */
@@ -148,7 +152,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /**
      * Executor that runs tasks against the general concurrency policy for this managed executor.
      */
-    private volatile PolicyExecutor policyExecutor;
+    volatile PolicyExecutor policyExecutor;
 
     /**
      * Privileged action to lazily obtain the transaction context provider.
@@ -294,11 +298,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @param tasks collection of tasks.
      * @return list of callbacks.
      */
-    private <T> PolicyTaskCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
+    private <T> TaskLifeCycleCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
 
         int numTasks = tasks.size();
-        PolicyTaskCallback[] callbacks = new PolicyTaskCallback[numTasks];
+        TaskLifeCycleCallback[] callbacks = new TaskLifeCycleCallback[numTasks];
 
         if (numTasks == 1)
             callbacks[0] = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(getExecutionProperties(tasks.iterator().next())));
@@ -379,8 +383,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
         // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks));
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            // Policy executor can optimize the last task in the list to run on the current thread if we submit under the same executor,
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[callbacks.length - 1].policyExecutor : policyExecutor;
+            return (List) executor.invokeAll(tasks, callbacks);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -412,8 +420,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
         // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+            return (List) executor.invokeAll(tasks, callbacks, timeout, unit);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -445,8 +456,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
         // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return policyExecutor.invokeAny(tasks, createCallbacks(tasks));
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+            return executor.invokeAny(tasks, callbacks);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -465,8 +479,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         // TODO replace this temporary prototype code
-        if (usePolicyExecutor)
-            return policyExecutor.invokeAny(tasks, createCallbacks(tasks), timeout, unit);
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+            return executor.invokeAny(tasks, callbacks, timeout, unit);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -534,6 +551,16 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /**
+     * Declarative Services method for setting the long running concurrency policy.
+     *
+     * @param svc the service
+     */
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
+    protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
+        longRunningPolicyExecutorRef.set(svc.getExecutor());
+    }
+
+    /**
      * Declarative Services method for setting the transaction context provider service reference
      *
      * @param ref reference to the service
@@ -568,8 +595,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
         // TODO replace this temporary prototype code
         if (usePolicyExecutor) {
-            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-            return policyExecutor.submit(task, callback);
+            TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return callback.policyExecutor.submit(task, callback);
         }
 
         ExecutorService execSvc = getExecSvc();
@@ -594,8 +621,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
         // TODO replace this temporary prototype code
         if (usePolicyExecutor) {
-            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-            return policyExecutor.submit(task, result, callback);
+            TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return callback.policyExecutor.submit(task, result, callback);
         }
 
         ExecutorService execSvc = getExecSvc();
@@ -641,6 +668,15 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     protected void unsetExecutorService(ExecutorService svc) {}
+
+    /**
+     * Declarative Services method for unsetting the long running concurrency policy
+     *
+     * @param svc the service
+     */
+    protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
+        longRunningPolicyExecutorRef.compareAndSet(svc.getExecutor(), null);
+    }
 
     /**
      * Declarative Services method for unsetting the transaction context provider service reference

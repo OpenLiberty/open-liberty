@@ -36,6 +36,7 @@ import javax.annotation.Resource;
 import javax.enterprise.concurrent.AbortedException;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
+import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
 import javax.transaction.TransactionSynchronizationRegistry;
@@ -64,19 +65,27 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
     // Futures to cancel between tests, to reduce the chance of failures in one test method interfering with others
     private final Set<Future<?>> cancelAfterTest = Collections.newSetFromMap(new ConcurrentHashMap<Future<?>, Boolean>());
 
-    // max: 1 + caller threads; maxQueue: 1; wait: 2m and abort
+    // BOTH:  max: 1 + caller threads; maxQueue: 1; wait: 2m and abort
     @Resource(lookup = "java:comp/DefaultManagedExecutorService")
     private ManagedExecutorService defaultExecutor;
 
-    // max: 4; maxQueue: 1; wait: 0 and submitter runs requiring permit
+    // NORM:  max: 4; maxQueue: 1; wait: 0 and submitter runs requiring permit
+    // LONG:  max: 1 + caller threads; maxQueue: 1; wait: 2m and abort
     @Resource(lookup = "java:comp/DefaultManagedScheduledExecutorService")
     private ManagedScheduledExecutorService defaultScheduledExecutor;
 
-    // max: 1; maxQueue: 1; wait: 0 and abort
+    // NORM:  max: 1; maxQueue: 1; wait: 0 and abort
+    // LONG:  max: 1; maxQueue: 1; wait: 0 and abort
     @Resource(name = "java:comp/env/concurrent/executor1ref", lookup = "concurrent/executor1")
     private ManagedExecutorService executor1;
 
-    // max: 2 (core: 1) + caller threads; maxQueue: 2; wait: 0 and abort
+    // NORM:  max: 2 (core: 1) + caller threads; maxQueue: 2; wait: 0 and abort
+    // LONG:  max: 2; maxQueue: 2; wait: 20s and abort; startTimeout: 1m
+    @Resource(name = "java:app/env/concurrent/executor2ref", lookup = "concurrent/executor2")
+    private ManagedExecutorService executor2;
+
+    // NORM:  max: 2 (core: 1) + caller threads; maxQueue: 2; wait: 0 and abort
+    // LONG:  max: 1 + caller threads; maxQueue: 1; wait: 2m and abort
     @Resource(name = "java:module/env/concurrent/executor2ref", lookup = "concurrent/scheduledExecutor2")
     private ManagedScheduledExecutorService scheduledExecutor2;
 
@@ -325,36 +334,73 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
     @Test
     public void testAbortWhenQueueFull() throws Exception {
         // Use up maxConcurrency of 1
-        CountingTask blockerTask = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
-        Future<Integer> blockerTaskFuture = executor1.submit(blockerTask);
-        cancelAfterTest.add(blockerTaskFuture);
-        assertTrue(blockerTask.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        CountingTask blockerTask1 = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        Future<Integer> blockerTaskFuture1 = executor1.submit(blockerTask1);
+        cancelAfterTest.add(blockerTaskFuture1);
+        assertTrue(blockerTask1.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         // Use up maxQueueSize of 1
-        CountingTask queuedTask = new CountingTask(null, null, null, null); // TODO add a listener and test taskAborted on cancel from queue
-        Future<Integer> queuedTaskFuture = executor1.submit(queuedTask);
-        cancelAfterTest.add(queuedTaskFuture);
+        CountingTask queuedTask1 = new CountingTask(null, null, null, null); // TODO add a listener and test taskAborted on cancel from queue
+        Future<Integer> queuedTaskFuture1 = executor1.submit(queuedTask1);
+        cancelAfterTest.add(queuedTaskFuture1);
 
         // Submit task that aborts due to full queue
-        CountingTask abortedTask = new CountingTask(null, new TaskListener().doLookup("java:module/env/concurrent/executor2ref", ABORTED).doGet(true, ABORTED), null, null);
+        CountingTask abortedTask1 = new CountingTask(null, new TaskListener().doLookup("java:module/env/concurrent/executor2ref", ABORTED).doGet(true, ABORTED), null, null);
         try {
-            Future<Integer> abortedTaskFuture = executor1.submit(abortedTask);
-            cancelAfterTest.add(abortedTaskFuture);
-            fail("Unexpectedly allowed submit: " + abortedTaskFuture);
+            Future<Integer> abortedTaskFuture1 = executor1.submit(abortedTask1);
+            cancelAfterTest.add(abortedTaskFuture1);
+            fail("Unexpectedly allowed submit: " + abortedTaskFuture1);
         } catch (RejectedExecutionException x) {
             if (!x.getMessage().startsWith("CWWKE1201E"))
                 throw x;
         }
 
-        assertRejected(executor1, abortedTask, (TaskListener) abortedTask.listener, RejectedExecutionException.class, "CWWKE1201E");
+        assertRejected(executor1, abortedTask1, (TaskListener) abortedTask1.listener, RejectedExecutionException.class, "CWWKE1201E");
 
-        assertEquals(scheduledExecutor2, ((TaskListener) abortedTask.listener).resultOfLookup[ABORTED]);
+        assertEquals(scheduledExecutor2, ((TaskListener) abortedTask1.listener).resultOfLookup[ABORTED]);
 
-        cancelAfterTest.remove(queuedTaskFuture);
-        assertTrue(queuedTaskFuture.cancel(false));
+        // Even though the queue is full for normal tasks, we can still submit and run long-running tasks per the long-running policy
 
-        cancelAfterTest.remove(blockerTaskFuture);
-        assertTrue(blockerTaskFuture.cancel(true));
+        // Use up long-running policy's maxConcurrency of 1
+        CountingTask blockerTask2 = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        blockerTask2.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> blockerTaskFuture2 = executor1.submit(blockerTask2);
+        cancelAfterTest.add(blockerTaskFuture2);
+        assertTrue(blockerTask2.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // Use up long-running policy's maxQueueSize of 1
+        CountingTask queuedTask2 = new CountingTask(null, null, null, null);
+        queuedTask2.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> queuedTaskFuture2 = executor1.submit(queuedTask2);
+        cancelAfterTest.add(queuedTaskFuture2);
+
+        // Allow the normal policy tasks to complete:
+        cancelAfterTest.remove(queuedTaskFuture1);
+        assertTrue(queuedTaskFuture1.cancel(false));
+
+        cancelAfterTest.remove(blockerTaskFuture1);
+        assertTrue(blockerTaskFuture1.cancel(true));
+
+        // Submit long-running task that aborts due to full queue
+        CountingTask abortedTask2 = new CountingTask(null, new TaskListener(), null, null);
+        abortedTask2.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        try {
+            Future<Integer> abortedTaskFuture2 = executor1.submit(abortedTask2);
+            cancelAfterTest.add(abortedTaskFuture2);
+            fail("Unexpectedly allowed submit: " + abortedTaskFuture2);
+        } catch (RejectedExecutionException x) {
+            if (!x.getMessage().startsWith("CWWKE1201E"))
+                throw x;
+        }
+
+        assertRejected(executor1, abortedTask1, (TaskListener) abortedTask1.listener, RejectedExecutionException.class, "CWWKE1201E");
+
+        // Allow the long-running policy tasks to complete:
+        cancelAfterTest.remove(queuedTaskFuture2);
+        assertTrue(queuedTaskFuture2.cancel(false));
+
+        cancelAfterTest.remove(blockerTaskFuture2);
+        assertTrue(blockerTaskFuture2.cancel(true));
     }
 
     /**
@@ -376,6 +422,8 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
 
         // Submit task that aborts due to interrupted wait
         CountingTask abortedTask = new CountingTask(null, new TaskListener().doLookup("java:comp/env/concurrent/executor1ref", ABORTED).doGet(true, ABORTED), null, null);
+        // Long running task goes to same policy executor because no longRunningPolicy[Ref] is configured
+        abortedTask.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
         Thread.currentThread().interrupt();
         try {
             Future<Integer> abortedTaskFuture = defaultExecutor.submit(abortedTask);
@@ -480,6 +528,138 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
         assertTrue("unexpected: " + listener.resultOfLookup[SUBMITTED], listener.resultOfLookup[SUBMITTED] instanceof UserTransaction);
         assertTrue("unexpected: " + listener.resultOfLookup[STARTING], listener.resultOfLookup[STARTING] instanceof UserTransaction);
         assertTrue("unexpected: " + listener.resultOfLookup[DONE], listener.resultOfLookup[DONE] instanceof UserTransaction);
+    }
+
+    /**
+     * Submit normal and long-running tasks in a single request to timed invokeAll.
+     */
+    @Test
+    public void testInvokeAllMixedPoliciesTimed() throws Exception {
+        AtomicInteger counter = new AtomicInteger();
+
+        CountingTask normalTask = new CountingTask(counter, null, null, null);
+        normalTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.FALSE.toString());
+
+        CountingTask longTask = new CountingTask(counter, null, null, null);
+        longTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+
+        List<Future<Integer>> futures = executor2.invokeAll(Arrays.asList(normalTask, longTask), TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals(2, futures.size());
+        assertTrue(futures.get(0).isDone());
+        assertTrue(futures.get(1).isDone());
+        assertFalse(futures.get(0).isCancelled());
+        assertFalse(futures.get(1).isCancelled());
+        assertEquals(2, counter.get()); // all have completed and incremented the counter
+    }
+
+    /**
+     * Submit normal and long-running tasks in a single request via untimed invokeAll. Untimed invokeAll can run normal tasks on the current thread
+     * in excess of max concurrency per the maxPolicy=loose configuration.
+     */
+    @Test
+    public void testInvokeAllMixedPoliciesUntimed() throws Exception {
+        // Use up normal policy's max concurrency of 2
+        CountDownLatch blockerContinueLatch = new CountDownLatch(1);
+        CountingTask blockerTask1 = new CountingTask(null, null, new CountDownLatch(1), blockerContinueLatch);
+        CountingTask blockerTask2 = new CountingTask(null, null, new CountDownLatch(1), blockerContinueLatch);
+        Future<Integer> blockerTask1Future = executor2.submit(blockerTask1);
+        cancelAfterTest.add(blockerTask1Future);
+        Future<Integer> blockerTask2Future = executor2.submit(blockerTask2);
+        cancelAfterTest.add(blockerTask2Future);
+
+        // Wait for at least one to start, which ensures we will have the queue capacity to perform the invokeAll
+        assertTrue(blockerTask1.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        AtomicInteger counter = new AtomicInteger();
+        CountingTask normalTask1 = new CountingTask(counter, null, null, null);
+        CountingTask normalTask2 = new CountingTask(counter, null, null, null);
+        CountingTask longTask = new CountingTask(counter, null, null, null);
+        longTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+
+        List<Future<Integer>> futures = executor2.invokeAll(Arrays.asList(normalTask1, longTask, normalTask2));
+        assertEquals(3, futures.size());
+        assertEquals(3, counter.get()); // all have completed and incremented the counter
+
+        // Normal tasks were forced to run on same thread, due to max concurrency being used up
+        long currentThreadId = Thread.currentThread().getId();
+        assertEquals(currentThreadId, normalTask1.threadId);
+        assertEquals(currentThreadId, normalTask2.threadId);
+
+        // Allow the blockers to complete normally
+        blockerContinueLatch.countDown();
+        assertEquals(Integer.valueOf(1), blockerTask1Future.get());
+        cancelAfterTest.remove(blockerTask1Future);
+        assertEquals(Integer.valueOf(1), blockerTask2Future.get());
+        cancelAfterTest.remove(blockerTask2Future);
+    }
+
+    /**
+     * Submit a normal task and a long running task via invokeAny, where the normal policy has max concurrency used up.
+     * The long running task must run and return its result from invokeAny.
+     */
+    @Test
+    public void testInvokeAnyMixedPoliciesRunLongRunning() throws Exception {
+        // Use up normal policy's max concurrency of 1
+        CountingTask blockerTask = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        Future<Integer> blockerTaskFuture = executor1.submit(blockerTask);
+        cancelAfterTest.add(blockerTaskFuture);
+        assertTrue(blockerTask.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        CountingTask normalTask = new CountingTask(null, null, new CountDownLatch(1), null);
+        normalTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.FALSE.toString());
+
+        CountingTask longRunningTask = new CountingTask(null, null, null, null);
+        longRunningTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+
+        assertEquals(Integer.valueOf(1), executor1.invokeAny(Arrays.asList(normalTask, longRunningTask)));
+
+        // long-running task completed
+        assertEquals(1, longRunningTask.counter.get());
+
+        // normal task didn't complete
+        assertEquals(0, normalTask.counter.get());
+
+        // normal task didn't start
+        assertEquals(1, normalTask.beginLatch.getCount());
+
+        blockerTask.continueLatch.countDown();
+        assertEquals(Integer.valueOf(1), blockerTaskFuture.get());
+        cancelAfterTest.remove(blockerTaskFuture);
+    }
+
+    /**
+     * Submit a normal task and a long running task via invokeAny, where the long-running policy has max concurrency used up.
+     * The normal task must run and return its result from invokeAny.
+     */
+    @Test
+    public void testInvokeAnyMixedPoliciesRunNormal() throws Exception {
+        // Use up long-running policy's max concurrency of 1
+        CountingTask blockerTask = new CountingTask(null, null, new CountDownLatch(1), new CountDownLatch(1));
+        blockerTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> blockerTaskFuture = executor1.submit(blockerTask);
+        cancelAfterTest.add(blockerTaskFuture);
+        assertTrue(blockerTask.beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        CountingTask longRunningTask = new CountingTask(null, null, new CountDownLatch(1), null);
+        longRunningTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+
+        CountingTask normalTask = new CountingTask(null, null, null, null);
+        normalTask.execProps.put(ManagedTask.LONGRUNNING_HINT, Boolean.FALSE.toString());
+
+        assertEquals(Integer.valueOf(1), executor1.invokeAny(Arrays.asList(longRunningTask, normalTask), TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // normal task completed
+        assertEquals(1, normalTask.counter.get());
+
+        // long-running task didn't complete
+        assertEquals(0, longRunningTask.counter.get());
+
+        // long-running task didn't start
+        assertEquals(1, longRunningTask.beginLatch.getCount());
+
+        blockerTask.continueLatch.countDown();
+        assertEquals(Integer.valueOf(1), blockerTaskFuture.get());
+        cancelAfterTest.remove(blockerTaskFuture);
     }
 
     /**
