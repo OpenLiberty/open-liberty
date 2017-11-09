@@ -8,16 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.jaxrs21.fat.extended;
+package jaxrs21.fat.classSubRes;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.core.Application;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                PatchTest.class,
-                ProviderPriorityTest.class,
-                ClassSubResTest.class
-})
-public class FATSuite {}
+@ApplicationPath("/rest")
+@Path("/test")
+public class ClassSubResTestApp extends Application {
+
+    @Path("/sub/{subType}")
+    public Class<?> page(@PathParam("subType") String subType) throws ClassNotFoundException {
+        return Class.forName("jaxrs21.fat.classSubRes.sub." + subType);
+    }
+}
