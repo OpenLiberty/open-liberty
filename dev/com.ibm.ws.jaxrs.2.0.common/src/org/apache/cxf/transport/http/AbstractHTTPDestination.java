@@ -686,6 +686,7 @@ public abstract class AbstractHTTPDestination
         return responseStream;
     }
 
+    @FFDCIgnore({ IllegalStateException.class })
     private void closeResponseOutputStream(HttpServletResponse response) throws IOException {
         try {
             response.getOutputStream().close();
