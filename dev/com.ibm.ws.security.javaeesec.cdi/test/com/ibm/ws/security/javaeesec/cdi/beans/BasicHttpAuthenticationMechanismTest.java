@@ -56,7 +56,7 @@ public class BasicHttpAuthenticationMechanismTest {
     private static final String IS_MANDATORY_POLICY = "javax.security.auth.message.MessagePolicy.isMandatory";
 
     private BasicHttpAuthenticationMechanism mechanism;
-    private final String realmName = "My Basic Realm";
+    private String realmName;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private HttpMessageContext httpMessageContext;
