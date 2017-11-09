@@ -12,6 +12,7 @@ IBM-API-Package: javax.validation; type="spec", \
  javax.validation.groups; type="spec", \
  javax.validation.metadata; type="spec", \
  javax.validation.spi; type="spec",\
+ javax.validation.valueextraction; type="spec",\
  com.ibm.ws.beanvalidation.accessor; type="internal"
 IBM-ShortName: beanValidation-2.0
 Subsystem-Name: Bean Validation 2.0
@@ -21,10 +22,11 @@ Subsystem-Name: Bean Validation 2.0
  com.ibm.websphere.appserver.el-3.0, \
  com.ibm.websphere.appserver.transaction-1.2, \
  com.ibm.websphere.appserver.javax.interceptor-1.2, \
- com.ibm.websphere.appserver.internal.slf4j-1.7.7,\
  com.ibm.websphere.appserver.javaeeCompatible-8.0
--bundles=com.ibm.ws.org.apache.commons.weaver.1.1, \
- com.ibm.ws.beanvalidation.v11, \
- com.ibm.ws.org.apache.bval.1.1.0
+-bundles=com.ibm.ws.beanvalidation.v11, \
+ com.ibm.ws.org.hibernate.validator.6.0.4.Final, \
+ com.ibm.ws.org.jboss.logging.3.3.0, \
+ com.ibm.ws.com.fasterxml.classmate.1.3.1
 kind=beta
 edition=core
+
