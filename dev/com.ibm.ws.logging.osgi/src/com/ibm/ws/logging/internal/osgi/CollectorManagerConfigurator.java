@@ -104,20 +104,7 @@ public class CollectorManagerConfigurator {
     	//i.e. register it?
     	
     	
-    	//DYKC- Testing to see if the service is just registered... Is registered.
-//		ServiceReference<Source>[] servRefs;
-//		try {
-//			servRefs = (ServiceReference<Source>[]) bundleContext.getServiceReferences(Source.class.getName(), null);
-//			System.out.println("CollectorManagerConfigurator.java - Source.class.getName() " + Source.class.getName());
-//			if (servRefs != null) {
-//				for (ServiceReference<Source> servRef : servRefs) {
-//					System.out.println("Gotem");
-//				}
-//			}
-//
-//		} catch (InvalidSyntaxException e) {
-//			e.printStackTrace();
-//		}
+
     }
 
 

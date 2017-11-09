@@ -91,7 +91,7 @@ public class TraceRouterConfigurator {
      * This method is called from the ServiceListener.
      */
     protected void setWsTraceHandler(ServiceReference<WsTraceHandler> ref) {
-        getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
+        getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);
     }
 
     /**

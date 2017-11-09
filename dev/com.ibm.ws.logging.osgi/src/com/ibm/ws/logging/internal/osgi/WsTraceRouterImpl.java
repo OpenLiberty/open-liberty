@@ -60,7 +60,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
     /**
      * Add the wsTraceHandler ref. 1 or more LogHandlers may be set.
      */
-    public void setWsTraceHandler(String id, WsTraceHandler ref) {
+    public void setWsTraceHandler(String id, WsTraceHandler ref, boolean isWantEarly) {
         if (id != null && ref != null) {
             REWRLOCK.writeLock().lock();
             try {
@@ -74,7 +74,7 @@ public class WsTraceRouterImpl implements WsTraceRouter {
                  * these early traces in the "earlierTraces" queue in BaseTraceService, which then
                  * passes them to WsTraceRouterImpl once it's registered.
                  */
-                if (earlierTraces == null) {
+                if (earlierTraces == null || !isWantEarly) {
                     return;
                 }
                 for (RoutedMessage earlierTrace : earlierTraces.toArray(new RoutedMessage[earlierTraces.size()])) {

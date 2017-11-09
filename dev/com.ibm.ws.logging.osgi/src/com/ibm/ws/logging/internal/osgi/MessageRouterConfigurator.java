@@ -178,7 +178,9 @@ public class MessageRouterConfigurator implements BundleListener {
      * This method is called from the ServiceListener.
      */
     protected void setWsLogHandler(ServiceReference<WsLogHandler> ref) {
-        getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref));
+    	
+    	//DYKC
+        getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);
     }
 
     /**
