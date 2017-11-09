@@ -10,5 +10,52 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.transport.http"/>
+	<classpathentry kind="src" path="/com.ibm.ws.logging.core"/>
+	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.core/generated/com.ibm.websphere.org.osgi.core.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.websphere.org.osgi.core.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.websphere.org.osgi.core"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/resource/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/resource/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/bundle/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/resolver/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/service/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/weaving/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/launch/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/namespace/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/startlevel/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/startlevel/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/wiring/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/framework/wiring/dto/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/condpermadmin/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/packageadmin/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/permissionadmin/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/startlevel/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/service/url/*"/>
+			<accessrule kind="accessible" pattern="org/osgi/util/tracker/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
+	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.service.cm/generated/com.ibm.websphere.org.osgi.service.cm.jar">
+		<attributes>
+			<attribute name="bsn" value="com.ibm.websphere.org.osgi.service.cm.jar"/>
+			<attribute name="type" value="PROJECT"/>
+			<attribute name="project" value="com.ibm.websphere.org.osgi.service.cm"/>
+			<attribute name="version" value="latest"/>
+			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
+		</attributes>
+		<accessrules>
+			<accessrule kind="accessible" pattern="org/osgi/service/cm/*"/>
+			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
+		</accessrules>
+	</classpathentry>
 	<classpathentry kind="output" path="build/classes"/>
 </classpath>
