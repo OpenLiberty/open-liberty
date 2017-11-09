@@ -195,7 +195,7 @@ public class FactoryImpl extends org.apache.myfaces.config.element.Factory imple
     @Override
     public List<String> getSearchExpressionContextFactory()
     {
-        return clientWindowFactories;
+        return searchExpressionContextFactories;
     }
 
 }
