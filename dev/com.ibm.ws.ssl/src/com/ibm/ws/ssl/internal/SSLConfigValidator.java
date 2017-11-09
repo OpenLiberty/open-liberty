@@ -138,7 +138,7 @@ public class SSLConfigValidator {
             if (isUsingDefaultSSLRepertoire() &&
                 defaultRepertoireIsNotAvailable() &&
                 defaultKeyStoreIsNotAvailable()) {
-                Tr.warning(tc, "ssl.defaultKeyStore.expected.CWPKI0817W", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
+                Tr.audit(tc, "ssl.defaultKeyStore.expected.CWPKI0817A", LibertyConstants.DEFAULT_KEYSTORE_REF_ID);
             }
         }
 

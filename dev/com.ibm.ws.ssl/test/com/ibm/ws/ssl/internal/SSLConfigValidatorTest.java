@@ -170,8 +170,8 @@ public class SSLConfigValidatorTest {
         map.put(Constants.SSLPROP_DEFAULT_ALIAS, LibertyConstants.DEFAULT_SSL_CONFIG_ID);
         validator.validate(map, Collections.<String, Map<String, Object>> emptyMap(), Collections.<String, WSKeyStore> emptyMap());
 
-        assertTrue("Expected warning about defaultSSLConfig and defaultKeyStore availability (CWPKI0817W)",
-                   outputMgr.checkForMessages("CWPKI0817W.*defaultKeyStore"));
+        assertTrue("Expected audit message about defaultSSLConfig and defaultKeyStore availability (CWPKI0817A)",
+                   outputMgr.checkForMessages("CWPKI0817A.*defaultKeyStore"));
     }
 
     /**
