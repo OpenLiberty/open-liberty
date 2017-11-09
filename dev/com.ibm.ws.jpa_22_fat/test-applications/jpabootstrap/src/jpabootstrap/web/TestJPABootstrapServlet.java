@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jpa22bootstrap.web;
+package jpabootstrap.web;
 
 import javax.annotation.Resource;
 import javax.persistence.EntityManager;
@@ -17,22 +17,20 @@ import javax.servlet.annotation.WebServlet;
 import javax.transaction.UserTransaction;
 
 import org.junit.Assert;
-import org.junit.Test;
 
 import componenttest.app.FATServlet;
-import jpa22bootstrap.entity.SimpleTestEntity;
+import jpabootstrap.entity.SimpleTestEntity;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/TestJPA22Bootstrap")
-public class TestJPA22BootstrapServlet extends FATServlet {
+@WebServlet(urlPatterns = "/TestJPABootstrap")
+public class TestJPABootstrapServlet extends FATServlet {
     @PersistenceContext(unitName = "JPAPU")
     private EntityManager em;
 
     @Resource
     private UserTransaction tx;
 
-    @Test
-    public void bootstrapTest22() throws Exception {
+    public void testPersistenceUnitBootstrap() throws Exception {
         tx.begin();
         SimpleTestEntity entity = new SimpleTestEntity();
         entity.setStrData("Foo Bar");
