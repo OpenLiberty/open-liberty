@@ -54,6 +54,8 @@ public class ConfigFilesXmlValidationUtils
     private final static String FACES_CONFIG_SCHEMA_PATH_12 = "org/apache/myfaces/resource/web-facesconfig_1_2.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_20 = "org/apache/myfaces/resource/web-facesconfig_2_0.xsd";
     private final static String FACES_CONFIG_SCHEMA_PATH_21 = "org/apache/myfaces/resource/web-facesconfig_2_1.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_22 = "org/apache/myfaces/resource/web-facesconfig_2_2.xsd";
+    private final static String FACES_CONFIG_SCHEMA_PATH_23 = "org/apache/myfaces/resource/web-facesconfig_2_3.xsd";
     private final static String FACES_TAGLIB_SCHEMA_PATH = "org/apache/myfaces/resource/web-facelettaglibrary_2_0.xsd";
 
     public static class LSInputImpl implements LSInput
@@ -228,7 +230,9 @@ public class ConfigFilesXmlValidationUtils
     {
         String xmlSchema = "1.2".equals(version)
                             ? FACES_CONFIG_SCHEMA_PATH_12
-                            : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 : FACES_CONFIG_SCHEMA_PATH_21);
+                            : ("2.0".equals(version) ? FACES_CONFIG_SCHEMA_PATH_20 
+                            : ("2.1".equals(version) ? FACES_CONFIG_SCHEMA_PATH_21
+                            : ("2.2".equals(version) ? FACES_CONFIG_SCHEMA_PATH_22 : FACES_CONFIG_SCHEMA_PATH_23)));
         
         InputStream stream = ClassUtils.getResourceAsStream(xmlSchema);
         
@@ -280,8 +284,9 @@ public class ConfigFilesXmlValidationUtils
                 // This is as a result of our aborted parse, so ignore.
             }
 
-            result = handler.isVersion21OrLater() ? "2.1" : (handler.isVersion20() ? "2.0" : (handler
-                    .isVersion12() ? "1.2" : "1.1"));
+            result = handler.isVersion23OrLater() ? "2.3" : (handler.isVersion22() ? "2.2" : 
+                        (handler.isVersion21() ? "2.1" : (handler.isVersion20() ? "2.0" : 
+                        (handler.isVersion12() ? "1.2" : "1.1"))));
         }
 
         catch (Throwable e)
@@ -311,7 +316,9 @@ public class ConfigFilesXmlValidationUtils
     {
         private boolean version12;
         private boolean version20;
-        private boolean version21OrLater;
+        private boolean version21;
+        private boolean version22;
+        private boolean version23OrLater;
 
         public boolean isVersion12()
         {
@@ -320,12 +327,22 @@ public class ConfigFilesXmlValidationUtils
 
         public boolean isVersion20()
         {
-            return this.version20 || this.version21OrLater;
+            return this.version20;
+        }
+
+        public boolean isVersion21()
+        {
+            return this.version21;
+        }
+
+        public boolean isVersion22()
+        {
+            return this.version22;
         }
         
-        public boolean isVersion21OrLater()
+        public boolean isVersion23OrLater()
         {
-            return version21OrLater;
+            return this.version23OrLater;
         }
 
         @Override
@@ -348,19 +365,41 @@ public class ConfigFilesXmlValidationUtils
                         {
                             this.version12 = true;
                             this.version20 = false;
-                            this.version21OrLater = false;
+                            this.version21 = false;
+                            this.version22 = false;
+                            this.version23OrLater = false;
                         }
                         else if (attributes.getValue(i).equals("2.0"))
                         {
-                            this.version21OrLater = false;
-                            this.version20 = true;
                             this.version12 = false;
+                            this.version20 = true;
+                            this.version21 = false;
+                            this.version22 = false;
+                            this.version23OrLater = false;
+                        }
+                        else if (attributes.getValue(i).equals("2.1"))
+                        {
+                            this.version12 = false;
+                            this.version20 = false;
+                            this.version21 = true;
+                            this.version22 = false;
+                            this.version23OrLater = false;
+                        }
+                        else if (attributes.getValue(i).equals("2.2"))
+                        {
+                            this.version12 = false;
+                            this.version20 = false;
+                            this.version21 = false;
+                            this.version22 = true;
+                            this.version23OrLater = false;
                         }
                         else
                         {
-                            this.version21OrLater = true;
-                            this.version20 = false;
                             this.version12 = false;
+                            this.version20 = false;
+                            this.version21 = false;
+                            this.version22 = false;
+                            this.version23OrLater = true;
                         }
                     }
                 }

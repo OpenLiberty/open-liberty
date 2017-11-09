@@ -468,7 +468,8 @@ public class DefaultFacesConfigurationProvider extends FacesConfigurationProvide
     private void validateFacesConfig(ExternalContext ectx, URL url) throws IOException, SAXException
     {
         String version = ConfigFilesXmlValidationUtils.getFacesConfigVersion(url);
-        if ("1.2".equals(version) || "2.0".equals(version) || "2.1".equals(version))
+        if ("1.2".equals(version) || "2.0".equals(version) || "2.1".equals(version) 
+            || "2.2".equals(version) || "2.3".equals(version))
         {
             ConfigFilesXmlValidationUtils.validateFacesConfigFile(url, ectx, version);
         }

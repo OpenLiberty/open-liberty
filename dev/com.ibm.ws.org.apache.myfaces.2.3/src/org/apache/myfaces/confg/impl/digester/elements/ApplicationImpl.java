@@ -231,9 +231,9 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
         return searchKeywordResolver;
     }
     
-    public void addSearchKeywordResolver(String handler)
+    public void addSearchKeywordResolver(String resolver)
     {
-        searchKeywordResolver.add(handler);
+        searchKeywordResolver.add(resolver);
     }
 
     @Override
@@ -242,7 +242,7 @@ public class ApplicationImpl extends org.apache.myfaces.config.element.Applicati
         return searchExpressionHandler;
     }
     
-    public void addSearchExpressionHandlerHandler(String handler)
+    public void addSearchExpressionHandler(String handler)
     {
         searchExpressionHandler.add(handler);
     }
