@@ -24,5 +24,5 @@ Subsystem-Name: JavaMail 1.6
 -bundles=com.ibm.ws.javamail.1.6
 -jars=com.ibm.websphere.javaee.mail.1.6; location:=dev/api/spec/, \
  com.ibm.websphere.appserver.thirdparty.mail-1.6; location:=dev/api/third-party/
-kind=noship
+kind=beta
 edition=core
