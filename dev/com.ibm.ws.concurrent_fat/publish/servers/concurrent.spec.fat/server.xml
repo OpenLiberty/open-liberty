@@ -10,21 +10,17 @@
   <include location="../fatTestPorts.xml"/>
   <variable name="onError" value="FAIL"/>
 
-  <!-- TODO remove the internal attribute (and overrides of default instances) once managed executors are switched over to using policy executor -->
-  <managedExecutorService id="DefaultManagedExecutorService" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"/>
-  <managedScheduledExecutorService id="DefaultManagedScheduledExecutorService" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only"/>
-
-  <managedExecutorService jndiName="concurrent/jeeMetadataContextSvc" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only">
+  <managedExecutorService jndiName="concurrent/jeeMetadataContextSvc">
     <contextService>
       <jeeMetadataContext/>
     </contextService>
   </managedExecutorService>
 
-  <managedExecutorService jndiName="concurrent/xsvc-empty-context" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only">
+  <managedExecutorService jndiName="concurrent/xsvc-empty-context">
     <contextService/>
   </managedExecutorService>
 
-  <managedScheduledExecutorService jndiName="concurrent/schedxsvc-classloader-context" policyExecutor.internal.prototype.do.not.use="enabled-for-internal-testing-only">
+  <managedScheduledExecutorService jndiName="concurrent/schedxsvc-classloader-context">
     <contextService>
       <classloaderContext/>
     </contextService>
