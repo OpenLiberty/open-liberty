@@ -226,7 +226,8 @@ Subsystem-Name: Java Persistence API 2.2
 -features=com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.transaction-1.2, \
  com.ibm.websphere.appserver.jdbc-4.2, \
- com.ibm.websphere.appserver.jpaContainer-2.2
+ com.ibm.websphere.appserver.jpaContainer-2.2,\
+ com.ibm.websphere.appserver.org.eclipse.persistence-2.7
 -bundles=com.ibm.websphere.appserver.thirdparty.eclipselink.2.7; location:=dev/api/third-party/, \
  com.ibm.ws.jpa.container.eclipselink.2.7
 kind=beta
