@@ -26,6 +26,7 @@ class CountingTask implements Callable<Integer>, ManagedTask {
     final AtomicInteger counter;
     final Map<String, String> execProps = new TreeMap<String, String>();
     final ManagedTaskListener listener;
+    volatile long threadId;
 
     CountingTask(AtomicInteger counter, ManagedTaskListener listener, CountDownLatch beginLatch, CountDownLatch continueLatch) {
         this.beginLatch = beginLatch == null ? new CountDownLatch(0) : beginLatch;
@@ -37,6 +38,7 @@ class CountingTask implements Callable<Integer>, ManagedTask {
     @Override
     public Integer call() throws Exception {
         System.out.println("> call " + toString());
+        threadId = Thread.currentThread().getId();
         beginLatch.countDown();
         try {
             if (!continueLatch.await(ConcurrentPolicyFATServlet.TIMEOUT_NS * 2, TimeUnit.NANOSECONDS)) {

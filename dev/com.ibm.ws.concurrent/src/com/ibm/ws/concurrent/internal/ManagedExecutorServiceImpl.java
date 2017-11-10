@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,7 +36,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedTask;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -48,20 +46,15 @@ import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.metatype.annotations.AttributeDefinition;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.bnd.metatype.annotation.Ext;
+import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.threading.PolicyExecutor;
-import com.ibm.ws.threading.PolicyExecutor.MaxPolicy;
-import com.ibm.ws.threading.PolicyExecutorProvider;
-import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
@@ -72,48 +65,10 @@ import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
 import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 import com.ibm.wsspi.threadcontext.WSContextService;
 
-interface BaseManagedExecutorServiceConfig {
-
-    @AttributeDefinition(required = false, name = "%jndiName", description = "%jndiName.desc")
-    @Ext.Unique("jndiName")
-    String jndiName();
-
-    @AttributeDefinition(required = false, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC)
-    String config_displayId();
-}
-
-interface FullManagedExecutorServiceConfig extends BaseManagedExecutorServiceConfig {
-
-    @AttributeDefinition(cardinality = 1, name = "%contextServiceRef", description = "%contextServiceRef.desc", defaultValue = "DefaultContextService")
-    @Ext.ReferencePid("com.ibm.ws.context.service")
-    String contextServiceRef();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(service.pid=${contextServiceRef})")
-    @Ext.Final
-    String ContextService_target();
-
-    @AttributeDefinition(name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "(service.pid=com.ibm.ws.threading)")
-    @Ext.Final
-    String executorService_target();
-
-    @AttributeDefinition(required = false, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC, defaultValue = "-1000")
-    int service_ranking();
-
-    @AttributeDefinition(required = false, name = Ext.INTERNAL, description = Ext.INTERNAL_DESC)
-    String javaCompDefaultName();
-}
-
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.concurrent.managedExecutorService", name = "%managedExecutorService", description = "%managedExecutorService.desc",
-                       localization = Ext.LOCALIZATION)
-@Ext.Alias("managedExecutorService")
-@Ext.SupportExtensions
-interface ManagedExecutorServiceConfig extends FullManagedExecutorServiceConfig {}
-
 @Component(configurationPid = "com.ibm.ws.concurrent.managedExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService" })
-@DSExt.ConfigureWithInterfaces
 public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecutorService, ResourceFactory, ApplicationRecycleComponent {
     private static final TraceComponent tc = Tr.register(ManagedExecutorServiceImpl.class);
 
@@ -165,7 +120,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     /**
      * Reference to the (unmanaged) executor service for this managed executor service.
      */
-    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     volatile ExecutorService executorService;
 
     /**
@@ -185,9 +139,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<String> jndiNameRef = new AtomicReference<String>();
 
     /**
-     * TODO Currently this field is only used for prototype usage of policy executor. Need to determine if managed executors can always use a policy executor.
+     * Reference to the executor that runs tasks according to the long running concurrency policy for this managed executor.
      */
-    private PolicyExecutor policyExecutor;
+    final AtomicReference<PolicyExecutor> longRunningPolicyExecutorRef = new AtomicReference<PolicyExecutor>();
 
     /**
      * Reference to the name of this managed executor service.
@@ -195,8 +149,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     final AtomicReference<String> name = new AtomicReference<String>();
 
-    @Reference
-    protected PolicyExecutorProvider policyExecutorProvider;
+    /**
+     * Executor that runs tasks against the general concurrency policy for this managed executor.
+     */
+    volatile PolicyExecutor policyExecutor;
 
     /**
      * Privileged action to lazily obtain the transaction context provider.
@@ -209,6 +165,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         }
     };
 
+    // TODO temporary code that gates whether or not to use a policy executor
+    private boolean usePolicyExecutor;
+
     /**
      * Reference to the transaction context provider.
      */
@@ -219,18 +178,13 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @param context DeclarativeService defined/populated component context
      */
     @Activate
-    protected void activate(ComponentContext context, BaseManagedExecutorServiceConfig config) {
-        Dictionary<String, ?> properties = context.getProperties();
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "activate", properties);
-
+    protected void activate(ComponentContext context, Map<String, Object> properties) {
         contextSvcRef.activate(context);
         tranContextProviderRef.activate(context);
 
-        String jndiName = config.jndiName();
+        String jndiName = (String) properties.get("jndiName");
         jndiNameRef.set(jndiName);
-        String xsvcName = jndiName == null ? config.config_displayId() : jndiName;
+        String xsvcName = jndiName == null ? (String) properties.get("config.displayId") : jndiName;
         name.set(xsvcName);
 
         Map<String, String> execProps = new TreeMap<String, String>();
@@ -239,30 +193,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         defaultExecutionProperties.set(execProps);
 
         // TODO replace this temporary prototype code
-        if ("enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use"))) {
-            policyExecutor = policyExecutorProvider.create(xsvcName);
-            String maxConcurrency = (String) properties.get("maxConcurrency");
-            if (maxConcurrency != null)
-                policyExecutor.maxConcurrency(Integer.parseInt(maxConcurrency));
-            String maxConcurrencyAppliesToCallerThread = (String) properties.get("maxConcurrencyAppliesToCallerThread");
-            if (maxConcurrencyAppliesToCallerThread != null)
-                policyExecutor.maxPolicy(Boolean.parseBoolean(maxConcurrencyAppliesToCallerThread) ? MaxPolicy.strict : MaxPolicy.loose);
-            String maxQueueSize = (String) properties.get("maxQueueSize");
-            if (maxQueueSize != null)
-                policyExecutor.maxQueueSize(Integer.parseInt(maxQueueSize));
-            String maxWaitForEnqueue = (String) properties.get("maxWaitForEnqueue");
-            if (maxWaitForEnqueue != null)
-                policyExecutor.maxWaitForEnqueue(Long.parseLong(maxWaitForEnqueue));
-            String runIfQueueFull = (String) properties.get("runIfQueueFull");
-            if (runIfQueueFull != null)
-                policyExecutor.runIfQueueFull(Boolean.parseBoolean(runIfQueueFull));
-            String startTimeout = (String) properties.get("startTimeout");
-            if (startTimeout != null)
-                policyExecutor.startTimeout(Long.parseLong(startTimeout));
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "activate");
+        usePolicyExecutor = "enabled-for-internal-testing-only".equals(properties.get("policyExecutor.internal.prototype.do.not.use"));
     }
 
     /*
@@ -270,14 +201,10 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @param context DeclarativeService defined/populated component context
      */
     @Modified
-    protected void modified(final ComponentContext context, BaseManagedExecutorServiceConfig config) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        if (trace && tc.isEntryEnabled())
-            Tr.entry(this, tc, "modified", config);
-
-        String jndiName = config.jndiName();
+    protected void modified(final ComponentContext context, Map<String, Object> properties) {
+        String jndiName = (String) properties.get("jndiName");
         String oldJNDIName = jndiNameRef.getAndSet(jndiName);
-        String xsvcName = jndiName == null ? config.config_displayId() : jndiName;
+        String xsvcName = jndiName == null ? (String) properties.get("config.displayId") : jndiName;
         name.set(xsvcName);
 
         Map<String, String> execProps = new TreeMap<String, String>();
@@ -298,9 +225,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
                 applications.removeAll(members);
                 appCoord.recycleApplications(members);
             }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(this, tc, "modified");
     }
 
     /**
@@ -311,8 +235,8 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     protected void deactivate(ComponentContext context) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        // TODO replace this temporary prototype code
-        if (policyExecutor != null)
+        // TODO replace this temporary prototype code - only cancel tasks that were submitted by this managed executor instead of shutting down the whole executor
+        if (usePolicyExecutor)
             policyExecutor.shutdownNow();
 
         contextSvcRef.deactivate(context);
@@ -374,11 +298,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      * @param tasks collection of tasks.
      * @return list of callbacks.
      */
-    private <T> PolicyTaskCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
+    private <T> TaskLifeCycleCallback[] createCallbacks(Collection<? extends Callable<T>> tasks) {
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
 
         int numTasks = tasks.size();
-        PolicyTaskCallback[] callbacks = new PolicyTaskCallback[numTasks];
+        TaskLifeCycleCallback[] callbacks = new TaskLifeCycleCallback[numTasks];
 
         if (numTasks == 1)
             callbacks[0] = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(getExecutionProperties(tasks.iterator().next())));
@@ -459,8 +383,12 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
         // TODO replace this temporary prototype code
-        if (policyExecutor != null)
-            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks));
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            // Policy executor can optimize the last task in the list to run on the current thread if we submit under the same executor,
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[callbacks.length - 1].policyExecutor : policyExecutor;
+            return (List) executor.invokeAll(tasks, callbacks);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -492,8 +420,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException {
         // TODO replace this temporary prototype code
-        if (policyExecutor != null)
-            return (List) policyExecutor.invokeAll(tasks, createCallbacks(tasks), timeout, unit);
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+            return (List) executor.invokeAll(tasks, callbacks, timeout, unit);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -525,8 +456,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException {
         // TODO replace this temporary prototype code
-        if (policyExecutor != null)
-            return policyExecutor.invokeAny(tasks, createCallbacks(tasks));
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+            return executor.invokeAny(tasks, callbacks);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -545,8 +479,11 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Override
     public <T> T invokeAny(Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         // TODO replace this temporary prototype code
-        if (policyExecutor != null)
-            return policyExecutor.invokeAny(tasks, createCallbacks(tasks), timeout, unit);
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback[] callbacks = createCallbacks(tasks);
+            PolicyExecutor executor = callbacks.length > 0 ? callbacks[0].policyExecutor : policyExecutor;
+            return executor.invokeAny(tasks, callbacks, timeout, unit);
+        }
 
         ExecutorService execSvc = getExecSvc();
 
@@ -589,6 +526,16 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /**
+     * Declarative Services method for setting the concurrency policy.
+     *
+     * @param svc the service
+     */
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
+        policyExecutor = svc.getExecutor();
+    }
+
+    /**
      * Declarative Services method for setting the context service reference
      *
      * @param ref reference to the service
@@ -596,6 +543,21 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
     protected void setContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.setReference(ref);
+    }
+
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(service.pid=com.ibm.ws.threading)")
+    protected void setExecutorService(ExecutorService svc) {
+        executorService = svc;
+    }
+
+    /**
+     * Declarative Services method for setting the long running concurrency policy.
+     *
+     * @param svc the service
+     */
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
+    protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
+        longRunningPolicyExecutorRef.set(svc.getExecutor());
     }
 
     /**
@@ -632,9 +594,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
 
         // TODO replace this temporary prototype code
-        if (policyExecutor != null) {
-            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-            return policyExecutor.submit(task, callback);
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return callback.policyExecutor.submit(task, callback);
         }
 
         ExecutorService execSvc = getExecSvc();
@@ -658,9 +620,9 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         WSContextService contextSvc = AccessController.doPrivileged(contextSvcAccessor);
 
         // TODO replace this temporary prototype code
-        if (policyExecutor != null) {
-            PolicyTaskCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-            return policyExecutor.submit(task, result, callback);
+        if (usePolicyExecutor) {
+            TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
+            return callback.policyExecutor.submit(task, result, callback);
         }
 
         ExecutorService execSvc = getExecSvc();
@@ -690,12 +652,30 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     }
 
     /**
+     * Declarative Services method for unsetting the concurrency policy
+     *
+     * @param svc the service
+     */
+    protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {}
+
+    /**
      * Declarative Services method for unsetting the context service reference
      *
      * @param ref reference to the service
      */
     protected void unsetContextService(ServiceReference<WSContextService> ref) {
         contextSvcRef.unsetReference(ref);
+    }
+
+    protected void unsetExecutorService(ExecutorService svc) {}
+
+    /**
+     * Declarative Services method for unsetting the long running concurrency policy
+     *
+     * @param svc the service
+     */
+    protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
+        longRunningPolicyExecutorRef.compareAndSet(svc.getExecutor(), null);
     }
 
     /**

@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -46,6 +47,11 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     private final ManagedExecutorServiceImpl managedExecutor;
 
     /**
+     * Policy executor that will run the task.
+     */
+    final PolicyExecutor policyExecutor;
+
+    /**
      * Represents thread context captured from the submitting thread.
      */
     private final ThreadContextDescriptor threadContextDescriptor;
@@ -59,6 +65,22 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     TaskLifeCycleCallback(ManagedExecutorServiceImpl managedExecutor, ThreadContextDescriptor threadContextDescriptor) {
         this.managedExecutor = managedExecutor;
         this.threadContextDescriptor = threadContextDescriptor;
+
+        Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
+        PolicyExecutor executor = Boolean.parseBoolean(execProps.get(ManagedTask.LONGRUNNING_HINT)) ? managedExecutor.longRunningPolicyExecutorRef.get() : null;
+        this.policyExecutor = executor == null ? managedExecutor.policyExecutor : executor;
+    }
+
+    /**
+     * Decide which policy executor will run the task.
+     * Use the policy executor for the long running concurrency policy if specified and the LONGRUNNING_HINT is true.
+     * Otherwise, use the policy executor the general concurrency policy.
+     *
+     * @param executor ignored by this implementation.
+     */
+    @Override
+    public final PolicyExecutor getExecutor(PolicyExecutor executor) {
+        return policyExecutor;
     }
 
     /**

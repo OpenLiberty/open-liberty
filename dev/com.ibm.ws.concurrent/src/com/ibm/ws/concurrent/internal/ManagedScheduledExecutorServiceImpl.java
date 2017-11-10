@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -20,35 +20,29 @@ import javax.enterprise.concurrent.ManagedExecutorService;
 import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.concurrent.Trigger;
 
-import org.apache.felix.scr.ext.annotation.DSExt;
+import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.metatype.annotations.ObjectClassDefinition;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
-import com.ibm.ws.bnd.metatype.annotation.Ext;
+import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.concurrency.policy.ConcurrencyPolicy;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleComponent;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.resource.ResourceFactory;
-
-@ObjectClassDefinition(factoryPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", name = "%managedScheduledExecutorService",
-                       description = "%managedScheduledExecutorService.desc",
-                       localization = Ext.LOCALIZATION)
-@Ext.Alias("managedScheduledExecutorService")
-@Ext.SupportExtensions
-interface ManagedScheduledExecutorServiceConfig extends FullManagedExecutorServiceConfig {
-
-}
+import com.ibm.wsspi.threadcontext.ThreadContextProvider;
+import com.ibm.wsspi.threadcontext.WSContextService;
 
 @Component(configurationPid = "com.ibm.ws.concurrent.managedScheduledExecutorService", configurationPolicy = ConfigurationPolicy.REQUIRE,
            service = { ExecutorService.class, ManagedExecutorService.class, ResourceFactory.class, ApplicationRecycleComponent.class, ScheduledExecutorService.class,
                        ManagedScheduledExecutorService.class },
-           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class) ,
+           reference = @Reference(name = ManagedExecutorServiceImpl.APP_RECYCLE_SERVICE, service = ApplicationRecycleCoordinator.class),
            property = { "creates.objectClass=java.util.concurrent.ExecutorService",
                         "creates.objectClass=java.util.concurrent.ScheduledExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedExecutorService",
                         "creates.objectClass=javax.enterprise.concurrent.ManagedScheduledExecutorService" })
-@DSExt.ConfigureWithInterfaces
 public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceImpl implements ManagedScheduledExecutorService {
     /**
      * Reference to the (unmanaged) scheduled executor service for this managed scheduled executor service.
@@ -138,4 +132,68 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
         return scheduledTask.future;
     }
 
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    @Trivial
+    protected void setConcurrencyPolicy(ConcurrencyPolicy svc) {
+        super.setConcurrencyPolicy(svc);
+    }
+
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(id=unbound)")
+    @Trivial
+    protected void setContextService(ServiceReference<WSContextService> ref) {
+        super.setContextService(ref);
+    }
+
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, target = "(service.pid=com.ibm.ws.threading)")
+    @Trivial
+    protected void setExecutorService(ExecutorService svc) {
+        super.setExecutorService(svc);
+    }
+
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(id=unbound)")
+    @Trivial
+    protected void setLongRunningPolicy(ConcurrencyPolicy svc) {
+        super.setLongRunningPolicy(svc);
+    }
+
+    @Override
+    @Reference(policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, target = "(component.name=com.ibm.ws.transaction.context.provider)")
+    @Trivial
+    protected void setTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
+        super.setTransactionContextProvider(ref);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetConcurrencyPolicy(ConcurrencyPolicy svc) {
+        super.unsetConcurrencyPolicy(svc);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetContextService(ServiceReference<WSContextService> ref) {
+        super.unsetContextService(ref);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetExecutorService(ExecutorService svc) {
+        super.unsetExecutorService(svc);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetLongRunningPolicy(ConcurrencyPolicy svc) {
+        super.unsetLongRunningPolicy(svc);
+    }
+
+    @Override
+    @Trivial
+    protected void unsetTransactionContextProvider(ServiceReference<ThreadContextProvider> ref) {
+        super.unsetTransactionContextProvider(ref);
+    }
 }
