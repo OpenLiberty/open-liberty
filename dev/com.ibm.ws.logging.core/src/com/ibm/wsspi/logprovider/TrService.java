@@ -192,6 +192,4 @@ public interface TrService {
      */
     void publishLogRecord(LogRecord logRecord);
     
-    
-    Source getLogSource();
 }

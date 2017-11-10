@@ -95,10 +95,4 @@ public class DisabledTraceService implements TrService {
 
     @Override
     public void unsetTraceRouter(WsTraceRouter traceRouter) {}
-
-	@Override
-	public Source getLogSource() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -103,7 +103,12 @@ public class CollectorManagerConfigurator {
     	//DYKC-TODO Need to do something regarding setting BufferManager/Conduit into CollectorManager?!?
     	//i.e. register it?
     	
-    	
+//DYKC     _______ ____    _____   ____  
+//    	  |__   __/ __ \  |  __ \ / __ \ 
+//    	     | | | |  | | | |  | | |  | |
+//    	     | | | |  | | | |  | | |  | |
+//    	     | | | |__| | | |__| | |__| |
+//    	     |_|  \____/  |_____/ \____/ 
 
     }
 

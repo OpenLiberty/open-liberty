@@ -26,6 +26,7 @@ import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.internal.impl.MessageLogHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
+import com.ibm.ws.logging.utils.ThreadLocalHandler;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
@@ -108,18 +109,18 @@ public class LogSource implements Source, WsLogHandler {
     @Trivial
     public void publish(RoutedMessage routedMessage) {
         //Publish the message if it is not coming from a handler thread
-        //if (!ThreadLocalHandler.get()) {
-        LogRecord logRecord = routedMessage.getLogRecord();
+        if (!ThreadLocalHandler.get()) {
+            LogRecord logRecord = routedMessage.getLogRecord();
 //            if (logRecord != null && bufferMgr != null) {
 //                bufferMgr.add(parse(routedMessage, logRecord));
 //            }
-        if (logRecord != null && sh != null) {
-            sh.writeToLog(parse(routedMessage, logRecord));
+            if (logRecord != null && sh != null) {
+                sh.writeToLog(parse(routedMessage, logRecord));
+            }
         }
-        //}
     }
 
-    //DYKC - temp
+    //DYKC-temp bypass Conduit/BufferManager
     public void setHandler(MessageLogHandler sh) {
         this.sh = sh;
     }
