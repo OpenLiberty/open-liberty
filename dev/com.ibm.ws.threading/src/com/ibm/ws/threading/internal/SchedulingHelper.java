@@ -18,6 +18,7 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.RunnableScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -280,8 +281,9 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
             if (this.isDone()) {
                 return;
             }
-
-            this.m_defaultFuture = this.m_executor.submit(this.m_callable);
+            ExpeditedFutureTask<V> futureTask = new ExpeditedFutureTask<V>(this.m_callable);
+            this.m_executor.execute(futureTask);
+            this.m_defaultFuture = futureTask;
             this.m_scheduledExecutorQueue.remove(this);
         } catch (Exception e) {
             this.m_pendingException = new RuntimeException(e);
@@ -291,4 +293,31 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
             this.m_coordinationLatch.countDown();
         }
     }
+
+    /**
+     * FutureTask for a task that should be expedited
+     */
+    public class ExpeditedFutureTask<V> extends FutureTask<V> implements QueueItem {
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.util.concurrent.FutureTask.FutureTask<V>(Callable<V> arg0)
+         */
+        public ExpeditedFutureTask(Callable<V> arg0) {
+            super(arg0);
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see com.ibm.ws.threading.internal.QueueItem#isExpedited()
+         */
+        @Override
+        public boolean isExpedited() {
+            return true;
+        }
+
+    }
+
 }
