@@ -20,6 +20,7 @@ Import-Package: \
         com.ibm.wsspi.collector.manager, \
         com.ibm.ws.health.center.source.data, \
         com.ibm.ws.logging.source, \
+        com.ibm.ws.logging.utils, \
         com.ibm.ws.http.logging.source, \
         javax.net.ssl;resolution:=optional, \
         com.ibm.websphere.ssl;resolution:=optional, \

@@ -40,6 +40,8 @@ Export-Package: \
  com.ibm.ws.collector.manager.buffer, \
  com.ibm.ws.logging.utils, \
  com.ibm.ws.logging.source, \
+ com.ibm.ws.health.center.source.data, \
+ com.ibm.ws.http.logging.source, \
  com.ibm.ws.collector, \
  com.ibm.wsspi.logging;provide:=true
 

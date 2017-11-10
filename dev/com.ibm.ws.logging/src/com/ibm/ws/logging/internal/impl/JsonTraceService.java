@@ -18,6 +18,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsMessageRouter;
+import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.HandlerUtils;
@@ -36,9 +37,21 @@ public class JsonTraceService extends BaseTraceService {
     private volatile BufferManagerImpl traceConduit;//IF JsonTrService, this moves aswell
     private volatile HandlerUtils handlerUtils = null; //IF JsonTrService, this moves aswell
 
+    // for now always have it configured?
+    private volatile boolean isConfigured = false;
+
     @Override
     public synchronized void update(LogProviderConfig config) {
         super.update(config);
+        /*
+         * Check if it is configured then start up pipeline?
+         */
+//DYKC     _______ ____    _____   ____
+//      |__   __/ __ \  |  __ \ / __ \
+//         | | | |  | | | |  | | |  | |
+//         | | | |  | | | |  | | |  | |
+//         | | | |__| | | |__| | |__| |
+//         |_|  \____/  |_____/ \____/
         setupCollectorManagerPipeline();
     }
 
@@ -64,8 +77,8 @@ public class JsonTraceService extends BaseTraceService {
             logConduit = handlerUtils.getLogConduit();
             traceConduit = handlerUtils.getTraceConduit();
 
-            System.out.println("BASE TRACE SERVICE LogConduit is = " + logConduit.toString());
-            System.out.println("BASE TRACE SERVICE logSource is = " + logSource.toString());
+            System.out.println("JSON TRACE SERVICE LogConduit is = " + logConduit.toString());
+            System.out.println("JSON TRACE SERVICE logSource is = " + logSource.toString());
         }
         //Create Handler and pass it to CMBootStrap
         if (messageLogHandler == null) {
@@ -74,6 +87,7 @@ public class JsonTraceService extends BaseTraceService {
             logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
             handlerUtils.setHandler(messageLogHandler);
         }
+        isConfigured = true;
 
     }
 
@@ -87,7 +101,8 @@ public class JsonTraceService extends BaseTraceService {
         //DYKC
         //If not configured do:
         //If not configured, skip;
-        messageLogHandler.writeToLogNormal(message); //This replaces
+        if (!isConfigured)
+            messageLogHandler.writeToLogNormal(message); //This replaces
 
         invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
 
@@ -132,8 +147,48 @@ public class JsonTraceService extends BaseTraceService {
              * logSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
              * appropriately call setupCollectorManagerPipeline()
              */
-            if (logSource != null) {
+            if (logSource != null && isConfigured) {
                 logSource.publish(routedMessage);
+            }
+        }
+        return retMe;
+    }
+
+    /**
+     * Route only trace log records.Messages including Systemout,err will not be routed to trace source to avoid duplicate entries
+     */
+    @Override
+    protected boolean invokeTraceRouters(RoutedMessage routedTrace) {
+
+        boolean retMe = true;
+        LogRecord logRecord = routedTrace.getLogRecord();
+        if (logRecord != null) {
+            Level level = logRecord.getLevel();
+            int levelValue = level.intValue();
+            if (levelValue < Level.INFO.intValue()) {
+                String levelName = level.getName();
+                if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
+                    WsTraceRouter internalTrRouter = internalTraceRouter.get();
+                    if (internalTrRouter != null) {
+                        retMe &= internalTrRouter.route(routedTrace);
+                    } else {
+                        earlierTraces.add(routedTrace);
+                        /*
+                         * //DYKC
+                         * If no Routers are set, then there is no way for a trace event to go through to TraceSource
+                         * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
+                         * the router.
+                         *
+                         * When the Router is fully initialized then it will go through to the Router and then TraceSource as appropriate.
+                         *
+                         * traceSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
+                         * appropriately call setupCollectorManagerPipeline()
+                         */
+                        if (logSource != null && isConfigured) {
+                            traceSource.publish(routedTrace);
+                        }
+                    }
+                }
             }
         }
         return retMe;
@@ -175,9 +230,9 @@ public class JsonTraceService extends BaseTraceService {
             //But will need to make sure it doesn't go ahead and JSONIFIES
             // update ( which recieves configuration) will dictate if it gets configured?
 
-            //DYKC-ccode if (notConfigured){
-            messageLogHandler.writeToLogNormal(messageLogFormat);
-            //DYKC-ccode }
+            if (!isConfigured) {
+                messageLogHandler.writeToLogNormal(messageLogFormat);
+            }
 
             // console.log
             if (detailLog == systemOut) {

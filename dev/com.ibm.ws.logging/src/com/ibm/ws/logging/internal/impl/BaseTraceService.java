@@ -640,16 +640,8 @@ public class BaseTraceService implements TrService {
                 return;
             }
 
-            //DYKC
             // messages.log  //send directly.
-            //messagesLog.writeRecord(messageLogFormat); // OLD
-            //if not configured - do this - Its nice that we've already got invoke Message Routers above.
-            //But will need to make sure it doesn't go ahead and JSONIFIES
-            // update ( which recieves configuration) will dictate if it gets configured?
-
-            //DYKC-ccode if (notConfigured){
-            //moved over to jsontraceservice messageLogHandler.writeToLogNormal(messageLogFormat);
-            //DYKC-ccode }
+            messagesLog.writeRecord(messageLogFormat);
 
             // console.log
             if (detailLog == systemOut) {

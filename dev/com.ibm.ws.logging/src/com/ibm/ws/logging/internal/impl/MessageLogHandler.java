@@ -36,6 +36,7 @@ public class MessageLogHandler implements Handler, Formatter {
     private String wlpUserDir = null;
     private String serverName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
+    public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
 
     private CollectorManager collectorMgr = null;
 
@@ -55,17 +56,9 @@ public class MessageLogHandler implements Handler, Formatter {
         }
     }
 
-//    public static synchronized MessageLogHandler getInstance() {
-//        if (mySpecialHandler == null) {
-//            mySpecialHandler = new MessageLogHandler();
-//        }
-//        return mySpecialHandler;
-//    }
-
     @Override
     public String getHandlerName() {
-        // TODO Auto-generated method stub
-        return null;
+        return COMPONENT_NAME;
     }
 
     @Override
@@ -77,7 +70,7 @@ public class MessageLogHandler implements Handler, Formatter {
         } catch (Exception e) {
 
         } finally {
-            latch.countDown();
+            //latch.countDown();
         }
     }
 

@@ -11,12 +11,17 @@
  */
 package com.ibm.ws.collector;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.ibm.websphere.ras.DataFormatHelper;
+import com.ibm.ws.health.center.source.data.HCGCData;
+import com.ibm.ws.http.logging.source.AccessLogData;
+import com.ibm.ws.logging.source.FFDCData;
 import com.ibm.ws.logging.source.MessageLogData;
 import com.ibm.ws.logging.source.TraceLogData;
 
@@ -65,15 +70,49 @@ public class CollectorJsonUtils {
     public static String jsonifyEvent(Object event, String eventType, String serverName, String wlpUserDir, String serverHostName, String collectorVersion, String[] tags,
                                       int maxFieldLength) {
         boolean isHigherVer = collectorVersion.startsWith("1.1");
-        if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
+        if (eventType.equals(CollectorConstants.GC_EVENT_TYPE)) {
+            return jsonifyGCEvent(serverHostName, wlpUserDir, serverName, (HCGCData) event, isHigherVer, tags);
+        } else if (eventType.equals(CollectorConstants.MESSAGES_LOG_EVENT_TYPE)) {
             return jsonifyMessageLogEvent(serverHostName, wlpUserDir, serverName, (MessageLogData) event, isHigherVer, tags, maxFieldLength);
         } else if (eventType.equals(CollectorConstants.TRACE_LOG_EVENT_TYPE)) {
             return jsonifyTraceLogEvent(serverHostName, wlpUserDir, serverName, (TraceLogData) event, isHigherVer, tags, maxFieldLength);
+        } else if (eventType.equals(CollectorConstants.FFDC_EVENT_TYPE)) {
+            return jsonifyFFDCEvent(serverHostName, wlpUserDir, serverName, (FFDCData) event, isHigherVer, tags, maxFieldLength);
+        } else if (eventType.equals(CollectorConstants.ACCESS_LOG_EVENT_TYPE)) {
+            return jsonifyAccessLogEvent(serverHostName, wlpUserDir, serverName, (AccessLogData) event, isHigherVer, tags);
         }
         return "";
     }
 
     //Date date = new Date(HCGCData.getTime());
+
+    public static String jsonifyGCEvent(String hostName, String wlpUserDir, String serverName, HCGCData hcGCData, boolean isHigherVer, String[] tags) {
+        Date date = new Date(hcGCData.getTime());
+        String sequenceNum = hcGCData.getSequence();
+        StringBuilder sb = new StringBuilder();
+        boolean isFirstField = true;
+
+        sb.append("{");
+
+        //                                           name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
+        /* Common fields for all event types */
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        /* GC specific fields */
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_heap" : "heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_usedHeap" : "usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_maxHeap" : "maxHeap", String.valueOf(hcGCData.getMaxHeap()), false, false, false, isFirstField);
+        isFirstField = isFirstField
+                       & !addToJSON(sb, isHigherVer ? "ibm_duration" : "duration", String.valueOf((long) hcGCData.getDuration() * 1000), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_gcType" : "gcType", hcGCData.getType(), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_reason" : "reason", hcGCData.getReason(), false, false, false, isFirstField);
+
+        if (tags != null) {
+            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
+        }
+        sb.append("}");
+
+        return sb.toString();
+    }
 
     public static String jsonifyMessageLogEvent(String hostName, String wlpUserDir, String serverName, MessageLogData messageLogData, boolean isHigherVer, String[] tags,
                                                 int maxFieldLength) {
@@ -149,6 +188,96 @@ public class CollectorJsonUtils {
                        & !addToJSON(sb, isHigherVer ? "ibm_threadId" : "threadId", DataFormatHelper.padHexString(traceLogData.getThreadID(), 8), false, false, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_className" : "className", traceLogData.getClassName(), false, false, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, "message", message, false, true, false, isFirstField);
+
+        if (tags != null) {
+            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
+        }
+        sb.append("}");
+
+        return sb.toString();
+    }
+
+    public static String jsonifyFFDCEvent(String hostName, String wlpUserDir, String serverName, FFDCData ffdcData, boolean isHigherVer, String[] tags, int maxFieldLength) {
+
+        Date date = new Date(ffdcData.getTimeStamp());
+        String sequenceNum = ffdcData.getSequence();
+
+        String stackTrace = formatMessage(ffdcData.getStackTrace(), maxFieldLength);
+
+        StringBuilder sb = new StringBuilder();
+        boolean isFirstField = true;
+
+        sb.append("{");
+
+//      name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
+        /* Common fields for all event types */
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        /* FFDC specific fields */
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_className" : "className", ffdcData.getClassName(), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_exceptionName" : "exceptionName", ffdcData.getExceptionName(), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_probeID" : "probeID", ffdcData.getProbeID(), false, false, false, isFirstField);
+        isFirstField = isFirstField
+                       & !addToJSON(sb, isHigherVer ? "ibm_threadId" : "threadId", DataFormatHelper.padHexString(ffdcData.getThreadID(), 8), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_stackTrace" : "stackTrace", stackTrace, false, true, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_objectDetails" : "objectDetails", ffdcData.getObjectDetails(), false, true, false, isFirstField);
+
+        if (tags != null) {
+            addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
+        }
+        sb.append("}");
+
+        return sb.toString();
+    }
+
+    public static String jsonifyAccessLogEvent(String hostName, String wlpUserDir, String serverName, AccessLogData accessLogData, boolean isHigherVer, String[] tags) {
+        //Date date = new Date(accessLogData.getRequestStartTime());
+        Date date = new Date(accessLogData.getTimestamp());
+        String sequenceNum = accessLogData.getSequence();
+
+        StringBuilder sb = new StringBuilder();
+
+        boolean isFirstField = true;
+
+        sb.append("{");
+
+//      name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
+        /* Common fields for all event types */
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        /* access request specific fields */
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_requestHost" : "requestHost", accessLogData.getRequestHost(), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_requestPort" : "requestPort", accessLogData.getRequestPort(), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_remoteHost" : "remoteHost", accessLogData.getRemoteHost(), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_requestMethod" : "requestMethod", accessLogData.getRequestMethod(), false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_uriPath" : "uriPath", accessLogData.getURIPath(), false, false, false, isFirstField);
+        isFirstField = isFirstField
+                       & !addToJSON(sb, isHigherVer ? "ibm_requestProtocol" : "requestProtocol", accessLogData.getRequestProtocol(), false, false, false, isFirstField);
+
+        // Note: In ElasticsSearch it is not legal to have '.'(dot) in the field name.
+        //       ES will throw a parsing exception, if dot is present in the name.
+        //       So, we will use the whole queryString, instead of converting to JSON.
+        // String jsonQueryString = jsonifyQueryString(accessLogData.getQueryString());
+        String jsonQueryString = accessLogData.getQueryString();
+        if (jsonQueryString != null) {
+            try {
+                jsonQueryString = URLDecoder.decode(jsonQueryString, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                // ignore, use the original value;
+            }
+
+        }
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_queryString" : "queryString", jsonQueryString, false, true, false, isFirstField);
+        isFirstField = isFirstField
+                       & !addToJSON(sb, isHigherVer ? "ibm_elapsedTime" : "elapsedTime", String.valueOf(accessLogData.getElapsedTime()), false, false, false, isFirstField);
+        isFirstField = isFirstField
+                       & !addToJSON(sb, isHigherVer ? "ibm_responseCode" : "responseCode", String.valueOf(accessLogData.getResponseCode()), false, false, false, isFirstField);
+        isFirstField = isFirstField
+                       & !addToJSON(sb, isHigherVer ? "ibm_bytesReceived" : "bytesReceived", String.valueOf(accessLogData.getResponseSize()), false, false, false, isFirstField);
+
+        String userAgent = accessLogData.getUserAgent();
+        if (userAgent != null && userAgent.length() > MAX_USER_AGENT_LENGTH) {
+            userAgent = userAgent.substring(0, MAX_USER_AGENT_LENGTH);
+        }
+        isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_userAgent" : "userAgent", userAgent, false, false, false, isFirstField);
 
         if (tags != null) {
             addTagNameForVersion(sb, isHigherVer).append(jsonifyTags(tags));
