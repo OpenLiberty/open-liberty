@@ -13,7 +13,8 @@ IBM-API-Package: javax.validation; type="spec", \
  javax.validation.metadata; type="spec", \
  javax.validation.spi; type="spec",\
  javax.validation.valueextraction; type="spec",\
- com.ibm.ws.beanvalidation.accessor; type="internal"
+ com.ibm.ws.beanvalidation.accessor; type="internal",\
+ org.hibernate.validator; type="internal"
 IBM-ShortName: beanValidation-2.0
 Subsystem-Name: Bean Validation 2.0
 -features=com.ibm.websphere.appserver.javax.cdi-2.0, \

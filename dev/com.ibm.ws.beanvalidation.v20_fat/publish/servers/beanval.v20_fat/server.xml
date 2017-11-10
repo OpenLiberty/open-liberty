@@ -12,6 +12,7 @@
 
 	<featureManager>
 		<feature>beanValidation-2.0</feature>
+		<feature>cdi-2.0</feature>
 		<feature>servlet-4.0</feature>
 		<feature>jndi-1.0</feature>
 	    <feature>componenttest-1.0</feature>

@@ -16,9 +16,11 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import bval.v20.cdi.web.BeanValCDIServlet;
 import bval.v20.web.BeanVal20TestServlet;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
+import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -26,15 +28,20 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class BeanVal20Test extends FATServletClient {
 
-    public static final String APP_NAME = "bvalApp";
+    public static final String REG_APP = "bvalApp";
+    public static final String CDI_APP = "bvalCDIApp";
 
     @Server("beanval.v20_fat")
-    @TestServlet(servlet = BeanVal20TestServlet.class, contextRoot = APP_NAME)
+    @TestServlets({
+                    @TestServlet(servlet = BeanVal20TestServlet.class, contextRoot = REG_APP),
+                    @TestServlet(servlet = BeanValCDIServlet.class, contextRoot = CDI_APP)
+    })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "bval.v20.web");
+        ShrinkHelper.defaultDropinApp(server, REG_APP, "bval.v20.web");
+        ShrinkHelper.defaultDropinApp(server, CDI_APP, "bval.v20.cdi.web");
         server.startServer();
     }
 
