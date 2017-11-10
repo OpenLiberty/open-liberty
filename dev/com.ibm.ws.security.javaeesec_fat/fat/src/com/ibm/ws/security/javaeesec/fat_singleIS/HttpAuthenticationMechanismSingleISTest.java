@@ -34,7 +34,8 @@ public class HttpAuthenticationMechanismSingleISTest extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = HttpAuthenticationMechanismTest.class;
     protected String queryString = "/JavaEESecBasicAuthServlet/JavaEESecBasic";
-    protected static String[] warList = { "JavaEESecBasicAuthServlet.war", "JavaEESecAnnotatedBasicAuthServlet.war", "JavaEEsecBasicAuthServletMultipleIS.war" };
+    protected static String[] warList = { "JavaEESecBasicAuthServlet.war", "JavaEESecAnnotatedBasicAuthServlet.war",
+                                          "JavaEEsecFormAuth.war", "JavaEEsecFormAuthRedirect.war" };
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
 
