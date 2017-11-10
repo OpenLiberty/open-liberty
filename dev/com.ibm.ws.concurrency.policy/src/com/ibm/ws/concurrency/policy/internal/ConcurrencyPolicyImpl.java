@@ -40,8 +40,7 @@ public class ConcurrencyPolicyImpl implements ConcurrencyPolicy {
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        executor = provider.create((String) props.get("config.displayId"));
-        executor.updateConfig(props);
+        executor = provider.create(props);
     }
 
     @Deactivate

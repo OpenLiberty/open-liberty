@@ -59,7 +59,6 @@ public interface PolicyExecutor extends ExecutorService {
      * @return the executor.
      * @throws IllegalArgumentException if value is negative or greater than maximum concurrency.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a <code>concurrencyPolicy</code> instance created from server configuration.
      */
     PolicyExecutor expedite(int num);
 
@@ -115,7 +114,6 @@ public interface PolicyExecutor extends ExecutorService {
      * @return the executor.
      * @throws IllegalArgumentException if value is not positive or -1 (which means Integer.MAX_VALUE) or less than the number to expedite.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a <code>concurrencyPolicy</code> instance created from server configuration.
      */
     PolicyExecutor maxConcurrency(int max);
 
@@ -129,7 +127,6 @@ public interface PolicyExecutor extends ExecutorService {
      * @param policy indicates whether or not tasks that run on the invoking thread count towards maximum concurrency.
      * @return the executor.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a <code>concurrencyPolicy</code> instance created from server configuration.
      */
     PolicyExecutor maxPolicy(MaxPolicy policy);
 
@@ -150,7 +147,6 @@ public interface PolicyExecutor extends ExecutorService {
      * @return the executor.
      * @throws IllegalArgumentException if value is not positive or -1 (which means Integer.MAX_VALUE).
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a <code>concurrencyPolicy</code> instance created from server configuration.
      */
     PolicyExecutor maxQueueSize(int max);
 
@@ -166,7 +162,6 @@ public interface PolicyExecutor extends ExecutorService {
      * @return the executor.
      * @throws IllegalArgumentException if value is negative.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a <code>concurrencyPolicy</code> instance created from server configuration.
      */
     PolicyExecutor maxWaitForEnqueue(long ms);
 
@@ -180,7 +175,6 @@ public interface PolicyExecutor extends ExecutorService {
      *            false to abort the task in this case.
      * @return the executor.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a <code>concurrencyPolicy</code> instance created from server configuration.
      */
     PolicyExecutor runIfQueueFull(boolean runIfFull);
 
@@ -195,7 +189,6 @@ public interface PolicyExecutor extends ExecutorService {
      * @return the executor.
      * @throws IllegalArgumentException if value is negative (other than -1) or too large to convert to a nanosecond <code>long</code> value.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a <code>concurrencyPolicy</code> instance created from server configuration.
      */
     PolicyExecutor startTimeout(long ms);
 
