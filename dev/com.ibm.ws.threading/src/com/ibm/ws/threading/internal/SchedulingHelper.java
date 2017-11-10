@@ -282,8 +282,8 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
                 return;
             }
             ExpeditedFutureTask<V> futureTask = new ExpeditedFutureTask<V>(this.m_callable);
-            this.m_executor.execute(futureTask);
             this.m_defaultFuture = futureTask;
+            this.m_executor.execute(futureTask);
             this.m_scheduledExecutorQueue.remove(this);
         } catch (Exception e) {
             this.m_pendingException = new RuntimeException(e);
@@ -297,7 +297,7 @@ class SchedulingHelper<V> implements RunnableScheduledFuture<V> {
     /**
      * FutureTask for a task that should be expedited
      */
-    public class ExpeditedFutureTask<V> extends FutureTask<V> implements QueueItem {
+    public static class ExpeditedFutureTask<V> extends FutureTask<V> implements QueueItem {
 
         /*
          * (non-Javadoc)
