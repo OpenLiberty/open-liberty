@@ -16,14 +16,13 @@ IBM-API-Package: javax.decorator;  type="spec", \
  javax.enterprise.util;  type="spec", \
  javax.inject;  type="spec", \
  javax.interceptor;  type="spec", \
- javax.transaction;  type="internal", \
- javax.validation;  type="internal", \
  org.jboss.weld.el; type="internal", \
  org.jboss.weld.interceptor.proxy; type="internal", \
  org.jboss.weld.interceptor.util.proxy; type="internal", \
  org.jboss.weld.bean; type="internal", \
  org.jboss.weld.bean.proxy; type="internal", \
  org.jboss.weld.bean.proxy.util; type="internal", \
+ org.jboss.weld.module.ejb; type="internal", \
  org.jboss.weld.proxy; type="internal", \
  org.jboss.weld.security; type="internal", \
  org.jboss.weld.serialization.spi; type="internal", \
@@ -56,7 +55,8 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.jboss.logging.3.3.0, \
  com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
- com.ibm.ws.cdi.shared.weld, \
+ com.ibm.ws.cdi.weld, \
+ com.ibm.ws.cdi.internal, \
  com.ibm.ws.cdi.2.0.weld, \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/", \

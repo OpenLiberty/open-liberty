@@ -21,15 +21,12 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.WSSecurityException;
 import com.ibm.websphere.security.auth.WSSubject;
-import com.ibm.ws.cdi.interfaces.SecurityContextStore;
+import com.ibm.ws.cdi.internal.interfaces.SecurityContextStore;
 
 /**
  * Implementation of {@link SecurityContextStore} which can retrieve the current principal when running in the client container.
  */
-@Component(
-                name = "com.ibm.ws.cdi.ClientSecurityContextStore",
-                immediate = true,
-                property = { "service.vendor=IBM" })
+@Component(name = "com.ibm.ws.cdi.ClientSecurityContextStore", immediate = true, property = { "service.vendor=IBM" })
 public class ClientSecurityContextStore implements SecurityContextStore {
 
     private static final TraceComponent tc = Tr.register(ClientSecurityContextStore.class);
