@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.logging.source;
+package com.ibm.ws.logging.ffdc.source;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDC;
+import com.ibm.ws.logging.source.FFDCData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.logging.Incident;

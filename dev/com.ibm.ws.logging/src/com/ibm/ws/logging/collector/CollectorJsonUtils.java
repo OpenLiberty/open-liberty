@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.collector;
+package com.ibm.ws.logging.collector;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -19,8 +19,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import com.ibm.websphere.ras.DataFormatHelper;
-import com.ibm.ws.health.center.source.data.HCGCData;
-import com.ibm.ws.http.logging.source.AccessLogData;
+import com.ibm.ws.health.center.data.HCGCData;
+import com.ibm.ws.http.logging.data.AccessLogData;
 import com.ibm.ws.logging.source.FFDCData;
 import com.ibm.ws.logging.source.MessageLogData;
 import com.ibm.ws.logging.source.TraceLogData;

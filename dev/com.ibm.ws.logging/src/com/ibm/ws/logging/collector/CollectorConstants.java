@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.collector;
+package com.ibm.ws.logging.collector;
 
 public class CollectorConstants {
 

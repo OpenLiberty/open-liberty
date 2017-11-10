@@ -9,7 +9,7 @@
  * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
-package com.ibm.ws.health.center.source.data;
+package com.ibm.ws.health.center.data;
 
 public class HCGCData {
     private final long heap;

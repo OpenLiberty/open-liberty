@@ -29,6 +29,8 @@ import com.ibm.ws.collector.internal.Task;
 import com.ibm.ws.collector.internal.TaskConfig;
 import com.ibm.ws.collector.internal.TaskImpl;
 import com.ibm.ws.collector.internal.TraceConstants;
+import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;

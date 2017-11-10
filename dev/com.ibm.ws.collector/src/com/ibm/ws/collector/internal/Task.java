@@ -14,7 +14,7 @@ package com.ibm.ws.collector.internal;
 import java.util.concurrent.ExecutorService;
 
 import com.ibm.ws.collector.EventsBuffer;
-import com.ibm.ws.collector.Formatter;
+import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.wsspi.collector.manager.BufferManager;
 
 /**

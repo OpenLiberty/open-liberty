@@ -16,9 +16,9 @@ import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 
-import com.ibm.ws.collector.CollectorConstants;
-import com.ibm.ws.collector.CollectorJsonUtils;
-import com.ibm.ws.collector.Formatter;
+import com.ibm.ws.logging.collector.CollectorConstants;
+import com.ibm.ws.logging.collector.CollectorJsonUtils;
+import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
 import com.ibm.ws.logging.source.MessageLogData;
 import com.ibm.ws.logging.source.TraceLogData;

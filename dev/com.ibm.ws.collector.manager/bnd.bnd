@@ -9,10 +9,11 @@ Bundle-Description: Collector Manager: Collector Manager; version=${bVersion}
 
 WS-TraceGroup: collectorManager
 
-Export-Package: com.ibm.wsspi.collector.manager, \
-                com.ibm.ws.health.center.source.data, \
-                com.ibm.ws.logging.source, \
-                com.ibm.ws.http.logging.source
+Export-Package: \
+	com.ibm.wsspi.collector.manager,\
+	com.ibm.ws.health.center.data,\
+	com.ibm.ws.logging.ffdc.source,\
+	com.ibm.ws.http.logging.source
 
 Import-Package: com.ibm.ejs.ras, \
                 com.ibm.websphere.ras, \
@@ -24,6 +25,8 @@ Import-Package: com.ibm.ejs.ras, \
                 org.osgi.framework, \
                 javax.management, \
                 com.ibm.ws.logging, \
+                com.ibm.ws.http.logging.data, \
+                com.ibm.ws.health.center.data, \
                 com.ibm.ws.logging.internal, \
                 com.ibm.wsspi.collector.manager, \
                 com.ibm.ws.collector.manager.buffer, \
