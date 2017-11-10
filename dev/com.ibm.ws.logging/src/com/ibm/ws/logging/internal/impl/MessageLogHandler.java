@@ -37,6 +37,8 @@ public class MessageLogHandler implements Handler, Formatter {
     private String serverName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
 
+    private CollectorManager collectorMgr = null;
+
     public MessageLogHandler(String serverName, String wlpUserDir) {
         this.serverName = serverName;
         this.wlpUserDir = wlpUserDir;
@@ -68,8 +70,15 @@ public class MessageLogHandler implements Handler, Formatter {
 
     @Override
     public void init(CollectorManager collectorManager) {
-        // TODO Auto-generated method stub
+        try {
+            this.collectorMgr = collectorManager;
+            //Get the source Ids from the task map and subscribe to relevant sources
+            //collectorMgr.subscribe(this, new ArrayList<String>(taskMap.keySet()));
+        } catch (Exception e) {
 
+        } finally {
+            latch.countDown();
+        }
     }
 
     @Override
