@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
+import org.apache.http.Header;
 
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
@@ -134,7 +135,7 @@ public class RememberMeTest extends JavaEESecTestBase {
 
     @Test
     public void testRememberMeHttpNoCookie() throws Exception {
-        HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, javaeesec_basicRoleUser, javaeesec_basicRolePwd);
+        HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd);
         String response = processResponse(httpResponse, HttpServletResponse.SC_OK);
         verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser, Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
         validateNoCookie(httpResponse, REMEMBERME_COOKIE_NAME);
