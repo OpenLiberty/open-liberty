@@ -23,7 +23,8 @@ Bundle-Description: WebSphere Liberty kernel command line, version ${bVersion}
 Private-Package: com.ibm.ws.kernel.boot.cmdline;-split-package:=merge-last, \
  com.ibm.ws.kernel.boot.cmdline.resources, \
  com.ibm.ws.kernel.provisioning, \
- com.ibm.ws.kernel.boot.resources.*
+ com.ibm.ws.kernel.boot.resources.*,\
+ com.ibm.ws.staticvalue
 
 -includeresource: \
  @${repo;com.ibm.websphere.org.osgi.core}!/org/osgi/framework/Version*.class
@@ -32,7 +33,8 @@ instrument.disabled: true
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest, \
-	com.ibm.ws.kernel.boot;version=latest
+	com.ibm.ws.kernel.boot;version=latest, \
+	com.ibm.ws.logging.core;version=latest
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

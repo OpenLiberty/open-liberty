@@ -24,6 +24,8 @@ Import-Package: !org.apache.geronimo.osgi.registry.api, \
 
 Private-Package: org.apache.geronimo.osgi.locator
 
+# NOTE: We are intentionally including javax.validation 1.1 API for now
+#       until we get a 2.0 provider in a workable state
 Include-Resource: \
   @${repo;org.apache.geronimo.specs.geronimo-validation_1.1_spec;1.0.0.SNAPSHOT}!/META-INF/NOTICE
 

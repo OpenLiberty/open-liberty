@@ -124,14 +124,7 @@ public class IFixUtilsTest {
         platformDir.mkdirs();
         toolsDir.mkdirs();
 
-        // Reflectively amend the Utils class to set the current WLP dir as the installDir field. 
-        try {
-            Field getInstallField = Utils.class.getDeclaredField("installDir");
-            getInstallField.setAccessible(true);
-            getInstallField.set(null, wlpDir);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Utils.setInstallDir(wlpDir);
     }
 
     @After

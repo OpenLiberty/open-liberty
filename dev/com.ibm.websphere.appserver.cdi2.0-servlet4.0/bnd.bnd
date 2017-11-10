@@ -14,4 +14,5 @@
 
 -dependson: \
 	com.ibm.ws.cdi.2.0.web;version=latest, \
+	com.ibm.ws.cdi.web;version=latest, \
 	com.ibm.websphere.javaee.jsp.2.3;version=latest

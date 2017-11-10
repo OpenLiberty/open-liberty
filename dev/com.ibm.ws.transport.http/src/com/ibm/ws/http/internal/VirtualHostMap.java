@@ -19,10 +19,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  * This map bridges between independent dynamic components: HttpEndpoints (with their Chains), and
@@ -63,8 +65,8 @@ import com.ibm.websphere.ras.annotation.Trivial;
 public class VirtualHostMap {
     static final TraceComponent tc = Tr.register(VirtualHostMap.class);
 
-    private static volatile VirtualHostConfig defaultHost = null;
-    private static volatile AlternateHostSelector alternateHostSelector = null;
+    private static volatile StaticValue<VirtualHostConfig> defaultHost = StaticValue.createStaticValue(null);
+    private static volatile StaticValue<AlternateHostSelector> alternateHostSelector = StaticValue.createStaticValue(null);
 
     /**
      * Simple interface to allow deferred retrieval of host/port information
@@ -87,42 +89,58 @@ public class VirtualHostMap {
      *
      * @see VirtualHostImpl#modified
      */
-    public synchronized static void addVirtualHost(VirtualHostConfig oldConfig, VirtualHostConfig newConfig) {
+    public synchronized static void addVirtualHost(final VirtualHostConfig oldConfig, final VirtualHostConfig newConfig) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Add virtual host: " + newConfig.getVirtualHost(), oldConfig, newConfig, defaultHost, alternateHostSelector);
+            Tr.event(tc, "Add virtual host: " + newConfig.getVirtualHost(), oldConfig, newConfig, defaultHost.get(), alternateHostSelector.get());
         }
 
         // If the "default/catch-all-ness" of the host was modified,
         // the virtual host was removed before calling this method.
         if (newConfig.isDefaultHost()) {
-            defaultHost = newConfig;
-            if (alternateHostSelector != null) {
-                alternateHostSelector.alternateAddDefaultHost(newConfig);
+            defaultHost = StaticValue.mutateStaticValue(defaultHost, new Callable<VirtualHostConfig>() {
+                @Override
+                public VirtualHostConfig call() {
+                    return newConfig;
+                }
+            });
+
+            if (alternateHostSelector.get() != null) {
+                alternateHostSelector.get().alternateAddDefaultHost(newConfig);
             } else {
                 // notify default host of  active listeners
                 for (HttpEndpointImpl e : HttpEndpointList.getInstance()) {
                     int ePort = e.getListeningHttpPort();
-                    if (ePort > 0)
-                        defaultHost.listenerStarted(e, e.getResolvedHostName(), ePort, false);
+                    if (ePort > 0) {
+                        defaultHost.get().listenerStarted(e, e.getResolvedHostName(), ePort, false);
+                    }
+
                     ePort = e.getListeningSecureHttpPort();
-                    if (ePort > 0)
-                        defaultHost.listenerStarted(e, e.getResolvedHostName(), ePort, true);
+                    if (ePort > 0) {
+                        defaultHost.get().listenerStarted(e, e.getResolvedHostName(), ePort, true);
+                    }
+
                 }
             }
         } else {
-            if (alternateHostSelector == null) {
-                alternateHostSelector = new AlternateHostSelector();
-            }
+            if (alternateHostSelector.get() == null) {
+                alternateHostSelector = StaticValue.mutateStaticValue(alternateHostSelector, new Callable<AlternateHostSelector>() {
+                    @Override
+                    public AlternateHostSelector call() throws Exception {
+                        return new AlternateHostSelector();
+                    }
 
+                });
+            }
+            AlternateHostSelector current = alternateHostSelector.get();
             // Figure out which host aliases should be removed
             List<HostAlias> toRemove = new ArrayList<HostAlias>(oldConfig.getHostAliases());
             toRemove.removeAll(newConfig.getHostAliases());
 
             if (!toRemove.isEmpty()) {
-                alternateHostSelector.alternateRemoveVirtualHost(oldConfig, toRemove);
+                current.alternateRemoveVirtualHost(oldConfig, toRemove);
             }
 
-            alternateHostSelector.alternateAddVirtualHost(newConfig);
+            current.alternateAddVirtualHost(newConfig);
         }
     }
 
@@ -136,26 +154,35 @@ public class VirtualHostMap {
      */
     public synchronized static void removeVirtualHost(VirtualHostConfig config) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Remove virtual host: " + config.getVirtualHost(), config, defaultHost, alternateHostSelector);
+            Tr.event(tc, "Remove virtual host: " + config.getVirtualHost(), config, defaultHost.get(), alternateHostSelector);
         }
         if (config.isDefaultHost()) {
-            defaultHost = null;
-            if (alternateHostSelector != null) {
-                alternateHostSelector.alternateRemoveDefaultHost(config);
+            defaultHost = StaticValue.mutateStaticValue(defaultHost, new Callable<VirtualHostConfig>() {
+                @Override
+                public VirtualHostConfig call() {
+                    return null;
+                }
+            });
+            if (alternateHostSelector.get() != null) {
+                alternateHostSelector.get().alternateRemoveDefaultHost(config);
             } else {
                 // notify default host of  active listeners
                 for (HttpEndpointImpl e : HttpEndpointList.getInstance()) {
                     int ePort = e.getListeningHttpPort();
-                    if (ePort > 0)
+                    if (ePort > 0) {
                         config.listenerStopped(e, e.getResolvedHostName(), ePort, false);
+                    }
+
                     ePort = e.getListeningSecureHttpPort();
-                    if (ePort > 0)
+                    if (ePort > 0) {
                         config.listenerStopped(e, e.getResolvedHostName(), ePort, true);
+                    }
+
                 }
             }
-        } else if (alternateHostSelector != null) {
+        } else if (alternateHostSelector.get() != null) {
             // remove all configured host aliases.
-            alternateHostSelector.alternateRemoveVirtualHost(config, config.getHostAliases());
+            alternateHostSelector.get().alternateRemoveVirtualHost(config, config.getHostAliases());
         }
     }
 
@@ -170,13 +197,15 @@ public class VirtualHostMap {
      */
     public static synchronized void notifyStarted(HttpEndpointImpl endpoint, String resolvedHostName, int port, boolean isHttps) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Notify endpoint started: " + endpoint, resolvedHostName, port, isHttps, defaultHost, alternateHostSelector);
+            Tr.event(tc, "Notify endpoint started: " + endpoint, resolvedHostName, port, isHttps, defaultHost.get(), alternateHostSelector);
         }
-        if (alternateHostSelector == null) {
-            if (defaultHost != null)
-                defaultHost.listenerStarted(endpoint, resolvedHostName, port, isHttps);
+        if (alternateHostSelector.get() == null) {
+            if (defaultHost.get() != null) {
+                defaultHost.get().listenerStarted(endpoint, resolvedHostName, port, isHttps);
+            }
+
         } else {
-            alternateHostSelector.alternateNotifyStarted(endpoint, resolvedHostName, port, isHttps);
+            alternateHostSelector.get().alternateNotifyStarted(endpoint, resolvedHostName, port, isHttps);
         }
     }
 
@@ -193,13 +222,15 @@ public class VirtualHostMap {
      */
     public static synchronized void notifyStopped(HttpEndpointImpl endpoint, String resolvedHostName, int port, boolean isHttps) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(tc, "Notify endpoint stopped: " + endpoint, resolvedHostName, port, isHttps, defaultHost, alternateHostSelector);
+            Tr.event(tc, "Notify endpoint stopped: " + endpoint, resolvedHostName, port, isHttps, defaultHost.get(), alternateHostSelector);
         }
-        if (alternateHostSelector == null) {
-            if (defaultHost != null)
-                defaultHost.listenerStopped(endpoint, resolvedHostName, port, isHttps);
+        if (alternateHostSelector.get() == null) {
+            if (defaultHost.get() != null) {
+                defaultHost.get().listenerStopped(endpoint, resolvedHostName, port, isHttps);
+            }
+
         } else {
-            alternateHostSelector.alternateNotifyStopped(endpoint, resolvedHostName, port, isHttps);
+            alternateHostSelector.get().alternateNotifyStopped(endpoint, resolvedHostName, port, isHttps);
         }
     }
 
@@ -216,11 +247,13 @@ public class VirtualHostMap {
         // defer retrieval of headers until we need them:
         // if we don't have virtual hosts to select from, we don't care what the
         // headers are, there is only one answer.
-        AlternateHostSelector selector = alternateHostSelector;
+        AlternateHostSelector selector = alternateHostSelector.get();
         if (selector == null) {
-            VirtualHostConfig defHostCfg = defaultHost;
-            if (defHostCfg != null)
+            VirtualHostConfig defHostCfg = defaultHost.get();
+            if (defHostCfg != null) {
                 return defHostCfg.getVirtualHost();
+            }
+
             return null;
         }
 
@@ -278,7 +311,7 @@ public class VirtualHostMap {
             if (d != null) {
                 target = d.selectVirtualHost(hostName.toLowerCase(Locale.ENGLISH));
             } else {
-                target = defaultHost;
+                target = defaultHost.get();
             }
 
             // Make sure the target is ready to accept request from the selected endpoint..
@@ -476,7 +509,7 @@ public class VirtualHostMap {
          *
          * @see #selectVirtualHost(String)
          */
-        volatile HostTuple currentHosts = new HostTuple(null, defaultHost);
+        volatile HostTuple currentHosts = new HostTuple(null, defaultHost.get());
 
         VirtualHostDiscriminator(int port) {
             this.port = port;
@@ -577,8 +610,8 @@ public class VirtualHostMap {
 
                     // if we're removing a non-default host, and there is a default host around.. add the default host
                     // as the catch-all for this alias
-                    if (!config.isDefaultHost() && defaultHost != null) {
-                        addVirtualHost(hostName, defaultHost);
+                    if (!config.isDefaultHost() && defaultHost.get() != null) {
+                        addVirtualHost(hostName, defaultHost.get());
                     }
                 }
             } else {
@@ -742,7 +775,7 @@ public class VirtualHostMap {
          * @return true if this element should be cleaned up.
          */
         boolean cleanup() {
-            if ((currentHosts.wildcardHost == null || currentHosts.wildcardHost == defaultHost)
+            if ((currentHosts.wildcardHost == null || currentHosts.wildcardHost == defaultHost.get())
                 && currentHosts.otherHosts == null && endpoints.isEmpty()) {
                 return true;
             }
@@ -788,7 +821,7 @@ public class VirtualHostMap {
             }
 
             // no dice. Return the default host if we have one.
-            return defaultHost;
+            return defaultHost.get();
         }
 
         @Override
@@ -807,10 +840,10 @@ public class VirtualHostMap {
      *
      */
     protected synchronized static void dump(PrintStream ps) {
-        ps.println("Default host: " + defaultHost);
-        ps.println("Alternate hosts: " + (alternateHostSelector != null));
-        if (alternateHostSelector != null)
-            ps.println(alternateHostSelector);
+        ps.println("Default host: " + defaultHost.get());
+        ps.println("Alternate hosts: " + (alternateHostSelector.get() != null));
+        if (alternateHostSelector.get() != null)
+            ps.println(alternateHostSelector.get());
     }
 
 }

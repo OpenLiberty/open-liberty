@@ -43,6 +43,7 @@ public class ServerClasspathTest {
                                                         "org.omg.CORBA", "com.sun", "org.xml.sax", "com.ibm.jit",
                                                         "com.ibm.jsse2", "com.ibm.lang.management", "com.ibm.tools.attach",
                                                         "com.ibm.virtualization.management", "com.ibm.wsspi.kernel",
+                                                        "com.ibm.ws.staticvalue",
                                                         "jdk." // Java 9
     };
 

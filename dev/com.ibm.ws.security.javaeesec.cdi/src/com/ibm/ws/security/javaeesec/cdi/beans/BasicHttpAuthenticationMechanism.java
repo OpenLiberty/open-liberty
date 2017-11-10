@@ -21,7 +21,6 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
-import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
@@ -41,18 +40,16 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 
 @Default
 @ApplicationScoped
 public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMechanism {
+    ModulePropertiesProvider mpp = null;
 
     private static final TraceComponent tc = Tr.register(BasicHttpAuthenticationMechanism.class);
-
-    @Inject
-    private HAMProperties hamp;
 
     private String realmName = null;
     private final String DEFAULT_REALM = "defaultRealm";
@@ -77,9 +74,12 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     private void setRealmName() {
-        Properties props = hamp.getProperties();
-        if (realmName == null && props != null) {
-            realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
+        mpp = getModulePropertiesProvider();
+        if (mpp != null) {
+            Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
+            if (props != null) {
+                realmName = (String)props.get(JavaEESecConstants.REALM_NAME);
+            }
         }
         if (realmName == null || realmName.trim().isEmpty()) {
             Tr.warning(tc, "JAVAEESEC_WARNING_NO_REALM_NAME");
@@ -292,9 +292,16 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
         return status;
     }
 
-    // this is for unit test.
-    protected void setProps(HAMProperties hamp) {
-        this.hamp = hamp;
+    protected ModulePropertiesProvider getModulePropertiesProvider() {
+        Instance<ModulePropertiesProvider> modulePropertiesProivderInstance = getCDI().select(ModulePropertiesProvider.class);
+        if (modulePropertiesProivderInstance != null) {
+            return modulePropertiesProivderInstance.get();
+        }
+        return null;
     }
 
+    // this is for unit test.
+    protected void setMPP(ModulePropertiesProvider mpp) {
+        this.mpp = mpp;
+    }
 }

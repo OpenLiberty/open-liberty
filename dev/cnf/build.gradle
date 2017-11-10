@@ -124,6 +124,7 @@ task createGradleBootstrap {
                 String rev = projectPathToVersion.get(featureName)
                 if (rev != null) {
                     depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa\'\n'
+                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa.metadata.zip\'\n'
                 }
             }
         }

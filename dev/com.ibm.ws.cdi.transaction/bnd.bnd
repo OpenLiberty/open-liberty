@@ -15,25 +15,23 @@ Bundle-Name: com.ibm.ws.cdi.transaction
 Bundle-SymbolicName: com.ibm.ws.cdi.transaction
 Bundle-Description: CDI Transaction, version ${bVersion}
 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+javac.source: 1.7
+javac.target: 1.7
+
 -dsannotations: com.ibm.ws.cdi.transaction.liberty.LibertyTransactionService
 
 Private-Package: \
   com.ibm.ws.cdi.transaction.liberty
 
 Import-Package: \
-                org.jboss.weld.transaction.spi; version="[2.4.0,4.0.0)", \
-                javax.enterprise.context.*; version="[1.1.0,3.0.0)", \
-                javax.enterprise.event.*; version="[1.1.0,3.0.0)", \
-                javax.enterprise.inject.*; version="[1.1.0,3.0.0)", \
-                javax.enterprise.util.*; version="[1.1.0,3.0.0)", \
-                javax.decorator; version="[1.1.0,3.0.0)", \
-                *
-
+  com.ibm.ws.cdi.internal.interfaces, \
+  *
 
 WS-TraceGroup: JCDI
 
 -buildpath: \
-	com.ibm.websphere.appserver.thirdparty.cdi;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
 	com.ibm.tx.jta;version=latest,\
 	com.ibm.websphere.appserver.spi.logging,\
@@ -41,6 +39,5 @@ WS-TraceGroup: JCDI
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
-	com.ibm.ws.org.jboss.weld.2.4.3;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-	com.ibm.ws.cdi.shared.weld;version=latest
+	com.ibm.ws.cdi.internal;version=latest

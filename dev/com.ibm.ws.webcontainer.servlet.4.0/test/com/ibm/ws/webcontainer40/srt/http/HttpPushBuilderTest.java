@@ -31,6 +31,7 @@ import org.junit.Test;
 
 import com.ibm.websphere.servlet40.IRequest40;
 import com.ibm.ws.webcontainer40.srt.SRTServletRequest40;
+import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.http.HttpCookie;
 import com.ibm.wsspi.http.HttpRequest;
 
@@ -170,15 +171,14 @@ public class HttpPushBuilderTest {
 
         assertTrue(pb.getPath() == null);
         assertTrue(pb.getQueryString() == null);
-        assertTrue(pb.getHeader("Referer").equals("/UnitTest/TestAPI_path?test=queryStringFromRequest"));
-
+        assertTrue("Referer header = " + pb.getHeader("Referer"),pb.getHeader("Referer").equals("/UnitTest/TestAPI_path?test=queryStringFromRequest"));
     }
 
     @Test
     public void testAPI_Headers() {
         HashMap<String, String> headers = new HashMap<String, String>();
 
-        // Headers which shoul be part of the push request
+        // Headers which should be part of the push request
         headers.put("Content-Type", "charset=pushypushpush");
         headers.put("Date", "Tue, 07 Feb 2017 13050:00 GMT");
         headers.put("From", "pushbuildertest@us.ibm.com");
@@ -211,13 +211,14 @@ public class HttpPushBuilderTest {
 
         HttpPushBuilder pb = new HttpPushBuilder(srtReq, null, headerList, null);
 
-        assertTrue(pb.getHeader("Content-Type").equals(headers.get("Content-Type")));
-        assertTrue(pb.getHeader("Date").equals(headers.get("Date")));
-        assertTrue(pb.getHeader("From").equals(headers.get("From")));
-        assertTrue(pb.getHeader("MaxForwards").equals(headers.get("MaxForwards")));
+        assertTrue("Expected Content-Type " + headers.get("Content-Type") + " but was " + pb.getHeader("Content-Type"),pb.getHeader("Content-Type").equals(headers.get("Content-Type")));
+        assertTrue("Expected Date " + headers.get("Date") + " but was " + pb.getHeader("Date"),pb.getHeader("Date").equals(headers.get("Date")));
+        assertTrue("Expected From " + headers.get("From") + " but was " + pb.getHeader("From"),pb.getHeader("From").equals(headers.get("From")));
+        assertTrue("Expected MaxForwards " + headers.get("MaxForwards") + " but was " + pb.getHeader("MaxForwards"),pb.getHeader("MaxForwards").equals(headers.get("MaxForwards")));
 
         Iterator<String> headerNames = pb.getHeaderNames().iterator();
         ArrayList<String> hNames = new ArrayList<String>();
+        
         while (headerNames.hasNext()) {
             String name = headerNames.next();
             headers.remove(name);
@@ -234,9 +235,37 @@ public class HttpPushBuilderTest {
         pb.addHeader("testAddHeader", "testAddValue2");
         pb.setHeader("testSetHeader", "testSetValue1");
         pb.setHeader("testSetHeader", "testSetValue2");
+        
+        Set<HeaderField> hdrs = pb.getHeaders();
 
-        assertTrue(pb.getHeaders().size() == 2);
         assertTrue(pb.getHeaderNames().size() == 2);
+        
+        boolean addValue1Found=false, addValue2Found=false,setValue2Found=false;
+        
+        Iterator<HeaderField> hdrsIterator = hdrs.iterator();
+        while (hdrsIterator.hasNext()) {
+            HeaderField hdr = hdrsIterator.next();
+            if (hdr.getName().equals("testAddHeader")) {
+                if (hdr.asString().equals("testAddValue1") && !addValue1Found) {
+                    addValue1Found = true;
+                } else if (hdr.asString().equals("testAddValue2") && !addValue2Found) {
+                    addValue2Found = true;
+                } else {
+                    assertTrue("Unexpected header found : " + hdr.getName() + "=" + hdr.asString(),false);
+                }
+            } else if (hdr.getName().equals("testSetHeader")) {
+                if (hdr.asString().equals("testSetValue2") && !setValue2Found) {
+                    setValue2Found = true;
+                } else {
+                    assertTrue("Unexpected header found : " + hdr.getName() + "=" + hdr.asString(),false);
+                }
+            }
+        }
+        
+        assertTrue("Expected testAddHeader value of testAddValue1 but it was not found", addValue1Found);
+        assertTrue("Expected testAddHeader value of testAddValue2 but it was not found", addValue2Found);
+        assertTrue("Expected testSetHeader value of testSetValue2 but it was not found", setValue2Found);
+        
 
     }
 

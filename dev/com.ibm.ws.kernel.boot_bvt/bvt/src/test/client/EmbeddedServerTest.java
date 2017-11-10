@@ -21,14 +21,14 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import junit.framework.Assert;
-import junit.framework.AssertionFailedError;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.ws.kernel.boot.cmdline.Utils;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
+
+import junit.framework.Assert;
+import junit.framework.AssertionFailedError;
 
 /**
  *
@@ -61,8 +61,7 @@ public class EmbeddedServerTest {
         // We're going to start by making a nested classloader with limited delegation back
         // to this classloader.. a pain, but ..
         URLClassLoader classloader = new URLClassLoader(new URL[] { bvtImageKernelBundle.toURI().toURL(),
-                                                                   testServerClasses.toURI().toURL() },
-                                                        this.getClass().getClassLoader()) {
+                                                                    testServerClasses.toURI().toURL() }, this.getClass().getClassLoader()) {
             @Override
             protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                 Class<?> result = null;
@@ -132,8 +131,7 @@ public class EmbeddedServerTest {
 
         // We're going to start by making a nested classloader with limited delegation back
         // to this classloader.. a pain, but ..
-        URLClassLoader classloader = new URLClassLoader(jarURLs.toArray(new URL[0]),
-                                                        null) {
+        URLClassLoader classloader = new URLClassLoader(jarURLs.toArray(new URL[0]), null) {
             @Override
             protected synchronized Class<?> loadClass(String name, boolean resolve) throws ClassNotFoundException {
                 Class<?> result = null;
@@ -204,18 +202,10 @@ public class EmbeddedServerTest {
     }
 
     public static void setKernelUtilsBootstrapLibDir(File bootLibDir) throws Exception {
-        if (bootLibDirField == null) {
-            bootLibDirField = KernelUtils.class.getDeclaredField("libDir");
-            bootLibDirField.setAccessible(true);
-        }
-        bootLibDirField.set(null, bootLibDir);
+        KernelUtils.setBootStrapLibDir(bootLibDir);
     }
 
     public static void setUtilsInstallDir(File installDir) throws Exception {
-        if (utilsInstallDirField == null) {
-            utilsInstallDirField = Utils.class.getDeclaredField("installDir");
-            utilsInstallDirField.setAccessible(true);
-        }
-        utilsInstallDirField.set(null, installDir);
+        Utils.setInstallDir(installDir);
     }
 }

@@ -48,6 +48,7 @@ Private-Package: \
 -dsannotations: \
   com.ibm.ws.ssl.internal.KeyStoreServiceImpl, \
   com.ibm.ws.ssl.internal.SSLComponent, \
+  com.ibm.ws.ssl.internal.SSLConfigValidator, \
   com.ibm.ws.ssl.internal.SSLSupportImpl, \
   com.ibm.ws.ssl.internal.RepertoireConfigService, \
   com.ibm.ws.ssl.internal.KeystoreConfigurationFactory

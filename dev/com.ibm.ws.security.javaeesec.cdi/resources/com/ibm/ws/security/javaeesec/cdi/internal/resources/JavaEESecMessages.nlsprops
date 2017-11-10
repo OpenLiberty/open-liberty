@@ -18,11 +18,11 @@
 
 # Message prefix block: CWWKS1925 - CWWKS1949
 
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: The application deployment is failed because multiple HttpAuthenticationMechanism implementation are found. The list of classes is {0}. Most likely, this is an application packaging issue. Please make sure that there is only one HttpAuthenticationMechanism implementation in the application.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=The application deployment is failed because more than one HttpAuthenticationMechanism implementation are found. This condition is not allowed.
-JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only one HttpAuthenticationMechanism implementation in the application.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: The deployment for the {0} module in the {1} application failed because multiple HttpAuthenticationMechanism implementation are found. The list of classes is {2}. Most likely, this is an application packaging issue. Make sure that there is only one HttpAuthenticationMechanism implementation in each module.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=The application deployment failed because more than one HttpAuthenticationMechanism implementation are found. This condition is not allowed.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only one HttpAuthenticationMechanism implementation for each module in the application.
 
-JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: LoginToContinueProperties bean does not exist. The form login is not enabled. Please make sure that the application is annotated by LoginToContinue annotation.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: LoginToContinueProperties bean does not exist. The form login is not enabled. Make sure that the application is annotated by LoginToContinue annotation.
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=LoginToContinueProperties bean which is required for the form login authentication does not exist.
 JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Make sure that the application is annotated by LoginToContinue annotation in FormAuthenticationMechanismDefinition or CustomFormAuthenticationMechanismDefinition annotation.
 
@@ -41,3 +41,11 @@ JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=If the application provides an Ide
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml. IdentityStoreHandler bean is created when there is at least one IdentityStore bean. If the application intends to use an IdentityStore, make sure that it is configured properly. 
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=IdentityStoreHandler bean is not found. If the application intends to use an IdentityStore, make sure that it is configured properly. IdentityStoreHandler bean is created when there is at least one IdentityStore bean.
 JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=If the application intends to use an IdentityStore, make sure that it is configured properly.
+
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The application deployment failed because a login-config element was found in the web.xml file for the {0} module in the {1} application. To enable the HttpAuthenticationMechanism bean, remove the login-config element from the web.xml file.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment failed because both the login-config element and the HttpAuthenticationMechanism bean are defined. Only one of these authentication mechanisms can be used in your application.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=To enable the HttpAuthenticationMechanism bean, remove the login-config element from the web.xml file.
+
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: The realm name for basic authentication is not set, so the default value, defaultRealm, was used.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Because realm name for the basic authentication is not defined, the realm name was set to the default value of defaultRealm.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=To set the realm name, define it on a BasicAuthenticationMechanismDefinition annotation in the application.

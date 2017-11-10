@@ -42,7 +42,7 @@ import com.ibm.wsspi.kernel.embeddable.ServerEventListener.ServerEvent.Type;
 import com.ibm.wsspi.kernel.embeddable.ServerException;
 
 /**
- * 
+ *
  */
 public class EmbeddedServerImpl implements Server {
 
@@ -63,41 +63,33 @@ public class EmbeddedServerImpl implements Server {
     protected final AtomicReference<ServerTask> runningServer = new AtomicReference<ServerTask>();
 
     /**
-     * Our own private executor for queueing operations. This thread pool is cached, but unbounded.
+     * Our own private executor for queueing operations. By default this thread pool is cached, but unbounded.
      * Since we allow only one pendingStop, and one pendingStart, any operation requested by the
      * user that doesn't snag one of those two spots, it will return quickly as a no-op/redundant
-     * operation.
+     * operation. An alternative executor can be specified at construction.
      */
-    protected final ExecutorService opQueue = Executors.newCachedThreadPool(new ThreadFactory() {
-        @Override
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r);
-            t.setDaemon(true);
-            t.setName("EmbeddedLibertyOperation-" + t.getName());
-            return t;
-        }
-    });
+    protected final ExecutorService opQueue;
 
     /**
      * This is an abridged version of what the Launcher does when invoked from the
      * command line. The constructor just verifies the configuration of the server--
      * reading of bootstrap properties and detailed processing of configuration is
      * deferred until server start.
-     * 
+     *
      * <p>Note this constructor cannot be modified since it is being used by
      * a client which could be in maven central, removing this will break
      * compatibility with older versions of the embeddable launch API. New
      * enhancements need new constructors.</p>
-     * 
+     *
      * @param serverName ServerName: defaultServer will be used if this is null
      * @param userDir WLP_USER_DIR equivalent, may be null
      * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
      * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
-     * 
+     *
      * @see {@link ServerEventListener}
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, ServerEventListener listener) {
-        this(serverName, userDir, outputDir, null, listener, null);
+        this(serverName, userDir, outputDir, null, listener, null, null);
     }
 
     /**
@@ -105,19 +97,19 @@ public class EmbeddedServerImpl implements Server {
      * command line. The constructor just verifies the configuration of the server--
      * reading of bootstrap properties and detailed processing of configuration is
      * deferred until server start.
-     * 
+     *
      * <p>Note this is a new constructor with new enhancement to support the LOG_DIR
      * property.</p>
-     * 
+     *
      * @param serverName ServerName: defaultServer will be used if this is null
      * @param userDir WLP_USER_DIR equivalent, may be null
      * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
      * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
-     * 
+     *
      * @see {@link ServerEventListener}
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener) {
-        this(serverName, userDir, outputDir, logDir, listener, null);
+        this(serverName, userDir, outputDir, logDir, listener, null, null);
     }
 
     /**
@@ -125,19 +117,55 @@ public class EmbeddedServerImpl implements Server {
      * command line. The constructor just verifies the configuration of the server--
      * reading of bootstrap properties and detailed processing of configuration is
      * deferred until server start.
-     * 
+     *
      * <p>Note this is a new constructor with new enhancement to support
      * extraProductExtensions.</p>
-     * 
+     *
      * @param serverName ServerName: defaultServer will be used if this is null
      * @param userDir WLP_USER_DIR equivalent, may be null
      * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
      * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
      * @param extraProductExtensions HashMap of Properties, may be null
-     * 
+     *
      * @see {@link ServerEventListener}
      */
     public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions) {
+        this(serverName, userDir, outputDir, logDir, listener, extraProductExtensions, null);
+    }
+
+    /**
+     * This is an abridged version of what the Launcher does when invoked from the
+     * command line. The constructor just verifies the configuration of the server--
+     * reading of bootstrap properties and detailed processing of configuration is
+     * deferred until server start.
+     *
+     * <p>Note this is a new constructor with new enhancement to support
+     * extraProductExtensions and uses the specified ExecutorService</p>
+     *
+     * @param serverName ServerName: defaultServer will be used if this is null
+     * @param userDir WLP_USER_DIR equivalent, may be null
+     * @param outputDir WLP_OUTPUT_DIR equivalent, may be null
+     * @param listener ServerEventListener that should receive notifications of Server lifecycle changes, may be null.
+     * @param extraProductExtensions HashMap of Properties, may be null
+     * @param executor the executor service to use for start and stop operations
+     *
+     * @see {@link ServerEventListener}
+     */
+    public EmbeddedServerImpl(String serverName, File userDir, File outputDir, File logDir, ServerEventListener listener, HashMap<String, Properties> extraProductExtensions,
+                              ExecutorService executor) {
+        if (executor == null) {
+            opQueue = Executors.newCachedThreadPool(new ThreadFactory() {
+                @Override
+                public Thread newThread(Runnable r) {
+                    Thread t = new Thread(r);
+                    t.setDaemon(true);
+                    t.setName("EmbeddedLibertyOperation-" + t.getName());
+                    return t;
+                }
+            });
+        } else {
+            opQueue = executor;
+        }
         // find locations using the absolute paths of the files provided, which will be normalized
         String userDirPath = userDir == null ? null : userDir.getAbsolutePath();
         String outputDirPath = outputDir == null ? null : outputDir.getAbsolutePath();
@@ -150,15 +178,15 @@ public class EmbeddedServerImpl implements Server {
 
         externalListener = listener;
 
-        // Find location will throw standard exceptions w/ translated messages 
-        // for bad serverName or bad directories. 
+        // Find location will throw standard exceptions w/ translated messages
+        // for bad serverName or bad directories.
         bootProps.findLocations(serverName, userDirPath, outputDirPath, logDirPath, null);
 
         // PI20344 - 2014/06/16:  Setting a couple of java properties that are needed by the
         // com.ibm.ws.kernel.boot.cmdline.Utils class, which expects to have been launched from the
         // command line with WLP_USER_DIR & WLP_OUTPUT_DIR set as environment variables.  Since
-        // we're embedded, those environment variables never got set from the command line.  
-        // Here I am setting these variables as Java properties, and the Utils class is updated to  
+        // we're embedded, those environment variables never got set from the command line.
+        // Here I am setting these variables as Java properties, and the Utils class is updated to
         // check for these Java properties if the environment variables are not set.
         if (userDirPath != null) {
             System.setProperty(BootstrapConstants.ENV_WLP_USER_DIR, userDirPath);
@@ -215,7 +243,7 @@ public class EmbeddedServerImpl implements Server {
      * loaded. It doesn't actually start any of those features, but it needs to get far
      * enough to evaluate the full feature set, including features and auto-features
      * that are part of Liberty or are provided by product extensions.
-     * 
+     *
      * @param osRequest Super-secret internal runtime handshake
      * @return Set of strings describing the required contents for the server. Will not return null.
      * @throws FileNotFoundException
@@ -239,7 +267,7 @@ public class EmbeddedServerImpl implements Server {
      * start any of those features, but it needs to get far enough to evaluate the full
      * feature set, including features and auto-features that are part of Liberty or are
      * provided by product extensions.
-     * 
+     *
      * @return Set of strings describing the required features for the server. Will not return null.
      */
     public Set<String> getServerFeatures() {
@@ -290,10 +318,9 @@ public class EmbeddedServerImpl implements Server {
                         bootProps.verifyProcess(VerifyServer.EXISTS, null);
                     } else {
                         // Some OTHER action was attempted, which we don't support...
-                        LaunchException le = new LaunchException("Invalid argument passed to embedded start: " + launchArgs.getAction(),
-                                        MessageFormat.format(BootstrapConstants.messages.getString("warning.unrecognized.command"),
-                                                             launchArgs.getAction()),
-                                        null, // no exception
+                        LaunchException le = new LaunchException("Invalid argument passed to embedded start: "
+                                                                 + launchArgs.getAction(), MessageFormat.format(BootstrapConstants.messages.getString("warning.unrecognized.command"),
+                                                                                                                launchArgs.getAction()), null, // no exception
                                         ReturnCode.BAD_ARGUMENT);
                         fireEvent(Type.FAILED, le);
                         return new ServerResult(false, le);
@@ -322,10 +349,10 @@ public class EmbeddedServerImpl implements Server {
                     // Dig it. This is the server task.
                     Thread t = createServerThread(serverTask);
 
-                    // START THE SERVER TASK.... 
+                    // START THE SERVER TASK....
                     t.start();
                 } else {
-                    // RETURN: Something else started a running task (unlikely).. 
+                    // RETURN: Something else started a running task (unlikely)..
                     return new ServerResult(true, ReturnCode.REDUNDANT_ACTION_STATUS, null);
                 }
 
@@ -355,7 +382,7 @@ public class EmbeddedServerImpl implements Server {
     private class StopOperation implements Callable<Result> {
         /**
          * No arguments yet: someday there may be, we're just being flexible.
-         * 
+         *
          * @param arguments
          */
         StopOperation(String... arguments) {}
@@ -363,8 +390,8 @@ public class EmbeddedServerImpl implements Server {
         @Override
         public Result call() {
             if (runningServer.get() == null || !pendingStop.compareAndSet(null, this)) {
-                // either the server has already been started, or another operation is
-                // in the process of starting it...
+                // either the server has already been stopped, or another operation is
+                // in the process of stopping it...
                 return new ServerResult(false, ReturnCode.REDUNDANT_ACTION_STATUS, null);
             }
 
@@ -430,7 +457,7 @@ public class EmbeddedServerImpl implements Server {
 
         @Override
         public void run() {
-            // This task was queued! 
+            // This task was queued!
             fireEvent(Type.STARTING, null);
 
             ServerException ex = null;
@@ -532,7 +559,7 @@ public class EmbeddedServerImpl implements Server {
      * are a lot of ways to get it unstuck... (or diagnose a hung
      * server or whatever). But as soon as the framework does stop, then
      * this thread will go away.
-     * 
+     *
      * @param r
      * @return
      */

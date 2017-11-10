@@ -10,16 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.http.dispatcher.internal;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.osgi.framework.ServiceReference;
-import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.ComponentConstants;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -37,13 +36,13 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.http.internal.EncodingUtilsImpl;
 import com.ibm.ws.http.internal.HttpDateFormatImpl;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
 import com.ibm.wsspi.channelfw.ChannelFramework;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.http.EncodingUtils;
 import com.ibm.wsspi.http.HttpDateFormat;
 import com.ibm.wsspi.http.VirtualHostListener;
-import com.ibm.wsspi.http.WelcomePage;
 import com.ibm.wsspi.http.WorkClassifier;
 import com.ibm.wsspi.http.ee7.HttpTransportBehavior;
 import com.ibm.wsspi.kernel.service.utils.MetatypeUtils;
@@ -104,7 +103,12 @@ public class HttpDispatcher {
      * Active HttpDispatcher instance. May be null between deactivate and activate
      * calls.
      */
-    private static final AtomicReference<HttpDispatcher> instance = new AtomicReference<HttpDispatcher>();
+    private static final StaticValue<AtomicReference<HttpDispatcher>> instance = StaticValue.createStaticValue(new Callable<AtomicReference<HttpDispatcher>>() {
+        @Override
+        public AtomicReference<HttpDispatcher> call() throws Exception {
+            return new AtomicReference<HttpDispatcher>();
+        }
+    });
 
     /** appOrContextRootMissingMessage custom property */
     private volatile String appOrContextRootNotFound = null;
@@ -124,7 +128,12 @@ public class HttpDispatcher {
     /** PM97514 - webcontainer trusted attribute */
     private volatile boolean wcTrusted = true;
 
-    private static final AtomicInteger updateCount = new AtomicInteger(0);
+    private static final StaticValue<AtomicInteger> updateCount = StaticValue.createStaticValue(new Callable<AtomicInteger>() {
+        @Override
+        public AtomicInteger call() throws Exception {
+            return new AtomicInteger();
+        }
+    });;
 
     /**
      * Constructor.
@@ -141,7 +150,7 @@ public class HttpDispatcher {
         modified(properties);
 
         // Set this as the active HttpDispatcher instance
-        instance.set(this);
+        instance.get().set(this);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "HttpDispatcher activated, id=" + properties.get(ComponentConstants.COMPONENT_ID));
@@ -160,7 +169,7 @@ public class HttpDispatcher {
         }
 
         // Clear this as the active HttpDispatcher instance (unless another has already replaced)
-        instance.compareAndSet(this, null);
+        instance.get().compareAndSet(this, null);
     }
 
     /**
@@ -199,7 +208,7 @@ public class HttpDispatcher {
     }
 
     public static Boolean isWelcomePageEnabled() {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.enableWelcomePage;
 
@@ -221,7 +230,7 @@ public class HttpDispatcher {
         // this does not return a default string, since the caller may (and does in our case) choose to build a runtime
         // dependent string.
 
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.appOrContextRootNotFound;
 
@@ -242,7 +251,7 @@ public class HttpDispatcher {
     }
 
     public static boolean padContextRootNotFoundMessage() {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.padAppOrContextRootNotFoundMessage;
 
@@ -260,7 +269,7 @@ public class HttpDispatcher {
      */
     private synchronized void parseTrustedPrivateHeaderOrigin(String[] value) {
         // bump the updated count every time we call this.
-        updateCount.incrementAndGet();
+        updateCount.get().incrementAndGet();
 
         // PM97514 - allow restricting the use of private headers to requests coming from specific IP addresses
         List<String> addrs = new ArrayList<String>();
@@ -304,7 +313,7 @@ public class HttpDispatcher {
      * @return true if private headers should be used (the default is true)
      */
     public static boolean usePrivateHeaders(String hostAddr) {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f != null) {
             return f.originIsTrusted(hostAddr);
         }
@@ -375,7 +384,7 @@ public class HttpDispatcher {
      * @return EncodingUtils
      */
     public static EncodingUtils getEncodingUtils() {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         EncodingUtils svc = null;
         if (f != null) {
             svc = f.encodingSvc;
@@ -413,7 +422,7 @@ public class HttpDispatcher {
      * @return EventEngine - null if not found
      */
     public static EventEngine getEventService() {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.eventSvc;
 
@@ -446,7 +455,7 @@ public class HttpDispatcher {
      * @return CollaborationEngine - null if not found
      */
     public static ExecutorService getExecutorService() {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "HttpDispatcher instance not found");
@@ -519,7 +528,7 @@ public class HttpDispatcher {
      * @return CHFWBundle
      */
     public static CHFWBundle getCHFWBundle() {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.chfw;
 
@@ -607,7 +616,7 @@ public class HttpDispatcher {
      * @return WorkClassifier - null if not found
      */
     public static WorkClassifier getWorkClassifier() {
-        HttpDispatcher f = instance.get();
+        HttpDispatcher f = instance.get().get();
         if (f != null)
             return f.workClassifier;
 
@@ -618,7 +627,7 @@ public class HttpDispatcher {
      * @return
      */
     public static int getConfigUpdate() {
-        return updateCount.get();
+        return updateCount.get().get();
     }
 
     @Reference(service = HttpTransportBehavior.class, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)

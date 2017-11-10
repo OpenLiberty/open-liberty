@@ -26,7 +26,7 @@ jsf.container.init.useraction=Informational message. No user action needed.
 
 # 0: application name
 # 1: required ApplicationFactory implementations
-jsf.container.no.jsf.impl=JSFG101E: No JSF implementations were found in application {0}. A JSF implementation that contains one of the following javax.faces.application.ApplicationFactory implementations must be available to the application {1}.
+jsf.container.no.jsf.impl=JSFG0101E: No JSF implementations were found in application {0}. A JSF implementation that contains one of the following javax.faces.application.ApplicationFactory implementations must be available to the application {1}.
 jsf.container.no.jsf.impl.explanation=Liberty JSF integrations are only supported for a specific set of third-party JSF implementations. One of the listed ApplicationFactory implementations must be available to the indicated application.
 jsf.container.no.jsf.impl.useraction=Include either the Apache MyFaces or the Mojarra JSF implementation inside of the indicated application. Alternatively, if you would like to use the default JSF implementation that is provided by Liberty, Apache MyFaces, use the jsf-2.2 feature instead of jsfContainer-2.2.
 

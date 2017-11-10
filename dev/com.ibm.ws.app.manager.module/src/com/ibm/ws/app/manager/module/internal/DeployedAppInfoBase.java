@@ -50,7 +50,9 @@ import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo;
 import com.ibm.ws.container.service.app.deploy.extended.LibraryContainerInfo.LibraryType;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.javaee.dd.permissions.PermissionsConfig;
+import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.java2sec.PermissionManager;
+import com.ibm.ws.threadContext.ModuleMetaDataAccessorImpl;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.adaptable.module.AdaptableModuleFactory;
@@ -358,9 +360,11 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
             return false;
         }
 
+        List<ModuleMetaData> mmds = new ArrayList<ModuleMetaData>();
         for (ModuleContainerInfoBase modInfo : moduleContainerInfos) {
             try {
-                modInfo.createModuleMetaData(appInfo, this, this);
+                ModuleMetaData mmd = modInfo.createModuleMetaData(appInfo, this, this);
+                mmds.add(mmd);
             } catch (Throwable ex) {
                 uninstallApp();
                 futureMonitor.setResult(result, ex);
@@ -372,11 +376,14 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
 
         starting = true;
         try {
+            ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().beginContext(mmds);
             stateChangeService.fireApplicationStarting(appInfo);
         } catch (Throwable ex) {
             uninstallApp();
             futureMonitor.setResult(result, ex);
             return false;
+        } finally {
+            ModuleMetaDataAccessorImpl.getModuleMetaDataAccessor().endContext();
         }
         return true;
     }
