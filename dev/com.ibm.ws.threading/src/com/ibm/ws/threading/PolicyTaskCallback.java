@@ -20,6 +20,17 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public abstract class PolicyTaskCallback {
     /**
+     * Allows for replacing the policy executor to which the task was submitted with another when the invokeAll/invokeAny methods are used to submit multiple tasks.
+     *
+     * @param executor policy executor to which the task was submitted.
+     * @return the default implementation returns the policy executor to which the task was submitted, such that invokeAll/invokeAny
+     *         always run tasks according the policy executor upon which the invokeAll/invokeAny operation was invoked.
+     */
+    public PolicyExecutor getExecutor(PolicyExecutor executor) {
+        return executor;
+    }
+
+    /**
      * Returns the name of the task, which, for example, might be reported in exception messages or messages that are logged.
      *
      * @param task the Callable or Runnable task.
