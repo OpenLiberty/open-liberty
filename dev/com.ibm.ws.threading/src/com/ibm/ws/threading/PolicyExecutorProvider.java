@@ -11,6 +11,7 @@
 package com.ibm.ws.threading;
 
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 
@@ -53,6 +54,21 @@ public class PolicyExecutorProvider {
     private final ConcurrentHashMap<String, PolicyExecutorImpl> policyExecutors = new ConcurrentHashMap<String, PolicyExecutorImpl>();
 
     /**
+     * Creates a new policy executor instance and initializes it per the specified OSGi service component properties.
+     * The config.displayId of the OSGi service component properties is used as the unique identifier.
+     *
+     * @param props properties for a configuration-based OSGi service component instance. For example, an instance of concurrencyPolicy.
+     * @return a new policy executor instance.
+     * @throws IllegalStateException if an instance with the specified unique identifier already exists and has not been shut down.
+     * @throws NullPointerException if the specified identifier is null
+     */
+    public PolicyExecutor create(Map<String, Object> props) {
+        PolicyExecutor executor = new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, (String) props.get("config.displayId"), policyExecutors);
+        executor.updateConfig(props);
+        return executor;
+    }
+
+    /**
      * Creates a new policy executor instance.
      *
      * @param identifier unique identifier for the new instance, to be used for monitoring and problem determination.
@@ -62,7 +78,7 @@ public class PolicyExecutorProvider {
      * @throws NullPointerException if the specified identifier is null
      */
     public PolicyExecutor create(String identifier) {
-        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, identifier, policyExecutors);
+        return new PolicyExecutorImpl((ExecutorServiceImpl) globalExecutor, "PolicyExecutorProvider-" + identifier, policyExecutors);
     }
 
     public void introspectPolicyExecutors(PrintWriter out) {

@@ -82,6 +82,19 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     }
 
     /**
+     * Allows for replacing the identifier that is used in exception messages and log messages about the policy executor.
+     *
+     * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
+     *            concurrencyPolicy[longRunningPolicy]
+     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
+     * @return identifier to use in messages.
+     */
+    @Override
+    public String getIdentifier(String identifier) {
+        return identifier.startsWith("managed") ? identifier : managedExecutor.name.get() + " (" + identifier + ')';
+    }
+
+    /**
      * Returns the task name.
      *
      * @param task the task.
