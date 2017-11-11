@@ -35,8 +35,6 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 /**
  * Callback that uses the notifications it receives about about task life cycle
  * to apply and remove thread context and send events to a ManagedTaskListener.
- * TODO always use policy executor and remove SubmittedTask, where much of this implementation is copied from,
- * if the life cycle callback is able to achieve the same behavior.
  */
 public class TaskLifeCycleCallback extends PolicyTaskCallback {
     private static final TraceComponent tc = Tr.register(TaskLifeCycleCallback.class);
