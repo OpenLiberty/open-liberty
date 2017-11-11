@@ -43,6 +43,14 @@ public class AsyncReadCallback implements InterChannelCallback {
     private ThreadContextManager threadContextManager;
     private SRTServletRequestThreadData _requestDataAsyncReadCallbackThread;
 
+    // Keep track of whether we've pushed thread context onto this thread or not.  The error() method may
+    // be called while we're dispatched in complete().  This variable should only be accessed or modified
+    // while synchronized on the lock object returned by SRTInputStream31.
+    private boolean pushedThreadContext = false;
+    
+    // We were driven for an error and should not assume any future async reads are outstanding.
+    private boolean onErrorDriven = false;
+    
     public AsyncReadCallback(SRTInputStream31 in, ThreadContextManager tcm){
         this.in = in;
         this.threadContextManager = tcm;
@@ -81,59 +89,75 @@ public class AsyncReadCallback implements InterChannelCallback {
             SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
             
             //Push the original thread's context onto the current thread, also save off the current thread's context
-            this.threadContextManager.pushContextData();
+            boolean localPushedThreadContext = false;
+            try {
+                if (pushedThreadContext == false) {
+                    this.threadContextManager.pushContextData();
+                    this.pushedThreadContext = true;
+                    localPushedThreadContext = true;
+                }
 
-            //Call into the user's ReadListener to indicate there is data available
-            try{
-                this.in.getReadListener().onDataAvailable();
-            } catch (Throwable onDataAvailableException){
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Exception occurred during ReadListener.onDataAvailable : " + onDataAvailableException + ", " + this.in.getReadListener());
+                // Call into the user's ReadListener to indicate there is data available
+                try{
+                    this.in.getReadListener().onDataAvailable();
+                } catch (Throwable onDataAvailableException){
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exception occurred during ReadListener.onDataAvailable : " + onDataAvailableException + ", " + this.in.getReadListener());
+                    }
+                    error(vc, onDataAvailableException);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                        Tr.exit(tc, "complete");
+                    }
+                    return;
                 }
-                this.threadContextManager.popContextData();
-                error(vc, onDataAvailableException);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                    Tr.exit(tc, "complete");
-                }
-                return;
-            }
             
-            if(this.in.getReadListener() != null){ // the stream may have been closed during onDataAvailable
-                // cannot call onAllDataRead()
+                if(this.in.getReadListener() != null){ // the stream may have been closed during onDataAvailable
+                    // cannot call onAllDataRead()
 
-                //Determine if the message has been fully read. If so call the user's ReadListener to indicate all data has been read
-                //If the message isn't fully read then issue a forced async read to the channel
-                if(in.isFinished()){
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Message is fully read, calling ReadListener onAllDataRead : " + this.in.getReadListener());
-                    }
-                    try{
-                        this.in.getReadListener().onAllDataRead();
-                    } catch (Throwable onAllDataReadException){
+                    //Determine if the message has been fully read. If so call the user's ReadListener to indicate all data has been read
+                    //If the message isn't fully read then issue a forced async read to the channel
+                    if(in.isFinished()){
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Exception occurred during ReadListener.onAllDataRead : " + onAllDataReadException + ", " + this.in.getReadListener());
+                            Tr.debug(tc, "Message is fully read, calling ReadListener onAllDataRead : " + this.in.getReadListener());
                         }
-                        this.threadContextManager.popContextData();
-                        error(vc, onAllDataReadException);
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-                            Tr.exit(tc, "complete");
+                        try{
+                            this.in.getReadListener().onAllDataRead();
+                        } catch (Throwable onAllDataReadException){
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Exception occurred during ReadListener.onAllDataRead : " + onAllDataReadException + ", " + this.in.getReadListener());
+                            }
+                            error(vc, onAllDataReadException);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                                Tr.exit(tc, "complete");
+                            }
+                            return;
                         }
-                        return;
-                    }
-                } else {
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Data hasn't been fully read yet. There should be an outstanding read at this point : " + this.in.getReadListener());
+                        }
+                    
+                        // Need to call pre-join since the async read will occur on another
+                        // thread.
+                        if (onErrorDriven == false) {
+                            this.in.prepareAsyncReadListener();
+                        }
+                    }  
+                }
+                else{
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Data hasn't been fully read yet. There should be an outstanding read at this point : " + this.in.getReadListener());
+                        Tr.debug(tc, "ReadListener is not set , stream must be closed, cannot call onAllDataRead()");
                     }
-                }  
-            }
-            else{
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "ReadListener is not set , stream must be closed, cannot call onAllDataRead()");
+                }
+            } finally {
+                // Revert back to the thread's current context
+                if (localPushedThreadContext == true) {
+                    this.pushedThreadContext = false;
+                    this.threadContextManager.popContextData();
                 }
             }
-            //Revert back to the thread's current context
-            this.threadContextManager.popContextData();
-        }       
+        }
+        
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.exit(tc, "complete");
         }
@@ -147,38 +171,48 @@ public class AsyncReadCallback implements InterChannelCallback {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Calling user's ReadListener onError : " + this.in.getReadListener());
         }
+        onErrorDriven = true;
         Exception e = null;
         
         SRTServletRequestThreadData.getInstance().init(_requestDataAsyncReadCallbackThread);
-        
-        //Push the original thread's context onto the current thread, also save off the current thread's context
-        this.threadContextManager.pushContextData();
-        
-        if(this.in.getReadListener() != null){
-            synchronized( this.in.getCompleteLockObj()){
-                this.in.setAsyncReadOutstanding(false);
-                try {
-                    //An error occurred. Issue the onError call on the user's ReadListener
-                    this.in.getReadListener().onError(t);
-                } catch (Exception onErrorException) {
-                    e = onErrorException;
+
+        synchronized( this.in.getCompleteLockObj()){
+
+            boolean localPushedThreadContext = false;
+            try {
+                //Push the original thread's context onto the current thread, also save off the current thread's context
+                if (this.pushedThreadContext == false) {
+                    this.threadContextManager.pushContextData();
+                    this.pushedThreadContext = true;
+                    localPushedThreadContext = true;
+                }
+
+                if(this.in.getReadListener() != null){
+                    this.in.setAsyncReadOutstanding(false);
+                    try {
+                        //An error occurred. Issue the onError call on the user's ReadListener
+                        this.in.getReadListener().onError(t);
+                    } catch (Exception onErrorException) {
+                        e = onErrorException;
+                    }
+
+
+                    if (e != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exception occurred during ReadListener.onError : " + e + ", " + this.in.getReadListener());
+                    }
+                }
+                else{
+                    if (t != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Exception occurred during ReadListener and error cannot handle : " + t.getMessage() + ", " + this.in.getReadListener());
+                    }
+                }
+            } finally {
+                if (localPushedThreadContext == true) {
+                    //Revert back to the thread's current context
+                    this.pushedThreadContext = false;
+                    this.threadContextManager.popContextData();
                 }
             }
-
-
-            if (e != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception occurred during ReadListener.onError : " + e + ", " + this.in.getReadListener());
-            }
         }
-        else{
-            if (t != null && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception occurred during ReadListener and error cannot handle : " + t.getMessage() + ", " + this.in.getReadListener());
-            }
-        }
-        
-        //Revert back to the thread's current context
-        this.threadContextManager.popContextData();
-
     }
-
 }
