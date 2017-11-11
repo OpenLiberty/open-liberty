@@ -42,7 +42,7 @@ public class ViewScopeContextExtension implements Extension
         // Register ViewScopeBeanHolder as a bean with CDI annotations, so the system
         // can take it into account, and use it later when necessary.
         AnnotatedType bean = beanManager.createAnnotatedType(ViewScopeBeanHolder.class);
-        event.addAnnotatedType(bean);
+        event.addAnnotatedType(bean, bean.getJavaClass().getName());
     }
     
     void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscovery, BeanManager beanManager)

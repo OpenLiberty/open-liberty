@@ -30,6 +30,6 @@ public class JsfApplicationArtifactHolderExtension implements Extension
     {
         AnnotatedType jsfApplicationArtifactHolder =
                 beanManager.createAnnotatedType(JsfApplicationArtifactHolder.class);
-        event.addAnnotatedType(jsfApplicationArtifactHolder);
+        event.addAnnotatedType(jsfApplicationArtifactHolder, jsfApplicationArtifactHolder.getJavaClass().getName());
     }
 }

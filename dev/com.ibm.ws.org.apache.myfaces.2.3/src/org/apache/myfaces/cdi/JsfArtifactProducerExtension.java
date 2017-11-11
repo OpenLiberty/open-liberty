@@ -46,7 +46,7 @@ public class JsfArtifactProducerExtension implements Extension
         {
             AnnotatedType<JsfArtifactProducer> jsfArtifactProducer =
                             beanManager.createAnnotatedType(JsfArtifactProducer.class);
-            event.addAnnotatedType(jsfArtifactProducer, null);
+            event.addAnnotatedType(jsfArtifactProducer, jsfArtifactProducer.getJavaClass().getName());
         }
     }
     

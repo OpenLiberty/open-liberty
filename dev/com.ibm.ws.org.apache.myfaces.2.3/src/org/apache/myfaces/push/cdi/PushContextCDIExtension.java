@@ -50,19 +50,19 @@ public class PushContextCDIExtension implements Extension
         // can take it into account, and use it later when necessary.
         AnnotatedType<PushContextFactoryBean> pushContextFactoryBean =
                         beanManager.createAnnotatedType(PushContextFactoryBean.class);
-        event.addAnnotatedType(pushContextFactoryBean);
+        event.addAnnotatedType(pushContextFactoryBean, pushContextFactoryBean.getJavaClass().getName());
         
         AnnotatedType wcbean = beanManager.createAnnotatedType(WebsocketChannelTokenBuilderBean.class);
-        event.addAnnotatedType(wcbean);        
+        event.addAnnotatedType(wcbean, wcbean.getJavaClass().getName());
         
         AnnotatedType sessionhandlerbean = beanManager.createAnnotatedType(WebsocketSessionBean.class);
-        event.addAnnotatedType(sessionhandlerbean);
+        event.addAnnotatedType(sessionhandlerbean, sessionhandlerbean.getJavaClass().getName());
 
         AnnotatedType viewTokenBean = beanManager.createAnnotatedType(WebsocketViewBean.class);
-        event.addAnnotatedType(viewTokenBean);
+        event.addAnnotatedType(viewTokenBean, viewTokenBean.getJavaClass().getName());
 
         AnnotatedType apphandlerbean = beanManager.createAnnotatedType(WebsocketApplicationBean.class);
-        event.addAnnotatedType(apphandlerbean);
+        event.addAnnotatedType(apphandlerbean, apphandlerbean.getJavaClass().getName());
     }
 
     /**

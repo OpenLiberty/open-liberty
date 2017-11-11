@@ -48,7 +48,7 @@ public class FacesDataModelExtension implements Extension
         @Observes final BeforeBeanDiscovery event, BeanManager beanManager)
     {
         AnnotatedType beanHolder = beanManager.createAnnotatedType(FacesDataModelClassBeanHolder.class);
-        event.addAnnotatedType(beanHolder);
+        event.addAnnotatedType(beanHolder, beanHolder.getJavaClass().getName());
     }
 
     public <T> void collect(@Observes ProcessManagedBean<T> event)

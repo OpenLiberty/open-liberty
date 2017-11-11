@@ -57,7 +57,7 @@ public class FlowBuilderCDIExtension implements Extension
         // can take it into account, and use it later when necessary.
         AnnotatedType<FlowBuilderFactoryBean> flowDiscoveryHelper =
                         beanManager.createAnnotatedType(FlowBuilderFactoryBean.class);
-        event.addAnnotatedType(flowDiscoveryHelper);
+        event.addAnnotatedType(flowDiscoveryHelper, flowDiscoveryHelper.getJavaClass().getName());
     }
 
     /**
