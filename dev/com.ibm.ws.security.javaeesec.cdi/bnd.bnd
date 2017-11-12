@@ -22,7 +22,8 @@ WS-TraceGroup: \
 
 Export-Package: \
     com.ibm.ws.security.javaeesec.cdi.extensions, \
-    com.ibm.ws.security.javaeesec.cdi.beans
+    com.ibm.ws.security.javaeesec.cdi.beans, \
+    com.ibm.ws.security.javaeesec.cdi.beans.hash
 
 Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
  
@@ -56,6 +57,7 @@ Include-Resource: \
     com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.common.encoder;version=latest,\
     com.ibm.ws.container.service.compat;version=latest,\
+    com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\

@@ -25,6 +25,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
 import com.ibm.wsspi.threadcontext.ThreadContext;
@@ -34,8 +35,6 @@ import com.ibm.wsspi.threadcontext.ThreadContextProvider;
 /**
  * Callback that uses the notifications it receives about about task life cycle
  * to apply and remove thread context and send events to a ManagedTaskListener.
- * TODO always use policy executor and remove SubmittedTask, where much of this implementation is copied from,
- * if the life cycle callback is able to achieve the same behavior.
  */
 public class TaskLifeCycleCallback extends PolicyTaskCallback {
     private static final TraceComponent tc = Tr.register(TaskLifeCycleCallback.class);
@@ -44,6 +43,11 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
      * Managed executor to which the task was submitted.
      */
     private final ManagedExecutorServiceImpl managedExecutor;
+
+    /**
+     * Policy executor that will run the task.
+     */
+    final PolicyExecutor policyExecutor;
 
     /**
      * Represents thread context captured from the submitting thread.
@@ -59,6 +63,35 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     TaskLifeCycleCallback(ManagedExecutorServiceImpl managedExecutor, ThreadContextDescriptor threadContextDescriptor) {
         this.managedExecutor = managedExecutor;
         this.threadContextDescriptor = threadContextDescriptor;
+
+        Map<String, String> execProps = threadContextDescriptor.getExecutionProperties();
+        PolicyExecutor executor = Boolean.parseBoolean(execProps.get(ManagedTask.LONGRUNNING_HINT)) ? managedExecutor.longRunningPolicyExecutorRef.get() : null;
+        this.policyExecutor = executor == null ? managedExecutor.policyExecutor : executor;
+    }
+
+    /**
+     * Decide which policy executor will run the task.
+     * Use the policy executor for the long running concurrency policy if specified and the LONGRUNNING_HINT is true.
+     * Otherwise, use the policy executor the general concurrency policy.
+     *
+     * @param executor ignored by this implementation.
+     */
+    @Override
+    public final PolicyExecutor getExecutor(PolicyExecutor executor) {
+        return policyExecutor;
+    }
+
+    /**
+     * Allows for replacing the identifier that is used in exception messages and log messages about the policy executor.
+     *
+     * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
+     *            concurrencyPolicy[longRunningPolicy]
+     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
+     * @return identifier to use in messages.
+     */
+    @Override
+    public String getIdentifier(String identifier) {
+        return identifier.startsWith("managed") ? identifier : managedExecutor.name.get() + " (" + identifier + ')';
     }
 
     /**

@@ -191,15 +191,16 @@ public class ConvertRBtoNLSProps {
     }
     
     private static void printHeader(PrintWriter out, File file) {
+        println(out, "###############################################################################");
         println(out, "# Copyright (c) 2014 IBM Corporation and others.");
         println(out, "# All rights reserved. This program and the accompanying materials");
         println(out, "# are made available under the terms of the Eclipse Public License v1.0");
         println(out, "# which accompanies this distribution, and is available at");
         println(out, "# http://www.eclipse.org/legal/epl-v10.html");
-        println(out, "#                                            ");
-        println(out, "# Contributors:                               ");
+        println(out, "#");
+        println(out, "# Contributors:");
         println(out, "#     IBM Corporation - initial API and implementation");
-        println(out, "# -------------------------------------------------------------------------------------------------");
+        println(out, "###############################################################################");
         println(out, "# # {0} description of each insert field");
         println(out, "# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}");
         println(out, "# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message");

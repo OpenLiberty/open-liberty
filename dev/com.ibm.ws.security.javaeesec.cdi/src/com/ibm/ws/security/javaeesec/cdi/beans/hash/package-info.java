@@ -8,16 +8,11 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+/**
+ * @version 1.0.0
+ */
+@org.osgi.annotation.versioning.Version("1.0.0")
+@TraceOptions(traceGroup = "security", messageBundle = "com.ibm.ws.security.javaeesec.cdi.internal.resources.JavaEESecMessages")
+package com.ibm.ws.security.javaeesec.cdi.beans.hash;
 
-package com.ibm.ws.persistence.fat;
-
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                ConsumerTest_JPA21.class,
-                ConsumerTest_JPA22.class,
-})
-public class FATSuite {}
+import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -8,8 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
-package com.ibm.ws.security.javaeesec.identitystore;
+package com.ibm.ws.security.javaeesec.cdi.beans.hash;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -21,6 +20,8 @@ import java.util.Map;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Default;
 import javax.security.enterprise.identitystore.Pbkdf2PasswordHash;
 
 import com.ibm.websphere.ras.Tr;
@@ -28,6 +29,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 
+@Default
+@Dependent
 public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
 
     private static final TraceComponent tc = Tr.register(Pbkdf2PasswordHashImpl.class);
@@ -85,7 +88,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             Tr.debug(tc, "original Hash length : " + (originalHash != null?originalHash.length:"null"));
         }
         if (originalHash == null) {
-            String message = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA", Tr.formatMessage(tc, "JAVAEESEC_INVALID_HASH_VALUE"));
+            String message = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA", Tr.formatMessage(tc, "JAVAEESEC_CDI_INVALID_HASH_VALUE"));
             Tr.error(tc, message);
             throw new IllegalArgumentException(message);
         }
@@ -94,7 +97,7 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             Tr.debug(tc, "original Salt length : " + (salt != null?salt.length:"null"));
         }
         if (salt == null) {
-            String message = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA", Tr.formatMessage(tc, "JAVAEESEC_INVALID_SALT_VALUE"));
+            String message = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA", Tr.formatMessage(tc, "JAVAEESEC_CDI_INVALID_SALT_VALUE"));
             Tr.error(tc, message);
             throw new IllegalArgumentException(message);
         }
@@ -120,24 +123,24 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
                     Integer.parseInt(items[1]);
                     return items; // good.
                 } catch (Exception e) {
-                    error = Tr.formatMessage(tc, "JAVAEESEC_INVALID_ITERATION", items[1]);
+                    error = Tr.formatMessage(tc, "JAVAEESEC_CDI_INVALID_ITERATION", items[1]);
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Invalid format: the iterations is not a number : " + items[1]);
                     }
                 }
             } else {
-                error = Tr.formatMessage(tc, "JAVAEESEC_INVALID_ALGORITHM", items[0]);
+                error = Tr.formatMessage(tc, "JAVAEESEC_CDI_INVALID_ALGORITHM", items[0]);
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Invalid format: the hash algorithm is not supported : " + items[0]);
                 }
             }
         } else {
-            error = Tr.formatMessage(tc, "JAVAEESEC_INVALID_ELEMENTS", items.length);
+            error = Tr.formatMessage(tc, "JAVAEESEC_CDI_INVALID_ELEMENTS", items.length);
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Invalid format: the number of the elements is not 4 but " + items.length);
             }
         }
-        String message = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_DATA", error);
+        String message = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA", error);
         Tr.error(tc, message);
         throw new IllegalArgumentException(message);
     }
@@ -159,8 +162,8 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             if (index >= 0) {
                 output = index;
             } else {
-                Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-                String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
+                Tr.error(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
+                String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
                 throw new IllegalArgumentException(msg);
             }
         }
@@ -173,13 +176,13 @@ public class Pbkdf2PasswordHashImpl implements Pbkdf2PasswordHash {
             try {
                 output = Integer.parseInt(value);
                 if (output < minimumValue) {
-                    Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM", value, name, minimumValue);
-                    String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM", value, name, minimumValue);
+                    Tr.error(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM", value, name, minimumValue);
+                    String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM", value, name, minimumValue);
                     throw new IllegalArgumentException(msg);
                 }
             } catch (NumberFormatException e) {
-                Tr.error(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
-                String msg = Tr.formatMessage(tc, "JAVAEESEC_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
+                Tr.error(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
+                String msg = Tr.formatMessage(tc, "JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM", value, name);
                 throw new IllegalArgumentException(msg);
             }
         }
