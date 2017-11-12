@@ -47,11 +47,11 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
                         "org.hibernate.validator.cdi.internal.ValidatorFactoryBean;" +
                         "org.hibernate.validator.cdi.HibernateValidator;" +
                         "org.hibernate.validator.cdi.ValidationExtension;" +
-                        //"com.ibm.ws.beanvalidation.v20.cdi.internal.BValExtensionBean;" +
                         "org.hibernate.validator.cdi.internal.interceptor.ValidationInterceptor;" +
                         "org.hibernate.validator.internal.engine.ValidatorImpl;" +
                         "org.hibernate.validator.internal.engine.ValidatorFactoryImpl;" +
                         //"org.hibernate.validator.cdi.internal.ValidationProviderHelper;" +
+                        "org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory;" +
                         "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorBean;" +
                         "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorFactoryBean" // +
            //"org.hibernate.validator.cdi.internal.ValidatorBean;" +
@@ -117,7 +117,6 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
             System.out.println("@AGG adding " + vBean);
             afterBeanDiscoveryEvent.addBean(vBean);
             afterBeanDiscoveryEvent.addBean(hibernateValidatorBean);
-            afterBeanDiscoveryEvent.addBean(new BValExtensionBean());
         }
     }
 

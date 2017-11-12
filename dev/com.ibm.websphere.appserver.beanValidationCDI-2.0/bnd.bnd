@@ -13,4 +13,5 @@
 -nobundles=true
 
 -dependson: \
+	com.ibm.ws.beanvalidation.v20.cdi;version=latest,\
 	com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest

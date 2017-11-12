@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2015 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
+                   xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+                   localization="OSGI-INF/l10n/metatype">
+
+	<OCD description="internal use only" name="internal" 
+         id="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory">
+
+        <AD name="internal" description="internal use only"
+            id="type" required="true" type="String"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory">
+        <Object ocdref="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory"/>
+    </Designate>
+    
+    <OCD name="internal" description="internal use only"
+         id="com.ibm.ws.beanvalidation.v20.config.internal.ValidationConfigurationV20FactoryImpl">
+
+        <AD name="internal" description="internal use only"
+            id="ValidationReleasableFactory" required="true" type="String" cardinality="100"
+            ibm:type="pid" ibm:reference="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory" default="*" ibm:final="true"/> 
+
+        <AD id="ValidationReleasableFactory.cardinality.minimum" name="internal"  description="internal use only" 
+            type="String" required="true" default="${count(ValidationReleasableFactory)}"/>
+    </OCD>
+    
+    <Designate pid="com.ibm.ws.beanvalidation.v20.config.internal.ValidationConfigurationV20FactoryImpl">
+        <Object ocdref="com.ibm.ws.beanvalidation.v20.config.internal.ValidationConfigurationV20FactoryImpl"/>
+    </Designate>
+    
+</metatype:MetaData>

@@ -11,6 +11,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.xml.bind.ValidationException;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
@@ -21,11 +22,28 @@ public class BeanValCDIServlet extends FATServlet {
 
     @Inject
     BeanValCDIBean bean;
+
     @Resource
     ValidatorFactory injectValidatorFactory;
 
+    @Inject
+    ValidatorFactory injectValFact;
+
+    @Inject
+    Validator injectVal;
+
+    @Test
+    public void testInjectVF() throws Exception {
+        Assert.assertNotNull(injectValFact);
+    }
+
+    @Test
+    public void testInjectVal() throws Exception {
+        Assert.assertNotNull(injectVal);
+    }
+
     // TODO: Disabled because bean is not being injected into TestAnnotationValidator
-    // @Test
+    @Test
     public void testConstraintValidatorInjection() throws Exception {
         Validator validator = this.injectValidatorFactory.getValidator();
         Set<ConstraintViolation<BeanValCDIBean>> violations = validator.validate(this.bean, new Class[0]);
@@ -38,8 +56,7 @@ public class BeanValCDIServlet extends FATServlet {
         }
     }
 
-    // TODO: Disabled because Hibernate's Interceptor is being registered twice
-    // @Test
+    @Test
     public void testInterceptorRegisteredOnlyOnce() throws Exception {
         TestAnnotationValidator.isValidCounter = 0;
         this.bean.validateMethod("Inside testInterceptorRegisteredOnlyOnce test.");
