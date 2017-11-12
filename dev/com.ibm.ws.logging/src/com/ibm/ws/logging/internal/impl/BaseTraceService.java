@@ -169,15 +169,8 @@ public class BaseTraceService implements TrService {
     protected final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
 
-    //DYKC
     protected volatile String serverName = null;
     protected volatile String wlpUserDir = null;
-//    private volatile LogSource logSource = null;//IF JsonTrService, this moves aswell
-//    private volatile TraceSource traceSource = null;//IF JsonTrService, this moves aswell
-//    private volatile MessageLogHandler messageLogHandler = null;//IF JsonTrService, this moves aswell
-//    private volatile BufferManagerImpl logConduit;//IF JsonTrService, this moves aswell
-//    private volatile BufferManagerImpl traceConduit;//IF JsonTrService, this moves aswell
-//    private volatile HandlerUtils handlerUtils = null; //IF JsonTrService, this moves aswell
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -213,14 +206,12 @@ public class BaseTraceService implements TrService {
      */
     @Override
     public void init(LogProviderConfig config) {
-        System.out.println("BaseTraceService.java = BEGIN INIT"); //DYKC-debug
         update(config);
 
         registerLoggerHandlerSingleton();
         // Capture System.out/.err after registerLoggerHandler has initialized
         // LogManager, which might print errors due to misconfiguration.
         captureSystemStreams();
-        System.out.println("BaseTraceService.java = FINISHED INIT"); //DYKC-debug
     }
 
     protected void registerLoggerHandlerSingleton() {
@@ -256,14 +247,13 @@ public class BaseTraceService implements TrService {
      */
     @Override
     public synchronized void update(LogProviderConfig config) {
-        System.out.println("The current TrService is " + this.getClass().getName()); //DYKC-debug
         LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
         logHeader = trConfig.getLogHeader();
         javaLangInstrument = trConfig.hasJavaLangInstrument();
         consoleLogLevel = trConfig.getConsoleLogLevel();
         copySystemStreams = trConfig.copySystemStreams();
         hideMessageids = trConfig.getMessagesToHide();
-        //DYKC
+        //DYKC-nice to know what serverName and wlpUserDir is and pass it to an Handler created by JsonTrService
         serverName = trConfig.getServerName();
         wlpUserDir = trConfig.getWlpUsrDir();
         //add hideMessageIds to log header. This is printed when its configured in bootstrap.properties
@@ -284,44 +274,7 @@ public class BaseTraceService implements TrService {
         if (hideMessageids.size() > 0) {
             Tr.info(TraceSpecification.getTc(), "MESSAGES_CONFIGURED_HIDDEN_2", new Object[] { hideMessageids });
         }
-        //DYKC- I guess i should just have a JSON child class.
-        //setupCollectorManagerPipeline();
     }
-
-//    /*
-//     * Set up that pipeline. Should only appear in JsonTrService????
-//     *
-//     */
-//    private void setupCollectorManagerPipeline() {
-//        /*
-//         * //DYKC how to avoid other BTS from starting this up due to 'updates' calls in HPEL and JSR47.
-//         * If we don't have a handlerUtils, we definitely need one.
-//         * Should we always have this enabled?
-//         *
-//         */
-//        if (handlerUtils == null) {
-//            handlerUtils = HandlerUtils.getInstance();
-//
-//            //Sources
-//            logSource = handlerUtils.getLogSource();
-//            traceSource = handlerUtils.getTraceSource();
-//
-//            //Conduits
-//            logConduit = handlerUtils.getLogConduit();
-//            traceConduit = handlerUtils.getTraceConduit();
-//
-//            System.out.println("BASE TRACE SERVICE LogConduit is = " + logConduit.toString());
-//            System.out.println("BASE TRACE SERVICE logSource is = " + logSource.toString());
-//        }
-//        //Create Handler and pass it to CMBootStrap
-//        if (messageLogHandler == null) {
-//            messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
-//            messageLogHandler.setFileLogHolder(messagesLog);
-//            logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
-//            handlerUtils.setHandler(messageLogHandler);
-//        }
-//
-//    }
 
     /**
      * {@inheritDoc} <p>
@@ -488,13 +441,8 @@ public class BaseTraceService implements TrService {
 
         // Tee to messages.log (always)
         String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
-        //messagesLog.writeRecord(message); //OLD
-        //DYKC
-        //If not configured do:
-        //If not configured, skip;
-        //messageLogHandler.writeToLogNormal(message); //Replaces normal one, also moved over to json
+        messagesLog.writeRecord(message);
 
-        //DYKC - If it is configured, I'd definitely want it to go here.
         invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
 
         if (detailLog == systemOut) {
@@ -559,21 +507,6 @@ public class BaseTraceService implements TrService {
             retMe &= internalMsgRouter.route(routedMessage);
         } else {
             earlierMessages.add(routedMessage);
-            /*
-             * //DYKC
-             * If no Routers are set, then there is no way for a message event to go through to LogSource
-             * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
-             * the router.
-             *
-             * When the Router is fully initialized then it will go through to the Router and then LogSource as appropriate.
-             *
-             * logSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
-             * appropriately call setupCollectorManagerPipeline()
-             */
-//            if (logSource != null) {
-//                logSource.publish(routedMessage);
-//            }
-            //Moved over to JsonTraceService
         }
         return retMe;
     }
@@ -733,7 +666,6 @@ public class BaseTraceService implements TrService {
      * Inject the internal WsMessageRouter.
      */
     protected void setWsMessageRouter(WsMessageRouter msgRouter) {
-        System.out.print("Base Trace SErvice ++++++ setting a router");
         internalMessageRouter.set(msgRouter);
 
         // Pass the earlierMessages queue to the router.

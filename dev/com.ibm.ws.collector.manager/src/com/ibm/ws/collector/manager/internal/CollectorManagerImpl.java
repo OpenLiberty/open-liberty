@@ -99,10 +99,20 @@ public class CollectorManagerImpl implements CollectorManager {
             srcMgr = new SourceManager(source);
             sourceMgrs.put(srcMgr.getSourceId(), srcMgr);
             /*
-             * //DYKC
-             * Obtain the buffer and put it in bufferMangaerMap
-             * continue 'as normal'
-             * Do this only if source is LogSource or Trace Source
+             * Obtain the conduit/bufferManager and put it in bufferManagerMap
+             * if the source being set is message/log or trace.
+             *
+             * This is to make up for the prior logic where conduit/bufferManager
+             * were created before the source was created and were set into the bufferManagerMap
+             *
+             * With the new logic concerning LogSource and TraceSource for JsonLoggin, the LogSource
+             * and TraceSource and their respective Conduit/BufferManager were created outside of
+             * CollectorManager and OSGI serviceability. Thus, the following call to processInitializedConduits
+             * retrieves the conduits/bufferManagers that were created 'outside' collectorManager's realm of
+             * control and places them into bufferManagerMap because the following logic expects the prior
+             * statement to be true.
+             *
+             * Alas, continue 'as normal' afterwards.
              */
             processInitializedConduits(source);
 
@@ -131,30 +141,51 @@ public class CollectorManagerImpl implements CollectorManager {
 
     /*
      * Process Conduits created by Trace and Message due to the CollectorManagerPipelineConfigurator
+     * and CollectorManagerPipelineUtils.
      */
     private void processInitializedConduits(Source source) {
-
+        String sourceId = CollectorManagerUtils.getSourceId(source);
         String sourceName = source.getSourceName();
+        /*
+         * Check that the current source initialized is Log/Message and Trace.
+         * These are the unique special sources along with their respective Conduits/BufferManagers
+         * that were started before OSGI and thusly were not configured via 'the osgi' way that CollectorManager
+         * had in place before the JSON Logging work.
+         */
         if (sourceName.equals(CollectorConstants.MESSAGES_SOURCE) || sourceName.equals(CollectorConstants.TRACE_SOURCE)) {
+            //Make sure we have a bundleContext, we need this to play with osgi (i.e. register/listen to services)
             if (bundleContext == null) {
                 retrieveBundleContext();
             }
-            //should check if its already in map
+            /*
+             * We should really check if the source and conduit/bufferManager is already set into the
+             * SourceManager and BufferManager maps. If so, no need to continue the rest of this method.
+             */
+            if (sourceMgrs.containsKey(sourceId) && bufferManagerMap.containsKey(sourceId)) {
+                return;
+            }
+
             ServiceReference<BufferManager>[] servRefs;
             try {
                 servRefs = (ServiceReference<BufferManager>[]) bundleContext.getServiceReferences(BufferManager.class.getName(), null);
                 if (servRefs != null) {
                     for (ServiceReference<BufferManager> servRef : servRefs) {
-                        //ensure that the BufferManager retrieved is the right one for the source
+                        /*
+                         * Ensure that the Conduit/BufferManager retrieved is the right one for the source
+                         * by checking that the 'source' that the conduit/bufferManager was assinged to
+                         * was for the Source that we are registering.
+                         */
                         if (sourceName.equals(servRef.getProperty("source"))) {
-                            //Casts all the way down
+                            /*
+                             * Retrieve the actual Conduit/BufferManager fro mthe service Reference
+                             * and put it into the bufferManagerMap.
+                             */
                             Object object = bundleContext.getService(servRef);
                             BufferManager conduit = (BufferManager) object;
-                            bufferManagerMap.put(CollectorManagerUtils.getSourceId(source), conduit);
-                            System.out.println("BUFFER ACQUIRED TARGET FIRING " + conduit);
+                            bufferManagerMap.put(sourceId, conduit);
                         }
-                    } //end for
-                } //end if (servRefs != null)
+                    }
+                }
 
             } catch (InvalidSyntaxException e) {
                 e.printStackTrace();
@@ -344,11 +375,11 @@ public class CollectorManagerImpl implements CollectorManager {
             retrieveBundleContext();
         }
         buffMgrRegistration = bundleContext.registerService(BufferManager.class.getName(), bufferMgr, props);
-        //bundleContext.
         activeBuffMgrServices.put(sourceId, buffMgrRegistration);
     }
 
     private synchronized void unregisterAllBufferManagers() {
+        //DYKC-problem Probably don't want logConduit and traceConduit to be unregistered.
         for (ServiceRegistration<?> entry : activeBuffMgrServices.values()) {
             if (entry != null) {
                 entry.unregister();
@@ -356,7 +387,7 @@ public class CollectorManagerImpl implements CollectorManager {
         }
     }
 
-    private void retrieveBundleContext() {
+    private synchronized void retrieveBundleContext() {
         bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
     }
 }

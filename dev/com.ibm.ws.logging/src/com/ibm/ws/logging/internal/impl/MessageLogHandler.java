@@ -15,6 +15,7 @@ import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.concurrent.CountDownLatch;
 
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
@@ -37,6 +38,9 @@ public class MessageLogHandler implements Handler, Formatter {
     private String serverName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
+
+    /** Latch to handle a corner case where modified() might get called before init() */
+    private final CountDownLatch latch = new CountDownLatch(1);
 
     private CollectorManager collectorMgr = null;
 
@@ -70,7 +74,7 @@ public class MessageLogHandler implements Handler, Formatter {
         } catch (Exception e) {
 
         } finally {
-            //latch.countDown();
+            latch.countDown();
         }
     }
 

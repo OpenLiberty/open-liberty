@@ -27,11 +27,8 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
 
     /**
      * Create LogSource, TraceSource and their respective conduits.
-     * Handler is set specifically by BaseTraceService
      */
     public CollectorManagerPipelineUtils() {
-        System.out.println("HandlerUtils.java - I AM HANDLER UTILS AND I AM NOW ALIVE");
-        //DYKC-temp create only LogSource for now.
         if (logSource == null) {
             logSource = new LogSource();
         }
@@ -41,11 +38,11 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
         if (logConduit == null) {
             logConduit = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.message");
         }
-        System.out.println("HandlerUtils.java = created LogConduit/BufferManager + " + logConduit.toString());
+        //System.out.println("HandlerUtils.java = created LogConduit/BufferManager + " + logConduit.toString()); //DYKC-debug
         if (traceConduit == null) {
             traceConduit = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.trace");
         }
-        logSource.setBufferManager(logConduit); //DYKC-temp Definitely need to change taht method name....
+        logSource.setBufferManager(logConduit); //DYKC-temp methodName?
     }
 
     public static synchronized CollectorManagerPipelineUtils getInstance() {

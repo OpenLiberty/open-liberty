@@ -105,36 +105,48 @@ public class CollectorManagerPipelineConfigurator {
     
     protected void setCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
     	//DYKC-debug
-        //System.out.println("CollectorManagerConfigurator.java - setCollectorManagerHandler()");
     	
-    	//Need explicit the source class, since we need to register them as WsLogHandlers
+    	//Retrieves the LogSource and TraceSource from the collectorManagerPipelineUtils singleton
         LogSource logSource = collectorMgrPipelineUtils.getLogSource();
         TraceSource traceSource = collectorMgrPipelineUtils.getTraceSource();
-        System.out.println("CollectorManagerConfigurator.java - I got a Log Source " + logSource);
-        System.out.println("CollectorManagerConfigurator.java - I got a Trace Source " + traceSource);
+
+        //Retrieves the LogConduit and TraceConduit from the collectorManagerPipelineUtils singleton
     	BufferManagerImpl logConduit = collectorMgrPipelineUtils.getLogConduit();
     	BufferManagerImpl traceConduit = collectorMgrPipelineUtils.getTraceConduit();
-        System.out.println("CollectorManagerConfigurator.java - I got a Log Conduit " + logConduit);
-        System.out.println("CollectorManagerConfigurator.java - I got a Trace Conduit " + traceConduit);
+        //DYKC-debug
+        //System.out.println("CollectorManagerConfigurator.java - I got a Log Source " + logSource);
+        //System.out.println("CollectorManagerConfigurator.java - I got a Trace Source " + traceSource);
+        //System.out.println("CollectorManagerConfigurator.java - I got a Log Conduit " + logConduit);
+        //System.out.println("CollectorManagerConfigurator.java - I got a Trace Conduit " + traceConduit);
         
         
-        //Need to actually set conduit into the sources
+        /* Set the conduit/BufferManger into their respective sources
+         * Typically, this would have been set via osgi reference/dependencies that were
+         * defined in the bnd.bnd file of CollectorManager, but for the Json Logging feature,
+         * the LogSource and TraceSource are created earlier than osgi is available and will
+         * need to have the Conduit/BufferManager set in manually. 
+         */
+    	
         logSource.setBufferManager(logConduit);
         traceSource.setBufferManager(traceConduit);
         
-    	//Register the Conduits
+    	//Register the Conduits/BufferManager
     	bundleContext.registerService(BufferManager.class.getName(), logConduit, returnConduitServiceProps(logSource.getSourceName()));
     	bundleContext.registerService(BufferManager.class.getName(), traceConduit, returnConduitServiceProps(traceSource.getSourceName()));
-
-    	System.out.println("le name is + " + WsLogHandler.class.getName());
     	
     	
-        //Register the Sources as Source and WsLog/traceHandlers
+        //Register the LogSource and TraceSource as Source and WsLogHandler or WsTracehandler as intended
     	bundleContext.registerService(new String[] {Source.class.getName(), WsLogHandler.class.getName()}, logSource, returnSourceServiceProps());
     	bundleContext.registerService(new String[] {Source.class.getName(), WsTraceHandler.class.getName()}, traceSource, returnSourceServiceProps());
     	
-    	//Lastly register the Handler, if it exists.
-    	//Magic of piecing this together nicely in the CollectorManager belongs with the Collectormanager
+    	
+    	/* Retrieve and register the Handler, if it exists. JsonTraceService creates it and sets it
+    	 * into the collectorManagerPipelineUtils for retrieval now.
+    	 * 
+    	 * The responsibility of responsibly  tying the 'pipeline' together belongs with CollectorManager.
+    	 * This includes successfully merging the source and conduit/bufferManager with 'other' Handlers 
+    	 * (i.e. LogStashCollector, LogMetCollector)
+    	 */
     	Handler messageLoghandler = collectorMgrPipelineUtils.getLogHandler();
     	if (messageLoghandler != null){
     		bundleContext.registerService(Handler.class.getName(), messageLoghandler, returnHandlerServiceProps());

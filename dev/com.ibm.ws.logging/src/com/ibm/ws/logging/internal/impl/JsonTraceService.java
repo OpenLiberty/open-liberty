@@ -38,13 +38,16 @@ public class JsonTraceService extends BaseTraceService {
     private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
 
     // for now always have it configured?
-    private volatile boolean isConfigured = false;
+    private static volatile boolean isMessageJsonConfigured = false;
+    private static volatile boolean isConsoleJsonConfigured = false;
 
     @Override
     public synchronized void update(LogProviderConfig config) {
         super.update(config);
         /*
          * Check if it is configured then start up pipeline?
+         * Or will we always have a pipeline? <- This is easier atm.
+         *
          */
 //DYKC     _______ ____    _____   ____
 //      |__   __/ __ \  |  __ \ / __ \
@@ -56,7 +59,7 @@ public class JsonTraceService extends BaseTraceService {
     }
 
     /*
-     * Set up that pipeline. Should only appear in JsonTrService????
+     * Set up that pipeline.
      *
      */
     private void setupCollectorManagerPipeline() {
@@ -81,6 +84,7 @@ public class JsonTraceService extends BaseTraceService {
             System.out.println("JSON TRACE SERVICE logSource is = " + logSource.toString());
         }
         //Create Handler and pass it to CMBootStrap
+        //DYKC-problem create the appropriate handler, ie console vs message
         if (messageLogHandler == null) {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
             messageLogHandler.setFileLogHolder(messagesLog);
@@ -88,7 +92,7 @@ public class JsonTraceService extends BaseTraceService {
             collectorMgrPipelineUtils.setHandler(messageLogHandler);
         }
 
-        //isConfigured = true; //DYKC-temp
+        isMessageJsonConfigured = true; //DYKC-temp not the best way, configure to json.
 
     }
 
@@ -100,10 +104,9 @@ public class JsonTraceService extends BaseTraceService {
         String message = formatter.messageLogFormat(logRecord, logRecord.getMessage());
         //messagesLog.writeRecord(message); //OLD
         //DYKC
-        //If not configured do:
-        //If not configured, skip;
-        if (!isConfigured)
+        if (!isMessageJsonConfigured && !isConsoleJsonConfigured) {
             messageLogHandler.writeToLogNormal(message); //This replaces
+        }
 
         invokeMessageRouters(new RoutedMessageImpl(logRecord.getMessage(), logRecord.getMessage(), message, logRecord));
 
@@ -138,7 +141,7 @@ public class JsonTraceService extends BaseTraceService {
         } else {
             earlierMessages.add(routedMessage);
             /*
-             * //DYKC
+             * //DYKC-review
              * If no Routers are set, then there is no way for a message event to go through to LogSource
              * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
              * the router.
@@ -148,8 +151,8 @@ public class JsonTraceService extends BaseTraceService {
              * logSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
              * appropriately call setupCollectorManagerPipeline()
              */
-            if (logSource != null && isConfigured) {
-                logSource.publish(routedMessage);
+            if (logSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
+                logSource.publish(routedMessage); //DYKC-temp currently directly sends to handler that we gave to it.
             }
         }
         return retMe;
@@ -185,7 +188,7 @@ public class JsonTraceService extends BaseTraceService {
                          * traceSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
                          * appropriately call setupCollectorManagerPipeline()
                          */
-                        if (logSource != null && isConfigured) {
+                        if (logSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
                             traceSource.publish(routedTrace);
                         }
                     }
@@ -227,11 +230,10 @@ public class JsonTraceService extends BaseTraceService {
             //DYKC
             // messages.log  //send directly.
             //messagesLog.writeRecord(messageLogFormat); // OLD
-            //if not configured - do this - Its nice that we've already got invoke Message Routers above.
-            //But will need to make sure it doesn't go ahead and JSONIFIES
-            // update ( which recieves configuration) will dictate if it gets configured?
+            //If messageHandler and consoleHandler are not configured.
+            //Write normally.
 
-            if (!isConfigured) {
+            if (!isMessageJsonConfigured && !isConsoleJsonConfigured) {
                 messageLogHandler.writeToLogNormal(messageLogFormat);
             }
 
