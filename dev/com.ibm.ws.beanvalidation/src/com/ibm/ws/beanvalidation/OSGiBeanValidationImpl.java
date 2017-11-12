@@ -418,8 +418,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
      * configuration updates.
      */
     private void cleanBvalCache() {
-        // TODO @AGG
-        if (false && isBeanValidationVersion11()) {
+        if (isBeanValidationVersion11()) {
             ClassLoader classLoader = null;
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;

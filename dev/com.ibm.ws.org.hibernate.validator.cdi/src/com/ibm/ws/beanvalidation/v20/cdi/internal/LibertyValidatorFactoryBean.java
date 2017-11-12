@@ -22,6 +22,7 @@ import javax.enterprise.inject.Default;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.validation.ValidatorFactory;
 
+import org.hibernate.validator.cdi.HibernateValidator;
 import org.hibernate.validator.cdi.internal.ValidationProviderHelper;
 import org.hibernate.validator.cdi.internal.ValidatorFactoryBean;
 
@@ -34,10 +35,11 @@ import org.hibernate.validator.cdi.internal.ValidatorFactoryBean;
  *
  */
 public class LibertyValidatorFactoryBean extends ValidatorFactoryBean {
-    protected String id = null;
+
+    protected final String id = getClass().getName();
 
     static final Set<Annotation> qualifiers = new HashSet<Annotation>(Arrays.asList(new AnnotationLiteral<Default>() {},
-                                                                                    //new AnnotationLiteral<HibernateValidator>() {},
+                                                                                    new AnnotationLiteral<HibernateValidator>() {},
                                                                                     new AnnotationLiteral<Any>() {}));
 
     public LibertyValidatorFactoryBean() {
@@ -49,7 +51,7 @@ public class LibertyValidatorFactoryBean extends ValidatorFactoryBean {
     public ValidatorFactory create(CreationalContext<ValidatorFactory> context) {
         System.out.println("@AGG creating VF!");
         Thread.dumpStack();
-        return LibertyHibernateValidatorExtension.instance().getDefaultValidatorFactory();
+        return LibertyHibernateValidatorExtension.getDefaultValidatorFactory();
     }
 
     @Override
@@ -73,14 +75,10 @@ public class LibertyValidatorFactoryBean extends ValidatorFactoryBean {
     /*
      * Override this method so that a LibertyValidatorFactoryBean is stored in the WELD
      * Bean Store keyed on its classname. This allows an injected ValidatorFactory Bean to
-     * be retrieved in both local and server failover scenarios as per defect 774504.
+     * be retrieved in both local and server failover scenarios
      */
     @Override
     public String getId() {
-        if (id == null) {
-            // Set id to the class name
-            id = this.getClass().getName();
-        }
         return id;
     }
 

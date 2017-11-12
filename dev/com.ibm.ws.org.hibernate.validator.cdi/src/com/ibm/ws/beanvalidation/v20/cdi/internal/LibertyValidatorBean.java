@@ -36,7 +36,7 @@ import org.hibernate.validator.cdi.internal.ValidatorBean;
  */
 public class LibertyValidatorBean extends ValidatorBean {
 
-    protected String id = null;
+    protected final String id = getClass().getName();
 
     static final Set<Annotation> qualifiers = new HashSet<Annotation>(Arrays.asList(new AnnotationLiteral<Default>() {},
                                                                                     new AnnotationLiteral<HibernateValidator>() {},
@@ -48,7 +48,7 @@ public class LibertyValidatorBean extends ValidatorBean {
 
     @Override
     public Validator create(CreationalContext<Validator> context) {
-        Validator validator = LibertyHibernateValidatorExtension.instance().getDefaultValidator();
+        Validator validator = LibertyHibernateValidatorExtension.getDefaultValidator();
         return validator;
     }
 
@@ -73,14 +73,10 @@ public class LibertyValidatorBean extends ValidatorBean {
     /*
      * Override this method so that a LibertyValidatorBean is stored in the WELD
      * Bean Store keyed on its classname. This allows an injected Validator Bean to
-     * be retrieved in both local and server failover scenarios as per defect 774504.
+     * be retrieved in both local and server failover scenarios
      */
     @Override
     public String getId() {
-        if (id == null) {
-            // Set id to the class name
-            id = this.getClass().getName();
-        }
         return id;
     }
 }

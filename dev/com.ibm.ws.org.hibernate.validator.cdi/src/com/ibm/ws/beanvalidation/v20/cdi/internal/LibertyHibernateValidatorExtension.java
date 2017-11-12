@@ -28,7 +28,8 @@ import javax.validation.executable.ValidateOnExecution;
 import org.hibernate.validator.cdi.ValidationExtension;
 import org.hibernate.validator.cdi.internal.ValidatorBean;
 import org.hibernate.validator.cdi.internal.ValidatorFactoryBean;
-import org.osgi.service.component.annotations.Activate;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -62,35 +63,28 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
            })
 public class LibertyHibernateValidatorExtension implements Extension, WebSphereCDIExtension {
 
-    // TODO get rid of this and use svc registry instead
-    private static LibertyHibernateValidatorExtension instance;
-
-    public static LibertyHibernateValidatorExtension instance() {
-        return instance;
-    }
-
     @Reference
     BeanValidation beanValidation;
 
-    @Activate
-    protected void activate() {
-        instance = this;
+    public static BeanValidation getBeanVal() {
+        BundleContext bctx = FrameworkUtil.getBundle(LibertyHibernateValidatorExtension.class).getBundleContext();
+        return bctx.getService(bctx.getServiceReference(BeanValidation.class));
     }
 
-    public Validator getDefaultValidator() {
+    public static Validator getDefaultValidator() {
         try {
             ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            return beanValidation.getValidator(componentMetaData);
+            return getBeanVal().getValidator(componentMetaData);
         } catch (ValidationException e) {
             e.printStackTrace();
             return null;
         }
     }
 
-    public ValidatorFactory getDefaultValidatorFactory() {
+    public static ValidatorFactory getDefaultValidatorFactory() {
         try {
             ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-            return beanValidation.getValidatorFactory(componentMetaData);
+            return getBeanVal().getValidatorFactory(componentMetaData);
         } catch (ValidationException e) {
             e.printStackTrace();
             return null;
