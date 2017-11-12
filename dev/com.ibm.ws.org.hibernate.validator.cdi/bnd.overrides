@@ -20,4 +20,5 @@ Private-Package: \
 
 Include-Resource: \
   @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/services/*,\
-  @${repo;org.hibernate.validator:hibernate-validator-cdi;6.0.4.Final}!/META-INF/services/*
+  @${repo;org.hibernate.validator:hibernate-validator-cdi;6.0.4.Final}!/META-INF/services/*,\
+  META-INF=resources/META-INF
