@@ -47,7 +47,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
                         "org.hibernate.validator.cdi.internal.ValidatorFactoryBean;" +
                         "org.hibernate.validator.cdi.HibernateValidator;" +
                         "org.hibernate.validator.cdi.ValidationExtension;" +
-                        "com.ibm.ws.beanvalidation.v20.cdi.internal.BValExtensionBean;" +
+                        //"com.ibm.ws.beanvalidation.v20.cdi.internal.BValExtensionBean;" +
                         "org.hibernate.validator.cdi.internal.interceptor.ValidationInterceptor;" +
                         "org.hibernate.validator.internal.engine.ValidatorImpl;" +
                         "org.hibernate.validator.internal.engine.ValidatorFactoryImpl;" +

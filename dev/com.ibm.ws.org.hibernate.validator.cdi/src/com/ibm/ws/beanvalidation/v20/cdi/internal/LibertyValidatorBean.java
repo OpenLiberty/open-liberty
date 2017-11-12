@@ -11,6 +11,7 @@
 package com.ibm.ws.beanvalidation.v20.cdi.internal;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -54,6 +55,14 @@ public class LibertyValidatorBean extends ValidatorBean {
     @Override
     public Class<?> getBeanClass() {
         return Validator.class;
+    }
+
+    @Override
+    public Set<Type> getTypes() {
+        Set<Type> types = new HashSet<Type>();
+        for (Class<?> c = Validator.class; c != null; c = c.getSuperclass())
+            types.add(c);
+        return types;
     }
 
     @Override
