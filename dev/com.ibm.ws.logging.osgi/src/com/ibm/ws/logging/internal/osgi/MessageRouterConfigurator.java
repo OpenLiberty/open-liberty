@@ -31,6 +31,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.wsspi.logging.LogHandler;
 
 /**
@@ -180,7 +181,16 @@ public class MessageRouterConfigurator implements BundleListener {
     protected void setWsLogHandler(ServiceReference<WsLogHandler> ref) {
     	
     	//DYKC
-        getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);
+    	//If it is a jsonTrSErvice, then we don't want early messages, and the opposite is true if it is not a jsonTRservice
+    	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
+    		System.out.println("MessageRouterConfigurator ~~~~ setting message router false");
+    		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);
+    	}
+    	else {
+    		System.out.println("MessageRouterConfigurator ~~~~ setting message router true");
+    		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);   		
+    	}
+
     }
 
     /**

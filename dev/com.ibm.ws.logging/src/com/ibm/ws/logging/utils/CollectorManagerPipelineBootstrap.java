@@ -18,7 +18,7 @@ import com.ibm.wsspi.collector.manager.Handler;
 /**
  *
  */
-public interface CollectorManagerBootStrap {
+public interface CollectorManagerPipelineBootstrap {
 
     public LogSource getLogSource();
 

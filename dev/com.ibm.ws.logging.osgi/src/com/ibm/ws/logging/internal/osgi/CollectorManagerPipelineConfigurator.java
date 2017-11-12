@@ -13,6 +13,7 @@ package com.ibm.ws.logging.internal.osgi;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
@@ -21,18 +22,24 @@ import org.osgi.framework.ServiceListener;
 import org.osgi.framework.ServiceReference;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
-import com.ibm.ws.logging.utils.HandlerUtils;
+import com.ibm.ws.logging.WsLogHandler;
+import com.ibm.ws.logging.WsTraceHandler;
+import com.ibm.ws.logging.source.LogSource;
+import com.ibm.ws.logging.source.TraceSource;
+import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
+import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
+import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.Source;
 
 
-public class CollectorManagerConfigurator {
+public class CollectorManagerPipelineConfigurator {
 
     /**
      * A reference to the OSGI bundle framework.
      */
     private BundleContext bundleContext = null;
-    private HandlerUtils myHandlerUtils = null;
+    private CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
     /**
      * The ServiceListener interface. Invoked by OSGI whenever a ServiceReference changes state.
      * Receives WsLogHandler events and passes them along to WsTraceRouterImpl.
@@ -61,8 +68,8 @@ public class CollectorManagerConfigurator {
      * 
      * @param context The BundleContext.
      */
-    public CollectorManagerConfigurator(BundleContext context) {
-    	myHandlerUtils = HandlerUtils.getInstance();
+    public CollectorManagerPipelineConfigurator(BundleContext context) {
+    	collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
         bundleContext = context;
 
         try {
@@ -77,39 +84,62 @@ public class CollectorManagerConfigurator {
         }
     }
 
-    private Dictionary<String,String> returnProps(){
+    private Dictionary<String,String> returnSourceServiceProps(){
     	Dictionary<String, String> serviceProperties = new Hashtable<String, String>();
     	serviceProperties.put("service.vendor", "IBM");
     	serviceProperties.put("id", "ANALYTICSLOGSOURCE");
     	return serviceProperties;
     }
     
+    private Dictionary<String,String> returnConduitServiceProps(String sourceName){
+    	Dictionary<String, String> serviceProperties = new Hashtable<String, String>();
+    	serviceProperties.put("source", sourceName);
+    	return serviceProperties;
+    }
+    
+    private Dictionary<String,String> returnHandlerServiceProps(){
+    	Dictionary<String, String> serviceProperties = new Hashtable<String, String>();
+    	serviceProperties.put("service.vendor", "IBM");
+    	return serviceProperties;
+    }
+    
     protected void setCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
-   	
-        System.out.println("CollectorManagerConfigurator.java - setCollectorManagerHandler()");
-        Source logSource = myHandlerUtils.getLogSource();
-        Source traceSource = myHandlerUtils.getTraceSource();
+    	//DYKC-debug
+        //System.out.println("CollectorManagerConfigurator.java - setCollectorManagerHandler()");
+    	
+    	//Need explicit the source class, since we need to register them as WsLogHandlers
+        LogSource logSource = collectorMgrPipelineUtils.getLogSource();
+        TraceSource traceSource = collectorMgrPipelineUtils.getTraceSource();
         System.out.println("CollectorManagerConfigurator.java - I got a Log Source " + logSource);
         System.out.println("CollectorManagerConfigurator.java - I got a Trace Source " + traceSource);
+    	BufferManagerImpl logConduit = collectorMgrPipelineUtils.getLogConduit();
+    	BufferManagerImpl traceConduit = collectorMgrPipelineUtils.getTraceConduit();
+        System.out.println("CollectorManagerConfigurator.java - I got a Log Conduit " + logConduit);
+        System.out.println("CollectorManagerConfigurator.java - I got a Trace Conduit " + traceConduit);
         
-
-    	bundleContext.registerService(Source.class.getName(), logSource, returnProps());
-    	bundleContext.registerService(Source.class.getName(), traceSource, returnProps());
         
-    	BufferManagerImpl logConduit = myHandlerUtils.getLogConduit();
-    	BufferManagerImpl traceConduit = myHandlerUtils.getTraceConduit();
-    	
-    	
-    	//DYKC-TODO Need to do something regarding setting BufferManager/Conduit into CollectorManager?!?
-    	//i.e. register it?
-    	
-//DYKC     _______ ____    _____   ____  
-//    	  |__   __/ __ \  |  __ \ / __ \ 
-//    	     | | | |  | | | |  | | |  | |
-//    	     | | | |  | | | |  | | |  | |
-//    	     | | | |__| | | |__| | |__| |
-//    	     |_|  \____/  |_____/ \____/ 
+        //Need to actually set conduit into the sources
+        logSource.setBufferManager(logConduit);
+        traceSource.setBufferManager(traceConduit);
+        
+    	//Register the Conduits
+    	bundleContext.registerService(BufferManager.class.getName(), logConduit, returnConduitServiceProps(logSource.getSourceName()));
+    	bundleContext.registerService(BufferManager.class.getName(), traceConduit, returnConduitServiceProps(traceSource.getSourceName()));
 
+    	System.out.println("le name is + " + WsLogHandler.class.getName());
+    	
+    	
+        //Register the Sources as Source and WsLog/traceHandlers
+    	bundleContext.registerService(new String[] {Source.class.getName(), WsLogHandler.class.getName()}, logSource, returnSourceServiceProps());
+    	bundleContext.registerService(new String[] {Source.class.getName(), WsTraceHandler.class.getName()}, traceSource, returnSourceServiceProps());
+    	
+    	//Lastly register the Handler, if it exists.
+    	//Magic of piecing this together nicely in the CollectorManager belongs with the Collectormanager
+    	Handler messageLoghandler = collectorMgrPipelineUtils.getLogHandler();
+    	if (messageLoghandler != null){
+    		bundleContext.registerService(Handler.class.getName(), messageLoghandler, returnHandlerServiceProps());
+    	}
+    	
     }
 
 

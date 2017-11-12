@@ -21,12 +21,15 @@ import java.util.Map.Entry;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.cm.ConfigurationAdmin;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
@@ -86,7 +89,7 @@ public class CollectorManagerImpl implements CollectorManager {
      * When a source is bound, handle all pending subscriptions for the source.
      */
     public synchronized void setSource(Source source) {
-        System.out.println("CollectorManagerIMPL - setting source... top kek-------------------------");
+        System.out.println("CollectorManagerIMPL - setting source " + source.getSourceName());
         String sourceId = CollectorManagerUtils.getSourceId(source);
         SourceManager srcMgr = null;
         if (!sourceMgrs.containsKey(sourceId)) {
@@ -95,6 +98,14 @@ public class CollectorManagerImpl implements CollectorManager {
             }
             srcMgr = new SourceManager(source);
             sourceMgrs.put(srcMgr.getSourceId(), srcMgr);
+            /*
+             * //DYKC
+             * Obtain the buffer and put it in bufferMangaerMap
+             * continue 'as normal'
+             * Do this only if source is LogSource or Trace Source
+             */
+            processInitializedConduits(source);
+
             //Passes BufferManager onto SourceManager which will then associate a Handler to it.
             srcMgr.setBufferManager(bufferManagerMap.get(sourceId));
             //Handle pending subscriptions for this source
@@ -114,6 +125,39 @@ public class CollectorManagerImpl implements CollectorManager {
 
                     }
                 }
+            }
+        }
+    }
+
+    /*
+     * Process Conduits created by Trace and Message due to the CollectorManagerPipelineConfigurator
+     */
+    private void processInitializedConduits(Source source) {
+
+        String sourceName = source.getSourceName();
+        if (sourceName.equals(CollectorConstants.MESSAGES_SOURCE) || sourceName.equals(CollectorConstants.TRACE_SOURCE)) {
+            if (bundleContext == null) {
+                retrieveBundleContext();
+            }
+            //should check if its already in map
+            ServiceReference<BufferManager>[] servRefs;
+            try {
+                servRefs = (ServiceReference<BufferManager>[]) bundleContext.getServiceReferences(BufferManager.class.getName(), null);
+                if (servRefs != null) {
+                    for (ServiceReference<BufferManager> servRef : servRefs) {
+                        //ensure that the BufferManager retrieved is the right one for the source
+                        if (sourceName.equals(servRef.getProperty("source"))) {
+                            //Casts all the way down
+                            Object object = bundleContext.getService(servRef);
+                            BufferManager conduit = (BufferManager) object;
+                            bufferManagerMap.put(CollectorManagerUtils.getSourceId(source), conduit);
+                            System.out.println("BUFFER ACQUIRED TARGET FIRING " + conduit);
+                        }
+                    } //end for
+                } //end if (servRefs != null)
+
+            } catch (InvalidSyntaxException e) {
+                e.printStackTrace();
             }
         }
     }
@@ -159,6 +203,7 @@ public class CollectorManagerImpl implements CollectorManager {
      * When a handler is bound, call the init method of the handler.
      */
     public synchronized void setHandler(Handler handler) {
+        System.out.println("CollectorManagerIMPL - setting handler " + handler.getHandlerName());
         String handlerId = CollectorManagerUtils.getHandlerId(handler);
         HandlerManager hdlrMgr;
         if (!handlerMgrs.containsKey(handlerId)) {
@@ -295,7 +340,9 @@ public class CollectorManagerImpl implements CollectorManager {
         bufferManagerMap.put(sourceId, bufferMgr);
 
         //Create the BufferManager Service and store the ServiceRegistration into a Map so that the service can be unregistered later.
-        bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
+        if (bundleContext == null) {
+            retrieveBundleContext();
+        }
         buffMgrRegistration = bundleContext.registerService(BufferManager.class.getName(), bufferMgr, props);
         //bundleContext.
         activeBuffMgrServices.put(sourceId, buffMgrRegistration);
@@ -307,5 +354,9 @@ public class CollectorManagerImpl implements CollectorManager {
                 entry.unregister();
             }
         }
+    }
+
+    private void retrieveBundleContext() {
+        bundleContext = FrameworkUtil.getBundle(this.getClass()).getBundleContext();
     }
 }

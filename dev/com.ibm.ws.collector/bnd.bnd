@@ -18,7 +18,7 @@ Import-Package: \
         com.ibm.ws.ras.instrument.annotation, \
         com.ibm.wsspi.kernel.service.utils, \
         com.ibm.wsspi.collector.manager, \
-        com.ibm.ws.health.center.source.data, \
+        com.ibm.ws.health.center.data, \
         com.ibm.ws.logging.source, \
         com.ibm.ws.logging.utils, \
         com.ibm.ws.logging.collector, \

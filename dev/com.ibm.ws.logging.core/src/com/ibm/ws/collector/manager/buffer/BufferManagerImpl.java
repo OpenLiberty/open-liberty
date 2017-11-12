@@ -25,7 +25,7 @@ public class BufferManagerImpl extends BufferManager {
     private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);
     
     
-    //DYKC
+    //DYKC-temp
     private Handler myLogHandler = null;
 
     private final String sourceId;

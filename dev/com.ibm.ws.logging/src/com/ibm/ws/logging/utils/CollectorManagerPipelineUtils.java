@@ -16,19 +16,20 @@ import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.wsspi.collector.manager.Handler;
 
-public class HandlerUtils implements CollectorManagerBootStrap {
-    public static HandlerUtils myHandlerUtils;
-    private MessageLogHandler baseTraceServiceJSONHandler;
+public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBootstrap {
+    public static CollectorManagerPipelineUtils collectorMgrPipelineUtils;
+    private MessageLogHandler jsonTraceServiceMessageHandler;
     private LogSource logSource = null;
     private TraceSource traceSource = null;
     private BufferManagerImpl logConduit = null;
     private BufferManagerImpl traceConduit = null;
+    private boolean isJsonTrService = false;
 
     /**
      * Create LogSource, TraceSource and their respective conduits.
      * Handler is set specifically by BaseTraceService
      */
-    public HandlerUtils() {
+    public CollectorManagerPipelineUtils() {
         System.out.println("HandlerUtils.java - I AM HANDLER UTILS AND I AM NOW ALIVE");
         //DYKC-temp create only LogSource for now.
         if (logSource == null) {
@@ -47,11 +48,11 @@ public class HandlerUtils implements CollectorManagerBootStrap {
         logSource.setBufferManager(logConduit); //DYKC-temp Definitely need to change taht method name....
     }
 
-    public static synchronized HandlerUtils getInstance() {
-        if (myHandlerUtils == null) {
-            myHandlerUtils = new HandlerUtils();
+    public static synchronized CollectorManagerPipelineUtils getInstance() {
+        if (collectorMgrPipelineUtils == null) {
+            collectorMgrPipelineUtils = new CollectorManagerPipelineUtils();
         }
-        return myHandlerUtils;
+        return collectorMgrPipelineUtils;
     }
 
     @Override
@@ -80,6 +81,8 @@ public class HandlerUtils implements CollectorManagerBootStrap {
      */
     @Override
     public Handler getLogHandler() {
+        if (jsonTraceServiceMessageHandler != null)
+            return jsonTraceServiceMessageHandler;
         return null;
     }
 
@@ -89,7 +92,15 @@ public class HandlerUtils implements CollectorManagerBootStrap {
      */
     @Override
     public void setHandler(Handler handler) {
-        this.baseTraceServiceJSONHandler = (MessageLogHandler) handler;
+        this.jsonTraceServiceMessageHandler = (MessageLogHandler) handler;
+    }
+
+    public boolean getJsonTrService() {
+        return isJsonTrService;
+    }
+
+    public void setJsonTrService(boolean value) {
+        this.isJsonTrService = value;
     }
 
 }

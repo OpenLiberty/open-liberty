@@ -111,9 +111,10 @@ public class LogSource implements Source, WsLogHandler {
         //Publish the message if it is not coming from a handler thread
         if (!ThreadLocalHandler.get()) {
             LogRecord logRecord = routedMessage.getLogRecord();
-//            if (logRecord != null && bufferMgr != null) {
-//                bufferMgr.add(parse(routedMessage, logRecord));
-//            }
+            if (logRecord != null && bufferMgr != null) {
+                bufferMgr.add(parse(routedMessage, logRecord));
+            }
+            //DYKC-temp write directly to handler
             if (logRecord != null && sh != null) {
                 sh.writeToLog(parse(routedMessage, logRecord));
             }

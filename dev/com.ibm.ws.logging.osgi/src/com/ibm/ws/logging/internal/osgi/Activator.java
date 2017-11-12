@@ -27,7 +27,7 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
 import com.ibm.websphere.ras.TrConfigurator;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.TraceComponentChangeListener;
-import com.ibm.ws.logging.utils.HandlerUtils;
+import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.ws.ras.instrument.internal.main.LibertyJava8WorkaroundRuntimeTransformer;
 import com.ibm.ws.ras.instrument.internal.main.LibertyRuntimeTransformer;
 import com.ibm.wsspi.collector.manager.Source;
@@ -43,7 +43,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
     private ServiceTracker<EventAdmin, EventAdmin> eventAdminTracker;
     private MessageRouterConfigurator msgRouter;
     private TraceRouterConfigurator traceRouter;
-    private CollectorManagerConfigurator cmConfigurator; //DYKC
+    private CollectorManagerPipelineConfigurator cmConfigurator; //DYKC
 
     private LoggingConfigurationService logCfgService;
 
@@ -118,7 +118,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         traceRouter = new TraceRouterConfigurator(context);
         
         //DYKC-CollectorManagerConfigurator, maybe a better name?
-        cmConfigurator = new CollectorManagerConfigurator(context);
+        cmConfigurator = new CollectorManagerPipelineConfigurator(context);
     }
 
     /**

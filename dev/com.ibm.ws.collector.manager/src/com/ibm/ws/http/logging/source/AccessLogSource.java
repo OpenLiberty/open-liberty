@@ -39,6 +39,7 @@ public class AccessLogSource implements Source {
     private AccessLogHandler accessLogHandler;
 
     protected synchronized void activate(Map<String, Object> configuration) {
+        System.out.println("``````````````````````````ACTIVATING ACCESS LOG ````````````````````````````");
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }

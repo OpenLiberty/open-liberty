@@ -733,7 +733,7 @@ public class BaseTraceService implements TrService {
      * Inject the internal WsMessageRouter.
      */
     protected void setWsMessageRouter(WsMessageRouter msgRouter) {
-
+        System.out.print("Base Trace SErvice ++++++ setting a router");
         internalMessageRouter.set(msgRouter);
 
         // Pass the earlierMessages queue to the router.

@@ -21,7 +21,7 @@ import com.ibm.ws.logging.WsMessageRouter;
 import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
-import com.ibm.ws.logging.utils.HandlerUtils;
+import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 
@@ -30,12 +30,12 @@ import com.ibm.wsspi.logprovider.LogProviderConfig;
  */
 public class JsonTraceService extends BaseTraceService {
 
-    private volatile LogSource logSource = null;//IF JsonTrService, this moves aswell
-    private volatile TraceSource traceSource = null;//IF JsonTrService, this moves aswell
-    private volatile MessageLogHandler messageLogHandler = null;//IF JsonTrService, this moves aswell
-    private volatile BufferManagerImpl logConduit;//IF JsonTrService, this moves aswell
-    private volatile BufferManagerImpl traceConduit;//IF JsonTrService, this moves aswell
-    private volatile HandlerUtils handlerUtils = null; //IF JsonTrService, this moves aswell
+    private volatile LogSource logSource = null;
+    private volatile TraceSource traceSource = null;
+    private volatile MessageLogHandler messageLogHandler = null;
+    private volatile BufferManagerImpl logConduit;
+    private volatile BufferManagerImpl traceConduit;
+    private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
 
     // for now always have it configured?
     private volatile boolean isConfigured = false;
@@ -66,16 +66,16 @@ public class JsonTraceService extends BaseTraceService {
          * Should we always have this enabled?
          *
          */
-        if (handlerUtils == null) {
-            handlerUtils = HandlerUtils.getInstance();
-
+        if (collectorMgrPipelineUtils == null) {
+            collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
+            collectorMgrPipelineUtils.setJsonTrService(false);//DYKC-temp this should be true.. because we are a jsontraceservice
             //Sources
-            logSource = handlerUtils.getLogSource();
-            traceSource = handlerUtils.getTraceSource();
+            logSource = collectorMgrPipelineUtils.getLogSource();
+            traceSource = collectorMgrPipelineUtils.getTraceSource();
 
             //Conduits
-            logConduit = handlerUtils.getLogConduit();
-            traceConduit = handlerUtils.getTraceConduit();
+            logConduit = collectorMgrPipelineUtils.getLogConduit();
+            traceConduit = collectorMgrPipelineUtils.getTraceConduit();
 
             System.out.println("JSON TRACE SERVICE LogConduit is = " + logConduit.toString());
             System.out.println("JSON TRACE SERVICE logSource is = " + logSource.toString());
@@ -85,9 +85,10 @@ public class JsonTraceService extends BaseTraceService {
             messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
             messageLogHandler.setFileLogHolder(messagesLog);
             logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
-            handlerUtils.setHandler(messageLogHandler);
+            collectorMgrPipelineUtils.setHandler(messageLogHandler);
         }
-        isConfigured = true;
+
+        //isConfigured = true; //DYKC-temp
 
     }
 
