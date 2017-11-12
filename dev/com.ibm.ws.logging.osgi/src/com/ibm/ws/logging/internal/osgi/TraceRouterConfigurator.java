@@ -93,14 +93,12 @@ public class TraceRouterConfigurator {
      */
     protected void setWsTraceHandler(ServiceReference<WsTraceHandler> ref) {
     	//DYKC
-    	//If it is a jsonTrService, then we don't want trace messages, and the opposite is true if it is not a jsonTrService
+    	//If it is a jsonTrService, then we don't want early trace messages, and the opposite is true if it is not a jsonTrService
     	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
             getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);   		
     	} else {
     		 getTraceRouter().setWsTraceHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);  
     	}
-    		
-
     }
 
     /**

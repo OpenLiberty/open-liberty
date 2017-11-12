@@ -12,6 +12,8 @@
 package com.ibm.ws.collector.manager.buffer;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
@@ -19,14 +21,14 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Handler;
+import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
 
 public class BufferManagerImpl extends BufferManager {
 
     private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);
     
-    
-    //DYKC-temp
-    private Handler myLogHandler = null;
+    //DYKC
+    private Set<SyncrhonousHandler> synchronizedHandlerSet = new HashSet<SyncrhonousHandler>();
 
     private final String sourceId;
     /* Map to keep track of the next event for a handler */
@@ -41,15 +43,21 @@ public class BufferManagerImpl extends BufferManager {
     public void add(Object event) {
     	
     	//DYKC
-    	if ( myLogHandler != null) {
-    		//myLogHandler.writeToLog(event);
+    	//DYKC-temp
+    	//DYKC-debug
+    	//DYKC-problem
+    	//Check if we have any synchronized handlers, and write directly to them.
+    	if (!synchronizedHandlerSet.isEmpty()) {
+    		for (SyncrhonousHandler synchronizedHandler : synchronizedHandlerSet){
+    			synchronizedHandler.synchronousWrite(event);
+    		}
     	}
     	
         if (event == null)
             throw new NullPointerException();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Adding event to buffer " + event);
-        }
+        //if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //   Tr.debug(tc, "Adding event to buffer " + event);
+        //}
         ringBuffer.add(event);
     }
 
@@ -101,14 +109,16 @@ public class BufferManagerImpl extends BufferManager {
         handlerEventMap.putIfAbsent(handlerId, new HandlerStats(handlerId, sourceId));
     }
 
+    public void addSyncHandler(SyncrhonousHandler syncHandler) {
+    	System.out.println("Adding a syncrhnous handler " + syncHandler.getHandlerName());
+    	synchronizedHandlerSet.add(syncHandler);
+    }
+    
     public void removeHandler(String handlerId) {
         handlerEventMap.remove(handlerId);
     }
 
     
-    public void setSyncrohnizedHandler(Handler handler){
-    	myLogHandler = handler;
-    }
     
     public static class HandlerStats {
 

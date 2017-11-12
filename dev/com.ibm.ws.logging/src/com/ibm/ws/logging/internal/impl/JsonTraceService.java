@@ -30,9 +30,11 @@ import com.ibm.wsspi.logprovider.LogProviderConfig;
  */
 public class JsonTraceService extends BaseTraceService {
 
+    private final boolean isJsonTraceService = true;
     private volatile LogSource logSource = null;
     private volatile TraceSource traceSource = null;
     private volatile MessageLogHandler messageLogHandler = null;
+    //private volatile ConsoleLogHandler consoleLogHandler = null;
     private volatile BufferManagerImpl logConduit;
     private volatile BufferManagerImpl traceConduit;
     private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
@@ -60,18 +62,13 @@ public class JsonTraceService extends BaseTraceService {
 
     /*
      * Set up that pipeline.
-     *
+     * Should pass in config regarding if it is for messages.log or stdout
      */
     private void setupCollectorManagerPipeline() {
-        /*
-         * //DYKC how to avoid other BTS from starting this up due to 'updates' calls in HPEL and JSR47.
-         * If we don't have a handlerUtils, we definitely need one.
-         * Should we always have this enabled?
-         *
-         */
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
-            collectorMgrPipelineUtils.setJsonTrService(false);//DYKC-temp this should be true.. because we are a jsontraceservice
+            collectorMgrPipelineUtils.setJsonTrService(isJsonTraceService);//DYKC-temp this should be true.. because we are a jsontraceservice
+
             //Sources
             logSource = collectorMgrPipelineUtils.getLogSource();
             traceSource = collectorMgrPipelineUtils.getTraceSource();
@@ -80,16 +77,24 @@ public class JsonTraceService extends BaseTraceService {
             logConduit = collectorMgrPipelineUtils.getLogConduit();
             traceConduit = collectorMgrPipelineUtils.getTraceConduit();
 
-            System.out.println("JSON TRACE SERVICE LogConduit is = " + logConduit.toString());
-            System.out.println("JSON TRACE SERVICE logSource is = " + logSource.toString());
-        }
-        //Create Handler and pass it to CMBootStrap
-        //DYKC-problem create the appropriate handler, ie console vs message
-        if (messageLogHandler == null) {
-            messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
-            messageLogHandler.setFileLogHolder(messagesLog);
-            logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
-            collectorMgrPipelineUtils.setHandler(messageLogHandler);
+            //DYKC-TODO create the appropriate handler, ie console vs message
+            //based on config infromation.
+            if (messageLogHandler == null) {
+                messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
+                messageLogHandler.setFileLogHolder(messagesLog);
+                logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
+                collectorMgrPipelineUtils.setHandler(messageLogHandler);
+            }
+
+            /*
+             * DYKC-TODO
+             * Based on config, need to add the syncrhonized to configured source/conduit
+             * i.e If user wanted message, assign message, if use wants both, assign both
+             */
+            //DYKC-temp forcing messageLogHandler to take both as there is no configuration/external logic yet
+            logConduit.addSyncHandler(messageLogHandler);
+            traceConduit.addSyncHandler(messageLogHandler);
+
         }
 
         isMessageJsonConfigured = true; //DYKC-temp not the best way, configure to json.
@@ -127,7 +132,6 @@ public class JsonTraceService extends BaseTraceService {
 
     @Override
     protected boolean invokeMessageRouters(RoutedMessage routedMessage) {
-
         MessageRouter externalMsgRouter = externalMessageRouter.get();
         WsMessageRouter internalMsgRouter = internalMessageRouter.get();
 

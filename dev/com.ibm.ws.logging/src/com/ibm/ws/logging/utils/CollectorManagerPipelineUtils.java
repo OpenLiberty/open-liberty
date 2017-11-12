@@ -43,6 +43,7 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
             traceConduit = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.trace");
         }
         logSource.setBufferManager(logConduit); //DYKC-temp methodName?
+        traceSource.setBufferManager(traceConduit); //DYKC-temp methodName?
     }
 
     public static synchronized CollectorManagerPipelineUtils getInstance() {

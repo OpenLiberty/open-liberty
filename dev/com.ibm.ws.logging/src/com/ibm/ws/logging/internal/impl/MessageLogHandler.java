@@ -15,22 +15,27 @@ import java.net.UnknownHostException;
 import java.security.AccessController;
 import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import com.ibm.ws.health.center.data.HCGCData;
+import com.ibm.ws.http.logging.data.AccessLogData;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
 import com.ibm.ws.logging.internal.impl.BaseTraceService.TraceWriter;
+import com.ibm.ws.logging.source.FFDCData;
 import com.ibm.ws.logging.source.MessageLogData;
 import com.ibm.ws.logging.source.TraceLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
-import com.ibm.wsspi.collector.manager.Handler;
+import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
 
 /**
  *
  */
-public class MessageLogHandler implements Handler, Formatter {
+public class MessageLogHandler implements SyncrhonousHandler, Formatter {
 
     private TraceWriter myTraceWriter;
     private String serverHostName = null;
@@ -70,7 +75,11 @@ public class MessageLogHandler implements Handler, Formatter {
         try {
             this.collectorMgr = collectorManager;
             //Get the source Ids from the task map and subscribe to relevant sources
-            //collectorMgr.subscribe(this, new ArrayList<String>(taskMap.keySet()));
+            List<String> hardCodedSources = new ArrayList<String>();
+//            hardCodedSources.add(CollectorConstants.GC_SOURCE + "|" + CollectorConstants.MEMORY);
+//            hardCodedSources.add(CollectorConstants.ACCESS_LOG_SOURCE + "|" + CollectorConstants.MEMORY);
+//            hardCodedSources.add(CollectorConstants.FFDC_SOURCE + "|" + CollectorConstants.MEMORY);
+            collectorMgr.subscribe(this, hardCodedSources);
         } catch (Exception e) {
 
         } finally {
@@ -80,7 +89,7 @@ public class MessageLogHandler implements Handler, Formatter {
 
     @Override
     public void setBufferManager(String sourceId, BufferManager bufferMgr) {
-        System.out.println("Specialhandler.java - settingBuffermanager from " + bufferMgr.toString());
+        System.out.println("MessageLogHandler.java - settingBuffermanager from " + bufferMgr.toString());
     }
 
     @Override
@@ -96,20 +105,29 @@ public class MessageLogHandler implements Handler, Formatter {
 
     /*
      * Call by Conduit/BMI to write to log as JSON
+     * DYKC-temp TEMP TEMP TEMP
      */
-    public void writeToLog(Object event) {
-        String evensourcetType = getSourceTypeFromDataOjbect(event);
-        String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+    public void writeJsonifiedEvent(Object event) {
+        String eventSource = getSourceTypeFromDataObject(event);
+        String messageOutput = (String) formatEvent(eventSource, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
         myTraceWriter.writeRecord(messageOutput);
     }
 
-    private String getSourceTypeFromDataOjbect(Object event) {
+    private String getSourceTypeFromDataObject(Object event) {
         if (event instanceof MessageLogData) {
-            return CollectorConstants.MESSAGES_LOG_EVENT_TYPE;
+            return CollectorConstants.MESSAGES_SOURCE;
         } else if (event instanceof TraceLogData) {
-            return CollectorConstants.TRACE_LOG_EVENT_TYPE;
-        } else
+            return CollectorConstants.TRACE_SOURCE;
+        } else if (event instanceof AccessLogData) {
+            return CollectorConstants.ACCESS_LOG_SOURCE;
+        } else if (event instanceof HCGCData) {
+            return CollectorConstants.GC_SOURCE;
+        } else if (event instanceof FFDCData) {
+            return CollectorConstants.FFDC_SOURCE;
+        } else {
             return "";
+        }
+
     }
 
     /*
@@ -121,7 +139,8 @@ public class MessageLogHandler implements Handler, Formatter {
 
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
-        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, CollectorConstants.MESSAGES_LOG_EVENT_TYPE, serverName, wlpUserDir, serverHostName, "1.0", tags,
+        String eventType = CollectorJsonUtils.getEventType(source, location);
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.0", tags,
                                                          MAXFIELDLENGTH);
         return jsonStr;
     }
@@ -132,6 +151,28 @@ public class MessageLogHandler implements Handler, Formatter {
 
     public void setWlpUserDir(String wlpUserDir) {
         this.wlpUserDir = wlpUserDir;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.collector.manager.SyncrhonousHandler#isSynchronous()
+     */
+    @Override
+    public boolean isSynchronous() {
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.wsspi.collector.manager.SyncrhonousHandler#synchronousWrite()
+     */
+    @Override
+    public synchronized void synchronousWrite(Object event) {
+        String evensourcetType = getSourceTypeFromDataObject(event);
+        String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
+        myTraceWriter.writeRecord(messageOutput);
     }
 
 }

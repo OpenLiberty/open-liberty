@@ -34,6 +34,7 @@ import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.Source;
+import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
 
 public class CollectorManagerImpl implements CollectorManager {
 
@@ -304,7 +305,7 @@ public class CollectorManagerImpl implements CollectorManager {
                     }
                     hdlrMgr.addPendingSubscription(sourceId);
                     //Go ahead start a BufferManager which will activate the source
-                    startSourceWithBufferManager(sourceId);
+                    startSourceWithBufferManager(sourceId, handler);
                 }
             }
         }
@@ -353,7 +354,7 @@ public class CollectorManagerImpl implements CollectorManager {
         }
     }
 
-    private synchronized void startSourceWithBufferManager(String sourceId) {
+    private synchronized void startSourceWithBufferManager(String sourceId, Handler handler) {
         //result[0] is sourceName
         //result[1] is location
         String[] result = sourceId.split("\\|");
@@ -366,7 +367,16 @@ public class CollectorManagerImpl implements CollectorManager {
         //The 'source' property is used by Source classes to filter if this BufferManager service is applicable for them.
         props.put("source", result[0]);
 
-        BufferManager bufferMgr = new BufferManagerImpl(10000, sourceId);
+        //BufferManager bufferMgr = new BufferManagerImpl(10000, sourceId);
+        BufferManagerImpl bufferMgr = new BufferManagerImpl(10000, sourceId);
+
+        //DYKC-review additional logic to set a syncrhonized handler into the conduits/buffers
+        if (handler instanceof SyncrhonousHandler) {
+            //DYKC-debug
+            // System.out.println("I'm a heathen syncrhonous Handler I'm going to make a bufferMgr for " + result[0]);
+            bufferMgr.addSyncHandler((SyncrhonousHandler) handler);
+        }
+
         //Add BufferManager into a Map. This will be retrieved later to be passed onto a SourceManager so that it can associate a Handler to it.
         bufferManagerMap.put(sourceId, bufferMgr);
 

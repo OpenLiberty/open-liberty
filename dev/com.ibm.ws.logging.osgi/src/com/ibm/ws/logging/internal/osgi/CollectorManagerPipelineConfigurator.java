@@ -104,8 +104,7 @@ public class CollectorManagerPipelineConfigurator {
     }
     
     protected void setCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
-    	//DYKC-debug
-    	
+   	
     	//Retrieves the LogSource and TraceSource from the collectorManagerPipelineUtils singleton
         LogSource logSource = collectorMgrPipelineUtils.getLogSource();
         TraceSource traceSource = collectorMgrPipelineUtils.getTraceSource();
@@ -113,11 +112,6 @@ public class CollectorManagerPipelineConfigurator {
         //Retrieves the LogConduit and TraceConduit from the collectorManagerPipelineUtils singleton
     	BufferManagerImpl logConduit = collectorMgrPipelineUtils.getLogConduit();
     	BufferManagerImpl traceConduit = collectorMgrPipelineUtils.getTraceConduit();
-        //DYKC-debug
-        //System.out.println("CollectorManagerConfigurator.java - I got a Log Source " + logSource);
-        //System.out.println("CollectorManagerConfigurator.java - I got a Trace Source " + traceSource);
-        //System.out.println("CollectorManagerConfigurator.java - I got a Log Conduit " + logConduit);
-        //System.out.println("CollectorManagerConfigurator.java - I got a Trace Conduit " + traceConduit);
         
         
         /* Set the conduit/BufferManger into their respective sources
@@ -127,8 +121,8 @@ public class CollectorManagerPipelineConfigurator {
          * need to have the Conduit/BufferManager set in manually. 
          */
     	
-        logSource.setBufferManager(logConduit);
-        traceSource.setBufferManager(traceConduit);
+        //logSource.setBufferManager(logConduit);
+        //traceSource.setBufferManager(traceConduit);
         
     	//Register the Conduits/BufferManager
     	bundleContext.registerService(BufferManager.class.getName(), logConduit, returnConduitServiceProps(logSource.getSourceName()));
@@ -156,7 +150,7 @@ public class CollectorManagerPipelineConfigurator {
 
 
     protected void unsetCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
-        //do nothing, we want to keep LogSource and TraceSource and conduit actively registered?
+        //DYKC-problem? do nothing, we want to keep LogSource and TraceSource and conduit actively registered?
     }
 
     /**

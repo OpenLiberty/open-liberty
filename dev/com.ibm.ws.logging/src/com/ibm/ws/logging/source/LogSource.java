@@ -115,9 +115,11 @@ public class LogSource implements Source, WsLogHandler {
                 bufferMgr.add(parse(routedMessage, logRecord));
             }
             //DYKC-temp write directly to handler
-            if (logRecord != null && sh != null) {
-                sh.writeToLog(parse(routedMessage, logRecord));
-            }
+            //DYKC-problem
+            //DYKC-debug
+//            if (logRecord != null && sh != null) {
+//                sh.writeJsonifiedEvent(parse(routedMessage, logRecord));
+//            }
         }
     }
 
