@@ -1286,6 +1286,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         out.println(INDENT + "maxQueueSize = " + maxQueueSize);
         out.println(INDENT + "maxWaitForEnqueue = " + TimeUnit.NANOSECONDS.toMillis(maxWaitForEnqueueNS.get()) + " ms");
         out.println(INDENT + "runIfQueueFull = " + runIfQueueFull);
+        out.println(INDENT + "startTimeout = " + (startTimeout == -1 ? "None" : TimeUnit.NANOSECONDS.toMillis(startTimeout) + " ms"));
         int numRunningThreads, numRunningPrioritizedThreads;
         synchronized (configLock) {
             numRunningThreads = maxConcurrency - maxConcurrencyConstraint.availablePermits();
@@ -1294,9 +1295,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         out.println(INDENT + "Total Enqueued to Global Executor = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
         out.println(INDENT + "withheldConcurrency = " + withheldConcurrency.get());
         out.println(INDENT + "Remaining Queue Capacity = " + maxQueueSizeConstraint.availablePermits());
-        out.println(INDENT + "Created by PolicyExecutorProvider = " + (providerCreated != null));
         out.println(INDENT + "state = " + state.toString());
-        out.println(INDENT + "Running Task Futures: ");
+        out.println(INDENT + "Running Task Futures:");
         if (running.isEmpty()) {
             out.println(DOUBLEINDENT + "None");
         } else {

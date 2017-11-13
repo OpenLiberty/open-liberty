@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.threading.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -167,4 +170,38 @@ public class PolicyExecutorTest {
         } catch (IllegalStateException x) {
         } // pass
     }
+
+    /**
+     * Test introspector for policy executors
+     */
+    @Test
+    public void testIntrospector() {
+
+        PolicyExecutorImpl exec = (PolicyExecutorImpl) provider.create("testIntrospector").expedite(5).maxConcurrency(10).maxQueueSize(3).maxWaitForEnqueue(30).startTimeout(10).runIfQueueFull(true);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintWriter pw = new PrintWriter(out);
+        exec.introspect(pw);
+        pw.flush();
+        String output = new String(out.toByteArray());
+
+        String expectedoutput = "PolicyExecutorProvider-testIntrospector\n"
+                                + "  expedite = 5\n"
+                                + "  maxConcurrency = 10 (loose)\n"
+                                + "  maxQueueSize = 3\n"
+                                + "  maxWaitForEnqueue = 30 ms\n"
+                                + "  runIfQueueFull = true\n"
+                                + "  startTimeout = 10 ms\n"
+                                + "  Total Enqueued to Global Executor = 0 (0 expedited)\n"
+                                + "  withheldConcurrency = 0\n"
+                                + "  Remaining Queue Capacity = 3\n"
+                                + "  state = ACTIVE\n"
+                                + "  Running Task Futures:\n"
+                                + "    None\n"
+                                + "  Queued Task Futures (up to first 50):\n"
+                                + "    None\n\n";
+
+        assertEquals("The policy executor introspector output did not match the expected output.", expectedoutput, output);
+    }
+
 }
