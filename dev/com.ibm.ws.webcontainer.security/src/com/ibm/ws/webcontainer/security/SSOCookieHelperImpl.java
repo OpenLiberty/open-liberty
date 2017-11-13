@@ -150,7 +150,9 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
      */
     @Override
     public void removeSSOCookieFromResponse(HttpServletResponse resp) {
-        ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
+	if (resp instanceof com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) {
+	    ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
+	}
     }
 
     /**
