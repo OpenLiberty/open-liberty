@@ -116,13 +116,20 @@ public class KernelBootstrap {
             // Clear workarea if directed via properties or service
             cleanStart();
 
-            // Read the bootstrap manifest (kernel, log provider, os extensions)
+            // Read the bootstrap manifest
             BootstrapManifest bootManifest = null;
             try {
                 bootManifest = BootstrapManifest.readBootstrapManifest(libertyBoot);
             } catch (IOException e) {
-                throw new LaunchException("Could not read the jar manifest",
-                                BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
+                throw new LaunchException("Could not read the jar manifest", BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
+            }
+
+            // Read the bootstrap defaults (kernel, log provider, os extensions)
+            BootstrapDefaults bootDefaults = null;
+            try {
+                bootDefaults = new BootstrapDefaults(bootProps);
+            } catch (IOException e) {
+                throw new LaunchException("Could not read the defaults file", BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
             }
 
             // handle system packages & system.packages.extra -- MAY THROW if
@@ -135,12 +142,7 @@ public class KernelBootstrap {
 
             // Find the bootstrap resources we need to launch the nested framework.
             // MAY THROW if these resources can not be found or read
-            KernelResolver resolver = new KernelResolver(bootProps.getInstallRoot(),
-                            bootProps.getWorkareaFile(KernelResolver.CACHE_FILE),
-                            bootManifest.getKernelDefinition(bootProps),
-                            bootManifest.getLogProviderDefinition(bootProps),
-                            bootManifest.getOSExtensionDefinition(bootProps),
-                            libertyBoot);
+            KernelResolver resolver = new KernelResolver(bootProps.getInstallRoot(), bootProps.getWorkareaFile(KernelResolver.CACHE_FILE), bootDefaults.getKernelDefinition(bootProps), bootDefaults.getLogProviderDefinition(bootProps), bootDefaults.getOSExtensionDefinition(bootProps), libertyBoot);
 
             // ISSUE LAUNCH FEEDBACK TO THE CONSOLE -- we've done the cursory validation at least.
             String logLevel = bootProps.get("com.ibm.ws.logging.console.log.level");
@@ -422,15 +424,14 @@ public class KernelBootstrap {
             File bestMatchFile = repo.selectBundle("com.ibm.ws.org.eclipse.equinox.region",
                                                    VersionUtility.stringToVersionRange("[1.0,1.0.100)"));
             if (bestMatchFile == null) {
-                throw new LaunchException("Could not find bundle for " + "com.ibm.ws.org.eclipse.equinox.region" + ".",
-                                BootstrapConstants.messages.getString("error.missingBundleException"));
+                throw new LaunchException("Could not find bundle for " + "com.ibm.ws.org.eclipse.equinox.region"
+                                          + ".", BootstrapConstants.messages.getString("error.missingBundleException"));
             } else {
                 // Add to the list of boot jars...
                 try {
                     urlList.add(bestMatchFile.toURI().toURL());
                 } catch (MalformedURLException e) {
-                    throw new LaunchException("Failure to set the default Security Manager due to exception ",
-                                    BootstrapConstants.messages.getString("error.set.securitymanager"), e);
+                    throw new LaunchException("Failure to set the default Security Manager due to exception ", BootstrapConstants.messages.getString("error.set.securitymanager"), e);
                 }
             }
 
@@ -454,8 +455,7 @@ public class KernelBootstrap {
 
             processVersion(bootProps, "info.serverVersion", kernelVersion, productInfo, true);
         } catch (IOException e) {
-            throw new LaunchException("Could not read the jar manifest",
-                            BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
+            throw new LaunchException("Could not read the jar manifest", BootstrapConstants.messages.getString("error.unknown.kernel.version"), e);
         }
     }
 
@@ -520,9 +520,7 @@ public class KernelBootstrap {
         Throwable cause = ex.getCause();
         if (cause == null)
             cause = ex;
-        throw new LaunchException(untranslatedMsg,
-                        MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), cause.toString()),
-                        cause);
+        throw new LaunchException(untranslatedMsg, MessageFormat.format(BootstrapConstants.messages.getString("error.unknownException"), cause.toString()), cause);
     }
 
     /**
