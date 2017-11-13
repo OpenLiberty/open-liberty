@@ -41,6 +41,8 @@ Export-Package: \
 Include-Resource: \
     WEB-INF=resources/WEB-INF
     
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.metrics.MetricsHandler,\
 	com.ibm.ws.microprofile.metrics.ApplicationListener
