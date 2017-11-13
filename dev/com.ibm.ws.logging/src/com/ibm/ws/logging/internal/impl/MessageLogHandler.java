@@ -31,6 +31,7 @@ import com.ibm.ws.logging.source.TraceLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
+import com.ibm.wsspi.logprovider.LogProviderConfig;
 
 /**
  *
@@ -65,6 +66,12 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
         }
     }
 
+    public void modified(LogProviderConfig config) {
+        //LogProviderConfigImpl trConfig = (LogProviderConfigImpl) config;
+        // Sources?
+        //etc?
+    }
+
     @Override
     public String getHandlerName() {
         return COMPONENT_NAME;
@@ -76,26 +83,23 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
             this.collectorMgr = collectorManager;
             //Get the source Ids from the task map and subscribe to relevant sources
             List<String> hardCodedSources = new ArrayList<String>();
-//            hardCodedSources.add(CollectorConstants.GC_SOURCE + "|" + CollectorConstants.MEMORY);
-//            hardCodedSources.add(CollectorConstants.ACCESS_LOG_SOURCE + "|" + CollectorConstants.MEMORY);
-//            hardCodedSources.add(CollectorConstants.FFDC_SOURCE + "|" + CollectorConstants.MEMORY);
+            hardCodedSources.add(CollectorConstants.GC_SOURCE + "|" + CollectorConstants.MEMORY);
+            hardCodedSources.add(CollectorConstants.ACCESS_LOG_SOURCE + "|" + CollectorConstants.MEMORY);
+            hardCodedSources.add(CollectorConstants.FFDC_SOURCE + "|" + CollectorConstants.MEMORY);
             collectorMgr.subscribe(this, hardCodedSources);
         } catch (Exception e) {
 
-        } finally {
-            latch.countDown();
         }
     }
 
     @Override
     public void setBufferManager(String sourceId, BufferManager bufferMgr) {
-        System.out.println("MessageLogHandler.java - settingBuffermanager from " + bufferMgr.toString());
+        //Not needed in a Syncrhonized Handler
     }
 
     @Override
     public void unsetBufferManager(String sourceId, BufferManager bufferMgr) {
-        // TODO Auto-generated method stub
-
+        //Not needed in a Syncrhonized Handler
     }
 
     ///DYKC

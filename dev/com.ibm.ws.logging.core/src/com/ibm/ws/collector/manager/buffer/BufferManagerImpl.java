@@ -43,21 +43,17 @@ public class BufferManagerImpl extends BufferManager {
     public void add(Object event) {
     	
     	//DYKC
-    	//DYKC-temp
-    	//DYKC-debug
-    	//DYKC-problem
     	//Check if we have any synchronized handlers, and write directly to them.
     	if (!synchronizedHandlerSet.isEmpty()) {
     		for (SyncrhonousHandler synchronizedHandler : synchronizedHandlerSet){
     			synchronizedHandler.synchronousWrite(event);
     		}
     	}
-    	
         if (event == null)
             throw new NullPointerException();
-        //if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //   Tr.debug(tc, "Adding event to buffer " + event);
-        //}
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+           Tr.debug(tc, "Adding event to buffer " + event);
+        }
         ringBuffer.add(event);
     }
 
@@ -110,6 +106,7 @@ public class BufferManagerImpl extends BufferManager {
     }
 
     public void addSyncHandler(SyncrhonousHandler syncHandler) {
+    	//DYKC
     	System.out.println("Adding a syncrhnous handler " + syncHandler.getHandlerName());
     	synchronizedHandlerSet.add(syncHandler);
     }

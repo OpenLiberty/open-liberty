@@ -57,14 +57,14 @@ public class JsonTraceService extends BaseTraceService {
 //         | | | |  | | | |  | | |  | |
 //         | | | |__| | | |__| | |__| |
 //         |_|  \____/  |_____/ \____/
-        setupCollectorManagerPipeline();
+        setupCollectorManagerPipeline(config);
     }
 
     /*
      * Set up that pipeline.
      * Should pass in config regarding if it is for messages.log or stdout
      */
-    private void setupCollectorManagerPipeline() {
+    private void setupCollectorManagerPipeline(LogProviderConfig config) {
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
             collectorMgrPipelineUtils.setJsonTrService(isJsonTraceService);//DYKC-temp this should be true.. because we are a jsontraceservice
@@ -81,10 +81,18 @@ public class JsonTraceService extends BaseTraceService {
             //based on config infromation.
             if (messageLogHandler == null) {
                 messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
-                messageLogHandler.setFileLogHolder(messagesLog);
-                logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
-                collectorMgrPipelineUtils.setHandler(messageLogHandler);
             }
+            //DYKC     _______ ____    _____   ____
+//              |__   __/ __ \  |  __ \ / __ \
+//                 | | | |  | | | |  | | |  | |
+//                 | | | |  | | | |  | | |  | |
+//                 | | | |__| | | |__| | |__| |
+//                 |_|  \____/  |_____/ \____/
+//config handler?
+            messageLogHandler.modified(config);
+            messageLogHandler.setFileLogHolder(messagesLog);
+            logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
+            collectorMgrPipelineUtils.setHandler(messageLogHandler);
 
             /*
              * DYKC-TODO
