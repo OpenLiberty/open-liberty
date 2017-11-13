@@ -153,9 +153,6 @@ public class SSOCookieHelperImpl implements SSOCookieHelper {
        if (resp instanceof com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) {
                ((com.ibm.wsspi.webcontainer.servlet.IExtendedResponse) resp).removeCookie(getSSOCookiename());
        }
-       Cookie c = new Cookie(getSSOCookiename(),"");
-       c.setMaxAge(0);
-       resp.addCookie(c);
     }
 
     /**
