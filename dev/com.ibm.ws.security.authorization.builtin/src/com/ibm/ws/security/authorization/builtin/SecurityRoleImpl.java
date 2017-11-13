@@ -40,17 +40,20 @@ public class SecurityRoleImpl implements SecurityRole {
     private final Set<String> specialSubjects = new HashSet<String>();
     private final Set<String> accessIds = new HashSet<String>();
     private String name = null;
+    private final String bundleLocation;
 
     /**
      * Create a role from the configuration properties
-     * 
+     *
      * @param pids TODO
      * @param props
      */
     public SecurityRoleImpl(ConfigurationAdmin configAdmin,
+                            String bundleLocation,
                             String roleName,
                             Dictionary<String, Object> roleProps, Set<String> pids) {
         name = roleName;
+        this.bundleLocation = bundleLocation;
 
         processUsers(configAdmin, roleName, roleProps, pids);
         processGroups(configAdmin, roleName, roleProps, pids);
@@ -92,7 +95,7 @@ public class SecurityRoleImpl implements SecurityRole {
 
     /**
      * Read and process all the user elements
-     * 
+     *
      * @param configAdmin
      * @param roleName
      * @param roleProps
@@ -107,8 +110,7 @@ public class SecurityRoleImpl implements SecurityRole {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No users in role " + roleName);
             }
-        }
-        else {
+        } else {
             Set<String> badUsers = new HashSet<String>();
             Set<String> badAccessIds = new HashSet<String>();
             for (int i = 0; i < userPids.length; i++) {
@@ -118,7 +120,7 @@ public class SecurityRoleImpl implements SecurityRole {
                 pids.add(userPids[i]);
                 Configuration userConfig = null;
                 try {
-                    userConfig = configAdmin.getConfiguration(userPids[i]);
+                    userConfig = configAdmin.getConfiguration(userPids[i], bundleLocation);
                 } catch (IOException ioe) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Invalid user entry " + userPids[i]);
@@ -148,8 +150,7 @@ public class SecurityRoleImpl implements SecurityRole {
                         badAccessIds.add(accessId);
                         accessIds.remove(accessId);
                     }
-                }
-                else {
+                } else {
                     // TODO: check for bad access id
                     if (badUsers.contains(name)) {
                         // This user is already flagged as a duplicate
@@ -174,7 +175,7 @@ public class SecurityRoleImpl implements SecurityRole {
 
     /**
      * Read and process all the group elements
-     * 
+     *
      * @param configAdmin
      * @param roleName
      * @param roleProps
@@ -189,8 +190,7 @@ public class SecurityRoleImpl implements SecurityRole {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No groups in role " + roleName);
             }
-        }
-        else {
+        } else {
             Set<String> badGroups = new HashSet<String>();
             Set<String> badAccessIds = new HashSet<String>();
             for (int i = 0; i < groupPids.length; i++) {
@@ -200,7 +200,7 @@ public class SecurityRoleImpl implements SecurityRole {
                 pids.add(groupPids[i]);
                 Configuration groupConfig = null;
                 try {
-                    groupConfig = configAdmin.getConfiguration(groupPids[i]);
+                    groupConfig = configAdmin.getConfiguration(groupPids[i], bundleLocation);
                 } catch (IOException ioe) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Invalid group entry " + groupPids[i]);
@@ -231,8 +231,7 @@ public class SecurityRoleImpl implements SecurityRole {
                         badAccessIds.add(accessId);
                         accessIds.remove(accessId);
                     }
-                }
-                else {
+                } else {
                     // TODO: check for bad access id
                     if (badGroups.contains(name)) {
                         // This group is already flagged as a duplicate
@@ -257,7 +256,7 @@ public class SecurityRoleImpl implements SecurityRole {
 
     /**
      * Read and process all the specialSubject elements
-     * 
+     *
      * @param configAdmin
      * @param roleName
      * @param roleProps
@@ -272,8 +271,7 @@ public class SecurityRoleImpl implements SecurityRole {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "No special subjects in role " + roleName);
             }
-        }
-        else {
+        } else {
             Set<String> badSpecialSubjects = new HashSet<String>();
             for (int i = 0; i < specialSubjectPids.length; i++) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -282,7 +280,7 @@ public class SecurityRoleImpl implements SecurityRole {
                 pids.add(specialSubjectPids[i]);
                 Configuration specialSubjectConfig = null;
                 try {
-                    specialSubjectConfig = configAdmin.getConfiguration(specialSubjectPids[i]);
+                    specialSubjectConfig = configAdmin.getConfiguration(specialSubjectPids[i], bundleLocation);
                 } catch (IOException ioe) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Invalid special subject entry " + specialSubjectPids[i]);

@@ -57,7 +57,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     /**
      * The policy executor instance.
      */
-    private final PolicyExecutorImpl executor;
+    final PolicyExecutorImpl executor;
 
     /**
      * Latch for invokeAny futures. Otherwise null.
@@ -429,7 +429,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
+                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", getIdentifier(), getTaskName(),
                                                                            System.nanoTime() - nsAcceptBegin,
                                                                            nsStartBy - nsAcceptBegin)));
                     s = state.get();
@@ -467,7 +467,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executor.identifier, getTaskName(),
+                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", getIdentifier(), getTaskName(),
                                                                            System.nanoTime() - nsAcceptBegin,
                                                                            nsStartBy - nsAcceptBegin)));
                     s = state.get();
@@ -491,7 +491,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             && state.get() < RUNNING // not started yet
             && System.nanoTime() - nsStartBy > 0) // start timeout has elapsed
             abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                   executor.identifier,
+                                                                   getIdentifier(),
                                                                    getTaskName(),
                                                                    System.nanoTime() - nsAcceptBegin,
                                                                    nsStartBy - nsAcceptBegin)));
@@ -615,6 +615,11 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
     }
 
     @Trivial
+    final String getIdentifier() {
+        return callback == null ? executor.identifier : callback.getIdentifier(executor.identifier);
+    }
+
+    @Trivial
     final String getTaskName() {
         return callback == null ? task.toString() : callback.getName(task);
     }
@@ -633,7 +638,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                   && s < RUNNING // not started yet
                   && System.nanoTime() - nsStartBy > 0 // start timeout has elapsed
                   && (abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                             executor.identifier,
+                                                                             getIdentifier(),
                                                                              getTaskName(),
                                                                              System.nanoTime() - nsAcceptBegin,
                                                                              nsStartBy - nsAcceptBegin)))
@@ -772,7 +777,7 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             default:
                 b.append(s); // should be unreachable
         }
-        b.append(" on ").append(executor.identifier);
+        b.append(" on ").append(getIdentifier());
         if (s == SUCCESSFUL || s == FAILED)
             b.append(": ").append(result.get());
         return b.toString();

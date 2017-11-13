@@ -23,6 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.auth.Subject;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.cm.ConfigurationEvent;
@@ -104,6 +105,8 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
 
     private final RuntimeSecurityService runtimeSecurityService = RuntimeSecurityService.SINGLETON_INSTANCE;
 
+    private String bundleLocation;
+
     /**
      * Method to activate Messaging Security component
      * 
@@ -111,11 +114,12 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
      * @throws MessagingSecurityException
      */
     @Activate
-    protected void activate(Map<String, Object> properties) {
+    protected void activate(BundleContext ctx, Map<String, Object> properties) {
 
         SibTr.entry(tc, CLASS_NAME + "activate", properties);
 
         this.properties = properties;
+        this.bundleLocation = ctx.getBundle().getLocation();
         populateDestinationPermissions();
         runtimeSecurityService.modifyMessagingServices(this);
 
@@ -160,7 +164,8 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
         temporaryDestinationPermissions = null;
         sibAuthenticationService = null;
         sibAuthorizationService = null;
-
+        this.bundleLocation = null;
+        
         SibTr.exit(tc, CLASS_NAME + "deactivate");
     }
 
@@ -595,7 +600,7 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
         Configuration config = null;
         try {
             pids.add(input);
-            config = configAdmin.getConfiguration(input);
+            config = configAdmin.getConfiguration(input, bundleLocation);
         } catch (IOException e) {
             MessagingSecurityException mse = new MessagingSecurityException(e);
             FFDCFilter.processException(mse, CLASS_NAME + ".getDictionaryObject", "1008", this);

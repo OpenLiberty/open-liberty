@@ -39,10 +39,10 @@ import com.ibm.ws.config.admin.ExtendedConfiguration;
  * This represents a Configuration and implements Configuration.
  * It provides APIs to get configuration attributes, properties,
  * and to delete and update its configuration dictionary.
- * 
+ *
  * In addition to the standard OSGi Configuration value type support,
  * this implementation also supports Map of Strings as one of the value types.
- * 
+ *
  */
 class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
@@ -92,7 +92,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /**
      * Constructor to create an instance of Configuration.
-     * 
+     *
      * @param caImpl
      * @param bndlLocation
      * @param factoryPid
@@ -142,6 +142,12 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
         }
     }
 
+    // Returns true if the configuration has not been bound to a bundle
+    @Trivial
+    protected boolean isUnbound() {
+        return boundBundle == null;
+    }
+
     @Trivial
     protected boolean bind(Bundle bundle) {
         lock.lock();
@@ -167,7 +173,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#delete()
      */
     @Override
@@ -208,7 +214,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#getBundleLocation()
      */
     @Override
@@ -235,7 +241,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#getFactoryPid()
      */
     @Override
@@ -257,7 +263,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#getPid()
      */
     @Override
@@ -295,7 +301,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#getProperties()
      */
     @Override
@@ -327,7 +333,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#setBundleLocation(java.lang.String)
      */
     @Override
@@ -351,9 +357,9 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#update()
-     * 
+     *
      * The Configuration Admin service must first store the configuration
      * information
      * and then call a configuration target's updated method: either the
@@ -373,14 +379,14 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#update(java.util.Dictionary)
-     * 
+     *
      * The Configuration Admin service must first store the configuration
      * information
      * and then call a configuration target's updated method: either the
      * ManagedService.updated or ManagedServiceFactory.updated method.
-     * 
+     *
      * Also initiates an asynchronous call to all ConfigurationListeners with a
      * ConfigurationEvent.CM_UPDATED event.
      */
@@ -443,7 +449,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
      * the given properties before caching
      * and the internal pid-to-config table is updated to reflect the new config
      * properties.
-     * 
+     *
      * @param properties
      * @param replaceProp
      * @param isMetaTypeProperties
@@ -562,7 +568,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
      * It sets configuration dictionary with specified dictionary
      * and updates configuration attributes if they are not set
      * and found in given dictionary.
-     * 
+     *
      * @param d
      */
     private void setProperties(Dictionary<String, ?> d) {
@@ -687,7 +693,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.osgi.service.cm.Configuration#getChangeCount()
      */
     @Override
@@ -698,7 +704,7 @@ class ExtendedConfigurationImpl implements ExtendedConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see com.ibm.ws.config.admin.ExtendedConfiguration#setFullId(com.ibm.ws.config.admin.ConfigID)
      */
     @Override

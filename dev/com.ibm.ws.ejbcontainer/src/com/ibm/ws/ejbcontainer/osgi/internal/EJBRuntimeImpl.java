@@ -1387,6 +1387,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, "Waiting for EJBRemoteRuntime failed: " + e);
             }
+            // Once one thread has completed the wait; no point in others continuing to wait
+            remoteFeatureLatch = null;
+            remoteLatch.countDown();
         }
     }
 
@@ -1497,17 +1500,23 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     @Reference(name = "features", cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setLibertyFeature(ServiceReference<LibertyFeature> feature) {
-        String featureName = (String) feature.getProperty("ibm.featureName");
-        if (featureName != null && featureName.startsWith("ejbRemote")) {
-            remoteFeatureLatch = new CountDownLatch(1);
+        // If the remote runtime hasn't come up yet, but remote is configured,
+        // then create a latch to support a pause in starting remote EJBs.
+        if (ejbRemoteRuntimeServiceRef.getReference() == null) {
+            String featureName = (String) feature.getProperty("ibm.featureName");
+            if (featureName != null && featureName.startsWith("ejbRemote")) {
+                remoteFeatureLatch = new CountDownLatch(1);
+            }
         }
     }
 
     protected void unsetLibertyFeature(ServiceReference<LibertyFeature> feature) {
-        String featureName = (String) feature.getProperty("ibm.featureName");
-        if (featureName != null && featureName.startsWith("ejbRemote")) {
-            CountDownLatch remoteLatch = remoteFeatureLatch;
-            if (remoteLatch != null) {
+        // If the remote feature was configured, but never came up, and now
+        // is being removed, then also remove the remote latch.
+        CountDownLatch remoteLatch = remoteFeatureLatch;
+        if (remoteLatch != null) {
+            String featureName = (String) feature.getProperty("ibm.featureName");
+            if (featureName != null && featureName.startsWith("ejbRemote")) {
                 remoteLatch.countDown();
                 remoteFeatureLatch = null;
             }
