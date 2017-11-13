@@ -11,9 +11,6 @@
 
 package cdi.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.enterprise.inject.Default;
@@ -21,22 +18,11 @@ import javax.inject.Singleton;
 
 @Default
 @Singleton
-public class LoggingServiceImpl implements LoggingService {
-    public final static String CLASS_NAME = WidgetEntityListener.class.getName();
+public class ConverterLoggingServiceImpl extends AbstractLoggingService implements ConverterLoggingService {
+    public final static String CLASS_NAME = ConverterLoggingServiceImpl.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
 
-    private List<String> _messages = new ArrayList<String>();
-
-    @Override
-    public synchronized void log(String s) {
-        svLogger.logp(Level.INFO, CLASS_NAME, "log", s);
-        _messages.add(s);
-    }
-
-    @Override
-    public synchronized List<String> getAndClearMessages() {
-        List<String> messages = _messages;
-        _messages = new ArrayList<String>();
-        return messages;
+    public ConverterLoggingServiceImpl() {
+        super(svLogger, CLASS_NAME);
     }
 }

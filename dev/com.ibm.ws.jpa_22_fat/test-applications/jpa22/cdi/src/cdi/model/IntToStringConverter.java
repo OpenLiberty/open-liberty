@@ -14,6 +14,7 @@ package cdi.model;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.persistence.AttributeConverter;
@@ -22,11 +23,11 @@ import javax.persistence.Converter;
 @Named
 @Converter
 public class IntToStringConverter implements AttributeConverter<Integer, String> {
-    private LoggingService logger;
+    private ConverterLoggingService logger;
 
     public IntToStringConverter() {
         // Default logger to avoid NPEs if injection fails.
-        logger = new LoggingService() {
+        logger = new ConverterLoggingService() {
 
             private final List<String> _messages = Arrays.asList(new String[] { "injection failed" });
 
@@ -45,9 +46,14 @@ public class IntToStringConverter implements AttributeConverter<Integer, String>
     }
 
     @Inject
-    public void setLoggingService(LoggingService ls) {
+    public void setLoggingService(ConverterLoggingService ls) {
         logger = ls;
         logger.log(msg("injection"));
+    }
+
+    @PostConstruct
+    public void postConstruct() {
+        logger.log(msg("postConstruct"));
     }
 
     private static String msg(String s) {

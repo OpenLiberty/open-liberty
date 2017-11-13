@@ -46,11 +46,11 @@ import javax.persistence.PreUpdate;
 public class WidgetEntityListener {
     public final static String CLASS_NAME = WidgetEntityListener.class.getName();
 
-    private LoggingService logger;
+    private EntListenerLoggingService logger;
 
     public WidgetEntityListener() {
         // Default logger to avoid NPEs if injection fails.
-        logger = new LoggingService() {
+        logger = new EntListenerLoggingService() {
 
             private final List<String> _messages = Arrays.asList(new String[] { "injection failed" });
 
@@ -69,7 +69,7 @@ public class WidgetEntityListener {
     }
 
     @Inject
-    public void setLoggingService(LoggingService ls) {
+    public void setLoggingService(EntListenerLoggingService ls) {
         logger = ls;
         logger.log(msg("injection"));
     }

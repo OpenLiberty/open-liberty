@@ -13,7 +13,7 @@ package cdi.model;
 
 import java.util.List;
 
-public interface LoggingService {
+public interface EntListenerLoggingService {
     public void log(String s);
 
     public List<String> getAndClearMessages();
