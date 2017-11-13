@@ -166,6 +166,25 @@ public interface PolicyExecutor extends ExecutorService {
     PolicyExecutor maxWaitForEnqueue(long ms);
 
     /**
+     * Registers a one-time callback to be invoked asynchronously
+     * when the available remaining capacity of the task queue
+     * drops below the specified minimum.
+     * If a queue size callback is already registered, this replaces
+     * the previous registration.
+     * To unregister an existing callback without replacing,
+     * specify a null value for the callback.
+     * The callback is not guaranteed to be invoked in the case of
+     * available queue capacity being taken away due to shutdown.
+     *
+     * @param minAvailable threshold for minimum available queue capacity
+     *            below which the callback should be notified.
+     * @param callback the callback, or null to unregister.
+     * @return callback that was replaced or removed by the new registration.
+     *         null if no previous callback was in place.
+     */
+    Runnable registerQueueSizeCallback(int minAvailable, Runnable callback);
+
+    /**
      * Applies when using the <code>execute</code> or <code>submit</code> methods. Indicates whether or not to run the task on the
      * caller's thread when the queue is full and the <code>maxWaitForEnqueue</code> has been exceeded.
      * The default value is false, in which case the task submission is rejected after the <code>maxWaitForEnqueue</code> elapses
