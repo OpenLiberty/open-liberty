@@ -1,8 +1,8 @@
 <server>
     <featureManager>
-        <feature>servlet-3.1</feature>
+        <feature>servlet-4.0</feature>
         <feature>ejbLite-3.2</feature>
-        <feature>beanValidation-1.1</feature>
+        <feature>beanValidation-2.0</feature>
         <feature>componenttest-1.0</feature>
     </featureManager>
     

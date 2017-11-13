@@ -22,5 +22,8 @@ instrument.disabled: true
   com.ibm.ws.cdi.interfaces;version=latest,\
   com.ibm.ws.org.jboss.logging.3.3.0;version=latest,\
   org.hibernate.validator:hibernate-validator;version=6.0.4.Final,\
-  org.hibernate.validator:hibernate-validator-cdi;version=6.0.4.Final
+  org.hibernate.validator:hibernate-validator-cdi;version=6.0.4.Final,\
+  com.ibm.ws.beanvalidation;version=latest,\
+  com.ibm.ws.container.service;version=latest,\
+  com.ibm.ws.classloading;version=latest
 

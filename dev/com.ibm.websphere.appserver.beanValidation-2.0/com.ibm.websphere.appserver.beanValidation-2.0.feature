@@ -14,7 +14,9 @@ IBM-API-Package: javax.validation; type="spec", \
  javax.validation.spi; type="spec",\
  javax.validation.valueextraction; type="spec",\
  com.ibm.ws.beanvalidation.accessor; type="internal",\
- org.hibernate.validator; type="internal"
+ org.hibernate.validator; type="internal",\
+ com.ibm.ws.beanvalidation.v20.cdi.internal; type="internal",\
+ org.hibernate.validator.internal.engine; type="internal"
 IBM-ShortName: beanValidation-2.0
 Subsystem-Name: Bean Validation 2.0
 -features=com.ibm.websphere.appserver.javax.cdi-2.0, \
@@ -24,7 +26,7 @@ Subsystem-Name: Bean Validation 2.0
  com.ibm.websphere.appserver.transaction-1.2, \
  com.ibm.websphere.appserver.javax.interceptor-1.2, \
  com.ibm.websphere.appserver.javaeeCompatible-8.0
--bundles=com.ibm.ws.beanvalidation.v11, \
+-bundles=com.ibm.ws.beanvalidation.v20, \
  com.ibm.ws.org.hibernate.validator.6.0.4.Final, \
  com.ibm.ws.org.jboss.logging.3.3.0, \
  com.ibm.ws.com.fasterxml.classmate.1.3.1

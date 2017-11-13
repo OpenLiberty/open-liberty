@@ -196,7 +196,7 @@ public class BasicValidation11CommonTest extends BasicValidation10CommonTest {
      * Test that validation.xml can specify all components directly from the
      * Apache Bval 1.1 bundle.
      */
-    @Test
+    //@Test TODO disable for bval 2.0
     public void testBuildApacheConfiguredValidatorFactory11() throws Exception {
         run("ApacheBvalConfig_11", "BeanValidationServlet");
     }
@@ -205,7 +205,7 @@ public class BasicValidation11CommonTest extends BasicValidation10CommonTest {
      * Ensure that the apache bval impl classes have the proper visibility to
      * the application.
      */
-    @Test
+    //@Test TODO disable for bval 2.0
     public void testApacheBvalImplClassVisibility11() throws Exception {
         run("ApacheBvalConfig_11", "BeanValidationServlet");
     }

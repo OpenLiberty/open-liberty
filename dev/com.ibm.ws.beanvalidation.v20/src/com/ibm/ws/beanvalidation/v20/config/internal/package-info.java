@@ -8,14 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.beanvalidation.service;
+@TraceOptions(traceGroup = "BeanValidation", messageBundle = BVNLSConstants.BV_RESOURCE_BUNDLE)
+package com.ibm.ws.beanvalidation.v20.config.internal;
 
-import org.osgi.framework.Version;
+import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.ws.beanvalidation.BVNLSConstants;
 
-public abstract class BeanValidationRuntimeVersion {
-    public static final String VERSION = "version";
-
-    public static final Version VERSION_1_0 = new Version(1, 0, 0);
-    public static final Version VERSION_1_1 = new Version(1, 1, 0);
-    public static final Version VERSION_2_0 = new Version(2, 0, 0);
-}
