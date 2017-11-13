@@ -166,6 +166,11 @@ public class CDIEJBManagedObjectFactoryImpl<T> extends AbstractManagedObjectFact
             }
 
         }
+
+        if (_ejbDescriptor == null) {
+            Tr.error(tc, "Could not find an EjbDescriptor for : " + _ejbName);
+        }
+
         return _ejbDescriptor;
     }
 
