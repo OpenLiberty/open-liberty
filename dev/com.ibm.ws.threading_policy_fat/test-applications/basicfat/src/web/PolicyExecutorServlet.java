@@ -936,6 +936,74 @@ public class PolicyExecutorServlet extends FATServlet {
         } // pass
     }
 
+    // Register concurrency callbacks with a policy executor. Verify that at most one can be registered,
+    // that the most recently registered replaces any previous ones, and that the concurrency callback
+    // can be unregistered by supplying null. Verify that the concurrency callback is notified when the
+    // number of running tasks exceeds the threshold.
+    @Test
+    public void testConcurrencyCallback() throws Exception {
+        PolicyExecutor executor = provider.create("testConcurrencyCallback")
+                        .maxConcurrency(3);
+
+        CountDownLatch over0Latch = new CountDownLatch(1);
+        Runnable callbackOver0 = new CountDownCallback(over0Latch);
+        assertNull(executor.registerConcurrencyCallback(0, callbackOver0));
+        assertEquals(1, over0Latch.getCount());
+
+        // new registration replaces previous
+        CountDownLatch over1Latch = new CountDownLatch(1);
+        Runnable callbackOver1 = new CountDownCallback(over1Latch);
+        assertEquals(callbackOver0, executor.registerConcurrencyCallback(1, callbackOver1));
+        assertEquals(1, over1Latch.getCount());
+
+        // previously registered callback is not invoked
+        CountDownLatch blocker1StartedLatch = new CountDownLatch(1);
+        CountDownLatch blockerContinueLatch = new CountDownLatch(1);
+        CountDownTask blocker1Task = new CountDownTask(blocker1StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker1Future = executor.submit(blocker1Task);
+        assertTrue(blocker1StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, over0Latch.getCount());
+        assertEquals(1, over1Latch.getCount());
+
+        // trigger the active callback by starting another task, such that 2 are running
+        CountDownLatch blocker2StartedLatch = new CountDownLatch(1);
+        CountDownTask blocker2Task = new CountDownTask(blocker2StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker2Future = executor.submit(blocker2Task);
+        assertTrue(blocker2StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(over1Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, over0Latch.getCount());
+
+        // register a callback for a threshold that has already been reached
+        assertNull(executor.registerConcurrencyCallback(0, callbackOver0));
+        assertTrue(over0Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // register another callback which hasn't been reached
+        CountDownLatch over2Latch = new CountDownLatch(1);
+        Runnable callbackOver2 = new CountDownCallback(over2Latch);
+        assertNull(executor.registerConcurrencyCallback(2, callbackOver2));
+        assertEquals(1, over2Latch.getCount());
+
+        // trigger the active callback by starting another task, such that 3 are running
+        CountDownLatch blocker3StartedLatch = new CountDownLatch(1);
+        CountDownTask blocker3Task = new CountDownTask(blocker3StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker3Future = executor.submit(blocker3Task);
+        assertTrue(blocker3StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(over2Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // allow all 3 blocked tasks to finish
+        blockerContinueLatch.countDown();
+
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(blocker1Future.isDone());
+        assertTrue(blocker2Future.isDone());
+        assertTrue(blocker3Future.isDone());
+        assertFalse(blocker1Future.isCancelled());
+        assertFalse(blocker2Future.isCancelled());
+        assertFalse(blocker3Future.isCancelled());
+    }
+
     // Attempt to await termination from multiple threads at once after a shutdown.
     @Test
     public void testConcurrentAwaitTerminationAfterShutdown() throws Exception {
