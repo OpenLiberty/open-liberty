@@ -13,12 +13,51 @@ package com.ibm.ws.security.javaeesec.fat_helper;
 
 import static org.junit.Assert.assertNotNull;
 
+import org.apache.directory.api.ldap.model.entry.Entry;
+
+import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.apacheds.EmbeddedApacheDS;
+
 import componenttest.topology.impl.LibertyServer;
 
 /**
  * Server Helper Methods
  */
 public class ServerHelper {
+
+    protected static Class<?> logClass = ServerHelper.class;
+
+    private static EmbeddedApacheDS ldapServer = null;
+
+    public static void setupldapServer() throws Exception {
+        ldapServer = new EmbeddedApacheDS("HTTPAuthLDAP");
+        ldapServer.addPartition("test", "o=ibm,c=us");
+        ldapServer.startServer(Integer.parseInt(System.getProperty("ldap.1.port")));
+
+        Entry entry = ldapServer.newEntry("o=ibm,c=us");
+        entry.add("objectclass", "organization");
+        entry.add("o", "ibm");
+        ldapServer.add(entry);
+
+        entry = ldapServer.newEntry("uid=jaspildapuser1,o=ibm,c=us");
+        entry.add("objectclass", "inetorgperson");
+        entry.add("uid", "jaspildapuser1");
+        entry.add("sn", "jaspildapuser1sn");
+        entry.add("cn", "jaspiuser1");
+        entry.add("userPassword", "s3cur1ty");
+        ldapServer.add(entry);
+
+    }
+
+    public static void stopldapServer() {
+        if (ldapServer != null) {
+            try {
+                ldapServer.stopService();
+            } catch (Exception e) {
+                Log.error(logClass, "teardown", e, "LDAP server threw error while stopping. " + e.getMessage());
+            }
+        }
+    }
 
     public static void verifyServerStarted(LibertyServer server) {
         assertNotNull("FeatureManager did not report update was complete",
