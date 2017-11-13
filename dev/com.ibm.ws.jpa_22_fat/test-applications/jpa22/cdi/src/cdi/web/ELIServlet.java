@@ -30,7 +30,8 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import cdi.model.ConvertableWidget;
-import cdi.model.LoggingService;
+import cdi.model.ConverterLoggingService;
+import cdi.model.EntListenerLoggingService;
 import cdi.model.Widget;
 import componenttest.app.FATServlet;
 
@@ -40,10 +41,14 @@ public class ELIServlet extends FATServlet {
     private static final String CLASS_NAME = ELIServlet.class.getName();
     private static final Logger svLogger = Logger.getLogger(CLASS_NAME);
 
-    private boolean firstTest = true;
+    private volatile boolean firstEntityListenerTest = true;
+    private volatile boolean firstConverterTest = true;
 
     @Inject // used for checking callbacks to entity listener
-    private LoggingService logger;
+    private EntListenerLoggingService entityListenerlogger;
+
+    @Inject // used for checking callbacks to converter
+    private ConverterLoggingService converterLogger;
 
     @PersistenceContext
     private EntityManager em;
@@ -65,11 +70,11 @@ public class ELIServlet extends FATServlet {
 
         insert("circle", "A round widget");
 
-        List<String> searchMessages = createMessageList(new String[] { "prePersist", "postPersist" });
+        List<String> searchMessages = createEntityListenerMessageList(new String[] { "prePersist", "postPersist" });
         boolean[] foundMessages = new boolean[searchMessages.size()];
         boolean[] orderCorrect = new boolean[searchMessages.size() - 1];
 
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = entityListenerlogger.getAndClearMessages();
         for (String msg : loggerMessages) {
             if ("injection failed".equalsIgnoreCase(msg)) {
                 Assert.fail("Injection failed to occur before some callback method");
@@ -103,11 +108,11 @@ public class ELIServlet extends FATServlet {
 
         final int id = insert("square", "A widget with four equal sides");
 
-        List<String> searchMessages = createMessageList(new String[] { "prePersist", "postPersist" });
+        List<String> searchMessages = createEntityListenerMessageList(new String[] { "prePersist", "postPersist" });
         boolean[] foundMessages = new boolean[searchMessages.size()];
         boolean[] orderCorrect = new boolean[searchMessages.size() - 1];
 
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = entityListenerlogger.getAndClearMessages();
         for (String msg : loggerMessages) {
             if ("injection failed".equalsIgnoreCase(msg)) {
                 Assert.fail("Injection failed to occur before some callback method");
@@ -136,10 +141,10 @@ public class ELIServlet extends FATServlet {
         em.clear();
 
         find(id);
-        searchMessages = createMessageList(new String[] { "postLoad" });
+        searchMessages = createEntityListenerMessageList(new String[] { "postLoad" });
         foundMessages = new boolean[searchMessages.size()];
 
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = entityListenerlogger.getAndClearMessages();
         for (String msg : loggerMessages) {
             for (int index = 0; index < searchMessages.size(); index++) {
                 if (msg.indexOf(searchMessages.get(index)) >= 0) {
@@ -160,11 +165,11 @@ public class ELIServlet extends FATServlet {
 
         final int id = insert("rectangle", "A widget with two long sides and two short sides");
 
-        List<String> searchMessages = createMessageList(new String[] { "prePersist", "postPersist" });
+        List<String> searchMessages = createEntityListenerMessageList(new String[] { "prePersist", "postPersist" });
         boolean[] foundMessages = new boolean[searchMessages.size()];
         boolean[] orderCorrect = new boolean[searchMessages.size() - 1];
 
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = entityListenerlogger.getAndClearMessages();
         for (String msg : loggerMessages) {
             if ("injection failed".equalsIgnoreCase(msg)) {
                 Assert.fail("Injection failed to occur before some callback method");
@@ -193,11 +198,11 @@ public class ELIServlet extends FATServlet {
         em.clear();
 
         update(id, "rectangle", "A widget with two pairs of two equal sides");
-        searchMessages = createMessageList(new String[] { "preUpdate", "postUpdate" });
+        searchMessages = createEntityListenerMessageList(new String[] { "preUpdate", "postUpdate" });
         foundMessages = new boolean[searchMessages.size()];
         orderCorrect = new boolean[searchMessages.size() - 1];
 
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = entityListenerlogger.getAndClearMessages();
         for (String msg : loggerMessages) {
             for (int index = 0; index < searchMessages.size(); index++) {
                 if (msg.indexOf(searchMessages.get(index)) >= 0) {
@@ -227,11 +232,11 @@ public class ELIServlet extends FATServlet {
 
         final int id = insert("triangle", "A widget with three sides");
 
-        List<String> searchMessages = createMessageList(new String[] { "prePersist", "postPersist" });
+        List<String> searchMessages = createEntityListenerMessageList(new String[] { "prePersist", "postPersist" });
         boolean[] foundMessages = new boolean[searchMessages.size()];
         boolean[] orderCorrect = new boolean[searchMessages.size() - 1];
 
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = entityListenerlogger.getAndClearMessages();
         for (String msg : loggerMessages) {
             if ("injection failed".equalsIgnoreCase(msg)) {
                 Assert.fail("Injection failed to occur before some callback method");
@@ -260,11 +265,11 @@ public class ELIServlet extends FATServlet {
         em.clear();
 
         delete(id);
-        searchMessages = createMessageList(new String[] { "preRemove", "postRemove" });
+        searchMessages = createEntityListenerMessageList(new String[] { "preRemove", "postRemove" });
         foundMessages = new boolean[searchMessages.size()];
         orderCorrect = new boolean[searchMessages.size() - 1];
 
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = entityListenerlogger.getAndClearMessages();
         for (String msg : loggerMessages) {
             for (int index = 0; index < searchMessages.size(); index++) {
                 if (msg.indexOf(searchMessages.get(index)) >= 0) {
@@ -300,9 +305,9 @@ public class ELIServlet extends FATServlet {
         em.persist(newEntity);
         tx.commit();
 
-        List<String> searchMessages = createMessageList(new String[] { "convertToDatabaseColumn" });
+        List<String> searchMessages = createConverterMessageList(new String[] { "convertToDatabaseColumn" });
         boolean[] foundMessages = new boolean[searchMessages.size()];
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = converterLogger.getAndClearMessages();
 
         for (String msg : loggerMessages) {
             if ("injection failed".equalsIgnoreCase(msg)) {
@@ -328,9 +333,9 @@ public class ELIServlet extends FATServlet {
         Assert.assertEquals("Icosahedron", findEntity.getName());
         Assert.assertEquals("A widget with 20 sides.", findEntity.getDescription());
 
-        searchMessages = createMessageList(new String[] { "convertToEntityAttribute" });
+        searchMessages = createConverterMessageList(new String[] { "convertToEntityAttribute" });
         foundMessages = new boolean[searchMessages.size()];
-        loggerMessages = logger.getAndClearMessages();
+        loggerMessages = converterLogger.getAndClearMessages();
 
         for (String msg : loggerMessages) {
             if ("injection failed".equalsIgnoreCase(msg)) {
@@ -351,13 +356,27 @@ public class ELIServlet extends FATServlet {
 
     // Support methods
 
-    private List<String> createMessageList(String[] arr) {
+    private List<String> createEntityListenerMessageList(String[] arr) {
         List<String> list = new ArrayList<String>(arr.length);
 
-        if (firstTest) {
+        if (firstEntityListenerTest) {
             list.add("injection");
             list.add("postConstruct");
-            firstTest = false;
+            firstEntityListenerTest = false;
+        }
+
+        list.addAll(Arrays.asList(arr));
+
+        return list;
+    }
+
+    private List<String> createConverterMessageList(String[] arr) {
+        List<String> list = new ArrayList<String>(arr.length);
+
+        if (firstConverterTest) {
+            list.add("injection");
+            list.add("postConstruct");
+            firstConverterTest = false;
         }
 
         list.addAll(Arrays.asList(arr));
