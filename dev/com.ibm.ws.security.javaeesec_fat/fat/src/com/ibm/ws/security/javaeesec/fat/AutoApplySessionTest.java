@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import javax.servlet.http.HttpServletResponse;
@@ -44,21 +45,20 @@ import componenttest.topology.impl.LibertyServerFactory;
 @MinimumJavaLevel(javaLevel = 1.7, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-public class RememberMeTest extends JavaEESecTestBase {
+public class AutoApplySessionTest extends JavaEESecTestBase {
 
-    private static final String REMEMBERME_COOKIE_NAME = "JREMEMBERMEID";
+    private static final String COOKIE_NAME = "jaspicSession";
 
-    protected static Class<?> logClass = RememberMeTest.class;
+    protected static Class<?> logClass = AutoApplySessionTest.class;
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected String queryString = "/JavaEESec/CommonServlet";
-    protected static String[] warList = { "JavaEESec.war" };
     protected static String urlBase;
     protected static String urlHttps;
     protected static String JAR_NAME = "JavaEESecBase.jar";
 
     protected DefaultHttpClient httpclient;
 
-    public RememberMeTest() {
+    public AutoApplySessionTest() {
         super(myServer, logClass);
     }
 
@@ -76,9 +76,8 @@ public class RememberMeTest extends JavaEESecTestBase {
 
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESec.war", true, JAR_NAME, false, "web.jar.base", "web.war.servlets",
                                                "web.war.mechanisms",
-                                               "web.war.mechanisms.rememberme",
-                                               "web.war.identitystores",
-                                               "web.war.identitystores.rememberme");
+                                               "web.war.mechanisms.autoapplysession",
+                                               "web.war.identitystores");
         myServer.setServerConfigurationFile("commonServer.xml");
         myServer.startServer(true);
         myServer.addInstalledAppForValidation("JavaEESec");
@@ -114,29 +113,21 @@ public class RememberMeTest extends JavaEESecTestBase {
     }
 
     @Test
-    public void testRememberMe() throws Exception {
+    public void testAutoApplySession() throws Exception {
         HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString, javaeesec_basicRoleUser, javaeesec_basicRolePwd);
         String response = processResponse(httpResponse, HttpServletResponse.SC_OK);
         verifyUserResponse(response, getUserPrincipalFound + javaeesec_basicRoleUser, getRemoteUserFound + javaeesec_basicRoleUser);
-        Header cookieHeader = getCookieHeader(httpResponse, REMEMBERME_COOKIE_NAME);
+        Header cookieHeader = getCookieHeader(httpResponse, COOKIE_NAME);
         String cookieHeaderString = cookieHeader.toString();
 
-        assertTrue("The Expires parameter must be set.", cookieHeaderString.contains("Expires="));
-        assertTrue("The Path parameter must be set.", cookieHeaderString.contains("Path=/"));
-        assertTrue("The Secure parameter must be set.", cookieHeaderString.contains("Secure"));
-        assertTrue("The HttpOnly parameter must be set.", cookieHeaderString.contains("HttpOnly"));
+        assertFalse("The Expires element must not be set.", cookieHeaderString.contains("Expires="));
+        assertTrue("The Path element must be set.", cookieHeaderString.contains("Path=/"));
+        assertFalse("The Secure element must not be set.", cookieHeaderString.contains("Secure")); // By default ssoRequiresSSL is set to false
+        assertTrue("The HttpOnly element must be set.", cookieHeaderString.contains("HttpOnly"));
 
         httpclient.getCookieStore().clear();
-        response = accessWithCookie(httpclient, urlHttps + queryString, REMEMBERME_COOKIE_NAME, getCookieValue(cookieHeader, REMEMBERME_COOKIE_NAME), HttpServletResponse.SC_OK);
+        response = accessWithCookie(httpclient, urlHttps + queryString, COOKIE_NAME, getCookieValue(cookieHeader, COOKIE_NAME), HttpServletResponse.SC_OK);
         verifyUserResponse(response, getUserPrincipalFound + javaeesec_basicRoleUser, getRemoteUserFound + javaeesec_basicRoleUser);
-    }
-
-    @Test
-    public void testRememberMeHttpNoCookie() throws Exception {
-        HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, javaeesec_basicRoleUser, javaeesec_basicRolePwd);
-        String response = processResponse(httpResponse, HttpServletResponse.SC_OK);
-        verifyUserResponse(response, getUserPrincipalFound + javaeesec_basicRoleUser, getRemoteUserFound + javaeesec_basicRoleUser);
-        validateNoCookie(httpResponse, REMEMBERME_COOKIE_NAME);
     }
 
 }
