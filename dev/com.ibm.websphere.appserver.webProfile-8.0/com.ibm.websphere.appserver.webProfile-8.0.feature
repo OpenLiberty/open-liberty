@@ -5,8 +5,8 @@ IBM-App-ForceRestart: install, uninstall
 IBM-ShortName: webProfile-8.0
 Subsystem-Version: 8.0.0
 Subsystem-Name: Java EE Web Profile 8.0
-# TODO-EE8: Need to add appSecurity-3.0 once bug w/ CDI 2.0 is resolved
 -features=\
+  com.ibm.websphere.appserver.appSecurity-3.0,\
   com.ibm.websphere.appserver.beanValidation-2.0,\
   com.ibm.websphere.appserver.cdi-2.0,\
   com.ibm.websphere.appserver.ejbLite-3.2,\

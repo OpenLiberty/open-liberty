@@ -17,6 +17,10 @@ Bundle-Description: Batch support for CDI; version=${bVersion}
 
 WS-TraceGroup: wsbatch
 
+Import-Package:\
+  javax.enterprise.*;version="[1.1,2.1)",\
+  *
+
 Export-Package:\
   com.ibm.ws.jbatch.cdi;provide:=true
 
