@@ -11,6 +11,7 @@ IBM-ShortName: appSecurity-3.0
 #IBM-SPI-Package:
 Subsystem-Name: Application Security 3.0
 -features=com.ibm.websphere.appserver.cdi-2.0, \
+ com.ibm.websphere.appserver.el-3.0, \
  com.ibm.websphere.appserver.jaspic-1.1, \
  com.ibm.websphere.appserver.servlet-4.0
 -bundles=com.ibm.websphere.javaee.security.1.0; location:=dev/api/spec/, \
