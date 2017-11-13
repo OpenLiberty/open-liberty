@@ -19,7 +19,7 @@
   <opentracing>
   	<!-- Test excluding exact relative and absolute URIs -->
   	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest?response=simple" />
-  	<excludeSpans pattern="http://localhost:8010/serviceApp/rest/testService/excludeTest?response=absoluteUri" />
+  	<excludeSpans pattern="http://localhost:${bvt.prop.HTTP_default}/serviceApp/rest/testService/excludeTest?response=absoluteUri" />
   	<excludeSpans pattern="/serviceApp/rest/testService/excludeTest\?response=regexTest[0-9]+" regex="true" />
 
 	<!-- Test excluding wildcard URIs -->
