@@ -3893,6 +3893,66 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(terminationFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
+    // Register late start callbacks with a policy executor. Verify that at most one can be registered,
+    // that the most recently registered replaces any previous ones, and that the late start callback
+    // can be unregistered by supplying null. Verify that the late start callback is notified when a
+    // task starts after the designated threshold.
+    @Test
+    public void testLateStartCallback() throws Exception {
+        PolicyExecutor executor = provider.create("testLateStartCallback")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
+/*
+ * Add late start for > TIMEOUT_NS nanos
+ * submit blocker task
+ * submit task blocked in queue
+ * Sleep for remaining of 300 ms.
+ * Add late start for > 200 ms.
+ * await the late start callback
+ */
+        CountDownLatch lateBy3MinutesLatch = new CountDownLatch(1);
+        Runnable lateBy3MinutesCallback = new CountDownCallback(lateBy3MinutesLatch);
+        assertNull(executor.registerLateStartCallback(3, TimeUnit.MINUTES, lateBy3MinutesCallback));
+
+        // use up maxConcurrency
+        CountDownLatch blocker1StartedLatch = new CountDownLatch(1);
+        CountDownLatch blockerContinueLatch = new CountDownLatch(1);
+        CountDownTask blocker1Task = new CountDownTask(blocker1StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker1Future = executor.submit(blocker1Task);
+
+        // queue another task
+        PolicyTaskFuture<Integer> lateTaskFuture = executor.submit(new SharedIncrementTask(), 1, null);
+        assertTrue(blocker1StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, lateBy3MinutesLatch.getCount());
+
+        // new registration replaces previous
+        CountDownLatch lateBy200MillisLatch = new CountDownLatch(1);
+        Runnable lateBy200MillisCallback = new CountDownCallback(lateBy200MillisLatch);
+        assertEquals(lateBy3MinutesCallback, executor.registerLateStartCallback(200, TimeUnit.MILLISECONDS, lateBy200MillisCallback));
+
+        // wait for task to become late, and then allow it to run
+        TimeUnit.MILLISECONDS.sleep(300 - lateTaskFuture.getElapsedAcceptTime(TimeUnit.MILLISECONDS) - lateTaskFuture.getElapsedQueueTime(TimeUnit.MILLISECONDS)); // extra 100ms tolerance
+        blockerContinueLatch.countDown();
+
+        assertTrue(lateBy200MillisLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, lateBy3MinutesLatch.getCount());
+
+        // register another callback which hasn't been reached
+        assertNull(executor.registerLateStartCallback(3, TimeUnit.MINUTES, lateBy3MinutesCallback));
+        assertEquals(1, lateBy3MinutesLatch.getCount());
+
+        assertEquals(Integer.valueOf(1), lateTaskFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(blocker1Future.isDone());
+        assertFalse(blocker1Future.isCancelled());
+
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(1, lateBy3MinutesLatch.getCount()); // never invoked
+    }
+
     // Invoke groups of tasks on the policy executor that break themselves into multiple tasks that also
     // invoke groups of tasks on the policy executor, which in turn break themselves down and
     // invoke more groups of tasks, and so forth.
@@ -4428,8 +4488,10 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         // Task must have 0 run time, and its queue time must stop changing after abort
         long queueTimeNS = future.getElapsedQueueTime(TimeUnit.NANOSECONDS);
@@ -4512,15 +4574,19 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 2 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         try {
             Integer result = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 3 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         assertEquals(0, future2.getElapsedRunTime(TimeUnit.NANOSECONDS));
         assertEquals(0, future3.getElapsedRunTime(TimeUnit.NANOSECONDS));
@@ -4586,8 +4652,10 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 1 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         assertFalse(future2.isDone());
 

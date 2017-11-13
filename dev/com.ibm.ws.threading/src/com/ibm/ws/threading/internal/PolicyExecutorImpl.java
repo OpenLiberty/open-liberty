@@ -61,6 +61,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     private final AtomicReference<Callback> cbConcurrency = new AtomicReference<Callback>();
+    private final AtomicReference<Callback> cbLateStart = new AtomicReference<Callback>();
     private final AtomicReference<Callback> cbQueueSize = new AtomicReference<Callback>();
 
     /**
@@ -997,6 +998,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
     @Override
     public Runnable registerConcurrencyCallback(int max, Runnable runnable) {
+        if (state.get() != State.ACTIVE)
+            throw new IllegalStateException(state.toString());
+
         Callback callback = new Callback(max, runnable);
         Callback previous = cbConcurrency.getAndSet(callback);
         if (runnable != null
@@ -1010,7 +1014,24 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public Runnable registerLateStartCallback(long maxDelay, TimeUnit unit, Runnable runnable) {
+        long ns = unit.toNanos(maxDelay);
+        if (ns == Long.MAX_VALUE) // overflow or max value which can never be exceeded
+            throw new IllegalArgumentException(maxDelay + " " + unit);
+
+        if (state.get() != State.ACTIVE)
+            throw new IllegalStateException(state.toString());
+
+        Callback callback = new Callback(ns, runnable);
+        Callback previous = cbLateStart.getAndSet(callback);
+        return previous == null ? null : previous.runnable;
+    }
+
+    @Override
     public Runnable registerQueueSizeCallback(int minAvailable, Runnable runnable) {
+        if (state.get() != State.ACTIVE)
+            throw new IllegalStateException(state.toString());
+
         Callback callback = new Callback(minAvailable, runnable);
         Callback previous = cbQueueSize.getAndSet(callback);
         if (runnable != null
@@ -1043,7 +1064,18 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         running.add(future); // intentionally done before checking state to avoid missing cancels on shutdownNow
         int runCount = runningCount.incrementAndGet();
         try {
-            Callback callback = cbConcurrency.get();
+            Callback callback = cbLateStart.get();
+            if (callback != null) {
+                long delay = future.nsQueueEnd - future.nsAcceptBegin;
+                if (delay > callback.threshold
+                    && cbLateStart.compareAndSet(callback, null)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "callback: late start " + delay + "ns > " + callback.threshold + "ns", callback.runnable);
+                    globalExecutor.submit(callback.runnable);
+                }
+            }
+
+            callback = cbConcurrency.get();
             if (callback != null
                 && runCount > callback.threshold
                 && cbConcurrency.compareAndSet(callback, null)) {
@@ -1079,6 +1111,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                 Tr.event(this, tc, "state: ACTIVE --> ENQUEUE_STOPPING");
 
+            // unregister callbacks
+            cbConcurrency.set(null);
+            cbLateStart.set(null);
+            cbQueueSize.set(null);
+
             maxWaitForEnqueueNS.set(-1); // make attempted task submissions fail immediately
 
             synchronized (configLock) {
@@ -1091,9 +1128,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled())
                     Tr.event(this, tc, "state: ENQUEUE_STOPPING --> ENQUEUE_STOPPED");
 
-            shutdownLatch.countDown();
-
             policyExecutors.remove(identifier); // remove tracking of this instance and allow identifier to be reused
+
+            shutdownLatch.countDown();
         } else
             while (state.get() == State.ENQUEUE_STOPPING)
                 try { // Await completion of other thread that concurrently invokes shutdown.
