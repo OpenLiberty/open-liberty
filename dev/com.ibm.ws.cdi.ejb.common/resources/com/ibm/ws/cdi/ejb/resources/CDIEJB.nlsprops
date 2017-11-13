@@ -32,3 +32,8 @@ lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: A {0} lifecycle intecepto
 lifecycle.interceptor.exception.CWOWB2001E.explanation=Lifecycle interceptors should avoid throwing checked exceptions 
 lifecycle.interceptor.exception.CWOWB2001E.useraction=Check the logs to determine the problem
 
+internal.server.error.CWOWB2002E=CWOWB2002E: WebSphere Application Server internal error occurred. Please contact WebSphere Application Server support with the following data: {0} {1}
+internal.server.error.CWOWB2002E.explanation=CMSG0001
+internal.server.error.CWOWB2002E.useraction=See the problem determination information on the WebSphere Application Server Support web page: http://www.ibm.com/software/webservers/appserv/was/support.
+
+
