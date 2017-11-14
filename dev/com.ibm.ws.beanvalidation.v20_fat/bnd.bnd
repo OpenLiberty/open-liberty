@@ -16,7 +16,18 @@ javac.target: 1.8
 
 src: \
 	fat/src,\
-	test-applications/bvalApp/src,\
+	test-applications/beanvalidation_10.war/src,\
+    test-applications/beanvalidation_11.war/src,\
+    test-applications/defaultbeanvalidation_10.war/src,\
+    test-applications/defaultbeanvalidation_11.war/src,\
+    test-applications/EJBModule1EJB.jar/src,\
+    test-applications/EJBModule2EJB.jar/src,\
+    test-applications/EJBModuleWeb.war/src,\
+    test-applications/HibernateBvalConfig_10.war/src,\
+    test-applications/HibernateBvalConfig_11.war/src,\
+    test-applications/BeanValidationCDI_11.war/src,\
+    test-applications/bvalApp/src,\
+    test-applications/DefaultBeanValidationCDI_11.war/src,\
 	test-applications/bvalCDIApp/src
 
 test.project: true
@@ -24,4 +35,5 @@ test.project: true
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.validation.2.0;version=latest
