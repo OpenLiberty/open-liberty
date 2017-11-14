@@ -16,6 +16,8 @@ package com.ibm.ws.security.javaeesec.fat_helper;
  */
 public class Constants {
 
+    public static final boolean HAS_LDAP_SERVER = true;
+
     public final static String DEFAULT_REALM = "JaspiRealm";
     //Value of JASPI_GROUP must match group.name property passed in provider bnd.bnd.
     public final static String JASPI_GROUP = "JASPIGroup";
@@ -35,6 +37,7 @@ public class Constants {
     public final static String DEFAULT_BASIC_REGISTRATION = "/JASPIBasic";
     public final static String DEFAULT_FORM_REGISTRATION = "/JASPIForm";
     public final static String DEFAULT_FORM_LOGIN_PAGE = "/JavaEEsecFormAuth/JavaEEsecFormAuthServlet";
+    public final static String DEFAULT_CUSTOM_FORM_LOGIN_PAGE = "/JavaEESecCustomFormLoginServlet/JavaEESecAnnotatedFormLoginServlet";
     public final static String DEFAULT_REDIRECT_FORM_LOGIN_PAGE = "/JavaEEsecFormAuthRedirect/JavaEEsecFormAuthRedirectServlet";
 
     public final static String AUTH_TYPE_BASIC = "BASIC";

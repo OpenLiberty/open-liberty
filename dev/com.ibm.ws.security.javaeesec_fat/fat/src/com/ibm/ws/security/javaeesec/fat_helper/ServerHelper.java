@@ -29,6 +29,19 @@ public class ServerHelper {
 
     private static EmbeddedApacheDS ldapServer = null;
 
+    public static void commonStopServer(LibertyServer myServer) throws Exception {
+        commonStopServer(myServer, false);
+    }
+
+    public static void commonStopServer(LibertyServer myServer, boolean stopLdapServer) throws Exception {
+
+        myServer.stopServer();
+        myServer.setServerConfigurationFile("server.xml");
+        if (stopLdapServer) {
+            stopldapServer();
+        }
+    }
+
     public static void setupldapServer() throws Exception {
         ldapServer = new EmbeddedApacheDS("HTTPAuthLDAP");
         ldapServer.addPartition("test", "o=ibm,c=us");

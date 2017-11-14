@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.javaeesec.fat;
+package com.ibm.ws.security.javaeesec.fat_helper;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,7 +40,6 @@ import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 
 import componenttest.topology.impl.LibertyServer;
 
@@ -315,46 +314,6 @@ public class JavaEESecTestBase {
         }
     }
 
-    protected void verifyJaspiAuthenticationProcessedByProvider(String response, String jaspiProvider, String servletName) {
-        Log.info(logClass, "verifyJaspiAuthenticationProcessedByProvider", "Verify response contains Servlet name and JASPI authentication processed");
-        if (servletName != Constants.NO_NAME_VALIDATION)
-            mustContain(response, servletName);
-        verifyJaspiAuthenticationUsed(response, jaspiProvider);
-    }
-
-    protected void verifyJaspiAuthenticationProcessedOnFormLoginError(String response, String jaspiProvider) {
-        Log.info(logClass, "verifyJaspiAuthenticationProcessedByProvider", "Verify response shows Login Error Page and JASPI processed validateRequest");
-        mustContain(response, Constants.LOGIN_ERROR_PAGE);
-        verifyJaspiAuthenticationProcessedValidateRequestInMessageLog();
-    }
-
-    protected void verifyJaspiAuthenticationUsed(String response, String jaspiProvider) {
-        Log.info(logClass, "verifyJaspiAuthenticationUsed", "Verify response shows JASPI validateRequest and secureResponse called");
-        mustContain(response, Constants.jaspiValidateRequest + jaspiProvider);
-        mustContain(response, Constants.jaspiSecureResponse + jaspiProvider);
-    }
-
-    protected void verifyJaspiRequestAndResponseWrapping(String response) {
-        Log.info(logClass, "verifyJaspiRequestAndResponseWrapping", "Verify JASPI request and response have been wrapped.");
-        mustContain(response, Constants.requestIsWrapped);
-        mustContain(response, Constants.responseIsWrapped);
-        responseMustBeWrapped(response, "SCIProgrammaticRequestFilter");
-        responseMustBeWrapped(response, "SCLProgrammaticRequestFilter");
-        responseMustBeWrapped(response, "DeclaredRequestFilter");
-        responseMustBeWrapped(response, "AnnotatedRequestFilter");
-    }
-
-    private void responseMustBeWrapped(String response, String filterName) {
-        mustContain(response, "The httpServletRequest in the " + filterName + " filter has been wrapped by httpServletRequestWrapper.");
-        mustContain(response, "The httpServletRestponse in the " + filterName + " filter has been wrapped by httpServletResponseWrapper.");
-    }
-
-    protected void verifyNoJaspiAuthentication(String response, String jaspiProvider) {
-        Log.info(logClass, "verifyJaspiAuthenticationProcessedByProvider", "Verify response does NOT show calls to JASPI validateRequest and secureRespone");
-        mustNotContain(response, Constants.jaspiValidateRequest + jaspiProvider);
-        mustNotContain(response, Constants.jaspiSecureResponse + jaspiProvider);
-    }
-
     private void mustContain(String response, String target) {
         assertTrue("Expected result " + target + " not found in response", response.contains(target));
     }
@@ -389,7 +348,7 @@ public class JavaEESecTestBase {
         mustContain(response, Constants.getAuthTypeNull);
         verifyUserResponse(response, Constants.getUserPrincipalNull, Constants.getRemoteUserNull);
         mustContain(response, Constants.getRunAsSubjectNull);
-        verifyJaspiLogoutProcessedCleanSubjectInMessageLog();
+
     }
 
     protected void verifyUnauthenticatedResponseInMessageLog() {
@@ -402,53 +361,6 @@ public class JavaEESecTestBase {
                       server.waitForStringInLogUsingMark(Constants.getUserPrincipalNull));
         assertNotNull("Servlet getRemoteUser call did not return " + Constants.getRemoteUserNull + " as expected in messages.log.",
                       server.waitForStringInLogUsingMark(Constants.getRemoteUserNull));
-    }
-
-    protected void verifyJaspiAuthenticationProcessedInMessageLog() {
-        Log.info(logClass, "verifyJaspiAuthenticationProcessedInMessageLog", "Verify messages.log contains isMandatory=true and calls to validateRequest and secureResponse ");
-        assertNotNull("Messages.log did not show that security runtime indicated that isMandatory=true and the JASPI provider must protect this resource. ",
-                      server.waitForStringInLogUsingMark("JASPI_PROTECTED isMandatory=true"));
-        assertNotNull("Messages.log did not show JASPI provider validateRequest was called. ",
-                      server.waitForStringInLogUsingMark("validateRequest"));
-        assertNotNull("Messages.log did not show JASPI provider secureResponse was called. ",
-                      server.waitForStringInLogUsingMark("secureResponse"));
-    }
-
-    protected void verifyAuthenticateMethodProcessedInMessageLog(String method) {
-        Log.info(logClass, "verifyAuthenticateMethodProcessedInMessageLog", "Verify messages.log contains QueryString: method=" + method
-                                                                            + " followed by call to validateRequest");
-        assertNotNull("Messages.log did not show QueryString: method=" + method,
-                      server.waitForStringInLogUsingMark("QueryString: method=" + method));
-        assertNotNull("Messages.log did not show validateRequest",
-                      server.waitForStringInLogUsingMark("validateRequest"));
-        assertNotNull("Messages.log did not show Servlet authenticate invoked for " + method,
-                      server.waitForStringInLogUsingMark("Servlet authenticate invoked for " + method));
-    }
-
-    protected void verifyJaspiAuthenticationProcessedUnprotectedInMessageLog() {
-        Log.info(logClass, "verifyJaspiAuthenticationProcessedUnprotectedInMessageLog",
-                 "Verify messages.log contains isMandatory=false and calls to validateRequest and secureResponse ");
-        assertNotNull("Messages.log did not show that the security runtime indicated that authentication is optional for unprotected servlet through isMandatory=false. ",
-                      server.waitForStringInLogUsingMark("JASPI_UNPROTECTED isMandatory=false"));
-        assertNotNull("Messages.log did not show JASPI provider validateRequest was called. ",
-                      server.waitForStringInLogUsingMark("validateRequest"));
-        assertNotNull("Messages.log did not show JASPI provider secureResponse was called. ",
-                      server.waitForStringInLogUsingMark("secureResponse"));
-    }
-
-    // For Form Login positive flow, after the form is submitted, we only get validateRequest and not a call to secureResponse
-    protected void verifyJaspiAuthenticationProcessedValidateRequestInMessageLog() {
-        Log.info(logClass, "verifyJaspiAuthenticationProcessedValidateRequestInMessageLog", "Verify messages.log contains calls to validateRequest and secureResponse ");
-        assertNotNull("Messages.log did not show JASPI provider is protecting this resource. ",
-                      server.waitForStringInLogUsingMark("JASPI_UNPROTECTED isMandatory=false"));
-        assertNotNull("Messages.log did not show JASPI provider validateRequest was called. ",
-                      server.waitForStringInLogUsingMark("validateRequest"));
-    }
-
-    protected void verifyJaspiLogoutProcessedCleanSubjectInMessageLog() {
-        Log.info(logClass, "verifyJaspiLogoutProcessedCleanSubjectInMessageLog", "Verify messages.log contains call to cleanSubject.");
-        assertNotNull("Messages.log did not show JASPI provider called cleanSubject. ",
-                      server.waitForStringInLogUsingMark("cleanSubject"));
     }
 
     protected void verifyUserResponse(String response, String getUserPrincipal, String getRemoteUser) {

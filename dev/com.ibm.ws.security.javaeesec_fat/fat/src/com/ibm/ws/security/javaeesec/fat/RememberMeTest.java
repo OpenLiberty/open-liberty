@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
@@ -26,9 +27,10 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
-import org.apache.http.Header;
 
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLHelper;
 
@@ -91,11 +93,7 @@ public class RememberMeTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        if (!OnlyRunInJava7Rule.IS_JAVA_7_OR_HIGHER) {
-            return;
-        }
-        myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
+        ServerHelper.commonStopServer(myServer);
     }
 
     @SuppressWarnings("restriction")

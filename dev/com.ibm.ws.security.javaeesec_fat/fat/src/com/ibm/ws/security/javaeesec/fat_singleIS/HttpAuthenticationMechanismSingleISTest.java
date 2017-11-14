@@ -18,8 +18,8 @@ import org.junit.Test;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.javaeesec.fat.HttpAuthenticationMechanismTest;
-import com.ibm.ws.security.javaeesec.fat.JavaEESecTestBase;
 import com.ibm.ws.security.javaeesec.fat_helper.Constants;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;

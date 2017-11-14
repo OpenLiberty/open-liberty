@@ -27,12 +27,10 @@ import componenttest.topology.impl.LibertyServerFactory;
 /**
  *
  */
-public class FormHttpAuthenticationMechanismTestSingleISTest extends JavaEESecTestBase {
-
+public class CustomFormHttpAuthenticationMechanismSingleISTest extends JavaEESecTestBase {
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
     protected static Class<?> logClass = FormHttpAuthenticationMechanismTestSingleISTest.class;
-    protected static String[] warList = { "JavaEESecBasicAuthServlet.war", "JavaEESecAnnotatedBasicAuthServlet.war",
-                                          "JavaEEsecFormAuth.war", "JavaEEsecFormAuthRedirect.war" };
+    protected static String[] warList = { "JavaEESecCustomFormLoginServlet.war" };
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
 
@@ -48,7 +46,7 @@ public class FormHttpAuthenticationMechanismTestSingleISTest extends JavaEESecTe
     private static final String USER_DN = "uid=" + USER + "," + BASE_DN;
     private static final String PASSWORD = "s3cur1ty";
 
-    public FormHttpAuthenticationMechanismTestSingleISTest() {
+    public CustomFormHttpAuthenticationMechanismSingleISTest() {
         super(myServer, logClass);
     }
 
@@ -110,4 +108,5 @@ public class FormHttpAuthenticationMechanismTestSingleISTest extends JavaEESecTe
         executeFormLogin(httpclient, urlBase + Constants.DEFAULT_REDIRECT_FORM_LOGIN_PAGE, Constants.javaeesec_basicRoleLDAPUser,
                          Constants.javaeesec_basicRolePwd, true);
     }
+
 }

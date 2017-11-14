@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.security.javaeesec.fat_singleIS.FormHttpAuthenticationMechanismTestSingleISTest;
@@ -56,7 +57,7 @@ public class FormHttpAuthenticationMechanismTest extends FormHttpAuthenticationM
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuth.war", true, JAR_NAME, false, "web.jar.base", "web.war.formlogin");
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEEsecFormAuthRedirect.war", true, JAR_NAME, false, "web.jar.base", "web.war.redirectformlogin");
         myServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/javaeesecinternals-1.0.mf");
-
+        myServer.setServerConfigurationFile("form.xml");
         myServer.startServer(true);
 
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
@@ -66,9 +67,7 @@ public class FormHttpAuthenticationMechanismTest extends FormHttpAuthenticationM
     @AfterClass
     public static void tearDown() throws Exception {
 
-        myServer.stopServer();
-
-        ServerHelper.stopldapServer();
+        ServerHelper.commonStopServer(myServer, Constants.HAS_LDAP_SERVER);
     }
 
     @Before

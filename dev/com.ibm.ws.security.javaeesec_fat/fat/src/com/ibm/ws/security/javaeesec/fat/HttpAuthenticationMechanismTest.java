@@ -10,6 +10,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.apacheds.EmbeddedApacheDS;
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
 import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
 import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.security.javaeesec.fat_singleIS.HttpAuthenticationMechanismSingleISTest;
@@ -61,8 +62,7 @@ public class HttpAuthenticationMechanismTest extends HttpAuthenticationMechanism
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-        ServerHelper.stopldapServer();
+        ServerHelper.commonStopServer(myServer, Constants.HAS_LDAP_SERVER);
     }
 
     @Before
