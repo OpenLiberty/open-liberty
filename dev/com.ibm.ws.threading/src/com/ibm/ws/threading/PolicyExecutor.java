@@ -167,6 +167,21 @@ public interface PolicyExecutor extends ExecutorService {
 
     /**
      * Registers a one-time callback to be invoked asynchronously
+     * when the count of running tasks exceeds the specified maximum.
+     * If a concurrency callback is already registered, this replaces
+     * the previous registration.
+     * To unregister an existing callback without replacing,
+     * specify a null value for the callback.
+     *
+     * @param max threshold for maximum concurrency beyond which the callback should be notified.
+     * @param callback the callback, or null to unregister.
+     * @return callback that was replaced or removed by the new registration.
+     *         null if no previous callback was in place.
+     */
+    Runnable registerConcurrencyCallback(int max, Runnable callback);
+
+    /**
+     * Registers a one-time callback to be invoked asynchronously
      * when the available remaining capacity of the task queue
      * drops below the specified minimum.
      * If a queue size callback is already registered, this replaces
