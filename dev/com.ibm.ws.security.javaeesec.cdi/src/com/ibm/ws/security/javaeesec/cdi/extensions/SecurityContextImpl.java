@@ -129,6 +129,7 @@ public class SecurityContextImpl implements SecurityContext {
         SecurityConstraintCollection collection = securityMetadata.getSecurityConstraintCollection();
 
         if (null != collection) {
+
             AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
             Subject callerSubject = getCallerSubject();
 
@@ -136,8 +137,8 @@ public class SecurityContextImpl implements SecurityContext {
                 MatchResponse matchResponse = collection.getMatchResponse(resource, method);
 
                 if (matchResponse.equals(MatchResponse.NO_MATCH_RESPONSE)) {
-                    // not match responses,  continue to the next method
-                    continue;
+                    // There are no constraints so user has access
+                    return true;
                 }
 
                 if (matchResponse.isAccessPrecluded()) {
