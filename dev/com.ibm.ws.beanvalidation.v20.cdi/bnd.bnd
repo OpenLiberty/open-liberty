@@ -21,11 +21,6 @@ WS-TraceGroup: BeanValidation
 Private-Package: \
   com.ibm.ws.beanvalidation.v20.cdi.*
   
-Include-Resource: \
-  OSGI-INF=resources/OSGI-INF
-
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
-
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl

@@ -23,9 +23,6 @@ Export-Package: com.ibm.ws.beanvalidation.v20.config
 Private-Package: \
   com.ibm.ws.beanvalidation.v20.config.*
 
-Include-Resource: \
-    OSGI-INF=resources/OSGI-INF
-
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.beanvalidation.v20.config.internal.ValidationConfigurationV20FactoryImpl
