@@ -15,6 +15,8 @@
 javac.source: 1.8
 javac.target: 1.8
 
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 -dependson: \
 	com.ibm.ws.jdbc;version=latest, \
 	com.ibm.ws.jdbc.4.1;version=latest, \

@@ -5,5 +5,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jsf-2.3))"
 -bundles=com.ibm.ws.cdi.2.0.jsf
 IBM-Install-Policy: when-satisfied
-kind=noship
+kind=beta
 edition=core

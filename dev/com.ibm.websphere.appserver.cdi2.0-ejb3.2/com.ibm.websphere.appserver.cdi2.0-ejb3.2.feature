@@ -6,5 +6,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
 -bundles=com.ibm.ws.cdi.2.0.ejb, \
          com.ibm.ws.cdi.ejb.common
 IBM-Install-Policy: when-satisfied
-kind=noship
+kind=beta
 edition=core

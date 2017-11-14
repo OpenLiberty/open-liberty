@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
 import static org.junit.Assert.assertEquals;
@@ -13,7 +23,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.Header;
+import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
+import org.apache.http.HttpMessage;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.auth.AuthScope;
@@ -31,17 +43,6 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.topology.impl.LibertyServer;
 
-/*
- * IBM Confidential
- *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2014, 2016
- *
- * The source code for this program is not published or other-
- * wise divested of its trade secrets, irrespective of what has
- * been deposited with the U.S. Copyright Office.
- */
 public class JavaEESecTestBase {
 
     public static final String DEFAULT_REALM = "JaspiRealm";
@@ -257,19 +258,26 @@ public class JavaEESecTestBase {
     }
 
     protected String executeGetRequestBasicAuthCreds(DefaultHttpClient httpClient, String url, String userid, String password, int expectedStatusCode) throws Exception {
-
         String methodName = "executeGetRequestBasicAuthCreds";
         Log.info(logClass, getCurrentTestName(), "Servlet url: " + url + " userid: " + userid + ", password: " + password + ", expectedStatusCode=" + expectedStatusCode
                                                  + " , method=" + methodName);
+
+        HttpResponse response = executeGetRequestBasicAuthCreds(httpClient, url, userid, password);
+        return processResponse(response, expectedStatusCode);
+    }
+
+    protected HttpResponse executeGetRequestBasicAuthCreds(DefaultHttpClient httpClient, String url, String userid, String password) throws Exception {
+        String methodName = "executeGetRequestBasicAuthCreds";
+        Log.info(logClass, getCurrentTestName(), "Servlet url: " + url + " userid: " + userid + ", password: " + password + " , method=" + methodName);
         HttpGet getMethod = new HttpGet(url);
-        if (userid != null)
+        if (userid != null) {
             httpClient.getCredentialsProvider().setCredentials(new AuthScope("localhost", AuthScope.ANY_PORT, AuthScope.ANY_REALM),
                                                                new UsernamePasswordCredentials(userid, password));
+        }
         HttpResponse response = httpClient.execute(getMethod);
         Log.info(logClass, methodName, "Actual response: " + response.toString());
 
-        return processResponse(response, expectedStatusCode);
-
+        return response;
     }
 
     protected String executeGetRequestNoAuthCreds(DefaultHttpClient httpClient, String url, int expectedStatusCode) throws Exception {
@@ -299,6 +307,66 @@ public class JavaEESecTestBase {
                      expectedStatusCode, response.getStatusLine().getStatusCode());
 
         return content;
+    }
+
+    protected Header getCookieHeader(HttpResponse response, String cookieName) {
+        String methodName = "getCookie";
+        Log.info(logClass, methodName, response.toString() + ", cookieName=" + cookieName);
+        Header[] setCookieHeaders = response.getHeaders("Set-Cookie");
+        if (setCookieHeaders == null) {
+            fail("There must be Set-Cookie headers.");
+        }
+        for (Header header : setCookieHeaders) {
+            Log.info(logClass, methodName, "Header: " + header);
+            for (HeaderElement e : header.getElements()) {
+                if (e.getName().equals(cookieName)) {
+                    return header;
+                }
+            }
+        }
+        fail("Set-Cookie for " + cookieName + " not found.");
+        return null;
+    }
+
+    protected String getCookieValue(Header header, String cookieName) {
+        String methodName = "getCookieValue";
+        Log.info(logClass, methodName, "header: " + header + ", cookieName=" + cookieName);
+        for (HeaderElement e : header.getElements()) {
+            Log.info(logClass, methodName, "HeaderElement: " + e);
+            if (e.getName().equals(cookieName)) {
+                return e.getValue();
+            }
+        }
+        return null;
+    }
+
+    protected String accessWithCookie(DefaultHttpClient httpClient, String url, String cookieName, String cookie, int expectedStatusCode) {
+        Log.info(logClass, getCurrentTestName(), "accessWithCookie: url=" + url + ", cookie=" + cookie +
+                                                 ", expectedStatusCode=" + expectedStatusCode);
+        try {
+            HttpGet getMethod = new HttpGet(url);
+            getMethod.setHeader("Cookie", cookieName + "=" + cookie);
+            HttpResponse response = httpClient.execute(getMethod);
+            return processResponse(response, expectedStatusCode);
+        } catch (Exception e) {
+            fail("Caught unexpected exception: " + e);
+            return null;
+        }
+    }
+
+    public void validateNoCookie(HttpMessage httpMessage, String cookieName) {
+        Log.info(logClass, getCurrentTestName(), "validateNoSSOCookie: httpMessage=" + httpMessage + ", cookieName=" + cookieName);
+        Header[] setCookieHeaders = httpMessage.getHeaders("Set-Cookie");
+        if (setCookieHeaders != null) {
+            for (Header header : setCookieHeaders) {
+                Log.info(logClass, "validateNoCookie", "header: " + header);
+                for (HeaderElement e : header.getElements()) {
+                    if (e.getName().equals(cookieName)) {
+                        fail("There must not be a cookie for " + cookieName);
+                    }
+                }
+            }
+        }
     }
 
     /**

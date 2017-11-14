@@ -49,6 +49,19 @@ import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 public class PolicyExecutorImpl implements PolicyExecutor {
     private static final TraceComponent tc = Tr.register(PolicyExecutorImpl.class, "concurrencyPolicy", "com.ibm.ws.threading.internal.resources.ThreadingMessages");
 
+    @Trivial
+    private static class Callback {
+        private final Runnable runnable;
+        private final long threshold;
+
+        private Callback(long threshold, Runnable runnable) {
+            this.runnable = runnable;
+            this.threshold = threshold;
+        }
+    }
+
+    private final AtomicReference<Callback> cbQueueSize = new AtomicReference<Callback>();
+
     /**
      * Use this lock to make a consistent update to both expedite and expeditesAvailable,
      * maxConcurrency and maxConcurrencyConstraint, and to maxQueueSize and maxQueueSizeConstraint.
@@ -428,6 +441,15 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             }
 
             if (haveQueuePermit) {
+                Callback callback = cbQueueSize.get();
+                if (callback != null
+                    && maxQueueSizeConstraint.availablePermits() < callback.threshold
+                    && cbQueueSize.compareAndSet(callback, null)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
+                    globalExecutor.submit(callback.runnable);
+                }
+
                 policyTaskFuture.accept(false);
                 enqueued = queue.offer(policyTaskFuture);
 
@@ -939,16 +961,28 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         else if (max < 1)
             throw new IllegalArgumentException(Integer.toString(max));
 
+        int increase;
         synchronized (configLock) {
             if (state.get() != State.ACTIVE)
                 throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxQueueSize", identifier));
 
-            int increase = max - maxQueueSize;
+            increase = max - maxQueueSize;
             if (increase > 0)
                 maxQueueSizeConstraint.release(increase);
             else if (increase < 0)
                 maxQueueSizeConstraint.reducePermits(-increase);
             maxQueueSize = max;
+        }
+
+        if (increase < 0) {
+            Callback callback = cbQueueSize.get();
+            if (callback != null
+                && maxQueueSizeConstraint.availablePermits() < callback.threshold
+                && cbQueueSize.compareAndSet(callback, null)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
+                globalExecutor.submit(callback.runnable);
+            }
         }
 
         return this;
@@ -964,6 +998,20 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 return this;
 
         throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxWaitForEnqueue", identifier));
+    }
+
+    @Override
+    public Runnable registerQueueSizeCallback(int minAvailable, Runnable runnable) {
+        Callback callback = new Callback(minAvailable, runnable);
+        Callback previous = cbQueueSize.getAndSet(callback);
+        if (runnable != null
+            && maxQueueSizeConstraint.availablePermits() < minAvailable
+            && cbQueueSize.compareAndSet(callback, null)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "callback: queue capacity < " + minAvailable, runnable);
+            globalExecutor.submit(runnable);
+        }
+        return previous == null ? null : previous.runnable;
     }
 
     @Override
@@ -1185,7 +1233,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         runIfQueueFull = u_runIfQueueFull;
         startTimeout = u_startTimeout == -1 ? -1 : TimeUnit.MILLISECONDS.toNanos(u_startTimeout);
 
-        int a;
+        int a, queueCapacityAdded;
         synchronized (configLock) {
             a = expeditesAvailable.addAndGet(u_expedite - expedite);
             expedite = u_expedite;
@@ -1197,12 +1245,23 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 maxConcurrencyConstraint.reducePermits(-increase);
             maxConcurrency = u_max;
 
-            increase = u_maxQueueSize - maxQueueSize;
-            if (increase > 0)
-                maxQueueSizeConstraint.release(increase);
-            else if (increase < 0)
-                maxQueueSizeConstraint.reducePermits(-increase);
+            queueCapacityAdded = u_maxQueueSize - maxQueueSize;
+            if (queueCapacityAdded > 0)
+                maxQueueSizeConstraint.release(queueCapacityAdded);
+            else if (queueCapacityAdded < 0)
+                maxQueueSizeConstraint.reducePermits(-queueCapacityAdded);
             maxQueueSize = u_max;
+        }
+
+        if (queueCapacityAdded < 0) {
+            Callback callback = cbQueueSize.get();
+            if (callback != null
+                && maxQueueSizeConstraint.availablePermits() < callback.threshold
+                && cbQueueSize.compareAndSet(callback, null)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "callback: queue capacity < " + callback.threshold, callback.runnable);
+                globalExecutor.submit(callback.runnable);
+            }
         }
 
         // Expedite as many of the remaining tasks as the available maxConcurrency permits and increased expedites
@@ -1227,6 +1286,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         out.println(INDENT + "maxQueueSize = " + maxQueueSize);
         out.println(INDENT + "maxWaitForEnqueue = " + TimeUnit.NANOSECONDS.toMillis(maxWaitForEnqueueNS.get()) + " ms");
         out.println(INDENT + "runIfQueueFull = " + runIfQueueFull);
+        out.println(INDENT + "startTimeout = " + (startTimeout == -1 ? "None" : TimeUnit.NANOSECONDS.toMillis(startTimeout) + " ms"));
         int numRunningThreads, numRunningPrioritizedThreads;
         synchronized (configLock) {
             numRunningThreads = maxConcurrency - maxConcurrencyConstraint.availablePermits();
@@ -1235,9 +1295,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         out.println(INDENT + "Total Enqueued to Global Executor = " + numRunningThreads + " (" + numRunningPrioritizedThreads + " expedited)");
         out.println(INDENT + "withheldConcurrency = " + withheldConcurrency.get());
         out.println(INDENT + "Remaining Queue Capacity = " + maxQueueSizeConstraint.availablePermits());
-        out.println(INDENT + "Created by PolicyExecutorProvider = " + (providerCreated != null));
         out.println(INDENT + "state = " + state.toString());
-        out.println(INDENT + "Running Task Futures: ");
+        out.println(INDENT + "Running Task Futures:");
         if (running.isEmpty()) {
             out.println(DOUBLEINDENT + "None");
         } else {

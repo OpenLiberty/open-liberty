@@ -39,4 +39,7 @@ public interface FATOpentracingConstants {
 
     // Introspection service API ...
     String GET_TRACER_STATE_PATH = "getTracerState";
+    
+    // 'excludeTest' API
+    String GET_EXCLUDE_TEST_PATH = "excludeTest";
 }

@@ -64,5 +64,5 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
 -jars=com.ibm.websphere.appserver.thirdparty.cdi-2.0; location:="dev/api/third-party/,lib/"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
-kind=noship
+kind=beta
 edition=core

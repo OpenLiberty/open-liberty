@@ -7,5 +7,5 @@ IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature
  com.ibm.ws.cdi.web, \
  com.ibm.websphere.javaee.jsp.2.3; location:="dev/api/spec/,lib/"
 IBM-Install-Policy: when-satisfied
-kind=noship
+kind=beta
 edition=core
