@@ -17,14 +17,5 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 
-@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE)
-public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {
-//    void beforeBeanDiscovery(@Observes BeforeBeanDiscovery bbd, BeanManager bm) {
-//        AnnotatedType<OpentracingProducerBean> at = bm.createAnnotatedType(OpentracingProducerBean.class);
-//        bbd.addAnnotatedType(at);
-//        AnnotatedType<Traced> bindingType = bm.createAnnotatedType(Traced.class);
-//        bbd.addInterceptorBinding(bindingType);
-//        AnnotatedType<TracedInterceptor> interceptorType = bm.createAnnotatedType(TracedInterceptor.class);
-//        bbd.addAnnotatedType(interceptorType);
-//    }
-}
+@Component(service = WebSphereCDIExtension.class, configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
+public class OpentracingCDIInjectionExtension implements WebSphereCDIExtension, Extension {}

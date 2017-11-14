@@ -9,11 +9,11 @@
   <include location="../fatTestPorts.xml"/>
 
   <application location="serviceApp.war">
-    <classloader apiTypeVisibility="spec, ibm-api, third-party"/>
+    <classloader apiTypeVisibility="spec, ibm-api, third-party, stable"/>
   </application>
 
   <!-- Turn this on for the FAT: That provides good diagnostics in case -->
   <!-- of a failure, and means that trace code is tested. -->
-  <logging traceSpecification="*=audit:com.ibm.ws.opentracing.*=all"/>
+  <logging traceSpecification="*=audit:org.jboss.weld.*=all"/>
 
 </server>

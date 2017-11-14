@@ -10,7 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.testing.opentracing.service;
 
-import com.ibm.ws.opentracing.cdi.Traced;
+import org.eclipse.microprofile.opentracing.Traced;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
@@ -39,6 +39,9 @@ import io.opentracing.Tracer;
 public class FATOpentracingService extends Application implements FATOpentracingConstants {
     // Trace ...
 
+    @Inject
+    MyBean mybean;
+    
     private static final String CLASS_NAME = FATOpentracingService.class.getSimpleName();
 
     @SuppressWarnings("unused")
@@ -61,7 +64,6 @@ public class FATOpentracingService extends Application implements FATOpentracing
             value2Name + " [ " + value2 + " ]");
     }
 
-    @Traced
     private static void traceEnterReturn(String methodName, String valueName, Object value) {
         System.out.println(CLASS_NAME + "." + methodName + " ENTER / RETURN " + valueName + " [ " + value + " ]");
     }
@@ -201,6 +203,7 @@ public class FATOpentracingService extends Application implements FATOpentracing
     @Produces(MediaType.TEXT_PLAIN)
     public String getImmediate(@QueryParam(RESPONSE_PARAM_NAME) String responseText) {
         String methodName = "getImmediate";
+        mybean.dosomething();
         traceEnterReturn(methodName, "ResponseText", responseText);
         return responseText;
     }

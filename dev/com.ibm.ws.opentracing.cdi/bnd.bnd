@@ -31,6 +31,7 @@ Include-Resource: \
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.org.eclipse.microprofile.opentracing.1.0;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
