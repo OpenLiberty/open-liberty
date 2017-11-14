@@ -17,7 +17,7 @@ Subsystem-Name: Application Security 3.0
 -bundles=com.ibm.websphere.javaee.security.1.0; location:=dev/api/spec/, \
  com.ibm.ws.security.javaeesec.1.0, \
  com.ibm.ws.security.javaeesec.cdi
-kind=noship
+kind=beta
 edition=core
 #-jars=xyz; location:=dev/spi/ibm/
 #-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.javaee.security_1.0-javadoc.zip
