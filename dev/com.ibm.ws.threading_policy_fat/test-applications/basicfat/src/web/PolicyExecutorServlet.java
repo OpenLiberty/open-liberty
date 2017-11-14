@@ -1002,6 +1002,12 @@ public class PolicyExecutorServlet extends FATServlet {
         assertFalse(blocker1Future.isCancelled());
         assertFalse(blocker2Future.isCancelled());
         assertFalse(blocker3Future.isCancelled());
+
+        try {
+            Runnable previous = executor.registerConcurrencyCallback(4, new CountDownCallback(new CountDownLatch(1)));
+            fail("Should not be able to register callback after shutdown. Result of register was: " + previous);
+        } catch (IllegalStateException x) {
+        } // pass
     }
 
     // Attempt to await termination from multiple threads at once after a shutdown.
@@ -3903,14 +3909,7 @@ public class PolicyExecutorServlet extends FATServlet {
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
-/*
- * Add late start for > TIMEOUT_NS nanos
- * submit blocker task
- * submit task blocked in queue
- * Sleep for remaining of 300 ms.
- * Add late start for > 200 ms.
- * await the late start callback
- */
+
         CountDownLatch lateBy3MinutesLatch = new CountDownLatch(1);
         Runnable lateBy3MinutesCallback = new CountDownCallback(lateBy3MinutesLatch);
         assertNull(executor.registerLateStartCallback(3, TimeUnit.MINUTES, lateBy3MinutesCallback));
@@ -3951,6 +3950,12 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
         assertEquals(1, lateBy3MinutesLatch.getCount()); // never invoked
+
+        try {
+            Runnable previous = executor.registerLateStartCallback(5, TimeUnit.SECONDS, new CountDownCallback(new CountDownLatch(1)));
+            fail("Should not be able to register callback after shutdown. Result of register was: " + previous);
+        } catch (IllegalStateException x) {
+        } // pass
     }
 
     // Invoke groups of tasks on the policy executor that break themselves into multiple tasks that also
@@ -4063,6 +4068,12 @@ public class PolicyExecutorServlet extends FATServlet {
         List<Runnable> canceledFromQueue = executor.shutdownNow();
         assertEquals(2, canceledFromQueue.size());
         assertTrue(blockerFuture.isCancelled());
+
+        try {
+            Runnable previous = executor.registerQueueSizeCallback(10, new CountDownCallback(new CountDownLatch(1)));
+            fail("Should not be able to register callback after shutdown. Result of register was: " + previous);
+        } catch (IllegalStateException x) {
+        } // pass
     }
 
     // Use a policy executor to submit tasks that resubmit themselves to perform a recursive computation.

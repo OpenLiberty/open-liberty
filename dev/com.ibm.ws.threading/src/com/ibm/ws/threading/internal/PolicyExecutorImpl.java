@@ -58,6 +58,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
             this.runnable = runnable;
             this.threshold = threshold;
         }
+
+        @Override
+        public String toString() {
+            return new StringBuilder("Callback@").append(Integer.toHexString(hashCode())).append(" threshold ").append(threshold).append(" for ").append(runnable).toString();
+        }
     }
 
     private final AtomicReference<Callback> cbConcurrency = new AtomicReference<Callback>();
@@ -1350,8 +1355,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         out.println(INDENT + "withheldConcurrency = " + withheldConcurrency.get());
         out.println(INDENT + "Remaining Queue Capacity = " + maxQueueSizeConstraint.availablePermits());
         out.println(INDENT + "state = " + state.toString());
-        out.println(INDENT + "Running Task Futures:");
-        out.println(INDENT + "Running Task Count: " + runningCount);
+        out.println(INDENT + "concurrency callback = " + cbConcurrency.get());
+        out.println(INDENT + "late start callback = " + cbLateStart.get());
+        out.println(INDENT + "queue capacity callback = " + cbQueueSize.get());
+        out.println(INDENT + "Running Task Count = " + runningCount);
         out.println(INDENT + "Running Task Futures:");
         if (running.isEmpty()) {
             out.println(DOUBLEINDENT + "None");
