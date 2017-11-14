@@ -30,7 +30,7 @@ import com.ibm.wsspi.logprovider.LogProviderConfig;
  */
 public class JsonTraceService extends BaseTraceService {
 
-    private final volatile boolean isJsonTraceService = true;
+    private final boolean isJSON = true;
     private volatile LogSource logSource = null;
     private volatile TraceSource traceSource = null;
     private volatile MessageLogHandler messageLogHandler = null;
@@ -65,7 +65,7 @@ public class JsonTraceService extends BaseTraceService {
         //setupCollectorManagerPipeline(config);
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
-            collectorMgrPipelineUtils.setJsonTrService(isJsonTraceService);//DYKC-temp this should be true.. because we are a jsontraceservice
+            collectorMgrPipelineUtils.setJsonTrService(isJSON);//DYKC-temp this should be true.. because we are a jsontraceservice
 
             //Sources
             logSource = collectorMgrPipelineUtils.getLogSource();
@@ -119,7 +119,7 @@ public class JsonTraceService extends BaseTraceService {
     private void setupCollectorManagerPipeline(LogProviderConfig config) {
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
-            collectorMgrPipelineUtils.setJsonTrService(isJsonTraceService);//DYKC-temp this should be true.. because we are a jsontraceservice
+            collectorMgrPipelineUtils.setJsonTrService(isJSON);//DYKC-temp this should be true.. because we are a jsontraceservice
 
             //Sources
             logSource = collectorMgrPipelineUtils.getLogSource();
