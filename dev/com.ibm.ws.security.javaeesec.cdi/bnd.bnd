@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 1.8
+javac.target: 1.8
+
 Bundle-Name: com.ibm.ws.security.javaeesec.cdi
 Bundle-Description: WAS Java EE Security 1.0 CDI, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.javaeesec.cdi
