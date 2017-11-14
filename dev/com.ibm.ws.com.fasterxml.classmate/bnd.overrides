@@ -8,15 +8,19 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/liberty-release.props
+-include= ~../cnf/resources/bnd/rejar.props
+bVersion=1.0
 
--nobundles=true
+Bundle-SymbolicName: com.ibm.ws.com.fasterxml.classmate.1.3.1
 
--dependson: \
-  com.ibm.websphere.javaee.validation.2.0,\
-  com.ibm.websphere.appserver.beanValidationCDI-2.0,\
-  com.ibm.ws.beanvalidation.v20;version=latest,\
-  com.ibm.ws.com.fasterxml.classmate;version=latest,\
-  com.ibm.ws.org.hibernate.validator;version=latest,\
-  com.ibm.ws.org.hibernate.validator.cdi;version=latest,\
-  com.ibm.ws.org.jboss.logging;version=latest
+Private-Package: \
+  com.fasterxml.classmate.util.*
+
+Import-Package: \
+  *
+
+Export-Package: \
+  com.fasterxml.classmate;version="1.3.1", \
+  com.fasterxml.classmate.members;version="1.3.1", \
+  com.fasterxml.classmate.types;version="1.3.1", \
+  com.fasterxml.classmate.util;version="1.3.1"

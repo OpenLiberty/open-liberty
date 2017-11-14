@@ -13,10 +13,5 @@
 -nobundles=true
 
 -dependson: \
-  com.ibm.websphere.javaee.validation.2.0,\
-  com.ibm.websphere.appserver.beanValidationCDI-2.0,\
-  com.ibm.ws.beanvalidation.v20;version=latest,\
-  com.ibm.ws.com.fasterxml.classmate;version=latest,\
-  com.ibm.ws.org.hibernate.validator;version=latest,\
-  com.ibm.ws.org.hibernate.validator.cdi;version=latest,\
-  com.ibm.ws.org.jboss.logging;version=latest
+	com.ibm.ws.beanvalidation.v20.cdi;version=latest,\
+	com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest
