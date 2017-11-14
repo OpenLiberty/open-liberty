@@ -166,7 +166,7 @@ org.jboss.logging:jboss-logging:3.3.0.Final
 org.jboss.shrinkwrap:shrinkwrap-api:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
-org.jboss.weld:weld-osgi-bundle:2.4.3.Final
+org.jboss.weld:weld-osgi-bundle:2.4.5.Final
 org.jboss.weld:weld-osgi-bundle:3.0.1.Final
 org.jmock:jmock:2.5.1
 org.jmock:jmock-junit4:2.5.1
