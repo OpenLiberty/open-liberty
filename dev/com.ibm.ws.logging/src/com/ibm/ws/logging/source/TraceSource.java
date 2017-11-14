@@ -20,8 +20,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
+import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
-import com.ibm.ws.logging.utils.ThreadLocalHandler;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 

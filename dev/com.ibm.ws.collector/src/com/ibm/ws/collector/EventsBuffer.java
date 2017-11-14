@@ -19,7 +19,7 @@ import java.util.TimerTask;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.logging.utils.ThreadLocalHandler;
+import com.ibm.ws.logging.synch.ThreadLocalHandler;
 
 public class EventsBuffer {
 

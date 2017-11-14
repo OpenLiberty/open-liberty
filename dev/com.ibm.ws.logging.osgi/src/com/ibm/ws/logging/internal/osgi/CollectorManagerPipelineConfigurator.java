@@ -113,23 +113,11 @@ public class CollectorManagerPipelineConfigurator {
     	BufferManagerImpl logConduit = collectorMgrPipelineUtils.getLogConduit();
     	BufferManagerImpl traceConduit = collectorMgrPipelineUtils.getTraceConduit();
         
-        
-        /* Set the conduit/BufferManger into their respective sources
-         * Typically, this would have been set via osgi reference/dependencies that were
-         * defined in the bnd.bnd file of CollectorManager, but for the Json Logging feature,
-         * the LogSource and TraceSource are created earlier than osgi is available and will
-         * need to have the Conduit/BufferManager set in manually. 
-         */
-    	
-        //logSource.setBufferManager(logConduit);
-        //traceSource.setBufferManager(traceConduit);
-        
-    	//Register the Conduits/BufferManager
+    	//Register the Conduits/BufferManager with their 'source' property set to the type of source they are intended for.
     	bundleContext.registerService(BufferManager.class.getName(), logConduit, returnConduitServiceProps(logSource.getSourceName()));
     	bundleContext.registerService(BufferManager.class.getName(), traceConduit, returnConduitServiceProps(traceSource.getSourceName()));
     	
-    	
-        //Register the LogSource and TraceSource as Source and WsLogHandler or WsTracehandler as intended
+        //Register the LogSource and TraceSource as Source and WsLogHandler or WsTracehandler respectively.
     	bundleContext.registerService(new String[] {Source.class.getName(), WsLogHandler.class.getName()}, logSource, returnSourceServiceProps());
     	bundleContext.registerService(new String[] {Source.class.getName(), WsTraceHandler.class.getName()}, traceSource, returnSourceServiceProps());
     	

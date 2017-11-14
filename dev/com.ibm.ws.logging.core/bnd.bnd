@@ -26,6 +26,7 @@ Export-Package: \
 	com.ibm.wsspi.logging,\
 	com.ibm.wsspi.logprovider,\
 	com.ibm.wsspi.collector.manager,\
+	com.ibm.ws.logging.synch,\
 	com.ibm.ws.collector.manager.buffer
 instrument.disabled: true
 

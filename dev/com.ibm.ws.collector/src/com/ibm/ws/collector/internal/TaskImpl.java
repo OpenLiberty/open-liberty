@@ -18,7 +18,7 @@ import java.util.concurrent.Future;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.logging.utils.ThreadLocalHandler;
+import com.ibm.ws.logging.synch.ThreadLocalHandler;
 
 /**
  * Implementation of the task interface.

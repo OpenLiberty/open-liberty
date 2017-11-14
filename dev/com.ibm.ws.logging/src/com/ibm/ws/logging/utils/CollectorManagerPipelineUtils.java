@@ -38,12 +38,20 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
         if (logConduit == null) {
             logConduit = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.message");
         }
-        //System.out.println("HandlerUtils.java = created LogConduit/BufferManager + " + logConduit.toString()); //DYKC-debug
+
         if (traceConduit == null) {
             traceConduit = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.trace");
         }
-        logSource.setBufferManager(logConduit); //DYKC-temp methodName?
-        traceSource.setBufferManager(traceConduit); //DYKC-temp methodName?
+
+        /*
+         * Set the conduit/BufferManger into their respective sources
+         * Typically, this would have been set via osgi reference/dependencies that were
+         * defined in the bnd.bnd file of CollectorManager, but for the Json Logging feature,
+         * the LogSource and TraceSource are created earlier than osgi is available and will
+         * need to have the Conduit/BufferManager set in manually.
+         */
+        logSource.setBufferManager(logConduit);
+        traceSource.setBufferManager(traceConduit);
     }
 
     public static synchronized CollectorManagerPipelineUtils getInstance() {

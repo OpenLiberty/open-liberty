@@ -9,7 +9,7 @@
 * of its trade secrets, irrespective of what has been deposited with the
 * U.S. Copyright Office.
 */
-package com.ibm.ws.logging.utils;
+package com.ibm.ws.logging.synch;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 

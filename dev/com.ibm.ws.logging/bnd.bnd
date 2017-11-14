@@ -38,6 +38,7 @@ Export-Package: \
 	com.ibm.ws.logging.internal,\
 	com.ibm.wsspi.collector.manager,\
 	com.ibm.ws.collector.manager.buffer,\
+	com.ibm.ws.logging.synch,\
 	com.ibm.ws.logging.utils,\
 	com.ibm.ws.logging.source,\
 	com.ibm.ws.health.center.data,\

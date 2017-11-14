@@ -17,7 +17,6 @@ import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.http.logging.data.AccessLogData;
@@ -38,15 +37,12 @@ import com.ibm.wsspi.logprovider.LogProviderConfig;
  */
 public class MessageLogHandler implements SyncrhonousHandler, Formatter {
 
-    private TraceWriter myTraceWriter;
+    private TraceWriter traceWriter;
     private String serverHostName = null;
     private String wlpUserDir = null;
     private String serverName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
-
-    /** Latch to handle a corner case where modified() might get called before init() */
-    private final CountDownLatch latch = new CountDownLatch(1);
 
     private CollectorManager collectorMgr = null;
 
@@ -81,7 +77,8 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     public void init(CollectorManager collectorManager) {
         try {
             this.collectorMgr = collectorManager;
-            //Get the source Ids from the task map and subscribe to relevant sources
+            //DYKC-temp
+            //Get the source Ids from the config passed in by JsonTrService
             List<String> hardCodedSources = new ArrayList<String>();
             hardCodedSources.add(CollectorConstants.GC_SOURCE + "|" + CollectorConstants.MEMORY);
             hardCodedSources.add(CollectorConstants.ACCESS_LOG_SOURCE + "|" + CollectorConstants.MEMORY);
@@ -104,7 +101,7 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
 
     ///DYKC
     public void setFileLogHolder(TraceWriter trw) {
-        myTraceWriter = trw;
+        traceWriter = trw;
     }
 
     /*
@@ -114,7 +111,7 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     public void writeJsonifiedEvent(Object event) {
         String eventSource = getSourceTypeFromDataObject(event);
         String messageOutput = (String) formatEvent(eventSource, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        myTraceWriter.writeRecord(messageOutput);
+        traceWriter.writeRecord(messageOutput);
     }
 
     private String getSourceTypeFromDataObject(Object event) {
@@ -138,7 +135,7 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
      * Direct Call by BTS to write straight to Log.
      */
     public void writeToLogNormal(String messageLogFormat) {
-        myTraceWriter.writeRecord(messageLogFormat);
+        traceWriter.writeRecord(messageLogFormat);
     }
 
     @Override
@@ -157,26 +154,16 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
         this.wlpUserDir = wlpUserDir;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.collector.manager.SyncrhonousHandler#isSynchronous()
-     */
     @Override
     public boolean isSynchronous() {
         return true;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.wsspi.collector.manager.SyncrhonousHandler#synchronousWrite()
-     */
     @Override
     public synchronized void synchronousWrite(Object event) {
         String evensourcetType = getSourceTypeFromDataObject(event);
         String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        myTraceWriter.writeRecord(messageOutput);
+        traceWriter.writeRecord(messageOutput);
     }
 
 }
