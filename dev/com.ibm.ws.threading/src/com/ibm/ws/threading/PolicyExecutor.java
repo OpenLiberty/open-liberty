@@ -183,7 +183,7 @@ public interface PolicyExecutor extends ExecutorService {
     Runnable registerConcurrencyCallback(int max, Runnable callback);
 
     /**
-     * Registers a one-time callback to be invoked asynchronously
+     * Registers a one-time callback to be invoked asynchronously when
      * the difference between task start time and submit time exceeds the specified maximum delay.
      * If a late start callback is already registered, this replaces
      * the previous registration.
@@ -191,7 +191,8 @@ public interface PolicyExecutor extends ExecutorService {
      * specify a null value for the callback.
      * The callback is automatically unregistered upon shutdown.
      *
-     * @param max threshold for maximum concurrency beyond which the callback should be notified.
+     * @param maxDelay maximum delay for a task to start, beyond which the callback should be notified.
+     * @param unit unit of time.
      * @param callback the callback, or null to unregister.
      * @return callback that was replaced or removed by the new registration.
      *         null if no previous callback was in place.
