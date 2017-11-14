@@ -10,8 +10,11 @@
  *******************************************************************************/
 package com.ibm.ws.threading.internal;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintWriter;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -33,7 +36,7 @@ public class PolicyExecutorTest {
         PolicyExecutor executor = provider.create("testCoreConcurrencyConfiguration");
 
         try {
-            executor.coreConcurrency(-2);
+            executor.expedite(-2);
             fail("Should reject negative core concurrency.");
         } catch (IllegalArgumentException x) {
             if (!x.getMessage().contains("-2"))
@@ -42,14 +45,14 @@ public class PolicyExecutorTest {
 
         executor.maxConcurrency(10);
         try {
-            executor.coreConcurrency(12);
+            executor.expedite(12);
             fail("Should reject core concurrency set greater than max concurrency.");
         } catch (IllegalArgumentException x) {
             if (!x.getMessage().contains("12"))
                 throw x;
         }
 
-        executor.coreConcurrency(10);
+        executor.expedite(10);
         try {
             executor.maxConcurrency(5);
             fail("Should reject max concurrency set less than core concurrency.");
@@ -59,12 +62,12 @@ public class PolicyExecutorTest {
         }
 
         executor.maxConcurrency(Integer.MAX_VALUE);
-        executor.coreConcurrency(Integer.MAX_VALUE);
+        executor.expedite(Integer.MAX_VALUE);
 
-        executor.coreConcurrency(-1);
+        executor.expedite(-1);
         executor.maxConcurrency(-1);
 
-        executor.coreConcurrency(0);
+        executor.expedite(0);
 
         executor.shutdownNow();
     }
@@ -167,4 +170,38 @@ public class PolicyExecutorTest {
         } catch (IllegalStateException x) {
         } // pass
     }
+
+    /**
+     * Test introspector for policy executors
+     */
+    @Test
+    public void testIntrospector() {
+
+        PolicyExecutorImpl exec = (PolicyExecutorImpl) provider.create("testIntrospector").expedite(5).maxConcurrency(10).maxQueueSize(3).maxWaitForEnqueue(30).startTimeout(10).runIfQueueFull(true);
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintWriter pw = new PrintWriter(out);
+        exec.introspect(pw);
+        pw.flush();
+        String output = new String(out.toByteArray());
+
+        String expectedoutput = "PolicyExecutorProvider-testIntrospector\n"
+                                + "  expedite = 5\n"
+                                + "  maxConcurrency = 10 (loose)\n"
+                                + "  maxQueueSize = 3\n"
+                                + "  maxWaitForEnqueue = 30 ms\n"
+                                + "  runIfQueueFull = true\n"
+                                + "  startTimeout = 10 ms\n"
+                                + "  Total Enqueued to Global Executor = 0 (0 expedited)\n"
+                                + "  withheldConcurrency = 0\n"
+                                + "  Remaining Queue Capacity = 3\n"
+                                + "  state = ACTIVE\n"
+                                + "  Running Task Futures:\n"
+                                + "    None\n"
+                                + "  Queued Task Futures (up to first 50):\n"
+                                + "    None\n\n";
+
+        assertEquals("The policy executor introspector output did not match the expected output.", expectedoutput, output);
+    }
+
 }

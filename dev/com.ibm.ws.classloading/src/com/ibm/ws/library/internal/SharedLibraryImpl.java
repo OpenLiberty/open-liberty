@@ -20,14 +20,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Dictionary;
 import java.util.EnumSet;
-import java.util.Hashtable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ConcurrentSkipListSet;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -40,14 +32,11 @@ import org.osgi.util.tracker.ServiceTracker;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.library.internal.SharedLibraryConstants.SharedLibraryAttribute;
 import com.ibm.wsspi.artifact.ArtifactContainer;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoadingService;
 import com.ibm.wsspi.config.Fileset;
-import com.ibm.wsspi.config.FilesetChangeListener;
 import com.ibm.wsspi.kernel.service.utils.PathUtils;
 import com.ibm.wsspi.library.Library;
 import com.ibm.wsspi.library.LibraryChangeListener;
@@ -285,7 +274,7 @@ public class SharedLibraryImpl implements Library {
         ArrayList<File> result = new ArrayList<File>();
         for (String pid : pids) {
             try {
-                Configuration config = configAdmin.getConfiguration(pid);
+                Configuration config = configAdmin.getConfiguration(pid, ctx.getBundle().getLocation());
                 Dictionary<String, Object> configProps = config.getProperties();
                 if (configProps == null) {
                     if (tc.isDebugEnabled()) {
@@ -327,7 +316,7 @@ public class SharedLibraryImpl implements Library {
         ArrayList<File> result = new ArrayList<File>();
         for (String pid : pids) {
             try {
-                Configuration config = configAdmin.getConfiguration(pid);
+                Configuration config = configAdmin.getConfiguration(pid, ctx.getBundle().getLocation());
                 Dictionary<String, Object> configProps = config.getProperties();
                 if (configProps == null) {
                     if (tc.isDebugEnabled()) {
@@ -388,4 +377,3 @@ public class SharedLibraryImpl implements Library {
         notifyListeners();
     }
 }
-

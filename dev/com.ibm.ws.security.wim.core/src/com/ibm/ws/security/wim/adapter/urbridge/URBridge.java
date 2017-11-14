@@ -41,14 +41,12 @@ import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.wim.ConfigManager;
-import com.ibm.ws.security.wim.FactoryManager;
 import com.ibm.ws.security.wim.Repository;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeConstants;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeEntity;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeEntityFactory;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeHelper;
 import com.ibm.ws.security.wim.adapter.urbridge.utils.URBridgeXPathHelper;
-import com.ibm.ws.security.wim.env.ICacheUtil;
 import com.ibm.ws.security.wim.util.ControlsHelper;
 import com.ibm.ws.security.wim.util.SchemaConstantsInternal;
 import com.ibm.wsspi.security.wim.SchemaConstants;
@@ -130,26 +128,9 @@ public class URBridge implements Repository {
     public final static String SPI_PREFIX = "WIM_SPI ";
 
     /**
-     * Constant for context key for old password
+     * SAF UserRegistry implementation class.
      */
-    private static final String OLD_PASSWORD = "OLD_PASSWORD";
-
-    /**
-     * Constant for context key for new user security name
-     */
-    private static final String NEW_SECURITY_NAME = "NEW_SECURITY_NAME";
-
-    /**
-     * Constant for context key to replace group members
-     */
-    private static final String REPLACE_MEMBERS = "REPLACE_MEMBERS";
-
-    /**
-     * Constant for context key to delete group members
-     */
-    private static final String DELETE_MEMBERS = "DELETE_MEMBERS";
-
-    private static final String SAFRegistryImplClass = "com.ibm.ws.security.registry.saf.internal.SAFRegistry";
+    private static final String SAFRegistryImplClass = "com.ibm.ws.security.registry.saf.internal.SAFDelegatingUserRegistry";
 
     /**
      * Name of the entity type for person account.
@@ -179,34 +160,6 @@ public class URBridge implements Repository {
      */
     private static Map<String, String[]> defaultRDNProperties = null;
 
-    /**
-     * The userSecurityName cache
-     */
-    private ICacheUtil iUserSecurityNameCache = null;
-
-    /**
-     * The groupSecurityName cache
-     */
-    private ICacheUtil iGroupSecurityNameCache = null;
-
-    /**
-     * The userSearch cache
-     */
-    private ICacheUtil iUserSearchCache = null;
-
-    /**
-     * The groupSearch cache
-     */
-    private ICacheUtil iGroupSearchCache = null;
-
-    private ICacheUtil iUserUniqueIdCache = null;
-
-    private ICacheUtil iUserDispNameCache = null;
-
-    private ICacheUtil iGroupUniqueIdCache = null;
-
-    private ICacheUtil iGroupDispNameCache = null;
-
     /*******************************************************************************************/
 
     private static void initializeSupportedEntities() {
@@ -225,24 +178,6 @@ public class URBridge implements Repository {
     }
 
     /**
-     *
-     */
-    private void initializeCaches() {
-        int cacheSize = 100;
-        long cacheTimeOut = 1200;
-        if (FactoryManager.getCacheUtil().isCacheAvailable()) {
-            iUserSecurityNameCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-            iUserUniqueIdCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-            iUserDispNameCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-            iGroupSecurityNameCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-            iUserSearchCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-            iGroupSearchCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-            iGroupUniqueIdCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-            iGroupDispNameCache = FactoryManager.getCacheUtil().initialize(cacheSize, cacheSize, cacheTimeOut);
-        }
-    }
-
-    /**
      * Constructor
      *
      * @param configProps
@@ -251,7 +186,6 @@ public class URBridge implements Repository {
     public URBridge(Map<String, Object> configProps, UserRegistry ur, ConfigManager configMgr) throws InitializationException {
         reposId = (String) configProps.get(KEY_ID);
         userRegistry = ur;
-        initializeCaches();
         configManager = configMgr;
         if (defaultSupportedEntities == null)
             initializeSupportedEntities();
@@ -437,7 +371,6 @@ public class URBridge implements Repository {
             return rdnProperties;
     }
 
-    @SuppressWarnings("unchecked")
     private List<String> getSupportedEntityTypes() {
         List<String> supportedEntities = configManager.getSupportedEntityTypes();
         if (supportedEntities != null && supportedEntities.size() > 0)
@@ -734,20 +667,19 @@ public class URBridge implements Repository {
             if (entityType.size() == 0 || entityType.size() > 1) {
                 noSpecificEntityType = true;
             }
-            /*
-             * if((SAFRegistryImplClass.equalsIgnoreCase(reg.getClass().getName()))) {
-             * if (entityType.contains(personAccountType) || noSpecificEntityType){
-             * if (reg.isValidUser(secName))
-             * typeList.add(personAccountType);
-             * }
-             * if(entityType.contains(groupAccountType) || noSpecificEntityType){
-             * if (reg.isValidGroup(secName))
-             * typeList.add(groupAccountType);
-             * }
-             * }
-             * else
-             */
-            {
+
+            if (isSafRegistry()) {
+                if (entityType.contains(personAccountType) || noSpecificEntityType) {
+                    if (userRegistry.isValidUser(secName)) {
+                        typeList.add(personAccountType);
+                    }
+                }
+                if (entityType.contains(groupAccountType) || noSpecificEntityType) {
+                    if (userRegistry.isValidGroup(secName)) {
+                        typeList.add(groupAccountType);
+                    }
+                }
+            } else {
                 if (entityType.contains(personAccountType) || noSpecificEntityType) {
                     int resultSize = searchUsers(secName, 1).getList().size();
 
@@ -789,14 +721,6 @@ public class URBridge implements Repository {
     }
 
     /**
-     * @param secName
-     * @param i
-     */
-    private String getKey(String secName, int i) {
-        return secName + "|" + i;
-    }
-
-    /**
      * The method reads the uniqueName of the user and returns the rdn property
      */
     private String getRDN(String name) {
@@ -816,6 +740,7 @@ public class URBridge implements Repository {
      */
     @SuppressWarnings("unchecked")
     @Override
+    @FFDCIgnore({ EntryNotFoundException.class, RegistryException.class })
     public Root search(Root root) throws WIMException {
         final String METHODNAME = "search";
         String uniqueName = null;
@@ -886,19 +811,13 @@ public class URBridge implements Repository {
                     List<String> searchAttrs = getAttributes(searchControl, type);
                     List<String> returnNames = new ArrayList<String>();
 
-                    /*
-                     * if ((SAFRegistryImplClass.equalsIgnoreCase(reg.getClass().getName()))&&!expression.endsWith(SchemaConstants.VALUE_WILD_CARD)) {
-                     * try{
-                     * String secName = reg.getGroupSecurityName(expression);
-                     * returnNames.add(secName);
-                     * }
-                     * catch (com.ibm.websphere.security.EntryNotFoundException enfe) {
-                     * }
-                     * catch (com.ibm.websphere.security.CustomRegistryException cre) {
-                     * }
-                     * } else
-                     */
-                    {
+                    if (isSafRegistry() && !expression.endsWith(SchemaConstants.VALUE_WILD_CARD)) {
+                        try {
+                            returnNames.add(userRegistry.getGroupSecurityName(expression));
+                        } catch (EntryNotFoundException enfe) {
+                        } catch (RegistryException re) {
+                        }
+                    } else {
                         if (!expression.contains(SchemaConstants.VALUE_WILD_CARD)) {
                             countLimit = 1;
                         }
@@ -936,19 +855,13 @@ public class URBridge implements Repository {
                     List<String> searchAttrs = getAttributes(searchControl, type);
                     List<String> returnNames = new ArrayList<String>();
 
-                    /*
-                     * if ((SAFRegistryImplClass.equalsIgnoreCase(reg.getClass().getName()))&&!expression.endsWith(SchemaConstants.VALUE_WILD_CARD)) {
-                     * try{
-                     * String secName= reg.getUserSecurityName(expression);
-                     * returnNames.add(secName);
-                     * }
-                     * catch (com.ibm.websphere.security.EntryNotFoundException enfe) {
-                     * }
-                     * catch (com.ibm.websphere.security.CustomRegistryException cre) {
-                     * }
-                     * } else
-                     */
-                    {
+                    if (isSafRegistry() && !expression.endsWith(SchemaConstants.VALUE_WILD_CARD)) {
+                        try {
+                            returnNames.add(userRegistry.getUserSecurityName(expression));
+                        } catch (EntryNotFoundException enfe) {
+                        } catch (RegistryException re) {
+                        }
+                    } else {
                         if (!expression.contains(SchemaConstants.VALUE_WILD_CARD)) {
                             countLimit = 1;
                         }
@@ -1045,7 +958,7 @@ public class URBridge implements Repository {
 
                     // first need to check if valid user or not
                     boolean isValidUser = false;
-                    if ((SAFRegistryImplClass.equalsIgnoreCase(userRegistry.getClass().getName()))) {
+                    if (isSafRegistry()) {
                         try {
                             isValidUser = userRegistry.isValidUser(pname);
                         } catch (RegistryException e) {
@@ -1163,15 +1076,7 @@ public class URBridge implements Repository {
      * @throws EntryNotFoundException
      */
     public String getUserSecurityName(String uniqueId) throws EntryNotFoundException, RegistryException {
-        String secName = null;
-        if (iUserSecurityNameCache.containsKey(uniqueId))
-            secName = (String) iUserSecurityNameCache.get(uniqueId);
-        else {
-            secName = userRegistry.getUserSecurityName(uniqueId);
-            iUserSecurityNameCache.put(uniqueId, secName);
-        }
-
-        return secName;
+        return userRegistry.getUserSecurityName(uniqueId);
     }
 
     /**
@@ -1181,15 +1086,7 @@ public class URBridge implements Repository {
      * @throws EntryNotFoundException
      */
     public String getUniqueUserId(String securityName) throws EntryNotFoundException, RegistryException {
-        String uniqueId = null;
-        if (iUserUniqueIdCache.containsKey(securityName))
-            uniqueId = (String) iUserUniqueIdCache.get(securityName);
-        else {
-            uniqueId = userRegistry.getUniqueUserId(securityName);
-            iUserUniqueIdCache.put(securityName, uniqueId);
-        }
-
-        return uniqueId;
+        return userRegistry.getUniqueUserId(securityName);
     }
 
     /**
@@ -1199,15 +1096,7 @@ public class URBridge implements Repository {
      * @throws EntryNotFoundException
      */
     public String getUserDisplayName(String securityName) throws EntryNotFoundException, RegistryException {
-        String displayName = null;
-        if (iUserDispNameCache.containsKey(securityName))
-            displayName = (String) iUserDispNameCache.get(securityName);
-        else {
-            displayName = userRegistry.getUserDisplayName(securityName);
-            iUserDispNameCache.put(securityName, displayName);
-        }
-
-        return displayName;
+        return userRegistry.getUserDisplayName(securityName);
     }
 
     /**
@@ -1217,15 +1106,7 @@ public class URBridge implements Repository {
      * @throws EntryNotFoundException
      */
     public String getGroupSecurityName(String uniqueId) throws EntryNotFoundException, RegistryException {
-        String secName = null;
-        if (iGroupSecurityNameCache.containsKey(uniqueId))
-            secName = (String) iGroupSecurityNameCache.get(uniqueId);
-        else {
-            secName = userRegistry.getGroupSecurityName(uniqueId);
-            iGroupSecurityNameCache.put(uniqueId, secName);
-        }
-
-        return secName;
+        return userRegistry.getGroupSecurityName(uniqueId);
     }
 
     /**
@@ -1235,15 +1116,7 @@ public class URBridge implements Repository {
      * @throws EntryNotFoundException
      */
     public String getUniqueGroupId(String securityName) throws EntryNotFoundException, RegistryException {
-        String uniqueId = null;
-        if (iGroupUniqueIdCache.containsKey(securityName))
-            uniqueId = (String) iGroupUniqueIdCache.get(securityName);
-        else {
-            uniqueId = userRegistry.getUniqueGroupId(securityName);
-            iGroupUniqueIdCache.put(securityName, uniqueId);
-        }
-
-        return uniqueId;
+        return userRegistry.getUniqueGroupId(securityName);
     }
 
     /**
@@ -1253,15 +1126,7 @@ public class URBridge implements Repository {
      * @throws EntryNotFoundException
      */
     public String getGroupDisplayName(String securityName) throws EntryNotFoundException, RegistryException {
-        String displayName = null;
-        if (iGroupDispNameCache.containsKey(securityName))
-            displayName = (String) iGroupDispNameCache.get(securityName);
-        else {
-            displayName = userRegistry.getGroupDisplayName(securityName);
-            iGroupDispNameCache.put(securityName, displayName);
-        }
-
-        return displayName;
+        return userRegistry.getGroupDisplayName(securityName);
     }
 
     /**
@@ -1271,14 +1136,7 @@ public class URBridge implements Repository {
      * @throws RegistryException
      */
     private SearchResult searchUsers(String secName, int i) throws RegistryException {
-        String key = getKey(secName, i);
-        if (iUserSearchCache.containsKey(key))
-            return (SearchResult) iUserSearchCache.get(key);
-        else {
-            SearchResult result = userRegistry.getUsers(secName, i);
-            iUserSearchCache.put(key, result);
-            return result;
-        }
+        return userRegistry.getUsers(secName, i);
     }
 
     /**
@@ -1288,14 +1146,7 @@ public class URBridge implements Repository {
      * @throws RegistryException
      */
     private SearchResult searchGroups(String secName, int i) throws RegistryException {
-        String key = getKey(secName, i);
-        if (iGroupSearchCache.containsKey(key))
-            return (SearchResult) iGroupSearchCache.get(key);
-        else {
-            SearchResult result = userRegistry.getGroups(secName, i);
-            iGroupSearchCache.put(key, result);
-            return result;
-        }
+        return userRegistry.getGroups(secName, i);
     }
 
     /**
@@ -1383,28 +1234,6 @@ public class URBridge implements Repository {
     }
 
     /**
-     *
-     */
-    public void stopCacheThreads() {
-        if (iUserSecurityNameCache != null)
-            iUserSecurityNameCache.stopEvictionTask();
-        if (iUserUniqueIdCache != null)
-            iUserUniqueIdCache.stopEvictionTask();
-        if (iUserDispNameCache != null)
-            iUserDispNameCache.stopEvictionTask();
-        if (iGroupSecurityNameCache != null)
-            iGroupSecurityNameCache.stopEvictionTask();
-        if (iUserSearchCache != null)
-            iUserSearchCache.stopEvictionTask();
-        if (iGroupSearchCache != null)
-            iGroupSearchCache.stopEvictionTask();
-        if (iGroupUniqueIdCache != null)
-            iGroupUniqueIdCache.stopEvictionTask();
-        if (iGroupDispNameCache != null)
-            iGroupDispNameCache.stopEvictionTask();
-    }
-
-    /**
      * @param returnRoot
      */
     private boolean isURBridgeResult(Root returnRoot) {
@@ -1424,232 +1253,145 @@ public class URBridge implements Repository {
         return false;
     }
 
-/*
- * @Override
- * public Root delete(Root root) throws WIMException {
- * if(userRegistry instanceof WriteableUserRegistry) {
- * if(root.getEntities().size() > 0) {
- * Root returnRoot = new Root();
- * Entity inEntity = root.getEntities().get(0);
- * IdentifierType inId = inEntity.getIdentifier();
- *
- * String memberType = validateEntity(inEntity);
- * String uniqueName = inId.getUniqueName();
- *
- * Entity returnEntity = null;
- * if (Service.DO_GROUP.equalsIgnoreCase(memberType))
- * returnEntity = new Group();
- * else
- * returnEntity = new PersonAccount();
- *
- * returnRoot.getEntities().add(returnEntity);
- * IdentifierType identifier = new IdentifierType();
- * identifier.setRepositoryId(reposId);
- * returnEntity.setIdentifier(identifier);
- *
- * // Wrap the entity in an object that provides functionality to the entity.
- * URBridgeEntityFactory osEntityFactory = new URBridgeEntityFactory();
- * URBridgeEntity osEntity = osEntityFactory.createObject(returnEntity, userRegistry,
- * propsMap, baseEntryName, entityConfigMap);
- * osEntity.setSecurityNameProp(uniqueName);
- *
- * if (Service.DO_GROUP.equalsIgnoreCase(memberType))
- * try {
- * ((WriteableUserRegistry)userRegistry).deleteGroup(uniqueName);
- * } catch (DeleteGroupFailedException e) {
- * throw new WIMException(e);
- * }
- * else
- * try {
- * ((WriteableUserRegistry)userRegistry).deleteUser(uniqueName);
- * } catch (DeleteUserFailedException e) {
- * throw new WIMException(e);
- * }
- *
- * return returnRoot;
- * }
- * }
- * else {
- * throw new WIMApplicationException(WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
- * Tr.formatMessage(tc, WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
- * WIMMessageHelper.generateMsgParms(reposId)));
- * }
- *
- * return null;
- * }
- *
- * @Override
- * public Root create(Root root) throws WIMException {
- * if(userRegistry instanceof WriteableUserRegistry) {
- * if(root.getEntities().size() > 0) {
- * Root returnRoot = new Root();
- * Entity inEntity = root.getEntities().get(0);
- * IdentifierType inId = inEntity.getIdentifier();
- *
- * String memberType = validateEntity(inEntity);
- * String uniqueName = inId.getUniqueName();
- *
- * Entity returnEntity = null;
- * if (Service.DO_GROUP.equalsIgnoreCase(memberType))
- * returnEntity = new Group();
- * else
- * returnEntity = new PersonAccount();
- *
- * returnRoot.getEntities().add(returnEntity);
- * IdentifierType identifier = new IdentifierType();
- * identifier.setRepositoryId(reposId);
- * returnEntity.setIdentifier(identifier);
- *
- * // Wrap the entity in an object that provides functionality to the entity.
- * URBridgeEntityFactory osEntityFactory = new URBridgeEntityFactory();
- * URBridgeEntity osEntity = osEntityFactory.createObject(returnEntity, userRegistry,
- * propsMap, baseEntryName, entityConfigMap);
- * osEntity.setSecurityNameProp(uniqueName);
- *
- * if (Service.DO_GROUP.equalsIgnoreCase(memberType))
- * try {
- * List<Entity> memberEntities = ((Group)inEntity).getMembers();
- * String[] members = null;
- * if(memberEntities != null && memberEntities.size() > 0) {
- * members = new String[memberEntities.size()];
- * int count = 0;
- * for(Entity member : memberEntities)
- * members[count++] = member.getIdentifier().getUniqueName();
- * }
- * ((WriteableUserRegistry)userRegistry).createGroup(uniqueName, members);
- * } catch (CreateGroupFailedException e) {
- * throw new WIMException(e);
- * }
- * else
- * try {
- * String password = new String(((PersonAccount)inEntity).getPassword());
- * ((WriteableUserRegistry)userRegistry).createUser(uniqueName, password);
- * } catch (CreateUserFailedException e) {
- * throw new WIMException(e);
- * }
- *
- * return returnRoot;
- * }
- * }
- * else {
- * throw new WIMApplicationException(WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
- * Tr.formatMessage(tc, WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
- * WIMMessageHelper.generateMsgParms(reposId)));
- * }
- *
- * return null;
- * }
- *
- * @Override
- * public Root update(Root root) throws WIMException {
- * if(userRegistry instanceof WriteableUserRegistry) {
- * if(root.getEntities().size() > 0) {
- * Root returnRoot = new Root();
- * Entity inEntity = root.getEntities().get(0);
- * IdentifierType inId = inEntity.getIdentifier();
- *
- * String type = validateEntity(inEntity);
- * String uniqueName = inId.getUniqueName();
- *
- * Entity returnEntity = null;
- * if (Service.DO_GROUP.equalsIgnoreCase(type))
- * returnEntity = new Group();
- * else
- * returnEntity = new PersonAccount();
- *
- * returnRoot.getEntities().add(returnEntity);
- * IdentifierType identifier = new IdentifierType();
- * identifier.setRepositoryId(reposId);
- * returnEntity.setIdentifier(identifier);
- *
- * // Wrap the entity in an object that provides functionality to the entity.
- * URBridgeEntityFactory osEntityFactory = new URBridgeEntityFactory();
- * URBridgeEntity osEntity = osEntityFactory.createObject(returnEntity, userRegistry,
- * propsMap, baseEntryName, entityConfigMap);
- * osEntity.setSecurityNameProp(uniqueName);
- *
- * if (Service.DO_GROUP.equalsIgnoreCase(type)) {
- * try {
- * if(((Group)inEntity).isSetDescription() && ((Group)inEntity).getDescription().size() > 0) {
- * String groupDescription = ((Group)inEntity).getDescription().get(0);
- * ((WriteableUserRegistry)userRegistry).updateGroup(uniqueName, groupDescription);
- * }
- * else {
- * if(root.getContexts() != null && root.getContexts().size() > 0) {
- * boolean replaceMembers = false;
- * boolean deleteMembers = false;
- * for(Context context : root.getContexts()) {
- * if(context.getKey().equalsIgnoreCase(REPLACE_MEMBERS)) {
- * replaceMembers = true;
- * break;
- * }
- * else if(context.getKey().equalsIgnoreCase(DELETE_MEMBERS)) {
- * deleteMembers = true;
- * break;
- * }
- * }
- *
- * if(replaceMembers || deleteMembers) {
- * List<String> members = new ArrayList<String>();
- * for(Entity member : ((Group)inEntity).getMembers()) {
- * members.add(member.getIdentifier().getUniqueName());
- * }
- * if(replaceMembers)
- * ((WriteableUserRegistry)userRegistry).replaceGroupMembers(uniqueName, members);
- * else
- * ((WriteableUserRegistry)userRegistry).deleteGroupMembers(uniqueName, members);
- * }
- * }
- * }
- * }
- * catch (UpdateGroupFailedException e) {
- * throw new WIMException(e);
- * }
- * }
- * else {
- * try {
- * if(((PersonAccount)inEntity).isSetPassword()) {
- * String password = new String(((PersonAccount)inEntity).getPassword());
- * String oldPassword = null;
- * if(root.getContexts() != null && root.getContexts().size() > 0) {
- * for (Context context : root.getContexts()) {
- * if(context.getKey().equalsIgnoreCase(OLD_PASSWORD)) {
- * oldPassword = (String)context.getValue();
- * break;
- * }
- * }
- * }
- * ((WriteableUserRegistry)userRegistry).updatePassword(uniqueName, oldPassword, password);
- * }
- * else {
- * if(root.getContexts() != null && root.getContexts().size() > 0) {
- * String newuserSecurityName = null;
- * for (Context context : root.getContexts()) {
- * if(context.getKey().equalsIgnoreCase(NEW_SECURITY_NAME)) {
- * newuserSecurityName = (String)context.getValue();
- * break;
- * }
- * }
- *
- * if(newuserSecurityName != null)
- * ((WriteableUserRegistry)userRegistry).renameUser(uniqueName, newuserSecurityName);
- * }
- * }
- * } catch (UpdateUserFailedException e) {
- * throw new WIMException(e);
- * }
- * }
- *
- * return returnRoot;
- * }
- * }
- * else {
- * throw new WIMApplicationException(WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
- * Tr.formatMessage(tc, WIMMessageKey.CANNOT_WRITE_TO_READ_ONLY_REPOSITORY,
- * WIMMessageHelper.generateMsgParms(reposId)));
- * }
- *
- * return null;
- * }
- */
+    /**
+     * Is the entity in this realm?
+     *
+     * @param uniqueName The entity unique name.
+     * @return True if the entity is in the realm, false if the entity is not.
+     */
+    @FFDCIgnore(Exception.class)
+    public boolean isEntityInRealm(String uniqueName) {
+
+        if (isSafRegistry()) {
+            try {
+                return userRegistry.isValidUser(uniqueName);
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+
+            try {
+                return userRegistry.isValidGroup(uniqueName);
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+        } else {
+            try {
+                SearchResult result = userRegistry.getUsers(uniqueName, 1);
+                if (result != null && result.getList().size() > 0)
+                    return true;
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+
+            try {
+                SearchResult result = userRegistry.getGroups(uniqueName, 1);
+                if (result != null && result.getList().size() > 0)
+                    return true;
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine the entity type for the entity in the {@link UserRegistry}.
+     *
+     * @param entity The entity to search for.
+     * @return Null if the entity was not found in the {@link UserRegistry} or a
+     *         {@link List} containing the entity type and the user name.
+     */
+    @FFDCIgnore(Exception.class)
+    public List<String> getEntityType(String entity) {
+
+        if (isSafRegistry()) {
+            try {
+                if (userRegistry.isValidUser(entity)) {
+                    List<String> returnValue = new ArrayList<String>();
+                    returnValue.add(SchemaConstants.DO_PERSON_ACCOUNT);
+                    returnValue.add(userRegistry.getUserSecurityName(entity)); // Handle SAF tokens.
+                    return returnValue;
+                }
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+
+            try {
+                if (userRegistry.isValidGroup(entity)) {
+                    List<String> returnValue = new ArrayList<String>();
+                    returnValue.add(SchemaConstants.DO_GROUP);
+                    returnValue.add(userRegistry.getGroupSecurityName(entity)); // Handle SAF tokens.
+                    return returnValue;
+                }
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+        } else {
+            try {
+                SearchResult result = userRegistry.getUsers(entity, 1);
+                if (result != null && result.getList().size() > 0) {
+                    List<String> returnValue = new ArrayList<String>();
+                    returnValue.add(SchemaConstants.DO_PERSON_ACCOUNT);
+                    returnValue.add(entity);
+                    return returnValue;
+                }
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+
+            try {
+                SearchResult result = userRegistry.getGroups(entity, 1);
+                if (result != null && result.getList().size() > 0) {
+                    List<String> returnValue = new ArrayList<String>();
+                    returnValue.add(SchemaConstants.DO_GROUP);
+                    returnValue.add(entity);
+                    return returnValue;
+                }
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+
+            try {
+                String result = userRegistry.getUserSecurityName(entity);
+                if (result != null) {
+                    List<String> returnValue = new ArrayList<String>();
+                    returnValue.add(SchemaConstants.DO_PERSON_ACCOUNT);
+                    returnValue.add(result);
+                    return returnValue;
+                }
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+
+            try {
+                String result = userRegistry.getGroupSecurityName(entity);
+                if (result != null) {
+                    List<String> returnValue = new ArrayList<String>();
+                    returnValue.add(SchemaConstants.DO_GROUP);
+                    returnValue.add(result);
+                    return returnValue;
+                }
+            } catch (Exception e) {
+                /* Ignore. */
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Return whether the {@link UserRegistry} contained in this {@link URBridge} instance is
+     * a zOS SAF registry.
+     *
+     * <p/>
+     * Normally we want to know if this is a SAF registry as we want to avoid making getUser()
+     * and getGroup calls as much as we can as they are expensive operations, especially for
+     * SAF registries with a large number of users.
+     *
+     * @return True if the {@link UserRegistry} is a zOS SAF registry.
+     */
+    private boolean isSafRegistry() {
+        return SAFRegistryImplClass.equalsIgnoreCase(userRegistry.getClass().getName());
+    }
 }

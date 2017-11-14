@@ -1,0 +1,56 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+apply from: '../cnf/gradle/scripts/fat.gradle'
+
+def autoFvtDir = "${projectDir}/build/libs/autoFVT"
+def publishDir = autoFvtDir + "/publish"
+
+addRequiredLibraries {
+  doLast {
+    // Define dependency groups
+    configurations {
+      libs
+    }
+    // Define G:A:V coordinates of each dependency
+    dependencies {
+      libs 'org.apache.httpcomponents:httpclient:4.1.2',
+           'org.apache.httpcomponents:httpcore:4.1.2',
+           'commons-logging:commons-logging:1.1.3',
+           'commons-codec:commons-codec:1.6',
+           'org.apache.directory.server:apacheds-service:2.0.0-M15',
+           project(':fattest.simplicity'),
+           project(':apache_directory_server'),
+           project(':com.ibm.ws.webcontainer.security_test.servlets')
+    }
+    // Copy the dependencies wherever they may be needed
+    copy {
+      // Adding jars to "autoFVT/lib/" will include them in a FAT bucket classpath at runtime
+      from configurations.libs
+      into "${buildDir}/autoFVT/lib/"
+    }
+  }
+}
+/** 
+ * com.ibm.ws.security.javaeesec_fatnot used for now, maybe requried once jsr375/jaspi coexisting test. 
+ **/
+task copyFeatureBundle {
+  doLast {
+    copy {
+      from "${projectDir}/generated/com.ibm.ws.security.jaspi.test.jar"
+      into "${projectDir}/publish/files/bundles"
+    }
+  }
+}
+/**
+ *autoFVT {
+ *  dependsOn copyFeatureBundle
+ *}
+ **/

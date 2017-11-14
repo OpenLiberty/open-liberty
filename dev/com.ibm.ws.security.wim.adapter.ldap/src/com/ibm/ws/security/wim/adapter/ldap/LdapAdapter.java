@@ -3982,18 +3982,20 @@ public class LdapAdapter extends BaseRepository implements ConfiguredRepository 
         while (sFilter.indexOf("~=", index) > -1 ||
                sFilter.indexOf(">=", index) > -1 ||
                sFilter.indexOf("<=", index) > -1 ||
-               sFilter.indexOf(":=", index) > -1 ||
+               //               sFilter.indexOf(":=", index) > -1 ||
                sFilter.indexOf("=", index) > -1) {
-            if (sFilter.indexOf("~=", index) > -1)
+
+            if (sFilter.indexOf("~=", index) > -1) {
                 index = sFilter.indexOf("~=", index);
-            else if (sFilter.indexOf(">=", index) > -1)
+            } else if (sFilter.indexOf(">=", index) > -1) {
                 index = sFilter.indexOf(">=", index);
-            else if (sFilter.indexOf("<=", index) > -1)
+            } else if (sFilter.indexOf("<=", index) > -1) {
                 index = sFilter.indexOf("<=", index);
-            else if (sFilter.indexOf(":=", index) > -1)
-                index = sFilter.indexOf(":=", index);
-            else if (sFilter.indexOf("=", index) > -1)
+//            } else if (sFilter.indexOf(":=", index) > -1) {
+//                index = sFilter.indexOf(":=", index);
+            } else if (sFilter.indexOf("=", index) > -1) {
                 index = sFilter.indexOf("=", index);
+            }
 
             attrIndex = index;
             while (attrIndex > -1 && sFilter.charAt(attrIndex) != '(') {

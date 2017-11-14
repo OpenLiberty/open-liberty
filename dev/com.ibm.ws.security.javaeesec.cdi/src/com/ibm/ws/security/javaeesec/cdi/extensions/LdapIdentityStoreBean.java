@@ -52,7 +52,7 @@ public class LdapIdentityStoreBean implements Bean<IdentityStore>, PassivationCa
 
         type = new TypeLiteral<IdentityStore>() {}.getType();
         types = Collections.singleton(type);
-        name = this.getClass().getName() + "[" + type + "]";
+        name = this.getClass().getName() + "@" + this.hashCode() + "[" + type + "]";
         id = beanManager.hashCode() + "#" + this.name;
     }
 
@@ -63,8 +63,6 @@ public class LdapIdentityStoreBean implements Bean<IdentityStore>, PassivationCa
      */
     @Override
     public IdentityStore create(CreationalContext<IdentityStore> arg0) {
-        Tr.debug(tc, "~~~create ldap bean");
-        // TODO Return the actual LdapIdentityStore impl
         return new LdapIdentityStore(ldapIdentityStoreDefinition);
     }
 

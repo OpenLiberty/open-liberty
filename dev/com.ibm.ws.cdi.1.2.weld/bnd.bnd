@@ -13,18 +13,14 @@ bVersion=1.0
 
 Bundle-Name: com.ibm.ws.cdi.1.2.weld
 Bundle-SymbolicName: com.ibm.ws.cdi.1.2.weld
+Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 
-Bundle-Description:cdi 1.2 weld impl, version ${bVersion}
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils
                 
-Import-Package: org.jboss.weld.*;version="[2,3)", \
-                *
- 
 WS-TraceGroup: JCDI
-
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -buildpath: \
         com.ibm.websphere.javaee.cdi.1.2;version=latest,\

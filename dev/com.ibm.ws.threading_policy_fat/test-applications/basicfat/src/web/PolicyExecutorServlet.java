@@ -18,7 +18,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -43,7 +42,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.Phaser;
 import java.util.concurrent.RejectedExecutionException;
-import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -55,6 +53,7 @@ import javax.servlet.annotation.WebServlet;
 import org.junit.Test;
 
 import com.ibm.ws.threading.PolicyExecutor;
+import com.ibm.ws.threading.PolicyExecutor.MaxPolicy;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
@@ -998,7 +997,7 @@ public class PolicyExecutorServlet extends FATServlet {
         final int totalAwaitEnqueue = 4;
         final int numToQueue = 2;
         PolicyExecutor executor = provider.create("testConcurrentAwaitTerminationAfterShutdownNow")
-                        .coreConcurrency(0)
+                        .expedite(0)
                         .maxConcurrency(1)
                         .maxQueueSize(numToQueue)
                         .maxWaitForEnqueue(100);
@@ -1709,7 +1708,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testIdentifiers() throws Exception {
         ExecutorService executor1 = provider.create("testIdentifiers")
-                        .coreConcurrency(4)
+                        .expedite(4)
                         .maxConcurrency(20)
                         .maxQueueSize(50)
                         .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(30));
@@ -2112,7 +2111,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testInvokeAllAbortIgnoredWhenConcurrencyUnlimited() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllAbortIgnoredWhenConcurrencyUnlimited")
-                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxPolicy(MaxPolicy.loose)
                         .maxQueueSize(1)
                         .runIfQueueFull(false);
 
@@ -2169,7 +2168,7 @@ public class PolicyExecutorServlet extends FATServlet {
         }
 
         executor = provider.create("testInvokeAllAfterShutdownNow")
-                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxPolicy(MaxPolicy.loose)
                         .runIfQueueFull(true);
         executor.shutdownNow();
 
@@ -2196,7 +2195,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllCallerRunsWhenQueueFull() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllCallerRunsWhenQueueFull")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxPolicy(MaxPolicy.loose)
                         .maxQueueSize(1);
 
         CountDownLatch beginLatch = new CountDownLatch(3);
@@ -2266,7 +2265,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllInterruptedWhileRunningTaskThatCannotBeSubmitted() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllInterruptedWhileRunningTaskThatCannotBeSubmitted")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxPolicy(MaxPolicy.loose)
                         .maxQueueSize(1);
 
         // Invoke 4 tasks.
@@ -2314,7 +2313,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllOfOneAndNone() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllOfOneAndNone")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(true)
+                        .maxPolicy(MaxPolicy.strict)
                         .maxQueueSize(2)
                         .maxWaitForEnqueue(TimeUnit.SECONDS.toMillis(10));
 
@@ -2344,7 +2343,7 @@ public class PolicyExecutorServlet extends FATServlet {
         } // pass
 
         // If using maxConcurrencyAppliesToCallerThread=false, we don't need a permit
-        executor.maxConcurrencyAppliesToCallerThread(false);
+        executor.maxPolicy(MaxPolicy.loose);
         futures = executor.invokeAll(Collections.singleton(new ThreadIdTask()));
         assertEquals(1, futures.size());
         assertEquals(Long.valueOf(threadId), futures.get(0).get(0, TimeUnit.MINUTES));
@@ -2361,9 +2360,9 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testInvokeAllOnCurrentThread() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllOnCurrentThread")
-                        .coreConcurrency(1)
+                        .expedite(1)
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(true)
+                        .maxPolicy(MaxPolicy.strict)
                         .maxQueueSize(10);
 
         long threadId = Thread.currentThread().getId();
@@ -2389,7 +2388,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllOnCurrentThreadCallerRunsWithoutPermit() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllOnCurrentThreadCallerRunsWithoutPermit")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxPolicy(MaxPolicy.loose)
                         .maxQueueSize(10);
 
         // Use up the only permit
@@ -2550,9 +2549,9 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testInvokeAllTimed() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimed")
-                        .coreConcurrency(2)
+                        .expedite(2)
                         .maxConcurrency(3)
-                        .maxConcurrencyAppliesToCallerThread(true) // meaningless for timed invokeAll, which never runs on caller thread
+                        .maxPolicy(MaxPolicy.strict) // meaningless for timed invokeAll, which never runs on caller thread
                         .maxQueueSize(2)
                         .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
 
@@ -2615,7 +2614,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testInvokeAllTimedInterruptWaitForCompletion() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimedInterruptWaitForCompletion")
-                        .coreConcurrency(2);
+                        .expedite(2);
 
         CountDownLatch beginLatch = new CountDownLatch(3);
         CountDownLatch blocker = new CountDownLatch(1);
@@ -2649,7 +2648,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testInvokeAllTimedInterruptWaitForEnqueue() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimedInterruptWaitForEnqueue")
-                        .coreConcurrency(1)
+                        .expedite(1)
                         .maxConcurrency(1)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(TimeUnit.MINUTES.toMillis(8));
@@ -2800,7 +2799,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllTimedTimeoutWaitForEnqueue() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimedTimeoutWaitForEnqueue")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxPolicy(MaxPolicy.loose)
                         .maxQueueSize(1)
                         .maxWaitForEnqueue(200)
                         .runIfQueueFull(true);
@@ -2838,7 +2837,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAllTimeoutWaitForEnqueue() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAllTimeoutWaitForEnqueue")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(true)
+                        .maxPolicy(MaxPolicy.strict)
                         .maxQueueSize(2)
                         .maxWaitForEnqueue(200);
 
@@ -3279,7 +3278,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAnyOfOne() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAnyOfOne")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(true) // require a permit
+                        .maxPolicy(MaxPolicy.strict) // require a permit
                         .maxQueueSize(1);
 
         Set<Callable<Long>> oneTask = Collections.<Callable<Long>> singleton(new ThreadIdTask());
@@ -3294,25 +3293,15 @@ public class PolicyExecutorServlet extends FATServlet {
         Future<Boolean> blockerFuture = executor.submit(new CountDownTask(beginLatch, noQueueCapacityRemains, TIMEOUT_NS));
         assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
-        // TODO Update in future user story. Temporarily use internals while lacking the callback to decrement the above latch once queue capacity is used up.
-        Field f = executor.getClass().getDeclaredField("maxQueueSizeConstraint");
-        f.setAccessible(true);
-        final Semaphore q = (Semaphore) f.get(executor);
-        testThreads.submit(new Callable<Void>() {
-            @Override
-            public Void call() throws InterruptedException {
-                for (long start = System.nanoTime(); q.availablePermits() > 0 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
-                noQueueCapacityRemains.countDown();
-                return null;
-            }
-        });
+        // Register callback to decrement the above latch once queue capacity is used up.
+        assertNull(executor.registerQueueSizeCallback(1, new CountDownCallback(noQueueCapacityRemains)));
 
         // Permit is required and unavailable. Task should be run on global thread pool.
         assertNotSame(curThreadId, executor.invokeAny(oneTask));
 
         assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
 
-        executor.maxConcurrencyAppliesToCallerThread(false);
+        executor.maxPolicy(MaxPolicy.loose);
 
         // Use up the permit
         blockerFuture = executor.submit(new CountDownTask(new CountDownLatch(0), new CountDownLatch(1), TIMEOUT_NS));
@@ -3361,7 +3350,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testInvokeAnyShutdownNowWhileEnqueued() throws Exception {
         PolicyExecutor executor = provider.create("testInvokeAnyShutdownNowWhileEnqueued")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(true)
+                        .maxPolicy(MaxPolicy.strict)
                         .maxQueueSize(2);
 
         CountDownLatch blocker = new CountDownLatch(1);
@@ -3373,18 +3362,8 @@ public class PolicyExecutorServlet extends FATServlet {
         List<Callable<Integer>> tasks = Arrays.<Callable<Integer>> asList(new SharedIncrementTask(counter), new SharedIncrementTask(counter));
 
         final CountDownLatch noQueueCapacityRemains = new CountDownLatch(1);
-        // TODO Update in future user story. Temporarily use internals while lacking the callback to decrement the above latch once queue capacity is used up.
-        Field f = executor.getClass().getDeclaredField("maxQueueSizeConstraint");
-        f.setAccessible(true);
-        final Semaphore q = (Semaphore) f.get(executor);
-        testThreads.submit(new Callable<Void>() {
-            @Override
-            public Void call() throws InterruptedException {
-                for (long start = System.nanoTime(); q.availablePermits() > 0 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
-                noQueueCapacityRemains.countDown();
-                return null;
-            }
-        });
+        // Register a callback to decrement the above latch once queue capacity is used up.
+        assertNull(executor.registerQueueSizeCallback(1, new CountDownCallback(noQueueCapacityRemains)));
 
         Future<List<Runnable>> shutdownFuture = testThreads.submit(new ShutdownTask(executor, true, new CountDownLatch(0), noQueueCapacityRemains, TIMEOUT_NS));
 
@@ -3678,18 +3657,8 @@ public class PolicyExecutorServlet extends FATServlet {
         List<Callable<Integer>> tasks = Arrays.<Callable<Integer>> asList(new SharedIncrementTask(counter), new SharedIncrementTask(counter));
 
         final CountDownLatch noQueueCapacityRemains = new CountDownLatch(1);
-        // TODO Update in future user story. Temporarily use internals while lacking the callback to decrement the above latch once queue capacity is used up.
-        Field f = executor.getClass().getDeclaredField("maxQueueSizeConstraint");
-        f.setAccessible(true);
-        final Semaphore q = (Semaphore) f.get(executor);
-        testThreads.submit(new Callable<Void>() {
-            @Override
-            public Void call() throws InterruptedException {
-                for (long start = System.nanoTime(); q.availablePermits() > 0 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(100));
-                noQueueCapacityRemains.countDown();
-                return null;
-            }
-        });
+        // Register a callback to decrement the above latch once queue capacity is used up.
+        assertNull(executor.registerQueueSizeCallback(1, new CountDownCallback(noQueueCapacityRemains)));
 
         Future<List<Runnable>> shutdownFuture = testThreads.submit(new ShutdownTask(executor, true, new CountDownLatch(0), noQueueCapacityRemains, TIMEOUT_NS));
 
@@ -3862,7 +3831,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testMultipleLayersOfInvokeAll() throws Exception {
         PolicyExecutor executor = provider.create("testMultipleLayersOfInvokeAll")
-                        .coreConcurrency(0) // everything could run on the current thread if it needs to
+                        .expedite(0) // everything could run on the current thread if it needs to
                         .maxConcurrency(3)
                         .maxQueueSize(4); // just enough to ensure we can cover a 16 element array
 
@@ -3885,7 +3854,7 @@ public class PolicyExecutorServlet extends FATServlet {
     @Test
     public void testMultipleLayersOfSubmits() throws Exception {
         ExecutorService executor = provider.create("testMultipleLayersOfSubmits")
-                        .coreConcurrency(8)
+                        .expedite(8)
                         .maxConcurrency(8) // just enough to ensure we can cover a 16 element array
                         .maxQueueSize(3)
                         .runIfQueueFull(true);
@@ -3906,13 +3875,75 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
+    // Register queue size callbacks with a policy executor. Verify that at most one can be registered,
+    // that the most recently registered replaces any previous ones, and that the queue size callback
+    // can be unregistered by supplying null. Verify that the queue size callback is notified when the
+    // queue size drops below the threshold.
+    @Test
+    public void testQueueSizeCallback() throws Exception {
+        PolicyExecutor executor = provider.create("testQueueSizeCallback")
+                        .maxConcurrency(1)
+                        .maxQueueSize(5);
+
+        CountDownLatch under5Latch = new CountDownLatch(1);
+        Runnable callbackUnder5 = new CountDownCallback(under5Latch);
+        assertNull(executor.registerQueueSizeCallback(5, callbackUnder5));
+        assertEquals(1, under5Latch.getCount());
+
+        // new registration replaces previous
+        CountDownLatch under4Latch = new CountDownLatch(1);
+        Runnable callbackUnder4 = new CountDownCallback(under4Latch);
+        assertEquals(callbackUnder5, executor.registerQueueSizeCallback(4, callbackUnder4));
+        assertEquals(1, under4Latch.getCount());
+
+        // previously registered callback is not invoked
+        CountDownLatch blockerStartedLatch = new CountDownLatch(1);
+        CountDownLatch blockerContinueLatch = new CountDownLatch(1);
+        CountDownTask blockerTask = new CountDownTask(blockerStartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(8));
+        Future<Boolean> blockerFuture = executor.submit(blockerTask);
+        assertTrue(blockerStartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, under5Latch.getCount());
+        assertEquals(1, under4Latch.getCount());
+
+        // add a task to the queue (will be stuck until blocker completes), such that capacity of 4 remains
+        Future<Integer> queuedFuture1 = executor.submit((Callable<Integer>) new SharedIncrementTask());
+        assertEquals(1, under4Latch.getCount());
+        assertEquals(1, under5Latch.getCount());
+
+        // trigger the active callback (under4Latch) by adding another task to the queue
+        Future<Integer> queuedFuture2 = executor.submit((Callable<Integer>) new SharedIncrementTask());
+        assertTrue(under4Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, under5Latch.getCount());
+
+        // register another callback
+        CountDownLatch under3Latch = new CountDownLatch(1);
+        Runnable callbackUnder3 = new CountDownCallback(under3Latch);
+        assertNull(executor.registerQueueSizeCallback(3, callbackUnder3));
+        assertEquals(1, under3Latch.getCount());
+
+        // trigger the active callback (under3Latch) by shrinking the queue
+        executor.maxQueueSize(4);
+        assertTrue(under3Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, under5Latch.getCount());
+
+        // register a callback for a threshold that has already been reached
+        CountDownLatch under6Latch = new CountDownLatch(1);
+        Runnable callbackUnder6 = new CountDownCallback(under6Latch);
+        assertNull(executor.registerQueueSizeCallback(6, callbackUnder6));
+        assertTrue(under6Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        List<Runnable> canceledFromQueue = executor.shutdownNow();
+        assertEquals(2, canceledFromQueue.size());
+        assertTrue(blockerFuture.isCancelled());
+    }
+
     // Use a policy executor to submit tasks that resubmit themselves to perform a recursive computation.
     // Have one of the recursive task require greater concurrency than provided by the policy executor
     // such that it hangs. Then interrupt it to free up a thread to enable completion.
     @Test
     public void testRecursiveTasks() throws Exception {
         PolicyExecutor executor = provider.create("testRecursiveTasks")
-                        .coreConcurrency(8)
+                        .expedite(8)
                         .maxConcurrency(10)
                         .maxQueueSize(10) // just enough to cover factorials of 6, 4, and 3 without getting stuck
                         .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS * 2));
@@ -3925,7 +3956,7 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(Long.valueOf(6), f3.get(TIMEOUT_NS * 3, TimeUnit.NANOSECONDS));
 
         // Decrease concurrency and submit a recursive task that will hang
-        executor.coreConcurrency(3).maxConcurrency(3);
+        executor.expedite(3).maxConcurrency(3);
         Future<Long> f5 = executor.submit(new FactorialTask(5, executor));
         try {
             fail("Should not be able to complete recursive task with insufficient concurrency: " + f5.get(200, TimeUnit.MILLISECONDS));
@@ -4014,7 +4045,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testRunIfQueueFull() throws Exception {
         PolicyExecutor executor = provider.create("testRunIfQueueFull")
                         .maxConcurrency(1)
-                        .maxConcurrencyAppliesToCallerThread(false)
+                        .maxPolicy(MaxPolicy.loose)
                         .maxQueueSize(1)
                         .runIfQueueFull(true);
 
@@ -4060,7 +4091,7 @@ public class PolicyExecutorServlet extends FATServlet {
         assertEquals(currentThreadId, future4.get());
 
         // Reconfigure so that running on the caller thread requires a permit
-        executor.maxConcurrencyAppliesToCallerThread(true);
+        executor.maxPolicy(MaxPolicy.strict);
 
         // Shouldn't be able to run on the current thread anymore
         try {
@@ -4259,7 +4290,7 @@ public class PolicyExecutorServlet extends FATServlet {
     public void testShutdownNowDuringInvokeAll() throws Exception {
         PolicyExecutor executor = provider.create("testShutdownNowDuringInvokeAll")
                         .maxConcurrency(2)
-                        .maxConcurrencyAppliesToCallerThread(true);
+                        .maxPolicy(MaxPolicy.strict);
 
         CountDownLatch blocker = new CountDownLatch(1);
         CountDownLatch task3BeginLatch = new CountDownLatch(1);
@@ -4337,7 +4368,10 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(future.isDone());
         assertFalse(future.isCancelled());
         assertEquals(0, future.getElapsedRunTime(TimeUnit.NANOSECONDS));
-        assertEquals(queueTimeNS, future.getElapsedQueueTime(TimeUnit.NANOSECONDS));
+        boolean sameQueueTime = false;
+        for (long start = System.nanoTime(); !sameQueueTime && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200))
+            sameQueueTime = queueTimeNS == future.getElapsedQueueTime(TimeUnit.NANOSECONDS);
+        assertTrue(sameQueueTime);
 
         // Additional testing for the measured run time of the blocker task
         assertTrue(blockerFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));

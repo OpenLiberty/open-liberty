@@ -907,14 +907,18 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         reply = isAuthorized ? new PermitReply() : DENY_AUTHZ_FAILED;
 
         auditManager.setWebRequest(webRequest);
-        auditManager.setRealm(authResult.getTargetRealm());
+	if (authResult != null) {
+	    auditManager.setRealm(authResult.getTargetRealm());
+	}
 
         Audit.audit(Audit.EventID.SECURITY_AUTHZ_01, webRequest, authResult, uriName, Integer.valueOf(reply.getStatusCode()));
         // now update current thread context
         if (isAuthorized) {
             // at this point set invocation subject = caller subject.
             // delegation may change the invocation subject later
-            subjectManager.setInvocationSubject(authResult.getSubject());
+	    if (authResult != null) {
+		subjectManager.setInvocationSubject(authResult.getSubject());
+	    }
         } else {
             // if authorization failure, put the caller subject back to the original one.
             subjectManager.setCallerSubject(receivedSubject);

@@ -12,33 +12,55 @@ package com.ibm.ws.threading;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 /**
  * <p>Policy executors are backed by the Liberty global thread pool, but allow
- * concurrency constraints and various queue attributes to be controlled independently
+ * concurrency constraints, queue attributes, and other related behaviors to be controlled independently
  * of the global thread pool.</p>
+ *
+ * <p>Policy executors are constructed programmatically via <code>PolicyExecutorProvider</code>,
+ * or as OSGi service components backed by configuration (the <code>concurrencyPolicy</code> element).
+ * </p>
  */
 public interface PolicyExecutor extends ExecutorService {
     /**
-     * Specifies a core number of tasks that the policy executor should aim to run concurrently
-     * by expediting requests to the global thread pool. This is different than a minimum in that
-     * no guarantee is made that this many tasks will be running concurrently.
-     * The default coreConcurrency is 0.
-     * If core concurrency is updated while the policy executor is in use, the update goes into
+     * A policy for enforcing maximum concurrency.
+     */
+    @Trivial
+    public enum MaxPolicy {
+        /**
+         * Maximum concurrency is loosely enforced, in that tasks are allowed to run on the submitter's thread without counting against maximum concurrency.
+         */
+        loose,
+
+        /**
+         * Maximum concurrency is strictly enforced, in that tasks that run on the submitter's thread count towards maximum concurrency.
+         * This policy does not allow running on the submitter's thread if already at maximum concurrency.
+         */
+        strict
+    }
+
+    /**
+     * Specifies a core number of tasks to aim to run concurrently
+     * by expediting requests to the global thread pool. This provides no guarantee
+     * that this many tasks will run concurrently. The default value is 0.
+     * If the expedite value is updated while in use, the update goes into
      * effect gradually as previous expedited and non-expedited requests complete.
      *
-     * @param core core concurrency.
+     * @param num number of tasks to expedite.
      * @return the executor.
      * @throws IllegalArgumentException if value is negative or greater than maximum concurrency.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
-    PolicyExecutor coreConcurrency(int core);
+    PolicyExecutor expedite(int num);
 
     /**
      * Submits and invokes a group of tasks with a callback per task to be invoked at various points in the task's life cycle.
@@ -82,96 +104,110 @@ public interface PolicyExecutor extends ExecutorService {
                     TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException;
 
     /**
-     * Specifies the maximum number of tasks from this policy executor that can be running
-     * at any given point in time. The default maxConcurrency is Integer.MAX_VALUE.
+     * Specifies the maximum number of tasks that can be running
+     * at any given point in time. The default is Integer.MAX_VALUE.
      * Maximum concurrency can be updated while tasks are in progress. If the maximum concurrency
      * is reduced below the number of concurrently executing tasks, the update goes into effect
      * gradually, as in-progress tasks complete rather than causing them to be canceled.
      *
      * @param max maximum concurrency.
      * @return the executor.
-     * @throws IllegalArgumentException if value is not positive or -1 (which means Integer.MAX_VALUE) or less than core concurrency.
+     * @throws IllegalArgumentException if value is not positive or -1 (which means Integer.MAX_VALUE) or less than the number to expedite.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
     PolicyExecutor maxConcurrency(int max);
 
     /**
-     * Indicates whether or not to count tasks that run on the caller's thread towards maxConcurrency.
+     * Indicates whether to loosely (the default) or strictly enforce maximum concurrency for tasks that run on the caller's thread.
      * Tasks can run on the caller's thread when using untimed invokeAll, or, if only invoking a single task, untimed invokeAny.
      * If runIfQueueFull is true, tasks can also run on the caller's thread when using the execute and submit methods.
-     * The default value is false.
+     * In all of these cases, <code>maxPolicy</code> determines whether running on the caller's thread counts against
+     * the maximum concurrency.
      *
-     * @param applyToCallerThread indicates whether or not tasks that run on the invoking thread count towards maxConcurrency.
+     * @param policy indicates whether or not tasks that run on the invoking thread count towards maximum concurrency.
      * @return the executor.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
-    PolicyExecutor maxConcurrencyAppliesToCallerThread(boolean applyToCallerThread);
+    PolicyExecutor maxPolicy(MaxPolicy policy);
 
     /**
      * Specifies the maximum number of submitted tasks that can be queued for execution at any given point in time.
-     * As tasks are started or canceled, they are removed from the queue. When the queue is
-     * at capacity and another task is submitted, the policy executor waits for up to the
-     * maxWaitForEnqueue for a queue position to become available, after which, if the queue
-     * is still at capacity, runIfQueueFull determines whether to attempt running on the current thread
-     * (if permitted by maxConcurrency) or whether to reject the task submission.
+     * As tasks are started, canceled, or aborted, they are removed from the queue.
+     * When the queue is at capacity and another task is submitted, the behavior is determined by the
+     * <code>maxWaitForEnqueue</code> and <code>runIfQueueFull</code> attributes.
      * Applications that submit many tasks over a short period of time might want to use
      * a maximum queue size that is at least as large as the maximum concurrency.
      * The default maxQueueSize is Integer.MAX_VALUE.
      * Maximum queue size can be updated while tasks are in progress and/or queued for execution.
      * If the maximum queue size is reduced below the current number of queued tasks,
-     * the update goes into effect gradually, queued tasks execute naturally or are canceled
+     * the update goes into effect gradually, as queued tasks execute naturally or are canceled
      * by the user, rather than automatically canceling the excess queued tasks.
      *
      * @param max capacity of the task queue.
      * @return the executor.
      * @throws IllegalArgumentException if value is not positive or -1 (which means Integer.MAX_VALUE).
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
     PolicyExecutor maxQueueSize(int max);
 
     /**
      * Specifies the maximum number of milliseconds to wait for enqueuing a submitted task.
+     * If unable to enqueue the task within this interval, the task submission is subject to the <code>runIfQueueFull</code> policy.
      * The default value of 0 indicates to not wait at all.
-     * When maxWaitForEnqueue is updated, the update applies to task submits that occur
+     * When <code>maxWaitForEnqueue</code> is updated, the update applies only to tasks submitted
      * after that point. Submits that were already waiting continue to wait per the previously
      * configured value.
      *
-     * @param ms maximum number of milliseconds to wait when attempting to queue a submitted task.
+     * @param ms maximum number of milliseconds to wait when attempting to enqueue a submitted task.
      * @return the executor.
      * @throws IllegalArgumentException if value is negative.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
     PolicyExecutor maxWaitForEnqueue(long ms);
 
     /**
-     * Applies when using the execute or submit methods. Indicates whether or not to run the task on the
-     * caller's thread when the queue is full and the maxWaitForEnqueue has been exceeded.
-     * The default value is false, in which case the task submission is rejected after the maxWaitForEnqueue elapses
+     * Registers a one-time callback to be invoked asynchronously
+     * when the available remaining capacity of the task queue
+     * drops below the specified minimum.
+     * If a queue size callback is already registered, this replaces
+     * the previous registration.
+     * To unregister an existing callback without replacing,
+     * specify a null value for the callback.
+     * The callback is not guaranteed to be invoked in the case of
+     * available queue capacity being taken away due to shutdown.
+     *
+     * @param minAvailable threshold for minimum available queue capacity
+     *            below which the callback should be notified.
+     * @param callback the callback, or null to unregister.
+     * @return callback that was replaced or removed by the new registration.
+     *         null if no previous callback was in place.
+     */
+    Runnable registerQueueSizeCallback(int minAvailable, Runnable callback);
+
+    /**
+     * Applies when using the <code>execute</code> or <code>submit</code> methods. Indicates whether or not to run the task on the
+     * caller's thread when the queue is full and the <code>maxWaitForEnqueue</code> has been exceeded.
+     * The default value is false, in which case the task submission is rejected after the <code>maxWaitForEnqueue</code> elapses
      * instead of running on the caller's thread.
      *
      * @param runIfFull true to indicate that a task which cannot be queued should run on the thread from which submit or execute is invoked;
      *            false to abort the task in this case.
      * @return the executor.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
     PolicyExecutor runIfQueueFull(boolean runIfFull);
 
     /**
      * Specifies a number of milliseconds, starting at task submit, after which a task should not start. The default value of -1 means no timeout.
-     * Execution property com.ibm.ws.concurrent.START_TIMEOUT_NANOS overrides on a per-task basis.
-     * Note that if both maxWaitForEnqueue and startTimeout are enabled, the startTimeout should be configured larger than the maxWaitForEnqueue
+     * The value returned by <code>PolicyTaskCallabck.getStartTimeout</code>, if any, overrides on a per-task basis.
+     * Note that if both <code>maxWaitForEnqueue</code> and <code>startTimeout</code> are enabled,
+     * the <code>startTimeout</code> should be configured larger than the <code>maxWaitForEnqueue</code>
      * such that remains possible to start tasks after they have waited for a queue position.
      *
      * @param ms number of milliseconds beyond which a task should not start.
      * @return the executor.
      * @throws IllegalArgumentException if value is negative (other than -1) or too large to convert to a nanosecond <code>long</code> value.
      * @throws IllegalStateException if the executor has been shut down.
-     * @throws UnsupportedOperationException if invoked on a policyExecutor instance created from server configuration.
      */
     PolicyExecutor startTimeout(long ms);
 
@@ -188,4 +224,12 @@ public interface PolicyExecutor extends ExecutorService {
      * @see java.util.concurrent.ExecutorService#submit(java.lang.Runnable, java.lang.Object)
      */
     <T> PolicyTaskFuture<T> submit(Runnable task, T result, PolicyTaskCallback callback);
+
+    /**
+     * Update the configuration of this instance, either initially or as a modification.
+     * This method is appropriate for configuration-based OSGi service components (concurrencyPolicy).
+     *
+     * @param props key/value pairs containing the already-validated configuration.
+     */
+    void updateConfig(Map<String, Object> props);
 }

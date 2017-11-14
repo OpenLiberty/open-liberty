@@ -14,7 +14,6 @@ IBM-API-Package: javax.decorator;  type="spec", \
  javax.inject;  type="spec", \
  javax.interceptor;  type="spec", \
  javax.transaction;  type="internal", \
- javax.validation;  type="internal", \
  org.jboss.weld.el; type="internal", \
  org.jboss.weld.interceptor.proxy; type="internal", \
  org.jboss.weld.interceptor.util.proxy; type="internal", \
@@ -52,7 +51,8 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.jboss.logging.3.3.0, \
  com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
- com.ibm.ws.cdi.shared.weld, \
+ com.ibm.ws.cdi.weld, \
+ com.ibm.ws.cdi.internal, \
  com.ibm.ws.cdi.1.2.weld, \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/", \
  com.ibm.ws.cdi.interfaces

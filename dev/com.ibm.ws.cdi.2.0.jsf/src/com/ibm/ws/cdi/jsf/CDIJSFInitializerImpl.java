@@ -21,7 +21,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.cdi.CDIService;
-import com.ibm.ws.cdi.interfaces.CDIRuntime;
+import com.ibm.ws.cdi.internal.interfaces.CDIRuntime;
 import com.ibm.ws.jsf.shared.cdi.CDIJSFInitializer;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 

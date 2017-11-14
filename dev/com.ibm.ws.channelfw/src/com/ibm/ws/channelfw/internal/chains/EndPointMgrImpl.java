@@ -16,6 +16,7 @@ import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
@@ -32,6 +33,7 @@ import com.ibm.websphere.channelfw.EndPointMgr;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.channelfw.internal.ChannelFrameworkConstants;
+import com.ibm.ws.staticvalue.StaticValue;
 
 /**
  * Temporary version of the WAS runtimefw EndPointMgr.
@@ -48,16 +50,17 @@ public class EndPointMgrImpl implements EndPointMgr {
 
     /** Singleton reference */
     private static class EndpointManagerHolder {
-        private static EndPointMgr singleton;
-
-        static {
-            BundleContext bundleContext = null;
-            Bundle b = FrameworkUtil.getBundle(EndpointManagerHolder.class);
-            if (b != null) {
-                bundleContext = b.getBundleContext();
+        private static StaticValue<EndPointMgr> singleton = StaticValue.createStaticValue(new Callable<EndPointMgr>() {
+            @Override
+            public EndPointMgr call() throws Exception {
+                BundleContext bundleContext = null;
+                Bundle b = FrameworkUtil.getBundle(EndpointManagerHolder.class);
+                if (b != null) {
+                    bundleContext = b.getBundleContext();
+                }
+                return new EndPointMgrImpl(bundleContext);
             }
-            singleton = new EndPointMgrImpl(bundleContext);
-        }
+        });
     }
 
     /** BundleContext for registering the MBeans */
@@ -84,11 +87,16 @@ public class EndPointMgrImpl implements EndPointMgr {
      * @return EndPointMgrImpl
      */
     public static EndPointMgr getRef() {
-        return EndpointManagerHolder.singleton;
+        return EndpointManagerHolder.singleton.get();
     }
 
-    public static void setRef(EndPointMgr singleton) {
-        EndpointManagerHolder.singleton = singleton;
+    public static void setRef(final EndPointMgr singleton) {
+        EndpointManagerHolder.singleton = StaticValue.mutateStaticValue(EndpointManagerHolder.singleton, new Callable<EndPointMgr>() {
+            @Override
+            public EndPointMgr call() throws Exception {
+                return singleton;
+            }
+        });
     }
 
     /**

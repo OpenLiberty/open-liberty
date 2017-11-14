@@ -319,8 +319,12 @@ public class EmbeddedApacheDS {
      * @throws Exception
      */
     public void startServer() throws Exception {
+        startServer(getOpenPort());
+    }
+
+    public void startServer(int port) throws Exception {
         this.server = new LdapServer();
-        this.server.setTransports(new TcpTransport(getOpenPort()));
+        this.server.setTransports(new TcpTransport(port));
         this.server.setDirectoryService(this.service);
         this.server.start();
         System.out.println("The server '" + this.name + "' is running on TCP port: " + server.getPort());

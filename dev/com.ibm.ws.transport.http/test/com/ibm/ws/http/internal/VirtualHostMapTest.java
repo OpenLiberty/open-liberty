@@ -5,8 +5,8 @@
  *
  * WLP Copyright IBM Corp. 2013, 2017
  *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
 package com.ibm.ws.http.internal;
@@ -40,12 +40,13 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.http.internal.VirtualHostMap.RequestHelper;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.http.HttpContainer;
 import com.ibm.wsspi.http.VirtualHost;
 import com.ibm.wsspi.http.VirtualHostListener;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -97,11 +98,11 @@ public class VirtualHostMapTest {
         // Clear the alternateHostSelector and defaultHost
         Field f = VirtualHostMap.class.getDeclaredField("alternateHostSelector");
         f.setAccessible(true);
-        f.set(null, null);
+        f.set(null, StaticValue.createStaticValue(null));
 
         f = VirtualHostMap.class.getDeclaredField("defaultHost");
         f.setAccessible(true);
-        f.set(null, null);
+        f.set(null, StaticValue.createStaticValue(null));
     }
 
     @After
@@ -129,9 +130,9 @@ public class VirtualHostMapTest {
         setUpOneActivation();
         VirtualHostImpl vhost = new VirtualHostImpl();
 
-        // If there are aliases defined for the default virtual host, 
-        // it stops acting like the "catch-all" host, and starts acting 
-        // like any other virtual host.. 
+        // If there are aliases defined for the default virtual host,
+        // it stops acting like the "catch-all" host, and starts acting
+        // like any other virtual host..
         vhost.activate(mockComponentContext, buildMap("default_host", Arrays.asList(new String[] { "*" })));
         Assert.assertFalse("isDefaultHost should return false (hostAlias defined)", vhost.getActiveConfig().isDefaultHost());
 
@@ -156,7 +157,7 @@ public class VirtualHostMapTest {
                 one(mockVHostReg).setProperties(with(any(Dictionary.class)));
             }
         });
-        // Now, modify the default host configuration to remove the host alias, 
+        // Now, modify the default host configuration to remove the host alias,
         // and try to disable it. Should get a warning that you can't.
         Map<String, Object> map = buildMap("default_host", null);
         map.put("enabled", false);
@@ -174,8 +175,8 @@ public class VirtualHostMapTest {
         setUpOneActivation();
         VirtualHostImpl vhost = new VirtualHostImpl();
 
-        // pass through: should give a warning. 
-        // There are no aliases defined at all, and this is not the default host.. 
+        // pass through: should give a warning.
+        // There are no aliases defined at all, and this is not the default host..
         vhost.activate(mockComponentContext, buildMap("vhost1", null));
         Assert.assertTrue("Should see a warning about missing hostAliases", outputMgr.checkForMessages("CWWKT0025W"));
         vhost.deactivate(mockComponentContext, 0);
@@ -186,8 +187,8 @@ public class VirtualHostMapTest {
         setUpOneActivation();
         VirtualHostImpl vhost = new VirtualHostImpl();
 
-        // activate with a bad alias, that one bad alias should be removed, 
-        // so we should end up with no aliases and another warning.. 
+        // activate with a bad alias, that one bad alias should be removed,
+        // so we should end up with no aliases and another warning..
         vhost.activate(mockComponentContext, buildMap("vhost1", Arrays.asList(new String[] { "*bad" })));
         Assert.assertTrue("Should see a warning about bad use of wildcard", outputMgr.checkForMessages("CWWKT0026W"));
         Assert.assertTrue("Should see a warning about missing hostAliases", outputMgr.checkForMessages("CWWKT0025W"));
@@ -203,8 +204,8 @@ public class VirtualHostMapTest {
         VirtualHostImpl vhost2 = new VirtualHostImpl();
         VirtualHostImpl vhost3 = new VirtualHostImpl();
 
-        // activate with a bad alias, that one bad alias should be removed, 
-        // so we should end up with no aliases and another warning.. 
+        // activate with a bad alias, that one bad alias should be removed,
+        // so we should end up with no aliases and another warning..
         vhost.activate(mockComponentContext, buildMap("vhost1", Arrays.asList(new String[] { "*:80" })));
         vhost2.activate(mockComponentContext, buildMap("vhost2", Arrays.asList(new String[] { "myhost:80" })));
         vhost3.activate(mockComponentContext, buildMap("vhost2", Arrays.asList(new String[] { "other:80" })));
@@ -222,8 +223,8 @@ public class VirtualHostMapTest {
         VirtualHostImpl vhost = new VirtualHostImpl();
         VirtualHostImpl vhost2 = new VirtualHostImpl();
 
-        // activate with a bad alias, that one bad alias should be removed, 
-        // so we should end up with no aliases and another warning.. 
+        // activate with a bad alias, that one bad alias should be removed,
+        // so we should end up with no aliases and another warning..
         vhost.activate(mockComponentContext, buildMap("vhost1", Arrays.asList(new String[] { "myhost:80" })));
         vhost2.activate(mockComponentContext, buildMap("vhost2", Arrays.asList(new String[] { "myhost:80" })));
         Assert.assertTrue("Should see a warning about duplicate aliases", outputMgr.checkForMessages("CWWKT0027W"));
@@ -238,8 +239,8 @@ public class VirtualHostMapTest {
         VirtualHostImpl vhost = new VirtualHostImpl();
         VirtualHostImpl vhost2 = new VirtualHostImpl();
 
-        // activate with a bad alias, that one bad alias should be removed, 
-        // so we should end up with no aliases and another warning.. 
+        // activate with a bad alias, that one bad alias should be removed,
+        // so we should end up with no aliases and another warning..
         vhost.activate(mockComponentContext, buildMap("vhost1", Arrays.asList(new String[] { "*:80" })));
         vhost2.activate(mockComponentContext, buildMap("vhost2", Arrays.asList(new String[] { "*:80" })));
         Assert.assertTrue("Should see a warning about duplicate aliases", outputMgr.checkForMessages("CWWKT0027W"));
@@ -252,7 +253,7 @@ public class VirtualHostMapTest {
         setUpOneActivation();
         VirtualHostImpl vhost = new VirtualHostImpl();
 
-        // add the wildcard alias for the vhost.. 
+        // add the wildcard alias for the vhost..
         vhost.activate(mockComponentContext, buildMap("vhost1", Arrays.asList(new String[] { "*" })));
 
         context.checking(new Expectations() {
@@ -270,9 +271,9 @@ public class VirtualHostMapTest {
             }
         });
 
-        // update the vhost configuration: should remove the good alias, 
-        // and then define a bad alias, that one bad alias should be removed, 
-        // so we should end up with no aliases and another warning.. 
+        // update the vhost configuration: should remove the good alias,
+        // and then define a bad alias, that one bad alias should be removed,
+        // so we should end up with no aliases and another warning..
         vhost.modified(buildMap("vhost1", Arrays.asList(new String[] { "*bad" })));
         Assert.assertTrue("Should see a warning about bad use of wildcard", outputMgr.checkForMessages("CWWKT0026W"));
         Assert.assertTrue("Should see a warning about missing hostAliases", outputMgr.checkForMessages("CWWKT0025W"));
@@ -286,7 +287,7 @@ public class VirtualHostMapTest {
         final HttpEndpointImpl mockEP1 = context.mock(HttpEndpointImpl.class, "allowEP1");
         final HttpEndpointImpl mockEP2 = context.mock(HttpEndpointImpl.class, "allowEP2");
 
-        // define two allowFromEndpoints 
+        // define two allowFromEndpoints
         final ArrayList<String> ep = new ArrayList<String>();
         ep.add("allowEP1");
         ep.add("allowEP2");
@@ -308,7 +309,7 @@ public class VirtualHostMapTest {
             }
         });
 
-        // update the vhost configuration: should remove one allowFromEndpoint, 
+        // update the vhost configuration: should remove one allowFromEndpoint,
         // so we should end up with only one allowFromEndpoint
         ep.remove("allowEP2");
         vhost.modified(buildMapWithEndpoint("vhost1", Arrays.asList(new String[] { "*" }), ep));
@@ -341,7 +342,7 @@ public class VirtualHostMapTest {
             }
         });
         // update the vhost configuration with the identical alias list. This should
-        // not result in a call to update the service properties.. 
+        // not result in a call to update the service properties..
         vhost.modified(buildMap("vhost1", Arrays.asList(new String[] { "*" })));
         vhost.deactivate(mockComponentContext, 0);
     }
@@ -354,8 +355,8 @@ public class VirtualHostMapTest {
         // register the vhost with an alias
         vhost.activate(mockComponentContext, buildMap("vhost1", Arrays.asList(new String[] { "*" })));
 
-        // update the vhost configuration with the identical configuration, 
-        // but toggle the enabled flag.. 
+        // update the vhost configuration with the identical configuration,
+        // but toggle the enabled flag..
         Map<String, Object> newMap = buildMap("vhost1", Arrays.asList(new String[] { "*" }));
         newMap.put(HttpServiceConstants.ENABLED, false);
         vhost.modified(newMap);
@@ -426,11 +427,11 @@ public class VirtualHostMapTest {
         defaulthost.deactivate(mockComponentContext, 0);
         Assert.assertNull("VirtualHost should not be retrieved by port.. (no default virtual host)", VirtualHostMap.findVirtualHost("endpoint", wildcard8080));
 
-        // Stop the endpoint before deactivate: the virtual host will still be in the map.. 
+        // Stop the endpoint before deactivate: the virtual host will still be in the map..
         VirtualHostMap.notifyStopped(mockEndpoint, "*", 8080, false);
         Assert.assertNotNull("VirtualHost is still associated with the port.. (listener stopped)", VirtualHostMap.findVirtualHost("endpoint", helper8080));
 
-        // now deactivate.. 
+        // now deactivate..
         vhost.deactivate(mockComponentContext, 0);
         Assert.assertNull("VirtualHost should not be retrieved by port.. (no virtual hosts)", VirtualHostMap.findVirtualHost("endpoint", helper8080));
         HttpEndpointList.unregisterEndpoint(mockEndpoint);
@@ -505,7 +506,7 @@ public class VirtualHostMapTest {
         // This puts the default_host in as a regular virtual host, not as the default/catch-all.
         defaulthost.activate(mockComponentContext, buildMap("default_host", Arrays.asList(new String[] { "*:8443" })));
 
-        // This endpoint is in the list of registered endpoints already.. 
+        // This endpoint is in the list of registered endpoints already..
         VirtualHostMap.notifyStarted(mockEndpointABC, "a.b.c", 8443, true);
         Assert.assertSame("VirtualHost should be retrieved by port.. ", vhost, VirtualHostMap.findVirtualHost("endpoint", helper8443));
 
@@ -556,10 +557,10 @@ public class VirtualHostMapTest {
         TestRequestHelper helper8080 = new TestRequestHelper("a.b.c", 8080);
         TestRequestHelper helper8443 = new TestRequestHelper("a.b.c", 8443);
 
-        // Clear the alternateHostSelector.. 
+        // Clear the alternateHostSelector..
         Field f = VirtualHostMap.class.getDeclaredField("alternateHostSelector");
         f.setAccessible(true);
-        f.set(null, null);
+        f.set(null, StaticValue.createStaticValue(null));
 
         HttpEndpointList.registerEndpoint(mockEndpoint);
         VirtualHostImpl vhost = new VirtualHostImpl();
@@ -673,7 +674,7 @@ public class VirtualHostMapTest {
         Assert.assertSame("Should retrieve default_host for port ", vhost1, vh);
 
         System.out.println("## 6");
-        // activate of wildcard vhost means removal of port from default host: there is only one endpoint, 
+        // activate of wildcard vhost means removal of port from default host: there is only one endpoint,
         // which means we see a notification of removal of context x
         vhost2.activate(mockComponentContext, buildMap("vhost2", Arrays.asList(new String[] { "*:8443" })));
         VirtualHostMap.dump(System.out);
@@ -789,8 +790,8 @@ public class VirtualHostMapTest {
                 allowing(mockVHostReg).setProperties(with(any(Dictionary.class)));
 
                 // The x context root is added to the default host.
-                // There may be more messages about this context being added or removed 
-                // depending on when vhost2 (*:8443) is added/removed relative to 
+                // There may be more messages about this context being added or removed
+                // depending on when vhost2 (*:8443) is added/removed relative to
                 // the other port (*:8080).
                 atLeast(1).of(mockListener).contextRootAdded("/x", vhost1);
                 atLeast(1).of(mockListener).contextRootRemoved("/x", vhost1);
@@ -803,10 +804,10 @@ public class VirtualHostMapTest {
             }
         });
 
-        // Clear the alternateHostSelector.. 
+        // Clear the alternateHostSelector..
         Field f = VirtualHostMap.class.getDeclaredField("alternateHostSelector");
         f.setAccessible(true);
-        f.set(null, null);
+        f.set(null, StaticValue.createStaticValue(null));
 
         final Runnable r1 = new Runnable() {
             @Override
@@ -817,7 +818,7 @@ public class VirtualHostMapTest {
 
                     waitFor(start);
 
-                    // Addition/removal of VirtualHosts 
+                    // Addition/removal of VirtualHosts
                     vhost1.activate(mockComponentContext, buildMap("default_host", null));
                     sleep(5);
 
@@ -857,14 +858,14 @@ public class VirtualHostMapTest {
         };
 
         Thread t1 = new Thread(r1, "t1");
-        t1.setDaemon(true); // allow JVM to exit if we deadlock... 
+        t1.setDaemon(true); // allow JVM to exit if we deadlock...
         t1.start();
 
         final Runnable r2 = new Runnable() {
             @Override
             public void run() {
                 try {
-                    // Addition/removal of HttpEndpoint ports.. 
+                    // Addition/removal of HttpEndpoint ports..
                     waitFor(start);
 
                     HttpEndpointList.registerEndpoint(mockEndpoint);
@@ -881,7 +882,7 @@ public class VirtualHostMapTest {
 
                     waitFor(middle);
                     // want to be stable when looking up virtual hosts just so we can make sure
-                    // that we can assert a definite answer.. 
+                    // that we can assert a definite answer..
                     VirtualHostImpl result = VirtualHostMap.findVirtualHost("endpoint", new TestRequestHelper("e.f", 8443));
                     Assert.assertSame("VirtualHost 2 should be retrieved with wildcard host", vhost2, result);
 
@@ -908,7 +909,7 @@ public class VirtualHostMapTest {
         };
 
         Thread t2 = new Thread(r2, "t2");
-        t2.setDaemon(true); // allow JVM to exit if we deadlock...  
+        t2.setDaemon(true); // allow JVM to exit if we deadlock...
         t2.start();
 
         // Wait at most 10 minutes for the above to sort itself out (which is a ridiculous amount of time)

@@ -33,9 +33,9 @@ import org.osgi.service.cm.Configuration;
 import org.osgi.service.cm.ConfigurationAdmin;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.wsspi.library.Library;
+
+import test.common.SharedOutputManager;
 
 @SuppressWarnings("unchecked")
 public class InterceptorConfigImplTest {
@@ -103,6 +103,7 @@ public class InterceptorConfigImplTest {
         final Map<String, Object> props = createInterceptorDefaultProps(true);
         mock.checking(new Expectations() {
             {
+                allowing(cc).getBundleContext();
                 allowing(cc).locateService(KEY_CONFIGURATION_ADMIN, configAdminRef);
                 will(returnValue(configAdmin));
 
@@ -129,12 +130,14 @@ public class InterceptorConfigImplTest {
 
         mock.checking(new Expectations() {
             {
+                allowing(cc).getBundleContext();
+
                 allowing(cc).locateService(KEY_CONFIGURATION_ADMIN, configAdminRef);
                 will(returnValue(configAdmin));
 
                 one(configAdmin).listConfigurations("(service.pid=propertiesRef)");
                 will(returnValue(new Configuration[] { config }));
-                one(configAdmin).getConfiguration("propertiesRef");
+                one(configAdmin).getConfiguration("propertiesRef", "");
                 will(returnValue(config));
 
                 one(config).getProperties();

@@ -18,7 +18,8 @@
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.org.jboss.logging;version=latest,\
 	com.ibm.ws.org.jboss.classfilewriter;version=latest,\
-	com.ibm.ws.cdi.shared.weld;version=latest,\
+	com.ibm.ws.cdi.weld;version=latest,\
+        com.ibm.ws.cdi.internal;version=latest,\
 	com.ibm.ws.cdi.2.0.weld;version=latest,\
 	com.ibm.websphere.javaee.jstl.1.2;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\

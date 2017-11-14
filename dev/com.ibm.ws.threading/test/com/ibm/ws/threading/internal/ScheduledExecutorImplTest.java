@@ -28,6 +28,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.ibm.ws.threading.internal.SchedulingHelper.ExpeditedFutureTask;
 import test.common.SharedOutputManager;
 
 public class ScheduledExecutorImplTest {
@@ -75,27 +76,6 @@ public class ScheduledExecutorImplTest {
     public void testScheduleRunnable() throws Exception {
         logger.logp(Level.INFO, cName, "testScheduleRunnable", "Entry.");
 
-        class SimpleRunnable implements Runnable {
-            long scheduledTime;
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.lang.Runnable#run()
-             */
-            @Override
-            public void run() {
-                // Record scheduled time
-                scheduledTime = new Date().getTime();
-
-            }
-
-            long getScheduledTime() {
-                return scheduledTime;
-            }
-
-        };
-
         SimpleRunnable target = new SimpleRunnable();
         long startTime = new Date().getTime();
 
@@ -119,28 +99,6 @@ public class ScheduledExecutorImplTest {
     @Test(timeout = 60000)
     public void testScheduleCallable() throws Exception {
         logger.logp(Level.INFO, cName, "testScheduleCallable", "Entry.");
-
-        class SimpleCallable<V> implements Callable<V> {
-            long scheduledTime;
-
-            long getScheduledTime() {
-                return scheduledTime;
-            }
-
-            /*
-             * (non-Javadoc)
-             * 
-             * @see java.util.concurrent.Callable#call()
-             */
-            @Override
-            public V call() throws Exception {
-                // Record scheduled time
-                scheduledTime = new Date().getTime();
-
-                return null;
-            }
-
-        };
 
         SimpleCallable<?> target = new SimpleCallable<Object>();
         long startTime = new Date().getTime();
@@ -324,4 +282,71 @@ public class ScheduledExecutorImplTest {
 
         logger.logp(Level.INFO, cName, "testScheduleAtFixedRate", "Exit.");
     }
+
+    /**
+     * Ensures that scheduled tasks (both runnable and callable) are expedited
+     */
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void testScheduledTasksAreExpedited() throws Exception {
+        logger.logp(Level.INFO, cName, "testScheduledTasksAreExpedited", "Entry.");
+
+        SimpleRunnable runnable = new SimpleRunnable();
+        ScheduledFuture<?> schedFutureFromRunnable = m_scheduledExecutor.schedule(runnable, 1, TimeUnit.SECONDS);
+        schedFutureFromRunnable.get();
+        ExpeditedFutureTask taskFuturefromRunnable = (ExpeditedFutureTask) ((SchedulingHelper) schedFutureFromRunnable).m_defaultFuture;
+        Assert.assertTrue("Scheduled runnable should be expedited", taskFuturefromRunnable.isExpedited());
+
+        SimpleCallable<?> callable = new SimpleCallable<Object>();
+        ScheduledFuture<?> schedFutureFromCallable = m_scheduledExecutor.schedule(callable, 1, TimeUnit.SECONDS);
+        schedFutureFromCallable.get();
+        ExpeditedFutureTask taskFuturefromCallable = (ExpeditedFutureTask) ((SchedulingHelper) schedFutureFromCallable).m_defaultFuture;
+        Assert.assertTrue("Scheduled callable should be expedited", taskFuturefromCallable.isExpedited());
+
+        logger.logp(Level.INFO, cName, "testScheduledTasksAreExpedited", "Exit.");
+    }
+
+    class SimpleRunnable implements Runnable {
+        long scheduledTime;
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.lang.Runnable#run()
+         */
+        @Override
+        public void run() {
+            // Record scheduled time
+            scheduledTime = new Date().getTime();
+
+        }
+
+        long getScheduledTime() {
+            return scheduledTime;
+        }
+
+    };
+
+    class SimpleCallable<V> implements Callable<V> {
+        long scheduledTime;
+
+        long getScheduledTime() {
+            return scheduledTime;
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see java.util.concurrent.Callable#call()
+         */
+        @Override
+        public V call() throws Exception {
+            // Record scheduled time
+            scheduledTime = new Date().getTime();
+
+            return null;
+        }
+
+    };
+
 }

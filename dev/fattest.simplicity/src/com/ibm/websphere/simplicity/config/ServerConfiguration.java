@@ -28,6 +28,7 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
+import com.ibm.websphere.simplicity.config.wim.LdapFilters;
 import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
 
 /**
@@ -223,6 +224,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "ldapRegistry")
     private ConfigElementList<LdapRegistry> ldapRegistries;
+
+    @XmlElement(name = "activedLdapFilterProperties")
+    private ConfigElementList<LdapFilters> activedLdapFilterProperties;
 
     @XmlAnyAttribute
     private Map<QName, Object> unknownAttributes;
@@ -1039,5 +1043,17 @@ public class ServerConfiguration implements Cloneable {
             this.ldapRegistries = new ConfigElementList<LdapRegistry>();
         }
         return this.ldapRegistries;
+    }
+
+    /**
+     * Get all 'activedLdapFilterProperties' elements.
+     *
+     * @return All {@link LdapFilters} configuration instances.
+     */
+    public ConfigElementList<LdapFilters> getActivedLdapFilterProperties() {
+        if (this.activedLdapFilterProperties == null) {
+            this.activedLdapFilterProperties = new ConfigElementList<LdapFilters>();
+        }
+        return this.activedLdapFilterProperties;
     }
 }

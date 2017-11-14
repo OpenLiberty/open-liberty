@@ -16,7 +16,7 @@ import org.jboss.weld.executor.AbstractExecutorServices;
 import org.jboss.weld.manager.api.ExecutorServices;
 
 /**
- * The original version of the is was in what is now the com.ibm.ws.cdi.shared.weld bundle.
+ * The original version of the is was in what is now the com.ibm.ws.cdi.weld bundle.
  * It has now been split out into this 2.0 version and a corresponding 1.2 version
  */
 public class ExecutorServicesImpl extends AbstractExecutorServices implements ExecutorServices {

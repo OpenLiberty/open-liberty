@@ -18,24 +18,40 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.AccessController;
 import java.util.ResourceBundle;
+import java.util.concurrent.Callable;
 import java.util.zip.ZipFile;
 
 import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
+import com.ibm.ws.staticvalue.StaticValue;
 
 public class Utils {
-    private static File installDir;
-    private static File userDir;
-    private static File outputDir;
-    private static File logDir;
+    private static StaticValue<File> installDir = StaticValue.createStaticValue(null);
+    private static StaticValue<File> userDir = StaticValue.createStaticValue(null);
+    private static StaticValue<File> outputDir = StaticValue.createStaticValue(null);
+    private static StaticValue<File> logDir = StaticValue.createStaticValue(null);
     private static ResourceBundle cmdlineResourceBundle;
 
-    public static File getInstallDir() {
-        if (installDir == null) {
-            URL url = UtilityMain.class.getProtectionDomain().getCodeSource().getLocation();
-            installDir = getFile(url).getParentFile().getParentFile();
+    public static class FileInitializer implements Callable<File> {
+        final File file;
+
+        public FileInitializer(File file) {
+            this.file = file;
         }
 
-        return installDir;
+        @Override
+        public File call() throws Exception {
+            return file;
+        }
+    }
+
+    public static File getInstallDir() {
+        if (installDir.get() == null) {
+            URL url = UtilityMain.class.getProtectionDomain().getCodeSource().getLocation();
+            File file = getFile(url).getParentFile().getParentFile();
+            installDir = StaticValue.mutateStaticValue(installDir, new FileInitializer(file));
+        }
+
+        return installDir.get();
     }
 
     public static File getUserDir() {
@@ -44,26 +60,28 @@ public class Utils {
 
         // 1st check in environment variable is set.  This is the normal case
         // when the server is started from the command line.
-        if (userDir == null) {
+        if (userDir.get() == null) {
+            File resultDir = null;
             userDirLoc = System.getenv(BootstrapConstants.ENV_WLP_USER_DIR);
             if (userDirLoc != null) {
-                userDir = new File(userDirLoc);
+                resultDir = new File(userDirLoc);
             } else {
 
                 // PI20344: Check if the Java property is set, which is the normal case when
                 // the server is embedded; i.e. they didn't launch it from the command line.
                 userDirLoc = System.getProperty(BootstrapConstants.ENV_WLP_USER_DIR);
                 if (userDirLoc != null) {
-                    userDir = new File(userDirLoc);
+                    resultDir = new File(userDirLoc);
                 } else {
                     File installDir = Utils.getInstallDir();
                     if (installDir != null) {
-                        userDir = new File(installDir, "usr");
+                        resultDir = new File(installDir, "usr");
                     }
                 }
             }
+            userDir = StaticValue.mutateStaticValue(userDir, new FileInitializer(resultDir));
         }
-        return userDir;
+        return userDir.get();
     }
 
     /**
@@ -88,8 +106,8 @@ public class Utils {
 
         // 1st check in environment variable is set.  This is the normal case
         // when the server is started from the command line.
-        if (logDir == null) {
-
+        if (logDir.get() == null) {
+            File resultDir = null;
             try {
                 logDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>() {
                     @Override
@@ -102,17 +120,19 @@ public class Utils {
 
             //outputDirLoc = System.getenv(BootstrapConstants.ENV_WLP_OUTPUT_DIR);
             if (logDirLoc != null) {
-                logDir = new File(logDirLoc);
+                resultDir = new File(logDirLoc);
             } else {
                 // PI20344: Check if the Java property is set, which is the normal case when
                 // the server is embedded; i.e. they didn't launch it from the command line.
                 logDirLoc = System.getProperty(BootstrapConstants.ENV_LOG_DIR);
                 if (logDirLoc != null) {
-                    logDir = new File(logDirLoc);
+                    resultDir = new File(logDirLoc);
                 }
             }
+            logDir = StaticValue.mutateStaticValue(logDir, new FileInitializer(resultDir));
         }
-        return logDir;
+
+        return logDir.get();
     }
 
     /**
@@ -128,7 +148,7 @@ public class Utils {
 
         // 1st check in environment variable is set.  This is the normal case
         // when the server is started from the command line.
-        if (outputDir == null) {
+        if (outputDir.get() == null) {
 
             try {
                 outputDirLoc = AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<String>() {
@@ -141,27 +161,29 @@ public class Utils {
             }
 
             //outputDirLoc = System.getenv(BootstrapConstants.ENV_WLP_OUTPUT_DIR);
+            File resultDir = null;
             if (outputDirLoc != null) {
-                outputDir = new File(outputDirLoc);
+                resultDir = new File(outputDirLoc);
             } else {
                 // PI20344: Check if the Java property is set, which is the normal case when
                 // the server is embedded; i.e. they didn't launch it from the command line.
                 outputDirLoc = System.getProperty(BootstrapConstants.ENV_WLP_OUTPUT_DIR);
                 if (outputDirLoc != null) {
-                    outputDir = new File(outputDirLoc);
+                    resultDir = new File(outputDirLoc);
                 } else {
                     File userDir = Utils.getUserDir();
                     if (userDir != null) {
                         if (isClient) {
-                            outputDir = new File(userDir, "clients");
+                            resultDir = new File(userDir, "clients");
                         } else {
-                            outputDir = new File(userDir, "servers");
+                            resultDir = new File(userDir, "servers");
                         }
                     }
                 }
             }
+            outputDir = StaticValue.mutateStaticValue(outputDir, new FileInitializer(resultDir));
         }
-        return outputDir;
+        return outputDir.get();
     }
 
     /**
@@ -314,16 +336,16 @@ public class Utils {
      * @param installDir
      */
     public static void setInstallDir(File installDir) {
-        Utils.installDir = installDir;
+        Utils.installDir = StaticValue.mutateStaticValue(Utils.installDir, new FileInitializer(installDir));
     }
 
     /**
      * This method should be called by common install kernel only.
      *
-     * @param installDir
+     * @param userDir
      */
     public static void setUserDir(File userDir) {
-        Utils.userDir = userDir;
+        Utils.userDir = StaticValue.mutateStaticValue(Utils.userDir, new FileInitializer(userDir));
     }
 
     /**

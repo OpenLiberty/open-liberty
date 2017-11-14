@@ -121,8 +121,11 @@ public class FATOpentracingService extends Application implements FATOpentracing
     /**
      * <p>Start a new child span of the active span.</p>
      *
-     * <p>The child span must be finish using {@link #finishChildSpan}
+     * <p>The child span must be finished using {@link #finishChildSpan}
      * before completing the service request which created the span.</p>
+     * 
+     * If there is no active span, the newly created span is made the
+     * active span.
      *
      * @param spanName The name to give the new child span.
      *
@@ -141,8 +144,13 @@ public class FATOpentracingService extends Application implements FATOpentracing
         } else {
             ActiveSpan activeSpan = useTracer.activeSpan();
             Tracer.SpanBuilder spanBuilder = useTracer.buildSpan(spanName);
-            spanBuilder.asChildOf( activeSpan.context() );
+            if (activeSpan != null) {
+                spanBuilder.asChildOf( activeSpan.context() );
+            }
             childSpan = spanBuilder.startManual();
+            if (activeSpan == null) {
+                useTracer.makeActive(childSpan);
+            }
         }
 
         traceReturn(methodName, "ChildSpan", childSpan);
@@ -456,5 +464,14 @@ public class FATOpentracingService extends Application implements FATOpentracing
 
         traceReturn(methodName, "FinalResponse", finalResponse);
         return finalResponse;
+    }
+
+    @GET
+    @Path(GET_EXCLUDE_TEST_PATH)
+    @Produces(MediaType.TEXT_PLAIN)
+    public String excludeTest(@QueryParam(RESPONSE_PARAM_NAME) String responseText) {
+        String methodName = "excludeTest";
+        traceEnterReturn(methodName, "ResponseText", responseText);
+        return responseText;
     }
 }

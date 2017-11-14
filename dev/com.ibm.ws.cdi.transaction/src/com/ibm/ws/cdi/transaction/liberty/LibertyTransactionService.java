@@ -18,7 +18,6 @@ import javax.transaction.Transaction;
 import javax.transaction.TransactionManager;
 import javax.transaction.UserTransaction;
 
-import com.ibm.ws.cdi.interfaces.TransactionService;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
@@ -29,14 +28,14 @@ import com.ibm.tx.jta.impl.RegisteredSyncs;
 import com.ibm.tx.jta.impl.TransactionImpl;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.internal.interfaces.TransactionService;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 
 /**
  * DS to provide transaction services to cdi; shared across all threads and applications
  */
-@Component(
-                property = { "service.vendor=IBM" })
+@Component(property = { "service.vendor=IBM" })
 public class LibertyTransactionService implements TransactionService {
 
     private static final TraceComponent TC = Tr.register(LibertyTransactionService.class);
@@ -46,7 +45,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /**
      * Called by DS to activate this service
-     * 
+     *
      * @param compcontext the context of this component
      */
     protected void activate(ComponentContext compcontext) {
@@ -59,7 +58,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /**
      * Called by DS to deactivate this service
-     * 
+     *
      * @param compcontext the context of this component
      */
     protected void deactivate(ComponentContext compcontext) {
@@ -72,7 +71,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /**
      * Called by DS to set the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     @Reference(name = "userTransaction", service = UserTransaction.class, policy = ReferencePolicy.DYNAMIC)
@@ -82,7 +81,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /**
      * Called by DS to remove the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     protected void unsetUserTransaction(ServiceReference<UserTransaction> ref) {
@@ -91,7 +90,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /**
      * Called by DS to set the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     @Reference(name = "transactionManager", service = TransactionManager.class, policy = ReferencePolicy.DYNAMIC)
@@ -101,7 +100,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /**
      * Called by DS to remove the service reference
-     * 
+     *
      * @param ref the reference from DS
      */
     protected void unsetTransactionManager(ServiceReference<TransactionManager> ref) {
@@ -145,7 +144,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jboss.weld.bootstrap.api.Service#cleanup()
      */
     @Override
@@ -158,7 +157,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jboss.weld.transaction.spi.TransactionServices#isTransactionActive()
      */
     @Override
@@ -180,7 +179,7 @@ public class LibertyTransactionService implements TransactionService {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.jboss.weld.transaction.spi.TransactionServices#registerSynchronization(javax.transaction.Synchronization)
      */
     @Override

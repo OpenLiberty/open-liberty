@@ -26,13 +26,13 @@ Bundle-Description: JavaMail 1.6 API; This feature allows applications to utiliz
 
 WS-TraceGroup: Mail
 
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"   
+
 ## Resources that were moved from the original javax.mail.jar to
 ## the new feature jar, included the mailcap file which is needed
 ## for the app-resources header
 
-
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.6}!/META-INF/mailcap, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.6}!/META-INF/gfprobe-provider.xml, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.6}!/META-INF/javamail.charset.map, \
