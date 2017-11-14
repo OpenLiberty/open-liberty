@@ -292,14 +292,14 @@ cdi.ambiguous.artifact.names=CWWKY0041W: The batch container is running with a C
 cdi.ambiguous.artifact.names.explanation=When the batch runtime loads artifacts by using the CDI engine, the batch properties (@BatchProperty) and batch contexts (JobContext and StepContext) are injected, and the full capabilities of CDI are made available. These capabilities include the injection of other managed beans according to qualifiers and all other features of the CDI programming model. When the batch runtime loads artifacts without using the CDI engine, it only injects the batch properties and contexts. Because it is not a CDI-managed bean in this path, no other injections or other features of the CDI programming model are available within that batch artifact. This message indicates that although the server is configured so that the CDI feature is active, the batch artifact cannot be loaded as a CDI-managed bean because the 'ref' attribute value that corresponds to this artifact reference in XML does not point to a single, unambiguous CDI-managed bean.
 cdi.ambiguous.artifact.names.useraction=Add the @Dependent annotation or another suitable bean-defining annotation to your batch artifact. Alternatively, you can set bean discovery mode to 'all' in the beans.xml file, although this solution might slow down your application. If all of the ambiguous artifacts are not needed, you can also remove the ambiguous 'ref' attributes from the application so that only a single, unambiguous reference remains.
 
-#{0} job/partition
+#{0} job/flow/partition
 #{1} The JSL
 display.resolved.jsl=CWWKY0042I:  The resolved JSL for this {0} is \n {1}.
-display.resolved.jsl.explanation=The JSL used for the job or partition is displayed after parameters and properties are resolved.  The job JSL will not resolve partition plan properties.  Look for this message in the individual partition logs for partition plan property resolution.
+display.resolved.jsl.explanation=The JSL used for the job or partition is displayed after parameters and properties are resolved.  The job JSL does not resolve partition plan properties.  Look for this message in the individual partition logs for partition plan property resolution.
 display.resolved.jsl.useraction=Verify the JSL and parameter resolution is as expected.
 
 #{0} The JSL
 display.unresolved.jsl=CWWKY0043I:  The unresolved JSL for this job is \n {0}.
 display.unresolved.jsl.explanation=The JSL used for the job is displayed before parameters and properties are resolved.
-display.unresolved.jsl.useraction=Verify the JSL is as expected.
+display.unresolved.jsl.useraction=Ensure that the file name for the JSL is correct and verify that the source of the JSL contains the correct JSL.
 

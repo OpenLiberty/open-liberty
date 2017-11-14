@@ -17,7 +17,6 @@
 package com.ibm.jbatch.container.controller.impl;
 
 import java.io.PrintWriter;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.List;
@@ -26,13 +25,6 @@ import java.util.logging.Logger;
 
 import javax.batch.operations.JobExecutionNotRunningException;
 import javax.batch.runtime.BatchStatus;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import org.w3c.dom.Node;
-import org.w3c.dom.bootstrap.DOMImplementationRegistry;
-import org.w3c.dom.ls.DOMImplementationLS;
-import org.w3c.dom.ls.LSSerializer;
-import org.xml.sax.InputSource;
 
 import com.ibm.jbatch.container.IController;
 import com.ibm.jbatch.container.IThreadRootController;
@@ -145,8 +137,7 @@ public class WorkUnitThreadControllerImpl implements IThreadRootController {
                 // Print the resolved JSL for the job or flow
                 JSLJob jslJob = jobNavigator.getRootModelElement();
                 ModelSerializer<JSLJob> ms = ModelSerializerFactory.createJobModelSerializer();
-                String xml = ms.serializeModel(jslJob);
-                String prettyXml = formatXML(xml);
+                String prettyXml = ms.prettySerializeModel(jslJob);
 
                 // Set the type.  Partitions are handled elsewhere, step doesn't go through here
                 String type = "job";
@@ -165,25 +156,6 @@ public class WorkUnitThreadControllerImpl implements IThreadRootController {
             logger.fine("Won't start work unit because status is currently : " + batchStatus);
             return false;
         }
-    }
-
-    private String formatXML(String input) {
-        String returnString;
-        try {
-            final InputSource src = new InputSource(new StringReader(input));
-            final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src).getDocumentElement();
-            final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
-            final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
-            final LSSerializer writer = impl.createLSSerializer();
-            writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
-            writer.getDomConfig().setParameter("xml-declaration", false); /* skip XML declare */
-            returnString = writer.writeToString(document);
-            return returnString;
-        } catch (Exception e) {
-            // Oh well, just return it as one line
-            returnString = input;
-        }
-        return returnString;
     }
 
     public ExecutionStatus executeWorkUnit() {
