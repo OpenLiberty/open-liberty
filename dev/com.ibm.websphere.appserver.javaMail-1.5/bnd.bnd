@@ -14,5 +14,6 @@
 
 -dependson: \
 	com.ibm.ws.javamail;version=latest, \
+	com.ibm.ws.javamail.config;version=latest,\
 	com.ibm.websphere.javaee.mail.1.5;version=latest, \
 	com.ibm.websphere.appserver.thirdparty.mail;version=latest

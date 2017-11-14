@@ -8,12 +8,13 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/liberty-release.props
+-include= ~../cnf/resources/bnd/bundle.props
 
--nobundles=true
+bVersion=1.5
+bSymbolicName=com.ibm.ws.javamail.config
 
--dependson: \
-	com.ibm.ws.javamail.1.6;version=latest, \
-	com.ibm.ws.javamail.config;version=latest,\
-	com.ibm.websphere.javaee.mail.1.6;version=latest, \
-	com.ibm.websphere.appserver.thirdparty.mail-1.6;version=latest
+Bundle-Name: JavaMail Common Config
+Bundle-SymbolicName: com.ibm.ws.javamail.config
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
