@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi.liberty;
+package com.ibm.ws.cdi.config.liberty;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -21,12 +21,13 @@ import org.osgi.service.component.annotations.Modified;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIContainerConfig;
 
 /**
  * DS for custom CDI properties. The active instance can either be retrieved through DS or through a static getter method.
  */
-@Component(name = "com.ibm.ws.cdi12.cdiContainer", service = CDI12ContainerConfig.class, configurationPid = "com.ibm.ws.cdi12.cdiContainer", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
-public class CDI12ContainerConfig {
+@Component(name = "com.ibm.ws.cdi12.cdiContainer", service = CDIContainerConfig.class, configurationPid = "com.ibm.ws.cdi12.cdiContainer", configurationPolicy = ConfigurationPolicy.REQUIRE, immediate = true, property = { "service.vendor=IBM" })
+public class CDI12ContainerConfig implements CDIContainerConfig {
 
     /*-
      * This example demonstrates how to add a new property.
@@ -138,10 +139,11 @@ public class CDI12ContainerConfig {
      *
      * @return true if the value set in the server configuration for the property of enableImplicitBeanArchives is false
      */
+    @Override
     public boolean isImplicitBeanArchivesScanningDisabled() {
         boolean enableImplicitBeanArchivesValue = (Boolean) this.properties.get("enableImplicitBeanArchives");
 
-        if (tc.isWarningEnabled() && ! hasLoggedNoImplicitMsg && ! enableImplicitBeanArchivesValue) {
+        if (tc.isWarningEnabled() && !hasLoggedNoImplicitMsg && !enableImplicitBeanArchivesValue) {
             hasLoggedNoImplicitMsg = true;
             Tr.warning(tc, "implicit.bean.scanning.disabled.CWOWB1009W");
         }

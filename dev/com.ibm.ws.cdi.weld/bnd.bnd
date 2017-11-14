@@ -21,8 +21,7 @@ javac.source: 1.7
 javac.target: 1.7
 
 -dsannotations-inherit: true
--dsannotations: com.ibm.ws.cdi.liberty.CDI12ContainerConfig,\
-  com.ibm.ws.cdi.impl.DefaultSecurityService,\
+-dsannotations: com.ibm.ws.cdi.impl.DefaultSecurityService,\
   com.ibm.ws.cdi.liberty.CDIRuntimeImpl,\
   com.ibm.ws.cdi.impl.managedobject.CDIManagedObjectService,\
   com.ibm.ws.cdi.impl.inject.InjectProcessorProvider
@@ -81,9 +80,6 @@ Import-Package: !org.scannotation.archiveiterator, \
                 org.jboss.weld.util.collections;version="[2.4,4)",\
                 *
  
-Include-Resource: \
-  OSGI-INF=resources/OSGI-INF
-  
 WS-TraceGroup: JCDI
 
 -buildpath.bootclasspath: \
