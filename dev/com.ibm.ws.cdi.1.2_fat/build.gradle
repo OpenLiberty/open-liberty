@@ -14,14 +14,32 @@ addRequiredLibraries {
   doLast {
     configurations {
       commons
+      derbyEmbedded
+      slf4jjdk
+      deltaspike
     }
     dependencies {
       commons 'commons-logging:commons-logging:1.1.3', 'commons-codec:commons-codec:1.6'
+      derbyEmbedded 'org.apache.derby:derby:10.11.1.1'
+      slf4jjdk 'org.slf4j:slf4j-jdk14:1.7.7', 'org.slf4j:slf4j-api:1.7.7'
+      deltaspike 'org.apache.deltaspike.core:deltaspike-core-api:1.5.0'
     }
     copy {
       from configurations.commons
       into "${buildDir}/autoFVT/lib/"
+    } 
+    copy {
+      from configurations.derbyEmbedded
+      into "${buildDir}/autoFVT/publish/shared/resources/derby/"
+    } 
+    copy {
+      from configurations.slf4jjdk
+      into "${buildDir}/autoFVT/lib/"
+    } 
+    copy {
+      from configurations.deltaspike
+      into "${buildDir}/autoFVT/lib/"
     }
   }
 }
-	
+

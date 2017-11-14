@@ -29,6 +29,7 @@ import org.jboss.shrinkwrap.api.asset.FileAsset;
 import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.ResourceAdapterArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -175,10 +176,15 @@ public class FATSuite {
 
     static{
         
+        JavaArchive jarInRar172 = ShrinkWrap.create(JavaArchive.class,"jarInRar.jar")
+                        .addClass("com.ibm.ws.cdi12.fat.jarinrar.rar.Amigo")
+                        .addClass("com.ibm.ws.cdi12.fat.jarinrar.rar.TestResourceAdapter")
+                        .add(new FileAsset(new File("test-applications/jarInRar.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
 
-        JavaArchive derbyJar = ShrinkWrap.create(ZipImporter.class,"derby.jar")
-                        .importFrom(new File("test-applications/PreBuildArchives.jar/resources/derby.jar"))
-                        .as(JavaArchive.class);        
+        JavaArchive jarInRarEjb173 = ShrinkWrap.create(JavaArchive.class,"jarInRarEjb.jar")
+                        .addClass("com.ibm.ws.cdi12.fat.jarinrar.ejb.MySingletonStartupBean")
+                        .add(new FileAsset(new File("test-applications/jarInRarEjb.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml")
+                        .addAsManifestResource(new File("test-applications/jarInRarEjb.jar/resources/META-INF/MANIFEST.MF"));     
 
         //This will do until we have gradle code to build bundles. 
         JavaArchive helloWorldBundle = ShrinkWrap.create(ZipImporter.class,"cdi.helloworld.extension_1.0.0.jar")
@@ -231,14 +237,9 @@ public class FATSuite {
                         .addClass("vistest.appClientAsWarLib.dummy.DummyMain")
                         .addClass("vistest.appClientAsWarLib.AppClientAsWarLibTargetBean")
                         .addClass("vistest.appClientAsWarLib.AppClientAsWarLibTestingBean");
-//This test requires a duplicate class, but shrinkwrap builds out of a common classpath.
-//So I am going to replace this with a precompiled jar.
-//JavaArchive maskedClassEjb31 = ShrinkWrap.create(JavaArchive.class,"maskedClassEjb.jar")
-//                        .addClass("test.Type1");
-//                        .addClass("beans.SessionBean1");
-        JavaArchive maskedClassEjb31 = ShrinkWrap.create(ZipImporter.class,"maskedClassEjb.jar")
-                        .importFrom(new File("test-applications/PreBuildArchives.jar/resources/maskedClassEjb.jar"))
-                        .as(JavaArchive.class);
+        JavaArchive maskedClassEjb31 = ShrinkWrap.create(JavaArchive.class,"maskedClassEjb.jar")
+                        .add(new FileAsset(new File("build/classes/test/Type1RenameMeWhenImportingToShrinkwrap.class")), "/test/Type1.class")
+                        .addClass("beans.SessionBean1");
         JavaArchive visTestEjb10 = ShrinkWrap.create(JavaArchive.class,"visTestEjb.jar")
                         .addClass("vistest.ejb.dummy.DummySessionBean")
                         .addClass("vistest.ejb.EjbTargetBean")
@@ -327,7 +328,6 @@ public class FATSuite {
                         .addClass("vistest.warLib.WarLibTargetBean");
         JavaArchive TestValidatorInJar20 = ShrinkWrap.create(JavaArchive.class,"TestValidatorInJar.jar")
                         .addClass("com.ibm.cdi.test.basic.injection.jar.AppScopedBean");
-        JavaArchive jarInRarEjb145 = ShrinkWrap.create(JavaArchive.class,"jarInRarEjb.jar");
         JavaArchive visTestEjbLib23 = ShrinkWrap.create(JavaArchive.class,"visTestEjbLib.jar")
                         .addClass("vistest.ejbLib.EjbLibTargetBean")
                         .addClass("vistest.ejbLib.EjbLibTestingBean");
@@ -412,7 +412,6 @@ public class FATSuite {
                         .addClass("com.ibm.ws.cdi12.test.annotatedBeansXML.DependentScopedBean")
                         .addClass("com.ibm.ws.cdi12.test.annotatedBeansXML.UnannotatedClassInAnnotatedModeBeanArchive")
                         .add(new FileAsset(new File("test-applications/archiveWithAnnotatedModeBeansXML.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml");
-        JavaArchive jarInRar76 = ShrinkWrap.create(JavaArchive.class,"jarInRar.jar");
         JavaArchive archiveWithImplicitBeans118 = ShrinkWrap.create(JavaArchive.class,"archiveWithImplicitBeans.jar")
                         .addClass("com.ibm.ws.cdi12.test.implicit.beans.StereotypedBean")
                         .addClass("com.ibm.ws.cdi12.test.implicit.beans.MyExtendedScopedBean")
@@ -646,11 +645,7 @@ public class FATSuite {
                         .addClass("com.ibm.ws.cdi12.fat.injectparameters.TestUtils")
                         .addClass("com.ibm.ws.cdi12.fat.injectparameters.TestCdiBean")
                         .addClass("com.ibm.ws.cdi12.fat.injectparameters.TestCdiBeanServlet");
-
-/*
-While gradle builds this correctly the libaries are not on the classpath when ShrinkWrap is running
-So the classloader fails to add MyScheduler. So I will use a prebuilt war. 
-WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTest.war")
+        WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTest.war")
                         .addClass("com.ibm.ws.cdi.deltaspike.scheduler.GlobalResultHolder")
                         .addClass("com.ibm.ws.cdi.deltaspike.scheduler.RequestScopedNumberProvider")
                         .addClass("com.ibm.ws.cdi.deltaspike.scheduler.MyScheduler")
@@ -666,12 +661,6 @@ WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTe
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-cdictrl-api-1.5.0.jar")), "/WEB-INF/lib/deltaspike-cdictrl-api-1.5.0.jar")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-core-api-1.5.0.jar")), "/WEB-INF/lib/deltaspike-core-api-1.5.0.jar")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
- */
-        WebArchive deltaspikeTest137 = ShrinkWrap.create(ZipImporter.class,"deltaspikeTest.war")
-                        .importFrom(new File("test-applications/PreBuildArchives.jar/resources/deltaspikeTest.war"))
-                        .as(WebArchive.class);
-
-
         WebArchive helloWorldExtensionTest100 = ShrinkWrap.create(WebArchive.class, "helloWorldExtensionTest.war")
                         .addClass("cdi12.helloworld.extension.test.HelloWorldExtensionTestServlet")
                         .addClass("cdi12.helloworld.extension.test.HelloWorldExtensionBean")
@@ -1064,6 +1053,12 @@ WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTe
                         .addClass("com.ibm.ws.cdi12.test.priority.WarDecorator")
                         .addClass("com.ibm.ws.cdi12.test.priority.GlobalPriorityTestServlet")
                         .add(new FileAsset(new File("test-applications/globalPriorityWebApp.war/resources/WEB-INF/beans.xml")), "/WEB-INF/beans.xml");
+
+
+        ResourceAdapterArchive jarInRar173 = ShrinkWrap.create(ResourceAdapterArchive.class,"jarInRar.rar")
+                        .addAsLibrary(jarInRar172)
+                        .add(new FileAsset(new File("test-applications/jarInRar.rar/resources/META-INF/ra.xml")), "/META-INF/ra.xml");
+
         EnterpriseArchive cdi12helloworldtest106 = ShrinkWrap.create(EnterpriseArchive.class,"cdi12helloworldtest.ear")
                         .add(new FileAsset(new File("test-applications/cdi12helloworldtest.ear/resources/META-INF/application.xml")), "/META-INF/application.xml")
                         .addAsModule(cdi12helloworldtest60);
@@ -1204,11 +1199,9 @@ WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTe
                         .addAsModule(warLibAccessBeansInWar2132);
         EnterpriseArchive DeltaSpikeTCCL97 = ShrinkWrap.create(EnterpriseArchive.class,"DeltaSpikeTCCL.ear");
         
-        //When I tried to build a rar I got a class not found for the ShrinkWrap class, so I am using a pre-built application. 
-        EnterpriseArchive jarInRarEar = ShrinkWrap.create(ZipImporter.class,"jarInRar.ear")
-                        .importFrom(new File("test-applications/PreBuildArchives.jar/resources/jarInRar.ear"))
-                        .as(EnterpriseArchive.class);
-
+        EnterpriseArchive jarInRarEar = ShrinkWrap.create(EnterpriseArchive.class,"jarInRar.ear")
+                        .addAsModule(jarInRarEjb173)
+                        .addAsModule(jarInRar173);
 
         exportAppToServer("aparServer", vetoedEJBStartup99);
         exportAppToServer("cdi12AfterTypeDiscoveryServer", afterTypeDiscoveryApp30, "/apps");
@@ -1291,9 +1284,7 @@ WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTe
         exportAppToClient("cdiClientAdvanced", appClientAdvanced151, "/apps");
         exportAppToClient("visTestClient", visTest107, "/apps");
         
-        exportAppToShared(derbyJar, "resources/derby/");
-        
-        exportBundle(helloWorldBundle);
+        exportBundle(helloWorldBundle); 
 
 
     }
