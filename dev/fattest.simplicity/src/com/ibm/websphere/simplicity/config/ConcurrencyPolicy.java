@@ -45,11 +45,11 @@ public class ConcurrencyPolicy extends ConfigElement {
         return maxWaitForEnqueue;
     }
 
-    public String runIfQueueFull() {
+    public String getRunIfQueueFull() {
         return runIfQueueFull;
     }
 
-    public String startTimeout() {
+    public String getStartTimeout() {
         return startTimeout;
     }
 
