@@ -982,7 +982,9 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             result = false;
         }
         authResult.setTargetRealm(authResult.realm != null ? authResult.realm : collabUtils.getUserRegistryRealm(securityServiceRef));
-        webReply.writeResponse(resp);
+        if (!resp.isCommitted()) {
+            webReply.writeResponse(resp);
+        }
         Audit.audit(Audit.EventID.SECURITY_AUTHN_01, webRequest, authResult, Integer.valueOf(webReply.getStatusCode()));
         return result;
     }
