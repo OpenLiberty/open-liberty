@@ -33,6 +33,7 @@ import javax.interceptor.InvocationContext;
 import javax.security.auth.message.MessageInfo;
 
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 
 import javax.servlet.RequestDispatcher;
@@ -84,6 +85,7 @@ public class LoginToContinueInterceptorTest {
     private ReferrerURLCookieHandler ruh;
     private WebAppSecurityConfig wasc;
     private HttpMessageContext hmc;
+    private AuthenticationParameters ap;
     private MessageInfo mi;
     private HttpServletRequest req;
     private HttpServletResponse res;
@@ -135,6 +137,7 @@ public class LoginToContinueInterceptorTest {
         wasc = mockery.mock(WebAppSecurityConfig.class);
         ruh = mockery.mock(ReferrerURLCookieHandler.class);
         hmc = mockery.mock(HttpMessageContext.class);
+        ap = mockery.mock(AuthenticationParameters.class);
         mi = mockery.mock(MessageInfo.class);
         wr = mockery.mock(WebRequest.class);
         smd = mockery.mock(SecurityMetadata.class);
@@ -308,7 +311,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withAuthParams();
         withELP(elpi, elValue, Boolean.FALSE).withNoELP(elpm);
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -333,7 +336,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE);
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withAuthParams();
         withELP(elpm, elValue, Boolean.FALSE).withNoELP(elpi);
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -354,7 +357,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withNoELP();
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withNoELP().withAuthParams();
 
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -375,7 +378,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP();
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
 
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -395,7 +398,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP();
+        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
     }
@@ -413,7 +416,7 @@ public class LoginToContinueInterceptorTest {
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl);
+        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams();
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
@@ -431,7 +434,7 @@ public class LoginToContinueInterceptorTest {
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl ="http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl);
+        withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams();
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
@@ -552,6 +555,19 @@ public class LoginToContinueInterceptorTest {
                 one(wr).getSecurityMetadata();
                 will(returnValue(smd));
                 one(smd).setLoginConfiguration(with(any(LoginConfiguration.class)));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withAuthParams() {
+        mockery.checking(new Expectations() {
+            {
+                one(hmc).getAuthParameters();
+                will(returnValue(ap));
+                one(ap).isNewAuthentication();
+                will(returnValue(false));
             }
         });
         return this;

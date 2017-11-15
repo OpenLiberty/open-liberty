@@ -28,6 +28,7 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 import javax.security.auth.message.MessageInfo;
 import javax.security.enterprise.AuthenticationStatus;
+import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import javax.servlet.RequestDispatcher;
@@ -96,15 +97,22 @@ public class LoginToContinueInterceptor {
                 Object[] params = ic.getParameters();
                 HttpServletRequest req = (HttpServletRequest) params[0];
                 HttpServletResponse res = (HttpServletResponse) params[1];
+                HttpMessageContext hmc = (HttpMessageContext) params[2];
+                AuthenticationParameters authParams = hmc.getAuthParameters();
                 Class hamClass = getClass(ic);
-                if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
-                    // need to redirect.
-                    HttpMessageContext mc = (HttpMessageContext) params[2];
-                    result = gotoLoginPage(mpp.getAuthMechProperties(hamClass), req, res, mc);
-                } else if (result.equals(AuthenticationStatus.SUCCESS)) {
-                    boolean isCustomForm = isCustomForm(hamClass);
-                    // redirect to the original url.
-                    postLoginProcess(req, res, isCustomForm);
+                if (!isNewAuth(authParams)) {
+                    if (result.equals(AuthenticationStatus.SEND_CONTINUE)) {
+                        // need to redirect.
+                        result = gotoLoginPage(mpp.getAuthMechProperties(hamClass), req, res, hmc);
+                    } else if (result.equals(AuthenticationStatus.SUCCESS)) {
+                        boolean isCustomForm = isCustomForm(hamClass);
+                        // redirect to the original url.
+                        postLoginProcess(req, res, isCustomForm);
+                    } else if (result.equals(AuthenticationStatus.SEND_FAILURE)) {
+                        if(isCustomForm(hamClass)) {
+                            rediectErrorPage(mpp.getAuthMechProperties(hamClass), req, res);
+                        }
+                    }
                 }
             } else {
                 Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
@@ -140,7 +148,7 @@ public class LoginToContinueInterceptor {
             }
         } else {
             res.setStatus(HttpServletResponse.SC_FOUND);
-            String loginUrl = getLoginUrl(req, loginPage);
+            String loginUrl = getUrl(req, loginPage);
             res.sendRedirect(res.encodeURL(loginUrl));
         }
         return status;
@@ -211,6 +219,16 @@ public class LoginToContinueInterceptor {
         res.setStatus(HttpServletResponse.SC_FOUND);
     }
 
+
+    protected void rediectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
+        String errorPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE);
+        String errorUrl = getUrl(req, errorPage);
+// TODO: for the beta, use sendRedirect in order to avoid the status is overwritten by WebCollaborator.
+//        res.setHeader("Location", res.encodeURL(errorUrl));
+//        res.setStatus(HttpServletResponse.SC_FOUND);
+        res.sendRedirect(res.encodeURL(errorUrl));
+    }
+
     /**
      * Always be redirecting to a stored req with the web app... strip any initial slash
      *
@@ -251,13 +269,13 @@ public class LoginToContinueInterceptor {
         }
     }
 
-    private String getLoginUrl(HttpServletRequest req, String loginPage) {
+    private String getUrl(HttpServletRequest req, String uri) {
         StringBuilder builder = new StringBuilder(req.getRequestURL());
         if (tc.isDebugEnabled())
-            Tr.debug(tc, "getFormURL : loginPage : " + loginPage, ", requestURL : " + builder);
+            Tr.debug(tc, "getURL : uri : " + uri, ", requestURL : " + builder);
         int hostIndex = builder.indexOf("//");
         int contextIndex = builder.indexOf("/", hostIndex + 2);
-        builder.replace(contextIndex, builder.length(), normalizeURL(loginPage, req.getContextPath()));
+        builder.replace(contextIndex, builder.length(), normalizeURL(uri, req.getContextPath()));
         return builder.toString();
     }
 
@@ -315,6 +333,14 @@ public class LoginToContinueInterceptor {
             return modulePropertiesProivderInstance.get();
         }
         return null;
+    }
+
+    private boolean isNewAuth(AuthenticationParameters authParams) {
+        boolean isNewAuth = false;
+        if (authParams != null) {
+            isNewAuth = authParams.isNewAuthentication();
+        }
+        return isNewAuth;
     }
 
     @SuppressWarnings("rawtypes")
