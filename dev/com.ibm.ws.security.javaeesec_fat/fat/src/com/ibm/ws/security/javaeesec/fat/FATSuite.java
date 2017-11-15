@@ -19,9 +19,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
+//                CustomFormHttpAuthenticationMechanismTest.class,
                 HttpAuthenticationMechanismTest.class,
                 RememberMeTest.class,
-                AutoApplySessionTest.class
+                AutoApplySessionTest.class,
+                FormHttpAuthenticationMechanismTest.class
+
 })
 
 /**

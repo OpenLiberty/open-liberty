@@ -24,9 +24,11 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
@@ -49,6 +51,8 @@ import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
+import javax.security.enterprise.SecurityContext;
+
 //TODO import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 //TODO import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
 
@@ -56,6 +60,9 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
  * Base servlet which the JASPI test servlets extend.
  */
 public abstract class FlexibleBaseServlet extends HttpServlet {
+    @Inject
+    private SecurityContext securityContext;
+    
     private static final long serialVersionUID = 1L;
     private String servletName;
     public List<BaseServletStep> mySteps = new ArrayList<BaseServletStep>();
@@ -335,6 +342,30 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
                 writeLine(p.getBuffer(), "You can customize the isUserInRole call with the follow paramter: ?role=name");
             }
             writeLine(p.getBuffer(), "isUserInRole(" + role + "): " + p.getRequest().isUserInRole(role));
+        }
+
+    }
+    public class WriteSecurityContextStep implements BaseServletStep {
+
+        @Override
+        public void invoke(BaseServletParms p) throws Exception {
+            writeLine(p.getBuffer(), "**************WriteSecurityContextStep****************");
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(javaeesec_basic): "
+                                     + securityContext.isCallerInRole("javaeesec_basic"));
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(javaeesec_form): " + securityContext.isCallerInRole("javaeesec_form"));
+            String role = p.getRequest().getParameter("role");
+            if (role == null) {
+                writeLine(p.getBuffer(), "You can customize the isUserInRole call with the follow paramter: ?role=name");
+            }
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(" + role + "): " + securityContext.isCallerInRole(role));
+            
+            //writeLine(p.getBuffer(), "getRemoteUser: " + p.getRequest().getRemoteUser());
+            writeLine(p.getBuffer(), "securityContext.getCallerPrincipal(): " + securityContext.getCallerPrincipal());
+
+            if (securityContext.getCallerPrincipal() != null) {
+                writeLine(p.getBuffer(), "securityContext.getCallerPrincipal(): "
+                                         + securityContext.getCallerPrincipal().getName());
+            }
         }
 
     }
