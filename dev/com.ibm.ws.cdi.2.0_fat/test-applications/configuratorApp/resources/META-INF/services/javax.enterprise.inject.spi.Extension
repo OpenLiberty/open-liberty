@@ -1,0 +1,8 @@
+###########
+configuratorApp.web.tests.extensions.configurators.bean.AfterBeanDiscoveryObserver
+configuratorApp.web.tests.extensions.configurators.beanAttributes.ProcessBeanAttributesObserver
+configuratorApp.web.tests.extensions.configurators.injectionPoint.ProcessInjectionPointObserver
+configuratorApp.web.tests.extensions.configurators.observerMethod.ProcessObserverMethodObserver
+configuratorApp.web.tests.extensions.configurators.producer.ProcessProducerObserver
+configuratorApp.web.tests.extensions.configurators.annotatedTypeConfigurator.ProcessAnnotatedTypeObserver
+###########

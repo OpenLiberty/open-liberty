@@ -8,20 +8,20 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package configuratorApp.web.tests.extensions.configurators.producer;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.inject.Vetoed;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class,
-                BuiltinAnnoLiteralsTest.class,
-})
-public class FATSuite {
+@Vetoed
+public class Dodecahedron {
 
+    private ParameterInjectedBean paramInjectedBean;
+
+    public Dodecahedron(ParameterInjectedBean paramInjectedBean) {
+        this.paramInjectedBean = paramInjectedBean;
+    }
+
+    public ParameterInjectedBean getParamInjectedBean() {
+        return paramInjectedBean;
+    }
 }

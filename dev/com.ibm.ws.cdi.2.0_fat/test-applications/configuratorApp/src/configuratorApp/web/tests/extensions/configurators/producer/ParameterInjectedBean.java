@@ -8,20 +8,22 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package configuratorApp.web.tests.extensions.configurators.producer;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import java.lang.annotation.Annotation;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class,
-                BuiltinAnnoLiteralsTest.class,
-})
-public class FATSuite {
+import javax.enterprise.inject.Vetoed;
 
+@Vetoed
+public class ParameterInjectedBean {
+
+    private Class<? extends Annotation> annotation;
+
+    public ParameterInjectedBean(Class<? extends Annotation> annotation) {
+        this.annotation = annotation;
+    }
+
+    public Class<?> getAnnotation() {
+        return annotation;
+    }
 }

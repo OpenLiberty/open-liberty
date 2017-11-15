@@ -8,20 +8,13 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package configuratorApp.web.tests.extensions.configurators.observerMethod;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.context.ApplicationScoped;
+import javax.enterprise.event.Observes;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class,
-                BuiltinAnnoLiteralsTest.class,
-})
-public class FATSuite {
+@ApplicationScoped
+public class ShapeObserver {
 
+    public void observer(@Observes Triangle triangle) {}
 }

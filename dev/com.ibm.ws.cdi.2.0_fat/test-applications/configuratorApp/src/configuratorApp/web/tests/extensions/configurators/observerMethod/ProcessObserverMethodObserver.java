@@ -8,20 +8,17 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package configuratorApp.web.tests.extensions.configurators.observerMethod;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.Extension;
+import javax.enterprise.inject.spi.ObserverMethod;
+import javax.enterprise.inject.spi.ProcessObserverMethod;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class,
-                BuiltinAnnoLiteralsTest.class,
-})
-public class FATSuite {
+public class ProcessObserverMethodObserver implements Extension {
 
+    void observer(@Observes ProcessObserverMethod<Triangle, ShapeObserver> event) {
+
+        event.configureObserverMethod().priority(ObserverMethod.DEFAULT_PRIORITY + 1);
+    }
 }
