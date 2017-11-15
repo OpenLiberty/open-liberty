@@ -5682,6 +5682,7 @@ public class PolicyExecutorServlet extends FATServlet {
 
         continueLatch1.countDown(); //allow task1 to complete
         assertTrue(future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        for (long start = System.nanoTime(); executor.getRunningTaskCount() != 1 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200));
         assertEquals(1, executor.getRunningTaskCount()); //task2 is running
 
         executor.shutdown();
@@ -5689,6 +5690,7 @@ public class PolicyExecutorServlet extends FATServlet {
 
         continueLatch2.countDown(); //allow task2 to complete
         assertTrue(future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        for (long start = System.nanoTime(); executor.getRunningTaskCount() != 0 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200));
         assertEquals(0, executor.getRunningTaskCount()); //no tasks running
     }
 
