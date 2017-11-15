@@ -87,7 +87,7 @@ public class HttpAuthenticationMechanismSingleISTest extends JavaEESecTestBase {
      * <LI> Servlet is accessed and it prints information about the subject: getAuthType, getUserPrincipal, getRemoteUser.
      * </OL>
      */
-    @Test
+    //@Test
     public void testJaspiBasicAuthValidGroupInRole_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleGroupUser, Constants.javaeesec_basicRoleGroupPwd,
