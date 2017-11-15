@@ -66,6 +66,15 @@ javac.encoding: UTF-8
 
 buildEngineName: defaultEngine
 
+Bundle-License: \
+  Eclipse Public License; \
+  url=https://www.eclipse.org/legal/epl-v10.html
+
+Bundle-SCM: \
+  connection=scm:git:https://github.com/OpenLiberty/open-liberty.git, \
+  developerConnection=scm:git:https://github.com:OpenLiberty/open-liberty.git, \
+  url=https://github.com/OpenLiberty/open-liberty/tree/master
+
 # This is the version of JUnit that will be used at build time and run time
 junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 
