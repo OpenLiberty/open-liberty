@@ -167,20 +167,57 @@ public interface PolicyExecutor extends ExecutorService {
 
     /**
      * Registers a one-time callback to be invoked asynchronously
+     * when the count of running tasks exceeds the specified maximum.
+     * If a concurrency callback is already registered, this replaces
+     * the previous registration.
+     * To unregister an existing callback without replacing,
+     * specify a null value for the callback.
+     * The callback is automatically unregistered upon shutdown.
+     *
+     * @param max threshold for maximum concurrency beyond which the callback should be notified.
+     * @param callback the callback, or null to unregister.
+     * @return callback that was replaced or removed by the new registration.
+     *         null if no previous callback was in place.
+     * @throws IllegalStateException if the executor has been shut down.
+     */
+    Runnable registerConcurrencyCallback(int max, Runnable callback);
+
+    /**
+     * Registers a one-time callback to be invoked asynchronously when
+     * the difference between task start time and submit time exceeds the specified maximum delay.
+     * If a late start callback is already registered, this replaces
+     * the previous registration.
+     * To unregister an existing callback without replacing,
+     * specify a null value for the callback.
+     * The callback is automatically unregistered upon shutdown.
+     *
+     * @param maxDelay maximum delay for a task to start, beyond which the callback should be notified.
+     * @param unit unit of time.
+     * @param callback the callback, or null to unregister.
+     * @return callback that was replaced or removed by the new registration.
+     *         null if no previous callback was in place.
+     * @throws IllegalArgumentException if maxDelay is greater than or equal to the
+     *             maximum number of nanoseconds representable as a long value.
+     * @throws IllegalStateException if the executor has been shut down.
+     */
+    Runnable registerLateStartCallback(long maxDelay, TimeUnit unit, Runnable callback);
+
+    /**
+     * Registers a one-time callback to be invoked asynchronously
      * when the available remaining capacity of the task queue
      * drops below the specified minimum.
      * If a queue size callback is already registered, this replaces
      * the previous registration.
      * To unregister an existing callback without replacing,
      * specify a null value for the callback.
-     * The callback is not guaranteed to be invoked in the case of
-     * available queue capacity being taken away due to shutdown.
+     * The callback is automatically unregistered upon shutdown.
      *
      * @param minAvailable threshold for minimum available queue capacity
      *            below which the callback should be notified.
      * @param callback the callback, or null to unregister.
      * @return callback that was replaced or removed by the new registration.
      *         null if no previous callback was in place.
+     * @throws IllegalStateException if the executor has been shut down.
      */
     Runnable registerQueueSizeCallback(int minAvailable, Runnable callback);
 

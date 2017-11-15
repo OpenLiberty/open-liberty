@@ -936,6 +936,80 @@ public class PolicyExecutorServlet extends FATServlet {
         } // pass
     }
 
+    // Register concurrency callbacks with a policy executor. Verify that at most one can be registered,
+    // that the most recently registered replaces any previous ones, and that the concurrency callback
+    // can be unregistered by supplying null. Verify that the concurrency callback is notified when the
+    // number of running tasks exceeds the threshold.
+    @Test
+    public void testConcurrencyCallback() throws Exception {
+        PolicyExecutor executor = provider.create("testConcurrencyCallback")
+                        .maxConcurrency(3);
+
+        CountDownLatch over0Latch = new CountDownLatch(1);
+        Runnable callbackOver0 = new CountDownCallback(over0Latch);
+        assertNull(executor.registerConcurrencyCallback(0, callbackOver0));
+        assertEquals(1, over0Latch.getCount());
+
+        // new registration replaces previous
+        CountDownLatch over1Latch = new CountDownLatch(1);
+        Runnable callbackOver1 = new CountDownCallback(over1Latch);
+        assertEquals(callbackOver0, executor.registerConcurrencyCallback(1, callbackOver1));
+        assertEquals(1, over1Latch.getCount());
+
+        // previously registered callback is not invoked
+        CountDownLatch blocker1StartedLatch = new CountDownLatch(1);
+        CountDownLatch blockerContinueLatch = new CountDownLatch(1);
+        CountDownTask blocker1Task = new CountDownTask(blocker1StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker1Future = executor.submit(blocker1Task);
+        assertTrue(blocker1StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, over0Latch.getCount());
+        assertEquals(1, over1Latch.getCount());
+
+        // trigger the active callback by starting another task, such that 2 are running
+        CountDownLatch blocker2StartedLatch = new CountDownLatch(1);
+        CountDownTask blocker2Task = new CountDownTask(blocker2StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker2Future = executor.submit(blocker2Task);
+        assertTrue(blocker2StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(over1Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, over0Latch.getCount());
+
+        // register a callback for a threshold that has already been reached
+        assertNull(executor.registerConcurrencyCallback(0, callbackOver0));
+        assertTrue(over0Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // register another callback which hasn't been reached
+        CountDownLatch over2Latch = new CountDownLatch(1);
+        Runnable callbackOver2 = new CountDownCallback(over2Latch);
+        assertNull(executor.registerConcurrencyCallback(2, callbackOver2));
+        assertEquals(1, over2Latch.getCount());
+
+        // trigger the active callback by starting another task, such that 3 are running
+        CountDownLatch blocker3StartedLatch = new CountDownLatch(1);
+        CountDownTask blocker3Task = new CountDownTask(blocker3StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker3Future = executor.submit(blocker3Task);
+        assertTrue(blocker3StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(over2Latch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        // allow all 3 blocked tasks to finish
+        blockerContinueLatch.countDown();
+
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(blocker1Future.isDone());
+        assertTrue(blocker2Future.isDone());
+        assertTrue(blocker3Future.isDone());
+        assertFalse(blocker1Future.isCancelled());
+        assertFalse(blocker2Future.isCancelled());
+        assertFalse(blocker3Future.isCancelled());
+
+        try {
+            Runnable previous = executor.registerConcurrencyCallback(4, new CountDownCallback(new CountDownLatch(1)));
+            fail("Should not be able to register callback after shutdown. Result of register was: " + previous);
+        } catch (IllegalStateException x) {
+        } // pass
+    }
+
     // Attempt to await termination from multiple threads at once after a shutdown.
     @Test
     public void testConcurrentAwaitTerminationAfterShutdown() throws Exception {
@@ -3825,6 +3899,65 @@ public class PolicyExecutorServlet extends FATServlet {
         assertTrue(terminationFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
+    // Register late start callbacks with a policy executor. Verify that at most one can be registered,
+    // that the most recently registered replaces any previous ones, and that the late start callback
+    // can be unregistered by supplying null. Verify that the late start callback is notified when a
+    // task starts after the designated threshold.
+    @Test
+    public void testLateStartCallback() throws Exception {
+        PolicyExecutor executor = provider.create("testLateStartCallback")
+                        .maxConcurrency(1)
+                        .maxQueueSize(1)
+                        .maxWaitForEnqueue(TimeUnit.NANOSECONDS.toMillis(TIMEOUT_NS));
+
+        CountDownLatch lateBy3MinutesLatch = new CountDownLatch(1);
+        Runnable lateBy3MinutesCallback = new CountDownCallback(lateBy3MinutesLatch);
+        assertNull(executor.registerLateStartCallback(3, TimeUnit.MINUTES, lateBy3MinutesCallback));
+
+        // use up maxConcurrency
+        CountDownLatch blocker1StartedLatch = new CountDownLatch(1);
+        CountDownLatch blockerContinueLatch = new CountDownLatch(1);
+        CountDownTask blocker1Task = new CountDownTask(blocker1StartedLatch, blockerContinueLatch, TimeUnit.MINUTES.toNanos(9));
+        Future<Boolean> blocker1Future = executor.submit(blocker1Task);
+
+        // queue another task
+        PolicyTaskFuture<Integer> lateTaskFuture = executor.submit(new SharedIncrementTask(), 1, null);
+        assertTrue(blocker1StartedLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, lateBy3MinutesLatch.getCount());
+
+        // new registration replaces previous
+        CountDownLatch lateBy200MillisLatch = new CountDownLatch(1);
+        Runnable lateBy200MillisCallback = new CountDownCallback(lateBy200MillisLatch);
+        assertEquals(lateBy3MinutesCallback, executor.registerLateStartCallback(200, TimeUnit.MILLISECONDS, lateBy200MillisCallback));
+
+        // wait for task to become late, and then allow it to run
+        TimeUnit.MILLISECONDS.sleep(300 - lateTaskFuture.getElapsedAcceptTime(TimeUnit.MILLISECONDS) - lateTaskFuture.getElapsedQueueTime(TimeUnit.MILLISECONDS)); // extra 100ms tolerance
+        blockerContinueLatch.countDown();
+
+        assertTrue(lateBy200MillisLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(1, lateBy3MinutesLatch.getCount());
+
+        // register another callback which hasn't been reached
+        assertNull(executor.registerLateStartCallback(3, TimeUnit.MINUTES, lateBy3MinutesCallback));
+        assertEquals(1, lateBy3MinutesLatch.getCount());
+
+        assertEquals(Integer.valueOf(1), lateTaskFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertTrue(blocker1Future.isDone());
+        assertFalse(blocker1Future.isCancelled());
+
+        executor.shutdown();
+        assertTrue(executor.awaitTermination(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(1, lateBy3MinutesLatch.getCount()); // never invoked
+
+        try {
+            Runnable previous = executor.registerLateStartCallback(5, TimeUnit.SECONDS, new CountDownCallback(new CountDownLatch(1)));
+            fail("Should not be able to register callback after shutdown. Result of register was: " + previous);
+        } catch (IllegalStateException x) {
+        } // pass
+    }
+
     // Invoke groups of tasks on the policy executor that break themselves into multiple tasks that also
     // invoke groups of tasks on the policy executor, which in turn break themselves down and
     // invoke more groups of tasks, and so forth.
@@ -3935,6 +4068,12 @@ public class PolicyExecutorServlet extends FATServlet {
         List<Runnable> canceledFromQueue = executor.shutdownNow();
         assertEquals(2, canceledFromQueue.size());
         assertTrue(blockerFuture.isCancelled());
+
+        try {
+            Runnable previous = executor.registerQueueSizeCallback(10, new CountDownCallback(new CountDownLatch(1)));
+            fail("Should not be able to register callback after shutdown. Result of register was: " + previous);
+        } catch (IllegalStateException x) {
+        } // pass
     }
 
     // Use a policy executor to submit tasks that resubmit themselves to perform a recursive computation.
@@ -4360,8 +4499,10 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         // Task must have 0 run time, and its queue time must stop changing after abort
         long queueTimeNS = future.getElapsedQueueTime(TimeUnit.NANOSECONDS);
@@ -4444,15 +4585,19 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 2 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         try {
             Integer result = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 3 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         assertEquals(0, future2.getElapsedRunTime(TimeUnit.NANOSECONDS));
         assertEquals(0, future3.getElapsedRunTime(TimeUnit.NANOSECONDS));
@@ -4518,8 +4663,10 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 1 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            // TODO check the message of the cause exception once we add it
-        } // pass - aborted due to timeout
+            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+                throw x;
+            // else pass - aborted due to timeout
+        }
 
         assertFalse(future2.isDone());
 
