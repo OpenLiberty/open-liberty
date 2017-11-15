@@ -1,0 +1,48 @@
+<server description="JavaEESec Security FAT">
+
+	<featureManager>
+		<feature>appSecurity-3.0</feature>
+		<feature>el-3.0</feature>
+		<feature>jdbc-4.1</feature>
+		<feature>componenttest-1.0</feature>
+	</featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+ 	
+ 	<webContainer deferServletLoad="false"/>
+    
+    <application type="war" id="CustomQueryDatabaseServlet" name="CustomQueryDatabaseServlet" location="dbfatAuthAlias.war">
+      <classloader commonLibraryRef="DerbyLib"/>
+    </application>
+	
+	<application type="war" id="DatabaseAuthAliasBasicAuthServlet" name="DatabaseAuthAliasBasicAuthServlet" location="DatabaseAuthAliasBasicAuthServlet.war">
+ 		<application-bnd>
+			<security-role name="javaeesec_basic">
+				<user name="blue1" access-id="user:JavaEESec Basic Realm/blue1" />
+				<group name="group1" />
+				<group name="group3" access-id="group:JavaEESec Basic Realm/group3" />
+			</security-role>	
+			<security-role name="javaeesec_form">
+				<user name="jaspiuser3" />
+				<group name="group2" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+		<classloader commonLibraryRef="DerbyLib" />
+	</application>
+
+	<dataSource id="derby1" jndiName="jdbc/derby1fat" fat.modify="true">
+    	<jdbcDriver libraryRef="DerbyLib"/>
+    	<properties.derby.embedded databaseName="memory:derby1" createDatabase="create" />
+    	<containerAuthData user="dbuser1" password="{xor}Oz0vKDtu" />
+    </dataSource>
+    
+    <library id="DerbyLib" fat.modify="true">
+    	<fileset dir="${shared.resource.dir}/derby" includes="*.jar"/>
+    </library>
+
+    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+	<include location="../fatTestPorts.xml" />
+</server>
