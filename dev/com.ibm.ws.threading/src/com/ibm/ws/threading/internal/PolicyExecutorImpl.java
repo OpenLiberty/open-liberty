@@ -1309,7 +1309,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 maxQueueSizeConstraint.release(queueCapacityAdded);
             else if (queueCapacityAdded < 0)
                 maxQueueSizeConstraint.reducePermits(-queueCapacityAdded);
-            maxQueueSize = u_max;
+            maxQueueSize = u_maxQueueSize;
         }
 
         if (queueCapacityAdded < 0) {
