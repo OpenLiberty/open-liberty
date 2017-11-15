@@ -11,20 +11,13 @@
 package com.ibm.ws.security.javaeesec.identitystore;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.el.ELException;
-import javax.el.ELProcessor;
 import javax.security.enterprise.identitystore.DatabaseIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.PasswordHash;
-
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * A wrapper class that offers convenience methods for retrieving configuration
@@ -37,28 +30,28 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 public class DatabaseIdentityStoreDefinitionWrapper {
 
-    /** The query to use to lookup users/callers. */
+    /** The query to use to lookup users/callers. Will be null when set by a deferred EL expression. */
     private final String callerQuery;
 
-    /** The data source lookup. */
+    /** The data source lookup. Will be null when set by a deferred EL expression. */
     private final String dataSourceLookup;
 
-    /** The query to use to lookup groups. */
+    /** The query to use to lookup groups. Will be null when set by a deferred EL expression. */
     private final String groupsQuery;
 
-    /** The hashing algorithm class to use. */
+    /** The hashing algorithm class to use. Will be null when set by a deferred EL expression. */
     private final Class<? extends PasswordHash> hashAlgorithm;
 
-    /** Parameters to configure the hash algorithm with. */
+    /** Parameters to configure the hash algorithm with. Will be null when set by a deferred EL expression. */
     private final List<String> hashAlgorithmParameters;
 
     /** The definitions for this IdentityStore. */
     private final DatabaseIdentityStoreDefinition idStoreDefinition;
 
-    /** The priority for this IdentityStore. */
-    private final int priority;
+    /** The priority for this IdentityStore. Will be null when set by a deferred EL expression. */
+    private final Integer priority;
 
-    /** The ValidationTypes this IdentityStore can be used for. */
+    /** The ValidationTypes this IdentityStore can be used for. Will be null when set by a deferred EL expression. */
     private final Set<ValidationType> useFor;
 
     /**
@@ -78,16 +71,110 @@ public class DatabaseIdentityStoreDefinitionWrapper {
         this.idStoreDefinition = idStoreDefinition;
 
         /*
-         * Set all configuration. We do this in the constructor instead of on retrieval
-         * in order to fail-fast.
+         * Evaluate the configuration. The values will be non-null if the setting is NOT
+         * a deferred EL expression. If it is a deferred EL expression, we will dynamically
+         * evaluate it at call time.
          */
-        this.callerQuery = setCallerQuery();
-        this.dataSourceLookup = setDataSourceLookup();
-        this.groupsQuery = setGroupsQuery();
-        this.hashAlgorithm = setHashAlgorithm();
-        this.hashAlgorithmParameters = setHashAlgorithmParameters();
-        this.priority = setPriority();
-        this.useFor = setUseFor();
+        this.callerQuery = evaluateCallerQuery(true);
+        this.dataSourceLookup = evaluateDataSourceLookup(true);
+        this.groupsQuery = evaluateGroupsQuery(true);
+        this.hashAlgorithm = evaluateHashAlgorithm();
+        this.hashAlgorithmParameters = evaluateHashAlgorithmParameters();
+        this.priority = evaluatePriority(true);
+        this.useFor = evaluateUseFor(true);
+    }
+
+    /**
+     * Evaluate and return the callerQuery.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The callerQuery or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateCallerQuery(boolean immediateOnly) {
+        return ELHelper.processString("callerQuery", idStoreDefinition.callerQuery(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the dataSourceLookup.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The dataSourceLookup or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateDataSourceLookup(boolean immediateOnly) {
+        return ELHelper.processString("dataSourceLookup", idStoreDefinition.dataSourceLookup(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the groupsQuery.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The groupsQuery or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateGroupsQuery(boolean immediateOnly) {
+        return ELHelper.processString("groupsQuery", idStoreDefinition.groupsQuery(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the hashAlgorithm.
+     *
+     * @return The hashAlgorithm.
+     */
+    private Class<? extends PasswordHash> evaluateHashAlgorithm() {
+        return idStoreDefinition.hashAlgorithm();
+    }
+
+    /**
+     * Evaluate and return the hashAlgorithmParameters.
+     *
+     * @return The hashAlgorithmParameters.
+     */
+    private List<String> evaluateHashAlgorithmParameters() {
+        List<String> parameters = new ArrayList<String>();
+
+        String[] config = idStoreDefinition.hashAlgorithmParameters();
+        if (config != null && config.length > 0) {
+            for (int idx = 0; idx < config.length; idx++) {
+                String value = config[idx];
+                parameters.add(ELHelper.processString("hashAlgorithmParameters[" + idx + "]", value, false));
+            }
+        }
+
+        return parameters;
+    }
+
+    /**
+     * Evaluate and return the priority.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The priority or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private Integer evaluatePriority(boolean immediateOnly) {
+        return ELHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the useFor.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The useFor or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private Set<ValidationType> evaluateUseFor(boolean immediateOnly) {
+        return ELHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
     }
 
     /**
@@ -98,7 +185,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @see DatabaseIdentityStoreDefinition#callerQuery()
      */
     String getCallerQuery() {
-        return this.callerQuery;
+        return (this.callerQuery != null) ? this.callerQuery : evaluateCallerQuery(false);
     }
 
     /**
@@ -109,7 +196,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @see DatabaseIdentityStoreDefinition#dataSourceLookup()
      */
     String getDataSourceLookup() {
-        return dataSourceLookup;
+        return (dataSourceLookup != null) ? this.dataSourceLookup : evaluateDataSourceLookup(false);
     }
 
     /**
@@ -120,7 +207,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @see DatabaseIdentityStoreDefinition#groupsQuery()
      */
     String getGroupsQuery() {
-        return groupsQuery;
+        return (groupsQuery != null) ? this.groupsQuery : evaluateGroupsQuery(false);
     }
 
     /**
@@ -154,7 +241,7 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @see DatabaseIdentityStoreDefinition#priorityExpression()
      */
     int getPriority() {
-        return this.priority;
+        return (this.priority != null) ? this.priority : evaluatePriority(false);
     }
 
     /**
@@ -166,159 +253,6 @@ public class DatabaseIdentityStoreDefinitionWrapper {
      * @see DatabaseIdentityStoreDefinition#useForExpression()
      */
     Set<ValidationType> getUseFor() {
-        return this.useFor;
-    }
-
-    /**
-     * This method will process a configuration value for any configuration setting in
-     * {@link DatabaseIdentityStoreDefinition} that is a string and whose name is NOT a
-     * "*Expression". It will first check to see if it is a EL expression. It it is, it
-     * will return the evaluated expression; otherwise, it will return the literal String.
-     *
-     * @param name The name of the property. Used for error messages.
-     * @param value The value returned from from the {@link DatabaseIdentityStoreDefinition}, which can
-     *            either be a literal String or an EL expression.
-     * @return The String value.
-     */
-    @FFDCIgnore(ELException.class)
-    private String processString(String name, String value) {
-        String result;
-
-        ELProcessor elp = new ELProcessor();
-        try {
-            Object obj = elp.eval(value);
-            if (obj instanceof String) {
-                result = (String) obj;
-            } else {
-                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to a String value.");
-            }
-        } catch (ELException e) {
-            result = value;
-        }
-
-        return result;
-    }
-
-    /**
-     * Validate and return the callerQuery.
-     *
-     * @return The validated callerQuery.
-     */
-    private String setCallerQuery() {
-        return processString("callerQuery", idStoreDefinition.callerQuery());
-    }
-
-    /**
-     * Validate and return the dataSourceLookup.
-     *
-     * @return The validated dataSourceLookup.
-     */
-    private String setDataSourceLookup() {
-        return processString("dataSourceLookup", idStoreDefinition.dataSourceLookup());
-    }
-
-    /**
-     * Validate and return the groupsQuery.
-     *
-     * @return The validated groupsQuery.
-     */
-    private String setGroupsQuery() {
-        return processString("groupsQuery", idStoreDefinition.groupsQuery());
-    }
-
-    /**
-     * Validate and return the hashAlgorithm.
-     *
-     * @return The validated hashAlgorithm.
-     */
-    private Class<? extends PasswordHash> setHashAlgorithm() {
-        return idStoreDefinition.hashAlgorithm(); // TODO Not sure this is correct.
-    }
-
-    /**
-     * Validate and return the hashAlgorithmParameters.
-     *
-     * @return The validated hashAlgorithmParameters.
-     */
-    private List<String> setHashAlgorithmParameters() {
-        List<String> parameters = new ArrayList<String>();
-
-        String[] config = idStoreDefinition.hashAlgorithmParameters();
-        if (config != null && config.length > 0) {
-            for (int idx = 0; idx < config.length; idx++) {
-                String value = config[idx];
-                parameters.add(processString("hashAlgorithmParameters[" + idx + "]", value));
-            }
-        }
-
-        return parameters;
-    }
-
-    /**
-     * Validate and return the priority either from the EL expression or the direct priority setting.
-     *
-     * @return The validated priority.
-     */
-    private int setPriority() {
-        int priority;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.priorityExpression().isEmpty()) {
-            /*
-             * Direct setting.
-             */
-            priority = idStoreDefinition.priority();
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            Object obj = elp.eval(idStoreDefinition.priorityExpression());
-            if (obj instanceof Number) {
-                priority = ((Number) obj).intValue();
-            } else {
-                throw new IllegalArgumentException("Expected 'priorityExpression' to evaluate to an integer value.");
-            }
-        }
-
-        return priority;
-    }
-
-    /**
-     * Validate and return the {@link ValidationType}s for the {@link IdentityStore} from either
-     * the EL expression or the direct useFor setting.
-     *
-     * @return The validated useFor types.
-     */
-    private Set<ValidationType> setUseFor() {
-        Set<ValidationType> types = null;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.useForExpression().isEmpty()) {
-            types = new HashSet<ValidationType>(Arrays.asList(idStoreDefinition.useFor()));
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            elp.getELManager().importClass(ValidationType.class.getCanonicalName());
-            Object obj = elp.eval(idStoreDefinition.useForExpression());
-            if (obj instanceof Object[]) {
-                types = new HashSet(Arrays.asList(obj));
-            } else if (obj instanceof Set) {
-                types = (Set<ValidationType>) obj;
-            } else {
-                throw new IllegalArgumentException("Expected 'useForExpression' to evaluate to a Set<ValidationType>.");
-            }
-        }
-
-        if (types == null || types.isEmpty()) {
-            throw new IllegalArgumentException("The identity store must be configured with at least one ValidationType.");
-        }
-        return Collections.unmodifiableSet(types);
+        return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
     }
 }

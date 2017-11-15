@@ -69,7 +69,14 @@ public class CDIHelper {
 
     public static ELProcessor getELProcessor() {
         ELProcessor elProcessor = new ELProcessor();
-        elProcessor.getELManager().addELResolver(getBeanManager().getELResolver());
+
+        /*
+         * This should never be null in production, but this check allows running unit tests
+         * without the CDIService.
+         */
+        if (cdiService != null) {
+            elProcessor.getELManager().addELResolver(getBeanManager().getELResolver());
+        }
         return elProcessor;
     }
 
