@@ -5,6 +5,7 @@
 biz.aQute.bnd:biz.aQute.bnd:3.5.0
 biz.aQute.bnd:biz.aQute.bnd.annotation:3.5.0
 biz.aQute.bnd:org.osgi.impl.bundle.repoindex.cli:3.5.0
+com.fasterxml:classmate:1.3.1
 com.fasterxml.jackson.core:jackson-annotations:2.2.3
 com.fasterxml.jackson.core:jackson-core:2.2.3
 com.fasterxml.jackson.core:jackson-databind:2.2.3
@@ -73,6 +74,7 @@ javax.security.jacc:javax.security.jacc-api:1.5
 javax.servlet.jsp:javax.servlet.jsp-api:2.3.2-b01
 javax.servlet:javax.servlet-api:3.1.0
 javax.transaction:javax.transaction-api:1.2
+javax.validation:validation-api:2.0.0.Final
 javax.websocket:javax.websocket-api:1.0
 javax.websocket:javax.websocket-api:1.1
 javax.ws.rs:javax.ws.rs-api:2.0
@@ -161,6 +163,8 @@ org.glassfish.jersey.core:jersey-client:2.26
 org.glassfish.jersey.core:jersey-common:2.26
 org.glassfish.jersey.inject:jersey-hk2:2.26
 org.hamcrest:hamcrest-all:1.3
+org.hibernate.validator:hibernate-validator:6.0.4.Final
+org.hibernate.validator:hibernate-validator-cdi:6.0.4.Final
 org.javassist:javassist:3.17.1-GA
 org.jboss.classfilewriter:jboss-classfilewriter:1.1.2.Final
 org.jboss.jdeparser:jdeparser:1.0.0.Final

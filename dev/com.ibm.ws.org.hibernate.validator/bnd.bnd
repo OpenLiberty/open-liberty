@@ -8,20 +8,6 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
-bVersion=1.0
+-include= jar:${fileuri;${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-javac.source: 1.8
-javac.target: 1.8
-
-src: \
-	fat/src,\
-	test-applications/bvalApp/src,\
-	test-applications/bvalCDIApp/src
-
-test.project: true
-
--buildpath: \
-	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest
+-buildpath: org.hibernate.validator:hibernate-validator;version=6.0.4.Final

@@ -8,20 +8,19 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
--include= ~../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/rejar.props
 bVersion=1.0
 
-javac.source: 1.8
-javac.target: 1.8
+Bundle-SymbolicName: com.ibm.ws.com.fasterxml.classmate.1.3.1
 
-src: \
-	fat/src,\
-	test-applications/bvalApp/src,\
-	test-applications/bvalCDIApp/src
+Private-Package: \
+  com.fasterxml.classmate.util.*
 
-test.project: true
+Import-Package: \
+  *
 
--buildpath: \
-	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest,\
-	com.ibm.websphere.javaee.validation.2.0;version=latest
+Export-Package: \
+  com.fasterxml.classmate;version="1.3.1", \
+  com.fasterxml.classmate.members;version="1.3.1", \
+  com.fasterxml.classmate.types;version="1.3.1", \
+  com.fasterxml.classmate.util;version="1.3.1"
