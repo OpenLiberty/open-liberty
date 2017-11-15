@@ -51,6 +51,8 @@ public class UISelectOne extends UIInput
 
     public static final String INVALID_MESSAGE_ID = "javax.faces.component.UISelectOne.INVALID";
 
+    private boolean selectItemValueFound = false;
+
     public UISelectOne()
     {
         setRendererType("javax.faces.Menu");
@@ -60,6 +62,87 @@ public class UISelectOne extends UIInput
     public String getFamily()
     {
         return COMPONENT_FAMILY;
+    }
+
+    /**
+     * Verify that when ever there is a ValueExpression and submitted value is not empty, then
+     * visit all the UISelectItem elements within the UISelectOne radio components to check if
+     * the submitted value exists in any of the select items.
+     *
+     * @see javax.faces.component.UIInput#processValidators(javax.faces.context.FacesContext)
+     */
+    @Override
+    public void processValidators(FacesContext context) 
+    {
+        String group = getGroup();
+        ValueExpression ve = getValueExpression("value");
+        String submittedValue = (String) getSubmittedValue();
+        if (group != null && !group.isEmpty() && ve != null && !isEmpty(submittedValue)) 
+        {
+            final UIComponent form = getRadioNestingForm(context, this);
+
+            form.visitTree(VisitContext.createVisitContext(context), new VisitCallback() 
+            {
+                @Override
+                public VisitResult visit(VisitContext visitContext, UIComponent target) 
+                {
+                    if (target instanceof UISelectOne  && ((UISelectOne) target).getGroup().equals(group)) 
+                    {
+                        UISelectOne radio = (UISelectOne) target;
+
+                        // if target is an instance of UISelectOne then get all the UISelectItem children
+                        // and verify if the submitted value exists
+                        for (Iterator<UIComponent> iter = radio.getChildren().iterator(); iter.hasNext(); ) 
+                        {
+                            UIComponent component = iter.next();
+                            if (component instanceof UISelectItem) 
+                            {
+                                UISelectItem item = (UISelectItem) component;
+                                if (item.getItemValue().equals(submittedValue)) 
+                                {
+                                    selectItemValueFound = true;
+                                    return VisitResult.COMPLETE;
+                                }
+                            }
+
+                        }
+                        return VisitResult.REJECT;
+                    }
+
+                    return VisitResult.ACCEPT;
+                }
+            });
+        }
+        if (!isEmpty(submittedValue))
+        {
+            super.processValidators(context);
+        }
+    }
+
+    /**
+     * Get the container component of a radio
+     *
+     * @param context
+     * @param radio
+     * @return
+     */
+    private static UIComponent getRadioNestingForm(FacesContext context, UISelectOne radio) 
+    {
+        UIComponent namingContainer = radio.getNamingContainer();
+
+        while (namingContainer != null && !(namingContainer instanceof UIForm) && namingContainer.getParent() != null) 
+        {
+            namingContainer = namingContainer.getParent().getNamingContainer();
+        }
+
+        if (namingContainer != null) 
+        {
+            return namingContainer;
+        } 
+        else 
+        {
+            return context.getViewRoot();
+        }
     }
     
     /**
@@ -101,6 +184,14 @@ public class UISelectOne extends UIInput
                 return; // Matched & Required true & No-selection did NOT match, so return ok.
             }
         }
+
+        // if selectItemValueFound is true, then it means that we have found the select item value
+        // in the other UISelectOne radio components, and no validation error is thrown.
+        if (selectItemValueFound) 
+        {
+            return;
+        }
+
         _MessageUtils.addErrorMessage(context, this, INVALID_MESSAGE_ID, 
                 new Object[] {_MessageUtils.getLabel(context, this) });
         setValid(false);

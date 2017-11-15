@@ -19,13 +19,15 @@
 package org.apache.myfaces.shared.renderkit.html;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
-import javax.el.ValueExpression;
+import javax.faces.FacesException;
 
 import javax.faces.component.UIComponent;
 import javax.faces.component.UIInput;
@@ -52,19 +54,20 @@ import org.apache.myfaces.shared.renderkit.html.util.ResourceUtils;
 public class HtmlRadioRendererBase
         extends HtmlRenderer
 {
-    //private static final Log log = LogFactory.getLog(HtmlRadioRendererBase.class);
     private static final Logger log = Logger.getLogger(HtmlRadioRendererBase.class.getName());
 
     private static final String PAGE_DIRECTION = "pageDirection";
     private static final String LINE_DIRECTION = "lineDirection";
     
-    private static final  Set<VisitHint> FIND_SELECT_LIST_HINTS = 
-            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED));
+    private static final Set<VisitHint> FIND_SELECT_LIST_HINTS = 
+            Collections.unmodifiableSet(EnumSet.of(VisitHint.SKIP_UNRENDERED, VisitHint.SKIP_ITERATION));
+
+    private Map<String, UISelectOne> groupFirst = new HashMap<String, UISelectOne>();
     
+    @Override
     public void encodeEnd(FacesContext facesContext, UIComponent uiComponent) throws IOException
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(
-                facesContext, uiComponent, UISelectOne.class);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
 
         UISelectOne selectOne = (UISelectOne)uiComponent;
 
@@ -91,7 +94,6 @@ public class HtmlRadioRendererBase
         ResponseWriter writer = facesContext.getResponseWriter();
 
         Map<String, List<ClientBehavior>> behaviors = null;
-
         if (uiComponent instanceof ClientBehaviorHolder)
         {
             behaviors = ((ClientBehaviorHolder) uiComponent).getClientBehaviors();
@@ -101,92 +103,50 @@ public class HtmlRadioRendererBase
             }
         }
         
-        String group = null;
-        if (uiComponent instanceof HtmlSelectOneRadio)
+        String group = selectOne instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) selectOne).getGroup() : null;
+        if (group != null && !group.isEmpty())
         {
-            group = ((HtmlSelectOneRadio)uiComponent).getGroup();
-        }
-        if (group != null && group.length() > 0)
-        {
-            // NEW JSF 2.3: Render as distributed component
-            String id = uiComponent.getId();
-            if (id != null && HtmlRendererUtils.GROUP_INDEXED_ID_CHECKER.matcher(id).matches())
+            if (!groupFirst.containsKey(group)) 
             {
-                // The id has a number/index at the end, use it to take the value. It means the selectItemList
-                // is not in the current component and needs to be grabbed from some other component to
-                // get the right one.
-                
-                int i = id.length() - 1;
-                while (i > 0 && Character.isDigit(id.charAt(i)))
-                {
-                    i--;
-                }
-                Integer itemNum = Integer.valueOf(id.substring(i+1));
-                
-                Converter converter;
-                List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                        selectOne, facesContext);
-                converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-                ValueExpression ve = selectOne.getValueExpression("value");
+                groupFirst.put(group, selectOne);
+            }
+
+            List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
+            if (selectItemList != null && !selectItemList.isEmpty())
+            {
+                Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
                 Object currentValue = null;
-                boolean currentValueSet = false;
-                if (ve != null || (selectItemList != null && selectItemList.size() > 0))
+
+                // If the current selectOne radio contains a value expression, 
+                // then get the current value using the current selectOne radio.
+                // Otherwise get the current value using the first selectOne radio which
+                // must contain a value expression.
+                if (selectOne.getValueExpression("value") != null)
                 {
-                    // No-op
+                    currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                                facesContext, selectOne);
                 }
                 else
                 {
-                    //Deferred, find Real Component and retrieve the selectItemList
-                    FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
-                    GetSelectItemListCallback callback = new GetSelectItemListCallback(group);
-                    formInfo.getForm().visitTree(
-                            VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS), callback);
-                    selectItemList = callback.getSelectItemList();
-                    converter = callback.getConverter();
-                    currentValueSet = true;
-                    currentValue = callback.getCurrentValue();
+                    currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                                facesContext, groupFirst.get(group));
                 }
-                
-                if (selectItemList != null && selectItemList.size() > 0)
-                {
-                    if (!currentValueSet)
-                    {
-                        currentValue = 
-                            org.apache.myfaces.shared.renderkit.RendererUtils.
-                                    getStringFromSubmittedValueOrLocalValueReturnNull(
-                                    facesContext, selectOne);
-                    }
-
-                    SelectItem selectItem = (SelectItem) selectItemList.get(itemNum);
-                    renderGroupOrItemRadio(facesContext, selectOne,
-                                                         selectItem, currentValue,
-                                                         converter, pageDirectionLayout, group, itemNum);
-                }
+                SelectItem selectItem = (SelectItem) selectItemList.get(0);
+                renderGroupOrItemRadio(facesContext, selectOne,
+                                                     selectItem, currentValue,
+                                                     converter, pageDirectionLayout, group, 0);
             }
             else
             {
-                // The id is not set or is an id without index, which means the index will be set by the clientId
-                // like for example inside a dataTable. The important thing here is do not encapsulate the radio
-                // inside a <table> tag, because it is not necessary. 
-                
-                Converter converter;
-                List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                        selectOne, facesContext);
-                converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-
-                Object currentValue = 
-                    org.apache.myfaces.shared.renderkit.RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
-                            facesContext, selectOne);
-
-                int itemNum = 0;
-                for (int i = 0; i < selectItemList.size(); i++)
-                {
-                    SelectItem selectItem = (SelectItem) selectItemList.get(i);
-
-                    itemNum = renderGroupOrItemRadio(facesContext, selectOne,
-                                                     selectItem, currentValue,
-                                                     converter, pageDirectionLayout, group, itemNum);
-                }
+                // Deferred case: find real component with attached selectItems
+                FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
+                GetSelectItemListCallback callback = new GetSelectItemListCallback(selectOne, group);
+                formInfo.getForm().visitTree(
+                        VisitContext.createVisitContext(facesContext, null, FIND_SELECT_LIST_HINTS),
+                        callback);                
+                renderGroupOrItemRadio(facesContext, selectOne, callback.getSelectItem(),
+                        callback.getCurrentValue(), callback.getConverter(), 
+                        pageDirectionLayout, group, callback.getIndex());
             }
         }
         else
@@ -210,13 +170,9 @@ public class HtmlRadioRendererBase
                 writer.startElement(HTML.TR_ELEM, null); // selectOne);
             }
 
-            Converter converter;
-            List selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                    selectOne, facesContext);
-            converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-
-            Object currentValue = 
-                org.apache.myfaces.shared.renderkit.RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+            List selectItemList = RendererUtils.getSelectItemList(selectOne, facesContext);
+            Converter converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
+            Object currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
                         facesContext, selectOne);
 
             int itemNum = 0;
@@ -348,7 +304,7 @@ public class HtmlRadioRendererBase
         } 
         else 
         {
-            String itemStrValue = org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedStringValue(
+            String itemStrValue = RendererUtils.getConvertedStringValue(
                     facesContext, selectOne, converter, selectItem.getValue());
             boolean itemChecked = (itemStrValue == null) ? 
                     itemStrValue == currentValue : 
@@ -369,7 +325,7 @@ public class HtmlRadioRendererBase
             
             //writer.write("\t\t");
             boolean renderGroupId = false;
-            if (group != null && group.length() > 0)
+            if (group != null && !group.isEmpty())
             {
                 //no op
                 renderGroupId = true;
@@ -386,7 +342,7 @@ public class HtmlRadioRendererBase
             boolean itemDisabled = selectItem.isDisabled();
     
             String itemId = renderRadio(facesContext, selectOne, itemStrValue, itemDisabled, 
-                    itemChecked, renderGroupId ? true : false, renderGroupId ? null : itemNum);
+                    itemChecked, renderGroupId, renderGroupId ? null : itemNum);
     
             // label element after the input
             boolean componentDisabled = isDisabled(facesContext, selectOne);
@@ -440,7 +396,7 @@ public class HtmlRadioRendererBase
     {
         String clientId = uiComponent.getClientId(facesContext);
 
-        String itemId = (itemNum == null)? null : clientId + 
+        String itemId = (itemNum == null) ? null : clientId + 
                 facesContext.getNamingContainerSeparatorChar() + itemNum;
 
         ResponseWriter writer = facesContext.getResponseWriter();
@@ -457,12 +413,8 @@ public class HtmlRadioRendererBase
         }
         writer.writeAttribute(HTML.TYPE_ATTR, HTML.INPUT_TYPE_RADIO, null);
         
-        String group = null;
-        if (uiComponent instanceof HtmlSelectOneRadio)
-        {
-            group = ((HtmlSelectOneRadio)uiComponent).getGroup();
-        }
-        if (group != null && group.length() > 0)
+        String group = uiComponent instanceof HtmlSelectOneRadio ? ((HtmlSelectOneRadio) uiComponent).getGroup() : null;
+        if (group != null && !group.isEmpty())
         {
             FormInfo formInfo = RendererUtils.findNestingForm(uiComponent, facesContext);
             writer.writeAttribute(HTML.NAME_ATTR, formInfo.getFormName()+
@@ -561,7 +513,7 @@ public class HtmlRadioRendererBase
 
         if (isDisabled(facesContext, uiComponent))
         {
-            writer.writeAttribute(org.apache.myfaces.shared.renderkit.html.HTML.DISABLED_ATTR, Boolean.TRUE, null);
+            writer.writeAttribute(HTML.DISABLED_ATTR, Boolean.TRUE, null);
         }
 
         writer.endElement(HTML.INPUT_ELEM);
@@ -578,14 +530,13 @@ public class HtmlRadioRendererBase
             return ((HtmlSelectOneRadio)uiComponent).isDisabled();
         }
 
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getBooleanAttribute(
-                uiComponent, HTML.DISABLED_ATTR, false);
+        return RendererUtils.getBooleanAttribute(uiComponent, HTML.DISABLED_ATTR, false);
     }
 
-
+    @Override
     public void decode(FacesContext facesContext, UIComponent uiComponent)
     {
-        org.apache.myfaces.shared.renderkit.RendererUtils.checkParamValidity(facesContext, uiComponent, null);
+        RendererUtils.checkParamValidity(facesContext, uiComponent, null);
         if (uiComponent instanceof UIInput)
         {
             HtmlRendererUtils.decodeUISelectOne(facesContext, uiComponent);
@@ -597,26 +548,33 @@ public class HtmlRadioRendererBase
         }
     }
 
-
+    @Override
     public Object getConvertedValue(FacesContext facesContext, UIComponent uiComponent, Object submittedValue)
         throws ConverterException
     {
         RendererUtils.checkParamValidity(facesContext, uiComponent, UISelectOne.class);
-        return org.apache.myfaces.shared.renderkit.RendererUtils.getConvertedUISelectOneValue(facesContext,
-                                                                                               (UISelectOne)uiComponent,
-                                                                                               submittedValue);
+        return RendererUtils.getConvertedUISelectOneValue(facesContext,
+                (UISelectOne)uiComponent, submittedValue);
     }
     
     private static class GetSelectItemListCallback implements VisitCallback
     {
-        private String group;
-        private List selectItemList;
+        private final UISelectOne selectOneRadio;
+        private final String group;
+        
+        private final List<UISelectOne> selectOneRadios;
+        
+        private int index;
+        private SelectItem selectItem;
         private Converter converter;
         private Object currentValue;
 
-        public GetSelectItemListCallback(String group)
+        public GetSelectItemListCallback(UISelectOne selectOneRadio, String group)
         {
+            this.selectOneRadio = selectOneRadio;
             this.group = group;
+            
+            this.selectOneRadios = new ArrayList<>();
         }
 
         @Override
@@ -624,46 +582,58 @@ public class HtmlRadioRendererBase
         {
             if (target instanceof UISelectOne)
             {
-                String targetGroup = ((UISelectOne)target).getGroup();
-                if (getGroup().equals(targetGroup))
+                UISelectOne targetSelectOneRadio = ((UISelectOne) target);
+                String targetGroup = targetSelectOneRadio.getGroup();
+                if (group.equals(targetGroup))
                 {
-                    ValueExpression value = target.getValueExpression("value");
-                    if (value != null)
-                    {
-                        UISelectOne selectOne = (UISelectOne) target;
-                        FacesContext facesContext = context.getFacesContext();
-                        selectItemList = org.apache.myfaces.shared.renderkit.RendererUtils.getSelectItemList(
-                            selectOne, facesContext);
-                        converter = HtmlRendererUtils.findUIOutputConverterFailSafe(facesContext, selectOne);
-                        
-                        if (selectItemList != null && selectItemList.size() > 0)
+                    selectOneRadios.add(targetSelectOneRadio);
+                    
+                    // check if the current selectOneRadio was already visited
+                    index = selectOneRadios.indexOf(selectOneRadio);
+                    if (index != -1)
+                    {                        
+                        UISelectOne first = selectOneRadios.get(0);
+
+                        // if we were found,
+                        // lets take the selectItems from the first selectOneRadio of our group
+                        List<SelectItem> selectItemList = RendererUtils.getSelectItemList(first,
+                                context.getFacesContext());
+                        if (selectItemList == null || selectItemList.isEmpty())
                         {
-                            currentValue = 
-                                org.apache.myfaces.shared.renderkit.RendererUtils.
-                                        getStringFromSubmittedValueOrLocalValueReturnNull(
-                                        context.getFacesContext(), selectOne);
+                            throw new FacesException("UISelectOne with id=\"" + first.getId()
+                                            + "\" and group=\"" + group + "\" does not have any UISelectItems!");
                         }
+                        
+                        // evaluate required infos from the first selectOneRadio of our group
+                        selectItem = selectItemList.get(index);
+                        converter = HtmlRendererUtils.findUIOutputConverterFailSafe(context.getFacesContext(), first);
+                        currentValue = RendererUtils.getStringFromSubmittedValueOrLocalValueReturnNull(
+                                context.getFacesContext(), first);
+                        
                         return VisitResult.COMPLETE;
                     }
+                    
+                    return VisitResult.REJECT;
                 }
                 else
                 {
                     return VisitResult.REJECT;
                 }
             }
+
             return VisitResult.ACCEPT;
         }
 
-        public String getGroup()
+        public int getIndex()
         {
-            return group;
+            return index;
         }
-
-        public List getSelectItemList()
+        
+        public SelectItem getSelectItem()
         {
-            return selectItemList;
+            return selectItem;
         }
-
+        
         public Converter getConverter()
         {
             return converter;
