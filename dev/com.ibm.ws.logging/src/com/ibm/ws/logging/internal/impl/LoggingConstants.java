@@ -39,6 +39,16 @@ public interface LoggingConstants {
     String nl = System.getProperty("line.separator");
     int nlen = nl.length();
 
+    String DEFAULT_MESSAGE_SOURCE = "message";
+    String DEFAULT_MESSAGE_FORMAT = "basic";
+    String DEFAULT_CONSOLE_SOURCE = "message";
+    String DEFAULT_CONSOLE_FORMAT = "basic";
+
+    String ENV_WLP_MESSAGE_LOG_SOURCE = "WLP_MESSAGE_LOG_SOURCE";
+    String ENV_WLP_MESSAGE_LOG_FORMAT = "WLP_MESSAGE_LOG_FORMAT";
+    String ENV_WLP_CONSOLE_LOG_SOURCE = "WLP_CONSOLE_LOG_SOURCE";
+    String ENV_WLP_CONSOLE_LOG_FORMAT = "WLP_CONSOLE_LOG_FORMAT";
+
     enum FFDCSummaryPolicy {
         DEFAULT, IMMEDIATE
     };
