@@ -138,13 +138,13 @@ public class JMXMBeanServerDelegation implements MBeanServer {
         ServiceRegistration<?> registration2 = null;
 
         if (null != context) {
-            // Prepare properties to be picked up by DelayedMBeanActivator 
+            // Prepare properties to be picked up by DelayedMBeanActivator
             // properties is used for original domain brought by MBean
             Hashtable<String, String> properties = new Hashtable<String, String>();
             properties.put(Constants.SERVICE_VENDOR, "IBM");
             properties.put("jmx.objectname", objName);
 
-            // Prepare properties to be picked up by DelayedMBeanActivator 
+            // Prepare properties to be picked up by DelayedMBeanActivator
             // properties2 is used for domain "WebSphere"
             Hashtable<String, String> properties2 = new Hashtable<String, String>();
             properties2.put(Constants.SERVICE_VENDOR, "IBM");
@@ -171,8 +171,7 @@ public class JMXMBeanServerDelegation implements MBeanServer {
                 if (shouldBeRegisteredToWebSphereDomain(name)) {
                     registration2 = context.registerService(RequiredModelMBean.class.getName(), rtMBean, properties2);
                 }
-            }
-            else {
+            } else {
                 // In case assembler cannot get mbi, we will register the object without
                 // wrapping it to instance of RequiredModelMBean.
                 String publishedInterface = null;
@@ -190,8 +189,7 @@ public class JMXMBeanServerDelegation implements MBeanServer {
                     if (shouldBeRegisteredToWebSphereDomain(name)) {
                         registration2 = context.registerService(publishedInterface, object, properties2);
                     }
-                }
-                else {
+                } else {
                     // The object does not seems like MBean object
                     throw new MBeanRegistrationException(null, ERR_NOT_MBEAN);
                 }
@@ -221,8 +219,7 @@ public class JMXMBeanServerDelegation implements MBeanServer {
                 objectNameMap = new Hashtable<String, String>();
             }
             objectNameMap.put(objName, objNameForWebSphere);
-        }
-        else {
+        } else {
             // This should not happen.
             // Before this service is used, it should already be initialized by activator.
             throw new MBeanRegistrationException(null, ERR_BC_NOT_INIT);
@@ -258,6 +255,7 @@ public class JMXMBeanServerDelegation implements MBeanServer {
             if (null != registration) {
                 try {
                     registration.unregister();
+                    serviceTable.remove(objName);
                 } catch (IllegalStateException e) {
                     // do nothing if the registration has been unregistered.
                 }
@@ -265,12 +263,12 @@ public class JMXMBeanServerDelegation implements MBeanServer {
             if (null != registration2) {
                 try {
                     registration2.unregister();
+                    serviceTable.remove(objNameForWebSphere);
                 } catch (IllegalStateException e) {
                     // do nothing if the registration has been unregistered.
                 }
             }
-        }
-        else {
+        } else {
             // This should not happen.
             // Before this service is used, it should already be initialized by activator.
             throw new MBeanRegistrationException(null, ERR_BC_NOT_INIT);
@@ -284,8 +282,7 @@ public class JMXMBeanServerDelegation implements MBeanServer {
         if (className.equalsIgnoreCase("javax.management.modelmbean.RequiredModelMBean")) {
             RequiredModelMBean rtMBean = new RequiredModelMBean();
             return rtMBean;
-        }
-        else {
+        } else {
             return null;
         }
     }
@@ -383,24 +380,16 @@ public class JMXMBeanServerDelegation implements MBeanServer {
 
                     // Re-format object name for WebSphere domain, please note the instance.id is not included.
                     // The instance.id is meaningless as it changes every time when server is restarted.
-                    targetNameStr = (new StringBuffer(WEBSPHERE_DOMAIN_NAME)).
-                                    append(MBEAN_FIELD_BUS_ID_KEY).append("=").append(busIdValue).append(",").
-                                    append(MBEAN_FIELD_TYPE_KEY).append("=").append(typeValue).append(",").
-                                    append(MBEAN_FIELD_SERVICE_KEY).append("=").append(serviceValue).append(",").
-                                    append(MBEAN_FIELD_PORT_KEY).append("=").append(portValue).append(",").
-                                    append(MBEAN_FIELD_NAME_KEY).append("=").append(nameTargetValue).toString();
-                }
-                else {
+                    targetNameStr = (new StringBuffer(WEBSPHERE_DOMAIN_NAME)).append(MBEAN_FIELD_BUS_ID_KEY).append("=").append(busIdValue).append(",").append(MBEAN_FIELD_TYPE_KEY).append("=").append(typeValue).append(",").append(MBEAN_FIELD_SERVICE_KEY).append("=").append(serviceValue).append(",").append(MBEAN_FIELD_PORT_KEY).append("=").append(portValue).append(",").append(MBEAN_FIELD_NAME_KEY).append("=").append(nameTargetValue).toString();
+                } else {
                     // No enough information to spell name value.
                     targetNameStr += "," + MBEAN_FIELD_NAME_KEY + "=" + nameTargetValue;
                 }
-            }
-            else {
+            } else {
                 // Not web service endpoint, no rule defined, so use default.
                 targetNameStr += "," + MBEAN_FIELD_NAME_KEY + "=" + nameTargetValue;
             }
-        }
-        else {
+        } else {
             // if "name" is already presents in object name, then no need to add it.
         }
 
@@ -413,31 +402,34 @@ public class JMXMBeanServerDelegation implements MBeanServer {
         if (null == typeValue) {
             // No type identified
             result = true;
-        }
-        else if (typeValue.equalsIgnoreCase(MBEAN_TYPE_BUS) ||
-                 typeValue.equalsIgnoreCase(MBEAN_TYPE_WORK_QUEUE_MANAGER)) {
+        } else if (typeValue.equalsIgnoreCase(MBEAN_TYPE_BUS) ||
+                   typeValue.equalsIgnoreCase(MBEAN_TYPE_WORK_QUEUE_MANAGER)) {
             result = false;
         }
         return result;
     }
 
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
+    public ObjectInstance createMBean(String className,
+                                      ObjectName name) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
         throw new MBeanRegistrationException(null, ERR_UNSUPPORTED_METHOD);
     }
 
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
+    public ObjectInstance createMBean(String className, ObjectName name,
+                                      ObjectName loaderName) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
         throw new MBeanRegistrationException(null, ERR_UNSUPPORTED_METHOD);
     }
 
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name, Object[] params, String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
+    public ObjectInstance createMBean(String className, ObjectName name, Object[] params,
+                                      String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException {
         throw new MBeanRegistrationException(null, ERR_UNSUPPORTED_METHOD);
     }
 
     @Override
-    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName, Object[] params, String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
+    public ObjectInstance createMBean(String className, ObjectName name, ObjectName loaderName, Object[] params,
+                                      String[] signature) throws ReflectionException, InstanceAlreadyExistsException, MBeanRegistrationException, MBeanException, NotCompliantMBeanException, InstanceNotFoundException {
         throw new MBeanRegistrationException(null, ERR_UNSUPPORTED_METHOD);
     }
 
@@ -475,7 +467,8 @@ public class JMXMBeanServerDelegation implements MBeanServer {
     }
 
     @Override
-    public void setAttribute(ObjectName name, Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
+    public void setAttribute(ObjectName name,
+                             Attribute attribute) throws InstanceNotFoundException, AttributeNotFoundException, InvalidAttributeValueException, MBeanException, ReflectionException {
         throw new InstanceNotFoundException(ERR_UNSUPPORTED_METHOD);
     }
 
@@ -517,7 +510,8 @@ public class JMXMBeanServerDelegation implements MBeanServer {
     }
 
     @Override
-    public void removeNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, ListenerNotFoundException {
+    public void removeNotificationListener(ObjectName name, ObjectName listener, NotificationFilter filter,
+                                           Object handback) throws InstanceNotFoundException, ListenerNotFoundException {
         throw new InstanceNotFoundException(ERR_UNSUPPORTED_METHOD);
     }
 
@@ -527,7 +521,8 @@ public class JMXMBeanServerDelegation implements MBeanServer {
     }
 
     @Override
-    public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter, Object handback) throws InstanceNotFoundException, ListenerNotFoundException {
+    public void removeNotificationListener(ObjectName name, NotificationListener listener, NotificationFilter filter,
+                                           Object handback) throws InstanceNotFoundException, ListenerNotFoundException {
         throw new InstanceNotFoundException(ERR_UNSUPPORTED_METHOD);
     }
 

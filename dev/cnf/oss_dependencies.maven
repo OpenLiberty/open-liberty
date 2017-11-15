@@ -69,7 +69,7 @@ javax.mail:javax.mail-api:1.6.0
 javax.persistence:javax.persistence-api:2.2
 javax.resource:javax.resource-api:1.7
 javax.security.auth.message:javax.security.auth.message-api:1.1
-javax.security.enterprise:javax.security.enterprise-api:1.0-b11
+javax.security.enterprise:javax.security.enterprise-api:1.0
 javax.security.jacc:javax.security.jacc-api:1.5
 javax.servlet.jsp:javax.servlet.jsp-api:2.3.2-b01
 javax.servlet:javax.servlet-api:3.1.0
