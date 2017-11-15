@@ -10,7 +10,8 @@ Subsystem-Name: Opentracing 1.0
 IBM-API-Package: io.opentracing;  type="third-party",\
                  io.opentracing.tag;  type="third-party",\
                  io.opentracing.propagation;  type="third-party", \
-                 com.ibm.ws.opentracing.tracer; type="ibm-spi"
+                 com.ibm.ws.opentracing.tracer; type="ibm-spi", \
+                 org.eclipse.microprofile.opentracing; type="ibm-api"
                  
 -features=com.ibm.websphere.appserver.jaxrs-2.0; ibm.tolerates:=2.1, \
           com.ibm.websphere.appserver.cdi-1.2; ibm.tolerates:=2.0, \
