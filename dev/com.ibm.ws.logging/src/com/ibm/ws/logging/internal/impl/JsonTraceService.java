@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.impl;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 
@@ -22,6 +24,7 @@ import com.ibm.ws.logging.WsTraceRouter;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
+import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
 
@@ -42,6 +45,7 @@ public class JsonTraceService extends BaseTraceService {
     // for now always have it configured?
     private static volatile boolean isMessageJsonConfigured = false;
     private static volatile boolean isConsoleJsonConfigured = false;
+    private static volatile Object sync = new Object();
 
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -55,14 +59,6 @@ public class JsonTraceService extends BaseTraceService {
          * YES- early messages.... DYKC-problem Early Messages!?!?!
          * Then should this be 'configured in' setupCollectormanagerPipline....
          */
-//DYKC     _______ ____    _____   ____
-//      |__   __/ __ \  |  __ \ / __ \
-//         | | | |  | | | |  | | |  | |
-//         | | | |  | | | |  | | |  | |
-//         | | | |__| | | |__| | |__| |
-//         |_|  \____/  |_____/ \____/
-        //do we even need setup colletor manage pipeline?
-        //setupCollectorManagerPipeline(config);
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
             collectorMgrPipelineUtils.setJsonTrService(isJSON);//DYKC-temp this should be true.. because we are a jsontraceservice
@@ -81,15 +77,45 @@ public class JsonTraceService extends BaseTraceService {
             //mesageLogConfigured
             //consoleLogConfigured
 
-//          if (mesageLogConfigured){
-            if (messageLogHandler == null) {
-                messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
+            String messageLogConfiguration = "json"; //DYKC-temp //retrieve configured value
+            List<String> messageSourceList = new ArrayList<String>(); //DYKC-temp //retrieve configured list - if configured
+
+            //DYKC-temp
+            //DYKC-debug
+            messageSourceList.add("message");
+            messageSourceList.add("trace");
+            messageSourceList.add("ffdc");
+            messageSourceList.add("garbageCollection");
+            messageSourceList.add("accessLog");
+
+            //DYKC-temp
+            //DYKC-debug
+            //How to best filter out messages and trace so that Handler won't init a buffermanager for those.
+            //1. Do it here
+            //2. Do it in Handler
+            //3. Do it in CollectorManager
+            List<String> filterdSourceList = new ArrayList<String>(messageSourceList);
+            filterdSourceList.remove("message");
+            filterdSourceList.remove("trace");
+
+            //if messageLog has been configured
+            if (messageLogConfiguration.toLowerCase().equals("json".toLowerCase())) {
+                //If there exists no messageLogHandler, create one; otherwise call modified();
+                if (messageLogHandler == null) {
+                    messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdSourceList);
+                    messageLogHandler.setSync(sync);
+                } else {
+                    messageLogHandler.modified(filterdSourceList);
+                }
+                //for any 'updates'
                 messageLogHandler.setFileLogHolder(messagesLog);
+                //Make the utils aware of the handler
+                collectorMgrPipelineUtils.setHandler(messageLogHandler);
+                isMessageJsonConfigured = true; //DYKC-temp not the best way, configure to json.
+
+                //configure messages and/or trace
+                setUnsetLogTrace(messageSourceList, messageLogHandler);
             }
-            messageLogHandler.modified(config);
-            collectorMgrPipelineUtils.setHandler(messageLogHandler);
-            isMessageJsonConfigured = true; //DYKC-temp not the best way, configure to json.
-//          }
 
 //          if (consoleLogConfigured){
 //          if (consoleLogHandler == null) {
@@ -105,60 +131,23 @@ public class JsonTraceService extends BaseTraceService {
              * i.e If user wanted message, assign message, if use wants both, assign both
              */
             //DYKC-temp forcing messageLogHandler to take both as there is no configuration/external logic yet
-            logConduit.addSyncHandler(messageLogHandler);
-            traceConduit.addSyncHandler(messageLogHandler);
-
+            //logConduit.addSyncHandler(messageLogHandler);
+            //traceConduit.addSyncHandler(messageLogHandler);
         }
-
     }
 
-    /*
-     * Set up that pipeline.
-     * Should pass in config regarding if it is for messages.log or stdout
-     */
-    private void setupCollectorManagerPipeline(LogProviderConfig config) {
-        if (collectorMgrPipelineUtils == null) {
-            collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
-            collectorMgrPipelineUtils.setJsonTrService(isJSON);//DYKC-temp this should be true.. because we are a jsontraceservice
-
-            //Sources
-            logSource = collectorMgrPipelineUtils.getLogSource();
-            traceSource = collectorMgrPipelineUtils.getTraceSource();
-
-            //Conduits
-            logConduit = collectorMgrPipelineUtils.getLogConduit();
-            traceConduit = collectorMgrPipelineUtils.getTraceConduit();
-
-            //DYKC-TODO create the appropriate handler, ie console vs message
-            //based on config infromation.
-            if (messageLogHandler == null) {
-                messageLogHandler = new MessageLogHandler(serverName, wlpUserDir);
-            }
-            //DYKC     _______ ____    _____   ____
-//              |__   __/ __ \  |  __ \ / __ \
-//                 | | | |  | | | |  | | |  | |
-//                 | | | |  | | | |  | | |  | |
-//                 | | | |__| | | |__| | |__| |
-//                 |_|  \____/  |_____/ \____/
-//config handler?
-            messageLogHandler.modified(config);
-            messageLogHandler.setFileLogHolder(messagesLog);
-            //logSource.setHandler(messageLogHandler); //DYKC-temp hardwire handler to source
-            collectorMgrPipelineUtils.setHandler(messageLogHandler);
-
-            /*
-             * DYKC-TODO
-             * Based on config, need to add the syncrhonized to configured source/conduit
-             * i.e If user wanted message, assign message, if use wants both, assign both
-             */
-            //DYKC-temp forcing messageLogHandler to take both as there is no configuration/external logic yet
-            logConduit.addSyncHandler(messageLogHandler);
-            traceConduit.addSyncHandler(messageLogHandler);
-
+    private void setUnsetLogTrace(List<String> sourceList, SyncrhonousHandler handler) {
+        if (sourceList.contains("message")) {
+            logConduit.addSyncHandler(handler);
+        } else {
+            logConduit.removeSyncHandler(handler);
         }
 
-        isMessageJsonConfigured = true; //DYKC-temp not the best way, configure to json.
-
+        if (sourceList.contains("trace")) {
+            traceConduit.addSyncHandler(handler);
+        } else {
+            traceConduit.removeSyncHandler(handler);
+        }
     }
 
     @Override
@@ -263,6 +252,13 @@ public class JsonTraceService extends BaseTraceService {
     }
 
     @Override
+    protected void initializeWriters(LogProviderConfigImpl config) {
+        synchronized (sync) {
+            super.initializeWriters(config);
+        }
+    }
+
+    @Override
     public void publishLogRecord(LogRecord logRecord) {
         String formattedMsg = null;
         String formattedVerboseMsg = null;
@@ -294,7 +290,8 @@ public class JsonTraceService extends BaseTraceService {
             if (!isMessageJsonConfigured && !isConsoleJsonConfigured) {
                 //messageLogHandler.writeToLogNormal(messageLogFormat);
                 //keep old behaviour.. otherwise we're just sending it to handler to write to the same log anyways
-                messagesLog.writeRecord(messageLogFormat);
+                //messagesLog.writeRecord(messageLogFormat);
+                messageLogHandler.writeToLogNormal(messageLogFormat);
             }
 
             // console.log

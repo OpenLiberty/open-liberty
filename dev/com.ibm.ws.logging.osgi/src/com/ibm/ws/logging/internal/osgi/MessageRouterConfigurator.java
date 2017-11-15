@@ -183,11 +183,9 @@ public class MessageRouterConfigurator implements BundleListener {
     	//DYKC
     	//If it is a jsonTrService, then we don't want early messages, and the opposite is true if it is not a jsonTrService
     	if (CollectorManagerPipelineUtils.getInstance().getJsonTrService()) {
-    		System.out.println("MessageRouterConfigurator ~~~~ setting message router false");
     		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), false);
     	}
     	else {
-    		System.out.println("MessageRouterConfigurator ~~~~ setting message router true");
     		getMessageRouter().setWsLogHandler((String) ref.getProperty("id"), bundleContext.getService(ref), true);   		
     	}
 

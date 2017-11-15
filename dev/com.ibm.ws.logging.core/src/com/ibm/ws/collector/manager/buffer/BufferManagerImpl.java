@@ -53,15 +53,11 @@ public class BufferManagerImpl extends BufferManager {
 		if (event == null)
 			throw new NullPointerException();
 		//DYCK- effectively reoves it from JSON output, but is still there for normal trace.log
-		ThreadLocalHandler.set(Boolean.TRUE);
-		try {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Adding event to buffer " + event);
-			}
-			ringBuffer.add(event);
-		} finally {
-			ThreadLocalHandler.remove();
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			//Tr.debug(tc, "Adding event to buffer " + event);
 		}
+		ringBuffer.add(event);
+
 
 	}
 
@@ -112,9 +108,15 @@ public class BufferManagerImpl extends BufferManager {
 	}
 
 	public void addSyncHandler(SyncrhonousHandler syncHandler) {
-		// DYKC
-		System.out.println("Adding a syncrhnous handler " + syncHandler.getHandlerName());
+		// DYKC-debug
+		System.out.println("Adding a synchronous handler " + syncHandler.getHandlerName());
 		synchronizedHandlerSet.add(syncHandler);
+	}
+	
+	public void removeSyncHandler(SyncrhonousHandler syncHandler) {
+		// DYKC-debug
+		System.out.println("removing a synchronous handler " + syncHandler.getHandlerName());
+		synchronizedHandlerSet.remove(syncHandler);
 	}
 
 	public void removeHandler(String handlerId) {

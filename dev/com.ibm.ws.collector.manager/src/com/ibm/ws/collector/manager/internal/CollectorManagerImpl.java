@@ -90,7 +90,7 @@ public class CollectorManagerImpl implements CollectorManager {
      * When a source is bound, handle all pending subscriptions for the source.
      */
     public synchronized void setSource(Source source) {
-        System.out.println("CollectorManagerIMPL - setting source " + source.getSourceName());
+        //System.out.println("CollectorManagerIMPL - setting source " + source.getSourceName()); //DYKC-temp //DYKC-debug
         String sourceId = CollectorManagerUtils.getSourceId(source);
         SourceManager srcMgr = null;
         if (!sourceMgrs.containsKey(sourceId)) {
