@@ -60,7 +60,7 @@ javac.encoding: UTF-8
 -releaserepo: ${if;${is.remote.publishing};RemotePublish;Release}
 -baselinerepo: Release
 -buildrepo: Local
--groupid: ${if;${test.project};test;dev}
+-groupid: ${if;${test.project};test;io.openliberty}
 -pom: 
 #-dsannotations-options: version;minimum=1.2
 

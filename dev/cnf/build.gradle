@@ -43,7 +43,7 @@ task createIvyXml {
                         if ('true'.equals(bndProject.get('test.project', 'false'))) {
                             (org, name) = ['test', bsn]
                         } else {
-                            (org, name) = ['dev', bsn]
+                            (org, name) = ['io.openliberty', bsn]
                         }
                         depsList = depsList + '        <dependency org="' + org + '" name="' + name + '" rev="' + bndProject.getVersion(bsn) + '"/>\n'
                         depsListLatest = depsListLatest + '        <dependency org="' + org + '" name="' + name + '" rev="latest.integration"/>\n'
@@ -87,7 +87,7 @@ task createGradleBootstrap {
                         if ('true'.equals(bndProject.get('test.project', 'false'))) {
                             (org, name) = ['test', bsn]
                         } else {
-                            (org, name) = ['dev', bsn]
+                            (org, name) = ['io.openliberty', bsn]
                         }
                         depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '\'\n'
                     }
