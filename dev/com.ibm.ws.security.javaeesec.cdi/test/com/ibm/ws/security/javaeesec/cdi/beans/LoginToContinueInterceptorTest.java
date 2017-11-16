@@ -13,45 +13,20 @@ package com.ibm.ws.security.javaeesec.cdi.beans;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
-import java.lang.StringBuffer;
-import java.io.IOException;
-import java.util.Set;
-import java.util.HashSet;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.el.ELProcessor;
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
-
 import javax.interceptor.InvocationContext;
-
 import javax.security.auth.message.MessageInfo;
-
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
-
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.ibm.ws.security.jaspi.JaspiConstants;
-import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
-import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
-
-import com.ibm.ws.security.javaeesec.JavaEESecConstants;
-import com.ibm.ws.webcontainer.security.AuthResult;
-import com.ibm.ws.webcontainer.security.AuthenticationResult;
-import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
-import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
-import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
-import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
-import com.ibm.ws.webcontainer.security.WebRequest;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -65,6 +40,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
 
+import com.ibm.ws.security.javaeesec.JavaEESecConstants;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.webcontainer.security.AuthenticationResult;
+import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
+import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
+import com.ibm.ws.webcontainer.security.WebRequest;
+import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
+import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+
 import test.common.SharedOutputManager;
 
 public class LoginToContinueInterceptorTest {
@@ -76,11 +60,11 @@ public class LoginToContinueInterceptorTest {
     };
 
     @SuppressWarnings("rawtypes")
-    
+
     private InvocationContext ici, icm;
     private ModulePropertiesProvider mpp;
     private Instance<ModulePropertiesProvider> mppi;
-    
+
     private LoginToContinueInterceptor ltci;
     private ReferrerURLCookieHandler ruh;
     private WebAppSecurityConfig wasc;
@@ -97,10 +81,10 @@ public class LoginToContinueInterceptorTest {
 
     private boolean isInterceptedMethod = false;
     private Class hamClass = null;
-    private Class CUSTOM_FORM_CLASS = CustomFormAuthenticationMechanism.class;
-    private Class FORM_CLASS = FormAuthenticationMechanism.class;
-    private Class CUSTOM_HAM_CLASS = String.class;
-    
+    private final Class CUSTOM_FORM_CLASS = CustomFormAuthenticationMechanism.class;
+    private final Class FORM_CLASS = FormAuthenticationMechanism.class;
+    private final Class CUSTOM_HAM_CLASS = String.class;
+
     private final String LOGIN_PAGE = "/login.jsp";
     private final String ERROR_PAGE = "/error.jsp";
 
@@ -160,24 +144,31 @@ public class LoginToContinueInterceptorTest {
                 return hamClass;
             }
 
+            @Override
             protected Class getTargetClass(InvocationContext ic) {
                 return hamClass;
             }
 
             @Override
-             protected WebAppSecurityConfig getWebSAppSeurityConfig() {
-                 return wasc;
-             }
+            protected WebAppSecurityConfig getWebSAppSeurityConfig() {
+                return wasc;
+            }
 
             @Override
-             protected ELProcessor getELProcessorWithAppModuleBeanManagerELResolver() {
-                 return elp;
-             }
+            protected ELProcessor getELProcessorWithAppModuleBeanManagerELResolver() {
+                return elp;
+            }
 
             @Override
             protected CDI getCDI() {
                 return cdi;
             }
+
+            @Override
+            protected SecurityMetadata getSecurityMetadata() {
+                return smd;
+            }
+
         };
     }
 
@@ -188,8 +179,8 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  initialize with no EL.
-     *  make sure that resolved is set true, isForward is set as specified, elForward is null;
+     * initialize with no EL.
+     * make sure that resolved is set true, isForward is set as specified, elForward is null;
      */
     @Test
     public void testInitializeNoEL() throws Exception {
@@ -207,8 +198,8 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  initialize with immediate EL with Form HAM.
-     *  make sure that resolved is set true, isForward is set as specified, elForward is the unrwrapped EL value;
+     * initialize with immediate EL with Form HAM.
+     * make sure that resolved is set true, isForward is set as specified, elForward is the unrwrapped EL value;
      */
     @Test
     public void testInitializeELImmediateWithForm() throws Exception {
@@ -229,9 +220,9 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  initialize with immediate EL with CustomForm HAM.
-     *  in this case, even it is emmediate EL, it's treated as deferred.
-     *  make sure that resolved is set false, isForward is unknown, elForward is the unrwrapped EL value;
+     * initialize with immediate EL with CustomForm HAM.
+     * in this case, even it is emmediate EL, it's treated as deferred.
+     * make sure that resolved is set false, isForward is unknown, elForward is the unrwrapped EL value;
      */
     @Test
     public void testInitializeELImmediateWithCustomForm() throws Exception {
@@ -250,8 +241,8 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  initialize with deferred EL with Form HAM.
-     *  make sure that resolved is set true, isForward is unknown, elForward is the unrwrapped EL value;
+     * initialize with deferred EL with Form HAM.
+     * make sure that resolved is set true, isForward is unknown, elForward is the unrwrapped EL value;
      */
     @Test
     public void testInitializeELDeferredWithForm() throws Exception {
@@ -271,8 +262,8 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  initialize with deferred EL with CustomForm HAM.
-     *  make sure that resolved is set true, isForward is unknown, elForward is the unrwrapped EL value;
+     * initialize with deferred EL with CustomForm HAM.
+     * make sure that resolved is set true, isForward is unknown, elForward is the unrwrapped EL value;
      */
     @Test
     public void testInitializeELDeferredWithCustomForm() throws Exception {
@@ -292,10 +283,10 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  valid method. valid objects.
-     *  use immediate EL. Make sure that el resolution happens during initiallization, and does not happen 
-     *  while intercepting the request.
-     *  Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     * valid method. valid objects.
+     * use immediate EL. Make sure that el resolution happens during initiallization, and does not happen
+     * while intercepting the request.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
     @Test
     public void testInterceptContinueFormELImmediate() throws Exception {
@@ -310,7 +301,7 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl ="http://localhost:80/contextRoot/request.html";
+        String requestUrl = "http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withAuthParams();
         withELP(elpi, elValue, Boolean.FALSE).withNoELP(elpm);
         ltci.initialize(ici);
@@ -318,9 +309,9 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  valid method. valid objects.
-     *  use deferred EL. Make sure that el resolution happens every interception.
-     *  Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     * valid method. valid objects.
+     * use deferred EL. Make sure that el resolution happens every interception.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
     @Test
     public void testInterceptContinueFormELDeferred() throws Exception {
@@ -335,7 +326,7 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl ="http://localhost:80/contextRoot/request.html";
+        String requestUrl = "http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withAuthParams();
         withELP(elpm, elValue, Boolean.FALSE).withNoELP(elpi);
         ltci.initialize(ici);
@@ -343,8 +334,8 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  valid method. valid objects.
-     *  Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
     @Test
     public void testInterceptContinueFormRedirect() throws Exception {
@@ -356,7 +347,7 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl ="http://localhost:80/contextRoot/request.html";
+        String requestUrl = "http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withNoELP().withAuthParams();
 
         ltci.initialize(ici);
@@ -364,8 +355,8 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  valid method. valid objects.
-     *  Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
     @Test
     public void testInterceptContinueFormForward() throws Exception {
@@ -377,7 +368,7 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.TRUE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl ="http://localhost:80/contextRoot/request.html";
+        String requestUrl = "http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
 
         ltci.initialize(ici);
@@ -385,8 +376,8 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  valid method. valid objects.
-     *  Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
     @Test
     public void testInterceptContinueFormDefault() throws Exception {
@@ -397,15 +388,15 @@ public class LoginToContinueInterceptorTest {
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl ="http://localhost:80/contextRoot/request.html";
+        String requestUrl = "http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
     }
 
     /**
-     *  valid method. valid objects.
-     *  Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
     @Test
     public void testInterceptSuccessCustomForm() throws Exception {
@@ -415,15 +406,15 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SUCCESS;
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl ="http://localhost:80/contextRoot/request.html";
+        String requestUrl = "http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams();
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
 
     /**
-     *  valid method. valid objects.
-     *  Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
+     * valid method. valid objects.
+     * Make sure that AuthenticationStatus.SUCCESS is returned along with redirection to the original url.
      */
     @Test
     public void testInterceptSuccessForm() throws Exception {
@@ -433,15 +424,15 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SUCCESS;
         Properties props = new Properties();
         String storedReq = "http://localhost:80/contextRoot/original.html";
-        String requestUrl ="http://localhost:80/contextRoot/request.html";
+        String requestUrl = "http://localhost:80/contextRoot/request.html";
         withInvocationContext(expect).withParams().withReferrer().withGetURL(storedReq, requestUrl).withAuthParams();
 
         assertEquals("The SUCCESS should be returned.", expect, ltci.intercept(icm));
     }
 
     /**
-     *  valid method. No ModulePropertiesProvider object.
-     *  Make sure that AuthenticationStatus.SEND_FAILURE is returned along with the error message in the log file.
+     * valid method. No ModulePropertiesProvider object.
+     * Make sure that AuthenticationStatus.SEND_FAILURE is returned along with the error message in the log file.
      */
     @Test
     public void testInterceptNoMpp() throws Exception {
@@ -453,7 +444,7 @@ public class LoginToContinueInterceptorTest {
     }
 
     /**
-     *  Unrelated method invocation, make sure that the target method is invoked.
+     * Unrelated method invocation, make sure that the target method is invoked.
      */
     @Test
     public void testInterceptDifferentMethod() throws Exception {
@@ -477,7 +468,7 @@ public class LoginToContinueInterceptorTest {
 
     @SuppressWarnings("unchecked")
     private LoginToContinueInterceptorTest withParams() throws Exception {
-        final Object[] params = {req, res, hmc};
+        final Object[] params = { req, res, hmc };
         mockery.checking(new Expectations() {
             {
                 one(icm).getParameters();
@@ -537,8 +528,6 @@ public class LoginToContinueInterceptorTest {
 
     @SuppressWarnings("unchecked")
     private LoginToContinueInterceptorTest withProps(final Properties props) throws Exception {
-        final HashMap map = new HashMap();
-        map.put(JaspiConstants.SECURITY_WEB_REQUEST, wr);
         mockery.checking(new Expectations() {
             {
                 one(cdi).select(ModulePropertiesProvider.class);
@@ -546,14 +535,8 @@ public class LoginToContinueInterceptorTest {
                 one(mppi).get();
                 will(returnValue(mpp));
                 // when trace is enabled, number of invocation would change, therefore it is set as 1 to 3.
-                between(1,3).of(mpp).getAuthMechProperties(with(any(Class.class)));
+                between(1, 3).of(mpp).getAuthMechProperties(with(any(Class.class)));
                 will(returnValue(props));
-                one(hmc).getMessageInfo();
-                will(returnValue(mi));
-                one(mi).getMap();
-                will(returnValue(map));
-                one(wr).getSecurityMetadata();
-                will(returnValue(smd));
                 one(smd).setLoginConfiguration(with(any(LoginConfiguration.class)));
             }
         });

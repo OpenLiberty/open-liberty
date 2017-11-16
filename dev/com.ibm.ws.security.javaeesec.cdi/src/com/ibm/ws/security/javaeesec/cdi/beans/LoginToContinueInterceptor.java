@@ -11,22 +11,17 @@
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import java.io.IOException;
-import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Properties;
-import java.util.Set;
 
-import javax.annotation.Priority;
 import javax.annotation.PostConstruct;
+import javax.annotation.Priority;
 import javax.el.ELProcessor;
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.Bean;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
-import javax.security.auth.message.MessageInfo;
 import javax.security.enterprise.AuthenticationStatus;
 import javax.security.enterprise.authentication.mechanism.http.AuthenticationParameters;
 import javax.security.enterprise.authentication.mechanism.http.HttpMessageContext;
@@ -40,23 +35,24 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.genericbnf.PasswordNullifier;
-import com.ibm.ws.security.jaspi.JaspiConstants;
+import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
+import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.webcontainer.security.AuthResult;
 import com.ibm.ws.webcontainer.security.AuthenticationResult;
 import com.ibm.ws.webcontainer.security.PostParameterHelper;
 import com.ibm.ws.webcontainer.security.ReferrerURLCookieHandler;
 import com.ibm.ws.webcontainer.security.WebAppSecurityConfig;
-import com.ibm.ws.webcontainer.security.WebRequest;
 import com.ibm.ws.webcontainer.security.metadata.FormLoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.FormLoginConfigurationImpl;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.LoginConfigurationImpl;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
  *
@@ -73,7 +69,7 @@ public class LoginToContinueInterceptor {
     private String elForward = null;
 
     @PostConstruct
-    public void initialize (InvocationContext ic) {
+    public void initialize(InvocationContext ic) {
         mpp = getModulePropertiesProvider();
         if (mpp != null) {
             Class hamClass = getTargetClass(ic);
@@ -109,7 +105,7 @@ public class LoginToContinueInterceptor {
                         // redirect to the original url.
                         postLoginProcess(req, res, isCustomForm);
                     } else if (result.equals(AuthenticationStatus.SEND_FAILURE)) {
-                        if(isCustomForm(hamClass)) {
+                        if (isCustomForm(hamClass)) {
                             rediectErrorPage(mpp.getAuthMechProperties(hamClass), req, res);
                         }
                     }
@@ -129,10 +125,8 @@ public class LoginToContinueInterceptor {
         String errorPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE);
         boolean useForwardToLogin = getUseForwardToLogin();
         AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
-        // update security metadata.
-        MessageInfo msgInfo = httpMessageContext.getMessageInfo();
-        WebRequest webRequest = (WebRequest) msgInfo.getMap().get(JaspiConstants.SECURITY_WEB_REQUEST);
-        updateFormLoginConfiguration(loginPage, errorPage, webRequest.getSecurityMetadata());
+
+        updateFormLoginConfiguration(loginPage, errorPage);
         // set wasrequrl cookie and postparam cookie.
         setCookies(req, res);
 
@@ -164,7 +158,8 @@ public class LoginToContinueInterceptor {
                 if (!isCustomHAM) {
                     ELProcessor elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
                     isForward = (Boolean) elProcessor.eval(elForward);
-                    if (tc.isDebugEnabled()) Tr.debug(tc, "elForward : " + elForward + ", result of elProcessor.eval : " + isForward);
+                    if (tc.isDebugEnabled())
+                        Tr.debug(tc, "elForward : " + elForward + ", result of elProcessor.eval : " + isForward);
                     resolved = true;
                 }
             }
@@ -186,19 +181,26 @@ public class LoginToContinueInterceptor {
         } else {
             ELProcessor elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
             Boolean result = (Boolean) elProcessor.eval(elForward);
-            if (tc.isDebugEnabled()) Tr.debug(tc, "elForward : " + elForward + ", result of elProcessor.eval : " + result);
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "elForward : " + elForward + ", result of elProcessor.eval : " + result);
             return result.booleanValue();
         }
     }
 
-    private void updateFormLoginConfiguration(String loginPage, String errorPage, SecurityMetadata securityMetadata) {
+    private void updateFormLoginConfiguration(String loginPage, String errorPage) {
         if (loginPage != null && errorPage != null) {
             FormLoginConfiguration flc = new FormLoginConfigurationImpl(loginPage, errorPage);
             LoginConfiguration lc = new LoginConfigurationImpl(LoginConfiguration.FORM, null, flc);
-            securityMetadata.setLoginConfiguration(lc);
+            getSecurityMetadata().setLoginConfiguration(lc);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "LoginConfiguration was updated. " + lc);
         }
+    }
+
+    protected SecurityMetadata getSecurityMetadata() {
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
+        return (SecurityMetadata) wmmd.getSecurityMetaData();
     }
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustomForm) throws IOException, RuntimeException {
@@ -218,7 +220,6 @@ public class LoginToContinueInterceptor {
         res.setHeader("Location", res.encodeURL(storedReq));
         res.setStatus(HttpServletResponse.SC_FOUND);
     }
-
 
     protected void rediectErrorPage(Properties props, HttpServletRequest req, HttpServletResponse res) throws IOException {
         String errorPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE);
@@ -348,7 +349,6 @@ public class LoginToContinueInterceptor {
         return CDI.current();
     }
 
-
     protected void setMPP(ModulePropertiesProvider mpp) {
         this.mpp = mpp;
     }
@@ -369,7 +369,7 @@ public class LoginToContinueInterceptor {
         return isForward;
     }
 
-    protected String  getElForward() {
+    protected String getElForward() {
         return elForward;
     }
 }
