@@ -1174,29 +1174,54 @@ public class FeatureManagerToolTest extends FeatureToolTestCommon {
     /**
      * This tests that when an ESA is installed that adds a JAR that had been previously ifixed then it should print a warning.
      */
-    @Test
-    public void testIFixedJar() throws Exception {
-        final String METHOD_NAME = "testIFixedJar";
-        Log.entering(c, METHOD_NAME);
 
+    /*
+     * @Test
+     * public void testIFixedJar() throws Exception {
+     * final String METHOD_NAME = "testIFixedJar";
+     * Log.entering(c, METHOD_NAME);
+     *
+     * // First install the ifix
+     * this.filesToTidy.add("lib/fixes/iFix1.xml");
+     * this.filesToTidy.add("lib/fixes/iFix1.lpmf");
+     * LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getInstallRoot() + "/lib/fixes", "publish/features/iFix1.xml");
+     * LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getInstallRoot() + "/lib/fixes", "publish/features/iFix1.lpmf");
+     *
+     * // Now install the feature
+     * filesToTidy.add("lib/features/usertest1.mf");
+     * filesToTidy.add("lib/usertest_1.0.0.jar");
+     * ProgramOutput po = server.installFeature(CORE_PRODUCT_NAME, "usertest_core");
+     *
+     * Log.info(c, METHOD_NAME, po.getStdout());
+     *
+     * assertEquals("The feature should have been installed. stdout:\r\n" + po.getStdout(), 0, po.getReturnCode());
+     * assertTrue("A message saying the iFix would need to be applied should have been printed:\r\n" + po.getStdout(),
+     * po.getStdout().contains("iFix1"));
+     *
+     * Log.exiting(c, METHOD_NAME);
+     * }
+     */
+
+    @Test
+    public void testIFixedJarFeatureManager() throws Exception {
+        final String METHOD_NAME = "testIFixedJarusingFeatureManaaer";
+        Log.entering(c, METHOD_NAME);
         // First install the ifix
         this.filesToTidy.add("lib/fixes/iFix1.xml");
         this.filesToTidy.add("lib/fixes/iFix1.lpmf");
         LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getInstallRoot() + "/lib/fixes", "publish/features/iFix1.xml");
         LibertyFileManager.copyFileIntoLiberty(server.getMachine(), server.getInstallRoot() + "/lib/fixes", "publish/features/iFix1.lpmf");
-
-        // Now install the feature
-        filesToTidy.add("lib/features/usertest.mf");
-        filesToTidy.add("lib/usertest_1.0.0.jar");
-        ProgramOutput po = server.installFeature(USR_PRODUCT_NAME, "usertest");
-
-        Log.info(c, METHOD_NAME, po.getStdout());
+        ProgramOutput po = server.getMachine().execute(server.getInstallRoot() + "/bin/featureManager",
+                                                       new String[] { "install", "usertest_core.esa", "--to=core",
+                                                                      "--from=" + server.getInstallRoot() + "lib/features" },
+                                                       server.getInstallRoot());
 
         assertEquals("The feature should have been installed. stdout:\r\n" + po.getStdout(), 0, po.getReturnCode());
         assertTrue("A message saying the iFix would need to be applied should have been printed:\r\n" + po.getStdout(),
                    po.getStdout().contains("iFix1"));
 
         Log.exiting(c, METHOD_NAME);
+
     }
 
     /**
@@ -1204,7 +1229,7 @@ public class FeatureManagerToolTest extends FeatureToolTestCommon {
      */
     @Test
     public void testExistingBundles() throws Exception {
-        final String METHOD_NAME = "testIFixedJar";
+        final String METHOD_NAME = "testExistingBundles";
         Log.entering(c, METHOD_NAME);
 
         ProgramOutput po = server.installFeature(null, "usertest");
@@ -1225,7 +1250,7 @@ public class FeatureManagerToolTest extends FeatureToolTestCommon {
      */
     @Test
     public void testExistingBundlesWithIgnore() throws Exception {
-        final String METHOD_NAME = "testIFixedJar";
+        final String METHOD_NAME = "testExistingBundlesWithIgnore";
         Log.entering(c, METHOD_NAME);
 
         ProgramOutput po = server.installFeature(null, "usertest");
