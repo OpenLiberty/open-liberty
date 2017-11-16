@@ -138,17 +138,17 @@ public class LogProviderConfigImpl implements LogProviderConfig {
 
         // Check ENV to see if the sources and formats are set
         messageSource = LoggingConfigUtils.parseStringCollection("messageSource",
-                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_MESSAGE_LOG_SOURCE),
+                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_SOURCE),
                                                                  messageSource);
 
-        messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_MESSAGE_LOG_FORMAT),
+        messageFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_MESSAGE_FORMAT),
                                                           messageFormat);
 
         consoleSource = LoggingConfigUtils.parseStringCollection("consoleSource",
-                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_CONSOLE_LOG_SOURCE),
+                                                                 LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_SOURCE),
                                                                  consoleSource);
 
-        consoleFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_CONSOLE_LOG_FORMAT),
+        consoleFormat = LoggingConfigUtils.getStringValue(LoggingConfigUtils.getEnvValue(LoggingConstants.ENV_WLP_LOGGING_CONSOLE_FORMAT),
                                                           consoleFormat);
 
         doCommonInit(config, true);
