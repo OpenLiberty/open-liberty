@@ -169,9 +169,6 @@ public class BaseTraceService implements TrService {
     protected final Queue<RoutedMessage> earlierMessages = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[100]);
     protected final Queue<RoutedMessage> earlierTraces = new SimpleRotatingSoftQueue<RoutedMessage>(new RoutedMessage[200]);
 
-    protected volatile String serverName = null;
-    protected volatile String wlpUserDir = null;
-
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
         boolean needsToOutputInternalPackageMarker = false;
@@ -253,9 +250,6 @@ public class BaseTraceService implements TrService {
         consoleLogLevel = trConfig.getConsoleLogLevel();
         copySystemStreams = trConfig.copySystemStreams();
         hideMessageids = trConfig.getMessagesToHide();
-        //DYKC-nice to know what serverName and wlpUserDir is and pass it to an Handler created by JsonTrService
-        serverName = trConfig.getServerName();
-        wlpUserDir = trConfig.getWlpUsrDir();
         //add hideMessageIds to log header. This is printed when its configured in bootstrap.properties
         if (hideMessageids.size() > 0) {
             logHeader = logHeader.concat("Suppressed message ids: " + hideMessageids).concat((LoggingConstants.nl));

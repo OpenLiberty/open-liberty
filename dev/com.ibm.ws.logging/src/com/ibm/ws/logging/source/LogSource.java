@@ -24,7 +24,6 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
-import com.ibm.ws.logging.internal.impl.MessageLogHandler;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
 import com.ibm.wsspi.collector.manager.BufferManager;
@@ -39,18 +38,8 @@ public class LogSource implements Source, WsLogHandler {
     private BufferManager bufferMgr = null;
     static Pattern messagePattern;
 
-    //DYKC-temp
-    private MessageLogHandler sh = null;
-
     static {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
-    }
-
-    /**
-     *
-     */
-    public LogSource() {
-        System.out.println("LogSource.java - Creating LogSource VERSION 2.0");
     }
 
     private final AtomicLong seq = new AtomicLong();
@@ -74,7 +63,6 @@ public class LogSource implements Source, WsLogHandler {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Setting buffer manager " + this);
         }
-        System.out.println("LogSource.java - setting Buffermanger " + bufferMgr.toString());
         this.bufferMgr = bufferMgr;
     }
 
@@ -114,18 +102,7 @@ public class LogSource implements Source, WsLogHandler {
             if (logRecord != null && bufferMgr != null) {
                 bufferMgr.add(parse(routedMessage, logRecord));
             }
-            //DYKC-temp write directly to handler
-            //DYKC-problem
-            //DYKC-debug
-//            if (logRecord != null && sh != null) {
-//                sh.writeJsonifiedEvent(parse(routedMessage, logRecord));
-//            }
         }
-    }
-
-    //DYKC-temp bypass Conduit/BufferManager
-    public void setHandler(MessageLogHandler sh) {
-        this.sh = sh;
     }
 
     public MessageLogData parse(RoutedMessage routedMessage, LogRecord logRecord) {

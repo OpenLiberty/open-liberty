@@ -58,6 +58,7 @@ public class CollectorManagerImpl implements CollectorManager {
     private final Map<String, HandlerManager> handlerMgrs = new HashMap<String, HandlerManager>();
 
     protected void activate(Map<String, Object> configuration) {
+        //DYKC-debugSystem.out.println("CollectorManagerImpl - Activate");
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }
@@ -90,7 +91,7 @@ public class CollectorManagerImpl implements CollectorManager {
      * When a source is bound, handle all pending subscriptions for the source.
      */
     public synchronized void setSource(Source source) {
-        //System.out.println("CollectorManagerIMPL - setting source " + source.getSourceName()); //DYKC-temp //DYKC-debug
+        //DYKC-debug System.out.println("CollectorManagerImpl - setSource " + source.getSourceName());
         String sourceId = CollectorManagerUtils.getSourceId(source);
         SourceManager srcMgr = null;
         if (!sourceMgrs.containsKey(sourceId)) {
@@ -106,7 +107,7 @@ public class CollectorManagerImpl implements CollectorManager {
              * This is to make up for the prior logic where conduit/bufferManager
              * were created before the source was created and were set into the bufferManagerMap
              *
-             * With the new logic concerning LogSource and TraceSource for JsonLoggin, the LogSource
+             * With the new logic concerning LogSource and TraceSource for JsonLogging, the LogSource
              * and TraceSource and their respective Conduit/BufferManager were created outside of
              * CollectorManager and OSGI serviceability. Thus, the following call to processInitializedConduits
              * retrieves the conduits/bufferManagers that were created 'outside' collectorManager's realm of
@@ -235,7 +236,6 @@ public class CollectorManagerImpl implements CollectorManager {
      * When a handler is bound, call the init method of the handler.
      */
     public synchronized void setHandler(Handler handler) {
-        System.out.println("CollectorManagerIMPL - setting handler " + handler.getHandlerName());
         String handlerId = CollectorManagerUtils.getHandlerId(handler);
         HandlerManager hdlrMgr;
         if (!handlerMgrs.containsKey(handlerId)) {
@@ -367,13 +367,10 @@ public class CollectorManagerImpl implements CollectorManager {
         //The 'source' property is used by Source classes to filter if this BufferManager service is applicable for them.
         props.put("source", result[0]);
 
-        //BufferManager bufferMgr = new BufferManagerImpl(10000, sourceId);
         BufferManagerImpl bufferMgr = new BufferManagerImpl(10000, sourceId);
 
         //DYKC-review additional logic to set a syncrhonized handler into the conduits/buffers
         if (handler instanceof SyncrhonousHandler) {
-            //DYKC-debug
-            // System.out.println("I'm a heathen syncrhonous Handler I'm going to make a bufferMgr for " + result[0]);
             bufferMgr.addSyncHandler((SyncrhonousHandler) handler);
         }
 

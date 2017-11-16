@@ -17,7 +17,6 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.http.logging.data.AccessLogData;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
@@ -41,6 +40,7 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     private String serverName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
     private volatile Object sync;
+    private static volatile boolean isInit = false;
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
     List<String> hardCodedSources = new ArrayList<String>();
     List<String> sourcesList = new ArrayList<String>();
@@ -51,11 +51,11 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     public void init(CollectorManager collectorManager) {
         try {
             this.collectorMgr = collectorManager;
-            // collectorMgr.subscribe(this, null);
+            //DYKC-debug System.out.println("Going to subscribe this " + convertToSourceIDList(sourcesList));
             collectorMgr.subscribe(this, convertToSourceIDList(sourcesList));
+            isInit = true;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println(e.toString());
         }
     }
 
@@ -81,27 +81,31 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     }
 
     public void modified(List<String> newSources) {
+
+        if (collectorMgr == null || isInit == false) {
+            this.sourcesList = newSources;
+            return;
+        }
+
         try {
 
             // old sources
             ArrayList<String> oldSources = new ArrayList<String>(sourcesList);
-
             //sources to remove -> In Old Sources, the difference between oldSource and newSource
             ArrayList<String> sourcesToRemove = new ArrayList<String>(oldSources);
             sourcesToRemove.removeAll(newSources);
+            //DYKC-debug System.out.println("Sources to remove " + sourcesToRemove);
             collectorMgr.unsubscribe(this, convertToSourceIDList(sourcesToRemove));
 
             //sources to Add -> In New Sources, the difference bewteen newSource and oldSource
             ArrayList<String> sourcesToAdd = new ArrayList<String>(newSources);
-            newSources.removeAll(oldSources);
-
+            sourcesToAdd.removeAll(oldSources);
+            //DYKC-debug System.out.println("Sources to add " + sourcesToAdd);
             collectorMgr.subscribe(this, convertToSourceIDList(sourcesToAdd));
 
             sourcesList = newSources; //new master sourcesList
+
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
     }
@@ -112,7 +116,10 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     private List<String> convertToSourceIDList(List<String> sourceList) {
         List<String> sourceIDList = new ArrayList<String>();
         for (String source : sourceList) {
-            sourceIDList.add(getSourceName(source) + "|" + CollectorConstants.MEMORY);
+            String sourceName = getSourceName(source);
+            if (!sourceName.equals("")) {
+                sourceIDList.add(getSourceName(source) + "|" + CollectorConstants.MEMORY);
+            }
         }
         return sourceIDList;
     }
@@ -148,8 +155,6 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
             return CollectorConstants.TRACE_SOURCE;
         } else if (event instanceof AccessLogData) {
             return CollectorConstants.ACCESS_LOG_SOURCE;
-        } else if (event instanceof HCGCData) {
-            return CollectorConstants.GC_SOURCE;
         } else if (event instanceof FFDCData) {
             return CollectorConstants.FFDC_SOURCE;
         } else {
@@ -196,9 +201,7 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     }
 
     protected String getSourceName(String source) {
-        if (source.equals(CollectorConstants.GC_CONFIG_VAL))
-            return CollectorConstants.GC_SOURCE;
-        else if (source.equals(CollectorConstants.MESSAGES_CONFIG_VAL))
+        if (source.equals(CollectorConstants.MESSAGES_CONFIG_VAL))
             return CollectorConstants.MESSAGES_SOURCE;
         else if (source.equals(CollectorConstants.FFDC_CONFIG_VAL))
             return CollectorConstants.FFDC_SOURCE;

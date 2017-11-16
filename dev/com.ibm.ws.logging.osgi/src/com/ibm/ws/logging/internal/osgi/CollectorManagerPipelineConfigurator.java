@@ -42,7 +42,8 @@ public class CollectorManagerPipelineConfigurator {
     private CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
     /**
      * The ServiceListener interface. Invoked by OSGI whenever a ServiceReference changes state.
-     * Receives WsLogHandler events and passes them along to WsTraceRouterImpl.
+     * Receives CollectorManager events and performs appropriate logic to set up the log and trace pipeline 
+     * for use by future handlers.
      */
     private final ServiceListener collectorManagerListener = new ServiceListener() {
         @Override

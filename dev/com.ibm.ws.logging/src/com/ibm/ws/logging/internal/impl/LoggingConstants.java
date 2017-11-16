@@ -43,6 +43,7 @@ public interface LoggingConstants {
     String DEFAULT_MESSAGE_FORMAT = "basic";
     String DEFAULT_CONSOLE_SOURCE = "message";
     String DEFAULT_CONSOLE_FORMAT = "basic";
+    String JSON_FORMAT = "json";
 
     String ENV_WLP_LOGGING_MESSAGE_SOURCE = "WLP_LOGGING_MESSAGE_SOURCE";
     String ENV_WLP_LOGGING_MESSAGE_FORMAT = "WLP_LOGGING_MESSAGE_FORMAT";

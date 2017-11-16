@@ -26,7 +26,12 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
     private boolean isJsonTrService = false;
 
     /**
-     * Create LogSource, TraceSource and their respective conduits.
+     * Create LogSource, TraceSource and their respective conduits and sets the conduit into the respective sources.
+     * In effect this creates the Source + Conduit portion of the pipeline.
+     * The rest of the pipline (i.e the handler) is created in the JsonTraceService and will hook into the pipeline
+     * there
+     * If HPEL or JSR47 TrServices are active, then only the source and conduit/bufferManager portion of the pipeline
+     * will be activated in anticpation for consumption by Logstash,LogMet,Audit or GC.
      */
     public CollectorManagerPipelineUtils() {
         if (logSource == null) {
@@ -81,7 +86,8 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
         return traceConduit;
     }
 
-    /*
+    /**
+     *
      * HandlerUtils is not responsible for creating the Handler.
      * This is the responsibility of the BaseTraceService.
      */
@@ -92,7 +98,7 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
         return null;
     }
 
-    /*
+    /**
      * HandlerUtils is not responsible for creating the Handler.
      * This is the responsibility of the BaseTraceService.
      */
@@ -101,6 +107,14 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
         this.jsonTraceServiceMessageHandler = (MessageLogHandler) handler;
     }
 
+    /**
+     * Used by the collectorManagerPipelineConfigurator to identify if pipeline was spawned as part
+     * of JsonTrService, If it is then the LogSource and Trace Source set into the WsMessageRouter or WsTraceRouter
+     * will NOT want 'early' messages/traces, the opposite is true if it is not created as part of JsonTraceService
+     * (i.e. HPEL or JSR47)
+     *
+     * @param value
+     */
     public boolean getJsonTrService() {
         return isJsonTrService;
     }
