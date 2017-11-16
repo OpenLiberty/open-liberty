@@ -63,6 +63,13 @@ public interface PolicyExecutor extends ExecutorService {
     PolicyExecutor expedite(int num);
 
     /**
+     * Returns the number of tasks from this PolicyExecutor currently running on the global executor.
+     *
+     * @return the number of running tasks
+     */
+    int getRunningTaskCount();
+
+    /**
      * Submits and invokes a group of tasks with a callback per task to be invoked at various points in the task's life cycle.
      * The first task is paired with the first callback. The second task is paired with the second callback. An so forth.
      * It is okay to include the same callback at multiple positions or to include null callbacks at some positions.
@@ -164,6 +171,13 @@ public interface PolicyExecutor extends ExecutorService {
      * @throws IllegalStateException if the executor has been shut down.
      */
     PolicyExecutor maxWaitForEnqueue(long ms);
+
+    /**
+     * Returns the number of additional tasks that can be enqueued without exceeding the maximum queue size.
+     *
+     * @return remaining capacity in queue
+     */
+    int queueCapacityRemaining();
 
     /**
      * Registers a one-time callback to be invoked asynchronously

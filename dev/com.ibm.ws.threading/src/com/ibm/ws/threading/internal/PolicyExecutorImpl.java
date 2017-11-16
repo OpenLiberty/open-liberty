@@ -573,6 +573,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public int getRunningTaskCount() {
+        return runningCount.get();
+    }
+
+    @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Trivial
     public final <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
@@ -999,6 +1004,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 return this;
 
         throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxWaitForEnqueue", identifier));
+    }
+
+    @Override
+    public int queueCapacityRemaining() {
+        int capacity = maxQueueSizeConstraint.availablePermits();
+        return capacity < 0 ? 0 : capacity;
     }
 
     @Override

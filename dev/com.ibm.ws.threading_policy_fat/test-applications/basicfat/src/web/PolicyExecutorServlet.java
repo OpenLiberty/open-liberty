@@ -5656,4 +5656,87 @@ public class PolicyExecutorServlet extends FATServlet {
         executor.shutdownNow();
     }
 
+    //Test the getRunningTaskCount method
+    @Test
+    public void testGetRunningTaskCount() throws Exception {
+        PolicyExecutor executor = provider.create("testgetRunningTaskCount").maxConcurrency(2);
+
+        CountDownLatch beginLatch1 = new CountDownLatch(1);
+        CountDownLatch continueLatch1 = new CountDownLatch(1);
+        CountDownLatch beginLatch2 = new CountDownLatch(1);
+        CountDownLatch continueLatch2 = new CountDownLatch(1);
+
+        assertEquals(0, executor.getRunningTaskCount()); //no tasks running
+
+        CountDownTask task1 = new CountDownTask(beginLatch1, continueLatch1, TimeUnit.HOURS.toNanos(1));
+        Future<Boolean> future1 = executor.submit(task1); //task1 will begin running and block on continueLatch1
+        assertTrue(beginLatch1.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(1, executor.getRunningTaskCount()); //task1 is running
+
+        CountDownTask task2 = new CountDownTask(beginLatch2, continueLatch2, TimeUnit.HOURS.toNanos(1));
+        Future<Boolean> future2 = executor.submit(task2); //task2 will begin running and block on continueLatch2
+        assertTrue(beginLatch2.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(2, executor.getRunningTaskCount()); //task1 and task2 are running
+
+        continueLatch1.countDown(); //allow task1 to complete
+        assertTrue(future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        for (long start = System.nanoTime(); executor.getRunningTaskCount() != 1 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200));
+        assertEquals(1, executor.getRunningTaskCount()); //task2 is running
+
+        executor.shutdown();
+        assertEquals(1, executor.getRunningTaskCount()); //task2 is running
+
+        continueLatch2.countDown(); //allow task2 to complete
+        assertTrue(future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        for (long start = System.nanoTime(); executor.getRunningTaskCount() != 0 && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200));
+        assertEquals(0, executor.getRunningTaskCount()); //no tasks running
+    }
+
+    //Test that testqueueCapacityRemaining is correct as tasks are queued, run, and the maxQueueSize value is changed.
+    @Test
+    public void testQueueCapacityRemaining() throws Exception {
+        PolicyExecutor executor = provider.create("testqueueCapacityRemaining").maxConcurrency(1).maxQueueSize(5);
+
+        CountDownLatch blockingBeginLatch = new CountDownLatch(1);
+        CountDownLatch blockingContinueLatch = new CountDownLatch(1);
+        CountDownLatch beginLatch = new CountDownLatch(1);
+        CountDownLatch continueLatch = new CountDownLatch(1);
+
+        assertEquals(5, executor.queueCapacityRemaining()); //no tasks in queue
+        CountDownTask blockingTask = new CountDownTask(blockingBeginLatch, blockingContinueLatch, TimeUnit.HOURS.toNanos(1));
+        Future<Boolean> blockingFuture = executor.submit(blockingTask); //blockingTask should start and block on continueLatch
+        assertTrue(blockingBeginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(5, executor.queueCapacityRemaining()); //no tasks in queue, maxQueueSize=5
+
+        CountDownTask task1 = new CountDownTask(beginLatch, continueLatch, TimeUnit.HOURS.toNanos(1));
+        Future<Boolean> future1 = executor.submit(task1); // should queue
+        assertEquals(4, executor.queueCapacityRemaining()); //task1 in queue, maxQueueSize=5
+
+        executor.maxQueueSize(6);
+        assertEquals(5, executor.queueCapacityRemaining()); //task 1 in queue, maxQueueSize=6
+
+        executor.maxQueueSize(4);
+        assertEquals(3, executor.queueCapacityRemaining()); //task1 in queue, maxQueueSize=4
+
+        CountDownTask task2 = new CountDownTask(new CountDownLatch(1), new CountDownLatch(0), TimeUnit.HOURS.toNanos(1));
+        Future<Boolean> future2 = executor.submit(task2); // should queue
+        assertEquals(2, executor.queueCapacityRemaining()); //task1 and task2 in queue, maxQueueSize=4
+
+        blockingContinueLatch.countDown(); //allow blockingTask to complete
+        assertTrue(beginLatch.await(TIMEOUT_NS, TimeUnit.NANOSECONDS)); //wait for task1 to begin running
+
+        assertEquals(3, executor.queueCapacityRemaining()); //task2 in queue, maxQueueSize=4
+        continueLatch.countDown(); //allow task1 and task2 to complete
+
+        assertTrue(blockingFuture.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+
+        assertEquals(4, executor.queueCapacityRemaining()); //no tasks in queue, maxQueueSize=4
+
+        executor.shutdown();
+        assertEquals(0, executor.queueCapacityRemaining()); //should return 0 after shutdown
+    }
 }
