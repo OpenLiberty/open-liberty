@@ -1,0 +1,8 @@
+<application-client-bnd
+   xmlns="http://websphere.ibm.com/xml/ns/javaee"
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-application-client-bnd_1_2.xsd"
+   version="1.2">
+
+   <resource-ref name="java:app/env/jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS"/>   
+</application-client-bnd>

@@ -9,20 +9,17 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package jpaappcli.client;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.PersistenceUnit;
 
-import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
+public class JPAApplicationClient {
+    @PersistenceUnit(unitName = "JPAPU_RL")
+    private static EntityManagerFactory emf;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPABootstrapTest.class,
-                JPA22FATSuite.class,
-                JPAAppClientTest.class
-})
-public class FATSuite {
+    public static void main(String[] args) {
 
+        System.out.println("emf=" + emf);
+    }
 }
