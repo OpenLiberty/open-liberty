@@ -23,8 +23,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 HttpAuthenticationMechanismTest.class,
                 RememberMeTest.class,
                 AutoApplySessionTest.class,
-                FormHttpAuthenticationMechanismTest.class
-
+                FormHttpAuthenticationMechanismTest.class,
+                LdapIdentityStoreDeferredSettingsTest.class
 })
 
 /**

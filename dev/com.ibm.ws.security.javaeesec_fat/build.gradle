@@ -39,7 +39,7 @@ addRequiredLibraries {
   }
 }
 /** 
- * com.ibm.ws.security.javaeesec_fatnot used for now, maybe requried once jsr375/jaspi coexisting test. 
+ * com.ibm.ws.security.javaeesec_fat not used for now, maybe requried once jsr375/jaspi coexisting test. 
  **/
 task copyFeatureBundle {
   doLast {

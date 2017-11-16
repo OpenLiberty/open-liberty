@@ -54,6 +54,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
@@ -377,6 +378,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             }
 
             @Override
+            @Sensitive
             public String bindDnPassword() {
                 return (overrides != null && overrides.containsKey("bindDnPassword")) ? (String) overrides.get("bindDnPassword") : "";
             }

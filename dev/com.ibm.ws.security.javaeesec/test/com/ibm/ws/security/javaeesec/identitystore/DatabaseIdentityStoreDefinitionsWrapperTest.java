@@ -32,12 +32,6 @@ import org.junit.Test;
  */
 public class DatabaseIdentityStoreDefinitionsWrapperTest {
 
-    /*
-     * TODO Need to fix ignored tests.
-     * TODO Should really have better EL expressions that would represent how a customer would use them.
-     * TODO The hashAlgorithm*_EL tests aren't really using EL. Need to figure out how to do them.
-     */
-
     @Test
     public void callerQuery() {
         DatabaseIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(null);
@@ -96,7 +90,7 @@ public class DatabaseIdentityStoreDefinitionsWrapperTest {
          * Override the callerQuery setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("groupsQuery", "'blah'.concat('blah')");
+        overrides.put("groupsQuery", "#{'blah'.concat('blah')}");
 
         DatabaseIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         DatabaseIdentityStoreDefinitionWrapper wrapper = new DatabaseIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -113,20 +107,6 @@ public class DatabaseIdentityStoreDefinitionsWrapperTest {
     }
 
     @Test
-    public void hashAlgorithm_EL() {
-        /*
-         * Override the callerQuery setting with an EL expression.
-         */
-        Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("hashAlgorithm", TestPasswordHash.class);
-
-        DatabaseIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
-        DatabaseIdentityStoreDefinitionWrapper wrapper = new DatabaseIdentityStoreDefinitionWrapper(idStoreDefinition);
-
-        assertEquals(TestPasswordHash.class, wrapper.getHashAlgorithm());
-    }
-
-    @Test
     public void hashAlgorithmParameters() {
         DatabaseIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(null);
         DatabaseIdentityStoreDefinitionWrapper wrapper = new DatabaseIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -136,10 +116,6 @@ public class DatabaseIdentityStoreDefinitionsWrapperTest {
 
     @Test
     public void hashAlgorithmParameters_EL() {
-        /*
-         * TODO Not really an EL test. Not sure how to test EL for a setting that is a String[].
-         */
-
         /*
          * Override the callerQuery setting with an EL expression.
          */
@@ -167,7 +143,7 @@ public class DatabaseIdentityStoreDefinitionsWrapperTest {
          * Override the priority with the priorityExpression setting.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("priorityExpression", "80/20");
+        overrides.put("priorityExpression", "#{80/20}");
 
         DatabaseIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         DatabaseIdentityStoreDefinitionWrapper wrapper = new DatabaseIdentityStoreDefinitionWrapper(idStoreDefinition);
