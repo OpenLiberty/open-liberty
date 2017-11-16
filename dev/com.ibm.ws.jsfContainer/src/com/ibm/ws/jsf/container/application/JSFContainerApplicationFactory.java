@@ -111,11 +111,12 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
      */
     private void serviceabilityChecks() {
         final String m = "serviceabilityChecks";
+        String requiredSpecVersionRange = JSFContainer.getJSFSpecLevel() + ".*";
 
         // Check version of JSF spec
         String apiVersion = javax.faces.application.ApplicationFactory.class.getPackage().getSpecificationVersion();
         if (apiVersion != null && !isVersionValid(apiVersion)) {
-            IllegalStateException ex = new IllegalStateException(Messages.get("jsf.container.bad.spec.api.version", appName, "[2.2,2.3)", apiVersion));
+            IllegalStateException ex = new IllegalStateException(Messages.get("jsf.container.bad.spec.api.version", appName, requiredSpecVersionRange, apiVersion));
             if (log.isLoggable(Level.SEVERE))
                 log.logp(Level.SEVERE, clazz, m, ex.getMessage(), ex);
             throw ex;
@@ -131,7 +132,7 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
         if (appFactoryClassName.equals(MYFACES_APP_FACTORY) || appFactoryClassName.equals(MOJARRA_APP_FACTORY)) {
             String implVersion = appFactoryClass.getPackage().getSpecificationVersion();
             if (implVersion != null && !isVersionValid(implVersion)) {
-                IllegalStateException ex = new IllegalStateException(Messages.get("jsf.container.bad.impl.version", appName, "[2.2,2.3)", implVersion));
+                IllegalStateException ex = new IllegalStateException(Messages.get("jsf.container.bad.impl.version", appName, requiredSpecVersionRange, implVersion));
                 if (log.isLoggable(Level.SEVERE))
                     log.logp(Level.SEVERE, clazz, m, ex.getMessage(), ex);
                 throw ex;
@@ -140,8 +141,9 @@ public class JSFContainerApplicationFactory extends ApplicationFactory {
     }
 
     private static boolean isVersionValid(String version) {
-        // A simple way of checking that version is within [2.2,2.3)
-        return version.equals("2.2") || version.startsWith("2.2.");
+        // A simple way of checking that version is within MAJOR.MINOR.*
+        String specLevel = JSFContainer.getJSFSpecLevel();
+        return version.equals(specLevel) || version.startsWith(specLevel + ".");
     }
 
     private IllegalStateException noJsfProviderFound() {

@@ -64,4 +64,12 @@ public class JSFContainer {
 
         throw new ClassNotFoundException();
     }
+
+    public static String getJSFSpecLevel() {
+        // This system property will be set by the ApplicationExtensionLibrary
+        String jsfSpecLevel = System.getProperty("com.ibm.ws.jsfContainer.JSF_SPEC_LEVEL");
+        if (jsfSpecLevel == null || jsfSpecLevel.isEmpty())
+            throw new IllegalStateException("The system property 'com.ibm.ws.jsfContainer.JSF_SPEC_LEVEL' was null.");
+        return jsfSpecLevel;
+    }
 }

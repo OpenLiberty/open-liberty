@@ -11,9 +11,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-Name: WAS JSF Container 2.2
-Bundle-SymbolicName: com.ibm.ws.jsfContainer.2.2
-Bundle-Description: WAS JSF 2.2, version ${bVersion}
+Bundle-Name: WAS JSF Container
+Bundle-SymbolicName: com.ibm.ws.jsfContainer
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
@@ -40,8 +39,6 @@ instrument.disabled: true
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.validation.1.1;version=latest,\
-    com.ibm.websphere.org.osgi.core,\
-    com.ibm.websphere.org.osgi.service.component,\
     com.ibm.ws.beanvalidation;version=latest,\
     com.ibm.ws.org.jboss.weld.2.4.5;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest

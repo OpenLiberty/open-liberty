@@ -10,6 +10,6 @@
  -->
 <server>
     <library id="com.ibm.ws.jsfContainer.2.2">
-    	<fileset dir="${wlp.install.dir}/lib/" includes="com.ibm.ws.jsfContainer.2.2_1.0.*.jar"/>
+    	<fileset dir="${wlp.install.dir}/lib/" includes="com.ibm.ws.jsfContainer_1.0.*.jar"/>
     </library>
 </server>

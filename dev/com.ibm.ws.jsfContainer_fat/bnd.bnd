@@ -32,6 +32,5 @@ test.project: true
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.validation.1.1;version=latest,\
-	com.ibm.ws.jsfContainer.2.2;version=latest,\
 	net.sourceforge.htmlunit:htmlunit;version=2.15,\
 	xml-apis:xml-apis;version=1.4.01

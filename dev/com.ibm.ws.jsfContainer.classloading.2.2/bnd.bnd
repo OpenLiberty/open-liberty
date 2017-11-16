@@ -12,18 +12,19 @@
 bVersion=1.0
 
 Bundle-Name: JSF Classloading extensions
-Bundle-SymbolicName: com.ibm.ws.jsfContainer.classloading
+Bundle-SymbolicName: com.ibm.ws.jsfContainer.classloading.2.2
 
- Include-Resource: \
-    OSGI-INF=resources/OSGI-INF
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
     
-IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+IBM-Default-Config: \
+  OSGI-INF/wlp/defaultInstances.xml
 
 Private-Package: \
-  com.ibm.ws.jsf.container.classloading
+  com.ibm.ws.jsf.container.classloading22
 
 -dsannotations: \
-  com.ibm.ws.jsf.container.classloading.JSFLibraryIntegration
+  com.ibm.ws.jsf.container.classloading22.JSF22LibraryIntegration
 
 -buildpath: \
 	com.ibm.websphere.org.osgi.core,\
