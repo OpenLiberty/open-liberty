@@ -103,6 +103,19 @@ public class JsonTraceService extends BaseTraceService {
 
         //DYKC-debug System.out.println("filtered " + filterdSourceList);
 
+        //if messageFormat has been configured to 'basic' - ensure that we return to old behaviour
+        if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
+            isMessageJsonConfigured = false;
+            isConsoleJsonConfigured = false;
+            if (messageLogHandler != null) {
+                setUnsetLogTrace(new ArrayList<String>(), messageLogHandler);
+            }
+            //if (consoleLogConfigured != null) {
+            //    setUnsetLogTrace(new ArrayList<String>(), messageLogHandler);
+            // }
+
+        }
+
         //if messageFormat has been configured to 'json'
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             //If there exists no messageLogHandler, create one; otherwise call modified();
@@ -130,11 +143,6 @@ public class JsonTraceService extends BaseTraceService {
 //          }
 //          isConsoleJsonConfigured = true;
 //          }
-
-        //DYKC-tempdebug forcing messageLogHandler to take both as there is no configuration/external logic yet
-        //logConduit.addSyncHandler(messageLogHandler);
-        //traceConduit.addSyncHandler(messageLogHandler);
-        // }
     }
 
     /*
