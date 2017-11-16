@@ -80,6 +80,9 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "cloudantDatabase")
     private ConfigElementList<CloudantDatabase> cloudantDatabases;
 
+    @XmlElement(name = "concurrencyPolicy")
+    private ConfigElementList<ConcurrencyPolicy> concurrencyPolicies;
+
     @XmlElement(name = "connectionFactory")
     private ConfigElementList<ConnectionFactory> connectionFactories;
 
@@ -350,6 +353,12 @@ public class ServerConfiguration implements Cloneable {
         if (this.cloudantDatabases == null)
             this.cloudantDatabases = new ConfigElementList<CloudantDatabase>();
         return this.cloudantDatabases;
+    }
+
+    public ConfigElementList<ConcurrencyPolicy> getConcurrencyPolicies() {
+        if (this.concurrencyPolicies == null)
+            this.concurrencyPolicies = new ConfigElementList<ConcurrencyPolicy>();
+        return this.concurrencyPolicies;
     }
 
     public ConfigElementList<ContextService> getContextServices() {
