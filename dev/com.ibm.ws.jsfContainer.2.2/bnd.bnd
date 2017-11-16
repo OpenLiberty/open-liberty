@@ -43,7 +43,7 @@ instrument.disabled: true
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.ws.beanvalidation;version=latest,\
-    com.ibm.ws.org.jboss.weld.2.4.3;version=latest, \
+    com.ibm.ws.org.jboss.weld.2.4.5;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest
 	
 -testpath: \
