@@ -191,19 +191,25 @@ public class DatabaseIdentityStore implements IdentityStore {
 
                 ResultSet result = runQuery(prep, caller);
 
-                if (!result.next()) {
+                if (!result.next()) { // advance to first result
                     if (tc.isEventEnabled()) {
                         Tr.event(tc, "No users returned for caller: " + caller + ", using query: " + idStoreDefinition.getCallerQuery());
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 }
 
-                dbPassword = new ProtectedString(result.getString(1).toCharArray());
-
-                if (result.next()) {
-                    result.last();
+                String dbreturn = result.getString(1);
+                if (dbreturn == null) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "Multiple results returned for caller: " + caller, result.getRow());
+                        Tr.event(tc, "The password returned from database is null for caller: " + caller);
+                    }
+                    return CredentialValidationResult.INVALID_RESULT;
+                }
+                dbPassword = new ProtectedString(dbreturn.toCharArray());
+
+                if (result.next()) { // check if there are additional results.
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "Multiple results returned for caller: " + caller);
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 }
@@ -214,13 +220,6 @@ public class DatabaseIdentityStore implements IdentityStore {
         } catch (NamingException | SQLException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Exception validating caller: " + caller, e);
-            }
-            return CredentialValidationResult.INVALID_RESULT;
-        }
-
-        if (dbPassword.isEmpty()) {
-            if (tc.isEventEnabled()) {
-                Tr.event(tc, "The password returned from database is null for caller: " + caller);
             }
             return CredentialValidationResult.INVALID_RESULT;
         }
