@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ConcurrencyPolicy;
 import com.ibm.websphere.simplicity.config.ContextService;
 import com.ibm.websphere.simplicity.config.ManagedExecutorService;
 import com.ibm.websphere.simplicity.config.ManagedScheduledExecutorService;
@@ -351,6 +352,43 @@ public class EEConcurrencyConfigTest extends FATServletClient {
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
+    }
+
+    /**
+     * Should be possible to make modifications to a concurrencyPolicy that is nested under a managed executor
+     * without interfering with tasks that are in-progress or queued. For this test, we set max concurrency to 1
+     * and submit two tasks, where the first depends on the second, such that the first is blocked while running and
+     * the second is stuck in the queue - a temporary deadlock of the executor. Then, we increase max concurrency to 2
+     * and expect both tasks to complete successfully.
+     */
+    @Test
+    public void testNestedConcurrencyPolicy() throws Exception {
+        // Add:
+        // <managedExecutorService jndiName="concurrent/execSvc1">
+        //   <concurrencyPolicy max="1"/>
+        // </managedExecutorService>
+        ServerConfiguration config = server.getServerConfiguration();
+        ManagedExecutorService execSvc1 = new ManagedExecutorService();
+        execSvc1.setJndiName("concurrent/execSvc1");
+        ConcurrencyPolicy policy = new ConcurrencyPolicy();
+        policy.setMax("1");
+        execSvc1.getConcurrencyPolicies().add(policy);
+        config.getManagedExecutorServices().add(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This leaves 1 future running and another stuck in the queue
+        runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
+
+        // Increase max concurrency of the nested concurrencyPolicy
+        policy.setMax("2");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This verifies that the previously blocked tasks complete successfully
+        runTest("testTask1BlockedByTask2Completed", "concurrent/execSvc1");
     }
 
     @Test
