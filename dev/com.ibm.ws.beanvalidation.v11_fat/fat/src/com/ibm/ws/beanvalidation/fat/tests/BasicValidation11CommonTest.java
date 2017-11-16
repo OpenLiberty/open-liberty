@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.fat.tests;
 
+import static org.junit.Assume.assumeTrue;
+
 import org.junit.Test;
 
 /**
@@ -198,6 +200,7 @@ public class BasicValidation11CommonTest extends BasicValidation10CommonTest {
      */
     @Test
     public void testBuildApacheConfiguredValidatorFactory11() throws Exception {
+        assumeTrue(bvalVersion < 20);
         run("ApacheBvalConfig_11", "BeanValidationServlet");
     }
 
@@ -207,6 +210,7 @@ public class BasicValidation11CommonTest extends BasicValidation10CommonTest {
      */
     @Test
     public void testApacheBvalImplClassVisibility11() throws Exception {
+        assumeTrue(bvalVersion < 20);
         run("ApacheBvalConfig_11", "BeanValidationServlet");
     }
 

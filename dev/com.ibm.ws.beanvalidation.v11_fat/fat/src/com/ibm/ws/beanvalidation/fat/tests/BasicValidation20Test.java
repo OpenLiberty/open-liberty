@@ -18,20 +18,17 @@ import com.ibm.ws.beanvalidation.fat.FATSuite;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
- * All Bean Validation tests for the 1.1 feature level.
+ * All Bean Validation tests for the 2.0 feature level.
  */
-public class BasicValidation11Test extends BasicValidation11CommonTest {
+public class BasicValidation20Test extends BasicValidation11CommonTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        isUsingBval11 = true;
-        bvalVersion = 11;
+        bvalVersion = 20;
 
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation_1.1.fat");
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation_2.0.fat");
 
         FATSuite.createAndExportCommonWARs(server);
-
-        FATSuite.createAndExportApacheWARs(server);
 
         server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION10);
         server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION11);

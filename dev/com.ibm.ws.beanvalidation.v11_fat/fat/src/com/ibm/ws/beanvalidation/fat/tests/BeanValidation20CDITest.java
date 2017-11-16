@@ -10,57 +10,38 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.fat.tests;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.beanvalidation.fat.FATSuite;
 
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
- * Collection of tests to be run when both cdi-1.1 and beanValidation-1.1 are enabled
+ * Collection of tests to be run when both cdi-2.0 and beanValidation-2.0 are enabled
  * together. Include all common tests from {@link BasicValidation11CommonTest} to ensure
  * that everything that worked without CDI works with it as well.
  */
-public class BeanValidationCDITest extends BasicValidation11CommonTest {
+public class BeanValidation20CDITest extends BasicValidation11CommonTest {
     private static final String FOLDER = "dropins";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation.cdi.fat");
+        bvalVersion = 20;
 
-        FATSuite.createAndExportWARs();
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation.cdi_2.0.fat");
 
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "BeanValidationCDI_11" + ".war");
-        war.addPackage("beanvalidation.cdi.beans");
-        war.addPackage("beanvalidation.cdi.web");
-        war.addPackage("beanvalidation.cdi.validation");
-        war.addAsWebInfResource(new File("test-applications/BeanValidationCDI_11.war/resources/WEB-INF/beans.xml"));
-        war.addAsDirectory("WEB-INF/classes/META-INF");
-        war.addAsResource(new File("test-applications/BeanValidationCDI_11.war/resources/WEB-INF/classes/META-INF/validation.xml"), "META-INF/validation.xml");
-        ShrinkHelper.exportToServer(server, FOLDER, war);
+        FATSuite.createAndExportCommonWARs(server);
 
-        war = ShrinkWrap.create(WebArchive.class, "DefaultBeanValidationCDI_11" + ".war");
-        war.addPackage("defaultbeanvalidation.cdi.beans");
-        war.addPackage("defaultbeanvalidation.cdi.web");
-        war.addPackage("defaultbeanvalidation.cdi.validation");
-        war.addAsWebInfResource(new File("test-applications/DefaultBeanValidationCDI_11.war/resources/WEB-INF/beans.xml"));
-        ShrinkHelper.exportToServer(server, FOLDER, war);
+        FATSuite.createAndExportCDIWARs(server);
 
-        server.addInstalledAppForValidation(FATSuite.APACHE_BVAL_CONFIG10);
-        server.addInstalledAppForValidation(FATSuite.APACHE_BVAL_CONFIG11);
         server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION10);
         server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION11);
         server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION10);
         server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION11);
         server.addInstalledAppForValidation("BeanValidationCDI_11");
-        server.startServer(BeanValidationCDITest.class.getSimpleName() + ".log");
+        server.startServer(BeanValidation20CDITest.class.getSimpleName() + ".log");
     }
 
     /**
