@@ -30,6 +30,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
@@ -308,6 +309,15 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
     }
 
     /**
+     * Submit 1 task and verify it completes successfully.
+     */
+    public void testTaskSuccessful(String execSvcJNDIName, PrintWriter out) throws Exception {
+        ExecutorService executor = InitialContext.doLookup(execSvcJNDIName);
+        Future<Integer> future = executor.submit(new IncrementTask(null, null, null, null));
+        assertEquals(Integer.valueOf(1), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
      * Submit 2 tasks, where the first task waits for the second to start. Task Futures are saved for later use.
      */
     public void testTask1BlockedByTask2(String execSvcJNDIName, PrintWriter out) throws Exception {
@@ -328,8 +338,41 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         @SuppressWarnings("unchecked")
         Future<Integer> future2 = (Future<Integer>) futures.remove("testTask1BlockedByTask2-future2-" + execSvcJNDIName);
 
-        assertEquals(Integer.valueOf(1), future1.get(5, TimeUnit.SECONDS)); //TIMEOUT_NS, TimeUnit.NANOSECONDS));
-        assertEquals(Integer.valueOf(1), future2.get(5, TimeUnit.SECONDS)); // TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(1), future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(1), future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(future1.isDone());
+        assertTrue(future2.isDone());
+        assertFalse(future1.isCancelled());
+        assertFalse(future2.isCancelled());
+    }
+
+    /**
+     * Submit 2 long running tasks, where the first task waits for the second to start. Task Futures are saved for later use.
+     */
+    public void testTask1BlockedByTask2LongRunning(String execSvcJNDIName, PrintWriter out) throws Exception {
+        ExecutorService executor = InitialContext.doLookup(execSvcJNDIName);
+        CountDownLatch task2StartedLatch = new CountDownLatch(1);
+        IncrementTask task1 = new IncrementTask(null, null, null, task2StartedLatch);
+        IncrementTask task2 = new IncrementTask(null, null, task2StartedLatch, null);
+        task1.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        task2.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> future1 = executor.submit(task1);
+        Future<Integer> future2 = executor.submit(task2);
+        futures.put("testTask1BlockedByTask2LongRunning-future1-" + execSvcJNDIName, future1);
+        futures.put("testTask1BlockedByTask2LongRunning-future2-" + execSvcJNDIName, future2);
+    }
+
+    /**
+     * Verify that futures for long running tasks previously submitted are completed now.
+     */
+    public void testTask1BlockedByTask2LongRunningCompleted(String execSvcJNDIName, PrintWriter out) throws Exception {
+        @SuppressWarnings("unchecked")
+        Future<Integer> future1 = (Future<Integer>) futures.remove("testTask1BlockedByTask2LongRunning-future1-" + execSvcJNDIName);
+        @SuppressWarnings("unchecked")
+        Future<Integer> future2 = (Future<Integer>) futures.remove("testTask1BlockedByTask2LongRunning-future2-" + execSvcJNDIName);
+
+        assertEquals(Integer.valueOf(1), future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(1), future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
         assertTrue(future1.isDone());
         assertTrue(future2.isDone());
         assertFalse(future1.isCancelled());
