@@ -74,18 +74,25 @@ public class EEConcurrencyConfigTest extends FATServletClient {
      */
     @Before
     public void setUpPerTest() throws Exception {
+        Exception failure = null;
         String consoleLogFileName = getClass().getSimpleName() + '.' + testName.getMethodName() + ".log";
         if (!server.isStarted()) {
             server.updateServerConfiguration(savedConfig);
             server.startServer(consoleLogFileName); // clean start
             Log.info(getClass(), "setUpPerTest", "server started, log file is " + consoleLogFileName);
         } else if (restoreSavedConfig) {
-            server.stopServer();
+            try {
+                server.stopServer();
+            } catch (Exception x) {
+                failure = x;
+            }
             server.updateServerConfiguration(savedConfig);
             server.startServer(consoleLogFileName, false, false); // warm start
             Log.info(getClass(), "setUpPerTest", "server restarted, log file is " + consoleLogFileName);
         }
         restoreSavedConfig = true; // assume all tests make config updates unless they tell us otherwise
+        if (failure != null)
+            throw failure;
     }
 
     /**
@@ -389,6 +396,47 @@ public class EEConcurrencyConfigTest extends FATServletClient {
 
         // This verifies that the previously blocked tasks complete successfully
         runTest("testTask1BlockedByTask2Completed", "concurrent/execSvc1");
+    }
+
+    /**
+     * Should be possible to make modifications to a longRunningPolicy that is nested under a managed executor
+     * without interfering with tasks that are in-progress or queued. For this test, we set max concurrency to 1
+     * and submit two tasks, where the first depends on the second, such that the first is blocked while running and
+     * the second is stuck in the queue - a temporary deadlock of the executor. At this point, we can still submit
+     * normal tasks (not long running) per the normal concurrencyPolicy. Then, we increase the long running policy's
+     * max concurrency to 2 and expect both long running tasks to complete successfully.
+     */
+    @Test
+    public void testNestedLongRunningPolicy() throws Exception {
+        // Add:
+        // <managedExecutorService jndiName="concurrent/execSvc1">
+        //   <longRunningPolicy max="1"/>
+        // </managedExecutorService>
+        ServerConfiguration config = server.getServerConfiguration();
+        ManagedExecutorService execSvc1 = new ManagedExecutorService();
+        execSvc1.setJndiName("concurrent/execSvc1");
+        ConcurrencyPolicy policy = new ConcurrencyPolicy();
+        policy.setMax("1");
+        execSvc1.getLongRunningPolicies().add(policy);
+        config.getManagedExecutorServices().add(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This leaves 1 future running and another stuck in the queue
+        runTest("testTask1BlockedByTask2LongRunning", "concurrent/execSvc1");
+
+        // Can still submit normal tasks, per a different concurrency policy
+        runTest("testTaskSuccessful", "concurrent/execSvc1");
+
+        // Increase max concurrency of the nested concurrencyPolicy
+        policy.setMax("2");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This verifies that the previously blocked tasks complete successfully
+        runTest("testTask1BlockedByTask2LongRunningCompleted", "concurrent/execSvc1");
     }
 
     @Test

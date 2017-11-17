@@ -27,6 +27,7 @@
   <AD id="maxQueueSize"      type="Integer" required="false" min="1" name="%maxQueueSize" description="%maxQueueSize.desc"/>
   <AD id="maxWaitForEnqueue" type="String"  ibm:type="duration" default="0" name="%maxWaitForEnqueue" description="%maxWaitForEnqueue.desc"/>
   <AD id="runIfQueueFull"    type="Boolean" default="false" name="%runIfQueueFull" description="%runIfQueueFull.desc"/>
+  <AD id="service.ranking"   type="Integer" default="0" name="internal" description="internal use only"/>
   <AD id="startTimeout"      type="String"  ibm:type="duration" required="false" name="%startTimeout" description="%startTimeout.desc"/>
  </OCD>
 
