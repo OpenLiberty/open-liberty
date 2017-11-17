@@ -54,6 +54,12 @@ public final class LocaleUtils
             }
             return locale;
         }
+        
+        Locale locale = Locale.forLanguageTag(localeString);
+        if (locale != null && !locale.getLanguage().isEmpty())
+        {
+            return locale;
+        }
 
         int separatorCountry = localeString.indexOf('_');
         char separator;
