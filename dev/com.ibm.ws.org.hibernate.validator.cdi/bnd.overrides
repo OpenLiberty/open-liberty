@@ -10,9 +10,12 @@ Fragment-Host:
 Import-Package: \
   org.apache.el,\
   *
-  
+
+Export-Package: org.hibernate.validator.cdi;version="6.0.4.Final";uses:="javax.enterprise.event,javax.enterprise.inject.spi,javax.inject,javax.validation,javax.validation.executable",\
+  org.hibernate.validator.cdi.internal;version="6.0.4.Final", \
+  org.hibernate.validator.cdi.internal.interceptor;version="6.0.4.Final"
+
 Private-Package: \
-  org.hibernate.validator.cdi.internal.*,\
   com.ibm.ws.beanvalidation.v20.cdi.*
   
 -dsannotations: \

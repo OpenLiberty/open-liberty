@@ -51,9 +51,14 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
                         "org.hibernate.validator.cdi.internal.interceptor.ValidationInterceptor;" +
                         "org.hibernate.validator.internal.engine.ValidatorImpl;" +
                         "org.hibernate.validator.internal.engine.ValidatorFactoryImpl;" +
+                        //"org.hibernate.validator.cdi.internal.ValidationProviderHelper;" +
                         "org.hibernate.validator.cdi.internal.InjectingConstraintValidatorFactory;" +
                         "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorBean;" +
-                        "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorFactoryBean",
+                        "com.ibm.ws.beanvalidation.v20.cdi.internal.LibertyValidatorFactoryBean" // +
+           //"org.hibernate.validator.cdi.internal.ValidatorBean;" +
+           //"org.hibernate.validator.cdi.internal.ValidatorFactoryBean;" +
+
+                        ,
                         "service.vendor=IBM"
            })
 public class LibertyHibernateValidatorExtension implements Extension, WebSphereCDIExtension {
@@ -92,14 +97,18 @@ public class LibertyHibernateValidatorExtension implements Extension, WebSphereC
     private ValidatorBean hibernateValidatorBean;
 
     public void afterBeanDiscovery(@Observes AfterBeanDiscovery afterBeanDiscoveryEvent, BeanManager beanManager) {
+        System.out.println("@AGG inside custom ABD");
+
         if (vfBean == null) {
             vfBean = hibernateValidatorFactoryBean = new LibertyValidatorFactoryBean();
+            System.out.println("@AGG adding " + vfBean);
             afterBeanDiscoveryEvent.addBean(vfBean);
             afterBeanDiscoveryEvent.addBean(hibernateValidatorFactoryBean);
         }
 
         if (vBean == null) {
             vBean = hibernateValidatorBean = new LibertyValidatorBean();
+            System.out.println("@AGG adding " + vBean);
             afterBeanDiscoveryEvent.addBean(vBean);
             afterBeanDiscoveryEvent.addBean(hibernateValidatorBean);
         }

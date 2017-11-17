@@ -19,8 +19,17 @@ Bundle-Description: Bean Validation v2.0 CDI Integration Bundle; version=${bVers
 WS-TraceGroup: BeanValidation
 
 Private-Package: \
-  com.ibm.ws.beanvalidation.v20.cdi.*
-  
+  com.ibm.ws.beanvalidation.v20.cdi.internal*
+
+Import-Package: \
+  org.hibernate.validator.cdi.internal,\
+  *
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
+
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl
@@ -30,6 +39,7 @@ Private-Package: \
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.beanvalidation;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
@@ -38,4 +48,5 @@ Private-Package: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.classloading;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
-	com.ibm.websphere.appserver.spi.kernel.service;version=latest
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest, \
+	com.ibm.ws.org.hibernate.validator.cdi.6.0.4.Final;version=latest

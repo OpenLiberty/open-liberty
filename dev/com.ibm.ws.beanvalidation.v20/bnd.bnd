@@ -18,14 +18,24 @@ Bundle-Description: Bean Validation Container v2.0; version=${bVersion}
 
 WS-TraceGroup: BeanValidation
 
-Export-Package: com.ibm.ws.beanvalidation.v20.config
+Import-Package: \
+  javax.validation.*;version="[2.0,3)",\
+  org.apache.el,\
+  *
+Export-Package: \
+   com.ibm.ws.beanvalidation.v20
  
 Private-Package: \
-  com.ibm.ws.beanvalidation.v20.config.*
+  com.ibm.ws.beanvalidation.v20.*
+
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
+IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 -dsannotations-inherit: true
 -dsannotations: \
-  com.ibm.ws.beanvalidation.v20.config.internal.ValidationConfigurationV20FactoryImpl
+  com.ibm.ws.beanvalidation.v20.ValidatorFactoryBuilderImpl
 
 Service-Component: \
   com.ibm.ws.beanvalidation.v20; \
@@ -34,13 +44,20 @@ Service-Component: \
     properties:="version=2.0"
 
 -buildpath: \
+    com.ibm.ws.adaptable.module;version=latest,\
+    com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.ws.javaee.dd;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.managedobject;version=latest,\
 	com.ibm.ws.beanvalidation;version=latest,\
+	com.ibm.ws.beanvalidation.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest, \
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
+	com.ibm.ws.org.hibernate.validator.6.0.4.Final;version=latest
+
