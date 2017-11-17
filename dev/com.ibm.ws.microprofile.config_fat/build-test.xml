@@ -25,10 +25,6 @@
 
 	</target>
 
-	<target name="post-package-test-applications">
-		<copy file="${basedir}/build/fat-applications/sharedLib.jar" todir="${basedir}/publish/servers/SharedLibUserServer/shared" />
-	</target>
-
 	<target name="localrun1" depends="init-tasks, run-fat" description="Execute FAT bucket(s)" />
 
 
