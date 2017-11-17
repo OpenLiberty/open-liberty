@@ -10,20 +10,14 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.identitystore;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Set;
 
-import javax.el.ELException;
-import javax.el.ELProcessor;
 import javax.security.enterprise.identitystore.IdentityStore;
 import javax.security.enterprise.identitystore.IdentityStore.ValidationType;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition;
 import javax.security.enterprise.identitystore.LdapIdentityStoreDefinition.LdapSearchScope;
 
-import com.ibm.websphere.ras.annotation.Sensitive;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.websphere.ras.ProtectedString;
 
 /**
  * A wrapper class that offers convenience methods for retrieving configuration
@@ -36,61 +30,61 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  */
 class LdapIdentityStoreDefinitionWrapper {
 
-    /** The distinguished name to bind with for this IdentityStore. */
+    /** The distinguished name to bind with for this IdentityStore. Will be null when set by a deferred EL expression. */
     private final String bindDn;
 
-    /** The distinguished name's password to bind with for this IdentityStore. */
-    private final String bindDnPassword;
+    /** The distinguished name's password to bind with for this IdentityStore. Will be null when set by a deferred EL expression. */
+    private final ProtectedString bindDnPassword;
 
-    /** The base distinguished name for users/callers. */
+    /** The base distinguished name for users/callers. Will be null when set by a deferred EL expression. */
     private final String callerBaseDn;
 
-    /** The LDAP attribute that contains the user/caller name. */
+    /** The LDAP attribute that contains the user/caller name. Will be null when set by a deferred EL expression. */
     private final String callerNameAttribute;
 
-    /** The search base to search for the user/caller on the LDAP server. */
+    /** The search base to search for the user/caller on the LDAP server. Will be null when set by a deferred EL expression. */
     private final String callerSearchBase;
 
-    /** The LDAP filter to search for the user/caller on the LDAP server. */
+    /** The LDAP filter to search for the user/caller on the LDAP server. Will be null when set by a deferred EL expression. */
     private final String callerSearchFilter;
 
     /** The search scope to search for the user/caller. */
     private final LdapSearchScope callerSearchScope;
 
-    /** The LDAP attribute to use to search for group membership on a group entity. */
+    /** The LDAP attribute to use to search for group membership on a group entity. Will be null when set by a deferred EL expression. */
     private final String groupMemberAttribute;
 
-    /** The LDAP attribute to use to search for group membership on a user/caller entity. */
+    /** The LDAP attribute to use to search for group membership on a user/caller entity. Will be null when set by a deferred EL expression. */
     private final String groupMemberOfAttribute;
 
-    /** The LDAP attribute to retrieve the group name from. */
+    /** The LDAP attribute to retrieve the group name from. Will be null when set by a deferred EL expression. */
     private final String groupNameAttribute;
 
-    /** The search base to search for groups on the LDAP server. */
+    /** The search base to search for groups on the LDAP server. Will be null when set by a deferred EL expression. */
     private final String groupSearchBase;
 
-    /** The LDAP filter to search for groups on the LDAP server. */
+    /** The LDAP filter to search for groups on the LDAP server. Will be null when set by a deferred EL expression. */
     private final String groupSearchFilter;
 
-    /** The search scope to search for groups. */
+    /** The search scope to search for groups. Will be null when set by a deferred EL expression. */
     private final LdapSearchScope groupSearchScope;
 
     /** The definitions for this IdentityStore. */
     private final LdapIdentityStoreDefinition idStoreDefinition;
 
-    /** The maximum number of results to return on a search. */
-    private final int maxResults;
+    /** The maximum number of results to return on a search. Will be null when set by a deferred EL expression. */
+    private final Integer maxResults;
 
-    /** The priority for this IdentityStore. */
-    private final int priority;
+    /** The priority for this IdentityStore. Will be null when set by a deferred EL expression. */
+    private final Integer priority;
 
-    /** The read timeout for LDAP contexts. */
-    private final int readTimeout;
+    /** The read timeout for LDAP contexts. Will be null when set by a deferred EL expression. */
+    private final Integer readTimeout;
 
-    /** The URL for the LDAP server to connect to. */
+    /** The URL for the LDAP server to connect to. Will be null when set by a deferred EL expression. */
     private final String url;
 
-    /** The ValidationTypes this IdentityStore can be used for. */
+    /** The ValidationTypes this IdentityStore can be used for. Will be null when set by a deferred EL expression. */
     private final Set<ValidationType> useFor;
 
     /**
@@ -110,27 +104,265 @@ class LdapIdentityStoreDefinitionWrapper {
         this.idStoreDefinition = idStoreDefinition;
 
         /*
-         * Set all configuration. We do this in the constructor instead of on retrieval
-         * in order to fail-fast.
+         * Evaluate the configuration. The values will be non-null if the setting is NOT
+         * a deferred EL expression. If it is a deferred EL expression, we will dynamically
+         * evaluate it at call time.
          */
-        this.bindDn = setBindDn();
-        this.bindDnPassword = setBindDnPasword();
-        this.callerBaseDn = setCallerBaseDn();
-        this.callerNameAttribute = setCallerNameAttribute();
-        this.callerSearchBase = setCallerSearchBase();
-        this.callerSearchFilter = setCallerSearchFilter();
-        this.callerSearchScope = setCallerSearchScope();
-        this.groupMemberAttribute = setGroupMemberAttribute();
-        this.groupMemberOfAttribute = setGroupMemberOfAttribute();
-        this.groupNameAttribute = setGroupNameAttribute();
-        this.groupSearchBase = setGroupSearchBase();
-        this.groupSearchFilter = setGroupSearchFilter();
-        this.groupSearchScope = setGroupSearchScope();
-        this.maxResults = setMaxResults();
-        this.priority = setPriority();
-        this.readTimeout = setReadTimeout();
-        this.url = setUrl();
-        this.useFor = setUseFor();
+        this.bindDn = evaluateBindDn(true);
+        this.bindDnPassword = evaluateBindDnPassword(true);
+        this.callerBaseDn = evaluateCallerBaseDn(true);
+        this.callerNameAttribute = evaluateCallerNameAttribute(true);
+        this.callerSearchBase = evaluateCallerSearchBase(true);
+        this.callerSearchFilter = evaluateCallerSearchFilter(true);
+        this.callerSearchScope = evaluateCallerSearchScope(true);
+        this.groupMemberAttribute = evaluateGroupMemberAttribute(true);
+        this.groupMemberOfAttribute = evaluateGroupMemberOfAttribute(true);
+        this.groupNameAttribute = evaluateGroupNameAttribute(true);
+        this.groupSearchBase = evaluateGroupSearchBase(true);
+        this.groupSearchFilter = evaluateGroupSearchFilter(true);
+        this.groupSearchScope = evaluateGroupSearchScope(true);
+        this.maxResults = evaluateMaxResults(true);
+        this.priority = evaluatePriority(true);
+        this.readTimeout = evaluateReadTimeout(true);
+        this.url = evaluateUrl(true);
+        this.useFor = evaluateUseFor(true);
+    }
+
+    /**
+     * Evaluate and return the bindDn.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The bindDn or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateBindDn(boolean immediateOnly) {
+        return ELHelper.processString("bindDn", this.idStoreDefinition.bindDn(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the bindDnPassword.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The bindDnPassword or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private ProtectedString evaluateBindDnPassword(boolean immediateOnly) {
+        String sResult = ELHelper.processString("bindDnPassword", this.idStoreDefinition.bindDnPassword(), immediateOnly, true);
+        return (sResult == null) ? null : new ProtectedString(sResult.toCharArray());
+    }
+
+    /**
+     * Evaluate and return the callerBaseDn.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The callerBaseDn or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateCallerBaseDn(boolean immediateOnly) {
+        return ELHelper.processString("callerBaseDn", this.idStoreDefinition.callerBaseDn(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the callerNameAttribute.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The callerNameAttribute or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateCallerNameAttribute(boolean immediateOnly) {
+        return ELHelper.processString("callerNameAttribute", this.idStoreDefinition.callerNameAttribute(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the callerSearchBase.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The callerSearchBase or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateCallerSearchBase(boolean immediateOnly) {
+        return ELHelper.processString("callerSearchBase", this.idStoreDefinition.callerSearchBase(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the callerSearchFilter.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The callerSearchFilter or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateCallerSearchFilter(boolean immediateOnly) {
+        return ELHelper.processString("callerSearchFilter", this.idStoreDefinition.callerSearchFilter(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the callerSearchScope.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The callerSearchScope or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private LdapSearchScope evaluateCallerSearchScope(boolean immediateOnly) {
+        return ELHelper.processLdapSearchScope("callerSearchScopeExpression", this.idStoreDefinition.callerSearchScopeExpression(), this.idStoreDefinition.callerSearchScope(),
+                                               immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the groupMemberAttribute.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The groupMemberAttribute or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateGroupMemberAttribute(boolean immediateOnly) {
+        return ELHelper.processString("groupMemberAttribute", this.idStoreDefinition.groupMemberAttribute(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the groupMemberOfAttribute.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The groupMemberOfAttribute or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateGroupMemberOfAttribute(boolean immediateOnly) {
+        return ELHelper.processString("groupMemberOfAttribute", this.idStoreDefinition.groupMemberOfAttribute(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the groupNameAttribute.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The groupNameAttribute or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateGroupNameAttribute(boolean immediateOnly) {
+        return ELHelper.processString("groupNameAttribute", this.idStoreDefinition.groupNameAttribute(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the groupSearchBase.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The groupSearchBase or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateGroupSearchBase(boolean immediateOnly) {
+        return ELHelper.processString("groupSearchBase", this.idStoreDefinition.groupSearchBase(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the groupSearchFilter.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The groupSearchFilter or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateGroupSearchFilter(boolean immediateOnly) {
+        return ELHelper.processString("groupSearchFilter", this.idStoreDefinition.groupSearchFilter(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the groupSearchScope.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The groupSearchScope or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private LdapSearchScope evaluateGroupSearchScope(boolean immediateOnly) {
+        return ELHelper.processLdapSearchScope("groupSearchScopeExpression", this.idStoreDefinition.groupSearchScopeExpression(), this.idStoreDefinition.groupSearchScope(),
+                                               immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the maxResults.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The maxResults or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private Integer evaluateMaxResults(boolean immediateOnly) {
+        return ELHelper.processInt("maxResultsExpression", this.idStoreDefinition.maxResultsExpression(), this.idStoreDefinition.maxResults(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the priority.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The priority or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private Integer evaluatePriority(boolean immediateOnly) {
+        return ELHelper.processInt("priorityExpression", this.idStoreDefinition.priorityExpression(), this.idStoreDefinition.priority(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the readTimeout.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The readTimeout or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private Integer evaluateReadTimeout(boolean immediateOnly) {
+        return ELHelper.processInt("readTimeoutExpression", this.idStoreDefinition.readTimeoutExpression(), this.idStoreDefinition.readTimeout(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the url.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The url or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private String evaluateUrl(boolean immediateOnly) {
+        return ELHelper.processString("url", this.idStoreDefinition.url(), immediateOnly);
+    }
+
+    /**
+     * Evaluate and return the useFor.
+     *
+     * @param immediateOnly If true, only return a non-null value if the setting is either an
+     *            immediate EL expression or not set by an EL expression. If false, return the
+     *            value regardless of where it is evaluated.
+     * @return The useFor or null if immediateOnly==true AND the value is not evaluated
+     *         from a deferred EL expression.
+     */
+    private Set<ValidationType> evaluateUseFor(boolean immediateOnly) {
+        return ELHelper.processUseFor(this.idStoreDefinition.useForExpression(), this.idStoreDefinition.useFor(), immediateOnly);
     }
 
     /**
@@ -141,7 +373,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#bindDn()
      */
     String getBindDn() {
-        return this.bindDn;
+        return (this.bindDn != null) ? this.bindDn : evaluateBindDn(false);
     }
 
     /**
@@ -151,9 +383,8 @@ class LdapIdentityStoreDefinitionWrapper {
      *
      * @see LdapIdentityStoreDefinition#bindDnPassword()
      */
-    @Sensitive
-    String getBindDnPassword() {
-        return this.bindDnPassword;
+    ProtectedString getBindDnPassword() {
+        return (this.bindDnPassword != null) ? this.bindDnPassword : evaluateBindDnPassword(false);
     }
 
     /**
@@ -164,7 +395,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#callerBaseDn()
      */
     String getCallerBaseDn() {
-        return callerBaseDn;
+        return (this.callerBaseDn != null) ? this.callerBaseDn : evaluateCallerBaseDn(false);
     }
 
     /**
@@ -175,7 +406,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#callerNameAttribute()
      */
     String getCallerNameAttribute() {
-        return callerNameAttribute;
+        return (this.callerNameAttribute != null) ? this.callerNameAttribute : evaluateCallerNameAttribute(false);
     }
 
     /**
@@ -186,7 +417,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#callerSearchBase()
      */
     String getCallerSearchBase() {
-        return callerSearchBase;
+        return (this.callerSearchBase != null) ? this.callerSearchBase : evaluateCallerSearchBase(false);
     }
 
     /**
@@ -197,7 +428,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#callerSearchFilter()
      */
     String getCallerSearchFilter() {
-        return callerSearchFilter;
+        return (this.callerSearchFilter != null) ? this.callerSearchFilter : evaluateCallerSearchFilter(false);
     }
 
     /**
@@ -209,7 +440,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#callerSearchScopeExpression()
      */
     LdapSearchScope getCallerSearchScope() {
-        return callerSearchScope;
+        return this.callerSearchScope != null ? this.callerSearchScope : evaluateCallerSearchScope(false);
     }
 
     /**
@@ -220,7 +451,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#groupMemberAttribute()
      */
     String getGroupMemberAttribute() {
-        return groupMemberAttribute;
+        return (this.groupMemberAttribute != null) ? this.groupMemberAttribute : evaluateGroupMemberAttribute(false);
     }
 
     /**
@@ -231,7 +462,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#groupMemberOfAttribute()
      */
     String getGroupMemberOfAttribute() {
-        return groupMemberOfAttribute;
+        return (this.groupMemberOfAttribute != null) ? this.groupMemberOfAttribute : evaluateGroupMemberOfAttribute(false);
     }
 
     /**
@@ -242,7 +473,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#groupNameAttribute()
      */
     String getGroupNameAttribute() {
-        return groupNameAttribute;
+        return (this.groupNameAttribute != null) ? this.groupNameAttribute : evaluateGroupNameAttribute(false);
     }
 
     /**
@@ -253,7 +484,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#groupSearchBase()
      */
     String getGroupSearchBase() {
-        return groupSearchBase;
+        return (this.groupSearchBase != null) ? this.groupSearchBase : evaluateGroupSearchBase(false);
     }
 
     /**
@@ -264,7 +495,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#groupSearchFilter()
      */
     String getGroupSearchFilter() {
-        return groupSearchFilter;
+        return (this.groupSearchFilter != null) ? this.groupSearchFilter : evaluateGroupSearchFilter(false);
     }
 
     /**
@@ -276,7 +507,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#groupSearchScopeExpression()
      */
     LdapSearchScope getGroupSearchScope() {
-        return groupSearchScope;
+        return (this.groupSearchScope != null) ? this.groupSearchScope : evaluateGroupSearchScope(false);
     }
 
     /**
@@ -288,7 +519,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#maxResultsExpression()
      */
     int getMaxResults() {
-        return maxResults;
+        return (this.maxResults != null) ? this.maxResults : evaluateMaxResults(false);
     }
 
     /**
@@ -300,7 +531,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#priorityExpression()
      */
     int getPriority() {
-        return this.priority;
+        return (this.priority != null) ? this.priority : evaluatePriority(false);
     }
 
     /**
@@ -312,7 +543,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#readTimeoutExpression()
      */
     int getReadTimeout() {
-        return readTimeout;
+        return (this.readTimeout != null) ? this.readTimeout : evaluateReadTimeout(false);
     }
 
     /**
@@ -323,7 +554,7 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#url()
      */
     String getUrl() {
-        return this.url;
+        return (this.url != null) ? this.url : evaluateUrl(false);
     }
 
     /**
@@ -335,342 +566,6 @@ class LdapIdentityStoreDefinitionWrapper {
      * @see LdapIdentityStoreDefinition#useForExpression()
      */
     Set<ValidationType> getUseFor() {
-        return this.useFor;
-    }
-
-    /**
-     * This method will process a configuration value for any configuration setting in
-     * {@link LdapIdentityStoreDefinition} that is a string and whose name is NOT a
-     * "*Expression". It will first check to see if it is a EL expression. It it is, it
-     * will return the evaluated expression; otherwise, it will return the literal String.
-     *
-     * @param name The name of the property. Used for error messages.
-     * @param value The value returned from from the {@link LdapIdentityStoreDefinition}, which can
-     *            either be a literal String or an EL expression.
-     * @return The String value.
-     */
-    @FFDCIgnore(ELException.class)
-    private String processString(String name, String value) {
-        String result;
-
-        ELProcessor elp = new ELProcessor();
-        try {
-            Object obj = elp.eval(value);
-            if (obj instanceof String) {
-                result = (String) obj;
-            } else {
-                throw new IllegalArgumentException("Expected '" + name + "' to evaluate to an String value.");
-            }
-        } catch (ELException e) {
-            result = value;
-        }
-
-        return result;
-    }
-
-    /**
-     * Validate and return the bindDn.
-     *
-     * @return The validated bindDn.
-     */
-    private String setBindDn() {
-        return processString("bindDn", idStoreDefinition.bindDn());
-    }
-
-    /**
-     * Validate and return the bindDnPassword.
-     *
-     * @return The validated bindDnPassword.
-     */
-    private String setBindDnPasword() {
-        return processString("bindDnPassword", idStoreDefinition.bindDnPassword());
-    }
-
-    /**
-     * Validate and return the callerBaseDn.
-     *
-     * @return The validated callerBaseDn.
-     */
-    private String setCallerBaseDn() {
-        return processString("callerBaseDn", idStoreDefinition.callerBaseDn());
-    }
-
-    /**
-     * Validate and return the callerNameAttribute.
-     *
-     * @return The validated callerNameAttribute.
-     */
-    private String setCallerNameAttribute() {
-        return processString("callerNameAttribute", idStoreDefinition.callerNameAttribute());
-    }
-
-    /**
-     * Validate and return the callerSearchBase.
-     *
-     * @return The validated callerSearchBase.
-     */
-    private String setCallerSearchBase() {
-        return processString("callerSearchBase", idStoreDefinition.callerSearchBase());
-    }
-
-    /**
-     * Validate and return the callerSearchFilter.
-     *
-     * @return The validated callerSearchFilter.
-     */
-    private String setCallerSearchFilter() {
-        return processString("callerSearchFilter", idStoreDefinition.callerSearchFilter());
-    }
-
-    /**
-     * Validate and return the callerSearchScope.
-     *
-     * @return The validated callerSearchScope
-     */
-    private LdapSearchScope setCallerSearchScope() {
-        LdapSearchScope scope;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.callerSearchScopeExpression().isEmpty()) {
-            /*
-             * Direct setting.
-             */
-            scope = idStoreDefinition.callerSearchScope();
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            elp.getELManager().importClass(LdapSearchScope.class.getCanonicalName());
-            Object obj = elp.eval(idStoreDefinition.callerSearchScopeExpression());
-            if (obj instanceof LdapSearchScope) {
-                scope = (LdapSearchScope) obj;
-            } else {
-                throw new IllegalArgumentException("Expected 'callerSearchScopeExpression' to evaluate to an LdapSearchScope type.");
-            }
-        }
-
-        return scope;
-    }
-
-    /**
-     * Validate and return the groupMemberAttribute.
-     *
-     * @return The validated groupMemberAttribute.
-     */
-    private String setGroupMemberAttribute() {
-        return processString("groupMemberAttribute", idStoreDefinition.groupMemberAttribute());
-    }
-
-    /**
-     * Validate and return the groupMemberOfAttribute.
-     *
-     * @return The validated groupMemberOfAttribute.
-     */
-    private String setGroupMemberOfAttribute() {
-        return processString("groupMemberOfAttribute", idStoreDefinition.groupMemberOfAttribute());
-    }
-
-    /**
-     * Validate and return the groupNameAttribute.
-     *
-     * @return The validated groupNameAttribute.
-     */
-    private String setGroupNameAttribute() {
-        return processString("groupNameAttribute", idStoreDefinition.groupNameAttribute());
-    }
-
-    /**
-     * Validate and return the groupSearchBase.
-     *
-     * @return The validated groupSearchBase.
-     */
-    private String setGroupSearchBase() {
-        return processString("groupSearchBase", idStoreDefinition.groupSearchBase());
-    }
-
-    /**
-     * Validate and return the groupSearchFilter.
-     *
-     * @return The validated groupSearchFilter.
-     */
-    private String setGroupSearchFilter() {
-        return processString("groupSearchFilter", idStoreDefinition.groupSearchFilter());
-    }
-
-    /**
-     * Validate and return the groupSearchScope.
-     *
-     * @return The validated groupSearchScope
-     */
-    private LdapSearchScope setGroupSearchScope() {
-        LdapSearchScope scope;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.groupSearchScopeExpression().isEmpty()) {
-            /*
-             * Direct setting.
-             */
-            scope = idStoreDefinition.groupSearchScope();
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            elp.getELManager().importClass(LdapSearchScope.class.getCanonicalName());
-            Object obj = elp.eval(idStoreDefinition.groupSearchScopeExpression());
-            if (obj instanceof LdapSearchScope) {
-                scope = (LdapSearchScope) obj;
-            } else {
-                throw new IllegalArgumentException("Expected 'groupSearchScopeExpression' to evaluate to an LdapSearchScope type.");
-            }
-        }
-
-        return scope;
-    }
-
-    /**
-     * Validate and return the maxResults.
-     *
-     * @return The validated maxResults
-     */
-    private int setMaxResults() {
-        int maxResults;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.maxResultsExpression().isEmpty()) {
-            /*
-             * Direct setting.
-             */
-            maxResults = idStoreDefinition.maxResults();
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            Object obj = elp.eval(idStoreDefinition.maxResultsExpression());
-            if (obj instanceof Number) {
-                maxResults = ((Number) obj).intValue();
-            } else {
-                throw new IllegalArgumentException("Expected 'maxResultsExpression' to evaluate to an integer value.");
-            }
-        }
-
-        return maxResults;
-    }
-
-    /**
-     * Validate and return the priority either from the EL expression or the direct priority setting.
-     *
-     * @return The validated priority.
-     */
-    private int setPriority() {
-        int priority;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.priorityExpression().isEmpty()) {
-            /*
-             * Direct setting.
-             */
-            priority = idStoreDefinition.priority();
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            Object obj = elp.eval(idStoreDefinition.priorityExpression());
-            if (obj instanceof Number) {
-                priority = ((Number) obj).intValue();
-            } else {
-                throw new IllegalArgumentException("Expected 'priorityExpression' to evaluate to an integer value.");
-            }
-        }
-
-        return priority;
-    }
-
-    /**
-     * Validate and return the readTimeout.
-     *
-     * @return The validated readTimeout
-     */
-    private int setReadTimeout() {
-        int readTimeout;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.readTimeoutExpression().isEmpty()) {
-            /*
-             * Direct setting.
-             */
-            readTimeout = idStoreDefinition.readTimeout();
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            Object obj = elp.eval(idStoreDefinition.readTimeoutExpression());
-            if (obj instanceof Number) {
-                readTimeout = ((Number) obj).intValue();
-            } else {
-                throw new IllegalArgumentException("Expected 'readTimeoutExpression' to evaluate to an integer value.");
-            }
-        }
-
-        return readTimeout;
-    }
-
-    /**
-     * Validate and return the url.
-     *
-     * @return The validated url.
-     */
-    private String setUrl() {
-        return processString("url", idStoreDefinition.url());
-    }
-
-    /**
-     * Validate and return the {@link ValidationType}s for the {@link IdentityStore} from either
-     * the EL expression or the direct useFor setting.
-     *
-     * @return The validated useFor types.
-     */
-    private Set<ValidationType> setUseFor() {
-        Set<ValidationType> types = null;
-
-        /*
-         * The expression language value takes precedence over the direct setting.
-         */
-        if (idStoreDefinition.useForExpression().isEmpty()) {
-            types = new HashSet<ValidationType>(Arrays.asList(idStoreDefinition.useFor()));
-        } else {
-            /*
-             * Evaluate the EL expression to get the value.
-             */
-            ELProcessor elp = new ELProcessor();
-            elp.getELManager().importClass(ValidationType.class.getCanonicalName());
-            Object obj = elp.eval(idStoreDefinition.useForExpression());
-            if (obj instanceof Object[]) {
-                types = new HashSet(Arrays.asList(obj));
-            } else if (obj instanceof Set) {
-                types = (Set<ValidationType>) obj;
-            } else {
-                throw new IllegalArgumentException("Expected 'useForExpression' to evaluate to a Set<ValidationType>.");
-            }
-        }
-
-        if (types == null || types.isEmpty()) {
-            throw new IllegalArgumentException("The identity store must be configured with at least one ValidationType.");
-        }
-        return Collections.unmodifiableSet(types);
+        return (this.useFor != null) ? this.useFor : evaluateUseFor(false);
     }
 }

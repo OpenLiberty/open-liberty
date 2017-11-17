@@ -573,6 +573,11 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public int getRunningTaskCount() {
+        return runningCount.get();
+    }
+
+    @Override
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Trivial
     public final <T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException {
@@ -1002,6 +1007,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public int queueCapacityRemaining() {
+        int capacity = maxQueueSizeConstraint.availablePermits();
+        return capacity < 0 ? 0 : capacity;
+    }
+
+    @Override
     public Runnable registerConcurrencyCallback(int max, Runnable runnable) {
         if (state.get() != State.ACTIVE)
             throw new IllegalStateException(state.toString());
@@ -1309,7 +1320,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 maxQueueSizeConstraint.release(queueCapacityAdded);
             else if (queueCapacityAdded < 0)
                 maxQueueSizeConstraint.reducePermits(-queueCapacityAdded);
-            maxQueueSize = u_max;
+            maxQueueSize = u_maxQueueSize;
         }
 
         if (queueCapacityAdded < 0) {

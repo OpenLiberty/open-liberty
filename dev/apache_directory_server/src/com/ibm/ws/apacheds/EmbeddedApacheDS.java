@@ -79,7 +79,7 @@ public class EmbeddedApacheDS {
     public EmbeddedApacheDS(String instance) throws Exception {
         this.name = instance;
 
-        File workDir = new File("apacheDS/" + instance);
+        File workDir = new File("apacheDS/instances/" + instance);
 
         /*
          * Start fresh each time.
@@ -93,6 +93,7 @@ public class EmbeddedApacheDS {
         }
 
         workDir.mkdirs();
+
         this.initDirectoryService(workDir);
     }
 
@@ -136,7 +137,8 @@ public class EmbeddedApacheDS {
      * @throws LdapException If there was an error adding the entry.
      */
     public void add(Entry entry) throws LdapException {
-        this.service.getAdminSession().add(entry);
+        CoreSession session = this.service.getAdminSession();
+        session.add(entry);
     }
 
     /**
@@ -233,6 +235,62 @@ public class EmbeddedApacheDS {
          * Start the service.
          */
         this.service.startup();
+
+        /*
+         * Add Microsoft schema for sAMAccountName and memberOf.
+         * These two attributes are not defined in ApacheDS.
+         */
+        Entry entry = newEntry("cn=microsoft, ou=schema");
+        entry.add("objectclass", "metaSchema");
+        entry.add("objectclass", "top");
+        entry.add("cn", "microsoft");
+        add(entry);
+
+        entry = newEntry("ou=attributetypes, cn=microsoft, ou=schema");
+        entry.add("objectclass", "organizationalUnit");
+        entry.add("objectclass", "top");
+        entry.add("ou", "attributetypes");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.4.221, ou=attributetypes, cn=microsoft, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.4.221");
+        entry.add("m-name", "sAMAccountName");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "TRUE");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.4.222, ou=attributetypes, cn=microsoft, ou=schema");
+        entry.add("objectclass", "metaAttributeType");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.4.222");
+        entry.add("m-name", "memberOf");
+        entry.add("m-equality", "caseIgnoreMatch");
+        entry.add("m-syntax", "1.3.6.1.4.1.1466.115.121.1.15");
+        entry.add("m-singleValue", "FALSE");
+        add(entry);
+
+        entry = newEntry("ou=objectclasses, cn=microsoft, ou=schema");
+        entry.add("objectclass", "organizationalUnit");
+        entry.add("objectclass", "top");
+        entry.add("ou", "objectClasses");
+        add(entry);
+
+        entry = newEntry("m-oid=1.2.840.113556.1.5.6, ou=objectclasses, cn=microsoft, ou=schema");
+        entry.add("objectclass", "metaObjectClass");
+        entry.add("objectclass", "metaTop");
+        entry.add("objectclass", "top");
+        entry.add("m-oid", "1.2.840.113556.1.5.6");
+        entry.add("m-name", "simulatedMicrosoftSecurityPrincipal");
+        entry.add("m-supObjectClass", "top");
+        entry.add("m-typeObjectClass", "AUXILIARY");
+        entry.add("m-must", "sAMAccountName");
+        entry.add("m-may", "memberOf");
+        add(entry);
     }
 
     /**

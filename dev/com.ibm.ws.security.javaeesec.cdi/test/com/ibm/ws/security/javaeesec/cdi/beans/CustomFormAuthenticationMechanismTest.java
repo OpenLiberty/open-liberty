@@ -140,7 +140,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestValidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ap, ch).withUsernamePassword(USER1, PASSWORD1).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        withMessageContext(ap).withMessageInfo().withUsernamePassword(USER1, PASSWORD1).withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -152,7 +152,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestInvalidIdAndPWIdentityStoreHandler() throws Exception {
         IdentityStoreHandler mish = new MyIdentityStoreHandler();
-        withMessageContext(ap, ch).withUsernamePassword(USER1, "invalid").withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withMessageContext(ap).withUsernamePassword(USER1, "invalid").withBeanInstance(mish).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -164,7 +164,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestValidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(ap, mch).withUsernamePassword(USER1, PASSWORD1).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_OK);
+        withMessageContext(ap).withMessageInfo().withHandler(mch).withUsernamePassword(USER1, PASSWORD1).withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_OK);
 
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SUCCESS", AuthenticationStatus.SUCCESS, status);
@@ -176,7 +176,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestInvalidIdAndPWNoIdentityStoreHandlerCallbackHandler() throws Exception {
         final MyCallbackHandler mch = new MyCallbackHandler();
-        withMessageContext(ap, mch).withUsernamePassword(USER1, "invalid").withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
+        withMessageContext(ap).withHandler(mch).withUsernamePassword(USER1, "invalid").withBeanInstance(null).withSetStatusToResponse(HttpServletResponse.SC_FORBIDDEN);
 
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_FAILURE", AuthenticationStatus.SEND_FAILURE, status);
@@ -189,7 +189,7 @@ public class CustomFormAuthenticationMechanismTest {
     public void testValidateRequestValidIdAndPWNoIdentityStoreHandlerCallbackHandlerException() throws Exception {
         final String msg = "An Exception by CallbackHandler";
         IOException ex = new IOException(msg);
-        withMessageContext(ap, ch).withUsernamePassword(USER1, PASSWORD1).withBeanInstance(null).withCallbackHandlerException(ex);
+        withMessageContext(ap).withHandler(ch).withUsernamePassword(USER1, PASSWORD1).withBeanInstance(null).withCallbackHandlerException(ex);
 
         try {
             AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
@@ -206,7 +206,7 @@ public class CustomFormAuthenticationMechanismTest {
     @Test
     public void testValidateRequestInvalidCredential() throws Exception {
         CallerOnlyCredential coc = new CallerOnlyCredential(USER1);
-        withMessageContext(ap, ch).withCredential(coc).withBeanInstance(null);
+        withMessageContext(ap).withHandler(ch).withCredential(coc).withBeanInstance(null);
 
         try {
             AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
@@ -221,7 +221,7 @@ public class CustomFormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestNoIdAndPWAuthReqFalseProtectedTrue() throws Exception {
-        withMessageContext(ap, ch).withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(true);
+        withMessageContext(ap).withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(true);
  
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -232,7 +232,7 @@ public class CustomFormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestNoIdAndPWAuthReqTrueProtectedFalse() throws Exception {
-        withMessageContext(ap, ch).withUsernamePassword(null, null).withAuthenticationRequest(true);
+        withMessageContext(ap).withUsernamePassword(null, null).withAuthenticationRequest(true);
  
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -243,7 +243,7 @@ public class CustomFormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestNoIdAndPWAuthReqFalseProtectedFalse() throws Exception {
-        withMessageContext(ap, ch).withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(false);
+        withMessageContext(ap).withUsernamePassword(null, null).withAuthenticationRequest(false).withProtected(false);
  
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be NOT_DONE", AuthenticationStatus.NOT_DONE, status);
@@ -254,7 +254,7 @@ public class CustomFormAuthenticationMechanismTest {
      */
     @Test
     public void testValidateRequestNoIdAndPW() throws Exception {
-        withMessageContext(null, ch);
+        withMessageContext(null);
  
         AuthenticationStatus status = cfam.validateRequest(req, res, hmc);
         assertEquals("The result should be SEND_CONTINUE", AuthenticationStatus.SEND_CONTINUE, status);
@@ -281,7 +281,25 @@ public class CustomFormAuthenticationMechanismTest {
     }
 
     @SuppressWarnings("unchecked")
-    private CustomFormAuthenticationMechanismTest withMessageContext(final AuthenticationParameters authParams, final CallbackHandler handler) throws Exception {
+    private CustomFormAuthenticationMechanismTest withMessageContext(final AuthenticationParameters authParams) throws Exception {
+        
+        mockery.checking(new Expectations() {
+            {
+                one(hmc).getClientSubject();
+                will(returnValue(cs));
+                one(hmc).getRequest();
+                will(returnValue(req));
+                one(hmc).getResponse();
+                will(returnValue(res));
+                one(hmc).getAuthParameters();
+                will(returnValue(authParams));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private CustomFormAuthenticationMechanismTest withMessageInfo() throws Exception {
         
         mockery.checking(new Expectations() {
             {
@@ -289,16 +307,18 @@ public class CustomFormAuthenticationMechanismTest {
                 will(returnValue(mi));
                 one(mi).getMap();
                 will(returnValue(mm));
-                one(hmc).getClientSubject();
-                will(returnValue(cs));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private CustomFormAuthenticationMechanismTest withHandler(final CallbackHandler handler) throws Exception {
+        
+        mockery.checking(new Expectations() {
+            {
                 one(hmc).getHandler();
                 will(returnValue(handler));
-                one(hmc).getRequest();
-                will(returnValue(req));
-                one(hmc).getResponse();
-                will(returnValue(res));
-                one(hmc).getAuthParameters();
-                will(returnValue(authParams));
             }
         });
         return this;

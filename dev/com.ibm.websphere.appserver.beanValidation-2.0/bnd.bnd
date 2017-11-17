@@ -13,13 +13,10 @@
 -nobundles=true
 
 -dependson: \
-  com.ibm.websphere.appserver.javax.cdi-2.0;version=latest,\
-  com.ibm.websphere.appserver.beanValidationCore-1.0;version=latest,\
-  com.ibm.websphere.appserver.javax.validation-2.0;version=latest,\
-  com.ibm.websphere.appserver.el-3.0;version=latest,\
-  com.ibm.websphere.appserver.transaction-1.2;version=latest,\
-  com.ibm.websphere.appserver.javax.interceptor-1.2;version=latest,\
-  com.ibm.websphere.appserver.internal.slf4j-1.7.7;version=latest,\
-  com.ibm.ws.org.apache.commons.weaver;version=latest,\
-  com.ibm.ws.beanvalidation.v11;version=latest,\
-  com.ibm.ws.org.apache.bval.1.1.0;version=latest
+  com.ibm.websphere.javaee.validation.2.0,\
+  com.ibm.websphere.appserver.beanValidationCDI-2.0,\
+  com.ibm.ws.beanvalidation.v20;version=latest,\
+  com.ibm.ws.com.fasterxml.classmate;version=latest,\
+  com.ibm.ws.org.hibernate.validator;version=latest,\
+  com.ibm.ws.org.hibernate.validator.cdi;version=latest,\
+  com.ibm.ws.org.jboss.logging;version=latest

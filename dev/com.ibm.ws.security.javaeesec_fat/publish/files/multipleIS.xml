@@ -1,0 +1,13 @@
+<server description="JavaEESec Multiple IdentityStore FAT">
+
+    <featureManager>
+        <feature>appSecurity-3.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->
+
+    <application type="war" id="JavaEESecMultipleIS" name="JavaEESecMultipleIS" location="JavaEESecMultipleIS.war">
+    </application>
+
+    <include location="../fatTestPorts.xml" />
+</server>

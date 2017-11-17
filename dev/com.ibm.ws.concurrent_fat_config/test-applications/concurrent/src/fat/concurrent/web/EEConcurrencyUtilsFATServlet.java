@@ -10,11 +10,18 @@
  *******************************************************************************/
 package fat.concurrent.web;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -23,6 +30,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Resource;
+import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.servlet.annotation.WebServlet;
@@ -41,9 +49,14 @@ import fat.concurrent.ejb.EEConcurrencyUtilsStatelessBean;
 public class EEConcurrencyUtilsFATServlet extends FATServlet {
 
     /**
-     * Maximum number of milliseconds to wait for a task to finish.
+     * Maximum number of nanoseconds to wait for a task to finish.
      */
-    private static final long TIMEOUT = 5000;
+    private static final long TIMEOUT_NS = TimeUnit.MINUTES.toNanos(2);
+
+    /**
+     * Map of futures to save across servlet invocations.
+     */
+    private static Map<String, Future<?>> futures = new HashMap<String, Future<?>>();
 
     @Resource
     private UserTransaction tran;
@@ -83,7 +96,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ExecutorService execSvc = (ExecutorService) new InitialContext().lookup(execSvcJNDIName);
         Future<Class<?>> future = execSvc.submit(loadClass);
         try {
-            loadedClass = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+            loadedClass = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         } finally {
             future.cancel(true);
         }
@@ -126,7 +139,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ExecutorService execSvc = (ExecutorService) new InitialContext().lookup(execSvcJNDIName);
         Future<BlockingQueue<Object>> future = execSvc.submit(javaCompLookup, results);
         try {
-            result = future.get(TIMEOUT, TimeUnit.MILLISECONDS).remove();
+            result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS).remove();
         } finally {
             future.cancel(true);
         }
@@ -176,7 +189,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ExecutorService execSvc = (ExecutorService) new InitialContext().lookup(execSvcJNDIName);
         Future<ClassLoader> future = execSvc.submit(getClassLoader);
         try {
-            ClassLoader taskClassLoader = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+            ClassLoader taskClassLoader = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             if (servletClassLoader.equals(taskClassLoader))
                 throw new Exception("Class loader of servlet " + servletClassLoader + " should not be propagated to managed task " + taskClassLoader);
         } finally {
@@ -218,7 +231,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ExecutorService execSvc = (ExecutorService) new InitialContext().lookup(execSvcJNDIName);
         Future<BlockingQueue<Object>> future = execSvc.submit(javaCompLookup, results);
         try {
-            result = future.get(TIMEOUT, TimeUnit.MILLISECONDS).remove();
+            result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS).remove();
         } finally {
             future.cancel(true);
         }
@@ -276,7 +289,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
                 }
             });
 
-            Transaction tran2 = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+            Transaction tran2 = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             System.out.println("during task: " + tran2);
             if (tran2 != null)
                 throw new Exception("Managed task without transactionContext configured should run in an LTC or no transaction at all, not " + tran2
@@ -296,6 +309,77 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
     }
 
     /**
+     * Submit 1 task and verify it completes successfully.
+     */
+    public void testTaskSuccessful(String execSvcJNDIName, PrintWriter out) throws Exception {
+        ExecutorService executor = InitialContext.doLookup(execSvcJNDIName);
+        Future<Integer> future = executor.submit(new IncrementTask(null, null, null, null));
+        assertEquals(Integer.valueOf(1), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+    }
+
+    /**
+     * Submit 2 tasks, where the first task waits for the second to start. Task Futures are saved for later use.
+     */
+    public void testTask1BlockedByTask2(String execSvcJNDIName, PrintWriter out) throws Exception {
+        ExecutorService executor = InitialContext.doLookup(execSvcJNDIName);
+        CountDownLatch task2StartedLatch = new CountDownLatch(1);
+        Future<Integer> future1 = executor.submit(new IncrementTask(null, null, null, task2StartedLatch));
+        Future<Integer> future2 = executor.submit(new IncrementTask(null, null, task2StartedLatch, null));
+        futures.put("testTask1BlockedByTask2-future1-" + execSvcJNDIName, future1);
+        futures.put("testTask1BlockedByTask2-future2-" + execSvcJNDIName, future2);
+    }
+
+    /**
+     * Verify that futures previously submitted are completed now.
+     */
+    public void testTask1BlockedByTask2Completed(String execSvcJNDIName, PrintWriter out) throws Exception {
+        @SuppressWarnings("unchecked")
+        Future<Integer> future1 = (Future<Integer>) futures.remove("testTask1BlockedByTask2-future1-" + execSvcJNDIName);
+        @SuppressWarnings("unchecked")
+        Future<Integer> future2 = (Future<Integer>) futures.remove("testTask1BlockedByTask2-future2-" + execSvcJNDIName);
+
+        assertEquals(Integer.valueOf(1), future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(1), future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(future1.isDone());
+        assertTrue(future2.isDone());
+        assertFalse(future1.isCancelled());
+        assertFalse(future2.isCancelled());
+    }
+
+    /**
+     * Submit 2 long running tasks, where the first task waits for the second to start. Task Futures are saved for later use.
+     */
+    public void testTask1BlockedByTask2LongRunning(String execSvcJNDIName, PrintWriter out) throws Exception {
+        ExecutorService executor = InitialContext.doLookup(execSvcJNDIName);
+        CountDownLatch task2StartedLatch = new CountDownLatch(1);
+        IncrementTask task1 = new IncrementTask(null, null, null, task2StartedLatch);
+        IncrementTask task2 = new IncrementTask(null, null, task2StartedLatch, null);
+        task1.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        task2.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> future1 = executor.submit(task1);
+        Future<Integer> future2 = executor.submit(task2);
+        futures.put("testTask1BlockedByTask2LongRunning-future1-" + execSvcJNDIName, future1);
+        futures.put("testTask1BlockedByTask2LongRunning-future2-" + execSvcJNDIName, future2);
+    }
+
+    /**
+     * Verify that futures for long running tasks previously submitted are completed now.
+     */
+    public void testTask1BlockedByTask2LongRunningCompleted(String execSvcJNDIName, PrintWriter out) throws Exception {
+        @SuppressWarnings("unchecked")
+        Future<Integer> future1 = (Future<Integer>) futures.remove("testTask1BlockedByTask2LongRunning-future1-" + execSvcJNDIName);
+        @SuppressWarnings("unchecked")
+        Future<Integer> future2 = (Future<Integer>) futures.remove("testTask1BlockedByTask2LongRunning-future2-" + execSvcJNDIName);
+
+        assertEquals(Integer.valueOf(1), future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertEquals(Integer.valueOf(1), future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
+        assertTrue(future1.isDone());
+        assertTrue(future2.isDone());
+        assertFalse(future1.isCancelled());
+        assertFalse(future2.isCancelled());
+    }
+
+    /**
      * Verify that a managed thread factory uses a thread group with max priority = 4
      *
      * @param threadFactoryJNDIName the thread factory to use.
@@ -308,7 +392,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ThreadInfoRunnable threadInfoRunnable = new ThreadInfoRunnable();
         Thread thread = threadFactory.newThread(threadInfoRunnable);
         thread.start();
-        ThreadGroup group = threadInfoRunnable.threadGroupQ.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        ThreadGroup group = threadInfoRunnable.threadGroupQ.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         int maxPriority = group.getMaxPriority();
 
         if (maxPriority != 4)
@@ -346,7 +430,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ThreadInfoRunnable threadInfoRunnable = new ThreadInfoRunnable();
         Thread thread = threadFactory.newThread(threadInfoRunnable);
         thread.start();
-        Boolean isDaemon = threadInfoRunnable.threadIsDaemonQ.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        Boolean isDaemon = threadInfoRunnable.threadIsDaemonQ.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
         if (!Boolean.TRUE.equals(isDaemon))
             throw new Exception("Managed thread should be a daemon thread. Instead: " + isDaemon);
@@ -399,7 +483,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ThreadInfoRunnable threadInfoRunnable = new ThreadInfoRunnable();
         Thread thread = threadFactory.newThread(threadInfoRunnable);
         thread.start();
-        Integer priority = threadInfoRunnable.threadPriorityQ.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        Integer priority = threadInfoRunnable.threadPriorityQ.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
         if (!Integer.valueOf(5).equals(priority))
             throw new Exception("Unexpected thread priority: " + priority);
@@ -418,7 +502,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         ThreadInfoRunnable threadInfoRunnable = new ThreadInfoRunnable();
         Thread thread = threadFactory.newThread(threadInfoRunnable);
         thread.start();
-        Integer priority = threadInfoRunnable.threadPriorityQ.poll(TIMEOUT, TimeUnit.MILLISECONDS);
+        Integer priority = threadInfoRunnable.threadPriorityQ.poll(TIMEOUT_NS, TimeUnit.NANOSECONDS);
 
         if (!Integer.valueOf(8).equals(priority))
             throw new Exception("Unexpected thread priority: " + priority);
@@ -454,7 +538,7 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
                 }
             });
 
-            Transaction tran2 = future.get(TIMEOUT, TimeUnit.MILLISECONDS);
+            Transaction tran2 = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             System.out.println("during task: " + tran2);
             if (tran2 != null)
                 throw new Exception("Managed task configured with transactionContext should run in an LTC, not " + tran2 + ". Original transaction was " + tran1);

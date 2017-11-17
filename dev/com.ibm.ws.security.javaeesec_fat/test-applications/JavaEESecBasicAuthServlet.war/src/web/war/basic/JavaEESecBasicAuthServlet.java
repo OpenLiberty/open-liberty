@@ -12,6 +12,7 @@ public class JavaEESecBasicAuthServlet extends FlexibleBaseServlet {
         mySteps.add(new WriteRequestBasicsStep());
         mySteps.add(new WritePrincipalStep());
         mySteps.add(new WriteRolesStep());
+        mySteps.add(new WriteSecurityContextStep());
         mySteps.add(new WriteSubjectStep());
         mySteps.add(new WritePublicCredentialsStep());
         mySteps.add(new WriteRunAsSubjectStep());
