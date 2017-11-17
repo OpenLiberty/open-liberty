@@ -15,9 +15,9 @@ import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.ServletMapping;
 
 /**
  * This test will test the functionality of the HttpServletRequest.getMapping()
@@ -28,35 +28,35 @@ import javax.servlet.http.ServletMapping;
  *
  */
 @WebServlet(urlPatterns = { "", "/pathMatch/*", "/", "/exactMatch",
-		"*.extension" }, name = "GetMappingTestServlet", asyncSupported = true)
+                            "*.extension" },
+            name = "GetMappingTestServlet", asyncSupported = true)
 public class GetMappingServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
-		System.out.println("++++++++ Enter GetMappingServlet");
+        System.out.println("++++++++ Enter GetMappingServlet");
 
-		ServletMapping mapping = request.getMapping();
+        HttpServletMapping mapping = request.getHttpServletMapping();
 
-		if (mapping != null) {
-			response.getWriter().append("ServletMapping values: mappingMatch: " + mapping.getMappingMatch());
-			response.getWriter().append(" matchValue: " + mapping.getMatchValue());
-			response.getWriter().append(" pattern: " + mapping.getPattern());
-			response.getWriter().append(" servletName: " + mapping.getServletName());
-		} else {
-			response.getWriter().append("FAIL: mapping was null");
-		}
+        if (mapping != null) {
+            response.getWriter().append("ServletMapping values: mappingMatch: " + mapping.getMappingMatch());
+            response.getWriter().append(" matchValue: " + mapping.getMatchValue());
+            response.getWriter().append(" pattern: " + mapping.getPattern());
+            response.getWriter().append(" servletName: " + mapping.getServletName());
+        } else {
+            response.getWriter().append("FAIL: mapping was null");
+        }
 
-		String completeAsync = request.getParameter("completeAsync");
-		if (completeAsync != null) {
-			request.getAsyncContext().complete();
-		}
+        String completeAsync = request.getParameter("completeAsync");
+        if (completeAsync != null) {
+            request.getAsyncContext().complete();
+        }
 
-		System.out.println("-------- Exit GetMappingServlet");
+        System.out.println("-------- Exit GetMappingServlet");
 
-	}
+    }
 
 }
