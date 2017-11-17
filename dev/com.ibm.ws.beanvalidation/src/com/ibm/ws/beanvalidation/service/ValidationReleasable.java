@@ -13,7 +13,7 @@ package com.ibm.ws.beanvalidation.service;
 /**
  * Interface to allow any implementer to specify how to release the particular
  * kind of validation releasable.
- * 
+ *
  * @param <T> the validation object that is stored to be released
  */
 public interface ValidationReleasable<T> {
@@ -25,8 +25,10 @@ public interface ValidationReleasable<T> {
 
     /**
      * Get the instance represented by this {@link ValidationReleasable}
-     * 
+     *
      * @return the instance
      */
     public T getInstance();
+
+    //public ValidatorFactory injectValidatorFactoryResources(ValidatorFactory vf);
 }

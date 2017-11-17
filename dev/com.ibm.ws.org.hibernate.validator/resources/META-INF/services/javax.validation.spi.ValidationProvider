@@ -14,13 +14,13 @@
 # KIND, either express or implied.  See the License for the
 # specific language governing permissions and limitations
 # under the License.
-#TODO: uncomment?
-##org.apache.bval.jsr.ApacheValidationProvider
+#TODO: remove
+org.apache.bval.jsr.ApacheValidationProvider
 
 # Added to maintain compatibility with 1.0 applications.
 # We find and load the class using thread-context, but the 
 # javax.validation.Validation.byProvider API validates that it knows the class
 # is listed as a service provider, so we list it here
-#TODO: uncomment?
-##org.apache.bval.jsr303.ApacheValidationProvider
+#TODO: remove
+org.apache.bval.jsr303.ApacheValidationProvider
 org.hibernate.validator.HibernateValidator
