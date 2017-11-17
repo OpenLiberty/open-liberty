@@ -13,5 +13,5 @@
 -nobundles=true
 
 -dependson: \
-	com.ibm.ws.jsfContainer.2.2;version=latest,\
-	com.ibm.ws.jsfContainer.classloading;version=latest
+	com.ibm.ws.jsfContainer;version=latest,\
+	com.ibm.ws.jsfContainer.classloading.2.2;version=latest
