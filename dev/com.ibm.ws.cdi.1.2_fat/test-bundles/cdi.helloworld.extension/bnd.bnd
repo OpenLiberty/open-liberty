@@ -8,7 +8,7 @@ Bundle-SymbolicName: cdi.helloworld.extension
 Bundle-Description: This bundle tests cdi runtime extension; version=${bVersion}
 Include-Resource: META-INF=META-INF/
 # hide the implementation packages
-Export-Package: com.ibm.ws.cdi.extension.impl
+Export-Package: com.ibm.ws.cdi.extension.impl;version=1.0.0
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.cdi.extension.impl.HelloWorldExtension

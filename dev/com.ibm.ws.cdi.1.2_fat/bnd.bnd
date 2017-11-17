@@ -11,6 +11,11 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+-sub: test-bundles/cdi.helloworld.extension/bnd.bnd,\
+      cdi_fat.bnd
+
+# Define the bundle for this FAT
+
 src: \
 	fat/src,\
 	test-applications/afterTypeDiscoveryApp.war/src,\
@@ -174,14 +179,10 @@ test.project: true
 	com.ibm.websphere.javaee.jsp.2.3;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-cdictrl-api-1.5.0.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-cdictrl-weld-1.5.0.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-core-api-1.5.0.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-core-impl-1.5.0.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-scheduler-module-api-1.5.0.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-scheduler-module-impl-1.5.0.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/quartz-2.2.1.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/slf4j-api-1.7.7.jar;version=file,\
-	test-applications/deltaspikeTest.war/resources/WEB-INF/lib/slf4j-jdk14-1.7.7.jar;version=file
-
-
+	org.quartz-scheduler:quartz;version=2.2.1,\
+	org.apache.deltaspike.core:deltaspike-core-api;version=1.5.0,\
+	org.apache.deltaspike.core:deltaspike-core-impl;version=1.5.0,\
+	org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api;version=1.5.0,\
+	org.apache.deltaspike.cdictrl:deltaspike-cdictrl-weld;version=1.5.0,\
+	org.apache.deltaspike.modules:deltaspike-scheduler-module-api;version=1.5.0,\
+	org.apache.deltaspike.modules:deltaspike-scheduler-module-impl;version=1.5.0

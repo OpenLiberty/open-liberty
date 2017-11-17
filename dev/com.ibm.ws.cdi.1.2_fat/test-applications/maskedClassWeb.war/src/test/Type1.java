@@ -11,6 +11,7 @@
 package test;
 
 import javax.enterprise.context.ApplicationScoped;
+import java.io.File;
 
 /**
  * This class will not be loaded because it is masked by test.Type1 in the EJB jar.
@@ -21,6 +22,16 @@ import javax.enterprise.context.ApplicationScoped;
 public class Type1 {
 
     public String getMessage() {
-        return "This is Type1 in the war";
+        try { 
+          final File f = new File(getClass().getProtectionDomain().getCodeSource().getLocation().getPath());
+          if (f.getCanonicalPath().contains("maskedClassWeb.war")) { 
+            return "from web";
+          } else if (f.getCanonicalPath().contains("maskedClassEjb.jar")) {
+            return "from ejb";
+          }
+          return "unkown " + f.getCanonicalPath();
+        } catch (Exception e) {
+          return e.getMessage();
+        }
     }
 }

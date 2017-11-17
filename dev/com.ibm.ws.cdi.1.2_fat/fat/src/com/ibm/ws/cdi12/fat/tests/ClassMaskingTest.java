@@ -45,7 +45,8 @@ public class ClassMaskingTest extends LoggingTest {
         lServer.useSecondaryHTTPPort();
 
         HttpUtils.findStringInUrl(lServer, "/maskedClassWeb/TestServlet",
-                                  "This is Type3, a managed bean in the war",
-                                  "This is TestBean in the war");
+                                  "Type1: from ejb",
+                                  "Type3: This is Type3, a managed bean in the war",
+                                  "TestBean: This is TestBean in the war");
     }
 }

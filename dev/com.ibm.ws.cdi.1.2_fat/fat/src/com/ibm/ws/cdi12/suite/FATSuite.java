@@ -10,6 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.cdi12.suite;
 
+import java.nio.file.Files; 
+import java.nio.file.StandardCopyOption; 
+import java.nio.file.attribute.FileAttribute; 
 import java.io.File;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -175,7 +178,15 @@ public class FATSuite {
     private static Map<String,List<Archive>> serversToApps = new HashMap<String,List<Archive>>();
 
     static{
-        
+    
+        try {
+          File helloWorldBundle = new File("publish/files/bundles/cdi.helloworld.extension.jar");
+          File helloWorldBundleDest = new File("publish/bundles/cdi.helloworld.extension_1.0.0.jar");
+          Files.copy(helloWorldBundle.toPath(), helloWorldBundleDest.toPath(), StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+
+        }
+
         JavaArchive jarInRar172 = ShrinkWrap.create(JavaArchive.class,"jarInRar.jar")
                         .addClass("com.ibm.ws.cdi12.fat.jarinrar.rar.Amigo")
                         .addClass("com.ibm.ws.cdi12.fat.jarinrar.rar.TestResourceAdapter")
@@ -186,10 +197,6 @@ public class FATSuite {
                         .add(new FileAsset(new File("test-applications/jarInRarEjb.jar/resources/META-INF/beans.xml")), "/META-INF/beans.xml")
                         .addAsManifestResource(new File("test-applications/jarInRarEjb.jar/resources/META-INF/MANIFEST.MF"));     
 
-        //This will do until we have gradle code to build bundles. 
-        JavaArchive helloWorldBundle = ShrinkWrap.create(ZipImporter.class,"cdi.helloworld.extension_1.0.0.jar")
-                        .importFrom(new File("test-applications/PreBuildArchives.jar/resources/cdi.helloworld.extension_1.0.0.jar"))
-                        .as(JavaArchive.class);        
         JavaArchive rootClassLoaderExtension109 = ShrinkWrap.create(JavaArchive.class,"rootClassLoaderExtension.jar")
                         .addClass("com.ibm.ws.cdi12.test.rootClassLoader.extension.RandomBean")
                         .addClass("com.ibm.ws.cdi12.test.rootClassLoader.extension.OSName")
@@ -238,8 +245,9 @@ public class FATSuite {
                         .addClass("vistest.appClientAsWarLib.AppClientAsWarLibTargetBean")
                         .addClass("vistest.appClientAsWarLib.AppClientAsWarLibTestingBean");
         JavaArchive maskedClassEjb31 = ShrinkWrap.create(JavaArchive.class,"maskedClassEjb.jar")
-                        .add(new FileAsset(new File("build/classes/test/Type1RenameMeWhenImportingToShrinkwrap.class")), "/test/Type1.class")
-                        .addClass("beans.SessionBean1");
+                        .addClass("test.Type1")
+                        .addClass("beans.SessionBean1")
+                        .add(new FileAsset(new File("test-applications/maskedClassEjb.jar/file.txt")), "/file.txt");
         JavaArchive visTestEjb10 = ShrinkWrap.create(JavaArchive.class,"visTestEjb.jar")
                         .addClass("vistest.ejb.dummy.DummySessionBean")
                         .addClass("vistest.ejb.EjbTargetBean")
@@ -646,9 +654,7 @@ public class FATSuite {
                         .addClass("com.ibm.ws.cdi12.fat.injectparameters.TestCdiBean")
                         .addClass("com.ibm.ws.cdi12.fat.injectparameters.TestCdiBeanServlet");
         WebArchive deltaspikeTest137 = ShrinkWrap.create(WebArchive.class, "deltaspikeTest.war")
-                        .addClass("com.ibm.ws.cdi.deltaspike.scheduler.GlobalResultHolder")
-                        .addClass("com.ibm.ws.cdi.deltaspike.scheduler.RequestScopedNumberProvider")
-                        .addClass("com.ibm.ws.cdi.deltaspike.scheduler.MyScheduler")
+                        .addPackage("com.ibm.ws.cdi.deltaspike.scheduler")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/quartz-config.xml")), "/WEB-INF/quartz-config.xml")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/web.xml")), "/WEB-INF/web.xml")
                         .add(new FileAsset(new File("test-applications/deltaspikeTest.war/resources/WEB-INF/lib/deltaspike-scheduler-module-impl-1.5.0.jar")), "/WEB-INF/lib/deltaspike-scheduler-module-impl-1.5.0.jar")
@@ -941,7 +947,8 @@ public class FATSuite {
                         .addClass("test.TestBeanWarImpl")
                         .addClass("test.Type3")
                         .addClass("test.Type1")
-                        .addClass("zservlet.TestServlet");
+                        .addClass("zservlet.TestServlet")
+                        .add(new FileAsset(new File("test-applications/maskedClassWeb.war/file.txt")), "/file.txt");
         WebArchive nonContextual134 = ShrinkWrap.create(WebArchive.class, "nonContextual.war")
                         .addClass("cdi12.noncontextual.test.Servlet")
                         .addClass("cdi12.noncontextual.test.NonContextualBean")
@@ -1284,8 +1291,7 @@ public class FATSuite {
         exportAppToClient("cdiClientAdvanced", appClientAdvanced151, "/apps");
         exportAppToClient("visTestClient", visTest107, "/apps");
         
-        exportBundle(helloWorldBundle); 
-
+     
 
     }
     

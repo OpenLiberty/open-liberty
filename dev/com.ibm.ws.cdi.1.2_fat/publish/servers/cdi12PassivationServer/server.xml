@@ -14,7 +14,7 @@
 
   <jdbcDriver id="FATJDBCDriver" libraryRef="cdilib"/>
     <library id="cdilib">    
-      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/derby" includes="derby-10.11.1.1.jar"/>
     </library>        
     
     <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="FATJDBCDriver">
