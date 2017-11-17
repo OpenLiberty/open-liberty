@@ -12,6 +12,7 @@ package com.ibm.ws.security.wim.env.was;
 
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
@@ -26,7 +27,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.wim.env.ICacheUtil;
 
 /**
- * Cache containing three internal tables in order to implement a least-recently-used removal algorithm.
+ * Cache containing three internal tables in order to implement a FIFO removal algorithm.
  */
 public class Cache implements ICacheUtil {
 
@@ -38,17 +39,17 @@ public class Cache implements ICacheUtil {
     private static int defaultTimeout;
 
     /**
-     * Primary hash table containing the most recently used entries.
+     * Primary hash table containing the most recently entered entries.
      */
     private ConcurrentHashMap<String, Object> primaryTable;
 
     /**
-     * Secondary hash table containing less recently used entries.
+     * Secondary hash table containing less recently entered entries.
      */
     private ConcurrentHashMap<String, Object> secondaryTable;
 
     /**
-     * Tertiary hash table containing least recently used entries that
+     * Tertiary hash table containing least recently entered entries that
      * are eligible for eviction.
      */
     private ConcurrentHashMap<String, Object> tertiaryTable;
@@ -68,12 +69,25 @@ public class Cache implements ICacheUtil {
      */
     private Timer timer;
 
-    private ICacheUtil cache = null;
+    /**
+     * Boolean to determine whether the cache has been initialized.
+     */
+    private boolean isInitialized = false;
 
+    /**
+     * Default constructor for the cache
+     */
     public Cache() {
 
     }
 
+    /**
+     * Constructs a cache with given values
+     *
+     * @param initialSize initial size of the HashTables in the cache
+     * @param cacheMaxSize max size of the HashTables in the cache
+     * @param timeoutInMilliSeconds default timeout for the cache
+     */
     private Cache(int initialSize, int cacheMaxSize, long timeoutInMilliSeconds) {
         primaryTable = new ConcurrentHashMap<String, Object>(initialSize);
         secondaryTable = new ConcurrentHashMap<String, Object>(initialSize);
@@ -81,6 +95,8 @@ public class Cache implements ICacheUtil {
 
         this.minSize = initialSize;
         this.entryLimit = cacheMaxSize;
+        this.isInitialized = true;
+        setDefaultTimeout((int) timeoutInMilliSeconds);
 
         if (timeoutInMilliSeconds > 0) {
             scheduleEvictionTask(timeoutInMilliSeconds);
@@ -119,6 +135,11 @@ public class Cache implements ICacheUtil {
         }
     }
 
+    /**
+     * Creates a timer and schedules the eviction task based on the timeout in milliseconds
+     *
+     * @param timeoutInMilliSeconds the time to be used in milliseconds for the eviction task
+     */
     private void scheduleEvictionTask(long timeoutInMilliSeconds) {
         EvictionTask evictionTask = new EvictionTask();
 
@@ -132,7 +153,7 @@ public class Cache implements ICacheUtil {
         AccessController.doPrivileged(swapTCCL);
         try {
             timer = new Timer(true);
-            long period = timeoutInMilliSeconds;// / 2;
+            long period = timeoutInMilliSeconds / 3;
             long delay = period;
             timer.schedule(evictionTask, delay, period);
         } finally {
@@ -142,11 +163,21 @@ public class Cache implements ICacheUtil {
 
     /**
      * Remove an object from the Cache.
+     *
+     * @param key the key of the entry to be removed
+     * @return the previous value associated with key, or null if there was none
      */
     public synchronized Object remove(String key) {
-        primaryTable.remove(key);
-        secondaryTable.remove(key);
-        return tertiaryTable.remove(key);
+        Object retVal;
+
+        retVal = primaryTable.remove(key);
+        if (retVal == null) {
+            retVal = secondaryTable.remove(key);
+            if (retVal == null) {
+                return tertiaryTable.remove(key);
+            }
+        }
+        return retVal;
     }
 
     /**
@@ -155,17 +186,17 @@ public class Cache implements ICacheUtil {
     @Override
     public synchronized Object get(Object key) {
         ConcurrentHashMap<String, Object> tableRef = primaryTable;
-        Entry curEntry = (Entry) primaryTable.get(key);
+        CacheEntry curEntry = (CacheEntry) primaryTable.get(key);
 
         // Not found in primary
         if (curEntry == null) {
             tableRef = secondaryTable;
-            curEntry = (Entry) secondaryTable.get(key);
+            curEntry = (CacheEntry) secondaryTable.get(key);
 
             // Not found in primary or secondary
             if (curEntry == null) {
                 tableRef = tertiaryTable;
-                curEntry = (Entry) tertiaryTable.get(key);
+                curEntry = (CacheEntry) tertiaryTable.get(key);
             }
 
             // Not found in primary, secondary, or tertiary
@@ -174,18 +205,12 @@ public class Cache implements ICacheUtil {
             }
         }
 
-        // If found in secondary or tertiary, move entry to primary
-        if ((tableRef != null) && (tableRef != primaryTable)) {
-            primaryTable.put(String.valueOf(key), curEntry);
-            tableRef.remove(key);
-        }
-
         // If not present even in any table, add an empty entry
         // that can be found faster for update
         if (tableRef == null) {
-            curEntry = (Entry) primaryTable.get(key);
+            curEntry = (CacheEntry) primaryTable.get(key);
             if (curEntry == null) {
-                curEntry = new Entry();
+                curEntry = new CacheEntry();
                 primaryTable.put(String.valueOf(key), curEntry);
             }
         }
@@ -194,6 +219,10 @@ public class Cache implements ICacheUtil {
 
     /**
      * Insert the value into the Cache using the specified key.
+     *
+     * @param key the key of the entry to be inserted
+     * @param value the value of the entry to be inserted
+     * @return the previous value associated with key, or null if there was none
      */
     public synchronized Object insert(String key, Object value) {
         // evict until size < maxSize
@@ -201,15 +230,20 @@ public class Cache implements ICacheUtil {
             evictStaleEntries();
         }
 
-        Entry curEntry = new Entry(value);
-        Entry oldEntry = (Entry) primaryTable.put(key, curEntry);
+        CacheEntry curEntry = new CacheEntry(value);
+        CacheEntry oldEntry1 = (CacheEntry) primaryTable.put(key, curEntry);
 
-        return oldEntry;
+        CacheEntry oldEntry2 = (CacheEntry) secondaryTable.remove(key);
+        CacheEntry oldEntry3 = (CacheEntry) tertiaryTable.remove(key);
+
+        return (oldEntry1 != null) ? oldEntry1.value : (oldEntry2 != null) ? oldEntry2.value : (oldEntry3 != null) ? oldEntry3.value : null;
     }
 
     /**
      * Determine if the cache is &quot;full&quot; and entries need
      * to be evicted.
+     *
+     * @return true if eviction is required
      */
     protected boolean isEvictionRequired() {
         final String METHODNAME = "isEvictionRequired";
@@ -223,8 +257,8 @@ public class Cache implements ICacheUtil {
         }
 
         if (entryLimit != 0 && entryLimit != Integer.MAX_VALUE) {
-            // If the cache size is greater than its limit, time to purge...
-            if (size > entryLimit) {
+            // If the cache size would be greater than its limit, time to purge...
+            if (size >= entryLimit) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                     Tr.debug(tc, METHODNAME + " The cache size is " + size + "( " + primaryTable.size() + ", " + secondaryTable.size() + ", " + tertiaryTable.size()
                                  + ") which is greater than the cache limit of " + entryLimit + ".");
@@ -254,7 +288,7 @@ public class Cache implements ICacheUtil {
 
     /**
      * Purge all entries from the Cache. Semantically, this should
-     * behave the same way the the expiration of all entries from
+     * behave the same as the expiration of all entries from
      * the cache.
      */
     public synchronized void clearAllEntries() {
@@ -268,29 +302,58 @@ public class Cache implements ICacheUtil {
         evictStaleEntries();
     }
 
+    /**
+     * retreives the default timeout value
+     *
+     * @return the default timeout value
+     */
     public static long getDefaultTimeout() {
         return defaultTimeout;
     }
 
+    /**
+     * sets the default timeout value
+     */
     public static void setDefaultTimeout(int timeout) {
         defaultTimeout = timeout;
     }
 
-    public static class Entry {
+    /**
+     * A class to wrap values entered to the cache
+     */
+    public static class CacheEntry {
+
         public Object value;
         public int timesAccessed;
 
-        public Entry() {}
+        public CacheEntry() {}
 
-        public Entry(Object value) {
+        public CacheEntry(Object value) {
             this.value = value;
         }
+
+        @Override
+        public boolean equals(Object obj) {
+            if (this == obj)
+                return true;
+            if (obj == null)
+                return false;
+            if (getClass() != obj.getClass())
+                return false;
+            CacheEntry other = (CacheEntry) obj;
+            if (value == null) {
+                if (other.value != null)
+                    return false;
+            } else if (!value.equals(other.value))
+                return false;
+            return true;
+        }
+
     }
 
-    int getEntryLimit() {
-        return entryLimit;
-    }
-
+    /**
+     * The eviction task for evicting stale entries
+     */
     @Trivial
     private class EvictionTask extends TimerTask {
         /** {@inheritDoc} */
@@ -311,35 +374,50 @@ public class Cache implements ICacheUtil {
 
     @Override
     public boolean isCacheInitialized() {
-        if (cache != null)
-            return true;
-
-        return false;
+        return isInitialized;
     }
 
+    /**
+     * Not implemented
+     */
     @Override
     public boolean isCacheAvailable() {
         return true;
     }
 
+    /**
+     * Not implemented
+     */
     @Override
     public int getNotSharedInt() {
         return 0;
     }
 
+    /**
+     * Not implemented
+     */
     @Override
     public int getSharedPushInt() {
         return 0;
     }
 
+    /**
+     * Not implemented
+     */
     @Override
     public int getSharedPushPullInt() {
         return 0;
     }
 
+    /**
+     * Not implemented
+     */
     @Override
     public void setSharingPolicy(int sharingPolicy) {}
 
+    /**
+     * Not implemented
+     */
     @Override
     public int getSharingPolicyInt(String sharingPolicyStr) {
         return 0;
@@ -357,15 +435,12 @@ public class Cache implements ICacheUtil {
 
     @Override
     public int size(boolean includeDiskCache) {
-        return primaryTable.size() + secondaryTable.size() + tertiaryTable.size();
+        return size();
     }
 
     @Override
     public boolean isEmpty(boolean includeDiskCache) {
-        if (primaryTable.isEmpty() && secondaryTable.isEmpty() && tertiaryTable.isEmpty())
-            return true;
-
-        return false;
+        return isEmpty();
     }
 
     @Override
@@ -378,19 +453,12 @@ public class Cache implements ICacheUtil {
 
     @Override
     public boolean containsKey(Object key, boolean includeDiskCache) {
-        if (primaryTable.containsKey(key) || secondaryTable.containsKey(key) || tertiaryTable.containsKey(key))
-            return true;
-
-        return false;
+        return containsKey(key);
     }
 
     @Override
     public Set<String> keySet(boolean includeDiskCache) {
-        Set<String> keySet = new HashSet<String>();
-        keySet.addAll(primaryTable.keySet());
-        keySet.addAll(secondaryTable.keySet());
-        keySet.addAll(tertiaryTable.keySet());
-        return keySet;
+        return keySet();
     }
 
     @Override
@@ -405,7 +473,8 @@ public class Cache implements ICacheUtil {
 
     @Override
     public boolean containsValue(Object value) {
-        if (primaryTable.containsValue(value) || secondaryTable.containsValue(value) || tertiaryTable.containsValue(value))
+        CacheEntry entry = new CacheEntry(value);
+        if (primaryTable.containsValue(entry) || secondaryTable.containsValue(entry) || tertiaryTable.containsValue(entry))
             return true;
 
         return false;
@@ -413,7 +482,7 @@ public class Cache implements ICacheUtil {
 
     @Override
     public boolean isEmpty() {
-        return false;
+        return size() == 0;
     }
 
     @Override
@@ -432,14 +501,14 @@ public class Cache implements ICacheUtil {
 
     @Override
     public void setTimeToLive(int timeToLive) {
-        defaultTimeout = timeToLive;
+        setDefaultTimeout(timeToLive);
     }
 
     @Override
     public ICacheUtil initialize(int initialSize, int cacheSize, long cachetimeOut) {
 
         final String METHODNAME = "initialize";
-        cache = new Cache(initialSize, cacheSize, cachetimeOut);
+        Cache cache = new Cache(initialSize, cacheSize, cachetimeOut);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, METHODNAME + " cache initialized successfully");
@@ -482,9 +551,12 @@ public class Cache implements ICacheUtil {
 
     @Override
     public Collection<Object> values() {
-        Collection<Object> retValue = primaryTable.values();
+        ArrayList<Object> retValue = new ArrayList<Object>();
+
+        retValue.addAll(primaryTable.values());
         retValue.addAll(secondaryTable.values());
         retValue.addAll(tertiaryTable.values());
+
         return retValue;
     }
 
