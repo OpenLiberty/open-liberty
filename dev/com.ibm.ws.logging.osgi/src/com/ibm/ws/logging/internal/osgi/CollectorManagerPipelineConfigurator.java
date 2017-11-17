@@ -51,7 +51,7 @@ public class CollectorManagerPipelineConfigurator {
         public void serviceChanged(ServiceEvent event) {
             switch (event.getType()) {
                 case ServiceEvent.REGISTERED:
-                	setCollectorManagerHandler((ServiceReference<CollectorManager>) event.getServiceReference());
+                	setCollectorManagerPipeline((ServiceReference<CollectorManager>) event.getServiceReference());
                     break;
                 case ServiceEvent.UNREGISTERING:
                     unsetCollectorManagerHandler((ServiceReference<CollectorManager>) event.getServiceReference());
@@ -104,7 +104,7 @@ public class CollectorManagerPipelineConfigurator {
     	return serviceProperties;
     }
     
-    protected void setCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
+    protected void setCollectorManagerPipeline(ServiceReference<CollectorManager> ref) {
    	
     	//Retrieves the LogSource and TraceSource from the collectorManagerPipelineUtils singleton
         LogSource logSource = collectorMgrPipelineUtils.getLogSource();
@@ -130,9 +130,14 @@ public class CollectorManagerPipelineConfigurator {
     	 * This includes successfully merging the source and conduit/bufferManager with 'other' Handlers 
     	 * (i.e. LogStashCollector, LogMetCollector)
     	 */
-    	Handler messageLoghandler = collectorMgrPipelineUtils.getLogHandler();
+    	Handler messageLoghandler = collectorMgrPipelineUtils.getMessageLogHandler();
     	if (messageLoghandler != null){
     		bundleContext.registerService(Handler.class.getName(), messageLoghandler, returnHandlerServiceProps());
+    	}
+    		
+    	Handler consoleLoghandler = collectorMgrPipelineUtils.getConsoleLogHandler();
+    	if (consoleLoghandler != null){
+    		bundleContext.registerService(Handler.class.getName(), consoleLoghandler, returnHandlerServiceProps());
     	}
     	
     }
@@ -153,7 +158,7 @@ public class CollectorManagerPipelineConfigurator {
 
         if (servRefs != null) {
             for (ServiceReference<CollectorManager> servRef : servRefs) {
-            	setCollectorManagerHandler(servRef);
+            	setCollectorManagerPipeline(servRef);
             }
         }
     }

@@ -28,7 +28,11 @@ public interface CollectorManagerPipelineBootstrap {
 
     public BufferManagerImpl getTraceConduit();
 
-    public Handler getLogHandler();
+    public Handler getMessageLogHandler();
 
-    public void setHandler(Handler handler);
+    public Handler getConsoleLogHandler();
+
+    public void setMessageHandler(Handler handler);
+
+    public void setConsoleHandler(Handler handler);
 }

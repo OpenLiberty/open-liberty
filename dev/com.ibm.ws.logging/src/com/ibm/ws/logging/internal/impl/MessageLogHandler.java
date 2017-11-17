@@ -94,13 +94,11 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
             //sources to remove -> In Old Sources, the difference between oldSource and newSource
             ArrayList<String> sourcesToRemove = new ArrayList<String>(oldSources);
             sourcesToRemove.removeAll(newSources);
-            //DYKC-debug System.out.println("Sources to remove " + sourcesToRemove);
             collectorMgr.unsubscribe(this, convertToSourceIDList(sourcesToRemove));
 
             //sources to Add -> In New Sources, the difference bewteen newSource and oldSource
             ArrayList<String> sourcesToAdd = new ArrayList<String>(newSources);
             sourcesToAdd.removeAll(oldSources);
-            //DYKC-debug System.out.println("Sources to add " + sourcesToAdd);
             collectorMgr.subscribe(this, convertToSourceIDList(sourcesToAdd));
 
             sourcesList = newSources; //new master sourcesList
@@ -143,7 +141,6 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
         //Not needed in a Syncrhonized Handler
     }
 
-    ///DYKC
     public void setFileLogHolder(TraceWriter trw) {
         traceWriter = trw;
     }
@@ -163,17 +160,10 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
 
     }
 
-    /*
-     * Direct Call by BTS to write straight to Log.
-     */
-    public void writeToLogNormal(String messageLogFormat) {
-        traceWriter.writeRecord(messageLogFormat);
-    }
-
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
         String eventType = CollectorJsonUtils.getEventType(source, location);
-        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.0", tags,
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
                                                          MAXFIELDLENGTH);
         return jsonStr;
     }
@@ -184,11 +174,6 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
 
     public void setWlpUserDir(String wlpUserDir) {
         this.wlpUserDir = wlpUserDir;
-    }
-
-    @Override
-    public boolean isSynchronous() {
-        return true;
     }
 
     @Override

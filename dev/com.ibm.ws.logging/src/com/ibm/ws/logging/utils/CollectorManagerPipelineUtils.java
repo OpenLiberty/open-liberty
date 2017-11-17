@@ -11,6 +11,7 @@
 package com.ibm.ws.logging.utils;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.logging.internal.impl.ConsoleLogHandler;
 import com.ibm.ws.logging.internal.impl.MessageLogHandler;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
@@ -18,7 +19,8 @@ import com.ibm.wsspi.collector.manager.Handler;
 
 public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBootstrap {
     public static CollectorManagerPipelineUtils collectorMgrPipelineUtils;
-    private MessageLogHandler jsonTraceServiceMessageHandler;
+    private MessageLogHandler messageLogHandler;
+    private ConsoleLogHandler consoleLogHandler;
     private LogSource logSource = null;
     private TraceSource traceSource = null;
     private BufferManagerImpl logConduit = null;
@@ -92,9 +94,9 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
      * This is the responsibility of the BaseTraceService.
      */
     @Override
-    public Handler getLogHandler() {
-        if (jsonTraceServiceMessageHandler != null)
-            return jsonTraceServiceMessageHandler;
+    public Handler getMessageLogHandler() {
+        if (messageLogHandler != null)
+            return messageLogHandler;
         return null;
     }
 
@@ -103,8 +105,8 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
      * This is the responsibility of the BaseTraceService.
      */
     @Override
-    public void setHandler(Handler handler) {
-        this.jsonTraceServiceMessageHandler = (MessageLogHandler) handler;
+    public void setMessageHandler(Handler handler) {
+        this.messageLogHandler = (MessageLogHandler) handler;
     }
 
     /**
@@ -121,6 +123,18 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
 
     public void setJsonTrService(boolean value) {
         this.isJsonTrService = value;
+    }
+
+    @Override
+    public Handler getConsoleLogHandler() {
+        if (consoleLogHandler != null)
+            return consoleLogHandler;
+        return null;
+    }
+
+    @Override
+    public void setConsoleHandler(Handler handler) {
+        this.consoleLogHandler = (ConsoleLogHandler) handler;
     }
 
 }

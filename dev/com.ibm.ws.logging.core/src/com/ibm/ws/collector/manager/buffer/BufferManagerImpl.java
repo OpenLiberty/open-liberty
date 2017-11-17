@@ -51,7 +51,7 @@ public class BufferManagerImpl extends BufferManager {
 		}
 		if (event == null)
 			throw new NullPointerException();
-		//DYCK- effectively reoves it from JSON output, but is still there for normal trace.log
+		//DYCK- effectively removes it from JSON output, but is still there for normal trace.log
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			//Tr.debug(tc, "Adding event to buffer " + event);
 		}

@@ -10,20 +10,18 @@
  *******************************************************************************/
 package com.ibm.ws.logging.internal.impl;
 
-import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.security.AccessController;
-import java.security.PrivilegedActionException;
 import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ibm.ws.health.center.data.HCGCData;
 import com.ibm.ws.http.logging.data.AccessLogData;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
+import com.ibm.ws.logging.internal.impl.BaseTraceService.SystemLogHolder;
 import com.ibm.ws.logging.source.FFDCData;
 import com.ibm.ws.logging.source.MessageLogData;
 import com.ibm.ws.logging.source.TraceLogData;
@@ -36,18 +34,37 @@ import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
  */
 public class ConsoleLogHandler implements SyncrhonousHandler, Formatter {
 
-    private PrintStream streamWriter;
     private String serverHostName = null;
     private String wlpUserDir = null;
     private String serverName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
-    public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
+    private volatile Object sync;
+    private static volatile boolean isInit = false;
+    public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.ConsoleLogHandler";
     List<String> sourcesList = new ArrayList<String>();
+    private SystemLogHolder sysLogHolder;
+
     private CollectorManager collectorMgr = null;
 
-    public ConsoleLogHandler(String serverName, String wlpUserDir) {
+    @Override
+    public void init(CollectorManager collectorManager) {
+        try {
+            this.collectorMgr = collectorManager;
+            //DYKC-debug System.out.println("Going to subscribe this " + convertToSourceIDList(sourcesList));
+            collectorMgr.subscribe(this, convertToSourceIDList(sourcesList));
+            isInit = true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public ConsoleLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
+
         this.serverName = serverName;
         this.wlpUserDir = wlpUserDir;
+
+        this.sourcesList = sourcesList;
+
         try {
             serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                 @Override
@@ -56,34 +73,54 @@ public class ConsoleLogHandler implements SyncrhonousHandler, Formatter {
                 }
             });
 
-        } catch (PrivilegedActionException pae) {
+        } catch (Exception e) {
+            e.printStackTrace();
             serverHostName = "";
         }
     }
 
     public void modified(List<String> newSources) {
+
+        if (collectorMgr == null || isInit == false) {
+            this.sourcesList = newSources;
+            return;
+        }
+
         try {
 
             // old sources
             ArrayList<String> oldSources = new ArrayList<String>(sourcesList);
-
             //sources to remove -> In Old Sources, the difference between oldSource and newSource
             ArrayList<String> sourcesToRemove = new ArrayList<String>(oldSources);
             sourcesToRemove.removeAll(newSources);
-            collectorMgr.unsubscribe(this, sourcesToRemove);
+            //DYKC-debug System.out.println("Sources to remove " + sourcesToRemove);
+            collectorMgr.unsubscribe(this, convertToSourceIDList(sourcesToRemove));
 
             //sources to Add -> In New Sources, the difference bewteen newSource and oldSource
             ArrayList<String> sourcesToAdd = new ArrayList<String>(newSources);
-            newSources.removeAll(oldSources);
-            collectorMgr.subscribe(this, sourcesList);
+            sourcesToAdd.removeAll(oldSources);
+            //DYKC-debug System.out.println("Sources to add " + sourcesToAdd);
+            collectorMgr.subscribe(this, convertToSourceIDList(sourcesToAdd));
 
             sourcesList = newSources; //new master sourcesList
+
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
-            // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
             e.printStackTrace();
         }
+    }
+
+    /**
+     * @param sourcesToAdd
+     */
+    private List<String> convertToSourceIDList(List<String> sourceList) {
+        List<String> sourceIDList = new ArrayList<String>();
+        for (String source : sourceList) {
+            String sourceName = getSourceName(source);
+            if (!sourceName.equals("")) {
+                sourceIDList.add(getSourceName(source) + "|" + CollectorConstants.MEMORY);
+            }
+        }
+        return sourceIDList;
     }
 
     @Override
@@ -91,20 +128,8 @@ public class ConsoleLogHandler implements SyncrhonousHandler, Formatter {
         return COMPONENT_NAME;
     }
 
-    @Override
-    public void init(CollectorManager collectorManager) {
-        try {
-            this.collectorMgr = collectorManager;
-            //DYKC-temp
-            //Get the source Ids from the config passed in by JsonTrService
-            List<String> hardCodedSources = new ArrayList<String>();
-            hardCodedSources.add(CollectorConstants.GC_SOURCE + "|" + CollectorConstants.MEMORY);
-            hardCodedSources.add(CollectorConstants.ACCESS_LOG_SOURCE + "|" + CollectorConstants.MEMORY);
-            hardCodedSources.add(CollectorConstants.FFDC_SOURCE + "|" + CollectorConstants.MEMORY);
-            collectorMgr.subscribe(this, hardCodedSources);
-        } catch (Exception e) {
-
-        }
+    public void setSync(Object sync) {
+        this.sync = sync;
     }
 
     @Override
@@ -117,8 +142,8 @@ public class ConsoleLogHandler implements SyncrhonousHandler, Formatter {
         //Not needed in a Syncrhonized Handler
     }
 
-    public void setStreamWrtier(PrintStream streamWriter) {
-        this.streamWriter = streamWriter;
+    public void setStreamWriter(SystemLogHolder sysLogHolder) {
+        this.sysLogHolder = sysLogHolder;
     }
 
     private String getSourceTypeFromDataObject(Object event) {
@@ -128,8 +153,6 @@ public class ConsoleLogHandler implements SyncrhonousHandler, Formatter {
             return CollectorConstants.TRACE_SOURCE;
         } else if (event instanceof AccessLogData) {
             return CollectorConstants.ACCESS_LOG_SOURCE;
-        } else if (event instanceof HCGCData) {
-            return CollectorConstants.GC_SOURCE;
         } else if (event instanceof FFDCData) {
             return CollectorConstants.FFDC_SOURCE;
         } else {
@@ -141,7 +164,7 @@ public class ConsoleLogHandler implements SyncrhonousHandler, Formatter {
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
         String eventType = CollectorJsonUtils.getEventType(source, location);
-        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.0", tags,
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
                                                          MAXFIELDLENGTH);
         return jsonStr;
     }
@@ -155,15 +178,22 @@ public class ConsoleLogHandler implements SyncrhonousHandler, Formatter {
     }
 
     @Override
-    public boolean isSynchronous() {
-        return true;
-    }
-
-    @Override
     public synchronized void synchronousWrite(Object event) {
         String evensourcetType = getSourceTypeFromDataObject(event);
         String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        streamWriter.println(messageOutput);
+        sysLogHolder.getOriginalStream().println(messageOutput);
+    }
+
+    protected String getSourceName(String source) {
+        if (source.equals(CollectorConstants.MESSAGES_CONFIG_VAL))
+            return CollectorConstants.MESSAGES_SOURCE;
+        else if (source.equals(CollectorConstants.FFDC_CONFIG_VAL))
+            return CollectorConstants.FFDC_SOURCE;
+        else if (source.equals(CollectorConstants.TRACE_CONFIG_VAL))
+            return CollectorConstants.TRACE_SOURCE;
+        else if (source.equalsIgnoreCase(CollectorConstants.ACCESS_CONFIG_VAL))
+            return CollectorConstants.ACCESS_LOG_SOURCE;
+        return "";
     }
 
 }
