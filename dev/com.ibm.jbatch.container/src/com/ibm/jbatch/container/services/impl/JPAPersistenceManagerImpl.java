@@ -59,7 +59,6 @@ import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.JobExecutionEntityV2;
 import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV2;
-import com.ibm.jbatch.container.persistence.jpa.JobInstanceEntityV3;
 import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionEntity;
 import com.ibm.jbatch.container.persistence.jpa.RemotablePartitionKey;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity;
@@ -76,7 +75,6 @@ import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.InstanceState;
 import com.ibm.jbatch.container.ws.RemotablePartitionState;
 import com.ibm.jbatch.container.ws.WSPartitionStepThreadExecution;
-//import com.ibm.jbatch.container.ws.WSSearchObject;
 import com.ibm.jbatch.container.ws.WSStepThreadExecutionAggregate;
 import com.ibm.jbatch.container.ws.impl.WSStartupRecoveryServiceImpl;
 import com.ibm.jbatch.spi.services.IBatchConfig;
@@ -170,7 +168,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * Most current versions of entities.
      */
     private static final int MAX_EXECUTION_VERSION = 2;
-    private static final int MAX_INSTANCE_VERSION = 3;
+    private static final int MAX_INSTANCE_VERSION = 2;
 
     /**
      * Declarative Services method for setting the Liberty executor.
@@ -303,10 +301,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      */
     @SuppressWarnings("rawtypes")
     private Class getJobInstanceEntityClass(int jobInstanceVersion) {
-        if (jobInstanceVersion == 2) {
+        if (jobInstanceVersion >= 2) {
             return JobInstanceEntityV2.class;
-        } else if (jobInstanceVersion >= 3) {
-            return JobInstanceEntityV3.class;
         } else {
             return JobInstanceEntity.class;
         }
@@ -327,8 +323,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
         // If any tables are not up to the current code level, re-load the PSU with backleveled entities.
         int instanceVersion = getJobInstanceTableVersion(retMe);
-        if (instanceVersion < 3) {
-            logger.fine("The GROUPNAMES column could not be found. The persistence service unit will exclude the V3 instance entity.");
+        if (instanceVersion < 2) {
+            logger.fine("The UPDATETIME column could not be found. The persistence service unit will exclude the V2 instance entity.");
             retMe.close();
             retMe = createPsu(instanceVersion, MAX_EXECUTION_VERSION);
         }
@@ -388,10 +384,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 @Override
                 public JobInstanceEntity call() {
                     JobInstanceEntity jobInstance;
-                    if (instanceVersion == 2) {
+                    if (instanceVersion >= 2) {
                         jobInstance = new JobInstanceEntityV2();
-                    } else if (instanceVersion >= 3) {
-                        jobInstance = new JobInstanceEntityV3();
                     } else {
                         jobInstance = new JobInstanceEntity();
                     }
@@ -2413,10 +2407,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             new TranRequest<Void>(em) {
                 @Override
                 public Void call() {
-                    final JobInstanceEntity instance;
-
-                    instance = em.find(JobInstanceEntity.class, jobInstanceId);
-
+                    final JobInstanceEntity instance = em.find(JobInstanceEntity.class, jobInstanceId);
                     if (instance == null) {
                         throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
                     }
@@ -2700,20 +2691,13 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     query.getSingleResult();
                     logger.fine("The UPDATETIME column exists, job instance table version = 2");
                     instanceVersion = 2;
-
-                    // Verify that groupNames column exists by running a query against it.
-                    queryString = "SELECT COUNT(x.groupNames) FROM JobInstanceEntityV3 x";
-                    query = em.createQuery(queryString, Long.class);
-                    query.getSingleResult();
-                    logger.fine("The groupNames column exists, job instance table version = 3");
-                    instanceVersion = 3;
                     return instanceVersion;
                 }
             }.runInNewOrExistingGlobalTran();
 
             return exec;
-        } catch (javax.persistence.PersistenceException pe) {
-            Throwable cause = pe.getCause();
+        } catch (javax.persistence.PersistenceException e) {
+            Throwable cause = e.getCause();
             while (cause != null) {
                 if (cause instanceof SQLSyntaxErrorException &&
                     cause.getMessage() != null &&
@@ -2722,49 +2706,13 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     logger.fine("The UPDATETIME column does not exist, job instance table version = 1");
                     instanceVersion = 1;
                     return instanceVersion;
-                } else if (cause instanceof SQLSyntaxErrorException &&
-                           cause.getMessage() != null &&
-                           cause.getMessage().contains("GROUPNAMES")) {
-                    // The column isn't there.
-                    logger.fine("The UPDATETIME column does not exist, job instance table version = 2");
-                    instanceVersion = 2;
-                    return instanceVersion;
                 }
                 cause = cause.getCause();
             }
-
             logger.fine("Unexpected exception while checking job instance table version, re-throwing");
-            throw pe;
+            throw e;
         } finally {
             em.close();
         }
     }
-
-    @Override
-    public JobInstanceEntity updateJobInstanceWithGroupNames(final long jobInstanceID, final Set<String> groupNames) {
-
-        EntityManager em = getPsu().createEntityManager();
-
-        try {
-            return new TranRequest<JobInstanceEntityV3>(em) {
-                @Override
-                public JobInstanceEntityV3 call() {
-
-                    JobInstanceEntityV3 instance = entityMgr.find(JobInstanceEntityV3.class, jobInstanceID);
-
-                    if (instance == null) {
-                        throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceID);
-                    }
-
-                    instance.setGroupNames(groupNames);
-
-                    entityMgr.merge(instance);
-                    return instance;
-                }
-            }.runInNewOrExistingGlobalTran();
-        } finally {
-            em.close();
-        }
-    }
-
 }

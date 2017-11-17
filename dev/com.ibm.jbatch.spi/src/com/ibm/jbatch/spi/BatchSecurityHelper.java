@@ -16,7 +16,6 @@
 */
 package com.ibm.jbatch.spi;
 
-import java.util.List;
 import javax.security.auth.Subject;
 
 /**

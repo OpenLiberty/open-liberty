@@ -102,7 +102,6 @@ instrument.classesExcludes: com/ibm/jbatch/container/internal/resources/*.class
 	com.ibm.ws.persistence;version=latest,\
 	com.ibm.tx.ltc;version=latest,\
 	com.ibm.tx.jta;version=latest,\
-	com.ibm.ws.security;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.security;version=latest,\
