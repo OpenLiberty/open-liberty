@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.JobInstance;
@@ -94,7 +93,7 @@ public class JobInstanceEntity implements JobInstance, WSJobInstance, EntityCons
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     @Column(name = "CREATETIME", nullable = false)
     private Date createTime;
-
+    
     @Column(name = "SUBMITTER", length = 256)
     private String submitter;
 
@@ -266,7 +265,8 @@ public class JobInstanceEntity implements JobInstance, WSJobInstance, EntityCons
         return null;
     }
 
-    public void setLastUpdatedTime(Date lastUpdatedTime) {}
+    public void setLastUpdatedTime(Date lastUpdatedTime) {
+    }
 
     public int getNumberOfExecutions() {
         return numberOfExecutions;
@@ -292,12 +292,6 @@ public class JobInstanceEntity implements JobInstance, WSJobInstance, EntityCons
     public void setStepThreadInstances(
                                        Collection<StepThreadInstanceEntity> stepThreadInstances) {
         this.stepThreadInstances = stepThreadInstances;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Set<String> getGroupNames() {
-        return null;
     }
 
 }

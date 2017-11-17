@@ -131,6 +131,14 @@ public interface WSJobRepository {
 
     public abstract WSStepThreadExecutionAggregate getStepExecutionAggregate(long topLevelStepExecutionId) throws IllegalArgumentException, JobSecurityException;
 
+    /**
+     * @param page the page of rows to get (starts at 0)
+     * @param pageSize the number of rows in a page
+     *
+     * @return the list of job instances (top-level job instances only)
+     */
+    public abstract List<WSJobInstance> getJobInstances(int page, int pageSize);
+
 //	public abstract void updateJobExecutionLogDir(long workUnitInternalExecutionId, String logDirPath);
 
     /**
@@ -273,7 +281,5 @@ public interface WSJobRepository {
      * Check the version of the job instance table in the job repository.
      */
     int getJobInstanceTableVersion() throws Exception;
-
-    public WSJobInstance updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames);
 
 }

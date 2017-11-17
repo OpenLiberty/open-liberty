@@ -11,11 +11,9 @@
 package com.ibm.jbatch.container.ws;
 
 public enum ROLES {
-
-    batchAdmin,
-    batchSubmitter,
-    batchMonitor,
-    batchGroupAdmin,
-    batchGroupMonitor
-
+	
+	batchAdmin,
+	batchSubmitter,
+	batchMonitor
+	
 }
