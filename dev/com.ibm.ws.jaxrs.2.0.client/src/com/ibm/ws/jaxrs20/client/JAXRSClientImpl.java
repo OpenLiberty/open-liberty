@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.WebTarget;
@@ -64,7 +65,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 public class JAXRSClientImpl extends ClientImpl {
     private static final TraceComponent tc = Tr.register(JAXRSClientImpl.class);
 
-    protected boolean closed;
+    protected final AtomicBoolean closed = new AtomicBoolean(false);
     protected Set<WebClient> baseClients = Collections.newSetFromMap(new WeakHashMap<WebClient, Boolean>());
     protected boolean hasSSLConfigInfo = false;
     private TLSConfiguration secConfig = null;
@@ -150,6 +151,7 @@ public class JAXRSClientImpl extends ClientImpl {
      */
     @Override
     public WebTarget target(UriBuilder builder) {
+        checkClosed();
         WebTargetImpl wt = (WebTargetImpl) super.target(builder);
 
         //construct our own webclient
@@ -215,31 +217,33 @@ public class JAXRSClientImpl extends ClientImpl {
      */
     @Override
     public void close() {
-        super.close();
-        synchronized (baseClients) {
-            for (WebClient wc : baseClients) {
-                wc.close();
-            }
-        }
-
-        String moduleName = getModuleName();
-        synchronized (clientsPerModule) {
-            List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
-
-            if (clients != null) { // the only way this isn't null is if the same client was closed twice
-                clients.remove(this);
-                if (clients.isEmpty()) {
-                    for (String id : busCache.keySet()) {
-                        if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
-                            busCache.remove(id).shutdown(false);
-                        }
-                    }
-                    clientsPerModule.remove(moduleName);
+        if (closed.compareAndSet(false, true)) {
+            super.close();
+            synchronized (baseClients) {
+                for (WebClient wc : baseClients) {
+                    wc.close();
                 }
             }
-        }
 
-        baseClients = null;
+            String moduleName = getModuleName();
+            synchronized (clientsPerModule) {
+                List<JAXRSClientImpl> clients = clientsPerModule.get(moduleName);
+
+                if (clients != null) { // the only way this isn't null is if the same client was closed twice
+                    clients.remove(this);
+                    if (clients.isEmpty()) {
+                        for (String id : busCache.keySet()) {
+                            if (id.startsWith(moduleName) || id.startsWith("unknown:")) {
+                                busCache.remove(id).shutdown(false);
+                            }
+                        }
+                        clientsPerModule.remove(moduleName);
+                    }
+                }
+            }
+
+            baseClients = null;
+        }
     }
 
     /**
@@ -251,6 +255,7 @@ public class JAXRSClientImpl extends ClientImpl {
 
     @Override
     public Client property(String name, @Sensitive Object value) {
+        checkClosed();
         // need to convert proxy password to ProtectedString
         if (JAXRSClientConstants.PROXY_PASSWORD.equals(name) && value != null &&
             !(value instanceof ProtectedString)) {
@@ -268,5 +273,11 @@ public class JAXRSClientImpl extends ClientImpl {
             }
         }
         return "unknown:";
+    }
+
+    private void checkClosed() {
+        if (closed.get()) {
+            throw new IllegalStateException("client is closed");
+        }
     }
 }
