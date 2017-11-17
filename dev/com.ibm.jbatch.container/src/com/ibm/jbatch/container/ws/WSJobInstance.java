@@ -18,6 +18,7 @@ package com.ibm.jbatch.container.ws;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 import javax.batch.runtime.BatchStatus;
 import javax.batch.runtime.JobInstance;
@@ -68,4 +69,6 @@ public interface WSJobInstance extends JobInstance {
      * @return the job executions associated with this instance, sorted by most to least recent
      */
     List<JobExecutionEntity> getJobExecutions();
+
+    Set<String> getGroupNames();
 }

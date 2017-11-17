@@ -1384,4 +1384,20 @@ public class MemoryPersistenceManagerImpl extends AbstractPersistenceManager imp
         return "MEM";
     }
 
+    /** {@inheritDoc} */
+    /*
+     * @Override
+     *
+     * public List<String> getGroupNamesForJobID(long jobInstanceID) throws NoSuchJobInstanceException {
+     * // TODO Auto-generated method stub
+     * return null;
+     * }
+     */
+
+    /** {@inheritDoc} */
+    @Override
+    public JobInstanceEntity updateJobInstanceWithGroupNames(long jobInstanceId, Set<String> groupNames) {
+        return null;
+    }
+
 }

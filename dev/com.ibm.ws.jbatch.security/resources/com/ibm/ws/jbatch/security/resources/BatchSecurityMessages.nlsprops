@@ -53,3 +53,16 @@ USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=If the user is not authorized to be 
 USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: User {0} is not authorized to start batch jobs.
 USER_UNAUTHORIZED_TO_START_JOB.explanation=The user is not part of a batch role that is authorized to start batch jobs.
 USER_UNAUTHORIZED_TO_START_JOB.useraction=If the user is not authorized to start batch jobs, then no action is required. If the user is authorized to perform the requested batch operation, then configure the batch security authorization and add this user to the required batch roles.
+
+#{0} The job instance id number
+#{1} The userid issuing the request
+#{2} A list of group names to which the job instance is accessible by
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE=CWWKY0305W: Access to job instance {0} denied.  The job has an operation group name defined and the user {1} has batchGroupMonitor or batchGroupAdmin authority but is not a member of the following configured groups: {2}.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.explanation=The batchGroupAdmin or batchGroupMonitor user is not part of a security group to which this job is associated with.
+USER_GROUP_UNAUTHORIZED_JOB_INSTANCE.useraction=If the user should have group access rights to this job, add the user to the appropriate security group(s).
+
+#{0} The job instance id number
+#{1} A list of group names defined for this Job
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES=CWWKY0306W: Access to job {0} denied.  The job has an operation group name(s) defined {1} and the user does not have batchGroupMonitor or batchGroupAdmin authority.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.explanation=The user is not part of any batch group roles and is not authorized to perform batch operations.
+USER_UNAUTHORIZED_NO_BATCH_GROUP_ROLES.useraction=If the user is not authorized to be a batch group user, then no action is required. If the user is authorized to perform the batch group operations and batch security is enabled, then configure the batch security authorization and add this user to the to the required batch group roles.
