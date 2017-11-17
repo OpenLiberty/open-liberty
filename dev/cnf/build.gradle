@@ -96,6 +96,7 @@ task createGradleBootstrap {
                             (org, name) = ['dev', bsn]
                         }
                         depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '\'\n'
+                        depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '@pom\'\n'
                     }
                 }
             }
