@@ -295,7 +295,7 @@ cdi.ambiguous.artifact.names.useraction=Add the @Dependent annotation or another
 #{0} job/flow/partition
 #{1} The JSL
 display.resolved.jsl=CWWKY0042I:  The resolved JSL for this {0} is \n {1}.
-display.resolved.jsl.explanation=The JSL used for the job or partition is displayed after parameters and properties are resolved.  The job JSL does not resolve partition plan properties.  Look for this message in the individual partition logs for partition plan property resolution.
+display.resolved.jsl.explanation=The JSL used for the job, flow, or partition is displayed after parameters and properties are resolved.  The job JSL does not resolve partition plan properties.  Look for this message in the individual partition logs for partition plan property resolution.
 display.resolved.jsl.useraction=Verify the JSL and parameter resolution is as expected.
 
 #{0} The JSL
