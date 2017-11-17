@@ -91,8 +91,8 @@ public class EEConcurrencyConfigTest extends FATServletClient {
             Log.info(getClass(), "setUpPerTest", "server restarted, log file is " + consoleLogFileName);
         }
         restoreSavedConfig = true; // assume all tests make config updates unless they tell us otherwise
-        //if (failure != null)
-        //    throw failure;
+        if (failure != null)
+            throw failure;
     }
 
     /**
@@ -106,19 +106,19 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         }
     }
 
-    //@Test
+    @Test
     public void testClassloaderContext() throws Exception {
         runTest("testClassloaderContext", "java:comp/DefaultManagedExecutorService");
         restoreSavedConfig = false;
     }
 
-    //@Test
+    @Test
     public void testJEEMetadataContext() throws Exception {
         runTest("testJEEMetadataContext", "java:comp/DefaultManagedExecutorService");
         restoreSavedConfig = false;
     }
 
-    //@Test
+    @Test
     @Mode(FULL)
     public void testCreateNewManagedExecutorService() throws Exception {
         // Add <contextService id="contextSvc1"/>
@@ -190,7 +190,7 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         runTest("testJEEMetadataContextFromEJB", null);
     }
 
-    //@Test
+    @Test
     @Mode(FULL)
     public void testCreateNewManagedScheduledExecutorService() throws Exception {
         // Add <managedScheduledExecutorService jndiName="concurrent/execSvc1"/> with nested contextService (initially empty)
@@ -259,7 +259,7 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         runTest("testJEEMetadataContextFromEJB", null);
     }
 
-    //@Test
+    @Test
     @Mode(FULL)
     public void testCreateNewManagedThreadFactory() throws Exception {
         // Add <managedThreadFactory jndiName="concurrent/threadFactory1"/>
@@ -318,7 +318,7 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         runTest("testThreadPriority3", "concurrent/threadFactory1");
     }
 
-    //@Test
+    @Test
     @Mode(FULL)
     public void testCreateManagedExecutorServiceWithNestedContextService() throws Exception {
         // Add <managedExecutorService jndiName="concurrent/execSvc1"> with nested contextService with nested classloaderContext
@@ -368,7 +368,7 @@ public class EEConcurrencyConfigTest extends FATServletClient {
      * the second is stuck in the queue - a temporary deadlock of the executor. Then, we increase max concurrency to 2
      * and expect both tasks to complete successfully.
      */
-    //@Test
+    @Test
     public void testNestedConcurrencyPolicy() throws Exception {
         // Add:
         // <managedExecutorService jndiName="concurrent/execSvc1">
@@ -406,7 +406,7 @@ public class EEConcurrencyConfigTest extends FATServletClient {
      * normal tasks (not long running) per the normal concurrencyPolicy. Then, we increase the long running policy's
      * max concurrency to 2 and expect both long running tasks to complete successfully.
      */
-    //@Test
+    @Test
     public void testNestedLongRunningPolicy() throws Exception {
         // Add:
         // <managedExecutorService jndiName="concurrent/execSvc1">
@@ -493,7 +493,7 @@ public class EEConcurrencyConfigTest extends FATServletClient {
         runTest("testTask1BlockedByTask2Completed", "concurrent/execSvc1");
     }
 
-    //@Test
+    @Test
     public void testTransactionContext() throws Exception {
         runTest("testNoTransactionContext", "java:comp/DefaultManagedExecutorService");
         runTest("testTransactionContext", "java:comp/DefaultManagedExecutorService");
