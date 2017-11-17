@@ -46,12 +46,7 @@ public class JsonUserFeatureTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer("CWWKE0701E.*ServiceThatRequiresJsonp"); // TODO Remove once JSONP-1.1 spec regression to javax.json.JsonValue is fixed
-        // Loading of JsonValue interface is trying to depend on presence of a provider:
-        // javax.json.JsonException: Provider org.glassfish.json.JsonProviderImpl not found
-        //   at javax.json.spi.JsonProvider.provider(JsonProvider.java:99)
-        //   at javax.json.Json.createObjectBuilder(Json.java:299)
-        //   at javax.json.JsonValue.<clinit>(JsonValue.java:61)
+        server.stopServer();
     }
 
     // Test a user feature with a service component that injects JsonProvider (from the bell)
@@ -62,10 +57,10 @@ public class JsonUserFeatureTest extends FATServletClient {
         server.resetLogMarks();
         assertNotNull(found = server.waitForStringInLogUsingMark("TEST3: JsonProvider obtained from declarative services"));
         assertTrue(found, found.contains(PROVIDER_JOHNZON_JSONP));
-        // TODO Enable once JSONP-1.1 spec regression (referenced earlier) is fixed
-        //assertNotNull(found = server.waitForStringInLogUsingMark("TEST4"));
-        //assertTrue(found, found.contains("\"weight\""));
-        //assertTrue(found, found.contains("171"));
+
+        assertNotNull(found = server.waitForStringInLogUsingMark("TEST4"));
+        assertTrue(found, found.contains("\"weight\""));
+        assertTrue(found, found.contains("171"));
     }
 
     @Test

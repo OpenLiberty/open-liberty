@@ -64,10 +64,6 @@ public class JSONBTest extends FATServletClient {
 
     @Test
     public void testJsonbFromUserFeature() throws Exception {
-        // Due to a JSON-P 1.1 spec bug, first-touch cannot be from the user feature, see:
-        // https://github.com/javaee/jsonp/issues/56
-        runTest(server, appName + "/JSONBTestServlet", "testJsonbDemo");
-
         // Add the jsonb user feature, which will make 'ServiceThatRequiresJsonb' activate
         server.setMarkToEndOfLog();
         ServerConfiguration config = server.getServerConfiguration();
