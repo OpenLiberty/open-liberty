@@ -170,6 +170,22 @@ public class JavaEESecTestBase {
         }
     }
 
+    protected String accessWithCustomHeader(DefaultHttpClient httpClient, String url, String name, String value, int expectedStatusCode) {
+        Log.info(logClass, getCurrentTestName(), "accessWithCustomHeader: url=" + url + ", name=" + name + ", value=" + value + 
+                                                 ", expectedStatusCode=" + expectedStatusCode);
+        try {
+            HttpGet getMethod = new HttpGet(url);
+            if (name != null && value != null) {
+                getMethod.setHeader(name, value);
+            }
+            HttpResponse response = httpClient.execute(getMethod);
+            return processResponse(response, expectedStatusCode);
+        } catch (Exception e) {
+            fail("Caught unexpected exception: " + e);
+            return null;
+        }
+    }
+
     /**
      * Send HttpClient get request to the given URL, ensure that the user is redirected to the form login page
      * and that the JASPI provider was or was not called, as expected.
@@ -214,6 +230,60 @@ public class JavaEESecTestBase {
             fail("Caught unexpected exception: " + e);
         }
     }
+
+    /**
+     * Send HttpClient get request to the given URL, ensure that the user is redirected or forwarded to the form login page
+     * Note that in order to use this method properly, HttlClient needs to be set ClientPNames.HANDLE_REDIRECTS=Boolean.FALSE.
+     * This propety let httpclient disable following the redirect automatically.
+     *
+     * @param httpclient HttpClient object to execute request
+     * @param url URL for request, should be protected and redirect to form login page
+     * @param redirect true if redirect is used to go to the login page, otherwise, use forward.
+     * @param formUrl Url of login page. this value is used when redirect is set as true.
+     * @param formTitle Name of Login form.
+     * @throws Exception
+     */
+
+    public String getFormLoginPage(DefaultHttpClient httpclient, String url, boolean redirect, String formUrl, String formTitle) throws Exception {
+        String methodName = "getFormLoginPage";
+        Log.info(logClass, methodName, "Form login page url: " + url + ", redirect: " + redirect);
+        String content = null;
+        try {
+            HttpGet getMethod = new HttpGet(url);
+            HttpResponse response = httpclient.execute(getMethod);
+            Log.info(logClass, methodName, "Form login page result: " + response.getStatusLine());
+            if (redirect) {
+                assertEquals("Expected " + HttpServletResponse.SC_MOVED_TEMPORARILY + " status code for form login page was not returned",
+                             HttpServletResponse.SC_MOVED_TEMPORARILY, response.getStatusLine().getStatusCode());
+                // check page url.
+                String location = response.getFirstHeader("Location").getValue();
+                assertTrue("Expected " + formUrl + " location for form login page was not returned", location.equals(formUrl));
+                // now get the contents of the redirect url.
+                EntityUtils.consume(response.getEntity());
+                Log.info(logClass, methodName, "Form login page redirect location : " + location);
+                getMethod = new HttpGet(location);
+                response = httpclient.execute(getMethod);
+            }
+            assertEquals("Expected " + HttpServletResponse.SC_OK + " status code for form login page was not returned",
+                         HttpServletResponse.SC_OK, response.getStatusLine().getStatusCode());
+
+            content = EntityUtils.toString(response.getEntity());
+
+            Log.info(logClass, methodName, "Form login page content: " + content);
+            EntityUtils.consume(response.getEntity());
+
+            if (response.getStatusLine().getStatusCode() == HttpServletResponse.SC_OK) {
+                // Verify we get the form login JSP
+                assertTrue("Did not find expected form login page: " + formTitle,
+                           content.contains(formTitle));
+                Log.info(logClass, methodName, "Found expected Form login page title: " + formTitle);
+            }
+            
+        } catch (IOException e) {
+            fail("Caught unexpected exception: " + e);
+        }
+        return content;
+    }  
 
     /**
      * Post HttpClient request to execute a form login on the given page, using the given username and password
@@ -270,6 +340,41 @@ public class JavaEESecTestBase {
         return location;
     }
 
+    public String executeCustomFormLogin(HttpClient httpclient, String url, String username, String password, String viewState) throws Exception {
+        String methodName = "executeCustomFormLogin";
+        Log.info(logClass, methodName, "Submitting custom login form (POST) =  " + url + ", username = " + username + ", password = " + password + ", viewState = " + viewState);
+
+        HttpPost postMethod = new HttpPost(url);
+//        postMethod.setEntity(new StringEntity(loginData));
+
+        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
+        nvps.add(new BasicNameValuePair("form:username", username));
+        nvps.add(new BasicNameValuePair("form:password", password));
+        nvps.add(new BasicNameValuePair("form:j_id_e", "Login"));
+        nvps.add(new BasicNameValuePair("form_SUBMIT", "1"));
+        if (viewState != null) {
+            nvps.add(new BasicNameValuePair("javax.faces.ViewState", viewState));
+        }
+        postMethod.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
+
+
+        HttpResponse response = httpclient.execute(postMethod);
+        Log.info(logClass, methodName, "postMethod.getStatusCode():  " + response.getStatusLine().getStatusCode());
+        String content = EntityUtils.toString(response.getEntity());
+        EntityUtils.consume(response.getEntity());
+        System.out.println("Toshi : content : " + content);
+
+        // Verify redirect to servlet
+        int status = response.getStatusLine().getStatusCode();
+        assertTrue("Form login did not result in redirect: " + status, status == HttpServletResponse.SC_MOVED_TEMPORARILY);
+
+        Header header = response.getFirstHeader("Location");
+        String location = header.getValue();
+        Log.info(logClass, methodName, "Redirect location:  " + location);
+        return location;
+    }
+
+
     /**
      *
      * @param client
@@ -277,7 +382,7 @@ public class JavaEESecTestBase {
      * @param expectedStatusCode
      * @return
      */
-    protected String accessPageNoChallenge(HttpClient client, String location, int expectedStatusCode, String servletName) {
+    protected String accessPageNoChallenge(HttpClient client, String location, int expectedStatusCode, String message) {
         String methodName = "accessPageNoChallenge";
         Log.info(logClass, methodName, "accessPageNoChallenge: location =  " + location + " expectedStatusCode =" + expectedStatusCode);
 
@@ -298,8 +403,8 @@ public class JavaEESecTestBase {
 
             // Paranoia check, make sure we hit the right servlet
             if (response.getStatusLine().getStatusCode() == 200) {
-                assertTrue("Response did not contain expected servlet name (" + servletName + ")",
-                           content.contains(servletName));
+                assertTrue("Response did not contain expected content (" + message + ")",
+                           content.contains(message));
                 return content;
             } else if (expectedStatusCode == 401) {
                 assertTrue("Response was not the expected error page: "
@@ -314,7 +419,7 @@ public class JavaEESecTestBase {
         }
     }
 
-    private void mustContain(String response, String target) {
+    public void mustContain(String response, String target) {
         assertTrue("Expected result " + target + " not found in response", response.contains(target));
     }
 
@@ -324,6 +429,10 @@ public class JavaEESecTestBase {
 
     private void mustMatch(String response, String target) {
         assertTrue("Expected result " + target + " not found in response", response.matches(target));
+    }
+
+    private void mustNotMatch(String response, String target) {
+        assertFalse("Expected result " + target + " found in response", response.matches(target));
     }
 
     protected void verifyAuthenticatedResponse(String response, String getAuthType, String getUserPrincipal, String getRemoteUser) {
@@ -462,6 +571,30 @@ public class JavaEESecTestBase {
     protected void verifyPersistentProviderNotRegisteredWithInvalidClass(String response, String providerClass) {
         response.contains("Unable to create a provider, class name: " + providerClass);
 
+    }
+ 
+    /**
+      * verify the group names. Note that this is a simple string comparison.
+     **/
+    public void verifyGroups(String response, String groups) {
+        Log.info(logClass, "verifyGroups", "Verify group contains: " + groups);
+        mustContain(response, "groupIds=[" + groups + "]");
+    }
+
+    /**
+      * verify the group names. Note that this is a simple string comparison.
+     **/
+    public void verifyNotInGroups(String response, String group) {
+        Log.info(logClass, "verifyGroups", "Verify group does not contain: " + group);
+        mustNotMatch(response, "(?s)\\A.*?\\bCallerSubject:.*?groupIds=\\[.*" + group +".*\\].*\\z");
+    }
+
+    /**
+      * verify the realm name. Note that this is a simple string comparison.
+     **/
+    public void verifyRealm(String response, String realm) {
+        Log.info(logClass, "verifyRealm", "Verify realm is : " + realm);
+        mustContain(response, "realmName=" + realm + ",");
     }
 
 }
