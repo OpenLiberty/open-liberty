@@ -42,13 +42,13 @@
  </Designate>
 
  <OCD id="com.ibm.ws.concurrent.managedExecutorService" ibm:alias="managedExecutorService" ibm:supportExtensions="true" ibmui:localization="OSGI-INF/l10n/metatype" name="%managedExecutorService" description="%managedExecutorService.desc">
-  <AD id="concurrencyPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" default="defaultConcurrencyPolicy" ibm:beta="true" cardinality="1" name="%concurrencyPolicy" description="%concurrencyPolicy.desc"/>
+  <AD id="concurrencyPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" default="defaultConcurrencyPolicy" cardinality="1" name="%concurrencyPolicy" description="%concurrencyPolicy.desc"/>
   <AD id="ConcurrencyPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
   <AD id="contextServiceRef"                     type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
   <AD id="ContextService.target"                 type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
   <AD id="javaCompDefaultName"                   type="String"  required="false" name="internal" description="internal use only" />
   <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
-  <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" ibm:beta="true" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>
+  <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>
   <AD id="LongRunningPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${longRunningPolicyRef})" name="internal" description="internal use only"/>
   <AD id="LongRunningPolicy.cardinality.minimum" type="String"  ibm:final="true" default="${count(longRunningPolicyRef)}" name="internal" description="internal use only"/>
   <AD id="service.ranking"                       type="Integer" default="-1000" name="internal" description="internal use only"/>
@@ -61,13 +61,13 @@
  </Designate>
 
  <OCD id="com.ibm.ws.concurrent.managedScheduledExecutorService" ibm:alias="managedScheduledExecutorService" ibm:supportExtensions="true" ibmui:localization="OSGI-INF/l10n/metatype" name="%managedScheduledExecutorService" description="%managedScheduledExecutorService.desc">
-  <AD id="concurrencyPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" default="defaultConcurrencyPolicy" ibm:beta="true" cardinality="1" name="%concurrencyPolicy" description="%concurrencyPolicy.desc"/>
+  <AD id="concurrencyPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" default="defaultConcurrencyPolicy" cardinality="1" name="%concurrencyPolicy" description="%concurrencyPolicy.desc"/>
   <AD id="ConcurrencyPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${concurrencyPolicyRef})" name="internal" description="internal use only"/>
   <AD id="contextServiceRef"                     type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.context.service" default="DefaultContextService" cardinality="1" name="%contextServiceRef" description="%contextServiceRef.desc"/>
   <AD id="ContextService.target"                 type="String"  ibm:final="true" default="(service.pid=${contextServiceRef})" name="internal" description="internal use only"/>
   <AD id="javaCompDefaultName"                   type="String"  required="false" name="internal" description="internal use only" />
   <AD id="jndiName"                              type="String"  required="false" ibm:unique="jndiName" name="%jndiName" description="%jndiName.desc"/>
-  <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" ibm:beta="true" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>
+  <AD id="longRunningPolicyRef"                  type="String"  ibm:type="pid" ibm:reference="com.ibm.ws.concurrency.policy.concurrencyPolicy" required="false" cardinality="1" name="%longRunningPolicy" description="%longRunningPolicy.desc"/>
   <AD id="LongRunningPolicy.target"              type="String"  ibm:final="true" default="(service.pid=${longRunningPolicyRef})" name="internal" description="internal use only"/>
   <AD id="LongRunningPolicy.cardinality.minimum" type="String"  ibm:final="true" default="${count(longRunningPolicyRef)}" name="internal" description="internal use only"/>
   <AD id="service.ranking"                       type="Integer" default="-1000" name="internal" description="internal use only"/>
