@@ -1203,6 +1203,7 @@ public class FeatureManagerToolTest extends FeatureToolTestCommon {
      */
 
     @Test
+    @Mode(TestMode.LITE)
     public void testIFixedJarFeatureManager() throws Exception {
         final String METHOD_NAME = "testIFixedJarusingFeatureManaaer";
         Log.entering(c, METHOD_NAME);
