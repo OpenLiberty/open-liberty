@@ -13,14 +13,18 @@ package fat.concurrent.web;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -33,6 +37,7 @@ import javax.annotation.Resource;
 import javax.enterprise.concurrent.ManagedTask;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
+import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,10 +61,31 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
     /**
      * Map of futures to save across servlet invocations.
      */
-    private static Map<String, Future<?>> futures = new HashMap<String, Future<?>>();
+    private Map<String, Future<?>> futures;
 
     @Resource
     private UserTransaction tran;
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public void init() throws ServletException {
+        // An OSGi service is used to cache our list of futures across application restart
+        org.osgi.framework.BundleContext bundleContext = org.osgi.framework.FrameworkUtil.getBundle(getClass().getClassLoader().getClass()).getBundleContext();
+        @SuppressWarnings("rawtypes")
+        Collection<org.osgi.framework.ServiceReference<Map>> refs;
+        try {
+            refs = bundleContext.getServiceReferences(Map.class, "(id=EEConcurrencyUtilsFATServlet.futures)");
+        } catch (org.osgi.framework.InvalidSyntaxException x) {
+            throw new ServletException(x);
+        }
+        if (refs.isEmpty()) {
+            Hashtable<String, Object> props = new Hashtable<String, Object>();
+            props.put("id", "EEConcurrencyUtilsFATServlet.futures");
+            bundleContext.registerService(Map.class, futures = new HashMap<String, Future<?>>(), props);
+        } else {
+            futures = (Map<String, Future<?>>) bundleContext.getService(refs.iterator().next());
+        }
+    }
 
     @Override
     protected void invokeTest(String method, HttpServletRequest request, HttpServletResponse response) throws Exception {
@@ -164,6 +190,17 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         EEConcurrencyUtilsStatelessBean ejb = (EEConcurrencyUtilsStatelessBean) new InitialContext()
                         .lookup("java:global/concurrent/EEConcurrencyUtilsStatelessBean!" + EEConcurrencyUtilsStatelessBean.class.getCanonicalName());
         ejb.testJEEMetadataContextExecSvc1();
+    }
+
+    /**
+     * Submit 1 long running task and verify it completes successfully.
+     */
+    public void testLongRunningTaskSuccessful(String execSvcJNDIName, PrintWriter out) throws Exception {
+        ExecutorService executor = InitialContext.doLookup(execSvcJNDIName);
+        IncrementTask task = new IncrementTask(null, null, null, null);
+        task.getExecutionProperties().put(ManagedTask.LONGRUNNING_HINT, Boolean.TRUE.toString());
+        Future<Integer> future = executor.submit(task);
+        assertEquals(Integer.valueOf(1), future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS));
     }
 
     /**
@@ -332,6 +369,31 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
     /**
      * Verify that futures previously submitted are completed now.
      */
+    public void testTask1BlockedByTask2Canceled(String execSvcJNDIName, PrintWriter out) throws Exception {
+        @SuppressWarnings("unchecked")
+        Future<Integer> future1 = (Future<Integer>) futures.remove("testTask1BlockedByTask2-future1-" + execSvcJNDIName);
+        @SuppressWarnings("unchecked")
+        Future<Integer> future2 = (Future<Integer>) futures.remove("testTask1BlockedByTask2-future2-" + execSvcJNDIName);
+
+        assertTrue(future1.isDone());
+        assertTrue(future2.isDone());
+        assertTrue(future1.isCancelled());
+        assertTrue(future2.isCancelled());
+
+        try {
+            fail("Task 1 should have been canceled. Instead, result is: " + future1.get(0, TimeUnit.SECONDS));
+        } catch (CancellationException x) {
+        } // pass
+
+        try {
+            fail("Task 2 should have been canceled. Instead, result is:  " + future2.get(0, TimeUnit.SECONDS));
+        } catch (CancellationException x) {
+        } // pass
+    }
+
+    /**
+     * Verify that futures previously submitted are completed now.
+     */
     public void testTask1BlockedByTask2Completed(String execSvcJNDIName, PrintWriter out) throws Exception {
         @SuppressWarnings("unchecked")
         Future<Integer> future1 = (Future<Integer>) futures.remove("testTask1BlockedByTask2-future1-" + execSvcJNDIName);
@@ -360,6 +422,31 @@ public class EEConcurrencyUtilsFATServlet extends FATServlet {
         Future<Integer> future2 = executor.submit(task2);
         futures.put("testTask1BlockedByTask2LongRunning-future1-" + execSvcJNDIName, future1);
         futures.put("testTask1BlockedByTask2LongRunning-future2-" + execSvcJNDIName, future2);
+    }
+
+    /**
+     * Verify that futures for long running tasks previously submitted are canceled now.
+     */
+    public void testTask1BlockedByTask2LongRunningCanceled(String execSvcJNDIName, PrintWriter out) throws Exception {
+        @SuppressWarnings("unchecked")
+        Future<Integer> future1 = (Future<Integer>) futures.remove("testTask1BlockedByTask2LongRunning-future1-" + execSvcJNDIName);
+        @SuppressWarnings("unchecked")
+        Future<Integer> future2 = (Future<Integer>) futures.remove("testTask1BlockedByTask2LongRunning-future2-" + execSvcJNDIName);
+
+        assertTrue(future1.isDone());
+        assertTrue(future2.isDone());
+        assertTrue(future1.isCancelled());
+        assertTrue(future2.isCancelled());
+
+        try {
+            fail("Long running task 1 should have been canceled. Instead, result is:  " + future1.get(0, TimeUnit.SECONDS));
+        } catch (CancellationException x) {
+        } // pass
+
+        try {
+            fail("Long running task 2 should have been canceled. Instead, result is:  " + future2.get(0, TimeUnit.SECONDS));
+        } catch (CancellationException x) {
+        } // pass
     }
 
     /**
