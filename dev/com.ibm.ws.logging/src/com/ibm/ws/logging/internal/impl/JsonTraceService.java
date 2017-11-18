@@ -53,6 +53,7 @@ public class JsonTraceService extends BaseTraceService {
 
     @Override
     public synchronized void update(LogProviderConfig config) {
+        System.out.println("1");
         super.update(config);
 
         //Need LogProviderConfigImpl to get additional information specifically for JsonTraceService
@@ -96,14 +97,8 @@ public class JsonTraceService extends BaseTraceService {
          * This is so that Handler doesn't 'subscribe' message or trace
          * and kicks off an undesired BufferManagerImpl instance.
          */
-//        List<String> filterdMessageSourceList = new ArrayList<String>(messageSourceList);
-//        filterdMessageSourceList.remove(CollectorConstants.TRACE_CONFIG_VAL);
-//        filterdMessageSourceList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
         List<String> filterdMessageSourceList = filterSourcelist(messageSourceList);
         List<String> filterdConsoleSourceList = filterSourcelist(consoleSourceList);
-//        List<String> filterdConsoleSourceList = new ArrayList<String>(consoleSourceList);
-//        filterdConsoleSourceList.remove(CollectorConstants.TRACE_CONFIG_VAL);
-//        filterdConsoleSourceList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
 
         //if messageFormat has been configured to 'basic' - ensure that we are not connecting Sources to Conduits
         //DYKC-temp Are we case sensitive?
@@ -135,12 +130,13 @@ public class JsonTraceService extends BaseTraceService {
             //for any 'updates' to the FileLogHolder
             messageLogHandler.setFileLogHolder(messagesLog);
 
-            isMessageJsonConfigured = true; //DYKC-temp not the best way, configure to json.
+            isMessageJsonConfigured = true;
 
-            //configure messages and/or trace
+            //Connect the conduits to the handler as necessary
             manageConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
         }
 
+        //if consoleFormat has been configured to 'json'
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             //If there exists no consoleLogHandler, create one; otherwise call modified();
             if (consoleLogHandler == null) {
@@ -152,10 +148,9 @@ public class JsonTraceService extends BaseTraceService {
                 consoleLogHandler.modified(filterdConsoleSourceList);
             }
             isConsoleJsonConfigured = true;
-            //configure messages and/or trace
+
+            //Connect the conduits to the handler as necessary
             manageConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
-            //manageConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler, logConduit);
-            // manageConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler, traceConduit);
         }
     }
 
@@ -186,14 +181,6 @@ public class JsonTraceService extends BaseTraceService {
             traceConduit.addSyncHandler(handler);
         } else {
             traceConduit.removeSyncHandler(handler);
-        }
-    }
-
-    private void manageConduitSyncHandlerConnection(List<String> sourceList, SyncrhonousHandler handler, BufferManagerImpl conduit) {
-        if (sourceList.contains("message")) {
-            conduit.addSyncHandler(handler);
-        } else {
-            conduit.removeSyncHandler(handler);
         }
     }
 

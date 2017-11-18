@@ -36,13 +36,15 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
 
     private TraceWriter traceWriter;
     private String serverHostName = null;
+    private final String serverName = null;
     private String wlpUserDir = null;
-    private String serverName = null;
+    private String wlpServerName = null;
     private final int MAXFIELDLENGTH = -1; //Unlimited field length
     private volatile Object sync;
     private static volatile boolean isInit = false;
     public static final String COMPONENT_NAME = "com.ibm.ws.logging.internal.impl.MessageLogHandler";
-    List<String> hardCodedSources = new ArrayList<String>();
+    private static final String ENV_VAR_CONTAINERHOST = "CONTAINER_HOST";
+    private static final String ENV_VAR_CONTAINERNAME = "CONTAINER_NAME";
     List<String> sourcesList = new ArrayList<String>();
 
     private CollectorManager collectorMgr = null;
@@ -51,7 +53,6 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     public void init(CollectorManager collectorManager) {
         try {
             this.collectorMgr = collectorManager;
-            //DYKC-debug System.out.println("Going to subscribe this " + convertToSourceIDList(sourcesList));
             collectorMgr.subscribe(this, convertToSourceIDList(sourcesList));
             isInit = true;
         } catch (Exception e) {
@@ -61,23 +62,38 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
 
     public MessageLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
 
-        this.serverName = serverName;
+        this.wlpServerName = serverName;
         this.wlpUserDir = wlpUserDir;
 
         this.sourcesList = sourcesList;
 
-        try {
-            serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
-                @Override
-                public String run() throws UnknownHostException {
-                    return InetAddress.getLocalHost().getHostName();
-                }
-            });
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            serverHostName = "";
+        //Resolve server name to be the DOCKER Container name or the wlp server name.
+        String containerName = System.getenv(ENV_VAR_CONTAINERNAME);
+        if (containerName == null || containerName.equals("") || containerName.length() == 0) {
+            serverName = wlpServerName;
+        } else {
+            serverName = containerName;
         }
+
+        //Resolve server name to be the DOCKER HOST name or the cannonical host name.
+        String containerHost = System.getenv(ENV_VAR_CONTAINERHOST);
+        if (containerName == null || containerName.equals("") || containerName.length() == 0) {
+            try {
+                serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
+                    @Override
+                    public String run() throws UnknownHostException {
+                        return InetAddress.getLocalHost().getCanonicalHostName();
+                    }
+                });
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                serverHostName = "";
+            }
+        } else {
+            serverName = containerName;
+        }
+
     }
 
     public void modified(List<String> newSources) {
@@ -108,9 +124,6 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
         }
     }
 
-    /**
-     * @param sourcesToAdd
-     */
     private List<String> convertToSourceIDList(List<String> sourceList) {
         List<String> sourceIDList = new ArrayList<String>();
         for (String source : sourceList) {
@@ -163,13 +176,13 @@ public class MessageLogHandler implements SyncrhonousHandler, Formatter {
     @Override
     public Object formatEvent(String source, String location, Object event, String[] tags, int maxFieldLength) {
         String eventType = CollectorJsonUtils.getEventType(source, location);
-        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, serverName, wlpUserDir, serverHostName, "1.1", tags,
+        String jsonStr = CollectorJsonUtils.jsonifyEvent(event, eventType, wlpServerName, wlpUserDir, serverHostName, "1.1", tags,
                                                          MAXFIELDLENGTH);
         return jsonStr;
     }
 
-    public void setServername(String serverName) {
-        this.serverName = serverName;
+    public void setWlpServerName(String serverName) {
+        this.wlpServerName = serverName;
     }
 
     public void setWlpUserDir(String wlpUserDir) {
