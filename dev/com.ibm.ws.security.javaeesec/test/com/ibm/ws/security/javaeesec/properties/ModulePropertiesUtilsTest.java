@@ -233,8 +233,8 @@ public class ModulePropertiesUtilsTest {
         withModuleName(MODULENAME).withAppName(APPLNAME).withModulePropertiesProvider(false, false).withAuthMechClassList(list);
         mpu.setComponentMetaData(cmd);
         assertNull("null should be returned.", mpu.getHttpAuthenticationMechanism());
-        assertTrue("CWWKS1915E  message with application and module name, and list of classeswas not logged",
-                   outputMgr.checkForStandardErr("CWWKS1915E:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
+        assertTrue("CWWKS1912E message with application and module name, and list of classeswas not logged",
+                   outputMgr.checkForStandardErr("CWWKS1912E:.*" + MODULENAME + ".*" + APPLNAME + ".*"));
     }
 
     /**

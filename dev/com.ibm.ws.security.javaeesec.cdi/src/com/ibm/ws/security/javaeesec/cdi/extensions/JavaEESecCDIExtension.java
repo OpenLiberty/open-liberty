@@ -161,7 +161,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (DeploymentException de) {
             afterBeanDiscovery.addDefinitionError(de);
         }
-        if (!moduleMap.isEmpty()) {
+        if (!isEmptyModuleMap()) {
             ModulePropertiesProviderBean bean = new ModulePropertiesProviderBean(beanManager, moduleMap);
             beansToAdd.add(bean);
         }
@@ -706,6 +706,21 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 }
             }
         }
+    }
+    private boolean isEmptyModuleMap() {
+        boolean result = moduleMap.isEmpty();
+        if (!result) {
+            // check ModuleProperties is empty.
+            for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+                if (entry.getValue().getAuthMechMap().isEmpty()) {
+                    result = true;
+                } else {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     private List<String> getWebModuleList() {

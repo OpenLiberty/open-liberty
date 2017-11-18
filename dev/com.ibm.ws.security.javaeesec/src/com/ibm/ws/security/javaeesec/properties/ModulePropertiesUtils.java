@@ -96,8 +96,10 @@ public class ModulePropertiesUtils {
                     } else {
                         Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                     }
-                } else {
+                } else if (implClassList.size() > 1) {
                     Tr.error(tc, "JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS", getJ2EEModuleName(), getJ2EEApplicationName(), implClassList);
+                } else {
+                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                 }
             } else if (logError) {
                 Tr.error(tc, "JAVAEESEC_ERROR_NO_MODULE_PROPS", getJ2EEApplicationName());
