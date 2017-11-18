@@ -54,6 +54,7 @@ public class JsonTraceService extends BaseTraceService {
     @Override
     public synchronized void update(LogProviderConfig config) {
         super.update(config);
+
         //Need LogProviderConfigImpl to get additional information specifically for JsonTraceService
         LogProviderConfigImpl jsonTRConfig = (LogProviderConfigImpl) config;
 
@@ -76,7 +77,7 @@ public class JsonTraceService extends BaseTraceService {
         traceConduit = collectorMgrPipelineUtils.getTraceConduit();
 
         /*
-         * Check if 'json' is configured
+         * Check if 'json' is configured for messages.log output and console output
          * if 'messageFormat' is set to json PLUS 'messageSources' set start up messageLogHandler
          * if 'consoleFormat' is set to json PLUS 'consoleSource' set start up consoleLogHandler
          */
@@ -95,26 +96,28 @@ public class JsonTraceService extends BaseTraceService {
          * This is so that Handler doesn't 'subscribe' message or trace
          * and kicks off an undesired BufferManagerImpl instance.
          */
-        List<String> filterdMessageSourceList = new ArrayList<String>(messageSourceList);
-        filterdMessageSourceList.remove(CollectorConstants.TRACE_CONFIG_VAL);
-        filterdMessageSourceList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
-
-        List<String> filterdConsoleSourceList = new ArrayList<String>(consoleSourceList);
-        filterdConsoleSourceList.remove(CollectorConstants.TRACE_CONFIG_VAL);
-        filterdConsoleSourceList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
+//        List<String> filterdMessageSourceList = new ArrayList<String>(messageSourceList);
+//        filterdMessageSourceList.remove(CollectorConstants.TRACE_CONFIG_VAL);
+//        filterdMessageSourceList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
+        List<String> filterdMessageSourceList = filterSourcelist(messageSourceList);
+        List<String> filterdConsoleSourceList = filterSourcelist(consoleSourceList);
+//        List<String> filterdConsoleSourceList = new ArrayList<String>(consoleSourceList);
+//        filterdConsoleSourceList.remove(CollectorConstants.TRACE_CONFIG_VAL);
+//        filterdConsoleSourceList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
 
         //if messageFormat has been configured to 'basic' - ensure that we are not connecting Sources to Conduits
+        //DYKC-temp Are we case sensitive?
         if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
             isMessageJsonConfigured = false;
             if (messageLogHandler != null) {
-                setUnsetLogTrace(new ArrayList<String>(), messageLogHandler);
+                manageConduitSyncHandlerConnection(new ArrayList<String>(), messageLogHandler);
             }
         }
-
+        //if consoleFormat has been configured to 'basic' - ensure that we are not connecting Sources to Conduits
         if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT)) {
             isConsoleJsonConfigured = false;
             if (consoleLogHandler != null) {
-                setUnsetLogTrace(new ArrayList<String>(), consoleLogHandler);
+                manageConduitSyncHandlerConnection(new ArrayList<String>(), consoleLogHandler);
             }
         }
 
@@ -135,7 +138,7 @@ public class JsonTraceService extends BaseTraceService {
             isMessageJsonConfigured = true; //DYKC-temp not the best way, configure to json.
 
             //configure messages and/or trace
-            setUnsetLogTrace(messageSourceList, messageLogHandler);
+            manageConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
         }
 
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
@@ -150,15 +153,29 @@ public class JsonTraceService extends BaseTraceService {
             }
             isConsoleJsonConfigured = true;
             //configure messages and/or trace
-            setUnsetLogTrace(consoleSourceList, consoleLogHandler);
+            manageConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
+            //manageConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler, logConduit);
+            // manageConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler, traceConduit);
         }
     }
 
     /*
-     * Based on config (sourceList), need to add the syncrhonized to configured source/conduit
+     * Helper method to clean up the original source list by removing messages and
+     * trace from it. Otherwise, our json handlers will subscribe these and cause
+     * collectorManager to create 'new' conduits/Buffermanagers.
+     */
+    private List<String> filterSourcelist(List<String> sourceList) {
+        List<String> filteredList = new ArrayList<String>(sourceList);
+        filteredList.remove(CollectorConstants.TRACE_CONFIG_VAL);
+        filteredList.remove(CollectorConstants.MESSAGES_CONFIG_VAL);
+        return filteredList;
+    }
+
+    /*
+     * Based on config (sourceList), need to connect the synchronized handler to configured source/conduit
      * i.e If user wanted message, assign message, if use wants both, assign both
      */
-    private void setUnsetLogTrace(List<String> sourceList, SyncrhonousHandler handler) {
+    private void manageConduitSyncHandlerConnection(List<String> sourceList, SyncrhonousHandler handler) {
         if (sourceList.contains("message")) {
             logConduit.addSyncHandler(handler);
         } else {
@@ -169,6 +186,14 @@ public class JsonTraceService extends BaseTraceService {
             traceConduit.addSyncHandler(handler);
         } else {
             traceConduit.removeSyncHandler(handler);
+        }
+    }
+
+    private void manageConduitSyncHandlerConnection(List<String> sourceList, SyncrhonousHandler handler, BufferManagerImpl conduit) {
+        if (sourceList.contains("message")) {
+            conduit.addSyncHandler(handler);
+        } else {
+            conduit.removeSyncHandler(handler);
         }
     }
 

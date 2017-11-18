@@ -11,6 +11,7 @@
 package com.ibm.ws.logging.utils;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.internal.impl.ConsoleLogHandler;
 import com.ibm.ws.logging.internal.impl.MessageLogHandler;
 import com.ibm.ws.logging.source.LogSource;
@@ -43,11 +44,11 @@ public class CollectorManagerPipelineUtils implements CollectorManagerPipelineBo
             traceSource = new TraceSource();
         }
         if (logConduit == null) {
-            logConduit = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.message");
+            logConduit = new BufferManagerImpl(10000, CollectorConstants.MESSAGES_SOURCE);
         }
 
         if (traceConduit == null) {
-            traceConduit = new BufferManagerImpl(10000, "com.ibm.ws.logging.source.trace");
+            traceConduit = new BufferManagerImpl(10000, CollectorConstants.TRACE_SOURCE);
         }
 
         /*
