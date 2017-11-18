@@ -23,6 +23,7 @@ Import-Package: \
         com.ibm.ws.logging.utils, \
         com.ibm.ws.logging.collector, \
         com.ibm.ws.http.logging.source, \
+        com.ibm.ws.logging.synch, \
         javax.net.ssl;resolution:=optional, \
         com.ibm.websphere.ssl;resolution:=optional, \
         com.ibm.wsspi.ssl;resolution:=optional

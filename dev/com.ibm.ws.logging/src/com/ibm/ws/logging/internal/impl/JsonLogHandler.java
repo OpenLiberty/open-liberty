@@ -17,9 +17,13 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibm.ws.http.logging.data.AccessLogData;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
 import com.ibm.ws.logging.collector.Formatter;
+import com.ibm.ws.logging.source.FFDCData;
+import com.ibm.ws.logging.source.MessageLogData;
+import com.ibm.ws.logging.source.TraceLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
@@ -99,15 +103,15 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
         }
 
         try {
-
-            // old sources
+            //Old sources
             ArrayList<String> oldSources = new ArrayList<String>(sourcesList);
-            //sources to remove -> In Old Sources, the difference between oldSource and newSource
+
+            //Sources to remove -> In Old Sources, the difference between oldSource and newSource
             ArrayList<String> sourcesToRemove = new ArrayList<String>(oldSources);
             sourcesToRemove.removeAll(newSources);
             collectorMgr.unsubscribe(this, convertToSourceIDList(sourcesToRemove));
 
-            //sources to Add -> In New Sources, the difference bewteen newSource and oldSource
+            //Sources to Add -> In New Sources, the difference bewteen newSource and oldSource
             ArrayList<String> sourcesToAdd = new ArrayList<String>(newSources);
             sourcesToAdd.removeAll(oldSources);
             collectorMgr.subscribe(this, convertToSourceIDList(sourcesToAdd));
@@ -118,6 +122,8 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
             e.printStackTrace();
         }
     }
+
+    public abstract void setWriter(Object writer);
 
     @Override
     public void setBufferManager(String sourceId, BufferManager bufferMgr) {
@@ -156,6 +162,9 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
         return sourceIDList;
     }
 
+    /*
+     * Get the fully qualified source string from the config value
+     */
     protected String getSourceName(String source) {
         if (source.equals(CollectorConstants.MESSAGES_CONFIG_VAL))
             return CollectorConstants.MESSAGES_SOURCE;
@@ -166,5 +175,23 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
         else if (source.equalsIgnoreCase(CollectorConstants.ACCESS_CONFIG_VAL))
             return CollectorConstants.ACCESS_LOG_SOURCE;
         return "";
+    }
+
+    /*
+     * Get the type of source based on the object given by comparing it to the *Data classess
+     */
+    protected String getSourceTypeFromDataObject(Object event) {
+        if (event instanceof MessageLogData) {
+            return CollectorConstants.MESSAGES_SOURCE;
+        } else if (event instanceof TraceLogData) {
+            return CollectorConstants.TRACE_SOURCE;
+        } else if (event instanceof AccessLogData) {
+            return CollectorConstants.ACCESS_LOG_SOURCE;
+        } else if (event instanceof FFDCData) {
+            return CollectorConstants.FFDC_SOURCE;
+        } else {
+            return "";
+        }
+
     }
 }

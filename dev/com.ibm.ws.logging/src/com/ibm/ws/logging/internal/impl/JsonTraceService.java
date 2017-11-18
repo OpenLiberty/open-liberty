@@ -43,7 +43,9 @@ public class JsonTraceService extends BaseTraceService {
     private volatile BufferManagerImpl traceConduit;
     private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
 
-    // for now always have it configured?
+    private static final String CONSOLE_LOG = "consoleLog";
+    private static final String MESSAGE_LOG = "messageLog";
+
     private static volatile boolean isMessageJsonConfigured = false;
     private static volatile boolean isConsoleJsonConfigured = false;
     private static volatile Object sync = new Object();
@@ -53,20 +55,28 @@ public class JsonTraceService extends BaseTraceService {
 
     @Override
     public synchronized void update(LogProviderConfig config) {
-        System.out.println("1");
         super.update(config);
 
-        //Need LogProviderConfigImpl to get additional information specifically for JsonTraceService
+        //Need a LogProviderConfigImpl to get additional information specifically for JsonTraceService
         LogProviderConfigImpl jsonTRConfig = (LogProviderConfigImpl) config;
 
-        //Need to know serverName and wlpUserDir is and pass it to an Handler created by JsonTrService
-        //for correct json outoput.
+        /*
+         * Need to know the values of wlpServerName and wlpUserDir
+         * They are passed into the handlers for use as part of the jsonified output
+         */
         serverName = jsonTRConfig.getServerName();
         wlpUserDir = jsonTRConfig.getWlpUsrDir();
 
+        //Retrieve collectormgrPiplineUtils
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
-            collectorMgrPipelineUtils.setJsonTrService(isJSON);//DYKC-temp this should be true.. because we are a jsontraceservice
+            /*
+             * Need to tell collectormgrPiplineUtils that a JsonTrService is active
+             * So that when the eventual registration of LogSource and TraceSource as WsLogHandler
+             * and WsTraceHandler (which kicks of the MessageRouterConfigurator and TraceRouterConfigurator)
+             * will not flush early messages and trace back through the LogSource and TraceSource.
+             */
+            collectorMgrPipelineUtils.setJsonTrService(isJSON);
         }
 
         //Sources
@@ -78,21 +88,16 @@ public class JsonTraceService extends BaseTraceService {
         traceConduit = collectorMgrPipelineUtils.getTraceConduit();
 
         /*
-         * Check if 'json' is configured for messages.log output and console output
-         * if 'messageFormat' is set to json PLUS 'messageSources' set start up messageLogHandler
-         * if 'consoleFormat' is set to json PLUS 'consoleSource' set start up consoleLogHandler
+         * Retrieve the format setting for message.log and console
          */
-
-        //String messageLogConfiguration = "json"; //DYKC-temp //retrieve configured value getConfiguration()
         String messageFormat = jsonTRConfig.getMessageFormat();
         String consoleFormat = jsonTRConfig.getConsoleFormat();
 
-        //Retrieve sourceLists
+        //Retrieve the source lists of both message and console
         List<String> messageSourceList = new ArrayList<String>(jsonTRConfig.getMessageSource());
         List<String> consoleSourceList = new ArrayList<String>(jsonTRConfig.getConsoleSource());
 
         /*
-         * DYKC-temp
          * Filter out Message and Trace from messageSourceList
          * This is so that Handler doesn't 'subscribe' message or trace
          * and kicks off an undesired BufferManagerImpl instance.
@@ -100,23 +105,34 @@ public class JsonTraceService extends BaseTraceService {
         List<String> filterdMessageSourceList = filterSourcelist(messageSourceList);
         List<String> filterdConsoleSourceList = filterSourcelist(consoleSourceList);
 
-        //if messageFormat has been configured to 'basic' - ensure that we are not connecting Sources to Conduits
-        //DYKC-temp Are we case sensitive?
+        /*
+         * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
+         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         */
         if (messageFormat.toLowerCase().equals(LoggingConstants.DEFAULT_MESSAGE_FORMAT)) {
             isMessageJsonConfigured = false;
             if (messageLogHandler != null) {
-                manageConduitSyncHandlerConnection(new ArrayList<String>(), messageLogHandler);
-            }
-        }
-        //if consoleFormat has been configured to 'basic' - ensure that we are not connecting Sources to Conduits
-        if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT)) {
-            isConsoleJsonConfigured = false;
-            if (consoleLogHandler != null) {
-                manageConduitSyncHandlerConnection(new ArrayList<String>(), consoleLogHandler);
+                updateConduitSyncHandlerConnection(new ArrayList<String>(), messageLogHandler);
             }
         }
 
-        //if messageFormat has been configured to 'json'
+        /*
+         * If consoleFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
+         * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
+         */
+        if (consoleFormat.toLowerCase().equals(LoggingConstants.DEFAULT_CONSOLE_FORMAT)) {
+            isConsoleJsonConfigured = false;
+            if (consoleLogHandler != null) {
+                updateConduitSyncHandlerConnection(new ArrayList<String>(), consoleLogHandler);
+            }
+        }
+
+        /*
+         * If messageFormat has been configured to 'json', create the messageLogHandler as necessary or
+         * call modified as necessary, provide it to the collectorMgrPipleLinUtils as necessary and set the
+         * messageJsonConfigured flag as appropriate and update the connection between the unique message
+         * and trace conduits to the handler.
+         */
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             //If there exists no messageLogHandler, create one; otherwise call modified();
             if (messageLogHandler == null) {
@@ -128,29 +144,34 @@ public class JsonTraceService extends BaseTraceService {
                 messageLogHandler.modified(filterdMessageSourceList);
             }
             //for any 'updates' to the FileLogHolder
-            messageLogHandler.setFileLogHolder(messagesLog);
+            messageLogHandler.setWriter(messagesLog);
 
             isMessageJsonConfigured = true;
 
             //Connect the conduits to the handler as necessary
-            manageConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
+            updateConduitSyncHandlerConnection(messageSourceList, messageLogHandler);
         }
 
-        //if consoleFormat has been configured to 'json'
+        /*
+         * If consoleFormat has been configured to 'json', create the consoleLogHandler as necessary or
+         * call modified as necessary, provide it to the collectorMgrPipleLinUtils as necessary and set the
+         * consoleJsonConfigured flag as appropriate and update the connection between the unique message
+         * and trace conduits to the handler.
+         */
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
             //If there exists no consoleLogHandler, create one; otherwise call modified();
             if (consoleLogHandler == null) {
                 consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
-                consoleLogHandler.setStreamWriter(systemOut);
                 //Make the utils aware of the Console handler
                 collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
+                consoleLogHandler.setWriter(systemOut);
             } else {
                 consoleLogHandler.modified(filterdConsoleSourceList);
             }
             isConsoleJsonConfigured = true;
 
             //Connect the conduits to the handler as necessary
-            manageConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
+            updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
         }
     }
 
@@ -167,10 +188,10 @@ public class JsonTraceService extends BaseTraceService {
     }
 
     /*
-     * Based on config (sourceList), need to connect the synchronized handler to configured source/conduit
-     * i.e If user wanted message, assign message, if use wants both, assign both
+     * Based on config (sourceList), need to connect the synchronized handler to configured source/conduit..
+     * Or disconnect it.
      */
-    private void manageConduitSyncHandlerConnection(List<String> sourceList, SyncrhonousHandler handler) {
+    private void updateConduitSyncHandlerConnection(List<String> sourceList, SyncrhonousHandler handler) {
         if (sourceList.contains("message")) {
             logConduit.addSyncHandler(handler);
         } else {
@@ -227,7 +248,6 @@ public class JsonTraceService extends BaseTraceService {
         } else {
             earlierMessages.add(routedMessage);
             /*
-             * //DYKC-review
              * If no Routers are set, then there is no way for a message event to go through to LogSource
              * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
              * the router.
@@ -238,7 +258,7 @@ public class JsonTraceService extends BaseTraceService {
              * appropriately call setupCollectorManagerPipeline()
              */
             if (logSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
-                logSource.publish(routedMessage); //DYKC-temp currently directly sends to handler that we gave to it.
+                logSource.publish(routedMessage);
             }
         }
         return retMe;
@@ -264,7 +284,6 @@ public class JsonTraceService extends BaseTraceService {
                     } else {
                         earlierTraces.add(routedTrace);
                         /*
-                         * //DYKC
                          * If no Routers are set, then there is no way for a trace event to go through to TraceSource
                          * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
                          * the router.
@@ -275,7 +294,6 @@ public class JsonTraceService extends BaseTraceService {
                          * appropriately call setupCollectorManagerPipeline()
                          */
                         if (traceSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
-                            //System.out.println("publish");
                             traceSource.publish(routedTrace);
                         }
                     }
@@ -339,9 +357,11 @@ public class JsonTraceService extends BaseTraceService {
                 }
                 return; // DONE!!
             } else if (levelValue >= consoleLogLevel.intValue()) {
-                //If console json configured, we do not want to write 'normally' to the console.log/stdout/stder
-                //We will rely on invokeTraceRouters to pass it on to the appropriate Handler
-                if (!isConsoleJsonConfigured) {//DYKC
+                /*
+                 * If console json configured, we do not want to write 'normally' to the console.log/stdout/stder
+                 * We will rely on invokeTraceRouters to pass it on to the appropriate consoleLogHandler
+                 */
+                if (!isConsoleJsonConfigured) {
                     // Only route messages permitted by consoleLogLevel
                     String consoleMsg = formatter.consoleLogFormat(logRecord, formattedMsg);
                     if (levelValue == WsLevel.ERROR.intValue() || levelValue == WsLevel.FATAL.intValue()) {
@@ -351,7 +371,7 @@ public class JsonTraceService extends BaseTraceService {
                         // messages othwerwise above the filter are routed to system out
                         writeStreamOutput(systemOut, consoleMsg, false);
                     }
-                } //DYKC
+                }
             }
         }
 

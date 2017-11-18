@@ -27,7 +27,6 @@ public class BufferManagerImpl extends BufferManager {
 
 	private static final TraceComponent tc = Tr.register(BufferManagerImpl.class);
 
-	// DYKC
 	private Set<SyncrhonousHandler> synchronizedHandlerSet = new HashSet<SyncrhonousHandler>();
 
 	private final String sourceId;
@@ -41,9 +40,10 @@ public class BufferManagerImpl extends BufferManager {
 
 	@Override
 	public void add(Object event) {
-		// DYKC
-		// Check if we have any synchronized handlers, and write directly to
-		// them.
+		
+		/*
+		 * Check if we have any synchronized handlers, and write directly to them
+		 */
 		if (!synchronizedHandlerSet.isEmpty()) {
 			for (SyncrhonousHandler synchronizedHandler : synchronizedHandlerSet) {
 				synchronizedHandler.synchronousWrite(event);
@@ -51,7 +51,8 @@ public class BufferManagerImpl extends BufferManager {
 		}
 		if (event == null)
 			throw new NullPointerException();
-		//DYCK- effectively removes it from JSON output, but is still there for normal trace.log
+		
+		//Need to resolve this somehow
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			//Tr.debug(tc, "Adding event to buffer " + event);
 		}
