@@ -233,7 +233,7 @@
 
 		<echo>Running ${test.bucket.name}</echo>
 		<echo>Timeout: ${fattest.timeout}</echo>
-		<iff if="debug.framework">
+		<iff if="env.debug.framework">
 			<then>
 				<!-- if we are debugging then set these values to be passed to the JVM -->
 				<property name="framework.debug.jvmarg1" value="-Xdebug" />
@@ -246,7 +246,7 @@
 				<property name="framework.debug.jvmarg2" value="-Dignore=ignore" />
 			</else>
 		</iff>
-		<iff if="debug.server">
+		<iff if="env.debug.server">
 			<then>
 				<!-- this is the debugging port for the liberty server that will be launched by the tests -->
 				<property name="server.debug.sysprop.value" value="7777" />

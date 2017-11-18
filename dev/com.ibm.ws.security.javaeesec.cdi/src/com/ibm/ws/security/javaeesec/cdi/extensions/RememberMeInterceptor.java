@@ -148,7 +148,7 @@ public class RememberMeInterceptor {
         if (isRememberMeExpression.isEmpty()) {
             return rememberMe.isRememberMe();
         } else {
-            return (Boolean) elProcessor.eval(isRememberMeExpression);
+            return processExpression(elProcessor, isRememberMeExpression);
         }
     }
 
@@ -163,7 +163,7 @@ public class RememberMeInterceptor {
         if (cookieMaxAgeSecondsExpression.isEmpty()) {
             return rememberMe.cookieMaxAgeSeconds();
         } else {
-            return (Integer) elProcessor.eval(cookieMaxAgeSecondsExpression);
+            return processExpression(elProcessor, cookieMaxAgeSecondsExpression);
         }
     }
 
@@ -182,7 +182,7 @@ public class RememberMeInterceptor {
         if (cookieSecureOnlyExpression.isEmpty()) {
             return rememberMe.cookieSecureOnly();
         } else {
-            return (Boolean) elProcessor.eval(cookieSecureOnlyExpression);
+            return processExpression(elProcessor, cookieSecureOnlyExpression);
         }
     }
 
@@ -192,7 +192,7 @@ public class RememberMeInterceptor {
         if (cookieHttpOnlyExpression.isEmpty()) {
             return rememberMe.cookieHttpOnly();
         } else {
-            return (Boolean) elProcessor.eval(cookieHttpOnlyExpression);
+            return processExpression(elProcessor, cookieHttpOnlyExpression);
         }
     }
 
@@ -215,6 +215,18 @@ public class RememberMeInterceptor {
 
     protected ELProcessor getELProcessorWithAppModuleBeanManagerELResolver() {
         return CDIHelper.getELProcessor();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T processExpression(ELProcessor elProcessor, String expression) {
+        return (T) elProcessor.eval(removeBrackets(expression));
+    }
+
+    private String removeBrackets(String expression) {
+        if ((expression.startsWith("${") || expression.startsWith("#{")) && expression.endsWith("}")) {
+            expression = expression.substring(2, expression.length() - 1);
+        }
+        return expression;
     }
 
 }

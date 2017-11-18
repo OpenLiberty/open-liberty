@@ -30,6 +30,8 @@ import com.ibm.ws.jaxrs20.client.JAXRSClientConstants;
  */
 public class LibertyJaxRsClientOAuthInterceptor extends AbstractPhaseInterceptor<Message> {
     private static final TraceComponent tc = Tr.register(LibertyJaxRsClientOAuthInterceptor.class, JAXRSClientConstants.TR_GROUP, JAXRSClientConstants.TR_RESOURCE_BUNDLE);
+    private static final String AUTHN_TOKEN = "authnToken";
+    private static final String WEB_TARGET = "webTarget";
 
     public LibertyJaxRsClientOAuthInterceptor() {
         super(Phase.PRE_LOGICAL);
@@ -72,10 +74,8 @@ public class LibertyJaxRsClientOAuthInterceptor extends AbstractPhaseInterceptor
                 addAuthnHeader(mpJwt, message);
             }
         } else {
-            //TODO Tr.warn - [authnToken] attribute in [WebTarget] configuration is set to [mpjwt] but the MicroProfile JWT token is not available. The request will not contain Authorization header with the Bearer token. Check for any warning messages prior to this.
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Cannot find MpJwt Token in the WSSubject");
-            }
+            String msg = Tr.formatMessage(tc, "warn_missing_mpjwt_token", new Object[] { AUTHN_TOKEN, WEB_TARGET, "mpjwt" });
+            Tr.warning(tc, msg);
         }
 
     }

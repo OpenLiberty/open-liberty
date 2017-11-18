@@ -8,20 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.jpa;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
+
 @RunWith(Suite.class)
 @SuiteClasses({
-                JPA21BootstrapTest.class,
-                JPA22BootstrapTest.class,
-                JPACDIIntegrationTest.class,
-                JPA22QueryTest.class,
-                JPA22Injection.class,
-                JPA22TimeAPITest.class
+                JPABootstrapTest.class,
+                JPA22FATSuite.class
 })
 public class FATSuite {
 

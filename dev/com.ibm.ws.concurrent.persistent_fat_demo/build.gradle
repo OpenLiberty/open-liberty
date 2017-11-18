@@ -24,8 +24,3 @@ addRequiredLibraries {
 		}
 	}
 }
-
-// jar clause can be removed once PR #453 is promoted to master
-jar {
-	dependsOn addRequiredLibraries
-}

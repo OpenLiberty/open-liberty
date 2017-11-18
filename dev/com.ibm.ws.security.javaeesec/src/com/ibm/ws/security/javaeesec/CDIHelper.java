@@ -11,6 +11,7 @@
 
 package com.ibm.ws.security.javaeesec;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.el.ELProcessor;
@@ -31,11 +32,13 @@ public class CDIHelper {
 
     private static CDIService cdiService;
 
+    @SuppressWarnings("static-access")
     @Reference
     protected void setCDIService(CDIService cdiService) {
         this.cdiService = cdiService;
     }
 
+    @SuppressWarnings("static-access")
     protected void unsetCDIService(CDIService cdiService) {
         this.cdiService = null;
     }
@@ -47,13 +50,33 @@ public class CDIHelper {
         return beanManager.getReference(bean, beanClass, beanManager.createCreationalContext(bean));
     }
 
+    @SuppressWarnings("unchecked")
+    public static <T> Set<T> getBeansFromCurrentModule(Class<T> beanClass) {
+        Set<T> beanInstances = new HashSet<T>();
+        BeanManager beanManager = getBeanManager();
+        Set<Bean<?>> beans = beanManager.getBeans(beanClass);
+
+        for (Bean<?> bean : beans) {
+            beanInstances.add((T) beanManager.getReference(bean, beanClass, beanManager.createCreationalContext(bean)));
+        }
+
+        return beanInstances;
+    }
+
     public static BeanManager getBeanManager() {
         return cdiService.getCurrentModuleBeanManager();
     }
 
     public static ELProcessor getELProcessor() {
         ELProcessor elProcessor = new ELProcessor();
-        elProcessor.getELManager().addELResolver(getBeanManager().getELResolver());
+
+        /*
+         * This should never be null in production, but this check allows running unit tests
+         * without the CDIService.
+         */
+        if (cdiService != null) {
+            elProcessor.getELManager().addELResolver(getBeanManager().getELResolver());
+        }
         return elProcessor;
     }
 

@@ -13,20 +13,28 @@ bVersion=1.0
 
 Bundle-Name: com.ibm.ws.cdi.1.2.weld
 Bundle-SymbolicName: com.ibm.ws.cdi.1.2.weld
+Bundle-Description:CDI 1.2 Weld Integration, version ${bVersion}
 
-Bundle-Description:cdi 1.2 weld impl, version ${bVersion}
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+
+-dsannotations: com.ibm.ws.cdi.config.liberty.CDI12ContainerConfig
 
 Export-Package: com.ibm.ws.cdi.executor, \
                 com.ibm.ws.cdi.utils
                 
-Import-Package: org.jboss.weld.*;version="[2,3)", \
-                *
- 
-WS-TraceGroup: JCDI
+Private-Package: \
+                com.ibm.ws.cdi.config.liberty
+                
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
 
-Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
+WS-TraceGroup: JCDI
 
 -buildpath: \
         com.ibm.websphere.javaee.cdi.1.2;version=latest,\
-        com.ibm.ws.org.jboss.weld.2.4.3;version=latest, \
+        com.ibm.ws.org.jboss.weld.2.4.5;version=latest, \
+        com.ibm.websphere.org.osgi.service.component,\
+        com.ibm.wsspi.org.osgi.service.component.annotations,\
+        com.ibm.ws.logging.core,\
+        com.ibm.ws.cdi.interfaces;version=latest,\
         com.ibm.ws.org.osgi.annotation.versioning;version=latest

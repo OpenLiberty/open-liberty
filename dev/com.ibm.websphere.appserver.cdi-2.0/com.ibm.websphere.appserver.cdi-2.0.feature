@@ -12,17 +12,17 @@ IBM-API-Package: javax.decorator;  type="spec", \
  javax.enterprise.inject;  type="spec", \
  javax.enterprise.inject.literal;  type="spec", \
  javax.enterprise.inject.spi;  type="spec", \
+ javax.enterprise.inject.spi.configurator;  type="spec", \
  javax.enterprise.util;  type="spec", \
  javax.inject;  type="spec", \
  javax.interceptor;  type="spec", \
- javax.transaction;  type="internal", \
- javax.validation;  type="internal", \
  org.jboss.weld.el; type="internal", \
  org.jboss.weld.interceptor.proxy; type="internal", \
  org.jboss.weld.interceptor.util.proxy; type="internal", \
  org.jboss.weld.bean; type="internal", \
  org.jboss.weld.bean.proxy; type="internal", \
  org.jboss.weld.bean.proxy.util; type="internal", \
+ org.jboss.weld.module.ejb; type="internal", \
  org.jboss.weld.proxy; type="internal", \
  org.jboss.weld.security; type="internal", \
  org.jboss.weld.serialization.spi; type="internal", \
@@ -39,8 +39,8 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
  com.ibm.websphere.appserver.javaeePlatform-7.0, \
  com.ibm.websphere.appserver.javax.ejb-3.2, \
  com.ibm.websphere.appserver.javax.annotation-1.2, \
- com.ibm.websphere.appserver.javax.validation-1.1, \
- com.ibm.websphere.appserver.javaeeCompatible-7.0, \
+ com.ibm.websphere.appserver.javax.validation-2.0, \
+ com.ibm.websphere.appserver.javaeeCompatible-8.0, \
  com.ibm.websphere.appserver.javax.interceptor-1.2, \
  com.ibm.websphere.appserver.javax.cdi-2.0, \
  com.ibm.websphere.appserver.injection-1.0, \
@@ -55,7 +55,8 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.jboss.logging.3.3.0, \
  com.ibm.ws.org.jboss.classfilewriter.1.1.2, \
- com.ibm.ws.cdi.shared.weld, \
+ com.ibm.ws.cdi.weld, \
+ com.ibm.ws.cdi.internal, \
  com.ibm.ws.cdi.2.0.weld, \
  com.ibm.websphere.javaee.jstl.1.2; apiJar=false; location:="dev/api/spec/,lib/", \
  com.ibm.websphere.javaee.websocket.1.1; apiJar=false; location:="dev/api/spec/,lib/", \
@@ -63,5 +64,5 @@ Subsystem-Name: Contexts and Dependency Injection 2.0
 -jars=com.ibm.websphere.appserver.thirdparty.cdi-2.0; location:="dev/api/third-party/,lib/"
 -files=dev/api/ibm/schema/ibm-managed-bean-bnd_1_0.xsd, \
  dev/api/ibm/schema/ibm-managed-bean-bnd_1_1.xsd
-kind=noship
+kind=beta
 edition=core

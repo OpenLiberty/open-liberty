@@ -42,6 +42,12 @@ public interface ClassLoaderConfiguration {
     /** @see #setSharedLibraries(List) */
     ClassLoaderConfiguration setSharedLibraries(String... libs);
 
+    /** @param libs the names of shared libraries that should be associated with this classloader */
+    ClassLoaderConfiguration addSharedLibraries(List<String> libs);
+
+    /** @see #addSharedLibraries(List) */
+    ClassLoaderConfiguration addSharedLibraries(String... libs);
+
     List<String> getSharedLibraries();
 
     /** @param libs the names of common shared libraries that should be associated with this classloader */
@@ -73,4 +79,9 @@ public interface ClassLoaderConfiguration {
     ClassLoaderConfiguration setProtectionDomain(ProtectionDomain domain);
 
     ProtectionDomain getProtectionDomain();
+
+    /** @param include Whether or not to include ApplicationExtensionLibrary instances to this classloader */
+    ClassLoaderConfiguration setIncludeAppExtensions(boolean include);
+
+    boolean getIncludeAppExtensions();
 }

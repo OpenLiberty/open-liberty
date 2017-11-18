@@ -25,14 +25,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.websphere.security.WSSecurityException;
-import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.authentication.principals.WSPrincipal;
 import com.ibm.ws.security.authorization.AuthorizationService;
 import com.ibm.ws.security.context.SubjectManager;
+import com.ibm.ws.security.intfc.SubjectManagerService;
 import com.ibm.ws.security.javaeesec.JavaEESecConstants;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.ws.webcontainer.security.metadata.MatchResponse;
+import com.ibm.ws.webcontainer.security.metadata.SecurityConstraintCollection;
+import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
+import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 
 /**
  *
@@ -99,13 +102,13 @@ public class SecurityContextImpl implements SecurityContext {
      * @see javax.security.enterprise.SecurityContext#getPrincipalsByType(java.lang.Class)
      */
     @Override
-    public <T extends Principal> Set<T> getPrincipalsByType(Class<T> arg0) {
+    public <T extends Principal> Set<T> getPrincipalsByType(Class<T> type) {
         //Get the caller principal from the caller subject
         Subject callerSubject = getCallerSubject();
 
         if (callerSubject != null) {
             //Get the prinicipals by type
-            Set<T> principals = callerSubject.getPrincipals(arg0);
+            Set<T> principals = callerSubject.getPrincipals(type);
             return principals;
         }
 
@@ -119,8 +122,42 @@ public class SecurityContextImpl implements SecurityContext {
      * @see javax.security.enterprise.SecurityContext#hasAccessToWebResource(java.lang.String, java.lang.String[])
      */
     @Override
-    public boolean hasAccessToWebResource(String arg0, String... arg1) {
-        // TODO Auto-generated method stub
+    public boolean hasAccessToWebResource(String resource, String... methods) {
+
+        String appName = getApplicationName();
+        SecurityMetadata securityMetadata = getSecurityMetadata();
+        SecurityConstraintCollection collection = securityMetadata.getSecurityConstraintCollection();
+
+        if (null != collection) {
+
+            AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
+            Subject callerSubject = getCallerSubject();
+
+            for (String method : methods) {
+                MatchResponse matchResponse = collection.getMatchResponse(resource, method);
+
+                if (matchResponse.equals(MatchResponse.NO_MATCH_RESPONSE)) {
+                    // There are no constraints so user has access
+                    return true;
+                }
+
+                if (matchResponse.isAccessPrecluded()) {
+                    //This methods access is precluded proceed to next method
+                    continue;
+                }
+
+                List<String> roles = matchResponse.getRoles();
+
+                if (roles != null && !roles.isEmpty()) {
+                    if (authService.isAuthorized(appName, roles, callerSubject)) {
+                        return true;
+                    }
+                } else {
+                    // there are no roles and access is not precluded the user has access
+                    return true;
+                }
+            }
+        }
         return false;
     }
 
@@ -132,9 +169,9 @@ public class SecurityContextImpl implements SecurityContext {
     @Override
     public boolean isCallerInRole(String role) {
 
+        Subject callerSubject = getCallerSubject();
         AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
         if (authService != null) {
-            Subject callerSubject = null;
             String appName = getApplicationName();
             List<String> roles = new ArrayList<String>();
             roles.add(role);
@@ -145,23 +182,29 @@ public class SecurityContextImpl implements SecurityContext {
     }
 
     private Subject getCallerSubject() {
-        Subject callerSubject = null;
-        try {
-            callerSubject = WSSubject.getRunAsSubject();
-            if (callerSubject == null) {
-                callerSubject = WSSubject.getCallerSubject();
-            }
-        } catch (WSSecurityException wse) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Exception getting Subject", wse);
-            }
+        SubjectManagerService subjectManagerService = SecurityContextHelper.getSubjectManagerService();
+        if (subjectManagerService != null) {
+            Subject callerSubject = null;
+
+            callerSubject = subjectManagerService.getInvocationSubject();
+            if (callerSubject == null)
+                callerSubject = subjectManagerService.getCallerSubject();
+            return callerSubject;
         }
-        return callerSubject;
+        return null;
     }
 
     private String getApplicationName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return cmd.getJ2EEName().getApplication();
+    }
+
+    private SecurityMetadata getSecurityMetadata() {
+        SecurityMetadata secMetadata = null;
+        ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
+        secMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+        return secMetadata;
     }
 
 }

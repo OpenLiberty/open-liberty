@@ -1006,7 +1006,8 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         ClassLoaderConfiguration clCfg = classLoadingService.createClassLoaderConfiguration()
                         .setId(moduleClassLoaderId)
                         .setParentId(parentId)
-                        .setDelegateToParentAfterCheckingLocalClasspath(isDelegateLast);
+                        .setDelegateToParentAfterCheckingLocalClasspath(isDelegateLast)
+			.setIncludeAppExtensions(true);
 
         clCfg.setProtectionDomain(protectionDomain);
 

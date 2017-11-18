@@ -15,6 +15,7 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.security.authorization.AuthorizationService;
+import com.ibm.ws.security.intfc.SubjectManagerService;
 
 /**
  *
@@ -26,6 +27,7 @@ import com.ibm.ws.security.authorization.AuthorizationService;
 public class SecurityContextHelper {
 
     private static AuthorizationService authorizationService;
+    private static SubjectManagerService smService;
 
     @Reference
     protected void setAuthorizationService(AuthorizationService authorizationService) {
@@ -40,4 +42,16 @@ public class SecurityContextHelper {
         return authorizationService;
     }
 
+    @Reference
+    public void setSubjectManagerService(SubjectManagerService smService) {
+        this.smService = smService;
+    }
+
+    public void unsetSubjectManagerService(SubjectManagerService smService) {
+        this.smService = null;
+    }
+
+    public static SubjectManagerService getSubjectManagerService() {
+        return smService;
+    }
 }

@@ -23,8 +23,7 @@ app-resources= \
   META-INF/services/org.apache.myfaces.config.annotation.LifecycleProvider | \
   META-INF/services/org.apache.myfaces.spi.AnnotationProvider | \
   META-INF/services/org.apache.myfaces.spi.InjectionProvider | \
-  META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider | \
-  META-INF/services/javax.faces.application.ApplicationFactory
+  META-INF/services/org.apache.myfaces.spi.FaceletConfigResourceProvider
 javac.source: 1.8
 javac.target: 1.8
 Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
@@ -78,6 +77,7 @@ Include-Resource: \
   @${repo;org.apache.myfaces.core.impl;2.3.0.SNAPSHOT;EXACT}!/META-INF/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/resources/**, \
   @${repo;com.ibm.websphere.javaee.jsf.2.3}!/META-INF/internal-resources/**, \
+  org/apache/myfaces/resource=resources/org/apache/myfaces/resource, \
   META-INF=@src/META-INF
 
 # Don't export the org.apache.myfaces.buildtools package as that is only needed for compilation.  The jar that contains the 
@@ -86,7 +86,7 @@ Include-Resource: \
 Export-Package: !org.apache.myfaces.buildtools.*, \
 org.apache.myfaces.*;version="1.0.17", \
 com.ibm.ws.jsf.cdi, \
-com.ibm.ws.jsf.config.*;thread-context=true;mandatory:="thread-context", \
+com.ibm.ws.jsf.config.*, \
 com.ibm.ws.jsf.ee, \
 com.ibm.ws.jsf.spi.*, \
 com.ibm.ws.jsf.extprocessor, \
@@ -165,7 +165,7 @@ Import-Package: !com.google.inject, \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.websocket.1.1;version=latest,\
-	com.ibm.websphere.javaee.validation.1.1;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.ws.cdi.interfaces;version=latest,\
 	com.ibm.ws.logging.core,\
 	com.ibm.websphere.appserver.spi.kernel.service,\

@@ -31,11 +31,6 @@ import org.junit.Test;
  */
 public class LdapIdentityStoreDefinitionsWrapperTest {
 
-    /*
-     * TODO Need to fix ignored tests.
-     * TODO Should really have better EL expressions that would represent how a customer would use them.
-     */
-
     @Test
     public void bindDn() {
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(null);
@@ -50,7 +45,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the bindDn setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("bindDn", "'blah'.concat('blah')");
+        overrides.put("bindDn", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -63,7 +58,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(null);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
 
-        assertEquals("password", wrapper.getBindDnPassword());
+        assertEquals("password", String.valueOf(wrapper.getBindDnPassword().getChars()));
     }
 
     @Test
@@ -72,12 +67,12 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the bindDnPassword setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("bindDnPassword", "'blah'.concat('blah')");
+        overrides.put("bindDnPassword", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
 
-        assertEquals("blahblah", wrapper.getBindDnPassword());
+        assertEquals("blahblah", String.valueOf(wrapper.getBindDnPassword().getChars()));
     }
 
     @Test
@@ -94,7 +89,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the callerBaseDn setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("callerBaseDn", "'blah'.concat('blah')");
+        overrides.put("callerBaseDn", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -116,7 +111,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the callerNameAttribute setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("callerNameAttribute", "'blah'.concat('blah')");
+        overrides.put("callerNameAttribute", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -138,7 +133,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the callerSearchBase setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("callerSearchBase", "'blah'.concat('blah')");
+        overrides.put("callerSearchBase", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -160,7 +155,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the callerSearchFilter setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("callerSearchFilter", "'blah'.concat('blah')");
+        overrides.put("callerSearchFilter", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -205,7 +200,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the groupMemberAttribute setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("groupMemberAttribute", "'blah'.concat('blah')");
+        overrides.put("groupMemberAttribute", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -227,7 +222,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the groupMemberOfAttribute setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("groupMemberOfAttribute", "'blah'.concat('blah')");
+        overrides.put("groupMemberOfAttribute", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -249,7 +244,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the groupNameAttribute setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("groupNameAttribute", "'blah'.concat('blah')");
+        overrides.put("groupNameAttribute", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -271,7 +266,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the groupSearchBase setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("groupSearchBase", "'blah'.concat('blah')");
+        overrides.put("groupSearchBase", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -293,7 +288,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the groupSearchFilter setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("groupSearchFilter", "'blah'.concat('blah')");
+        overrides.put("groupSearchFilter", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -338,7 +333,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the maxResults with the maxResultsExpression setting.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("maxResultsExpression", "100/20");
+        overrides.put("maxResultsExpression", "#{100/20}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -360,7 +355,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the priority with the priorityExpression setting.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("priorityExpression", "80/20");
+        overrides.put("priorityExpression", "#{80/20}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -382,7 +377,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the readTimeout with the readTimeoutExpression setting.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("readTimeoutExpression", "100*100");
+        overrides.put("readTimeoutExpression", "#{100*100}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);
@@ -404,7 +399,7 @@ public class LdapIdentityStoreDefinitionsWrapperTest {
          * Override the url setting with an EL expression.
          */
         Map<String, Object> overrides = new HashMap<String, Object>();
-        overrides.put("url", "'blah'.concat('blah')");
+        overrides.put("url", "#{'blah'.concat('blah')}");
 
         LdapIdentityStoreDefinition idStoreDefinition = getInstanceofAnnotation(overrides);
         LdapIdentityStoreDefinitionWrapper wrapper = new LdapIdentityStoreDefinitionWrapper(idStoreDefinition);

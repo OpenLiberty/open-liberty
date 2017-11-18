@@ -138,8 +138,14 @@ public class CSSCompoundSecMechConfig implements Serializable {
     private boolean extractSSLTransportForEachAddress(TSSCompoundSecMechConfig requirement) {
 
         //from the requirement get the addresses
-        TSSSSLTransportConfig transportConfig = (TSSSSLTransportConfig) requirement.getTransport_mech();
-        TransportAddress[] addresses = transportConfig.getTransportAddresses();
+	Object transportConfig = requirement.getTransport_mech();
+	
+	//If SSL is not enabled, return false 
+	if (!(transportConfig instanceof TSSSSLTransportConfig)) {
+	    return false;
+	}
+
+        TransportAddress[] addresses = ((TSSSSLTransportConfig)transportConfig).getTransportAddresses();
         if (addresses.length == 0) {
             return false;
         }

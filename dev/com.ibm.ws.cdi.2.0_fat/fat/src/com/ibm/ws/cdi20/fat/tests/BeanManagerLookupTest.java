@@ -51,8 +51,8 @@ public class BeanManagerLookupTest extends FATServletClient {
                         .addPackages(true, "beanManagerLookupApp.web", "helloworldApp.web")
                         .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
         // Write the WebArchive to 'publish/servers/cdi20BasicServer/apps/beanManagerLookupApp.war' and print the contents
-        ShrinkHelper.exportAppToServer(server1, app1);
-
+        ShrinkHelper.exportDropinAppToServer(server1, app1);
+        server1.addInstalledAppForValidation(APP_NAME);
         server1.startServer();
     }
 

@@ -353,12 +353,12 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
    */
   public String getRequestedSessionId(HttpServletRequest _request)
   {
-    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE))
-    {
-      LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[GET_REQUESTED_SESSION_ID]);
+    SessionAffinityContext sac = getSessionAffinityContext(_request);
+      
+    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+      LoggingUtil.SESSION_LOGGER_CORE.entering(methodClassName, methodNames[GET_REQUESTED_SESSION_ID], sac.isFirstSessionIdValid());
     }
 
-    SessionAffinityContext sac = getSessionAffinityContext(_request);
     String reqSessId = sac.getRequestedSessionID();
 
     // if we have multiple session ids, the "requested" one is either the
@@ -393,11 +393,10 @@ public class HttpSessionContextImpl extends SessionContext implements IHttpSessi
         }
         reqSessId = sac.getFirstRequestedSessionID();
       }
-    } else if (!idIsValid){
-    	// Only session available is the one sent from the client so return that one
-        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE))
-        {
-          LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[GET_REQUESTED_SESSION_ID], "none valid - return first");
+    } else if (!idIsValid && !sac.isFirstSessionIdValid()){
+        // Only session available is the one sent from the client so return that one
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&LoggingUtil.SESSION_LOGGER_CORE.isLoggable(Level.FINE)) {
+          LoggingUtil.SESSION_LOGGER_CORE.logp(Level.FINE, methodClassName, methodNames[GET_REQUESTED_SESSION_ID], "return the only one id sent from client");
         }
         reqSessId = sac.getFirstRequestedSessionID();
     }

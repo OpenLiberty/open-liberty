@@ -24,4 +24,6 @@ public interface MicroProfileJwtConfig {
 
     public boolean ignoreApplicationAuthMethod();
 
+    public boolean getMapToUserRegistry();
+
 }

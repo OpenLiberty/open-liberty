@@ -20,12 +20,16 @@ import static org.junit.Assert.fail;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.EntryNotFoundException;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
@@ -34,6 +38,8 @@ import componenttest.topology.utils.LDAPUtils;
  * This tests a configuration where the realm's only participating base entry is invalid
  * and doesn't match any known repository. The expectation is that no calls will succeed.
  */
+@RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class InvalidBaseEntryInRealmTest {
 
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.core.fat.invalidBaseEntryInRealm");
@@ -73,7 +79,7 @@ public class InvalidBaseEntryInRealmTest {
         Log.info(c, "tearDown", "Stopping the server...");
 
         try {
-            server.stopServer();
+            server.stopServer("CWIML0515E");
         } finally {
             server.removeInstalledAppForValidation("userRegistry");
             server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");

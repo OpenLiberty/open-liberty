@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -82,6 +84,11 @@ public class LdapConfigManager {
      * Constant for Base DN
      */
     static final String BASE_DN = "baseDN";
+
+    /**
+     * Pattern to determine if the attribute is in the format of "&lt;attribute name&gt;:&lt;matching rule OID&gt;:=&lt;value&gt;".
+     */
+    private static final Pattern PATTERN_EXTENSIBLE_MATCH_FILTER = Pattern.compile("(.+):(.+):(.*)");
 
     /**
      * A array of <code>MessageFormat</code> objects that are used to build LDAP search filter.
@@ -397,6 +404,13 @@ public class LdapConfigManager {
     private boolean isRacf = false;
 
     private String timestampFormat;
+
+    /**
+     * Flag to determine whether to use membership (memberOf) attribute or member attribute.
+     * True means membership was not set, so the default is used. False means the user set the membership attribute.
+     * If both member and membership attributes are set in groupProperties, member will take precedence.          
+     */    
+    private boolean iDefaultMembershipAttr = true;
 
     /**
      * Refreshes the caches using the given configuration data object.
@@ -839,8 +853,10 @@ public class LdapConfigManager {
                 // Check if iGroupMemberIdMap have ibm-allGroups , if true then do the nested search for group members
                 iLdapOperationalAttr = (iGroupMemberIdMap.contains(IBM_ALL_GROUPS));
 
-                // Clear the membership attribute
-                iMembershipAttrName = null;
+                // Clear the membership attribute if we were using the default. Otherwise keep it, as it was explicitly set
+                if (iDefaultMembershipAttr) {
+                    iMembershipAttrName = null;
+                }
                 LdapEntity ldapEntity = null;
                 List<String> grpTypes = getGroupTypes();
                 List<String> objectClasses = new ArrayList<String>();
@@ -1402,6 +1418,7 @@ public class LdapConfigManager {
                 iMembershipAttrScope = LdapConstants.LDAP_DIRECT_GROUP_MEMBERSHIP;
             }
         } else {
+            iDefaultMembershipAttr = false;
             Map<String, Object> mbrshipAttr = membershipPropList.get(0);
             String name = (String) mbrshipAttr.get(ConfigConstants.CONFIG_PROP_NAME);
             if (name.trim().length() == 0) {
@@ -2681,19 +2698,36 @@ public class LdapConfigManager {
     }
 
     public String getAttributeName(LdapEntity ldapEntity, String propName) {
-        String attrName = ldapEntity.getAttribute(propName);
-        if (attrName == null) {
-            attrName = iPropToAttrMap.get(propName);
-        }
-        if (attrName == null) {
-            int pos = propName.indexOf(":");
-            if (pos > -1 && !(propName.contains("userAccountControl"))) {
-                return propName.substring(pos + 1);
-            } else {
-                return propName;
+
+        /*
+         * Check for extensible matching. For now we won't try to map the attribute
+         * in the extensible matching filter, but in the future it may be necessary.
+         */
+        Matcher matcher = PATTERN_EXTENSIBLE_MATCH_FILTER.matcher(propName);
+        if (matcher.matches()) {
+            String attrName = matcher.find(0) ? matcher.group(1) : null;
+            String oid = matcher.find(1) ? matcher.group(2) : null;
+            String value = matcher.find(2) ? matcher.group(3) : null;
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Attribute name: " + attrName + ", OID: " + oid + ", Value:" + value);
             }
+            return propName;
         } else {
-            return attrName;
+
+            String attrName = ldapEntity.getAttribute(propName);
+            if (attrName == null) {
+                attrName = iPropToAttrMap.get(propName);
+            }
+            if (attrName == null) {
+                int pos = propName.indexOf(":");
+                if (pos > -1) {
+                    return propName.substring(pos + 1);
+                } else {
+                    return propName;
+                }
+            } else {
+                return attrName;
+            }
         }
     }
 

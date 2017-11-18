@@ -24,6 +24,7 @@ import javax.naming.ldap.LdapName;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.registry.EntryNotFoundException;
@@ -32,10 +33,15 @@ import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.annotation.AllowedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.topology.utils.LDAPUtils;
 
+@RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class DefaultWIMRealmTest {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.registry.fat.DefaultWIMRealm");
     private static final Class<?> c = DefaultWIMRealmTest.class;
@@ -75,8 +81,11 @@ public class DefaultWIMRealmTest {
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        server.stopServer();
-        server.deleteFileFromLibertyInstallRoot("lib/features/testfileadapter-1.0.mf");
+        try {
+            server.stopServer("CWIML4537E");
+        } finally {
+            server.deleteFileFromLibertyInstallRoot("lib/features/testfileadapter-1.0.mf");
+        }
     }
 
     /**

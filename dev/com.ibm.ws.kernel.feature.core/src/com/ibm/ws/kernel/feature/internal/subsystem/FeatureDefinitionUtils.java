@@ -79,7 +79,7 @@ public class FeatureDefinitionUtils {
 
     static final List<String> LOCALIZABLE_HEADERS = Collections.unmodifiableList(Arrays.asList(new String[] { "Subsystem-Name", "Subsystem-Description" }));
 
-    public final static Collection<String> ALLOWED_ON_CLIENT_ONLY_FEATURES = Arrays.asList("com.ibm.websphere.appserver.javaeeClient-7.0",
+    public final static Collection<String> ALLOWED_ON_CLIENT_ONLY_FEATURES = Arrays.asList("com.ibm.websphere.appserver.javaeeClient-7.0", "com.ibm.websphere.appserver.javaeeClient-8.0",
                                                                                            "com.ibm.websphere.appserver.appSecurityClient-1.0");
 
     public static final String NL = "\r\n";

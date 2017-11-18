@@ -24,6 +24,10 @@ IBM-Web-Extension-Processing-Disabled: true
 
 Web-ContextPath: /metrics
 
+Import-Package: \
+	javax.enterprise.inject; version="[1.1,3)",\
+	*
+
 Private-Package: \
     com.ibm.ws.microprofile.metrics.resources,\
     com.ibm.ws.microprofile.metrics.exceptions,\
@@ -37,6 +41,8 @@ Export-Package: \
 Include-Resource: \
     WEB-INF=resources/WEB-INF
     
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+
 -dsannotations-inherit: true
 -dsannotations: com.ibm.ws.microprofile.metrics.MetricsHandler,\
 	com.ibm.ws.microprofile.metrics.ApplicationListener
@@ -63,8 +69,5 @@ WS-TraceGroup: METRICS
 	com.ibm.websphere.javaee.annotation.1.2;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.websphere.javaee.interceptor.1.2;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.2;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest 
-
-Import-Package: *
  

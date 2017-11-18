@@ -34,10 +34,13 @@ import com.ibm.ws.security.registry.SearchResult;
 import com.ibm.ws.security.registry.test.UserRegistryServletConnection;
 
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
 @RunWith(FATRunner.class)
+@Mode(TestMode.LITE)
 public class BasicTests {
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.wim.adapter.file.fat.allURAPIs");
     private static final Class<?> c = BasicTests.class;
@@ -78,9 +81,12 @@ public class BasicTests {
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        server.stopServer();
-        server.deleteFileFromLibertyInstallRoot("lib/features/testfileadapter-1.0.mf");
-        server.deleteFileFromLibertyInstallRoot("lib/com.ibm.ws.security.wim.adapter.file_1.0.jar");
+        try {
+            server.stopServer("CWIML4537E");
+        } finally {
+            server.deleteFileFromLibertyInstallRoot("lib/features/testfileadapter-1.0.mf");
+            server.deleteFileFromLibertyInstallRoot("lib/com.ibm.ws.security.wim.adapter.file_1.0.jar");
+        }
     }
 
     //TODO : Test checkPassword() with invalid password, when actual FILE adapter is added

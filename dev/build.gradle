@@ -28,8 +28,10 @@ buildscript {
 /* Initialize the bnd workspace */
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
-ext.bndWorkspace = new Workspace(rootDir, bnd_cnf).setOffline(gradle.startParameter.offline)
-ext.cnf = rootProject.project(bnd_cnf)
+ext {
+  bndWorkspace = new Workspace(rootDir, bnd_cnf).setOffline(gradle.startParameter.offline)
+  cnf = rootProject.project(bnd_cnf)
+}
 
 /* Configure the subprojects */
 subprojects {

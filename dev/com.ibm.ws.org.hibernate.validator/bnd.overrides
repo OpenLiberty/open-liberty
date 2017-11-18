@@ -1,0 +1,116 @@
+-include= ~../cnf/resources/bnd/rejar.props, \
+          ~../cnf/resources/bnd/app-resources.bnd
+bVersion=1.0
+bSymbolicName=com.ibm.ws.org.hibernate.validator.6.0.4.Final
+
+Bundle-Name: Hibernate Validator Engine
+Bundle-SymbolicName: com.ibm.ws.org.hibernate.validator.6.0.4.Final
+Bundle-Description: Hibernate's Bean Validation (JSR-380) reference implementation; version=6.0.4.Final
+
+# Provide these as resources to applications
+app-resources= \
+  META-INF/services/javax.validation.spi.ValidationProvider | \
+  META-INF/validation-mapping-1.0.xsd | \
+  META-INF/validation-configuration-1.0.xsd | \
+  META-INF/validation-mapping-1.1.xsd | \
+  META-INF/validation-configuration-1.1.xsd | \
+  META-INF/validation-mapping-2.0.xsd | \
+  META-INF/validation-configuration-2.0.xsd
+
+Private-Package: \
+  org.hibernate.validator.internal.*
+
+Export-Package: \
+  org.hibernate.validator;version="6.0.4.Final";uses:="javax.validation,javax.validation.spi,javax.validation.valueextraction,org.hibernate.validator.cfg,org.hibernate.validator.spi.resourceloading,org.hibernate.validator.spi.scripting";thread-context=true, \
+  org.hibernate.validator.cfg;version="6.0.4.Final";uses:="javax.validation,org.hibernate.validator.cfg.context";thread-context=true, \
+  org.hibernate.validator.cfg.context;version="6.0.4.Final";uses:="javax.validation,org.hibernate.validator.cfg,org.hibernate.validator.spi.group";thread-context=true, \
+  org.hibernate.validator.cfg.defs;version="6.0.4.Final";uses:="javax.validation.constraints,org.hibernate.validator.cfg,org.hibernate.validator.constraints,org.hibernate.validator.constraints.time";thread-context=true, \
+  org.hibernate.validator.cfg.defs.br;version="6.0.4.Final";uses:="org.hibernate.validator.cfg,org.hibernate.validator.constraints.br";thread-context=true, \
+  org.hibernate.validator.cfg.defs.pl;version="6.0.4.Final";uses:="org.hibernate.validator.cfg,org.hibernate.validator.constraints.pl";thread-context=true, \
+  org.hibernate.validator.constraints;version="6.0.4.Final";uses:="javax.validation,javax.validation.constraints,javax.validation.constraintvalidation";thread-context=true, \
+  org.hibernate.validator.constraints.br;version="6.0.4.Final";uses:="javax.validation,javax.validation.constraints,javax.validation.constraintvalidation,org.hibernate.validator.constraints";thread-context=true, \
+  org.hibernate.validator.constraints.pl;version="6.0.4.Final";uses:="javax.validation";thread-context=true, \
+  org.hibernate.validator.constraints.time;version="6.0.4.Final";uses:="javax.validation";thread-context=true, \
+  org.hibernate.validator.constraintvalidation;version="6.0.4.Final";uses:="javax.validation, org.hibernate.validator.spi.scripting";thread-context=true, \
+  org.hibernate.validator.constraintvalidators;version="6.0.4.Final";uses:="javax.validation, org.hibernate.validator.constraints";thread-context=true, \
+  org.hibernate.validator.engine;version="6.0.4.Final";uses:="javax.validation";thread-context=true, \
+  org.hibernate.validator.group;version="6.0.4.Final";uses:="org.hibernate.validator.spi.group";thread-context=true, \
+  org.hibernate.validator.messageinterpolation;version="6.0.4.Final";uses:="javax.el,javax.validation,org.hibernate.validator.spi.resourceloading";thread-context=true, \
+  org.hibernate.validator.parameternameprovider;version="6.0.4.Final";uses:="com.thoughtworks.paranamer,javax.validation";thread-context=true, \
+  org.hibernate.validator.path;version="6.0.4.Final";uses:="javax.validation";thread-context=true, \
+  org.hibernate.validator.resourceloading;version="6.0.4.Final";uses:="org.hibernate.validator.spi.resourceloading";thread-context=true, \
+  org.hibernate.validator.spi.cfg;version="6.0.4.Final";uses:="org.hibernate.validator.cfg";thread-context=true, \
+  org.hibernate.validator.spi.group;version="6.0.4.Final";thread-context=true, \
+  org.hibernate.validator.spi.resourceloading;version="6.0.4.Final";thread-context=true, \
+  org.hibernate.validator.spi.scripting;version="6.0.4.Final";uses:="javax.script,javax.validation";thread-context=true,\
+  org.hibernate.validator.internal.util.classhierarchy;version="6.0.4.Final",\
+  org.hibernate.validator.internal.util.privilegedactions;version="6.0.4.Final",\
+  org.hibernate.validator.internal.engine;version="6.0.4.Final",\
+  org.hibernate.validator.internal.engine.valueextraction;version="6.0.4.Final",\
+  org.hibernate.validator.internal.util;version="6.0.4.Final",\
+  org.hibernate.validator.internal.util.logging;version="6.0.4.Final"
+
+Import-Package: \
+  !javax.persistence, \
+  javax.validation;version="[2.0.0,3.0.0)", \
+  javax.validation.constraints;version="[2.0.0,3.0.0)", \
+  javax.validation.constraintvalidation;version="[2.0.0,3.0.0)", \
+  javax.validation.executable;version="[2.0.0,3.0.0)", \
+  javax.validation.groups;version="[2.0.0,3.0.0)", \
+  javax.validation.metadata;version="[2.0.0,3.0.0)", \
+  javax.validation.spi;version="[2.0.0,3.0.0)", \
+  javax.validation.valueextraction;version="[2.0.0,3.0.0)", \
+  javax.script;version=0, \
+  !javax.xml.bind.*, \
+  javax.xml.namespace;version=0, \
+  javax.xml.stream;version=0, \
+  javax.xml.stream.events;version=0, \
+  javax.xml.stream.util;version=0, \
+  javax.xml.transform;version=0, \
+  javax.xml.transform.stream;version=0, \
+  javax.xml.validation;version=0, \
+  javax.el;version="[2.0.0,4.0.0)";resolution:=optional, \
+  org.xml.sax;version=0, \
+  org.jboss.logging;version="[3.1.0,4.0.0)", \
+  com.fasterxml.classmate;version="[1.3.1,2.0.0)", \
+  com.fasterxml.classmate.members;version="[1.3.1,2.0.0)", \
+  org.joda.time;version="[2.0.0,3.0.0)";resolution:=optional, \
+  org.jsoup;version="[1.5.2,2.0.0)";resolution:=optional, \
+  org.jsoup.nodes;version="[1.5.2,2.0.0)";resolution:=optional, \
+  org.jsoup.parser;version="[1.5.2,2.0.0)";resolution:=optional, \
+  org.jsoup.safety;version="[1.5.2,2.0.0)";resolution:=optional, \
+  org.jsoup.select;version="[1.5.2,2.0.0)";resolution:=optional, \
+  javax.money;version="[1.0.0,2.0.0)";resolution:=optional, \
+  com.thoughtworks.paranamer;version="[2.5.5,3.0.0)";resolution:=optional, \
+  com.ibm.wsspi.classloading,\
+  org.apache.el
+
+# Use dynamicImport-Package for JAXB APIs, with this, Equonix will have a chance to wire
+# those packages to the JAXB-2.2 API if the target bundle is started, or the one from system
+# bundle will be always used due to JAXB 2.2 API is not resolved. Similarly, do the same
+# with persistence because the open source optionally uses jpa if it is there for a customized
+# TraversableRevolver implementation.
+DynamicImport-Package: \
+ javax.persistence, \
+ javax.xml.bind, \
+ javax.xml.bind.annotation, \
+ javax.xml.bind.annotation.adapters, \
+ javax.xml.bind.attachment, \
+ javax.xml.bind.helpers, \
+ javax.xml.bind.util
+ 
+Include-Resource: \
+  @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/*.xsd, \
+  META-INF/services=resources/META-INF/services
+  
+Service-Component:\
+  org.hibernate.validator.HibernateValidator;\
+    implementation:=org.hibernate.validator.HibernateValidator;\
+    provide:=javax.validation.spi.ValidationProvider;\
+    configuration-policy:=ignore;\
+    properties:='implementation.class=org.hibernate.validator.HibernateValidator',\
+  com.ibm.ws.org.hibernate.validator.ResourceProvider; \
+    implementation:=com.ibm.wsspi.classloading.ResourceProvider; \
+    provide:=com.ibm.wsspi.classloading.ResourceProvider; \
+    configuration-policy:=ignore; \
+    properties:="resources=${app-resources}"

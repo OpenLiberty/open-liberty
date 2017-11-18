@@ -11,7 +11,6 @@
 package com.ibm.ws.kernel.boot.internal;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.CountDownLatch;
@@ -66,18 +65,14 @@ public class FrameworkManagerTest {
             }
         });
 
-        Field f = Utils.class.getDeclaredField("installDir");
-        f.setAccessible(true);
-        installDirBefore = (File) f.get(null);
+        installDirBefore = Utils.getInstallDir();
         String testClassesDir = System.getProperty("test.classesDir", "bin_test");
-        f.set(null, new File(testClassesDir, "test data"));
+        Utils.setInstallDir(new File(testClassesDir, "test data"));
     }
 
     @After
     public void after() throws Exception {
-        Field f = Utils.class.getDeclaredField("installDir");
-        f.setAccessible(true);
-        f.set(null, installDirBefore);
+        Utils.setInstallDir(installDirBefore);
 
         // Previous these tests were using @RunWith(JMock) to check expectations. I switched to asserting
         // expectations here because the TimeoutRule will not be called when using @RunWith(JMock)

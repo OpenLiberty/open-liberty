@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 1.8
+javac.target: 1.8
+
 Bundle-SymbolicName: com.ibm.websphere.javaee.jsonp.1.1
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
@@ -26,12 +29,11 @@ Export-Package: \
    javax.json.stream;version=1.1
    
 Include-Resource: \
-  @${repo;javax.json:javax.json-api;1.1}!/!module-info.class
+  @${repo;javax.json:javax.json-api;1.1.2}!/!module-info.class
 
 instrument.disabled: true
 
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-	${javac.bootclasspath.java6}, \
-	 javax.json:javax.json-api;version=1.1
+	 javax.json:javax.json-api;version=1.1.2

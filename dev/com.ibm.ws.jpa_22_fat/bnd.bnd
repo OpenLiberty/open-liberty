@@ -16,12 +16,11 @@ javac.source: 1.8
 
 src: \
 	fat/src,\
-	test-applications/cdi/src,\
-	test-applications/jpa21bootstrap/src,\
-	test-applications/jpa22bootstrap/src,\
-	test-applications/jpa22injection/src,\
-	test-applications/jpa22query/src,\
-	test-applications/jpa22timeapi
+	test-applications/jpabootstrap/src,\
+	test-applications/jpa22/cdi/src,\
+	test-applications/jpa22/jpa22injection/src,\
+	test-applications/jpa22/jpa22query/src,\
+	test-applications/jpa22/jpa22timeapi
 
 test.project: true
 

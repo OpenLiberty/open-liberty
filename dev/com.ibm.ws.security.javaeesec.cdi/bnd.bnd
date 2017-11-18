@@ -11,6 +11,9 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 1.8
+javac.target: 1.8
+
 Bundle-Name: com.ibm.ws.security.javaeesec.cdi
 Bundle-Description: WAS Java EE Security 1.0 CDI, version=${bVersion}
 Bundle-SymbolicName: com.ibm.ws.security.javaeesec.cdi
@@ -22,7 +25,8 @@ WS-TraceGroup: \
 
 Export-Package: \
     com.ibm.ws.security.javaeesec.cdi.extensions, \
-    com.ibm.ws.security.javaeesec.cdi.beans
+    com.ibm.ws.security.javaeesec.cdi.beans, \
+    com.ibm.ws.security.javaeesec.cdi.beans.hash
 
 Import-Package: com.ibm.ws.common.internal.encoder, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
  
@@ -47,13 +51,16 @@ Include-Resource: \
     com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
     com.ibm.websphere.javaee.security.1.0;version=latest,\
     com.ibm.websphere.security;version=latest,\
-    com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+    com.ibm.websphere.javaee.servlet.4.0;version=latest,\
     com.ibm.websphere.org.osgi.core,\
     com.ibm.websphere.org.osgi.service.component,\
     com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.adaptable.module;version=latest,\
     com.ibm.ws.cdi.interfaces;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
     com.ibm.ws.common.encoder;version=latest,\
     com.ibm.ws.container.service.compat;version=latest,\
+    com.ibm.ws.kernel.service;version=latest, \
     com.ibm.ws.logging;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.ws.security.authentication;version=latest,\
@@ -66,7 +73,7 @@ Include-Resource: \
     com.ibm.ws.security.token;version=latest,\
     com.ibm.ws.webcontainer;version=latest, \
     com.ibm.ws.org.osgi.annotation.versioning;version=latest, \
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
+    com.ibm.websphere.javaee.cdi.2.0;version=latest,\
     com.ibm.ws.transport.http;version=latest
 
 -testpath: \
@@ -80,7 +87,6 @@ Include-Resource: \
     cglib:cglib-nodep;version=2.1.0.3, \
     com.ibm.ws.cdi.interfaces;version=latest,\
     com.ibm.websphere.javaee.annotation.1.2;version=latest,\
-    com.ibm.websphere.javaee.cdi.1.2;version=latest,\
     com.ibm.websphere.javaee.el.3.0;version=latest,\
     com.ibm.ws.security.javaeesec.1.0;version=latest,\
     com.ibm.ws.kernel.boot;version=latest, \

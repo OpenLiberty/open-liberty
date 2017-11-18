@@ -16,7 +16,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                AsyncEventsTest.class,
                 BeanManagerLookupTest.class,
+                BuiltinAnnoLiteralsTest.class,
+                CDIContainerConfigTest.class,
+                ConfiguratorTest.class,
+                InterceptionFactoryTest.class
 })
 public class FATSuite {
 

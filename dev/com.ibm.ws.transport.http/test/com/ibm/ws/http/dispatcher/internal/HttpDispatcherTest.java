@@ -5,8 +5,8 @@
  *
  * WLP Copyright IBM Corp. 2014, 2017
  *
- * The source code for this program is not published or otherwise divested 
- * of its trade secrets, irrespective of what has been deposited with the 
+ * The source code for this program is not published or otherwise divested
+ * of its trade secrets, irrespective of what has been deposited with the
  * U.S. Copyright Office.
  */
 package com.ibm.ws.http.dispatcher.internal;
@@ -15,8 +15,6 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
-
-import junit.framework.Assert;
 
 import org.jmock.Expectations;
 import org.jmock.Mockery;
@@ -31,12 +29,14 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.osgi.framework.ServiceReference;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.http.VirtualHostListener;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
+
+import junit.framework.Assert;
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -71,11 +71,11 @@ public class HttpDispatcherTest {
     }
 
     private static void clearDispatcher() throws Exception {
-        ((AtomicReference<HttpDispatcher>) dispatcherInstance.get(null)).set(null);
+        ((StaticValue<AtomicReference<HttpDispatcher>>) dispatcherInstance.get(null)).get().set(null);
     }
 
     private static HttpDispatcher getDispatcher() throws Exception {
-        return ((AtomicReference<HttpDispatcher>) dispatcherInstance.get(null)).get();
+        return ((StaticValue<AtomicReference<HttpDispatcher>>) dispatcherInstance.get(null)).get().get();
     }
 
     @Rule
@@ -86,7 +86,7 @@ public class HttpDispatcherTest {
 
     @Before
     public void setUp() throws Exception {
-        // make sure the default instance is clear before we start anything.. 
+        // make sure the default instance is clear before we start anything..
         clearDispatcher();
     }
 
@@ -152,7 +152,7 @@ public class HttpDispatcherTest {
         // the static instance value should be set to the newly activated dispatcher instance.
         Assert.assertNull("Dispatcher d1 should be removed as active instance", getDispatcher());
 
-        // Now that there is no instance, there should be some default behavior for shutdown: 
+        // Now that there is no instance, there should be some default behavior for shutdown:
         Assert.assertNull("No default missing-context message", HttpDispatcher.getContextRootNotFoundMessage());
         Assert.assertFalse("Do not show welcome page when there is no dispatcher", HttpDispatcher.isWelcomePageEnabled());
         Assert.assertTrue("Trust private headers by default", HttpDispatcher.usePrivateHeaders("a.b.c"));
@@ -174,7 +174,7 @@ public class HttpDispatcherTest {
         Assert.assertFalse("Private headers should be disabled for a.b.c", HttpDispatcher.usePrivateHeaders("a.b.c"));
         Assert.assertTrue("Private headers should be enabled for d.e.f", HttpDispatcher.usePrivateHeaders("d.e.f"));
 
-        // Set webcontainer ref w/ setting to disable headers.. 
+        // Set webcontainer ref w/ setting to disable headers..
         // since there is a value for trusted header origin, this should be ignored
         context.checking(new Expectations() {
             {
@@ -191,7 +191,7 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // Set the trustedHeaderOrigin back to the default, which should then use the 
+        // Set the trustedHeaderOrigin back to the default, which should then use the
         // blanket-off setting from the webcontainer.
         context.checking(new Expectations() {
             {
@@ -293,7 +293,7 @@ public class HttpDispatcherTest {
             context.assertIsSatisfied();
         }
 
-        // Registered dispatcher, trust header from matching source 
+        // Registered dispatcher, trust header from matching source
         d.modified(buildMap(true, null, new String[] { "1.2.3.4" }));
 
         // reset the cached value of use private headers for the connection

@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.jwt.JwtToken;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.common.crypto.HashUtils;
 import com.ibm.ws.security.mp.jwt.MicroProfileJwtConfig;
 import com.ibm.ws.security.mp.jwt.TraceConstants;
 import com.ibm.ws.security.mp.jwt.error.MpJwtProcessingException;
@@ -51,7 +52,7 @@ public class TAIMappingHelper {
         decodedTokenPayload = decodedPayload;
         config = clientConfig;
         if (decodedTokenPayload != null) {
-            claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, config.getUserNameAttribute(), config.getGroupNameAttribute(), false);
+            claimToPrincipalMapping = new JwtPrincipalMapping(decodedTokenPayload, config.getUserNameAttribute(), config.getGroupNameAttribute(), config.getMapToUserRegistry());
             setUsername();
         }
         if (tc.isDebugEnabled()) {
@@ -66,9 +67,7 @@ public class TAIMappingHelper {
         }
         jwtPrincipal = createJwtPrincipal(jwtToken);
         String issuer = getIssuer(jwtPrincipal);
-        if (issuer != null) {
-            customProperties = populateCustomProperties(issuer);
-        }
+        customProperties = populateCustomProperties(issuer, config.getMapToUserRegistry());
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName);
         }
@@ -83,7 +82,7 @@ public class TAIMappingHelper {
         //        if (jwt != null) {
         //            subject.getPrivateCredentials().add(jwt);
         //        }
-        customProperties.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, username);
+
         customProperties.put(AuthenticationConstants.INTERNAL_JSON_WEB_TOKEN, jwtPrincipal);
 
         subject.getPrivateCredentials().add(jwtPrincipal);
@@ -155,28 +154,49 @@ public class TAIMappingHelper {
         return jwtPrincipal.getIssuer();
     }
 
-    Hashtable<String, Object> populateCustomProperties(String issuer) {
+    Hashtable<String, Object> populateCustomProperties(String issuer, boolean mapToUR) {
         String methodName = "populateCustomProperties";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, issuer);
         }
         Hashtable<String, Object> customProperties = new Hashtable<String, Object>();
 
-        String realm = getRealm(issuer);
-        String uniqueID = getUniqueId(realm);
-        List<String> groupswithrealm = getGroupsWithRealm(realm);
+        if (mapToUR) {
+            customProperties.put(AuthenticationConstants.INTERNAL_ASSERTION_KEY, Boolean.TRUE);
+            customProperties.put(AttributeNameConstants.WSCREDENTIAL_USERID, username);
+        } else if (issuer != null) {
+            String realm = getRealm(issuer);
+            String uniqueID = getUniqueId(realm);
+            List<String> groupswithrealm = getGroupsWithRealm(realm);
 
-        customProperties.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueID);
-        if (realm != null && !realm.isEmpty()) {
-            customProperties.put(AttributeNameConstants.WSCREDENTIAL_REALM, realm);
+            customProperties.put(AttributeNameConstants.WSCREDENTIAL_UNIQUEID, uniqueID);
+            if (realm != null && !realm.isEmpty()) {
+                customProperties.put(AttributeNameConstants.WSCREDENTIAL_REALM, realm);
+            }
+            if (!groupswithrealm.isEmpty()) {
+                customProperties.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groupswithrealm);
+            }
+            customProperties.put(AttributeNameConstants.WSCREDENTIAL_SECURITYNAME, username);
+
         }
-        if (!groupswithrealm.isEmpty()) {
-            customProperties.put(AttributeNameConstants.WSCREDENTIAL_GROUPS, groupswithrealm);
-        }
+        addCustomCacheKey(customProperties);
+
         if (tc.isDebugEnabled()) {
             Tr.exit(tc, methodName, customProperties);
         }
+
         return customProperties;
+    }
+
+    /**
+     * @param customProperties
+     */
+    private void addCustomCacheKey(Hashtable<String, Object> customProperties) {
+
+        if (jwtPrincipal != null) {
+            String customCacheKey = HashUtils.digest(jwtPrincipal.toString());
+            customProperties.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
+        }
     }
 
     String getRealm(String issuer) {

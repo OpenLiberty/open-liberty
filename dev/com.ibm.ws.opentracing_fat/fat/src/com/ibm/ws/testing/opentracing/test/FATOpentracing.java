@@ -75,6 +75,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 @Mode(TestMode.FULL)
 public class FATOpentracing implements FATOpentracingConstants {
+    private static final String FEATURE_NAME = "com.ibm.ws.opentracing.mock-0.30.mf";
+    private static final String BUNDLE_NAME = "com.ibm.ws.opentracing.mock.jar";
     // Logging ...
 
     private static final Class<? extends FATOpentracing> CLASS = FATOpentracing.class;
@@ -93,8 +95,10 @@ public class FATOpentracing implements FATOpentracingConstants {
 
     private static LibertyServer server;
 
-    private static void setUpServer() {
+    private static void setUpServer() throws Exception {
         server = LibertyServerFactory.getLibertyServer(OPENTRACING_FAT_SERVER1_NAME);
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/features/", "features/" + FEATURE_NAME);
+        server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/" + BUNDLE_NAME);
     }
 
     private static LibertyServer getServer() {
@@ -169,6 +173,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
     public static final String[] GET_MANUAL_CONDITION = new String[] { GET_MANUAL_PATH };
     public static final String[] MANUAL_CONDITION = new String[] { "manualSpan" };
+    public static final String[] GET_EXCLUDE_TEST_CONDITION = new String[] { GET_EXCLUDE_TEST_PATH };
 
     /**
      * <p>Answer the condition for a delayed get.</p>
@@ -305,6 +310,12 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         return null;
     }
+    
+    public void verifyContiguousSpans(
+                                      List<FATUtilsSpans.CompletedSpan> completedSpans,
+                                      int expectedSpanCount) {
+        verifyContiguousSpans(completedSpans, expectedSpanCount, 1);
+    }
 
     /**
      * <p>Verify that a contiguous collection of spans is present as the tail
@@ -326,7 +337,7 @@ public class FATOpentracing implements FATOpentracingConstants {
      */
     public void verifyContiguousSpans(
         List<FATUtilsSpans.CompletedSpan> completedSpans,
-        int expectedSpanCount) {
+        int expectedSpanCount, int expectedRootSpanCount) {
 
         String methodName = "verifyContiguousSpans";
 
@@ -374,7 +385,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
         // *** Exactly one root span must be present. ***
 
-        assertEq("Root spans", Integer.valueOf(1), Integer.valueOf(rootCount));
+        assertEq("Root spans", Integer.valueOf(expectedRootSpanCount), Integer.valueOf(rootCount));
     }
 
     public static final boolean IS_CONTAINER = true;
@@ -512,7 +523,7 @@ public class FATOpentracing implements FATOpentracingConstants {
 
     /**
      * <p>Retrieve the completed span state by making a service call to the
-     * opening tracing FAT service.</p>
+     * open tracing FAT service.</p>
      *
      * @param priorRequestPath The immediately preceding request made to the
      *     open tracing FAT service.  Used for to match this request within
@@ -1496,5 +1507,173 @@ public class FATOpentracing implements FATOpentracingConstants {
             useServer.getHostname(),
             useServer.getHttpDefaultPort(),
             requestPath );
+    }
+
+    @Test
+    public void testExcludes() throws Exception {
+        testExcludedPath("simple");
+        testExcludedPath("wildcardTest");
+        testExcludedPath("absoluteUri");
+        testExcludedPath("regexTest123");
+        testIncludedPath("wildcardInclude");
+        testNestedExcludePath("nestedSuccess", 1, false);
+        testNestedExcludePath("nestedExcludeTest1", 1, true);
+        testExcludedPath("incomingExcluded");
+        testIncludedPath("incomingIncluded");
+    }
+
+    /**
+     * @throws Exception
+     * @throws UnsupportedEncodingException
+     */
+    private void testExcludedPath(String param) throws Exception, UnsupportedEncodingException {
+        int initialCompletedSpansSize = getCompletedSpans(GET_EXCLUDE_TEST_PATH).size();
+
+        sendRequest(GET_EXCLUDE_TEST_PATH, param);
+        
+        int newCompletedSpansCount = getCompletedSpans(GET_EXCLUDE_TEST_PATH).size();
+        
+        // Subtract one because getCompletedSpans itself creates another span for /serviceApp/rest/testService/getTracerState
+        assertEq("Completed Spans Count", initialCompletedSpansSize, newCompletedSpansCount - 1);
+    }
+
+    private void testIncludedPath(String param) throws Exception, UnsupportedEncodingException {
+        sendRequest(GET_EXCLUDE_TEST_PATH, param);
+        
+        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_EXCLUDE_TEST_PATH);
+
+        int tailSize = 1;
+
+        // *** The included request is expected to generate exactly one completed span. ***
+
+        verifyContiguousSpans(completedSpans, tailSize);
+
+        // *** The single completed span must be a root span, and must be for the get. ***
+
+        ParentCondition getExcludeTestCondition = new ParentCondition(
+                FATUtilsSpans.SpanKind.SERVER, null,
+                FATUtilsSpans.SpanKind.SERVER, GET_EXCLUDE_TEST_CONDITION);
+        verifyParents(completedSpans, tailSize, getExcludeTestCondition);
+        
+        completedSpans = getCompletedSpans(GET_IMMEDIATE_PATH);
+        
+        verifyTracerStateEvent(completedSpans);
+
+        verifyContiguousSpans(completedSpans, 1);
+    }
+
+    /**
+     * @throws UnsupportedEncodingException
+     * @throws Exception
+     */
+    private void sendRequest(String path, String responseText) throws UnsupportedEncodingException, Exception {
+        String methodName = "sendRequest";
+        Map<String, Object> requestParms = new HashMap<String, Object>();
+        requestParms.put(RESPONSE_PARAM_NAME, responseText);
+
+        String requestUrl = getRequestUrl(path, requestParms);
+
+        info(methodName, "Request URL", requestUrl);
+        info(methodName, "Expected Response", responseText);
+
+        List<String> actualResponseLines =
+            FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
+        // throws Exception
+        info(methodName, "Actual Response", actualResponseLines);
+
+        // *** The excludeBoth request is expected to have exactly one line of text. ***
+
+        assertEq("Line count",
+                 Integer.valueOf(1), Integer.valueOf(actualResponseLines.size()));
+
+        // *** And is expected to have the response text as specified through the request parameter. ***
+
+        assertEq("Reponse text",
+                 responseText, actualResponseLines.get(0));
+    }
+    
+    private void testNestedExcludePath(String param, int nestDepth, boolean excludingDelay4) throws Exception {
+        String methodName = "testNestedExcludePath";
+
+        String responseText = param + " nested [ " + Integer.toString(nestDepth) + " ]";
+
+        Map<String, Object> requestParms = getNestedParms(nestDepth, false, responseText);
+
+        String requestUrl = getRequestUrl(GET_NESTED_PATH, requestParms);
+
+        info(methodName, "Request URL", requestUrl);
+        info(methodName, "Expected Response", responseText);
+
+        List<String> actualResponseLines =
+            FATUtilsServer.gatherHttpRequest(FATUtilsServer.HttpRequestMethod.GET, requestUrl);
+        info(methodName, "Actual Response", actualResponseLines);
+
+        List<FATUtilsSpans.CompletedSpan> completedSpans = getCompletedSpans(GET_NESTED_PATH);
+
+        int tailSize = excludingDelay4 ? 5 : 7;
+
+        verifyContiguousSpans(completedSpans, tailSize);
+
+        // *** A root span for the initial get nested request. ***
+
+        String[] getNested1Text = getNestedCondition(1);
+        ParentCondition getNested1Condition = new ParentCondition(
+                FATUtilsSpans.SpanKind.SERVER, null,
+                FATUtilsSpans.SpanKind.SERVER, getNested1Text);
+
+        String[] getDelayed2Text = getDelayedCondition(2);
+        String[] getDelayed4Text = getDelayedCondition(4);
+        String[] getDelayed6Text = getDelayedCondition(6);
+
+        // *** A pair of completed spans for the call from root get nested ***
+        // *** request to the two second delay request. ***
+
+        ParentCondition getDelay2ClientCondition = new ParentCondition(
+                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
+                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text);
+        ParentCondition getDelay2ContainerCondition = new ParentCondition(
+                FATUtilsSpans.SpanKind.CLIENT, getDelayed2Text,
+                FATUtilsSpans.SpanKind.SERVER, getDelayed2Text);
+
+        // *** A pair of completed spans for the call from root get nested ***
+        // *** request to the four second delay request. ***
+
+        ParentCondition getDelay4ClientCondition = new ParentCondition(
+                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
+                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text);
+        ParentCondition getDelay4ContainerCondition = new ParentCondition(
+                FATUtilsSpans.SpanKind.CLIENT, getDelayed4Text,
+                FATUtilsSpans.SpanKind.SERVER, getDelayed4Text);
+
+        // *** A pair of completed spans for the call from root get nested ***
+        // *** request to the six second delay request. ***
+
+        ParentCondition getDelay6ClientCondition = new ParentCondition(
+                FATUtilsSpans.SpanKind.SERVER, getNested1Text,
+                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text);
+        ParentCondition getDelay6ContainerCondition = new ParentCondition(
+                FATUtilsSpans.SpanKind.CLIENT, getDelayed6Text,
+                FATUtilsSpans.SpanKind.SERVER, getDelayed6Text);
+
+        if (excludingDelay4) {
+            verifyParents(
+                          completedSpans, tailSize,
+                          getNested1Condition,
+                          getDelay2ClientCondition, getDelay2ContainerCondition,
+                          getDelay6ClientCondition, getDelay6ContainerCondition);
+        } else {
+            verifyParents(
+                          completedSpans, tailSize,
+                          getNested1Condition,
+                          getDelay2ClientCondition, getDelay2ContainerCondition,
+                          getDelay4ClientCondition, getDelay4ContainerCondition,
+                          getDelay6ClientCondition, getDelay6ContainerCondition);
+        }
+        
+        completedSpans = getCompletedSpans(GET_IMMEDIATE_PATH);
+
+        verifyTracerStateEvent(completedSpans);
+
+        verifyContiguousSpans(completedSpans, 1);
     }
 }

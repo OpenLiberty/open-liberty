@@ -38,6 +38,8 @@ import com.ibm.jbatch.container.execution.impl.RuntimePartitionExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeStepExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution;
 import com.ibm.jbatch.container.execution.impl.RuntimeWorkUnitExecution.StopLock;
+import com.ibm.jbatch.container.jsl.ModelSerializer;
+import com.ibm.jbatch.container.jsl.ModelSerializerFactory;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadExecutionEntity;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadInstanceEntity;
 import com.ibm.jbatch.container.persistence.jpa.StepThreadInstanceKey;
@@ -844,6 +846,10 @@ public abstract class BaseStepControllerImpl implements IExecutionElementControl
                                                                                                getJobInstanceId(),
                                                                                                getJobExecutionId() },
                                                logger);
+            ModelSerializer<Step> ms = ModelSerializerFactory.createStepModelSerializer();
+            String prettyXml = ms.prettySerializeModel(step);
+            JoblogUtil.logToJobLogAndTraceOnly(Level.INFO, "display.resolved.jsl", new Object[] { "partition", prettyXml }, logger);
+
         }
 
         @Override

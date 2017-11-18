@@ -217,21 +217,13 @@ public class SRTInputStream31 extends SRTInputStream
         AsyncContext31Impl ac = (AsyncContext31Impl)request.getAsyncContext();
 
         try {
-            
-            
-            ReadListenerRunnable rlRunnable = new ReadListenerRunnable(tcm, this,ac);
-            
-            ac.setReadListenerRunning(true);
-            
-            com.ibm.ws.webcontainer.osgi.WebContainer.getExecutorService().execute(rlRunnable);
-            
+            ac.startReadListener(tcm, this);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "An exception occurred while setting the ReadListener : " + e);
             }
             //There was a problem with the read so we should invoke their onError, since technically it's been set now
             this.listener.onError(e);
-            ac.setReadListenerRunning(false);
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -408,6 +400,16 @@ public class SRTInputStream31 extends SRTInputStream
         
     public void setAsyncReadOutstanding(Boolean asyncReadOutstanding){
         this.asyncReadOutstanding = asyncReadOutstanding;
+    }
+    
+    /**
+     * Sets up for driving the read listener again on another thread.
+     */
+    public void prepareAsyncReadListener() {
+        // Need to call pre-join since the async read will occur on another
+        // thread.
+        AsyncContext31Impl ac = (AsyncContext31Impl)request.getAsyncContext();
+        ac.continueReadListener();
     }
     
     /**

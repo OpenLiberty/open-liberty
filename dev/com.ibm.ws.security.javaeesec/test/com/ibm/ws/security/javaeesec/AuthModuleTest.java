@@ -14,11 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.enterprise.inject.Instance;
-import javax.enterprise.inject.spi.CDI;
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.message.AuthException;
@@ -46,7 +48,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.ibm.ws.security.jaspi.JaspiMessageInfo;
-import com.ibm.ws.security.javaeesec.authentication.mechanism.http.HAMProperties;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
+import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
 
 public class AuthModuleTest {
 
@@ -60,34 +63,35 @@ public class AuthModuleTest {
 
     private ServerAuthModule authModule;
     @SuppressWarnings("rawtypes")
-    private CDI cdi;
     private Instance<HttpAuthenticationMechanism> beanInstance;
-    private HttpAuthenticationMechanism httpAuthenticationMechanism;
+    private Instance<HttpAuthenticationMechanism> hami;
+    private HttpAuthenticationMechanism ham;
     private HttpServletRequest request;
     private HttpServletResponse response;
     private Subject clientSubject;
     private Subject serviceSubject;
-    private Instance<HAMProperties> hampi;
-    private HAMProperties hamp;
+    private Instance<ModulePropertiesProvider> mppi;
+    private ModulePropertiesProvider mpp;
+    private Iterator itl;
 
     @SuppressWarnings("unchecked")
     @Before
     public void setUp() throws Exception {
-        cdi = mockery.mock(CDI.class);
         beanInstance = mockery.mock(Instance.class);
-        httpAuthenticationMechanism = mockery.mock(HttpAuthenticationMechanism.class);
+        ham = mockery.mock(HttpAuthenticationMechanism.class);
         request = mockery.mock(HttpServletRequest.class);
         response = mockery.mock(HttpServletResponse.class);
         clientSubject = new Subject();
         serviceSubject = null;
-        hampi = mockery.mock(Instance.class, "hampi");
-        hamp = mockery.mock(HAMProperties.class);
+        mppi = mockery.mock(Instance.class, "mppi");
+        mpp = mockery.mock(ModulePropertiesProvider.class);
+        itl = mockery.mock(Iterator.class, "itl");
 
         authModule = new AuthModule() {
             @SuppressWarnings("rawtypes")
             @Override
-            protected CDI getCDI() {
-                return cdi;
+            protected ModulePropertiesUtils getModulePropertiesUtils() {
+                return new ModulePropertiesUtilsDouble();
             }
         };
     }
@@ -118,19 +122,20 @@ public class AuthModuleTest {
 
     @Test
     public void testValidateRequestRegisterSession() throws Exception {
-        withBeanInstance().withOneMechanism().authMechValidatesRequest(AuthenticationStatus.SUCCESS);
+        authMechValidatesRequest(AuthenticationStatus.SUCCESS);
 
         final HttpMessageContext httpMessageContext = mockery.mock(HttpMessageContext.class);
         authModule = new AuthModule() {
             @SuppressWarnings("rawtypes")
-            @Override
-            protected CDI getCDI() {
-                return cdi;
-            }
 
             @Override
             protected HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
                 return httpMessageContext;
+            }
+
+            @Override
+            protected ModulePropertiesUtils getModulePropertiesUtils() {
+                return new ModulePropertiesUtilsDouble();
             }
         };
 
@@ -173,6 +178,16 @@ public class AuthModuleTest {
     }
 
     @Test
+    public void testValidateRequestWithNotDone() throws Exception {
+        setNormalPathExpectations().authMechValidatesRequest(AuthenticationStatus.NOT_DONE);
+        initializeModule();
+        MessageInfo messageInfo = createMessageInfo(true);
+
+        AuthStatus status = authModule.validateRequest(messageInfo, clientSubject, serviceSubject);
+        assertEquals("The AuthStatus must be SUCCESS.", AuthStatus.SUCCESS, status);
+    }
+
+    @Test
     public void testValidateRequestWithAuthenticationException() throws Exception {
         setNormalPathExpectations().authMechValidateRequestThrowsException();
         initializeModule();
@@ -183,20 +198,6 @@ public class AuthModuleTest {
             fail("There must be an AuthException thrown from the AuthModule.");
         } catch (AuthException e) {
             assertEquals("The AuthException cause must be set.", AuthenticationException.class, e.getCause().getClass());
-        }
-    }
-
-    @Test
-    public void testWithMechanismException() throws Exception {
-        withBeanInstance().withMechanismException();
-        initializeModule();
-        MessageInfo messageInfo = createMessageInfo(true);
-
-        try {
-            authModule.validateRequest(messageInfo, clientSubject, serviceSubject);
-            fail("There must be an AuthException thrown from the AuthModule.");
-        } catch (AuthException e) {
-            assertEquals("The AuthException cause must be set.", RuntimeException.class, e.getCause().getClass());
         }
     }
 
@@ -253,7 +254,7 @@ public class AuthModuleTest {
         setNormalPathExpectations();
         mockery.checking(new Expectations() {
             {
-                one(httpAuthenticationMechanism).cleanSubject(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
+                one(ham).cleanSubject(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
             }
         });
 
@@ -278,59 +279,13 @@ public class AuthModuleTest {
     }
 
     private AuthModuleTest setNormalPathExpectations() throws Exception {
-        return withBeanInstance().withOneMechanism().withAuthParams(null);
+        return withAuthParams(null);
     }
 
     // The path taken when invoked from SecurityContext.authenticate(...)
     private AuthModuleTest setAuthenticatePathExpectations() throws Exception {
         AuthenticationParameters authenticationParameters = mockery.mock(AuthenticationParameters.class);
-        return withBeanInstance().withOneMechanism().withAuthParams(authenticationParameters);
-    }
-
-    @SuppressWarnings("unchecked")
-    private AuthModuleTest withBeanInstance() throws Exception {
-        final Class implClass = String.class;
-        mockery.checking(new Expectations() {
-            {
-                one(cdi).select(HAMProperties.class);
-                will(returnValue(hampi));
-                one(hampi).isUnsatisfied();
-                will(returnValue(false));
-                one(hampi).isAmbiguous();
-                will(returnValue(false));
-                one(hampi).get();
-                will(returnValue(hamp));
-                one(hamp).getImplementationClass();
-                will(returnValue(implClass));
-                one(cdi).select(implClass);
-                will(returnValue(beanInstance));
-                one(beanInstance).isUnsatisfied();
-                will(returnValue(false));
-                one(beanInstance).isAmbiguous();
-                will(returnValue(false));
-            }
-        });
-        return this;
-    }
-
-    private AuthModuleTest withOneMechanism() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(beanInstance).get();
-                will(returnValue(httpAuthenticationMechanism));
-            }
-        });
-        return this;
-    }
-
-    private AuthModuleTest withMechanismException() throws Exception {
-        mockery.checking(new Expectations() {
-            {
-                one(beanInstance).get();
-                will(throwException(new RuntimeException()));
-            }
-        });
-        return this;
+        return withAuthParams(authenticationParameters);
     }
 
     private AuthModuleTest withAuthParams(final AuthenticationParameters authenticationParameters) {
@@ -346,7 +301,7 @@ public class AuthModuleTest {
     private AuthModuleTest authMechValidatesRequest(final AuthenticationStatus status) throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(httpAuthenticationMechanism).validateRequest(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
+                one(ham).validateRequest(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
                 will(returnValue(status));
             }
         });
@@ -356,7 +311,7 @@ public class AuthModuleTest {
     private AuthModuleTest authMechValidateRequestThrowsException() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(httpAuthenticationMechanism).validateRequest(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
+                one(ham).validateRequest(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
                 will(throwException(new AuthenticationException()));
             }
         });
@@ -366,7 +321,7 @@ public class AuthModuleTest {
     private AuthModuleTest authMechSecuresResponse(final AuthenticationStatus status) throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(httpAuthenticationMechanism).secureResponse(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
+                one(ham).secureResponse(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
                 will(returnValue(status));
             }
         });
@@ -376,7 +331,7 @@ public class AuthModuleTest {
     private AuthModuleTest authMechSecuresResponseThrowsException() throws Exception {
         mockery.checking(new Expectations() {
             {
-                one(httpAuthenticationMechanism).secureResponse(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
+                one(ham).secureResponse(with(request), with(response), with(aNonNull(HttpMessageContext.class)));
                 will(throwException(new AuthenticationException()));
             }
         });
@@ -411,6 +366,15 @@ public class AuthModuleTest {
         MessageInfo messageInfo = new JaspiMessageInfo(request, response);
         messageInfo.getMap().put(IS_MANDATORY_POLICY, Boolean.toString(mandatory));
         return messageInfo;
+    }
+
+    class ModulePropertiesUtilsDouble extends ModulePropertiesUtils {
+        @Override
+        public HttpAuthenticationMechanism getHttpAuthenticationMechanism() {
+            return ham;
+        }
+        
+    
     }
 
 }

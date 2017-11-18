@@ -33,7 +33,7 @@ Unsupported.op.from.servlet.context.listener.31.useraction=Add the listener usin
 # 
 # Notes for translation:
 # {0} is the application name
-handlerClass.is.null==SRVE9003E: The HttpUpgradeHandler object passed is null with web application: {0}.
+handlerClass.is.null=SRVE9003E: The HttpUpgradeHandler object passed is null with web application: {0}.
 handlerClass.is.null.explanation=Failed to upgrade the request because HttpUpgradeHandler object passed is null.
 handlerClass.is.null.useraction= Make sure that the correct HttpUpgradeHandler object is provided.
 # --------------------------------

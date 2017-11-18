@@ -12,7 +12,9 @@
 bVersion=1.0
 
 src: \
-	fat/src
+	fat/src,\
+	test-applications/checkJvmAppClasspath/src,\
+	test-applications/shutdownfat/src
 
 test.project: true
 
@@ -36,4 +38,6 @@ test.project: true
 	com.ibm.ws.org.eclipse.equinox.region;version=latest, \
 	com.ibm.ws.runtime.update;version=latest, \
 	com.ibm.ws.kernel.feature.core;version=latest, \
-	com.ibm.ws.kernel.feature;version=latest
+	com.ibm.ws.kernel.feature;version=latest, \
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.ejb.3.2;version=latest

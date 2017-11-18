@@ -202,12 +202,22 @@ public class LDAPFatUtils {
      * @throws Exception If there was an issue updating the server configuration.
      */
     public static void updateConfigDynamically(LibertyServer server, ServerConfiguration config, boolean waitForAppToStart) throws Exception {
-        server.setMarkToEndOfLog(server.getDefaultLogFile());
-        server.setMarkToEndOfLog(server.getMostRecentTraceFile());
+        resetMarksInLogs(server);
         server.updateServerConfiguration(config);
         server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
         if (waitForAppToStart) {
             server.waitForStringInLogUsingMark("CWWKZ0003I"); //CWWKZ0003I: The application userRegistry updated in 0.020 seconds.
         }
+    }
+
+    /**
+     * Reset the marks in all Liberty logs.
+     *
+     * @param server The server for the logs to reset the marks.
+     * @throws Exception If there was an error resetting the marks.
+     */
+    public static void resetMarksInLogs(LibertyServer server) throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultLogFile());
+        server.setMarkToEndOfLog(server.getMostRecentTraceFile());
     }
 }

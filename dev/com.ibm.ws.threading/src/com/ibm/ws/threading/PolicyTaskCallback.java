@@ -20,6 +20,50 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public abstract class PolicyTaskCallback {
     /**
+     * Allows for replacing the policy executor to which the task was submitted with another when the invokeAll/invokeAny methods are used to submit multiple tasks.
+     *
+     * @param executor policy executor to which the task was submitted.
+     * @return the default implementation returns the policy executor to which the task was submitted, such that invokeAll/invokeAny
+     *         always run tasks according the policy executor upon which the invokeAll/invokeAny operation was invoked.
+     */
+    public PolicyExecutor getExecutor(PolicyExecutor executor) {
+        return executor;
+    }
+
+    /**
+     * Allows for replacing the identifier that is used in exception messages and log messages about the policy executor.
+     *
+     * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
+     *            PolicyExecutorProvider-MPFaultTolerance12345
+     *            concurrencyPolicy[longRunningPolicy]
+     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
+     * @return the default implementation returns the policy executor's identifier, as supplied in the parameter to this method.
+     */
+    public String getIdentifier(String policyExecutorIdentifier) {
+        return policyExecutorIdentifier;
+    }
+
+    /**
+     * Returns the name of the task, which, for example, might be reported in exception messages or messages that are logged.
+     *
+     * @param task the Callable or Runnable task.
+     * @return the default implementation invokes toString on the task object.
+     */
+    public String getName(Object task) {
+        return task.toString();
+    }
+
+    /**
+     * Allows for an override of the default start timeout, which is provided as a parameter.
+     *
+     * @param defaultStartTimeoutNS the default start timeout (in nanoseconds) that is configured on the policy executor. -1 indicates no timeout.
+     * @return the default implementation returns the default start timeout in nanoseconds.
+     */
+    public long getStartTimeout(long defaultStartTimeoutNS) {
+        return defaultStartTimeoutNS;
+    }
+
+    /**
      * Invoked when a task's future is canceled.
      * This callback is invoked synchronously on the thread that cancels the task.
      *

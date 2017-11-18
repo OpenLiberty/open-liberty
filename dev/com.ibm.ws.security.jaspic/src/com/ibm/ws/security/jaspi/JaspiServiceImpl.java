@@ -410,15 +410,8 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
         try {
             ServerAuthContext authContext = getServerAuthContext(jaspiRequest, provider);
             MessageInfo msgInfo = jaspiRequest.getMessageInfo();
-            // need to add webRequest for the JSR375 provider.
-            if (msgInfo != null) {
-                msgInfo.getMap().put(JaspiConstants.SECURITY_WEB_REQUEST, jaspiRequest.getWebRequest());
-            } else {
-                if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "msgInfo object is null.");
-                }
-            }
             setRequestAuthType(jaspiRequest.getHttpServletRequest(), authType);
+
             if (webSecurityContext != null) {
                 setRunSecureResponse(true, (JaspiAuthContext) webSecurityContext.getJaspiAuthContext());
             }
@@ -649,8 +642,8 @@ public class JaspiServiceImpl implements JaspiService, WebAuthenticator {
             switch (responseStatus) {
 
                 case HttpServletResponse.SC_UNAUTHORIZED:
-                    //authResult = new AuthenticationResult(AuthResult.SEND_401, webRequest.getContextManager().getAppRealm());
-                    authResult = new AuthenticationResult(AuthResult.SEND_401, (String) null);
+                    String realm = (String) jaspiRequest.getMessageInfo().getMap().get(AttributeNameConstants.WSCREDENTIAL_REALM);
+                    authResult = new AuthenticationResult(AuthResult.SEND_401, realm != null ? realm : (String) null);
                     pretty = "SEND_401";
                     break;
 

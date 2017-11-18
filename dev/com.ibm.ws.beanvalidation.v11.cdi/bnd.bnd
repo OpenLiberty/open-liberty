@@ -19,7 +19,9 @@ Bundle-Description: Bean Validation v1.1 CDI Integration Bundle; version=${bVers
 WS-TraceGroup: BeanValidation
 
 Import-Package: \
+  !com.ibm.ws.beanvalidation,\
   javax.validation.*;version="[1.1,3)",\
+  javax.enterprise.*;version="[1.1,3)",\
   *
  
 Private-Package: \
@@ -31,8 +33,6 @@ Include-Resource: \
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
-Import-Package: !com.ibm.ws.beanvalidation, *
-    
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.beanvalidation.v11.cdi.internal.ValidationReleasableFactoryImpl, \

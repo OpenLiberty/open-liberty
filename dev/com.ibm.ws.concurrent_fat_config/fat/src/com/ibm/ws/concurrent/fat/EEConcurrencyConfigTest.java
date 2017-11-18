@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.ConcurrencyPolicy;
 import com.ibm.websphere.simplicity.config.ContextService;
 import com.ibm.websphere.simplicity.config.ManagedExecutorService;
 import com.ibm.websphere.simplicity.config.ManagedScheduledExecutorService;
@@ -73,18 +74,25 @@ public class EEConcurrencyConfigTest extends FATServletClient {
      */
     @Before
     public void setUpPerTest() throws Exception {
+        Exception failure = null;
         String consoleLogFileName = getClass().getSimpleName() + '.' + testName.getMethodName() + ".log";
         if (!server.isStarted()) {
             server.updateServerConfiguration(savedConfig);
             server.startServer(consoleLogFileName); // clean start
             Log.info(getClass(), "setUpPerTest", "server started, log file is " + consoleLogFileName);
         } else if (restoreSavedConfig) {
-            server.stopServer();
+            try {
+                server.stopServer();
+            } catch (Exception x) {
+                failure = x;
+            }
             server.updateServerConfiguration(savedConfig);
             server.startServer(consoleLogFileName, false, false); // warm start
             Log.info(getClass(), "setUpPerTest", "server restarted, log file is " + consoleLogFileName);
         }
         restoreSavedConfig = true; // assume all tests make config updates unless they tell us otherwise
+        if (failure != null)
+            throw failure;
     }
 
     /**
@@ -351,6 +359,239 @@ public class EEConcurrencyConfigTest extends FATServletClient {
 
         runTest("testNoClassloaderContext", "concurrent/execSvc1");
         runTest("testJEEMetadataContext", "concurrent/execSvc1");
+    }
+
+    /**
+     * Should be possible to make modifications to which concurrency policy a managed executor points at via its longRunningPolicyRef
+     * without interfering with tasks that are in-progress or queued. For this test, we set max concurrency to 1
+     * and submit two long running tasks, where the first depends on the second, such that the first is blocked while running and
+     * the second is stuck in the queue - a temporary deadlock of the executor. Then, we switch which concurrency
+     * policy the managed executor's longRunningPolicyRef points to and verify that we can submit and run tasks per the new policy.
+     * Then, we increase max concurrency of the old policy 2 and expect both of the previous tasks to complete successfully.
+     */
+    @Test
+    public void testLongRunningPolicyRef() throws Exception {
+        // Add: <concurrencyPolicy id="longRunningPolicy" max="1"/>
+        ServerConfiguration config = server.getServerConfiguration();
+        ConcurrencyPolicy longRunningPolicy = new ConcurrencyPolicy();
+        longRunningPolicy.setId("longRunningPolicy");
+        longRunningPolicy.setMax("1");
+        config.getConcurrencyPolicies().add(longRunningPolicy);
+        // Add: <managedExecutorService jndiName="concurrent/execSvc1" longRunningPolicyRef="longRunningPolicy"/>
+        ManagedExecutorService execSvc1 = new ManagedExecutorService();
+        execSvc1.setId("execSvc1");
+        execSvc1.setJndiName("concurrent/execSvc1");
+        execSvc1.setLongRunningPolicyRef(longRunningPolicy.getId());
+        config.getManagedExecutorServices().add(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This leaves 1 future running and another stuck in the queue
+        runTest("testTask1BlockedByTask2LongRunning", "concurrent/execSvc1");
+
+        // Remove the longRunningPolicyRef to switch to a different concurrency policy (defaults to the normal concurrency policy).
+        // Should be able to submit more tasks on that policy.
+        // Update: <managedExecutorService jndiName="concurrent/execSvc1"/>
+        execSvc1.setLongRunningPolicyRef(null);
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        runTest("testLongRunningTaskSuccessful", "concurrent/execSvc1");
+
+        // Increase max concurrency of the concurrencyPolicy that the managed executor no longer points to
+        longRunningPolicy.setMax("2");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This verifies that the previously blocked tasks complete successfully
+        runTest("testTask1BlockedByTask2LongRunningCompleted", "concurrent/execSvc1");
+    }
+
+    /**
+     * Should be possible to make modifications to a concurrencyPolicy that is nested under a managed executor
+     * without interfering with tasks that are in-progress or queued. For this test, we set max concurrency to 1
+     * and submit two tasks, where the first depends on the second, such that the first is blocked while running and
+     * the second is stuck in the queue - a temporary deadlock of the executor. Then, we increase max concurrency to 2
+     * and expect both tasks to complete successfully.
+     */
+    @Test
+    public void testNestedConcurrencyPolicy() throws Exception {
+        // Add:
+        // <managedExecutorService jndiName="concurrent/execSvc1">
+        //   <concurrencyPolicy max="1"/>
+        // </managedExecutorService>
+        ServerConfiguration config = server.getServerConfiguration();
+        ManagedExecutorService execSvc1 = new ManagedExecutorService();
+        execSvc1.setJndiName("concurrent/execSvc1");
+        ConcurrencyPolicy policy = new ConcurrencyPolicy();
+        policy.setMax("1");
+        execSvc1.getConcurrencyPolicies().add(policy);
+        config.getManagedExecutorServices().add(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This leaves 1 future running and another stuck in the queue
+        runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
+
+        // Increase max concurrency of the nested concurrencyPolicy
+        policy.setMax("2");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This verifies that the previously blocked tasks complete successfully
+        runTest("testTask1BlockedByTask2Completed", "concurrent/execSvc1");
+    }
+
+    /**
+     * Should be possible to make modifications to a longRunningPolicy that is nested under a managed executor
+     * without interfering with tasks that are in-progress or queued. For this test, we set max concurrency to 1
+     * and submit two tasks, where the first depends on the second, such that the first is blocked while running and
+     * the second is stuck in the queue - a temporary deadlock of the executor. At this point, we can still submit
+     * normal tasks (not long running) per the normal concurrencyPolicy. Then, we increase the long running policy's
+     * max concurrency to 2 and expect both long running tasks to complete successfully.
+     */
+    @Test
+    public void testNestedLongRunningPolicy() throws Exception {
+        // Add:
+        // <managedExecutorService jndiName="concurrent/execSvc1">
+        //   <longRunningPolicy max="1"/>
+        // </managedExecutorService>
+        ServerConfiguration config = server.getServerConfiguration();
+        ManagedScheduledExecutorService execSvc1 = new ManagedScheduledExecutorService();
+        execSvc1.setJndiName("concurrent/execSvc1");
+        ConcurrencyPolicy policy = new ConcurrencyPolicy();
+        policy.setMax("1");
+        execSvc1.getLongRunningPolicies().add(policy);
+        config.getManagedScheduledExecutorServices().add(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This leaves 1 future running and another stuck in the queue
+        runTest("testTask1BlockedByTask2LongRunning", "concurrent/execSvc1");
+
+        // Can still submit normal tasks, per a different concurrency policy
+        runTest("testTaskSuccessful", "concurrent/execSvc1");
+
+        // Increase max concurrency of the nested concurrencyPolicy
+        policy.setMax("2");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This verifies that the previously blocked tasks complete successfully
+        runTest("testTask1BlockedByTask2LongRunningCompleted", "concurrent/execSvc1");
+    }
+
+    /**
+     * Should be possible to make modifications to which concurrency policy a managed executor points at
+     * without interfering with tasks that are in-progress or queued. For this test, we set max concurrency to 1
+     * and submit two tasks, where the first depends on the second, such that the first is blocked while running and
+     * the second is stuck in the queue - a temporary deadlock of the executor. Then, we switch which concurrency
+     * policy the managed executor points to and verify that we can submit and run tasks per the new policy.
+     * Then, we increase max concurrency of the old policy 2 and expect both of the previous tasks to complete successfully.
+     */
+    @Test
+    public void testPolicyRef() throws Exception {
+        // Add: <concurrencyPolicy id="normalPolicy" max="1"/>
+        ServerConfiguration config = server.getServerConfiguration();
+        ConcurrencyPolicy normalPolicy = new ConcurrencyPolicy();
+        normalPolicy.setId("normalPolicy");
+        normalPolicy.setMax("1");
+        config.getConcurrencyPolicies().add(normalPolicy);
+        // Add: <managedExecutorService jndiName="concurrent/execSvc1" concurrencyPolicyRef="normalPolicy"/>
+        ManagedExecutorService execSvc1 = new ManagedExecutorService();
+        execSvc1.setId("execSvc1");
+        execSvc1.setJndiName("concurrent/execSvc1");
+        execSvc1.setConcurrencyPolicyRef(normalPolicy.getId());
+        config.getManagedExecutorServices().add(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This leaves 1 future running and another stuck in the queue
+        runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
+
+        // Switch to a different concurrency policy. Should be able to submit more tasks on that policy.
+        // Add: <concurrencyPolicy id="policy1" max="1"/>
+        ConcurrencyPolicy policy1 = new ConcurrencyPolicy();
+        policy1.setId("policy1");
+        policy1.setMax("1");
+        config.getConcurrencyPolicies().add(policy1);
+        // Update: <managedExecutorService jndiName="concurrent/execSvc1" concurrencyPolicyRef="policy1"/>
+        execSvc1.setConcurrencyPolicyRef(policy1.getId());
+
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        runTest("testTaskSuccessful", "concurrent/execSvc1");
+
+        // Increase max concurrency of the concurrencyPolicy that the managed executor no longer points to
+        normalPolicy.setMax("2");
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This verifies that the previously blocked tasks complete successfully
+        runTest("testTask1BlockedByTask2Completed", "concurrent/execSvc1");
+    }
+
+    /**
+     * Verify that both long running as well as normal tasks submitted by a managed executor are canceled
+     * when the managed executor deactivates. We test this by submitting 2 normal tasks and 2 long running
+     * tasks to a managed executor with concurrency policies that only allow 1 to run at time, and where the
+     * first task blocks when it runs, leaving the other tasks stuck in the queue. Then we remove the configuration
+     * of the managed executor to make it deactivate and verify that all of the task Futures are canceled.
+     */
+    @Test
+    public void testTasksCanceledOnDeactivate() throws Exception {
+        // Add:
+        // <managedExecutorService jndiName="concurrent/execSvc1" concurrencyPolicy="normalPolicy" longRunningPolicyRef="longrunPolicy"/>
+        // <concurrencyPolicy id="normalPolicy" max="1" maxQueueSize="5"/>
+        // <concurrencyPolicy id="longrunPolicy" max="1" maxQueueSize="1" maxWaitForEnqueue="5m"/>
+        ServerConfiguration config = server.getServerConfiguration();
+        ConcurrencyPolicy longrunPolicy = new ConcurrencyPolicy();
+        longrunPolicy.setId("longrunPolicy");
+        longrunPolicy.setMax("1");
+        longrunPolicy.setMaxQueueSize("1");
+        longrunPolicy.setMaxWaitForEnqueue("5m");
+        ConcurrencyPolicy normalPolicy = new ConcurrencyPolicy();
+        normalPolicy.setId("normalPolicy");
+        normalPolicy.setMax("1");
+        normalPolicy.setMaxQueueSize("5");
+        config.getConcurrencyPolicies().add(longrunPolicy);
+        config.getConcurrencyPolicies().add(normalPolicy);
+        ManagedScheduledExecutorService execSvc1 = new ManagedScheduledExecutorService();
+        execSvc1.setJndiName("concurrent/execSvc1");
+        execSvc1.setConcurrencyPolicyRef(normalPolicy.getId());
+        execSvc1.setLongRunningPolicyRef(longrunPolicy.getId());
+        config.getManagedScheduledExecutorServices().add(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // This leaves 1 future running and another stuck in the queue for normal tasks
+        runTest("testTask1BlockedByTask2", "concurrent/execSvc1");
+
+        // This leaves 1 future running and another stuck in the queue for long running tasks
+        runTest("testTask1BlockedByTask2LongRunning", "concurrent/execSvc1");
+
+        // Delete the managedScheduledExecutorService configuration
+        config.getManagedScheduledExecutorServices().remove(execSvc1);
+        server.setMarkToEndOfLog();
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+
+        // Tasks should be canceled
+        runTest("testTask1BlockedByTask2Canceled", "concurrent/execSvc1");
+        runTest("testTask1BlockedByTask2LongRunningCanceled", "concurrent/execSvc1");
     }
 
     @Test

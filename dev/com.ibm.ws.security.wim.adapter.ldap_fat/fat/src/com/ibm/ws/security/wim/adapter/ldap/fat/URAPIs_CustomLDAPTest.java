@@ -81,7 +81,11 @@ public class URAPIs_CustomLDAPTest {
     @AfterClass
     public static void tearDown() throws Exception {
         Log.info(c, "tearDown", "Stopping the server...");
-        server.stopServer();
+        try {
+            server.stopServer("CWIML4529E", "CWIML4537E");
+        } finally {
+            server.deleteFileFromLibertyInstallRoot("lib/features/internalfeatures/securitylibertyinternals-1.0.mf");
+        }
     }
 
     /**

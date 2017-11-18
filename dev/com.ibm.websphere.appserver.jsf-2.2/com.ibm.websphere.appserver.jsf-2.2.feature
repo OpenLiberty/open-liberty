@@ -27,7 +27,7 @@ IBM-API-Package: javax.faces; type="spec", \
 IBM-ShortName: jsf-2.2
 Subsystem-Name: JavaServer Faces 2.2
 -features=com.ibm.websphere.appserver.javax.cdi-1.2, \
- com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0, \
+ com.ibm.websphere.appserver.servlet-3.1, \
  com.ibm.websphere.appserver.javax.validation-1.1, \
  com.ibm.websphere.appserver.javax.jsf-2.2, \
  com.ibm.websphere.appserver.jsp-2.3, \
