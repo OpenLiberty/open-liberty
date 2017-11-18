@@ -8,21 +8,15 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.cdi20.fat.tests;
+package cdiContainerConfigApp.explicit;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.enterprise.context.RequestScoped;
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                AsyncEventsTest.class,
-                BeanManagerLookupTest.class,
-                BuiltinAnnoLiteralsTest.class,
-                CDIContainerConfigTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class
-})
-public class FATSuite {
+@RequestScoped
+public class MyExplicitBean {
+
+    public String greeting() {
+        return "You found the CDI20 bean!";
+    }
 
 }
