@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2016 IBM Corporation and others.
+ * Copyright (c) 2015, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ public class TaskConfig {
 
     private final int maxFieldLength;
 
+    private final int maxEvents;
+
     public static class Builder {
 
         /* Mandatory fields */
@@ -36,8 +38,8 @@ public class TaskConfig {
         /* Optional fields */
         private boolean enabled = TaskConstants.DEFAULT_TASK_STATUS;
         private String[] tags;
-
         private int maxFieldLength;
+        private int maxEvents;
 
         public Builder(String source, String location) {
             this.source = source;
@@ -62,6 +64,11 @@ public class TaskConfig {
             return this;
         }
 
+        public Builder maxEvents(int maxEvents) {
+            this.maxEvents = maxEvents;
+            return this;
+        }
+
         public Builder maxFieldLength(int maxFieldLength) {
             this.maxFieldLength = maxFieldLength;
             return this;
@@ -76,8 +83,8 @@ public class TaskConfig {
 
         enabled = builder.enabled;
         tags = builder.tags;
-
         maxFieldLength = builder.maxFieldLength;
+        maxEvents = builder.maxEvents;
     }
 
     public String sourceId() {
@@ -101,6 +108,10 @@ public class TaskConfig {
         return (tags != null) ? Arrays.copyOf(tags, tags.length) : null;
     }
 
+    public int getMaxEvents() {
+        return maxEvents;
+    }
+
     public int getMaxFieldLength() {
         return maxFieldLength;
     }
@@ -108,7 +119,7 @@ public class TaskConfig {
     @Override
     public String toString() {
         return "TaskConfig [location=" + location + ", sourceName=" + sourceName + ", enabled=" + enabled + ", tags=" + ((tags != null) ? Arrays.toString(tags) : tags)
-               + ", maxFieldLength=" + maxFieldLength + "]";
+               + ", maxFieldLength=" + maxFieldLength + ", maxEvents=" + maxEvents + "]";
     }
 
 }

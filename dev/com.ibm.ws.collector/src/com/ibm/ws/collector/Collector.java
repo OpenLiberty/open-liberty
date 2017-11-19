@@ -62,6 +62,7 @@ public abstract class Collector implements Handler, Formatter {
     protected static final String SOURCE_LIST_KEY = "source";
     private static final String TAG_LIST_KEY = "tag";
     private static final String MAX_FIELD_KEY = "maxFieldLength";
+    private static final String MAX_EVENTS_KEY = "maxEvents";
 
     protected static final String EXECUTOR_SERVICE = "executorService";
     protected final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>(EXECUTOR_SERVICE);
@@ -207,6 +208,7 @@ public abstract class Collector implements Handler, Formatter {
      * 2) Location
      * 3) Status, whether it is enabled or not
      * 4) Tags associated with the config
+     * 5) maxEvents associated with the config, to throttle events
      */
     private List<TaskConfig> parseConfig(Map<String, Object> config) {
         List<TaskConfig> result = new ArrayList<TaskConfig>();
@@ -223,7 +225,27 @@ public abstract class Collector implements Handler, Formatter {
             }
             tagList = validList.toArray(new String[validList.size()]);
         }
+
         int maxFieldLength = (Integer) config.get(MAX_FIELD_KEY);
+        int maxEvents = 0;
+        //Events Throttling - maxEvents
+        if (config.containsKey(MAX_EVENTS_KEY)) {
+            //Check if maxEvents is in the integer range 0-2147483647
+            try {
+
+                maxEvents = Integer.parseInt(config.get(MAX_EVENTS_KEY).toString());
+                if (maxEvents < 0) {
+                    maxEvents = 0;
+                }
+
+            } catch (Exception e) {//Any other casting exception will result in the following out-of-range warning
+                Tr.warning(tc, "MAXEVENTS_OUTOFRANGE_WARNING", config.get(MAX_EVENTS_KEY));
+                maxEvents = 0;
+
+            }
+
+        }
+
         if (config.containsKey(SOURCE_LIST_KEY)) {
             String[] sourceList = (String[]) config.get(SOURCE_LIST_KEY);
             if (sourceList != null) {
@@ -232,12 +254,14 @@ public abstract class Collector implements Handler, Formatter {
                         TaskConfig.Builder builder = new TaskConfig.Builder(getSourceName(source.trim()), CollectorConstants.MEMORY);
                         builder.enabled(true);
                         builder.tags(tagList);
+                        builder.maxEvents(maxEvents);
                         builder.maxFieldLength(maxFieldLength);
                         result.add(builder.build());
                     }
                 }
             }
         }
+
         return result;
     }
 

@@ -23,3 +23,15 @@ TAGS_FILTERING_WARNING.userAction= Remove the space, dash, or backslash characte
 SSLREF_NOTFOUND=TRAS4302E: The sslRef attribute of logstashCollector or bluemixLogCollector is not specified, or the sslRef ID cannot be found.
 SSLREF_NOTFOUND.explanation=No SSL configuration is found for logstashCollector or bluemixLogCollector feature.
 SSLREF_NOTFOUND.userAction=Create an SSL configuration, and specify the ID using the sslRef attribute in the logstashCollector element or bluemixLogCollector element.
+
+MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: The logstashCollector and bluemixLogCollector can use maxEvents that have an integer value within the range of 0-2147483647. The given maxEvents is ignored: {0}
+MAXEVENTS_OUTOFRANGE_WARNING.explanation= The value of maxEvents is out of range and not a valid integer between 0-2147483647.
+MAXEVENTS_OUTOFRANGE_WARNING.userAction= Correct the value of maxEvents. Otherwise, no throttling is applied.
+
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: Event creation exceeds maximum handling rate. {0} events per second will be handled until event backlog cleared.
+MAXEVENTS_EXCEEDS_MAXRATE.explanation= The number of events to process exceeds the specified maxEvents rate per second.
+MAXEVENTS_EXCEEDS_MAXRATE.userAction= Change the configurations in the server.xml file for maxEvents, if you want to change the event handling rate.
+
+MAXEVENTS_NOTEXCEED_RATE=TRAS4305I: The event backlog has been cleared. New events will be handled without delay.
+MAXEVENTS_NOTEXCEED_RATE.explanation= Events have finished processing at the maximum handling rate.
+MAXEVENTS_NOTEXCEED_RATE.userAction=  No action is required.
