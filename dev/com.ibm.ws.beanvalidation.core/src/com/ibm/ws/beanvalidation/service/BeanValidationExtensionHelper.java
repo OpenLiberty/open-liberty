@@ -76,15 +76,15 @@ public class BeanValidationExtensionHelper
         }
     }
 
-//    public static Container getContainer(ModuleMetaData mmd) {
-//        return containerMap.get(mmd);
-//    }
-//
-//    public static void putContainer(ModuleMetaData mmd, Container container) {
-//        containerMap.put(mmd, container);
-//    }
-//
-//    public static void removeContainer(ModuleMetaData mmd) {
-//        containerMap.remove(mmd);
-//    }
+    public static Container getContainer(ModuleMetaData mmd) {
+        return containerMap.get(mmd);
+    }
+
+    public static void putContainer(ModuleMetaData mmd, Container container) {
+        containerMap.put(mmd, container);
+    }
+
+    public static void removeContainer(ModuleMetaData mmd) {
+        containerMap.remove(mmd);
+    }
 }
