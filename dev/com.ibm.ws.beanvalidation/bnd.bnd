@@ -30,6 +30,9 @@ Import-Package: \
 Private-Package: \
   com.ibm.ws.beanvalidation.*
 
+Include-Resource: \
+  OSGI-INF=resources/OSGI-INF
+
 -dsannotations-inherit: true
 -dsannotations: \
   com.ibm.ws.beanvalidation.OSGiBeanValidationImpl, \

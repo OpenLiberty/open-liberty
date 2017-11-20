@@ -10,7 +10,9 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.service;
 
+import javax.validation.Configuration;
 import javax.validation.ConstraintValidatorFactory;
+import javax.validation.ValidatorFactory;
 
 import com.ibm.ws.managedobject.ManagedObject;
 
@@ -21,7 +23,7 @@ public interface ValidationReleasableFactory {
 
     /**
      * Create a validation releasable object out of the class type passed in.
-     * 
+     *
      * @param clazz the type of validation releasable to create
      * @return the releasable object
      */
@@ -29,8 +31,10 @@ public interface ValidationReleasableFactory {
 
     /**
      * Create a ConstraintValidatorFactory as a ValidationReleasable.
-     * 
+     *
      * @return the releasable ConstraintValidatorFactory
      */
     public ValidationReleasable<ConstraintValidatorFactory> createConstraintValidatorFactory();
+
+    public ValidatorFactory injectValidatorFactoryResources(Configuration<?> config, ClassLoader appClassLoader);
 }

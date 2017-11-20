@@ -17,4 +17,5 @@ public abstract class BeanValidationRuntimeVersion {
 
     public static final Version VERSION_1_0 = new Version(1, 0, 0);
     public static final Version VERSION_1_1 = new Version(1, 1, 0);
+    public static final Version VERSION_2_0 = new Version(2, 0, 0);
 }
