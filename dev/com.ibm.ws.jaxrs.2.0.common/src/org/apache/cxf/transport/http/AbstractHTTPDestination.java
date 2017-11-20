@@ -87,8 +87,8 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 /**
  * Common base for HTTP Destination implementations.
  */
-public abstract class AbstractHTTPDestination
-    extends AbstractMultiplexDestination
+public abstract class AbstractHTTPDestination 
+    extends AbstractMultiplexDestination 
     implements Configurable, Assertor {
 
     public static final String HTTP_REQUEST = "HTTP.REQUEST";
@@ -134,9 +134,8 @@ public abstract class AbstractHTTPDestination
      * Constructor
      *
      * @param b the associated Bus
-     * @param registry the destination registry
+     * @param ci the associated conduit initiator
      * @param ei the endpoint info of the destination
-     * @param path the path
      * @param dp true for adding the default port if it is missing
      * @throws IOException
      */
@@ -175,14 +174,10 @@ public abstract class AbstractHTTPDestination
             String authEncoded = creds.get(1);
             try {
                 byte[] authBytes = Base64Utility.decode(authEncoded);
-
-                if (authBytes == null) {
-                    throw new Base64Exception(new Throwable("Invalid Base64 data."));
-                }
-
-                String authDecoded = decodeBasicAuthWithIso8859
+                
+                String authDecoded = decodeBasicAuthWithIso8859 
                     ? new String(authBytes, StandardCharsets.ISO_8859_1) : new String(authBytes);
-
+                
                 int idx = authDecoded.indexOf(':');
                 String username = null;
                 String password = null;
@@ -195,7 +190,7 @@ public abstract class AbstractHTTPDestination
                     }
                 }
 
-                AuthorizationPolicy policy = sc.getUserPrincipal() == null
+                AuthorizationPolicy policy = sc.getUserPrincipal() == null 
                     ? new AuthorizationPolicy() : new PrincipalAuthorizationPolicy(sc);
                 policy.setUserName(username);
                 policy.setPassword(password);
@@ -440,10 +435,10 @@ public abstract class AbstractHTTPDestination
      */
     private static void propogateSecureSession(HttpServletRequest request,
                                                Message message) {
-        final String cipherSuite =
+        final String cipherSuite = 
             (String) request.getAttribute(SSL_CIPHER_SUITE_ATTRIBUTE);
         if (cipherSuite != null) {
-            final java.security.cert.Certificate[] certs =
+            final java.security.cert.Certificate[] certs = 
                 (java.security.cert.Certificate[]) request.getAttribute(SSL_PEER_CERT_CHAIN_ATTRIBUTE);
             message.put(TLSSessionInfo.class,
                         new TLSSessionInfo(cipherSuite,
@@ -673,9 +668,9 @@ public abstract class AbstractHTTPDestination
         if (hasNoResponseContent(outMessage)) {
             response.setContentLength(0);
             response.flushBuffer();
-            closeResponseOutputStream(response);
+            response.getOutputStream().close();
         } else if (!getStream) {
-            closeResponseOutputStream(response);
+            response.getOutputStream().close();
         } else {
             responseStream = response.getOutputStream();
         }
@@ -684,15 +679,6 @@ public abstract class AbstractHTTPDestination
             outMessage.remove(HTTP_RESPONSE);
         }
         return responseStream;
-    }
-
-    @FFDCIgnore({ IllegalStateException.class })
-    private void closeResponseOutputStream(HttpServletResponse response) throws IOException {
-        try {
-            response.getOutputStream().close();
-        } catch (IllegalStateException ex) {
-            // response.getWriter() has already been called
-        }
     }
 
     private int getReponseCodeFromMessage(Message message) {

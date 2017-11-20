@@ -211,7 +211,7 @@ public class JAXRSInInterceptor extends AbstractPhaseInterceptor<Message> {
 
             try {
                 ori = JAXRSUtils.findTargetMethod(matchedResources, message,
-                                                  httpMethod, matchedValues, requestContentType, acceptContentTypes, true, true);
+                                                  httpMethod, matchedValues, requestContentType, acceptContentTypes, true);
                 setExchangeProperties(message, exchange, ori, matchedValues, resources.size());
 
                 if (resourceMethodCache != null) {

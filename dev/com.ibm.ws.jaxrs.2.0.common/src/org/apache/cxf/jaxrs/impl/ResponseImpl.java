@@ -58,7 +58,6 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.transform.Source;
 
 import org.apache.cxf.helpers.IOUtils;
-import org.apache.cxf.io.ReaderInputStream;
 import org.apache.cxf.jaxrs.provider.ProviderFactory;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.jaxrs.utils.InjectionUtils;
@@ -429,12 +428,6 @@ public final class ResponseImpl extends Response {
             entityStreamAvailable = entityStream != null;
         } else if (entity instanceof InputStream) {
             entityStream = InputStream.class.cast(entity);
-        } else {
-            Message inMessage = getResponseMessage();
-            Reader reader = inMessage.getContent(Reader.class);
-            if (reader != null) {
-                entityStream = InputStream.class.cast(new ReaderInputStream(reader));
-            }
         }
 
         // we need to check for readers even if no IS is set - the readers may still do it

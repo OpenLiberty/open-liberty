@@ -21,9 +21,11 @@ package org.apache.cxf.jaxrs.provider;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -38,11 +40,14 @@ import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ContainerResponseFilter;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.container.PreMatching;
-import javax.ws.rs.core.Configurable;
 import javax.ws.rs.core.Configuration;
 import javax.ws.rs.core.Feature;
 import javax.ws.rs.core.FeatureContext;
+import javax.ws.rs.ext.ContextResolver;
 import javax.ws.rs.ext.ExceptionMapper;
+import javax.ws.rs.ext.MessageBodyReader;
+import javax.ws.rs.ext.MessageBodyWriter;
+import javax.ws.rs.ext.ParamConverterProvider;
 import javax.ws.rs.ext.ReaderInterceptor;
 import javax.ws.rs.ext.WriterInterceptor;
 
@@ -77,6 +82,19 @@ import com.ibm.websphere.ras.TraceComponent;
 
 public final class ServerProviderFactory extends ProviderFactory {
     private static final TraceComponent tc = Tr.register(ServerProviderFactory.class);
+    private static final Set<Class<?>> SERVER_FILTER_INTERCEPTOR_CLASSES =
+                    new HashSet<Class<?>>(Arrays.<Class<?>> asList(ContainerRequestFilter.class,
+                                                                   ContainerResponseFilter.class,
+                                                                   ReaderInterceptor.class,
+                                                                   WriterInterceptor.class,
+                                                                   //defect 211444, add all provider types of server side
+                                                                   Feature.class,
+                                                                   ExceptionMapper.class,
+                                                                   ContextResolver.class,
+                                                                   DynamicFeature.class,
+                                                                   MessageBodyWriter.class,
+                                                                   MessageBodyReader.class,
+                                                                   ParamConverterProvider.class));
 
     private static final String WADL_PROVIDER_NAME = "org.apache.cxf.jaxrs.model.wadl.WadlGenerator";
     private static final String MAKE_DEFAULT_WAE_LEAST_SPECIFIC = "default.wae.mapper.least.specific";
@@ -418,9 +436,8 @@ public final class ServerProviderFactory extends ProviderFactory {
     }
 
     private FeatureContext createServerFeatureContext() {
-        final FeatureContextImpl featureContext = new FeatureContextImpl();
-        final ServerConfigurableFactory factory = getBus().getExtension(ServerConfigurableFactory.class);
-        final Configurable<FeatureContext> configImpl = (factory == null) ? new ServerFeatureContextConfigurable(featureContext) : factory.create(featureContext);
+        FeatureContextImpl featureContext = new FeatureContextImpl();
+        ServerFeatureContextConfigurable configImpl = new ServerFeatureContextConfigurable(featureContext);
         featureContext.setConfigurable(configImpl);
 
         if (application != null) {
@@ -438,7 +455,7 @@ public final class ServerProviderFactory extends ProviderFactory {
 
     private static class ServerFeatureContextConfigurable extends ConfigurableImpl<FeatureContext> {
         protected ServerFeatureContextConfigurable(FeatureContext mc) {
-            super(mc, RuntimeType.SERVER, ServerConfigurableFactory.SERVER_FILTER_INTERCEPTOR_CLASSES);
+            super(mc, RuntimeType.SERVER, SERVER_FILTER_INTERCEPTOR_CLASSES.toArray(new Class<?>[]{}));
         }
     }
 
