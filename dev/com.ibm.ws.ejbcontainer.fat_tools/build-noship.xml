@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="com.ibm.ws.ejbcontainer.fat_tools" default="build">
+  <import file="../ant_build/public_imports/standard_imports.xml"/>
+
+  <target name="post-compile">
+    <iff>
+      <and>
+        <or>
+          <not>
+            <isset property="no.trace.instrumentation" />
+          </not>
+          <isfalse value="${no.trace.instrumentation}" />
+        </or>
+      </and>
+      <then>
+        <instrument.trace ffdc="true">
+          <fileset dir="${classes.dir}">
+            <!-- This package is for Liberty.  Anything else is a manually-traced source overlay. --> 
+            <include name="com/ibm/websphere/ejbcontainer/test/osgi/**/*.class" />
+          </fileset>
+        </instrument.trace>
+      </then>
+    </iff>
+  </target>
+</project>
