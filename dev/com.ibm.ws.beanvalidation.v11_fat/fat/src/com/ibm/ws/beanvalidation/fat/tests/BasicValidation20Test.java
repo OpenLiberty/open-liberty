@@ -34,7 +34,7 @@ public class BasicValidation20Test extends BasicValidation11CommonTest {
         server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION11);
         server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION10);
         server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION11);
-        server.startServer(BasicValidation11Test.class.getSimpleName() + ".log");
+        server.startServer(BasicValidation20Test.class.getSimpleName() + ".log");
     }
 
     @AfterClass

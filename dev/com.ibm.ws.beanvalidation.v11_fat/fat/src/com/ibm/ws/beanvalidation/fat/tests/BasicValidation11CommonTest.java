@@ -191,6 +191,9 @@ public class BasicValidation11CommonTest extends BasicValidation10CommonTest {
      */
     @Test
     public void testCustomParameterNameProvider11() throws Exception {
+        //TODO: Remove this assumption when the ValidationConfigurationV20FactoryImpl can be
+        // enabled without the CDI bundle
+        assumeTrue(bvalVersion < 20);
         run("beanvalidation_11", "BeanValidationInjection");
     }
 
