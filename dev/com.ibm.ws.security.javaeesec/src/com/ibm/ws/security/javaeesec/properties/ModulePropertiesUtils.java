@@ -10,27 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.properties;
 
-import java.util.Iterator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
-
 import javax.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-
-import com.ibm.wsspi.webcontainer.metadata.WebComponentMetaData;
-import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
-
-
-//TODO: add module name for the error message.
-//TODO: add module name for the error message.
-//TODO: add module name for the error message.
 
 public class ModulePropertiesUtils {
     private static final TraceComponent tc = Tr.register(ModulePropertiesUtils.class);
@@ -73,6 +65,7 @@ public class ModulePropertiesUtils {
         return getHttpAuthenticationMechanism(true);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     private HttpAuthenticationMechanism getHttpAuthenticationMechanism(boolean logError) {
         HttpAuthenticationMechanism ham = null;
         CDI cdi = getCDI();
@@ -95,13 +88,18 @@ public class ModulePropertiesUtils {
                             if (tc.isDebugEnabled()) {
                                 Tr.debug(tc, "HAM from the module BeanManager : " + ham);
                             }
+                        } else if (hams.size() > 1) {
+                            Tr.error(tc, "JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS", getJ2EEModuleName(), getJ2EEApplicationName(), new ArrayList<HttpAuthenticationMechanism>(hams));
+                        } else {
+                            Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                         }
-                    }
-                    if (ham == null) {
+                    } else {
                         Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                     }
-                } else {
+                } else if (implClassList.size() > 1) {
                     Tr.error(tc, "JAVAEESEC_ERROR_MULTIPLE_HTTPAUTHMECHS", getJ2EEModuleName(), getJ2EEApplicationName(), implClassList);
+                } else {
+                    Tr.error(tc, "JAVAEESEC_ERROR_NO_HAM", getJ2EEModuleName(), getJ2EEApplicationName());
                 }
             } else if (logError) {
                 Tr.error(tc, "JAVAEESEC_ERROR_NO_MODULE_PROPS", getJ2EEApplicationName());
@@ -119,11 +117,12 @@ public class ModulePropertiesUtils {
 
     public String extractExpression(String elExpression) {
         if (elExpression != null && (elExpression.startsWith("#{") || elExpression.startsWith("${")) && elExpression.endsWith("}")) {
-            return elExpression.substring(2, elExpression.length() -1);
+            return elExpression.substring(2, elExpression.length() - 1);
         }
         return elExpression;
     }
 
+    @SuppressWarnings("rawtypes")
     protected CDI getCDI() {
         return CDI.current();
     }
