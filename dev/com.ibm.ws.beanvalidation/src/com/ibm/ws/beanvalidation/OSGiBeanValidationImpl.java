@@ -62,11 +62,10 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  * service. <p>
  */
 @Component(service = { ModuleMetaDataListener.class,
-                      BeanValidationUsingClassLoader.class,
-                      BeanValidation.class },
+                       BeanValidationUsingClassLoader.class,
+                       BeanValidation.class },
            immediate = true)
-public class OSGiBeanValidationImpl extends AbstractBeanValidation
-                implements ModuleMetaDataListener, BeanValidationUsingClassLoader {
+public class OSGiBeanValidationImpl extends AbstractBeanValidation implements ModuleMetaDataListener, BeanValidationUsingClassLoader {
     private static final TraceComponent tc = Tr.register(OSGiBeanValidationImpl.class);
 
     private static final String REFERENCE_VALIDATION_CONFIG_FACTORY = "validationConfigFactory";
@@ -74,22 +73,19 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
 
     private MetaDataSlot ivModuleMetaDataSlot;
 
-    private final AtomicServiceReference<ValidationConfigurationFactory> validationConfigFactorySR =
-                    new AtomicServiceReference<ValidationConfigurationFactory>(REFERENCE_VALIDATION_CONFIG_FACTORY);
+    private final AtomicServiceReference<ValidationConfigurationFactory> validationConfigFactorySR = new AtomicServiceReference<ValidationConfigurationFactory>(REFERENCE_VALIDATION_CONFIG_FACTORY);
 
-    private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR =
-                    new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
+    private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
 
     private static final Version DEFAULT_VERSION = BeanValidationRuntimeVersion.VERSION_1_0;
     private Version runtimeVersion = DEFAULT_VERSION;
 
-    private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction =
-                    new PrivilegedAction<ThreadContextAccessor>() {
-                        @Override
-                        public ThreadContextAccessor run() {
-                            return ThreadContextAccessor.getThreadContextAccessor();
-                        }
-                    };
+    private static final PrivilegedAction<ThreadContextAccessor> getThreadContextAccessorAction = new PrivilegedAction<ThreadContextAccessor>() {
+        @Override
+        public ThreadContextAccessor run() {
+            return ThreadContextAccessor.getThreadContextAccessor();
+        }
+    };
 
     @Override
     public void registerValidatorFactory(ModuleMetaData mmd, ClassLoader cl, ValidatorFactory validatorFactory) {
@@ -132,7 +128,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
             synchronized (scopeData) {
                 vf = scopeData.ivValidatorFactory;
                 if (vf == null) {
-                    // It's possible that the requesting component is doing so after the app 
+                    // It's possible that the requesting component is doing so after the app
                     // has been destroyed (i.e. moduleMetaDataDestroyed already called). If so,
                     // indicate by throwing an exception if the version>=11. For compatibility,
                     // leave the v10 case as is.
@@ -394,7 +390,11 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
     }
 
     private boolean isBeanValidationVersion11OrGreater() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) >= 0 ? true : false;
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) >= 0;
+    }
+
+    private boolean isBeanValidationVersion11() {
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) == 0;
     }
 
     @Override
@@ -418,7 +418,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
      * configuration updates.
      */
     private void cleanBvalCache() {
-        if (isBeanValidationVersion11OrGreater()) {
+        if (isBeanValidationVersion11()) {
             ClassLoader classLoader = null;
             SetContextClassLoaderPrivileged setClassLoader = null;
             ClassLoader oldClassLoader = null;
@@ -432,9 +432,7 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation
                     wasTcclCreated = true;
                 }
 
-                ThreadContextAccessor tca = System.getSecurityManager() == null ?
-                                ThreadContextAccessor.getThreadContextAccessor() :
-                                AccessController.doPrivileged(getThreadContextAccessorAction);
+                ThreadContextAccessor tca = System.getSecurityManager() == null ? ThreadContextAccessor.getThreadContextAccessor() : AccessController.doPrivileged(getThreadContextAccessorAction);
 
                 // set the thread context class loader to be used, must be reset in finally block
                 setClassLoader = new SetContextClassLoaderPrivileged(tca);
