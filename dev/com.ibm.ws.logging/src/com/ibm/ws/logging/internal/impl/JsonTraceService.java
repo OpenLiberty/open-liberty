@@ -138,14 +138,12 @@ public class JsonTraceService extends BaseTraceService {
             if (messageLogHandler == null) {
                 messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
                 messageLogHandler.setSync(sync);
-                //Make the utils aware of the Message handler
                 collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
             } else {
                 messageLogHandler.modified(filterdMessageSourceList);
             }
             //for any 'updates' to the FileLogHolder
             messageLogHandler.setWriter(messagesLog);
-
             isMessageJsonConfigured = true;
 
             //Connect the conduits to the handler as necessary
@@ -162,16 +160,15 @@ public class JsonTraceService extends BaseTraceService {
             //If there exists no consoleLogHandler, create one; otherwise call modified();
             if (consoleLogHandler == null) {
                 consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
-                //Make the utils aware of the Console handler
                 collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
                 consoleLogHandler.setWriter(systemOut);
             } else {
                 consoleLogHandler.modified(filterdConsoleSourceList);
             }
-            isConsoleJsonConfigured = true;
-
             //Connect the conduits to the handler as necessary
             updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
+
+            isConsoleJsonConfigured = true;
         }
     }
 
@@ -294,6 +291,7 @@ public class JsonTraceService extends BaseTraceService {
                          * appropriately call setupCollectorManagerPipeline()
                          */
                         if (traceSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
+                            // if (logRecord.getMessage().contains(arg0))
                             traceSource.publish(routedTrace);
                         }
                     }

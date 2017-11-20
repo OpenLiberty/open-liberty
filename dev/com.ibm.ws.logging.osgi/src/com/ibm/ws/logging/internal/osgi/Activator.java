@@ -43,7 +43,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
     private ServiceTracker<EventAdmin, EventAdmin> eventAdminTracker;
     private MessageRouterConfigurator msgRouter;
     private TraceRouterConfigurator traceRouter;
-    private CollectorManagerPipelineConfigurator cmConfigurator; //DYKC
+    private CollectorManagerPipelineConfigurator collectorMgrPipeConfigurator; 
 
     private LoggingConfigurationService logCfgService;
 
@@ -117,8 +117,7 @@ public class Activator implements BundleActivator, ServiceTrackerCustomizer<Even
         msgRouter = new MessageRouterConfigurator(context);
         traceRouter = new TraceRouterConfigurator(context);
         
-        //DYKC-CollectorManagerConfigurator, maybe a better name?
-        cmConfigurator = new CollectorManagerPipelineConfigurator(context);
+        collectorMgrPipeConfigurator = new CollectorManagerPipelineConfigurator(context);
     }
 
     /**

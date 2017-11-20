@@ -144,7 +144,7 @@ public class CollectorManagerPipelineConfigurator {
 
 
     protected void unsetCollectorManagerHandler(ServiceReference<CollectorManager> ref) {
-        //DYKC-problem? do nothing, we want to keep LogSource and TraceSource and conduit actively registered?
+        //Do nothing, we want to keep LogSource and TraceSource and conduit actively registered
     }
 
     /**

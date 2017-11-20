@@ -52,7 +52,6 @@ public class BufferManagerImpl extends BufferManager {
 		if (event == null)
 			throw new NullPointerException();
 		
-		//Need to resolve this somehow
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			//Tr.debug(tc, "Adding event to buffer " + event);
 		}
@@ -108,14 +107,10 @@ public class BufferManagerImpl extends BufferManager {
 	}
 
 	public void addSyncHandler(SyncrhonousHandler syncHandler) {
-		// DYKC-debug
-		//DYKC-debugSystem.out.println("Adding a synchronous handler " + syncHandler.getHandlerName());
 		synchronizedHandlerSet.add(syncHandler);
 	}
 	
 	public void removeSyncHandler(SyncrhonousHandler syncHandler) {
-		// DYKC-debug
-		//DYKC-debugSystem.out.println("removing a synchronous handler " + syncHandler.getHandlerName());
 		synchronizedHandlerSet.remove(syncHandler);
 	}
 

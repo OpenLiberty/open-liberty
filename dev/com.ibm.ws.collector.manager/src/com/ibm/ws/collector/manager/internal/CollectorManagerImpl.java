@@ -57,7 +57,6 @@ public class CollectorManagerImpl implements CollectorManager {
     private final Map<String, HandlerManager> handlerMgrs = new HashMap<String, HandlerManager>();
 
     protected void activate(Map<String, Object> configuration) {
-        //DYKC-debugSystem.out.println("CollectorManagerImpl - Activate");
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }
@@ -90,7 +89,6 @@ public class CollectorManagerImpl implements CollectorManager {
      * When a source is bound, handle all pending subscriptions for the source.
      */
     public synchronized void setSource(Source source) {
-        //DYKC-debug System.out.println("CollectorManagerImpl - setSource " + source.getSourceName());
         String sourceId = CollectorManagerUtils.getSourceId(source);
         SourceManager srcMgr = null;
         if (!sourceMgrs.containsKey(sourceId)) {
@@ -368,7 +366,6 @@ public class CollectorManagerImpl implements CollectorManager {
 
         BufferManagerImpl bufferMgr = new BufferManagerImpl(10000, sourceId);
 
-        //DYKC-review additional logic to set a syncrhonized handler into the conduits/buffers
         if (handler instanceof SyncrhonousHandler) {
             bufferMgr.addSyncHandler((SyncrhonousHandler) handler);
         }
@@ -385,7 +382,6 @@ public class CollectorManagerImpl implements CollectorManager {
     }
 
     private synchronized void unregisterAllBufferManagers() {
-        //DYKC-problem Probably don't want logConduit and traceConduit to be unregistered.
         for (ServiceRegistration<?> entry : activeBuffMgrServices.values()) {
             if (entry != null) {
                 entry.unregister();

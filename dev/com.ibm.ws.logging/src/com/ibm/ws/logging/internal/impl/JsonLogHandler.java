@@ -17,6 +17,8 @@ import java.security.PrivilegedExceptionAction;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.logging.data.AccessLogData;
 import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.collector.CollectorJsonUtils;
@@ -32,6 +34,8 @@ import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
  *
  */
 public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
+
+    private static final TraceComponent tc = Tr.register(JsonLogHandler.class);
 
     protected String serverHostName = null;
     protected String serverName = null;
