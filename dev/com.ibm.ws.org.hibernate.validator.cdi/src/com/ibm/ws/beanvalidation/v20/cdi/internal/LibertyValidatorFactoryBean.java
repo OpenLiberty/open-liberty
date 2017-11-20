@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,6 @@ import java.util.Set;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.Default;
-import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.util.AnnotationLiteral;
 import javax.validation.ValidatorFactory;
 
@@ -28,7 +27,7 @@ import org.hibernate.validator.cdi.internal.ValidationProviderHelper;
 import org.hibernate.validator.cdi.internal.ValidatorFactoryBean;
 
 /**
- * This class is used to extend the Apache ValidatorFactoryBean for the sole purpose
+ * This class is used to extend the Hibernate ValidatorFactoryBean for the sole purpose
  * of overriding the create method. Instead of passing in the ValidatorFactory object
  * when the bean is initialized, we delay the creation of the ValidatorFactory until
  * create is called. The delay is needed since the server thread doesn't have its
@@ -45,17 +44,10 @@ public class LibertyValidatorFactoryBean extends ValidatorFactoryBean {
 
     public LibertyValidatorFactoryBean() {
         super(null, ValidationProviderHelper.forHibernateValidator());
-        System.out.println("@AGG LibertyValidatorFactoryBean ctor");
-    }
-
-    public LibertyValidatorFactoryBean(BeanManager beanManager, ValidationProviderHelper validationProviderHelper) {
-        super(beanManager, validationProviderHelper);
     }
 
     @Override
     public ValidatorFactory create(CreationalContext<ValidatorFactory> context) {
-        System.out.println("@AGG creating VF!");
-        Thread.dumpStack();
         return LibertyHibernateValidatorExtension.getDefaultValidatorFactory();
     }
 

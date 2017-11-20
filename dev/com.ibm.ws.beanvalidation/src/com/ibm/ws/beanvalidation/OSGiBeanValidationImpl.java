@@ -500,12 +500,8 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
         return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) == 0;
     }
 
-    private boolean isBeanValidationVersion11() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_1_1) == 0 ? true : false;
-    }
-
     private boolean isBeanValidationVersion20() {
-        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_2_0) == 0 ? true : false;
+        return runtimeVersion.compareTo(BeanValidationRuntimeVersion.VERSION_2_0) == 0;
     }
 
     @Override
