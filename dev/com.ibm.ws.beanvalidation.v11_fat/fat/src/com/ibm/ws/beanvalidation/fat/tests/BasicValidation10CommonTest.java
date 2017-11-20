@@ -11,6 +11,7 @@
 package com.ibm.ws.beanvalidation.fat.tests;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assume.assumeTrue;
 
 import java.util.List;
 
@@ -23,7 +24,8 @@ import org.junit.Test;
  */
 public class BasicValidation10CommonTest extends AbstractTest {
 
-    protected boolean isUsingBval11;
+    protected static boolean isUsingBval11;
+    protected static int bvalVersion;
 
     /**
      * Verify that the Bean Validation feature is loaded properly and is
@@ -196,6 +198,7 @@ public class BasicValidation10CommonTest extends AbstractTest {
      */
     @Test
     public void testBuildApacheConfiguredValidatorFactory10() throws Exception {
+        assumeTrue(bvalVersion < 20);
         run("ApacheBvalConfig_10", "BeanValidationServlet",
             "testBuildApacheConfiguredValidatorFactory&isFeature11=" + isUsingBval11);
     }
@@ -206,6 +209,7 @@ public class BasicValidation10CommonTest extends AbstractTest {
      */
     @Test
     public void testApacheBvalImplClassVisibility10() throws Exception {
+        assumeTrue(bvalVersion < 20);
         run("ApacheBvalConfig_10", "BeanValidationServlet");
     }
 
