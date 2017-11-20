@@ -22,8 +22,7 @@ import com.ibm.ws.beanvalidation.ValidatorFactoryAccessor;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.wsspi.adaptable.module.Container;
 
-public class BeanValidationExtensionHelper
-{
+public class BeanValidationExtensionHelper {
     private static Map<ModuleMetaData, Container> containerMap = new HashMap<ModuleMetaData, Container>();
 
     /**
@@ -42,7 +41,7 @@ public class BeanValidationExtensionHelper
      * path that requires the module meta data. The normal cannot be taken by the extension, since the time at which it
      * executes the module meta data is not available. Instead the extension has a module meta data listener attached,
      * and registers the created ValidatorFactory when the listener is triggered.
-     * 
+     *
      */
     public static ValidatorFactory validatorFactoryAccessorProxy(ClassLoader cl) {
         return ValidatorFactoryAccessor.getValidatorFactory(cl);
@@ -75,16 +74,4 @@ public class BeanValidationExtensionHelper
             return parent;
         }
     }
-
-//    public static Container getContainer(ModuleMetaData mmd) {
-//        return containerMap.get(mmd);
-//    }
-//
-//    public static void putContainer(ModuleMetaData mmd, Container container) {
-//        containerMap.put(mmd, container);
-//    }
-//
-//    public static void removeContainer(ModuleMetaData mmd) {
-//        containerMap.remove(mmd);
-//    }
 }
