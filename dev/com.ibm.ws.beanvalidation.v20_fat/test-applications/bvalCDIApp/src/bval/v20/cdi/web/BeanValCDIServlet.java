@@ -42,7 +42,6 @@ public class BeanValCDIServlet extends FATServlet {
         Assert.assertNotNull(injectVal);
     }
 
-    // TODO: Disabled because bean is not being injected into TestAnnotationValidator
     @Test
     public void testConstraintValidatorInjection() throws Exception {
         Validator validator = this.injectValidatorFactory.getValidator();
