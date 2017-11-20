@@ -17,7 +17,7 @@
   <Object ocdref="com.ibm.ws.concurrency.policy.concurrencyPolicy"/>
  </Designate>
 
- <OCD id="com.ibm.ws.concurrency.policy.concurrencyPolicy" ibm:alias="concurrencyPolicy" ibm:beta="true" name="%concurrencyPolicy" description="%concurrencyPolicy.desc">
+ <OCD id="com.ibm.ws.concurrency.policy.concurrencyPolicy" ibm:alias="concurrencyPolicy" name="%concurrencyPolicy" description="%concurrencyPolicy.desc">
   <AD id="expedite"          type="Integer" default="0" min="0" name="%expedite" description="%expedite.desc"/>
   <AD id="max"               type="Integer" required="false" min="1" name="%max" description="%max.desc"/>
   <AD id="maxPolicy"         type="String"  default="loose" name="%maxPolicy" description="%maxPolicy.desc">
