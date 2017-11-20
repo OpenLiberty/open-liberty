@@ -10,6 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.concurrent.internal;
 
+import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -21,8 +22,10 @@ import javax.enterprise.concurrent.ManagedScheduledExecutorService;
 import javax.enterprise.concurrent.Trigger;
 
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
@@ -49,6 +52,13 @@ public class ManagedScheduledExecutorServiceImpl extends ManagedExecutorServiceI
      */
     @Reference(target = "(deferrable=false)")
     ScheduledExecutorService scheduledExecSvc;
+
+    @Override
+    @Modified
+    @Trivial
+    protected void modified(ComponentContext context, Map<String, Object> properties) {
+        super.modified(context, properties);
+    }
 
     /**
      * @see java.util.concurrent.ScheduledExecutorService#schedule(java.util.concurrent.Callable, long, java.util.concurrent.TimeUnit)
