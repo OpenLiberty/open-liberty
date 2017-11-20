@@ -26,10 +26,10 @@
     <properties.derby.embedded createDatabase="create" databaseName="${shared.resource.dir}/data/lockdb"/>
   </dataSource>
   <library id="DerbyLib">
-    <fileset dir="${server.config.dir}/derby" includes="*.jar"/>
+    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
   </library>
   
-  <javaPermission codebase="${server.config.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
   <variable name="onError" value="FAIL"/>
 

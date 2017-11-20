@@ -8,33 +8,24 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-apply from: '../cnf/gradle/scripts/fat.gradle'
-	
-addRequiredLibraries {
-  doLast {
-	def serverDir = "${buildDir}/autoFVT/publish/servers/com.ibm.ws.jdbc.fat.v41"
-    configurations {
-      libs
-      derby
-      derby40
-    }
-    dependencies {
-    	libs 'org.glassfish:javax.json:1.0.4'
-    	derby 'org.apache.derby:derby:10.11.1'
-    	derby40 'org.apache.derby:derby:10.7.1.1'
-    }
-    copy {
-      from configurations.libs
-      into "${buildDir}/autoFVT/lib/"
-    }
-    copy {
-        from configurations.derby
-        into serverDir + "/derby"
-    }
-    copy {
-        from configurations.derby40
-        into serverDir + "/derby40"
-    }
-  }
+
+configurations {
+  derby40
 }
-	
+
+dependencies {
+  requiredLibs 'org.glassfish:javax.json:1.0.4'
+  derby40 'org.apache.derby:derby:10.7.1.1'
+}
+
+def serverDir = "${buildDir}/autoFVT/publish/servers/com.ibm.ws.jdbc.fat.v41"
+
+task addDerby40(type: Copy) {
+  from configurations.derby
+  into serverDir + "/derby40"
+}
+
+addRequiredLibraries {
+  dependsOn addDerby
+  dependsOn addDerby40
+}

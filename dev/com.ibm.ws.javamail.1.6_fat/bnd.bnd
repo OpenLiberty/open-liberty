@@ -16,7 +16,7 @@ src: \
   test-applications/fvtweb/src, \
   test-applications/TestingApp/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
   com.ibm.ws.componenttest:public.api;version=1.0.0,\

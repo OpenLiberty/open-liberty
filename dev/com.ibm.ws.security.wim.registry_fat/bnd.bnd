@@ -15,7 +15,7 @@ bVersion=1.0
 src: \
 	fat/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	apache_directory_server;version=latest,\

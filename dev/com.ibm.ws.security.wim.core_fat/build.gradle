@@ -9,27 +9,10 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-apply from: '../cnf/gradle/scripts/fat.gradle'
-
-def autoFvtDir = "${projectDir}/build/libs/autoFVT"
-def publishDir = autoFvtDir + "/publish"
-
-addRequiredLibraries.doLast {
-  /*
-   * Copy libraries necessary for FAT runtime. 
-   */
-  configurations { 
-     fatLibs { }
-  }
-  dependencies { 
-    fatLibs  project(':fattest.simplicity'),
-             project(':com.ibm.ws.security.registry'),
-             project(':com.ibm.ws.security.registry_test.servlet')
-  }
-  copy {
-    from configurations.fatLibs
-    into "${autoFvtDir}/lib/"
-  }
+dependencies { 
+  requiredLibs project(':fattest.simplicity'),
+    project(':com.ibm.ws.security.registry'),
+    project(':com.ibm.ws.security.registry_test.servlet')
 }
 
 autoFVT.doLast {
@@ -37,8 +20,9 @@ autoFVT.doLast {
    * Copy the local ApacheDS LDAP instances. 
    */
   copy {
-    from "${projectDir}/../apache_directory_server/apacheds-2.0.0-M15"
-    into "${buildDir}/autoFVT/apacheds-2.0.0-M15"
+    from project(':apache_directory_server').projectDir
+    into autoFvtDir
+    include 'apacheds-2.0.0-M15'
   }
 
   /*
@@ -51,10 +35,10 @@ autoFVT.doLast {
     'com.ibm.ws.security.wim.core.fat.dynamic'
   ]
   servers.each { server ->
-    copy { 
-      from "${projectDir}/../com.ibm.ws.security.registry_test.servlet/build/libs/test-application"
-      into "${publishDir}/servers/${server}/dropins"
-      include "*.war"
+    copy {
+      from new File(project(':com.ibm.ws.security.registry_test.servlet').buildDir, 'test-application')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
+      include '*.war'
     }
   }
 }

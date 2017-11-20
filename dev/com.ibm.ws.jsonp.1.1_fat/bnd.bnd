@@ -15,7 +15,7 @@ src: \
 	fat/src,\
 	test-applications/JSONP11fat/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\

@@ -19,7 +19,7 @@ src: \
 	test-applications/bvalApp/src,\
 	test-applications/bvalCDIApp/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\

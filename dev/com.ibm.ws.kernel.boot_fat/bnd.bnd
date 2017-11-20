@@ -16,7 +16,7 @@ src: \
 	test-applications/checkJvmAppClasspath/src,\
 	test-applications/shutdownfat/src
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

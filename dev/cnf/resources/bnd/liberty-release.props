@@ -1,4 +1,3 @@
--include= ${workspace}/generated.properties
 
 releaseTypeGA=true
 libertyServiceVersion=17.0.0.3
