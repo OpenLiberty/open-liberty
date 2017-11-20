@@ -41,6 +41,7 @@ public abstract class AbstractEjbEndpointService implements EjbEndpointService {
     private static EjbEndpointService instance = null;
 
     private final Map<String, WebSphereEjbServices> ejbServices = new HashMap<String, WebSphereEjbServices>();
+    private final Map<String, WebSphereEjbDescriptor<?>> ejbDescriptorMap = new HashMap<>();
 
     protected static void setInstance(EjbEndpointService instance) {
         AbstractEjbEndpointService.instance = instance;
@@ -73,7 +74,15 @@ public abstract class AbstractEjbEndpointService implements EjbEndpointService {
                 List<EJBEndpoint> ejbs = eps.getEJBEndpoints();
                 if (ejbs != null && ejbs.size() > 0) {
                     for (EJBEndpoint ejb : ejbs) {
-                        EjbDescriptor<?> descriptor = EjbDescriptorImpl.newInstance(ejb, classLoader);
+                        String j2eeNameString = ejb.getJ2EEName().toString();
+                        WebSphereEjbDescriptor<?> descriptor = null;
+                        synchronized (ejbDescriptorMap) {
+                            descriptor = ejbDescriptorMap.get(j2eeNameString);
+                            if (descriptor == null) {
+                                descriptor = EjbDescriptorImpl.newInstance(ejb, classLoader);
+                                ejbDescriptorMap.put(j2eeNameString, descriptor);
+                            }
+                        }
                         ejbDescriptors.add(descriptor);
                     }
                 }
@@ -114,7 +123,7 @@ public abstract class AbstractEjbEndpointService implements EjbEndpointService {
         synchronized (ejbServices) {
             services = ejbServices.get(applicationID);
             if (services == null) {
-                services = new WebSphereEjbServicesImpl();
+                services = new WebSphereEjbServicesImpl(applicationID, ejbDescriptorMap);
                 ejbServices.put(applicationID, services);
             }
         }

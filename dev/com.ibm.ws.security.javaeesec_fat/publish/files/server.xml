@@ -2,8 +2,6 @@
 
 	<featureManager>
 		<feature>appSecurity-3.0</feature>
-		<feature>el-3.0</feature>
-		<feature>javaeesecinternals-1.0</feature>
 	</featureManager>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires 1/4/2099 -->

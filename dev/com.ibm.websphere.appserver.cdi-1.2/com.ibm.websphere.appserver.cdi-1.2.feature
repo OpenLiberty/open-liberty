@@ -46,7 +46,7 @@ Subsystem-Name: Contexts and Dependency Injection 1.2
  com.ibm.websphere.appserver.javax.servlet-3.1, \
  com.ibm.websphere.appserver.javax.jsf-2.2, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
--bundles=com.ibm.ws.org.jboss.weld.2.4.3, \
+-bundles=com.ibm.ws.org.jboss.weld.2.4.5, \
  com.ibm.ws.org.jboss.jdeparser.1.0.0, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.jboss.logging.3.3.0, \

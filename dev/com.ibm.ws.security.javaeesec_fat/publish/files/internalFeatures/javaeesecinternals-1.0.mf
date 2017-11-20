@@ -1,6 +1,0 @@
-Subsystem-ManifestVersion: 1
-Subsystem-SymbolicName: javaeesecinternals-1.0; visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Type: osgi.subsystem.feature
-IBM-API-Package: com.ibm.ws.security.javaeesec.properties; version="1.0"; type="internal"
-IBM-Feature-Version: 2

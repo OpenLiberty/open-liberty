@@ -62,7 +62,7 @@ javax.enterprise:cdi-api:2.0
 javax.inject:javax.inject:1
 javax.interceptor:javax.interceptor-api:1.2
 javax.jms:javax.jms-api:2.0
-javax.json:javax.json-api:1.1
+javax.json:javax.json-api:1.1.2
 javax.json.bind:javax.json.bind-api:1.0
 javax.mail:javax.mail-api:1.5.0
 javax.mail:javax.mail-api:1.6.0
@@ -100,13 +100,13 @@ org.apache.commons:commons-lang3:3.5
 org.apache.commons:commons-math:2.2
 org.apache.commons:commons-weaver-privilizer:1.1
 org.apache.commons:commons-weaver-processor:1.1
-org.apache.cxf:cxf-core:3.1.11
-org.apache.cxf:cxf-rt-frontend-jaxrs:3.1.11
-org.apache.cxf:cxf-rt-rs-client:3.1.11
-org.apache.cxf:cxf-rt-rs-service-description:3.1.11
-org.apache.cxf:cxf-rt-transports-http:3.1.11
-org.apache.cxf:cxf-tools-common:3.1.11
-org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.11
+org.apache.cxf:cxf-core:3.1.14
+org.apache.cxf:cxf-rt-frontend-jaxrs:3.1.14
+org.apache.cxf:cxf-rt-rs-client:3.1.14
+org.apache.cxf:cxf-rt-rs-service-description:3.1.14
+org.apache.cxf:cxf-rt-transports-http:3.1.14
+org.apache.cxf:cxf-tools-common:3.1.14
+org.apache.cxf:cxf-tools-wadlto-jaxrs:3.1.14
 org.apache.derby:derby:10.11.1.1
 org.apache.derby:derbynet:10.11.1.1
 org.apache.directory.server:apacheds-service:2.0.0-M15
@@ -154,7 +154,7 @@ org.eclipse.microprofile.config:microprofile-config-api:1.0
 org.eclipse.microprofile.config:microprofile-config-api:1.1
 org.eclipse.microprofile.jwt:microprofile-jwt-auth-api:1.0
 org.glassfish:javax.json:1.0.4
-org.glassfish:javax.json:1.1
+org.glassfish:javax.json:1.1.2
 org.glassfish.hk2:hk2-api:2.5.0-b42 
 org.glassfish.hk2:hk2-locator:2.5.0-b42
 org.glassfish.hk2:hk2-utils:2.5.0-b42
@@ -172,7 +172,7 @@ org.jboss.logging:jboss-logging:3.3.0.Final
 org.jboss.shrinkwrap:shrinkwrap-api:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-impl-base:1.2.3
 org.jboss.shrinkwrap:shrinkwrap-spi:1.2.3
-org.jboss.weld:weld-osgi-bundle:2.4.3.Final
+org.jboss.weld:weld-osgi-bundle:2.4.5.Final
 org.jboss.weld:weld-osgi-bundle:3.0.1.Final
 org.jmock:jmock:2.5.1
 org.jmock:jmock-junit4:2.5.1
