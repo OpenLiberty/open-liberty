@@ -19,12 +19,11 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletMapping;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.MappingMatch;
 import javax.servlet.http.PushBuilder;
-import javax.servlet.http.ServletMapping;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.servlet.request.IRequest;
@@ -33,9 +32,8 @@ import com.ibm.ws.webcontainer31.srt.SRTServletRequest31;
 import com.ibm.ws.webcontainer40.osgi.srt.SRTConnectionContext40;
 import com.ibm.ws.webcontainer40.osgi.webapp.WebAppDispatcherContext40;
 import com.ibm.ws.webcontainer40.srt.http.HttpPushBuilder;
-import com.ibm.ws.webcontainer40.srt.http.HttpServletMapping;
+import com.ibm.ws.webcontainer40.srt.http.HttpServletMappingImpl;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
-import com.ibm.wsspi.webcontainer.WCCustomProperties;
 import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
 import com.ibm.wsspi.webcontainer40.WCCustomProperties40;
@@ -101,43 +99,7 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
     }
 
     @Override
-    public Cookie[] getCookies(String name) {
-        String methodName = "getCookies";
-
-        if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME, methodName, "");
-        }
-        if (WCCustomProperties.CHECK_REQUEST_OBJECT_IN_USE) {
-            checkRequestObjectInUse();
-        }
-        Cookie[] allCookies = _request.getCookies();
-        if (allCookies != null) {
-            Cookie[] tempCookies = new Cookie[allCookies.length];
-            int foundCookies = 0;
-
-            // Get all the cookies that matches a given name
-            for (int i = 0; i < allCookies.length; i++) {
-                if (allCookies[i].getName().equals(name)) {
-                    tempCookies[foundCookies] = allCookies[i];
-                    foundCookies++;
-                }
-            }
-
-            if (foundCookies == 0) {
-                return null;
-            }
-
-            // Create a new array for found cookies
-            Cookie[] cookies = new Cookie[foundCookies];
-            System.arraycopy(tempCookies, 0, cookies, 0, foundCookies);
-            return cookies;
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public ServletMapping getMapping() {
+    public HttpServletMapping getHttpServletMapping() {
         String methodName = "getMapping";
 
         if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
@@ -146,7 +108,7 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
 
         WebAppDispatcherContext40 dispatchContext = (WebAppDispatcherContext40) this.getDispatchContext();
 
-        ServletMapping returnMapping = dispatchContext.getServletMapping();
+        HttpServletMapping returnMapping = dispatchContext.getServletMapping();
         if (returnMapping != null) {
             if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                 logger.logp(Level.FINE, CLASS_NAME, methodName, "existing mapping found. Servlet name = " + returnMapping.getServletName());
@@ -190,39 +152,39 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
             switch (dispatchContext.getMappingMatch()) {
                 case CONTEXT_ROOT:
                     // matchValue and pattern are both the empty string
-                    returnMapping = new HttpServletMapping(MappingMatch.CONTEXT_ROOT, "", "", servletName);
+                    returnMapping = new HttpServletMappingImpl(MappingMatch.CONTEXT_ROOT, "", "", servletName);
                     break;
                 case DEFAULT:
                     // matchValue is the empty string and the pattern is "/"
-                    returnMapping = new HttpServletMapping(MappingMatch.DEFAULT, "", pattern, servletName);
+                    returnMapping = new HttpServletMappingImpl(MappingMatch.DEFAULT, "", pattern, servletName);
                     break;
                 case EXACT:
                     // matchValue and pattern are the same in this case except matchValue has no leading "/"
                     pattern = servletPath + pathInfo;
-                    returnMapping = new HttpServletMapping(MappingMatch.EXACT, matchValue, pattern, servletName);
+                    returnMapping = new HttpServletMappingImpl(MappingMatch.EXACT, matchValue, pattern, servletName);
                     break;
                 case EXTENSION:
                     // matchValue is everything before the extension (".") and the pattern is "/*" + the extension including (".") taken from the servletPath.
                     matchValue = matchValue.substring(0, matchValue.indexOf("."));
                     pattern = "*" + servletPath.substring(servletPath.indexOf("."), servletPath.length());
-                    returnMapping = new HttpServletMapping(MappingMatch.EXTENSION, matchValue, pattern, servletName);
+                    returnMapping = new HttpServletMappingImpl(MappingMatch.EXTENSION, matchValue, pattern, servletName);
                     break;
                 case PATH:
                     // matchValue is the pathInfo after the last "/" and pattern is the servletPath + "/*"
                     matchValue = pathInfo.substring(pathInfo.lastIndexOf("/") + 1, pathInfo.length());
                     pattern = servletPath + "/*";
-                    returnMapping = new HttpServletMapping(MappingMatch.PATH, matchValue, pattern, servletName);
+                    returnMapping = new HttpServletMappingImpl(MappingMatch.PATH, matchValue, pattern, servletName);
                     break;
                 default:
                     // If nothing else matches we should return UNKNOWN
-                    returnMapping = new HttpServletMapping(MappingMatch.UNKNOWN, "", "", "");
+                    returnMapping = new HttpServletMappingImpl(null, "", "", "");
                     break;
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
                 logger.logp(Level.FINE, CLASS_NAME, methodName, "matching match not found.");
             }
-            returnMapping = new HttpServletMapping(MappingMatch.UNKNOWN, "", "", "");
+            returnMapping = new HttpServletMappingImpl(null, "", "", "");
         }
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
