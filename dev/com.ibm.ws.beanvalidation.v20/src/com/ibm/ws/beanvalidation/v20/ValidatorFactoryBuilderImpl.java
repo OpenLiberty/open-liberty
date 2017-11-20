@@ -22,6 +22,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
@@ -41,7 +42,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  *
  */
-@Component(service = ValidatorFactoryBuilder.class)
+@Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
+           immediate = true)
 public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ValidatorFactoryBuilderImpl.class);
 
