@@ -40,8 +40,8 @@ public class JsonbCDITestServlet extends FATServlet {
         assertNotNull(jsonb);
         assertNotNull(jsonb2);
         assertNotNull(bean.getJsonb());
-        assertEquals("Two Jsonb injection points should inject the same object instance", jsonb.toString(), jsonb2.toString());
-        assertEquals("Two Jsonb injection points should inject the same object instance", jsonb.toString(), bean.getJsonb().toString());
+        assertEquals("Two Jsonb injection points should inject the same object instance", jsonb, jsonb2);
+        assertEquals("Two Jsonb injection points should inject the same object instance", jsonb, bean.getJsonb());
     }
 
     @Test

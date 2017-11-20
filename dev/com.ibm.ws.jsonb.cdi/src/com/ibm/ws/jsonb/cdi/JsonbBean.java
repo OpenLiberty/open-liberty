@@ -25,6 +25,8 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 import javax.json.bind.Jsonb;
+import javax.json.bind.spi.JsonbProvider;
+import javax.json.spi.JsonProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -38,9 +40,17 @@ public class JsonbBean implements Bean<Jsonb>, PassivationCapable {
     static final Set<Type> types = new HashSet<Type>(Arrays.asList(Object.class, Jsonb.class));
     static final Set<Annotation> qualifiers = new HashSet<Annotation>(Arrays.asList(Default.Literal.INSTANCE, Any.Literal.INSTANCE));
 
+    private final JsonbProvider jsonbProvider;
+    private final JsonProvider jsonpProvider;
+
+    public JsonbBean(JsonbProvider jsonbProivder, JsonProvider jsonpProvider) {
+        this.jsonbProvider = jsonbProivder;
+        this.jsonpProvider = jsonpProvider;
+    }
+
     @Override
     public Jsonb create(CreationalContext<Jsonb> ctx) {
-        return JsonbExtension.create(ctx);
+        return jsonbProvider.create().withProvider(jsonpProvider).build();
     }
 
     @Override
@@ -101,7 +111,7 @@ public class JsonbBean implements Bean<Jsonb>, PassivationCapable {
 
     @Override
     public String getId() {
-        return "JsonbBean-" + hashCode();
+        return getClass().getCanonicalName() + '-' + hashCode();
     }
 
 }
