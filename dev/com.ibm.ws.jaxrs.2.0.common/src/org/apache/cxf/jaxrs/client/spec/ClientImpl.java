@@ -387,7 +387,7 @@ public class ClientImpl implements Client {
                 }
                 bean.setThreadSafe(threadSafe);
                 if (threadSafe) {
-                    Integer cleanupPeriod = getIntValue(configProps.get(THREAD_SAFE_CLIENT_STATE_CLEANUP_PROP));
+                    Integer cleanupPeriod = getIntValue(configProps.get(THREAD_SAFE_CLIENT_PROP));
                     if (cleanupPeriod == null) {
                         cleanupPeriod = THREAD_SAFE_CLIENT_STATE_CLEANUP_PERIOD;
                     }

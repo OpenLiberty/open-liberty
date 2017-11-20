@@ -77,7 +77,7 @@ public class Headers {
     //Liberty Change for CXF End
 
     private static final List<String> SENSITIVE_HEADERS = Arrays.asList("Authorization", "Proxy-Authorization");
-    private static final List<Object> SENSITIVE_HEADER_MARKER = Arrays.asList((Object) "***");
+    private static final List<String> SENSITIVE_HEADER_MARKER = Arrays.asList("***");
     private static final String ALLOW_LOGGING_SENSITIVE_HEADERS = "allow.logging.sensitive.headers";
     /**
      * Known HTTP headers whose values have to be represented as individual HTTP headers
@@ -119,9 +119,8 @@ public class Headers {
         String version = Version.getCurrentVersion();
         return name + "/" + version;
     }
-
-    static String toString(Map<String, List<Object>> headers, boolean logSensitiveHeaders) {
-        Map<String, List<Object>> filteredHeaders = new TreeMap<String, List<Object>>(String.CASE_INSENSITIVE_ORDER);
+    static String toString(Map<String, List<String>> headers, boolean logSensitiveHeaders) {
+        Map<String, List<String>> filteredHeaders = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
         filteredHeaders.putAll(headers);
         if (!logSensitiveHeaders) {
             for (String filteredKey : SENSITIVE_HEADERS) {
@@ -311,14 +310,14 @@ public class Headers {
      * @param headers The Message protocol headers.
      */
     static void logProtocolHeaders(Level level,
-                                   Map<String, List<Object>> headersMap,
+                                   Map<String, List<String>> headersMap,
                                    boolean logSensitiveHeaders) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            for (Map.Entry<String, List<Object>> entry : headersMap.entrySet()) {
+            for (Map.Entry<String, List<String>> entry : headersMap.entrySet()) {
                 String key = entry.getKey();
                 boolean sensitive = !logSensitiveHeaders && SENSITIVE_HEADERS.contains(key);
-                List<Object> headerList = sensitive ? SENSITIVE_HEADER_MARKER : entry.getValue();
-                for (Object value : headerList) {
+                List<String> headerList = sensitive ? SENSITIVE_HEADER_MARKER : entry.getValue();
+                for (String value : headerList) {
                     Tr.debug(tc, key + ": "
                                  + (value == null ? "<null>" : value.toString()));
                 }
@@ -367,9 +366,7 @@ public class Headers {
         }
 
         transferProtocolHeadersToURLConnection(connection);
-
-        Map<String, List<Object>> theHeaders = CastUtils.cast(headers);
-        logProtocolHeaders(Level.FINE, theHeaders, logSensitiveHeaders());
+        logProtocolHeaders(Level.FINE, headers, logSensitiveHeaders());
     }
 
     public String determineContentType() {
@@ -458,8 +455,7 @@ public class Headers {
             headers.put(Message.CONTENT_TYPE, Collections.singletonList(req.getContentType()));
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Map<String, List<Object>> theHeaders = CastUtils.cast(headers);
-            Tr.debug(tc, "Request Headers: " + toString(theHeaders,
+            Tr.debug(tc, "Request Headers: " + toString(headers,
                                                                logSensitiveHeaders()));
         }
     }

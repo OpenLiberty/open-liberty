@@ -101,7 +101,7 @@ import org.apache.cxf.transport.MessageObserver;
 
 /**
  * Common proxy and http-centric client implementation
- *
+ * 
  */
 public abstract class AbstractClient implements Client {
     protected static final String REQUEST_CONTEXT = "RequestContext";
@@ -498,11 +498,7 @@ public abstract class AbstractClient implements Client {
         @SuppressWarnings("unchecked")
         Class<T> theClass = (Class<T>) cls;
 
-        Object contentTypeHeader = headers.getFirst("Content-Type");
-        if (contentTypeHeader == null) {
-            contentTypeHeader = MediaType.WILDCARD;
-        }
-        MediaType contentType = JAXRSUtils.toMediaType(contentTypeHeader.toString());
+        MediaType contentType = JAXRSUtils.toMediaType(headers.getFirst("Content-Type").toString());
 
         List<WriterInterceptor> writers = ClientProviderFactory.getInstance(outMessage)
                         .createMessageBodyWriterInterceptor(theClass, type, anns, contentType, outMessage, null);
@@ -563,7 +559,7 @@ public abstract class AbstractClient implements Client {
 
     protected void completeExchange(Exchange exchange, boolean proxy) {
         // higher level conduits such as FailoverTargetSelector need to
-        // clear the request state but a fair number of response objects
+        // clear the request state but a fair number of response objects 
         // depend on InputStream being still open thus lower-level conduits
         // operating on InputStream don't have to close streams pro-actively
         exchange.put(KEEP_CONDUIT_ALIVE, true);
@@ -573,7 +569,7 @@ public abstract class AbstractClient implements Client {
             // usually the (failover) conduit change will result in a retry call
             // which in turn will reset the base and current request URI.
             // In some cases, such as the "upfront" load-balancing, etc, the retries
-            // won't be executed so it is necessary to reset the base address
+            // won't be executed so it is necessary to reset the base address 
             calculateNewRequestURI(URI.create(s), getCurrentURI(), proxy);
             return;
         }
@@ -623,15 +619,15 @@ public abstract class AbstractClient implements Client {
         Exchange exchange = outMessage.getExchange();
         Integer responseCode = getResponseCode(exchange);
         if (responseCode == null
-            || responseCode < 300 && !(actualEx instanceof IOException)
+            || responseCode < 300 && !(actualEx instanceof IOException) 
             || actualEx instanceof IOException && exchange.get("client.redirect.exception") != null) {
             if (actualEx instanceof ProcessingException) {
                 throw (RuntimeException)actualEx;
             } else if (actualEx != null) {
                 Object useProcExProp = exchange.get("wrap.in.processing.exception");
                 if (actualEx instanceof RuntimeException
-                    && useProcExProp != null && PropertyUtils.isFalse(useProcExProp)) {
-                    throw (Exception)actualEx;
+                    && useProcExProp != null && PropertyUtils.isFalse(useProcExProp)) {                
+                    throw (Exception)actualEx;    
                 } else {
                     throw new ProcessingException(actualEx);
                 }
@@ -803,7 +799,7 @@ public abstract class AbstractClient implements Client {
     protected String convertParamValue(Object pValue, Annotation[] anns) {
         return convertParamValue(pValue, pValue == null ? null : pValue.getClass(), anns);
     }
-    protected String convertParamValue(Object pValue, Class<?> pClass, Annotation[] anns) {
+    protected String convertParamValue(Object pValue, Class<?> pClass, Annotation[] anns) {    
         if (pValue == null && pClass == null) {
             return null;
         }
@@ -913,9 +909,9 @@ public abstract class AbstractClient implements Client {
     }
 
     // Note that some conduit selectors may update Message.ENDPOINT_ADDRESS
-    // after the conduit selector has been prepared but before the actual
-    // invocation thus it is also important to have baseURI and currentURI
-    // synched up with the latest endpoint address, after a successful proxy
+    // after the conduit selector has been prepared but before the actual 
+    // invocation thus it is also important to have baseURI and currentURI 
+    // synched up with the latest endpoint address, after a successful proxy 
     // or web client invocation has returned
     protected void prepareConduitSelector(Message message, URI currentURI, boolean proxy) {
         try {
@@ -1009,7 +1005,7 @@ public abstract class AbstractClient implements Client {
 
         String ct = headers.getFirst(HttpHeaders.CONTENT_TYPE);
         m.put(Message.CONTENT_TYPE, ct);
-
+        
         body = checkIfBodyEmpty(body, ct);
         setEmptyRequestPropertyIfNeeded(m, body);
 
@@ -1038,13 +1034,13 @@ public abstract class AbstractClient implements Client {
     private void setRequestMethod(Message m, String httpMethod) {
         m.put(Message.HTTP_REQUEST_METHOD, httpMethod);
         if (!KNOWN_METHODS.contains(httpMethod) && !m.containsKey("use.async.http.conduit")) {
-            // if the async conduit is loaded then let it handle this method without users
+            // if the async conduit is loaded then let it handle this method without users 
             // having to explicitly request it given that, without reflectively updating
             // HTTPUrlConnection, it will not work without the async conduit anyway
             m.put("use.async.http.conduit", true);
         }
-        //TODO: consider setting "use.httpurlconnection.method.reflection" here too -
-        // if the async conduit is not loaded then the only way for the custom HTTP verb
+        //TODO: consider setting "use.httpurlconnection.method.reflection" here too - 
+        // if the async conduit is not loaded then the only way for the custom HTTP verb 
         // to be supported is to attempt to reflectively modify HTTPUrlConnection
     }
 
@@ -1069,7 +1065,7 @@ public abstract class AbstractClient implements Client {
     }
 
     protected Map<String, Object> getRequestContext(Message outMessage) {
-        Map<String, Object> invContext
+        Map<String, Object> invContext 
             = CastUtils.cast((Map<?, ?>)outMessage.get(Message.INVOCATION_CONTEXT));
         return CastUtils.cast((Map<?, ?>) invContext.get(REQUEST_CONTEXT));
     }
@@ -1126,7 +1122,7 @@ public abstract class AbstractClient implements Client {
         outMessage.getExchange().put("org.apache.cxf.resource.operation.name", name);
     }
 
-
+    
     protected static Type getCallbackType(InvocationCallback<?> callback) {
         Class<?> cls = callback.getClass();
         ParameterizedType pt = findCallbackType(cls);
@@ -1135,12 +1131,12 @@ public abstract class AbstractClient implements Client {
             actualType = tp;
             break;
         }
-        if (actualType instanceof TypeVariable) {
+        if (actualType instanceof TypeVariable) { 
             actualType = InjectionUtils.getSuperType(cls, (TypeVariable<?>)actualType);
         }
         return actualType;
     }
-
+    
     protected static ParameterizedType findCallbackType(Class<?> cls) {
         if (cls == null || cls == Object.class) {
             return null;
@@ -1155,17 +1151,17 @@ public abstract class AbstractClient implements Client {
         }
         return findCallbackType(cls.getSuperclass());
     }
-
+    
     protected static Class<?> getCallbackClass(Type outType) {
         Class<?> respClass = null;
         if (outType instanceof Class) {
             respClass = (Class<?>)outType;
-        } else if (outType instanceof ParameterizedType) {
+        } else if (outType instanceof ParameterizedType) { 
             ParameterizedType pt = (ParameterizedType)outType;
             if (pt.getRawType() instanceof Class) {
                 respClass = (Class<?>)pt.getRawType();
             }
-        } else if (outType == null) {
+        } else if (outType == null) { 
             respClass = Response.class;
         }
         return respClass;
@@ -1176,7 +1172,7 @@ public abstract class AbstractClient implements Client {
             state.reset();
         }
     }
-
+    
     protected abstract class AbstractBodyWriter extends AbstractOutDatabindingInterceptor {
 
         public AbstractBodyWriter() {
@@ -1243,8 +1239,8 @@ public abstract class AbstractClient implements Client {
                     cb.handleException(message, ex);
                 }
             }
-
-
+            
+            
         }
     }
     protected abstract class AbstractClientAsyncResponseInterceptor extends AbstractPhaseInterceptor<Message> {
@@ -1285,16 +1281,16 @@ public abstract class AbstractClient implements Client {
                     r = (Response)results[0];
                 }
             } catch (Exception ex) {
-                Throwable t = ex instanceof WebApplicationException
-                    ? (WebApplicationException)ex
-                    : ex instanceof ProcessingException
+                Throwable t = ex instanceof WebApplicationException 
+                    ? (WebApplicationException)ex 
+                    : ex instanceof ProcessingException 
                     ? (ProcessingException)ex : new ProcessingException(ex);
                 cb.handleException(message, t);
                 return;
             }
             doHandleAsyncResponse(message, r, cb);
         }
-
+        
         protected abstract void doHandleAsyncResponse(Message message, Response r, JaxrsClientCallback<?> cb);
 
         protected void closeAsyncResponseIfPossible(Response r, Message outMessage, JaxrsClientCallback<?> cb) {
@@ -1302,7 +1298,7 @@ public abstract class AbstractClient implements Client {
                 r.close();
             }
         }
-
+        
         protected void handleAsyncFault(Message message) {
         }
     }
