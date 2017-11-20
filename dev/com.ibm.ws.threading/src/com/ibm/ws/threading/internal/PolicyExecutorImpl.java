@@ -333,6 +333,23 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public int cancel(String identifier, boolean interruptIfRunning) {
+        int count = 0;
+
+        // Remove and cancel all queued tasks.
+        for (PolicyTaskFutureImpl<?> f = queue.poll(); f != null; f = queue.poll())
+            if (f.cancel(false))
+                count++;
+
+        // Cancel tasks that are running
+        for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
+            if (it.next().cancel(interruptIfRunning))
+                count++;
+
+        return count;
+    }
+
+    @Override
     public PolicyExecutor expedite(int num) {
         if (num == -1)
             num = Integer.MAX_VALUE;
@@ -571,6 +588,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     Tr.debug(this, tc, "expedites/maxConcurrency available", cca, maxConcurrencyConstraint.availablePermits());
             }
         }
+    }
+
+    @Override
+    @Trivial
+    public String getIdentifier() {
+        return identifier;
     }
 
     @Override
