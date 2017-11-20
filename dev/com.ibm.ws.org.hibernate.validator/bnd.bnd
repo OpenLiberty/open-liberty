@@ -10,9 +10,4 @@
 #*******************************************************************************
 -include= jar:${fileuri;${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}}!/META-INF/MANIFEST.MF,bnd.overrides
 
-instrument.disabled: true
-
--buildpath: \
-    org.hibernate.validator:hibernate-validator;version=6.0.4.Final,\
-    com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-    com.ibm.websphere.javaee.validation.2.0;version=latest
+-buildpath: org.hibernate.validator:hibernate-validator;version=6.0.4.Final

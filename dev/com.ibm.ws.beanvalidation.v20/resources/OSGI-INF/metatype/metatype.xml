@@ -12,13 +12,6 @@
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0" 
                    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
-
-	<OCD description="internal use only" name="internal" 
-         id="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory">
-
-        <AD name="internal" description="internal use only"
-            id="type" required="true" type="String"/>
-    </OCD>
     
     <Designate factoryPid="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory">
         <Object ocdref="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory"/>

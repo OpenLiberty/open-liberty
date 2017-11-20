@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ import org.hibernate.validator.cdi.internal.ValidationProviderHelper;
 import org.hibernate.validator.cdi.internal.ValidatorBean;
 
 /**
- * This class is used to extend the Apache ValidatorBean for the sole purpose
+ * This class is used to extend the Hibernate ValidatorBean for the sole purpose
  * of overriding the create method. Instead of passing in the Validator object
  * when the bean is initialized, we delay the creation of the Validator until
  * create is called. The delay is needed since the server thread doesn't have its
