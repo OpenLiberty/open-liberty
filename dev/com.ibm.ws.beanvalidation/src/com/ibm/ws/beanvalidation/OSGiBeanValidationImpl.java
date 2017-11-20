@@ -344,10 +344,6 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
 
             // store the module container in slot
             mmd.setMetaData(mmdSlot, scopeData);
-
-            // map used by ValidationReleasableImpl for looking up the ManagedObjectService
-            //Dead code???
-//            BeanValidationExtensionHelper.putContainer(mmd, container);
         }
 
     }
@@ -399,8 +395,6 @@ public class OSGiBeanValidationImpl extends AbstractBeanValidation implements Mo
                     scopeData.configurator = null;
                     scopeData.ivValidatorFactory = null;
                 }
-                //Dead code?
-                //BeanValidationExtensionHelper.removeContainer(mmd);
             }
         }
 
