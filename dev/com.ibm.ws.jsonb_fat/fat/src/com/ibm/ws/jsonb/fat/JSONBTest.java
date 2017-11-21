@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import static com.ibm.ws.jsonb.fat.FATSuite.CDI_APP;
-import static com.ibm.ws.jsonb.fat.FATSuite.JSONB_APP;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_GLASSFISH_JSONP;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_YASSON;
 import static org.junit.Assert.assertNotNull;
@@ -19,11 +17,14 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -32,25 +33,27 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jsonb.cdi.web.JsonbCDITestServlet;
 import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.YassonTestServlet;
 
 @RunWith(FATRunner.class)
 public class JSONBTest extends FATServletClient {
+    private static final String appName = "jsonbapp";
 
     @Server("com.ibm.ws.jsonb.fat")
     @TestServlets({
-                    @TestServlet(servlet = JSONBTestServlet.class, contextRoot = JSONB_APP),
-                    @TestServlet(servlet = YassonTestServlet.class, contextRoot = JSONB_APP),
-                    @TestServlet(servlet = JsonbCDITestServlet.class, contextRoot = CDI_APP)
+                    @TestServlet(servlet = JSONBTestServlet.class, path = appName + "/JSONBTestServlet"),
+                    @TestServlet(servlet = YassonTestServlet.class, path = appName + "/YassonTestServlet")
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.jsonbApp(server);
-        FATSuite.cdiApp(server);
+        WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war")
+                        .addPackage("web.jsonbtest");
+        ShrinkHelper.exportAppToServer(server, app);
+
+        server.addInstalledAppForValidation(appName);
         server.startServer();
     }
 
