@@ -124,4 +124,15 @@ public abstract class PolicyTaskCallback {
      * @throws ExecutionException
      */
     public void raiseAbortedException(Throwable x) throws ExecutionException {}
+
+    /**
+     * Allows for raising a more meaningful exception when the Future.get is attempted from the same
+     * thread that is preparing to submit or start the task. This is essentially a deadlock where the
+     * task will never be able to start. The deadlock must be broken by raising an exception.
+     * The default implementation does nothing, in response to which the policy executor raises a generic
+     * InterruptedException without any message or cause exception.
+     *
+     * @throws InterruptedException if the callback provider wishes to replace the generic InterruptedException that is raised for this condition.
+     */
+    public void resolveDeadlockOnFutureGet() throws InterruptedException {}
 }
