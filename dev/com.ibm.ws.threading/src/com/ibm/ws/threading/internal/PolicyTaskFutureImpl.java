@@ -504,14 +504,14 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "canceled from queue");
                     if (callback != null)
-                        callback.onCancel(task, this, false, false);
+                        callback.onCancel(task, this, false);
                 } else if (state.get() == PRESUBMIT) {
                     nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
                     state.releaseShared(CANCELED);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "canceled during pre-submit");
                     if (callback != null)
-                        callback.onCancel(task, this, false, false);
+                        callback.onCancel(task, this, false);
                 } else if (interruptIfRunning) {
                     state.releaseShared(CANCELING);
                     Thread t = thread;
@@ -524,12 +524,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     } finally {
                         state.releaseShared(CANCELED);
                         if (callback != null)
-                            callback.onCancel(task, this, false, true);
+                            callback.onCancel(task, this, true);
                     }
                 } else {
                     state.releaseShared(CANCELED);
                     if (callback != null)
-                        callback.onCancel(task, this, false, true);
+                        callback.onCancel(task, this, true);
                 }
 
                 return true;

@@ -69,10 +69,9 @@ public abstract class PolicyTaskCallback {
      *
      * @param task the Callable or Runnable task.
      * @param future the future for the task that was canceled.
-     * @param timedOut indicates if the start timeout elapsed and caused cancellation.
      * @param whileRunning indicates if the task was canceled while running (as opposed to while still queued for execution or just before it started).
      */
-    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {}
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean whileRunning) {}
 
     /**
      * Invoked on the thread of execution of a task after it completes, which could be successfully, exceptionally, or due to cancellation/interrupt.
