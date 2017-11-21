@@ -382,11 +382,14 @@ public class CollectorManagerImpl implements CollectorManager {
     }
 
     private synchronized void unregisterAllBufferManagers() {
-        for (ServiceRegistration<?> entry : activeBuffMgrServices.values()) {
+        Map<String, ServiceRegistration<?>> shutDownCopyBuffMgrService = new HashMap<String, ServiceRegistration<?>>(activeBuffMgrServices);
+        activeBuffMgrServices.clear();
+        for (ServiceRegistration<?> entry : shutDownCopyBuffMgrService.values()) {
             if (entry != null) {
                 entry.unregister();
             }
         }
+        shutDownCopyBuffMgrService.clear();
     }
 
     private synchronized void retrieveBundleContext() {

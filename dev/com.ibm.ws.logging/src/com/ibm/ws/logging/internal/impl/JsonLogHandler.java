@@ -31,7 +31,7 @@ import com.ibm.wsspi.collector.manager.CollectorManager;
 import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
 
 /**
- *
+ * An abstract class that defines the common functionality of a json handler services
  */
 public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
 
@@ -63,6 +63,14 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
         }
     }
 
+    /**
+     * Constructor for the JsonLoghandler which will establish server information needed
+     * to fill in the fields of the JSON data object
+     * 
+     * @param serverName The wlp servername
+     * @param wlpUserDir The wlp user directory
+     * @param sourcesList The first sourceList to subscribe to collectorManager with
+     */
     public JsonLogHandler(String serverName, String wlpUserDir, List<String> sourcesList) {
 
         this.wlpServerName = serverName;
@@ -99,6 +107,12 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
 
     }
 
+    /**
+     * Without osgi, this modified method is called explicility from the update method in
+     * JsonTrService
+     * 
+     * @param newSources List of the new source list from config
+     */
     public void modified(List<String> newSources) {
 
         if (collectorMgr == null || isInit == false) {
@@ -127,6 +141,11 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
         }
     }
 
+    /**
+     * Setter to set the writer for the handler
+     * 
+     * @param writer Object used to write out
+     */
     public abstract void setWriter(Object writer);
 
     @Override
@@ -155,6 +174,10 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
         this.wlpUserDir = wlpUserDir;
     }
 
+    /*
+     * Given the sourceList in 'config' form, return the sourceID
+     * Proper sourceID format is <source> | <location>
+     */
     protected List<String> convertToSourceIDList(List<String> sourceList) {
         List<String> sourceIDList = new ArrayList<String>();
         for (String source : sourceList) {
