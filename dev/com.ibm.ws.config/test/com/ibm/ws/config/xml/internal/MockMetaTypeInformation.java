@@ -30,7 +30,7 @@ public class MockMetaTypeInformation implements EquinoxMetaTypeInformation {
     private final Bundle bundle;
 
     public MockMetaTypeInformation() {
-        this(null);
+        this(new MockBundle());
     }
 
     public MockMetaTypeInformation(Bundle bundle) {

@@ -80,12 +80,9 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
     void addToBeanClazzes(Class<?> clazz);
 
     /**
-     * Return the Set of ALL classes known about by this BDA. These classes are found by scanForBeans()
-     * so that method must have been called first.
-     *
-     * @return the map of all classes known about by this BDA
+     * Returns true if and only if the specified class is contained in this BeanDeploymentArchive
      */
-    public Map<String, Class<?>> getAllClazzes();
+    public boolean containsClass(Class<?> clazz);
 
     /**
      * Get the BeanManager for this BDA
