@@ -170,10 +170,6 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         public void put(String className, Class<?> clazz) {
             allClasses.put(className, clazz);
         }
-
-        public boolean containsClass(String className) {
-            return allClasses.containsKey(className);
-        }
     }
 
     //package visibility only ... use factory
@@ -875,7 +871,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         //jeeComponentClasses is per module but we have multiple bdas per module
         //so if the class is not directly in this bda, check the descendant bdas
         for (Class<?> clazz : jeeComponentClasses) {
-            if (classesInBda.containsClass(clazz.getName())) {
+            if (containsClass(clazz)) {
                 createInjectionTargetsForJEEComponentClass(clazz);
             } else {
                 for (WebSphereBeanDeploymentArchive child : getDescendantBdas()) {
