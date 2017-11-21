@@ -54,12 +54,8 @@ Service-Component:\
         implementation:=com.ibm.ws.logging.ffdc.source.FFDCSource;\
         provide:=com.ibm.wsspi.collector.manager.Source; \
         bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.source.ffdcsource)'; \
-        properties:="service.vendor=IBM", \
-    com.ibm.ws.http.logging.source.accesslog;\
-        implementation:=com.ibm.ws.http.logging.source.AccessLogSource;\
-        provide:=com.ibm.wsspi.collector.manager.Source; \
-        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.http.logging.source.accesslog)'; \
         properties:="service.vendor=IBM"
+
 	
 Private-Package: \
   com.ibm.ws.collector.manager.internal*, \

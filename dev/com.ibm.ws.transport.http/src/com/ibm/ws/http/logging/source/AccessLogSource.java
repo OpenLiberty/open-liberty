@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.http.logging.data.AccessLogData;
+import com.ibm.ws.http.channel.internal.values.AccessLogData;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 import com.ibm.wsspi.http.channel.HttpRequestMessage;
