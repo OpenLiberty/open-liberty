@@ -106,6 +106,24 @@ public class JsonTraceService extends BaseTraceService {
         List<String> filterdConsoleSourceList = filterSourcelist(consoleSourceList);
 
         /*
+         * Create the MessageLogHandler and ConsoleLogHandler if they do not exist yet.
+         * If we do not then they will not be appropriately registered with CollectorManager
+         * when the CollectorManagerConfigurator is registering services. The consequence is that
+         * if the user wishes to switch to 'json' messages or console at a later time (other than
+         * startup) they will not be able to subscribe to accessLog and ffdc sources.
+         */
+        if (messageLogHandler == null) {
+            messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
+            messageLogHandler.setSync(sync);
+            collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
+        }
+        if (consoleLogHandler == null) {
+            consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
+            collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
+            consoleLogHandler.setWriter(systemOut);
+        }
+
+        /*
          * If messageFormat has been configured to 'basic' - ensure that we are not connecting conduits/bufferManagers to the handler
          * otherwise we would have the undesired effect of writing both 'basic' and 'json' formatted message events
          */
@@ -134,14 +152,7 @@ public class JsonTraceService extends BaseTraceService {
          * and trace conduits to the handler.
          */
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
-            //If there exists no messageLogHandler, create one; otherwise call modified();
-            if (messageLogHandler == null) {
-                messageLogHandler = new MessageLogHandler(serverName, wlpUserDir, filterdMessageSourceList);
-                messageLogHandler.setSync(sync);
-                collectorMgrPipelineUtils.setMessageHandler(messageLogHandler);
-            } else {
-                messageLogHandler.modified(filterdMessageSourceList);
-            }
+            messageLogHandler.modified(filterdMessageSourceList);
             //for any 'updates' to the FileLogHolder
             messageLogHandler.setWriter(messagesLog);
             isMessageJsonConfigured = true;
@@ -157,14 +168,7 @@ public class JsonTraceService extends BaseTraceService {
          * and trace conduits to the handler.
          */
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
-            //If there exists no consoleLogHandler, create one; otherwise call modified();
-            if (consoleLogHandler == null) {
-                consoleLogHandler = new ConsoleLogHandler(serverName, wlpUserDir, filterdConsoleSourceList);
-                collectorMgrPipelineUtils.setConsoleHandler(consoleLogHandler);
-                consoleLogHandler.setWriter(systemOut);
-            } else {
-                consoleLogHandler.modified(filterdConsoleSourceList);
-            }
+            consoleLogHandler.modified(filterdConsoleSourceList);
             //Connect the conduits to the handler as necessary
             updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
 
