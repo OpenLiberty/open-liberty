@@ -1,0 +1,496 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TestSuite" time="0.516" tests="117" errors="0" skipped="116" failures="1">
+  <properties>
+    <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
+    <property name="sun.boot.library.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib"/>
+    <property name="java.vm.version" value="25.144-b01"/>
+    <property name="gopherProxySet" value="false"/>
+    <property name="java.vm.vendor" value="Oracle Corporation"/>
+    <property name="maven.multiModuleProjectDirectory" value="/libertyGit/open-liberty/dev/com.ibm.ws.microprofile.config_fat_tck/tckRunner/tck"/>
+    <property name="java.vendor.url" value="http://java.oracle.com/"/>
+    <property name="path.separator" value=":"/>
+    <property name="guice.disable.misplaced.annotation.check" value="true"/>
+    <property name="java.vm.name" value="Java HotSpot(TM) 64-Bit Server VM"/>
+    <property name="file.encoding.pkg" value="sun.io"/>
+    <property name="user.country" value="GB"/>
+    <property name="sun.java.launcher" value="SUN_STANDARD"/>
+    <property name="sun.os.patch.level" value="unknown"/>
+    <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
+    <property name="user.dir" value="/libertyGit/open-liberty/dev/com.ibm.ws.microprofile.config_fat_tck/tckRunner/tck"/>
+    <property name="java.runtime.version" value="1.8.0_144-b01"/>
+    <property name="java.awt.graphicsenv" value="sun.awt.CGraphicsEnvironment"/>
+    <property name="java.endorsed.dirs" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/endorsed"/>
+    <property name="os.arch" value="x86_64"/>
+    <property name="java.io.tmpdir" value="/var/folders/rf/899_dgzj6l9cq307_yky9sq00000gn/T/"/>
+    <property name="line.separator" value="&#10;"/>
+    <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
+    <property name="os.name" value="Mac OS X"/>
+    <property name="classworlds.conf" value="/Users/hutchig/maven/apache-maven-3.3.9/bin/m2.conf"/>
+    <property name="sun.jnu.encoding" value="UTF-8"/>
+    <property name="java.library.path" value="/Users/hutchig/Library/Java/Extensions:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java:."/>
+    <property name="java.specification.name" value="Java Platform API Specification"/>
+    <property name="java.class.version" value="52.0"/>
+    <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
+    <property name="os.version" value="10.12.6"/>
+    <property name="user.home" value="/Users/hutchig"/>
+    <property name="user.timezone" value="Europe/London"/>
+    <property name="java.awt.printerjob" value="sun.lwawt.macosx.CPrinterJob"/>
+    <property name="java.specification.version" value="1.8"/>
+    <property name="file.encoding" value="UTF-8"/>
+    <property name="user.name" value="hutchig"/>
+    <property name="java.class.path" value="/Users/hutchig/maven/apache-maven-3.3.9/boot/plexus-classworlds-2.5.2.jar"/>
+    <property name="java.vm.specification.version" value="1.8"/>
+    <property name="sun.arch.data.model" value="64"/>
+    <property name="java.home" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre"/>
+    <property name="sun.java.command" value="org.codehaus.plexus.classworlds.launcher.Launcher"/>
+    <property name="java.specification.vendor" value="Oracle Corporation"/>
+    <property name="user.language" value="en"/>
+    <property name="awt.toolkit" value="sun.lwawt.macosx.LWCToolkit"/>
+    <property name="java.vm.info" value="mixed mode"/>
+    <property name="java.version" value="1.8.0_144"/>
+    <property name="java.ext.dirs" value="/Users/hutchig/Library/Java/Extensions:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/ext:/Library/Java/Extensions:/Network/Library/Java/Extensions:/System/Library/Java/Extensions:/usr/lib/java"/>
+    <property name="sun.boot.class.path" value="/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/resources.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/rt.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/sunrsasign.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/jsse.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/jce.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/charsets.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/lib/jfr.jar:/Library/Java/JavaVirtualMachines/jdk1.8.0_144.jdk/Contents/Home/jre/classes"/>
+    <property name="java.vendor" value="Oracle Corporation"/>
+    <property name="maven.home" value="/Users/hutchig/maven/apache-maven-3.3.9"/>
+    <property name="file.separator" value="/"/>
+    <property name="java.vendor.url.bug" value="http://bugreport.sun.com/bugreport/"/>
+    <property name="sun.cpu.endian" value="little"/>
+    <property name="sun.io.unicode.encoding" value="UnicodeBig"/>
+    <property name="sun.cpu.isalist" value=""/>
+  </properties>
+  <testcase name="arquillianBeforeSuite" classname="org.eclipse.microprofile.config.tck.CdiOptionalInjectionTest" time="0.516">
+    <failure message="wlpHome is required for initialization" type="org.jboss.arquillian.container.spi.ConfigurationException">org.jboss.arquillian.container.spi.ConfigurationException: wlpHome is required for initialization
+	at org.jboss.arquillian.container.was.wlp_managed_8_5.WLPManagedContainerConfiguration.validate(WLPManagedContainerConfiguration.java:65)
+	at org.jboss.arquillian.container.impl.ContainerImpl.createDeployableConfiguration(ContainerImpl.java:115)
+	at org.jboss.arquillian.container.impl.ContainerImpl.setup(ContainerImpl.java:181)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$7.perform(ContainerLifecycleController.java:149)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$7.perform(ContainerLifecycleController.java:145)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.forContainer(ContainerLifecycleController.java:255)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.setupContainer(ContainerLifecycleController.java:144)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:96)
+	at org.jboss.arquillian.core.impl.EventContextImpl.invokeObservers(EventContextImpl.java:99)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:81)
+	at org.jboss.arquillian.container.impl.client.ContainerDeploymentContextHandler.createContainerContext(ContainerDeploymentContextHandler.java:57)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:96)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:88)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:145)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:116)
+	at org.jboss.arquillian.core.impl.EventImpl.fire(EventImpl.java:67)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$1.perform(ContainerLifecycleController.java:62)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController$1.perform(ContainerLifecycleController.java:55)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.forEachContainer(ContainerLifecycleController.java:209)
+	at org.jboss.arquillian.container.impl.client.container.ContainerLifecycleController.setupContainers(ContainerLifecycleController.java:54)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:96)
+	at org.jboss.arquillian.core.impl.EventContextImpl.invokeObservers(EventContextImpl.java:99)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:81)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:145)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:116)
+	at org.jboss.arquillian.core.impl.EventImpl.fire(EventImpl.java:67)
+	at org.jboss.arquillian.container.test.impl.client.ContainerEventController.execute(ContainerEventController.java:85)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:96)
+	at org.jboss.arquillian.core.impl.EventContextImpl.invokeObservers(EventContextImpl.java:99)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:81)
+	at org.jboss.arquillian.test.impl.TestContextHandler.createSuiteContext(TestContextHandler.java:73)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.jboss.arquillian.core.impl.ObserverImpl.invoke(ObserverImpl.java:96)
+	at org.jboss.arquillian.core.impl.EventContextImpl.proceed(EventContextImpl.java:88)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:145)
+	at org.jboss.arquillian.core.impl.ManagerImpl.fire(ManagerImpl.java:116)
+	at org.jboss.arquillian.test.impl.EventTestRunnerAdaptor.beforeSuite(EventTestRunnerAdaptor.java:75)
+	at org.jboss.arquillian.testng.Arquillian.arquillianBeforeSuite(Arquillian.java:71)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.testng.internal.MethodInvocationHelper.invokeMethod(MethodInvocationHelper.java:85)
+	at org.testng.internal.Invoker.invokeConfigurationMethod(Invoker.java:510)
+	at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:211)
+	at org.testng.internal.Invoker.invokeConfigurations(Invoker.java:138)
+	at org.testng.SuiteRunner.privateRun(SuiteRunner.java:298)
+	at org.testng.SuiteRunner.run(SuiteRunner.java:261)
+	at org.testng.SuiteRunnerWorker.runSuite(SuiteRunnerWorker.java:52)
+	at org.testng.SuiteRunnerWorker.run(SuiteRunnerWorker.java:86)
+	at org.testng.TestNG.runSuitesSequentially(TestNG.java:1215)
+	at org.testng.TestNG.runSuitesLocally(TestNG.java:1140)
+	at org.testng.TestNG.run(TestNG.java:1048)
+	at org.apache.maven.surefire.testng.TestNGExecutor.run(TestNGExecutor.java:293)
+	at org.apache.maven.surefire.testng.TestNGXmlTestSuite.execute(TestNGXmlTestSuite.java:84)
+	at org.apache.maven.surefire.testng.TestNGProvider.invoke(TestNGProvider.java:91)
+	at org.apache.maven.surefire.booter.ForkedBooter.invokeProviderInSameClassLoader(ForkedBooter.java:200)
+	at org.apache.maven.surefire.booter.ForkedBooter.runSuitesInProcess(ForkedBooter.java:153)
+	at org.apache.maven.surefire.booter.ForkedBooter.main(ForkedBooter.java:103)
+</failure>
+    <system-out><![CDATA[...
+... TestNG 6.9.9 by Cédric Beust (cedric@beust.com)
+...
+
+]]></system-out>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.CdiOptionalInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.CdiOptionalInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testOptionalInjection" classname="org.eclipse.microprofile.config.tck.CdiOptionalInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testBoolean" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testCustomConverter" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testDouble" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testDouble_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testDuration" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testDuration_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testFloat" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testFloat_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testInstant" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testInstant_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testInt" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testInteger" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testInteger_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLocalDate" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLocalDateTime" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLocalDateTime_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLocalDate_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLocalTime" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLocalTime_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLong" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testLong_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testOffsetDateTime" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testOffsetDateTime_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testOffsetTime" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testOffsetTime_Broken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testURLConverter" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testURLConverterBroken" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testdouble" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testfloat" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testlong" classname="org.eclipse.microprofile.config.tck.ConverterTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testDynamicValueInPropertyConfigSource" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testEnvironmentConfigSource" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testGetConfigSources" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testGetPropertyNames" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testInjectedConfigSerializable" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testJavaConfigPropertyFilesConfigSource" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testNonExistingConfigKey" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testNonExistingConfigKeyGet" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testPropertyConfigSource" classname="org.eclipse.microprofile.config.tck.ConfigProviderTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.broken.MissingValueOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.broken.MissingValueOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="test" classname="org.eclipse.microprofile.config.tck.broken.MissingValueOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.broken.MissingConverterOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.broken.MissingConverterOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="test" classname="org.eclipse.microprofile.config.tck.broken.MissingConverterOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.EmptyValuesTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.EmptyValuesTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testEmptyStringProgrammaticLookup" classname="org.eclipse.microprofile.config.tck.EmptyValuesTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.EmptyValuesTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testEmptyStringPropertyFromConfigFile" classname="org.eclipse.microprofile.config.tck.EmptyValuesTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.EmptyValuesTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testEmptyStringValues" classname="org.eclipse.microprofile.config.tck.EmptyValuesTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.broken.WrongConverterOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.broken.WrongConverterOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="test" classname="org.eclipse.microprofile.config.tck.broken.WrongConverterOnInstanceInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.CustomConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.CustomConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testConfigSourceProvider" classname="org.eclipse.microprofile.config.tck.CustomConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.CDIPlainInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.CDIPlainInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="can_inject_default_property_path" classname="org.eclipse.microprofile.config.tck.CDIPlainInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.CDIPlainInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="can_inject_dynamic_values_via_CDI_provider" classname="org.eclipse.microprofile.config.tck.CDIPlainInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.CDIPlainInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="can_inject_simple_values_when_defined" classname="org.eclipse.microprofile.config.tck.CDIPlainInjectionTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeClass" classname="org.eclipse.microprofile.config.tck.AutoDiscoveredConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.AutoDiscoveredConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testAutoDiscoveredConfigureSources" classname="org.eclipse.microprofile.config.tck.AutoDiscoveredConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.AutoDiscoveredConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testAutoDiscoveredConverterManuallyAdded" classname="org.eclipse.microprofile.config.tck.AutoDiscoveredConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="arquillianBeforeTest" classname="org.eclipse.microprofile.config.tck.AutoDiscoveredConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+  <testcase name="testAutoDiscoveredConverterNotAddedAutomatically" classname="org.eclipse.microprofile.config.tck.AutoDiscoveredConfigSourceTest" time="0">
+    <skipped/>
+  </testcase>
+</testsuite>
