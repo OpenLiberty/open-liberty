@@ -23,4 +23,4 @@
                        <property name="allowConnectingToRunningServer">${allowConnectingToRunningServer}</property>
                </configuration>
        </container>
-</arquillian>
+</arquillian> 

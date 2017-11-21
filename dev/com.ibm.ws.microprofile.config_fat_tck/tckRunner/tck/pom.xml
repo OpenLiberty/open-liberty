@@ -15,7 +15,7 @@
 	<version>1.0-SNAPSHOT</version>
 	<name>MicroProfile Config TCK Runner TCK Module</name>
 
-	<properties>
+	<properties> 
 		<!-- Define a foundation for where the build (we are testing) 
 		     specific JARs come from. The rest of the pom will work
 		     as long as ${wlp} is valid, so that is all that needs to be
