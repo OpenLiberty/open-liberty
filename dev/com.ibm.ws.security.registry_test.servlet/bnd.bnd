@@ -16,6 +16,7 @@ src: \
     src, \
     test-applications/userRegistry/src
 
+publish.wlp.jar.disabled: false
 test.project: true
 
 -buildpath: \

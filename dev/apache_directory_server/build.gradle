@@ -9,63 +9,26 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-task copyApacheDSJar {
-  
-  doLast {
-
-    def props = new Properties()
-    file("${rootDir}/generated.properties").withInputStream { props.load(it) }
-    
-    repositories {
-
-      if (usrHomeProps.exists() && !props.getProperty('artifactory.force.external.repo')) {
-        // If Artifactory is available, use it
-        maven {
-          credentials {
-            username props.getProperty("artifactory.download.user")
-            password props.getProperty("artifactory.download.token")
-          }
-          url ("https://" + props.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty")
-        }
-      } else {
-        // Otherwise, use public maven
-        mavenCentral()
-        maven {
-          url ("http://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/")
-        }
-      }
-    }
-
-    configurations {
-      apachelibs
-    }
-
-    /*
-     * We only depend on the ApacheDS JAR. Don't download transitive dependencies since this
-     * JAR is all the service needs to run.
-     */
-    dependencies {
-      apachelibs("org.apache.directory.server:apacheds-service:2.0.0-M15") {
-        transitive = false 
-      } 
-    }
-
-    /*
-     * Copy the dependencies to the ApacheDS service lib directory.
-     */
-    copy {
-      from configurations.apachelibs
-      into "${projectDir}/apacheds-2.0.0-M15/lib/"
-    }
-  }
-}
-
-assemble {
-  dependsOn copyApacheDSJar
-}
-
 clean {
   doLast {
     delete "${projectDir}/apacheds-2.0.0-M15/lib/apache_directory_server.jar"
   }
+}
+
+jar.doLast {
+  /*
+   * Copy the ApacheDS JAR to the ApacheDS service lib directory.
+   */
+  sourceSets.main.runtimeClasspath.each { file ->
+    if ("apacheds-service-2.0.0-M15.jar".equals(file.name)) {
+      copy {
+        from file.absolutePath
+        into "apacheds-2.0.0-M15/lib/"
+      }
+    }
+  }
+}
+
+clean.doFirst {
+  file("apacheds-2.0.0-M15/lib/apacheds-service-2.0.0-M15.jar").delete()
 }

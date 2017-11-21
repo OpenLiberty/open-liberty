@@ -26,8 +26,8 @@ WS-TraceGroup: JAXRS
 -exportcontents: \
    !org.apache.cxf.validation, \
    !org.apache.cxf.jaxrs.validation, \
-   !org.apache.cxf.databinding;version=3.1.11, \
-   org.apache.cxf.*;version=3.1.11, \
+   !org.apache.cxf.databinding;version=3.1.14, \
+   org.apache.cxf.*;version=3.1.14, \
 
 Export-Package: \
 	com.ibm.ws.jaxrs20,\
@@ -135,17 +135,17 @@ Private-Package:\
    com.ibm.ws.jaxrs20.*, \
 
 Include-Resource: \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-xc;1.6.2}, \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.6.2}, \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;1.6.2}, \
-  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.6.2}, \
-  @${repo;org.apache.cxf.cxf-rt-rs-service-description;3.1.11;EXACT}, \
-  @${repo;org.apache.cxf.cxf-tools-wadlto-jaxrs;3.1.11;EXACT}, \
-  @${repo;org.apache.cxf.cxf-tools-common;3.1.11;EXACT}, \
-  @${repo;org.apache.cxf.cxf-rt-transports-http;3.1.11;EXACT}, \
-  @${repo;org.apache.cxf.cxf-rt-rs-client;3.1.11;EXACT}, \
-  @${repo;org.apache.cxf.cxf-rt-frontend-jaxrs;3.1.11;EXACT}, \
-  @${repo;org.apache.cxf.cxf-core;3.1.11;EXACT}!/!OSGI-INF/*, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-xc;1.9.13}, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;1.9.13}, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;1.9.13}, \
+  @${repo;com.ibm.ws.org.codehaus.jackson:jackson-core-asl;1.9.13}, \
+  @${repo;org.apache.cxf.cxf-rt-rs-service-description;3.1.14;EXACT}, \
+  @${repo;org.apache.cxf.cxf-tools-wadlto-jaxrs;3.1.14;EXACT}, \
+  @${repo;org.apache.cxf.cxf-tools-common;3.1.14;EXACT}, \
+  @${repo;org.apache.cxf.cxf-rt-transports-http;3.1.14;EXACT}, \
+  @${repo;org.apache.cxf.cxf-rt-rs-client;3.1.14;EXACT}, \
+  @${repo;org.apache.cxf.cxf-rt-frontend-jaxrs;3.1.14;EXACT}, \
+  @${repo;org.apache.cxf.cxf-core;3.1.14;EXACT}!/!OSGI-INF/*, \
   OSGI-INF=resources/OSGI-INF, \
   META-INF=resources/META-INF, \
   org/apache/cxf=${bin}/org/apache/cxf, \
@@ -161,13 +161,13 @@ Include-Resource: \
 instrument.classesExcludes: com/ibm/ws/jaxrs20/internal/resources/*.class
 
 -buildpath: \
-	org.apache.cxf.cxf-core;strategy=exact;version=3.1.11,\
-	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.11,\
-	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version=3.1.11,\
-	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.11,\
-	org.apache.cxf.cxf-tools-common;strategy=exact;version=3.1.11,\
-	org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version=3.1.11,\
-	org.apache.cxf.cxf-rt-rs-service-description;strategy=exact;version=3.1.11,\
+	org.apache.cxf.cxf-core;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-rt-frontend-jaxrs;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-rt-rs-client;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-rt-transports-http;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-tools-common;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-tools-wadlto-jaxrs;strategy=exact;version=3.1.14,\
+	org.apache.cxf.cxf-rt-rs-service-description;strategy=exact;version=3.1.14,\
 	com.ibm.ws.org.codehaus.jackson:jackson-core-asl;version=1.6.2, \
 	com.ibm.ws.org.codehaus.jackson:jackson-jaxrs;version=1.6.2, \
 	com.ibm.ws.org.codehaus.jackson:jackson-mapper-asl;version=1.6.2, \

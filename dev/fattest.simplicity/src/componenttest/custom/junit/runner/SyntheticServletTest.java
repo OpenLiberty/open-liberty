@@ -17,7 +17,6 @@ import org.junit.runners.model.FrameworkMethod;
 
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.TestServlet;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 
@@ -27,10 +26,10 @@ public class SyntheticServletTest extends FrameworkMethod {
     private final String queryPath;
     private final String testName;
 
-    public SyntheticServletTest(Field server, TestServlet anno, Method method) {
+    public SyntheticServletTest(Field server, String queryPath, Method method) {
         super(method);
         this.server = server;
-        this.queryPath = anno.path();
+        this.queryPath = queryPath;
         this.testName = method.getName();
     }
 

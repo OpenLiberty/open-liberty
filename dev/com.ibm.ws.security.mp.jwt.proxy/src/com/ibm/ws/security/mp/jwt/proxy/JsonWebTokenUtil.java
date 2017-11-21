@@ -32,4 +32,10 @@ public interface JsonWebTokenUtil {
 	 */
 	public Principal cloneJsonWebToken(Subject subject);
 
+	/**
+	 * Creates a JsonWebToken from the given jwt, type, and username then
+	 * returns it as a Principal
+	 */
+	public Principal getJsonWebToken(String jwt, String type, String username);
+
 }

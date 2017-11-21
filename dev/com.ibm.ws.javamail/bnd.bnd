@@ -26,7 +26,6 @@ WS-TraceGroup: Mail
 ## the new feature jar, included the mailcap file which is needed
 ## for the app-resources header
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/mailcap, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/gfprobe-provider.xml, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.5}!/META-INF/javamail.charset.map, \

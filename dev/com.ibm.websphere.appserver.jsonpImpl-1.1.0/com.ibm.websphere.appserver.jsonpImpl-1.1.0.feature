@@ -4,7 +4,8 @@
 symbolicName=com.ibm.websphere.appserver.jsonpImpl-1.1.0
 singleton=true
 visibility=private
--features=com.ibm.websphere.appserver.bells-1.0
+-features=com.ibm.websphere.appserver.bells-1.0,\
+  com.ibm.websphere.appserver.javaeeCompatible-8.0
 -bundles=com.ibm.websphere.javaee.jsonp.1.1; location:="dev/api/spec/,lib/"
 kind=beta
 edition=core

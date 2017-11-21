@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.audit.AuditEvent;
 import com.ibm.ws.common.internal.encoder.Base64Coder;
 import com.ibm.ws.security.SecurityService;
@@ -148,21 +149,28 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
                                                       webRequest.getHttpServletResponse());
                     }
                     SSOCookieHelper ssoCh = webAppSecurityConfig.createSSOCookieHelper();
+
+                    // restore post params if it exists.
+                    HttpServletResponse res = webRequest.getHttpServletResponse();
+                    if (!res.isCommitted()) {
+                        PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecurityConfig);
+                        postParameterHelper.restore(webRequest.getHttpServletRequest(), res);
+                    }
                     if (props != null &&
                         props.get("authType") != null &&
                         props.get("authType").equals("FORM_LOGIN")) {
                         //
                         // login form successfully processed, add ltpatoken for redirect
                         //
-                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(),
-                                                      webRequest.getHttpServletRequest(),
-                                                      webRequest.getHttpServletResponse());
+// In order to avoid setting LTPAToken2 twice, commented out the following lines.
+//                        ssoCh.addSSOCookiesToResponse(authResult.getSubject(),
+//                                                      webRequest.getHttpServletRequest(),
+//                                                      webRequest.getHttpServletResponse());
                     } else { // not processing a login form
                         // We only want an ltpa token after form login. in all other cases remove it
                         // EXCEPT if the JASPI provider has committed the response
-                        HttpServletResponse response = webRequest.getHttpServletResponse();
-                        if (!response.isCommitted()) {
-                            ssoCh.removeSSOCookieFromResponse(response);
+                        if (!res.isCommitted()) {
+                            ssoCh.removeSSOCookieFromResponse(res);
                         }
                     }
                 }
@@ -265,7 +273,8 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         return webAuthenticatorRef;
     }
 
-    private String decodeCookieString(String cookieString) {
+    @Sensitive
+    private String decodeCookieString(@Sensitive String cookieString) {
         try {
             return Base64Coder.base64Decode(cookieString);
         } catch (Exception e) {

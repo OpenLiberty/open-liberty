@@ -9,7 +9,7 @@ IBM-API-Package: javax.websocket; type="spec", \
  com.ibm.websphere.wsoc; type="ibm-api"
 IBM-ShortName: websocket-1.0
 Subsystem-Name: Java WebSocket 1.0
--features=com.ibm.websphere.appserver.servlet-3.1
+-features=com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:=4.0
 -bundles=com.ibm.ws.wsoc, \
  com.ibm.websphere.javaee.websocket.1.0; location:="dev/api/spec/,lib/"
 -jars=com.ibm.websphere.appserver.api.wsoc; location:=dev/api/ibm/

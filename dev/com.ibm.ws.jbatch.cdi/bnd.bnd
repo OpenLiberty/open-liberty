@@ -17,6 +17,10 @@ Bundle-Description: Batch support for CDI; version=${bVersion}
 
 WS-TraceGroup: wsbatch
 
+Import-Package:\
+  javax.enterprise.*;version="[1.1,2.1)",\
+  *
+
 Export-Package:\
   com.ibm.ws.jbatch.cdi;provide:=true
 
@@ -33,8 +37,8 @@ Include-Resource: \
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.javaee.batch.1.0,\
-	com.ibm.websphere.javaee.cdi.1.0,\
+	com.ibm.websphere.javaee.cdi.1.2,\
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces,\
+	com.ibm.ws.cdi.interfaces,\
 	com.ibm.jbatch.container, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

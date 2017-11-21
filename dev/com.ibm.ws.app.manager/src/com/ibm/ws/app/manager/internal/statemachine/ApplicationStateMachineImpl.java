@@ -1315,8 +1315,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         while ((failedFuture = _notifyAppStarting.poll()) != null) {
                             failedDependency(failedFuture, null);
                         }
-                        while ((failedFuture = _notifyAppStarted.poll()) != null) {
-                            failedDependency(failedFuture, null);
+                        while ((startedFuture = _notifyAppStarted.poll()) != null) {
+                            // NOTE: Ideally we should call failedDependency here. We just removed this app, so we shouldn't tell listeners
+                            // that it has started. In practice we only use the startedFuture to block apps from starting before RARs.
+                            // If the RAR has been removed, we don't need to wait on it.
+                            resolveDependency(startedFuture);
                         }
                         return;
                 }

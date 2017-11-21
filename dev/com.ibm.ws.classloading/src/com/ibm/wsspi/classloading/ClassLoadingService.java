@@ -34,7 +34,7 @@ public interface ClassLoadingService {
      * <strong>N.B. it is the caller's responsibility to ensure that this method is not
      * called concurrently for the same or equivalent {@link ClassLoaderIdentity} objects.
      * The results of concurrent invocation for the same identity are not defined.</strong>
-     * 
+     *
      * @param classPath A list of URLs that should be used to load classes
      * @param gwConfig The desired configuration for the gateway.
      * @param config The desired configuration of the ClassLoader.
@@ -54,7 +54,7 @@ public interface ClassLoadingService {
      * <strong>N.B. it is the caller's responsibility to ensure that this method is not
      * called concurrently for the same or equivalent {@link ClassLoaderIdentity} objects.
      * The results of concurrent invocation for the same identity are not defined.</strong>
-     * 
+     *
      * @param classPath A list of URLs that should be used to load classes
      * @param gwClassLoader The gateway ClassLoader.
      * @param config The desired configuration of the ClassLoader.
@@ -73,7 +73,7 @@ public interface ClassLoadingService {
      * <strong>N.B. it is the caller's responsibility to ensure that this method is not
      * called concurrently for the same or equivalent {@link ClassLoaderIdentity} objects.
      * The results of concurrent invocation for the same identity are not defined.</strong>
-     * 
+     *
      * @param classpath A list of URLs that should be used to load classes
      * @param config The desired configuration of the ClassLoader.
      * @return the created class loader.
@@ -93,7 +93,7 @@ public interface ClassLoadingService {
     /**
      * This creates an immutable ClassLoaderIdentity. Multiple calls to
      * createIdentity with the same parameters may result in the same object.
-     * 
+     *
      * @param domain a unique name indicating the domain (i.e. the user) of the class loader
      * @param id an id unique within the domain
      * @return a new ClassLoaderIdentity composed of the domain and the id
@@ -106,17 +106,17 @@ public interface ClassLoadingService {
      * loading them directly. The returned {@link ClassLoader} should be
      * discarded as early as possible to allow it and all its classes to be
      * garbage-collected.
-     * 
+     *
      * @param loader the class loader to clone
      * @return a new {@link ClassLoader} or <code>null</code> if <code>loader</code> was not created by this service
-     * 
+     *
      * @see javax.persistence.spi.PersistenceUnitInfo#getNewTempClassLoader()
      */
     ClassLoader getShadowClassLoader(ClassLoader loader);
 
     /**
      * Attempt to register a {@link ClassTransformer} with a {@link ClassLoader}.
-     * 
+     *
      * @param transformer the {@link ClassTransformer} to be registered
      * @param loader the {@link ClassLoader} to be modified
      * @return <code>true</code> if the operation succeeded, <code>false</code>
@@ -126,7 +126,7 @@ public interface ClassLoadingService {
 
     /**
      * Attempt to unregister a {@link ClassTransformer} from a {@link ClassLoader}.
-     * 
+     *
      * @param transformer the {@link ClassTransformer} to be unregistered
      * @param loader the {@link ClassLoader} to be modified
      * @return <code>true</code> if <code>loader</code> was modified,
@@ -139,7 +139,7 @@ public interface ClassLoadingService {
      * This method builds a classloader that delegates to the provided classloaders in order. It
      * adds the parent classloader as the parent so it is consulted first and then consults the
      * follow on ones when a class load fails.
-     * 
+     *
      * @param parent the first classloader to query
      * @param classloaders the class loaders to unify,
      * @return a unified classloader
@@ -148,7 +148,7 @@ public interface ClassLoadingService {
 
     /**
      * Create or retrieve the shared class loader for a shared library.
-     * 
+     *
      * @param lib the shared library to create a class loader for
      * @return the unique class loader for the provided library
      */
@@ -157,10 +157,10 @@ public interface ClassLoadingService {
     /**
      * This will augment the application class loader with the ability to see more internal packages. These packages are ones that contain classes that are loaded from the context
      * class loader so are needed to be visible but shouldn't be available through the main application class loader.
-     * 
+     *
      * Note: It is the caller's responsibility to ensure the returned class loader is {@link #destroyThreadContextClassLoader destroyed} when it is no longer needed.,
      * in order to avoid leaking this loader (and all classes it loaded).
-     * 
+     *
      * @param applicationClassLoader The application class loader to augment
      * @return The new class loader that can be set as the thread context class loader
      */
@@ -171,7 +171,7 @@ public interface ClassLoadingService {
      * context class loader contains URLClassLoader, it may hold the jar
      * file lock when the caching is enabled on Windows platform.
      * So we need guarantee the resources could be released here.
-     * 
+     *
      * @param unifiedClassLoader The thread context class loader
      */
     void destroyThreadContextClassLoader(ClassLoader unifiedClassLoader);
@@ -179,7 +179,7 @@ public interface ClassLoadingService {
     /**
      * This method returns whether or not the provided ClassLoader object
      * is an instance of an AppClassLoader.
-     * 
+     *
      * @param cl The class loader object to analyze.
      * @return true if an instance of AppClassLoader was provided, otherwise false.
      */
@@ -188,7 +188,7 @@ public interface ClassLoadingService {
     /**
      * This method returns whether or not the provided ClassLoader object
      * is an instance of an ThreadContextClassLoader.
-     * 
+     *
      * @param cl The class loader object to analyze.
      * @return true if an instance of ThreadContextClassLoader was provided, otherwise false.
      */

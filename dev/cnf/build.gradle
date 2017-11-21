@@ -30,6 +30,7 @@ task createIvyXml {
     doLast {
         String depsList = ""
         String depsListLatest = ""
+
         fileTree(dir: "${rootDir}", include: '*').visit { element ->
             if (element.isDirectory()) {
                 String relativePath = "$element.relativePath"
@@ -37,19 +38,26 @@ task createIvyXml {
                 if (bndProject != null && !bndProject.isNoBundles()) {
                     String artifact = ""
                     for (String bsn : bndProject.getBsns()) {
-                        def org = ""
-                        def name = ""
+                        String org = ""
+                        String name = ""
                         if ('true'.equals(bndProject.get('test.project', 'false'))) {
                             (org, name) = ['test', bsn]
                         } else {
                             (org, name) = ['dev', bsn]
                         }
-                        depsList = depsList + '        <dependency org="' + org + '" name="' + name + '" rev="' + bndProject.getVersion(bsn) + '"/>\n'
-                        depsListLatest = depsListLatest + '        <dependency org="' + org + '" name="' + name + '" rev="latest.integration"/>\n'
+                        depsList = depsList + '        <dependency org="' + org + '" name="' + name + '" rev="' + bndProject.getVersion(bsn) + '">\n'
+                        depsList = depsList + '          <artifact name="' + name + '" type="jar"/>\n'
+                        depsList = depsList + '          <artifact name="' + name + '" type="pom"/>\n'
+                        depsList = depsList + '        </dependency>\n'
+                        depsListLatest = depsListLatest + '        <dependency org="' + org + '" name="' + name + '" rev="latest.integration">\n'
+                        depsListLatest = depsListLatest + '          <artifact name="' + name + '" type="jar"/>\n'
+                        depsListLatest = depsListLatest + '          <artifact name="' + name + '" type="pom"/>\n'
+                        depsListLatest = depsListLatest + '        </dependency>\n'
                     }
                 }
             }
         }
+
         File ivyXml = new File("${buildDir}/ivy.xml")
         ivyXml.createNewFile()
         ivyXml.text = """<ivy-module version="2.0">
@@ -66,6 +74,92 @@ $depsList  </dependencies>
 $depsListLatest  </dependencies>
 </ivy-module>
 """
+    }
+}
+
+task createGradleBootstrap {
+    doLast {
+        String depsList = ""
+
+        fileTree(dir: "${rootDir}", include: '*').visit { element ->
+            if (element.isDirectory()) {
+                String relativePath = "$element.relativePath"
+                def bndProject = bndWorkspace.getProject(relativePath)
+                if (bndProject != null && !bndProject.isNoBundles()) {
+                    String artifact = ""
+                    for (String bsn : bndProject.getBsns()) {
+                        String org = ""
+                        String name = ""
+                        if ('true'.equals(bndProject.get('test.project', 'false'))) {
+                            (org, name) = ['test', bsn]
+                        } else {
+                            (org, name) = ['dev', bsn]
+                        }
+                        depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '\'\n'
+                        depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '@pom\'\n'
+                    }
+                }
+            }
+        }
+
+        String org = "dev"
+        Map<String, String> projectPathToVersion = new HashMap<String, String>()
+        rootProject.subprojects.each { p ->
+            projectPathToVersion.put(p.name, p.version)
+        }
+
+        fileTree(dir: "${rootDir}", include: '*/*.feature').visit { feature ->
+            if (feature.isDirectory()) return
+
+            String text = feature.getFile().getText()
+            if (text.contains("kind=ga") || text.contains("kind=beta")) {
+                String name = null
+                int index = text.indexOf("symbolicName=")
+                if (index != -1) {
+                    int endIndex = text.indexOf("\n", index)
+                    if (endIndex == -1) {
+                        endIndex = text.length()
+                    }
+                    // symbolicName= is length 13
+                    name = text.substring(index + 13, endIndex)
+                    name = name.replaceAll("\\s+", "")
+                } else {
+                    name = feature.name.substring(0, feature.name.size() - 8)
+                }
+
+                String featureName = feature.name.substring(0, feature.name.size() - 8)
+                String rev = projectPathToVersion.get(featureName)
+                if (rev != null) {
+                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa\'\n'
+                    depsList = depsList + '    compile \'' + org + ':' + name + ':' + rev + '@esa.metadata.zip\'\n'
+                }
+            }
+        }
+
+        File dependenciesFile = new File("${buildDir}/dependencies.gradle")
+        dependenciesFile.createNewFile()
+        dependenciesFile.text = """dependencies {
+$depsList
+}
+"""
+    }
+}
+
+task createGaESAList {
+    doLast {
+        String features = ""
+        fileTree(dir: "${rootDir}", include: '*/*.feature').visit { feature ->
+            if (feature.isDirectory() || !feature.getFile().getText().contains("kind=ga")) {
+                return
+            }
+
+            String name = feature.name.substring(0, feature.name.size()-8)
+            features += name + "\n"
+        }
+
+        File gaEsa = new File("${buildDir}/gaFeatures.txt")
+        gaEsa.createNewFile()
+        gaEsa.text = features
     }
 }
 
@@ -178,17 +272,32 @@ $classpathEntries</classpath>
 task zipIvyBootstrap(type: Zip) {
     dependsOn createIvyXml
     dependsOn createGeneratedReplacementProjects
+    dependsOn createGaESAList
     baseName 'ivy-bootstrap'
     into 'prereq.published', {from "${buildDir}/ivy.xml", "${buildDir}/ivy-latest.xml"}
     from "${buildDir}/replacements"
 }
 
+task zipGradleBootstrap(type: Zip) {
+    dependsOn createGradleBootstrap
+    dependsOn createGeneratedReplacementProjects
+    dependsOn createGaESAList
+    baseName 'gradle-bootstrap'
+    into 'prereq.published', {from "${buildDir}/dependencies.gradle", "${buildDir}/gaFeatures.txt"}
+    from "${buildDir}/replacements"
+}
+
 publishing {
   publications {
-    maven(MavenPublication) {
-      artifactId 'ivy-bootstrap'
-      version project.version
-      artifact zipIvyBootstrap
+    ivy(MavenPublication) {
+        artifactId 'ivy-bootstrap'
+        version project.version
+        artifact zipIvyBootstrap
+    }
+    gradle(MavenPublication) {
+        artifactId 'gradle-bootstrap'
+        version project.version
+        artifact zipGradleBootstrap
     }
   }
 }

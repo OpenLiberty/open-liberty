@@ -12,15 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.classloading-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.persistence-2.1;version=latest, \
-	com.ibm.websphere.appserver.javax.annotation-1.2;version=latest, \
-	com.ibm.websphere.appserver.jdbc-4.1;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.2;version=latest, \
-	com.ibm.websphere.appserver.javaeeCompatible-7.0;version=latest, \
 	com.ibm.ws.jpa.container.v21;version=latest, \
 	com.ibm.ws.jpa.container;version=latest, \
 	com.ibm.ws.jpa.container.thirdparty;version=latest

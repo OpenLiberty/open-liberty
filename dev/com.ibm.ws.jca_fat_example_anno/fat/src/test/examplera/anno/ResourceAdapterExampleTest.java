@@ -52,7 +52,7 @@ public class ResourceAdapterExampleTest extends FATServletClient {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        server.stopServer();
+        server.stopServer("CNTR4015W");
     }
 
     private void runTest(String queryString, String... toFind) throws Exception {

@@ -75,6 +75,14 @@ public class MpJwtHelper {
 			return null;
 	}
 
+	public static Principal getJsonWebToken(String jwt, String type, String username) {
+		JsonWebTokenUtil jsonWebTokenUtil = getJsonWebTokenUtil();
+		if (jsonWebTokenUtil != null) {
+			return jsonWebTokenUtil.getJsonWebToken(jwt, type, username);
+		}
+		return null;
+	}
+
 	private static JsonWebTokenUtil getJsonWebTokenUtil() {
 		if (isJavaVersionAtLeast18()) {
 			return JsonWebTokenUtilRef.getService();

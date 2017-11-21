@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ossc>
+  <project project="EclipseLink"
+    projectURL="https://www.eclipse.org/eclipselink/"
+    version="@VERSION@" revision="@REVISION@"
+    license-type="EPLv1"
+    contact="sutter@us.ibm.com"
+    encryption="no">
+    <download location="ftp://public.dhe.ibm.com/ibmdl/export/pub/software/openliberty/wasliberty-open-liberty/com/ibm/ws/org/eclipse/persistence/">
+        <file basename="@ANTLR_JAR@" checksum="@ANTLR_CHECKSUM@"/>
+        <file basename="@ASM_JAR@" checksum="@ASM_CHECKSUM@"/>
+        <file basename="@CORE_JAR@" checksum="@CORE_CHECKSUM@"/>
+        <file basename="@JPA_JAR@" checksum="@JPA_CHECKSUM@"/>
+        <file basename="@JPQL_JAR@" checksum="@JPQL_CHECKSUM@"/>
+        <file basename="@MODELGEN_JAR@" checksum="@MODELGEN_CHECKSUM@"/>
+      </download>
+  </project>
+  <clearencehistory/>
+  <notes/>
+</ossc>

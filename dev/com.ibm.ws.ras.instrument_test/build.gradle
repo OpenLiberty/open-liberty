@@ -1,0 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+/******************************************************************************* 
+ * NOTE that this is a separate test project because tests have a dependency
+ * com.ibm.ws.junit.extensions and com.ibm.ws.junit.extensions has a
+ * transative dependency on com.ibm.ws.ras.instrument.  To avoid a circular
+ * dependency the tests have been moved to a separate project.
+ *******************************************************************************/

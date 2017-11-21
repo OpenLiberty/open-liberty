@@ -16,6 +16,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
@@ -27,6 +28,7 @@ import com.ibm.ws.session.SessionProperties;
 import com.ibm.ws.session.SessionStoreService;
 import com.ibm.ws.session.utils.EncodeCloneID;
 import com.ibm.ws.session.utils.LoggingUtil;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 /*
@@ -36,7 +38,11 @@ import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 public class SessionMgrComponentImpl implements SessionManager {
     
     /** Only used by WXS. Should be removed as soon as SPI is defined. */
-    public static final AtomicReference<SessionMgrComponentImpl> INSTANCE = new AtomicReference<SessionMgrComponentImpl>();
+    public static final StaticValue<AtomicReference<SessionMgrComponentImpl>> INSTANCE = StaticValue.createStaticValue(new Callable<AtomicReference<SessionMgrComponentImpl>>() {
+        @Override
+        public AtomicReference<SessionMgrComponentImpl> call() throws Exception {
+            return new AtomicReference<SessionMgrComponentImpl>();
+        }});
 
     private final SessionManagerConfig serverLevelSessionManagerConfig = new SessionManagerConfig();
     private final WsLocationAdmin wsLocationAdmin;
@@ -54,7 +60,7 @@ public class SessionMgrComponentImpl implements SessionManager {
      * @return the configuration of the currently active SessionManager instance
      */
     public static SessionManagerConfig getServerSessionManagerConfig() {
-        SessionMgrComponentImpl service = INSTANCE.get();
+        SessionMgrComponentImpl service = INSTANCE.get().get();
         if (service == null) {
             // no session manager service is available
             return null; 

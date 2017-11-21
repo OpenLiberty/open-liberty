@@ -12,12 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.authData-1.0;version=latest, \
-	com.ibm.websphere.appserver.appSecurity-1.0;version=latest, \
-	com.ibm.websphere.appserver.javax.connector-1.6;version=latest, \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.websphere.appserver.transaction-1.1;version=latest, \
-	com.ibm.websphere.appserver.api.authData;version=latest
+	com.ibm.websphere.appserver.api.authData;version=latest, \
+	com.ibm.websphere.appserver.api.passwordUtil;version=latest

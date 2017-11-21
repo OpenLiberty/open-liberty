@@ -12,24 +12,28 @@
 bVersion=1.0
 Bundle-Name: com.ibm.ws.cdi.1.2.jsf
 Bundle-SymbolicName: com.ibm.ws.cdi.1.2.jsf
-Bundle-Description: weld JSF, version ${bVersion}
+Bundle-Description: CDI 1.2 JSF, version ${bVersion}
+
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.7))"
 
 -dsannotations: com.ibm.ws.cdi.jsf.CDIJSFInitializerImpl
 
 Private-Package: com.ibm.ws.cdi.jsf;version=1.0;thread-context=true
- 
-Import-Package: javax.faces.*;version="[1.0,2.4)", \
- *
+
+Import-Package: \
+  com.ibm.ws.cdi.internal.interfaces, \
+  *
 
 WS-TraceGroup: JCDI
 
 -buildpath: \
-	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.ws.webcontainer;version=latest,\
 	com.ibm.websphere.javaee.jsf.2.2;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.ws.session;version=latest,\
-	com.ibm.ws.cdi.1.2.weld.impl;version=latest,\
+	com.ibm.ws.cdi.weld;version=latest,\
+	com.ibm.ws.cdi.internal;version=latest, \
 	com.ibm.websphere.appserver.thirdparty.cdi;version=latest,\
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
@@ -40,6 +44,6 @@ WS-TraceGroup: JCDI
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.jsf.shared;version=latest,\
-	com.ibm.ws.org.jboss.weld.2.4.3;version=latest,\
-	com.ibm.ws.cdi.1.2.interfaces;version=latest, \
+	com.ibm.ws.org.jboss.weld.2.4.5;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest, \
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

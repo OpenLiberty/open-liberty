@@ -50,7 +50,6 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.jbatch.container.RASConstants;
-import com.ibm.jbatch.container.exception.BatchIllegalIDPersistedException;
 import com.ibm.jbatch.container.exception.BatchIllegalJobStatusTransitionException;
 import com.ibm.jbatch.container.exception.ExecutionAssignedToServerException;
 import com.ibm.jbatch.container.exception.JobStoppedException;
@@ -71,6 +70,7 @@ import com.ibm.jbatch.container.persistence.jpa.TopLevelStepInstanceKey;
 import com.ibm.jbatch.container.services.IJPAQueryHelper;
 import com.ibm.jbatch.container.services.IPersistenceManagerService;
 import com.ibm.jbatch.container.util.WSStepThreadExecutionAggregateImpl;
+import com.ibm.jbatch.container.validation.IdentifierValidator;
 import com.ibm.jbatch.container.ws.BatchLocationService;
 import com.ibm.jbatch.container.ws.InstanceState;
 import com.ibm.jbatch.container.ws.RemotablePartitionState;
@@ -88,6 +88,18 @@ import com.ibm.wsspi.persistence.DatabaseStore;
 import com.ibm.wsspi.persistence.PersistenceServiceUnit;
 
 /**
+ * Database-backed (via JPA) batch persistence impl.
+ *
+ * Note that we use global transactions for database access, even reads which don't really need to be coordinated with anything else
+ * in any "atomic" manner. The reason for this is that we have execution flows in which multiple
+ * database reads/writes are performed in a sequence on a single thread, so a mix of global trans
+ * for the insert/updates and non-global trans for the reads would not allow these accesses to all
+ * be handled with a single database connection (per WebSphere connection pooling). This substantially
+ * complicates the question of "how many connections do I need?" and the related pooling settings needed
+ * to avoid deadlock, etc. Since a 2pc transaction involving only a single resource is optimized in WebSphere,
+ * there should be only a minimal performance hit to using a global tran in a single resource case such as
+ * one in which we just want to read from a single DB.
+ *
  * Note: JPAPersistenceManagerImpl is ranked higher than MemoryPeristenceManagerImpl
  * so if they're both activated, JPA should take precedence. Note that all @Reference
  * injectors of IPersistenceManagerService should set the GREEDY option so that they
@@ -390,7 +402,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
             }.runInNewOrExistingGlobalTran();
 
-            validatePersistedJobInstanceIds(instance);
+            IdentifierValidator.validatePersistedJobInstanceIds(instance);
             return instance;
 
         } finally {
@@ -399,10 +411,16 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public JobInstanceEntity getJobInstance(long jobInstanceId) throws NoSuchJobInstanceException {
-        EntityManager em = getPsu().createEntityManager();
+    public JobInstanceEntity getJobInstance(final long jobInstanceId) throws NoSuchJobInstanceException {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            JobInstanceEntity instance = em.find(JobInstanceEntity.class, jobInstanceId);
+            JobInstanceEntity instance = new TranRequest<JobInstanceEntity>(em) {
+                @Override
+                public JobInstanceEntity call() {
+                    return em.find(JobInstanceEntity.class, jobInstanceId);
+                }
+            }.runInNewOrExistingGlobalTran();
+
             if (instance == null) {
                 throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
             }
@@ -413,10 +431,16 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public JobInstanceEntity getJobInstanceFromExecutionId(long jobExecutionId) throws NoSuchJobExecutionException {
-        EntityManager em = getPsu().createEntityManager();
+    public JobInstanceEntity getJobInstanceFromExecutionId(final long jobExecutionId) throws NoSuchJobExecutionException {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            JobExecutionEntity exec = em.find(JobExecutionEntity.class, jobExecutionId);
+            JobExecutionEntity exec = new TranRequest<JobExecutionEntity>(em) {
+                @Override
+                public JobExecutionEntity call() {
+                    return em.find(JobExecutionEntity.class, jobExecutionId);
+                }
+            }.runInNewOrExistingGlobalTran();
+
             if (exec == null) {
                 throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
             }
@@ -427,109 +451,143 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public List<JobInstanceEntity> getJobInstances(String jobName, int start, int count) {
-        EntityManager em = getPsu().createEntityManager();
+    public List<JobInstanceEntity> getJobInstances(final String jobName, final int start, final int count) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_CREATETIME_BY_JOBNAME_QUERY,
-                                                                      JobInstanceEntity.class);
-            query.setParameter("name", jobName);
-            List<JobInstanceEntity> ids = query.setFirstResult(start).setMaxResults(count).getResultList();
-            if (ids == null) {
-                return new ArrayList<JobInstanceEntity>();
-            }
-            return ids;
-        } finally {
-            em.close();
-        }
-    }
+            List<JobInstanceEntity> exec = new TranRequest<List<JobInstanceEntity>>(em) {
 
-    @Override
-    public List<JobInstanceEntity> getJobInstances(String jobName, String submitter, int start, int count) {
-        EntityManager em = getPsu().createEntityManager();
-        try {
-            TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_CREATETIME_BY_JOBNAME_AND_SUBMITTER_QUERY,
-                                                                      JobInstanceEntity.class);
-            query.setParameter("name", jobName);
-            query.setParameter("submitter", submitter);
-            List<JobInstanceEntity> ids = query.setFirstResult(start).setMaxResults(count).getResultList();
-            if (ids == null) {
-                return new ArrayList<JobInstanceEntity>();
-            }
-            return ids;
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
-    public List<JobInstanceEntity> getJobInstances(int page, int pageSize) {
-        ArrayList<JobInstanceEntity> result = new ArrayList<JobInstanceEntity>();
-        List<JobInstanceEntity> jobList;
-        EntityManager em = getPsu().createEntityManager();
-        try {
-            TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_BY_CREATETIME_FIND_ALL_QUERY,
-                                                                      JobInstanceEntity.class);
-            jobList = query.setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
-
-            if (jobList != null) {
-                for (JobInstanceEntity instance : jobList) {
-                    result.add(instance);
+                @Override
+                public List<JobInstanceEntity> call() throws Exception {
+                    TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_CREATETIME_BY_JOBNAME_QUERY,
+                                                                              JobInstanceEntity.class);
+                    query.setParameter("name", jobName);
+                    List<JobInstanceEntity> ids = query.setFirstResult(start).setMaxResults(count).getResultList();
+                    if (ids == null) {
+                        return new ArrayList<JobInstanceEntity>();
+                    }
+                    return ids;
                 }
-            }
 
-            return result;
+            }.runInNewOrExistingGlobalTran();
+            return exec;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public List<JobInstanceEntity> getJobInstances(IJPAQueryHelper queryHelper, int page, int pageSize) {
-        ArrayList<JobInstanceEntity> result = new ArrayList<JobInstanceEntity>();
-        List<JobInstanceEntity> jobList;
-        EntityManager em = getPsu().createEntityManager();
+    public List<JobInstanceEntity> getJobInstances(final String jobName, final String submitter, final int start, final int count) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
+            List<JobInstanceEntity> exec = new TranRequest<List<JobInstanceEntity>>(em) {
+                @Override
+                public List<JobInstanceEntity> call() throws Exception {
 
-            // Obtain the JPA query from the Helper
-            String jpaQueryString = queryHelper.getQuery();
-
-            // Build and populate the parameters of the JPA query
-            TypedQuery<JobInstanceEntity> query = em.createQuery(jpaQueryString, JobInstanceEntity.class);
-
-            queryHelper.setQueryParameters(query);
-
-            jobList = query.setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
-
-            if (jobList != null) {
-                for (JobInstanceEntity instance : jobList) {
-                    result.add(instance);
+                    TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_CREATETIME_BY_JOBNAME_AND_SUBMITTER_QUERY,
+                                                                              JobInstanceEntity.class);
+                    query.setParameter("name", jobName);
+                    query.setParameter("submitter", submitter);
+                    List<JobInstanceEntity> ids = query.setFirstResult(start).setMaxResults(count).getResultList();
+                    if (ids == null) {
+                        return new ArrayList<JobInstanceEntity>();
+                    }
+                    return ids;
                 }
-            }
+            }.runInNewOrExistingGlobalTran();
 
-            return result;
+            return exec;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public List<JobInstanceEntity> getJobInstances(int page, int pageSize, String submitter) {
-
-        ArrayList<JobInstanceEntity> result = new ArrayList<JobInstanceEntity>();
-        List<JobInstanceEntity> jobList;
-        EntityManager em = getPsu().createEntityManager();
+    public List<JobInstanceEntity> getJobInstances(final int page, final int pageSize) {
+        final ArrayList<JobInstanceEntity> result = new ArrayList<JobInstanceEntity>();
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_BY_CREATETIME_FIND_BY_SUBMITTER_QUERY,
-                                                                      JobInstanceEntity.class);
-            query.setParameter("submitter", submitter);
-            jobList = query.setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+            List<JobInstanceEntity> exec = new TranRequest<List<JobInstanceEntity>>(em) {
 
-            if (jobList != null) {
-                for (JobInstanceEntity instance : jobList) {
-                    result.add(instance);
+                @Override
+                public List<JobInstanceEntity> call() throws Exception {
+                    TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_BY_CREATETIME_FIND_ALL_QUERY,
+                                                                              JobInstanceEntity.class);
+                    final List<JobInstanceEntity> jobList = query.setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+                    if (jobList != null) {
+                        for (JobInstanceEntity instance : jobList) {
+                            result.add(instance);
+                        }
+                    }
+                    return result;
                 }
-            }
-            return result;
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<JobInstanceEntity> getJobInstances(final IJPAQueryHelper queryHelper, final int page, final int pageSize) {
+        final ArrayList<JobInstanceEntity> result = new ArrayList<JobInstanceEntity>();
+
+        final EntityManager em = getPsu().createEntityManager();
+        try {
+            List<JobInstanceEntity> exec = new TranRequest<List<JobInstanceEntity>>(em) {
+                @Override
+                public List<JobInstanceEntity> call() throws Exception {
+                    // Obtain the JPA query from the Helper
+                    String jpaQueryString = queryHelper.getQuery();
+
+                    // Build and populate the parameters of the JPA query
+                    TypedQuery<JobInstanceEntity> query = em.createQuery(jpaQueryString, JobInstanceEntity.class);
+
+                    queryHelper.setQueryParameters(query);
+
+                    final List<JobInstanceEntity> jobList = query.setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+                    if (jobList != null) {
+                        for (JobInstanceEntity instance : jobList) {
+                            result.add(instance);
+                        }
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public List<JobInstanceEntity> getJobInstances(final int page, final int pageSize, final String submitter) {
+
+        final ArrayList<JobInstanceEntity> result = new ArrayList<JobInstanceEntity>();
+
+        final EntityManager em = getPsu().createEntityManager();
+        try {
+            List<JobInstanceEntity> exec = new TranRequest<List<JobInstanceEntity>>(em) {
+                @Override
+                public List<JobInstanceEntity> call() throws Exception {
+                    TypedQuery<JobInstanceEntity> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCES_SORT_BY_CREATETIME_FIND_BY_SUBMITTER_QUERY,
+                                                                              JobInstanceEntity.class);
+                    query.setParameter("submitter", submitter);
+                    final List<JobInstanceEntity> jobList = query.setFirstResult(page * pageSize).setMaxResults(pageSize).getResultList();
+
+                    if (jobList != null) {
+                        for (JobInstanceEntity instance : jobList) {
+                            result.add(instance);
+                        }
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } finally {
             em.close();
         }
@@ -537,32 +595,45 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
     @Override
     public Set<String> getJobNamesSet() {
-        EntityManager em = getPsu().createEntityManager();
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<String> query = em.createNamedQuery(JobInstanceEntity.GET_JOB_NAMES_SET_QUERY,
-                                                           String.class);
-            List<String> result = query.getResultList();
-            if (result == null) {
-                return new HashSet<String>();
-            }
-            return cleanUpResult(new HashSet<String>(result));
+            Set<String> exec = new TranRequest<Set<String>>(em) {
+                @Override
+                public Set<String> call() throws Exception {
+                    TypedQuery<String> query = em.createNamedQuery(JobInstanceEntity.GET_JOB_NAMES_SET_QUERY,
+                                                                   String.class);
+                    List<String> result = query.getResultList();
+                    if (result == null) {
+                        return new HashSet<String>();
+                    }
+                    return cleanUpResult(new HashSet<String>(result));
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public Set<String> getJobNamesSet(String submitter) {
-        EntityManager em = getPsu().createEntityManager();
+    public Set<String> getJobNamesSet(final String submitter) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<String> query = em.createNamedQuery(JobInstanceEntity.GET_JOB_NAMES_SET_BY_SUBMITTER_QUERY,
-                                                           String.class);
-            query.setParameter("submitter", submitter);
-            List<String> result = query.getResultList();
-            if (result == null) {
-                return new HashSet<String>();
-            }
-            return cleanUpResult(new HashSet<String>(result));
+            Set<String> exec = new TranRequest<Set<String>>(em) {
+                @Override
+                public Set<String> call() throws Exception {
+                    TypedQuery<String> query = em.createNamedQuery(JobInstanceEntity.GET_JOB_NAMES_SET_BY_SUBMITTER_QUERY,
+                                                                   String.class);
+                    query.setParameter("submitter", submitter);
+                    List<String> result = query.getResultList();
+                    if (result == null) {
+                        return new HashSet<String>();
+                    }
+                    return cleanUpResult(new HashSet<String>(result));
+                }
+            }.runInNewOrExistingGlobalTran();
+            return exec;
         } finally {
             em.close();
         }
@@ -577,37 +648,55 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public int getJobInstanceCount(String jobName) {
-        EntityManager em = getPsu().createEntityManager();
+    public int getJobInstanceCount(final String jobName) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<Long> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCE_COUNT_BY_JOBNAME_QUERY,
-                                                         Long.class);
-            query.setParameter("name", jobName);
-            Long result = query.getSingleResult();
-            if (result > Integer.MAX_VALUE) {
-                throw new IllegalArgumentException("More than MAX_INTEGER results found.");
-            } else {
-                return result.intValue();
-            }
+            Integer exec = new TranRequest<Integer>(em) {
+                @Override
+                public Integer call() throws Exception {
+                    TypedQuery<Long> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCE_COUNT_BY_JOBNAME_QUERY,
+                                                                 Long.class);
+                    query.setParameter("name", jobName);
+                    Long result = query.getSingleResult();
+                    if (result > Integer.MAX_VALUE) {
+                        throw new IllegalArgumentException("More than MAX_INTEGER results found.");
+                    } else {
+                        return result.intValue();
+                    }
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+
         } finally {
             em.close();
         }
     }
 
     @Override
-    public int getJobInstanceCount(String jobName, String submitter) {
-        EntityManager em = getPsu().createEntityManager();
+    public int getJobInstanceCount(final String jobName, final String submitter) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<Long> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCE_COUNT_BY_JOBNAME_AND_SUBMITTER_QUERY,
-                                                         Long.class);
-            query.setParameter("name", jobName);
-            query.setParameter("submitter", submitter);
-            Long result = query.getSingleResult();
-            if (result > Integer.MAX_VALUE) {
-                throw new IllegalArgumentException("More than MAX_INTEGER results found.");
-            } else {
-                return result.intValue();
-            }
+
+            Integer exec = new TranRequest<Integer>(em) {
+
+                @Override
+                public Integer call() throws Exception {
+                    TypedQuery<Long> query = em.createNamedQuery(JobInstanceEntity.GET_JOBINSTANCE_COUNT_BY_JOBNAME_AND_SUBMITTER_QUERY,
+                                                                 Long.class);
+                    query.setParameter("name", jobName);
+                    query.setParameter("submitter", submitter);
+                    Long result = query.getSingleResult();
+                    if (result > Integer.MAX_VALUE) {
+                        throw new IllegalArgumentException("More than MAX_INTEGER results found.");
+                    } else {
+                        return result.intValue();
+                    }
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+
         } finally {
             em.close();
         }
@@ -758,6 +847,37 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
+    public JobInstance updateJobInstanceWithInstanceStateAndBatchStatus(final long jobInstanceId, final InstanceState state, final BatchStatus batchStatus,
+                                                                        final Date lastUpdated) {
+        EntityManager em = getPsu().createEntityManager();
+        try {
+            return new TranRequest<JobInstance>(em) {
+                @Override
+                public JobInstance call() {
+                    JobInstanceEntity instance = entityMgr.find(JobInstanceEntity.class, jobInstanceId);
+                    if (instance == null) {
+                        throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
+                    }
+
+                    //Thinking a state check will be enough in this case.
+                    try {
+                        verifyStateTransitionIsValid(instance, state);
+                    } catch (BatchIllegalJobStatusTransitionException e) {
+                        throw new PersistenceException(e);
+                    }
+
+                    instance.setInstanceState(state);
+                    instance.setBatchStatus(batchStatus);
+                    instance.setLastUpdatedTime(lastUpdated);
+                    return instance;
+                }
+            }.runInNewOrExistingGlobalTran();
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
     public JobExecution updateJobExecutionAndInstanceOnStarted(final long jobExecutionId, final Date startedTime) throws NoSuchJobExecutionException {
         EntityManager em = getPsu().createEntityManager();
         try {
@@ -793,63 +913,6 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         }
     }
 
-    /*
-     * Check persisted job instance id and throw exception if any ids violate
-     * batch id rule: Cannot be <= 0
-     */
-    protected void validatePersistedJobInstanceIds(JobInstanceEntity instance) throws PersistenceException {
-        if (instance.getInstanceId() <= 0) {
-
-            long id = instance.getInstanceId();
-
-            PersistenceException e = new PersistenceException(new BatchIllegalIDPersistedException(Long.toString(id)));
-            logger.log(Level.SEVERE, "error.invalid.persisted.job.id",
-                       new Object[] { Long.toString(id), e });
-
-            throw e;
-        }
-
-    }
-
-    /*
-     * Check persisted job execution id and throw exception if any ids violate
-     * batch id rule: Cannot be <= 0
-     */
-    protected void validatePersistedJobExecution(JobExecutionEntity execution) throws PersistenceException {
-
-        if (execution.getExecutionId() <= 0) {
-
-            long exId = execution.getExecutionId();
-
-            PersistenceException e = new PersistenceException(new BatchIllegalIDPersistedException(Long.toString(exId)));
-            logger.log(Level.SEVERE, "error.invalid.persisted.exe.id",
-                       new Object[] { Long.toString(exId), e });
-
-            throw e;
-        }
-
-    }
-
-    /*
-     * Check persisted job step execution id and throw exception if any ids
-     * violate batch id rule: Cannot be <= 0
-     */
-    protected void validatePersistedStepExecution(
-                                                  StepThreadExecutionEntity stepExecution) throws PersistenceException {
-
-        if (stepExecution.getStepExecutionId() <= 0) {
-
-            long stepId = stepExecution.getStepExecutionId();
-
-            PersistenceException e = new PersistenceException(new BatchIllegalIDPersistedException(Long.toString(stepId)));
-            logger.log(Level.SEVERE, "error.invalid.persisted.step.id",
-                       new Object[] { Long.toString(stepId), e });
-
-            throw e;
-        }
-
-    }
-
     @Override
     public JobExecution updateJobExecutionAndInstanceOnStatusChange(final long jobExecutionId, final BatchStatus newBatchStatus,
                                                                     final Date updateTime) throws NoSuchJobExecutionException {
@@ -882,19 +945,20 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
+    // This sets state to STOPPED, so ideally would be renamed (which is a pain).
     public JobExecution updateJobExecutionAndInstanceNotSetToServerYet(final long jobExecutionId,
                                                                        final Date updateTime) throws NoSuchJobExecutionException, ExecutionAssignedToServerException {
-        EntityManager em = getPsu().createEntityManager();
+        final EntityManager em = getPsu().createEntityManager();
 
-        final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_AND_INSTANCE_SERVER_NOT_SET,
-                                                                         JobExecutionEntity.class);
-        query.setParameter("batchStatus", BatchStatus.STOPPED);
-        query.setParameter("jobExecId", jobExecutionId);
-        query.setParameter("lastUpdatedTime", updateTime);
         try {
             return new TranRequest<JobExecution>(em) {
                 @Override
                 public JobExecution call() throws ExecutionAssignedToServerException {
+                    final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_AND_INSTANCE_SERVER_NOT_SET,
+                                                                                     JobExecutionEntity.class);
+                    query.setParameter("batchStatus", BatchStatus.STOPPED);
+                    query.setParameter("jobExecId", jobExecutionId);
+                    query.setParameter("lastUpdatedTime", updateTime);
                     JobExecutionEntity execution = entityMgr.find(JobExecutionEntity.class, jobExecutionId, LockModeType.PESSIMISTIC_WRITE);
                     if (execution == null) {
                         throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
@@ -1032,7 +1096,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
             }.runInNewOrExistingGlobalTran();
 
-            validatePersistedJobExecution(jobExecution);
+            IdentifierValidator.validatePersistedJobExecution(jobExecution);
 
         } finally {
             em.close();
@@ -1041,13 +1105,20 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public JobExecutionEntity getJobExecution(long jobExecutionId) throws NoSuchJobExecutionException {
-        EntityManager em = getPsu().createEntityManager();
+    public JobExecutionEntity getJobExecution(final long jobExecutionId) throws NoSuchJobExecutionException {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            JobExecutionEntity exec = em.find(JobExecutionEntity.class, jobExecutionId);
-            if (exec == null) {
-                throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
-            }
+            JobExecutionEntity exec = new TranRequest<JobExecutionEntity>(em) {
+                @Override
+                public JobExecutionEntity call() throws Exception {
+                    JobExecutionEntity execution = em.find(JobExecutionEntity.class, jobExecutionId);
+                    if (execution == null) {
+                        throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
+                    }
+                    return execution;
+                }
+            }.runInNewOrExistingGlobalTran();
+
             return exec;
         } finally {
             em.close();
@@ -1060,39 +1131,58 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      *         The container keeps its own order and does not depend on execution id or creation time to order these.
      */
     @Override
-    public List<JobExecutionEntity> getJobExecutionsFromJobInstanceId(long jobInstanceId) throws NoSuchJobInstanceException {
-        EntityManager em = getPsu().createEntityManager();
+    public List<JobExecutionEntity> getJobExecutionsFromJobInstanceId(final long jobInstanceId) throws NoSuchJobInstanceException {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONS_MOST_TO_LEAST_RECENT_BY_INSTANCE,
-                                                                       JobExecutionEntity.class);
-            query.setParameter("instanceId", jobInstanceId);
-            List<JobExecutionEntity> result = query.getResultList();
-            if (result == null || result.size() == 0) {
-                // call this to trigger NoSuchJobInstanceException if instance is completely unknown (as opposed to there being no executions
-                getJobInstance(jobInstanceId);
-                if (result == null) {
-                    return new ArrayList<JobExecutionEntity>();
+
+            List<JobExecutionEntity> exec = new TranRequest<List<JobExecutionEntity>>(em) {
+
+                @Override
+                public List<JobExecutionEntity> call() throws Exception {
+
+                    TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONS_MOST_TO_LEAST_RECENT_BY_INSTANCE,
+                                                                               JobExecutionEntity.class);
+                    query.setParameter("instanceId", jobInstanceId);
+                    List<JobExecutionEntity> result = query.getResultList();
+                    if (result == null || result.size() == 0) {
+                        // call this to trigger NoSuchJobInstanceException if instance is completely unknown (as opposed to there being no executions
+                        getJobInstance(jobInstanceId);
+                        if (result == null) {
+                            return new ArrayList<JobExecutionEntity>();
+                        }
+                    }
+                    return result;
                 }
-            }
-            return result;
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public List<Long> getJobExecutionsRunning(String jobName) {
-        EntityManager em = getPsu().createEntityManager();
+    public List<Long> getJobExecutionsRunning(final String jobName) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<Long> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_NAME_AND_STATUSES_QUERY,
-                                                         Long.class);
-            query.setParameter("name", jobName);
-            query.setParameter("status", RUNNING_STATUSES);
-            List<Long> result = query.getResultList();
-            if (result == null) {
-                return new ArrayList<Long>();
-            }
-            return result;
+            List<Long> exec = new TranRequest<List<Long>>(em) {
+
+                @Override
+                public List<Long> call() throws Exception {
+                    TypedQuery<Long> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONIDS_BY_NAME_AND_STATUSES_QUERY,
+                                                                 Long.class);
+                    query.setParameter("name", jobName);
+                    query.setParameter("status", RUNNING_STATUSES);
+                    List<Long> result = query.getResultList();
+                    if (result == null) {
+                        return new ArrayList<Long>();
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+
         } finally {
             em.close();
         }
@@ -1101,23 +1191,30 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     /**
      * This method is called during recovery processing.
      *
-     * Note: This is not a method on the persistence service, only on the JPA persistence impl
+     * Note: This is not a method on {@link IPersistenceManagerService}, only on the JPA persistence impl
      *
      * @return List<JobExecutionEntity> of jobexecutions with a "running" status and this server's serverId
      */
     public List<JobExecutionEntity> getJobExecutionsRunningLocalToServer(PersistenceServiceUnit psu) {
 
-        EntityManager em = psu.createEntityManager();
+        final EntityManager em = psu.createEntityManager();
         try {
-            TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONS_BY_SERVERID_AND_STATUSES_QUERY,
-                                                                       JobExecutionEntity.class);
-            query.setParameter("serverid", batchLocationService.getServerId());
-            query.setParameter("status", RUNNING_STATUSES);
-            List<JobExecutionEntity> result = query.getResultList();
-            if (result == null) {
-                return new ArrayList<JobExecutionEntity>();
-            }
-            return result;
+            List<JobExecutionEntity> exec = new TranRequest<List<JobExecutionEntity>>(em) {
+                @Override
+                public List<JobExecutionEntity> call() throws Exception {
+                    TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.GET_JOB_EXECUTIONS_BY_SERVERID_AND_STATUSES_QUERY,
+                                                                               JobExecutionEntity.class);
+                    query.setParameter("serverid", batchLocationService.getServerId());
+                    query.setParameter("status", RUNNING_STATUSES);
+                    List<JobExecutionEntity> result = query.getResultList();
+                    if (result == null) {
+                        return new ArrayList<JobExecutionEntity>();
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } finally {
             em.close();
         }
@@ -1132,50 +1229,67 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      */
     public List<RemotablePartitionEntity> getPartitionsRunningLocalToServer(PersistenceServiceUnit psu) {
 
-        EntityManager em = psu.createEntityManager();
+        final EntityManager em = psu.createEntityManager();
+
         try {
-            TypedQuery<RemotablePartitionEntity> query = em.createNamedQuery(RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY,
-                                                                             RemotablePartitionEntity.class);
-            query.setParameter("serverid", batchLocationService.getServerId());
-            query.setParameter("status", RUNNING_STATUSES);
-            List<RemotablePartitionEntity> result = query.getResultList();
-            if (result == null) {
-                return new ArrayList<RemotablePartitionEntity>();
-            }
-            return result;
+            List<RemotablePartitionEntity> exec = new TranRequest<List<RemotablePartitionEntity>>(em) {
+                @Override
+                public List<RemotablePartitionEntity> call() throws Exception {
+                    TypedQuery<RemotablePartitionEntity> query = em.createNamedQuery(RemotablePartitionEntity.GET_PARTITION_STEP_THREAD_EXECUTIONIDS_BY_SERVERID_AND_STATUSES_QUERY,
+                                                                                     RemotablePartitionEntity.class);
+                    query.setParameter("serverid", batchLocationService.getServerId());
+                    query.setParameter("status", RUNNING_STATUSES);
+                    List<RemotablePartitionEntity> result = query.getResultList();
+                    if (result == null) {
+                        return new ArrayList<RemotablePartitionEntity>();
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public JobExecutionEntity getJobExecutionFromJobExecNum(long jobInstanceId, int jobExecNum) throws NoSuchJobInstanceException, IllegalArgumentException {
+    public JobExecutionEntity getJobExecutionFromJobExecNum(final long jobInstanceId, final int jobExecNum) throws NoSuchJobInstanceException, IllegalArgumentException {
 
-        EntityManager em = getPsu().createEntityManager();
-        TypedQuery<JobExecutionEntity> query = em.createNamedQuery(
-                                                                   JobExecutionEntity.GET_JOB_EXECUTIONS_BY_JOB_INST_ID_AND_JOB_EXEC_NUM,
-                                                                   JobExecutionEntity.class);
+        final EntityManager em = getPsu().createEntityManager();
+        try {
+            JobExecutionEntity exec = new TranRequest<JobExecutionEntity>(em) {
+                @Override
+                public JobExecutionEntity call() {
+                    final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(
+                                                                                     JobExecutionEntity.GET_JOB_EXECUTIONS_BY_JOB_INST_ID_AND_JOB_EXEC_NUM,
+                                                                                     JobExecutionEntity.class);
+                    query.setParameter("instanceId", jobInstanceId);
+                    query.setParameter("jobExecNum", jobExecNum);
 
-        query.setParameter("instanceId", jobInstanceId);
-        query.setParameter("jobExecNum", jobExecNum);
+                    List<JobExecutionEntity> jobExec = query.getResultList();
 
-        List<JobExecutionEntity> jobExec = query.getResultList();
+                    if (jobExec.size() > 1) {
+                        throw new IllegalStateException("Found more than one result for jobInstanceId: " + jobInstanceId + ", jobExecNum: " + jobExecNum);
+                    }
 
-        if (jobExec.size() > 1) {
-            throw new IllegalStateException("Found more than one result for jobInstanceId: " + jobInstanceId + ", jobExecNum: " + jobExecNum);
+                    if (jobExec == null || jobExec.size() == 0) {
+                        // call this to trigger NoSuchJobInstanceException if instance is completely unknown (as opposed to there being no executions
+                        getJobInstance(jobInstanceId);
+
+                        throw new IllegalArgumentException("Didn't find any job execution entries at job instance id: "
+                                                           + jobInstanceId + ", job execution number: "
+                                                           + jobExecNum);
+                    }
+
+                    return (jobExec.get(0));
+                }
+            }.runInNewOrExistingGlobalTran();
+            return exec;
+        } finally {
+            em.close();
         }
 
-        if (jobExec == null || jobExec.size() == 0) {
-
-            // call this to trigger NoSuchJobInstanceException if instance is completely unknown (as opposed to there being no executions
-            getJobInstance(jobInstanceId);
-
-            throw new IllegalArgumentException("Didn't find any job execution entries at job instance id: "
-                                               + jobInstanceId + ", job execution number: "
-                                               + jobExecNum);
-        }
-
-        return (jobExec.get(0));
     }
 
     @Override
@@ -1200,18 +1314,19 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
     @Override
     public JobExecutionEntity updateJobExecutionServerIdAndRestUrlForStartingJob(final long jobExecutionId) throws NoSuchJobExecutionException, JobStoppedException {
-        EntityManager em = getPsu().createEntityManager();
+        final EntityManager em = getPsu().createEntityManager();
 
-        final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_SERVERID_AND_RESTURL_FOR_STARTING_JOB,
-                                                                         JobExecutionEntity.class);
-
-        query.setParameter("serverId", batchLocationService.getServerId());
-        query.setParameter("restUrl", batchLocationService.getBatchRestUrl());
-        query.setParameter("jobExecId", jobExecutionId);
         try {
             return new TranRequest<JobExecutionEntity>(em) {
                 @Override
                 public JobExecutionEntity call() throws JobStoppedException {
+                    final TypedQuery<JobExecutionEntity> query = em.createNamedQuery(JobExecutionEntity.UPDATE_JOB_EXECUTION_SERVERID_AND_RESTURL_FOR_STARTING_JOB,
+                                                                                     JobExecutionEntity.class);
+
+                    query.setParameter("serverId", batchLocationService.getServerId());
+                    query.setParameter("restUrl", batchLocationService.getBatchRestUrl());
+                    query.setParameter("jobExecId", jobExecutionId);
+
                     JobExecutionEntity execution = entityMgr.find(JobExecutionEntity.class, jobExecutionId, LockModeType.PESSIMISTIC_WRITE);
                     if (execution == null) {
                         throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
@@ -1260,7 +1375,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                         throw new IllegalStateException("Didn't find JobExecutionEntity associated with value: " + jobExecutionId);
                     }
 
-                    // 2. Construct and initalize new entity instances
+                    // 2. Construct and initialize new entity instances
                     //   Note some important initialization (e.g. batch status = STARTING and startcount = 1), is done in the constructors
                     final TopLevelStepInstanceEntity stepInstance = new TopLevelStepInstanceEntity(jobInstance, instanceKey.getStepName(), isPartitioned);
                     final TopLevelStepExecutionEntity stepExecution = new TopLevelStepExecutionEntity(jobExecution, instanceKey.getStepName(), isPartitioned);
@@ -1281,7 +1396,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
             }.runInNewOrExistingGlobalTran();
 
-            validatePersistedStepExecution(stepExecution);
+            IdentifierValidator.validatePersistedStepExecution(stepExecution);
 
             return stepExecution;
 
@@ -1419,7 +1534,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
             }.runInNewOrExistingGlobalTran();
 
-            validatePersistedStepExecution(stepExecution);
+            IdentifierValidator.validatePersistedStepExecution(stepExecution);
 
             return stepExecution;
 
@@ -1474,7 +1589,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
             }.runInNewOrExistingGlobalTran();
 
-            validatePersistedStepExecution(stepExecution);
+            IdentifierValidator.validatePersistedStepExecution(stepExecution);
 
             return stepExecution;
 
@@ -1555,7 +1670,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
             }.runInNewOrExistingGlobalTran();
 
-            validatePersistedStepExecution(stepExecution);
+            IdentifierValidator.validatePersistedStepExecution(stepExecution);
 
             return stepExecution;
 
@@ -1609,7 +1724,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 }
             }.runInNewOrExistingGlobalTran();
 
-            validatePersistedStepExecution(stepExecution);
+            IdentifierValidator.validatePersistedStepExecution(stepExecution);
 
             return stepExecution;
 
@@ -1622,11 +1737,17 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * @return null if not found (don't throw exception)
      */
     @Override
-    public StepThreadInstanceEntity getStepThreadInstance(StepThreadInstanceKey stepInstanceKey) {
-        EntityManager em = getPsu().createEntityManager();
+    public StepThreadInstanceEntity getStepThreadInstance(final StepThreadInstanceKey stepInstanceKey) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            StepThreadInstanceEntity instance = em.find(StepThreadInstanceEntity.class, stepInstanceKey);
-            return instance;
+
+            StepThreadInstanceEntity exec = new TranRequest<StepThreadInstanceEntity>(em) {
+                @Override
+                public StepThreadInstanceEntity call() throws Exception {
+                    return em.find(StepThreadInstanceEntity.class, stepInstanceKey);
+                }
+            }.runInNewOrExistingGlobalTran();
+            return exec;
         } finally {
             em.close();
         }
@@ -1640,15 +1761,27 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      */
     @Override
     public List<Integer> getStepThreadInstancePartitionNumbersOfRelatedCompletedPartitions(
-                                                                                           StepThreadInstanceKey topLevelKey) {
+                                                                                           final StepThreadInstanceKey topLevelKey) {
 
-        EntityManager em = getPsu().createEntityManager();
-        TypedQuery<Integer> query = em.createNamedQuery(TopLevelStepInstanceEntity.GET_RELATED_PARTITION_LEVEL_COMPLETED_PARTITION_NUMBERS,
-                                                        Integer.class);
-        query.setParameter("instanceId", topLevelKey.getJobInstance());
-        query.setParameter("stepName", topLevelKey.getStepName());
+        final EntityManager em = getPsu().createEntityManager();
 
-        return query.getResultList();
+        try {
+            List<Integer> exec = new TranRequest<List<Integer>>(em) {
+                @Override
+                public List<Integer> call() throws Exception {
+                    TypedQuery<Integer> query = em.createNamedQuery(TopLevelStepInstanceEntity.GET_RELATED_PARTITION_LEVEL_COMPLETED_PARTITION_NUMBERS,
+                                                                    Integer.class);
+                    query.setParameter("instanceId", topLevelKey.getJobInstance());
+                    query.setParameter("stepName", topLevelKey.getStepName());
+
+                    return query.getResultList();
+                }
+            }.runInNewOrExistingGlobalTran();
+            return exec;
+        } finally {
+            em.close();
+        }
+
     }
 
     @Override
@@ -1668,16 +1801,16 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public TopLevelStepInstanceEntity updateStepThreadInstanceWithPartitionPlanSize(StepThreadInstanceKey stepInstanceKey, final int numCurrentPartitions) {
-        EntityManager em = getPsu().createEntityManager();
+    public TopLevelStepInstanceEntity updateStepThreadInstanceWithPartitionPlanSize(final StepThreadInstanceKey stepInstanceKey, final int numCurrentPartitions) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            final TopLevelStepInstanceEntity stepInstance = em.find(TopLevelStepInstanceEntity.class, stepInstanceKey);
-            if (stepInstance == null) {
-                throw new IllegalStateException("No step thread instance found for key = " + stepInstanceKey);
-            }
             return new TranRequest<TopLevelStepInstanceEntity>(em) {
                 @Override
                 public TopLevelStepInstanceEntity call() {
+                    final TopLevelStepInstanceEntity stepInstance = em.find(TopLevelStepInstanceEntity.class, stepInstanceKey);
+                    if (stepInstance == null) {
+                        throw new IllegalStateException("No step thread instance found for key = " + stepInstanceKey);
+                    }
                     stepInstance.setPartitionPlanSize(numCurrentPartitions);
                     return stepInstance;
                 }
@@ -1712,10 +1845,17 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public StepThreadExecutionEntity getStepThreadExecution(long stepExecutionId) {
-        EntityManager em = getPsu().createEntityManager();
+    public StepThreadExecutionEntity getStepThreadExecution(final long stepExecutionId) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            return em.find(StepThreadExecutionEntity.class, stepExecutionId);
+            StepThreadExecutionEntity exec = new TranRequest<StepThreadExecutionEntity>(em) {
+                @Override
+                public StepThreadExecutionEntity call() throws Exception {
+                    return em.find(StepThreadExecutionEntity.class, stepExecutionId);
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } finally {
             em.close();
         }
@@ -1725,75 +1865,93 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      * order by start time, ascending
      */
     @Override
-    public List<StepExecution> getStepExecutionsTopLevelFromJobExecutionId(long jobExecutionId) throws NoSuchJobExecutionException {
-        EntityManager em = getPsu().createEntityManager();
+    public List<StepExecution> getStepExecutionsTopLevelFromJobExecutionId(final long jobExecutionId) throws NoSuchJobExecutionException {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            TypedQuery<StepExecution> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_TOP_LEVEL_STEP_EXECUTIONS_BY_JOB_EXEC_SORT_BY_START_TIME_ASC,
-                                                                  StepExecution.class);
-            query.setParameter("jobExecId", jobExecutionId);
-            List<StepExecution> result = query.getResultList();
-            if (result == null) {
-                result = new ArrayList<StepExecution>();
-            }
-            // If empty, try to get job execution to generate NoSuchJobExecutionException if unknown id
-            if (result.isEmpty()) {
-                getJobExecution(jobExecutionId);
-            }
-            return result;
+            List<StepExecution> exec = new TranRequest<List<StepExecution>>(em) {
+                @Override
+                public List<StepExecution> call() throws Exception {
+                    TypedQuery<StepExecution> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_TOP_LEVEL_STEP_EXECUTIONS_BY_JOB_EXEC_SORT_BY_START_TIME_ASC,
+                                                                          StepExecution.class);
+                    query.setParameter("jobExecId", jobExecutionId);
+                    List<StepExecution> result = query.getResultList();
+                    if (result == null) {
+                        result = new ArrayList<StepExecution>();
+                    }
+                    // If empty, try to get job execution to generate NoSuchJobExecutionException if unknown id
+                    if (result.isEmpty()) {
+                        getJobExecution(jobExecutionId);
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+            return exec;
         } finally {
             em.close();
         }
     }
 
     @Override
-    public WSStepThreadExecutionAggregate getStepExecutionAggregateFromJobExecutionNumberAndStepName(long jobInstanceId, int jobExecNum,
-                                                                                                     String stepName) throws NoSuchJobInstanceException, IllegalArgumentException {
+    public WSStepThreadExecutionAggregate getStepExecutionAggregateFromJobExecutionNumberAndStepName(final long jobInstanceId, final int jobExecNum,
+                                                                                                     final String stepName) throws NoSuchJobInstanceException, IllegalArgumentException {
 
-        WSStepThreadExecutionAggregateImpl retVal = new WSStepThreadExecutionAggregateImpl();
+        final WSStepThreadExecutionAggregateImpl retVal = new WSStepThreadExecutionAggregateImpl();
 
-        EntityManager em = getPsu().createEntityManager();
-        // 222050 - Backout 205106
-        // Query query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_TOP_LEVEL_STEP_EXECUTION_BY_JOB_INSTANCE_JOB_EXEC_NUM_AND_STEP_NAME);
-        TypedQuery<StepThreadExecutionEntity> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_TOP_LEVEL_STEP_EXECUTION_BY_JOB_INSTANCE_JOB_EXEC_NUM_AND_STEP_NAME,
-                                                                          StepThreadExecutionEntity.class);
+        final EntityManager em = getPsu().createEntityManager();
 
-        query.setParameter("jobInstanceId", jobInstanceId);
-        query.setParameter("jobExecNum", jobExecNum);
-        query.setParameter("stepName", stepName);
-        // 222050 - Backout 205106
-        // List<Object[]> stepExecs = query.getResultList();
-        List<StepThreadExecutionEntity> stepExecs = query.getResultList();
-
-        if (stepExecs == null || stepExecs.size() == 0) {
-            // Trigger NoSuchJobInstanceException
-            getJobInstance(jobInstanceId);
-
-            throw new IllegalArgumentException("Didn't find any step thread exec entries at job instance id: " + jobInstanceId + ", job execution number: " + jobExecNum
-                                               + ", and stepName: " + stepName);
-        }
-
-        // Verify the first is the top-level.
         try {
-            // 220050 - Backout 205106 TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0)[0];
-            TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0);
-            retVal.setTopLevelStepExecution(topLevelStepExecution);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Didn't find top-level step thread exec entry at job instance id: " + jobInstanceId + ", job execution number: " + jobExecNum
-                                               + ", and stepName: " + stepName);
-        }
+            WSStepThreadExecutionAggregateImpl exec = new TranRequest<WSStepThreadExecutionAggregateImpl>(em) {
+                @Override
+                public WSStepThreadExecutionAggregateImpl call() throws Exception {
+                    // 222050 - Backout 205106
+                    // Query query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_TOP_LEVEL_STEP_EXECUTION_BY_JOB_INSTANCE_JOB_EXEC_NUM_AND_STEP_NAME);
+                    TypedQuery<StepThreadExecutionEntity> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_TOP_LEVEL_STEP_EXECUTION_BY_JOB_INSTANCE_JOB_EXEC_NUM_AND_STEP_NAME,
+                                                                                      StepThreadExecutionEntity.class);
 
-        // Go through the list and store the entities properly
-        /*
-         * 222050 - Backout 205106
-         * List<WSPartitionStepAggregate> partitionSteps = new ArrayList<WSPartitionStepAggregate>();
-         * for (int i = 1; i < stepExecs.size(); i++) {
-         * partitionSteps.add(new WSPartitionStepAggregateImpl(stepExecs.get(i)));
-         * }
-         *
-         * retVal.setPartitionAggregate(partitionSteps);
-         */
-        retVal.setPartitionLevelStepExecutions(new ArrayList<WSPartitionStepThreadExecution>(stepExecs.subList(1, stepExecs.size())));
-        return retVal;
+                    query.setParameter("jobInstanceId", jobInstanceId);
+                    query.setParameter("jobExecNum", jobExecNum);
+                    query.setParameter("stepName", stepName);
+                    // 222050 - Backout 205106
+                    // List<Object[]> stepExecs = query.getResultList();
+                    List<StepThreadExecutionEntity> stepExecs = query.getResultList();
+
+                    if (stepExecs == null || stepExecs.size() == 0) {
+                        // Trigger NoSuchJobInstanceException
+                        getJobInstance(jobInstanceId);
+
+                        throw new IllegalArgumentException("Didn't find any step thread exec entries at job instance id: " + jobInstanceId + ", job execution number: " + jobExecNum
+                                                           + ", and stepName: " + stepName);
+                    }
+
+                    // Verify the first is the top-level.
+                    try {
+                        // 220050 - Backout 205106 TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0)[0];
+                        TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0);
+                        retVal.setTopLevelStepExecution(topLevelStepExecution);
+                    } catch (ClassCastException e) {
+                        throw new IllegalArgumentException("Didn't find top-level step thread exec entry at job instance id: " + jobInstanceId + ", job execution number: "
+                                                           + jobExecNum
+                                                           + ", and stepName: " + stepName);
+                    }
+
+                    // Go through the list and store the entities properly
+                    /*
+                     * 222050 - Backout 205106
+                     * List<WSPartitionStepAggregate> partitionSteps = new ArrayList<WSPartitionStepAggregate>();
+                     * for (int i = 1; i < stepExecs.size(); i++) {
+                     * partitionSteps.add(new WSPartitionStepAggregateImpl(stepExecs.get(i)));
+                     * }
+                     *
+                     * retVal.setPartitionAggregate(partitionSteps);
+                     */
+                    retVal.setPartitionLevelStepExecutions(new ArrayList<WSPartitionStepThreadExecution>(stepExecs.subList(1, stepExecs.size())));
+                    return retVal;
+                }
+            }.runInNewOrExistingGlobalTran();
+            return exec;
+        } finally {
+            em.close();
+        }
     }
 
     @Override
@@ -1923,91 +2081,117 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 
     @Override
     public WSStepThreadExecutionAggregate getStepExecutionAggregateFromJobExecutionId(
-                                                                                      long jobExecutionId, String stepName) throws NoSuchJobExecutionException {
-        WSStepThreadExecutionAggregateImpl retVal = new WSStepThreadExecutionAggregateImpl();
+                                                                                      final long jobExecutionId, final String stepName) throws NoSuchJobExecutionException {
+        final WSStepThreadExecutionAggregateImpl retVal = new WSStepThreadExecutionAggregateImpl();
 
-        EntityManager em = getPsu().createEntityManager();
-        // 222050 - Backout 205106
-        // Query query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_BY_JOB_EXEC_AND_STEP_NAME_SORT_BY_PART_NUM_ASC);
-        TypedQuery<StepThreadExecutionEntity> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_BY_JOB_EXEC_AND_STEP_NAME_SORT_BY_PART_NUM_ASC,
-                                                                          StepThreadExecutionEntity.class);
+        final EntityManager em = getPsu().createEntityManager();
 
-        query.setParameter("jobExecId", jobExecutionId);
-        query.setParameter("stepName", stepName);
-        // 222050 - Backout 205106
-        // List<Object[]> stepExecs = query.getResultList();
-        List<StepThreadExecutionEntity> stepExecs = query.getResultList();
-
-        if (stepExecs == null || stepExecs.size() == 0) {
-            throw new IllegalArgumentException("Didn't find any step thread exec entries at job execution id: " + jobExecutionId + ", and stepName: " + stepName);
-        }
-
-        // Verify the first is the top-level.
         try {
-            // 222050 - Backout 205106
-            // TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0)[0];
-            TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0);
-            retVal.setTopLevelStepExecution(topLevelStepExecution);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Didn't find top-level step thread exec entry at job execution id: " + jobExecutionId + ", and stepName: " + stepName);
+            WSStepThreadExecutionAggregate exec = new TranRequest<WSStepThreadExecutionAggregate>(em) {
+                @Override
+                public WSStepThreadExecutionAggregate call() throws Exception {
+                    // 222050 - Backout 205106
+                    // Query query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_BY_JOB_EXEC_AND_STEP_NAME_SORT_BY_PART_NUM_ASC);
+                    TypedQuery<StepThreadExecutionEntity> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_BY_JOB_EXEC_AND_STEP_NAME_SORT_BY_PART_NUM_ASC,
+                                                                                      StepThreadExecutionEntity.class);
+
+                    query.setParameter("jobExecId", jobExecutionId);
+                    query.setParameter("stepName", stepName);
+                    // 222050 - Backout 205106
+                    // List<Object[]> stepExecs = query.getResultList();
+                    List<StepThreadExecutionEntity> stepExecs = query.getResultList();
+
+                    if (stepExecs == null || stepExecs.size() == 0) {
+                        throw new IllegalArgumentException("Didn't find any step thread exec entries at job execution id: " + jobExecutionId + ", and stepName: " + stepName);
+                    }
+
+                    // Verify the first is the top-level.
+                    try {
+                        // 222050 - Backout 205106
+                        // TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0)[0];
+                        TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0);
+                        retVal.setTopLevelStepExecution(topLevelStepExecution);
+                    } catch (ClassCastException e) {
+                        throw new IllegalArgumentException("Didn't find top-level step thread exec entry at job execution id: " + jobExecutionId + ", and stepName: " + stepName);
+                    }
+
+                    // Go through the list and store the entities properly
+                    /*
+                     * 222050 - Backout 205106
+                     * List<WSPartitionStepAggregate> partitionSteps = new ArrayList<WSPartitionStepAggregate>();
+                     * for (int i = 1; i < stepExecs.size(); i++) {
+                     * partitionSteps.add(new WSPartitionStepAggregateImpl(stepExecs.get(i)));
+                     * }
+                     *
+                     * retVal.setPartitionAggregate(partitionSteps);
+                     */
+                    retVal.setPartitionLevelStepExecutions(new ArrayList<WSPartitionStepThreadExecution>(stepExecs.subList(1, stepExecs.size())));
+                    return retVal;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+        } finally {
+            em.close();
         }
 
-        // Go through the list and store the entities properly
-        /*
-         * 222050 - Backout 205106
-         * List<WSPartitionStepAggregate> partitionSteps = new ArrayList<WSPartitionStepAggregate>();
-         * for (int i = 1; i < stepExecs.size(); i++) {
-         * partitionSteps.add(new WSPartitionStepAggregateImpl(stepExecs.get(i)));
-         * }
-         *
-         * retVal.setPartitionAggregate(partitionSteps);
-         */
-        retVal.setPartitionLevelStepExecutions(new ArrayList<WSPartitionStepThreadExecution>(stepExecs.subList(1, stepExecs.size())));
-        return retVal;
     }
 
     @Override
-    public WSStepThreadExecutionAggregate getStepExecutionAggregate(long topLevelStepExecutionId) throws IllegalArgumentException {
+    public WSStepThreadExecutionAggregate getStepExecutionAggregate(final long topLevelStepExecutionId) throws IllegalArgumentException {
 
-        WSStepThreadExecutionAggregateImpl retVal = new WSStepThreadExecutionAggregateImpl();
+        final WSStepThreadExecutionAggregateImpl retVal = new WSStepThreadExecutionAggregateImpl();
 
-        EntityManager em = getPsu().createEntityManager();
-        // 222050 - Backout 205106
-        // Query query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_SORT_BY_PART_NUM_ASC);
-        TypedQuery<StepThreadExecutionEntity> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_SORT_BY_PART_NUM_ASC,
-                                                                          StepThreadExecutionEntity.class);
+        final EntityManager em = getPsu().createEntityManager();
 
-        query.setParameter("topLevelStepExecutionId", topLevelStepExecutionId);
-        // 222050 - Backout 205106
-        // List<Object[]> stepExecs = query.getResultList();
-        List<StepThreadExecutionEntity> stepExecs = query.getResultList();
-
-        if (stepExecs == null || stepExecs.size() == 0) {
-            throw new IllegalArgumentException("Didn't find any step thread exec entries at id: " + topLevelStepExecutionId);
-        }
-
-        // Verify the first is the top-level.
         try {
-            // 222050 - Backout 205106
-            // TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0)[0];
-            TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0);
-            retVal.setTopLevelStepExecution(topLevelStepExecution);
-        } catch (ClassCastException e) {
-            throw new IllegalArgumentException("Didn't find top-level step thread exec entry at id: " + topLevelStepExecutionId, e);
+            WSStepThreadExecutionAggregate exec = new TranRequest<WSStepThreadExecutionAggregate>(em) {
+                @Override
+                public WSStepThreadExecutionAggregate call() throws Exception {
+                    // 222050 - Backout 205106
+                    // Query query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_SORT_BY_PART_NUM_ASC);
+                    TypedQuery<StepThreadExecutionEntity> query = em.createNamedQuery(TopLevelStepExecutionEntity.GET_ALL_RELATED_STEP_THREAD_EXECUTIONS_SORT_BY_PART_NUM_ASC,
+                                                                                      StepThreadExecutionEntity.class);
+
+                    query.setParameter("topLevelStepExecutionId", topLevelStepExecutionId);
+                    // 222050 - Backout 205106
+                    // List<Object[]> stepExecs = query.getResultList();
+                    List<StepThreadExecutionEntity> stepExecs = query.getResultList();
+
+                    if (stepExecs == null || stepExecs.size() == 0) {
+                        throw new IllegalArgumentException("Didn't find any step thread exec entries at id: " + topLevelStepExecutionId);
+                    }
+
+                    // Verify the first is the top-level.
+                    try {
+                        // 222050 - Backout 205106
+                        // TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0)[0];
+                        TopLevelStepExecutionEntity topLevelStepExecution = (TopLevelStepExecutionEntity) stepExecs.get(0);
+                        retVal.setTopLevelStepExecution(topLevelStepExecution);
+                    } catch (ClassCastException e) {
+                        throw new IllegalArgumentException("Didn't find top-level step thread exec entry at id: " + topLevelStepExecutionId, e);
+                    }
+
+                    // Go through the list and store the entities properly
+                    /*
+                     * 222050 - Backout 205106
+                     * List<WSPartitionStepAggregate> partitionSteps = new ArrayList<WSPartitionStepAggregate>();
+                     * for (int i = 1; i < stepExecs.size(); i++) {
+                     * partitionSteps.add(new WSPartitionStepAggregateImpl(stepExecs.get(i)));
+                     * }
+                     *
+                     * retVal.setPartitionAggregate(partitionSteps);
+                     */
+                    retVal.setPartitionLevelStepExecutions(new ArrayList<WSPartitionStepThreadExecution>(stepExecs.subList(1, stepExecs.size())));
+                    return retVal;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
+        } finally {
+            em.close();
         }
 
-        // Go through the list and store the entities properly
-        /*
-         * 222050 - Backout 205106
-         * List<WSPartitionStepAggregate> partitionSteps = new ArrayList<WSPartitionStepAggregate>();
-         * for (int i = 1; i < stepExecs.size(); i++) {
-         * partitionSteps.add(new WSPartitionStepAggregateImpl(stepExecs.get(i)));
-         * }
-         *
-         * retVal.setPartitionAggregate(partitionSteps);
-         */
-        retVal.setPartitionLevelStepExecutions(new ArrayList<WSPartitionStepThreadExecution>(stepExecs.subList(1, stepExecs.size())));
-        return retVal;
     }
 
     /**
@@ -2021,31 +2205,35 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
      *
      * @return The list of StepExecutions with "running" statuses for the given jobExecutionId.
      */
-    public List<StepExecution> getStepThreadExecutionsRunning(PersistenceServiceUnit psu, long jobExecutionId) {
+    public List<StepExecution> getStepThreadExecutionsRunning(PersistenceServiceUnit psu, final long jobExecutionId) {
 
-        EntityManager em = psu.createEntityManager();
+        final EntityManager em = psu.createEntityManager();
         try {
-            TypedQuery<StepExecution> query = em.createNamedQuery(StepThreadExecutionEntity.GET_STEP_THREAD_EXECUTIONIDS_BY_JOB_EXEC_AND_STATUSES_QUERY,
-                                                                  StepExecution.class);
-            query.setParameter("jobExecutionId", jobExecutionId);
-            query.setParameter("status", RUNNING_STATUSES);
-            List<StepExecution> result = query.getResultList();
-            if (result == null) {
-                return new ArrayList<StepExecution>();
-            }
-            return result;
+
+            List<StepExecution> exec = new TranRequest<List<StepExecution>>(em) {
+                @Override
+                public List<StepExecution> call() throws Exception {
+
+                    TypedQuery<StepExecution> query = em.createNamedQuery(StepThreadExecutionEntity.GET_STEP_THREAD_EXECUTIONIDS_BY_JOB_EXEC_AND_STATUSES_QUERY,
+                                                                          StepExecution.class);
+                    query.setParameter("jobExecutionId", jobExecutionId);
+                    query.setParameter("status", RUNNING_STATUSES);
+                    List<StepExecution> result = query.getResultList();
+                    if (result == null) {
+                        return new ArrayList<StepExecution>();
+                    }
+                    return result;
+                }
+            }.runInNewOrExistingGlobalTran();
+            return exec;
         } finally {
             em.close();
         }
     }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//
-// Disable the split-flow and partition execution methods for now.  Revisit when we do cross-JVM distribution of partitions and splitflows within
-// a single job.   Rationale for not including this logic is we don't want to externalize new associated tables and create a customer DB migration
-// problem if it turns out we need to make changes.
-//
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////
+// Disable the split-flow and partition execution methods for now.
+////////////////////////////////////////////////////////////////////
 
     /*
      * (non-Javadoc)
@@ -2213,16 +2401,16 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     }
 
     @Override
-    public boolean purgeJobInstanceAndRelatedData(long jobInstanceId) {
-        EntityManager em = getPsu().createEntityManager();
+    public boolean purgeJobInstanceAndRelatedData(final long jobInstanceId) {
+        final EntityManager em = getPsu().createEntityManager();
         try {
-            final JobInstanceEntity instance = em.find(JobInstanceEntity.class, jobInstanceId);
-            if (instance == null) {
-                throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
-            }
             new TranRequest<Void>(em) {
                 @Override
                 public Void call() {
+                    final JobInstanceEntity instance = em.find(JobInstanceEntity.class, jobInstanceId);
+                    if (instance == null) {
+                        throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
+                    }
                     entityMgr.remove(instance);
                     return null;
                 }
@@ -2256,7 +2444,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
 //		}
 //	}
 
-// TO COMPLETE MERGING FROM HARRY - probably can do this with one query now
+// probably can do this with one query now
 //    @Override
 //    public List<StepExecution> getStepExecutionsPartitionsForJobExecution(long execid, String stepName)
 //            throws NoSuchJobExecutionException {
@@ -2424,38 +2612,6 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         return databaseStoreDisplayId + "_batchPersistence";
     }
 
-    @Override
-    public JobInstance updateJobInstanceWithInstanceStateAndBatchStatus(
-                                                                        final long jobInstanceId, final InstanceState state, final BatchStatus batchStatus,
-                                                                        final Date lastUpdated) {
-        EntityManager em = getPsu().createEntityManager();
-        try {
-            return new TranRequest<JobInstance>(em) {
-                @Override
-                public JobInstance call() {
-                    JobInstanceEntity instance = entityMgr.find(JobInstanceEntity.class, jobInstanceId);
-                    if (instance == null) {
-                        throw new NoSuchJobInstanceException("No job instance found for id = " + jobInstanceId);
-                    }
-
-                    //Thinking a state check will be enough in this case.
-                    try {
-                        verifyStateTransitionIsValid(instance, state);
-                    } catch (BatchIllegalJobStatusTransitionException e) {
-                        throw new PersistenceException(e);
-                    }
-
-                    instance.setInstanceState(state);
-                    instance.setBatchStatus(batchStatus);
-                    instance.setLastUpdatedTime(lastUpdated);
-                    return instance;
-                }
-            }.runInNewOrExistingGlobalTran();
-        } finally {
-            em.close();
-        }
-    }
-
     /**
      * {@inheritDoc}
      *
@@ -2471,15 +2627,23 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         if (executionVersion != null)
             return executionVersion;
 
-        EntityManager em = psu.createEntityManager();
+        final EntityManager em = psu.createEntityManager();
         try {
-            // Verify that JOBPARAMETER exists by running a query against it.
-            String queryString = "SELECT COUNT(e.jobParameterElements) FROM JobExecutionEntityV2 e";
-            TypedQuery<Long> query = em.createQuery(queryString, Long.class);
-            query.getSingleResult();
-            logger.fine("The JOBPARAMETER table exists, job execution table version = 2");
-            executionVersion = 2;
-            return executionVersion;
+
+            Integer exec = new TranRequest<Integer>(em) {
+                @Override
+                public Integer call() throws Exception {
+                    // Verify that JOBPARAMETER exists by running a query against it.
+                    String queryString = "SELECT COUNT(e.jobParameterElements) FROM JobExecutionEntityV2 e";
+                    TypedQuery<Long> query = em.createQuery(queryString, Long.class);
+                    query.getSingleResult();
+                    logger.fine("The JOBPARAMETER table exists, job execution table version = 2");
+                    executionVersion = 2;
+                    return executionVersion;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } catch (javax.persistence.PersistenceException e) {
             Throwable cause = e.getCause();
             while (cause != null) {
@@ -2515,15 +2679,23 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         if (instanceVersion != null)
             return instanceVersion;
 
-        EntityManager em = psu.createEntityManager();
+        final EntityManager em = psu.createEntityManager();
+
         try {
-            // Verify that UPDATETIME column exists by running a query against it.
-            String queryString = "SELECT COUNT(x.lastUpdatedTime) FROM JobInstanceEntityV2 x";
-            TypedQuery<Long> query = em.createQuery(queryString, Long.class);
-            query.getSingleResult();
-            logger.fine("The UPDATETIME column exists, job instance table version = 2");
-            instanceVersion = 2;
-            return instanceVersion;
+            Integer exec = new TranRequest<Integer>(em) {
+                @Override
+                public Integer call() throws Exception {
+                    // Verify that UPDATETIME column exists by running a query against it.
+                    String queryString = "SELECT COUNT(x.lastUpdatedTime) FROM JobInstanceEntityV2 x";
+                    TypedQuery<Long> query = em.createQuery(queryString, Long.class);
+                    query.getSingleResult();
+                    logger.fine("The UPDATETIME column exists, job instance table version = 2");
+                    instanceVersion = 2;
+                    return instanceVersion;
+                }
+            }.runInNewOrExistingGlobalTran();
+
+            return exec;
         } catch (javax.persistence.PersistenceException e) {
             Throwable cause = e.getCause();
             while (cause != null) {

@@ -1,0 +1,204 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+// To update the EclipseLink binaries:
+// 1. Navigate into this project in Git Bash.
+// 2. Invoke the following command to update the oss_ibm.maven with the new version for the EclipseLink binaries:
+//        .././gradlew -b updatebinaries.gradle replacemavendependencies -Pnewversion={NewEclipseLinkBinariesVersion}
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1.WAS-8e605f1
+// 3. Invoke the following command to ensure no new messages were introduced in the new EclipseLink binaries:
+//        .././gradlew -b updatebinaries.gradle comparenlsprops -Pnewversion={NewEclipseLinkBinariesVersion}
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1.WAS-8e605f1
+// 4. Invoke the following command which will generate the ossc.xml files in this project's generated directory. NOTE: you will have to manually update the ossc.xml file where it resides. The command is meant to help with generating checksums.
+//        .././gradlew -b updatebinaries.gradle generateosscxml -Pnewversion={NewEclipseLinkBinariesVersion} -Pbaseversion={NewEclipseLinkBinariesBaseVersion}
+//        Example of {NewEclipseLinkBinariesVersion} -> 2.7.1.WAS-8e605f1
+//        Example of {NewEclipseLinkBinariesBaseVersion} -> 2.7.1_WAS
+// 5. Invoke the releaseNeeded command to make sure everything worked properly:
+//        .././gradlew releaseNeeded
+
+apply plugin: 'java'
+
+// Replaces the EclipseLink binaries coordinates in ossc_ibm.maven with the new coordinates passed in
+task replacemavendependencies {
+  doLast {
+    ant.replaceregexp(match:'com\\.ibm\\.ws\\.org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.antlr:.*$', replace: "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr:${newversion}", flags:'g', byline:true) {
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
+    }
+    ant.replaceregexp(match:'com\\.ibm\\.ws\\.org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.asm:.*$', replace: "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm:${newversion}", flags:'g', byline:true) {
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
+    }
+    ant.replaceregexp(match:'com\\.ibm\\.ws\\.org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.core:.*$', replace: "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:${newversion}", flags:'g', byline:true) {
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
+    }
+    ant.replaceregexp(match:'com\\.ibm\\.ws\\.org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.jpa\\.jpql:.*$', replace: "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:${newversion}", flags:'g', byline:true) {
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
+    }
+    ant.replaceregexp(match:'com\\.ibm\\.ws\\.org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.jpa\\.modelgen:.*$', replace: "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:${newversion}", flags:'g', byline:true) {
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
+    }
+    ant.replaceregexp(match:'com\\.ibm\\.ws\\.org\\.eclipse\\.persistence:org\\.eclipse\\.persistence\\.jpa:.*$', replace: "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:${newversion}", flags:'g', byline:true) {
+      fileset(dir: "${rootDir}/../cnf", includes: 'oss_ibm.maven')
+    }
+  }
+}
+
+repositories {
+  mavenLocal()
+}
+
+configurations {
+  binaries
+}
+
+dependencies {
+  binaries "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.antlr:${newversion}"
+  binaries "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.asm:${newversion}"
+  binaries "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.core:${newversion}"
+  binaries "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.jpql:${newversion}"
+  binaries "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa.modelgen:${newversion}"
+  binaries "com.ibm.ws.org.eclipse.persistence:org.eclipse.persistence.jpa:${newversion}"
+}
+
+def newResourcesDir = "${projectDir}/resources.new"
+def existingResourceDir = "${projectDir}/resources.existing"
+
+sourceSets {
+  nlspropsTool.java.srcDir 'src/com/ibm/ws/i18n/conversion/tools'
+}
+
+task runNLSPropsTool(dependsOn:'classes', type: JavaExec) {
+  // Find the location of the eclipselink core jar containing the new translation messages
+  def coreJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.core-${newversion}")}.each{ }
+
+  // Run the ConvertRBtoNLSProps class which converts the translation class files to nlsprops files
+  main = "com.ibm.ws.i18n.conversion.tools.ConvertRBtoNLSProps"
+  classpath += sourceSets.nlspropsTool.runtimeClasspath
+  args coreJar, newResourcesDir, "org/eclipse/persistence/internal/localization/i18n/.*class", "org/eclipse/persistence/exceptions/i18n/.*class"
+}
+
+// Check incoming resource bundles in new binaries for changes. Compare the checksum of existing nlsprop files to the binaries resource bundles
+task comparenlsprops {
+  delete existingResourceDir, newResourcesDir
+  dependsOn runNLSPropsTool
+
+  doLast {
+    // Copy (English) existing nlsprop files into a work directory
+    copy {
+      from "${projectDir}/resources"
+      into existingResourceDir
+      include '**/*Resource.nlsprops'
+      // Remove '#[A-Z]+ NON-TRANSLATABLE' string(S) from the existing nlsprop
+      filter {
+      	it.contains("NON-TRANSLATABLE") ? null: it
+      }
+    }
+
+    // Get checksum for existing nlsprops files
+    task existingCheckSum {
+      ant.checksum(totalproperty: 'resource.existing.checksum') {
+        fileset(dir: existingResourceDir) {
+          include(name: '**/*.nlsprops')
+        }
+      }
+    }
+    delete fileTree(existingResourceDir){
+      include '**/*.MD5'
+    }
+
+    // Explicitly get rid of the Trace nlsprops file as we don't want to translate trace message.
+    delete fileTree(newResourcesDir){
+      include '**/TraceLocalizationResource.nlsprops'
+    }
+
+    task fixCRLF {
+      ant.fixcrlf(srcDir: newResourcesDir, eol: 'crlf')
+    }
+
+    // Get checksum for binary nlsprops files
+    task newCheckSum {
+      ant.checksum(totalproperty: 'resource.new.checksum') {
+        fileset(dir: newResourcesDir) {
+          include(name: '**/*.nlsprops')
+        }
+      }
+    }
+    delete fileTree(newResourcesDir){
+      include '**/*.MD5'
+    }
+    if(ant.properties['resource.existing.checksum'] != ant.properties['resource.new.checksum']) {
+
+      // The script will fail if the new EclipseLink binaries include changes to the translation files. If that is the case, you must manually
+      // change the tranlation files in the resources directory so it can be translated by the translation team.
+      throw new GradleException("The NLS files have changed since the last build - please update the NLS resources and notify the ID team that new translation may be required. To find what changed you need to diff ${projectDir}/resources.new to ${projectDir}/resources.existing.")
+    }
+    delete existingResourceDir, newResourcesDir
+  }
+}
+
+// Generates an ossc.xml file with the EclipseLink binaries version and calculated checksum values
+// Note: the ossc.xml file is put into the generated folder and needs to be manually moved to it's proper location
+task generateosscxml{
+  doLast {
+    // Resolve the jar files
+    def antlrJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.antlr-${newversion}")}.each{ }
+    ant.checksum(file: antlrJar, property:'antlr.checksum')
+    def asmJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.asm-${newversion}")}.each{ }
+    ant.checksum(file: asmJar, property:'asm.checksum')
+    def coreJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.core-${newversion}")}.each{ }
+    ant.checksum(file: coreJar, property:'core.checksum')
+    def jpaJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.jpa-${newversion}")}.each{ }
+    ant.checksum(file: jpaJar, property:'jpa.checksum')
+    def jpqlJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.jpa.jpql-${newversion}")}.each{ }
+    ant.checksum(file: jpqlJar, property:'jpql.checksum')
+    def modelgenJar = configurations.binaries.resolvedConfiguration.files.find{ it.name.startsWith("org.eclipse.persistence.jpa.modelgen-${newversion}")}.each{ }
+    ant.checksum(file: modelgenJar, property:'modelgen.checksum')
+
+    copy {
+      from "${projectDir}/ossc.template"
+      into "${buildDir}"
+      rename { 'ossc.xml' }
+    }
+
+    // Run the Eclipselink Version class to get the binaries version information
+    def tmpBuildProps = "${buildDir}/tmp/build.properties.tmp"
+    javaexec {
+      standardOutput = new FileOutputStream(tmpBuildProps)
+      classpath configurations.binaries
+      main = "org.eclipse.persistence.Version"
+    }
+
+    // Extract the EclipseLink build version from the temporary file created when running the EclipseLink Version class
+    def buildversion
+    String buildVersion = new File(tmpBuildProps).eachLine { line ->
+      if( line.contains("Build Version:")) {
+        def values = line.split("\\s+")
+        buildversion = values[3]
+      }
+    }
+
+    task replaceToken {
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@VERSION@', value: "${baseversion}")
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@REVISION@', value: "${buildversion}")
+
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@ANTLR_JAR@', value: antlrJar.name)
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@ANTLR_CHECKSUM@', value: ant.properties['antlr.checksum'])
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@ASM_JAR@', value: asmJar.name)
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@ASM_CHECKSUM@', value: ant.properties['asm.checksum'])
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@CORE_JAR@', value: coreJar.name)
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@CORE_CHECKSUM@', value: ant.properties['core.checksum'])
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@JPA_JAR@', value: jpaJar.name)
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@JPA_CHECKSUM@', value: ant.properties['jpa.checksum'])
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@JPQL_JAR@', value: jpqlJar.name)
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@JPQL_CHECKSUM@', value: ant.properties['jpql.checksum'])
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@MODELGEN_JAR@', value: modelgenJar.name)
+      ant.replace( file: "${buildDir}/ossc.xml", token: '@MODELGEN_CHECKSUM@', value: ant.properties['modelgen.checksum'])
+    }
+  }
+}

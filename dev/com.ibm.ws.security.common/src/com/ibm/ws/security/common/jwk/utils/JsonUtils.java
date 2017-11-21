@@ -79,10 +79,16 @@ public class JsonUtils {
     //    private static AtomicServiceReference<VirtualHost> virtualHostRef;
 
     public static String convertToBase64(String source) {
+        if (source == null) {
+            return null;
+        }
         return Base64.encodeBase64URLSafeString(StringUtils.getBytesUtf8(source));
     }
 
     public static String decodeFromBase64String(String encoded) {
+        if (encoded == null) {
+            return null;
+        }
         return new String(Base64.decodeBase64(encoded));
     }
 
@@ -98,6 +104,9 @@ public class JsonUtils {
     }
 
     public static String toJson(String source) {
+        if (source == null) {
+            return null;
+        }
         try {
             return StringUtils.newStringUtf8(source.getBytes("UTF8"));
         } catch (UnsupportedEncodingException e) {
@@ -124,8 +133,11 @@ public class JsonUtils {
 
     // either from header or payload
     public static Object claimFromJsonObject(String jsonFormattedString, String claimName) throws JoseException {
-        Object claim = null;
+        if (jsonFormattedString == null) {
+            return null;
+        }
 
+        Object claim = null;
         //JSONObject jobj = JSONObject.parse(jsonFormattedString);
         Map<String, Object> jobj = org.jose4j.json.JsonUtil.parseJson(jsonFormattedString);
         if (jobj != null) {
@@ -138,6 +150,9 @@ public class JsonUtils {
     // assuming payload not the whole token string
     public static Map claimsFromJsonObject(String jsonFormattedString) throws JoseException {
         Map claimsMap = new ConcurrentHashMap<String, Object>();
+        if (jsonFormattedString == null) {
+            return claimsMap;
+        }
 
         //JSONObject jobj = JSONObject.parse(jsonFormattedString);
         Map<String, Object> jobj = org.jose4j.json.JsonUtil.parseJson(jsonFormattedString);
@@ -204,6 +219,9 @@ public class JsonUtils {
     }
 
     public static String[] splitTokenString(String tokenString) {
+        if (tokenString == null) {
+            return null;
+        }
         boolean isPlainTextJWT = false;
         if (tokenString.endsWith(".")) {
             isPlainTextJWT = true;

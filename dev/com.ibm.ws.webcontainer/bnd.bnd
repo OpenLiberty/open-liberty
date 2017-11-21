@@ -52,7 +52,7 @@ Service-Component: \
 	 dynamic:="webAppConnectionCollaborator,webAppSecurityCollaborator,webAppTransactionCollaborator,webAppInvocationCollaborator,webAppInitializationCollaborator", \
    com.ibm.ws.generatePluginConfig;\
      implementation:=com.ibm.ws.webcontainer.osgi.mbeans.GeneratePluginConfigMBean;\
-     provide:='javax.management.DynamicMBean,com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig,com.ibm.ws.webserver.plugin.runtime.interfaces.PluginUtilityConfigGenerator';\
+     provide:='javax.management.DynamicMBean,com.ibm.wsspi.webcontainer.osgi.mbeans.GeneratePluginConfig,com.ibm.ws.webserver.plugin.runtime.interfaces.PluginUtilityConfigGenerator,com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener';\
      modified:='modified';\
      locationService=com.ibm.wsspi.kernel.service.location.WsLocationAdmin; \
      virtualHostMgr=com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager; \
@@ -75,6 +75,7 @@ Service-Component: \
 Export-Package: !*.internal.*, \
     com.ibm.ws.webcontainer.internalRuntimeExport.*, \
     com.ibm.ws.webcontainer.async*;provide:=true, \
+    com.ibm.ws.webcontainer.core*;provide=true, \
 	com.ibm.ws.webcontainer.osgi*;provide:=true, \
 	com.ibm.ws.webcontainer.resources;provide:=true, \
 	com.ibm.ws.webcontainer.srt*;provide:=true, \
@@ -205,7 +206,7 @@ instrument.disabled: true
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.jmock:jmock-legacy;version=2.5.0, \
 	com.ibm.ws.org.objenesis:objenesis;version=1.0, \
 	cglib:cglib-nodep;version=2.1.0.3, \

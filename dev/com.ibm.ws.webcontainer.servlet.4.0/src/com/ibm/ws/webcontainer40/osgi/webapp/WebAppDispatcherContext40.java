@@ -10,8 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.osgi.webapp;
 
+import javax.servlet.http.HttpServletMapping;
 import javax.servlet.http.MappingMatch;
-import javax.servlet.http.ServletMapping;
 
 import com.ibm.ws.webcontainer.osgi.webapp.WebApp;
 import com.ibm.ws.webcontainer.osgi.webapp.WebAppDispatcherContext;
@@ -23,7 +23,7 @@ import com.ibm.wsspi.webcontainer.servlet.IServletWrapper;
  */
 public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
 
-    private ServletMapping _mapping;
+    private HttpServletMapping _mapping;
     private MappingMatch _match;
 
     public WebAppDispatcherContext40() {
@@ -47,10 +47,10 @@ public class WebAppDispatcherContext40 extends WebAppDispatcherContext {
     }
 
     public void setServletMapping() {
-        _mapping = _request.getMapping();
+        _mapping = _request.getHttpServletMapping();
     }
 
-    public ServletMapping getServletMapping() {
+    public HttpServletMapping getServletMapping() {
         return _mapping;
     }
 

@@ -12,10 +12,7 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.security-1.0;version=latest, \
 	com.ibm.ws.messaging.utils;version=latest, \
 	com.ibm.ws.messaging.security;version=latest, \
 	com.ibm.ws.messaging.security.common;version=latest

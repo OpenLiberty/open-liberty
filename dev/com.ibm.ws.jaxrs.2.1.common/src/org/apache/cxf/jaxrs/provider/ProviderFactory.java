@@ -19,7 +19,6 @@
 //https://issues.apache.org/jira/browse/CXF-6307
 package org.apache.cxf.jaxrs.provider;
 
-import java.io.File;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -44,7 +43,8 @@ import java.util.TreeMap;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import javax.activation.DataSource;
+import javax.json.bind.spi.JsonbProvider;
+import javax.json.spi.JsonProvider;
 import javax.ws.rs.Produces;
 import javax.ws.rs.container.DynamicFeature;
 import javax.ws.rs.core.Application;
@@ -82,15 +82,10 @@ import org.apache.cxf.jaxrs.utils.JAXRSUtils;
 import org.apache.cxf.jaxrs.utils.ResourceUtils;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProvider;
-import org.codehaus.jackson.jaxrs.JacksonJaxbJsonProviderWrapper;
-import org.codehaus.jackson.map.AnnotationIntrospector;
-import org.codehaus.jackson.map.DeserializationConfig;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.map.SerializationConfig;
-import org.codehaus.jackson.map.annotate.JsonSerialize.Inclusion;
-import org.codehaus.jackson.map.introspect.JacksonAnnotationIntrospector;
-import org.codehaus.jackson.xc.JaxbAnnotationIntrospector;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -98,8 +93,10 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jaxrs20.JaxRsConstants;
 import com.ibm.ws.jaxrs20.api.JaxRsFactoryBeanCustomizer;
 import com.ibm.ws.jaxrs20.injection.InjectionRuntimeContextHelper;
+import com.ibm.ws.jaxrs20.providers.jsonb.JsonBProvider;
 import com.ibm.ws.jaxrs20.providers.jsonp.JsonPProvider;
 import com.ibm.ws.jaxrs20.providers.multipart.IBMMultipartProvider;
+import com.ibm.ws.jaxrs20.utils.CustomizerUtils;
 
 public abstract class ProviderFactory {
     private static final TraceComponent tc = Tr.register(ProviderFactory.class);
@@ -118,7 +115,6 @@ public abstract class ProviderFactory {
     private static final String BUS_PROVIDERS_ALL = "org.apache.cxf.jaxrs.bus.providers";
     private static final String PROVIDER_CACHE_ALLOWED = "org.apache.cxf.jaxrs.provider.cache.allowed";
     private static final String PROVIDER_CACHE_CHECK_ALL = "org.apache.cxf.jaxrs.provider.cache.checkAllCandidates";
-    private static final String JSONPCLASS = "javax.json.Json";
 
     protected Map<NameKey, ProviderInfo<ReaderInterceptor>> readerInterceptors = new NameKeyMap<ProviderInfo<ReaderInterceptor>>(true);
     protected Map<NameKey, ProviderInfo<WriterInterceptor>> writerInterceptors = new NameKeyMap<ProviderInfo<WriterInterceptor>>(true);
@@ -192,7 +188,7 @@ public abstract class ProviderFactory {
                              //new StringProvider<Object>(), // Liberty Change for CXF
                              //new JAXBElementSubProvider(),
                              createJsonpProvider(), // Liberty Change for CXF Begin
-                             createJacksonProvider(),
+                             createJsonbProvider(),
                              new IBMMultipartProvider(), // Liberty Change for CXF End
                              new MultipartProvider());
         Object prop = factory.getBus().getProperty("skip.default.json.provider.registration");
@@ -228,30 +224,23 @@ public abstract class ProviderFactory {
 
     // Liberty Change for CXF Begin
     private static Object createJsonpProvider() {
-
-        // We can only create the JSON-P provider if the jsonp feature is provisioned. This usually
-        // requires the user to explicitly add the jsonp-1.0 feature in the server.xml (or some feature
-        // that includes it).  The following classloading code checks to see if this bundle can load
-        // (via dynamic import) the JSON-P classes.  If so, then it returns the JSON-P provider.  If not,
-        // it returns null.
-        JsonPProvider provider = null;
-        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+        JsonProvider jsonProvider = AccessController.doPrivileged(new PrivilegedAction<JsonProvider>(){
 
             @Override
-            public ClassLoader run() {
-                return ProviderFactory.class.getClassLoader();
-            }
-        });
-        Class<?> c = ProviderFactory.loadClass(cl, JSONPCLASS);
-        if (c != null) {
-            provider = new JsonPProvider();
-        }
-
-        return provider;
+            public JsonProvider run() {
+                Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
+                if(b != null) {
+                    BundleContext bc = b.getBundleContext();
+                    ServiceReference<JsonProvider> sr = bc.getServiceReference(JsonProvider.class);
+                    return (JsonProvider)bc.getService(sr);
+                }
+                return null;
+            }});
+        
+        return new JsonPProvider(jsonProvider);
     }
+    // Liberty Change for CXF End
 
-    //JsonPProvider and IBM JSON4J Provider handle
-    private final static String[] jsonpClasses = new String[] { "javax.json.JsonArray", "javax.json.JsonObject", "javax.json.JsonStructure" };//,
 
     @FFDCIgnore(value = { ClassNotFoundException.class })
     public static Class<?> loadClass(ClassLoader cl, String className) {
@@ -267,44 +256,22 @@ public abstract class ProviderFactory {
 
         return c;
     }
-
-    private static Object createJacksonProvider() {
-
-        JacksonJaxbJsonProvider jacksonjaxbprovider = new JacksonJaxbJsonProviderWrapper();
-        jacksonjaxbprovider.addUntouchable(DataSource.class);//Let DataSourceProvider handle DataSource.class
-        jacksonjaxbprovider.addUntouchable(File.class);
-
-        // Like createJsonpProvider(), this code attempts to load the JSON-P classes to ensure that
-        // the Jackson provider that we want to return will function properly -- this requires that
-        // this class' bundle is able to load the JSON-P classes via dynamic import -- which requires
-        // that the jsonp feature is provisioned.
-        ClassLoader cl = AccessController.doPrivileged(new PrivilegedAction<ClassLoader>() {
+    
+    private static Object createJsonbProvider() {
+        JsonbProvider jsonbProvider = AccessController.doPrivileged(new PrivilegedAction<JsonbProvider>(){
 
             @Override
-            public ClassLoader run() {
-                return ProviderFactory.class.getClassLoader();
-            }
-        });
-
-        for (String clsName : jsonpClasses) { //JsonPProvider and IBM JSON4J Provider handle
-            Class<?> c = ProviderFactory.loadClass(cl, clsName);
-            if (c != null) {
-                jacksonjaxbprovider.addUntouchable(c);
-            }
-        }
-
-        ObjectMapper mapperObject = new ObjectMapper();
-        AnnotationIntrospector annotationIntrospectorPairObject = new AnnotationIntrospector.Pair(new JaxbAnnotationIntrospector(), new JacksonAnnotationIntrospector());
-
-        SerializationConfig serializationConfig = mapperObject.getSerializationConfig();
-        serializationConfig.setSerializationInclusion(Inclusion.NON_NULL);
-        serializationConfig.setAnnotationIntrospector(annotationIntrospectorPairObject);
-
-        DeserializationConfig deserializationConfig = mapperObject.getDeserializationConfig();
-        deserializationConfig.setAnnotationIntrospector(annotationIntrospectorPairObject);
-
-        jacksonjaxbprovider.setMapper(mapperObject);
-        return jacksonjaxbprovider;
+            public JsonbProvider run() {
+                Bundle b = FrameworkUtil.getBundle(ProviderFactory.class);
+                if(b != null) {
+                    BundleContext bc = b.getBundleContext();
+                    ServiceReference<JsonbProvider> sr = bc.getServiceReference(JsonbProvider.class);
+                    return (JsonbProvider)bc.getService(sr);
+                }
+                return null;
+            }});
+        
+        return new JsonBProvider(jsonbProvider);
     }
 
     // Liberty Change for CXF End
@@ -365,7 +332,7 @@ public abstract class ProviderFactory {
         } else if (candidates.size() == 1) {
             return candidates.get(0);
         } else {
-            Collections.sort(candidates, new ClassComparator());
+            Collections.sort(candidates, new PriorityBasedClassComparator());
             return new ContextResolverProxy<T>(candidates);
         }
 
@@ -1066,7 +1033,11 @@ public abstract class ProviderFactory {
             if (result != 0) {
                 return result;
             }
-            return compareCustomStatus(p1, p2);
+            result = compareCustomStatus(p1, p2);
+            if (result != 0) {
+                return result;
+            }
+            return comparePriorityStatus(p1.getProvider().getClass(), p2.getProvider().getClass());
         }
     }
 
@@ -1097,7 +1068,11 @@ public abstract class ProviderFactory {
             if (result != 0) {
                 return result;
             }
-            return compareCustomStatus(p1, p2);
+            result = compareCustomStatus(p1, p2);
+            if (result != 0) {
+                return result;
+            }
+            return comparePriorityStatus(p1.getProvider().getClass(), p2.getProvider().getClass());
         }
     }
 
@@ -1111,6 +1086,13 @@ public abstract class ProviderFactory {
             result = busGlobal1.compareTo(busGlobal2);
         }
         return result;
+    }
+
+
+    static int comparePriorityStatus(Class<?> cl1, Class<?> cl2) {
+        Integer value1 = AnnotationUtils.getBindingPriority(cl1);
+        Integer value2 = AnnotationUtils.getBindingPriority(cl2);
+        return value1.compareTo(value2);
     }
 
     private static class ContextResolverComparator
@@ -1247,6 +1229,25 @@ public abstract class ProviderFactory {
         @Override
         public int compare(Object em1, Object em2) {
             return compareClasses(expectedCls, em1, em2);
+        }
+    }
+
+    static class PriorityBasedClassComparator extends ClassComparator {
+        PriorityBasedClassComparator() {
+            super();
+        }
+
+        PriorityBasedClassComparator(Class<?> expectedCls) {
+            super(expectedCls);
+        }
+
+        @Override
+        public int compare(Object em1, Object em2) {
+            int result = super.compare(em1, em2);
+            if (result == 0) {
+                result = comparePriorityStatus(em1.getClass(), em2.getClass());
+            }
+            return result;
         }
     }
 
@@ -1611,7 +1612,7 @@ public abstract class ProviderFactory {
              */
             JaxRsFactoryBeanCustomizer beanCustomizer = InjectionRuntimeContextHelper.findBeanCustomizer(o.getClass(), getBus());
             if (beanCustomizer != null) {
-                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())));
+                Object proxyObject = beanCustomizer.onSetupProviderProxy(o, beanCustomizerContexts.get(CustomizerUtils.createCustomizerKey(beanCustomizer)));
 
                 if (proxyObject != null && (proxyObject != o || !proxyObject.equals(o))) {
                     pi.setProvider(proxyObject);
@@ -1619,7 +1620,7 @@ public abstract class ProviderFactory {
             }
 
             if (beanCustomizer != null && DynamicFeature.class.isAssignableFrom(pi.getProvider().getClass())) {
-                Object newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())),
+                Object newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(CustomizerUtils.createCustomizerKey(beanCustomizer)),
                                                                                     null);
                 if (newProviderInstance != null) {
                     pi.setProvider(newProviderInstance);

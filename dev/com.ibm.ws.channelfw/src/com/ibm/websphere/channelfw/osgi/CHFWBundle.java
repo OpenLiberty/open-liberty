@@ -13,6 +13,7 @@ package com.ibm.websphere.channelfw.osgi;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicReference;
@@ -44,6 +45,7 @@ import com.ibm.ws.channelfw.internal.ChannelFrameworkImpl;
 import com.ibm.ws.channelfw.internal.chains.EndPointMgrImpl;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.feature.ServerStarted;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.ws.tcpchannel.internal.TCPChannelFactory;
 import com.ibm.ws.udpchannel.internal.UDPChannelFactory;
 import com.ibm.wsspi.bytebuffer.WsByteBufferPoolManager;
@@ -67,16 +69,20 @@ import com.ibm.wsspi.timer.QuickApproxTime;
 public class CHFWBundle implements ServerQuiesceListener {
 
     /** Trace service */
-    private static final TraceComponent tc =
-                    Tr.register(CHFWBundle.class,
-                                ChannelFrameworkConstants.BASE_TRACE_NAME,
-                                ChannelFrameworkConstants.BASE_BUNDLE);
+    private static final TraceComponent tc = Tr.register(CHFWBundle.class,
+                                                         ChannelFrameworkConstants.BASE_TRACE_NAME,
+                                                         ChannelFrameworkConstants.BASE_BUNDLE);
 
     /**
      * Active HttpDispatcher instance. May be null between deactivate and activate
      * calls.
      */
-    private static final AtomicReference<CHFWBundle> instance = new AtomicReference<CHFWBundle>();
+    private static final StaticValue<AtomicReference<CHFWBundle>> instance = StaticValue.createStaticValue(new Callable<AtomicReference<CHFWBundle>>() {
+        @Override
+        public AtomicReference<CHFWBundle> call() {
+            return new AtomicReference<CHFWBundle>();
+        }
+    });;
 
     /** Reference to the channel framework */
     private ChannelFrameworkImpl chfw = null;
@@ -103,7 +109,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * DS method for activating this component.
-     * 
+     *
      * @param context
      */
     @Activate
@@ -112,7 +118,7 @@ public class CHFWBundle implements ServerQuiesceListener {
             Tr.event(this, tc, "Activating ", config);
         }
 
-        // handle config (such as TCP factory info) before registering 
+        // handle config (such as TCP factory info) before registering
         // factories, as the register will trigger an automatic load of any
         // delayed configuration, and we need the config before that happens
         modified(config);
@@ -120,12 +126,12 @@ public class CHFWBundle implements ServerQuiesceListener {
         this.chfw.registerFactory("TCPChannel", TCPChannelFactory.class);
         this.chfw.registerFactory("UDPChannel", UDPChannelFactory.class);
 
-        instance.set(this); // required components have been activated
+        instance.get().set(this); // required components have been activated
     }
 
     /**
      * DS method for deactivating this component.
-     * 
+     *
      * @param context
      */
     @Deactivate
@@ -133,7 +139,7 @@ public class CHFWBundle implements ServerQuiesceListener {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Deactivating");
         }
-        instance.compareAndSet(this, null);
+        instance.get().compareAndSet(this, null);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Destroying all endpoints");
@@ -156,7 +162,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * Modified method. This method is called when the
      * service properties associated with the service are updated through a
      * configuration change.
-     * 
+     *
      * @param cfwConfiguration
      *            the configuration data
      */
@@ -186,12 +192,12 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * When notified that the server is going to stop, pre-quiesce all chains in the runtime.
      * This will be called before services start getting torn down..
-     * 
+     *
      * @see com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener#serverStopping()
      */
     @Override
     public void serverStopping() {
-        // If the system is configured to quiesce connections.. 
+        // If the system is configured to quiesce connections..
         long timeout = chfw.getDefaultChainQuiesceTimeout();
         if (timeout > 0) {
             ChainData[] runningChains = chfw.getRunningChains();
@@ -214,7 +220,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * Declarative services method that is invoked once the server is started.
      * Only after this method is invoked is the initial polling for
      * persistent tasks performed.
-     * 
+     *
      * @param ref reference to the ServerStarted service
      */
     @Reference(service = ServerStarted.class,
@@ -238,7 +244,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * Declarative Services method for unsetting the ServerStarted service
-     * 
+     *
      * @param ref reference to the service
      */
     protected synchronized void unsetServerStarted(ServiceReference<ServerStarted> ref) {
@@ -282,18 +288,18 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * DS method for removing the ByteBufferConfiguration.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param service
      */
     protected void unsetByteBufferConfig(ByteBufferConfiguration bbConfig) {}
 
     /**
      * Access the event service.
-     * 
+     *
      * @return EventEngine - null if not found
      */
     public static EventEngine getEventService() {
-        CHFWBundle c = instance.get();
+        CHFWBundle c = instance.get().get();
         if (null != c) {
             return c.eventService;
         }
@@ -302,7 +308,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * DS method for setting the event reference.
-     * 
+     *
      * @param service
      */
     @Reference(service = EventEngine.class,
@@ -314,7 +320,7 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * DS method for removing the event reference.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param service
      */
     protected void unsetEventService(EventEngine service) {}
@@ -322,11 +328,11 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * Access the channel framework's {@link java.util.concurrent.ExecutorService} to
      * use for work dispatch.
-     * 
+     *
      * @return the executor service instance to use within the channel framework
      */
     public static ExecutorService getExecutorService() {
-        CHFWBundle c = instance.get();
+        CHFWBundle c = instance.get().get();
         if (null != c) {
             return c.executorService;
         }
@@ -335,7 +341,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * DS method for setting the executor service reference.
-     * 
+     *
      * @param executorService the {@link java.util.concurrent.ExecutorService} to
      *            queue work to.
      */
@@ -348,18 +354,18 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * DS method for clearing the executor service reference.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param executorService the service instance to clear
      */
     protected void unsetExecutorService(ExecutorService executorService) {}
 
     /**
      * Access the scheduled event service.
-     * 
+     *
      * @return ScheduledEventService - null if not found
      */
     public static ScheduledEventService getScheduleService() {
-        CHFWBundle c = instance.get();
+        CHFWBundle c = instance.get().get();
         if (null != c) {
             return c.scheduler;
         }
@@ -391,7 +397,7 @@ public class CHFWBundle implements ServerQuiesceListener {
      * @return ScheduledEventService - null if not found
      */
     public static ScheduledExecutorService getScheduledExecutorService() {
-        CHFWBundle c = instance.get();
+        CHFWBundle c = instance.get().get();
         if (null != c) {
             return c.scheduledExecutor;
         }
@@ -400,7 +406,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * DS method for setting the scheduled event service reference.
-     * 
+     *
      * @param ref
      */
     @Reference(service = ScheduledEventService.class,
@@ -412,14 +418,14 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * DS method for removing the scheduled event service reference.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param ref
      */
     protected void unsetScheduledEventService(ScheduledEventService ref) {}
 
     /**
      * DS method to set a factory provider.
-     * 
+     *
      * @param provider
      */
     @Reference(service = ChannelFactoryProvider.class,
@@ -436,7 +442,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * DS method to remove a factory provider.
-     * 
+     *
      * @param provider
      */
     protected void unsetFactoryProvider(ChannelFactoryProvider provider) {
@@ -449,7 +455,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * Access the channel framework's {@link ApproximateTime} service.
-     * 
+     *
      * @return the approximate time service instance to use within the channel framework
      */
     public static long getApproxTime() {
@@ -459,7 +465,7 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * Set the approximate time service reference.
      * This is a required reference: will be called before activation.
-     * 
+     *
      * @param ref new ApproximateTime service instance/provider
      */
     @Reference(service = ApproximateTime.class,
@@ -471,7 +477,7 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * Remove the reference to the approximate time service.
      * This is a required reference, will be called after deactivate.
-     * 
+     *
      * @param ref ApproximateTime service instance/provider to remove
      */
     protected void unsetApproxTimeService(ApproximateTime ref) {
@@ -480,7 +486,7 @@ public class CHFWBundle implements ServerQuiesceListener {
 
     /**
      * Query the reference to the channel framework.
-     * 
+     *
      * @return ChannelFramework
      */
     public ChannelFramework getFramework() {
@@ -490,9 +496,9 @@ public class CHFWBundle implements ServerQuiesceListener {
     /**
      * Access the reference to the bytebuffer pool manager created by this
      * bundle, or the default/fallback pool.
-     * 
+     *
      * This method should never return null
-     * 
+     *
      * @return WsByteBufferPoolManager
      */
     public WsByteBufferPoolManager getBufferManager() {
@@ -501,7 +507,7 @@ public class CHFWBundle implements ServerQuiesceListener {
         // Get the byte buffer manager-- bbMgr could return null
         WsByteBufferPoolManager result = (bbMgr == null) ? null : bbMgr.getBufferManager();
 
-        // Fall back to a default if bbMgr was null or null was returned 
+        // Fall back to a default if bbMgr was null or null was returned
         return result != null ? result : ChannelFrameworkFactory.getBufferManager();
     }
 

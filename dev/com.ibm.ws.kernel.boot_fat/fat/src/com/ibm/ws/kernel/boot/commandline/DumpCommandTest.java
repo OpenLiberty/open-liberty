@@ -26,7 +26,9 @@ import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.ProgramOutput;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -46,6 +48,7 @@ public class DumpCommandTest {
     @BeforeClass
     public static void before() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.kernel.shutdown.fat");
+        ShrinkHelper.defaultApp(server, "shutdownfat", "com.ibm.ws.kernel.boot.fat");
         Log.info(c, "before", "starting server");
         server.startServer("DumpCommandTest.log");
         serverRoot = new File(server.getServerRoot());

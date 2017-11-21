@@ -12,11 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: *.mf
-
 -dependson: \
-	com.ibm.websphere.appserver.artifact-1.0;version=latest, \
-	com.ibm.websphere.appserver.containerServices-1.0;version=latest, \
-	com.ibm.websphere.appserver.dynamicBundle-1.0;version=latest, \
 	com.ibm.ws.classloading;version=latest, \
 	com.ibm.websphere.appserver.spi.classloading;version=latest

@@ -17,7 +17,6 @@ import com.ibm.ws.opentracing.OpentracingTracerManager;
 import io.opentracing.Tracer;
 
 public class OpentracingProducerBean {
-
     @Produces
     public Tracer getTracer() {
         return OpentracingTracerManager.getTracer();

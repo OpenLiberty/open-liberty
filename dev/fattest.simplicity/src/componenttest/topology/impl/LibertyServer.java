@@ -28,7 +28,6 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Method;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
@@ -88,6 +87,7 @@ import com.ibm.ws.fat.util.ACEScanner;
 
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
+import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
@@ -1284,21 +1284,13 @@ public class LibertyServer implements LogMonitorClient {
                 }
 
                 if (output == null) {
+                    // We didn't get a return value from the start script. This is pretty rare, but it's possible for the JVM to miss the output
+                    // from the script and wait forever for a response. When this happens, we test to see if the server was actually started (it
+                    // almost always should be.) If not, we try to start the server again. The chances of both calls failing at the JVM level are
+                    // extraordinarily small.
                     Log.warning(c, "The process that runs the server script did not return. The server may or may not have actually started.");
-                    if (IBM_JVM) {
-                        // Use the IBM dump API if running on an appropriate JDK
-                        // This is probably just going to tell us that we're waiting forever in Process.waitFor(), but
-                        // at least we'll know that.
-                        Class<?> dump = Class.forName("com.ibm.jvm.Dump");
-                        Method javaDump = dump.getMethod("JavaDump", (Class[]) null);
-                        javaDump.invoke(null, (Object[]) null);
-                    } else {
-                        // Otherwise, just dump the stack to figure out where things got hung
-                        Thread.dumpStack();
-                    }
 
-                    // We didn't get a return value from the start script. Call resetStarted() to try to determine whether
-                    // the server is actually running or not.
+                    //Call resetStarted() to try to determine whether the server is actually running or not.
                     int rc = resetStarted();
                     if (rc == 0) {
                         // The server is running, so proceed as if nothing went wrong.
@@ -2034,22 +2026,20 @@ public class LibertyServer implements LogMonitorClient {
             throw serverStartException;
         }
 
-        if (validateApps || validateTimedExit) {
-            // App validation needs the info messages in messages.log
-
-            if (!messagesLog.exists()) {
-                // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
-                Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
-                messagesLog = consoleLog;
-            }
-
-            if (validateTimedExit) {
-                validateTimedExitEnabled(messagesLog);
-            }
-            if (validateApps) {
-                validateAppsLoaded(messagesLog);
-            }
+        if (!messagesLog.exists()) {
+            // NOTE: The HPEL FAT bucket has a strange mechanism to create messages.log for test purposes, which may get messed up
+            Log.info(c, method, "WARNING: messages.log does not exist-- trying app verification step with console.log");
+            messagesLog = consoleLog;
         }
+
+        // App validation needs the info messages in messages.log
+        if (validateTimedExit) {
+            validateTimedExitEnabled(messagesLog);
+        }
+        if (validateApps) {
+            validateAppsLoaded(messagesLog);
+        }
+        FeatureDependencyProcessor.validateTestedFeatures(this, messagesLog);
     }
 
     protected void validateTimedExitEnabled(RemoteFile messagesLog) throws Exception {
@@ -2277,75 +2267,11 @@ public class LibertyServer implements LogMonitorClient {
     protected void checkLogsForErrorsAndWarnings(String... regIgnore) throws Exception {
         final String method = "checkLogsForErrorsAndWarnings";
 
-        if (!isServerExemptFromChecking(regIgnore)) {
-            // Get all warnings and errors in logs - default to an empty list
-            List<String> errorsInLogs = new ArrayList<String>();
-            try {
-                errorsInLogs = this.findStringsInLogs(".*[EW] .*\\d{4}[EW]:.*");
-                if (errorsInLogs != null && !errorsInLogs.isEmpty()) {
-                    // There were unexpected errors in logs, print them
-                    // and set an exception to return
-                    StringBuffer sb = new StringBuffer("Errors/warnings were found in server ");
-                    sb.append(getServerName());
-                    sb.append(" logs:");
-                    for (String errorInLog : errorsInLogs) {
-                        sb.append("\n <br>");
-                        sb.append(errorInLog);
-                        Log.info(c, method, "Error/warning found in log ORIGINALLY: " + errorInLog);
-                    }
-                }
-            } catch (Exception e) {
-                Log.warning(getClass(), "While checking for log errors and warnings, findStringsInLogs caused an exception: " + e.getMessage());
-            }
-
-            // Compile set of regex's using input list and universal ignore list
-            List<Pattern> ignorePatterns = new ArrayList<Pattern>();
-            if (regIgnore != null && regIgnore.length != 0) {
-                Log.info(c, method, "regIgnore length is " + regIgnore.length);
-                for (String ignoreRegEx : regIgnore) {
-                    ignorePatterns.add(Pattern.compile(ignoreRegEx));
-                }
-            }
-            Log.info(c, method, "ignorePatterns is " + ignorePatterns.toString());
-            // Add the regexes added via the instance method
-            if (ignoredErrors != null) {
-                Log.info(c, method, "ignoreErrors is " + ignoredErrors.toString());
-                for (String regex : ignoredErrors) {
-                    ignorePatterns.add(Pattern.compile(regex));
-                }
-                ignoredErrors.clear();
-                Log.info(c, method, "ignoreErrors NOW is " + ignoredErrors.toString());
-            }
-
-            // Add the global fixed list of regexes entries.
-            if (fixedIgnoreErrorsList != null) {
-                Log.info(c, method, "fixedIgnoreErrorsList is " + fixedIgnoreErrorsList.toString());
-                for (String regex : fixedIgnoreErrorsList) {
-                    ignorePatterns.add(Pattern.compile(regex));
-                }
-            }
-
-            // Do not blow up for any Java 2 security errors or warnings, we want
-            // the tests to continue on and run as much as possible
-            if (GLOBAL_DEBUG_JAVA2SECURITY) {
-                ignorePatterns.add(Pattern.compile("CWWKE09(21W|12W|13E|14W|15W|16W)"));
-            }
-
-            Log.info(c, method, "ignorePatterns NOW is " + ignorePatterns.toString());
-            // Remove any ignored warnings or patterns
-            for (Pattern ignorePattern : ignorePatterns) {
-                Iterator<String> iter = errorsInLogs.iterator();
-                while (iter.hasNext()) {
-                    if (ignorePattern.matcher(iter.next()).find()) {
-                        // this is an ignored warning/error, remove it from list
-                        iter.remove();
-                        Log.info(c, method, "Error being removed is " + ignorePattern);
-                    }
-                }
-            }
-
-            Exception ex = null;
-            if (errorsInLogs != null && !errorsInLogs.isEmpty()) {
+        // Get all warnings and errors in logs - default to an empty list
+        List<String> errorsInLogs = new ArrayList<String>();
+        try {
+            errorsInLogs = this.findStringsInLogs(".*[EW] .*\\d{4}[EW]:.*");
+            if (!errorsInLogs.isEmpty()) {
                 // There were unexpected errors in logs, print them
                 // and set an exception to return
                 StringBuffer sb = new StringBuffer("Errors/warnings were found in server ");
@@ -2354,102 +2280,78 @@ public class LibertyServer implements LogMonitorClient {
                 for (String errorInLog : errorsInLogs) {
                     sb.append("\n <br>");
                     sb.append(errorInLog);
-                    Log.info(c, method, "Error/warning found: " + errorInLog);
-                }
-                ex = new Exception(sb.toString());
-            }
-
-            if (ex == null)
-                Log.info(c, method, "No unexpected errors or warnings found in server logs.");
-            else
-                throw ex;
-        } else {
-            Log.info(c, method, "Skipping log validation on server " + getServerName());
-        }
-    }
-
-    /**
-     * Checks the current server to see if it is eligible
-     * for log checking.
-     *
-     * @param none
-     *
-     * @return boolean true - no need to check, false - check for errors
-     */
-    protected boolean isServerExemptFromChecking(String... regIgnore) {
-
-        String method = "isServerExemptFromChecking";
-        Log.info(c, method, "Entering isServerExemptFromChecking");
-        boolean result = true;
-        if (!isCheckingDisabled(regIgnore)) {
-            try {
-                if (serversExemptFromChecking == null) {
-                    loadExemptServers();
-                }
-                Log.info(c, method, "Checking Server Name " + getServerName());
-                String foundServer = serversExemptFromChecking.get(getServerName());
-                if (foundServer == null)
-                    result = false;
-
-            } catch (Exception e) {
-                Log.info(c, "isServerValidation", "Error determing Exempt Servers " + e.toString());
-            }
-        }
-
-        return result;
-
-    }
-
-    /**
-     * Looks at the list of regular expressions to ignore
-     * in search of the disable checking flag.
-     *
-     * @param String... regularExpressions to ignore
-     *
-     * @return boolean true when disable flag found, false when disable flag not found.
-     */
-    private boolean isCheckingDisabled(String... regIgnore) {
-
-        boolean checkingDisabled = false;
-        if (regIgnore != null && regIgnore.length > 0)
-            for (String disableString : regIgnore)
-                if (disableString.equals(LibertyServer.DISABLE_FAILURE_CHECKING))
-                    checkingDisabled = true;
-
-        return checkingDisabled;
-
-    }
-
-    /**
-     * Reads a list of exempt servers into a HashMap for later searching.
-     *
-     * @param none
-     *
-     * @return none
-     */
-
-    protected void loadExemptServers() throws Exception {
-        String method = "loadExemptServers";
-        BufferedReader br = null;
-        serversExemptFromChecking = new HashMap<String, String>(1000);
-        Log.info(c, method, "loading exempt server list");
-        RemoteFile exempt = new RemoteFile(machine, serverRoot + "/exemptServersList.txt");
-        try {
-            br = new BufferedReader(new InputStreamReader(exempt.openForReading()));
-            for (String line; (line = br.readLine()) != null;) {
-                if (line.indexOf("#") < 0) {
-                    serversExemptFromChecking.put(line.trim(), line.trim());
+                    Log.info(c, method, "Error/warning found in log ORIGINALLY: " + errorInLog);
                 }
             }
         } catch (Exception e) {
-            Log.info(c, method, "Error loading ExemptServer list " + e.toString());
-            serversExemptFromChecking = null;
-            throw e;
-        } finally {
-            if (br != null)
-                br.close();
+            Log.warning(getClass(), "While checking for log errors and warnings, findStringsInLogs caused an exception: " + e.getMessage());
         }
 
+        // Compile set of regex's using input list and universal ignore list
+        List<Pattern> ignorePatterns = new ArrayList<Pattern>();
+        if (regIgnore != null && regIgnore.length != 0) {
+            Log.info(c, method, "regIgnore length is " + regIgnore.length);
+            for (String ignoreRegEx : regIgnore) {
+                ignorePatterns.add(Pattern.compile(ignoreRegEx));
+            }
+        }
+        Log.info(c, method, "ignorePatterns is " + ignorePatterns.toString());
+        // Add the regexes added via the instance method
+        if (ignoredErrors != null) {
+            Log.info(c, method, "ignoreErrors is " + ignoredErrors.toString());
+            for (String regex : ignoredErrors) {
+                ignorePatterns.add(Pattern.compile(regex));
+            }
+            ignoredErrors.clear();
+            Log.info(c, method, "ignoreErrors NOW is " + ignoredErrors.toString());
+        }
+
+        // Add the global fixed list of regexes entries.
+        if (fixedIgnoreErrorsList != null) {
+            Log.info(c, method, "fixedIgnoreErrorsList is " + fixedIgnoreErrorsList.toString());
+            for (String regex : fixedIgnoreErrorsList) {
+                ignorePatterns.add(Pattern.compile(regex));
+            }
+        }
+
+        // Do not blow up for any Java 2 security errors or warnings, we want
+        // the tests to continue on and run as much as possible
+        if (GLOBAL_DEBUG_JAVA2SECURITY) {
+            ignorePatterns.add(Pattern.compile("CWWKE09(21W|12W|13E|14W|15W|16W)"));
+        }
+
+        Log.info(c, method, "ignorePatterns NOW is " + ignorePatterns.toString());
+        // Remove any ignored warnings or patterns
+        for (Pattern ignorePattern : ignorePatterns) {
+            Iterator<String> iter = errorsInLogs.iterator();
+            while (iter.hasNext()) {
+                if (ignorePattern.matcher(iter.next()).find()) {
+                    // this is an ignored warning/error, remove it from list
+                    iter.remove();
+                    Log.info(c, method, "Error being removed is " + ignorePattern);
+                }
+            }
+        }
+
+        Exception ex = null;
+        if (!errorsInLogs.isEmpty()) {
+            // There were unexpected errors in logs, print them
+            // and set an exception to return
+            StringBuilder sb = new StringBuilder("Errors/warnings were found in server ");
+            sb.append(getServerName());
+            sb.append(" logs:");
+            for (String errorInLog : errorsInLogs) {
+                sb.append("\n <br>");
+                sb.append(errorInLog);
+                Log.info(c, method, "Error/warning found: " + errorInLog);
+            }
+            ex = new Exception(sb.toString());
+        }
+
+        if (ex == null)
+            Log.info(c, method, "No unexpected errors or warnings found in server logs.");
+        else
+            throw ex;
     }
 
     protected void clearMessageCounters() {
@@ -4766,6 +4668,8 @@ public class LibertyServer implements LogMonitorClient {
             Log.warning(c, message);
             throw new RuntimeException(message);
         }
+
+        FeatureDependencyProcessor.validateTestedFeatures(this, logFile);
 
         return matchingLines;
     }

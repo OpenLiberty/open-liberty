@@ -194,7 +194,10 @@ public class FATRunner extends BlockJUnit4ClassRunner {
                     List<String> allowedFFDCs = getAllowedFFDCAnnotationFromTest(method);
                     // remove allowedFFDCs
                     for (String ffdcException : allowedFFDCs) {
-                        unexpectedFFDCs.remove(ffdcException);
+                        if (ffdcException.equals(AllowedFFDC.ALL_FFDC))
+                            unexpectedFFDCs.clear();
+                        else
+                            unexpectedFFDCs.remove(ffdcException);
                     }
 
                     for (FFDCInfo ffdcInfo : unexpectedFFDCs.values()) {
@@ -699,6 +702,12 @@ public class FATRunner extends BlockJUnit4ClassRunner {
     }
 
     private static Map<String, Long> createDirectorySnapshot(String path) {
+
+        // this check can be expensive on machines with lots of content in /tmp, skip unless needed
+        if (!ENABLE_TMP_DIR_CHECKING) {
+            return null;
+        }
+
         Map<String, Long> snapshot = new HashMap<String, Long>();
 
         File dir = new File(path);

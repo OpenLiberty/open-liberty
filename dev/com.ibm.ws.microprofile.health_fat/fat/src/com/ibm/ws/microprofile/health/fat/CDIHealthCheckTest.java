@@ -58,10 +58,9 @@ public class CDIHealthCheckTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server1.stopServer("CWMH0051W");
     }
 
-    @Test
     public void testJsonReceived() throws Exception {
 
         URL healthURL = new URL("http://" + server1.getHostname() + ":" + server1.getHttpDefaultPort() + "/health");
@@ -73,17 +72,18 @@ public class CDIHealthCheckTest {
         Json.createReader(br);
         JsonObject jsonResponse = Json.createReader(br).readObject();
         br.close();
-        log("testJsonRecieved", "Response: jsonResponse= " + jsonResponse.toString());
+        log("testJsonReceived", "Response: jsonResponse= " + jsonResponse.toString());
         assertNotNull("need to retieve contents of url", jsonResponse.getString("outcome"));
         JsonArray checks = (JsonArray) jsonResponse.get("checks");
 
         assertEquals(1, checks.size());
-        assertEquals("testJsonRecieved", ((JsonObject) checks.get(0)).getString("name"));
+        assertEquals("testJsonReceived", ((JsonObject) checks.get(0)).getString("name"));
         assertEquals(jsonResponse.getString("outcome"), "UP");
     }
 
     @Test
     public void testSingleHealthChecks() throws Exception {
+        testJsonReceived();
         testSingleOutcomeUP();
         testSingleOutcomeDOWN();
         testCheckUPWithData();

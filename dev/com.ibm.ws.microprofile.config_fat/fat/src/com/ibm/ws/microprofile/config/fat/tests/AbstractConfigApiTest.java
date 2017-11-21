@@ -1,4 +1,4 @@
-/*******************************************************************************
+ /*******************************************************************************
  * Copyright (c) 2016 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
@@ -8,10 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.microprofile.config.fat.tests;
 
 import org.junit.rules.TestName;
 
+import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.browser.WebBrowser;
 
@@ -42,4 +44,5 @@ public abstract class AbstractConfigApiTest extends LoggingTest {
     public static String upperCaseInitialLetter(String string) {
         return string != null && string.length() >= 1 ? string.substring(0, 1).toUpperCase() + string.substring(1) : "";
     }
+   
 }

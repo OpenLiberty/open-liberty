@@ -69,7 +69,8 @@ Private-Package: \
  com.ibm.ws.kernel.boot.*, \
  com.ibm.ws.kernel.launch.*, \
  com.ibm.ws.kernel.internal.*, \
- com.ibm.wsspi.kernel.embeddable.*
+ com.ibm.wsspi.kernel.embeddable.*, \
+ com.ibm.ws.staticvalue
 
 # security.policy file is pre-processed: the ${osgi-jar} variable in it will be replaced
 # with the name of the osgi jar specified above.

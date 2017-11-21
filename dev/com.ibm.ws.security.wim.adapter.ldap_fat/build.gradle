@@ -1,0 +1,181 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+
+apply from: '../cnf/gradle/scripts/fat.gradle'
+
+def autoFvtDir = "${projectDir}/build/libs/autoFVT"
+def publishDir = autoFvtDir + "/publish"
+
+addRequiredLibraries.doLast {
+  /*
+   * Copy libraries necessary for FAT runtime. 
+   */
+  configurations { 
+     fatLibs { }
+  }
+  dependencies { 
+    fatLibs 'com.ibm.ws.componenttest:public.api:1.0.0',
+            'commons-logging:commons-logging:1.1.1',
+            'commons-codec:commons-codec:1.4',
+            'org.apache.httpcomponents:httpclient:4.1.2',
+            'org.apache.httpcomponents:httpcore:4.1.2',
+            'org.apache.directory.server:apacheds-service:2.0.0-M15',
+            project(':fattest.simplicity'),
+            project(':apache_directory_server'),
+            project(':com.ibm.websphere.security.wim.base'),
+            project(':com.ibm.ws.security.registry'),
+            project(':com.ibm.ws.security.registry_test.servlet'),
+            project(':com.ibm.ws.security.wim.core'),
+            project(':com.ibm.ws.security.wim_test.servlet'),
+            project(':com.ibm.ws.webcontainer.security_test.servlets')
+  }
+  copy {
+    from configurations.fatLibs
+    into "${autoFvtDir}/lib/"
+  }
+}
+
+autoFVT.doLast {
+  /*
+   * Copy the local ApacheDS LDAP instances. 
+   */
+  copy {
+    from "${projectDir}/../apache_directory_server/apacheds-2.0.0-M15"
+    into "${buildDir}/autoFVT/apacheds-2.0.0-M15"
+  }
+
+  /*
+   * Copy sample CustomRepository user feature to this test bucket.
+   */
+  copy { 
+    from "${projectDir}/../com.ibm.ws.security.wim.repository_test.custom/publish/usr/extension/lib/features/customRepositorySample-1.0.mf"
+    into "${publishDir}/features"
+  }
+  copy {
+    from "${projectDir}/../com.ibm.ws.security.wim.repository_test.custom/build/libs/com.ibm.ws.security.wim.repository_test.custom.jar"
+    into "${publishDir}/bundles"
+    rename("com.ibm.ws.security.wim.repository_test.custom.jar", "com.ibm.ws.security.wim.repository_test.custom_1.0.jar")
+  }
+    
+  /*
+   * Copy sample custom UserRegistry feature to this test bucket.
+   */
+  copy { 
+    from "${projectDir}/../com.ibm.ws.security.registry_test.custom/publish/features/customRegistrySample-1.0.mf"
+    into "${autoFvtDir}/lib/LibertyFATTestFiles/internalfeatures/"
+  }
+  copy {
+    from "${projectDir}/../com.ibm.ws.security.registry_test.custom/build/libs/com.ibm.ws.security.registry_test.custom.jar"
+    into "${autoFvtDir}/lib/LibertyFATTestFiles/internalfeatures/"
+    rename("com.ibm.ws.security.registry_test.custom.jar", "com.ibm.ws.security.registry_test.custom_1.0.jar")
+  }
+    
+  /*
+   * Copy the userRegistry WAR into test servers.
+   */
+  def servers = [
+    'com.ibm.ws.security.registry.ldap.fat.ad',
+    'com.ibm.ws.security.registry.ldap.fat.ad.noId',
+    'com.ibm.ws.security.registry.ldap.fat.ad.ssl',
+    'com.ibm.ws.security.registry.ldap.fat.custom',
+    'com.ibm.ws.security.registry.ldap.fat.ids',
+    'com.ibm.ws.security.registry.ldap.fat.ids.extremeFailover',
+    'com.ibm.ws.security.registry.ldap.fat.ids.failover',
+    'com.ibm.ws.security.registry.ldap.fat.ids.nofilters',
+    'com.ibm.ws.security.registry.ldap.fat.ids.reuseConnection',
+    'com.ibm.ws.security.registry.ldap.fat.ids.ssl',
+    'com.ibm.ws.security.registry.ldap.fat.ids.ssl.trustonly',
+    'com.ibm.ws.security.registry.ldap.fat.ldapname',
+    'com.ibm.ws.security.registry.ldap.fat.performance',
+    'com.ibm.ws.security.registry.ldap.fat.user.group.search.bases',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ad',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ad.nested',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ad.noId',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ad.ssl',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.context.pool.on.ldap.fail',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.context.pool.timeout',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.custom',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.dynamic',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.ETSFforGroupM',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.federation',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.input.output.mapping',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.multipleldaps',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.realm.mapping',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.referral',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.search.paging',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.searchbase',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.sun',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.sun.attrMappingVar4',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.sun.default',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.sun.ssl',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.attrMappingVar1',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.attrMappingVar2',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.attrMappingVar3',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.emptyInput',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.propertynotsupported',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.nested',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.ssl',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.sslref',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.sslref.badssl',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.failover',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tworealms',
+  ]
+  servers.each { server ->
+    copy { 
+      from "${projectDir}/../com.ibm.ws.security.registry_test.servlet/build/libs/test-application/userRegistry.war"
+      into "${publishDir}/servers/${server}/dropins"
+    }
+  }
+
+  /*
+   * Copy the WIM API WAR into test servers.
+   */
+  servers = [
+    'vmm.apis.tds.ldap'
+  ]
+  servers.each { server ->
+    copy { 
+      from "${projectDir}/../com.ibm.ws.security.wim_test.servlet/build/libs/test-application/vmmService.war"
+      into "${publishDir}/servers/${server}/dropins"
+    }
+  }
+
+  /*
+   * Copy the clientcert.zip into test servers.
+   */
+  servers = [
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.certlogin',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.fedcertlogin',
+    'com.ibm.ws.security.wim.adapter.ldap.fat.tds.certlogin_SBInFilter'
+  ]
+  servers.each { server ->
+    copy { 
+      from "${projectDir}/../com.ibm.ws.webcontainer.security_test.servlets/build/libs/test-application/clientcert.zip"
+      into "${publishDir}/servers/${server}/apps"
+      rename("clientcert.zip", "clientcert.war")
+    }
+  }
+
+  /*
+   * Copy the basicauth.zip into test servers.
+   */
+  servers = [
+    'com.ibm.ws.security.wim.adapter.ldap.fat.outbound.ssl'
+  ]
+  servers.each { server ->
+    copy { 
+      from "${projectDir}/../com.ibm.ws.webcontainer.security_test.servlets/build/libs/test-application/basicauth.zip"
+      into "${publishDir}/servers/${server}/apps"
+      rename("basicauth.zip", "basicauth.war")
+    }
+  }
+}

@@ -260,7 +260,7 @@ public abstract class Frame {
     public String toString() {
         StringBuilder frameToString = new StringBuilder();
 
-        frameToString.append("FrameType: " + this.getFrameType() + "\n");
+        frameToString.append("\nFrameType: " + this.getFrameType() + "\n");
 
         frameToString.append("FrameFlags:\n");
         frameToString.append(" FlagAckSet: ").append(this.flagAckSet()).append("\n");

@@ -2,7 +2,7 @@
 symbolicName=com.ibm.websphere.appserver.jsonb-1.0
 visibility=public
 IBM-ShortName: jsonb-1.0
-Subsystem-Name: JavaScript Object Notation Binding
+Subsystem-Name: JavaScript Object Notation Binding 1.0
 IBM-API-Package: javax.json.bind; type="spec", \
  javax.json.bind.adapter; type="spec", \
  javax.json.bind.annotation; type="spec", \

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.injection;
 
+import static com.ibm.ws.jaxrs20.utils.CustomizerUtils.createCustomizerKey;
+
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -72,7 +74,7 @@ public abstract class InjectionRuntimeContextHelper {
         }
 
         for (JaxRsFactoryBeanCustomizer beanCustomizer : beanCustomizers) {
-            if (beanCustomizer.isCustomizableBean(c, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())))) {
+            if (beanCustomizer.isCustomizableBean(c, beanCustomizerContexts.get(createCustomizerKey(beanCustomizer)))) {
                 return true;
             }
         }
@@ -91,7 +93,7 @@ public abstract class InjectionRuntimeContextHelper {
 
         JaxRsFactoryBeanCustomizer rtn = null;
         for (JaxRsFactoryBeanCustomizer beanCustomizer : beanCustomizers) {
-            if (beanCustomizer.isCustomizableBean(c, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())))) {
+            if (beanCustomizer.isCustomizableBean(c, beanCustomizerContexts.get(createCustomizerKey(beanCustomizer)))) {
                 return beanCustomizer;
             }
         }
@@ -103,7 +105,7 @@ public abstract class InjectionRuntimeContextHelper {
     public static Object getBeanCustomizerContext(JaxRsFactoryBeanCustomizer beanCustomizer, Bus bus)
     {
         Map<String, BeanCustomizerContext> beanCustomizerContexts = (Map<String, BeanCustomizerContext>) bus.getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
-        return beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode()));
+        return beanCustomizerContexts.get(createCustomizerKey(beanCustomizer));
     }
 
     /**
@@ -145,12 +147,12 @@ public abstract class InjectionRuntimeContextHelper {
         Map<String, Object> beanCustomizerContexts = (Map<String, Object>) bus.getProperty(JaxRsConstants.ENDPOINT_BEANCUSTOMIZER_CONTEXTOBJ);
 
         if (beanCustomizers != null && !beanCustomizers.isEmpty() && beanCustomizerContexts != null) {
-            // return;        
+            // return;
 
             //boolean isReplaced = false;
             Object newProviderInstance = null;
             for (JaxRsFactoryBeanCustomizer beanCustomizer : beanCustomizers) {
-                if (beanCustomizer.isCustomizableBean(clz, beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())))) {
+                if (beanCustomizer.isCustomizableBean(clz, beanCustomizerContexts.get(createCustomizerKey(beanCustomizer)))) {
 
                     newProviderInstance = beanCustomizer.onSingletonProviderInit(pi.getProvider(), beanCustomizerContexts.get(Integer.toString(beanCustomizer.hashCode())), message);
 

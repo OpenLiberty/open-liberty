@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<validation-config
+    xmlns="http://jboss.org/xml/ns/javax/validation/configuration"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://jboss.org/xml/ns/javax/validation/configuration validation-configuration-1.0.xsd">
+  <default-provider>org.apache.bval.jsr303.ApacheValidationProvider</default-provider>
+  <message-interpolator>org.apache.bval.jsr303.DefaultMessageInterpolator</message-interpolator>
+  <traversable-resolver>org.apache.bval.jsr303.resolver.DefaultTraversableResolver</traversable-resolver>
+  <constraint-validator-factory>org.apache.bval.jsr303.DefaultConstraintValidatorFactory</constraint-validator-factory>
+</validation-config>
+
+

@@ -27,6 +27,10 @@ import javax.xml.namespace.QName;
 
 import org.w3c.dom.Element;
 
+import com.ibm.websphere.simplicity.config.wim.FederatedRepository;
+import com.ibm.websphere.simplicity.config.wim.LdapFilters;
+import com.ibm.websphere.simplicity.config.wim.LdapRegistry;
+
 /**
  * Represents a server configuration document for the WAS 8.5 Liberty Profile.
  */
@@ -75,6 +79,9 @@ public class ServerConfiguration implements Cloneable {
 
     @XmlElement(name = "cloudantDatabase")
     private ConfigElementList<CloudantDatabase> cloudantDatabases;
+
+    @XmlElement(name = "concurrencyPolicy")
+    private ConfigElementList<ConcurrencyPolicy> concurrencyPolicies;
 
     @XmlElement(name = "connectionFactory")
     private ConfigElementList<ConnectionFactory> connectionFactories;
@@ -215,6 +222,15 @@ public class ServerConfiguration implements Cloneable {
     @XmlElement(name = "openapi")
     private OpenAPIElement openAPIElement;
 
+    @XmlElement(name = "federatedRepository")
+    private FederatedRepository federatedRepository;
+
+    @XmlElement(name = "ldapRegistry")
+    private ConfigElementList<LdapRegistry> ldapRegistries;
+
+    @XmlElement(name = "activedLdapFilterProperties")
+    private ConfigElementList<LdapFilters> activedLdapFilterProperties;
+
     @XmlAnyAttribute
     private Map<QName, Object> unknownAttributes;
 
@@ -337,6 +353,12 @@ public class ServerConfiguration implements Cloneable {
         if (this.cloudantDatabases == null)
             this.cloudantDatabases = new ConfigElementList<CloudantDatabase>();
         return this.cloudantDatabases;
+    }
+
+    public ConfigElementList<ConcurrencyPolicy> getConcurrencyPolicies() {
+        if (this.concurrencyPolicies == null)
+            this.concurrencyPolicies = new ConfigElementList<ConcurrencyPolicy>();
+        return this.concurrencyPolicies;
     }
 
     public ConfigElementList<ContextService> getContextServices() {
@@ -993,9 +1015,54 @@ public class ServerConfiguration implements Cloneable {
      * @param unknownElements The elements to add back to the configuration.
      */
     public void addUnknownElements(List<Element> unknownElements) {
-        for (Element e : unknownElements) {
-            this.unknownElements.add(e);
+        if (this.unknownElements == null) {
+            this.unknownElements = new ArrayList<Element>(unknownElements);
+        } else {
+            for (Element e : unknownElements) {
+                this.unknownElements.add(e);
+            }
         }
     }
 
+    /**
+     * Get the 'federatedRepository' element.
+     *
+     * @return The {@link FederatedRepository} configuration instance.
+     */
+    public FederatedRepository getFederatedRepository() {
+        return this.federatedRepository;
+    }
+
+    /**
+     * Set the 'federatedRepository' element.
+     *
+     * @param federatedRepository The 'federatedRepository' configuration to set.
+     */
+    public void setFederatedRepositoryElement(FederatedRepository federatedRepository) {
+        this.federatedRepository = federatedRepository;
+    }
+
+    /**
+     * Get all 'ldapRegistry' elements.
+     *
+     * @return All {@link LdapRegistry} configuration instances.
+     */
+    public ConfigElementList<LdapRegistry> getLdapRegistries() {
+        if (this.ldapRegistries == null) {
+            this.ldapRegistries = new ConfigElementList<LdapRegistry>();
+        }
+        return this.ldapRegistries;
+    }
+
+    /**
+     * Get all 'activedLdapFilterProperties' elements.
+     *
+     * @return All {@link LdapFilters} configuration instances.
+     */
+    public ConfigElementList<LdapFilters> getActivedLdapFilterProperties() {
+        if (this.activedLdapFilterProperties == null) {
+            this.activedLdapFilterProperties = new ConfigElementList<LdapFilters>();
+        }
+        return this.activedLdapFilterProperties;
+    }
 }

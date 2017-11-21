@@ -5,12 +5,14 @@ IBM-App-ForceRestart: uninstall, \
  install
 -features=com.ibm.websphere.appserver.injection-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.servlet-3.1, \
+ com.ibm.websphere.appserver.servlet-4.0, \
  com.ibm.websphere.appserver.classloading-1.0, \
- com.ibm.websphere.appserver.javax.mail-1.5, \
+ com.ibm.websphere.appserver.javax.mail-1.6, \
  com.ibm.websphere.appserver.globalhandler-1.0, \
  com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
  com.ibm.websphere.appserver.json-1.0, \
+ com.ibm.websphere.appserver.jsonpInternal-1.1, \
+ com.ibm.websphere.appserver.jsonbInternal-1.0, \
  com.ibm.websphere.appserver.internal.slf4j-1.7.7
 -bundles=com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \
  com.ibm.ws.org.apache.xml.resolver.1.2, \

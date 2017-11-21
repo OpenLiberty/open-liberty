@@ -2117,17 +2117,25 @@ public class FaceletViewDeclarationLanguage extends FaceletViewDeclarationLangua
                 {
                     view = context.getApplication().getViewHandler().createView(context, viewId);
                 }
-                context.setViewRoot (view); 
-                boolean oldContextEventState = context.isProcessingEvents();
-                try 
+                // If the view is not transient, then something is wrong. Throw an exception.
+                if (!view.isTransient())
                 {
-                    context.setProcessingEvents (true);
-                    vdl.buildView (context, view);
-                }
-                finally
-                {
-                    context.setProcessingEvents (oldContextEventState);
+                    throw new FacesException ("unable to create view \"" + viewId + "\"");
                 } 
+                else
+                {
+                    context.setViewRoot (view); 
+                    boolean oldContextEventState = context.isProcessingEvents();
+                    try 
+                    {
+                        context.setProcessingEvents (true);
+                        vdl.buildView (context, view);
+                    }
+                    finally
+                    {
+                        context.setProcessingEvents (oldContextEventState);
+                    } 
+                }
             }
             catch (Throwable e)
             {

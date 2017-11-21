@@ -1,0 +1,73 @@
+<!--
+    Copyright (c) 2017 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License v1.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-v10.html
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Test SSL configuration - LDAPwithDefaultOutboundSSL.xml">
+
+	<featureManager>
+		<feature>appSecurity-2.0</feature>
+		<feature>ldapRegistry-3.0</feature>
+		<feature>jsp-2.2</feature>
+        <feature>transportSecurity-1.0</feature>
+	</featureManager>
+
+	<sslDefault sslRef="mixSSLSettings"  outboundSSLRef="AlternateSSLSettings"/>
+
+	<ssl id="DefaultSSLSettings" keyStoreRef="DefaultKeyStore" trustStoreRef="DefaultTrustStore" 
+	     securityLevel="CUSTOM" enabledCiphers="TLS_RSA_WITH_AES_128_CBC_SHA TLS_RSA_WITH_AES_128_CBC_SHA256 TLS_DHE_RSA_WITH_AES_128_CBC_SHA">
+    </ssl>     
+	<keyStore id="DefaultKeyStore" location="${server.config.dir}/DefaultServerKeyFile.jks" type="JKS" password="Liberty" />
+	<keyStore id="DefaultTrustStore" location="${server.config.dir}/DefaultServerTrustFile.jks" type="JKS" password="Liberty" />
+
+	<!-- AlternateSSLSettings contains the trust needed to access the LDAP server -->
+	<ssl id="AlternateSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="AlternateTrustStore" sslProtocol="TLSv1" >
+    </ssl>
+	<keyStore id="AlternateKeyStore" location="${server.config.dir}/AlternateServerKeyFile.jks" type="JKS" password="ytrebiL" />
+	<keyStore id="AlternateTrustStore" location="${server.config.dir}/AlternateServerTrustFile.jks" type="JKS" password="ytrebiL" />
+
+	<!--  mixSSLSetting does not have trust required to access the LDAP server -->
+	<ssl id="mixSSLSettings" keyStoreRef="AlternateKeyStore" trustStoreRef="DefaultTrustStore" >
+    </ssl>
+
+ 	<ldapRegistry id="LDAP" realm="SampleLdapIDSRealm" host="${ldap.server.4.name}" port="${ldap.server.4.ssl.port}" ignoreCase="true"
+		baseDN="o=ibm,c=us"
+		ldapType="IBM Tivoli Directory Server"
+		searchTimeout="8m"
+		sslEnabled="true" >
+        <idsFilters
+			userFilter="(&amp;(uid=%v)(objectclass=ePerson))"
+			groupFilter="(&amp;(cn=%v)(|(objectclass=groupOfNames)(objectclass=groupOfUniqueNames)(objectclass=groupOfURLs)))"
+			userIdMap="*:uid"
+			groupIdMap="*:cn"
+			groupMemberIdMap="ibm-allGroups:member;ibm-allGroups:uniqueMember;groupOfNames:member;groupOfUniqueNames:uniqueMember" />
+		<failoverServers name="failoverLdapServers">
+           <server host="${ldap.server.7.name}" port="${ldap.server.7.ssl.port}"/>
+        </failoverServers>		
+	</ldapRegistry>
+
+	<application type="war" id="basicauth" name="basicauth" location="${server.config.dir}/apps/basicauth.war">
+		<application-bnd>
+			<security-role name="Employee">
+				<user name="LDAPUser1" />
+				<group name="group1" />
+			</security-role>
+			<security-role name="Manager">
+				<user name="LDAPUser2" />
+				<group name="group2" />
+			</security-role>
+			<security-role name="AllAuthenticated">
+				<special-subject type="ALL_AUTHENTICATED_USERS" />
+			</security-role>
+		</application-bnd>
+	</application>
+
+
+	<include optional="true" location="../fatTestPorts.xml"/>
+
+</server>

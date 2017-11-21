@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+bVersion=1.0
+
+Bundle-Name: BeanValidation CDI 2.0
+Bundle-SymbolicName: com.ibm.ws.beanvalidation.v20.cdi
+Bundle-Description: Bean Validation v2.0 CDI Integration Bundle; version=${bVersion}
+
+WS-TraceGroup: BeanValidation
+
+Private-Package: \
+  com.ibm.ws.beanvalidation.v20.cdi.*
+  
+-dsannotations-inherit: true
+-dsannotations: \
+  com.ibm.ws.beanvalidation.v20.cdi.internal.ValidationReleasableFactoryImpl
+
+-buildpath: \
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.beanvalidation;version=latest,\
+	com.ibm.ws.managedobject;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.javaee.dd;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest

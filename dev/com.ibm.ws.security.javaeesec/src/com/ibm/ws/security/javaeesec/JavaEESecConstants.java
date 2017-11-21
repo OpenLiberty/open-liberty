@@ -18,4 +18,20 @@ public class JavaEESecConstants {
     public static final String LOGIN_TO_CONTINUE_ERRORPAGE = "errorPage";
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN = "useForwardToLogin";
     public static final String LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION = "useForwardToLoginExpression";
+
+    public static final String SECURITY_CONTEXT_AUTH_PARAMS = "com.ibm.ws.security.javaeesec.auth.params";
+
+    public static final String REALM_NAME = "realmName";
+    public static final String CALLER_QUERY = "callerQuery";
+    public static final String DS_LOOKUP = "dataSourceLookup";
+    public static final String DEFAULT_DS_NAME = "java:comp/DefaultDataSource";
+    public static final String GROUPS_QUERY = "groupsQuery";
+    public static final String PWD_HASH_ALGORITHM = "hashAlgorithm";
+    public static final String PWD_HASH_PARAMETERS = "hashAlgorithmParameters";
+    public static final String PRIORITY = "priority";
+    public static final String PRIORITY_EXPRESSION = "priorityExpression";
+    public static final String USE_FOR = "useFor";
+    public static final String USE_FOR_EXPRESSION = "useForExpression";
+
+    public static final String GET_GROUPS_PERMISSION = "getGroups";
 }

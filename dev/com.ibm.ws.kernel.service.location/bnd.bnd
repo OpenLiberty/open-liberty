@@ -28,6 +28,7 @@ Private-Package: \
 instrument.classesExcludes: com/ibm/ws/kernel/**/internal/resources/*.class
 
 -buildpath: \
+	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest, \
@@ -36,7 +37,7 @@ instrument.classesExcludes: com/ibm/ws/kernel/**/internal/resources/*.class
 -testpath: \
 	org.jmockit:jmockit;version=1.25, \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
 	org.jmock:jmock-junit4;strategy=exact;version=2.5.1, \
 	org.jmock:jmock;strategy=exact;version=2.5.1, \
 	org.hamcrest:hamcrest-all;version=1.3, \

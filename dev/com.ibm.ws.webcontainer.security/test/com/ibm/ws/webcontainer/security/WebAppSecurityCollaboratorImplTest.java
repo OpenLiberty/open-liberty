@@ -1615,6 +1615,8 @@ public class WebAppSecurityCollaboratorImplTest {
                 will(returnValue(null));
                 allowing(authenticator).authenticate(commonWebRequest);
                 will(returnValue(authResult));
+                one(commongResp).isCommitted();
+                will(returnValue(false));
                 one(commongResp).sendError(403, "AuthenticationFailed");
             }
         });
@@ -1638,6 +1640,8 @@ public class WebAppSecurityCollaboratorImplTest {
         mock.checking(new Expectations() {
             {
                 allowing(userRegistry).getRealm();
+                one(commongResp).isCommitted();
+                will(returnValue(false));
             }
         });
 

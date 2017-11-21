@@ -10,10 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.example;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -47,26 +43,23 @@ public class SimpleTest extends FATServletClient {
     public static final String APP_NAME = "app1";
 
     @Server("FATServer")
-    @TestServlet(servlet = TestServletA.class, path = APP_NAME + "/TestServletA")
-    public static LibertyServer server1;
+    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
         // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Include a simple index.jsp static file in the root of the WebArchive
-        WebArchive app1 = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addPackages(true, "app1.web")
-                        .addAsWebInfResource(new File("test-applications/" + APP_NAME + "/resources/index.jsp"));
-        // Write the WebArchive to 'publish/servers/FATServer/apps/app1.war' and print the contents
-        ShrinkHelper.exportAppToServer(server1, app1);
+        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
+        // Exports the resulting application to the ${server.config.dir}/apps/ directory
+        ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
 
-        server1.startServer();
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server1.stopServer();
+        server.stopServer();
     }
 
     @Test

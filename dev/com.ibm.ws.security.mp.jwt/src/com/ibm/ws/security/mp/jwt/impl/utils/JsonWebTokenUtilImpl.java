@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.impl.utils;
 
@@ -98,6 +98,22 @@ public class JsonWebTokenUtilImpl implements JsonWebTokenUtil {
             Tr.exit(tc, methodName, null);
         }
         return null;
+    }
+
+    @Override
+    public Principal getJsonWebToken(String jwt, String type, String username) {
+        String methodName = "getJsonWebToken";
+        if (tc.isDebugEnabled()) {
+            Tr.entry(tc, methodName, username);
+        }
+
+        DefaultJsonWebTokenImpl jsonWebToken = new DefaultJsonWebTokenImpl(jwt, type, username);
+
+        if (tc.isDebugEnabled()) {
+            Tr.exit(tc, methodName, jsonWebToken);
+        }
+
+        return (Principal) jsonWebToken;
     }
 
     private void multipleJsonWebTokenPrincipalsError(Set<JsonWebToken> principals) {

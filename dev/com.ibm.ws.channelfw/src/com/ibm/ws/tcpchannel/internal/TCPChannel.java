@@ -17,6 +17,7 @@ import java.nio.channels.SocketChannel;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 import java.util.Queue;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
@@ -27,6 +28,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
+import com.ibm.ws.staticvalue.StaticValue;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 import com.ibm.wsspi.channelfw.ConnectionLink;
@@ -50,7 +52,7 @@ import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 @SuppressWarnings("unchecked")
 public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFDCSelfIntrospectable {
 
-    protected static NBAccept acceptReqProcessor = null;
+    volatile protected static StaticValue<NBAccept> acceptReqProcessor = StaticValue.createStaticValue(null);
 
     private String channelName = null;
     protected String externalName = null;
@@ -76,8 +78,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
     protected TCPChannelFactory channelFactory = null;
 
     private int connectionCount = 0; // inbound connection count
-    private final Object connectionCountSync = new Object()
-    {}; // sync object for above counter
+    private final Object connectionCountSync = new Object() {}; // sync object for above counter
 
     protected StatisticsLogger statLogger = null;
     protected final AtomicLong totalSyncReads = new AtomicLong(0);
@@ -102,7 +103,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Initialize this channel.
-     * 
+     *
      * @param runtimeConfig
      * @param tcpConfig
      * @throws ChannelException
@@ -113,7 +114,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Initialize this channel.
-     * 
+     *
      * @param runtimeConfig
      * @param tcpConfig
      * @param factory
@@ -138,8 +139,14 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
         this.alists = AccessLists.getInstance(this.config);
 
-        if (this.config.isInbound() && acceptReqProcessor == null) {
-            acceptReqProcessor = new NBAccept(this.config);
+        if (this.config.isInbound() && acceptReqProcessor.get() == null) {
+            acceptReqProcessor = StaticValue.mutateStaticValue(acceptReqProcessor, new Callable<NBAccept>() {
+                @Override
+                public NBAccept call() throws Exception {
+                    return new NBAccept(TCPChannel.this.config);
+                }
+
+            });
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -194,7 +201,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Access the configuration for the channel.
-     * 
+     *
      * @return TCPChannelConfiguration
      */
     public TCPChannelConfiguration getConfig() {
@@ -257,7 +264,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
                     if (null == this.endPoint.getServerSocket()) {
                         initializePort();
                     }
-                    acceptReqProcessor.registerPort(this.endPoint);
+                    acceptReqProcessor.get().registerPort(this.endPoint);
                     this.preparingToStop = false;
 
                     String IPvType = "IPv4";
@@ -312,7 +319,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Initialize the endpoint listening socket.
-     * 
+     *
      * @throws ChannelException
      */
     private void initializePort() throws ChannelException {
@@ -337,7 +344,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Create the TCP end point for this channel.
-     * 
+     *
      * @return TCPPort
      * @throws ChannelException
      */
@@ -383,8 +390,8 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
             Tr.entry(tc, "stop (" + millisec + ") " + getExternalName());
         }
         // Stop accepting new connections on the inbound channels
-        if (!this.preparingToStop && acceptReqProcessor != null && this.config.isInbound()) {
-            acceptReqProcessor.removePort(this.endPoint);
+        if (!this.preparingToStop && acceptReqProcessor.get() != null && this.config.isInbound()) {
+            acceptReqProcessor.get().removePort(this.endPoint);
             // PK60924 - stop the listening port now
             this.endPoint.destroyServerSocket();
             Tr.info(tc, TCPChannelMessageConstants.TCP_CHANNEL_STOPPED, getExternalName(), this.displayableHostName, String.valueOf(this.endPoint.getListenPort()));
@@ -408,7 +415,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Returns the name.
-     * 
+     *
      * @return String
      */
     @Override
@@ -418,7 +425,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Returns the appSideClass.
-     * 
+     *
      * @return Class
      */
     @Override
@@ -429,7 +436,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
     /**
      * Returns null because there will never be channels on the
      * device side of this channel.
-     * 
+     *
      * @return Class
      */
     @Override
@@ -482,7 +489,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
      * This method will return the type of address object this channel plans to
      * pass down towards
      * the device side.
-     * 
+     *
      * @return Class
      */
     @Override
@@ -498,7 +505,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
      * from the application side. A channel may accept more than one address
      * object type but
      * passes only one down to the channels below.
-     * 
+     *
      * @return Class[]
      */
     @Override
@@ -509,7 +516,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
     /**
      * call the destroy on all the TCPConnLink objects related to
      * this TCPChannel which are currently "in use".
-     * 
+     *
      */
     private synchronized void destroyConnLinks() {
 
@@ -539,7 +546,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Access the factory to create connections.
-     * 
+     *
      * @return VirtualConnectionFactory
      */
     protected VirtualConnectionFactory getVcFactory() {
@@ -548,7 +555,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Query the external name of the channel.
-     * 
+     *
      * @return String
      */
     public String getExternalName() {
@@ -557,7 +564,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Returns the lastConnExceededTime.
-     * 
+     *
      * @return long
      */
     protected long getLastConnExceededTime() {
@@ -566,7 +573,7 @@ public abstract class TCPChannel implements InboundChannel, OutboundChannel, FFD
 
     /**
      * Sets the lastConnExceededTime.
-     * 
+     *
      * @param lastConnExceededTime
      *            The lastConnExceededTime to set
      */

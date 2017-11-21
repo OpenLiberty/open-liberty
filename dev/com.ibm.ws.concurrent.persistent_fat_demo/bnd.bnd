@@ -18,14 +18,8 @@ src: \
 test.project: true
 
 -buildpath: \
-	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-	../build.sharedResources/lib/ws-junit/ws-junit.jar;version=file, \
-	org.jboss.shrinkwrap:shrinkwrap-api;version=1.2.3,\
-	fattest.simplicity;version=latest, \
-	com.ibm.ws.componenttest:public.api;version=1.0.0,\
 	com.ibm.websphere.javaee.annotation.1.1;version=latest,\
 	com.ibm.websphere.javaee.concurrent.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
 	com.ibm.websphere.javaee.transaction.1.1;version=latest,\
-	com.ibm.ws.concurrent.persistent;version=latest,\
-	com.ibm.ws.componenttest;version=latest
+	com.ibm.ws.concurrent.persistent;version=latest

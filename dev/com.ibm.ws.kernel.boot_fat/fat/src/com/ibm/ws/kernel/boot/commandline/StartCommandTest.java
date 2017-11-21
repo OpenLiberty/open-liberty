@@ -13,12 +13,14 @@ package com.ibm.ws.kernel.boot.commandline;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.ProgramOutput;
+
 import componenttest.common.apiservices.Bootstrap;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.utils.LibertyServerUtils;
@@ -35,13 +37,21 @@ public class StartCommandTest {
     private static Machine machine;
     private static String installPath;
     private static String defaultServerPath;
+    private static String previousWorkDir;
 
     @BeforeClass
     public static void setup() throws Exception {
         bootstrap = Bootstrap.getInstance();
         machine = LibertyServerUtils.createMachine(bootstrap);
+        previousWorkDir = machine.getWorkDir();
+        machine.setWorkDir(null);
         installPath = LibertyFileManager.getInstallPath(bootstrap);
         defaultServerPath = installPath + "/usr/servers/" + defaultServerName;
+    }
+
+    @AfterClass
+    public static void tearDown() {
+        machine.setWorkDir(previousWorkDir);
     }
 
     @Before
@@ -65,7 +75,7 @@ public class StartCommandTest {
     public void testIsServerEnvCreatedForImplicitServerCreate() throws Exception {
 
         ProgramOutput po = LibertyServerUtils.executeLibertyCmd(bootstrap, "server", "start");
-        assertEquals("Unexpected return code from server start command", 0, po.getReturnCode());
+        assertEquals("Unexpected return code from server start command STDOUT: \" + po.getStdout() + \" STDERR: \" + po.getStderr()", 0, po.getReturnCode());
 
         try {
             // check that server directory was created

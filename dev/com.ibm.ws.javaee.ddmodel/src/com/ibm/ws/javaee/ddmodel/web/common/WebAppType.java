@@ -10,6 +10,8 @@
  *******************************************************************************/
 package com.ibm.ws.javaee.ddmodel.web.common;
 
+import javax.xml.XMLConstants;
+
 import com.ibm.ws.javaee.dd.web.WebApp;
 import com.ibm.ws.javaee.dd.web.common.AbsoluteOrdering;
 import com.ibm.ws.javaee.ddmodel.AnySimpleType;
@@ -79,7 +81,7 @@ public class WebAppType extends WebCommonType implements WebApp, DDParser.RootPa
 
     @Override
     public boolean handleAttribute(DDParser parser, String nsURI, String localName, int index) throws ParseException {
-        if (nsURI == null) {
+        if (nsURI == null || XMLConstants.NULL_NS_URI.equals(nsURI)) {
             if (parser.version >= 24 && "version".equals(localName)) {
                 version = parser.parseTokenAttributeValue(index);
                 return true;

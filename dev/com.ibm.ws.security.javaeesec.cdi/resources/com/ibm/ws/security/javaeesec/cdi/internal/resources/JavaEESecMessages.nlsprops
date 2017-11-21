@@ -16,5 +16,55 @@
 #NLS_ENCODING=UNICODE
 # -------------------------------------------------------------------------------------------------
 
-# Message prefix block: CWWKS1X00 - CWWKS1X99
+# Message prefix block: CWWKS1925 - CWWKS1949
 
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: The deployment for the {0} module in the {1} application failed because multiple HttpAuthenticationMechanism implementation are found. The list of classes is {2}. Most likely, this is an application packaging issue. Make sure that there is only one HttpAuthenticationMechanism implementation in each module.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=The application deployment failed because more than one HttpAuthenticationMechanism implementation are found. This condition is not allowed.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Make sure that there is only one HttpAuthenticationMechanism implementation for each module in the application.
+
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: LoginToContinueProperties bean does not exist. The form login is not enabled. Make sure that the application is annotated by LoginToContinue annotation.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=LoginToContinueProperties bean which is required for the form login authentication does not exist.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Make sure that the application is annotated by LoginToContinue annotation in FormAuthenticationMechanismDefinition or CustomFormAuthenticationMechanismDefinition annotation.
+
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: The supplied credential class {0} is not supported by CustomFormHttpAuthenticationMechanism class. Use either javax.security.enterprise.credential.UsernamePasswordCredential or javax.security.enterprise.credential.BasicAuthenticationCredential for authentication.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=The supplied credential class for the authentication is not supported by CustomFormHttpAuthenticationMechanism class. Use either javax.security.enterprise.credential.UsernamePasswordCredential or javax.security.enterprise.credential.BasicAuthenticationCredential for authentication.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Make sure that the supported credential class is used for Custom Form authentication.
+
+JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: Principal name is null or Principal object does not exist. Make sure that CredentialValidationResult contains valid Principal object.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=Principal object in the given CredentialValidationResult object is not valid. Either it is null or it does not have valid name.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=If the application provides an IdentityStore, make sure that it returns valid Principal object in CredentialValidationResult.
+
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: UniqueId is null. Make sure that CredentialValidationResult contains valid UniqueId.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=UniqueId in the given CredentialValidationResult object is null.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=If the application provides an IdentityStore, make sure that it returns valid UniqueId in CredentialValidationResult.
+
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: IdentityStoreHandler bean is not found. Use a User Registry which is defined by server.xml. IdentityStoreHandler bean is created when there is at least one IdentityStore bean. If the application intends to use an IdentityStore, make sure that it is configured properly. 
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=IdentityStoreHandler bean is not found. If the application intends to use an IdentityStore, make sure that it is configured properly. IdentityStoreHandler bean is created when there is at least one IdentityStore bean.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=If the application intends to use an IdentityStore, make sure that it is configured properly.
+
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS=CWWKS1931E: The application deployment failed because a login-config element was found in the web.xml file for the {0} module in the {1} application. To enable the HttpAuthenticationMechanism bean, remove the login-config element from the web.xml file.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.explanation=The application deployment failed because both the login-config element and the HttpAuthenticationMechanism bean are defined. Only one of these authentication mechanisms can be used in your application.
+JAVAEESEC_CDI_ERROR_LOGIN_CONFIG_EXISTS.useraction=To enable the HttpAuthenticationMechanism bean, remove the login-config element from the web.xml file.
+
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME=CWWKS1932W: The realm name for basic authentication is not set, so the default value, defaultRealm, was used.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.explanation=Because realm name for the basic authentication is not defined, the realm name was set to the default value of defaultRealm.
+JAVAEESEC_CDI_WARNING_NO_REALM_NAME.useraction=To set the realm name, define it on a BasicAuthenticationMechanismDefinition annotation in the application.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM=CWWKS1933E: The value {0} of the configuration parameter {1} is invalid.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.explanation=The value of the configuration parameter is not valid.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_PARAM.useraction=Make sure that the configuration parameter is set correctly.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM=CWWKS1934E: The value {0} of the configuration parameter {1} is less than the minimum value {2}.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.explanation=The value of the configuration parameter is less than the minimum value.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_BELOW_MINIMUM_PARAM.useraction=Make sure that the configuration parameter value is equal to or greater than the minimum value.
+
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA=CWWKS1935E: The hashed data is invalid. {0}
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.explanation=The hashed value in the database is not valid.
+JAVAEESEC_CDI_ERROR_PASSWORDHASH_INVALID_DATA.useraction=Make sure that the hashed data in the database was hashed by the hash algorithm which PasswordHash implementation class supports.
+
+#The following messages are used with JAVAEESEC_ERR_RPASSWORDHASH_INVALID_DATA message.
+JAVAEESEC_CDI_INVALID_ITERATION=The iterations {0} is not a number.
+JAVAEESEC_CDI_INVALID_ALGORITHM=The hash algorithm {0} is not supported.
+JAVAEESEC_CDI_INVALID_ELEMENTS=The number of the elements {0} is not 4.
+JAVAEESEC_CDI_INVALID_HASH_VALUE=The hash value is not encoded properly.
+JAVAEESEC_CDI_INVALID_SALT_VALUE=The salt value is not encoded properly.

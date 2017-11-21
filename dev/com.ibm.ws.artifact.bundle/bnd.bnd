@@ -35,4 +35,5 @@ Service-Component: \
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.artifact;version=latest,\
-	com.ibm.ws.kernel.service
+	com.ibm.ws.kernel.service,\
+	com.ibm.ws.logging.core

@@ -12,12 +12,6 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
-	com.ibm.websphere.appserver.restHandler-1.0;version=latest, \
-	com.ibm.websphere.appserver.servlet-3.1;version=latest, \
-	com.ibm.websphere.appserver.spi.restHandler;version=latest, \
-	com.ibm.ws.microprofile.metrics;version=latest, \
-	com.ibm.websphere.appserver.cdi-1.2;version=latest 
- 
+	com.ibm.ws.require.java8;version=latest, \
+	com.ibm.ws.microprofile.metrics;version=latest

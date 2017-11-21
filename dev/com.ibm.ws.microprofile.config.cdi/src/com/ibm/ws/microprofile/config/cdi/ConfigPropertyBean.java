@@ -21,13 +21,11 @@ import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
-import javax.enterprise.inject.spi.CDI;
 import javax.enterprise.inject.spi.InjectionPoint;
 import javax.enterprise.inject.spi.PassivationCapable;
 
 import org.eclipse.microprofile.config.Config;
-import org.eclipse.microprofile.config.spi.ConfigBuilder;
-import org.eclipse.microprofile.config.spi.ConfigProviderResolver;
+import org.eclipse.microprofile.config.ConfigProvider;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -42,6 +40,8 @@ public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean
 
     private final Class<T> beanClass;
 
+    private final BeanManager beanManager;
+
     public ConfigPropertyBean(BeanManager beanManager, Class<T> beanClass) {
         this(beanManager, beanClass, beanClass);
     }
@@ -49,52 +49,39 @@ public class ConfigPropertyBean<T> extends AbstractConfigBean<T> implements Bean
     public ConfigPropertyBean(BeanManager beanManager, Type beanType, Class<T> beanClass) {
         super(beanManager, beanType, ConfigPropertyLiteral.INSTANCE);
         this.beanClass = beanClass;
+        this.beanManager = beanManager;
     }
 
     /** {@inheritDoc} */
     @SuppressWarnings("unchecked")
     @Override
     public T create(CreationalContext<T> creationalContext) {
-        CDI<Object> cdi = CDI.current();
-        BeanManager beanManager = cdi.getBeanManager();
         InjectionPoint injectionPoint = getInjectionPoint(beanManager, creationalContext);
 
-        //TODO when we get the Config to work in the correct CDI scopes, we'll want CDI to provide the Config here
-//        Set<Bean<?>> beans = beanManager.getBeans(Config.class);
-//        Bean<?> bean = beanManager.resolve(beans);
-//
-//        Config config = (Config) beanManager.getReference(bean, Config.class, creationalContext);
-
-        //TODO for now we'll just get a new one so we can manually release it again straight away
-        ConfigBuilder builder = ConfigProviderResolver.instance().getBuilder();
-        builder.addDiscoveredConverters();
-        builder.addDefaultSources();
-        builder.addDiscoveredSources();
-        Config config = builder.build();
+        // Note the config is cached per thread context class loader
+        // This shouldn't matter though as the config object is updated with values dynamically
+        // Also means that injecting config does things the same way as calling `getConfig().getValue()`
+        Config config = ConfigProvider.getConfig();
 
         T instance = null;
 
-        try {
-            Type ipType = injectionPoint.getType();
-            if (ipType instanceof ParameterizedType) {
-                ParameterizedType pType = (ParameterizedType) ipType;
-                Type rType = pType.getRawType();
-                if (rType == Optional.class) {
-                    Type[] tArgs = pType.getActualTypeArguments();
-                    Type aType = tArgs[0];
-                    Class<?> aClass = (Class<?>) aType;
-                    instance = (T) getOptional(config, injectionPoint, aClass);
-                } else {
-                    throw new IllegalArgumentException(Tr.formatMessage(tc, "unable.to.determine.injection.type.CWMCG5001E", ipType));
-                }
-            } else if (ipType instanceof Class) {
-                Class<T> ipClass = (Class<T>) ipType;
-                instance = ConfigProducer.newValue(config, injectionPoint, ipClass, false);
+        Type ipType = injectionPoint.getType();
+        if (ipType instanceof ParameterizedType) {
+            ParameterizedType pType = (ParameterizedType) ipType;
+            Type rType = pType.getRawType();
+            if (rType == Optional.class) {
+                Type[] tArgs = pType.getActualTypeArguments();
+                Type aType = tArgs[0];
+                Class<?> aClass = (Class<?>) aType;
+                instance = (T) getOptional(config, injectionPoint, aClass);
             } else {
                 throw new IllegalArgumentException(Tr.formatMessage(tc, "unable.to.determine.injection.type.CWMCG5001E", ipType));
             }
-        } finally {
-            ConfigProviderResolver.instance().releaseConfig(config);
+        } else if (ipType instanceof Class) {
+            Class<T> ipClass = (Class<T>) ipType;
+            instance = ConfigProducer.newValue(config, injectionPoint, ipClass, false);
+        } else {
+            throw new IllegalArgumentException(Tr.formatMessage(tc, "unable.to.determine.injection.type.CWMCG5001E", ipType));
         }
         return instance;
     }

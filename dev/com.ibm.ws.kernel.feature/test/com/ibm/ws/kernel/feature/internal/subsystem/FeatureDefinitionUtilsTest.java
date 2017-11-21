@@ -44,7 +44,7 @@ import com.ibm.ws.kernel.provisioning.VersionUtility;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 
 /**
- * 
+ *
  */
 public class FeatureDefinitionUtilsTest {
 
@@ -79,8 +79,8 @@ public class FeatureDefinitionUtilsTest {
         writer.flush();
         String result = out.toString();
 
-        // -- Result string should look something like this: 
-        // com.ibm.websphere.supersededA=../com.ibm.ws.kernel.feature_test/build/unittest/test data/com.ibm.websphere.supersededA.mf;1364156286000;300;;;2;PUBLIC;NEVER;1.0.0;0000
+        // -- Result string should look something like this:
+        // com.ibm.websphere.supersededA=../com.ibm.ws.kernel.feature/test/test data/com.ibm.websphere.supersededA.mf;1364156286000;300;;;2;PUBLIC;NEVER;1.0.0;0000
 
         String[] lines = result.split(FeatureDefinitionUtils.NL);
 
@@ -144,7 +144,7 @@ public class FeatureDefinitionUtilsTest {
         // TODO: ADD EXPECTATION FOR ERROR MESSAGE CODE
         // outputMgr.expectError("CWWKFIXME");
 
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -161,7 +161,7 @@ public class FeatureDefinitionUtilsTest {
         // TODO: ADD EXPECTATION FOR ERROR MESSAGE CODE
         // outputMgr.expectError("CWWKFIXME");
 
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -176,7 +176,7 @@ public class FeatureDefinitionUtilsTest {
 
     @Test
     public void testDownlevelFeatureVersion() throws IOException {
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -194,7 +194,7 @@ public class FeatureDefinitionUtilsTest {
 
     @Test
     public void testUnspecifiedFeatureVersion() throws IOException {
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -215,7 +215,7 @@ public class FeatureDefinitionUtilsTest {
         // We expect this error code to be in the output for unsupported feature version
         outputMgr.expectError("CWWKF0022E");
 
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -233,7 +233,7 @@ public class FeatureDefinitionUtilsTest {
     @Test
     public void testIBMShortNameUnspecified() throws Exception {
         // IBM-ShortName not present
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -255,7 +255,7 @@ public class FeatureDefinitionUtilsTest {
     @Test
     public void testIBMShortNamePublic() throws Exception {
         // IBM-ShortName in mf file of a public feature
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -278,7 +278,7 @@ public class FeatureDefinitionUtilsTest {
     @Test
     public void testIBMShortNameHidden() throws Exception {
         // IBM-ShortName in mf file but it should be ignored because feature is not public
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -303,8 +303,8 @@ public class FeatureDefinitionUtilsTest {
         // We expect this error code to be in the output for mismatched superseded flags
         outputMgr.expectError("CWWKF0020E");
 
-        // Intentional extra trailing whitespace... 
-        // Superseded is specified false, but we say it is superseded by something... 
+        // Intentional extra trailing whitespace...
+        // Superseded is specified false, but we say it is superseded by something...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -322,11 +322,11 @@ public class FeatureDefinitionUtilsTest {
 
     @Test
     public void testImmutableAttributeFlags() throws Exception {
-        // Round-trip through the cache will convert to absolute path. We need the input file to 
-        // have also been constructed from an absolute path so it will match.. 
+        // Round-trip through the cache will convert to absolute path. We need the input file to
+        // have also been constructed from an absolute path so it will match..
         File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
 
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -347,10 +347,10 @@ public class FeatureDefinitionUtilsTest {
         Assert.assertTrue("API-package flag should be true", iAttr.hasApiPackages);
         Assert.assertFalse("SPI-package flag should be false", iAttr.hasSpiPackages);
 
-        // Do nothing that would trigger more detailed fluff up of API/SPI here.. 
-        // Want to make sure it gets into the cache anyway.. 
+        // Do nothing that would trigger more detailed fluff up of API/SPI here..
+        // Want to make sure it gets into the cache anyway..
 
-        // Reset the output buffer, let's flatten it for the cache.. 
+        // Reset the output buffer, let's flatten it for the cache..
         out.reset();
         writer = new PrintWriter(out, true);
         FeatureDefinitionUtils.writeAttributes(iAttr, details, writer);
@@ -358,7 +358,7 @@ public class FeatureDefinitionUtilsTest {
         String result = out.toString();
         System.out.println(result);
 
-        // So, now we have our shiny cache line, which should actually be two lines, kind of like this: 
+        // So, now we have our shiny cache line, which should actually be two lines, kind of like this:
         // com.ibm.websphere.supersededA=;xxxx;xxxx;custom;;2;PROTECTED;INSTALL;1.0.0;0010
         // -A:javax.servlet.annotation;  type="spec",javax.servlet.descriptor; type="spec",com.ibm.websphere.servlet.session;  type="ibm-api",com.ibm.wsspi.servlet.session;  type="ibm-api",com.ibm.wsspi.webcontainer;  type="internal"
 
@@ -375,12 +375,12 @@ public class FeatureDefinitionUtilsTest {
         Assert.assertEquals("Equals should show these as the same", iAttr, iAttr2);
         Assert.assertEquals("hashCode should be the same", iAttr.hashCode(), iAttr2.hashCode());
 
-        // Let's just mess around with the flags now.. 
+        // Let's just mess around with the flags now..
         String newLine = lines[0].replace("0010", "1101");
         System.out.println("Updated line: \n\t" + newLine);
         iAttr2 = FeatureDefinitionUtils.loadAttributes(newLine, null);
         Assert.assertNotNull("Should return non-null attribtues", iAttr2);
-        // Equals/hashCode are only focused on symbolic name & version: these should still be equal.. 
+        // Equals/hashCode are only focused on symbolic name & version: these should still be equal..
         Assert.assertEquals("Equals should show these as the same", iAttr, iAttr2);
         Assert.assertEquals("hashCode should be the same", iAttr.hashCode(), iAttr2.hashCode());
         Assert.assertTrue("AutoFeature flag should be true", iAttr2.isAutoFeature);
@@ -391,11 +391,11 @@ public class FeatureDefinitionUtilsTest {
 
     @Test
     public void testProvisioningDetailsExtraLines() throws Exception {
-        // Round-trip through the cache will convert to absolute path. We need the input file to 
-        // have also been constructed from an absolute path so it will match.. 
+        // Round-trip through the cache will convert to absolute path. We need the input file to
+        // have also been constructed from an absolute path so it will match..
         File featureFile = new File(SharedConstants.TEST_DATA_DIR, "com.ibm.websphere.supersededA.mf").getAbsoluteFile();
 
-        // Intentional extra trailing whitespace... 
+        // Intentional extra trailing whitespace...
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         PrintWriter writer = new PrintWriter(out, true);
         writer.write("Manifest-Version: 1.0 \n");
@@ -414,7 +414,7 @@ public class FeatureDefinitionUtilsTest {
         writer.write(" osgi.identity; filter:=\"(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jpa-2.0))\" \n");
         writer.flush();
 
-        // Lame: round-trip through to the cache lines we need: 
+        // Lame: round-trip through to the cache lines we need:
         ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
         ProvisioningDetails details = new ProvisioningDetails(null, in);
         ImmutableAttributes iAttr = FeatureDefinitionUtils.loadAttributes("custom", featureFile, details);
@@ -445,12 +445,12 @@ public class FeatureDefinitionUtilsTest {
         ImmutableAttributes newAttr = FeatureDefinitionUtils.loadAttributes(readLine, null);
         assertAttributesEqual(ImmutableAttributes.class, iAttr, newAttr);
 
-        // Now, based on our attribute flags.. pull off the extra lines.. 
+        // Now, based on our attribute flags.. pull off the extra lines..
         ProvisioningDetails details2 = new ProvisioningDetails(reader, newAttr);
-        // Some fields should be equal... 
+        // Some fields should be equal...
         assertAttributesEqual(ProvisioningDetails.class, details, details2,
                               "apiPackages", "apiServices", "autoFeatureCapability", "spiPackages");
-        // MOST fields should be null because we avoided touching them. 
+        // MOST fields should be null because we avoided touching them.
         assertAttributesNull(ProvisioningDetails.class, details2, false,
                              "apiPackages", "apiServices", "autoFeatureCapability", "spiPackages", "iAttr");
     }
@@ -505,14 +505,14 @@ public class FeatureDefinitionUtilsTest {
         List<String> names = Arrays.asList(fieldNames);
 
         for (Field f : fields) {
-            // If the names specified in the parameter list are the ones that should not be null, 
+            // If the names specified in the parameter list are the ones that should not be null,
             // and this field is one of those.. skip it.
             if (!specifiedFieldsAreNull && names.contains(f.getName()))
                 continue;
 
             // skip basic types, statics, and finals.
             // --> this is obviously not an exhaustive list.
-            // types may have to be added when there are fields of those types.. 
+            // types may have to be added when there are fields of those types..
             Class<?> type = f.getType();
             int modifiers = f.getModifiers();
             if (type == int.class || type == boolean.class

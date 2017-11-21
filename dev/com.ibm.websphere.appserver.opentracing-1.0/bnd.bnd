@@ -12,8 +12,8 @@
 
 -nobundles=true
 
-publish.feature.resources: **
-
 -dependson: \
     com.ibm.ws.require.java8;version=latest, \
-    com.ibm.ws.opentracing;version=latest
+    com.ibm.ws.opentracing;version=latest, \
+    com.ibm.websphere.appserver.thirdparty.opentracing;version=latest, \
+    com.ibm.ws.opentracing.cdi;version=latest

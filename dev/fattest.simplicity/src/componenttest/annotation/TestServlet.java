@@ -23,18 +23,22 @@ public @interface TestServlet {
 
     /**
      * The path to the test servlet URL (i.e. <code>application/servlet</code>).
-     * The hostname and port are inferred from the LibertyServer field which is being annotated.
+     * The hostname and port are inferred from the LibertyServer field which is being annotated.<br>
+     * This value cannot be specified with <code>@TestServlet.contextRoot()</code>
      */
-    String path();
+    String path() default "";
 
     /**
-     * The servlet class.<br>
-     * <b>IMPORTANT:</b> To use this annotation in a FAT, the project's build-test.xml must
-     * specify either of the following in order to get the servlet class on the javac classpath:
-     * <ul>
-     * <li> &lt;property name="project.compile.use.classpath.source" value="true"/> </li>
-     * <li> &lt;import file="../ant_build/public_imports/shrinkwrap_fat_imports.xml"/> </li>
-     * </ul>
+     * The application context root leading to the test servlet. The rest of the servlet path will be inferred
+     * from the first value in <code>@WebServlet.value()</code> or <code>@WebServlet.urlPatterns()</code>. If
+     * XML descriptors are being used instead of <code>@WebServlet</code>, the <code>@TestServlet.path()</code>
+     * approach must be used instead.
+     * This value cannot be specified with <code>@TestServlet.path()</code>
+     */
+    String contextRoot() default "";
+
+    /**
+     * The servlet class to scan for '@Test' annotations, which will be invoked automatically via HTTP GET request
      */
     Class<? extends HttpServlet> servlet();
 

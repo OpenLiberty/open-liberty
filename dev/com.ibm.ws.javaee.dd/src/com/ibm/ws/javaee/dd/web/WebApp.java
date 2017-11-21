@@ -22,6 +22,8 @@ public interface WebApp extends ModuleDeploymentDescriptor, DeploymentDescriptor
 
     static final String DD_NAME = "WEB-INF/web.xml";
 
+    static final int VERSION_4_0 = 40;
+
     static final int VERSION_3_1 = 31;
 
     static final int VERSION_3_0 = 30;
