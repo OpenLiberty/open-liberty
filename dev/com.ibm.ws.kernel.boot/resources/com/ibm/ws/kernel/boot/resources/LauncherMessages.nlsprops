@@ -196,7 +196,9 @@ info.frameworkRestart=CWWKE0041I: The platform cache is out of sync. Restarting 
 info.frameworkRestart.explanation=The framework has been restarted because the platform cache was out of sync.
 info.frameworkRestart.useraction=No action is required.
 
-# CWWKE0042E removed because it's only used in com.ibm.ws.kernel.boot.cmdline - Do not reuse.
+error.badVersion=CWWKE0042E: The correct Java version is not running. The runtime environment requires Java 7 or higher.
+error.badVersion.explanation=Either an unsupported Java version is running, or the JAVA_HOME system variable is set to point to an older version of Java.
+error.badVersion.useraction= Upgrade the Java version to Java 7, or adjust the JAVA_HOME system variable to point to Java 7.
 
 error.unsupportedLaunch=CWWKE0043E: The launch location is not a local file. ({0})
 error.unsupportedLaunch.explanation=The runtime environment must be launched from a local file, for example a JAR file.

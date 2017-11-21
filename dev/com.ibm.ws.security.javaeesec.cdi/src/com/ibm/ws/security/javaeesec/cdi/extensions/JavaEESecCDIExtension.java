@@ -54,6 +54,7 @@ import org.osgi.service.component.annotations.Component;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
 import com.ibm.ws.security.javaeesec.CDIHelper;
@@ -160,7 +161,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
         } catch (DeploymentException de) {
             afterBeanDiscovery.addDefinitionError(de);
         }
-        if (!moduleMap.isEmpty()) {
+        if (!isEmptyModuleMap()) {
             ModulePropertiesProviderBean bean = new ModulePropertiesProviderBean(beanManager, moduleMap);
             beansToAdd.add(bean);
         }
@@ -377,6 +378,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
             }
 
             @Override
+            @Sensitive
             public String bindDnPassword() {
                 return (overrides != null && overrides.containsKey("bindDnPassword")) ? (String) overrides.get("bindDnPassword") : "";
             }
@@ -704,6 +706,21 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                 }
             }
         }
+    }
+    private boolean isEmptyModuleMap() {
+        boolean result = moduleMap.isEmpty();
+        if (!result) {
+            // check ModuleProperties is empty.
+            for (Map.Entry<String, ModuleProperties> entry : moduleMap.entrySet()) {
+                if (entry.getValue().getAuthMechMap().isEmpty()) {
+                    result = true;
+                } else {
+                    result = false;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
     private List<String> getWebModuleList() {

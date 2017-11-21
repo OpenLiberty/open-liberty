@@ -28,6 +28,10 @@ import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
 import org.junit.runner.RunWith;
 
+import com.ibm.ws.security.javaeesec.fat_helper.Constants;
+import com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase;
+import com.ibm.ws.security.javaeesec.fat_helper.ServerHelper;
+import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 import com.ibm.ws.webcontainer.security.test.servlets.SSLHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
@@ -89,11 +93,7 @@ public class RememberMeTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
-        if (!OnlyRunInJava7Rule.IS_JAVA_7_OR_HIGHER) {
-            return;
-        }
-        myServer.stopServer();
-        myServer.setServerConfigurationFile("server.xml");
+        ServerHelper.commonStopServer(myServer);
     }
 
     @SuppressWarnings("restriction")
@@ -115,9 +115,9 @@ public class RememberMeTest extends JavaEESecTestBase {
 
     @Test
     public void testRememberMe() throws Exception {
-        HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString, javaeesec_basicRoleUser, javaeesec_basicRolePwd);
+        HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlHttps + queryString, Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd);
         String response = processResponse(httpResponse, HttpServletResponse.SC_OK);
-        verifyUserResponse(response, getUserPrincipalFound + javaeesec_basicRoleUser, getRemoteUserFound + javaeesec_basicRoleUser);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser, Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
         Header cookieHeader = getCookieHeader(httpResponse, REMEMBERME_COOKIE_NAME);
         String cookieHeaderString = cookieHeader.toString();
 
@@ -128,14 +128,14 @@ public class RememberMeTest extends JavaEESecTestBase {
 
         httpclient.getCookieStore().clear();
         response = accessWithCookie(httpclient, urlHttps + queryString, REMEMBERME_COOKIE_NAME, getCookieValue(cookieHeader, REMEMBERME_COOKIE_NAME), HttpServletResponse.SC_OK);
-        verifyUserResponse(response, getUserPrincipalFound + javaeesec_basicRoleUser, getRemoteUserFound + javaeesec_basicRoleUser);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser, Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
     }
 
     @Test
     public void testRememberMeHttpNoCookie() throws Exception {
-        HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, javaeesec_basicRoleUser, javaeesec_basicRolePwd);
+        HttpResponse httpResponse = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString, Constants.javaeesec_basicRoleUser, Constants.javaeesec_basicRolePwd);
         String response = processResponse(httpResponse, HttpServletResponse.SC_OK);
-        verifyUserResponse(response, getUserPrincipalFound + javaeesec_basicRoleUser, getRemoteUserFound + javaeesec_basicRoleUser);
+        verifyUserResponse(response, Constants.getUserPrincipalFound + Constants.javaeesec_basicRoleUser, Constants.getRemoteUserFound + Constants.javaeesec_basicRoleUser);
         validateNoCookie(httpResponse, REMEMBERME_COOKIE_NAME);
     }
 

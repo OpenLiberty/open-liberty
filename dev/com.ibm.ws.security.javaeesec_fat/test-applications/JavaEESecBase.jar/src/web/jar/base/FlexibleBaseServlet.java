@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package web.jar.base;
 
 import java.io.BufferedReader;
@@ -24,9 +34,11 @@ import java.util.Scanner;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.logging.Logger;
+import javax.inject.Inject;
 
 import javax.enterprise.inject.Instance;
 import javax.enterprise.inject.spi.CDI;
+import javax.inject.Inject;
 import javax.security.auth.Subject;
 import javax.security.auth.message.config.AuthConfigFactory;
 import javax.security.auth.message.config.AuthConfigProvider;
@@ -49,13 +61,15 @@ import com.ibm.websphere.security.auth.WSSubject;
 import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.wsspi.security.token.SingleSignonToken;
 
-//TODO import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
-//TODO import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
+import javax.security.enterprise.SecurityContext;
 
 /**
  * Base servlet which the JASPI test servlets extend.
  */
 public abstract class FlexibleBaseServlet extends HttpServlet {
+    @Inject
+    private SecurityContext securityContext;
+    
     private static final long serialVersionUID = 1L;
     private String servletName;
     public List<BaseServletStep> mySteps = new ArrayList<BaseServletStep>();
@@ -85,47 +99,6 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//TODO        Instance<ModulePropertiesProvider> mppi = CDI.current().select(ModulePropertiesProvider.class);
-//TODO        Instance<HttpAuthenticationMechanism> hami = null;
-//TODO        ModulePropertiesProvider mpp = null;
-//TODO        HttpAuthenticationMechanism ham = null;
-//TODO        List<Class> hamcl = null;
-//TODO        Properties props = null;
-//TODO        if (mppi != null && !mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
-//TODO            mpp = mppi.get();
-//TODO            hamcl = mpp.getAuthMechClassList();
-//TODO            for (Class hamc : hamcl) {
-//TODO                hami = CDI.current().select(hamc);
-//TODO                if (hami != null && !hami.isUnsatisfied() && !hami.isAmbiguous()) {
-//TODO                    ham = hami.get();
-//TODO                    props = mpp.getAuthMechProperties(hamc);
-//TODO                    break;
-//TODO                }
-//TODO            }
-//TODO        }
-//        Instance<IdentityStoreHandler> ishBean = CDI.current().select(IdentityStoreHandler.class);
-//        IdentityStoreHandler ish = null;
-//        if (ishBean != null && !ishBean.isUnsatisfied()) {
-//            ish = ishBean.get();
-//        }
-        PrintWriter writer = resp.getWriter();
-//        CredentialValidationResult result = ish.validate(new UsernamePasswordCredential("validuser1", "security"));
-//TODO        writer.println("ModulePropertiesProvider: " + mpp);
-//TODO        writer.println("authmechclass list: " + hamcl);
-//TODO        writer.println("properties: " + props);
-//TODO        writer.println("authmech: " + ham);
-//        writer.println("Toshi:IdentityStoreHandlerBean: " + ishBean);
-//        writer.println("Toshi:IdentityStoreHandlerBean.isUnsatisfied: " + ishBean.isUnsatisfied());
-//        writer.println("Toshi:IdentityStoreHandler: " + ish);
-//        writer.println("Toshi:validation result : " + result);
-//        writer.println("Toshi:getStatus : " + result.getStatus());
-//        writer.println("Toshi:getCallerDn : " + result.getCallerDn());
-//        writer.println("Toshi:getCallerGroups : " + result.getCallerGroups());
-//        if (result.getCallerPrincipal() != null) {
-//            writer.println("Toshi:getCallerPrincipal : " + result.getCallerPrincipal().getName());
-//        }
-//        writer.println("Toshi:getCallerUniqueId : " + result.getCallerUniqueId());
-//        writer.println("Toshi:getCallerIdentityStoreId : " + result.getIdentityStoreId());
         handleRequest("GET", req, resp);
     }
 
@@ -338,6 +311,30 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
         }
 
     }
+    public class WriteSecurityContextStep implements BaseServletStep {
+
+        @Override
+        public void invoke(BaseServletParms p) throws Exception {
+            writeLine(p.getBuffer(), "**************WriteSecurityContextStep****************");
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(javaeesec_basic): "
+                                     + securityContext.isCallerInRole("javaeesec_basic"));
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(javaeesec_form): " + securityContext.isCallerInRole("javaeesec_form"));
+            String role = p.getRequest().getParameter("role");
+            if (role == null) {
+                writeLine(p.getBuffer(), "You can customize the isUserInRole call with the follow paramter: ?role=name");
+            }
+            writeLine(p.getBuffer(), "securityContext.isCallerInRole(" + role + "): " + securityContext.isCallerInRole(role));
+            
+            //writeLine(p.getBuffer(), "getRemoteUser: " + p.getRequest().getRemoteUser());
+            writeLine(p.getBuffer(), "securityContext.getCallerPrincipal(): " + securityContext.getCallerPrincipal());
+
+            if (securityContext.getCallerPrincipal() != null) {
+                writeLine(p.getBuffer(), "securityContext.getCallerPrincipal(): "
+                                         + securityContext.getCallerPrincipal().getName());
+            }
+        }
+
+    }
 
     public class WriteCookiesStep implements BaseServletStep {
 
@@ -432,6 +429,62 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
             Subject runAsSubject = WSSubject.getRunAsSubject();
             writeLine(p.getBuffer(), "RunAsSubject: " + runAsSubject);
         }
+    }
+
+    public class WriteJSR375Step implements BaseServletStep {
+
+        @Override
+        public void invoke(BaseServletParms p) throws Exception {
+            // list avaiable identitystorehandler, identitystores, and httpauthemechs.
+            Instance<IdentityStoreHandler> ishi = CDI.current().select(IdentityStoreHandler.class);
+            String value;
+            if (ishi != null && !ishi.isUnsatisfied() && !ishi.isAmbiguous()) {
+                value = "1 exists: " + ishi.get().getClass();
+            } else {
+                value = "0 exists";
+            }
+            writeLine(p.getBuffer(), "IdentityStoreHandler : " + value);
+
+            Instance<IdentityStore> isi = CDI.current().select(IdentityStore.class);
+            if (isi != null) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(" exists: [");
+                int i = 0;
+                for (IdentityStore is : isi) {
+                    sb.append(is.getClass()).append(", ");
+                    i++;
+                }
+                sb.append("]");
+                value = i + sb.toString();
+            } else {
+                value = "0 exists";
+            }
+            writeLine(p.getBuffer(), "IdentityStore : " + value);
+
+            Instance<HttpAuthenticationMechanism> hami = CDI.current().select(HttpAuthenticationMechanism.class);
+            if (hami != null) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(" exists: [");
+                int i = 0;
+                for (HttpAuthenticationMechanism ham : hami) {
+                    sb.append(skipProxyClass(ham.getClass()).toString()).append(", ");
+                    i++;
+                }
+                sb.append("]");
+                value = i + sb.toString();
+            } else {
+                value = "0 exists";
+            }
+            writeLine(p.getBuffer(), "HttpAuthenticationMechanism : " + value);
+        }
+    }
+
+    private Class skipProxyClass(Class clz) {
+        Class output = clz;
+        while (output.toString().toLowerCase().contains("weld")) {
+            output = output.getSuperclass();
+        }
+        return output;
     }
 
     public abstract class ProcessStep implements BaseServletStep {

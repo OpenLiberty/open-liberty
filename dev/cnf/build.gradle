@@ -45,8 +45,14 @@ task createIvyXml {
                         } else {
                             (org, name) = ['dev', bsn]
                         }
-                        depsList = depsList + '        <dependency org="' + org + '" name="' + name + '" rev="' + bndProject.getVersion(bsn) + '"/>\n'
-                        depsListLatest = depsListLatest + '        <dependency org="' + org + '" name="' + name + '" rev="latest.integration"/>\n'
+                        depsList = depsList + '        <dependency org="' + org + '" name="' + name + '" rev="' + bndProject.getVersion(bsn) + '">\n'
+                        depsList = depsList + '          <artifact name="' + name + '" type="jar"/>\n'
+                        depsList = depsList + '          <artifact name="' + name + '" type="pom"/>\n'
+                        depsList = depsList + '        </dependency>\n'
+                        depsListLatest = depsListLatest + '        <dependency org="' + org + '" name="' + name + '" rev="latest.integration">\n'
+                        depsListLatest = depsListLatest + '          <artifact name="' + name + '" type="jar"/>\n'
+                        depsListLatest = depsListLatest + '          <artifact name="' + name + '" type="pom"/>\n'
+                        depsListLatest = depsListLatest + '        </dependency>\n'
                     }
                 }
             }
@@ -90,6 +96,7 @@ task createGradleBootstrap {
                             (org, name) = ['dev', bsn]
                         }
                         depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '\'\n'
+                        depsList = depsList + '    compile \'' + org + ':' + name + ':' + bndProject.getVersion(bsn) + '@pom\'\n'
                     }
                 }
             }

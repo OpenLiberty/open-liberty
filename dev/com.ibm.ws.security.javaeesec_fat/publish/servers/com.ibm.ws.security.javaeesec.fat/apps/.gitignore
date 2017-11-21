@@ -12,3 +12,4 @@ FormPostServlet.war
 /JavaEESecCustomFormPostForwardServlet.war
 /JavaEESecCustomFormPostServlet.war
 /JavaEESecServlet.war
+/JavaEEsecBasicAuthServletMultipleIS.war

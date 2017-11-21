@@ -18,7 +18,6 @@ bVersion=1.6
 javac.source: 1.8
 javac.target: 1.8
 
-
 bSymbolicName=com.ibm.ws.javamail.1.6
 
 Bundle-Name: JavaMail 1.6 API
@@ -34,7 +33,6 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=1.8))"
 ## for the app-resources header
 
 Include-Resource: \
-  OSGI-INF=resources/OSGI-INF, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.6}!/META-INF/mailcap, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.6}!/META-INF/gfprobe-provider.xml, \
   @${repo;com.ibm.ws.com.sun.mail.javax.mail.1.6}!/META-INF/javamail.charset.map, \

@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
+import com.ibm.ws.threading.StartTimeoutException;
 
 /**
  * Allows the policy executor to tie into internal state and other details of a Future implementation.
@@ -429,9 +430,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", getIdentifier(), getTaskName(),
-                                                                           System.nanoTime() - nsAcceptBegin,
-                                                                           nsStartBy - nsAcceptBegin)));
+                    abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                                    System.nanoTime() - nsAcceptBegin, //
+                                    nsStartBy - nsAcceptBegin));
                     s = state.get();
                 }
                 if (s == RUNNING) { // continue waiting
@@ -467,9 +468,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", getIdentifier(), getTaskName(),
-                                                                           System.nanoTime() - nsAcceptBegin,
-                                                                           nsStartBy - nsAcceptBegin)));
+                    abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                                    System.nanoTime() - nsAcceptBegin, //
+                                    nsStartBy - nsAcceptBegin));
                     s = state.get();
                 }
                 if (s == RUNNING) { // wait for the remainder of the timeout supplied to get
@@ -490,11 +491,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         if (nsStartBy != nsAcceptBegin - 1 // has a start timeout
             && state.get() < RUNNING // not started yet
             && System.nanoTime() - nsStartBy > 0) // start timeout has elapsed
-            abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                   getIdentifier(),
-                                                                   getTaskName(),
-                                                                   System.nanoTime() - nsAcceptBegin,
-                                                                   nsStartBy - nsAcceptBegin)));
+            abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                            System.nanoTime() - nsAcceptBegin, //
+                            nsStartBy - nsAcceptBegin));
 
         if (result.compareAndSet(state, CANCELED))
             try {
@@ -637,11 +636,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                || nsStartBy != nsAcceptBegin - 1 // has a start timeout
                   && s < RUNNING // not started yet
                   && System.nanoTime() - nsStartBy > 0 // start timeout has elapsed
-                  && (abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                             getIdentifier(),
-                                                                             getTaskName(),
-                                                                             System.nanoTime() - nsAcceptBegin,
-                                                                             nsStartBy - nsAcceptBegin)))
+                  && (abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                                  System.nanoTime() - nsAcceptBegin, //
+                                  nsStartBy - nsAcceptBegin))
                       || state.get() > RUNNING);
     }
 

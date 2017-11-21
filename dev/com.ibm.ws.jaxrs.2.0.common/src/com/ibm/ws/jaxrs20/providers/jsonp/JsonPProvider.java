@@ -49,17 +49,28 @@ public class JsonPProvider implements MessageBodyReader, MessageBodyWriter {
     private final static Map<String, Method> jsonpMethodMaps = new HashMap<String, Method>();
 
     static {
-        ClassLoadingService clSvc = LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getService();
-        ClassLoader cl = clSvc == null ? Thread.currentThread().getContextClassLoader() : clSvc.createThreadContextClassLoader(JsonPProvider.class.getClassLoader());
+        try {
+            ClassLoadingService clSvc = LibertyJaxRsThreadPoolAdapter.getClassLoadingServiceref().getService();
+            ClassLoader cl = clSvc == null ? Thread.currentThread().getContextClassLoader() : clSvc.createThreadContextClassLoader(JsonPProvider.class.getClassLoader());
 
+            loadClass(cl);
+
+            if (clSvc != null) {
+                clSvc.destroyThreadContextClassLoader(cl);
+            }
+        } catch (NoClassDefFoundError e) {
+            ClassLoader cl = Thread.currentThread().getContextClassLoader();
+            loadClass(cl);
+        }
+    }
+
+    private static void loadClass(ClassLoader cl) {
         for (String clsName : jsonpClasses) {
             Class<?> c = ReflectUtil.loadClass(cl, clsName);
             if (c != null) {
                 jsonpClsMaps.put(clsName, c);
             }
         }
-        if (clSvc != null)
-            clSvc.destroyThreadContextClassLoader(cl);
     }
 
     @Override
