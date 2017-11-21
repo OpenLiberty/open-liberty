@@ -534,7 +534,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
         if (wbda == null) {
             for (WebSphereBeanDeploymentArchive bda : orderedBDAs) {
-                if ((bda.getAllClazzes().containsKey(clazz.getName())) && (bda.getAllClazzes().containsValue(clazz))) {
+                if ((bda.containsClass(clazz))) {
                     wbda = bda;
                     classBDAMap.put(clazz, bda);
                     break;

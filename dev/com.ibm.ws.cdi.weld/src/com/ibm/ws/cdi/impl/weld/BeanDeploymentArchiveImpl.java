@@ -499,8 +499,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                     for (ManagedBeanDescriptor<?> managedBeanDescriptor : managedBeanDescriptors) {
                         boolean added = false;
                         for (WebSphereBeanDeploymentArchive child : getWebSphereBeanDeploymentArchives()) {
-                            if ((child.getAllClazzes().containsKey(managedBeanDescriptor.getBeanClass().getName()))
-                                && (child.getAllClazzes().containsValue(managedBeanDescriptor.getBeanClass()))) {
+                            if (child.containsClass(managedBeanDescriptor.getBeanClass())) {
                                 child.addManagedBeanDescriptor(managedBeanDescriptor);
                                 added = true;
                                 break;
@@ -514,8 +513,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                     for (EjbDescriptor<?> ejbDescriptor : ejbDescriptors) {
                         boolean added = false;
                         for (WebSphereBeanDeploymentArchive child : getWebSphereBeanDeploymentArchives()) {
-                            if ((child.getAllClazzes().containsKey(ejbDescriptor.getBeanClass().getName()))
-                                && (child.getAllClazzes().containsValue(ejbDescriptor.getBeanClass()))) {
+                            if (child.containsClass(ejbDescriptor.getBeanClass())) {
                                 child.addEjbDescriptor(ejbDescriptor);
                                 added = true;
                                 break;
@@ -628,8 +626,9 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
     @Trivial
     // This is marked trivial because it's called when iterating over all BDAs to look
     // for a single class which causes lots of noise in the trace without adding any value
-    public Map<String, Class<?>> getAllClazzes() {
-        return classesInBda.allClasses;
+    public boolean containsClass(Class<?> clazz) {
+        Class<?> inMap = classesInBda.get(clazz.getName());
+        return clazz.equals(inMap);
     }
 
     @Override
@@ -880,7 +879,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
                 createInjectionTargetsForJEEComponentClass(clazz);
             } else {
                 for (WebSphereBeanDeploymentArchive child : getDescendantBdas()) {
-                    if (child.getAllClazzes().containsKey(clazz.getName())) {
+                    if (child.containsClass(clazz)) {
                         child.createInjectionTargetsForJEEComponentClass(clazz);
                         break;
                     }
