@@ -17,7 +17,7 @@ File publishDir = new File(autoFvtDir, 'publish')
 publishing {
   publications {
     maven(MavenPublication) {
-      artifactId project.name
+      artifactId project.name + '_autoFVT'
       groupId 'test'
       version project.version
       artifact zipProjectFVT
