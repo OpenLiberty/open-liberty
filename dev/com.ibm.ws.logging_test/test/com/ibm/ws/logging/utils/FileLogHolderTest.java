@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.logging.internal.impl;
+package com.ibm.ws.logging.utils;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -25,13 +25,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 
+import com.ibm.ws.logging.internal.impl.BaseTraceFormatter;
+import com.ibm.ws.logging.internal.impl.FileLogHeader;
+import com.ibm.ws.logging.internal.impl.LoggingConstants;
+import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
+
 import test.LoggingTestUtils;
 import test.TestConstants;
 import test.common.SharedOutputManager;
 import test.common.TestFile;
-
-import com.ibm.ws.logging.internal.impl.LoggingConstants.TraceFormat;
-import com.ibm.ws.logging.utils.FileLogHolder;
 
 /**
  *
@@ -89,7 +91,7 @@ public class FileLogHolderTest {
         assertTrue("fileRegex should contain file name: " + a1.fileLogSet.getFilePattern().pattern(), a1.fileLogSet.getFilePattern().pattern().contains("a"));
         assertTrue("fileRegex should contain file extension: " + a1.fileLogSet.getFilePattern().pattern(), a1.fileLogSet.getFilePattern().pattern().contains("log"));
 
-        // at this point, we should have written the header (header line), and 
+        // at this point, we should have written the header (header line), and
         // the first record (a record), including line endings: check our math
         long expected = headerLen + aRecordLen;
         assertEquals("Check our math, we should have written " + (header + aRecord) + " (" + expected + " bytes", expected, a1.currentCountingStream.count());
@@ -127,7 +129,7 @@ public class FileLogHolderTest {
         assertEquals("Check our math, our counting should be accurate", a1.currentCountingStream.count(), getLength(a1));
         assertEquals("Only one file should exist", 1, getLogFiles(aLogFilter).length);
 
-        // Now, let's change the log name to b*. Nothing should happen to the a* log file. 
+        // Now, let's change the log name to b*. Nothing should happen to the a* log file.
         // a1 and b1 should still be the same log holder instance
         // It should have a new regex pattern for the new filename
         FileLogHolder b1 = FileLogHolder.createFileLogHolder(a1, null, testLogDir, "b.log", 1, headerLen + 20);
@@ -156,7 +158,7 @@ public class FileLogHolderTest {
         b2.writeRecord("unlimited1");
         b2.writeRecord("unlimited2");
 
-        // write an additional 20 + line endings to what we had before.. 
+        // write an additional 20 + line endings to what we had before..
         expected = expected + (10 + LoggingConstants.nl.length()) * 2;
         assertEquals("We should have have written 48 bytes", expected, b2.currentCountingStream.count());
         assertEquals("Check our math, our counting should be accurate", b2.currentCountingStream.count(), getLength(b2));
@@ -232,7 +234,7 @@ public class FileLogHolderTest {
 
     /**
      * Gets all of the logs from the logs dir. Returns an empty array if there are no files in there.
-     * 
+     *
      * @return An array of the log files
      */
     private File[] getLogFiles(FilenameFilter filter) {
