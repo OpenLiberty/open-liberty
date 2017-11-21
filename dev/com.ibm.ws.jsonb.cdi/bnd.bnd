@@ -9,32 +9,31 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
+
 bVersion=1.0
 
 javac.source: 1.8
 javac.target: 1.8
 
-src: \
-	fat/src,\
-	test-applications/jsonbapp/src,\
-	test-applications/jsonbCDIapp/src,\
-	test-bundles/TestBundleUsingJsonb/src,\
-	test-bundles/TestBundleUsingJsonp/src
+Bundle-SymbolicName: com.ibm.ws.jsonb.cdi
+Bundle-Description: JSON-B CDI integrations
 
-test.project: true
+Include-Resource: \
+  META-INF=resources/META-INF
 
--sub: *.bnd
+Private-Package: \
+  com.ibm.ws.jsonb.cdi
+  
+-dsannotations: \
+  com.ibm.ws.jsonb.cdi.JsonbExtension
 
 -buildpath: \
-	com.ibm.wsspi.org.osgi.core;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component;version=latest,\
-	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
-	org.apache.johnzon:johnzon-core;version=1.1.0,\
-	org.apache.johnzon:johnzon-jsonb;version=1.1.0,\
-	org.apache.johnzon:johnzon-mapper;version=1.1.0,\
-	org.eclipse:yasson;version=1.0.0,\
-	org.glassfish:javax.json;version=1.1,\
 	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
-	com.ibm.websphere.javaee.servlet.4.0;version=latest
+	com.ibm.websphere.appserver.spi.logging;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.cdi.interfaces;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest
