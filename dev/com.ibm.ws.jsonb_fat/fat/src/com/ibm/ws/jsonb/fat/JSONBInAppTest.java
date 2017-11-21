@@ -10,11 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import static com.ibm.ws.jsonb.fat.FATSuite.JSONB_APP;
-
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -27,17 +29,21 @@ import web.jsonbtest.YassonTestServlet;
 
 @RunWith(FATRunner.class)
 public class JSONBInAppTest extends FATServletClient {
+    private static final String appName = "jsonbapp";
 
     @Server("com.ibm.ws.jsonb.inapp")
     @TestServlets({
-                    @TestServlet(servlet = JSONBTestServlet.class, contextRoot = JSONB_APP),
-                    @TestServlet(servlet = YassonTestServlet.class, contextRoot = JSONB_APP)
+                    @TestServlet(servlet = JSONBTestServlet.class, path = appName + "/JSONBTestServlet"),
+                    @TestServlet(servlet = YassonTestServlet.class, path = appName + "/YassonTestServlet")
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        FATSuite.jsonbApp(server);
+        WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war")
+                        .addPackage("web.jsonbtest");
+        ShrinkHelper.exportAppToServer(server, app);
+        server.addInstalledAppForValidation(appName);
         server.startServer();
     }
 

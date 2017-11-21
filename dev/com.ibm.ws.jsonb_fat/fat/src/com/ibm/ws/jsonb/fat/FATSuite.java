@@ -16,8 +16,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -35,18 +33,7 @@ public class FATSuite {
     public static final String PROVIDER_GLASSFISH_JSONP = "org.glassfish.json.JsonProviderImpl";
     public static final String PROVIDER_JOHNZON_JSONP = "org.apache.johnzon.core.JsonProviderImpl";
 
-    public static final String JSONB_APP = "jsonbapp";
-    public static final String CDI_APP = "jsonbCDIapp";
-
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jsonb.fat");
-
-    public static void jsonbApp(LibertyServer server) throws Exception {
-        ShrinkHelper.defaultApp(server, JSONB_APP, "web.jsonbtest");
-    }
-
-    public static void cdiApp(LibertyServer server) throws Exception {
-        ShrinkHelper.defaultApp(server, CDI_APP, "jsonb.cdi.web");
-    }
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
@@ -57,6 +44,18 @@ public class FATSuite {
         // Install bundles for user features
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/test.jsonp.bundle.jar");
         server.copyFileToLibertyInstallRoot("usr/extension/lib/", "bundles/test.jsonb.bundle.jar");
+
+        // For some reason the JSON-P 1.1 ref impl doesn't include a META-INF/service/ so we need
+        // to manually add one here.  It would be ideal if Glassfish JSON-P could add a service file
+        // so the implementation can be discovered in a standard way.  See discussion on this issue:
+        // https://github.com/javaee/jsonp/issues/55
+//        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "org.glassfish.jsonp-1.1.jar")
+//                        .as(ZipImporter.class)
+//                        .importFrom(new File("publish/shared/resources/refImpls/javax.json-1.1.jar"))
+//                        .as(JavaArchive.class)
+//                        .addAsServiceProvider(JsonProvider.class.getName(), "org.glassfish.json.JsonProviderImpl");
+//        ShrinkHelper.exportArtifact(jar, "lib/LibertyFATTestFiles/refImpls/");
+//        server.copyFileToLibertyInstallRoot("usr/shared/resources/refImpls/", "refImpls" + jar.getName());
     }
 
     @AfterClass
@@ -64,5 +63,4 @@ public class FATSuite {
         // Remove the user extension added during setup
         server.deleteDirectoryFromLibertyInstallRoot("usr/extension/");
     }
-
 }
