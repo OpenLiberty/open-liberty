@@ -90,6 +90,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
      * @return identifier to use in messages.
      */
     @Override
+    @Trivial
     public String getIdentifier(String identifier) {
         return identifier.startsWith("managed") ? identifier : managedExecutor.name.get() + " (" + identifier + ')';
     }

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.srt.http;
 
+import javax.servlet.http.HttpServletMapping;
 import javax.servlet.http.MappingMatch;
-import javax.servlet.http.ServletMapping;
 
 /**
  * An implementation of the Servlet 4.0 ServletMapping API.
  */
-public class HttpServletMapping implements ServletMapping {
+public class HttpServletMappingImpl implements HttpServletMapping {
 
     private final MappingMatch mappingMatch;
     private final String matchValue;
@@ -30,24 +30,12 @@ public class HttpServletMapping implements ServletMapping {
      * @param pattern
      * @param servletName
      */
-    public HttpServletMapping(MappingMatch mappingMatch, String matchValue,
-                              String pattern, String servletName) {
+    public HttpServletMappingImpl(MappingMatch mappingMatch, String matchValue,
+                                  String pattern, String servletName) {
         this.mappingMatch = mappingMatch;
         this.matchValue = matchValue;
         this.pattern = pattern;
         this.servletName = servletName;
-        String matchString = "UNKOWN";
-        if (mappingMatch.equals(MappingMatch.CONTEXT_ROOT))
-            matchString = "CONTEXT_ROOT";
-        else if (mappingMatch.equals(MappingMatch.DEFAULT))
-            matchString = "DEFAULT";
-        else if (mappingMatch.equals(MappingMatch.EXACT))
-            matchString = "EXACT";
-        else if (mappingMatch.equals(MappingMatch.EXTENSION))
-            matchString = "EXTENSION";
-        else if (mappingMatch.equals(MappingMatch.PATH))
-            matchString = "PATH";
-
     }
 
     /** {@inheritDoc} */

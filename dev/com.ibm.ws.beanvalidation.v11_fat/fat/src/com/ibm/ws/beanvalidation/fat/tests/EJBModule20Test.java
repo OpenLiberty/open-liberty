@@ -20,23 +20,23 @@ import com.ibm.ws.beanvalidation.fat.FATSuite;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
- * Run ejb module tests on bval-1.1.
+ * Run ejb module tests on bval-2.0.
  *
  * Test various combinations where an application is packaged with one web module
  * and either one or two ejb modules. The web module does not include a validation.xml
  * and both ejb modules do. This covers what validation.xml is found both by the
  * container and provider and needs to be common between bval-1.0 and bval-1.1.
  */
-public class EJBModule11Test extends AbstractTest {
+public class EJBModule20Test extends AbstractTest {
     private static final String FOLDER = "dropins";
 
     @BeforeClass
     public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation.ejb_1.1.fat");
+        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation.ejb_2.0.fat");
 
         FATSuite.createAndExportEJBWARs(server);
 
-        server.startServer(EJBModule11Test.class.getSimpleName() + ".log");
+        server.startServer(EJBModule20Test.class.getSimpleName() + ".log");
     }
 
     /**

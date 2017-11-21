@@ -73,6 +73,7 @@ javax.security.enterprise:javax.security.enterprise-api:1.0
 javax.security.jacc:javax.security.jacc-api:1.5
 javax.servlet.jsp:javax.servlet.jsp-api:2.3.2-b01
 javax.servlet:javax.servlet-api:3.1.0
+javax.servlet:javax.servlet-api:4.0.0
 javax.transaction:javax.transaction-api:1.2
 javax.validation:validation-api:2.0.0.Final
 javax.websocket:javax.websocket-api:1.0

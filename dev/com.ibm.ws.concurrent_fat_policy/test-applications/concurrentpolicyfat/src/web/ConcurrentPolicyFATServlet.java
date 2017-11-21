@@ -188,7 +188,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             assertNull(listener.exception[ABORTED].getCause());
         else {
             Throwable cause = listener.exception[ABORTED].getCause();
-            if (cause == null || !causeClass.equals(cause.getClass()) ||
+            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
                 causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
                 throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", listener.exception[ABORTED]);
         }
@@ -200,7 +200,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             if (!(failure instanceof AbortedException))
                 throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
             Throwable cause = failure.getCause();
-            if (cause == null || !causeClass.equals(cause.getClass()) ||
+            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
                 causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
                 throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", failure);
         } else {
@@ -223,7 +223,7 @@ public class ConcurrentPolicyFATServlet extends FATServlet {
             if (!(failure instanceof AbortedException))
                 throw new Exception("Unexpected or missing failure. See chained exceptions", failure);
             Throwable cause = failure.getCause();
-            if (cause == null || !causeClass.equals(cause.getClass()) ||
+            if (cause == null || !causeClass.isAssignableFrom(cause.getClass()) ||
                 causeMessagePrefix != null && (cause.getMessage() == null || !cause.getMessage().startsWith(causeMessagePrefix)))
                 throw new Exception("Unexpected or missing cause of AbortedException. See chained exceptions", failure);
         } else {

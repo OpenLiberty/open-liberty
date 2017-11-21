@@ -39,6 +39,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
+import com.ibm.ws.threading.StartTimeoutException;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 
 /**
@@ -186,8 +187,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     break;
                 } else { // timed out
                     next.nsRunEnd = next.nsQueueEnd = nsQueueEnd;
-                    next.abort(false, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", next.getIdentifier(), next.getTaskName(),
-                                                                                 nsQueueEnd - next.nsAcceptBegin, next.nsStartBy - next.nsAcceptBegin)));
+                    next.abort(false, new StartTimeoutException(next.getIdentifier(), next.getTaskName(), //
+                                    nsQueueEnd - next.nsAcceptBegin, //
+                                    next.nsStartBy - next.nsAcceptBegin));
                 }
             }
 
@@ -415,10 +417,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                             if (now - startBy >= 0) { // found a task in the queue that has timed out
                                 if (queue.remove(future)) { // can't use iterator.remove - it doesn't tell us whether it actually removed anything
                                     future.nsRunEnd = future.nsQueueEnd = System.nanoTime();
-                                    future.abort(false, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                                                   future.getIdentifier(), future.getTaskName(),
-                                                                                                   future.nsQueueEnd - future.nsAcceptBegin,
-                                                                                                   future.nsStartBy - future.nsAcceptBegin)));
+                                    future.abort(false, new StartTimeoutException(future.getIdentifier(), future.getTaskName(), //
+                                                    future.nsQueueEnd - future.nsAcceptBegin, //
+                                                    future.nsStartBy - future.nsAcceptBegin));
                                     // Release and re-acquire is needed to preserve correctness of shutdown logic
                                     maxQueueSizeConstraint.release();
                                     haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
@@ -474,10 +475,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 boolean haveConcurrencyPermit = false;
                 if (policyTaskFuture.nsStartBy != policyTaskFuture.nsAcceptBegin - 1 // start timeout enabled, and
                     && System.nanoTime() - policyTaskFuture.nsStartBy >= 0) // timed out per the startTimeout
-                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                          policyTaskFuture.getIdentifier(), policyTaskFuture.getTaskName(),
-                                                                          policyTaskFuture.nsQueueEnd - policyTaskFuture.nsAcceptBegin,
-                                                                          policyTaskFuture.nsStartBy - policyTaskFuture.nsAcceptBegin));
+                    throw new RejectedExecutionException(new StartTimeoutException( //
+                                    policyTaskFuture.getIdentifier(), policyTaskFuture.getTaskName(), //
+                                    policyTaskFuture.nsQueueEnd - policyTaskFuture.nsAcceptBegin, //
+                                    policyTaskFuture.nsStartBy - policyTaskFuture.nsAcceptBegin));
                 else if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
                          !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
                                                                         && (maxPolicy == MaxPolicy.loose
@@ -653,10 +654,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                         runTask(taskFuture);
                     else { // timed out
                         taskFuture.nsRunEnd = taskFuture.nsQueueEnd;
-                        RejectedExecutionException x = new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                                                       taskFuture.getIdentifier(), taskFuture.getTaskName(),
-                                                                                                       taskFuture.nsQueueEnd - taskFuture.nsAcceptBegin,
-                                                                                                       taskFuture.nsStartBy - taskFuture.nsAcceptBegin));
+                        RejectedExecutionException x = new RejectedExecutionException(new StartTimeoutException( //
+                                        taskFuture.getIdentifier(), taskFuture.getTaskName(), //
+                                        taskFuture.nsQueueEnd - taskFuture.nsAcceptBegin, //
+                                        taskFuture.nsStartBy - taskFuture.nsAcceptBegin));
                         taskFuture.abort(false, x);
                         throw x;
                     }
