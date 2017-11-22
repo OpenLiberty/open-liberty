@@ -11,7 +11,7 @@ Subsystem-Name: Internal Java RESTful Services 2.1
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.javax.mail-1.6, \
  com.ibm.websphere.appserver.globalhandler-1.0, \
- com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
+ com.ibm.websphere.appserver.javax.annotation-1.3; apiJar=false, \
  com.ibm.websphere.appserver.json-1.0, \
  com.ibm.websphere.appserver.javaeeCompatible-8.0
 -bundles=com.ibm.websphere.appserver.api.jaxrs20; location:="dev/api/ibm/,lib/", \

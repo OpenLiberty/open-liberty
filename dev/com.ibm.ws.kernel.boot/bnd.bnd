@@ -29,6 +29,11 @@ Bundle-Description: WebSphere Liberty kernel launcher, version ${bVersion}
 
 Main-Class: com.ibm.ws.kernel.boot.cmdline.EnvCheck
 
+# This bundle emits messages before the OSGi runtime is fully started,
+# and so it needs to be able to load message translations from other
+# jar files using the jar manifest Class-Path attribute
+Class-Path: com.ibm.ws.kernel.boot.nls_${bFullVersion}.jar
+
 # Export-Package is used to generate extra system packages when preparing 
 # framework launch and to ensure bnd picks up platform/injected services
 # For each exported package, create (in that package) a package-info.java

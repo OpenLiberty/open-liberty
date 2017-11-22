@@ -38,7 +38,7 @@ public class ParameterInfoCallback extends PolicyTaskCallback {
     }
 
     @Override
-    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean whileRunning) {
         nsAccept[CANCEL] = future.getElapsedAcceptTime(TimeUnit.NANOSECONDS);
         nsQueue[CANCEL] = future.getElapsedQueueTime(TimeUnit.NANOSECONDS);
         nsRun[CANCEL] = future.getElapsedRunTime(TimeUnit.NANOSECONDS);
