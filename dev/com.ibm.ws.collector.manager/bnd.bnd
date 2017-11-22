@@ -34,8 +34,6 @@ Import-Package: com.ibm.ejs.ras, \
                 com.ibm.tools.attach, \
                 org.osgi.service.cm, \
                 com.ibm.wsspi.logging, \
-                com.ibm.wsspi.http.logging, \
-                com.ibm.wsspi.http.channel, \
                 com.ibm.wsspi.genericbnf
 
 Service-Component:\
