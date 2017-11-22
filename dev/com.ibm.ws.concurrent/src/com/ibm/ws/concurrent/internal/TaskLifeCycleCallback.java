@@ -126,7 +126,7 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
 
     @FFDCIgnore({ Error.class, RuntimeException.class }) // No need for FFDC, error is logged instead
     @Override
-    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean whileRunning) {
         // Tasks that are canceled while running have the taskAborted notification sent on the thread of execution instead.
 
         // notify listener: taskAborted (if task was canceled before it started)
