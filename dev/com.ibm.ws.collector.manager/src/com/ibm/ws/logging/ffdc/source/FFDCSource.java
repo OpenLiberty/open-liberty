@@ -41,7 +41,6 @@ public class FFDCSource implements Source {
     private IncidentHandler incidentHandler;
 
     protected synchronized void activate(Map<String, Object> configuration) {
-        System.out.println("Activating ffdc");
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }
