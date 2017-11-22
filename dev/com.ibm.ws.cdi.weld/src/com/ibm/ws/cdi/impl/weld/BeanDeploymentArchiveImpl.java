@@ -30,17 +30,16 @@ import javax.inject.Inject;
 
 import org.jboss.weld.annotated.enhanced.EnhancedAnnotatedField;
 import org.jboss.weld.bootstrap.api.Bootstrap;
-import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.api.helpers.SimpleServiceRegistry;
 import org.jboss.weld.bootstrap.spi.BeanDeploymentArchive;
 import org.jboss.weld.bootstrap.spi.BeanDiscoveryMode;
 import org.jboss.weld.bootstrap.spi.BeansXml;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor;
 import org.jboss.weld.bootstrap.spi.EEModuleDescriptor.ModuleType;
+import org.jboss.weld.bootstrap.api.ServiceRegistry;
 import org.jboss.weld.bootstrap.spi.helpers.EEModuleDescriptorImpl;
 import org.jboss.weld.ejb.spi.EjbDescriptor;
 import org.jboss.weld.ejb.spi.EjbServices;
-import org.jboss.weld.exceptions.IllegalArgumentException;
 import org.jboss.weld.injection.FieldInjectionPoint;
 import org.jboss.weld.injection.InjectionPointFactory;
 import org.jboss.weld.injection.spi.EjbInjectionServices;
@@ -70,6 +69,7 @@ import com.ibm.ws.cdi.internal.interfaces.WebSphereBeanDeploymentArchive;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereCDIDeployment;
 import com.ibm.ws.cdi.internal.interfaces.WebSphereInjectionServices;
 import com.ibm.ws.cdi.utils.WeldCDIUtils;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.injectionengine.ReferenceContext;
 
 /**
@@ -140,6 +140,7 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
         private final Map<String, Class<?>> allClasses = new TreeMap<String, Class<?>>();
         private ClassLoader loader;
 
+        @FFDCIgnore(ClassNotFoundException.class)
         public Class<?> get(String className) {
             if (loader == null) {
                 return null;
@@ -149,7 +150,11 @@ public class BeanDeploymentArchiveImpl implements WebSphereBeanDeploymentArchive
             if (clazz == null) {
                 try {
                     clazz = Class.forName(className, true, loader);
-                    allClasses.put(className, clazz);
+                    if (loader == clazz.getClassLoader()) {
+                        allClasses.put(className, clazz);
+                    } else {
+                        return null;
+                    }
                 } catch (ClassNotFoundException cnfe) {
                     // Do nothing, just ignore
                 }
