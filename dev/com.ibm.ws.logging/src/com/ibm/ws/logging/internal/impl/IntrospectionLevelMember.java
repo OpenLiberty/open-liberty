@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2014 IBM Corporation and others.
+ * Copyright (c) 2006, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -49,7 +49,7 @@ public final class IntrospectionLevelMember {
     private static final int EXTRA_SPACE = 5;
 
     /** The maximum number of primitive array elements we're prepared to print */
-    private static final int MAX_PRIMITIVE_ARRAY_LENGTH = 1024;
+    private static final int MAX_ARRAY_LENGTH = 1024;
 
     /** The object that this IntrospectionLevelMember is wrapping */
     private final Object _member;
@@ -71,7 +71,7 @@ public final class IntrospectionLevelMember {
 
     /**
      * Determine if another object is the same as this IntrospectionLevelMember
-     * 
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      * @param obj
      *            The other object to be tested
@@ -105,7 +105,7 @@ public final class IntrospectionLevelMember {
 
     /**
      * Construct a new IntrospectionLevelMember for a root object
-     * 
+     *
      * @param member
      */
     public IntrospectionLevelMember(Object member) {
@@ -117,7 +117,7 @@ public final class IntrospectionLevelMember {
     /**
      * Construct a new IntrospectionLevelMember. NOTE: It's the caller's
      * responsibility to add this new member to any relevant allKnownMembers set
-     * 
+     *
      * @param level
      *            The introspection level for this member
      * @param name
@@ -140,7 +140,7 @@ public final class IntrospectionLevelMember {
     /**
      * Return the size of the string that will generated if this member is
      * instructed to print itself
-     * 
+     *
      * @return the number of bytes needed to introspect this member
      */
     public int sizeOfIntrospection() {
@@ -174,9 +174,18 @@ public final class IntrospectionLevelMember {
             Class<?> memberClass = _member.getClass();
             if (memberClass.isArray()) {
                 int length = Array.getLength(_member);
-                for (int i = 0; i < length; i++) {
-                    Object value = Array.get(_member, i);
-                    addNewChild(_name + "[" + i + "]", value);
+                Class<?> componentType = memberClass.getComponentType();
+                if (componentType.isPrimitive()) {
+                    addNewChild(componentType + "[0.." + (length - 1) + "]", _member);
+                } else {
+                    String simpleName = componentType.getSimpleName();
+                    for (int i = 0; i < length && i < MAX_ARRAY_LENGTH; i++) {
+                        Object value = Array.get(_member, i);
+                        addNewChild(simpleName + "[" + i + "]", value);
+                    }
+                    if (length > MAX_ARRAY_LENGTH) {
+                        addNewChild(simpleName + "[...]", "/* array length = " + length + " */");
+                    }
                 }
             } else {
                 /*
@@ -188,10 +197,13 @@ public final class IntrospectionLevelMember {
                 Class<?> currentClass = _member.getClass();
                 while (currentClass != Object.class) {
                     Field[] fields = getFields(currentClass);
-                    for (int i = 0; i < fields.length; i++) {
+                    for (int i = 0; i < fields.length && i < MAX_ARRAY_LENGTH; i++) {
                         final Field field = fields[i];
                         Object value = getFieldValue(field);
                         addNewChild(field.getName(), value);
+                    }
+                    if (fields.length > MAX_ARRAY_LENGTH) {
+                        addNewChild("field...", "/* total # of fields = " + fields.length + " */");
                     }
                     currentClass = currentClass.getSuperclass();
                 }
@@ -235,7 +247,7 @@ public final class IntrospectionLevelMember {
     /**
      * Add a new IntrospectionLevelMember to _children List (Checking to see if
      * the new child should be introspected further
-     * 
+     *
      * @param name
      *            The name of the new child
      * @param value
@@ -258,19 +270,16 @@ public final class IntrospectionLevelMember {
 
     /**
      * Return the value of the member's field
-     * 
+     *
      * @param field
      *            The field to be queried
      * @return The value of the field
      */
     private Object getFieldValue(final Field field) {
-        Object field_value = AccessController.doPrivileged(new PrivilegedAction<Object>()
-        {
+        Object field_value = AccessController.doPrivileged(new PrivilegedAction<Object>() {
             @Override
-            public Object run()
-            {
-                try
-                {
+            public Object run() {
+                try {
                     Object value = field.get(_member);
 
                     // Don't dump sensitive data
@@ -280,9 +289,7 @@ public final class IntrospectionLevelMember {
                     }
 
                     return value;
-                }
-                catch (IllegalAccessException e)
-                {
+                } catch (IllegalAccessException e) {
                     // No FFDC code needed - we're in the middle of FFDC'ing!
                     // Should not happen - if it does return a string :-)
                     return "/* Could not access " + field.getName() + " */";
@@ -294,28 +301,22 @@ public final class IntrospectionLevelMember {
 
     /**
      * Return the fields in a particular class
-     * 
+     *
      * @param currentClass
      *            The class to be introspected
      * @return the fields of the class
      */
     private Field[] getFields(final Class<?> currentClass) {
-        final Field[] objectFields = AccessController.doPrivileged(new PrivilegedAction<Field[]>()
-        {
+        final Field[] objectFields = AccessController.doPrivileged(new PrivilegedAction<Field[]>() {
             @Override
-            public Field[] run()
-            {
-                try
-                {
+            public Field[] run() {
+                try {
                     Field[] tempObjectFields = currentClass.getDeclaredFields();
-                    if (tempObjectFields.length != 0)
-                    {
+                    if (tempObjectFields.length != 0) {
                         AccessibleObject.setAccessible(tempObjectFields, true);
                     }
                     return tempObjectFields;
-                }
-                catch (Throwable t)
-                {
+                } catch (Throwable t) {
                     // Introspection of field failed
                     StringWriter sw = new StringWriter();
                     PrintWriter pw = new PrintWriter(sw);
@@ -330,7 +331,7 @@ public final class IntrospectionLevelMember {
 
     /**
      * Make a string that describes this object
-     * 
+     *
      * @param value
      *            The value needing a description
      * @return The description
@@ -364,7 +365,7 @@ public final class IntrospectionLevelMember {
     /**
      * Convert an Object (which must be an array) to a string to be used as a
      * description
-     * 
+     *
      * @param value
      *            The object to be converted
      * @return The converted string
@@ -373,13 +374,13 @@ public final class IntrospectionLevelMember {
         String answer;
         int length = Array.getLength(value);
         StringBuffer temp = new StringBuffer("{");
-        for (int i = 0; i < length && i < MAX_PRIMITIVE_ARRAY_LENGTH; i++) {
+        for (int i = 0; i < length && i < MAX_ARRAY_LENGTH; i++) {
             Object element = Array.get(value, i);
             if ((i > 0) && !(element instanceof Character))
                 temp.append(",");
             temp.append(element);
         }
-        if (length > MAX_PRIMITIVE_ARRAY_LENGTH) {
+        if (length > MAX_ARRAY_LENGTH) {
             if (!(Array.get(value, 0) instanceof Character))
                 temp.append(",");
             temp.append("...");
@@ -394,7 +395,7 @@ public final class IntrospectionLevelMember {
     /**
      * Return either null (if the value doesn't need further introspection) or
      * the object reference if it does require further introspection
-     * 
+     *
      * @param value
      *            The object that might require further introspection
      * @return null if the object doesn't require further introspection, value
@@ -425,7 +426,7 @@ public final class IntrospectionLevelMember {
 
     /**
      * Print this IntrospectionLevelMember to an incident stream
-     * 
+     *
      * @param is
      *            The incident stream
      * @param maxDepth
@@ -447,4 +448,3 @@ public final class IntrospectionLevelMember {
 }
 
 // End of file
-
