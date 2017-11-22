@@ -4,7 +4,7 @@ visibility=private
 IBM-API-Package: com.ibm.websphere.persistence.mbean; type="ibm-api"
 -features=com.ibm.websphere.appserver.jndi-1.0, \
  com.ibm.websphere.appserver.containerServices-1.0, \
- com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
+ com.ibm.websphere.appserver.javax.annotation-1.2; ibm.tolerates:=1.3; apiJar=false, \
  com.ibm.websphere.appserver.jdbc-4.1; ibm.tolerates:="4.0, 4.2", \
  com.ibm.websphere.appserver.transaction-1.2, \
  com.ibm.websphere.appserver.org.eclipse.persistence-2.6; ibm.tolerates:="2.7"

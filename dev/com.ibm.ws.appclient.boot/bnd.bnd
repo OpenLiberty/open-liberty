@@ -18,6 +18,11 @@ Bundle-Description: WebSphere Liberty app client launcher, version ${bVersion}
 
 Main-Class: com.ibm.ws.appclient.boot.cmdline.ClientEnvCheck
 
+# This bundle emits messages before the OSGi runtime is fully started,
+# and so it needs to be able to load message translations from other
+# jar files using the jar manifest Class-Path attribute
+Class-Path: com.ibm.ws.appclient.boot.cmdline.nls_${bFullVersion}.jar
+
 Require-Bundle: com.ibm.ws.kernel.boot
 
 Private-Package: \

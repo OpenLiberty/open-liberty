@@ -1,0 +1,34 @@
+<server description="Server for testing CDI">
+    <jndiEntry value="helloWorld" jndiName="globalGreeting" />
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>osgiconsole-1.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>jsf-2.2</feature>
+        <feature>cdi-1.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>beanValidation-1.1</feature>
+        <feature>jms-2.0</feature>
+        <feature>mdb-3.2</feature>
+        <feature>ejb-3.2</feature>
+        <feature>managedBeans-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>wasJmsServer-1.0</feature>
+        <feature>websocket-1.1</feature>
+        </featureManager>
+
+<messagingEngine>
+
+                <queue id="QUEUE1"></queue>
+</messagingEngine>
+
+    <jmsActivationSpec id="jeeInjectionTargetTest/jeeInjectionTargetTest/MyMessageDrivenBean">
+        <properties.wasJms destinationRef="MyQueue"></properties.wasJms>
+    </jmsActivationSpec>
+    <jmsQueue id="MyQueue" jndiName="MyQueue">
+    <properties.wasJms queueName="QUEUE1"/>
+    </jmsQueue>
+    
+</server>
