@@ -56,13 +56,14 @@ public class MessageLogHandler extends JsonLogHandler implements SyncrhonousHand
         /*
          * Needed to address a synchronization issue between the syncrhonousWrite method and FileLogHolder
          */
+
+        /*
+         * Given an 'object' we must determine what type of log event it originates from.
+         * Knowing that it is a *Data object, we can figure what type of source it is.
+         */
+        String evensourcetType = getSourceTypeFromDataObject(event);
+        String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
         synchronized (sync) {
-            /*
-             * Given an 'object' we must determine what type of log event it originates from.
-             * Knowing that it is a *Data object, we can figure what type of source it is.
-             */
-            String evensourcetType = getSourceTypeFromDataObject(event);
-            String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
             traceWriter.writeRecord(messageOutput);
         }
     }

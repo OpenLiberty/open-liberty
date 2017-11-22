@@ -35,14 +35,16 @@ public class ConsoleLogHandler extends JsonLogHandler implements SyncrhonousHand
     }
 
     @Override
-    public synchronized void synchronousWrite(Object event) {
+    public void synchronousWrite(Object event) {
         /*
          * Given an 'object' we must determine what type of log event it originates from.
          * Knowing that it is a *Data object, we can figure what type of source it is.
          */
         String evensourcetType = getSourceTypeFromDataObject(event);
         String messageOutput = (String) formatEvent(evensourcetType, CollectorConstants.MEMORY, event, null, MAXFIELDLENGTH);
-        sysLogHolder.getOriginalStream().println(messageOutput);
+        synchronized (this) {
+            sysLogHolder.getOriginalStream().println(messageOutput);
+        }
     }
 
     @Override
