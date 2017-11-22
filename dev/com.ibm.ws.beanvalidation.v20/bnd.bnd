@@ -19,7 +19,6 @@ Bundle-Description: Bean Validation Container v2.0; version=${bVersion}
 WS-TraceGroup: BeanValidation
 
 Import-Package: \
-  javax.validation.*;version="[2.0,3)",\
   org.apache.el,\
   *
 Export-Package: \
