@@ -48,7 +48,7 @@ public class ValidatorFactoryBuilderImpl implements ValidatorFactoryBuilder {
     private static final TraceComponent tc = Tr.register(ValidatorFactoryBuilderImpl.class);
 
     private static final String REFERENCE_CLASSLOADING_SERVICE = "classLoadingService";
-    private static final String REFERENCE_VALIDATION_RELEASABLE_FACTORY = "ValidationReleasableFactory20";
+    private static final String REFERENCE_VALIDATION_RELEASABLE_FACTORY = "ValidationReleasableFactory";
 
     private final AtomicServiceReference<ClassLoadingService> classLoadingServiceSR = new AtomicServiceReference<ClassLoadingService>(REFERENCE_CLASSLOADING_SERVICE);
     private final AtomicServiceReference<ValidationReleasableFactory> validationReleasableFactorySR = new AtomicServiceReference<ValidationReleasableFactory>(REFERENCE_VALIDATION_RELEASABLE_FACTORY);

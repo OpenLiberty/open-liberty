@@ -53,7 +53,7 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  * An implementation that is CDI aware.
  */
-@Component(configurationPolicy = ConfigurationPolicy.REQUIRE,
+@Component(configurationPolicy = ConfigurationPolicy.OPTIONAL,
            immediate = true,
            property = { "type=CDIValidationReleasableFactory" })
 public class ValidationReleasableFactoryImpl implements ValidationReleasableFactory, ComponentMetaDataListener {

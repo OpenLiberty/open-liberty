@@ -14,6 +14,17 @@
                    localization="OSGI-INF/l10n/metatype">
 
 	<OCD description="internal use only" name="internal" 
+         id="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory">
+
+        <AD name="internal" description="internal use only"
+            id="type" required="true" type="String"/>
+    </OCD>
+    
+    <Designate factoryPid="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory">
+        <Object ocdref="com.ibm.ws.beanvalidation.service.ValidationReleasableFactory"/>
+    </Designate>
+    
+	<OCD description="internal use only" name="internal" 
          id="com.ibm.ws.beanvalidation.service.ValidatorFactoryBuilder">
 
         <AD name="internal" description="internal use only"
