@@ -22,5 +22,6 @@ public class StartTimeoutException extends IllegalStateException {
 
     public StartTimeoutException(String executorId, String taskName, long elapsedNS, long startTimeoutNS) {
         super(Tr.formatMessage(tc, "CWWKE1205.start.timeout", executorId, taskName, elapsedNS, startTimeoutNS));
+        Tr.error(tc, "CWWKE1205.start.timeout", executorId, taskName, elapsedNS, startTimeoutNS);
     }
 }
