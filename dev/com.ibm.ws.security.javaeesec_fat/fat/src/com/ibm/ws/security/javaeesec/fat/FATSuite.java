@@ -31,7 +31,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleIdentityStoreFormForwardTest.class,
                 MultipleIdentityStoreCustomFormRedirectTest.class,
                 MultipleIdentityStoreCustomFormForwardTest.class,
-                NoJavaEESecFormTest.class
+                NoJavaEESecFormTest.class,
+                MultipleIdentityStoreFormPostRedirectTest.class
 })
 
 /**
