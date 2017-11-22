@@ -173,6 +173,8 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
         if (mi != null) {
             config.messageInterpolator(mi);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for MessageInterpolator class(null means default) " + messageInterpolatorClassName);
         }
     }
 
@@ -191,6 +193,8 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
         if (tr != null) {
             config.traversableResolver(tr);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for TraversableResolver class(null means default) " + traversableResolverClassName);
         }
     }
 
@@ -209,6 +213,8 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
         if (pnp != null) {
             config.parameterNameProvider(pnp);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for ParameterNameProvider class(null means default) " + parameterNameProviderClassName);
         }
     }
 
@@ -227,6 +233,8 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
         if (clockProvider != null) {
             config.clockProvider(clockProvider);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for ClockProvider class(null means default) " + clockProviderClassName);
         }
     }
 
@@ -250,6 +258,8 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
         if (cvf != null) {
             config.constraintValidatorFactory(cvf);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Failed to create a CDI managed object for ConstraintValidatorFactory class(null means default) " + constraintValidatorFactoryClassName);
         }
     }
 
@@ -284,40 +294,53 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
 
     private <T> ManagedObjectFactory<T> getManagedBeanManagedObjectFactory(Class<T> clazz) {
         ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
-        ManagedObjectService managedObjectService = managedObjectServiceRef.getService();
-        if (managedObjectService != null) {
-            try {
-                ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
-                if (factory.isManaged()) {
-                    return factory;
-                }
-            } catch (ManagedObjectException e) {
-                // ffdc
+        ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
+        try {
+            ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
+            if (factory.isManaged()) {
+                return factory;
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "ManagedObjectFactory for " + clazz.getName() + " was not managed.");
+                return null;
             }
+        } catch (ManagedObjectException e) {
+            // ffdc
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to create a ManagedObjectFactory for " + clazz.getName(), e);
+            return null;
         }
-        return null;
     }
 
+    //TODO: delete once we are certain we won't need to use our ReleasableConstraintValidatorFactory.
     private <T> ManagedObject<?> createManagedObject(Object instance) {
         ModuleMetaData mmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData();
-        ManagedObjectService managedObjectService = managedObjectServiceRef.getService();
-        if (managedObjectService != null) {
-            try {
-                return managedObjectService.createManagedObject(mmd, instance);
-            } catch (ManagedObjectException e) {
-                // ffdc
-            }
+        ManagedObjectService managedObjectService = managedObjectServiceRef.getServiceWithException();
+        try {
+            return managedObjectService.createManagedObject(mmd, instance);
+        } catch (ManagedObjectException e) {
+            // ffdc
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to create a ManagedObject for an instance of " + instance.getClass().getName(), e);
+            return null;
         }
-        return null;
     }
 
     private <T> T createManagedObject(Class<T> clazz) {
         // The mof handles calling produce, inject, and postConstruct.
         ManagedObjectFactory<T> mof = getManagedBeanManagedObjectFactory(clazz);
+        if (mof == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "ManagedObjectFactory during createManagedObject() was null.");
+            return null;
+        }
+
         ManagedObject<T> mo;
         try {
             mo = mof.createManagedObject();
         } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Failed to create a ManagedObject using a ManagedObjectFactory for class type " + mof.getManagedObjectClass(), e);
             return null;
         }
         return mo.getObject();
@@ -327,6 +350,8 @@ public class ValidationReleasableFactoryImpl implements ValidationReleasableFact
         try {
             return Class.forName(className, true, appClassLoader);
         } catch (ClassNotFoundException e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Class not found during CDI enablement of the ValidatorFactory.", e);
             return null;
         }
     }
