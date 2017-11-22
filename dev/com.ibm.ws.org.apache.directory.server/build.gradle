@@ -11,7 +11,7 @@
 
 clean {
   doLast {
-    delete "${projectDir}/apacheds-2.0.0-M15/lib/apache_directory_server.jar"
+    delete "${projectDir}/apacheds-2.0.0-M15/lib/com.ibm.ws.org.apache.directory.server.jar"
   }
 }
 
