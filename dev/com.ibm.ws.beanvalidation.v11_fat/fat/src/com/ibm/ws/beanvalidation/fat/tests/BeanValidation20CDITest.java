@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.ibm.ws.beanvalidation.fat.FATSuite;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
@@ -23,6 +24,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  * together. Include all common tests from {@link BasicValidation11CommonTest} to ensure
  * that everything that worked without CDI works with it as well.
  */
+@MinimumJavaLevel(javaLevel = 1.8)
 public class BeanValidation20CDITest extends BasicValidation11CommonTest {
     private static final String FOLDER = "dropins";
 

@@ -17,6 +17,7 @@ import org.junit.Test;
 
 import com.ibm.ws.beanvalidation.fat.FATSuite;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
@@ -27,8 +28,8 @@ import componenttest.topology.impl.LibertyServerFactory;
  * and both ejb modules do. This covers what validation.xml is found both by the
  * container and provider and needs to be common between bval-1.0 and bval-1.1.
  */
+@MinimumJavaLevel(javaLevel = 1.8)
 public class EJBModule20Test extends AbstractTest {
-    private static final String FOLDER = "dropins";
 
     @BeforeClass
     public static void setUp() throws Exception {

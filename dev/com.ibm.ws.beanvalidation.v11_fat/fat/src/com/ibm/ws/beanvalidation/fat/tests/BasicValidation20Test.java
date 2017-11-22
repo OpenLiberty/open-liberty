@@ -15,11 +15,13 @@ import org.junit.BeforeClass;
 
 import com.ibm.ws.beanvalidation.fat.FATSuite;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * All Bean Validation tests for the 2.0 feature level.
  */
+@MinimumJavaLevel(javaLevel = 1.8)
 public class BasicValidation20Test extends BasicValidation11CommonTest {
 
     @BeforeClass
