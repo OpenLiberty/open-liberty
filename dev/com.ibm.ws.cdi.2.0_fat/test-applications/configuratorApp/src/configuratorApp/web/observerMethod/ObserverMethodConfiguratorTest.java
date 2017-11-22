@@ -12,8 +12,11 @@ package configuratorApp.web.observerMethod;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Random;
 import java.util.Set;
+import java.util.Vector;
 
+import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.ObserverMethod;
@@ -28,6 +31,23 @@ import configuratorApp.web.ConfiguratorTestBase;
 @WebServlet(urlPatterns = "/observerMethodConfiguratorTest")
 public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
 
+    public static Vector<Integer> observations = new Vector<Integer>();
+
+    public static int[] observerPriorities = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+
+    public static int[] positions = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
+
+    static {
+        // Shuffle priorities
+        final Random rnd = new Random();
+        for (int i = observerPriorities.length - 1; i > 0; i--) {
+            int index = rnd.nextInt(i + 1);
+            int j = observerPriorities[index];
+            observerPriorities[index] = observerPriorities[i];
+            observerPriorities[i] = j;
+        }
+    }
+
     @Inject
     BeanManager bm;
 
@@ -41,5 +61,24 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
     public void testObserverMethodCanBeVetoed() {
         Set<ObserverMethod<? super Dodecagon>> observers = bm.resolveObserverMethods(new Dodecagon(), Any.Literal.INSTANCE);
         assertEquals(observers.size(), 0);
+    }
+
+    @Inject
+    Event<Square> squareEvent;
+
+    @Test
+    public void testObserverOrdering() {
+
+        squareEvent.fire(new Square());
+
+        // Check enough observers were called
+        assertEquals(observerPriorities.length, observations.size());
+
+        // Check observers were called in the expected randomized order
+        int position = 0;
+        for (int observation : observations) {
+            System.out.println("Checking observer " + observation + " happened in position " + position);
+            assertEquals(observation, positions[position++]);
+        }
     }
 }
