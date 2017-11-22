@@ -26,11 +26,14 @@ import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -88,14 +91,19 @@ public final class HttpUtils {
 
     private static final Pattern ENCODE_PATTERN = Pattern.compile("%[0-9a-fA-F][0-9a-fA-F]");
     private static final String CHARSET_PARAMETER = "charset";
+    private static final String DOUBLE_QUOTE = "\"";
 
     // there are more of such characters, ex, '*' but '*' is not affected by UrlEncode
     private static final String PATH_RESERVED_CHARACTERS = "=@/:!$&\'(),;~";
     private static final String QUERY_RESERVED_CHARACTERS = "?/,";
 
+    private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_REQUEST_CONTENT = new HashSet<String>(Arrays.asList(new String[] { "GET", "HEAD", "OPTIONS", "TRACE" }));
+    private static final Set<String> KNOWN_HTTP_VERBS_WITH_NO_RESPONSE_CONTENT =
+                    new HashSet<String>(Arrays.asList(new String[] { "HEAD", "OPTIONS" }));
+
     private HttpUtils() {
     }
-    
+
     public static String urlDecode(String value, String enc) {
         return UrlUtils.urlDecode(value, enc);
     }
@@ -355,10 +363,10 @@ public final class HttpUtils {
     }
 
     public static URI toAbsoluteUri(URI u, Message message) {
-        HttpServletRequest request = 
+        HttpServletRequest request =
             (HttpServletRequest)message.get(AbstractHTTPDestination.HTTP_REQUEST);
         boolean absolute = u.isAbsolute();
-        StringBuilder uriBuf = new StringBuilder(); 
+        StringBuilder uriBuf = new StringBuilder();
         if (request != null && (!absolute || isLocalHostOrAnyIpAddress(u, uriBuf, message))) {
             String serverAndPort = request.getServerName();
             boolean localAddressUsed = false;
@@ -382,7 +390,7 @@ public final class HttpUtils {
                 u = URI.create(base + u.toString());
             } else {
                 int originalPort = u.getPort();
-                String hostValue = uriBuf.toString().contains(ANY_IP_ADDRESS_SCHEME) 
+                String hostValue = uriBuf.toString().contains(ANY_IP_ADDRESS_SCHEME)
                     ? ANY_IP_ADDRESS : LOCAL_HOST_IP_ADDRESS;
                 String replaceValue = originalPort == -1 ? hostValue : hostValue + ":" + originalPort;
                 u = URI.create(u.toString().replace(replaceValue, serverAndPort));
@@ -393,7 +401,7 @@ public final class HttpUtils {
 
     private static boolean isLocalHostOrAnyIpAddress(URI u, StringBuilder uriStringBuffer, Message m) {
         String uriString = u.toString();
-        boolean result = uriString.contains(LOCAL_HOST_IP_ADDRESS_SCHEME) && replaceLoopBackAddress(m) 
+        boolean result = uriString.contains(LOCAL_HOST_IP_ADDRESS_SCHEME) && replaceLoopBackAddress(m)
             || uriString.contains(ANY_IP_ADDRESS_SCHEME);
         uriStringBuffer.append(uriString);
         return result;
@@ -467,11 +475,11 @@ public final class HttpUtils {
             if (d instanceof AbstractHTTPDestination) {
                 EndpointInfo ei = ((AbstractHTTPDestination) d).getEndpointInfo();
                 HttpServletRequest request = (HttpServletRequest) m.get(AbstractHTTPDestination.HTTP_REQUEST);
-                Object property = request != null 
+                Object property = request != null
                     ? request.getAttribute("org.apache.cxf.transport.endpoint.address") : null;
                 address = property != null ? property.toString() : ei.getAddress();
             } else {
-                address = m.containsKey(Message.BASE_PATH) 
+                address = m.containsKey(Message.BASE_PATH)
                     ? (String)m.get(Message.BASE_PATH) : d.getAddress().getAddress().getValue();
             }
         } else {
@@ -568,7 +576,7 @@ public final class HttpUtils {
 
     public static String getSetEncoding(MediaType mt, MultivaluedMap<String, Object> headers,
                                         String defaultEncoding) {
-        String enc = mt.getParameters().get(CHARSET_PARAMETER);
+        String enc = getMediaTypeCharsetParameter(mt);
         if (enc == null) {
             return defaultEncoding;
         }
@@ -576,7 +584,7 @@ public final class HttpUtils {
             "0".getBytes(enc);
             return enc;
         } catch (UnsupportedEncodingException ex) {
-            String message = new org.apache.cxf.common.i18n.Message("UNSUPPORTED_ENCODING", 
+            String message = new org.apache.cxf.common.i18n.Message("UNSUPPORTED_ENCODING",
                                  BUNDLE, enc, defaultEncoding).toString();
             Tr.warning(tc, message);
             headers.putSingle(HttpHeaders.CONTENT_TYPE,
@@ -588,8 +596,17 @@ public final class HttpUtils {
     }
 
     public static String getEncoding(MediaType mt, String defaultEncoding) {
-        String charset = mt == null ? defaultEncoding : mt.getParameters().get("charset");
+        String charset = mt == null ? defaultEncoding : getMediaTypeCharsetParameter(mt);
         return charset == null ? defaultEncoding : charset;
+    }
+
+    public static String getMediaTypeCharsetParameter(MediaType mt) {
+        String charset = mt.getParameters().get(CHARSET_PARAMETER);
+        if (charset != null && charset.startsWith(DOUBLE_QUOTE)
+            && charset.endsWith(DOUBLE_QUOTE) && charset.length() > 1) {
+            charset = charset.substring(1, charset.length() - 1);
+        }
+        return charset;
     }
 
     public static URI resolve(UriBuilder baseBuilder, URI uri) {
@@ -682,5 +699,13 @@ public final class HttpUtils {
         }
 
         return clazz.cast(value);
+    }
+
+    public static boolean isMethodWithNoRequestContent(String method) {
+        return KNOWN_HTTP_VERBS_WITH_NO_REQUEST_CONTENT.contains(method);
+    }
+
+    public static boolean isMethodWithNoResponseContent(String method) {
+        return KNOWN_HTTP_VERBS_WITH_NO_RESPONSE_CONTENT.contains(method);
     }
 }

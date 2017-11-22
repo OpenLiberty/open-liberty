@@ -29,8 +29,8 @@ public class FailingCallback extends ParameterInfoCallback {
     }
 
     @Override
-    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {
-        super.onCancel(task, future, timedOut, whileRunning);
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean whileRunning) {
+        super.onCancel(task, future, whileRunning);
         if (failureClass[CANCEL] != null)
             throw newRuntimeException(failureClass[CANCEL]);
     }

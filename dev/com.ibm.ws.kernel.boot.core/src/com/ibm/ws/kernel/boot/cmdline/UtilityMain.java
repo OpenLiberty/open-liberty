@@ -311,6 +311,23 @@ public class UtilityMain {
                     urls.add(url);
                 }
             }
+
+            f = null;
+            for (AbstractResourceRepository repo : repos) {
+                f = repo.selectResource(rb.getAttribute("location"),
+                                        rb.getSymbolicName() + ".nls",
+                                        VersionUtility.stringToVersionRange(bundleVersion));
+                if (f != null) {
+                    break;
+                }
+            }
+            if (f != null) {
+                URL url = f.toURI().toURL();
+                // make sure that there is no duplicate url.
+                if (!urls.contains(url)) {
+                    urls.add(url);
+                }
+            }
         }
         return urls;
     }

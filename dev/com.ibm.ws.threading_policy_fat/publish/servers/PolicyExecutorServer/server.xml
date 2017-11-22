@@ -20,4 +20,7 @@
     
     <application location="basicfat.war" />
     
+    <!-- Needed for application to shutdown the ExecutorService testThreads -->
+    <javaPermission codebase="${server.config.dir}/apps/basicfat.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+    
 </server>

@@ -20,7 +20,6 @@
 package org.apache.cxf.staxutils;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -29,6 +28,7 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -68,6 +68,14 @@ import javax.xml.transform.sax.SAXSource;
 import javax.xml.transform.stax.StAXSource;
 import javax.xml.transform.stream.StreamSource;
 
+import org.apache.cxf.common.classloader.ClassLoaderUtils;
+import org.apache.cxf.common.logging.LogUtils;
+import org.apache.cxf.common.util.PropertyUtils;
+import org.apache.cxf.common.util.StringUtils;
+import org.apache.cxf.common.util.SystemPropertyAction;
+import org.apache.cxf.helpers.CastUtils;
+import org.apache.cxf.helpers.DOMUtils;
+import org.apache.cxf.message.Message;
 import org.w3c.dom.Attr;
 import org.w3c.dom.CDATASection;
 import org.w3c.dom.Comment;
@@ -81,18 +89,8 @@ import org.w3c.dom.Node;
 import org.w3c.dom.ProcessingInstruction;
 import org.w3c.dom.Text;
 import org.w3c.dom.UserDataHandler;
-
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
-
-import org.apache.cxf.common.classloader.ClassLoaderUtils;
-import org.apache.cxf.common.logging.LogUtils;
-import org.apache.cxf.common.util.PropertyUtils;
-import org.apache.cxf.common.util.StringUtils;
-import org.apache.cxf.common.util.SystemPropertyAction;
-import org.apache.cxf.helpers.CastUtils;
-import org.apache.cxf.helpers.DOMUtils;
-import org.apache.cxf.message.Message;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -103,29 +101,29 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 public final class StaxUtils {
     // System properies for defaults, but also contextual properties usable
     // for StaxInInterceptor
-    public static final String MAX_CHILD_ELEMENTS = 
+    public static final String MAX_CHILD_ELEMENTS =
         "org.apache.cxf.stax.maxChildElements";
-    public static final String MAX_ELEMENT_DEPTH = 
+    public static final String MAX_ELEMENT_DEPTH =
         "org.apache.cxf.stax.maxElementDepth";
-    public static final String MAX_ATTRIBUTE_COUNT = 
+    public static final String MAX_ATTRIBUTE_COUNT =
         "org.apache.cxf.stax.maxAttributeCount";
-    public static final String MAX_ATTRIBUTE_SIZE = 
+    public static final String MAX_ATTRIBUTE_SIZE =
         "org.apache.cxf.stax.maxAttributeSize";
-    public static final String MAX_TEXT_LENGTH = 
+    public static final String MAX_TEXT_LENGTH =
         "org.apache.cxf.stax.maxTextLength";
     public static final String MIN_TEXT_SEGMENT =
         "org.apache.cxf.stax.minTextSegment";
-    public static final String MAX_ELEMENT_COUNT = 
+    public static final String MAX_ELEMENT_COUNT =
         "org.apache.cxf.stax.maxElementCount";
-    public static final String MAX_XML_CHARACTERS = 
+    public static final String MAX_XML_CHARACTERS =
         "org.apache.cxf.stax.maxXMLCharacters";
 
-    public static final String ALLOW_INSECURE_PARSER = 
+    public static final String ALLOW_INSECURE_PARSER =
         "org.apache.cxf.stax.allowInsecureParser";
-    
-    private static final String INNER_ELEMENT_COUNT_SYSTEM_PROP = 
+
+    private static final String INNER_ELEMENT_COUNT_SYSTEM_PROP =
         "org.apache.cxf.staxutils.innerElementCountThreshold";
-    private static final String INNER_ELEMENT_LEVEL_SYSTEM_PROP = 
+    private static final String INNER_ELEMENT_LEVEL_SYSTEM_PROP =
         "org.apache.cxf.staxutils.innerElementLevelThreshold";
 
     private static final Logger LOG = LogUtils.getL7dLogger(StaxUtils.class);
@@ -659,7 +657,7 @@ public final class StaxUtils {
         reader.close();
     }
 
-    public static Document copy(Document doc) 
+    public static Document copy(Document doc)
         throws XMLStreamException, ParserConfigurationException {
 
         XMLStreamReader reader = createXMLStreamReader(doc);
@@ -736,7 +734,7 @@ public final class StaxUtils {
     public static void copy(XMLStreamReader reader, XMLStreamWriter writer) throws XMLStreamException {
         copy(reader, writer, false, false);
     }
-    public static void copy(XMLStreamReader reader, XMLStreamWriter writer, boolean fragment) 
+    public static void copy(XMLStreamReader reader, XMLStreamWriter writer, boolean fragment)
         throws XMLStreamException {
         copy(reader, writer, fragment, false);
     }
@@ -952,7 +950,7 @@ public final class StaxUtils {
      * @param writer
      * @throws XMLStreamException
      */
-    public static void writeElement(Element e, XMLStreamWriter writer, boolean repairing) 
+    public static void writeElement(Element e, XMLStreamWriter writer, boolean repairing)
         throws XMLStreamException {
         writeElement(e, writer, repairing, true);
     }
@@ -1086,7 +1084,7 @@ public final class StaxUtils {
         return sortedAttrs;
     }
 
-    public static void writeNode(Node n, XMLStreamWriter writer, boolean repairing) 
+    public static void writeNode(Node n, XMLStreamWriter writer, boolean repairing)
         throws XMLStreamException {
 
         switch (n.getNodeType()) {
@@ -1176,7 +1174,7 @@ public final class StaxUtils {
     }
 
     public static Document read(File is) throws XMLStreamException, IOException {
-        try (InputStream fin = new FileInputStream(is)) {
+        try (InputStream fin = Files.newInputStream(is.toPath())) {
             return read(fin);
         }
     }
@@ -1211,7 +1209,7 @@ public final class StaxUtils {
         return doc;
     }
 
-    public static Document read(DocumentBuilder builder, XMLStreamReader reader, boolean repairing) 
+    public static Document read(DocumentBuilder builder, XMLStreamReader reader, boolean repairing)
         throws XMLStreamException {
 
         Document doc = builder == null ? DOMUtils.createDocument() : builder.newDocument();
@@ -1258,14 +1256,14 @@ public final class StaxUtils {
         return false;
     }
 
-    public static void readDocElements(Node parent, XMLStreamReader reader, boolean repairing) 
+    public static void readDocElements(Node parent, XMLStreamReader reader, boolean repairing)
         throws XMLStreamException {
         Document doc = getDocument(parent);
         readDocElements(doc, parent, reader, repairing, false);
     }
 
     public static void readDocElements(Node parent, XMLStreamReader reader, boolean repairing,
-                                       boolean isThreshold) 
+                                       boolean isThreshold)
         throws XMLStreamException {
         Document doc = getDocument(parent);
         readDocElements(doc, parent, reader, repairing, false, isThreshold);
@@ -1951,7 +1949,7 @@ public final class StaxUtils {
             n++;
         }
     }
-    
+
 
     public static void printXmlFragment(XMLStreamReader reader) {
         try {
@@ -1970,8 +1968,8 @@ public final class StaxUtils {
         }
     }
 
-    
-    private static void writeStartElementEvent(XMLEvent event, XMLStreamWriter writer) 
+
+    private static void writeStartElementEvent(XMLEvent event, XMLStreamWriter writer)
         throws XMLStreamException {
         StartElement start = event.asStartElement();
         QName name = start.getName();
@@ -1996,7 +1994,7 @@ public final class StaxUtils {
             writeAttributeEvent(it.next(), writer);
         }
     }
-    private static void writeAttributeEvent(XMLEvent event, XMLStreamWriter writer) 
+    private static void writeAttributeEvent(XMLEvent event, XMLStreamWriter writer)
         throws XMLStreamException {
 
         Attribute attr = (Attribute) event;
@@ -2192,7 +2190,7 @@ public final class StaxUtils {
     public static XMLStreamReader configureReader(XMLStreamReader reader, Integer maxChildElements,
                                                   Integer maxElementDepth, Integer maxAttributeCount,
                                                   Integer maxAttributeSize, Integer maxTextLength,
-                                       Long maxElementCount, Long maxXMLCharacters) 
+                                       Long maxElementCount, Long maxXMLCharacters)
         throws XMLStreamException {
         //CHECKSTYLE:ON
 

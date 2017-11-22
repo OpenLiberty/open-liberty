@@ -22,15 +22,16 @@ import componenttest.topology.impl.LibertyServerFactory;
  */
 public class BasicValidation11Test extends BasicValidation11CommonTest {
 
-    public BasicValidation11Test() {
-        isUsingBval11 = true;
-    }
-
     @BeforeClass
     public static void setUp() throws Exception {
+        isUsingBval11 = true;
+        bvalVersion = 11;
+
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation_1.1.fat");
 
-        FATSuite.createAndExportWARs();
+        FATSuite.createAndExportCommonWARs(server);
+
+        FATSuite.createAndExportApacheWARs(server);
 
         server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION10);
         server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION11);

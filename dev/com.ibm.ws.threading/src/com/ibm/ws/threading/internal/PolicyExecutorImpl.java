@@ -39,6 +39,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyExecutor;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
+import com.ibm.ws.threading.StartTimeoutException;
 import com.ibm.ws.threading.internal.PolicyTaskFutureImpl.InvokeAnyLatch;
 
 /**
@@ -186,8 +187,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     break;
                 } else { // timed out
                     next.nsRunEnd = next.nsQueueEnd = nsQueueEnd;
-                    next.abort(false, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", next.getIdentifier(), next.getTaskName(),
-                                                                                 nsQueueEnd - next.nsAcceptBegin, next.nsStartBy - next.nsAcceptBegin)));
+                    next.abort(false, new StartTimeoutException(next.getIdentifier(), next.getTaskName(), //
+                                    nsQueueEnd - next.nsAcceptBegin, //
+                                    next.nsStartBy - next.nsAcceptBegin));
                 }
             }
 
@@ -331,6 +333,23 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public int cancel(String identifier, boolean interruptIfRunning) {
+        int count = 0;
+
+        // Remove and cancel all queued tasks.
+        for (PolicyTaskFutureImpl<?> f = queue.poll(); f != null; f = queue.poll())
+            if (f.cancel(false))
+                count++;
+
+        // Cancel tasks that are running
+        for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
+            if (it.next().cancel(interruptIfRunning))
+                count++;
+
+        return count;
+    }
+
+    @Override
     public PolicyExecutor expedite(int num) {
         if (num == -1)
             num = Integer.MAX_VALUE;
@@ -340,7 +359,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         int a;
         synchronized (configLock) {
             if (num > maxConcurrency)
-                throw new IllegalArgumentException(Integer.toString(num));
+                throw new IllegalArgumentException("expedite: " + num + " > maxConcurrency: " + maxConcurrency);
 
             if (state.get() != State.ACTIVE)
                 throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "expedite", identifier));
@@ -415,10 +434,9 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                             if (now - startBy >= 0) { // found a task in the queue that has timed out
                                 if (queue.remove(future)) { // can't use iterator.remove - it doesn't tell us whether it actually removed anything
                                     future.nsRunEnd = future.nsQueueEnd = System.nanoTime();
-                                    future.abort(false, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                                                   future.getIdentifier(), future.getTaskName(),
-                                                                                                   future.nsQueueEnd - future.nsAcceptBegin,
-                                                                                                   future.nsStartBy - future.nsAcceptBegin)));
+                                    future.abort(false, new StartTimeoutException(future.getIdentifier(), future.getTaskName(), //
+                                                    future.nsQueueEnd - future.nsAcceptBegin, //
+                                                    future.nsStartBy - future.nsAcceptBegin));
                                     // Release and re-acquire is needed to preserve correctness of shutdown logic
                                     maxQueueSizeConstraint.release();
                                     haveQueuePermit = maxQueueSizeConstraint.tryAcquire();
@@ -474,10 +492,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 boolean haveConcurrencyPermit = false;
                 if (policyTaskFuture.nsStartBy != policyTaskFuture.nsAcceptBegin - 1 // start timeout enabled, and
                     && System.nanoTime() - policyTaskFuture.nsStartBy >= 0) // timed out per the startTimeout
-                    throw new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                          policyTaskFuture.getIdentifier(), policyTaskFuture.getTaskName(),
-                                                                          policyTaskFuture.nsQueueEnd - policyTaskFuture.nsAcceptBegin,
-                                                                          policyTaskFuture.nsStartBy - policyTaskFuture.nsAcceptBegin));
+                    throw new RejectedExecutionException(new StartTimeoutException( //
+                                    policyTaskFuture.getIdentifier(), policyTaskFuture.getTaskName(), //
+                                    policyTaskFuture.nsQueueEnd - policyTaskFuture.nsAcceptBegin, //
+                                    policyTaskFuture.nsStartBy - policyTaskFuture.nsAcceptBegin));
                 else if (Boolean.TRUE.equals(runIfQueueFullOverride) ||
                          !Boolean.FALSE.equals(runIfQueueFullOverride) && runIfQueueFull
                                                                         && (maxPolicy == MaxPolicy.loose
@@ -573,6 +591,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    @Trivial
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    @Override
     public int getRunningTaskCount() {
         return runningCount.get();
     }
@@ -653,10 +677,10 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                         runTask(taskFuture);
                     else { // timed out
                         taskFuture.nsRunEnd = taskFuture.nsQueueEnd;
-                        RejectedExecutionException x = new RejectedExecutionException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                                                       taskFuture.getIdentifier(), taskFuture.getTaskName(),
-                                                                                                       taskFuture.nsQueueEnd - taskFuture.nsAcceptBegin,
-                                                                                                       taskFuture.nsStartBy - taskFuture.nsAcceptBegin));
+                        RejectedExecutionException x = new RejectedExecutionException(new StartTimeoutException( //
+                                        taskFuture.getIdentifier(), taskFuture.getTaskName(), //
+                                        taskFuture.nsQueueEnd - taskFuture.nsAcceptBegin, //
+                                        taskFuture.nsStartBy - taskFuture.nsAcceptBegin));
                         taskFuture.abort(false, x);
                         throw x;
                     }
@@ -926,7 +950,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         synchronized (configLock) {
             if (max < expedite)
-                throw new IllegalArgumentException(Integer.toString(max));
+                throw new IllegalArgumentException("maxConcurrency: " + max + " < expedite: " + expedite);
 
             if (state.get() != State.ACTIVE)
                 throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxConcurrency", identifier));
@@ -1287,13 +1311,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         // Validation that cannot be performed by metatype:
         if (u_expedite > u_max)
-            throw new IllegalArgumentException(u_expedite + " > " + u_max);
+            throw new IllegalArgumentException("expedite: " + u_expedite + " > max: " + u_max);
 
         if (u_maxWaitForEnqueue < 0 || u_maxWaitForEnqueue > maxMS)
-            throw new IllegalArgumentException(Long.toString(u_maxWaitForEnqueue));
+            throw new IllegalArgumentException("maxWaitForEnqueue: " + u_maxWaitForEnqueue);
 
         if (u_startTimeout < -1 || u_startTimeout > maxMS)
-            throw new IllegalArgumentException(Long.toString(u_startTimeout));
+            throw new IllegalArgumentException("startTimeout: " + u_startTimeout);
 
         for (long current = maxWaitForEnqueueNS.get(); current != -1; current = maxWaitForEnqueueNS.get())
             if (maxWaitForEnqueueNS.compareAndSet(current, TimeUnit.MILLISECONDS.toNanos(u_maxWaitForEnqueue)))

@@ -94,7 +94,6 @@ public class LdapIdentityStoreDeferredSettingsTest extends JavaEESecTestBase {
 
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecAnnotatedBasicAuthServletDeferred.war", true, JAR_NAME, false, "web.jar.base",
                                                "web.war.annotatedbasic.deferred");
-        myServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/javaeesecinternals-1.0.mf");
 
         myServer.startServer(true);
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort()

@@ -18,6 +18,8 @@ package com.ibm.jbatch.container.jsl;
 
 public interface ModelSerializer<T> {
 
-	public String serializeModel(T model);
-	
+    public String serializeModel(T model);
+
+    public String prettySerializeModel(T model);
+
 }
