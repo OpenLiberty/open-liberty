@@ -12,7 +12,6 @@ Export-Package: \
  com.ibm.wsspi.security.wim.exception, \
  com.ibm.wsspi.security.wim.model, \
  com.ibm.websphere.security.wim;provide:=true, \
- com.ibm.websphere.security.wim.copyright;provide:=true, \
  com.ibm.websphere.security.wim.ras;provide:=true, \
  com.ibm.websphere.security.wim.util;provide:=true
 
