@@ -53,6 +53,7 @@ import com.ibm.ws.webcontainer.security.metadata.LoginConfigurationImpl;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
+import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 
 /**
  *
@@ -136,6 +137,12 @@ public class LoginToContinueInterceptor {
             }
             RequestDispatcher rd = req.getRequestDispatcher(loginPage);
             try {
+                if (req.getMethod().equalsIgnoreCase("POST") && (req instanceof IExtendedRequest)) {
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Set GET method instead of original POST method for preventing a potential JSF error.");
+                    }
+                    ((IExtendedRequest)req).setMethod("GET");
+                }
                 rd.forward(req, res);
             } catch (Exception e) {
                 status = AuthenticationStatus.SEND_FAILURE;
