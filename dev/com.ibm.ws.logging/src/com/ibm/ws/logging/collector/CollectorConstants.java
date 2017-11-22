@@ -22,7 +22,7 @@ public class CollectorConstants {
     /* Source component names */
     public static final String GC_SOURCE = "com.ibm.ws.health.center.source.gcsource";
     public static final String MESSAGES_SOURCE = "com.ibm.ws.logging.source.message";
-    public static final String FFDC_SOURCE = "com.ibm.ws.logging.source.ffdcsource";
+    public static final String FFDC_SOURCE = "com.ibm.ws.logging.ffdc.source.ffdcsource";
     public static final String TRACE_SOURCE = "com.ibm.ws.logging.source.trace";
     public static final String ACCESS_LOG_SOURCE = "com.ibm.ws.http.logging.source.accesslog";
 

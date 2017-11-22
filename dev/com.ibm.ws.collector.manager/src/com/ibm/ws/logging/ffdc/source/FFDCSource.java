@@ -34,13 +34,14 @@ public class FFDCSource implements Source {
     public final static int CALLER_DETAILS_CHARS_MAX_SIZE = 2048;
     public final static String NEWLINE_CHARS = System.getProperty("line.separator");
 
-    private final String sourceName = "com.ibm.ws.logging.source.ffdcsource";
+    private final String sourceName = "com.ibm.ws.logging.ffdc.source.ffdcsource";
     private final String location = "memory";
 
     private BufferManager bufferMgr = null;
     private IncidentHandler incidentHandler;
 
     protected synchronized void activate(Map<String, Object> configuration) {
+        System.out.println("Activating ffdc");
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Activating " + this);
         }

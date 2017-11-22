@@ -51,7 +51,7 @@ Service-Component:\
     com.ibm.ws.logging.source.ffdcsource;\
         implementation:=com.ibm.ws.logging.ffdc.source.FFDCSource;\
         provide:=com.ibm.wsspi.collector.manager.Source; \
-        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.source.ffdcsource)'; \
+        bufferManager='com.ibm.wsspi.collector.manager.BufferManager(source=com.ibm.ws.logging.ffdc.source.ffdcsource)'; \
         properties:="service.vendor=IBM"
 
 	
