@@ -111,6 +111,7 @@ import com.ibm.ws.managedobject.ManagedObject;
 import com.ibm.ws.session.SessionCookieConfigImpl;
 import com.ibm.ws.session.utils.LoggingUtil;
 import com.ibm.ws.util.WSThreadLocal;
+import com.ibm.ws.util.WSUtil;
 import com.ibm.ws.webcontainer.WebContainer;
 import com.ibm.ws.webcontainer.async.AsyncListenerEnum;
 import com.ibm.ws.webcontainer.async.ListenerHelper;
@@ -4928,6 +4929,25 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
       // LIBERTY - following code is not in tWAS - why is it needed?
             if (requestProcessor != null) {
+                
+                if(WCCustomProperties.SET_400_SC_ON_TOO_MANY_PARENT_DIRS && (!(requestProcessor instanceof ServletWrapper) || securityEnabled)){
+                    try{
+                        WSUtil.resolveURI(req.getRequestURI());
+                    }
+                    catch(IllegalArgumentException e){
+                        if(e.getMessage().contains("is invalid because it contains more references to parent directories")){
+                            //re-throw the exception and make sure we set 400 status code
+                            if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                                logger.logp(Level.FINE, CLASS_NAME, "handleRequest", "Request contains more ../ than allowed, will set 400 SC");
+                            }
+                            WebContainerRequestState reqState = WebContainerRequestState.getInstance(false);
+                            if(reqState != null)
+                                reqState.setAttribute("com.ibm.ws.webcontainer.set400",true);
+                            throw e;
+                        }
+                    }
+                }
+                
                 if (requestProcessor instanceof ExtensionProcessor) {
                     IServletWrapper servletWrapper = ((ExtensionProcessor) requestProcessor).getServletWrapper(req, res);
                     if (servletWrapper != null) {
@@ -5042,7 +5062,16 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 WebAppErrorReport r = new WebAppErrorReport(th);
                 if (requestProcessor != null && requestProcessor instanceof ServletWrapper)
                     r.setTargetServletName(((ServletWrapper) requestProcessor).getServletName());
-                r.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                if(reqState != null && ((Boolean)reqState.getAttribute("com.ibm.ws.webcontainer.set400"))) {
+                    if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE)) {
+                        logger.logp(Level.FINE, CLASS_NAME, "handleException", "Setting the status code to 400");
+                    }
+                    r.setErrorCode(HttpServletResponse.SC_BAD_REQUEST);
+                    reqState.removeAttribute("com.ibm.ws.webcontainer.set400");
+                }
+                else {
+                    r.setErrorCode(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                }
                 this.sendError((HttpServletRequest) req, (HttpServletResponse) res, r);
             }
         }
