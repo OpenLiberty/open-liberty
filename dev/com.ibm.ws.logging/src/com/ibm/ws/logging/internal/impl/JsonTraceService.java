@@ -25,6 +25,7 @@ import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.ws.logging.source.LogSource;
 import com.ibm.ws.logging.source.TraceSource;
 import com.ibm.ws.logging.utils.CollectorManagerPipelineUtils;
+import com.ibm.ws.logging.utils.RecursionCounter;
 import com.ibm.wsspi.collector.manager.SyncrhonousHandler;
 import com.ibm.wsspi.logging.MessageRouter;
 import com.ibm.wsspi.logprovider.LogProviderConfig;
@@ -43,15 +44,14 @@ public class JsonTraceService extends BaseTraceService {
     private volatile BufferManagerImpl traceConduit;
     private volatile CollectorManagerPipelineUtils collectorMgrPipelineUtils = null;
 
-    private static final String CONSOLE_LOG = "consoleLog";
-    private static final String MESSAGE_LOG = "messageLog";
-
     private static volatile boolean isMessageJsonConfigured = false;
     private static volatile boolean isConsoleJsonConfigured = false;
     private static volatile Object sync = new Object();
 
     private volatile String serverName = null;
     private volatile String wlpUserDir = null;
+
+    static RecursionCounter counter = new RecursionCounter();
 
     @Override
     public synchronized void update(LogProviderConfig config) {
@@ -273,35 +273,43 @@ public class JsonTraceService extends BaseTraceService {
 
         boolean retMe = true;
         LogRecord logRecord = routedTrace.getLogRecord();
-        if (logRecord != null) {
-            Level level = logRecord.getLevel();
-            int levelValue = level.intValue();
-            if (levelValue < Level.INFO.intValue()) {
-                String levelName = level.getName();
-                if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
-                    WsTraceRouter internalTrRouter = internalTraceRouter.get();
-                    if (internalTrRouter != null) {
-                        retMe &= internalTrRouter.route(routedTrace);
-                    } else {
-                        earlierTraces.add(routedTrace);
-                        /*
-                         * If no Routers are set, then there is no way for a trace event to go through to TraceSource
-                         * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
-                         * the router.
-                         *
-                         * When the Router is fully initialized then it will go through to the Router and then TraceSource as appropriate.
-                         *
-                         * traceSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
-                         * appropriately call setupCollectorManagerPipeline()
-                         */
-                        if (traceSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
-                            // if (logRecord.getMessage().contains(arg0))
-                            traceSource.publish(routedTrace);
+        /*
+         * Avoid any feedback traces that are emitted after this point.
+         * The first time the counter increments is the first pass-through.
+         * The second time the counter increments is the second pass-through due
+         * to trace emitted. We do not want any more pass-throughs.
+         */
+        if (!(counter.incrementCount() > 2)) {
+            if (logRecord != null) {
+                Level level = logRecord.getLevel();
+                int levelValue = level.intValue();
+                if (levelValue < Level.INFO.intValue()) {
+                    String levelName = level.getName();
+                    if (!(levelName.equals("SystemOut") || levelName.equals("SystemErr"))) { //SystemOut/Err=700
+                        WsTraceRouter internalTrRouter = internalTraceRouter.get();
+                        if (internalTrRouter != null) {
+                            retMe &= internalTrRouter.route(routedTrace);
+                        } else {
+                            earlierTraces.add(routedTrace);
+                            /*
+                             * If no Routers are set, then there is no way for a trace event to go through to TraceSource
+                             * if JSON has been configured. Put this in place (for now) to directly send to logSource by skipping
+                             * the router.
+                             *
+                             * When the Router is fully initialized then it will go through to the Router and then TraceSource as appropriate.
+                             *
+                             * traceSource should only be not null (i.e active) if we are 'JsonTrService' because only 'JsonTrService' will
+                             * appropriately call setupCollectorManagerPipeline()
+                             */
+                            if (traceSource != null && (isMessageJsonConfigured || isConsoleJsonConfigured)) {
+                                traceSource.publish(routedTrace);
+                            }
                         }
                     }
                 }
             }
         }
+        counter.decrementCount();
         return retMe;
     }
 

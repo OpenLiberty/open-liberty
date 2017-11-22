@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import com.ibm.ws.logging.utils.RecursionCounter;
 
 import com.ibm.ws.logging.RoutedMessage;
 import com.ibm.ws.logging.WsTraceHandler;
@@ -31,7 +32,6 @@ public class WsTraceRouterImpl implements WsTraceRouter {
      */
     private final ConcurrentMap<String, WsTraceHandler> wsTraceHandlerServices = new ConcurrentHashMap<String, WsTraceHandler>();
 
-    static RecursionCounter counter = new RecursionCounter();
     /**
      * Earlier traces issued before wsTraceHandler(s) are registered.
      *
@@ -109,7 +109,6 @@ public class WsTraceRouterImpl implements WsTraceRouter {
         boolean logNormally = true;
         REWRLOCK.readLock().lock();
         try {
-            if (!(counter.incrementCount() > 1)) {
                 // Cache message for WsTraceHandlers that haven't registered yet.
                 if (earlierTraces != null) {
                     earlierTraces.add(routedTrace);
@@ -117,10 +116,8 @@ public class WsTraceRouterImpl implements WsTraceRouter {
                 Set<String> routeAllMsgsToTheseLogHandlers = wsTraceHandlerServices.keySet();
                 logNormally = routeToAll(routedTrace, routeAllMsgsToTheseLogHandlers);
 
-            }
         } finally {
             REWRLOCK.readLock().unlock();
-            counter.decrementCount();
         }
         return logNormally;
 

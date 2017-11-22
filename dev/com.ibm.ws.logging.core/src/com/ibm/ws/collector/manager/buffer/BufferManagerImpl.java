@@ -53,7 +53,7 @@ public class BufferManagerImpl extends BufferManager {
 			throw new NullPointerException();
 		
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			//Tr.debug(tc, "Adding event to buffer " + event);
+			Tr.debug(tc, "Adding event to buffer " + event);
 		}
 		ringBuffer.add(event);
 
