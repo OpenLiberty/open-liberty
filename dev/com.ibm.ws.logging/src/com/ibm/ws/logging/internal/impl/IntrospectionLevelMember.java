@@ -387,7 +387,7 @@ public final class IntrospectionLevelMember {
         }
         temp.append("} /* array length = ");
         temp.append(Integer.toString(Array.getLength(value)));
-        temp.append("*/");
+        temp.append(" */");
         answer = temp.toString();
         return answer;
     }
