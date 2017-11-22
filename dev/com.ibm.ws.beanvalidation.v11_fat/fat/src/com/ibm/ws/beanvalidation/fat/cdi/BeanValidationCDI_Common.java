@@ -8,43 +8,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.beanvalidation.fat.tests;
+package com.ibm.ws.beanvalidation.fat.cdi;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.ibm.ws.beanvalidation.fat.FATSuite;
-
-import componenttest.annotation.MinimumJavaLevel;
-import componenttest.topology.impl.LibertyServerFactory;
+import com.ibm.ws.beanvalidation.fat.basic.BasicValidation_Common;
 
 /**
- * Collection of tests to be run when both cdi-2.0 and beanValidation-2.0 are enabled
- * together. Include all common tests from {@link BasicValidation11CommonTest} to ensure
+ * Collection of tests to be run when both cdi-1.1 and beanValidation-1.1 are enabled
+ * together. Include all common tests from {@link BasicValidation_Common} to ensure
  * that everything that worked without CDI works with it as well.
  */
-@MinimumJavaLevel(javaLevel = 1.8)
-public class BeanValidation20CDITest extends BasicValidation11CommonTest {
-    private static final String FOLDER = "dropins";
-
-    @BeforeClass
-    public static void setUp() throws Exception {
-        bvalVersion = 20;
-
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation.cdi_2.0.fat");
-
-        FATSuite.createAndExportCommonWARs(server);
-
-        FATSuite.createAndExportCDIWARs(server);
-
-        server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION10);
-        server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION11);
-        server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION10);
-        server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION11);
-        server.addInstalledAppForValidation("BeanValidationCDI_11");
-        server.startServer(BeanValidation20CDITest.class.getSimpleName() + ".log");
-    }
+public abstract class BeanValidationCDI_Common extends BasicValidation_Common {
 
     /**
      * Test that a servlet can use @Resource to inject a ValidatorFactory that
@@ -136,31 +111,5 @@ public class BeanValidation20CDITest extends BasicValidation11CommonTest {
     @Test
     public void testDecimalInclusiveForString() throws Exception {
         run("DefaultBeanValidationCDI_11", "BValInjectionServlet", "testDecimalInclusiveForString");
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        if (server != null && server.isStarted()) {
-            server.stopServer();
-        }
-
-        // TODO this needs to be debugged, as currently all @PreDestroy methods
-        // created by bean validation get called twice.
-//        List<String> destroyedList;
-//        destroyedList = server.findStringsInLogs("CustomConstraintValidatorFactory is getting destroyed.");
-//        Assert.assertEquals("CustomConstraintValidatorFactory wasn't destroyed once: " + destroyedList,
-//                            1, destroyedList.size());
-//
-//        destroyedList = server.findStringsInLogs("CustomMessageInterpolator is getting destroyed.");
-//        Assert.assertEquals("CustomConstraintValidatorFactory wasn't destroyed once: " + destroyedList,
-//                            1, destroyedList.size());
-//
-//        destroyedList = server.findStringsInLogs("TestAnnotationValidator is getting destroyed.");
-//        Assert.assertEquals("CustomConstraintValidatorFactory wasn't destroyed once: " + destroyedList,
-//                            1, destroyedList.size());
-
-        //Check that server logs are really collected when an application fails to start, if this line is ever re-enabled.
-        //Currently they do not get collected when server.stopServer(false) is called.
-        //server.postStopServerArchive();
     }
 }

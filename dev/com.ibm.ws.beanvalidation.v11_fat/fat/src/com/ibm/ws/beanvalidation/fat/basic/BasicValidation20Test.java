@@ -8,40 +8,42 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.beanvalidation.fat.tests;
+package com.ibm.ws.beanvalidation.fat.basic;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-
-import com.ibm.ws.beanvalidation.fat.FATSuite;
+import org.junit.runner.RunWith;
 
 import componenttest.annotation.MinimumJavaLevel;
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * All Bean Validation tests for the 2.0 feature level.
  */
+@RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 1.8)
-public class BasicValidation20Test extends BasicValidation11CommonTest {
+public class BasicValidation20Test extends BasicValidation_Common {
+
+    @Server("com.ibm.ws.beanvalidation_2.0.fat")
+    public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
         bvalVersion = 20;
-
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation_2.0.fat");
-
-        FATSuite.createAndExportCommonWARs(server);
-
-        server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION10);
-        server.addInstalledAppForValidation(FATSuite.DEFAULT_BEAN_VALIDATION11);
-        server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION10);
-        server.addInstalledAppForValidation(FATSuite.BEAN_VALIDATION11);
-        server.startServer(BasicValidation20Test.class.getSimpleName() + ".log");
+        createAndExportCommonWARs(server);
+        server.startServer();
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer();
+    }
+
+    @Override
+    public LibertyServer getServer() {
+        return server;
     }
 
 }

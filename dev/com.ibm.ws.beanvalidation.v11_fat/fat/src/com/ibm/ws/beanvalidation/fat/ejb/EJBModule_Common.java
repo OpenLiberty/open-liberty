@@ -8,16 +8,19 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.beanvalidation.fat.tests;
+package com.ibm.ws.beanvalidation.fat.ejb;
 
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.ibm.ws.beanvalidation.fat.FATSuite;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
-import componenttest.topology.impl.LibertyServerFactory;
+import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
 
 /**
  * Run ejb module tests on bval-1.1.
@@ -27,16 +30,42 @@ import componenttest.topology.impl.LibertyServerFactory;
  * and both ejb modules do. This covers what validation.xml is found both by the
  * container and provider and needs to be common between bval-1.0 and bval-1.1.
  */
-public class EJBModule11Test extends AbstractTest {
-    private static final String FOLDER = "dropins";
+public abstract class EJBModule_Common extends FATServletClient {
 
-    @BeforeClass
-    public static void setUp() throws Exception {
-        server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation.ejb_1.1.fat");
+    public static void createAndExportEJBWARs(LibertyServer server) throws Exception {
+        JavaArchive jar = ShrinkHelper.buildJavaArchive("EJBModule1EJB.jar", "beanvalidation.ejbmodule.*");
+        JavaArchive jar2 = ShrinkHelper.buildJavaArchive("EJBModule2EJB.jar", "beanvalidation.ejbmodule2.ejb");
 
-        FATSuite.createAndExportEJBWARs(server);
+        WebArchive war = ShrinkHelper.buildDefaultApp("EJBModuleWeb.war", "beanvalidation.web");
 
-        server.startServer(EJBModule11Test.class.getSimpleName() + ".log");
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "OneEJBModuleApp.ear")
+                        .addAsModule(war)
+                        .addAsModule(jar);
+        ShrinkHelper.addDirectory(ear, "test-applications/OneEJBModuleApp.ear/resources/");
+        ShrinkHelper.exportToServer(server, "dropins", ear);
+
+        EnterpriseArchive ear2 = ShrinkWrap.create(EnterpriseArchive.class, "TwoEJBModulesApp.ear")
+                        .addAsModule(war)
+                        .addAsModule(jar)
+                        .addAsModule(jar2);
+        ShrinkHelper.addDirectory(ear2, "test-applications/TwoEJBModulesApp.ear/resources/");
+        ShrinkHelper.exportToServer(server, "dropins", ear2);
+    }
+
+    protected abstract LibertyServer getServer();
+
+    protected void run(String war, String servlet) throws Exception {
+        String originalTestName = testName.getMethodName();
+        String servletTest = originalTestName.substring(0, originalTestName.length() - 2);
+        run(war, servlet, servletTest);
+    }
+
+    /**
+     * Run a test by connecting to a url that is put together with the context-root
+     * being the war, the servlet and test method in the web application.
+     */
+    protected void run(String war, String servlet, String testMethod) throws Exception {
+        FATServletClient.runTest(getServer(), war + "/" + servlet, testMethod);
     }
 
     /**
@@ -120,10 +149,5 @@ public class EJBModule11Test extends AbstractTest {
     @Test
     public void testUseBuildDefaultValidatorFactory() throws Exception {
         run("OneEJBModuleWeb", "BeanValidationServlet", testName.getMethodName());
-    }
-
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer();
     }
 }
