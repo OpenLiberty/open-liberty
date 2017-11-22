@@ -69,10 +69,9 @@ public abstract class PolicyTaskCallback {
      *
      * @param task the Callable or Runnable task.
      * @param future the future for the task that was canceled.
-     * @param timedOut indicates if the start timeout elapsed and caused cancellation.
      * @param whileRunning indicates if the task was canceled while running (as opposed to while still queued for execution or just before it started).
      */
-    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean timedOut, boolean whileRunning) {}
+    public void onCancel(Object task, PolicyTaskFuture<?> future, boolean whileRunning) {}
 
     /**
      * Invoked on the thread of execution of a task after it completes, which could be successfully, exceptionally, or due to cancellation/interrupt.
@@ -125,4 +124,15 @@ public abstract class PolicyTaskCallback {
      * @throws ExecutionException
      */
     public void raiseAbortedException(Throwable x) throws ExecutionException {}
+
+    /**
+     * Allows for raising a more meaningful exception when the Future.get is attempted from the same
+     * thread that is preparing to submit or start the task. This is essentially a deadlock where the
+     * task will never be able to start. The deadlock must be broken by raising an exception.
+     * The default implementation does nothing, in response to which the policy executor raises a generic
+     * InterruptedException without any message or cause exception.
+     *
+     * @throws InterruptedException if the callback provider wishes to replace the generic InterruptedException that is raised for this condition.
+     */
+    public void resolveDeadlockOnFutureGet() throws InterruptedException {}
 }

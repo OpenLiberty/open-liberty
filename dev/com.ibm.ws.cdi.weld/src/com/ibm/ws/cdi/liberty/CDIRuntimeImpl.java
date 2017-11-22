@@ -33,6 +33,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.ejs.util.Util;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIContainerConfig;
 import com.ibm.ws.cdi.CDIException;
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.cdi.extension.WebSphereCDIExtension;
@@ -91,7 +92,7 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
     private final AtomicServiceReference<ScheduledExecutorService> scheduledExecutorServiceRef = new AtomicServiceReference<ScheduledExecutorService>("scheduledExecutorService");
     private final AtomicServiceReference<ExecutorService> executorServiceRef = new AtomicServiceReference<ExecutorService>("executorService");
 
-    private final AtomicServiceReference<CDI12ContainerConfig> containerConfigRef = new AtomicServiceReference<CDI12ContainerConfig>("containerConfig");
+    private final AtomicServiceReference<CDIContainerConfig> containerConfigRef = new AtomicServiceReference<CDIContainerConfig>("containerConfig");
     private final AtomicServiceReference<ResourceRefConfigFactory> resourceRefConfigFactoryRef = new AtomicServiceReference<ResourceRefConfigFactory>("resourceRefConfigFactory");
 
     private MetaDataSlot applicationSlot;
@@ -143,12 +144,12 @@ public class CDIRuntimeImpl extends AbstractCDIRuntime implements ApplicationSta
         resourceRefConfigFactoryRef.deactivate(cc);
     }
 
-    @Reference(name = "containerConfig", service = CDI12ContainerConfig.class)
-    protected void setContainerConfig(ServiceReference<CDI12ContainerConfig> ref) {
+    @Reference(name = "containerConfig", service = CDIContainerConfig.class)
+    protected void setContainerConfig(ServiceReference<CDIContainerConfig> ref) {
         containerConfigRef.setReference(ref);
     }
 
-    protected void unsetContainerConfig(ServiceReference<CDI12ContainerConfig> ref) {
+    protected void unsetContainerConfig(ServiceReference<CDIContainerConfig> ref) {
         containerConfigRef.unsetReference(ref);
     }
 

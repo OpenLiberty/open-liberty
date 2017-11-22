@@ -18,9 +18,10 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
                 AsyncEventsTest.class,
                 BeanManagerLookupTest.class,
-                ConfiguratorTest.class,
-                InterceptionFactoryTest.class,
                 BuiltinAnnoLiteralsTest.class,
+                CDIContainerConfigTest.class,
+                ConfiguratorTest.class,
+                InterceptionFactoryTest.class
 })
 public class FATSuite {
 

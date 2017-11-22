@@ -17,49 +17,77 @@
 package com.ibm.jbatch.container.jsl.impl;
 
 import java.io.ByteArrayOutputStream;
+import java.io.StringReader;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
 
-
-
+import org.w3c.dom.Node;
+import org.w3c.dom.bootstrap.DOMImplementationRegistry;
+import org.w3c.dom.ls.DOMImplementationLS;
+import org.w3c.dom.ls.LSSerializer;
+import org.xml.sax.InputSource;
 
 import com.ibm.jbatch.container.jsl.JSLValidationEventHandler;
 import com.ibm.jbatch.container.jsl.ModelSerializer;
-import com.ibm.jbatch.container.jsl.ValidatorHelper;
 import com.ibm.jbatch.jsl.model.Step;
 
 public class StepModelSerializerImpl implements ModelSerializer<Step> {
 
-	@Override
-	public String serializeModel(Step model) {
-		return marshalStep(model);
-	}
+    @Override
+    public String serializeModel(Step model) {
+        return marshalStep(model);
+    }
+
+    @Override
+    public String prettySerializeModel(Step model) {
+        String serializedModel = serializeModel(model);
+
+        return formatXML(serializedModel);
+    }
 
     private String marshalStep(Step step) {
-    	String resultXML = null;
-    	JSLValidationEventHandler handler = new JSLValidationEventHandler();
-    	try {
-    		JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model");
-    		Marshaller m = ctx.createMarshaller();
-    		m.setSchema(ValidatorHelper.getXJCLSchema());
-    		m.setEventHandler(handler);
-    		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    		//m.marshal(job, baos);
-    		/*
-    		 * from scott: 
-    		 */
-    		m.marshal( new JAXBElement(
-    				new QName("http://xmlns.jcp.org/xml/ns/javaee","step"), Step.class, step ), baos);
-    		resultXML = baos.toString();
-    	}
-    	catch(Exception e){
-    		throw new RuntimeException("Exception while marshalling Step", e);
-    	}
-    	
-    	return resultXML;
+        String resultXML = null;
+        JSLValidationEventHandler handler = new JSLValidationEventHandler();
+        try {
+            ClassLoader currentClassLoader = Step.class.getClassLoader();
+            JAXBContext ctx = JAXBContext.newInstance("com.ibm.jbatch.jsl.model", currentClassLoader);
+            Marshaller m = ctx.createMarshaller();
+            m.setEventHandler(handler);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            //m.marshal(job, baos);
+            /*
+             * from scott:
+             */
+            m.marshal(new JAXBElement(new QName("http://com.ibm.jbatch.model/serialization", "step"), Step.class, step), baos);
+            resultXML = baos.toString();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while marshalling Step", e);
+        }
+
+        return resultXML;
     }
-    
+
+    private String formatXML(String input) {
+        String returnString;
+        try {
+            final InputSource src = new InputSource(new StringReader(input));
+            final Node document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(src).getDocumentElement();
+            final DOMImplementationRegistry registry = DOMImplementationRegistry.newInstance();
+            final DOMImplementationLS impl = (DOMImplementationLS) registry.getDOMImplementation("LS");
+            final LSSerializer writer = impl.createLSSerializer();
+            writer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
+            writer.getDomConfig().setParameter("xml-declaration", false); /* skip XML declare */
+            returnString = writer.writeToString(document);
+            return returnString;
+        } catch (Exception e) {
+            // Oh well, just return it as one line
+            returnString = input;
+        }
+        return returnString;
+    }
+
 }

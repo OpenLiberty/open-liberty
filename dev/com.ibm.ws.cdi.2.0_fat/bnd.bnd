@@ -15,9 +15,10 @@ src: \
 	fat/src,\
 	test-applications/asyncEventsApp/src,\
 	test-applications/beanManagerLookupApp/src,\
+	test-applications/builtinAnnoLiteralsApp/src,\
+	test-applications/cdiContainerConfigApp/src,\
 	test-applications/configuratorApp/src,\
-	test-applications/interceptionFactoryApp/src,\
-	test-applications/builtinAnnoLiteralsApp/src
+	test-applications/interceptionFactoryApp/src
 
 test.project: true
 

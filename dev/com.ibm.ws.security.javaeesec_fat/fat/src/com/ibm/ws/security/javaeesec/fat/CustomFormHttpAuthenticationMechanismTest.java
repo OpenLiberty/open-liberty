@@ -33,7 +33,6 @@ public class CustomFormHttpAuthenticationMechanismTest extends CustomFormHttpAut
         ServerHelper.setupldapServer();
 
         WCApplicationHelper.addWarToServerApps(myServer, "JavaEESecCustomFormLoginServlet.war", true, JAR_NAME, false, "web.jar.base", "web.war.mechanism.customForm");
-        myServer.copyFileToLibertyInstallRoot("lib/features", "internalFeatures/javaeesecinternals-1.0.mf");
         myServer.setServerConfigurationFile("customForm.xml");
         myServer.startServer(true);
 

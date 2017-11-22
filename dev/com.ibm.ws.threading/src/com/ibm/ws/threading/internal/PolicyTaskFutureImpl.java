@@ -28,6 +28,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
+import com.ibm.ws.threading.StartTimeoutException;
 
 /**
  * Allows the policy executor to tie into internal state and other details of a Future implementation.
@@ -429,9 +430,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", getIdentifier(), getTaskName(),
-                                                                           System.nanoTime() - nsAcceptBegin,
-                                                                           nsStartBy - nsAcceptBegin)));
+                    abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                                    System.nanoTime() - nsAcceptBegin, //
+                                    nsStartBy - nsAcceptBegin));
                     s = state.get();
                 }
                 if (s == RUNNING) { // continue waiting
@@ -467,9 +468,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                 state.tryAcquireSharedNanos(1, nsStartBy - nsGetBegin);
                 s = state.get();
                 if (s == SUBMITTED) { // attempt to abort the task
-                    abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout", getIdentifier(), getTaskName(),
-                                                                           System.nanoTime() - nsAcceptBegin,
-                                                                           nsStartBy - nsAcceptBegin)));
+                    abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                                    System.nanoTime() - nsAcceptBegin, //
+                                    nsStartBy - nsAcceptBegin));
                     s = state.get();
                 }
                 if (s == RUNNING) { // wait for the remainder of the timeout supplied to get
@@ -490,11 +491,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
         if (nsStartBy != nsAcceptBegin - 1 // has a start timeout
             && state.get() < RUNNING // not started yet
             && System.nanoTime() - nsStartBy > 0) // start timeout has elapsed
-            abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                   getIdentifier(),
-                                                                   getTaskName(),
-                                                                   System.nanoTime() - nsAcceptBegin,
-                                                                   nsStartBy - nsAcceptBegin)));
+            abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                            System.nanoTime() - nsAcceptBegin, //
+                            nsStartBy - nsAcceptBegin));
 
         if (result.compareAndSet(state, CANCELED))
             try {
@@ -505,14 +504,14 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "canceled from queue");
                     if (callback != null)
-                        callback.onCancel(task, this, false, false);
+                        callback.onCancel(task, this, false);
                 } else if (state.get() == PRESUBMIT) {
                     nsRunEnd = nsQueueEnd = nsAcceptEnd = System.nanoTime();
                     state.releaseShared(CANCELED);
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                         Tr.debug(this, tc, "canceled during pre-submit");
                     if (callback != null)
-                        callback.onCancel(task, this, false, false);
+                        callback.onCancel(task, this, false);
                 } else if (interruptIfRunning) {
                     state.releaseShared(CANCELING);
                     Thread t = thread;
@@ -525,12 +524,12 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                     } finally {
                         state.releaseShared(CANCELED);
                         if (callback != null)
-                            callback.onCancel(task, this, false, true);
+                            callback.onCancel(task, this, true);
                     }
                 } else {
                     state.releaseShared(CANCELED);
                     if (callback != null)
-                        callback.onCancel(task, this, false, true);
+                        callback.onCancel(task, this, true);
                 }
 
                 return true;
@@ -562,8 +561,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             case CANCELING:
                 throw new CancellationException();
             case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
-            case PRESUBMIT: // only possible when get() is invoke from onStart, which runs on the submitter's thread and therefore blocks completion
-                throw new InterruptedException(); // TODO message
+            case PRESUBMIT: // only possible when get() is invoked from onStart, which runs on the submitter's thread and therefore blocks completion
+                if (callback != null)
+                    callback.resolveDeadlockOnFutureGet();
+                throw new InterruptedException();
             default: // should be unreachable
                 throw new IllegalStateException(Integer.toString(state.get()));
         }
@@ -587,8 +588,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             case TIMEOUT:
                 throw new TimeoutException();
             case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
-            case PRESUBMIT: // only possible when get() is invoke from onStart, which runs on the submitter's thread and therefore blocks completion
-                throw new InterruptedException(); // TODO message
+            case PRESUBMIT: // only possible when get() is invoked from onStart, which runs on the submitter's thread and therefore blocks completion
+                if (callback != null)
+                    callback.resolveDeadlockOnFutureGet();
+                throw new InterruptedException();
             default: // should be unreachable
                 throw new IllegalStateException(Integer.toString(state.get()));
         }
@@ -637,11 +640,9 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
                || nsStartBy != nsAcceptBegin - 1 // has a start timeout
                   && s < RUNNING // not started yet
                   && System.nanoTime() - nsStartBy > 0 // start timeout has elapsed
-                  && (abort(true, new IllegalStateException(Tr.formatMessage(tc, "CWWKE1205.start.timeout",
-                                                                             getIdentifier(),
-                                                                             getTaskName(),
-                                                                             System.nanoTime() - nsAcceptBegin,
-                                                                             nsStartBy - nsAcceptBegin)))
+                  && (abort(true, new StartTimeoutException(getIdentifier(), getTaskName(), //
+                                  System.nanoTime() - nsAcceptBegin, //
+                                  nsStartBy - nsAcceptBegin))
                       || state.get() > RUNNING);
     }
 

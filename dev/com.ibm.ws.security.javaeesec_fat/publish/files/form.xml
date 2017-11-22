@@ -2,8 +2,6 @@
 
 	<featureManager>
 		<feature>appSecurity-3.0</feature>
-		<feature>el-3.0</feature>
-		<feature>javaeesecinternals-1.0</feature>
 		<feature>jsp-2.3</feature>
 	</featureManager>
 

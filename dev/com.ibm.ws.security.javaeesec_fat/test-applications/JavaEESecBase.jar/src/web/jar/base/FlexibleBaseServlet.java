@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2017 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package web.jar.base;
 
 import java.io.BufferedReader;
@@ -53,9 +63,6 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
 
 import javax.security.enterprise.SecurityContext;
 
-//TODO import com.ibm.ws.security.javaeesec.properties.ModulePropertiesProvider;
-//TODO import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
-
 /**
  * Base servlet which the JASPI test servlets extend.
  */
@@ -92,47 +99,6 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
 
     @Override
     public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//TODO        Instance<ModulePropertiesProvider> mppi = CDI.current().select(ModulePropertiesProvider.class);
-//TODO        Instance<HttpAuthenticationMechanism> hami = null;
-//TODO        ModulePropertiesProvider mpp = null;
-//TODO        HttpAuthenticationMechanism ham = null;
-//TODO        List<Class> hamcl = null;
-//TODO        Properties props = null;
-//TODO        if (mppi != null && !mppi.isUnsatisfied() && !mppi.isAmbiguous()) {
-//TODO            mpp = mppi.get();
-//TODO            hamcl = mpp.getAuthMechClassList();
-//TODO            for (Class hamc : hamcl) {
-//TODO                hami = CDI.current().select(hamc);
-//TODO                if (hami != null && !hami.isUnsatisfied() && !hami.isAmbiguous()) {
-//TODO                    ham = hami.get();
-//TODO                    props = mpp.getAuthMechProperties(hamc);
-//TODO                    break;
-//TODO                }
-//TODO            }
-//TODO        }
-//        Instance<IdentityStoreHandler> ishBean = CDI.current().select(IdentityStoreHandler.class);
-//        IdentityStoreHandler ish = null;
-//        if (ishBean != null && !ishBean.isUnsatisfied()) {
-//            ish = ishBean.get();
-//        }
-        PrintWriter writer = resp.getWriter();
-//        CredentialValidationResult result = ish.validate(new UsernamePasswordCredential("validuser1", "security"));
-//TODO        writer.println("ModulePropertiesProvider: " + mpp);
-//TODO        writer.println("authmechclass list: " + hamcl);
-//TODO        writer.println("properties: " + props);
-//TODO        writer.println("authmech: " + ham);
-//        writer.println("Toshi:IdentityStoreHandlerBean: " + ishBean);
-//        writer.println("Toshi:IdentityStoreHandlerBean.isUnsatisfied: " + ishBean.isUnsatisfied());
-//        writer.println("Toshi:IdentityStoreHandler: " + ish);
-//        writer.println("Toshi:validation result : " + result);
-//        writer.println("Toshi:getStatus : " + result.getStatus());
-//        writer.println("Toshi:getCallerDn : " + result.getCallerDn());
-//        writer.println("Toshi:getCallerGroups : " + result.getCallerGroups());
-//        if (result.getCallerPrincipal() != null) {
-//            writer.println("Toshi:getCallerPrincipal : " + result.getCallerPrincipal().getName());
-//        }
-//        writer.println("Toshi:getCallerUniqueId : " + result.getCallerUniqueId());
-//        writer.println("Toshi:getCallerIdentityStoreId : " + result.getIdentityStoreId());
         handleRequest("GET", req, resp);
     }
 
@@ -463,6 +429,62 @@ public abstract class FlexibleBaseServlet extends HttpServlet {
             Subject runAsSubject = WSSubject.getRunAsSubject();
             writeLine(p.getBuffer(), "RunAsSubject: " + runAsSubject);
         }
+    }
+
+    public class WriteJSR375Step implements BaseServletStep {
+
+        @Override
+        public void invoke(BaseServletParms p) throws Exception {
+            // list avaiable identitystorehandler, identitystores, and httpauthemechs.
+            Instance<IdentityStoreHandler> ishi = CDI.current().select(IdentityStoreHandler.class);
+            String value;
+            if (ishi != null && !ishi.isUnsatisfied() && !ishi.isAmbiguous()) {
+                value = "1 exists: " + ishi.get().getClass();
+            } else {
+                value = "0 exists";
+            }
+            writeLine(p.getBuffer(), "IdentityStoreHandler : " + value);
+
+            Instance<IdentityStore> isi = CDI.current().select(IdentityStore.class);
+            if (isi != null) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(" exists: [");
+                int i = 0;
+                for (IdentityStore is : isi) {
+                    sb.append(is.getClass()).append(", ");
+                    i++;
+                }
+                sb.append("]");
+                value = i + sb.toString();
+            } else {
+                value = "0 exists";
+            }
+            writeLine(p.getBuffer(), "IdentityStore : " + value);
+
+            Instance<HttpAuthenticationMechanism> hami = CDI.current().select(HttpAuthenticationMechanism.class);
+            if (hami != null) {
+                StringBuffer sb = new StringBuffer();
+                sb.append(" exists: [");
+                int i = 0;
+                for (HttpAuthenticationMechanism ham : hami) {
+                    sb.append(skipProxyClass(ham.getClass()).toString()).append(", ");
+                    i++;
+                }
+                sb.append("]");
+                value = i + sb.toString();
+            } else {
+                value = "0 exists";
+            }
+            writeLine(p.getBuffer(), "HttpAuthenticationMechanism : " + value);
+        }
+    }
+
+    private Class skipProxyClass(Class clz) {
+        Class output = clz;
+        while (output.toString().toLowerCase().contains("weld")) {
+            output = output.getSuperclass();
+        }
+        return output;
     }
 
     public abstract class ProcessStep implements BaseServletStep {

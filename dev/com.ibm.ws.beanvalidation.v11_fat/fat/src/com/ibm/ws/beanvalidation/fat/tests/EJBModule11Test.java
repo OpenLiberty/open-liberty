@@ -10,18 +10,12 @@
  *******************************************************************************/
 package com.ibm.ws.beanvalidation.fat.tests;
 
-import java.io.File;
-
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
-import org.jboss.shrinkwrap.api.spec.JavaArchive;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.ws.beanvalidation.fat.FATSuite;
 
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -40,30 +34,7 @@ public class EJBModule11Test extends AbstractTest {
     public static void setUp() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.beanvalidation.ejb_1.1.fat");
 
-        JavaArchive jar = ShrinkWrap.create(JavaArchive.class, "EJBModule1EJB" + ".jar");
-        jar.addPackage("beanvalidation.ejbmodule.ejb");
-        jar.addPackage("beanvalidation.ejbmodule");
-        ShrinkHelper.addDirectory(jar, "test-applications/EJBModule1EJB.jar/resources");
-
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "EJBModuleWeb" + ".war");
-        war.addPackage("beanvalidation.web");
-
-        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "OneEJBModuleApp" + ".ear");
-        ear.addAsModule(war);
-        ear.addAsModule(jar);
-        ear.addAsManifestResource(new File("test-applications/OneEJBModuleApp.ear/resources/META-INF/application.xml"));
-        ShrinkHelper.exportToServer(server, FOLDER, ear);
-
-        JavaArchive jar2 = ShrinkWrap.create(JavaArchive.class, "EJBModule2EJB" + ".jar");
-        jar2.addPackage("beanvalidation.ejbmodule2.ejb");
-        ShrinkHelper.addDirectory(jar2, "test-applications/EJBModule2EJB.jar/resources");
-
-        EnterpriseArchive ear2 = ShrinkWrap.create(EnterpriseArchive.class, "TwoEJBModulesApp" + ".ear");
-        ear2.addAsModule(war);
-        ear2.addAsModule(jar);
-        ear2.addAsModule(jar2);
-        ear2.addAsManifestResource(new File("test-applications/TwoEJBModulesApp.ear/resources/META-INF/application.xml"));
-        ShrinkHelper.exportToServer(server, FOLDER, ear2);
+        FATSuite.createAndExportEJBWARs(server);
 
         server.startServer(EJBModule11Test.class.getSimpleName() + ".log");
     }

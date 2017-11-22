@@ -16,14 +16,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -80,11 +78,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private static final String CONFIG_ID = "config.displayId";
 
     /**
-     * Controls how often we purge the list of tracked futures.
-     */
-    static final int FUTURE_PURGE_INTERVAL = 20;
-
-    /**
      * Names of applications using this ResourceFactory
      */
     private final Set<String> applications = Collections.newSetFromMap(new ConcurrentHashMap<String, Boolean>());
@@ -115,23 +108,13 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     private final AtomicReference<Map<String, String>> defaultExecutionProperties = new AtomicReference<Map<String, String>>();
 
     /**
-     * Count of futures. In combination with FUTURE_PURGE_INTERVAL, this determines when to purge completed futures from the list.
-     */
-    volatile int futureCount;
-
-    /**
-     * Futures for tasks that might be scheduled or running. These are tracked so that we can meet the requirement
-     * of canceling or interrupting tasks that are scheduled or running when the managed executor service goes away.
-     */
-    final ConcurrentLinkedQueue<Future<?>> futures = new ConcurrentLinkedQueue<Future<?>>();
-
-    /**
      * Reference to the JNDI name (if any) of this managed executor service.
      */
     private final AtomicReference<String> jndiNameRef = new AtomicReference<String>();
 
     /**
      * Reference to the executor that runs tasks according to the long running concurrency policy for this managed executor.
+     * Null if longRunningPolicy is not configured, in which case the executor for the normal concurrency policy should be used instead.
      */
     final AtomicReference<PolicyExecutor> longRunningPolicyExecutorRef = new AtomicReference<PolicyExecutor>();
 
@@ -219,16 +202,18 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
      */
     @Deactivate
     protected void deactivate(ComponentContext context) {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        // Cancel submitted or running tasks
+        int count = policyExecutor.cancel(getIdentifier(policyExecutor.getIdentifier()), true);
+
+        PolicyExecutor longRunningExecutor = longRunningPolicyExecutorRef.get();
+        if (longRunningExecutor != null)
+            count += longRunningExecutor.cancel(getIdentifier(longRunningExecutor.getIdentifier()), true);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, count + " submitted tasks canceled");
 
         contextSvcRef.deactivate(context);
         tranContextProviderRef.deactivate(context);
-
-        // Cancel submitted or running tasks // TODO have the policy executor(s) do this
-        for (Future<?> future = futures.poll(); future != null; future = futures.poll())
-            if (!future.isDone() && future.cancel(true))
-                if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "canceled", future);
     }
 
     /** {@inheritDoc} */
@@ -325,6 +310,22 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
         return execProps;
     }
 
+    /**
+     * Utility method to compute the identifier to be used in combination with the specified policy executor identifier.
+     * We prepend the managed executor name if it isn't already included in the policy executor's identifier.
+     *
+     * @param policyExecutorIdentifier unique identifier for the policy executor. Some examples:
+     *            concurrencyPolicy[longRunningPolicy]
+     *            managedExecutorService[executor1]/longRunningPolicy[default-0]
+     * @return identifier to use in messages and for matching of tasks upon shutdown.
+     */
+    @Trivial
+    final String getIdentifier(String policyExecutorIdentifier) {
+        return policyExecutorIdentifier.startsWith("managed") //
+                        ? policyExecutorIdentifier //
+                        : new StringBuilder(name.get()).append(" (").append(policyExecutorIdentifier).append(')').toString();
+    }
+
     /** {@inheritDoc} */
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
@@ -374,17 +375,6 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
     public boolean isTerminated() {
         // Section 3.1.6.1 of the Concurrency Utilities spec requires IllegalStateException
         throw new IllegalStateException(new UnsupportedOperationException("isTerminated"));
-    }
-
-    /**
-     * Purge completed futures from the list we are tracking.
-     * This method should be invoked every so often so that we don't leak memory.
-     */
-    @Trivial
-    final void purgeFutures() {
-        for (Iterator<Future<?>> it = futures.iterator(); it.hasNext();)
-            if (it.next().isDone())
-                it.remove();
     }
 
     /**
@@ -452,11 +442,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
         @SuppressWarnings("unchecked")
         TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-        Future<T> future = callback.policyExecutor.submit(task, callback);
-
-        if (futures.add(future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
-            purgeFutures();
-        return future;
+        return callback.policyExecutor.submit(task, callback);
     }
 
     /** {@inheritDoc} */
@@ -468,11 +454,7 @@ public class ManagedExecutorServiceImpl implements ExecutorService, ManagedExecu
 
         @SuppressWarnings("unchecked")
         TaskLifeCycleCallback callback = new TaskLifeCycleCallback(this, contextSvc.captureThreadContext(execProps));
-        Future<T> future = callback.policyExecutor.submit(task, result, callback);
-
-        if (futures.add(future) && ++futureCount % FUTURE_PURGE_INTERVAL == 0)
-            purgeFutures();
-        return future;
+        return callback.policyExecutor.submit(task, result, callback);
     }
 
     /** {@inheritDoc} */

@@ -57,6 +57,7 @@ import com.ibm.ws.threading.PolicyExecutor.MaxPolicy;
 import com.ibm.ws.threading.PolicyExecutorProvider;
 import com.ibm.ws.threading.PolicyTaskCallback;
 import com.ibm.ws.threading.PolicyTaskFuture;
+import com.ibm.ws.threading.StartTimeoutException;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
@@ -4499,7 +4500,9 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+            if (!(x.getCause() instanceof StartTimeoutException)
+                || x.getCause().getMessage() == null
+                || !x.getCause().getMessage().contains("CWWKE1205E"))
                 throw x;
             // else pass - aborted due to timeout
         }
@@ -4585,7 +4588,9 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future2.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 2 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+            if (!(x.getCause() instanceof StartTimeoutException)
+                || x.getCause().getMessage() == null
+                || !x.getCause().getMessage().contains("CWWKE1205E"))
                 throw x;
             // else pass - aborted due to timeout
         }
@@ -4594,7 +4599,9 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future3.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 3 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+            if (!(x.getCause() instanceof StartTimeoutException)
+                || x.getCause().getMessage() == null
+                || !x.getCause().getMessage().contains("CWWKE1205E"))
                 throw x;
             // else pass - aborted due to timeout
         }
@@ -4663,7 +4670,9 @@ public class PolicyExecutorServlet extends FATServlet {
             Integer result = future1.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
             fail("Task 1 should be been aborted, instead result is: " + result);
         } catch (RejectedExecutionException x) {
-            if (x.getMessage() == null || !x.getMessage().contains("CWWKE1205E"))
+            if (!(x.getCause() instanceof StartTimeoutException)
+                || x.getCause().getMessage() == null
+                || !x.getCause().getMessage().contains("CWWKE1205E"))
                 throw x;
             // else pass - aborted due to timeout
         }

@@ -86,7 +86,6 @@ public class LdapIdentityStore implements IdentityStore {
         env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         env.put(Context.PROVIDER_URL, url);
 
-        //TODO: Fix ssl
         boolean sslEnabled = url != null && url.startsWith("ldaps");
         if (sslEnabled) {
             env.put("java.naming.ldap.factory.socket", "com.ibm.ws.ssl.protocol.LibertySSLSocketFactory");
@@ -118,6 +117,10 @@ public class LdapIdentityStore implements IdentityStore {
 
     @Override
     public Set<String> getCallerGroups(CredentialValidationResult validationResult) {
+        if (!validationTypes().contains(IdentityStore.ValidationType.PROVIDE_GROUPS)) {
+            return new HashSet<String>();
+        }
+
         SecurityManager secManager = System.getSecurityManager();
         if (secManager != null) {
             secManager.checkPermission(new IdentityStorePermission("getGroups"));
@@ -128,22 +131,18 @@ public class LdapIdentityStore implements IdentityStore {
             String[] attrIds = { idStoreDefinition.getCallerNameAttribute() };
             String user = validationResult.getCallerPrincipal().getName();
             String filter = "(&(" + attrIds[0] + "=" + user + ")" + idStoreDefinition.getCallerSearchFilter() + ")";
-            userDn = getUserDn(user, filter, getCallerSearchControls());
-        }
-
-        Set<String> groups = new HashSet<String>();
-        try {
-            DirContext context = bind();
-
-            if (idStoreDefinition.getGroupSearchBase().isEmpty() || idStoreDefinition.getGroupSearchFilter().isEmpty()) {
-                groups = getGroupsByMembership(context, userDn, idStoreDefinition.getGroupMemberOfAttribute());
+            if (isValidDn(user)) {
+                userDn = user;
             } else {
-                groups = getGroupsByMember(context, userDn);
+                userDn = getUserDn(user, filter, getCallerSearchControls());
             }
-        } catch (NamingException e) {
-            Tr.debug(tc, "exception: ", e);
         }
-        return groups;
+
+        try {
+            return getGroups(bind(), userDn);
+        } catch (NamingException e) {
+        }
+        return new HashSet<String>();
     }
 
     /**
@@ -175,19 +174,6 @@ public class LdapIdentityStore implements IdentityStore {
         }
     }
 
-    /**
-     * Most LDAPs throw CommunicationException when LDAP server is down, but
-     * z/OS sometime throws ServiceUnavailableException when ldap server is down.
-     */
-//    private boolean isConnectionException(NamingException e, String METHODNAME) {
-//        if (e instanceof CommunicationException) {
-//            return true;
-//        } else if (e instanceof ServiceUnavailableException) {
-//            return true;
-//        }
-//        return false;
-//    }
-
     @Override
     public int priority() {
         return this.idStoreDefinition.getPriority();
@@ -208,18 +194,21 @@ public class LdapIdentityStore implements IdentityStore {
             String user = cred.getCaller();
             String filter = idStoreDefinition.getCallerSearchFilter();
             String[] attrIds = { idStoreDefinition.getCallerNameAttribute() };
-            String memberof = idStoreDefinition.getGroupMemberOfAttribute();
-            String member = idStoreDefinition.getGroupMemberAttribute();
+            String callerName = null;
+            String userDn = null;
 
             filter = "(&(" + attrIds[0] + "=" + user + ")" + filter + ")";
             Tr.debug(tc, "filter: ", filter);
             Tr.debug(tc, "attrIds: ", attrIds[0]);
-            Tr.debug(tc, "memberof: ", memberof);
-            Tr.debug(tc, "member: ", member);
 
             Set<String> groups = new HashSet<String>();
 
-            String userDn = getUserDn(user, filter, getCallerSearchControls());
+            if (isValidDn(user)) {
+                userDn = user;
+            } else {
+                userDn = getUserDn(user, filter, getCallerSearchControls());
+                callerName = user;
+            }
             if (userDn == null) {
                 return CredentialValidationResult.INVALID_RESULT;
             }
@@ -235,33 +224,46 @@ public class LdapIdentityStore implements IdentityStore {
                     return CredentialValidationResult.INVALID_RESULT;
                 }
             } catch (NamingException e) {
-                Tr.debug(tc, "exception: " + e);
-//                if (!isConnectionException(e, "getCallerGroups")) {
                 return CredentialValidationResult.INVALID_RESULT;
-//                }
             }
 
-            /*
-             * Get the caller's groups.
-             */
-            try {
-                if (idStoreDefinition.getGroupSearchBase().isEmpty() || idStoreDefinition.getGroupSearchFilter().isEmpty()) {
-                    groups = getGroupsByMembership(context, userDn, memberof);
-                } else {
-                    groups = getGroupsByMember(context, userDn);
-                }
-                Tr.debug(tc, "groups: ", groups);
-            } catch (NamingException e) {
-                Tr.debug(tc, "exception: " + e);
-            }
-
-            //TODO: storeId, host:port currently
             String url = idStoreDefinition.getUrl();
             url = url.replaceFirst("(?i)ldaps?:\\/\\/", "");
             if (url.endsWith("/")) {
                 url = url.substring(0, url.length() - 1);
             }
-            return new CredentialValidationResult(url, user, userDn, userDn, groups);
+
+            if (callerName == null) {
+                try {
+                    Attributes attrs = context.getAttributes(userDn, attrIds);
+                    Attribute attribute = attrs.get(attrIds[0]);
+                    NamingEnumeration<?> ne = attribute.getAll();
+                    while (ne.hasMoreElements()) {
+                        callerName = (String) ne.nextElement();
+                    }
+                } catch (NamingException e) {
+
+                }
+            }
+
+            if (validationTypes().contains(IdentityStore.ValidationType.PROVIDE_GROUPS)) {
+
+                /*
+                 * Get the caller's groups.
+                 */
+                try {
+                    String groupSearchBase = idStoreDefinition.getGroupSearchBase();
+                    String groupSearchFilter = idStoreDefinition.getGroupSearchFilter();
+                    if (groupSearchBase.isEmpty() || groupSearchFilter.isEmpty()) {
+                        groups = getGroupsByMembership(context, userDn);
+                    } else {
+                        groups = getGroupsByMember(context, userDn, groupSearchBase, groupSearchFilter);
+                    }
+                } catch (NamingException e) {
+                    Tr.debug(tc, "exception: " + e);
+                }
+            }
+            return new CredentialValidationResult(url, callerName, userDn, userDn, groups);
         }
 
         return CredentialValidationResult.INVALID_RESULT;
@@ -271,7 +273,6 @@ public class LdapIdentityStore implements IdentityStore {
      * Get the caller's full distinguished name (DN). The DN can be returned in one of the following ways:
      *
      * <ul>
-     * <li>The caller's name, if it is a DN.</li>
      * <li>Using the callerSearchBase, caller's name and the callerBaseDn to form the DN.</li>
      * <li>Search in LDAP for the user and returning the DN from the LDAP entry.</li>
      * </ul>
@@ -281,18 +282,8 @@ public class LdapIdentityStore implements IdentityStore {
      * @param controls The {@link SearchControls} object.
      * @return The user's DN.
      */
-    @FFDCIgnore(InvalidNameException.class)
     private String getUserDn(String callerName, String filter, SearchControls controls) {
-        //check if user is a valid DN
         String userDn = null;
-        try {
-            userDn = new LdapName(callerName).toString();
-        } catch (InvalidNameException e) {
-
-        }
-        if (userDn != null) {
-            return userDn;
-        }
         String searchBase = idStoreDefinition.getCallerSearchBase();
         if (searchBase == null || searchBase.isEmpty()) {
             userDn = idStoreDefinition.getCallerNameAttribute() + "=" + callerName + "," + idStoreDefinition.getCallerBaseDn();
@@ -338,15 +329,33 @@ public class LdapIdentityStore implements IdentityStore {
         return result.toString();
     }
 
+    private Set<String> getGroups(DirContext context, String userDn) {
+        Set<String> groups = null;
+        String groupSearchBase = idStoreDefinition.getGroupSearchBase();
+        String groupSearchFilter = idStoreDefinition.getGroupSearchFilter();
+        try {
+            if (groupSearchBase.isEmpty() || groupSearchFilter.isEmpty()) {
+                groups = getGroupsByMembership(context, userDn);
+            } else {
+                groups = getGroupsByMember(context, userDn, groupSearchBase, groupSearchFilter);
+            }
+        } catch (NamingException e) {
+            Tr.error(tc, "An error occurred while searching for groups.", e);
+        }
+        return groups;
+    }
+
     /**
      * Get the groups for the caller by using a member-style attribute found on group LDAP entities.
      *
      * @param context The {@link DirContext} to use when performing the search.
      * @param callerDn The caller's distinguished name.
+     * @param groupSearchFilter
+     * @param groupSearchBase2
      * @return The set of groups the caller is a member of.
      * @throws NamingException If there was an issue with the JNDI request.
      */
-    private Set<String> getGroupsByMember(DirContext context, String callerDn) throws NamingException {
+    private Set<String> getGroupsByMember(DirContext context, String callerDn, String groupSearchBase, String groupSearchFilter) throws NamingException {
 
         String[] attrIds = { idStoreDefinition.getGroupNameAttribute() };
         long limit = Long.valueOf(idStoreDefinition.getMaxResults());
@@ -354,11 +363,11 @@ public class LdapIdentityStore implements IdentityStore {
         int scope = getSearchScope(idStoreDefinition.getGroupSearchScope());
 
         SearchControls controls = new SearchControls(scope, limit, timeOut, attrIds, false, false);
-        String filter = "(&" + idStoreDefinition.getGroupSearchFilter() + "(" + idStoreDefinition.getGroupMemberAttribute() + "=" + callerDn + "))";
+        String filter = "(&" + groupSearchFilter + "(" + idStoreDefinition.getGroupMemberAttribute() + "=" + callerDn + "))";
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "JNDI_CALL search entry", new Object[] { idStoreDefinition.getGroupSearchBase(), filter, printControls(controls) });
+            Tr.debug(tc, "JNDI_CALL search entry", new Object[] { groupSearchBase, filter, printControls(controls) });
         }
-        NamingEnumeration<SearchResult> ne = context.search(new LdapName(idStoreDefinition.getGroupSearchBase()), filter, controls);
+        NamingEnumeration<SearchResult> ne = context.search(new LdapName(groupSearchBase), filter, controls);
         Set<String> groups = new HashSet<String>();
         while (ne.hasMoreElements()) {
             groups.add(ne.nextElement().getNameInNamespace());
@@ -375,7 +384,8 @@ public class LdapIdentityStore implements IdentityStore {
      * @return The set of groups the caller is a member of.
      * @throws NamingException If there was an issue with the JNDI request.
      */
-    private Set<String> getGroupsByMembership(DirContext context, String callerDn, String memberOfAttribute) throws NamingException {
+    private Set<String> getGroupsByMembership(DirContext context, String callerDn) throws NamingException {
+        String memberOfAttribute = idStoreDefinition.getGroupMemberOfAttribute();
         Attributes attrs;
         Set<String> groups = new HashSet<String>();
 
@@ -393,6 +403,17 @@ public class LdapIdentityStore implements IdentityStore {
         }
 
         return groups;
+    }
+
+    @Trivial
+    @FFDCIgnore(InvalidNameException.class)
+    private boolean isValidDn(String user) {
+        try {
+            new LdapName(user).toString();
+        } catch (InvalidNameException e) {
+            return false;
+        }
+        return true;
     }
 
     @Override

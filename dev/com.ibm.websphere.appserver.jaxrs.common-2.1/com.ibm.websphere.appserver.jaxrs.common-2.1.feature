@@ -9,7 +9,7 @@ IBM-App-ForceRestart: uninstall, \
  com.ibm.websphere.appserver.classloading-1.0, \
  com.ibm.websphere.appserver.javax.mail-1.6, \
  com.ibm.websphere.appserver.globalhandler-1.0, \
- com.ibm.websphere.appserver.javax.annotation-1.2; apiJar=false, \
+ com.ibm.websphere.appserver.javax.annotation-1.3; apiJar=false, \
  com.ibm.websphere.appserver.json-1.0, \
  com.ibm.websphere.appserver.jsonpInternal-1.1, \
  com.ibm.websphere.appserver.jsonbInternal-1.0, \
