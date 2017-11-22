@@ -561,8 +561,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             case CANCELING:
                 throw new CancellationException();
             case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
-            case PRESUBMIT: // only possible when get() is invoke from onStart, which runs on the submitter's thread and therefore blocks completion
-                throw new InterruptedException(); // TODO message
+            case PRESUBMIT: // only possible when get() is invoked from onStart, which runs on the submitter's thread and therefore blocks completion
+                if (callback != null)
+                    callback.resolveDeadlockOnFutureGet();
+                throw new InterruptedException();
             default: // should be unreachable
                 throw new IllegalStateException(Integer.toString(state.get()));
         }
@@ -586,8 +588,10 @@ public class PolicyTaskFutureImpl<T> implements PolicyTaskFuture<T> {
             case TIMEOUT:
                 throw new TimeoutException();
             case RUNNING: // only possible when get() is invoked from thread of execution and therefore blocks completion
-            case PRESUBMIT: // only possible when get() is invoke from onStart, which runs on the submitter's thread and therefore blocks completion
-                throw new InterruptedException(); // TODO message
+            case PRESUBMIT: // only possible when get() is invoked from onStart, which runs on the submitter's thread and therefore blocks completion
+                if (callback != null)
+                    callback.resolveDeadlockOnFutureGet();
+                throw new InterruptedException();
             default: // should be unreachable
                 throw new IllegalStateException(Integer.toString(state.get()));
         }

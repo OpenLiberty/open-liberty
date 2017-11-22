@@ -281,4 +281,9 @@ public class TaskLifeCycleCallback extends PolicyTaskCallback {
     public void raiseAbortedException(Throwable x) throws ExecutionException {
         throw new AbortedException(x);
     }
+
+    @Override
+    public void resolveDeadlockOnFutureGet() throws InterruptedException {
+        throw new InterruptedException(Tr.formatMessage(tc, "CWWKC1120.future.get.rejected"));
+    }
 }
