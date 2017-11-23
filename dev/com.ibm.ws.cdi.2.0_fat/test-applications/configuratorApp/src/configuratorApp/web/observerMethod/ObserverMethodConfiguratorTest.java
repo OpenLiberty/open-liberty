@@ -12,9 +12,9 @@ package configuratorApp.web.observerMethod;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Set;
-import java.util.Vector;
 
 import javax.enterprise.event.Event;
 import javax.enterprise.inject.Any;
@@ -31,20 +31,22 @@ import configuratorApp.web.ConfiguratorTestBase;
 @WebServlet(urlPatterns = "/observerMethodConfiguratorTest")
 public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
 
-    public static Vector<Integer> observations = new Vector<Integer>();
+    public static ArrayList<Integer> squareObservations = new ArrayList<Integer>();
+    public static ArrayList<Integer> circleObservations = new ArrayList<Integer>();
 
-    public static int[] observerPriorities = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    public static int[] squareObserverPriorities = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    public static final int[] circleObserverOrder = { 1, 2, 8, 3, 9, 5, 4, 6, 0, 7 };
 
     public static int[] positions = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
     static {
-        // Shuffle priorities
+        // Shuffle square observer priorities
         final Random rnd = new Random();
-        for (int i = observerPriorities.length - 1; i > 0; i--) {
+        for (int i = squareObserverPriorities.length - 1; i > 0; i--) {
             int index = rnd.nextInt(i + 1);
-            int j = observerPriorities[index];
-            observerPriorities[index] = observerPriorities[i];
-            observerPriorities[i] = j;
+            int j = squareObserverPriorities[index];
+            squareObserverPriorities[index] = squareObserverPriorities[i];
+            squareObserverPriorities[i] = j;
         }
     }
 
@@ -66,19 +68,50 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
     @Inject
     Event<Square> squareEvent;
 
+    /*
+     * This tests that the SquareObservers are called in an expected order
+     * Each SquareObserver is configured with a priority by a configurator in the ProcessObserverMethodObserver class
+     * The priorities used for each observer are taken from the squareObserverPriorities array which is initialized and randomized above
+     * Each observer records that it executed by appending its identity to the squareObservations ArrayList
+     * This test method checks that order of execution recorded in the squareObservations ArrayList matches the random priorities in the squareObserverPriorities array.
+     */
     @Test
-    public void testObserverOrdering() {
+    public void testSquareObserverOrdering() {
 
         squareEvent.fire(new Square());
 
         // Check enough observers were called
-        assertEquals(observerPriorities.length, observations.size());
+        assertEquals(squareObserverPriorities.length, squareObservations.size());
 
         // Check observers were called in the expected randomized order
         int position = 0;
-        for (int observation : observations) {
-            System.out.println("Checking observer " + observation + " happened in position " + position);
+        for (int observation : squareObservations) {
+            System.out.println("Checking square observer " + observation + " happened in position " + position);
             assertEquals(observation, positions[position++]);
+        }
+    }
+
+    @Inject
+    Event<Circle> circleEvent;
+
+    /*
+     * This tests that the priorities set on the circle observers (via @Priority) work as expected
+     * Each circle observer has a hard coded priority assigned via @Priority in the individual observer classes
+     * Those priorities are also represented by the circleObserverOrder array above.
+     * Each observer records that it executed by appending its identity to the circleObservations ArrayList
+     * This test method checks that the order of execution recorded in the circleObservations ArrayList matches the order represented by the circleObserverOrder array.
+     */
+    @Test
+    public void testCircleObserverOrdering() {
+
+        circleEvent.fire(new Circle());
+
+        // Check enough observers were called
+        assertEquals(circleObserverOrder.length, circleObservations.size());
+
+        // Check observers were called in the expected order
+        for (int position = 0; position < circleObserverOrder.length; position++) {
+            assertEquals(circleObservations.get(position).intValue(), circleObserverOrder[position]);
         }
     }
 }

@@ -8,9 +8,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package web.war.servlets.form.forward;
+package web.war.servlets.customform.get.forward;
 import web.jar.base.FlexibleBaseServlet;
-import javax.security.enterprise.authentication.mechanism.http.FormAuthenticationMechanismDefinition;
+import javax.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 
 import javax.servlet.annotation.HttpConstraint;
@@ -19,14 +19,14 @@ import javax.servlet.annotation.ServletSecurity;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.annotation.ServletSecurity.EmptyRoleSemantic;
 
-@FormAuthenticationMechanismDefinition(loginToContinue = @LoginToContinue(errorPage="/loginError.jsp", loginPage="/login.jsp", useForwardToLogin=true, useForwardToLoginExpression=""))
-@WebServlet("/MultipleISFormServlet")
+@CustomFormAuthenticationMechanismDefinition(loginToContinue = @LoginToContinue(errorPage="/customLoginError.jsp", loginPage="/customLogin.xhtml", useForwardToLogin=true, useForwardToLoginExpression=""))
+@WebServlet("/MultipleISCustomFormServlet")
 @ServletSecurity(value = @HttpConstraint(EmptyRoleSemantic.DENY), httpMethodConstraints = {@HttpMethodConstraint(value = "GET", rolesAllowed = "grantedgroup")})
-public class MultipleISFormServlet extends FlexibleBaseServlet {
+public class MultipleISCustomFormServlet extends FlexibleBaseServlet {
     private static final long serialVersionUID = 1L;
 
-    public MultipleISFormServlet() {
-        super("MultipleISFormServlet");
+    public MultipleISCustomFormServlet() {
+        super("MultipleISCustomFormServlet");
 
         mySteps.add(new WriteRequestBasicsStep());
         mySteps.add(new WritePrincipalStep());

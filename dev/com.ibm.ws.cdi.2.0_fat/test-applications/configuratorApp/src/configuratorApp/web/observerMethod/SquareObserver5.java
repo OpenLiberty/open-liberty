@@ -17,6 +17,6 @@ import javax.enterprise.event.Observes;
 public class SquareObserver5 {
 
     public void observer(@Observes Square square) {
-        ObserverMethodConfiguratorTest.observations.add(5);
+        ObserverMethodConfiguratorTest.squareObservations.add(5);
     }
 }

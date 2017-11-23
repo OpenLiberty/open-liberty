@@ -609,7 +609,7 @@ public class LoginToContinueInterceptorTest {
                 will(returnValue(true));
                 one(wasc).getSSORequiresSSL();
                 will(returnValue(false));
-                one(req).getMethod();
+                between(1, 2).of(req).getMethod();
                 will(returnValue("GET"));
                 one(ruh).setReferrerURLCookie(with(any(HttpServletRequest.class)), with(any(AuthenticationResult.class)), with(any(String.class)));
             }
