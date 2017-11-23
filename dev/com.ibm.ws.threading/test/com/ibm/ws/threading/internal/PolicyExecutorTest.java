@@ -283,25 +283,27 @@ public class PolicyExecutorTest {
         pw.flush();
         String output = new String(out.toByteArray());
 
-        String expectedoutput = "PolicyExecutorProvider-testIntrospector\n"
-                                + "  expedite = 5\n"
-                                + "  maxConcurrency = 10 (loose)\n"
-                                + "  maxQueueSize = 3\n"
-                                + "  maxWaitForEnqueue = 30 ms\n"
-                                + "  runIfQueueFull = true\n"
-                                + "  startTimeout = 10 ms\n"
-                                + "  Total Enqueued to Global Executor = 0 (0 expedited)\n"
-                                + "  withheldConcurrency = 0\n"
-                                + "  Remaining Queue Capacity = 3\n"
-                                + "  state = ACTIVE\n"
-                                + "  concurrency callback = null\n"
-                                + "  late start callback = null\n"
-                                + "  queue capacity callback = null\n"
-                                + "  Running Task Count = 0\n"
-                                + "  Running Task Futures:\n"
-                                + "    None\n"
-                                + "  Queued Task Futures (up to first 50):\n"
-                                + "    None\n\n";
+        String EOL = System.getProperty("line.separator");
+
+        String expectedoutput = "PolicyExecutorProvider-testIntrospector" + EOL
+                                + "  expedite = 5" + EOL
+                                + "  maxConcurrency = 10 (loose)" + EOL
+                                + "  maxQueueSize = 3" + EOL
+                                + "  maxWaitForEnqueue = 30 ms" + EOL
+                                + "  runIfQueueFull = true" + EOL
+                                + "  startTimeout = 10 ms" + EOL
+                                + "  Total Enqueued to Global Executor = 0 (0 expedited)" + EOL
+                                + "  withheldConcurrency = 0" + EOL
+                                + "  Remaining Queue Capacity = 3" + EOL
+                                + "  state = ACTIVE" + EOL
+                                + "  concurrency callback = null" + EOL
+                                + "  late start callback = null" + EOL
+                                + "  queue capacity callback = null" + EOL
+                                + "  Running Task Count = 0" + EOL
+                                + "  Running Task Futures:" + EOL
+                                + "    None" + EOL
+                                + "  Queued Task Futures (up to first 50):" + EOL
+                                + "    None" + EOL + EOL;
 
         assertEquals("The policy executor introspector output did not match the expected output.", expectedoutput, output);
     }
