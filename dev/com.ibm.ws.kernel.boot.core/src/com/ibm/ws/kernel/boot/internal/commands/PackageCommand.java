@@ -181,15 +181,7 @@ public class PackageCommand {
      * Otherwise return false.
      */
     private boolean includeMinifyorMinifyRunnable(String val) {
-        if (PackageProcessor.IncludeOption.MINIFY.getValue().equals(val)) {
-            return true;
-        }
-        else if (PackageProcessor.IncludeOption.MINIFYRUNNABLE.getValue().equals(val)) {
-            return true;
-        }
-        else {
-            return false;
-        }
+        return PackageProcessor.IncludeOption.MINIFY.matches(val);
     }
 
     public ReturnCode packageServerRuntime(File packageFile, boolean runtimeOnly) {
@@ -276,6 +268,10 @@ public class PackageCommand {
             return "pax";
         }
 
+        if (PackageProcessor.IncludeOption.RUNNABLE.matches(includeOption)) {
+            return "jar";
+        }
+        
         return "zip";
     }
 
