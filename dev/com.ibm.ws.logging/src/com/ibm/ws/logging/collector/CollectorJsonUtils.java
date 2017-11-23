@@ -95,7 +95,7 @@ public class CollectorJsonUtils {
 
         //                                           name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField, CollectorConstants.GC_EVENT_TYPE);
         /* GC specific fields */
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_heap" : "heap", String.valueOf((long) hcGCData.getHeap()), false, false, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_usedHeap" : "usedHeap", String.valueOf((long) hcGCData.getUsage()), false, false, false, isFirstField);
@@ -138,7 +138,7 @@ public class CollectorJsonUtils {
         sb.append("{");
 //      name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField, CollectorConstants.MESSAGES_LOG_EVENT_TYPE);
         /* Message log specific fields */
         isFirstField = isFirstField
                        & !addToJSON(sb, isHigherVer ? "loglevel" : "severity", isHigherVer ? messageLogData.getLogLevelRaw() : messageLogData.getLogLevel(), false, false, false,
@@ -175,7 +175,7 @@ public class CollectorJsonUtils {
 
 //      name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField, CollectorConstants.TRACE_LOG_EVENT_TYPE);
 
         /* Message log specific fields */
         isFirstField = isFirstField
@@ -210,7 +210,7 @@ public class CollectorJsonUtils {
 
 //      name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField, CollectorConstants.FFDC_EVENT_TYPE);
         /* FFDC specific fields */
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_className" : "className", ffdcData.getClassName(), false, false, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_exceptionName" : "exceptionName", ffdcData.getExceptionName(), false, false, false, isFirstField);
@@ -241,7 +241,7 @@ public class CollectorJsonUtils {
 
 //      name        value     jsonEscapeName? jsonEscapeValue? trim?   isFirst?
         /* Common fields for all event types */
-        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField);
+        isFirstField = addCommonFields(sb, hostName, wlpUserDir, serverName, date, sequenceNum, isHigherVer, isFirstField, CollectorConstants.ACCESS_LOG_EVENT_TYPE);
         /* access request specific fields */
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_requestHost" : "requestHost", accessLogData.getRequestHost(), false, false, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_requestPort" : "requestPort", accessLogData.getRequestPort(), false, false, false, isFirstField);
@@ -367,12 +367,13 @@ public class CollectorJsonUtils {
      * Returns true if the added filed is the first one on JSON.
      */
     static boolean addCommonFields(StringBuilder sb, String hostName, String wlpUserDir, String serverName, Date date, String sequenceNum, boolean isHigherVer,
-                                   boolean isFirstField) {
+                                   boolean isFirstField, String eventType) {
         String datetime = dateFormatTL.get().format(date);
 
         /* Common fields for all event types */
 
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_datetime" : "datetime", datetime, false, false, false, isFirstField);
+        isFirstField = isFirstField & !addToJSON(sb, "type", eventType, false, false, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "host" : "hostName", hostName, false, false, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_userDir" : "wlpUserDir", wlpUserDir, false, true, false, isFirstField);
         isFirstField = isFirstField & !addToJSON(sb, isHigherVer ? "ibm_serverName" : "serverName", serverName, false, false, false, isFirstField);
