@@ -286,17 +286,43 @@ public class CollectorJsonUtils {
         return sb.toString();
     }
 
-    private static String jsonEscape2(String s) {
-        String r = s;
-        r = r.replace("\\", "\\\\"); // \ -> \\
-        r = r.replace("\"", "\\\""); // " -> \"
-        r = r.replace("/", "\\/"); // / -> \/
-        r = r.replace("\b", "\\b"); // esc-b -> \b
-        r = r.replace("\f", "\\f"); // esc-f -> \f
-        r = r.replace("\n", "\\n"); // esc-n -> \n
-        r = r.replace("\r", "\\r"); // esc-r -> \r
-        r = r.replace("\t", "\\t"); // esc-t -> \t
-        return r;
+    /**
+     * Escape \b, \f, \n, \r, \t, ", \, / characters and appends to a string builder
+     *
+     * @param sb String builder to append to
+     * @param s String to escape
+     */
+    private static void jsonEscape3(StringBuilder sb, String s) {
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (c) {
+                case '\b':
+                    sb.append("\\b");
+                    break;
+                case '\f':
+                    sb.append("\\f");
+                    break;
+                case '\n':
+                    sb.append("\\n");
+                    break;
+                case '\r':
+                    sb.append("\\r");
+                    break;
+                case '\t':
+                    sb.append("\\t");
+                    break;
+
+                // Fall through because we just need to add \ (escaped) before the character
+                case '\\':
+                case '\"':
+                case '/':
+                    sb.append("\\");
+                    sb.append(c);
+                    break;
+                default:
+                    sb.append(c);
+            }
+        }
     }
 
     /*
@@ -316,14 +342,23 @@ public class CollectorJsonUtils {
         if (trim)
             value = value.trim();
 
+        sb.append("\"");
+        // escape name if requested
+
+        if (jsonEscapeName)
+            jsonEscape3(sb, name);
+        else
+            sb.append(name);
+
+        sb.append("\":\"");
+
         // escape value if requested
         if (jsonEscapeValue)
-            value = jsonEscape2(value);
-        // escape name if requested
-        if (jsonEscapeName)
-            name = jsonEscape2(name);
-        // append name : value to sb
-        sb.append("\"" + name + "\":\"").append(value).append("\"");
+            jsonEscape3(sb, value);
+        else
+            sb.append(value);
+
+        sb.append("\"");
         return true;
     }
 
@@ -351,11 +386,13 @@ public class CollectorJsonUtils {
         sb.append("[");
         for (int i = 0; i < tags.length; i++) {
 
-            tags[i] = jsonEscape2(tags[i].trim());
+            tags[i] = tags[i].trim();
             if (tags[i].contains(" ") || tags[i].contains("-")) {
                 continue;
             }
-            sb.append("\"").append(jsonEscape2(tags[i].trim())).append("\"");
+            sb.append("\"");
+            jsonEscape3(sb, tags[i]);
+            sb.append("\"");
             if (i != tags.length - 1) {
                 sb.append(",");
             }

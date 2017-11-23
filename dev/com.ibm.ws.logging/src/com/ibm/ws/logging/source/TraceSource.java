@@ -11,7 +11,6 @@
 package com.ibm.ws.logging.source;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.LogRecord;
 
 import com.ibm.websphere.ras.Tr;
@@ -21,6 +20,7 @@ import com.ibm.ws.logging.WsTraceHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
+import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
@@ -31,7 +31,8 @@ public class TraceSource implements Source, WsTraceHandler {
     private final String sourceName = "com.ibm.ws.logging.source.trace";
     private final String location = "memory";
     private BufferManager bufferMgr = null;
-    private final AtomicLong seq = new AtomicLong();
+    private final SequenceNumber sequenceNumber = new SequenceNumber();
+    //private final AtomicLong seq = new AtomicLong();
 
     protected void activate(Map<String, Object> configuration) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -108,7 +109,8 @@ public class TraceSource implements Source, WsTraceHandler {
         Map<String, String> extensions = null;
         if (logRecord instanceof WsLogRecord)
             extensions = ((WsLogRecord) logRecord).getExtensions();
-        String sequence = timestamp + "_" + String.format("%013X", seq.incrementAndGet());
+        String sequence = sequenceNumber.next(timestamp);
+        //String sequence = timestamp + "_" + String.format("%013X", seq.incrementAndGet());
 
         return new TraceLogData(timestamp, threadId, loggerName, logLevel, logLevelRaw, message, methodName, className, extensions, sequence);
 

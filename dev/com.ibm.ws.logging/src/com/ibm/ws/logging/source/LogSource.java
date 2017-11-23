@@ -11,7 +11,6 @@
 package com.ibm.ws.logging.source;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.LogRecord;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +23,7 @@ import com.ibm.ws.logging.WsLogHandler;
 import com.ibm.ws.logging.internal.WsLogRecord;
 import com.ibm.ws.logging.synch.ThreadLocalHandler;
 import com.ibm.ws.logging.utils.LogFormatUtils;
+import com.ibm.ws.logging.utils.SequenceNumber;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Source;
 
@@ -35,12 +35,14 @@ public class LogSource implements Source, WsLogHandler {
     private final String location = "memory";
     private BufferManager bufferMgr = null;
     static Pattern messagePattern;
+    private final SequenceNumber sequenceNumber = new SequenceNumber();
 
     static {
         messagePattern = Pattern.compile("^([A-Z][\\dA-Z]{3,4})(\\d{4})([A-Z])(:)");
+
     }
 
-    private final AtomicLong seq = new AtomicLong();
+    //private final AtomicLong seq = new AtomicLong();
 
     protected void activate(Map<String, Object> configuration) {
         System.out.println("LogSource.java - Activating LogSource");
@@ -120,7 +122,8 @@ public class LogSource implements Source, WsLogHandler {
         Map<String, String> extensions = null;
         if (logRecord instanceof WsLogRecord)
             extensions = ((WsLogRecord) logRecord).getExtensions();
-        String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
+        String sequence = sequenceNumber.next(date);
+        //String sequence = date + "_" + String.format("%013X", seq.incrementAndGet());
         Throwable throwable = logRecord.getThrown();
 
         return new MessageLogData(date, threadId, loggerName, logLevel, logLevelRaw, messageId, message, methodName, className, extensions, sequence, throwable);
