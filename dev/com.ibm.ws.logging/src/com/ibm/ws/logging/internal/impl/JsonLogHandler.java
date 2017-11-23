@@ -66,7 +66,7 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
     /**
      * Constructor for the JsonLoghandler which will establish server information needed
      * to fill in the fields of the JSON data object
-     * 
+     *
      * @param serverName The wlp servername
      * @param wlpUserDir The wlp user directory
      * @param sourcesList The first sourceList to subscribe to collectorManager with
@@ -88,7 +88,7 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
 
         //Resolve server name to be the DOCKER HOST name or the cannonical host name.
         String containerHost = System.getenv(ENV_VAR_CONTAINERHOST);
-        if (containerName == null || containerName.equals("") || containerName.length() == 0) {
+        if (containerHost == null || containerHost.equals("") || containerHost.length() == 0) {
             try {
                 serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                     @Override
@@ -102,7 +102,7 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
                 serverHostName = "";
             }
         } else {
-            serverName = containerName;
+            serverHostName = containerName;
         }
 
     }
@@ -110,7 +110,7 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
     /**
      * Without osgi, this modified method is called explicility from the update method in
      * JsonTrService
-     * 
+     *
      * @param newSources List of the new source list from config
      */
     public void modified(List<String> newSources) {
@@ -143,7 +143,7 @@ public abstract class JsonLogHandler implements SyncrhonousHandler, Formatter {
 
     /**
      * Setter to set the writer for the handler
-     * 
+     *
      * @param writer Object used to write out
      */
     public abstract void setWriter(Object writer);

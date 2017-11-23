@@ -70,13 +70,6 @@ public class JsonTraceService extends BaseTraceService {
         //Retrieve collectormgrPiplineUtils
         if (collectorMgrPipelineUtils == null) {
             collectorMgrPipelineUtils = CollectorManagerPipelineUtils.getInstance();
-            /*
-             * Need to tell collectormgrPiplineUtils that a JsonTrService is active
-             * So that when the eventual registration of LogSource and TraceSource as WsLogHandler
-             * and WsTraceHandler (which kicks of the MessageRouterConfigurator and TraceRouterConfigurator)
-             * will not flush early messages and trace back through the LogSource and TraceSource.
-             */
-            collectorMgrPipelineUtils.setJsonTrService(isJSON);
         }
 
         //Sources
@@ -152,6 +145,7 @@ public class JsonTraceService extends BaseTraceService {
          * and trace conduits to the handler.
          */
         if (messageFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
+            setJsonConfigured();
             messageLogHandler.modified(filterdMessageSourceList);
             //for any 'updates' to the FileLogHolder
             messageLogHandler.setWriter(messagesLog);
@@ -168,12 +162,23 @@ public class JsonTraceService extends BaseTraceService {
          * and trace conduits to the handler.
          */
         if (consoleFormat.toLowerCase().equals(LoggingConstants.JSON_FORMAT)) {
+            setJsonConfigured();
             consoleLogHandler.modified(filterdConsoleSourceList);
             //Connect the conduits to the handler as necessary
             updateConduitSyncHandlerConnection(consoleSourceList, consoleLogHandler);
 
             isConsoleJsonConfigured = true;
         }
+    }
+
+    /*
+     * Need to tell collectormgrPiplineUtils that a JsonTrService is active and is configured to emit JSON.
+     * So that when the eventual registration of LogSource and TraceSource as WsLogHandler
+     * and WsTraceHandler (which kicks of the MessageRouterConfigurator and TraceRouterConfigurator)
+     * will not flush early messages and trace back through the LogSource and TraceSource.
+     */
+    private void setJsonConfigured() {
+        collectorMgrPipelineUtils.setJsonTrService(isJSON);
     }
 
     /*
