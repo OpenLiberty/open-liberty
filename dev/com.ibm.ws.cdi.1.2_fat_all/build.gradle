@@ -36,8 +36,25 @@ task quartz (type: Copy) {
   into "${buildDir}/autoFVT/test-applications/deltaspikeTest.war/resources/WEB-INF/lib/"
 }
 
+//This task has a different output directory to the generic one in fat.gradle
+task copyCDIFeatureBundle {
+  enabled file("${projectDir}/test-bundles").exists()
+  doLast {
+    file("${buildDir}/buildfiles").eachLine { String line ->
+      if(!line.contains(project.name + ".jar")) {
+        copy {
+          from line
+          into "${buildDir}/autoFVT/publish/bundles"
+        }
+      }
+    }
+  }
+}
+
+
 addRequiredLibraries {
   dependsOn deltaspike
+  dependsOn copyCDIFeatureBundle
   doLast {
     copy {
       from configurations.commons

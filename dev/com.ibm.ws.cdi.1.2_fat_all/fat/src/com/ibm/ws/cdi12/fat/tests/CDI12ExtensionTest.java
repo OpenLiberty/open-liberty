@@ -31,7 +31,7 @@ public class CDI12ExtensionTest extends LoggingTest {
     // @ClassRule
     // Create the server.
     public static ShutDownSharedServer EXTENSION_SERVER = new ShutDownSharedServer("cdi12RuntimeExtensionServer");
-    public static String INSTALL_USERBUNDLE = "cdi.helloworld.extension_1.0.0";
+    public static String INSTALL_USERBUNDLE = "cdi.helloworld.extension";
     public static String INSTALL_USERFEATURE = "cdi.helloworld.extension";
 
     public static String EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE = "cdi12.internals-1.0";
@@ -49,11 +49,13 @@ public class CDI12ExtensionTest extends LoggingTest {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        //
+
         /**
          * Install the user feature and the bundle
          */
         server = EXTENSION_SERVER.getLibertyServer();
-        System.out.println("Intall the user feature bundle... cdi.helloworld.extension_1.0.0");
+        System.out.println("Intall the user feature bundle... cdi.helloworld.extension");
         server.installUserBundle(INSTALL_USERBUNDLE);
         server.installUserFeature(INSTALL_USERFEATURE);
         server.installSystemFeature(EXPOSE_INTERNAL_CDI_EXTENSION_API_FEATURE);

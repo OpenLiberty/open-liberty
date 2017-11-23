@@ -178,15 +178,6 @@ public class FATSuite {
     private static Map<String,List<Archive>> serversToApps = new HashMap<String,List<Archive>>();
 
     static{
-    
-        try {
-          File helloWorldBundle = new File("publish/files/bundles/cdi.helloworld.extension.jar");
-          File helloWorldBundleDest = new File("publish/bundles/cdi.helloworld.extension_1.0.0.jar");
-          Files.copy(helloWorldBundle.toPath(), helloWorldBundleDest.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (Exception e) {
-
-        }
-
         JavaArchive jarInRar172 = ShrinkWrap.create(JavaArchive.class,"jarInRar.jar")
                         .addClass("com.ibm.ws.cdi12.fat.jarinrar.rar.Amigo")
                         .addClass("com.ibm.ws.cdi12.fat.jarinrar.rar.TestResourceAdapter")

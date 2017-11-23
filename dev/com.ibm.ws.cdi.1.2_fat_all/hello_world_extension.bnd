@@ -1,4 +1,4 @@
--include= ~../../../cnf/resources/bnd/bundle.props
+-include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0.0
 
 # For more information, see http://was.pok.ibm.com/xwiki/bin/view/Liberty/UsingBnd
@@ -6,7 +6,7 @@ bVersion=1.0.0
 Bundle-Name: Test CDI Extension 
 Bundle-SymbolicName: cdi.helloworld.extension
 Bundle-Description: This bundle tests cdi runtime extension; version=${bVersion}
-Include-Resource: META-INF=META-INF/
+Include-Resource: META-INF=test-bundles/cdi.helloworld.extension/META-INF/
 # hide the implementation packages
 Export-Package: com.ibm.ws.cdi.extension.impl;version=1.0.0
 -dsannotations-inherit: true
