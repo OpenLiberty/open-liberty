@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.ibm.ws.collector.manager.buffer.BufferManagerImpl;
+import com.ibm.ws.logging.collector.CollectorConstants;
 import com.ibm.wsspi.collector.manager.BufferManager;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.collector.manager.Source;
@@ -112,7 +113,12 @@ public class SourceManager {
             //Inform the source that buffer will no longer be available
             //and it should stop sending events to this buffer.
             source.unsetBufferManager(bufferMgr);
-            bufferMgr = null;
+            /*
+             * Temporary Fix, can not set bufferMgr to null if this SrcMgr belongs
+             * to LogSource or TraceSource
+             */
+            if (!sourceId.contains(CollectorConstants.MESSAGES_SOURCE) && !sourceId.contains(CollectorConstants.TRACE_SOURCE))
+                bufferMgr = null;
             return true;
         }
         return false;
