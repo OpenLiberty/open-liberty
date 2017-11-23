@@ -11,8 +11,7 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
--sub: test-bundles/cdi.helloworld.extension/bnd.bnd,\
-      cdi_fat.bnd
+-sub: *.bnd
 
 # Define the bundle for this FAT
 
