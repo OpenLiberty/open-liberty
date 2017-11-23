@@ -14,8 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.directory.api.ldap.model.entry.Entry;
-import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.params.HttpParams;
@@ -49,26 +47,33 @@ import com.ibm.ws.security.javaeesec.fat_helper.WCApplicationHelper;
 @MinimumJavaLevel(javaLevel = 1.8, runSyntheticTest = false)
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
-public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
+public class NoJavaEESecFormTest extends JavaEESecTestBase {
 
     protected static LibertyServer myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.javaeesec.fat");
-    protected static Class<?> logClass = MultipleIdentityStoreFormRedirectTest.class;
+    protected static Class<?> logClass = NoJavaEESecFormTest.class;
     protected static String urlBase;
     protected static String JAR_NAME = "JavaEESecBase.jar";
-    protected static String APP_NAME = "JavaEESecMultipleISForm";
+    protected static String APP_NAME = "NoJavaEESec";
     protected static String WAR_NAME = APP_NAME + ".war";
-    protected static String XML_NAME = "multipleISForm.xml";
-    protected String queryString = "/" + APP_NAME + "/MultipleISFormServlet";
+    protected static String XML_NAME = "nojavaeesec.xml";
+    protected String queryString = "/" + APP_NAME + "/NoJavaEESecServlet";
     protected static String loginUri = "/" + APP_NAME + "/login.jsp";
     protected static String loginformUri = "/" + APP_NAME + "/j_security_check";
     protected static String TITLE_LOGIN_PAGE = "login page for the form login test";
     protected static String TITLE_ERROR_PAGE = "A Form login authentication failure occurred";
     protected static boolean REDIRECT = true;
+    private static String USER1 = "user1";
+    private static String GROUP1 = "group1";
+    private static String USER2 = "user2";
+    private static String INVALIDUSER1 = "invaliduser1";
+    private static String PASSWORD = "s3cur1ty";
+    
+    
     protected DefaultHttpClient httpclient;   
 
     protected static LocalLdapServer ldapServer;
 
-    public MultipleIdentityStoreFormRedirectTest() {
+    public NoJavaEESecFormTest() {
         super(myServer, logClass);
     }
 
@@ -78,10 +83,7 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
     @BeforeClass
     public static void setUp() throws Exception {
 
-        ldapServer = new LocalLdapServer();
-        ldapServer.start();
-
-        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect","web.war.identitystores.ldap.ldap1","web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly");
+        WCApplicationHelper.addWarToServerApps(myServer, WAR_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.nojavaeesec");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_NAME);
@@ -94,9 +96,6 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
     public static void tearDown() throws Exception {
         myServer.stopServer();
 
-        if (ldapServer != null) {
-            ldapServer.stop();
-        }
         myServer.setServerConfigurationFile("server.xml");
 
     }
@@ -123,8 +122,8 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
     /**
      * Verify the following:
      * <OL>
-     * <LI> Authentication is done by the first priority IdentityStroe
-     * <LI> Additional groups are added by the IdentityStore which only support getting groups.
+     * <LI> The server starts without any error even there is no JSR375 application.
+     * <LI> non JSR 375 Form login application works properly for authentication.
      * </OL>
      * <P> Expected Results:
      * <OL>
@@ -136,7 +135,7 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
      */
     @Mode(TestMode.FULL)
     @Test
-    public void testMultipleISFormRedirectWith1stIS_AllowedAccess() throws Exception {
+    public void testNoJavaEESec_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
 
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
@@ -147,87 +146,17 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + queryString);
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "127.0.0.1:10389");
-        verifyNotInGroups(response, "group:localhost:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:127.0.0.1:10389/grantedgroup2, group:127.0.0.1:10389/cn=group1,ou=groups,o=ibm,c=us, group:127.0.0.1:10389/grantedgroup");
+        verifyUserResponse(response, Constants.getUserPrincipalFound + USER1, Constants.getRemoteUserFound + USER1);
+        verifyRealm(response, "NoJavaEESecRealm");
+        verifyGroups(response, "group:NoJavaEESecRealm/group1");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
     /**
      * Verify the following:
      * <OL>
-     * <LI> Authentication is done by the second priority IdentityStroe because the user id does not exist in the first IdentityStore.
-     * <LI> Additional groups are added by the IdentityStore which only support getting groups.
-     * </OL>
-     * <P> Expected Results:
-     * <OL>
-     * <LI> Return code 200
-     * <LI> Veirfy the realm name is the same as the IdentityStore ID of the 2nd IdentityStore.
-     * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
-     * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
-     * </OL>
-     */
-    @Mode(TestMode.LITE)
-    @Test
-    public void testMultipleISFormRedirectWith2ndISonly_AllowedAccess() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
-
-        // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.ANOTHERUSER1, LocalLdapServer.ANOTHERPASSWORD, true);
-
-        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + queryString);
-
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.ANOTHERUSER1, Constants.getRemoteUserFound + LocalLdapServer.ANOTHERUSER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
-
-    /**
-     * Verify the following:
-     * <OL>
-     * <LI> Authentication is done by the second priority IdentityStroe because the password does not match in the 1st IdentityStore.
-     * <LI> Additional groups are added by the IdentityStore which only support getting groups.
-     * </OL>
-     * <P> Expected Results:
-     * <OL>
-     * <LI> Return code 200
-     * <LI> Veirfy the realm name is the same as the IdentityStore ID of the 2nd IdentityStore.
-     * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
-     * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
-     * </OL>
-     */
-    @Mode(TestMode.FULL)
-    @AllowedFFDC({"javax.naming.AuthenticationException" })
-    @Test
-    public void testMultipleISFormRedirectWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
-        Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-
-        // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
-        String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
-
-        // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.USER1, LocalLdapServer.ANOTHERPASSWORD, true);
-
-        // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
-        response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, urlBase + queryString);
-
-        verifyUserResponse(response, Constants.getUserPrincipalFound + LocalLdapServer.USER1, Constants.getRemoteUserFound + LocalLdapServer.USER1);
-        verifyRealm(response, "localhost:10389");
-        verifyNotInGroups(response, "group:127.0.0.1:10389/");  // make sure that there is no realm name from the second IdentityStore.
-        verifyGroups(response, "group:localhost:10389/grantedgroup2, group:localhost:10389/cn=anothergroup1,ou=anothergroups,o=ibm,c=us, group:localhost:10389/grantedgroup");
-        Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
-    }
-
-    /**
-     * Verify the following:
-     * <OL>
-     * <LI> Authentication is done by the first priority IdentityStroe but fails authorization check.
+     * <LI> The server starts without any error even there is no JSR375 application.
+     * <LI> non JSR 375 Form login application works properly for authentication.
      * </OL>
      * <P> Expected Results:
      * <OL>
@@ -238,25 +167,26 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
      */
     @Mode(TestMode.LITE)
     @Test
-    public void testMultipleISFormRedirectWith1stISuccess_DeniedAccess() throws Exception {
+    public void testNoJavaEESecAuthorizationFailure_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.INVALIDUSER, LocalLdapServer.PASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + loginformUri, USER2, PASSWORD, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns 403 due to authorization failure.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_FORBIDDEN, urlBase + queryString);
 
-        verifyMessageReceivedInMessageLog("CWWKS9104A:.*" + LocalLdapServer.INVALIDUSER + ".*" + LocalLdapServer.GRANTEDGROUP);
+        verifyMessageReceivedInMessageLog("CWWKS9104A:.*" + USER2 + ".*" + GROUP1);
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
     /**
      * Verify the following:
      * <OL>
-     * <LI> Authentication is failed for both the 1st and 2nd IdentityStore.
+     * <LI> The server starts without any error even there is no JSR375 application.
+     * <LI> non JSR 375 Form login application works properly for authentication.
      * </OL>
      * <P> Expected Results:
      * <OL>
@@ -265,20 +195,20 @@ public class MultipleIdentityStoreFormRedirectTest extends JavaEESecTestBase {
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
      */
-    @Mode(TestMode.FULL)
+    @Mode(TestMode.LITE)
     @AllowedFFDC({"javax.naming.AuthenticationException" })
     @Test
-    public void testMultipleISFormRedirectWith1st2ndFail_DeniedAccess() throws Exception {
+    public void testNoJavaEESecAuthenticationFailure_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // Send servlet query to get form login page. Since auto redirect is disabled, if forward is not set, this would return 302 and location.
         String response = getFormLoginPage(httpclient, urlBase + queryString, REDIRECT, urlBase + loginUri, TITLE_LOGIN_PAGE);
 
         // Execute Form login and get redirect location.
-        String location = executeFormLogin(httpclient, urlBase + loginformUri, LocalLdapServer.USER1, LocalLdapServer.INVALIDPASSWORD, true);
+        String location = executeFormLogin(httpclient, urlBase + loginformUri, INVALIDUSER1, PASSWORD, true);
 
         // Redirect to the given page, ensure it is the original servlet request and it returns the right response.
         response = accessPageNoChallenge(httpclient, location, HttpServletResponse.SC_OK, TITLE_ERROR_PAGE);
-        verifyMessageReceivedInMessageLog("CWWKS1652A:.*");
+        verifyMessageReceivedInMessageLog("CWWKS1100A:.*" + INVALIDUSER1 + ".*");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 }
