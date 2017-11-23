@@ -49,6 +49,19 @@ public interface PolicyExecutor extends ExecutorService {
     }
 
     /**
+     * Attempts to cancel all tasks (both in the queue and running) where the identifier of the task submitter matches the specified identifier.
+     * If PolicyTaskCallback is used when submitting a task, the identifier of the task submitter is obtained via PolicyTaskCallback.getIdentifier.
+     * Otherwise, the identifier is the identifier computed by the PolicyExecutorProvider.create method when the PolicyExecutor was created.
+     * Canceled tasks which have already started might still be in progress when this method returns. How the tasks responds to the interrupt/cancel
+     * signal depends on the task implementation.
+     *
+     * @param identifier the identifier to match
+     * @param interruptIfRunning indicates whether or not to allow interrupt on cancel
+     * @return count of task Futures that were successfully put into the canceled state.
+     */
+    int cancel(String identifier, boolean interruptIfRunning);
+
+    /**
      * Specifies a core number of tasks to aim to run concurrently
      * by expediting requests to the global thread pool. This provides no guarantee
      * that this many tasks will run concurrently. The default value is 0.
@@ -61,6 +74,13 @@ public interface PolicyExecutor extends ExecutorService {
      * @throws IllegalStateException if the executor has been shut down.
      */
     PolicyExecutor expedite(int num);
+
+    /**
+     * Returns the unique identifier for this policy executor.
+     *
+     * @return the unique identifier for this policy executor.
+     */
+    String getIdentifier();
 
     /**
      * Returns the number of tasks from this PolicyExecutor currently running on the global executor.

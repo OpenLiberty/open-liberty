@@ -333,6 +333,23 @@ public class PolicyExecutorImpl implements PolicyExecutor {
     }
 
     @Override
+    public int cancel(String identifier, boolean interruptIfRunning) {
+        int count = 0;
+
+        // Remove and cancel all queued tasks.
+        for (PolicyTaskFutureImpl<?> f = queue.poll(); f != null; f = queue.poll())
+            if (f.cancel(false))
+                count++;
+
+        // Cancel tasks that are running
+        for (Iterator<PolicyTaskFutureImpl<?>> it = running.iterator(); it.hasNext();)
+            if (it.next().cancel(interruptIfRunning))
+                count++;
+
+        return count;
+    }
+
+    @Override
     public PolicyExecutor expedite(int num) {
         if (num == -1)
             num = Integer.MAX_VALUE;
@@ -342,7 +359,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         int a;
         synchronized (configLock) {
             if (num > maxConcurrency)
-                throw new IllegalArgumentException(Integer.toString(num));
+                throw new IllegalArgumentException("expedite: " + num + " > maxConcurrency: " + maxConcurrency);
 
             if (state.get() != State.ACTIVE)
                 throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "expedite", identifier));
@@ -571,6 +588,12 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                     Tr.debug(this, tc, "expedites/maxConcurrency available", cca, maxConcurrencyConstraint.availablePermits());
             }
         }
+    }
+
+    @Override
+    @Trivial
+    public String getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -927,7 +950,7 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         synchronized (configLock) {
             if (max < expedite)
-                throw new IllegalArgumentException(Integer.toString(max));
+                throw new IllegalArgumentException("maxConcurrency: " + max + " < expedite: " + expedite);
 
             if (state.get() != State.ACTIVE)
                 throw new IllegalStateException(Tr.formatMessage(tc, "CWWKE1203.config.update.after.shutdown", "maxConcurrency", identifier));
@@ -1288,13 +1311,13 @@ public class PolicyExecutorImpl implements PolicyExecutor {
 
         // Validation that cannot be performed by metatype:
         if (u_expedite > u_max)
-            throw new IllegalArgumentException(u_expedite + " > " + u_max);
+            throw new IllegalArgumentException("expedite: " + u_expedite + " > max: " + u_max);
 
         if (u_maxWaitForEnqueue < 0 || u_maxWaitForEnqueue > maxMS)
-            throw new IllegalArgumentException(Long.toString(u_maxWaitForEnqueue));
+            throw new IllegalArgumentException("maxWaitForEnqueue: " + u_maxWaitForEnqueue);
 
         if (u_startTimeout < -1 || u_startTimeout > maxMS)
-            throw new IllegalArgumentException(Long.toString(u_startTimeout));
+            throw new IllegalArgumentException("startTimeout: " + u_startTimeout);
 
         for (long current = maxWaitForEnqueueNS.get(); current != -1; current = maxWaitForEnqueueNS.get())
             if (maxWaitForEnqueueNS.compareAndSet(current, TimeUnit.MILLISECONDS.toNanos(u_maxWaitForEnqueue)))
