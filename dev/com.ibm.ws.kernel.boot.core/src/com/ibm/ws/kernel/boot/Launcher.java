@@ -27,6 +27,7 @@ import com.ibm.ws.kernel.boot.internal.BootstrapConstants;
 import com.ibm.ws.kernel.boot.internal.KernelBootstrap;
 import com.ibm.ws.kernel.boot.internal.ServerLock;
 import com.ibm.ws.kernel.boot.internal.commands.ListServerHelper;
+import com.ibm.ws.kernel.boot.internal.commands.ServerHelpActions;
 import com.ibm.ws.kernel.boot.internal.commands.HelpCommand;
 
 /**
@@ -301,16 +302,6 @@ public class Launcher {
     }
 
     /**
-     * Return the ResoueceBundle for process command options.
-     *
-     * @return ResourceBundle
-     */
-    protected ResourceBundle getOptionsResourceBundle() {
-        /** Since this launches the framework, we have to do translation ourselves.. */
-        return ResourceBundle.getBundle("com.ibm.ws.kernel.boot.resources.LauncherOptions");
-    }
-
-    /**
      * Find main locations
      *
      * @param bootProps An instance of BootstrapConfig
@@ -338,7 +329,11 @@ public class Launcher {
     }
 
     protected ReturnCode showHelp(LaunchArguments launchArgs) {
-        return HelpCommand.showHelp(launchArgs);
+        return new HelpCommand(getHelpActions()).showHelp(launchArgs);
+    }
+
+    protected HelpActions getHelpActions() {
+        return new ServerHelpActions();
     }
 
     /**

@@ -22,7 +22,11 @@ Usage: {0} action clientName [options]
 
 use.actions=Actions:
 use.options=Options:
+use.options.gen.desc=\ \ \ \ Use help [actionName] for detailed option information of each action.
 use.jvmarg=JVM options:
+category-key.lifecycle=Server Lifecycle
+category-key.help=Information
+category-key.misc=Miscellaneous
 # -------- OPTIONS ----------------------------------------------------#
 # List of descriptive text for options. Use "\n\" for line continuations.
 # The code provides no whitespace: begin keys with "\ \ \ \ " for leading
@@ -98,8 +102,10 @@ option-desc.archive=\
 option-key.include=\
 \ \ \ \ --include=value,value,...
 option-desc.include=\
-\tA comma-delimited list of values. The valid values vary depending on \n\
-\tthe action.
+\tA comma-delimited list of values. The valid values are: all*, usr,   \n\
+\tminify. The usr option creates a package that contains the server,   \n\
+\tand application and not the runtime. The default all option produces \n\
+\ta client package that contains everything.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.template=\
 \ \ \ \ --template="templateName"
