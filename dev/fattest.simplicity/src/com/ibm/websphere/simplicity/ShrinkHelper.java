@@ -142,7 +142,8 @@ public class ShrinkHelper {
      * @return a WebArchive representing the application created
      */
     public static WebArchive buildDefaultApp(String appName, String... packages) throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war");
+        String appArchiveName = appName.endsWith(".war") ? appName : appName + ".war";
+        WebArchive app = ShrinkWrap.create(WebArchive.class, appArchiveName);
         for (String p : packages) {
             if (p.endsWith(".*"))
                 app = app.addPackages(true, p.replace(".*", ""));
@@ -163,9 +164,14 @@ public class ShrinkHelper {
      * @return a JavaArchive representing the JAR created
      */
     public static JavaArchive buildJavaArchive(String name, String... packages) throws Exception {
-        JavaArchive app = ShrinkWrap.create(JavaArchive.class, name + ".jar");
-        for (String p : packages)
-            app = app.addPackages(p.endsWith(".*"), p);
+        String archiveName = name.endsWith(".jar") ? name : name + ".jar";
+        JavaArchive app = ShrinkWrap.create(JavaArchive.class, archiveName);
+        for (String p : packages) {
+            if (p.endsWith(".*"))
+                app = app.addPackages(true, p.replace(".*", ""));
+            else
+                app = app.addPackages(false, p);
+        }
         if (new File("test-applications/" + name + "/resources/").exists())
             app = (JavaArchive) addDirectory(app, "test-applications/" + name + "/resources/");
         return app;
@@ -182,7 +188,9 @@ public class ShrinkHelper {
     public static WebArchive defaultDropinApp(LibertyServer server, String appName, String... packages) throws Exception {
         WebArchive app = buildDefaultApp(appName, packages);
         exportDropinAppToServer(server, app);
-        server.addInstalledAppForValidation(appName);
+        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
+                        ? appName.substring(0, appName.length() - 4) : appName;
+        server.addInstalledAppForValidation(installedAppName);
         return app;
     }
 
@@ -197,14 +205,9 @@ public class ShrinkHelper {
     public static WebArchive defaultApp(LibertyServer server, String appName, String... packages) throws Exception {
         WebArchive app = buildDefaultApp(appName, packages);
         exportAppToServer(server, app);
-        server.addInstalledAppForValidation(appName);
+        String installedAppName = (appName.endsWith(".war") || appName.endsWith(".ear"))//
+                        ? appName.substring(0, appName.length() - 4) : appName;
+        server.addInstalledAppForValidation(installedAppName);
         return app;
-    }
-
-    /**
-     * Shortcut for: <code>System.getProperty("user.dir")
-     */
-    private static String getCWD() {
-        return System.getProperty("user.dir");
     }
 }
