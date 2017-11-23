@@ -28,7 +28,7 @@ MAXEVENTS_OUTOFRANGE_WARNING=TRAS4303W: The logstashCollector and bluemixLogColl
 MAXEVENTS_OUTOFRANGE_WARNING.explanation= The value of maxEvents is out of range and not a valid integer between 0-2147483647.
 MAXEVENTS_OUTOFRANGE_WARNING.userAction= Correct the value of maxEvents. Otherwise, no throttling is applied.
 
-MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: Event creation exceeds maximum handling rate. {0} events per second will be handled until event backlog cleared.
+MAXEVENTS_EXCEEDS_MAXRATE=TRAS4304I: Event creation exceeds maximum handling rate on thread {0}. {1} events per second will be handled until event backlog cleared.
 MAXEVENTS_EXCEEDS_MAXRATE.explanation= The number of events to process exceeds the specified maxEvents rate per second.
 MAXEVENTS_EXCEEDS_MAXRATE.userAction= Change the configurations in the server.xml file for maxEvents, if you want to change the event handling rate.
 

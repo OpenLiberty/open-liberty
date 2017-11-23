@@ -193,7 +193,7 @@ public class TaskImpl extends Task implements Runnable {
                 currentTime = System.currentTimeMillis();
                 ringBuffer.add(currentTime);
                 if (!this.throttling) {
-                    Tr.info(tc, "MAXEVENTS_EXCEEDS_MAXRATE", maxEvents);
+                    Tr.info(tc, "MAXEVENTS_EXCEEDS_MAXRATE", Thread.currentThread().getName(), maxEvents);
                     this.throttling = true;
                 }
                 if (TraceComponent.isAnyTracingEnabled()) {
