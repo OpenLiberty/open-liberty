@@ -33,7 +33,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MultipleIdentityStoreCustomFormForwardTest.class,
                 NoJavaEESecFormTest.class,
                 MultipleIdentityStoreFormPostTest.class,
-                MultipleIdentityStoreCustomFormPostTest.class
+                MultipleIdentityStoreCustomFormPostTest.class,
+                MultipleIdentityStoreApplLoginToContinueTest.class
 })
 
 /**
