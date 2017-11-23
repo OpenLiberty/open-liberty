@@ -33,8 +33,9 @@
   </managedThreadFactory>
 
   <!-- Test application needs these permissions to help verify thread context -->
-  <javaPermission codebase="${server.config.dir}/dropins/war/concurrentbvt" className="java.lang.RuntimePermission" name="getClassLoader"/>
-  <javaPermission codebase="${server.config.dir}/dropins/war/concurrentbvt" className="java.lang.RuntimePermission" name="getContextClassLoader"/>
-  <javaPermission codebase="${server.config.dir}/dropins/war/concurrentbvt" className="java.lang.RuntimePermission" name="modifyThread"/>
-  <javaPermission codebase="${server.config.dir}/dropins/war/concurrentbvt" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="getClassLoader"/>
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="getContextClassLoader"/>
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+  <javaPermission codebase="${server.config.dir}/dropins/concurrentSpec.war" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+  
 </server>

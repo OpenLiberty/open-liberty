@@ -6161,7 +6161,8 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("taskSubmitted: future from " + event + " doesn't match " + future);
         if (event.uowType != UOWManager.UOW_TYPE_LOCAL_TRANSACTION)
             throw new Exception("taskSubmitted: should not be running in a transaction: " + event);
-        if (!(event.failureFromFutureGet instanceof InterruptedException))
+        if (!(event.failureFromFutureGet instanceof InterruptedException)
+            || !event.failureFromFutureGet.getMessage().startsWith("CWWKC1120E"))
             throw new Exception("taskSubmitted: missing or unexpected failure for Future.get during " + event, event.failureFromFutureGet);
 
         // taskStarting
@@ -6176,7 +6177,8 @@ public class EEConcurrencyTestServlet extends FATServlet {
             throw new Exception("taskStarting: future from " + event + " doesn't match " + future);
         if (event.uowType != UOWManager.UOW_TYPE_LOCAL_TRANSACTION)
             throw new Exception("taskStarting: should not be running in a transaction: " + event);
-        if (!(event.failureFromFutureGet instanceof InterruptedException))
+        if (!(event.failureFromFutureGet instanceof InterruptedException)
+            || !event.failureFromFutureGet.getMessage().startsWith("CWWKC1120E"))
             throw new Exception("taskStarting: missing or unexpected failure for Future.get during " + event, event.failureFromFutureGet);
 
         // taskDone
