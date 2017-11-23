@@ -65,7 +65,7 @@ javac.encoding: UTF-8
 -buildrepo: Local
 -groupid: ${if;${test.project};test;dev}
 -pom: 
-#-dsannotations-options: version;minimum=1.2
+-dsannotations-options: version;minimum=1.2
 
 buildEngineName: defaultEngine
 

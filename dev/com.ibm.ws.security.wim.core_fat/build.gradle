@@ -22,7 +22,7 @@ autoFVT.doLast {
   copy {
     from project(':apache_directory_server').projectDir
     into autoFvtDir
-    include 'apacheds-2.0.0-M15'
+    include 'apacheds-2.0.0-M15/**'
   }
 
   /*
