@@ -31,20 +31,22 @@ import configuratorApp.web.ConfiguratorTestBase;
 @WebServlet(urlPatterns = "/observerMethodConfiguratorTest")
 public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
 
-    public static Vector<Integer> observations = new Vector<Integer>();
+    public static Vector<Integer> squareObservations = new Vector<Integer>();
+    public static Vector<Integer> circleObservations = new Vector<Integer>();
 
-    public static int[] observerPriorities = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    public static int[] squareObserverPriorities = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    public static final int[] circleObserverOrder = { 1, 2, 8, 3, 9, 5, 4, 6, 0, 7 };
 
     public static int[] positions = { -1, -1, -1, -1, -1, -1, -1, -1, -1, -1 };
 
     static {
-        // Shuffle priorities
+        // Shuffle square observer priorities
         final Random rnd = new Random();
-        for (int i = observerPriorities.length - 1; i > 0; i--) {
+        for (int i = squareObserverPriorities.length - 1; i > 0; i--) {
             int index = rnd.nextInt(i + 1);
-            int j = observerPriorities[index];
-            observerPriorities[index] = observerPriorities[i];
-            observerPriorities[i] = j;
+            int j = squareObserverPriorities[index];
+            squareObserverPriorities[index] = squareObserverPriorities[i];
+            squareObserverPriorities[i] = j;
         }
     }
 
@@ -67,18 +69,35 @@ public class ObserverMethodConfiguratorTest extends ConfiguratorTestBase {
     Event<Square> squareEvent;
 
     @Test
-    public void testObserverOrdering() {
+    public void testSquareObserverOrdering() {
 
         squareEvent.fire(new Square());
 
         // Check enough observers were called
-        assertEquals(observerPriorities.length, observations.size());
+        assertEquals(squareObserverPriorities.length, squareObservations.size());
 
         // Check observers were called in the expected randomized order
         int position = 0;
-        for (int observation : observations) {
-            System.out.println("Checking observer " + observation + " happened in position " + position);
+        for (int observation : squareObservations) {
+            System.out.println("Checking square observer " + observation + " happened in position " + position);
             assertEquals(observation, positions[position++]);
+        }
+    }
+
+    @Inject
+    Event<Circle> circleEvent;
+
+    @Test
+    public void testCircleObserverOrdering() {
+
+        circleEvent.fire(new Circle());
+
+        // Check enough observers were called
+        assertEquals(circleObserverOrder.length, circleObservations.size());
+
+        // Check observers were called in the expected order
+        for (int position = 0; position < circleObserverOrder.length; position++) {
+            assertEquals(circleObservations.get(position).intValue(), circleObserverOrder[position]);
         }
     }
 }

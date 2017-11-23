@@ -10,13 +10,15 @@
  *******************************************************************************/
 package configuratorApp.web.observerMethod;
 
+import javax.annotation.Priority;
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.event.Observes;
+import javax.enterprise.inject.spi.ObserverMethod;
 
 @ApplicationScoped
-public class SquareObserver3 {
+public class CircleObserver9 {
 
-    public void observer(@Observes Square square) {
-        ObserverMethodConfiguratorTest.squareObservations.add(3);
+    public void observer(@Observes @Priority(ObserverMethod.DEFAULT_PRIORITY + 4) Circle circle) {
+        ObserverMethodConfiguratorTest.circleObservations.add(9);
     }
 }

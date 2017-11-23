@@ -10,13 +10,6 @@
  *******************************************************************************/
 package configuratorApp.web.observerMethod;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.enterprise.event.Observes;
+public class Circle {
 
-@ApplicationScoped
-public class SquareObserver3 {
-
-    public void observer(@Observes Square square) {
-        ObserverMethodConfiguratorTest.squareObservations.add(3);
-    }
 }
