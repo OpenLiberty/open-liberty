@@ -10,19 +10,15 @@
  *******************************************************************************/
 package com.ibm.ws.example;
 
-import org.junit.AfterClass;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
-import app1.web.TestServletA;
-import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.FATServletClient;
 
 /**
  * Example Shrinkwrap FAT project:
@@ -38,33 +34,109 @@ import componenttest.topology.utils.FATServletClient;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class SimpleTest extends FATServletClient {
+public class SimpleTest /* extends FATServletClient */ {
 
-    public static final String APP_NAME = "app1";
+//    public static final String APP_NAME = "app1";
+//
+//    @Server("FATServer")
+//    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
+//    public static LibertyServer server;
 
-    @Server("FATServer")
-    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
-    public static LibertyServer server;
+//    @BeforeClass
+//    public static void setUp() throws Exception {
+//        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
+//        // Include the 'app1.web' package and all of it's java classes and sub-packages
+//        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
+//        // Exports the resulting application to the ${server.config.dir}/apps/ directory
+//        ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
+//
+//        server.startServer();
+//    }
+//
+//    @AfterClass
+//    public static void tearDown() throws Exception {
+//        server.stopServer();
+//    }
+//
+//    @Test
+//    public void verifyArtifactoryDependency() throws Exception {
+//        // Confirm that the example Artifactory dependency was download and is available on the classpath
+//        org.apache.derby.drda.NetworkServerControl.class.getName();
+//    }
 
     @BeforeClass
-    public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
-
-        server.startServer();
+    public static void test() throws Exception {
+        File f = new File(System.getProperty("user.dir"));
+        ProcessBuilder pb = new ProcessBuilder("echo", "GDH");
+        Process p = pb.start();
+        int exitCode = p.waitFor();
     }
 
-    @AfterClass
-    public static void tearDown() throws Exception {
-        server.stopServer();
+//    @BeforeClass
+//    public void verifyJavaCommandLine() throws Exception {
+////        Runtime runtime = Runtime.getRuntime();
+//        //      Process pr = runtime.exec("echo Hello World From Java CLI");
+//        try {
+//            Runtime rt = Runtime.getRuntime();
+//            //Process pr = rt.exec("cmd /c dir");
+//            Process pr = rt.exec("echo GDH");
+//
+//            BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
+//
+//            String line = null;
+//
+//            while ((line = input.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//
+//            int exitVal = pr.waitFor();
+//            System.out.println("GDH Exited with error code " + exitVal);
+//
+//        } catch (Exception e) {
+//            System.out.println(e.toString());
+//            e.printStackTrace();
+//        }
+//
+//    }
+//
+//    @AfterClass
+//    public void verifyMavenAccessible() throws Exception {
+//        Runtime runtime = Runtime.getRuntime();
+//        Process pr = runtime.exec("mvn -version");
+//    }
+
+    @Test
+    public void test2() throws Exception {
+        ProcessBuilder pb = new ProcessBuilder("ls");
+        Process p = pb.start();
+        int exitCode = p.waitFor();
     }
 
     @Test
-    public void verifyArtifactoryDependency() throws Exception {
-        // Confirm that the example Artifactory dependency was download and is available on the classpath
-        org.apache.derby.drda.NetworkServerControl.class.getName();
+    public void verifyStdOut() throws Exception {
+        try {
+//            Runtime rt = Runtime.getRuntime();
+//            //Process pr = rt.exec("cmd /c dir");
+//            Process pr = rt.exec("");
+
+            File home = new File(System.getProperty("user.dir"));
+            String s = "echo GDH > " + home.toString() + "/temp";
+            Process p = Runtime.getRuntime().exec(s);
+            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+            String line = null;
+
+            while ((line = input.readLine()) != null) {
+                System.out.println(line);
+            }
+
+            int exitVal = p.waitFor();
+            System.out.println("GDH Exited with error code " + exitVal);
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            e.printStackTrace();
+        }
+
     }
 }
