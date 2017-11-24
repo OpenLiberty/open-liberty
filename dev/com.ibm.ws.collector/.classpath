@@ -1,63 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="src"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.logging"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.core"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.websphere.org.osgi.service.component"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wsspi.org.osgi.service.component.annotations"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.org.osgi.annotation.versioning"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.collector.manager"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.kernel.service"/>
-	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.ws.ssl"/>
-	<classpathentry kind="src" path="/com.ibm.ws.logging.core"/>
-	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.service.component/generated/com.ibm.websphere.org.osgi.service.component.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.org.osgi.service.component.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.org.osgi.service.component"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/osgi/service/component/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/service/component/runtime/dto/*"/>
-			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
-		</accessrules>
-	</classpathentry>
-	<classpathentry kind="lib" path="/com.ibm.websphere.org.osgi.core/generated/com.ibm.websphere.org.osgi.core.jar">
-		<attributes>
-			<attribute name="bsn" value="com.ibm.websphere.org.osgi.core.jar"/>
-			<attribute name="type" value="PROJECT"/>
-			<attribute name="project" value="com.ibm.websphere.org.osgi.core"/>
-			<attribute name="version" value="latest"/>
-			<attribute name="index_location" value="platform:/plugin/bndtools.builder/org/bndtools/builder/classpath/empty.index"/>
-		</attributes>
-		<accessrules>
-			<accessrule kind="accessible" pattern="org/osgi/dto/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/resource/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/resource/dto/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/dto/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/bundle/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/resolver/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/service/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/hooks/weaving/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/launch/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/namespace/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/startlevel/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/startlevel/dto/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/wiring/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/framework/wiring/dto/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/service/condpermadmin/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/service/packageadmin/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/service/permissionadmin/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/service/startlevel/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/service/url/*"/>
-			<accessrule kind="accessible" pattern="org/osgi/util/tracker/*"/>
-			<accessrule ignoreifbetter="true" kind="discouraged" pattern="**"/>
-		</accessrules>
-	</classpathentry>
-	<classpathentry kind="output" path="build/classes"/>
+	<classpathentry kind="src" output="bin" path="src"/>
+	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>
