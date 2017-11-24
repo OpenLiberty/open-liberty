@@ -6,6 +6,6 @@ Subsystem-Version: 1.0
 -features=com.ibm.websphere.appserver.channelfw-1.0
 -bundles=com.ibm.ws.transport.http
 -jars=com.ibm.websphere.appserver.spi.httptransport; location:=dev/spi/ibm/
--files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.httptransport_2.0-javadoc.zip
+-files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.httptransport_1.2-javadoc.zip
 kind=ga
 edition=core
