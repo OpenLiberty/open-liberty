@@ -70,7 +70,7 @@ task copyFeatureBundles {
       if (!line.contains(project.name + ".jar")) {
         copy {
           from line
-          into new File(project.buildDir, 'publish/files/bundles')
+          into new File(autoFvtDir, 'publish/files/bundles')
         }
       }
     }
@@ -298,7 +298,7 @@ task runfat(type: Exec) {
     // We can have this here because this task only ever runs locally, and thus is OK to unconditionally fail
     // the build. If we ever run FATs in remote builds, we should also gate this on a property like 
     // 'is.running.remote.build' so we don't fail the entire build whenever a testcase fails
-    if(new File(autoFvtDir, "/output/fail.log").exists())
+    if(new File(autoFvtDir, "output/fail.log").exists())
       throw new GradleException("The FAT bucket has test failures! See the logs and results for details.")
   }
 }
