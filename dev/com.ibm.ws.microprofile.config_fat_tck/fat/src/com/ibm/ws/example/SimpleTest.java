@@ -10,9 +10,7 @@
  *******************************************************************************/
 package com.ibm.ws.example;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,8 +64,28 @@ public class SimpleTest /* extends FATServletClient */ {
 
     @BeforeClass
     public static void test() throws Exception {
-        File f = new File(System.getProperty("user.dir"));
-        ProcessBuilder pb = new ProcessBuilder("echo", "GDH");
+        File home = new File(System.getProperty("user.dir"));
+        // /libertyGit/open-libertydev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
+        File mvnOutput = new File(home, "mvnResults");
+        ProcessBuilder pb = new ProcessBuilder("mvn", "--version");
+        File tckRunnerDir = new File("publish/tckRunner");
+        pb.redirectOutput(mvnOutput);
+        pb.directory(tckRunnerDir);
+        Process p = pb.start();
+        int exitCode = p.waitFor();
+    }
+
+    @Test
+    public void testBuildTckRunner() throws Exception {
+        File home = new File(System.getProperty("user.dir"));
+        // /libertyGit/open-libertydev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
+
+        ProcessBuilder pb = new ProcessBuilder("mvn", "test");
+        File tckRunnerDir = new File("publish/tckRunner");
+        pb.directory(tckRunnerDir);
+
+        File mvnOutput = new File(home, "mvnTestResults");
+        pb.redirectOutput(mvnOutput);
         Process p = pb.start();
         int exitCode = p.waitFor();
     }
@@ -105,38 +123,32 @@ public class SimpleTest /* extends FATServletClient */ {
 //        Process pr = runtime.exec("mvn -version");
 //    }
 
-    @Test
-    public void test2() throws Exception {
-        ProcessBuilder pb = new ProcessBuilder("ls");
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-    }
-
-    @Test
-    public void verifyStdOut() throws Exception {
-        try {
-//            Runtime rt = Runtime.getRuntime();
-//            //Process pr = rt.exec("cmd /c dir");
-//            Process pr = rt.exec("");
-
-            File home = new File(System.getProperty("user.dir"));
-            String s = "echo GDH > " + home.toString() + "/temp";
-            Process p = Runtime.getRuntime().exec(s);
-            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-            String line = null;
-
-            while ((line = input.readLine()) != null) {
-                System.out.println(line);
-            }
-
-            int exitVal = p.waitFor();
-            System.out.println("GDH Exited with error code " + exitVal);
-
-        } catch (Exception e) {
-            System.out.println(e.toString());
-            e.printStackTrace();
-        }
-
-    }
+//    @Test
+//    public void verifyStdOut() throws Exception {
+//        try {
+////            Runtime rt = Runtime.getRuntime();
+////            //Process pr = rt.exec("cmd /c dir");
+////            Process pr = rt.exec("");
+//
+//            File home = new File(System.getProperty("user.dir"));
+//            // /libertyGit/open-liberty/dev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
+//            String s = "echo GDH > " + home.toString();
+//            Process p = Runtime.getRuntime().exec(s);
+//            BufferedReader input = new BufferedReader(new InputStreamReader(p.getInputStream()));
+//
+//            String line = null;
+//
+//            while ((line = input.readLine()) != null) {
+//                System.out.println(line);
+//            }
+//
+//            int exitVal = p.waitFor();
+//            System.out.println("GDH Exited with error code " + exitVal);
+//
+//        } catch (Exception e) {
+//            System.out.println(e.toString());
+//            e.printStackTrace();
+//        }
+//
+//    }
 }
