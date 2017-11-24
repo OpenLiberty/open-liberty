@@ -52,13 +52,13 @@ public class SharedLibTest extends AbstractConfigApiTest {
 
         //TODO differentiate the pacakage names for these two jars. 
         JavaArchive sharedLib_jar = ShrinkWrap.create(JavaArchive.class, "sharedLib.jar")
-                        .addPackages(true, "com.ibm.ws.microprofile.archaius.impl.fat.tests")
+                        .addClass("com.ibm.ws.microprofile.archaius.impl.fat.tests.PingableSharedLibClass")
                         .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.json"), "microprofile-config.json")
                         .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.properties"), "microprofile-config.properties")
                         .addAsManifestResource(new File("test-applications/sharedLib.jar/resources/META-INF/microprofile-config.xml"), "microprofile-config.xml");
 
         JavaArchive sharedLibUser_jar = ShrinkWrap.create(JavaArchive.class, APP_NAME + ".jar")
-                        .addPackages(true, "com.ibm.ws.microprofile.archaius.impl.fat.tests");
+                        .addClass("com.ibm.ws.microprofile.archaius.impl.fat.tests.SharedLibUserToStringWebPage");
 
         WebArchive sharedLibUser_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsLibrary(sharedLibUser_jar)

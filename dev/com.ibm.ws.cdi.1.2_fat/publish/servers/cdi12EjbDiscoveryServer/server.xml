@@ -1,0 +1,11 @@
+<server description="Server for testing CDI">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>cdi-1.2</feature>
+        <feature>ejb-3.2</feature>
+        <feature>servlet-3.1</feature>
+    </featureManager>
+
+</server>

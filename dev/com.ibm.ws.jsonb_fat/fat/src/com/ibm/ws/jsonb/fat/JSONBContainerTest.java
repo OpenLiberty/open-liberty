@@ -10,20 +10,19 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
+import static com.ibm.ws.jsonb.fat.FATSuite.CDI_APP;
+import static com.ibm.ws.jsonb.fat.FATSuite.JSONB_APP;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_JOHNZON;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collections;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
@@ -32,28 +31,25 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import jsonb.cdi.web.JsonbCDITestServlet;
 import web.jsonbtest.JSONBTestServlet;
 import web.jsonbtest.JohnzonTestServlet;
 
 @RunWith(FATRunner.class)
 public class JSONBContainerTest extends FATServletClient {
-    private static final String appName = "jsonbapp";
-    private static final String SERVLET_PATH = "jsonbapp/JSONBTestServlet";
 
     @Server("com.ibm.ws.jsonb.container.fat")
     @TestServlets({
-                    @TestServlet(servlet = JSONBTestServlet.class, path = appName + "/JSONBTestServlet"),
-                    @TestServlet(servlet = JohnzonTestServlet.class, path = appName + "/JohnzonTestServlet")
+                    @TestServlet(servlet = JSONBTestServlet.class, contextRoot = JSONB_APP),
+                    @TestServlet(servlet = JohnzonTestServlet.class, contextRoot = JSONB_APP),
+                    @TestServlet(servlet = JsonbCDITestServlet.class, contextRoot = CDI_APP)
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war")
-                        .addPackage("web.jsonbtest");
-        ShrinkHelper.exportAppToServer(server, app);
-
-        server.addInstalledAppForValidation(appName);
+        FATSuite.jsonbApp(server);
+        FATSuite.cdiApp(server);
         server.startServer();
     }
 
@@ -86,9 +82,9 @@ public class JSONBContainerTest extends FATServletClient {
         ServerConfiguration config = server.getServerConfiguration();
         config.getFeatureManager().getFeatures().add("jsonb-1.0");
         server.updateServerConfiguration(config);
-        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(appName));
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(JSONB_APP));
 
         // Run a test to verify that jsonb is still usable
-        runTest(server, SERVLET_PATH, "testJsonbDeserializer&JsonbProvider=" + PROVIDER_JOHNZON);
+        runTest(server, JSONB_APP + "/JSONBTestServlet", "testJsonbDeserializer&JsonbProvider=" + PROVIDER_JOHNZON);
     }
 }

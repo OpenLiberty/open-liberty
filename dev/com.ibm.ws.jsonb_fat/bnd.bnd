@@ -17,6 +17,7 @@ javac.target: 1.8
 src: \
 	fat/src,\
 	test-applications/jsonbapp/src,\
+	test-applications/jsonbCDIapp/src,\
 	test-bundles/TestBundleUsingJsonb/src,\
 	test-bundles/TestBundleUsingJsonp/src
 
@@ -33,6 +34,7 @@ test.project: true
 	org.apache.johnzon:johnzon-mapper;version=1.1.0,\
 	org.eclipse:yasson;version=1.0.0,\
 	org.glassfish:javax.json;version=1.1,\
+	com.ibm.websphere.javaee.cdi.2.0;version=latest,\
 	com.ibm.websphere.javaee.jsonb.1.0;version=latest,\
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest
+	com.ibm.websphere.javaee.servlet.4.0;version=latest

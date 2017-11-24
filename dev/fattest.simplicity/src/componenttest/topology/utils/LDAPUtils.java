@@ -38,7 +38,7 @@ import componenttest.topology.impl.LibertyServer;
 public class LDAPUtils {
 
     private static final Class<?> c = LDAPUtils.class;
-    public static boolean USE_LOCAL_LDAP_SERVER = false;
+    public static boolean USE_LOCAL_LDAP_SERVER = true;
 
     public static String LDAP_SERVER_1_NAME = "localhost";
     public static String LDAP_SERVER_2_NAME = "localhost";
