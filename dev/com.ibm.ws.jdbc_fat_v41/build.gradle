@@ -18,14 +18,21 @@ dependencies {
   derby40 'org.apache.derby:derby:10.7.1.1'
 }
 
-def serverDir = "${buildDir}/autoFVT/publish/servers/com.ibm.ws.jdbc.fat.v41"
+File serverDir = new File(autoFvtDir, 'publish/servers/com.ibm.ws.jdbc.fat.v41')
 
-task addDerby40(type: Copy) {
+task addDerbyToServerDir(type: Copy) {
+  from configurations.derby
+  into new File(serverDir, 'derby')
+  rename 'derby-.*.jar', 'derby.jar'
+}
+
+task addDerby40ToServerDir(type: Copy) {
   from configurations.derby40
-  into serverDir + "/derby40"
+  into new File(serverDir, 'derby40')
+  rename 'derby-.*.jar', 'derby40.jar'
 }
 
 addRequiredLibraries {
-  dependsOn addDerby
-  dependsOn addDerby40
+  dependsOn addDerbyToServerDir
+  dependsOn addDerby40ToServerDir
 }
