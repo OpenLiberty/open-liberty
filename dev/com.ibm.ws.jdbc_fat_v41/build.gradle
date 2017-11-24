@@ -21,7 +21,7 @@ dependencies {
 def serverDir = "${buildDir}/autoFVT/publish/servers/com.ibm.ws.jdbc.fat.v41"
 
 task addDerby40(type: Copy) {
-  from configurations.derby
+  from configurations.derby40
   into serverDir + "/derby40"
 }
 

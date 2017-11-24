@@ -23,7 +23,7 @@ src: \
 	test-applications/SystemExitClient.jar/src,\
 	test-applications/SystemExitClientNoDD.jar/src,\
 
-test.project: true
+fat.project: true
 
 -buildpath: \
 	com.ibm.websphere.javaee.annotation.1.1;version=latest
