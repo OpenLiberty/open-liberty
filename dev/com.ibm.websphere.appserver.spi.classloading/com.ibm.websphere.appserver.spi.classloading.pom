@@ -25,5 +25,5 @@
   <artifactId>com.ibm.websphere.appserver.spi.classloading</artifactId>
   <version>${bFullVersion}</version>
   <name>WebSphere Classloading SPI</name>
-  <description>WebSphere Classloading SPI, version 1.4</description>
+  <description>WebSphere Classloading SPI, version 1.2</description>
 </project>
