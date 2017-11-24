@@ -16,8 +16,8 @@
        </engine>
        <container qualifier="websphere" default="true">
                <configuration>
-                       <property name="wlpHome">/libertyGit/open-liberty/dev/build.image/wlp</property>  
-                    <!--    <property name="wlpHome">/Users/hutchig/betas/Sep2017/wlp</property>  -->
+                   <!--    <property name="wlpHome">/libertyGit/open-liberty/dev/build.image/wlp</property>  -->
+                       <property name="wlpHome">/Users/hutchig/betas/Sep2017/wlp</property> 
                        <property name="serverName">server1</property>
                        <property name="httpPort">9080</property>
                        <property name="allowConnectingToRunningServer">true</property>

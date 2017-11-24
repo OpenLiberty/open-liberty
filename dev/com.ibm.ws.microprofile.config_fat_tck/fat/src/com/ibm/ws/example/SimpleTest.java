@@ -14,9 +14,6 @@ import java.io.File;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import componenttest.custom.junit.runner.FATRunner;
 
 /**
  * Example Shrinkwrap FAT project:
@@ -31,7 +28,7 @@ import componenttest.custom.junit.runner.FATRunner;
  * methods are defined in this class. All of the @Test methods are defined on the test
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
-@RunWith(FATRunner.class)
+//@RunWith(FATRunner.class)
 public class SimpleTest /* extends FATServletClient */ {
 
 //    public static final String APP_NAME = "app1";
