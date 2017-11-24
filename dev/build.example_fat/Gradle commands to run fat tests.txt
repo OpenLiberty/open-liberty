@@ -1,0 +1,11 @@
+To run a fat test use the command 
+
+/gradlew build.example_fat:buildandrun
+
+If you wish to include tests annotated with @Mode(TestMode.FULL) use
+
+/gradlew build.example_fat:buildandrun -Dfat.test.mode=FULL
+
+And if you only want to run a single test class the command is 
+
+./gradlew build.example_fat:buildandrun -Dfat.test.class.name=com.ibm.ws.example.SimpleTest

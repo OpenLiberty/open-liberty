@@ -18,7 +18,10 @@ package com.ibm.ws.fat.util;
  */
 
 import java.lang.reflect.Method;
+
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
@@ -31,7 +34,7 @@ import org.junit.Test;
 public class ShrinkWrapSharedServer extends SharedServer {
 
     private boolean shutdownAfterTest = true;
-    private final Map<Archive,String> archivesAndPaths;
+    private final Map<Archive,List<String>> archivesAndPaths;
     private static Class<?> c = ShrinkWrapSharedServer.class;
 
      /**
@@ -48,7 +51,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
      */
     public ShrinkWrapSharedServer(String serverName, Class testClass){
         super(serverName);
-        archivesAndPaths = new HashMap<Archive,String>();
+        archivesAndPaths = new HashMap<Archive,List<String>>();
         getArchivesViaAnnotation(serverName, testClass);
     }
 
@@ -60,11 +63,13 @@ public class ShrinkWrapSharedServer extends SharedServer {
                 try { 
                     Object archive = method.invoke(null);
                     if (archive instanceof Archive){
-                        archivesAndPaths.put((Archive) archive, dropinsPath);
+                        archivesAndPaths.put((Archive) archive, Arrays.asList(dropinsPath));
                     } else if (archive instanceof Archive[]){
                         Archive[] archives = (Archive[]) archive;
-                        for (Archive a : archives) { 
-                            archivesAndPaths.put(a, dropinsPath);
+                        for (Archive a : archives) {
+                            if (a != null) { 
+                              archivesAndPaths.put(a, Arrays.asList(dropinsPath));
+                            }
                         }
                     } else if (archive instanceof Map<?,?>) { 
                         Map<?,?> archiveMap = (Map<?,?>) archive;
@@ -73,13 +78,17 @@ public class ShrinkWrapSharedServer extends SharedServer {
                             if (! (key instanceof Archive)){
                                 throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a map, but the key was not an Archive");
                             }
-                            if (! (value instanceof String)){
-                                throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a map, but the key was not a String");
+                            if (! (value instanceof String) && ! (value instanceof List) && ! (((List) value).get(0) instanceof String) ){
+                                throw new IllegalArgumentException("A method annotated BuildShrinkWrap returned a map, but the key was not a String or a List of Strings with at least one element");
                             }
-                            archivesAndPaths.put((Archive) key, (String) value);
+                            if (value instanceof String) {
+                                archivesAndPaths.put((Archive) key, Arrays.asList((String) value));
+                            } else {
+                                archivesAndPaths.put((Archive) key, (List) value);
+                            }
                         }
                     } else {
-                        throw new IllegalArgumentException("A method annotated BuildShrinkWrap did not return an Archive, an array of Archives, or a map of <Archive,String>");
+                        throw new IllegalArgumentException("A method annotated BuildShrinkWrap did not return an Archive, an array of Archives, a map of <Archive,String>, or a map of <Archive,List<String>>");
                     }
                 } catch (Exception e) {
                     //We log and eat the exceptions here, so the constructor can be invoked statically and exceptions will make the test fail with an easy to debug error message. 
@@ -101,7 +110,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
     public ShrinkWrapSharedServer(String serverName){
         super(serverName);
         Log.info(c, "<init>", "buildingServer: " + serverName); 
-        archivesAndPaths = new HashMap<Archive,String>();
+        archivesAndPaths = new HashMap<Archive,List<String>>();
         try {
             StackTraceElement[] stackTrace = Thread.currentThread().getStackTrace();
             int i = 0;
@@ -142,11 +151,11 @@ public class ShrinkWrapSharedServer extends SharedServer {
     public ShrinkWrapSharedServer(String serverName, Archive... shirnkWrapArchives){
         super(serverName);
 
-        archivesAndPaths = new HashMap<Archive,String>();
+        archivesAndPaths = new HashMap<Archive,List<String>>();
         String dropinsPath = "publish/servers/"+serverName+"/dropins";
         
         for (Archive archive : shirnkWrapArchives) {
-            archivesAndPaths.put(archive, dropinsPath);
+            archivesAndPaths.put(archive, Arrays.asList(dropinsPath));
         }
     }
 
@@ -161,7 +170,7 @@ public class ShrinkWrapSharedServer extends SharedServer {
      *
      * @param archivesAndPaths a map of ShrinkWrap archives and their install paths.
      */
-    public ShrinkWrapSharedServer(String serverName, Map<Archive,String> archivesAndPaths){
+    public ShrinkWrapSharedServer(String serverName, Map<Archive,List<String>> archivesAndPaths){
         super(serverName);
         this.archivesAndPaths = archivesAndPaths;
     }
@@ -176,11 +185,16 @@ public class ShrinkWrapSharedServer extends SharedServer {
         for (Archive archive : archivesAndPaths.keySet()){
             //This takes place before the servers are copied, so we do not need to worry about
             //moving archives ourselves beyond this. 
-            ShrinkHelper.exportArtifact(archive, archivesAndPaths.get(archive));
+            for (String path : archivesAndPaths.get(archive)) { 
+                ShrinkHelper.exportArtifact(archive, path);
+            }
         }
         super.before();
    }
 
+    //I don't think it should be nessacary to shut down a SharedServer after every test but this is
+    //Just a guess based on the name "SharedServer" and the fact this addition was nessacary when I
+    //Ported from WS-CD open. TODO, investigate this further. 
     @Override 
     protected void after() {
        if (shutdownAfterTest &&getLibertyServer().isStarted()) {

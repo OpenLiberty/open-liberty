@@ -41,6 +41,69 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import com.ibm.ws.cdi12.fat.tests.AfterTypeDiscoveryTest;
+import com.ibm.ws.cdi12.fat.tests.AlterableContextTest;
+import com.ibm.ws.cdi12.fat.tests.AppClientAdvancedTest;
+import com.ibm.ws.cdi12.fat.tests.AppClientSecurityTest;
+import com.ibm.ws.cdi12.fat.tests.AppClientTest;
+import com.ibm.ws.cdi12.fat.tests.AppExtensionTest;
+import com.ibm.ws.cdi12.fat.tests.AroundConstructBeanTest;
+import com.ibm.ws.cdi12.fat.tests.AroundConstructEjbTest;
+import com.ibm.ws.cdi12.fat.tests.BeanDiscoveryModeNoneTest;
+import com.ibm.ws.cdi12.fat.tests.BeanLifecycleTest;
+import com.ibm.ws.cdi12.fat.tests.BeanManagerLookupTest;
+import com.ibm.ws.cdi12.fat.tests.CDI12ExtensionTest;
+import com.ibm.ws.cdi12.fat.tests.CDI12JNDIBeanManagerTest;
+import com.ibm.ws.cdi12.fat.tests.CDI12WebServicesTest;
+import com.ibm.ws.cdi12.fat.tests.CDICurrentTest;
+import com.ibm.ws.cdi12.fat.tests.CDIManagedBeanInterceptorTest;
+import com.ibm.ws.cdi12.fat.tests.ClassExclusionTest;
+import com.ibm.ws.cdi12.fat.tests.ClassLoadPrereqLogger;
+import com.ibm.ws.cdi12.fat.tests.ClassMaskingTest;
+import com.ibm.ws.cdi12.fat.tests.ConversationFilterTest;
+import com.ibm.ws.cdi12.fat.tests.DecoratorOnBuiltInBeansTest;
+import com.ibm.ws.cdi12.fat.tests.DeltaSpikeSchedulerTest;
+import com.ibm.ws.cdi12.fat.tests.DisablingBeansXmlValidationTest;
+import com.ibm.ws.cdi12.fat.tests.DynamicBeanExtensionTest;
+import com.ibm.ws.cdi12.fat.tests.EJB32Test;
+import com.ibm.ws.cdi12.fat.tests.EjbConstructorInjectionTest;
+import com.ibm.ws.cdi12.fat.tests.EjbDiscoveryTest;
+import com.ibm.ws.cdi12.fat.tests.EjbMiscTest;
+import com.ibm.ws.cdi12.fat.tests.EjbTimerTest;
+import com.ibm.ws.cdi12.fat.tests.EmptyCDITest;
+import com.ibm.ws.cdi12.fat.tests.EnablingBeansXmlValidationTest;
+import com.ibm.ws.cdi12.fat.tests.EventMetaDataTest;
+import com.ibm.ws.cdi12.fat.tests.GloballyEnableUsingPriorityTest;
+import com.ibm.ws.cdi12.fat.tests.InjectInjectionPointTest;
+import com.ibm.ws.cdi12.fat.tests.InjectParameterTest;
+import com.ibm.ws.cdi12.fat.tests.JEEInjectionTargetTest;
+import com.ibm.ws.cdi12.fat.tests.JNDILookupTest;
+import com.ibm.ws.cdi12.fat.tests.JarInRarTest;
+import com.ibm.ws.cdi12.fat.tests.MultiModuleAppTest;
+import com.ibm.ws.cdi12.fat.tests.MultipleBeansXmlTest;
+import com.ibm.ws.cdi12.fat.tests.MultipleNamedEJBTest;
+import com.ibm.ws.cdi12.fat.tests.NonContextualInjectionPointTest;
+import com.ibm.ws.cdi12.fat.tests.NonContextualTests;
+import com.ibm.ws.cdi12.fat.tests.ObservesInitializedTest;
+import com.ibm.ws.cdi12.fat.tests.PackagePrivateAccessTest;
+import com.ibm.ws.cdi12.fat.tests.PassivationBeanTests;
+import com.ibm.ws.cdi12.fat.tests.RootClassLoaderTest;
+import com.ibm.ws.cdi12.fat.tests.SessionDestroyTests;
+import com.ibm.ws.cdi12.fat.tests.SharedLibraryTest;
+import com.ibm.ws.cdi12.fat.tests.SimpleJSFTest;
+import com.ibm.ws.cdi12.fat.tests.SimpleJSFWithSharedLibTest;
+import com.ibm.ws.cdi12.fat.tests.SimpleJSPTest;
+import com.ibm.ws.cdi12.fat.tests.StatefulSessionBeanInjectionTest;
+import com.ibm.ws.cdi12.fat.tests.ValidatorInJarTest;
+import com.ibm.ws.cdi12.fat.tests.VisTest;
+import com.ibm.ws.cdi12.fat.tests.WarLibsAccessWarBeansTest;
+import com.ibm.ws.cdi12.fat.tests.WebBeansBeansXmlInWeldTest;
+import com.ibm.ws.cdi12.fat.tests.WithAnnotationsTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveNoAnnotationsTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchiveTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitBeanArchivesDisabledTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarLibJarsTest;
+import com.ibm.ws.cdi12.fat.tests.implicit.ImplicitWarTest;
 import com.ibm.ws.fat.util.FatLogHandler;
 
 /**
@@ -48,10 +111,92 @@ import com.ibm.ws.fat.util.FatLogHandler;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                CDI12Suite.class,
-                CDI1220Suite.class
+ /*
+
+Test definitions: 
+
+App_Client: If it's annotated @ClientOnly it goes here. 
+Annotations: Tests that check a specific annotation.
+CDI_API: These tests check that calling CDI APIs work correctly.
+Beansxml: These tests cover anything relating to the discovery or modification of CDI through CDI apis such as beans.xml
+EJB: These tests cover anything to do with EJB. 
+JSF: These tests cover anything to do with JSF. 
+JNDI: These tests cover anything to do with JNDI and java naming. 
+Events: These tests check that CDI life cycle events occur at the correct times. 
+visibility: These tests cover anything to do with ears, wars, jars and other archives.
+Third_Party: These tests cover third party libaries, such as DeltaSpike. 
+
+ */
+                AfterTypeDiscoveryTest.class,//definition
+                AlterableContextTest.class,//CDI_API
+                AroundConstructBeanTest.class, //EJB
+                AroundConstructEjbTest.class, //EJB
+                AppClientTest.class, //app_client
+                AppClientAdvancedTest.class, //app_client
+                AppClientSecurityTest.class,//app_client
+                AppExtensionTest.class,//
+                BeanDiscoveryModeNoneTest.class,
+                BeanLifecycleTest.class,//lifecycle
+                BeanManagerLookupTest.class,//jndi
+                CDI12JNDIBeanManagerTest.class, //jndi
+                CDI12ExtensionTest.class,//
+                CDI12WebServicesTest.class,//jee
+                CDICurrentTest.class,//CDI_API
+                ClassExclusionTest.class,//definition
+                ClassLoadPrereqLogger.class,
+                ClassMaskingTest.class,//packaging
+                ConversationFilterTest.class,
+                DecoratorOnBuiltInBeansTest.class,
+                DeltaSpikeSchedulerTest.class,//third_party
+                DisablingBeansXmlValidationTest.class, //definition
+                DynamicBeanExtensionTest.class,//
+                EjbConstructorInjectionTest.class,//EJB
+                EjbDiscoveryTest.class,//EJB
+                EjbMiscTest.class,//EJB
+                EJB32Test.class,//EJB
+                EjbTimerTest.class,//EJB
+                EmptyCDITest.class,//definition
+                EnablingBeansXmlValidationTest.class,//definition
+                EventMetaDataTest.class,//Lifecycle
+                GloballyEnableUsingPriorityTest.class,//annotation
+                ImplicitBeanArchivesDisabledTest.class, //definition
+                ImplicitBeanArchiveNoAnnotationsTest.class,//definition
+                ImplicitBeanArchiveTest.class,//definition
+                ImplicitWarLibJarsTest.class,//definition
+                ImplicitWarTest.class,//definition
+                InjectInjectionPointTest.class,
+                InjectParameterTest.class,
+                JarInRarTest.class,//packaging
+                JEEInjectionTargetTest.class,//jee
+                JNDILookupTest.class, //jndi
+                CDIManagedBeanInterceptorTest.class,//EJB
+                MultipleBeansXmlTest.class,//definition
+                MultiModuleAppTest.class, //packaging
+                MultipleNamedEJBTest.class,//EJB
+                NonContextualInjectionPointTest.class,//TODO
+                NonContextualTests.class,//TODO
+                ObservesInitializedTest.class,//lifecycle
+                PackagePrivateAccessTest.class,//packaging
+                PassivationBeanTests.class,//lifecycle 
+                RootClassLoaderTest.class,//packaging
+                SessionDestroyTests.class,//lifecycle
+                SharedLibraryTest.class,//packaging
+                SessionDestroyTests.class,//Duplicate!!
+                SimpleJSFTest.class, //jee
+                SimpleJSFWithSharedLibTest.class, //jee
+                SimpleJSPTest.class,//jee
+                StatefulSessionBeanInjectionTest.class, //ejb
+                ValidatorInJarTest.class,//packaging
+                VisTest.class,//packaging
+                WarLibsAccessWarBeansTest.class,//packaging
+                WebBeansBeansXmlInWeldTest.class,//definition
+                WithAnnotationsTest.class//Annotation
 })
 public class FATSuite {
+  
+    @ClassRule
+    public static RepeatTests r = RepeatTests.withoutModification()
+                    .andWith(FeatureReplacementAction.EE8_FEATURES);
   
     private static final Logger LOG = Logger.getLogger(FATSuite.class.getName());
     private static Map<String,List<Archive>> serversToApps = new HashMap<String,List<Archive>>();
