@@ -18,7 +18,7 @@ src: \
 test.project: true
 
 -buildpath: \
-	apache_directory_server;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.0;version=latest,\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
