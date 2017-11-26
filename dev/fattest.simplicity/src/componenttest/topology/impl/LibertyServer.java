@@ -265,7 +265,7 @@ public class LibertyServer implements LogMonitorClient {
 
     protected ApplicationManager appmgr;
 
-    protected List<String> installedApplications;
+    protected Set<String> installedApplications;
 
     protected static final String DEFAULT_SERVER = "defaultServer";
 
@@ -603,7 +603,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     protected void setup(boolean deleteServerDirIfExist, boolean usePreviouslyConfigured) throws Exception {
-        installedApplications = new ArrayList<String>();
+        installedApplications = new HashSet<String>();
         machine.connect();
         machine.setWorkDir(installRoot);
         if (this.serverToUse == null) {
@@ -1512,7 +1512,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     public void validateAppLoaded(String appName) throws Exception {
-        String exceptionText = validateAppsLoaded(Collections.singletonList(appName), LOG_SEARCH_TIMEOUT, getDefaultLogFile());
+        String exceptionText = validateAppsLoaded(Collections.singleton(appName), LOG_SEARCH_TIMEOUT, getDefaultLogFile());
         if (exceptionText != null) {
             throw new TopologyException(exceptionText);
         }
@@ -1532,7 +1532,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected String validateAppsLoaded(List<String> appList, int timeout, RemoteFile outputFile) throws Exception {
+    protected String validateAppsLoaded(Set<String> appList, int timeout, RemoteFile outputFile) throws Exception {
         // At time of writing, timeout argument was being ignored. Preserve that for now...
         timeout = LOG_SEARCH_TIMEOUT;
         return validateAppsLoaded(appList, timeout, 2 * timeout, outputFile);
@@ -1552,7 +1552,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param outputFile file to check
      * @return line that matched the regexp, or null to indicate not found within acceptable (extended) timeout
      */
-    protected String validateAppsLoaded(List<String> appList, int intendedTimeout, int extendedTimeout, RemoteFile outputFile) throws Exception {
+    protected String validateAppsLoaded(Set<String> appList, int intendedTimeout, int extendedTimeout, RemoteFile outputFile) throws Exception {
         final String method = "validateAppsLoaded";
 
         final long startTime = System.currentTimeMillis();
@@ -5162,7 +5162,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    public List<String> listAllInstalledAppsForValidation() {
+    public Set<String> listAllInstalledAppsForValidation() {
         final String method = "listAllInstalledAppsForValidation";
         Log.info(c, method, "Returning list of installed application for validation");
         for (String app : installedApplications) {

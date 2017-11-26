@@ -17,8 +17,10 @@ src: \
 	test-applications/JavaEESecBase.jar/src,\
 	test-applications/JavaEESec.war/src,\
 	test-applications/JavaEESecBasicAuthServlet.war/src,\
-	test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src
-
+	test-applications/JavaEESecAnnotatedBasicAuthServlet.war/src,\
+	test-applications/JavaEEsecFormAuth.war/src,\
+	test-applications/JavaEEsecFormAuthRedirect.war/src,\
+	test-applications/JavaEESecAnnotatedBasicAuthServletDeferred.war/src
 
 javac.source: 1.8
 javac.target: 1.8
@@ -34,9 +36,11 @@ test.project: true
 	com.ibm.websphere.javaee.cdi.1.2;version=latest,\
 	com.ibm.websphere.javaee.el.3.0;version=latest,\
 	com.ibm.websphere.javaee.jaspic.1.1;version=latest,\
+	com.ibm.websphere.javaee.jsf.2.3;version=latest,\
 	com.ibm.ws.security.javaeesec.1.0;version=latest,\
 	com.ibm.websphere.javaee.security.1.0;version=latest,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.websphere.javaee.validation.2.0;version=latest,\
 	com.ibm.websphere.appserver.spi.jaspic,\
 	com.ibm.websphere.security;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
@@ -44,6 +48,6 @@ test.project: true
 	com.ibm.ws.common.encoder,\
 	com.ibm.ws.security.token,\
 	com.ibm.websphere.org.osgi.service.component,\
-	apache_directory_server;version=latest,\
+	com.ibm.ws.org.apache.directory.server;version=latest,\
 	org.apache.directory.server:apacheds-service;version=latest,\
 	com.ibm.ws.webcontainer.security_test.servlets;version=latest

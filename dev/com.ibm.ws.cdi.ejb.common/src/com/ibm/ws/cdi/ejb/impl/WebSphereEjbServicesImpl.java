@@ -13,7 +13,10 @@ package com.ibm.ws.cdi.ejb.impl;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.InterceptionType;
@@ -36,6 +39,18 @@ public class WebSphereEjbServicesImpl implements WebSphereEjbServices {
     private static final TraceComponent tc = Tr.register(WebSphereEjbServicesImpl.class);
 
     private final EJBInterceptorRegistry interceptorRegistry = new EJBInterceptorRegistry();
+
+    private final Map<String, WebSphereEjbDescriptor<?>> ejbDescriptorMap;
+
+    private final String applicationID;
+
+    /**
+     * @param ejbDescriptorMap a map from j2ee name to WebSphereEjbDescriptor
+     */
+    public WebSphereEjbServicesImpl(String applicationID, Map<String, WebSphereEjbDescriptor<?>> ejbDescriptorMap) {
+        this.applicationID = applicationID;
+        this.ejbDescriptorMap = ejbDescriptorMap;
+    }
 
     // EJBs are not allowed to be annotated with @Transactional
     // Throw an exception if an interceptor for Transactional is registered
@@ -60,12 +75,7 @@ public class WebSphereEjbServicesImpl implements WebSphereEjbServices {
                 }
 
                 EjbDescriptor<?> descriptor = ejbDescriptor;
-                //TODO in Weld 3, InternalEjbDescriptor is package protected and we can't use it
-//                if (ejbDescriptor instanceof InternalEjbDescriptor) {
-//                    InternalEjbDescriptor<?> internal = (InternalEjbDescriptor<?>) ejbDescriptor;
-//                    descriptor = internal.delegate();
-//                }
-                WebSphereEjbDescriptor<?> webSphereEjbDescriptor = (WebSphereEjbDescriptor<?>) descriptor;
+                WebSphereEjbDescriptor<?> webSphereEjbDescriptor = findWebSphereEjbDescriptor(descriptor);
                 J2EEName ejbJ2EEName = webSphereEjbDescriptor.getEjbJ2EEName();
 
                 interceptorRegistry.registerInterceptors(ejbJ2EEName, interceptorBindings);
@@ -73,16 +83,25 @@ public class WebSphereEjbServicesImpl implements WebSphereEjbServices {
         }
     }
 
+    private WebSphereEjbDescriptor<?> findWebSphereEjbDescriptor(EjbDescriptor<?> descriptor) {
+        String j2eeName = EjbDescriptorImpl.parseJ2EEName(descriptor);
+        WebSphereEjbDescriptor<?> webSphereEjbDescriptor = null;
+        synchronized (ejbDescriptorMap) {
+            webSphereEjbDescriptor = ejbDescriptorMap.get(j2eeName);
+        }
+        if (webSphereEjbDescriptor == null || !descriptor.equals(webSphereEjbDescriptor)) {
+            //Shouldn't be possible to get here ... the ejbDescriptorMap is global so if the descriptor isn't in there then we didn't create it
+            //the one passed in should either be exactly the same as the one in the map or it should be one wrapped by Weld.
+            //If it was wrapped by Weld then the equals method should still defer down to our original and the two should be "equal".
+            throw new IllegalStateException(Tr.formatMessage(tc, "internal.server.error.CWOWB2002E", "WebSphereEjbDescriptor not found", j2eeName));
+        }
+        return webSphereEjbDescriptor;
+    }
+
     @Override
     public SessionObjectReference resolveEjb(EjbDescriptor<?> ejbDescriptor) {
         EjbDescriptor<?> descriptor = ejbDescriptor;
-        //TODO in Weld 3, InternalEjbDescriptor is package protected and we can't use it
-//        if (ejbDescriptor instanceof InternalEjbDescriptor) {
-//            InternalEjbDescriptor<?> internal = (InternalEjbDescriptor<?>) ejbDescriptor;
-//            descriptor = internal.delegate();
-//        }
-        WebSphereEjbDescriptor<?> webSphereEjbDescriptor = (WebSphereEjbDescriptor<?>) descriptor;
-
+        WebSphereEjbDescriptor<?> webSphereEjbDescriptor = findWebSphereEjbDescriptor(descriptor);
         EJBReferenceFactory factory = webSphereEjbDescriptor.getReferenceFactory();
         EJBReference reference = factory.create(null);
         return new SessionObjectReferenceImpl(reference);
@@ -97,6 +116,15 @@ public class WebSphereEjbServicesImpl implements WebSphereEjbServices {
     @Override
     public void cleanup() {
         interceptorRegistry.clearRegistry();
+        synchronized (ejbDescriptorMap) {
+            Iterator<Entry<String, WebSphereEjbDescriptor<?>>> itr = ejbDescriptorMap.entrySet().iterator();
+            while (itr.hasNext()) {
+                Entry<String, WebSphereEjbDescriptor<?>> entry = itr.next();
+                if (entry.getKey().startsWith(applicationID)) {
+                    itr.remove();
+                }
+            }
+        }
     }
 
 }

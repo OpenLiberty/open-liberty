@@ -22,6 +22,8 @@ import java.util.Set;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
+import javax.enterprise.inject.Instance;
+import javax.enterprise.inject.spi.CDI;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.security.enterprise.credential.Credential;
@@ -48,6 +50,7 @@ public class DatabaseIdentityStore implements IdentityStore {
 
     private static final TraceComponent tc = Tr.register(DatabaseIdentityStore.class);
 
+    // todo-kristip: generate a storeId
     private final String storeId = null;
 
     /** The definitions for this IdentityStore. */
@@ -63,21 +66,29 @@ public class DatabaseIdentityStore implements IdentityStore {
     public DatabaseIdentityStore(DatabaseIdentityStoreDefinition idStoreDefinition) {
         this.idStoreDefinition = new DatabaseIdentityStoreDefinitionWrapper(idStoreDefinition);
 
-        try {
-            passwordHash = this.idStoreDefinition.getHashAlgorithm().newInstance();
-        } catch (IllegalAccessException | InstantiationException e) {
-            throw new IllegalArgumentException("Cannot load the password HashAlgorithm: " + this.idStoreDefinition.getHashAlgorithm(), e);
+        Instance<? extends PasswordHash> p2phi = CDI.current().select(this.idStoreDefinition.getHashAlgorithm());
+        if (p2phi != null) {
+            passwordHash = p2phi.get();
+        } else {
+            throw new IllegalArgumentException("Cannot load the password HashAlgorithm, the CDI bean was not found for: " + this.idStoreDefinition.getHashAlgorithm());
         }
         List<String> params = this.idStoreDefinition.getHashAlgorithmParameters();
         if (params != null && !params.isEmpty()) {
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "Processing HashAlgorithmParameters.");
+            }
             Map<String, String> prepped = new HashMap<String, String>(params.size());
             for (String param : params) {
                 String[] split = param.split("=");
                 if (split.length != 2) {
-                    throw new IllegalArgumentException("Hash algorithm parameter is incorrect format, expected: name=value,  recevied: " + param);
+                    throw new IllegalArgumentException("Hash algorithm parameter is in the incorrect format. Expected: name=value,  recevied: " + param);
                 }
                 prepped.put(split[0], split[1]);
             }
+            if (tc.isEventEnabled()) {
+                Tr.event(tc, "Processed HashAlgorithmParameters: " + prepped);
+            }
+
             passwordHash.initialize(prepped);
         }
     }
@@ -102,15 +113,11 @@ public class DatabaseIdentityStore implements IdentityStore {
         }
         PreparedStatement prep = null;
         try {
-            DataSource myDS = (DataSource) new InitialContext().lookup(idStoreDefinition.getDataSourceLookup());
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Getting connection for " + caller + " for " + idStoreDefinition.getGroupsQuery());
-            }
-            Connection conn = myDS.getConnection();
+            Connection conn = getConnection(caller);
             try {
                 prep = conn.prepareStatement(idStoreDefinition.getGroupsQuery());
                 prep.setString(1, caller);
-                ResultSet result = runQuery(prep);
+                ResultSet result = runQuery(prep, caller);
 
                 while (result.next()) {
                     String aGroup = result.getString(1);
@@ -176,32 +183,33 @@ public class DatabaseIdentityStore implements IdentityStore {
         ProtectedString dbPassword = null;
         PreparedStatement prep = null;
         try {
-            // currently works when you define the user/pwd directly on the datasource
-            // kristip-todo: auth alias
-            DataSource myDS = (DataSource) new InitialContext().lookup(idStoreDefinition.getDataSourceLookup());
-            if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Getting connection for " + caller + " to run " + idStoreDefinition.getCallerQuery());
-            }
-            Connection conn = myDS.getConnection();
+
+            Connection conn = getConnection(caller);
             try {
                 prep = conn.prepareStatement(idStoreDefinition.getCallerQuery());
                 prep.setString(1, caller);
 
-                ResultSet result = runQuery(prep);
+                ResultSet result = runQuery(prep, caller);
 
-                if (!result.next()) {
+                if (!result.next()) { // advance to first result
                     if (tc.isEventEnabled()) {
                         Tr.event(tc, "No users returned for caller: " + caller + ", using query: " + idStoreDefinition.getCallerQuery());
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 }
 
-                dbPassword = new ProtectedString(result.getString(1).toCharArray());
-
-                if (result.next()) {
-                    result.last();
+                String dbreturn = result.getString(1);
+                if (dbreturn == null) {
                     if (tc.isEventEnabled()) {
-                        Tr.event(tc, "Multiple results returned for caller: " + caller, result.getRow());
+                        Tr.event(tc, "The password returned from database is null for caller: " + caller);
+                    }
+                    return CredentialValidationResult.INVALID_RESULT;
+                }
+                dbPassword = new ProtectedString(dbreturn.toCharArray());
+
+                if (result.next()) { // check if there are additional results.
+                    if (tc.isEventEnabled()) {
+                        Tr.event(tc, "Multiple results returned for caller: " + caller);
                     }
                     return CredentialValidationResult.INVALID_RESULT;
                 }
@@ -212,13 +220,6 @@ public class DatabaseIdentityStore implements IdentityStore {
         } catch (NamingException | SQLException e) {
             if (tc.isEventEnabled()) {
                 Tr.event(tc, "Exception validating caller: " + caller, e);
-            }
-            return CredentialValidationResult.INVALID_RESULT;
-        }
-
-        if (dbPassword.isEmpty()) {
-            if (tc.isEventEnabled()) {
-                Tr.event(tc, "The password returned from database is null for caller: " + caller);
             }
             return CredentialValidationResult.INVALID_RESULT;
         }
@@ -239,13 +240,21 @@ public class DatabaseIdentityStore implements IdentityStore {
         return idStoreDefinition.getUseFor();
     }
 
-    private ResultSet runQuery(PreparedStatement prep) throws SQLException {
+    private ResultSet runQuery(PreparedStatement prep, String caller) throws SQLException {
         long startTime = System.currentTimeMillis();
         ResultSet result = prep.executeQuery();
         long endTime = System.currentTimeMillis();
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Time to run query. Start time: " + startTime + ". End time: " + endTime + ". Total time in ms: " + (endTime - startTime));
+            Tr.debug(tc, "Time to run query on caller " + caller + ". Start time: " + startTime + ". End time: " + endTime + ". Total time in ms: " + (endTime - startTime));
         }
         return result;
+    }
+
+    private Connection getConnection(String caller) throws NamingException, SQLException {
+        // datasource could be an expression, look it up fresh everytime.
+        DataSource dataSource = (DataSource) new InitialContext().lookup(idStoreDefinition.getDataSourceLookup());
+
+        // todo-kristip: Should we do a retry on getting a connection if we get a failure?
+        return dataSource.getConnection();
     }
 }

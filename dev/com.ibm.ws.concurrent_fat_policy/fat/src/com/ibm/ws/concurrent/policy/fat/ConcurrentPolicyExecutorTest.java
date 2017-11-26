@@ -48,6 +48,6 @@ public class ConcurrentPolicyExecutorTest extends FATServletClient {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        server.stopServer("CWWKE1205E:"); // several tests intentionally exceed the startTimeout
     }
 }

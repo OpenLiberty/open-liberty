@@ -19,9 +19,21 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
+//                CustomFormHttpAuthenticationMechanismTest.class,
                 HttpAuthenticationMechanismTest.class,
                 RememberMeTest.class,
-                AutoApplySessionTest.class
+                AutoApplySessionTest.class,
+                FormHttpAuthenticationMechanismTest.class,
+                LdapIdentityStoreDeferredSettingsTest.class,
+                MultipleIdentityStoreBasicTest.class,
+                MultipleIdentityStoreApplCustomTest.class,
+                MultipleIdentityStoreFormRedirectTest.class,
+                MultipleIdentityStoreFormForwardTest.class,
+                MultipleIdentityStoreCustomFormRedirectTest.class,
+                MultipleIdentityStoreCustomFormForwardTest.class,
+                NoJavaEESecFormTest.class,
+                MultipleIdentityStoreFormPostTest.class,
+                MultipleIdentityStoreCustomFormPostTest.class
 })
 
 /**

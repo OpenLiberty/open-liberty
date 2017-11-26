@@ -43,7 +43,8 @@ public class SharedShrinkWrapApps {
 
         WebArchive brokenCDIConfig_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.broken")
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml");
+                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
+                        .addAsLibrary(cdiConfigJar());
 
         return brokenCDIConfig_war;
     }
@@ -55,21 +56,23 @@ public class SharedShrinkWrapApps {
             return(cdiConfig_war);
         }
 
-        JavaArchive cdiConfig_jar = ShrinkWrap.create(JavaArchive.class, APP_NAME + ".jar")
-                        .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
-                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.beans")
-                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.test")
-                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.web");
-
         cdiConfig_war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/permissions.xml"), "permissions.xml")
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.ConfigSource"),
                                                "services/org.eclipse.microprofile.config.spi.ConfigSource")
                         .addAsManifestResource(new File("test-applications/" + APP_NAME + ".war/resources/META-INF/services/org.eclipse.microprofile.config.spi.Converter"),
                                                "services/org.eclipse.microprofile.config.spi.Converter")
-                        .addAsLibrary(cdiConfig_jar);
+                        .addAsLibrary(cdiConfigJar());
 
         return(cdiConfig_war);
+    }
+
+    private static JavaArchive cdiConfigJar() {
+        return ShrinkWrap.create(JavaArchive.class, "cdiConfig.jar")
+                        .addAsManifestResource(new File("test-applications/cdiConfig.jar/resources/META-INF/permissions.xml"), "permissions.xml")
+                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.beans")
+                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.test")
+                        .addPackages(true, "com.ibm.ws.microprofile.appConfig.cdi.web");
     }
 
 }

@@ -15,8 +15,8 @@ import java.util.logging.Logger;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletMapping;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.ServletMapping;
 
 import com.ibm.ws.webcontainer.servlet.CacheServletWrapper;
 import com.ibm.ws.webcontainer.webapp.WebApp;
@@ -34,7 +34,7 @@ public class CacheServletWrapper40 extends CacheServletWrapper {
     protected final static Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer40.servlet");
     private static final String CLASS_NAME = CacheServletWrapper40.class.getName();
 
-    private final ServletMapping mapping;
+    private final HttpServletMapping mapping;
 
     /**
      * The CacheServletWrapper40 constructor will call the super class constructor and then

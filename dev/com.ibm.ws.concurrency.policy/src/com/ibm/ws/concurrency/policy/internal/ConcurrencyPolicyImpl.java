@@ -30,34 +30,60 @@ import com.ibm.ws.threading.PolicyExecutorProvider;
  */
 @Component(name = "com.ibm.ws.concurrency.policy.concurrencyPolicy",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
+           immediate = true, // to keep this component active in order to be able to finish running tasks even if ref count drops to 0
            service = { ConcurrencyPolicy.class },
            property = { "service.pid=com.ibm.ws.concurrency.policy.concurrencyPolicy" })
 public class ConcurrencyPolicyImpl implements ConcurrencyPolicy {
+    /**
+     * Lazily initialized policy executor instance corresponding to the configuration.
+     */
+    private PolicyExecutor executor;
+
+    /**
+     * OSGi service component properties. A non-null value indicates the service component is active.
+     */
+    private Map<String, Object> props;
+
     @Reference
     protected PolicyExecutorProvider provider;
 
-    private PolicyExecutor executor;
-
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> props) {
-        executor = provider.create(props);
+        this.props = props;
     }
 
     @Deactivate
     protected void deactivate(ComponentContext context) {
-        executor.shutdownNow();
+        PolicyExecutor px;
+        synchronized (this) {
+            px = executor;
+            executor = null;
+            props = null;
+        }
+        if (px != null)
+            px.shutdownNow();
     }
 
     /**
      * @see com.ibm.ws.concurrency.policy.ConcurrencyPolicy#getExecutor()
      */
     @Override
-    public PolicyExecutor getExecutor() {
+    public synchronized PolicyExecutor getExecutor() {
+        if (props == null)
+            throw new IllegalStateException();
+        if (executor == null)
+            executor = provider.create(props);
         return executor;
     }
 
     @Modified
     protected void modified(ComponentContext context, Map<String, Object> props) {
-        executor.updateConfig(props);
+        PolicyExecutor px;
+        synchronized (this) {
+            px = executor;
+            this.props = props;
+        }
+        if (px != null)
+            px.updateConfig(props);
     }
 }

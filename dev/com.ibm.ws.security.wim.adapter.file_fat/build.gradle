@@ -47,7 +47,7 @@ autoFVT.doLast {
    * Copy the local ApacheDS LDAP instances. 
    */
   copy {
-    from "${projectDir}/../apache_directory_server/apacheds-2.0.0-M15"
+    from "${projectDir}/../com.ibm.ws.org.apache.directory.server/apacheds-2.0.0-M15"
     into "${buildDir}/autoFVT/apacheds-2.0.0-M15"
   }
 

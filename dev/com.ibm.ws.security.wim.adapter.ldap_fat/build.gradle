@@ -29,7 +29,7 @@ addRequiredLibraries.doLast {
             'org.apache.httpcomponents:httpcore:4.1.2',
             'org.apache.directory.server:apacheds-service:2.0.0-M15',
             project(':fattest.simplicity'),
-            project(':apache_directory_server'),
+            project(':com.ibm.ws.org.apache.directory.server'),
             project(':com.ibm.websphere.security.wim.base'),
             project(':com.ibm.ws.security.registry'),
             project(':com.ibm.ws.security.registry_test.servlet'),
@@ -48,7 +48,7 @@ autoFVT.doLast {
    * Copy the local ApacheDS LDAP instances. 
    */
   copy {
-    from "${projectDir}/../apache_directory_server/apacheds-2.0.0-M15"
+    from "${projectDir}/../com.ibm.ws.org.apache.directory.server/apacheds-2.0.0-M15"
     into "${buildDir}/autoFVT/apacheds-2.0.0-M15"
   }
 

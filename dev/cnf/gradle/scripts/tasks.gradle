@@ -109,7 +109,13 @@ subprojects {
         into "${rootDir}/build.image/wlp/" + bnd('publish.wlp.jar.suffix', 'lib')
         include bnd('publish.wlp.jar.include', '*.jar')
         if (parseBoolean(bnd('publish.wlp.jar.rename', 'true'))) {
-          if ((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty)) {
+          // iFixed jars should get renamed with a qualifier so they can exist in the filesystem
+          // next to the base version of the jar, *except* for jars that are directly
+          // referenced in a tool script's classpath...
+          if (((bnd('IBM-Interim-Fixes', '').empty) && (bnd('IBM-Test-Fixes', '').empty))
+              || (project.name.equals("com.ibm.ws.kernel.boot"))
+              || (project.name.equals("com.ibm.ws.appclient.boot"))
+              || (project.name.equals("com.ibm.ws.kernel.boot.cmdline"))) {
             rename '(.*).jar', '$1' + "_${bnd.bFullVersion}.jar"
           }
           else {

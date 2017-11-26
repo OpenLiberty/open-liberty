@@ -10,8 +10,6 @@
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
-import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -32,21 +30,16 @@ import web.jsonptest.JSONPTestServlet;
  */
 @RunWith(FATRunner.class)
 public class JSONPContainerTest extends FATServletClient {
-    private static final String SERVLET_PATH = "jsonpapp/JSONPTestServlet";
-
-    @Server("com.ibm.ws.jsonp.container.fat")
-    @TestServlet(servlet = JSONPTestServlet.class, path = SERVLET_PATH)
-    public static LibertyServer server;
 
     private static final String appName = "jsonpapp";
 
+    @Server("com.ibm.ws.jsonp.container.fat")
+    @TestServlet(servlet = JSONPTestServlet.class, contextRoot = appName)
+    public static LibertyServer server;
+
     @BeforeClass
     public static void setUp() throws Exception {
-        WebArchive app = ShrinkWrap.create(WebArchive.class, appName + ".war")
-                        .addPackage("web.jsonptest");
-        ShrinkHelper.exportAppToServer(server, app);
-
-        server.addInstalledAppForValidation(appName);
+        ShrinkHelper.defaultApp(server, appName, "web.jsonptest");
         server.startServer();
     }
 
@@ -57,6 +50,6 @@ public class JSONPContainerTest extends FATServletClient {
 
     @Test
     public void testJsonpProviderAvailableJohnzon() throws Exception {
-        runTest(server, SERVLET_PATH, "testJsonpProviderAvailable&JsonpProvider=" + FATSuite.PROVIDER_JOHNZON_JSONP);
+        runTest(server, appName + "/JSONPTestServlet", "testJsonpProviderAvailable&JsonpProvider=" + FATSuite.PROVIDER_JOHNZON_JSONP);
     }
 }
