@@ -13,12 +13,12 @@ package componenttest.topology.ldap;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.List;
 
 import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.common.apiservices.Bootstrap;
+import componenttest.topology.utils.PrivHelper;
 
 /**
  *
@@ -30,21 +30,8 @@ public class LocalLdapServer {
     private BufferedReader in;
 
     private static final Class<?> c = LocalLdapServer.class;
-    private static final String APACHE_DS_HOME =
-                    AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return System.getProperty("apache.ds.home");
-                        }
-                    });
-
-    private static final String OS_NAME =
-                    AccessController.doPrivileged(new PrivilegedAction<String>() {
-                        @Override
-                        public String run() {
-                            return System.getProperty("os.name");
-                        }
-                    });
+    private static final String APACHE_DS_HOME = PrivHelper.getProperty("apache.ds.home");
+    private static final String OS_NAME = PrivHelper.getProperty("os.name");
 
     /**
      * Sets the name of the instance
@@ -108,8 +95,7 @@ public class LocalLdapServer {
             }
         }
 
-        in = new BufferedReader(
-                        new InputStreamReader(localLdapInstance.getInputStream()));
+        in = new BufferedReader(new InputStreamReader(localLdapInstance.getInputStream()));
 
         try {
             String line = null;
@@ -123,14 +109,12 @@ public class LocalLdapServer {
                     if (line.trim().equals("|_|")) {
                         //started, break the loop
                         break;
-                    }
-                    else {
+                    } else {
                         //wasn't the output we expected, but wasn't end of stream
                         //so just continue
                         continue;
                     }
-                }
-                else {
+                } else {
                     //reached the end of the stream, wait 1 second before trying again
                     try {
                         Thread.sleep(1000);
