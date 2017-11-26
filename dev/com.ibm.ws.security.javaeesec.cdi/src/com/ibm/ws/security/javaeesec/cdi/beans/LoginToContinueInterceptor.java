@@ -28,8 +28,6 @@ import javax.security.enterprise.authentication.mechanism.http.HttpMessageContex
 import javax.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -54,6 +52,8 @@ import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
 import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  *
@@ -66,15 +66,25 @@ public class LoginToContinueInterceptor {
     private static final TraceComponent tc = Tr.register(LoginToContinueInterceptor.class);
     ModulePropertiesProvider mpp = null;
     private boolean resolved = false;
-    private boolean isForward = true;
-    private String elForward = null;
 
+    Properties props = null;
+    // the following vaules are set if they are not EL expression, ro resolved immediately.
+    private String _errorPage = null;
+    private String _loginPage = null;
+    private Boolean _isForward = null;
+
+    @SuppressWarnings("rawtypes")
     @PostConstruct
     public void initialize(InvocationContext ic) {
         mpp = getModulePropertiesProvider();
         if (mpp != null) {
             Class hamClass = getTargetClass(ic);
-            initializeUseForwardToLogin(mpp.getAuthMechProperties(hamClass), isCustomHAM(hamClass));
+            boolean isCustomHAM = isCustomHAM(hamClass);
+            props = mpp.getAuthMechProperties(hamClass);
+            _isForward = resolveBoolean((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION),
+                                        (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN), true, isCustomHAM);
+            _loginPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE), "/login", true, isCustomHAM);
+            _errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), "/login-error", true, isCustomHAM);
         } else {
             Tr.error(tc, "JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST");
         }
@@ -122,9 +132,9 @@ public class LoginToContinueInterceptor {
     }
 
     protected AuthenticationStatus gotoLoginPage(Properties props, HttpServletRequest req, HttpServletResponse res, HttpMessageContext httpMessageContext) throws IOException {
-        String loginPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE);
-        String errorPage = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE);
-        boolean useForwardToLogin = getUseForwardToLogin();
+        String loginPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE), _loginPage);
+        String errorPage = resolveString((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE), _errorPage);
+        boolean useForwardToLogin = resolveBoolean((String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION), _isForward).booleanValue();;
         AuthenticationStatus status = AuthenticationStatus.SEND_CONTINUE;
 
         updateFormLoginConfiguration(loginPage, errorPage);
@@ -141,7 +151,7 @@ public class LoginToContinueInterceptor {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(tc, "Set GET method instead of original POST method for preventing a potential JSF error.");
                     }
-                    ((IExtendedRequest)req).setMethod("GET");
+                    ((IExtendedRequest) req).setMethod("GET");
                 }
                 rd.forward(req, res);
             } catch (Exception e) {
@@ -155,43 +165,72 @@ public class LoginToContinueInterceptor {
         return status;
     }
 
-    private void initializeUseForwardToLogin(Properties props, boolean isCustomHAM) {
-        String useForwardExpression = (String) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION);
-        boolean isImmediate = false;
-        if (useForwardExpression != null && !useForwardExpression.isEmpty()) {
-            isImmediate = ModulePropertiesUtils.getInstance().isImmediateEval(useForwardExpression);
-            elForward = ModulePropertiesUtils.getInstance().extractExpression(useForwardExpression);
-            if (isImmediate) {
-                if (!isCustomHAM) {
-                    ELProcessor elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
-                    isForward = (Boolean) elProcessor.eval(elForward);
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "elForward : " + elForward + ", result of elProcessor.eval : " + isForward);
-                    resolved = true;
-                }
+    private Boolean resolveBoolean(String expression, Boolean value, boolean isImmediateOnly, boolean isCustomHAM) {
+        Boolean result = null;
+        if (expression != null && !expression.isEmpty()) {
+            // evaluate only when HAM is not custom, needs to be resolved immediately and expression is set as immediate evaluation.
+            if (!isCustomHAM && ModulePropertiesUtils.getInstance().isImmediateEval(expression) && isImmediateOnly) {
+                result = resolveBoolean(expression);
             }
         } else {
-            // no EL.
-            boolean result = true;
-            Boolean value = (Boolean) props.get(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN);
             if (value != null) {
-                result = value.booleanValue();
+                result = value;
+            } else {
+                result = Boolean.TRUE;
             }
-            resolved = true;
-            isForward = result;
         }
+        return result;
     }
 
-    private boolean getUseForwardToLogin() {
-        if (resolved) {
-            return isForward;
-        } else {
-            ELProcessor elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
-            Boolean result = (Boolean) elProcessor.eval(elForward);
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "elForward : " + elForward + ", result of elProcessor.eval : " + result);
-            return result.booleanValue();
+    private Boolean resolveBoolean(String expression, Boolean value) {
+        if (value != null) {
+            return value.booleanValue();
         }
+        return resolveBoolean(expression);
+    }
+
+    protected Boolean resolveBoolean(String expression) {
+        Boolean result = Boolean.TRUE;
+        if (expression != null && !expression.isEmpty()) {
+            ELProcessor elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
+            String value = ModulePropertiesUtils.getInstance().extractExpression(expression);
+            result = (Boolean) elProcessor.eval(value);
+        }
+        return result;
+    }
+
+    private String resolveString(String expression, String defaultValue, boolean isImmediateOnly, boolean isCustomHAM) {
+        String result = null;
+        if (ModulePropertiesUtils.getInstance().isELExpression(expression)) {
+            // evaluate only when HAM is not custom, needs to be resolved immediately and expression is set as immediate evaluation.
+            if (!isCustomHAM && ModulePropertiesUtils.getInstance().isImmediateEval(expression) && isImmediateOnly) {
+                result = resolveString(expression);
+            }
+        } else {
+            if (expression != null && !expression.isEmpty()) {
+                result = expression;
+            } else {
+                result = defaultValue;
+            }
+        }
+        return result;
+    }
+
+    private String resolveString(String expression, String value) {
+        if (value != null) {
+            return value;
+        }
+        return resolveString(expression);
+    }
+
+    protected String resolveString(String expression) {
+        String result = null;
+        if (expression != null && !expression.isEmpty()) {
+            ELProcessor elProcessor = getELProcessorWithAppModuleBeanManagerELResolver();
+            String value = ModulePropertiesUtils.getInstance().extractExpression(expression);
+            result = (String) elProcessor.eval(value);
+        }
+        return result;
     }
 
     private void updateFormLoginConfiguration(String loginPage, String errorPage) {
@@ -212,7 +251,7 @@ public class LoginToContinueInterceptor {
 
     protected void postLoginProcess(HttpServletRequest req, HttpServletResponse res, boolean isCustomForm) throws IOException, RuntimeException {
         String storedReq = null;
-        WebAppSecurityConfig webAppSecConfig = getWebSAppSeurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebAppSeurityConfig();
         ReferrerURLCookieHandler referrerURLHandler = webAppSecConfig.createReferrerURLCookieHandler();
         storedReq = getStoredReq(req, referrerURLHandler);
         // If storedReq(WASReqURL) is bad, RuntimeExceptions are thrown in isReferrerHostValid. These exceptions are not caught here. If we return here, WASReqURL is good.
@@ -259,14 +298,14 @@ public class LoginToContinueInterceptor {
     }
 
     private void setCookies(HttpServletRequest req, HttpServletResponse res) {
-        WebAppSecurityConfig webAppSecConfig = getWebSAppSeurityConfig();
+        WebAppSecurityConfig webAppSecConfig = getWebAppSeurityConfig();
         if (allowToAddCookieToResponse(webAppSecConfig, req)) {
             AuthenticationResult authResult = new AuthenticationResult(AuthResult.REDIRECT, "dummy");
             if ("POST".equalsIgnoreCase(req.getMethod())) {
                 PostParameterHelper postParameterHelper = new PostParameterHelper(webAppSecConfig);
                 postParameterHelper.save(req, res, authResult, true);
             }
-            ReferrerURLCookieHandler referrerURLHandler = getWebSAppSeurityConfig().createReferrerURLCookieHandler();
+            ReferrerURLCookieHandler referrerURLHandler = getWebAppSeurityConfig().createReferrerURLCookieHandler();
             String query = req.getQueryString();
             String originalURL = req.getRequestURL().append(query != null ? "?" + query : "").toString();
             referrerURLHandler.setReferrerURLCookie(req, authResult, originalURL);
@@ -360,7 +399,7 @@ public class LoginToContinueInterceptor {
         this.mpp = mpp;
     }
 
-    protected WebAppSecurityConfig getWebSAppSeurityConfig() {
+    protected WebAppSecurityConfig getWebAppSeurityConfig() {
         return WebConfigUtils.getWebAppSecurityConfig();
     }
 
@@ -368,15 +407,14 @@ public class LoginToContinueInterceptor {
         return CDIHelper.getELProcessor();
     }
 
-    protected boolean getResolved() {
-        return resolved;
+    protected String getErrorPage() {
+        return _errorPage;
+    }
+    protected String getLoginPage() {
+        return _loginPage;
+    }
+    protected Boolean getIsForward() {
+        return _isForward;
     }
 
-    protected boolean getIsForward() {
-        return isForward;
-    }
-
-    protected String getElForward() {
-        return elForward;
-    }
 }

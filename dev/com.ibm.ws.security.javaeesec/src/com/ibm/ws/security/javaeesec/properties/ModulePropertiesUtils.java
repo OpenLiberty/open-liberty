@@ -108,6 +108,13 @@ public class ModulePropertiesUtils {
         return ham;
     }
 
+    public boolean isELExpression(String elExpression) {
+        if (elExpression != null) {
+            return elExpression.startsWith("#{") || elExpression.startsWith("${");
+        }
+        return false;
+    }
+
     public boolean isImmediateEval(String elExpression) {
         if (elExpression != null) {
             return elExpression.startsWith("#{");
