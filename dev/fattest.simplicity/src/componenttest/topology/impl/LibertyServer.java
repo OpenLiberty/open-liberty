@@ -1405,54 +1405,12 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     private boolean serverNeedsToRunWithJava2Security() {
-        String method = "serverNeedsToRunWithJava2Security";
-        Log.info(c, method, "Entering serverNeedsToRunWithJava2Security");
-        boolean result = true;
-        String serverName = getServerName();
-
-        try {
-            // Allow servers to opt-out of j2sec by setting
-            // websphere.java.security.exempt=true
-            // in their ${server.config.dir}/bootstrap.properties
-            if ("true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt")))
-                return false;
-
-            if (serversExemptFromJava2SecurityTesting == null) {
-                loadJava2SecurityExemptServers();
-            }
-            Log.info(c, method, "Checking Server Name " + serverName);
-            return !serversExemptFromJava2SecurityTesting.contains(serverName);
-        } catch (Exception e) {
-            Log.info(c, "serverNeedsToRunWithJava2Security", "Error determining Exempt Servers " + e.toString());
-            Log.info(c, method, "Skipping modification of the bootstrap.properties file to enable Java 2 Security on server " + serverName);
-            result = false;
-        }
-        return result;
-    }
-
-    private void loadJava2SecurityExemptServers() throws Exception {
-        String method = "loadJava2SecurityExemptServers";
-        BufferedReader br = null;
-        Log.info(c, method, "loading exempt server list");
-        RemoteFile exempt = new RemoteFile(machine, serverRoot + "/java2SecurityExemptServersList.txt");
-        try {
-            br = new BufferedReader(new InputStreamReader(exempt.openForReading()));
-            String line = br.readLine();
-            serversExemptFromJava2SecurityTesting = new HashSet<String>(1000);
-            while (line != null) {
-                if (line.startsWith("#") == false) {
-                    serversExemptFromJava2SecurityTesting.add(line.trim());
-                }
-                line = br.readLine();
-            }
-        } catch (Exception e) {
-            Log.info(c, method, "Error loading Java 2 Security exempt server list " + e.toString());
-            throw e;
-        } finally {
-            if (br != null) {
-                br.close();
-            }
-        }
+        // Allow servers to opt-out of j2sec by setting
+        // websphere.java.security.exempt=true
+        // in their ${server.config.dir}/bootstrap.properties
+        boolean j2secEnabled = !("true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt")));
+        Log.info(c, "serverNeedsToRunWithJava2Security", "Will server " + getServerName() + " run with Java 2 Security enabled?  " + j2secEnabled);
+        return j2secEnabled;
     }
 
     private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f) throws Exception {
@@ -3787,7 +3745,7 @@ public class LibertyServer implements LogMonitorClient {
         }
     }
 
-    protected Properties getBootstrapProperties() throws Exception {
+    protected Properties getBootstrapProperties() {
         Properties props = new Properties();
 
         try {
@@ -4632,11 +4590,11 @@ public class LibertyServer implements LogMonitorClient {
                     } else
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
-                        String regexp = it.next();
-                        if (Pattern.compile(regexp).matcher(line).find()) {
-                        it.remove();
-                        break;
-                        }
+                            String regexp = it.next();
+                            if (Pattern.compile(regexp).matcher(line).find()) {
+                                it.remove();
+                                break;
+                            }
                         }
                 }
             }
