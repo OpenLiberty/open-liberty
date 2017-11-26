@@ -18,6 +18,7 @@ src: \
 	fat/src,\
 	test-applications/appclient/src,\
 	test-applications/jpabootstrap/src,\
+	test-applications/jpa10/callback/src,\
 	test-applications/jpa22/cdi/src,\
 	test-applications/jpa22/jpa22injection/src,\
 	test-applications/jpa22/jpa22query/src,\

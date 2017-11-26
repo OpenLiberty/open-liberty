@@ -9,22 +9,15 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package jpa10callback.entity.entitydeclared.mappedsuperclass.xml;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+public class XMLCallbackPackageMSCEntity extends XMLCallbackPackageMSC {
+    public XMLCallbackPackageMSCEntity() {
+        super();
+    }
 
-import com.ibm.ws.jpa.jpa10.JPA10FATSuite;
-import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPABootstrapTest.class,
-                JPA10FATSuite.class,
-                JPA22FATSuite.class,
-                JPAAppClientTest.class
-})
-public class FATSuite {
-
+    @Override
+    public String toString() {
+        return "XMLCallbackPackageMSCEntity [id=" + getId() + ", name=" + getName() + "]";
+    }
 }

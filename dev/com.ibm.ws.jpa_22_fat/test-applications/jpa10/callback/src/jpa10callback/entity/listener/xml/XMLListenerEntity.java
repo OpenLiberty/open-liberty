@@ -9,22 +9,17 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package jpa10callback.entity.listener.xml;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import jpa10callback.entity.AbstractCallbackEntity;
 
-import com.ibm.ws.jpa.jpa10.JPA10FATSuite;
-import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
+public class XMLListenerEntity extends AbstractCallbackEntity {
+    public XMLListenerEntity() {
+        super();
+    }
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPABootstrapTest.class,
-                JPA10FATSuite.class,
-                JPA22FATSuite.class,
-                JPAAppClientTest.class
-})
-public class FATSuite {
-
+    @Override
+    public String toString() {
+        return "XMLListenerEntity [id=" + getId() + ", name=" + getName() + "]";
+    }
 }

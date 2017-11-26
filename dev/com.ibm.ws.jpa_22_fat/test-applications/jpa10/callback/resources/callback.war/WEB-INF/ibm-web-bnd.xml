@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 /*******************************************************************************
  * Copyright (c) 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -8,23 +10,14 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+-->
+<web-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-web-bnd_1_0.xsd"
+	version="1.0">
 
-package com.ibm.ws.jpa;
+	<virtual-host name="default_host" />
+	<resource-ref name="jdbc/JPA_DS"     binding-name="jdbc/JPA_DS" />
+	<resource-ref name="jdbc/JPA_NJTADS" binding-name="jdbc/JPA_NJTADS" />
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
-import com.ibm.ws.jpa.jpa10.JPA10FATSuite;
-import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
-
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPABootstrapTest.class,
-                JPA10FATSuite.class,
-                JPA22FATSuite.class,
-                JPAAppClientTest.class
-})
-public class FATSuite {
-
-}
+</web-bnd>

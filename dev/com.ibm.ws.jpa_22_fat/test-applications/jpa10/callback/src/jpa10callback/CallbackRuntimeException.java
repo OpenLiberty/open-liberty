@@ -9,22 +9,22 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.jpa;
+package jpa10callback;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+public class CallbackRuntimeException extends RuntimeException {
+    private static final long serialVersionUID = -4735489710261151529L;
 
-import com.ibm.ws.jpa.jpa10.JPA10FATSuite;
-import com.ibm.ws.jpa.jpa22.JPA22FATSuite;
+    public CallbackRuntimeException() {}
 
-@RunWith(Suite.class)
-@SuiteClasses({
-                JPABootstrapTest.class,
-                JPA10FATSuite.class,
-                JPA22FATSuite.class,
-                JPAAppClientTest.class
-})
-public class FATSuite {
+    public CallbackRuntimeException(String info) {
+        super(info);
+    }
 
+    public CallbackRuntimeException(Throwable t) {
+        super(t);
+    }
+
+    public CallbackRuntimeException(String info, Throwable t) {
+        super(info, t);
+    }
 }
