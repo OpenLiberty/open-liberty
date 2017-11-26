@@ -4513,8 +4513,11 @@ public class PolicyExecutorServlet extends FATServlet {
         assertFalse(future.isCancelled());
         assertEquals(0, future.getElapsedRunTime(TimeUnit.NANOSECONDS));
         boolean sameQueueTime = false;
-        for (long start = System.nanoTime(); !sameQueueTime && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200))
-            sameQueueTime = queueTimeNS == future.getElapsedQueueTime(TimeUnit.NANOSECONDS);
+        for (long start = System.nanoTime(); !sameQueueTime && System.nanoTime() - start < TIMEOUT_NS; Thread.sleep(200)) {
+            long newQueueTimeNS = future.getElapsedQueueTime(TimeUnit.NANOSECONDS);
+            sameQueueTime = queueTimeNS == newQueueTimeNS;
+            queueTimeNS = newQueueTimeNS;
+        }
         assertTrue(sameQueueTime);
 
         // Additional testing for the measured run time of the blocker task
