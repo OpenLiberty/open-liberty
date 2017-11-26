@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2016 IBM Corporation and others.
+ * Copyright (c) 2012, 2017 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.resource.ResourceException;
 import javax.resource.spi.ActivationSpec;
@@ -128,6 +129,12 @@ public class EndpointActivationService implements XAResourceFactory, Application
     private final AtomicServiceReference<AdminObjectService> destinationRef = new AtomicServiceReference<AdminObjectService>(DESTINATION);
 
     /**
+     * List of parameters used for each endpoint activation.
+     * Parameters are removed upon endpoint deactivation.
+     */
+    final ConcurrentLinkedQueue<ActivationParams> endpointActivationParams = new ConcurrentLinkedQueue<ActivationParams>();
+
+    /**
      * Unique identifier for this activation spec configuration.
      */
     private String id;
@@ -164,6 +171,31 @@ public class EndpointActivationService implements XAResourceFactory, Application
      * Thread context classloader to apply when starting/stopping the resource adapter.
      */
     private ClassLoader raClassLoader;
+
+    /**
+     * This class contains parameters used for endpoint activation.
+     */
+    static class ActivationParams {
+        final Object activationSpec;
+        final WSMessageEndpointFactory messageEndpointFactory;
+
+        private ActivationParams(Object activationSpec, WSMessageEndpointFactory messageEndpointFactory) {
+            this.activationSpec = activationSpec;
+            this.messageEndpointFactory = messageEndpointFactory;
+        }
+
+        /**
+         * Compare fields based on reference equality so that even if a resource adapter implements
+         * .equals in such a way that two instances match, we still consider them separate endpoint activations.
+         */
+        @Override
+        public boolean equals(Object o) {
+            ActivationParams a;
+            return o instanceof ActivationParams
+                   && (a = ((ActivationParams) o)).activationSpec == activationSpec
+                   && a.messageEndpointFactory == messageEndpointFactory;
+        }
+    }
 
     /**
      * DS method to activate this component.
@@ -515,6 +547,7 @@ public class EndpointActivationService implements XAResourceFactory, Application
                 } finally {
                     jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
                 }
+                endpointActivationParams.add(new ActivationParams(activationSpec, mef));
             } else {
                 //TODO We need to handle the case when @Activation is used.
                 throw new UnsupportedOperationException();
@@ -538,14 +571,11 @@ public class EndpointActivationService implements XAResourceFactory, Application
      */
     public void deactivateEndpoint(Object activationSpec, WSMessageEndpointFactory messageEndpointFactory) throws ResourceException {
         try {
-            BootstrapContextImpl bootstrapContext = bootstrapContextRef.getServiceWithException();
             if (activationSpec instanceof ActivationSpec) {
-                ClassLoader previousClassLoader = jcasu.beginContextClassLoader(raClassLoader);
-                try {
-                    bootstrapContext.resourceAdapter.endpointDeactivation(messageEndpointFactory, (ActivationSpec) activationSpec);
-                } finally {
-                    jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
-                }
+                if (endpointActivationParams.remove(new ActivationParams(activationSpec, messageEndpointFactory)))
+                    endpointDeactivation((ActivationSpec) activationSpec, messageEndpointFactory);
+                else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "already deactivated");
             } else {
                 //TODO We need to handle the case when @Activation is used.
                 throw new UnsupportedOperationException();
@@ -553,6 +583,22 @@ public class EndpointActivationService implements XAResourceFactory, Application
         } catch (Exception ex) {
             Tr.error(tc, "J2CA8803.deactivation.failed", bootstrapContextRef.getReference().getProperty(Constants.SERVICE_PID), ex);
             throw new ResourceException(ex);
+        }
+    }
+
+    /**
+     * Utility method to perform endpoint deactivation.
+     *
+     * @param activationSpec activation specification
+     * @param messageEndpointFactory message endpoint factory
+     */
+    void endpointDeactivation(ActivationSpec activationSpec, WSMessageEndpointFactory messageEndpointFactory) {
+        ClassLoader previousClassLoader = jcasu.beginContextClassLoader(raClassLoader);
+        try {
+            BootstrapContextImpl bootstrapContext = bootstrapContextRef.getServiceWithException();
+            bootstrapContext.resourceAdapter.endpointDeactivation(messageEndpointFactory, activationSpec);
+        } finally {
+            jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
         }
         Tr.info(tc, "J2CA8804.act.spec.inactive", id, messageEndpointFactory.getJ2EEName());
     }
