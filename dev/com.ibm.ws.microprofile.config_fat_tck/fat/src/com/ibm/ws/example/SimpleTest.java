@@ -14,6 +14,13 @@ import java.io.File;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.ibm.websphere.simplicity.PortType;
+
+import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.impl.LibertyServer;
 
 /**
  * Example Shrinkwrap FAT project:
@@ -28,14 +35,14 @@ import org.junit.Test;
  * methods are defined in this class. All of the @Test methods are defined on the test
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
-//@RunWith(FATRunner.class)
+@RunWith(FATRunner.class)
 public class SimpleTest /* extends FATServletClient */ {
 
 //    public static final String APP_NAME = "app1";
 //
-//    @Server("FATServer")
+    @Server("FATServer")
 //    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
-//    public static LibertyServer server;
+    public static LibertyServer server;
 
 //    @BeforeClass
 //    public static void setUp() throws Exception {
@@ -77,7 +84,12 @@ public class SimpleTest /* extends FATServletClient */ {
         File home = new File(System.getProperty("user.dir"));
         // /libertyGit/open-libertydev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
 
-        ProcessBuilder pb = new ProcessBuilder("mvn", "test");
+        // Now do the below in the surefire config in the pom.xml file
+        String wlpHome = System.getProperty("wlp.install.dir");
+        System.out.println("GDH wlp.install.dir is: " + wlpHome);
+        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DwlpHome=" + wlpHome, "-Dtck_server=" + server.getServerName(), "-Dtck_port="
+                                                                                                                                + server.getPort(PortType.WC_defaulthost));
+
         File tckRunnerDir = new File("publish/tckRunner");
         pb.directory(tckRunnerDir);
 

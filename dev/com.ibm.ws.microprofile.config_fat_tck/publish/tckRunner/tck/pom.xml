@@ -21,7 +21,8 @@
 		     as long as ${wlp} is valid, so that is all that needs to be
 		     changed if one is testing a downloaded/installed binary liberty -->
 		<repo>/libertyGit/open-liberty/</repo>
-		<wlp>${repo}dev${file.separator}build.image${file.separator}wlp${file.separator}</wlp>
+		<!--  <wlp>${repo}dev${file.separator}build.image${file.separator}wlp${file.separator}</wlp> -->
+		<wlp>${wlp.install.dir}</wlp>
 		
 		<lib>${wlp}lib${file.separator}</lib>
 		<dev>${wlp}dev${file.separator}</dev>
@@ -73,6 +74,11 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.17</version>
 				<configuration>
+				<systemPropertyVariables>
+					<wlpDir>${wlp.install.dir}</wlpDir>
+					<tck_server>${tck_server}</tck_server>
+					<tck_server>${tck_port}</tck_server>
+				</systemPropertyVariables>
 					<suiteXmlFiles>
 						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
 					</suiteXmlFiles>

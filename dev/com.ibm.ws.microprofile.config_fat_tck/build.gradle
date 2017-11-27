@@ -15,21 +15,14 @@ addRequiredLibraries {
   doLast {
     // Define dependency groups
     configurations {
-      tckRunner
       derby
     }
     // Define G:A:V coordinates of each dependency
     dependencies {
-      tckRunner 'org.apache.derby:derbynet:10.11.1.1'
       derby 'org.apache.derby:derbynet:10.11.1.1'
     }
     // Copy the dependencies wherever they may be needed
     copy {
-      // Adding jars to "autoFVT/lib/" will include them in a FAT bucket classpath at runtime
-      from configurations.tckRunner
-      into "${buildDir}/autoFVT/lib/"
-    }
-        copy {
       // Adding jars to "autoFVT/lib/" will include them in a FAT bucket classpath at runtime
       from configurations.derby
       into "${buildDir}/autoFVT/lib/"
