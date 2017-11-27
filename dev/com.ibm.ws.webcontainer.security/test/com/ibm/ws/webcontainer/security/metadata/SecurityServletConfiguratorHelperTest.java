@@ -97,6 +97,8 @@ public class SecurityServletConfiguratorHelperTest {
     private final static List<String> STATICANNOTATION_ROLES = new ArrayList<String>();
     private final static List<String> EMPTY_LIST = new ArrayList<String>();
 
+    private static final String ROLES_ALLOWED = "javax.annotation.security.RolesAllowed";
+
     private final Mockery mockery = new JUnit4Mockery() {
         {
             setImposteriser(ClassImposteriser.INSTANCE);
@@ -361,11 +363,19 @@ public class SecurityServletConfiguratorHelperTest {
         WebFragment webFragment = createWebFragmentMock();
         WebFragmentInfo webFragmentItem = createWebFragmentItemMock(webFragment);
         final WebAnnotations webAnnotations = createWebAnnotationMock(webFragmentItem);
+        final com.ibm.wsspi.anno.targets.AnnotationTargets_Targets targets = mockery.mock(com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.class);
 
         mockery.checking(new Expectations() {
             {
                 one(configurator).getWebAnnotations();
                 will(returnValue(webAnnotations));
+                one(webAnnotations).getAnnotationTargets();
+                will(returnValue(targets));
+                allowing(targets).getAnnotatedClasses(ROLES_ALLOWED);
+                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
+                allowing(targets).getClassesWithMethodAnnotation(ROLES_ALLOWED);
+                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
+
             }
         });
         configHelper.configureFromAnnotations(webFragmentItem);
@@ -382,11 +392,18 @@ public class SecurityServletConfiguratorHelperTest {
         WebFragment webFragment = createWebFragmentMock();
         WebFragmentInfo webFragmentItem = createWebFragmentItemMock(webFragment);
         final WebAnnotations webAnnotations = createNullWebAnnotationMock(webFragmentItem);
+        final com.ibm.wsspi.anno.targets.AnnotationTargets_Targets targets = mockery.mock(com.ibm.wsspi.anno.targets.AnnotationTargets_Targets.class);
 
         mockery.checking(new Expectations() {
             {
                 one(configurator).getWebAnnotations();
                 will(returnValue(webAnnotations));
+                one(webAnnotations).getAnnotationTargets();
+                will(returnValue(targets));
+                allowing(targets).getAnnotatedClasses(ROLES_ALLOWED);
+                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
+                allowing(targets).getClassesWithMethodAnnotation(ROLES_ALLOWED);
+                will(returnValue(com.ibm.ws.anno.util.internal.UtilImpl_EmptyStringSet.INSTANCE));
             }
         });
         configHelper.configureFromAnnotations(webFragmentItem);

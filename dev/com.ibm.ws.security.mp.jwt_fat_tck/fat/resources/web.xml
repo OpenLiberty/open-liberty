@@ -67,24 +67,6 @@
          </auth-constraint>   
     </security-constraint>
     
-  
-  
-  <!-- Liberty add  --> 
-    <security-role>
-       <role-name>Echoer</role-name>      
-   </security-role>
-      <security-role>
-       <role-name>Echoer2</role-name>      
-   </security-role>
-    <security-role>
-       <role-name>Token2Role</role-name>      
-   </security-role>
-    <security-role>
-       <role-name>Tester</role-name>      
-   </security-role>
-   <security-role>
-       <role-name>Group1MappedRole</role-name>        
-   </security-role>
 
   <!--
   <context-param>
