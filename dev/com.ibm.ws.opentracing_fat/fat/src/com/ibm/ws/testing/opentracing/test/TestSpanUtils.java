@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 
@@ -26,6 +27,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
  * {@link FATUtilsSpans} will need to be updated to match.</p>
  */
 @Mode(TestMode.FULL)
+@MinimumJavaLevel(javaLevel = 1.8)
 public class TestSpanUtils {
     /**
      * <p>Completed spans for span print string and parse verification.</p>
