@@ -57,7 +57,7 @@ public class LoginToContinueELTest extends JavaEESecTestBase {
     protected static String JAR_NAME = "JavaEESecBase.jar";
     protected static String APP_NAME = "JavaEESecFormELTest";
     protected static String WAR_NAME = APP_NAME + ".war";
-    protected static String XML_NAME = "FormEL.xml";
+    protected static String XML_NAME = "formEL.xml";
     protected static String IMMEDIATE_SERVLET_NAME = "/" + APP_NAME + "/ImmediateFormLogin";
     protected static String DEFERRED_SERVLET_NAME = "/" + APP_NAME + "/DeferredFormLogin";
     protected static String ORIGINAL_ERROR = "/original/loginError.jsp";
