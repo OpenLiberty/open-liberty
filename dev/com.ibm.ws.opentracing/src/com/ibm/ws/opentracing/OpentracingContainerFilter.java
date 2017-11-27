@@ -12,6 +12,7 @@ package com.ibm.ws.opentracing;
 
 import java.io.IOException;
 import java.net.URI;
+import java.text.Format;
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,12 +28,10 @@ import javax.ws.rs.core.MultivaluedMap;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.opentracing.filters.SpanFilterType;
 
 import io.opentracing.Span;
 import io.opentracing.SpanContext;
 import io.opentracing.Tracer;
-import io.opentracing.propagation.Format;
 import io.opentracing.propagation.TextMap;
 import io.opentracing.tag.Tags;
 
@@ -75,7 +74,7 @@ public class OpentracingContainerFilter implements ContainerRequestFilter, Conta
             Tr.debug(tc, methodName + " priorContext", priorOutgoingContext);
         }
 
-        boolean process = OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
+        boolean process = true; //OpentracingService.process(incomingUri, SpanFilterType.INCOMING);
 
         if (process) {
             Tracer.SpanBuilder spanBuilder = tracer.buildSpan(incomingURL);
