@@ -8,11 +8,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.example;
+package org.eclipse.microprofile.config.tck;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.stream.Stream;
 
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -36,13 +37,21 @@ import componenttest.topology.impl.LibertyServer;
  * servlet referenced by the annotation, and will be run whenever this test class runs.
  */
 @RunWith(FATRunner.class)
-public class SimpleTest /* extends FATServletClient */ {
+public class ConfigProviderTest {
 
 //    public static final String APP_NAME = "app1";
 //
     @Server("FATServer")
 //    @TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
+    private String className;
+    private String packageName;
+    private File home;
+    private String wlpHome;
+    private File tckRunnerDir;
+    private File mvnOutput;
+    private boolean init;
+    private String mvnCliRoot[];
 
 //    @BeforeClass
 //    public static void setUp() throws Exception {
@@ -66,18 +75,18 @@ public class SimpleTest /* extends FATServletClient */ {
 //        org.apache.derby.drda.NetworkServerControl.class.getName();
 //    }
 
-    @BeforeClass
-    public static void test() throws Exception {
-        File home = new File(System.getProperty("user.dir"));
-        // /libertyGit/open-libertydev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
-        File mvnOutput = new File(home, "mvnResults");
-        ProcessBuilder pb = new ProcessBuilder("mvn", "--version");
-        File tckRunnerDir = new File("publish/tckRunner");
-        pb.redirectOutput(mvnOutput);
-        pb.directory(tckRunnerDir);
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-    }
+//    @BeforeClass
+//    public static void test() throws Exception {
+//        File home = new File(System.getProperty("user.dir"));
+//        // /libertyGit/open-libertydev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
+//        File mvnOutput = new File(home, "mvnResults");
+//        ProcessBuilder pb = new ProcessBuilder("mvn", "--version");
+//        File tckRunnerDir = new File("publish/tckRunner");
+//        pb.redirectOutput(mvnOutput);
+//        pb.directory(tckRunnerDir);
+//        Process p = pb.start();
+//        int exitCode = p.waitFor();
+//    }
 
     @Test
     public void testBuildTckRunner() throws Exception {
@@ -97,6 +106,74 @@ public class SimpleTest /* extends FATServletClient */ {
         pb.redirectOutput(mvnOutput);
         Process p = pb.start();
         int exitCode = p.waitFor();
+    }
+
+    @Test
+    public void testDynamicValueInPropertyConfigSource() throws Exception {
+
+        String className = this.getClass().getName();
+        String packageName = this.getClass().getPackage().getName();
+
+        File home = new File(System.getProperty("user.dir"));
+        String wlpHome = System.getProperty("wlp.install.dir");
+        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+        //String[] cmd = (String[]) ArrayUtils.addAll(mvnCliRoot, new String[] { "-DmethodName=" + methodName });
+        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DwlpHome=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(), "-Dtck_port=" + server
+                        .getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className, "-DmethodName=" + methodName);
+
+        File tckRunnerDir = new File("publish/tckRunner");
+        pb.directory(tckRunnerDir);
+
+        File mvnOutput = new File(home, "mvnTestResults");
+        pb.redirectOutput(mvnOutput);
+        Process p = pb.start();
+        int exitCode = p.waitFor();
+    }
+
+    @Test
+    public void testDynamicValueInPropertyConfigSource2() throws Exception {
+        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+        String[] methodParm = new String[] { "-DmethodName=" + methodName };
+        String[] cmd = concatStringArray(mvnCliRoot, methodParm);
+        int rc = runCmd(cmd, tckRunnerDir, mvnOutput);
+    }
+
+    /**
+     * @param cmd
+     * @param workingDirectory TODO
+     * @param outputFile TODO
+     * @return
+     * @throws Exception
+     */
+    private int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
+
+        if (!init) {
+            init();
+        }
+        ProcessBuilder pb = new ProcessBuilder(cmd);
+        pb.directory(workingDirectory);
+        pb.redirectOutput(outputFile);
+        Process p = pb.start();
+        int exitCode = p.waitFor();
+        return exitCode;
+    }
+
+    public String[] concatStringArray(String[] a, String[] b) {
+        Stream<String> streamA = Arrays.stream(a);
+        Stream<String> streamB = Arrays.stream(b);
+        return Stream.concat(streamA, streamB).toArray(String[]::new);
+    }
+
+    public void init() throws Exception {
+        className = this.getClass().getName();
+        packageName = this.getClass().getPackage().getName();
+        home = new File(System.getProperty("user.dir"));
+        wlpHome = System.getProperty("wlp.install.dir");
+        mvnCliRoot = new String[] { "mvn", "test", "-DwlpHome=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(),
+                                    "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className };
+        tckRunnerDir = new File("publish/tckRunner");
+        mvnOutput = new File(home, "mvnTestResults");
+        init = true;
     }
 
 //    @BeforeClass

@@ -33,8 +33,14 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		<liberty.version>1.0.18</liberty.version>
+		<!--  <liberty.version>1.0.18</liberty.version> -->	
+		
+		 <liberty.version>${bFullVersion}.${buildLabel}</liberty.version>
+		
 		<arquillian.version>1.1.13.Final</arquillian.version>
+		
+		<config.version>1.1</config.version>
+		<config.bundle.version>1.2</config.bundle.version>
 
 		<defaultSuiteFiles>tck-suite.xml</defaultSuiteFiles>
 		<suiteXmlFile>${defaultSuiteFiles}</suiteXmlFile>
@@ -78,6 +84,8 @@
 					<wlpDir>${wlp.install.dir}</wlpDir>
 					<tck_server>${tck_server}</tck_server>
 					<tck_server>${tck_port}</tck_server>
+					<methodName>${methodName}</methodName>
+					<packageName>${packageName</packageName>
 				</systemPropertyVariables>
 					<suiteXmlFiles>
 						<suiteXmlFile>${suiteXmlFile}</suiteXmlFile>
@@ -154,7 +162,7 @@
 			<artifactId>microprofile-config_1.0_api</artifactId>
 			<version>1.0-SNAPSHOT</version>
 			<scope>system</scope>
-			<systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.1.1_1.2.18.jar</systemPath>
+			<systemPath>${api.stable}com.ibm.websphere.org.eclipse.microprofile.config.${mpconfig.version}_${mpconfig.bundle.version}.${version.qualifier}.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.ibm.wlp.lib</groupId>
@@ -184,12 +192,12 @@
 			<scope>system</scope>
 			<systemPath>${lib}com.ibm.ws.logging_${liberty.version}.jar</systemPath>
 		</dependency>
-		<dependency>
+<!-- 		<dependency>
 			<groupId>com.ibm.wlp.lib</groupId>
 			<artifactId>wlp.kernel.service</artifactId>
 			<version>1.0</version>
 			<scope>system</scope>
-			<systemPath>${lib}com.ibm.ws.kernel.service_1.3.18.jar</systemPath>
+			<systemPath>${lib}com.ibm.ws.kernel.service_1.3.${version.qualifier}.jar</systemPath>
 		</dependency>
 		<dependency>
 			<groupId>com.ibm.wlp.lib</groupId>
@@ -198,6 +206,7 @@
 			<scope>system</scope>
 			<systemPath>${api.spec}com.ibm.websphere.org.osgi.core_${liberty.version}.jar</systemPath>
 		</dependency>
+	-->
 		<dependency>
 			<groupId>com.ibm.wlp.lib</groupId>
 			<artifactId>wlp.osgi.service.component</artifactId>
