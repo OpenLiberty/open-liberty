@@ -56,27 +56,62 @@ public class OrderedJSONObject extends JSONObject
     }
 
     /**
+     * Convert a stream (in reader form) of JSON text into object form.
+     * @param reader The reader from which the JSON data is read.
+     * @return The contructed JSON Object.  Note that the JSONObject will be an instance of OrderedJSONObject and as such, attribute order is maintained.
+     *
+     * @throws IOEXception Thrown if an underlying IO error from the reader occurs, or if malformed JSON is read,
+     */
+    static public JSONObject parse(Reader reader) throws IOException {
+        return parse(reader, false);
+    }
+
+    /**
      * Convert a stream (in reader form) of JSON text into object form. 
      * @param reader The reader from which the JSON data is read.
+     * @param largeNumbers Set to true to support arbitrarily large numbers.
      * @return The contructed JSON Object.  Note that the JSONObject will be an instance of OrderedJSONObject and as such, attribute order is maintained.
      * 
      * @throws IOEXception Thrown if an underlying IO error from the reader occurs, or if malformed JSON is read,
      */
-    static public JSONObject parse(Reader reader) throws IOException {
+    static public JSONObject parse(Reader reader, boolean largeNumbers) throws IOException {
         reader = new BufferedReader(reader);
-        return new Parser(reader).parse(true);
+        return new Parser(reader, largeNumbers).parse(true);
     }
 
     /**
-     * Convert a String of JSON text into object form. 
+     * Convert a String of JSON text into object form.
      * @param str The JSON string to parse into a Java Object.
      * @return The contructed JSON Object.  Note that the JSONObject will be an instance of OrderedJSONObject and as such, attribute order is maintained.
      *
      * @throws IOEXception Thrown if malformed JSON is read,
      */
     static public JSONObject parse(String str) throws IOException {
+        return parse(str, false);
+    }
+
+    /**
+     * Convert a String of JSON text into object form. 
+     * @param str The JSON string to parse into a Java Object.
+     * @param largeNumbers Set to true to support arbitrarily large numbers.
+     * @return The contructed JSON Object.  Note that the JSONObject will be an instance of OrderedJSONObject and as such, attribute order is maintained.
+     *
+     * @throws IOEXception Thrown if malformed JSON is read,
+     */
+    static public JSONObject parse(String str, boolean largeNumbers) throws IOException {
         StringReader strReader = new StringReader(str);
-        return parse(strReader);
+        return parse(strReader, largeNumbers);
+    }
+
+    /**
+     * Convert a stream of JSON text into object form.
+     * @param is The InputStream from which to read the JSON.  It will assume the input stream is in UTF-8 and read it as such.
+     * @return The contructed JSON Object.  Note that the JSONObject will be an instance of OrderedJSONObject and as such, attribute order is maintained.
+     *
+     * @throws IOEXception Thrown if an underlying IO error from the stream occurs, or if malformed JSON is read,
+     */
+    static public JSONObject parse(InputStream is) throws IOException {
+        return parse(is, false);
     }
 
     /**
@@ -86,7 +121,7 @@ public class OrderedJSONObject extends JSONObject
      *
      * @throws IOEXception Thrown if an underlying IO error from the stream occurs, or if malformed JSON is read,
      */
-    static public JSONObject parse(InputStream is) throws IOException {
+    static public JSONObject parse(InputStream is, boolean largeNumbers) throws IOException {
         InputStreamReader isr = null;
         try
         {
@@ -96,7 +131,7 @@ public class OrderedJSONObject extends JSONObject
         {
             isr = new InputStreamReader(is);
         }
-        return parse(isr);
+        return parse(isr, largeNumbers);
     }
 
     /**

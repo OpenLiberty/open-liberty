@@ -29,7 +29,7 @@ public class JSONNumberTest {
     public void testLargeWholeNumber() throws IOException {
         String inputJson = "{\"number\":18446744073709551615}";
 
-        JSONObject obj = JSONObject.parse(inputJson);
+        JSONObject obj = JSONObject.parse(inputJson, true);
 
         assertEquals(new BigInteger("18446744073709551615"), obj.get("number"));
     }
@@ -68,7 +68,7 @@ public class JSONNumberTest {
     public void testLargeDecimalNumber() throws IOException {
         String inputJson = "{\"number\":2.0e500}";
 
-        JSONObject obj = JSONObject.parse(inputJson);
+        JSONObject obj = JSONObject.parse(inputJson, true);
 
         assertEquals(new BigDecimal("2.0e500"), obj.get("number"));
     }

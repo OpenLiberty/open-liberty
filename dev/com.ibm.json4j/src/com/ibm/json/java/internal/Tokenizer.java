@@ -47,12 +47,17 @@ public class Tokenizer
     private int     lastChar;
 
     /**
+     * Whether large numbers should be supported
+     */
+    private boolean largeNumbers = false;
+
+    /**
      * Constructor.
      * @param reader The reader from which the JSON string is read.
      * 
      * @throws IOException Thrown on IOErrors such as invalid JSON or sudden reader closures.
      */
-    public Tokenizer(Reader reader) throws IOException {
+    public Tokenizer(Reader reader, boolean largeNumbers) throws IOException {
         super();
 
         Class readerClass= reader.getClass();
@@ -69,6 +74,7 @@ public class Tokenizer
         this.lineNo    = 0;
         this.colNo     = 0;
         this.lastChar  = '\n';
+        this.largeNumbers = largeNumbers;
 
         readChar();
     }
@@ -270,7 +276,14 @@ public class Tokenizer
         {
             if (-1 != string.indexOf('.'))
             {
-                return new BigDecimal(string);
+                if (largeNumbers)
+                {
+                    return new BigDecimal(string);
+                }
+                else
+                {
+                    return Double.valueOf(string);
+                }
             }
 
             String sign = "";
@@ -282,16 +295,37 @@ public class Tokenizer
 
             if (string.toUpperCase().startsWith("0X"))
             {
-                return new BigInteger(sign + string.substring(2),16);
+                if (largeNumbers)
+                {
+                    return new BigInteger(sign + string.substring(2), 16);
+                }
+                else
+                {
+                    return Long.valueOf(sign + string.substring(2), 16);
+                }
             }
 
             if (string.equals("0"))
             {
-                return BigInteger.ZERO;
+                if (largeNumbers)
+                {
+                    return BigInteger.ZERO;
+                }
+                else
+                {
+                    return new Long(0);
+                }
             }
             else if (string.startsWith("0") && string.length() > 1)
             {
-                return new BigInteger(sign + string.substring(1),8);
+                if (largeNumbers)
+                {
+                    return new BigInteger(sign + string.substring(1), 8);
+                }
+                else
+                {
+                    return Long.valueOf(sign+string.substring(1), 8);
+                }
             }
 
             /**
@@ -300,11 +334,24 @@ public class Tokenizer
              */
             if (string.indexOf("e") != -1 || string.indexOf("E") != -1)
             {
-                return new BigDecimal(sign + string);
+                if (largeNumbers)
+                {
+                    return new BigDecimal(sign + string);
+                }
+                else
+                {
+                    return Double.valueOf(sign + string);
+                }
             }
             else
             {
-                return new BigInteger(sign + string,10);
+                if (largeNumbers) {
+                    return new BigInteger(sign + string, 10);
+                }
+                else
+                {
+                    return Long.valueOf(sign + string, 10);
+                }
             }
         }
         catch (NumberFormatException e)

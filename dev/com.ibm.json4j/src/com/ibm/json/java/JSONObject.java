@@ -78,7 +78,19 @@ public class JSONObject extends HashMap  implements JSONArtifact
      * @throws IOEXception Thrown if an underlying IO error from the reader occurs, or if malformed JSON is read,
      */
     static public JSONObject parse(Reader reader) throws IOException {
-        return new Parser(reader).parse();
+        return parse(reader, false);
+    }
+
+    /**
+     * Convert a stream (in reader form) of JSON text into object form.
+     * @param reader The reader from which the JSON data is read.
+     * @param largeNumbers Set to true to support arbitrarily large numbers.
+     * @return The contructed JSON Object.
+     *
+     * @throws IOEXception Thrown if an underlying IO error from the reader occurs, or if malformed JSON is read,
+     */
+    static public JSONObject parse(Reader reader, boolean largeNumbers) throws IOException {
+        return new Parser(reader, largeNumbers).parse();
     }
 
     /**
@@ -89,18 +101,42 @@ public class JSONObject extends HashMap  implements JSONArtifact
      * @throws IOEXception Thrown if malformed JSON is read,
      */
     static public JSONObject parse(String str) throws IOException {
-        StringReader strReader = new StringReader(str);
-        return parse(strReader);
+        return parse(str, false);
     }
 
     /**
-     * Convert a stream of JSON text into object form. 
+     * Convert a String of JSON text into object form.
+     * @param str The JSON string to parse into a Java Object.
+     * @param largeNumbers Set to true to support arbitrarily large numbers.
+     * @return The contructed JSON Object.
+     *
+     * @throws IOEXception Thrown if malformed JSON is read,
+     */
+    static public JSONObject parse(String str, boolean largeNumbers) throws IOException {
+        StringReader strReader = new StringReader(str);
+        return parse(strReader, largeNumbers);
+    }
+
+    /**
+     * Convert a stream of JSON text into object form.
      * @param is The inputStream from which to read the JSON.  It will assume the input stream is in UTF-8 and read it as such.
      * @return The contructed JSON Object.
      *
      * @throws IOEXception Thrown if an underlying IO error from the stream occurs, or if malformed JSON is read,
      */
     static public JSONObject parse(InputStream is) throws IOException {
+        return parse(is, false);
+    }
+
+    /**
+     * Convert a stream of JSON text into object form. 
+     * @param is The inputStream from which to read the JSON.  It will assume the input stream is in UTF-8 and read it as such.
+     * @param largeNumbers Set to true to support arbitrarily large numbers.
+     * @return The contructed JSON Object.
+     *
+     * @throws IOEXception Thrown if an underlying IO error from the stream occurs, or if malformed JSON is read,
+     */
+    static public JSONObject parse(InputStream is, boolean largeNumbers) throws IOException {
         InputStreamReader isr = null;
         try
         {
