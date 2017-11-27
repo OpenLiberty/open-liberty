@@ -12,6 +12,7 @@ package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
@@ -87,6 +88,17 @@ public class LoginToContinueInterceptorTest {
 
     private final String LOGIN_PAGE = "/login.jsp";
     private final String ERROR_PAGE = "/error.jsp";
+    private final String EL_LOGIN_PAGE_RESOLVED = "/login_el_resolved.jsp";
+    private final String EL_ERROR_PAGE_RESOLVED = "/error_el_resolved.jsp";
+    private final String EL_ERROR_PAGE = "someBean.errorPage";
+    private final String EL_LOGIN_PAGE = "someBean.loginPage";
+    private final String EL_IS_FORWARD = "someBean.isForward";
+    private final String EL_IMMEDIATE_ERROR_PAGE = "#{" + EL_ERROR_PAGE + "}";
+    private final String EL_IMMEDIATE_LOGIN_PAGE = "#{" + EL_LOGIN_PAGE + "}";
+    private final String EL_IMMEDIATE_IS_FORWARD = "#{" + EL_IS_FORWARD + "}";
+    private final String EL_DEFERRED_ERROR_PAGE = "${" + EL_ERROR_PAGE + "}";
+    private final String EL_DEFERRED_LOGIN_PAGE = "${" + EL_LOGIN_PAGE + "}";
+    private final String EL_DEFERRED_IS_FORWARD = "${" + EL_IS_FORWARD + "}";
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
 
@@ -150,7 +162,7 @@ public class LoginToContinueInterceptorTest {
             }
 
             @Override
-            protected WebAppSecurityConfig getWebSAppSeurityConfig() {
+            protected WebAppSecurityConfig getWebAppSeurityConfig() {
                 return wasc;
             }
 
@@ -187,13 +199,15 @@ public class LoginToContinueInterceptorTest {
         ltci.setMPP(mpp);
         hamClass = FORM_CLASS;
         Properties props = new Properties();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
         withInitProps(props);
         ltci.initialize(ici);
 
-        assertTrue("resolved field should be set as true.", ltci.getResolved());
-        assertFalse("isForward field should be set as false.", ltci.getIsForward());
-        assertEquals("esForward field should be set as null.", ltci.getElForward(), null);
+        assertEquals("_errorPage field should be set as specified.", ERROR_PAGE, ltci.getErrorPage());
+        assertEquals("_loginPage field should be set as specified.", LOGIN_PAGE, ltci.getLoginPage());
+        assertFalse("_isForward field should be set as false.", ltci.getIsForward());
 
     }
 
@@ -205,17 +219,19 @@ public class LoginToContinueInterceptorTest {
     public void testInitializeELImmediateWithForm() throws Exception {
         ltci.setMPP(mpp);
         hamClass = FORM_CLASS;
-        final String elValue = "someBean.get";
-        final String elWrapped = "#{" + elValue + "}";
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
-        withInitProps(props).withELP(elpi, elValue, Boolean.TRUE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, EL_IMMEDIATE_LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, EL_IMMEDIATE_ERROR_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, EL_IMMEDIATE_IS_FORWARD);
+        withInitProps(props).wlthELBoolean(elpi, EL_IS_FORWARD, Boolean.TRUE);
+        wlthELString(elpi, EL_ERROR_PAGE, EL_ERROR_PAGE_RESOLVED);
+        wlthELString(elpi, EL_LOGIN_PAGE, EL_LOGIN_PAGE_RESOLVED);
         ltci.initialize(ici);
 
-        assertTrue("resolved field should be set as true.", ltci.getResolved());
-        assertTrue("isForward field should be set as true.", ltci.getIsForward());
-        assertEquals("esForward field should be set as unwrapped EL value.", ltci.getElForward(), elValue);
+        assertEquals("_errorPage field should be set as specified.", EL_ERROR_PAGE_RESOLVED, ltci.getErrorPage());
+        assertEquals("_loginPage field should be set as specified.", EL_LOGIN_PAGE_RESOLVED, ltci.getLoginPage());
+        assertTrue("_isForward field should be set as true.", ltci.getIsForward());
 
     }
 
@@ -228,16 +244,11 @@ public class LoginToContinueInterceptorTest {
     public void testInitializeELImmediateWithCustomForm() throws Exception {
         ltci.setMPP(mpp);
         hamClass = CUSTOM_HAM_CLASS;
-        final String elValue = "someBean.get";
-        final String elWrapped = "#{" + elValue + "}";
-        Properties props = new Properties();
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
-        withInitProps(props).withNoELP();
-        ltci.initialize(ici);
+        withNoELP();
 
-        assertFalse("resolved field should be set as false.", ltci.getResolved());
-        assertEquals("esForward field should be set as unwrapped EL value.", ltci.getElForward(), elValue);
+        assertNull("_errorPage field should be null.", ltci.getErrorPage());
+        assertNull("_loginPage field should be null.", ltci.getLoginPage());
+        assertNull("_isForward field should be null.", ltci.getIsForward());
     }
 
     /**
@@ -248,17 +259,17 @@ public class LoginToContinueInterceptorTest {
     public void testInitializeELDeferredWithForm() throws Exception {
         ltci.setMPP(mpp);
         hamClass = FORM_CLASS;
-        final String elValue = "someBean.get";
-        final String elWrapped = "${" + elValue + "}";
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, EL_DEFERRED_LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, EL_DEFERRED_ERROR_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, EL_DEFERRED_IS_FORWARD);
         withInitProps(props).withNoELP();
         ltci.initialize(ici);
 
-        assertFalse("resolved field should be set as false.", ltci.getResolved());
-        assertEquals("esForward field should be set as unwrapped EL value.", ltci.getElForward(), elValue);
-
+        assertNull("_errorPage field should be null.", ltci.getErrorPage());
+        assertNull("_loginPage field should be null.", ltci.getLoginPage());
+        assertNull("_isForward field should be null.", ltci.getIsForward());
     }
 
     /**
@@ -269,17 +280,17 @@ public class LoginToContinueInterceptorTest {
     public void testInitializeELDeferredWithCustomForm() throws Exception {
         ltci.setMPP(mpp);
         hamClass = CUSTOM_HAM_CLASS;
-        final String elValue = "someBean.get";
-        final String elWrapped = "${" + elValue + "}";
         Properties props = new Properties();
         props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
-        withInitProps(props).withNoELP();
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, EL_DEFERRED_LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, EL_DEFERRED_ERROR_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, EL_DEFERRED_IS_FORWARD);
+        withProps(props).withNoELP();
         ltci.initialize(ici);
 
-        assertFalse("resolved field should be set as false.", ltci.getResolved());
-        assertEquals("esForward field should be set as unwrapped EL value.", ltci.getElForward(), elValue);
-
+        assertNull("_errorPage field should be null.", ltci.getErrorPage());
+        assertNull("_loginPage field should be null.", ltci.getLoginPage());
+        assertNull("_isForward field should be null.", ltci.getIsForward());
     }
 
     /**
@@ -293,17 +304,18 @@ public class LoginToContinueInterceptorTest {
         isInterceptedMethod = true;
         hamClass = FORM_CLASS;
         ltci.setMPP(mpp);
-        final String elValue = "someBean.get";
-        final String elWrapped = "${" + elValue + "}";
         Properties props = new Properties();
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGIN, Boolean.FALSE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, EL_IMMEDIATE_LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, EL_IMMEDIATE_ERROR_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, EL_IMMEDIATE_IS_FORWARD);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withAuthParams();
-        withELP(elpi, elValue, Boolean.FALSE).withNoELP(elpm);
+        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(EL_LOGIN_PAGE_RESOLVED).withAuthParams();
+        wlthELBoolean(elpi, EL_IS_FORWARD, Boolean.FALSE).withNoELP(elpm);
+        wlthELString(elpi, EL_ERROR_PAGE, EL_ERROR_PAGE_RESOLVED);
+        wlthELString(elpi, EL_LOGIN_PAGE, EL_LOGIN_PAGE_RESOLVED);
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
     }
@@ -318,17 +330,17 @@ public class LoginToContinueInterceptorTest {
         isInterceptedMethod = true;
         hamClass = FORM_CLASS;
         ltci.setMPP(mpp);
-        final String elValue = "someBean.get";
-        final String elWrapped = "${" + elValue + "}";
         Properties props = new Properties();
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, LOGIN_PAGE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, ERROR_PAGE);
-        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, elWrapped);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_LOGINPAGE, EL_DEFERRED_LOGIN_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_ERRORPAGE, EL_DEFERRED_ERROR_PAGE);
+        props.put(JavaEESecConstants.LOGIN_TO_CONTINUE_USEFORWARDTOLOGINEXPRESSION, EL_DEFERRED_IS_FORWARD);
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withAuthParams();
-        withELP(elpm, elValue, Boolean.FALSE).withNoELP(elpi);
+        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(EL_LOGIN_PAGE_RESOLVED).withAuthParams();
+        wlthELBoolean(elpm, EL_IS_FORWARD, Boolean.FALSE).withNoELP(elpi);
+        wlthELString(elpm, EL_ERROR_PAGE, EL_ERROR_PAGE_RESOLVED);
+        wlthELString(elpm, EL_LOGIN_PAGE, EL_LOGIN_PAGE_RESOLVED);
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
     }
@@ -348,7 +360,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withNoELP().withAuthParams();
+        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withRedirect(LOGIN_PAGE).withNoELP().withAuthParams();
 
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -369,7 +381,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
+        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
 
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
@@ -389,7 +401,7 @@ public class LoginToContinueInterceptorTest {
         Object expect = AuthenticationStatus.SEND_CONTINUE;
         String storedReq = "http://localhost:80/contextRoot/original.html";
         String requestUrl = "http://localhost:80/contextRoot/request.html";
-        withInvocationContext(expect).withProps(props).withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
+        withInvocationContext(expect).withProps(props).withLoginConfig().withParams().withReferrer().withSetCookies().withForward(LOGIN_PAGE).withNoELP().withAuthParams();
         ltci.initialize(ici);
         assertEquals("The SEND_CONTINUE should be returned.", expect, ltci.intercept(icm));
     }
@@ -494,7 +506,19 @@ public class LoginToContinueInterceptorTest {
     }
 
     @SuppressWarnings("unchecked")
-    private LoginToContinueInterceptorTest withELP(final ELProcessor elp, final String elValue, final Boolean output) {
+    private LoginToContinueInterceptorTest wlthELBoolean(final ELProcessor elp, final String elValue, final Boolean output) {
+        this.elp = elp;
+        mockery.checking(new Expectations() {
+            {
+                one(elp).eval(elValue);
+                will(returnValue(output));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest wlthELString(final ELProcessor elp, final String elValue, final String output) {
         this.elp = elp;
         mockery.checking(new Expectations() {
             {
@@ -537,6 +561,15 @@ public class LoginToContinueInterceptorTest {
                 // when trace is enabled, number of invocation would change, therefore it is set as 1 to 3.
                 between(1, 3).of(mpp).getAuthMechProperties(with(any(Class.class)));
                 will(returnValue(props));
+            }
+        });
+        return this;
+    }
+
+    @SuppressWarnings("unchecked")
+    private LoginToContinueInterceptorTest withLoginConfig() throws Exception {
+        mockery.checking(new Expectations() {
+            {
                 one(smd).setLoginConfiguration(with(any(LoginConfiguration.class)));
             }
         });

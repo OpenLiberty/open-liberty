@@ -34,7 +34,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 NoJavaEESecFormTest.class,
                 MultipleIdentityStoreFormPostTest.class,
                 MultipleIdentityStoreCustomFormPostTest.class,
-                MultipleIdentityStoreApplLoginToContinueTest.class
+                MultipleIdentityStoreApplLoginToContinueTest.class,
+                LoginToContinueELTest.class
 })
 
 /**
