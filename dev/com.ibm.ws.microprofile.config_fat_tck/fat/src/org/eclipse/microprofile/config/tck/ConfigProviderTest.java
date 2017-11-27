@@ -88,52 +88,62 @@ public class ConfigProviderTest {
 //        int exitCode = p.waitFor();
 //    }
 
-    @Test
-    public void testBuildTckRunner() throws Exception {
-        File home = new File(System.getProperty("user.dir"));
-        // /libertyGit/open-libertydev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
+//    @Test
+//    public void testBuildTckRunner() throws Exception {
+//        File home = new File(System.getProperty("user.dir"));
+//        // /libertyGit/open-libertydev/com.ibm.ws.microprofile.config_fat_tck/build/libs/autoFVT
+//
+//        // Now do the below in the surefire config in the pom.xml file
+//        String wlpHome = System.getProperty("wlp.install.dir");
+//        System.out.println("GDH wlp.install.dir is: " + wlpHome);
+//        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DwlpHome=" + wlpHome, "-Dtck_server=" + server.getServerName(), "-Dtck_port="
+//                                                                                                                                + server.getPort(PortType.WC_defaulthost));
+//
+//        File tckRunnerDir = new File("publish/tckRunner");
+//        pb.directory(tckRunnerDir);
+//
+//        File mvnOutput = new File(home, "mvnTestResults");
+//        pb.redirectOutput(mvnOutput);
+//        Process p = pb.start();
+//        int exitCode = p.waitFor();
+//    }
 
-        // Now do the below in the surefire config in the pom.xml file
-        String wlpHome = System.getProperty("wlp.install.dir");
-        System.out.println("GDH wlp.install.dir is: " + wlpHome);
-        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DwlpHome=" + wlpHome, "-Dtck_server=" + server.getServerName(), "-Dtck_port="
-                                                                                                                                + server.getPort(PortType.WC_defaulthost));
-
-        File tckRunnerDir = new File("publish/tckRunner");
-        pb.directory(tckRunnerDir);
-
-        File mvnOutput = new File(home, "mvnTestResults");
-        pb.redirectOutput(mvnOutput);
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-    }
+//    @Test
+//    public void testDynamicValueInPropertyConfigSource2() throws Exception {
+//
+//        String className = this.getClass().getName();
+//        String packageName = this.getClass().getPackage().getName();
+//
+//        File home = new File(System.getProperty("user.dir"));
+//        String wlpHome = System.getProperty("liberty.location");
+//        System.out.println("GDH wlpHomeis:" + wlpHome);
+//
+//        System.out.println("GDH getEnv:" + System.getenv().toString());
+//        System.out.println("GDH sysProps"
+//                           + ":" + System.getProperties().toString());
+//
+//        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
+//        //String[] cmd = (String[]) ArrayUtils.addAll(mvnCliRoot, new String[] { "-DmethodName=" + methodName });
+//        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DWLP=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(), "-Dtck_port=" + server
+//                        .getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className, "-DmethodName=" + methodName);
+//
+//        File tckRunnerDir = new File("publish/tckRunner");
+//        pb.directory(tckRunnerDir);
+//
+//        File mvnOutput = new File(home, "mvnTestResults");
+//        pb.redirectOutput(mvnOutput);
+//        Process p = pb.start();
+//        int exitCode = p.waitFor();
+//    }
 
     @Test
     public void testDynamicValueInPropertyConfigSource() throws Exception {
-
-        String className = this.getClass().getName();
-        String packageName = this.getClass().getPackage().getName();
-
-        File home = new File(System.getProperty("user.dir"));
-        String wlpHome = System.getProperty("wlp.install.dir");
-        String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
-        //String[] cmd = (String[]) ArrayUtils.addAll(mvnCliRoot, new String[] { "-DmethodName=" + methodName });
-        ProcessBuilder pb = new ProcessBuilder("mvn", "test", "-DwlpHome=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(), "-Dtck_port=" + server
-                        .getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className, "-DmethodName=" + methodName);
-
-        File tckRunnerDir = new File("publish/tckRunner");
-        pb.directory(tckRunnerDir);
-
-        File mvnOutput = new File(home, "mvnTestResults");
-        pb.redirectOutput(mvnOutput);
-        Process p = pb.start();
-        int exitCode = p.waitFor();
-    }
-
-    @Test
-    public void testDynamicValueInPropertyConfigSource2() throws Exception {
+        if (!init) {
+            init();
+        }
         String methodName = new Object() {}.getClass().getEnclosingMethod().getName();
         String[] methodParm = new String[] { "-DmethodName=" + methodName };
+
         String[] cmd = concatStringArray(mvnCliRoot, methodParm);
         int rc = runCmd(cmd, tckRunnerDir, mvnOutput);
     }
@@ -147,10 +157,9 @@ public class ConfigProviderTest {
      */
     private int runCmd(String[] cmd, File workingDirectory, File outputFile) throws Exception {
 
-        if (!init) {
-            init();
-        }
         ProcessBuilder pb = new ProcessBuilder(cmd);
+
+        System.out.println("GDH cmd is:" + cmd);
         pb.directory(workingDirectory);
         pb.redirectOutput(outputFile);
         Process p = pb.start();
@@ -168,8 +177,8 @@ public class ConfigProviderTest {
         className = this.getClass().getName();
         packageName = this.getClass().getPackage().getName();
         home = new File(System.getProperty("user.dir"));
-        wlpHome = System.getProperty("wlp.install.dir");
-        mvnCliRoot = new String[] { "mvn", "test", "-DwlpHome=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(),
+        wlpHome = System.getProperty("liberty.location");
+        mvnCliRoot = new String[] { "mvn", "test", "-DWLP=" + wlpHome, "-DsuiteXmlFile=method.xml", "-Dtck_server=" + server.getServerName(),
                                     "-Dtck_port=" + server.getPort(PortType.WC_defaulthost), "-DpackageName=" + packageName, "-DclassName=" + className };
         tckRunnerDir = new File("publish/tckRunner");
         mvnOutput = new File(home, "mvnTestResults");

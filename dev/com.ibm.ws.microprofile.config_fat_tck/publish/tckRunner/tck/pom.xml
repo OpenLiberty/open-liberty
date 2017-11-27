@@ -22,12 +22,12 @@
 		     changed if one is testing a downloaded/installed binary liberty -->
 		<repo>/libertyGit/open-liberty/</repo>
 		<!--  <wlp>${repo}dev${file.separator}build.image${file.separator}wlp${file.separator}</wlp> -->
-		<wlp>${wlp.install.dir}</wlp>
+		<wlp>${WLP}${file.separator}</wlp>
 		
 		<lib>${wlp}lib${file.separator}</lib>
 		<dev>${wlp}dev${file.separator}</dev>
 		<api.spec>${dev}api${file.separator}spec${file.separator}</api.spec>
-		<api.stable>${dev}${file.separator}api${file.separator}stable${file.separator}</api.stable>
+		<api.stable>${dev}api${file.separator}stable${file.separator}</api.stable>
 		<spi.spec>${dev}spi${file.separator}spec${file.separator}</spi.spec>
 
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -81,7 +81,7 @@
 				<version>2.17</version>
 				<configuration>
 				<systemPropertyVariables>
-					<wlpDir>${wlp.install.dir}</wlpDir>
+					<wlpDir>${wlpDir}</wlpDir>
 					<tck_server>${tck_server}</tck_server>
 					<tck_server>${tck_port}</tck_server>
 					<methodName>${methodName}</methodName>
