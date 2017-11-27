@@ -8,25 +8,9 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.security.mp.jwt.proxy;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
-
-import java.security.Principal;
-import java.util.HashSet;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import javax.security.auth.Subject;
+package com.ibm.ws.security.mp.jwt.propagation;
 
 import org.eclipse.microprofile.jwt.JsonWebToken;
-import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.integration.junit4.JUnit4Mockery;
 import org.jmock.lib.legacy.ClassImposteriser;
@@ -34,13 +18,8 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Rule;
-import org.junit.Test;
 import org.junit.rules.TestName;
-
-import org.osgi.framework.Constants;
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
 import test.common.SharedOutputManager;
@@ -52,11 +31,11 @@ public class MpJwtPropagationImplTest {
         }
     };
     private final ComponentContext cc = context.mock(ComponentContext.class);
-   
+
     private final JsonWebToken jwt = context.mock(JsonWebToken.class, "jwt");
 
-    
-    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.mp.jwt.*=all");
+    private static SharedOutputManager outputMgr = SharedOutputManager.getInstance()
+            .trace("com.ibm.ws.security.mp.jwt.*=all");
 
     @Rule
     public final TestName testName = new TestName();
@@ -84,5 +63,4 @@ public class MpJwtPropagationImplTest {
         outputMgr.restoreStreams();
     }
 
-    
 }
