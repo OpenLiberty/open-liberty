@@ -93,12 +93,12 @@ public class LoginToContinueInterceptorTest {
     private final String EL_ERROR_PAGE = "someBean.errorPage";
     private final String EL_LOGIN_PAGE = "someBean.loginPage";
     private final String EL_IS_FORWARD = "someBean.isForward";
-    private final String EL_IMMEDIATE_ERROR_PAGE = "#{" + EL_ERROR_PAGE + "}";
-    private final String EL_IMMEDIATE_LOGIN_PAGE = "#{" + EL_LOGIN_PAGE + "}";
-    private final String EL_IMMEDIATE_IS_FORWARD = "#{" + EL_IS_FORWARD + "}";
-    private final String EL_DEFERRED_ERROR_PAGE = "${" + EL_ERROR_PAGE + "}";
-    private final String EL_DEFERRED_LOGIN_PAGE = "${" + EL_LOGIN_PAGE + "}";
-    private final String EL_DEFERRED_IS_FORWARD = "${" + EL_IS_FORWARD + "}";
+    private final String EL_IMMEDIATE_ERROR_PAGE = "${" + EL_ERROR_PAGE + "}";
+    private final String EL_IMMEDIATE_LOGIN_PAGE = "${" + EL_LOGIN_PAGE + "}";
+    private final String EL_IMMEDIATE_IS_FORWARD = "${" + EL_IS_FORWARD + "}";
+    private final String EL_DEFERRED_ERROR_PAGE = "#{" + EL_ERROR_PAGE + "}";
+    private final String EL_DEFERRED_LOGIN_PAGE = "#{" + EL_LOGIN_PAGE + "}";
+    private final String EL_DEFERRED_IS_FORWARD = "#{" + EL_IS_FORWARD + "}";
 
     private static SharedOutputManager outputMgr = SharedOutputManager.getInstance().trace("com.ibm.ws.security.javaeesec.*=all");
 
