@@ -17,9 +17,6 @@ app-resources= \
   META-INF/validation-mapping-2.0.xsd | \
   META-INF/validation-configuration-2.0.xsd
 
-Private-Package: \
-  org.hibernate.validator.internal.*
-
 Export-Package: \
   org.hibernate.validator;version="6.0.4.Final";uses:="javax.validation,javax.validation.spi,javax.validation.valueextraction,org.hibernate.validator.cfg,org.hibernate.validator.spi.resourceloading,org.hibernate.validator.spi.scripting";thread-context=true, \
   org.hibernate.validator.cfg;version="6.0.4.Final";uses:="javax.validation,org.hibernate.validator.cfg.context";thread-context=true, \
@@ -43,12 +40,18 @@ Export-Package: \
   org.hibernate.validator.spi.group;version="6.0.4.Final";thread-context=true, \
   org.hibernate.validator.spi.resourceloading;version="6.0.4.Final";thread-context=true, \
   org.hibernate.validator.spi.scripting;version="6.0.4.Final";uses:="javax.script,javax.validation";thread-context=true,\
-  org.hibernate.validator.internal.util.classhierarchy;version="6.0.4.Final",\
-  org.hibernate.validator.internal.util.privilegedactions;version="6.0.4.Final",\
-  org.hibernate.validator.internal.engine;version="6.0.4.Final",\
-  org.hibernate.validator.internal.engine.valueextraction;version="6.0.4.Final",\
-  org.hibernate.validator.internal.util;version="6.0.4.Final",\
-  org.hibernate.validator.internal.util.logging;version="6.0.4.Final"
+  org.hibernate.validator.internal.*;version="6.0.4.Final"
+#  org.hibernate.validator.internal.util.classhierarchy;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.util.privilegedactions;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.engine;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.engine.constraintvalidation;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.engine.messageinterpolation.parser;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.engine.resolver;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.engine.valueextraction;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.util;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.util.logging;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.util.logging.formatter;version="6.0.4.Final",\
+#  org.hibernate.validator.internal.xml;version="6.0.4.Final"
 
 Import-Package: \
   !javax.persistence, \
@@ -101,7 +104,7 @@ DynamicImport-Package: \
  
 Include-Resource: \
   @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/*.xsd, \
-  @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/services
+  @${repo;org.hibernate.validator:hibernate-validator;6.0.4.Final}!/META-INF/services/*
   
 Service-Component:\
   org.hibernate.validator.HibernateValidator;\
