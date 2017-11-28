@@ -1,0 +1,60 @@
+
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config schema strings
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/SchemaData.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#
+# Message prefix block: CWWKG1001 - CWWKG1020
+
+config.internal.metatype.includeType.documentation=Okre\u015bl zas\u00f3b konfiguracji do do\u0142\u0105czenia do konfiguracji serwera.
+config.internal.metatype.includeType.label=Do\u0142\u0105cz
+config.internal.metatype.includeType.attribute.optional.documentation= Zezwalaj na pomini\u0119cie do\u0142\u0105czonego zasobu, je\u015bli nie zostanie znaleziony.
+config.internal.metatype.includeType.attribute.optional.label=Zas\u00f3b jest opcjonalny
+config.internal.metatype.includeType.attribute.location.documentation=Okre\u015bla po\u0142o\u017cenie zasobu. Mo\u017ce to by\u0107 \u015bcie\u017cka do pliku lub identyfikator URI zasobu zdalnego.
+config.internal.metatype.includeType.attribute.location.label=Po\u0142o\u017cenie
+config.internal.metatype.includeType.attribute.onConflict.documentation=Okre\u015bla zachowanie stosowane w przypadku znalezienia konflikt\u00f3w podczas scalania element\u00f3w.
+config.internal.metatype.includeType.attribute.onConflict.label=W razie konfliktu
+
+config.internal.metatype.variableDefinitionType.documentation=Zadeklaruj now\u0105 zmienn\u0105, okre\u015blaj\u0105c jej nazw\u0119 i warto\u015b\u0107.
+config.internal.metatype.variableDefinitionType.label=Deklaracja zmiennej
+config.internal.metatype.variableDefinitionType.name.documentation=Nazwa zmiennej.
+config.internal.metatype.variableDefinitionType.name.label=Nazwa
+config.internal.metatype.variableDefinitionType.value.documentation=Warto\u015b\u0107, kt\u00f3ra zostanie przypisana do zmiennej.
+config.internal.metatype.variableDefinitionType.value.label=Warto\u015b\u0107
+
+config.internal.metatype.duration.desc=Okre\u015bl dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, po kt\u00f3rej nast\u0119puje jednostka czasu, taka jak godziny (h), minuty (m), sekundy (s) lub milisekundy (ms). Na przyk\u0142ad okre\u015bl 500 milisekund jako 500ms. W pojedynczej pozycji mo\u017cna zawrze\u0107 wiele warto\u015bci. Na przyk\u0142ad 1s500ms oznacza 1,5 sekundy.
+config.internal.metatype.duration-s.desc=Okre\u015bl dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, po kt\u00f3rej nast\u0119puje jednostka czasu, taka jak godziny (h), minuty (m) lub sekundy (s). Na przyk\u0142ad okre\u015bl 30 sekund jako 30s. W pojedynczej pozycji mo\u017cna zawrze\u0107 wiele warto\u015bci. Na przyk\u0142ad 1m30s oznacza 90 sekund.
+config.internal.metatype.duration-m.desc=Okre\u015bl dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, po kt\u00f3rej nast\u0119puje jednostka czasu, taka jak godziny (h) lub minuty (m). Na przyk\u0142ad okre\u015bl 30 minut jako 30m. W pojedynczej pozycji mo\u017cna zawrze\u0107 wiele warto\u015bci. Na przyk\u0142ad 1h30m oznacza 90 minut.
+config.internal.metatype.duration-h.desc=Okre\u015bl dodatni\u0105 liczb\u0119 ca\u0142kowit\u0105, po kt\u00f3rej nast\u0119puje jednostka czasu, taka jak godziny (h). Na przyk\u0142ad okre\u015bl 12 godzin jako 12h.
+
+config.internal.metatype.pid.reference.type=Identyfikator konfiguracji typu {0} (\u0142a\u0144cuch).
+config.internal.metatype.pid.reference.list.type=Lista identyfikator\u00f3w konfiguracji typu {0} (\u0142a\u0144cuch rozdzielony przecinkami).
+config.internal.metatype.pid.reference.nested.type=Element typu {0}.
+
+config.internal.metatype.type.desc=Identyfikator PID ma warto\u015b\u0107 {0}.
+config.internal.metatype.type.child.desc=Identyfikator PID ma warto\u015b\u0107 {0} i jest to element potomny typu z\u0142o\u017conego <q>{1}</q>.
+
+config.internal.metatype.id.documentation=Unikalny identyfikator konfiguracji.
+config.internal.metatype.id.label=Identyfikator
+
+config.internal.metatype.onConflictType.merge.label=Elementy powoduj\u0105ce konflikt zostan\u0105 scalone.
+config.internal.metatype.onConflictType.replace.label=W przypadku konfliktu element\u00f3w zostanie u\u017cyty element z do\u0142\u0105czonego pliku.
+config.internal.metatype.onConflictType.ignore.label=Elementy powoduj\u0105ce konflikt znajduj\u0105ce si\u0119 w do\u0142\u0105czonym pliku zostan\u0105 zignorowane.
+config.internal.metatype.onConflictType.break.label=Elementy powoduj\u0105ce konflikt b\u0119d\u0105 powodowa\u0107 b\u0142\u0119dy konfiguracji.
+
+OSGI_SERVICE_ERROR=CWWKG1001E: Us\u0142uga OSGi {0} nie jest dost\u0119pna.  Spr\u00f3buj zrestartowa\u0107 serwer za pomoc\u0105 opcji --clean.
+OSGI_SERVICE_ERROR.explanation=Okre\u015blona us\u0142uga nie jest dost\u0119pna, co powoduje wyst\u0105pienie b\u0142\u0119du wewn\u0119trznego serwera.
+OSGI_SERVICE_ERROR.useraction=Zrestartuj serwer za pomoc\u0105 opcji --clean.

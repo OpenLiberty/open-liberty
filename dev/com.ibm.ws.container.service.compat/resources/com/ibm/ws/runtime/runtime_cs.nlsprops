@@ -1,0 +1,58 @@
+###############################################################################
+# Copyright (c) 1997, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# Standard Server runtime messages
+#
+#  Notes:
+#
+#   - DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+#   - WSVR0025I - WSVR0028I are reserved for TimeBomb (bootstrap*.nlsprops)
+#   - WSVR0300x - WSVR0314x are reserved for config (config*.nlsprops)
+#   - WSVR0313E is used for a MDB related error message by EJB component (see runtime.nlsprops)
+#   - WSVR0330x - WSVR0399x are reserved for class loader (this file)
+#   - WSVR0614x - WSVR0620x are reserved for bootstrap (bootstrap*.nlsprops.)
+#   - WSVR0631x - WSVR0650x are reserved for selective bundle provider extension
+#   - WSVR0700x - WSVR0720x are reserved for ThinRegistry (bootstrap*.nlsprops)
+#   - WSVR0800x - WSVR0899x are reserved for config (config*.nlsprops)
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.128,0,10/05/13,15:15:23
+#
+#CMVCPATHNAME com.ibm.ws.compat/resources/com/ibm/ws/runtime/runtime.nlsprops
+#COMPONENTPREFIX WSVR
+#COMPONENTNAMEFOR WSVR WebSphere Server
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+WSVR0603E=WSVR0603E: Metoda ComponentMetaDataAccessor beginContext p\u0159ijala metadata komponenty s hodnotou NULL.
+WSVR0603E.explanation=CMSG0001
+WSVR0603E.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# PK39527 - Update message text
+# -------------------------------------------------------------------------------------------------
+WSVR0623W=WSVR0623W: Do\u0161lo k neo\u010dek\u00e1van\u00e9 v\u00fdjimce: \"{0}\" Vlastnost com.ibm.websphere.threadpool.clearThreadLocal byla nastavena a pou\u017eije se na fond podproces\u016f {0}. Tato volba je zam\u00edtnuta.
+WSVR0623W.explanation=Vlastnost com.ibm.websphere.threadpool.clearThreadLocal se v t\u00e9to verzi st\u00e1le pou\u017e\u00edv\u00e1, ale bude odebr\u00e1na v p\u0159\u00ed\u0161t\u00ed verzi.
+WSVR0623W.useraction=Odeberte z vlastnost\u00ed prost\u0159ed\u00ed JVM (Java Virtual Machine) vlastnost com.ibm.websphere.threadpool.clearThreadLocal.
+
+# F743-24122
+WSVR0629I=WSVR0629I: Byla vy\u010derp\u00e1na kapacita vyrovn\u00e1vac\u00ed pam\u011bti po\u017eadavk\u016f pro fond podproces\u016f \"{0}\".
+WSVR0629I.explanation=Bylo dosa\u017eeno omezen\u00ed velikosti fronty nevy\u0159\u00edzen\u00fdch po\u017eadavk\u016f pro uveden\u00fd fond podproces\u016f, co\u017e bylo mohlo m\u00edt negativn\u00ed vliv na v\u00fdkon.
+WSVR0629I.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 okam\u017eit\u00e1 akce; je v\u0161ak mo\u017en\u00e9, \u017ee bude t\u0159eba vyrovn\u00e1vac\u00ed pam\u011b\u0165 po\u017eadavk\u016f fondu podproces\u016f zv\u011bt\u0161it, aby se zamezilo opakov\u00e1n\u00ed t\u00e9to situace v budoucnu.
+
+# PM13147 - Log growth of thread pool beyond maximum size
+WSVR0630I=WSVR0630I: Fond podproces\u016f s mo\u017enost\u00ed r\u016fstu \"{0}\" byl roz\u0161\u00ed\u0159en a p\u0159ekro\u010dil svou p\u016fvodn\u011b definovanou maxim\u00e1ln\u00ed kapacitu. Aktu\u00e1ln\u00ed velikost fondu je \"{1}\".
+WSVR0630I.explanation=Ur\u010den\u00fd fond podproces\u016f dos\u00e1hl sv\u00e9 p\u0159eddefinovan\u00e9 maxim\u00e1ln\u00ed velikosti a bude roz\u0161\u00ed\u0159en.
+WSVR0630I.useraction=Nen\u00ed nutn\u00e1 \u017e\u00e1dn\u00e1 okam\u017eit\u00e1 akce; fond v\u0161ak bude r\u016fst d\u00e1le, dokud bude po\u010det pracovn\u00edch po\u017eadavk\u016f vy\u0161\u0161\u00ed ne\u017e aktu\u00e1ln\u00ed po\u010det dostupn\u00fdch podproces\u016f.

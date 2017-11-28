@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: La classe deve avere un costruttore senza argomenti.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=La classe deve avere un costruttore senza argomenti e deve implementare l'interfaccia javax.security.auth.callback.CallbackHandler.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=Aggiungere un costruttore senza argomenti alla classe gestore callback.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: Si \u00e8 verificata la seguente eccezione di injection per il metodo di gestione PostConstruct: {0}
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=Si verifica un'eccezione quando il contenitore richiama il metodo PostConstruct.   
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=Assicurarsi che il metodo PostConstruct sia definito correttamente nel descrittore di distribuzione o sia annotato correttamente nella classe.    
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: Si \u00e8 verificata la seguente eccezione di injection per il metodo di gestione PreDestroy: {0}
+INJECTION_PREDESTROY_CWWKC2453E.explanation=Si verifica un'eccezione quando il contenitore richiama il metodo PreDestroy. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=Assicurarsi che il metodo PreDestroy sia definito correttamente nel descrittore di distribuzione o sia annotato correttamente nella classe. 
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: Esiste pi\u00f9 di un metodo PostConstruct o PreDestroy nella classe {1}. Il metodo PostConstruct o PreDestroy {0} non verr\u00e0 richiamato dal contenitore.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=Esiste pi\u00f9 di un metodo PostConstruct o PreDestroy dichiarato nella classe.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=Non sono richieste azioni. Il contenitore richiama il primo metodo rilevato.

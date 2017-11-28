@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.webcontainer.security.feature/resources/com/ibm/ws/webcontainer/security/feature/resources/WebFeatureSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Feature Web Security Collaborator
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9200 - CWWKS9249
+
+FEATURE_ROLE_CONFIG_PROCESSED=CWWKS9120I: A szolg\u00e1ltat\u00e1s szereplek\u00e9pez\u00e9s id="{0}" sikeresen feldolgoz\u00e1sra ker\u00fclt.
+FEATURE_ROLE_CONFIG_PROCESSED.explanation=A jogosults\u00e1gi szereplek\u00e9pez\u00e9s sikeresen feldolgoz\u00e1sra ker\u00fclt.
+FEATURE_ROLE_CONFIG_PROCESSED.useraction=Nincs teend\u0151.
+AUTHZ_ROLE_ID_IS_NULL=CWWKS9121E: Az id attrib\u00fatum hi\u00e1nyzik az <authorization-roles> elemben.
+AUTHZ_ROLE_ID_IS_NULL.explanation=Az id attrib\u00fatum megad\u00e1sa k\u00f6telez\u0151 az <authorization-roles> elem feldolgoz\u00e1sa \u00e9rdek\u00e9ben.
+AUTHZ_ROLE_ID_IS_NULL.useraction=Hat\u00e1rozza meg a megfelel\u0151 \u00e9rt\u00e9ket az <authorization-roles> elem id attrib\u00fatum\u00e1hoz.
+
+

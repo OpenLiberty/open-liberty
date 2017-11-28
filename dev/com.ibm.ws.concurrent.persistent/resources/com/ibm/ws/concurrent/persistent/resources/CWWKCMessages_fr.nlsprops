@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: Le programme d''ex\u00e9cution persistant {0} a annul\u00e9 la t\u00e2che {1}. Il est planifi\u00e9 que la t\u00e2che s''ex\u00e9cute \u00e0 nouveau apr\u00e8s {2} secondes.
+CWWKC1500.task.rollback.retry.explanation=L'ex\u00e9cution de la t\u00e2che a \u00e9t\u00e9 marqu\u00e9e pour annulation. La t\u00e2che est ex\u00e9cut\u00e9e \u00e0 nouveau apr\u00e8s le nombre de secondes indiqu\u00e9.
+CWWKC1500.task.rollback.retry.useraction=Attendez la nouvelle ex\u00e9cution de la t\u00e2che.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: Le programme d''ex\u00e9cution persistant {0} a annul\u00e9 la t\u00e2che {1} en raison de l''\u00e9chec {2}. Il est planifi\u00e9 que la t\u00e2che s''ex\u00e9cute \u00e0 nouveau apr\u00e8s {3} secondes.
+CWWKC1501.task.failure.retry.explanation=Echec et annulation de l'ex\u00e9cution de la t\u00e2che. La t\u00e2che est ex\u00e9cut\u00e9e apr\u00e8s le nombre de secondes indiqu\u00e9.
+CWWKC1501.task.failure.retry.useraction=Si l'\u00e9chec est transitoire, attendez la nouvelle ex\u00e9cution de la t\u00e2che. Sinon, corrigez la cause de l'\u00e9chec si ce dernier est inattendu.
+
+CWWKC1502.task.rollback=CWWKC1502W: Le programme d''ex\u00e9cution persistant {0} a annul\u00e9 la t\u00e2che {1}.
+CWWKC1502.task.rollback.explanation=L'ex\u00e9cution de la t\u00e2che a \u00e9t\u00e9 marqu\u00e9e pour annulation.
+CWWKC1502.task.rollback.useraction=Si l'annulation est inattendue, planifiez \u00e0 nouveau la t\u00e2che.
+
+CWWKC1503.task.failure=CWWKC1503W: Le programme d''ex\u00e9cution persistant {0} a annul\u00e9 la t\u00e2che {1} en raison de l''\u00e9chec {2}.
+CWWKC1503.task.failure.explanation=Echec et annulation de l'ex\u00e9cution de la t\u00e2che.
+CWWKC1503.task.failure.useraction=Corrigez la cause de l'\u00e9chec (si ce dernier est inattendu) et planifiez \u00e0 nouveau la t\u00e2che.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: Le programme d''ex\u00e9cution persistant {0} a abandonn\u00e9 la t\u00e2che {1} en raison de {2} annulations ou \u00e9checs cons\u00e9cutifs.
+CWWKC1510.retry.limit.reached.rollback.explanation=La t\u00e2che a atteint le nombre maximum de nouvelles tentatives cons\u00e9cutives, aucune nouvelle tentative ne sera effectu\u00e9e.
+CWWKC1510.retry.limit.reached.rollback.useraction=Si les annulations ou les \u00e9checs sont inattendus, d\u00e9terminez la cause et planifiez \u00e0 nouveau la t\u00e2che. Si les annulations et les \u00e9checs sont intermittents, pensez \u00e0 augmenter le nombre maximal de nouvelles tentatives. 
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: Le programme d''ex\u00e9cution persistant {0} a abandonn\u00e9 la t\u00e2che {1} en raison de {2} annulations ou \u00e9checs cons\u00e9cutifs. L''\u00e9chec final est {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=La t\u00e2che a atteint le nombre maximum de nouvelles tentatives cons\u00e9cutives, aucune nouvelle tentative ne sera effectu\u00e9e.
+CWWKC1511.retry.limit.reached.failed.useraction=Si les annulations ou les \u00e9checs sont inattendus, d\u00e9terminez la cause et planifiez \u00e0 nouveau la t\u00e2che. Si les annulations et les \u00e9checs sont intermittents, pensez \u00e0 augmenter le nombre maximal de nouvelles tentatives. 
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Vous ne pouvez pas planifier des t\u00e2ches persistantes depuis le contexte d'unit\u00e9 d'ex\u00e9cution actuel.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Planifiez des t\u00e2ches persistantes uniquement depuis une unit\u00e9 d'ex\u00e9cution qui est associ\u00e9e \u00e0 une application ou fonction avec une identit\u00e9 de chargeur de classe s\u00e9rialisable.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Assurez-vous que le contexte de l'application ou de la fonction est pr\u00e9sent sur l'unit\u00e9 d'ex\u00e9cution lors de la planification de t\u00e2ches.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: Vous pouvez appeler la m\u00e9thode {0} uniquement sur l''\u00e9l\u00e9ment TaskStatus qui est obtenu une fois la t\u00e2che termin\u00e9e. D\u00e9terminez si la t\u00e2che s''est termin\u00e9e au moment de l''obtention d''une instance TaskStatus en v\u00e9rifiant que la valeur getNextExecutionTime est nulle.
+CWWKC1550.status.unavailable.until.ended.explanation=TaskStatus est une image instantan\u00e9e immuable de l'\u00e9tat des t\u00e2ches. Toute valeur retourn\u00e9e par isDone ou isCancelled pr\u00e9alablement \u00e0 la fin de la t\u00e2che n'est plus valide une fois la t\u00e2che termin\u00e9e. Une erreur se produit s'il y a tentative de renvoi d'une valeur non fiable avant la fin de la t\u00e2che.
+CWWKC1550.status.unavailable.until.ended.useraction=Utilisez la m\u00e9thode getNextExecutionTime pour d\u00e9terminer si une t\u00e2ches est termin\u00e9e. Utilisez les m\u00e9thodes isDone et isCancelled uniquement si la t\u00e2che est termin\u00e9e.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: Vous pouvez appeler la m\u00e9thode uniquement sur l'\u00e9l\u00e9ment TaskStatus qui est obtenu une fois la t\u00e2che termin\u00e9e. Utilisez la m\u00e9thode getResult pour obtenir le r\u00e9sultat de l'ex\u00e9cution qui \u00e9tait l'ex\u00e9cution la plus r\u00e9cente au moment de l'obtention de l'instance TaskStatus.
+CWWKC1551.result.unavailable.until.ended.explanation=TaskStatus est une image instantan\u00e9e immuable de l'\u00e9tat des t\u00e2ches. Toute valeur retourn\u00e9e par get pr\u00e9alablement \u00e0 la fin de la t\u00e2che n'est plus valide une fois qu'une autre tentative d'ex\u00e9cution a \u00e9t\u00e9 effectu\u00e9e ou que la t\u00e2che est termin\u00e9e. Une erreur se produit s'il y a tentative de renvoi d'une valeur non fiable avant la fin de la t\u00e2che.
+CWWKC1551.result.unavailable.until.ended.useraction=Utilisez la m\u00e9thode getResult pour obtenir le r\u00e9sultat de la tentative d'ex\u00e9cution qui \u00e9tait la tentative la plus r\u00e9cente au moment de l'obtention de l'instance TaskStatus. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: Vous pouvez appeler la m\u00e9thode getDelay uniquement sur TaskStatus pour les t\u00e2ches uniques. Pour les t\u00e2ches r\u00e9p\u00e9titives et les t\u00e2ches planifi\u00e9es avec un d\u00e9clencheur, utilisez la m\u00e9thode getNextExecutionTime pour obtenir l'heure d'ex\u00e9cution suivante attendue apr\u00e8s l'ex\u00e9cution la plus r\u00e9cente une fois l'\u00e9tat TaskStatus obtenu.
+CWWKC1552.delay.unavailable.explanation=TaskStatus est une image instantan\u00e9e immuable de l'\u00e9tat des t\u00e2ches. Toute valeur retourn\u00e9e par getDelay pr\u00e9alablement \u00e0 la fin de la t\u00e2che n'est plus valide une fois qu'une autre tentative d'ex\u00e9cution a \u00e9t\u00e9 effectu\u00e9e. Une erreur se produit s'il y a tentative de renvoi d'une valeur non fiable avant la fin de la t\u00e2che.
+CWWKC1552.delay.unavailable.useraction=Utilisez la m\u00e9thode getNextExecutionTime pour obtenir l'heure d'ex\u00e9cution suivante attendue qui correspond \u00e0 l'heure \u00e0 laquelle l'\u00e9tat TaskStatus a \u00e9t\u00e9 obtenu.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: Le programme d''ex\u00e9cution persistant {0} ne peut pas obtenir le r\u00e9sultat de la t\u00e2che {1}. Consultez l''exception source.
+CWWKC1553.result.inaccessible.explanation=Une erreur s'est produite qui a emp\u00each\u00e9 l'obtention du r\u00e9sultat de t\u00e2che.
+CWWKC1553.result.inaccessible.useraction=Consultez l'exception source afin de corriger le probl\u00e8me, puis replanifiez la t\u00e2che .
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: La t\u00e2che {0} n''a pas pu s''ex\u00e9cuter. Consultez l''exception source.
+CWWKC1554.general.task.failure.explanation=La t\u00e2che n'a pas pu s'ex\u00e9cuter en raison de l'exception sp\u00e9cifi\u00e9e.
+CWWKC1554.general.task.failure.useraction=Consultez l'exception source afin de corriger le probl\u00e8me, puis replanifiez la t\u00e2che .
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: La t\u00e2che {0} est abandonn\u00e9e car elle est annul\u00e9e ou car elle a \u00e9chou\u00e9 {1} fois cons\u00e9cutives.
+CWWKC1555.retry.limit.reached.explanation=La t\u00e2che a atteint le nombre maximum de nouvelles tentatives cons\u00e9cutives, aucune nouvelle tentative ne sera effectu\u00e9e.
+CWWKC1555.retry.limit.reached.useraction=Consultez l'exception source afin de corriger le probl\u00e8me, puis replanifiez la t\u00e2che . Si le probl\u00e8me est intermittent, essayez d'augmenter le nombre maximal de nouvelles tentatives.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: L''ex\u00e9cution de t\u00e2ches depuis l''application {0} est diff\u00e9r\u00e9e jusqu''\u00e0 ce que l''application et les modules qui ont planifi\u00e9 les t\u00e2ches soient disponibles.
+CWWKC1556.task.exec.deferred.explanation=L'application et le module qui ont planifi\u00e9 une t\u00e2che doivent \u00eatre disponibles pour que cette t\u00e2che puisse s'ex\u00e9cuter.
+CWWKC1556.task.exec.deferred.useraction=Assurez-vous que l'application et le module qui ont planifi\u00e9 la t\u00e2che sont disponibles. Vous pouvez aussi annuler la t\u00e2che si elle n'est plus n\u00e9cessaire.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  Une erreur s''est produite. Demande {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=Une erreur s'est produite lors de la tentative d'ex\u00e9cution de l'op\u00e9ration demand\u00e9e.
+CWWKC1559.mbean.operation.failure.useraction=Pour plus de d\u00e9tails sur l'erreur d'op\u00e9ration, consultez les journaux du serveur.

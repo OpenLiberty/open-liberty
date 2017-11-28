@@ -1,0 +1,456 @@
+###############################################################################
+# Copyright (c) 2010, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#COMPONENTPREFIX CWWKG
+#COMPONENTNAMEFOR CWWKG WebSphere kernel config service messages
+#CMVCPATHNAME com.ibm.ws.config/resources/com/ibm/ws/config/internal/resources/ConfigMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+# Message prefix block: CWWKG0001 - CWWKG1000
+# -------------------------------------------------------------------------------------------------
+
+copyright=\n\
+Licenc hat\u00e1lya al\u00e1 tartoz\u00f3 anyagok - Az IBM tulajdona\n\
+(C) COPYRIGHT International Business Machines Corp. 2010 - Minden jog fenntartva.\n\
+Az USA korm\u00e1nyzati felhaszn\u00e1l\u00f3inak jogkorl\u00e1toz\u00e1sa - A haszn\u00e1latot, a m\u00e1sol\u00e1st \u00e9s a nyilv\u00e1noss\u00e1gra hozatalt\n\
+az IBM Corporation v\u00e1llalattal k\u00f6t\u00f6tt GSA ADP Schedule Contract korl\u00e1tozza.
+
+error.parse.server=CWWKG0001E: A konfigur\u00e1ci\u00f3\u00e9rtelmez\u0151 hib\u00e1t \u00e9szlelt a konfigur\u00e1ci\u00f3 gy\u00f6k\u00e9r \u00e9s a hivatkozott konfigur\u00e1ci\u00f3s dokumentumok \u00e9rtelmez\u00e9se sor\u00e1n. Hiba: {0}
+error.parse.server.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 nem olvashat\u00f3 be, mert hiba tal\u00e1lhat\u00f3 az egyik konfigur\u00e1ci\u00f3s f\u00e1jlban.
+error.parse.server.useraction=Oldja meg a konfigur\u00e1ci\u00f3s f\u00e1jlban l\u00e9v\u0151 hib\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.parse.bundle=CWWKG0002E: A konfigur\u00e1ci\u00f3\u00e9rtelmez\u0151 hib\u00e1t \u00e9szlelt a k\u00f6teg, v\u00e1ltozat vagy \u00e1lland\u00f3 azonoss\u00e1g (PID) \u00e9rtelmez\u00e9se sor\u00e1n. Hiba: {0} Hiba: {1} Ok: {2}
+error.parse.bundle.explanation=Hiba t\u00f6rt\u00e9nt a megadott konfigur\u00e1ci\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n.
+error.parse.bundle.useraction=Oldja meg a konfigur\u00e1ci\u00f3s hib\u00e1t, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+info.prop.ignored=CWWKG0003I: Egy oper\u00e1tor nincs megadva, vagy pedig a megadott \u00e9rt\u00e9k null vagy \u00fcres. A tulajdons\u00e1g figyelmen k\u00edv\u00fcl marad. Tulajdons\u00e1g: {0} F\u00e1jl: {1}
+info.prop.ignored.explanation=Egy v\u00e1rt konfigur\u00e1ci\u00f3s tulajdons\u00e1g hi\u00e1nyzik vagy nincs megadva, ez\u00e9rt figyelmen k\u00edv\u00fcl maradt.
+info.prop.ignored.useraction=Semmit sem kell tennie.
+
+info.unsupported.api=CWWKG0004I: Az API nem t\u00e1mogatott: {0}
+info.unsupported.api.explanation=A megadott API nem t\u00e1mogatott.
+info.unsupported.api.useraction=Haszn\u00e1ljon t\u00e1mogatott API-t.
+
+info.ignore.unresolved.optional.include=CWWKG0005I: Feloldatlan elhagyhat\u00f3 {0} er\u0151forr\u00e1s figyelmen k\u00edv\u00fcl hagy\u00e1sa ({1}). Sor: {2}, {3}
+info.ignore.unresolved.optional.include.explanation=Egy elhagyhat\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jl nem tal\u00e1lhat\u00f3, \u00e9s figyelmen k\u00edv\u00fcl lesz hagyva.
+info.ignore.unresolved.optional.include.useraction=Semmit sem kell tennie.
+
+info.ignore.invalid.optional.include=CWWKG0006I: Az \u00e9rv\u00e9nytelen @include? resource({0}) kifejez\u00e9s figyelmen k\u00edv\u00fcl hagy\u00e1sa.  Sor: {1}. {2}
+info.ignore.invalid.optional.include.explanation=A megadott er\u0151forr\u00e1s \u00e9rv\u00e9nytelen, ez\u00e9rt figyelmen k\u00edv\u00fcl maradt.
+info.ignore.invalid.optional.include.useraction=Ha nem szeretn\u00e9 mell\u0151zni az er\u0151forr\u00e1st, akkor tegye \u00e9rv\u00e9nyess\u00e9.
+
+warn.file.delete.failed=CWWKG0007W: A rendszer nem tudta t\u00f6r\u00f6lni a(z) {0} er\u0151forr\u00e1st.
+warn.file.delete.failed.explanation=A megadott er\u0151forr\u00e1s nem t\u00f6r\u00f6lhet\u0151.
+warn.file.delete.failed.useraction=Oldja meg az er\u0151forr\u00e1s t\u00f6rl\u00e9s\u00e9t megakad\u00e1lyoz\u00f3 probl\u00e9m\u00e1kat, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+warn.file.mkdirs.failed=CWWKG0008W: A rendszer nem tudott l\u00e9trehozni k\u00f6nyvt\u00e1rakat a k\u00f6vetkez\u0151 sz\u00e1m\u00e1ra: {0}.
+warn.file.mkdirs.failed.explanation=A megadott k\u00f6nyvt\u00e1rakat nem siker\u00fclt l\u00e9trehozni.
+warn.file.mkdirs.failed.useraction=Oldja meg a k\u00f6nyvt\u00e1rak l\u00e9trehoz\u00e1s\u00e1t megakad\u00e1lyoz\u00f3 probl\u00e9m\u00e1kat, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+
+warn.bundle.factory.noinstance=CWWKG0009W: A(z) {1} k\u00f6tegben l\u00e9v\u0151 {0} konfigur\u00e1ci\u00f3 azonos\u00edt\u00f3 n\u00e9lk\u00fcli gy\u00e1rt\u00f3konfigur\u00e1ci\u00f3t hat\u00e1roz meg.
+warn.bundle.factory.noinstance.explanation=A megadott gy\u00e1rt\u00f3konfigur\u00e1ci\u00f3nak nincs azonos\u00edt\u00f3ja.
+warn.bundle.factory.noinstance.useraction=Adjon meg egy azonos\u00edt\u00f3t a gy\u00e1rt\u00f3konfigur\u00e1ci\u00f3hoz.
+
+frameworkShutdown=CWWKG0010I: A(z) {0} kiszolg\u00e1l\u00f3 egy kor\u00e1bbi inicializ\u00e1l\u00e1si hiba miatt le\u00e1ll.
+frameworkShutdown.explanation=Egy kor\u00e1bbi inicializ\u00e1l\u00e1si hiba k\u00f6vetkezt\u00e9ben a kiszolg\u00e1l\u00f3 le\u00e1ll.
+frameworkShutdown.useraction=Oldja meg az inicializ\u00e1l\u00e1si hib\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+config.validator.foundConflictSingleton=\u00dctk\u00f6z\u0151 be\u00e1ll\u00edt\u00e1sok tal\u00e1lhat\u00f3k a(z) {0} konfigur\u00e1ci\u00f3hoz.
+config.validator.foundConflictInstance=\u00dctk\u00f6z\u0151 be\u00e1ll\u00edt\u00e1sok tal\u00e1lhat\u00f3k a(z) {0} konfigur\u00e1ci\u00f3 {1} p\u00e9ld\u00e1ny\u00e1hoz.
+config.validator.attributeConflict=A(z) {0} tulajdons\u00e1g \u00fctk\u00f6z\u0151 \u00e9rt\u00e9keket tartalmaz:
+config.validator.valueConflict=A(z) {1} tulajdons\u00e1gban a(z) {0} \u00e9rt\u00e9k van be\u00e1ll\u00edtva.
+config.validator.valueConflictNull=A(z) {0} sz\u00e1m\u00e1ra nem ker\u00fclt \u00e9rt\u00e9k be\u00e1ll\u00edt\u00e1sra.
+config.validator.valueConflictSecure=A(z) {0} sz\u00e1m\u00e1ra biztons\u00e1gos \u00e9rt\u00e9k ker\u00fclt be\u00e1ll\u00edt\u00e1sra.
+config.validator.activeValue=A(z) {0} tulajdons\u00e1g a k\u00f6vetkez\u0151 \u00e9rt\u00e9kre lesz be\u00e1ll\u00edtva: {1}.
+config.validator.activeValueNull=A(z) {0} tulajdons\u00e1g \u00e9rt\u00e9ke nem lesz be\u00e1ll\u00edtva.
+config.validator.activeValueSecure=A(z) {0} tulajdons\u00e1g a(z) {1} sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9kre lesz be\u00e1ll\u00edtva.
+
+warn.config.validate.failed=CWWKG0011W: A konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9se nem siker\u00fclt. {0}
+warn.config.validate.failed.explanation=A konfigur\u00e1ci\u00f3 a megadott probl\u00e9m\u00e1k miatt \u00e9rv\u00e9nytelen.
+warn.config.validate.failed.useraction=Jav\u00edtsa a konfigur\u00e1ci\u00f3t.
+
+warn.config.delete.failed=CWWKG0012W: A rendszer nem tudta t\u00f6r\u00f6lni a(z) {0} konfigur\u00e1ci\u00f3t.
+warn.config.delete.failed.explanation=A konfigur\u00e1ci\u00f3 nem lett elt\u00e1vol\u00edtva a ConfigurationAdmin szolg\u00e1ltat\u00e1sb\u00f3l.
+warn.config.delete.failed.useraction=Semmit sem kell tennie.
+
+warn.config.delete.failed.multiple=CWWKG0013W: A rendszer nem t\u00f6r\u00f6lte a(z) {0} konfigur\u00e1ci\u00f3t. T\u00f6bb megfelel\u0151 konfigur\u00e1ci\u00f3 tal\u00e1lhat\u00f3.
+warn.config.delete.failed.multiple.explanation=A megadott konfigur\u00e1ci\u00f3t nem lehetett biztons\u00e1gosan elt\u00e1vol\u00edtani a ConfigurationAdmin szolg\u00e1ltat\u00e1sb\u00f3l, mert t\u00f6bb megfelel\u0151 konfigur\u00e1ci\u00f3 is tal\u00e1lhat\u00f3.
+warn.config.delete.failed.multiple.useraction=Semmit sem kell tennie.
+
+error.syntax.parse.server=CWWKG0014E: A konfigur\u00e1ci\u00f3\u00e9rtelmez\u0151 XML szintaktikai hib\u00e1t \u00e9szlelt a konfigur\u00e1ci\u00f3 gy\u00f6k\u00e9r \u00e9s a hivatkozott konfigur\u00e1ci\u00f3s dokumentumok \u00e9rtelmez\u00e9se sor\u00e1n. Hiba: {0} F\u00e1jl: {1} Sor: {2} Oszlop: {3}
+error.syntax.parse.server.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 nem olvashat\u00f3 be, mert egy XML szintaktikai hiba tal\u00e1lhat\u00f3 az egyik konfigur\u00e1ci\u00f3s f\u00e1jlban.
+error.syntax.parse.server.useraction=Oldja meg a konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 XML szintaktikai hib\u00e1t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.config.update.init=CWWKG0015E: A rendszer nem tudta friss\u00edteni a konfigur\u00e1ci\u00f3(ka)t. Hiba: {0}
+error.config.update.init.explanation=A konfigur\u00e1ci\u00f3 nem friss\u00edthet\u0151k a ConfigurationAdmin szolg\u00e1ltat\u00e1sban.
+error.config.update.init.useraction=Semmit sem kell tennie.
+
+info.config.refresh.start=CWWKG0016I: Kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s ind\u00edt\u00e1sa.
+info.config.refresh.start.explanation=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jlok megv\u00e1ltoztak \u00e9s a rendszer megk\u00eds\u00e9rli friss\u00edteni a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t az \u00faj inform\u00e1ci\u00f3kkal.
+info.config.refresh.start.useraction=Semmit sem kell tennie.
+
+info.config.refresh.stop=CWWKG0017I: A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 friss\u00edt\u00e9se siker\u00fclt {0} m\u00e1sodperc alatt.
+info.config.refresh.stop.explanation=A rendszer v\u00e1ltoz\u00e1sokat \u00e9szlelet a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jljaiban \u00e9s friss\u00edtette a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t az \u00faj inform\u00e1ci\u00f3kkal.
+info.config.refresh.stop.useraction=Semmit sem kell tennie.
+
+info.config.refresh.nochanges=CWWKG0018I: A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 nem lett friss\u00edtve. Nem \u00e9szlelhet\u0151k funkcion\u00e1lis v\u00e1ltoz\u00e1sok.
+info.config.refresh.nochanges.explanation=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s f\u00e1jljai megv\u00e1ltoztak, de nem \u00e9szlelhet\u0151k funkcion\u00e1lis konfigur\u00e1ci\u00f3v\u00e1ltoz\u00e1sok.
+info.config.refresh.nochanges.useraction=Semmit sem kell tennie.
+
+schemagen.noextensions=CWWKG0019E: A(z) {1} attrib\u00fatumban megadott {0} sz\u00fcl\u0151konfigur\u00e1ci\u00f3 nem t\u00e1mogatja a kiterjeszt\u00e9seket.
+schemagen.noextensions.explanation=Be\u00e1gyazott konfigur\u00e1ci\u00f3k l\u00e9trehoz\u00e1s\u00e1hoz enged\u00e9lyezni kell Metatype kiterjeszt\u00e9seket.
+schemagen.noextensions.useraction=Adja hozz\u00e1 az ibm:supportExtensions="true" attrib\u00fatumot a metatype.xml f\u00e1jlhoz.
+
+schemagen.invalid.parent=CWWKG0020E: A(z) {1} attrib\u00fatumban megadott {0} sz\u00fcl\u0151konfigur\u00e1ci\u00f3 nem \u00e9rv\u00e9nyes.
+schemagen.invalid.parent.explanation=Az ibm:parentPid attrib\u00fatumban megadott sz\u00fcl\u0151konfigur\u00e1ci\u00f3 nem l\u00e9tezik.
+schemagen.invalid.parent.useraction=Jav\u00edtsa az ibm:parentPid attrib\u00fatumot a metatype.xml f\u00e1jlban.
+
+schemagen.duplicate.pid=CWWKG0021E: Ugyanaz a t\u00e1rolt azonoss\u00e1g (PID) be\u00e1ll\u00edt\u00e1s ({0}) van megadva t\u00f6bb metatype.xml f\u00e1jlban.
+schemagen.duplicate.pid.explanation=A pid \u00e9s factoryPid attrib\u00fatumok be\u00e1ll\u00edt\u00e1sainak egyedieknek kell lenni\u00fck.
+schemagen.duplicate.pid.useraction=Szerkessze a metatype.xml f\u00e1jlokat, hogy minden pid \u00e9s factoryPid attrib\u00fatum egyedi legyen.
+
+schemagen.alias.required=CWWKG0022E: A(z) {0} be\u00e1gyazott konfigur\u00e1ci\u00f3hoz konfigur\u00e1ci\u00f3s \u00e1ln\u00e9v sz\u00fcks\u00e9ges.
+schemagen.alias.required.explanation=A be\u00e1gyazott konfigur\u00e1ci\u00f3 nem rendelkezik konfigur\u00e1ci\u00f3s \u00e1ln\u00e9vvel.
+schemagen.alias.required.useraction=\u00c1ll\u00edtsa be a config.alias attrib\u00fatumot a metatype.xml f\u00e1jlban.
+
+schemagen.invalid.child=CWWKG0023E: A(z) {0} lesz\u00e1rmazott konfigur\u00e1ci\u00f3 csak egy gy\u00e1rt\u00f3konfigur\u00e1ci\u00f3 lehet.
+schemagen.invalid.child.explanation=A konfigur\u00e1ci\u00f3 csak egy gy\u00e1rt\u00f3konfigur\u00e1ci\u00f3 lehet.
+schemagen.invalid.child.useraction=Gy\u00e1rt\u00f3konfigur\u00e1ci\u00f3 meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1lja a factoryPid attrib\u00fatumot a pid attrib\u00fatum helyett.
+
+error.config.update.disk=CWWKG0024E: A(z) {0} kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 nem lett friss\u00edtve a lemezen. Hiba: {1}
+error.config.update.disk.explanation=Nem siker\u00fclt t\u00e1rolni a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s adatait a lemezen.
+error.config.update.disk.useraction=Semmit sem kell tennie.
+
+error.config.update.event=CWWKG0025E: A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 friss\u00edt\u00e9si esem\u00e9nyei nem lettek kibocs\u00e1tva a k\u00f6vetkez\u0151h\u00f6z: {0}. Hiba: {1}
+error.config.update.event.explanation=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 friss\u00edt\u00e9si esem\u00e9nyei nem lettek kibocs\u00e1tva.
+error.config.update.event.useraction=Semmit sem kell tennie.
+
+error.alias.collision=CWWKG0026E: Legal\u00e1bb k\u00e9t metat\u00edpus-meghat\u00e1roz\u00e1s ugyanazt a t\u00e1rolt azonoss\u00e1got (PID) vagy \u00e1lnevet haszn\u00e1lja. A(z) {0} PID azonos\u00edt\u00f3t vagy \u00e1lnevet {1} objektumoszt\u00e1ly-meghat\u00e1roz\u00e1s haszn\u00e1lja k\u00f6z\u00f6sen.
+error.alias.collision.explanation=T\u00f6bb metat\u00edpus-meghat\u00e1roz\u00e1s ugyanazt az \u00e1ln\u00e9v \u00e9rt\u00e9ket haszn\u00e1lja. Ez megj\u00f3solhatatlan viselked\u00e9st eredm\u00e9nyezhet.
+error.alias.collision.useraction=Jelentse a probl\u00e9m\u00e1t az IBM szerviznek.
+
+info.config.refresh.timeout=CWWKG0027W: Id\u0151t\u00fall\u00e9p\u00e9s a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 friss\u00edt\u00e9sekor.
+info.config.refresh.timeout.explanation=A rendszer t\u00fall\u00e9pte az id\u0151korl\u00e1tot, mik\u00f6zben arra v\u00e1rt, hogy a komponensek feldolgozz\u00e1k az \u00faj kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t.
+info.config.refresh.timeout.useraction=Semmit sem kell tennie.
+
+audit.include.being.processed=CWWKG0028A: Tartalmazott konfigur\u00e1ci\u00f3s er\u0151forr\u00e1s feldolgoz\u00e1sa: {0}
+audit.include.being.processed.explanation=A megadott er\u0151forr\u00e1s tartalm\u00e1t a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmazni fogja.
+audit.include.being.processed.useraction=Semmit sem kell tennie.
+
+schemagen.bad.reference.extension=CWWKG0029E: A(z) {0} attrib\u00fatum nem rendelkezik ibm:reference kiterjeszt\u00e9ssel, vagy a kiterjeszt\u00e9s nem ad meg pid elemet.
+schemagen.bad.reference.extension.explanation=Az ibm:reference kiterjeszt\u00e9s az ibm:type=pid form\u00e1tummal megadott attrib\u00fatumokhoz sz\u00fcks\u00e9ges.
+schemagen.bad.reference.extension.useraction=Szerkessze a vonatkoz\u00f3 metatype.xml f\u00e1jlt, \u00e9s adja hozz\u00e1, vagy jav\u00edtsa az ibm:reference kiterjeszt\u00e9st.
+
+schemagen.bad.reference.pid=CWWKG0030E: Az ibm:reference kiterjeszt\u00e9sen felsorolt {0} pid hivatkoz\u00e1s nem l\u00e9tezik.
+schemagen.bad.reference.pid.explanation=Az ibm:reference kiterjeszt\u00e9sben megadott pid hivatkoz\u00e1s nem l\u00e9tezik, vagy \u00e9rv\u00e9nytelen.
+schemagen.bad.reference.pid.useraction=Szerkessze a vonatkoz\u00f3 metatype.xml f\u00e1jlt, \u00e9s jav\u00edtsa a pid nevet az ibm:reference kiterjeszt\u00e9sben.
+
+error.unique.value.conflict=CWWKG0031E: A(z) {0} egyedi attrib\u00fatum sz\u00e1m\u00e1ra megadott {1} \u00e9rt\u00e9k m\u00e1r haszn\u00e1latban van.
+error.unique.value.conflict.explanation=A megadott attrib\u00fatum \u00e9rt\u00e9k\u00e9nek egyedinek kell lennie, de m\u00e1r haszn\u00e1latban van.
+error.unique.value.conflict.useraction=M\u00f3dos\u00edtsa az attrib\u00fatum \u00e9rt\u00e9k\u00e9t \u00fagy, hogy az egyedi legyen.
+
+warn.config.invalid.value=CWWKG0032W: V\u00e1ratlan \u00e9rt\u00e9k lett megadva a(z) [{0}] tulajdons\u00e1g sz\u00e1m\u00e1ra, \u00e9rt\u00e9k = [{1}]. A v\u00e1rt \u00e9rt\u00e9k(ek) a k\u00f6vetkez\u0151k: {2}.
+warn.config.invalid.value.explanation=A tulajdons\u00e1g sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k nem haszn\u00e1lhat\u00f3.
+warn.config.invalid.value.useraction=Jav\u00edtsa ki a tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t egy elv\u00e1rt \u00e9rt\u00e9kre.
+
+warning.pid.not.found=CWWKG0033W: A(z) [{0}] hivatkoz\u00e1s attrib\u00fatum sz\u00e1m\u00e1ra megadott [{1}] \u00e9rt\u00e9k nem tal\u00e1lhat\u00f3 a konfigur\u00e1ci\u00f3ban.
+warning.pid.not.found.explanation=A megadott \u00e9rt\u00e9knek a konfigur\u00e1ci\u00f3 elem\u00e9nek kell lennie.
+warning.pid.not.found.useraction=M\u00f3dos\u00edtsa az attrib\u00fatum \u00e9rt\u00e9k\u00e9t \u00fagy, hogy az egy \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s elemre hivatkozzon.
+
+error.targetRequired=CWWKG0034E: Meg kell adni a c\u00e9l f\u00e1jlt
+error.targetRequired.explanation=A c\u00e9l f\u00e1jlt meg kell adni a parancssorban.
+error.targetRequired.useraction=Futtassa \u00fajra a parancsot \u00e9s adjon meg egy c\u00e9l f\u00e1jlt. Az \u00e9rv\u00e9nyes param\u00e9terek list\u00e1j\u00e1t a --help parancs seg\u00edts\u00e9g\u00e9vel k\u00e9rdezheti le.
+
+error.unknownArgument=CWWKG0035E: Ismeretlen param\u00e9ter: {0}
+error.unknownArgument.explanation=A megadott param\u00e9ter nem ismerhet\u0151 fel.
+error.unknownArgument.useraction=Pr\u00f3b\u00e1lja meg \u00fajra futtatni a parancsot \u00e9rv\u00e9nyes param\u00e9terek haszn\u00e1lat\u00e1val. Az \u00e9rv\u00e9nyes param\u00e9terek list\u00e1j\u00e1t a --help parancs seg\u00edts\u00e9g\u00e9vel k\u00e9rdezheti le.
+
+error.schemaGenException=CWWKG0036E: Hiba a s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sakor: {0}
+error.schemaGenException.explanation=Hiba t\u00f6rt\u00e9nt a s\u00e9ma el\u0151\u00e1ll\u00edt\u00e1sa sor\u00e1n.
+error.schemaGenException.useraction=Vizsg\u00e1lja meg a kiv\u00e9telt
+
+error.schemaGenInvalidJarLocation=CWWKG0037E: \u00c9rv\u00e9nytelen jar hely.
+error.schemaGenInvalidJarLocation.explanation=A konfigur\u00e1ci\u00f3s jar f\u00e1jl helye helytelen.
+error.schemaGenInvalidJarLocation.useraction=Ellen\u0151rizze, hogy a konfigur\u00e1ci\u00f3s jar f\u00e1jl a wlp/lib helyen tal\u00e1lhat\u00f3.
+
+error.ocdExists=CWWKG0038E: Az objektumoszt\u00e1ly m\u00e1r regisztr\u00e1lva van a k\u00f6vetkez\u0151vel: {0}.
+error.ocdExists.explanation=Nem regisztr\u00e1lhat k\u00e9tszer egy objektumoszt\u00e1lyt.
+error.ocdExists.useraction=T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 objektumoszt\u00e1lyt.
+
+error.dsExists=CWWKG0039E: A kijel\u00f6lt oszt\u00e1ly m\u00e1r regisztr\u00e1lva van a k\u00f6vetkez\u0151vel: {0}.
+error.dsExists.explanation=Nem regisztr\u00e1lhat k\u00e9tszer egy kijel\u00f6lt oszt\u00e1lyt.
+error.dsExists.useraction=T\u00e1vol\u00edtsa el a t\u00f6bbsz\u00f6r szerepl\u0151 kijel\u00f6lt oszt\u00e1lyt.
+
+error.fileNotFound=CWWKG0040E: A(z) {0} f\u00e1jl nem tal\u00e1lhat\u00f3.
+error.fileNotFound.explanation=A kiz\u00e1rand\u00f3 PID-k list\u00e1j\u00e1t tartalmaz\u00f3 f\u00e1jl nem tal\u00e1lhat\u00f3.
+error.fileNotFound.useraction=Jav\u00edtsa ki a f\u00e1jlnevet, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra a paranccsal.
+
+error.invalidArgument=CWWKG0041E: \u00c9rv\u00e9nytelen argumentum: {0}. Az \u00e9rt\u00e9ket meg kell adni.
+error.invalidArgument.explanation=Az argumentum \u00e9rt\u00e9ke nem tal\u00e1lhat\u00f3.
+error.invalidArgument.useraction=Pr\u00f3b\u00e1lkozzon \u00fajra a paranccsal az \u00e9rt\u00e9k megad\u00e1sa ut\u00e1n.
+
+warn.parse.circular.include=CWWKG0042W: A k\u00f6rk\u00f6r\u00f6s f\u00fcgg\u0151s\u00e9gben szerepl\u0151 konfigur\u00e1ci\u00f3s er\u0151forr\u00e1sok: {0}.
+warn.parse.circular.include.explanation=Legal\u00e1bb egy konfigur\u00e1ci\u00f3tartalmaz\u00e1s k\u00f6rk\u00f6r\u00f6s f\u00fcgg\u0151s\u00e9get hoz l\u00e9tre.
+warn.parse.circular.include.useraction=T\u00e1vol\u00edtsa el a k\u00f6rk\u00f6r\u00f6s f\u00fcgg\u0151s\u00e9get okoz\u00f3 tartalmaz\u00e1sokat.
+
+info.configValidator.validator=CWWKG0043I: A haszn\u00e1latban l\u00e9v\u0151 konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nyes\u00edt\u0151 oszt\u00e1ly: {0}.
+info.configValidator.validator.explanation=A megjel\u00f6lt oszt\u00e1ly ker\u00fcl felhaszn\u00e1l\u00e1sra a konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nyes\u00edt\u00e9s\u00e9hez.
+info.configValidator.validator.useraction=Semmit sem kell tennie.
+
+fatal.configValidator.documentNotValid=CWWKG0044E: A kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1sra ker\u00fcl, mert a konfigur\u00e1ci\u00f3s dokumentum nem tartalmaz \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st: {0}.
+fatal.configValidator.documentNotValid.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentum nem tartalmaz \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st, vagy az al\u00e1\u00edr\u00e1ssal v\u00e9dett dokumentum egy r\u00e9sze m\u00f3dos\u00edt\u00e1sra ker\u00fclt. Ezt az \u00fczenetet olyan hiba\u00fczenet el\u0151zte meg, amely tov\u00e1bbi inform\u00e1ci\u00f3kkal szolg\u00e1l a dokumentum adott hib\u00e1j\u00e1val kapcsolatban.
+fatal.configValidator.documentNotValid.useraction=Jav\u00edtsa a megel\u0151z\u0151 hiba\u00fczenet \u00e1ltal azonos\u00edtott dokumentum hib\u00e1j\u00e1t.
+
+error.configValidator.parseFailed=CWWKG0045E: Egy konfigur\u00e1ci\u00f3s dokumentum nem \u00e9rtelmezhet\u0151: {0}, {1}.
+error.configValidator.parseFailed.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a megadott konfigur\u00e1ci\u00f3s dokumentum \u00e9rtelmez\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+error.configValidator.parseFailed.useraction=Jav\u00edtsa a konfigur\u00e1ci\u00f3s dokumentum kiv\u00e9telt okoz\u00f3 hib\u00e1j\u00e1t, majd \u00fajra pr\u00f3b\u00e1lkozzon meg a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1s\u00e1val.
+
+error.configValidator.unmarshalFailed=CWWKG0046E: Egy konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1s nem rendezhet\u0151 vissza: {0}, {1}.
+error.configValidator.unmarshalFailed.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a megadott konfigur\u00e1ci\u00f3s dokumentum visszarendez\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+error.configValidator.unmarshalFailed.useraction=Jav\u00edtsa a konfigur\u00e1ci\u00f3s dokumentum kiv\u00e9telt okoz\u00f3 hib\u00e1j\u00e1t, majd \u00fajra pr\u00f3b\u00e1lkozzon meg a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1s\u00e1val.
+
+error.configValidator.error=CWWKG0047E: Hiba t\u00f6rt\u00e9nt egy konfigur\u00e1ci\u00f3s dokumentum ellen\u0151rz\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n: {0}, {1}.
+error.configValidator.error.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt, mik\u00f6zben a rendszer megk\u00eds\u00e9relte ellen\u0151rizni azt, hogy a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentum tartalmaz-e \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st.
+error.configValidator.error.useraction=Jav\u00edtsa a konfigur\u00e1ci\u00f3s dokumentum kiv\u00e9telt okoz\u00f3 hib\u00e1j\u00e1t, majd \u00fajra pr\u00f3b\u00e1lkozzon meg a kiszolg\u00e1l\u00f3 ind\u00edt\u00e1s\u00e1val.
+
+error.configValidator.signatureMissing=CWWKG0048E: A konfigur\u00e1ci\u00f3s dokumentum nem tartalmaz al\u00e1\u00edr\u00e1st: {0}.
+error.configValidator.signatureMissing.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentum nem tartalmaz al\u00e1\u00edr\u00e1st.
+error.configValidator.signatureMissing.useraction=Cser\u00e9lje le a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumot a dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz\u00f3 v\u00e1ltozat\u00e1val, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.configValidator.keyInfoMissing=CWWKG0049E: Nem tal\u00e1lhat\u00f3 KeyInfo elem a konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1sban: {0}.
+error.configValidator.keyInfoMissing.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1s nem tartalmaz KeyInfo elemet.
+error.configValidator.keyInfoMissing.useraction=Cser\u00e9lje le a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumot a dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz\u00f3 v\u00e1ltozat\u00e1val, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.configValidator.signerNotAuthorized=CWWKG0050E: A konfigur\u00e1ci\u00f3s dokumentumot jogosulatlan entit\u00e1s \u00edrta al\u00e1: {0}.
+error.configValidator.signerNotAuthorized.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1s jogosulatlan tan\u00fas\u00edtv\u00e1nyt tartalmaz.
+error.configValidator.signerNotAuthorized.useraction=Cser\u00e9lje le a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumot a dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz\u00f3 v\u00e1ltozat\u00e1val, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.configValidator.x509DataMissing=CWWKG0051E: Nem tal\u00e1lhat\u00f3 X509Data elem a konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1sban: {0}.
+error.configValidator.x509DataMissing.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1s nem tartalmaz X509Data elemet.
+error.configValidator.x509DataMissing.useraction=Cser\u00e9lje le a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumot a dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz\u00f3 v\u00e1ltozat\u00e1val, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.configValidator.x509CertificateMissing=CWWKG0052E: Nem tal\u00e1lhat\u00f3 X509Certificate elem a konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1sban: {0}.
+error.configValidator.x509CertificateMissing.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1s nem tartalmaz X509Certificate elemet.
+error.configValidator.x509CertificateMissing.useraction=Cser\u00e9lje le a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumot a dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz\u00f3 v\u00e1ltozat\u00e1val, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.configValidator.protectedSectionModified=CWWKG0053E: A konfigur\u00e1ci\u00f3s dokumentum al\u00e1\u00edr\u00e1ssal v\u00e9dett r\u00e9sze m\u00f3dos\u00edt\u00e1sra ker\u00fclt: {0}.
+error.configValidator.protectedSectionModified.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 v\u00e9dett szakasz friss\u00edt\u00e9sre ker\u00fclt.
+error.configValidator.protectedSectionModified.useraction=T\u00e1vol\u00edtsa el a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentum v\u00e9dett szakasz\u00e1nak friss\u00edt\u00e9s\u00e9t, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+error.configValidator.signatureNotValid=CWWKG0054E: Egy konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1s nem \u00e9rv\u00e9nyes: {0}.
+error.configValidator.signatureNotValid.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumban l\u00e9v\u0151 al\u00e1\u00edr\u00e1s nem \u00e9rv\u00e9nyes.
+error.configValidator.signatureNotValid.useraction=Cser\u00e9lje le a megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentumot a dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz\u00f3 v\u00e1ltozat\u00e1val, majd ind\u00edtsa \u00fajra a kiszolg\u00e1l\u00f3t.
+
+info.configValidator.documentValid=CWWKG0055I: A konfigur\u00e1ci\u00f3s dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz: {0}.
+info.configValidator.documentValid.explanation=A megjel\u00f6lt konfigur\u00e1ci\u00f3s dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz.
+info.configValidator.documentValid.useraction=Semmit sem kell tennie.
+
+fatal.configValidator.dropinsEnabled=CWWKG0056E: Kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s, mert a beilleszt\u00e9sek (drop-in) enged\u00e9lyezettek.
+fatal.configValidator.dropinsEnabled.explanation=A be\u00e1gyazott kiszolg\u00e1l\u00f3 ind\u00edt\u00e1s\u00e1hoz haszn\u00e1lt konfigur\u00e1ci\u00f3s dokumentum(ok) nem tartalmaz(nak) applicationMonitor elemet, vagy olyan applicationMonitor elemet tartalmaz(nak), amely nem tiltotta a beilleszt\u00e9seket (drop-in).
+fatal.configValidator.dropinsEnabled.useraction=Adja meg a "dropinsEnabled=false" be\u00e1ll\u00edt\u00e1st az egyik konfigur\u00e1ci\u00f3s dokumentum applicationMonitor elem\u00e9ben.
+
+warn.configValidator.refreshFailed=CWWKG0057W: \u00c9rv\u00e9nytelen al\u00e1\u00edr\u00e1s miatt nem ker\u00fclt bet\u00f6lt\u00e9sre \u00faj konfigur\u00e1ci\u00f3.
+warn.configValidator.refreshFailed.explanation=Az \u00faj konfigur\u00e1ci\u00f3 dokumentum nem tartalmaz \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st, \u00edgy a konfigur\u00e1ci\u00f3 nem m\u00f3dosul.
+warn.configValidator.refreshFailed.useraction=Cser\u00e9lje le a friss\u00edtett konfigur\u00e1ci\u00f3s dokumentumot a dokumentum \u00e9rv\u00e9nyes al\u00e1\u00edr\u00e1st tartalmaz\u00f3 v\u00e1ltozat\u00e1val, majd pr\u00f3b\u00e1lkozzon meg \u00fajra a friss\u00edt\u00e9ssel.
+
+error.missing.required.attribute=CWWKG0058E: A(z) {2} egyedi azonos\u00edt\u00f3val rendelkez\u0151 {0} elem k\u00f6telez\u0151 {1} attrib\u00fatuma hi\u00e1nyzik.
+error.missing.required.attribute.explanation=A hi\u00e1nyz\u00f3 attrib\u00fatumnak a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlban vagy annak valamelyik hivatkozott konfigur\u00e1ci\u00f3s f\u00e1jlj\u00e1ban kell lennie.
+error.missing.required.attribute.useraction=Vegye fel a hi\u00e1nyz\u00f3 attrib\u00fatumot a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlba vagy annak valamelyik hivatkozott konfigur\u00e1ci\u00f3s f\u00e1jlj\u00e1ba.
+
+error.missingSuper=CWWKG0059E: A(z) {0} meg\u0151rz\u00f6tt azonoss\u00e1g nem dolgozhat\u00f3 fel, mert nem el\u00e9rhet\u0151 {1} meg\u0151rz\u00f6tt azonoss\u00e1got terjeszt ki.
+error.missingSuper.explanation=Bels\u0151 hiba t\u00f6rt\u00e9nt, mik\u00f6zben a megadott meg\u0151rz\u00f6tt azonoss\u00e1g konfigur\u00e1l\u00e1s\u00e1ra tett k\u00eds\u00e9rlet meghi\u00fasult, mert az egy el\u00e9rhetetlen meg\u0151rz\u00f6tt azonoss\u00e1got terjeszt ki.
+error.missingSuper.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a hi\u00e1nyz\u00f3 meg\u0151rz\u00f6tt azonoss\u00e1got biztos\u00edt\u00f3 \u00f6sszetev\u0151 vagy k\u00f6teg el\u00e9rhet\u0151 a fut\u00e1si k\u00f6rnyezetben. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+error.final.override=CWWKG0060E: Nem \u00e9rv\u00e9nyes a(z) {1} meg\u0151rz\u00f6tt azonoss\u00e1g {0} attrib\u00fatum\u00e1nak fel\u00fclb\u00edr\u00e1l\u00e1sa vagy \u00e1tnevez\u00e9se, mert a(z) {2} meg\u0151rz\u00f6tt azonoss\u00e1g final kateg\u00f3ri\u00e1val deklar\u00e1lja azt.
+error.final.override.explanation=Az attrib\u00fatum v\u00e9gs\u0151k\u00e9nt (final) deklar\u00e1lt. Az \u00fajrakonfigur\u00e1l\u00e1si k\u00eds\u00e9rletek figyelmen k\u00edv\u00fcl maradnak.
+error.final.override.useraction=Ne pr\u00f3b\u00e1lkozzon v\u00e9gs\u0151k\u00e9nt (final) megjel\u00f6lt attrib\u00fatum \u00fajrakonfigur\u00e1l\u00e1s\u00e1val. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+#TODO could this be renamed error.factoryOnly.extends?
+error.factoryOnly=CWWKG0061E: A(z) {0} meg\u0151rz\u00f6tt (persisted) azonoss\u00e1g nem gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g, ez\u00e9rt nem haszn\u00e1lhat\u00f3 a(z) {1} meg\u0151rz\u00f6tt azonoss\u00e1g kiterjeszt\u00e9s\u00e9re.
+error.factoryOnly.explanation=Az ibm:extends attrib\u00fatum csak gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gokra alkalmazhat\u00f3.
+error.factoryOnly.useraction=Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1ljon, vagy t\u00e1vol\u00edtsa el az ibm:extends attrib\u00fatumot az objektum\u00f6sszetev\u0151 meghat\u00e1roz\u00e1s\u00e1b\u00f3l. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.factoryOnly.extendsAlias=CWWKG0096E: A(z) {0} meg\u0151rz\u00f6tt azonoss\u00e1g nem a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g, ez\u00e9rt az ibm:extendsAlias attrib\u00fatum nem lehet a(z) {1} attrib\u00fatuma. Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el az ibm:extendsAlias attrib\u00fatumot a meg\u0151rz\u00f6tt azonoss\u00e1g meghat\u00e1roz\u00e1s\u00e1b\u00f3l.
+error.factoryOnly.extendsAlias.explanation=Az ibm:extendsAlias attrib\u00fatum csak olyan, gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gokra alkalmazhat\u00f3, amely m\u00e1sik, gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got terjeszt ki.
+error.factoryOnly.extendsAlias.useraction=Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1lja, vagy t\u00e1vol\u00edtsa el az ibm:extendsAlias attrib\u00fatumot a meg\u0151rz\u00f6tt azonoss\u00e1g meghat\u00e1roz\u00e1s\u00e1b\u00f3l.
+
+#"ibm:extends" is an xml attribute name and should not be translated
+error.superFactoryOnly=CWWKG0062E: A(z) {0} meg\u0151rz\u00f6tt (persisted) azonoss\u00e1g nem gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g, ez\u00e9rt a(z) {1} meg\u0151rz\u00f6tt azonoss\u00e1g nem terjesztheti ki azt.
+error.superFactoryOnly.explanation=Az ibm:extends attrib\u00fatum csak gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gokra alkalmazhat\u00f3.
+error.superFactoryOnly.useraction=Konfigur\u00e1lja \u00fajra a meg\u0151rz\u00f6tt azonoss\u00e1got \u00fagy, hogy gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1got haszn\u00e1ljon, vagy t\u00e1vol\u00edtsa el az ibm:extends attrib\u00fatumot az objektum\u00f6sszetev\u0151 meghat\u00e1roz\u00e1s\u00e1b\u00f3l. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.ExtendsAliasMustExtend=CWWKG0097E: A {0} meg\u0151rz\u00f6tt azonoss\u00e1g megadja a {1} egy ibm:extendsAlias attrib\u00fatum\u00e1t, ez\u00e9rt meg kell hat\u00e1roznia az ibm:extends attrib\u00fatumot.
+error.ExtendsAliasMustExtend.explanation=Amikor meghat\u00e1roz egy ibm:extendsAlias attrib\u00fatumot, akkor egy ibm:extends attrib\u00fatumot is meg kell hat\u00e1roznia.
+error.ExtendsAliasMustExtend.useraction=Adjon meg egy ibm:extends attrib\u00fatumot.
+
+#"ibm:parentPid" and "ibm:childAlias" are xml attribute names and should not be translated
+error.parentpid.and.childalias=CWWKG0098E: A {0} meg\u0151rz\u00f6tt azonoss\u00e1g megadja a(z) {2} {1} attrib\u00fatum\u00e1t, ez\u00e9rt meg kell hat\u00e1roznia a(z) {3}attrib\u00fatumot.
+error.parentpid.and.childalias.explanation=A metat\u00edpus azt jelzi, hogy az els\u0151 be\u00e1gyazott ut\u00f3delem r\u00e9szlegesen lett megadva. Az els\u0151 be\u00e1gyazott ut\u00f3delemeknek meg kell hat\u00e1rozniuk az ibm:parentPid \u00e9s az ibm:childAlias attrib\u00fatumokat is.
+error.parentpid.and.childalias.useraction=Ha a metat\u00edpus egy els\u0151 be\u00e1gyazott ut\u00f3delemre vonatkozik, adja meg a hi\u00e1nyz\u00f3 attrib\u00fatumot. M\u00e1s esetben t\u00e1vol\u00edtsa el a megadott attrib\u00fatumot. 
+
+#"ibm:rename" is an xml attribute name and should not be translated
+schemagen.rename.attribute.missing=CWWKG0063E: Nem nevezhet\u0151 \u00e1t a(z) {1} attrib\u00fatummeghat\u00e1roz\u00e1s, ahogyan a(z) {2} ibm:rename attrib\u00fatum megadja a(z) {0} meg\u0151rz\u00f6tt azonoss\u00e1gon bel\u00fcl.
+schemagen.rename.attribute.missing.explanation=Egy kiterjeszt\u0151 metat\u00edpus attrib\u00fatum nem l\u00e9tez\u0151 attrib\u00fatumot k\u00eds\u00e9rel meg \u00e1tnevezni.
+schemagen.rename.attribute.missing.useraction=Jav\u00edtsa az \u00e1tnevez\u00e9si kiterjeszt\u00e9st, hogy megl\u00e9v\u0151 attrib\u00fatumot hat\u00e1rozzon meg. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+schemagen.invalid.type.override=CWWKG0064E: Az attrib\u00fatumt\u00edpus fel\u00fclb\u00edr\u00e1l\u00e1sa \u00e9rv\u00e9nytelen a(z) {0} attrib\u00fatum \u00e1ltal a(z) {1} metat\u00edpusban. Helyette az eredeti {2} t\u00edpus ker\u00fcl felhaszn\u00e1l\u00e1sra.
+schemagen.invalid.type.override.explanation=Egy attrib\u00fatum megk\u00eds\u00e9relte fel\u00fclb\u00edr\u00e1lni egy kiterjesztett attrib\u00fatum t\u00edpus\u00e1t, de a kiterjeszt\u00e9si attrib\u00fatumok nem m\u00f3dos\u00edthatj\u00e1k az attrib\u00fatumt\u00edpusokat.
+schemagen.invalid.type.override.useraction=Az attrib\u00fatumt\u00edpus automatikusan az eredeti t\u00edpusra lesz \u00e1ll\u00edtva. A hiba \u00fajb\u00f3li el\u0151fordul\u00e1s\u00e1nak elker\u00fcl\u00e9se \u00e9rdek\u00e9ben jav\u00edtsa ki az attrib\u00fatumhoz tartoz\u00f3 t\u00edpus \u00e9rt\u00e9ket az \u00e1tnevez\u00e9s b\u0151v\u00edtm\u00e9nnyel. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+schemagen.non.factorypid.extension=CWWKG0065E: A(z) {0} nem gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g pr\u00f3b\u00e1lkozik egy m\u00e1sik metat\u00edpus kiterjeszt\u00e9s\u00e9vel.
+schemagen.non.factorypid.extension.explanation=Nem gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1g pr\u00f3b\u00e1lkozik egy m\u00e1sik metat\u00edpus kiterjeszt\u00e9s\u00e9vel. Csak a gy\u00e1r meg\u0151rz\u00f6tt azonoss\u00e1gok haszn\u00e1lhatnak kiterjeszt\u00e9seket.
+schemagen.non.factorypid.extension.useraction=M\u00f3dos\u00edtsa a metat\u00edpust, hogy gy\u00e1r legyen, vagy t\u00e1vol\u00edtsa el a kiterjeszt\u00e9seket a metat\u00edpus meghat\u00e1roz\u00e1s\u00e1b\u00f3l. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+schemagen.invalid.extension.pid=CWWKG0066E: A(z) {0} metat\u00edpus meg\u0151rz\u00f6tt azonoss\u00e1g a(z) {1} nem l\u00e9tez\u0151 meg\u0151rz\u00f6tt azonoss\u00e1g kiterjeszt\u00e9s\u00e9vel pr\u00f3b\u00e1lkozik.
+schemagen.invalid.extension.pid.explanation=A metat\u00edpus egy m\u00e1sik metat\u00edpus kiterjeszt\u00e9s\u00e9vel pr\u00f3b\u00e1lkozik, ami nem l\u00e9tezik.
+schemagen.invalid.extension.pid.useraction=M\u00f3dos\u00edtsa a metat\u00edpus kiterjeszt\u00e9st \u00fagy, hogy megl\u00e9v\u0151 meg\u0151rz\u00f6tt azonoss\u00e1got hat\u00e1rozzon meg. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.rename.attribute.missing=CWWKG0067E: Nem nevezhet\u0151 \u00e1t a(z) {1} attrib\u00fatummeghat\u00e1roz\u00e1s, amelyet a(z) {2} ibm:rename attrib\u00fatum ad meg a(z) {0} meg\u0151rz\u00f6tt azonoss\u00e1gon bel\u00fcl.
+error.rename.attribute.missing.explanation=Egy kiterjeszt\u0151 metat\u00edpus attrib\u00fatum nem l\u00e9tez\u0151 attrib\u00fatumot k\u00eds\u00e9rel meg \u00e1tnevezni.
+error.rename.attribute.missing.useraction=Jav\u00edtsa az \u00e1tnevez\u00e9si kiterjeszt\u00e9sben azonos\u00edtott attrib\u00fatumnevet, hogy az megl\u00e9v\u0151 attrib\u00fatumot hat\u00e1rozzon meg. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+#"ibm:rename" is an xml attribute name and should not be translated
+error.conflicting.rename.attribute=CWWKG0068E: Nem nevezhet\u0151 \u00e1t a(z) {0} attrib\u00fatum {1} \u00e9rt\u00e9kre a(z) {2} meg\u0151rz\u00f6tt azonoss\u00e1gon bel\u00fcl, mert ezt az attrib\u00fatumot m\u00e1r \u00e1tnevezte egy kiterjesztett metat\u00edpus.
+error.conflicting.rename.attribute.explanation=Az aktu\u00e1lis metat\u00edpus olyan ibm:rename attrib\u00fatummal rendelkezik, ami egy kiterjesztett metat\u00edpus \u00e1ltal m\u00e1r \u00e1tnevezett attrib\u00fatummeghat\u00e1roz\u00e1st azonos\u00edt.
+error.conflicting.rename.attribute.useraction=M\u00f3dos\u00edtsa az ibm:rename attrib\u00fatumot, hogy az \u00e9rv\u00e9nyes attrib\u00fatummeghat\u00e1roz\u00e1s azonos\u00edt\u00f3t adjon meg. Ez egy bels\u0151 hiba. K\u00f6vesse a norm\u00e1l WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+schemagen.unresolved.attrib.desc=CWWKG0069W: A(z) {2} k\u00f6tegben l\u00e9v\u0151 {1} objektumoszt\u00e1ly meghat\u00e1roz\u00e1s {0} attrib\u00fatuma nem \u00e9rtelmezett attrib\u00fatumle\u00edr\u00e1st tartalmaz.
+schemagen.unresolved.attrib.desc.explanation=A metat\u00edpusban l\u00e9v\u0151 attrib\u00fatum rendelkezik honos\u00edtott le\u00edr\u00e1ssal, de az \u00fczenet nem \u00e9rtelmezhet\u0151. Ennek eredm\u00e9nyek\u00e9pp az attrib\u00fatum nem fog megjelenni az \u00fczenetben.
+schemagen.unresolved.attrib.desc.useraction=Haszn\u00e1ljon nem-honos\u00edtott metat\u00edpus le\u00edr\u00e1st, vagy gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a honos\u00edt\u00e1si f\u00e1jl tartalmazza a honos\u00edtott le\u00edr\u00e1st.
+
+schemagen.unresolved.attrib.name=CWWKG0070W: A(z) {2} k\u00f6tegben l\u00e9v\u0151 {1} objektumoszt\u00e1ly meghat\u00e1roz\u00e1s {0} attrib\u00fatuma nem \u00e9rtelmezett attrib\u00fatumnevet tartalmaz.
+schemagen.unresolved.attrib.name.explanation=A metat\u00edpusban l\u00e9v\u0151 attrib\u00fatum rendelkezik honos\u00edtott n\u00e9vvel, de az \u00fczenet nem \u00e9rtelmezhet\u0151.
+schemagen.unresolved.attrib.name.useraction=Haszn\u00e1ljon nem-honos\u00edtott metat\u00edpus nevet, vagy gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a honos\u00edt\u00e1si f\u00e1jl tartalmazza a honos\u00edtott nevet.
+
+schemagen.no.attrib.desc=CWWKG0071W: A(z) {2} k\u00f6tegben l\u00e9v\u0151 {1} objektumoszt\u00e1ly meghat\u00e1roz\u00e1s {0} attrib\u00fatuma nem tartalmaz attrib\u00fatumle\u00edr\u00e1st.
+schemagen.no.attrib.desc.explanation=A metat\u00edpus egyik attrib\u00fatum\u00e1b\u00f3l hi\u00e1nyzik egy le\u00edr\u00e1s.
+schemagen.no.attrib.desc.useraction=Adjon meg egy le\u00edr\u00e1st a metat\u00edpus attrib\u00fatum sz\u00e1m\u00e1ra.
+
+schemagen.no.attrib.name=CWWKG0072W: A(z) {2} k\u00f6tegben l\u00e9v\u0151 {1} objektumoszt\u00e1ly meghat\u00e1roz\u00e1s {0} attrib\u00fatuma nem tartalmaz attrib\u00fatumnevet.
+schemagen.no.attrib.name.explanation=A metat\u00edpus egyik attrib\u00fatum\u00e1b\u00f3l hi\u00e1nyzik egy n\u00e9v.
+schemagen.no.attrib.name.useraction=Adjon meg egy nevet a metat\u00edpus attrib\u00fatum sz\u00e1m\u00e1ra.
+
+missing.metatype.file=CWWKG0073W: A metat\u00edpus honos\u00edt\u00e1si f\u00e1jl nem tal\u00e1lhat\u00f3 a(z) {0} k\u00f6tegben.
+missing.metatype.file.explanation=A megadott jar f\u00e1jl nem tartalmazza a sz\u00fcks\u00e9ges metat\u00edpus honos\u00edt\u00e1si f\u00e1jlokat.
+missing.metatype.file.useraction=Keresse meg a k\u00f6teg szerz\u0151j\u00e9t a sz\u00fcks\u00e9ges honos\u00edt\u00e1si f\u00e1jlokat tartalmaz\u00f3 k\u00f6teg beszerz\u00e9se \u00e9rdek\u00e9ben.
+
+error.config.update.exception=CWWKG0074E: A(z) {0} konfigur\u00e1ci\u00f3ja nem friss\u00edthet\u0151 a(z) {2} egyedi azonos\u00edt\u00f3val, a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {1}.
+error.config.update.exception.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9re tett k\u00eds\u00e9rlet sor\u00e1n.
+error.config.update.exception.useraction=Keressen a konfigur\u00e1ci\u00f3ban hib\u00e1kat, majd pr\u00f3b\u00e1lkozzon meg \u00fajra a friss\u00edt\u00e9ssel.
+
+error.attribute.validation.exception=CWWKG0075E: A(z) {2} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a(z) {0} konfigur\u00e1ci\u00f3s elem {1} attrib\u00fatuma sz\u00e1m\u00e1ra. Az \u00e9rv\u00e9nyes\u00edt\u00e9si \u00fczenet: {3}.
+error.attribute.validation.exception.explanation=Az attrib\u00fatum \u00e9rv\u00e9nyes\u00edt\u00e9se meghi\u00fasult.
+error.attribute.validation.exception.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t, hogy az attrib\u00fatum \u00e9rv\u00e9nyes \u00e9rt\u00e9k\u00e9t haszn\u00e1lja.
+
+warning.old.config.still.in.use=CWWKG0076W: A(z) {1} azonos\u00edt\u00f3val rendelkez\u0151 {0} el\u0151z\u0151 konfigur\u00e1ci\u00f3ja m\u00e9g haszn\u00e1latban van.
+warning.old.config.still.in.use.explanation=A konfigur\u00e1ci\u00f3s elem friss\u00edt\u00e9se meghi\u00fasult, de egy el\u0151z\u0151 \u00e9rt\u00e9k tov\u00e1bbra is haszn\u00e1latban van.
+warning.old.config.still.in.use.useraction=Semmit sem kell tennie.
+
+error.specify.parentpid=CWWKG0077E: A(z) {0} metat\u00edpus meghat\u00e1roz\u00e1sa egy ut\u00f3d \u00e1lnevet ad meg, de nem ad meg sz\u00fcl\u0151t.
+error.specify.parentpid.explanation=Ez bels\u0151 hiba, ahol a childAlias attrib\u00fatum csak akkor \u00e9rv\u00e9nyes, ha a parentPID attrib\u00fatum szint\u00e9n meg van adva.
+error.specify.parentpid.useraction=Adja meg a parentPID attrib\u00fatumot a metat\u00edpus meghat\u00e1roz\u00e1sban. Ez egy bels\u0151 hiba. K\u00f6vesse a WebSphere hibafelder\u00edt\u00e9si elj\u00e1r\u00e1sokat.
+
+error.prod.ext.features.not.found=CWWKG0078E: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny nem tartalmaz \u00f6sszetev\u0151t.
+error.prod.ext.features.not.found.explanation=A megadott term\u00e9kb\u0151v\u00edtm\u00e9nyhez tartoz\u00f3 \u00f6sszetev\u0151 le\u00edr\u00f3f\u00e1jlok nem tal\u00e1lhat\u00f3k.
+error.prod.ext.features.not.found.useraction=Ellen\u0151rizze, hogy az \u00f6sszetev\u0151 le\u00edr\u00f3f\u00e1jlok hely\u00e9\u00fcl szolg\u00e1l\u00f3 k\u00f6nyvt\u00e1r \u00e9rv\u00e9nyes-e.
+
+error.prod.ext.not.found=CWWKG0079E: A(z) {0} term\u00e9kb\u0151v\u00edtm\u00e9ny nem tal\u00e1lhat\u00f3 a k\u00f6vetkez\u0151 helyen: {1}.
+error.prod.ext.not.found.explanation=A term\u00e9kb\u0151v\u00edtm\u00e9ny nem tal\u00e1lhat\u00f3 az eml\u00edtett helyen.
+error.prod.ext.not.found.useraction=Ellen\u0151rizze, hogy a term\u00e9ktelep\u00edt\u00e9s helye helyesen van-e megadva a term\u00e9ktelep\u00edt\u00e9s tulajdons\u00e1gf\u00e1jlj\u00e1ban.
+
+error.prod.ext.not.defined=CWWKG0080E: A(z) {0} nev\u0171 term\u00e9kb\u0151v\u00edtm\u00e9ny nem l\u00e9tezik.
+error.prod.ext.not.defined.explanation=A megadott n\u00e9vvel nem l\u00e9tezik term\u00e9kb\u0151v\u00edtm\u00e9ny.
+error.prod.ext.not.defined.useraction=Ellen\u0151rizze, hogy a megadott term\u00e9kb\u0151v\u00edtm\u00e9ny n\u00e9v \u00e9rv\u00e9nyes-e.
+
+error.invalid.boolean.attribute=CWWKG0081E: A(z) {1} logikai attrib\u00fatum {0} \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: "true" \u00e9s "false". Az alap\u00e9rtelmezett {2} \u00e9rt\u00e9k ker\u00fcl \
+felhaszn\u00e1l\u00e1sra.
+error.invalid.boolean.attribute.explanation=Az attrib\u00fatum \u00e9rv\u00e9nyes\u00edt\u00e9se meghi\u00fasult.
+error.invalid.boolean.attribute.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t, hogy az attrib\u00fatum \u00e9rv\u00e9nyes \u00e9rt\u00e9k\u00e9t haszn\u00e1lja.
+
+warning.invalid.boolean.attribute=CWWKG0082W: A(z) {1} logikai attrib\u00fatum {0} \u00e9rt\u00e9k\u00e9t a rendszer "false" \u00e9rt\u00e9kk\u00e9nt \u00e9rtelmezi.
+warning.invalid.boolean.attribute.explanation=Az attrib\u00fatum \u00e9rv\u00e9nyes\u00edt\u00e9se meghi\u00fasult.
+warning.invalid.boolean.attribute.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t, hogy az attrib\u00fatum \u00e9rv\u00e9nyes \u00e9rt\u00e9k\u00e9t haszn\u00e1lja.
+
+warn.config.invalid.using.default.value=CWWKG0083W: \u00c9rv\u00e9nyes\u00edt\u00e9si hiba t\u00f6rt\u00e9nt a(z) [{0}] tulajdons\u00e1g (\u00e9rt\u00e9k = [{1}]) feldolgoz\u00e1sa k\u00f6zben. Haszn\u00e1latban l\u00e9v\u0151 alap\u00e9rtelmezett \u00e9rt\u00e9k: {2}. 
+warn.config.invalid.using.default.value.explanation=A tulajdons\u00e1g megadott \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen \u00e9s nem haszn\u00e1lhat\u00f3.  Az alap\u00e9rtelmezett \u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra helyette.
+warn.config.invalid.using.default.value.useraction=A rendszer az alap\u00e9rtelmezett \u00e9rt\u00e9ket fogja felhaszn\u00e1lni, vagy kijav\u00edthatja a tulajdons\u00e1g \u00e9rt\u00e9k\u00e9t \u00e9rv\u00e9nyes \u00e9rt\u00e9kre.
+
+warn.cannot.resolve.optional.include=CWWKG0084W: Az elhagyhat\u00f3 tartalmaz\u00e1si konfigur\u00e1ci\u00f3s f\u00e1jl nem oldhat\u00f3 fel: {0}
+warn.cannot.resolve.optional.include.explanation=A megadott konfigur\u00e1ci\u00f3s f\u00e1jl \u00e9rv\u00e9nytelen. Ez a hiba \u00e1ltal\u00e1ban azt jelzi, hogy rosszul form\u00e1zott az URL c\u00edm, vagy ismeretlen protokollt tartalmaz.
+warn.cannot.resolve.optional.include.useraction=Ellen\u0151rizze, hogy az URL \u00e9rv\u00e9nyes-e \u00e9s hogy k\u00f6zismert protokollt tartalmaz-e (pl. file, http vagy https).
+
+warning.unexpected.server.element=CWWKG0085W: A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s dokumentum be\u00e1gyazott kiszolg\u00e1l\u00f3 elemet tartalmaz. Az egym\u00e1sba \u00e1gyazott konfigur\u00e1ci\u00f3 figyelmen k\u00edv\u00fcl marad.
+warning.unexpected.server.element.explanation=Az XML konfigur\u00e1ci\u00f3s dokumentumban a fels\u0151 szint\u0171 kiszolg\u00e1l\u00f3 elembe kiszolg\u00e1l\u00f3 elem van be\u00e1gyazva. A be\u00e1gyazott kiszolg\u00e1l\u00f3n bel\u00fcli tartalom figyelmen k\u00edv\u00fcl marad. 
+warning.unexpected.server.element.useraction=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3s dokumentum\u00e1nak friss\u00edt\u00e9s\u00e9vel t\u00e1vol\u00edtsa el az egym\u00e1sba \u00e1gyazott kiszolg\u00e1l\u00f3elemeket.
+
+warn.bad.reference.filter=CWWKG0086W: A(z) {0} hivatkoz\u00e1ssz\u0171r\u0151 \u00e9rv\u00e9nytelen.
+warn.bad.reference.filter.explanation=Ez egy bels\u0151 hiba. Az attrib\u00fatummeghat\u00e1roz\u00e1sban megadott hivatkoz\u00e1ssz\u0171r\u0151 szintaxisa \u00e9rv\u00e9nytelen. 
+warn.bad.reference.filter.useraction=A metat\u00edpus-meghat\u00e1roz\u00e1s szerz\u0151j\u00e9nek \u00e9rv\u00e9nytelen hivatkoz\u00e1ssz\u0171r\u0151t kell megadnia. Ez egy bels\u0151 hiba.
+
+warning.multiple.matches=CWWKG0087W: A(z) [{0}] hivatkoz\u00e1s attrib\u00fatum sz\u00e1m\u00e1ra megadott [{1}] \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes, mert t\u00f6bb konfigur\u00e1ci\u00f3val is megegyezik.
+warning.multiple.matches.explanation=A konfigur\u00e1ci\u00f3ban t\u00f6bb elem ugyanazt az azonos\u00edt\u00f3 attrib\u00fatumot haszn\u00e1lja. A kiszolg\u00e1l\u00f3 nem tudja meghat\u00e1rozni, hogy melyik elemet kell megfeleltetni a hivatkoz\u00e1snak.
+warning.multiple.matches.useraction=Friss\u00edtse a konfigur\u00e1ci\u00f3t, hogy mindegyik elem k\u00fcl\u00f6nb\u00f6z\u0151 azonos\u00edt\u00f3 attrib\u00fatumot haszn\u00e1ljon. 
+
+error.breaking.include.conflict=CWWKG0088E: A(z) {1} konfigur\u00e1ci\u00f3s elem k\u00e9t k\u00fcl\u00f6nb\u00f6z\u0151 konfigur\u00e1ci\u00f3s er\u0151forr\u00e1sban van megadva: {0} \u00e9s {2}.
+error.breaking.include.conflict.explanation=A tartalmazott konfigur\u00e1ci\u00f3s er\u0151forr\u00e1s \u00fagy lett be\u00e1ll\u00edtva, hogy a konfigur\u00e1ci\u00f3s elemekben l\u00e9v\u0151 \u00fctk\u00f6z\u00e9sek felold\u00e1s\u00e1ra vagy a kiszolg\u00e1l\u00f3 le\u00e1ll\u00edt\u00e1s\u00e1val, vagy pedig a fut\u00e1si konfigur\u00e1ci\u00f3 friss\u00edt\u00e9s\u00e9nek megg\u00e1tl\u00e1s\u00e1val ker\u00fcl sor.
+error.breaking.include.conflict.useraction=Vagy friss\u00edtse a tartalmazott konfigur\u00e1ci\u00f3s er\u0151forr\u00e1st, hogy elt\u00e1vol\u00edtsa az \u00fctk\u00f6z\u0151 elemet, vagy pedig m\u00f3dos\u00edtsa az \u00fctk\u00f6z\u00e9sfelold\u00e1si viselked\u00e9st \u00f6sszevon\u00e1sra, cser\u00e9re vagy figyelmen k\u00edv\u00fcl hagy\u00e1sra, a megszak\u00edt\u00e1s helyett.
+ 
+error.include.location.not.specified=CWWKG0089E: A location attrib\u00fatumot a(z) {1} er\u0151forr\u00e1s {0}. sor\u00e1ban megadott include konfigur\u00e1ci\u00f3s elemen kell megadni
+error.include.location.not.specified.explanation=Egy include konfigur\u00e1ci\u00f3s elem meg van adva a kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban, de az elem nem adja meg a helyet.
+error.include.location.not.specified.useraction=Adja hozz\u00e1 a location attrib\u00fatumot a konfigur\u00e1ci\u00f3s elemhez.
+ 
+error.cannot.read.location=CWWKG0090E: A(z) {0} konfigur\u00e1ci\u00f3s er\u0151forr\u00e1s nem l\u00e9tezik vagy nem olvashat\u00f3. 
+error.cannot.read.location.explanation=Az er\u0151forr\u00e1s a megadott helyen nem \u00e9rhet\u0151 el.
+error.cannot.read.location.useraction=Ellen\u0151rizze, hogy a location attrib\u00fatum helyesen van-e megadva, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az er\u0151forr\u00e1s el\u00e9rhet\u0151.
+
+error.variable.name.missing=CWWKG0091E: Egy name attrib\u00fatumot meg kell adni a variable elemhez a(z) {1} er\u0151forr\u00e1s {0}. sor\u00e1ban.
+error.variable.name.missing.explanation=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 olyan variable konfigur\u00e1ci\u00f3s elemet tartalmaz, amely nem rendelkezik name attrib\u00fatummal.
+error.variable.name.missing.useraction=Adjon hozz\u00e1 egy name attrib\u00fatumot a variable elemhez.
+
+error.variable.value.missing=CWWKG0092E: Egy value attrib\u00fatumot meg kell adni a variable elemhez a(z) {1} er\u0151forr\u00e1s {0}. sor\u00e1ban.
+error.variable.value.missing.explanation=A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3 olyan variable konfigur\u00e1ci\u00f3s elemet tartalmaz, amely nem rendelkezik value attrib\u00fatummal.
+error.variable.value.missing.useraction=Adjon hozz\u00e1 egy value attrib\u00fatumot a variable elemhez.
+
+audit.dropin.being.processed=CWWKG0093A: Konfigur\u00e1ci\u00f3s hozz\u00e1ad\u00e1sok er\u0151forr\u00e1s feldolgoz\u00e1sa: {0}
+audit.dropin.being.processed.explanation=A megadott er\u0151forr\u00e1s tartalm\u00e1t a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 tartalmazni fogja.
+audit.dropin.being.processed.useraction=Semmit sem kell tennie.
+
+warning.unrecognized.merge.behavior=CWWKG0094W: Az include konfigur\u00e1ci\u00f3s elemben az \u00f6sszef\u00e9s\u00fcl\u00e9si viselked\u00e9shez megadott {0} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen. A rendszer a merge alap\u00e9rtelmezett \u00e9rt\u00e9ket fogja haszn\u00e1lni.
+warning.unrecognized.merge.behavior.explanation=Az include konfigur\u00e1ci\u00f3s elem olyan \u00e9rt\u00e9ket ad meg, amely nem \u00e9rv\u00e9nyes.  Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek a k\u00f6vetkez\u0151k:  merge, replace \u00e9s ignore.
+warning.unrecognized.merge.behavior.useraction=A kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3t friss\u00edtve jav\u00edtsa az \u00f6sszef\u00e9s\u00fcl\u00e9si viselked\u00e9st.
+
+error.missing.required.attribute.singleton=CWWKG0095E: A(z) {0} elem k\u00f6telez\u0151 {1} attrib\u00fatuma hi\u00e1nyzik.
+error.missing.required.attribute.singleton.explanation=A hi\u00e1nyz\u00f3 attrib\u00fatumnak a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlban vagy annak valamelyik hivatkozott konfigur\u00e1ci\u00f3s f\u00e1jlj\u00e1ban kell lennie.
+error.missing.required.attribute.singleton.useraction=Vegye fel a hi\u00e1nyz\u00f3 attrib\u00fatumot a server.xml konfigur\u00e1ci\u00f3s f\u00e1jlba vagy annak valamelyik hivatkozott konfigur\u00e1ci\u00f3s f\u00e1jlj\u00e1ba.
+
+#"ibm:extendsAlias" is an xml attribute name and should not be translated
+error.extendsAlias.collision=CWWKG0100E: A(z) {2} ibm:extendsAlias attrib\u00fatum t\u00f6bbsz\u00f6r szerepel egyetlen extends hierarchi\u00e1ban. A PID-k {0} \u00e9s {1}. Minden ibm: extendsAlias attrib\u00fatum egyedi a lesz\u00e1rmazotti hierarchi\u00e1ban.
+error.extendsAlias.collision.explanation=Minden ibm:extendsAlias attrib\u00fatumnak egyedinek kell lennie az egyetlen lesz\u00e1rmazottat tartalmaz\u00f3 hierarchi\u00e1ban.
+error.extendsAlias.collision.useraction=Tegyen minden ibm:extendsAlias attrib\u00fatumot egyediv\u00e9 a lesz\u00e1rmazotti hierarchi\u00e1ban.
+
+# Non-TR message
+error.invalidOCDRef=HIBA: A(z) [{0}] metat\u00edpus PID nem l\u00e9tez\u0151 objektumoszt\u00e1ly meghat\u00e1roz\u00e1s azonos\u00edt\u00f3t ([{1}]) ad meg.

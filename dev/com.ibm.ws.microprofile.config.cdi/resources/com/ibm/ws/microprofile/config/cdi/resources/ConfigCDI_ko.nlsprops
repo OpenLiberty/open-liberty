@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: \uc0bd\uc785\ub420 \ud2b9\uc131\uc758 \uc720\ud615\uc744 \ud310\ubcc4\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc0bd\uc785 \uc704\uce58\uc758 \uc720\ud615\uc774 "{0}"\uc785\ub2c8\ub2e4.
+unable.to.determine.injection.type.CWMCG5001E.explanation=@ConfigProperty \uaddc\uc815\uc790\ub85c \uc5b4\ub178\ud14c\uc774\uc158\uc774 \uc9c0\uc815\ub41c \uc0bd\uc785 \uc704\uce58\uc758 \uc720\ud615\uc774 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+unable.to.determine.injection.type.CWMCG5001E.useraction=\uc0bd\uc785 \uc704\uce58\uc5d0 \uc0bd\uc785\ud560 \ud2b9\uc131\uc5d0 \uc62c\ubc14\ub978 \uc720\ud615\uc774 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: \uc0dd\uc131\uc790 \ubc0f \uba54\uc18c\ub4dc \uad6c\uc131 \ud2b9\uc131 \uc0bd\uc785\uc5d0 \ud2b9\uc131 \uc774\ub984\uc744 \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4.
+unable.to.determine.injection.name.CWMCG5002E.explanation=\uc0dd\uc131\uc790 \ubc0f \uba54\uc18c\ub4dc \ub9e4\uac1c\ubcc0\uc218\uc5d0 \ub300\ud55c \uae30\ubcf8 \ud2b9\uc131 \uc774\ub984\uc744 \ud30c\uc0dd\uc2dc\ud0ac \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. @ConfigProperty \uaddc\uc815\uc790\uc5d0 \uc62c\ubc14\ub978 \ud2b9\uc131 \uc774\ub984\uc744 \uc804\ub2ec\ud574\uc57c \ud569\ub2c8\ub2e4. 
+unable.to.determine.injection.name.CWMCG5002E.useraction=@ConfigProperty \uaddc\uc815\uc790\ub97c \uc0ac\uc6a9\ud558\uc5ec \uc62c\ubc14\ub978 \ud2b9\uc131 \uc774\ub984\uc744 \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: {0} InjectionPoint \uc885\uc18d \ud56d\ubaa9\uc774 \ubd84\uc11d\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc624\ub958:  {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=\uc0bd\uc785\ub41c \uad6c\uc131 \ud2b9\uc131\uc774 \ubd84\uc11d\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774\ub984 \uc9c0\uc815\ub41c \ud2b9\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uac70\ub098 \ud544\uc218 \uc720\ud615\uc5d0 \ub300\ud55c \ubcc0\ud658\uae30\ub97c \ubd84\uc11d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+unable.to.resolve.injection.point.CWMCG5003E.useraction=\uc11c\ubc84 \uba54\uc2dc\uc9c0 \ubc0f ffdc \ub85c\uadf8\ub97c \uac80\uc0ac\ud558\uc5ec \uc6d0\uc778\uc744 \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624. \ud2b9\uc131\uc774 \uad6c\uc131 \uc18c\uc2a4 \uc911 \ud558\ub098\uc5d0 \uc874\uc7ac\ud558\uace0 \ud544\uc218 \ubcc0\ud658\uae30\uac00 \uad6c\uc131\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: "{0}" \uad6c\uc131 \ud2b9\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+property.not.found.CWMCG5004E.explanation=\uad6c\uc131\ub41c \uc18c\uc2a4\uc5d0\uc11c \uc774\ub984 \uc9c0\uc815\ub41c \ud2b9\uc131\uc744 \ucc3e\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. 
+property.not.found.CWMCG5004E.useraction=\ud2b9\uc131\uc774 \uad6c\uc131 \uc18c\uc2a4 \uc911 \ud558\ub098\uc5d0 \uc874\uc7ac\ud558\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: \uad6c\uc131 API \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}.
+temporary.CWMCG5999E.explanation=\uc77c\ubc18 \uc870\uc791\uc744 \ubc29\ud574\ud558\ub294 \uad6c\uc131 API \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+temporary.CWMCG5999E.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
+
+

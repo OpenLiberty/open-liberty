@@ -1,0 +1,397 @@
+###############################################################################
+# Copyright (c) 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#  10-22-01  ihodges               Creation
+#  10-24-01  irobins   113516      Added ERR_BEGIN_LTC_ACT
+#  27/02/02  gareth  LIDB1436.01.1 Use new RAS format
+#  14-03-02 amulholl    121351     Add message def ERR_DEPLOY
+#  25-04-02 beavenj    126204      Add message defs ERR_DEPLOY_...
+#  27-05-02 dmatthew   130828      Add message defs for cleanup failures
+#  23-08-02 irobins    143408      Use common messages
+#  17-06-03 ihodges    151542      New message ERR_BEGIN_GLOBAL_TX
+#  02-02-04 irobins    165735      Update explanation text
+#  01-06-04 dmatthew   207915      Change errors to warnings for unresolved
+#  26-02-07 awilkins   422999      Message review: updates to useraction and explanation
+#  11-02-08 mallam     496337      PII additions
+#  29-02-08 johawkes   501807      Style changes
+#-----------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/transaction.impl/src/com/ibm/ws/LocalTransaction/resources/LocalTransactionMessages.nlsprops
+#COMPONENTPREFIX WLTC
+#COMPONENTNAMEFOR WLTC WebSphere Transaction Monitor
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+#-----------------------------------------------------------------------
+ERR_INT_ERROR=WLTC0001E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny w metodzie {0} w klasie {1}. Dane \u015bledzenia stosu wyj\u0105tku: {2}.
+ERR_INT_ERROR.explanation=CMSG0001
+ERR_INT_ERROR.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_TX_GLB_ACT=WLTC0002E: Nie mo\u017cna rozpocz\u0105\u0107 operacji \
+LocalTransactionContainment, poniewa\u017c aktywna jest transakcja globalna.
+ERR_BEGIN_TX_GLB_ACT.explanation=Nast\u0105pi\u0142a niedozwolona pr\u00f3ba uruchomienia transakcji lokalnej, gdy aktywna jest transakcja globalna.
+ERR_BEGIN_TX_GLB_ACT.useraction=Przed wykonaniem pracy w transakcji lokalnej sprawd\u017a, czy zosta\u0142y zako\u0144czone wszystkie transakcje globalne.
+
+#-----------------------------------------------------------------------
+ERR_RESUME_TX_GLB_ACT=WLTC0003E: Nie mo\u017cna wznowi\u0107 operacji \
+LocalTransactionContainment, poniewa\u017c aktywna jest transakcja globalna.
+ERR_RESUME_TX_GLB_ACT.explanation=Kontener nie mo\u017ce wznowi\u0107 operacji LocalTransactionContainment, poniewa\u017c aktualnie aktywna jest transakcja globalna.
+ERR_RESUME_TX_GLB_ACT.useraction=Przed wznowieniem operacji LocalTransactionContainment sprawd\u017a, czy wszystkie transakcje globalne zosta\u0142y zako\u0144czone lub zawieszone.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_GLB_ACT=WLTC0004E: Nie mo\u017cna zarejestrowa\u0107 zasobu transakcji \
+lokalnej, poniewa\u017c aktywna jest transakcja globalna.
+ERR_ENLIST_TX_GLB_ACT.explanation=Nie mo\u017cna u\u017cy\u0107 po\u0142\u0105czenia transakcji lokalnej, poniewa\u017c obecnie aktywna jest transakcja globalna.
+ERR_ENLIST_TX_GLB_ACT.useraction=Przed wykonaniem pracy w transakcji lokalnej sprawd\u017a, czy zosta\u0142y zako\u0144czone wszystkie transakcje globalne.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_TX_CLEANUP=WLTC0005E: Nie mo\u017cna zarejestrowa\u0107 zasobu. Parametr resolution-control transakcji lokalnej ma warto\u015b\u0107 Application, dlatego zasoby mog\u0105 by\u0107 rejestrowane tylko na potrzeby procedury czyszcz\u0105cej.
+ERR_ENLIST_TX_CLEANUP.explanation=Kontener podj\u0105\u0142 pr\u00f3b\u0119 zarejestrowania zasobu, podczas gdy parametr resolution-control nie ma warto\u015bci ContainerAtBoundary.
+ERR_ENLIST_TX_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_LTC_COMPLETE=WLTC0006E: Nie mo\u017cna zarejestrowa\u0107 zasobu. Operacja LocalTransactionContainment jest ko\u0144czona lub ju\u017c zosta\u0142a zako\u0144czona.
+ERR_ENLIST_LTC_COMPLETE.explanation=Operacja LocalTransactionContainment nie znajduje si\u0119 w stanie, w kt\u00f3rym mo\u017cliwe jest zarejestrowanie zasobu.
+ERR_ENLIST_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_GLB_ACT=WLTC0007E: Nie mo\u017cna zarejestrowa\u0107 zasobu na potrzeby \
+procedury czyszcz\u0105cej, poniewa\u017c aktywna jest transakcja globalna.
+ERR_ENLIST_CLN_TX_GLB_ACT.explanation=Nie mo\u017cna u\u017cy\u0107 po\u0142\u0105czenia transakcji lokalnej, poniewa\u017c obecnie aktywna jest transakcja globalna.
+ERR_ENLIST_CLN_TX_GLB_ACT.useraction=Przed wykonaniem pracy w transakcji lokalnej sprawd\u017a, czy zosta\u0142y zako\u0144czone wszystkie transakcje globalne.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_TX_CLEANUP=WLTC0008E: Nie mo\u017cna zarejestrowa\u0107 zasobu na potrzeby \
+procedury czyszcz\u0105cej. Parametr resolution-control transakcji lokalnej ma warto\u015b\u0107 ContainerAtBoundary, dlatego zasoby nie mog\u0105 by\u0107 rejestrowane na potrzeby procedury czyszcz\u0105cej.
+ERR_ENLIST_CLN_TX_CLEANUP.explanation=Aplikacja u\u017cywaj\u0105ca po\u0142\u0105czenia transakcji lokalnej jest skonfigurowana w taki spos\u00f3b, aby za uruchamianie i rozstrzyganie transakcji lokalnych odpowiedzialny by\u0142 kontener. Nast\u0105pi\u0142o jednak uruchomienie transakcji lokalnej przez sam\u0105 aplikacj\u0119.
+ERR_ENLIST_CLN_TX_CLEANUP.useraction=W przypadku transakcji lokalnych rozstrzyganych przez kontener aplikacja powinna stosowa\u0107 model korzystania z po\u0142\u0105czenia get-use-model.
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_CLN_LTC_COMPLETE=WLTC0009E: Nie mo\u017cna zarejestrowa\u0107 zasobu na \
+potrzeby procedury czyszcz\u0105cej. Operacja LocalTransactionContainment jest ko\u0144czona lub ju\u017c zosta\u0142a zako\u0144czona.
+ERR_ENLIST_CLN_LTC_COMPLETE.explanation=Operacja LocalTransactionContainment nie znajduje si\u0119 w stanie, w kt\u00f3rym mo\u017cliwe jest zarejestrowanie zasobu.
+ERR_ENLIST_CLN_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_TX_GLB_ACT=WLTC0010E: Nie mo\u017cna wyrejestrowa\u0107 zasobu, poniewa\u017c \
+aktywna jest transakcja globalna.
+ERR_DELIST_TX_GLB_ACT.explanation=Operacja LocalTransactionContainment nie mo\u017ce wyrejestrowa\u0107 zasobu, poniewa\u017c obecnie aktywna jest transakcja globalna.
+ERR_DELIST_TX_GLB_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_NOT_ENLISTED=WLTC0011E: Nie mo\u017cna wyrejestrowa\u0107 zasobu. Nie jest on zarejestrowany na potrzeby procedury czyszcz\u0105cej w operacji LocalTransactionContainment.
+ERR_DELIST_NOT_ENLISTED.explanation=Operacja LocalTransactionContainment nie mo\u017ce wyrejestrowa\u0107 zasobu, kt\u00f3ry nie zosta\u0142 zarejestrowany na potrzeby procedury czyszcz\u0105cej.
+ERR_DELIST_NOT_ENLISTED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DELIST_LTC_COMPLETE=WLTC0012E: Nie mo\u017cna wyrejestrowa\u0107 zasobu. Operacja LocalTransactionContainment jest ko\u0144czona lub ju\u017c zosta\u0142a zako\u0144czona.
+ERR_DELIST_LTC_COMPLETE.explanation=Operacja LocalTransactionContainment nie znajduje si\u0119 w stanie, w kt\u00f3rym mo\u017cliwe jest wyrejestrowanie zasobu.
+ERR_DELIST_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_TX_GLB_ACT=WLTC0013E: Nie mo\u017cna zarejestrowa\u0107 synchronizacji, \
+poniewa\u017c aktywna jest transakcja globalna.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.explanation=Synchronizacja nie mo\u017ce zosta\u0107 zarejestrowana w operacji LocalTransactionContainment, poniewa\u017c aktualnie aktywna jest transakcja globalna.
+ERR_ENLIST_SYNCH_TX_GLB_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_ENLIST_SYNCH_LTC_COMPLETE=WLTC0014E: Nie mo\u017cna zarejestrowa\u0107 \
+synchronizacji. Operacja LocalTransactionContainment jest ko\u0144czona lub ju\u017c zosta\u0142a zako\u0144czona.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.explanation=Operacja LocalTransactionContainment nie znajduje si\u0119 w stanie, w kt\u00f3rym mo\u017cliwe jest zarejestrowanie synchronizacji.
+ERR_ENLIST_SYNCH_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_START=WLTC0015E: Uruchamianie zasobu {0} nie powiod\u0142o \
+si\u0119. Dane \u015bledzenia stosu wyj\u0105tku: {1}.
+ERR_XA_RESOURCE_START.explanation=Kontener nie mo\u017ce uruchomi\u0107 transakcji lokalnej.
+ERR_XA_RESOURCE_START.useraction=Sprawd\u017a mened\u017cer zasob\u00f3w.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_COMPLETE=WLTC0016E: Ko\u0144czenie dzia\u0142ania zasobu {0} nie \
+powiod\u0142o si\u0119. Dane \u015bledzenia stosu wyj\u0105tku: {1}.
+ERR_XA_RESOURCE_COMPLETE.explanation=Kontener nie mo\u017ce zako\u0144czy\u0107 transakcji lokalnej.
+ERR_XA_RESOURCE_COMPLETE.useraction=Sprawd\u017a mened\u017cer zasob\u00f3w.
+
+#-----------------------------------------------------------------------
+ERR_XA_RESOURCE_ROLLEDBACK=WLTC0017E: Zasoby zosta\u0142y wycofane z powodu \
+wywo\u0142ania metody setRollbackOnly().
+ERR_XA_RESOURCE_ROLLEDBACK.explanation=Zasoby zarejestrowane w operacji LocalTransactionContainment (LTC) zosta\u0142y wycofane, a nie zatwierdzone, poniewa\u017c wywo\u0142ano metod\u0119 setRollbackOnly() dla operacji LTC.
+ERR_XA_RESOURCE_ROLLEDBACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_LTC_ACT=WLTC0018E: Nie mo\u017cna rozpocz\u0105\u0107 operacji \
+LocalTransactionContainment. Operacja LocalTransactionContainment jest ju\u017c aktywna.
+ERR_BEGIN_LTC_ACT.explanation=Operacja LocalTransactionContainment by\u0142a ju\u017c aktywna, kiedy nast\u0105pi\u0142a pr\u00f3ba uruchomienia kolejnej.
+ERR_BEGIN_LTC_ACT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_STATE_RB_ONLY=WLTC0019E: Nie mo\u017cna wykona\u0107 operacji. Operacja LocalTransactionContainment zosta\u0142a oznaczona jako przeznaczona tylko do wycofywania.
+ERR_STATE_RB_ONLY.explanation=Operacja LocalTransactionContainment, w kt\u00f3rej wykonywana by\u0142a zako\u0144czona niepowodzeniem operacja, zosta\u0142a oznaczona przez kontener jako przeznaczona tylko do wycofywania.
+ERR_STATE_RB_ONLY.useraction=Skorzystaj z danych \u015bledzenia, aby okre\u015bli\u0107 przyczyn\u0119 oznaczenia operacji LocalTransactionContainment jako przeznaczonej tylko do wycofywania.
+
+#-----------------------------------------------------------------------
+ERR_LTC_COMPLETE=WLTC0020E: Nie mo\u017cna wykona\u0107 operacji. Operacja LocalTransactionContainment jest ko\u0144czona lub ju\u017c zosta\u0142a zako\u0144czona.
+ERR_LTC_COMPLETE.explanation=Operacja LocalTransactionContainment, w kt\u00f3rej wykonywana by\u0142a zako\u0144czona niepowodzeniem operacja, jest ko\u0144czona lub ju\u017c zosta\u0142a zako\u0144czona.
+ERR_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT=WLTC0021E: Stan zako\u0144czenia dzia\u0142ania zasobu jest \
+niesp\u00f3jny.
+ERR_NP_INCONSISTENT.explanation=Obiekt LocalTransactionCoordinator zarejestrowany jako zas\u00f3b ActivitySessionResource zako\u0144czy\u0142 dzia\u0142anie z niesp\u00f3jnymi wynikami.
+ERR_NP_INCONSISTENT.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NP_ROLLEDBACK=WLTC0022E: Zas\u00f3b zosta\u0142 zresetowany z powodu wywo\u0142ania metody \
+setRollbackOnly dla obiektu LTC.
+ERR_NP_ROLLEDBACK.explanation=Obiekt LocalTransactionCoordinator zarejestrowany jako zas\u00f3b ActivitySessionResource zosta\u0142 zresetowany z powodu wywo\u0142ania metody setRollbackOnly dla obiektu LocalTransactionContainment.
+ERR_NP_ROLLEDBACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL=WLTC0023E: Zako\u0144czenie dzia\u0142ania zasobu nie powiod\u0142o si\u0119 z \
+powodu niedozwolonego stanu.
+ERR_NP_ILLEGAL.explanation=Obiekt LocalTransactionCoordinator zarejestrowany jako zas\u00f3b ActivitySessionResource znajduje si\u0119 w niepoprawnym stanie dla zako\u0144czenia dzia\u0142ania.
+ERR_NP_ILLEGAL.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_LOOKUP_ASM=WLTC0024E: Nie mo\u017cna skontaktowa\u0107 si\u0119 z us\u0142ug\u0105 \
+ActivitySession. Wyszukanie obiektu ActivitySessionManager nie powiod\u0142o si\u0119.
+ERR_AS_LOOKUP_ASM.explanation=Nie mo\u017cna znale\u017a\u0107 obiektu ActivitySessionManager w przestrzeni nazw JNDI.
+ERR_AS_LOOKUP_ASM.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_ILLEGAL_STATE=WLTC0025E: Zarejestrowanie w us\u0142udze ActivitySession jest \
+niemo\u017cliwe. Us\u0142uga ActivitySession znajduje si\u0119 w niedozwolonym stanie.
+ERR_AS_ILLEGAL_STATE.explanation=Bie\u017c\u0105ca us\u0142uga ActivitySession nie znajduje si\u0119 w poprawnym stanie do zarejestrowania operacji LocalTransactionContainment jako zasobu.
+ERR_AS_ILLEGAL_STATE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_AS_UNEXPECTED=WLTC0026E: Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d w czasie interakcji z \
+us\u0142ug\u0105 ActivitySession.
+ERR_AS_UNEXPECTED.explanation=Wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d w czasie pr\u00f3by zarejestrowania operacji LocalTransactionContainment w us\u0142udze ActivitySession.
+ERR_AS_UNEXPECTED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_CLEANUP=WLTC0027E: Brak obiektu LocalTransactionCoordinator na \
+potrzeby procedury czyszcz\u0105cej.
+ERR_NO_LTC_CLEANUP.explanation=Obiekt LocalTransactionCoordinator nie jest powi\u0105zany z bie\u017c\u0105cym w\u0105tkiem i dlatego nie mo\u017ce zosta\u0107 poddany dzia\u0142aniu procedury czyszcz\u0105cej.
+ERR_NO_LTC_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_NO_LTC_COMPLETE=WLTC0028E: Brak obiektu LocalTransactionCoordinator do \
+zako\u0144czenia dzia\u0142ania.
+ERR_NO_LTC_COMPLETE.explanation=Obiekt LocalTransactionCoordinator nie jest powi\u0105zany z bie\u017c\u0105cym w\u0105tkiem i dlatego jego dzia\u0142anie nie mo\u017ce zosta\u0107 zako\u0144czone.
+ERR_NO_LTC_COMPLETE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY=WLTC0029E: Instalowanie aplikacji nie powiod\u0142o si\u0119. Komponent \
+aplikacji {0} ma rozszerzenia deskryptora wdra\u017cania produktu WebSphere, kt\u00f3re \
+nie s\u0105 w\u0142\u0105czone w zainstalowanej edycji serwera WebSphere Application Server. \
+Ich u\u017cycie mo\u017ce spowodowa\u0107 utrat\u0119 integralno\u015bci danych: ActivationPolicy {1}, \
+LocalTransactionBoundary {2}.
+ERR_DEPLOY.explanation=Aplikacja okre\u015blona w komunikacie zosta\u0142a z\u0142o\u017cona z zastosowaniem rozszerze\u0144, kt\u00f3re nie s\u0105 obs\u0142ugiwane przez zainstalowan\u0105 edycj\u0119 produktu. \
+Zezwolenie produktu na dzia\u0142anie tej aplikacji przy braku obs\u0142ugi oczekiwanych rozszerze\u0144 mo\u017ce skutkowa\u0107 zmian\u0105 zachowania wp\u0142ywaj\u0105c\u0105 na integralno\u015b\u0107 danych. Na przyk\u0142ad aktualizacje danych transakcji mog\u0105 zachodzi\u0107 w kilku transakcjach, podczas gdy obs\u0142uga tych rozszerze\u0144 powodowa\u0142aby ich wyst\u0105pienie tylko w ramach tej samej transakcji. \
+Z tego wzgl\u0119du instalowanie tej aplikacji nie jest bezpieczne.
+ERR_DEPLOY.useraction=Sprawd\u017a aplikacj\u0119, kt\u00f3rej instalacja si\u0119 nie powiod\u0142a. \
+Je\u015bli mo\u017ce ona dzia\u0142a\u0107 bez obs\u0142ugi rozszerze\u0144, z\u0142\u00f3\u017c j\u0105 ponownie bez okre\u015blania tych rozszerze\u0144. \
+Je\u015bli aplikacja wymaga obs\u0142ugi rozszerzonej, zainstaluj j\u0105 wy\u0142\u0105cznie na serwerach aplikacji udost\u0119pniaj\u0105cych tak\u0105 obs\u0142ug\u0119.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_RESOLUTION=WLTC0030E: Instalowanie aplikacji nie powiod\u0142o si\u0119. \
+Komponent bean {0} aplikacji zosta\u0142 skonfigurowany w taki spos\u00f3b, aby zarz\u0105dza\u0107 \
+swoimi transakcjami, ale ma on niekompatybilne ustawienie sterowania \
+rozstrzyganiem dla transakcji lokalnych o warto\u015bci ContainerAtBoundary.
+ERR_DEPLOY_RESOLUTION.explanation=Komponent bean okre\u015blony w komunikacie zosta\u0142 z\u0142o\u017cony z zastosowaniem rozszerze\u0144, kt\u00f3re nie s\u0105 obs\u0142ugiwane. Z tego wzgl\u0119du aplikacja nie zosta\u0142a zainstalowana.
+ERR_DEPLOY_RESOLUTION.useraction=Aplikacja, kt\u00f3rej instalowanie zako\u0144czy\u0142o si\u0119 niepowodzeniem, musi zosta\u0107 z\u0142o\u017cona ponownie przy u\u017cyciu alternatywnej konfiguracji komponentu bean.
+
+#-----------------------------------------------------------------------
+ERR_DEPLOY_FAILURE=WLTC0031E: Instalowanie aplikacji nie powiod\u0142o si\u0119. \
+Komponent {0} aplikacji nie mo\u017ce zosta\u0107 zainstalowany.
+ERR_DEPLOY_FAILURE.explanation=Poprawna instalacja aplikacji okre\u015blonej w komunikacie nie powiod\u0142a si\u0119. Aplikacja nie jest dost\u0119pna.
+ERR_DEPLOY_FAILURE.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_LTC_UNRESOLVED_ROLLEDBACK=WLTC0032W: Co najmniej jeden zas\u00f3b transakcji \
+lokalnej zosta\u0142 wycofany podczas procedury czyszcz\u0105cej operacji \
+LocalTransactionContainment.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.explanation=Operacja LocalTransactionContainment u\u017cywaj\u0105ca zasob\u00f3w transakcji lokalnej, kt\u00f3re nie zako\u0144czy\u0142y dzia\u0142ania, zosta\u0142a zako\u0144czona i spowodowa\u0142a wycofanie tych zasob\u00f3w.
+WRN_LTC_UNRESOLVED_ROLLEDBACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+
+#-----------------------------------------------------------------------
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK=WLTC0033W: Zas\u00f3b {0} zosta\u0142 \
+wycofany w procedurze czyszcz\u0105cej operacji LocalTransactionContainment.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.explanation=Zas\u00f3b transakcji lokalnej pozosta\u0142 nierozstrzygni\u0119ty w momencie zako\u0144czenia operacji LocalTransactionContainment i zosta\u0142 wycofany.
+WRN_RESOURCE_UNRESOLVED_LTC_ROLLEDBACK.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+
+#-----------------------------------------------------------------------
+ERR_NP_INCONSISTENT_CLEANUP=WLTC0034E: Stan zako\u0144czenia operacji \
+LocalTransactionContainment jest niesp\u00f3jny podczas procedury czyszcz\u0105cej.
+ERR_NP_INCONSISTENT_CLEANUP.explanation=Obiekt LocalTransactionCoordinator zarejestrowany jako obiekt ActivitySessionSynchronization zako\u0144czy\u0142 dzia\u0142anie podczas procedury czyszcz\u0105cej z niesp\u00f3jnymi wynikami.
+ERR_NP_INCONSISTENT_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+WRN_NP_ROLLEDBACK_CLEANUP=WLTC0035W: Nierozstrzygni\u0119ta operacja \
+LocalTransactionContainment zosta\u0142a zresetowana podczas procedury czyszcz\u0105cej.
+WRN_NP_ROLLEDBACK_CLEANUP.explanation=Obiekt LocalTransactionCoordinator zarejestrowany jako obiekt ActivitySessionSynchronization zosta\u0142 zresetowany.
+WRN_NP_ROLLEDBACK_CLEANUP.useraction=By\u0107 mo\u017ce wyst\u0105pi\u0142 b\u0142\u0105d aplikacji. Sprawd\u017a wszystkie pokrewne komunikaty, aby ustali\u0107 przyczyn\u0119 zresetowania.
+
+#-----------------------------------------------------------------------
+ERR_NP_ILLEGAL_CLEANUP=WLTC0036E: Zako\u0144czenie dzia\u0142ania co najmniej jednego \
+zasobu zarejestrowanego w operacji LocalTransactionContainment nie powiod\u0142o si\u0119 \
+podczas procedury czyszcz\u0105cej z powodu niedozwolonego stanu.
+ERR_NP_ILLEGAL_CLEANUP.explanation=Obiekt LocalTransactionCoordinator zarejestrowany jako obiekt ActivitySessionSynchronization zawiera co najmniej jeden zas\u00f3b znajduj\u0105cy si\u0119 stanie niedozwolonym dla zako\u0144czenia dzia\u0142ania podczas procedury czyszcz\u0105cej.
+ERR_NP_ILLEGAL_CLEANUP.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+ERR_BEGIN_GLOBAL_TX=WLTC0037E: Nie mo\u017cna uruchomi\u0107 transakcji globalnej. Operacja LocalTransactionContainment jest ju\u017c aktywna i dzia\u0142a.
+ERR_BEGIN_GLOBAL_TX.explanation=Operacja LocalTransactionContainment by\u0142a ju\u017c aktywna podczas pr\u00f3by uruchomienia transakcji globalnej.
+ERR_BEGIN_GLOBAL_TX.useraction=CMSG0002
+

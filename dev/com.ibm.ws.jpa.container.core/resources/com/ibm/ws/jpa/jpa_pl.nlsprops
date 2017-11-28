@@ -1,0 +1,329 @@
+###############################################################################
+# Copyright (c) 2006, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWJP (Java Persistence API)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/jpa.impl/src/com/ibm/ws/jpa/jpa.nlsprops
+#COMPONENTPREFIX CWWJP
+#COMPONENTNAMEFOR CWWJP Java Persistence API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E=CWWJP0001E: Serwer nie mo\u017ce za\u0142adowa\u0107 dostawcy interfejsu API Java Persistence (JPA) {1} w pakunku {0}, kt\u00f3ry znajduje si\u0119 w pliku {2}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {3}
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.explanation=Podczas przetwarzania na serwerze dla domy\u015blnego dostawcy JPA serwer nie m\u00f3g\u0142 znale\u017a\u0107 pliku dla dostawcy w pakunku.
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.useraction=Sprawd\u017a, czy w pakunku dostawcy JPA znajduj\u0105 si\u0119 nast\u0119puj\u0105ce informacje:\n  W pliku META-INF/services/javax.persistence.spi.PersistenceProvider jest zdefiniowana poprawna klasa implementacji dostawcy.\n Klasa implementacji istnieje w pakunku.\n We w\u0142a\u015bciwo\u015bci Bundle-ClassPath w pliku META-INF/MANIFEST.MF okre\u015blony jest plik JAR dostawcy.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E=CWWJP0002E: Serwer nie mo\u017ce odczyta\u0107 zawarto\u015bci pliku {1} w pakunku dostawcy interfejsu API Java Persistence (JPA) {0}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {2}
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.explanation=Podczas przetwarzania na serwerze dla domy\u015blnego dostawcy JPA serwer nie mo\u017ce odczyta\u0107 zawarto\u015bci pliku w pakunku dostawcy JPA.
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.useraction=Sprawd\u017a, czy w pakunku dostawcy JPA istnieje plik META-INF/services/javax.persistence.spi.PersistenceProvider i czy ten plik ma poprawny format.
+
+#-------------------------------------------------------------------------------
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E=CWWJP0003E: Rozszerzony kontekst trwa\u0142o\u015bci {0} mo\u017ce zosta\u0107 zainicjowany tylko w zasi\u0119gu stanowego komponentu bean sesji.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.explanation=Specyfikacja Java Persistence API (JPA) wymaga, aby rozszerzony kontekst pami\u0119ci trwa\u0142ej by\u0142 inicjowany tylko w zasi\u0119gu komponentu bean sesji stanowej, natomiast aplikacja usi\u0142owa\u0142a zainicjowa\u0107 rozszerzony kontekst pami\u0119ci trwa\u0142ej w zasi\u0119gu komponentu bean innego typu.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.useraction=Zmie\u0144 aplikacj\u0119 w taki spos\u00f3b, aby inicjowa\u0142a rozszerzony kontekst pami\u0119ci trwa\u0142ej w zasi\u0119gu komponentu bean sesji stanowej albo zmie\u0144 kontekst pami\u0119ci trwa\u0142ej.
+
+#-------------------------------------------------------------------------------
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E=CWWJP0004E: Serwer nie mo\u017ce znale\u017a\u0107 domy\u015blnego dostawcy interfejsu API Java Persistence (JPA) {0} w systemie. Funkcja domy\u015blnego dostawcy JPA jest wy\u0142\u0105czona.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.explanation=Dostawca interfejsu API Java Persistence dla produkt\u00f3w WebSphere jest zainstalowany na serwerze aplikacji dla domy\u015blnego dostawcy JPA w systemie. Nie mo\u017cna jednak znale\u017a\u0107 tego domy\u015blnego dostawcy. Z tego wzgl\u0119du funkcja domy\u015blnego dostawcy JPA zosta\u0142a wy\u0142\u0105czona.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.useraction=Skontaktuj si\u0119 z administratorem systemu, aby udost\u0119pni\u0142 na serwerze aplikacji zdefiniowan\u0105 przez u\u017cytkownika lub domy\u015bln\u0105 systemow\u0105 implementacj\u0119 WSJPA.
+
+#-------------------------------------------------------------------------------
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W=CWWJP0005W: Jednostka trwa\u0142o\u015bci {0} w module {1} u\u017cywa obiektu ClassLoader typu {2}. Funkcja obiektu Java Persistence API (JPA) mo\u017ce nie dzia\u0142a\u0107 zgodnie z oczekiwaniami.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.explanation=Aby w\u0142\u0105czy\u0107 pe\u0142n\u0105 obs\u0142ug\u0119 JPA, dostawca pami\u0119ci trwa\u0142ej musi wprowadzi\u0107 kod do obiektu JPA. Typ aktywnego kodu ClassLoader nie obs\u0142uguje wstrzykiwania kodu JPA. Z tego wzgl\u0119du obiekt JPA mo\u017ce nie dzia\u0142a\u0107 zgodnie z oczekiwaniami.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I=CWWJP0006I: Klasa {0} zosta\u0142a za\u0142adowana jako domy\u015blny dostawca interfejsu API Java Persistence (JPA).
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W=CWWJP0007W: Jednostka trwa\u0142o\u015bci {0} w module {2} aplikacji {1} jest ju\u017c zdefiniowana.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.explanation=Zgodnie z sekcj\u0105 6.2 specyfikacji Java Persistence API (JPA) nazwa jednostki pami\u0119ci trwa\u0142ej musi by\u0107 unikalna w obr\u0119bie danego pliku archiwum komponent\u00f3w EJB (EJB-EAR), pliki archiwum WWW (WAR), pliku JAR klienta aplikacji lub pliku EAR.  Zduplikowana jednostka pami\u0119ci trwa\u0142ej zostanie zignorowana.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.useraction=Przed ponowieniem pr\u00f3by usu\u0144 zduplikowan\u0105 jednostk\u0119 pami\u0119ci trwa\u0142ej.
+
+#-------------------------------------------------------------------------------
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E=CWWJP0008E: Serwer nie mo\u017ce znale\u017a\u0107 rejestru Java Transaction API (JTA), wyszukuj\u0105c nazw\u0119 JNDI {0}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {1}
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.explanation=\u015arodowisko wykonawcze serwera nie mo\u017ce powi\u0105za\u0107 w\u0105tku operacji z \u017cadnym komponentem aplikacji Java Platform, Enterprise Edition 5 (Java EE 5).  Taka sytuacja mo\u017ce wyst\u0105pi\u0107, kiedy klient JNDI u\u017cywaj\u0105cy nazwy java: nie zosta\u0142 uruchomiony w w\u0105tku \u017c\u0105dania aplikacji serwera.
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.useraction=Upewnij si\u0119, \u017ce aplikacja Java EE 5 nie wykonuje operacji JNDI na nazwach java: w blokach kodu statycznego ani w w\u0105tkach utworzonych przez t\u0119 aplikacj\u0119 Java EE 5.  Ten kod nie musi by\u0107 wykonywany w w\u0105tku \u017c\u0105dania aplikacji serwera i dlatego nie jest obs\u0142ugiwany przez operacje JNDI na nazwach java:.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E=CWWJP0009E: Serwer nie mo\u017ce utworzy\u0107 fabryki EntityManagerFactory dla jednostki trwa\u0142o\u015bci {0} z dostawcy {1} w module {2}.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.explanation=Metoda createContainerEntityManagerFactory dostawcy JPA (Java Persistence API) nie zwr\u00f3ci\u0142a obiektu EntityManagerFactory. Taka sytuacja mo\u017ce wyst\u0105pi\u0107, je\u015bli dla jednostki pami\u0119ci trwa\u0142ej u\u017cyto niepoprawnego dostawcy JPA lub je\u015bli wyst\u0105pi\u0142 b\u0142\u0105d dostawcy JPA.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.useraction=Sprawd\u017a, czy dla jednostki pami\u0119ci trwa\u0142ej skonfigurowano poprawnego dostawc\u0119 JPA oraz czy wcze\u015bniej nie wyst\u0105pi\u0142y inne b\u0142\u0119dy dostawcy JPA.
+
+#-------------------------------------------------------------------------------
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W=CWWJP0010W: Serwer nie mo\u017ce znale\u017a\u0107 wdro\u017conej aplikacji o nazwie {0} podczas pr\u00f3by znalezienia jednostki trwa\u0142o\u015bci {2} w module {1}.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.explanation=Aplikacja nie zosta\u0142a zainstalowana albo nie jest uruchomiona.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.useraction=Zainstaluj lub uruchom aplikacj\u0119.
+
+#-------------------------------------------------------------------------------
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E=CWWJP0012E: Nazwa jednostki trwa\u0142o\u015bci nie zosta\u0142a okre\u015blona, a w aplikacji {0} i module {1} nie znaleziono unikalnej jednostki trwa\u0142o\u015bci.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=Aplikacja zdefiniowa\u0142a jednostk\u0119 pami\u0119ci trwa\u0142ej lub odwo\u0142anie do kontekstu pami\u0119ci trwa\u0142ej bez nazwy jednostki pami\u0119ci trwa\u0142ej, a nie unikatowa jednostka pami\u0119ci trwa\u0142ej nie zosta\u0142a znaleziona.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=Zmie\u0144 aplikacj\u0119 w taki spos\u00f3b, aby okre\u015bla\u0142a nazw\u0119 jednostki pami\u0119ci trwa\u0142ej dla odwo\u0142ania, albo udost\u0119pnij unikaln\u0105 pami\u0119\u0107 trwa\u0142\u0105.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: Serwer nie mo\u017ce znale\u017a\u0107 \u017ar\u00f3d\u0142a danych {0} dla jednostki trwa\u0142o\u015bci {1}, poniewa\u017c napotka\u0142 nast\u0119puj\u0105cy wyj\u0105tek: \n \ {2}.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=Serwer usi\u0142owa\u0142 znale\u017a\u0107 \u017ar\u00f3d\u0142o danych dla jednostki pami\u0119ci trwa\u0142ej. \u0179r\u00f3d\u0142o danych nie zosta\u0142o jednak znalezione.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Sprawd\u017a, czy \u017c\u0105dane \u017ar\u00f3d\u0142o danych zosta\u0142o utworzone i powi\u0105zane.
+
+#-------------------------------------------------------------------------------
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E=CWWJP0014E: Wykryto niedozwolony format podczas transformacji klasy {0}. Klasa nie zosta\u0142a poddana transformacji.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.explanation=Dostawca interfejsu API Java Persistence(JPA) zg\u0142osi\u0142 wyj\u0105tek IllegalClassFormatException podczas pr\u00f3by transformacji klasy. Plik klasy jest uszkodzony albo wyst\u0105pi\u0142 problem z dostawc\u0105 JPA.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.useraction=Skoryguj uszkodzony plik klasy albo skontaktuj si\u0119 z dostawc\u0105 JPA, aby uzyska\u0107 pomoc.
+
+#-------------------------------------------------------------------------------
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E=CWWJP0015E: Wyst\u0105pi\u0142 b\u0142\u0105d w dostawcy trwa\u0142o\u015bci {0}, kiedy pr\u00f3bowa\u0142 utworzy\u0107 fabryk\u0119 mened\u017cera obiekt\u00f3w kontenera dla jednostki trwa\u0142o\u015bci {1}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {2}
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.explanation=Nie powiod\u0142o si\u0119 wykonanie metody createContainerEntityManagerFactory dostawcy JPA (Java Persistence API).
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.useraction=Skontaktuj si\u0119 z dostawc\u0105 JPA, aby uzyska\u0107 pomoc.
+
+#-------------------------------------------------------------------------------
+DUPL_PCTXT_REF_CWWJP0016W=CWWJP0016W: Zadeklarowano wi\u0119cej ni\u017c jeden element &lt;persistence-context-ref&gt; o nazwie {0} w pliku opisu wdra\u017cania {1}.
+DUPL_PCTXT_REF_CWWJP0016W.explanation=Zadeklarowano wi\u0119cej ni\u017c jedno odwo\u0142anie do kontekstu pami\u0119ci trwa\u0142ej w pliku deskryptora wdra\u017cania. Wszystkie instancje opr\u00f3cz pierwszej zostan\u0105 zignorowane.
+DUPL_PCTXT_REF_CWWJP0016W.useraction=Przed ponowieniem pr\u00f3by usu\u0144 zduplikowane odwo\u0142anie do kontekstu pami\u0119ci trwa\u0142ej albo zmie\u0144 jego nazw\u0119.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_STARTED_CWWJP0017I=CWWJP0017I: Komponent interfejsu API Java Persistence (JPA) zosta\u0142 uruchomiony.
+JPA_HAS_STARTED_CWWJP0017I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JPA_HAS_STARTED_CWWJP0017I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+MALFORMED_PERSISTENCE_XML_CWWJP0018E=CWWJP0018E: W pliku {0} wykryto niepoprawn\u0105 sk\u0142adni\u0119 lub b\u0142\u0119dy. Zosta\u0142 zg\u0142oszony nast\u0119puj\u0105cy komunikat o b\u0142\u0119dzie: {1}
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.explanation=Plik XML zawiera co najmniej jeden b\u0142\u0105d i nie jest zgodny z definicj\u0105 schematu. Aplikacja mo\u017ce nie dzia\u0142a\u0107 zgodnie z oczekiwaniami.
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.useraction=Skoryguj wszelkie b\u0142\u0119dy w pliku persistence.xml i pon\u00f3w pr\u00f3b\u0119.
+
+#-------------------------------------------------------------------------------
+APPL_STARTED_CWWJP0019W=CWWJP0019W: Aplikacja {0} zosta\u0142a ju\u017c uruchomiona.
+APPL_STARTED_CWWJP0019W.explanation=CMSG0001
+APPL_STARTED_CWWJP0019W.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E=CWWJP0020E: Serwer aplikacji nie mo\u017ce uruchomi\u0107 modu\u0142u {0} aplikacji {1}, poniewa\u017c aplikacja nie zosta\u0142a zainstalowana.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.explanation=Sprawd\u017a, czy aplikacja zosta\u0142a poprawnie utworzona i czy zosta\u0142 zainstalowany modu\u0142 tej aplikacji.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.useraction=Sprawd\u017a konfiguracj\u0119 aplikacji za pomoc\u0105 narz\u0119dzia do asemblacji aplikacji, zainstaluj aplikacj\u0119 i pon\u00f3w pr\u00f3b\u0119.
+
+#-------------------------------------------------------------------------------
+JPA_IS_DISABLED_CWWJP0022I=CWWJP0022I: Komponent interfejsu API Java Persistence (JPA) zosta\u0142 wy\u0142\u0105czony.
+JPA_IS_DISABLED_CWWJP0022I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JPA_IS_DISABLED_CWWJP0022I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E=CWWJP0023E: Serwer nie mo\u017ce utworzy\u0107 instancji EntityManagerFactory dla jednostki trwa\u0142o\u015bci {0} w celu wprowadzenia zale\u017cno\u015bci do modu\u0142u {2} aplikacji {1}.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.explanation=Nale\u017cy poprawnie zdefiniowa\u0107 jednostk\u0119 pami\u0119ci trwa\u0142ej i adnotacj\u0119 wprowadzania zale\u017cno\u015bci.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.useraction=Sprawd\u017a, czy poprawnie zdefiniowano jednostk\u0119 pami\u0119ci trwa\u0142ej i adnotacj\u0119 wprowadzania zale\u017cno\u015bci. Pon\u00f3w pr\u00f3b\u0119 wykonania procesu.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E=CWWJP0024E: Specyfikacja pliku JAR {0} dla jednostki trwa\u0142o\u015bci {1} jest niepoprawna.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.explanation=Specyfikacja pliku JAR dla jednostki pami\u0119ci trwa\u0142ej jest zniekszta\u0142cona. Z tego wzgl\u0119du komponent JPA (Java Persistence API) nie mo\u017ce przekaza\u0107 tych danych do dostawcy pami\u0119ci trwa\u0142ej.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.useraction=Popraw specyfikacj\u0119 pliku JAR i spr\u00f3buj ponownie.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E=CWWJP0025E: Serwer nie mo\u017ce zidentyfikowa\u0107 g\u0142\u00f3wnego adresu URL interfejsu API Java Persistence (JPA) {0} dla modu\u0142u {2} w aplikacji {1}.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.explanation=G\u0142\u00f3wny adres URL interfejsu JPA dla modu\u0142u w aplikacji jest zniekszta\u0142cony.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+JPA_IS_INITIALIZING_CWWJP0026I=CWWJP0026I: Trwa inicjowanie komponentu interfejsu API Java Persistence (JPA).
+JPA_IS_INITIALIZING_CWWJP0026I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JPA_IS_INITIALIZING_CWWJP0026I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_INITIALIZED_CWWJP0027I=CWWJP0027I: Komponent interfejsu API Java Persistence (JPA) zosta\u0142 zainicjowany.
+JPA_HAS_INITIALIZED_CWWJP0027I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JPA_HAS_INITIALIZED_CWWJP0027I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+JPA_IS_STARTING_CWWJP0028I=CWWJP0028I: Trwa uruchamianie komponentu interfejsu API Java Persistence (JPA).
+JPA_IS_STARTING_CWWJP0028I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JPA_IS_STARTING_CWWJP0028I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+PU_NOT_FOUND_CWWJP0029E=CWWJP0029E: Serwer nie mo\u017ce znale\u017a\u0107 jednostki trwa\u0142o\u015bci {2} w module {1} i aplikacji {0}.
+PU_NOT_FOUND_CWWJP0029E.explanation=Aplikacja zdefiniowa\u0142a odwo\u0142anie do jednostki pami\u0119ci trwa\u0142ej, kt\u00f3rej nie mo\u017cna znale\u017a\u0107 w wyniku wyszukiwania pliku META-INF/persistence.xml we wszystkich plikach i katalogach w \u015bcie\u017cce klasy.
+PU_NOT_FOUND_CWWJP0029E.useraction=Upewnij si\u0119, \u017ce nazwa jednostki pami\u0119ci trwa\u0142ej jest poprawna oraz \u017ce jednostka pami\u0119ci trwa\u0142ej zosta\u0142a poprawnie utworzona w aplikacji. Mo\u017cna to zrobi\u0107, sprawdzaj\u0105c, czy jednostka pami\u0119ci trwa\u0142ej zosta\u0142a zdefiniowana w pliku META-INF/persistence.xml znajduj\u0105cym si\u0119 w pliku JAR lub katalogu w \u015bcie\u017cce klasy.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E=CWWJP0030E: Serwer nie mo\u017ce znale\u017a\u0107 \u017ar\u00f3d\u0142a danych {0} w przestrzeni nazw komponentu dla jednostki trwa\u0142o\u015bci {1}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {2}
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.explanation=\u0179r\u00f3d\u0142o danych zdefiniowane dla tej jednostki pami\u0119ci trwa\u0142ej musi by\u0107 powi\u0105zane z przestrzeni\u0105 nazw komponentu.
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.useraction=Sprawd\u017a, czy \u017c\u0105dane \u017ar\u00f3d\u0142o danych zosta\u0142o utworzone i powi\u0105zane w przestrzeni nazw java:comp/env.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E=CWWJP0031E: Serwer nie mo\u017ce znale\u017a\u0107 \u017ar\u00f3d\u0142a danych {0} w globalnej przestrzeni nazw dla jednostki trwa\u0142o\u015bci {1}. Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {2}
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.explanation=\u0179r\u00f3d\u0142o danych zdefiniowane dla tej jednostki pami\u0119ci trwa\u0142ej musi by\u0107 powi\u0105zane z globaln\u0105 przestrzeni\u0105 nazw.
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.useraction=Sprawd\u017a, czy \u017c\u0105dane \u017ar\u00f3d\u0142o danych zosta\u0142o utworzone i powi\u0105zane w globalnej przestrzeni nazw.
+
+#-------------------------------------------------------------------------------
+CONNECTION_NOT_FOUND_CWWJP0032E=CWWJP0032E: Wywo\u0142anie metody obiektu java.sql.Connection zako\u0144czy\u0142o si\u0119 b\u0142\u0119dem: {0}
+CONNECTION_NOT_FOUND_CWWJP0032E.explanation=Nie mo\u017cna wywo\u0142a\u0107 metody obiektu java.sql.Connection innej ni\u017c metody close i isClosed, poniewa\u017c \u015brodowisko wykonawcze serwera nie mo\u017ce powi\u0105za\u0107 w\u0105tku operacji z \u017cadnym komponentem aplikacji Java Platform, Enterprise Edition 5 (Java EE 5).  Taka sytuacja mo\u017ce wyst\u0105pi\u0107, kiedy klient JNDI (Java Naming and Directory InterfaceTM) u\u017cywaj\u0105cy nazwy java: nie zosta\u0142 uruchomiony w w\u0105tku \u017c\u0105dania aplikacji serwera.
+CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Upewnij si\u0119, \u017ce aplikacja Java EE 5 nie wykonuje operacji JNDI na nazwach java: w blokach kodu statycznego ani w w\u0105tkach utworzonych przez t\u0119 aplikacj\u0119 Java EE 5.  Ten kod nie musi by\u0107 wykonywany w w\u0105tku \u017c\u0105dania aplikacji serwera.  Z tego wzgl\u0119du ten kod nie jest obs\u0142ugiwany w operacjach JNDI na nazwach java:.
+
+#-------------------------------------------------------------------------------
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: Serwer nie mo\u017ce znale\u017a\u0107 \u017ar\u00f3d\u0142a danych {0} w przestrzeni nazw komponentu dla jednostki trwa\u0142o\u015bci {1}, poniewa\u017c kontekst komponentu nie istnieje w w\u0105tku.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=Nie mo\u017cna znale\u017a\u0107 \u017ar\u00f3d\u0142a danych, poniewa\u017c \u015brodowisko wykonawcze serwera nie mo\u017ce powi\u0105za\u0107 w\u0105tku operacji z \u017cadnym komponentem aplikacji Java Platform, Enterprise Edition 5 (Java EE 5).  Taka sytuacja mo\u017ce wyst\u0105pi\u0107, kiedy klient JNDI (Java Naming and Directory InterfaceTM) u\u017cywaj\u0105cy nazwy \"java:\" nie zosta\u0142 uruchomiony w w\u0105tku \u017c\u0105dania aplikacji serwera.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Upewnij si\u0119, \u017ce aplikacja Java EE 5 nie wykonuje operacji JNDI na nazwach java: w blokach kodu statycznego ani w w\u0105tkach utworzonych przez t\u0119 aplikacj\u0119 Java EE 5.  Ten kod nie musi by\u0107 wykonywany w w\u0105tku \u017c\u0105dania aplikacji serwera.  Z tego wzgl\u0119du ten kod nie jest obs\u0142ugiwany w operacjach JNDI na nazwach java:.
+
+#----------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I=CWWJP0034I: To jest komunikat informacyjny tylko w j\u0119zyku angielskim: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.explanation=Ten komunikat informacyjny nie jest przet\u0142umaczony.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.useraction=Szczeg\u00f3\u0142owe informacje na ten temat zawiera komunikat.
+
+# ---------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W=CWWJP0035W: To jest komunikat ostrzegawczy tylko w j\u0119zyku angielskim: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.explanation=Ten komunikat ostrzegawczy nie jest przet\u0142umaczony.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.useraction=Szczeg\u00f3\u0142owe informacje na ten temat zawiera komunikat.
+
+# ---------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E=CWWJP0036E: To jest komunikat o b\u0142\u0119dzie tylko w j\u0119zyku angielskim: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.explanation=Ten komunikat o b\u0142\u0119dzie nie jest przet\u0142umaczony.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.useraction=Szczeg\u00f3\u0142owe informacje na ten temat zawiera komunikat.
+
+# ---------------------------------
+NO_UOW_SYNC_REGISTRY_CWWJP0037E=CWWJP0037E: Nie mo\u017cna znale\u017a\u0107 rejestru synchronizacji jednostki pracy w po\u0142o\u017ceniu {0} w globalnej przestrzeni nazw z powodu wyj\u0105tku: {1}
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.explanation=Dostawca interfejsu API Java Persistence (JPA) nie mo\u017ce dzia\u0142a\u0107 prawid\u0142owo bez dost\u0119pu do interfejsu UOWSynchronizationRegistry w celu uczestniczenia w transakcjach.
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.useraction=CMSG0002
+
+# ---------------------------------
+NO_COMPONENT_CONTEXT_CWWJP0038E=CWWJP0038E: Nie mo\u017cna zako\u0144czy\u0107 \u017c\u0105danej metody interfejsu API Java Persistence (JPA) dla kontekstu trwa\u0142o\u015bci {0}, poniewa\u017c zosta\u0142a ona wywo\u0142ana spoza zasi\u0119gu komponentu aplikacji Java Platform, Enterprise Edition 5 (Java EE 5).
+NO_COMPONENT_CONTEXT_CWWJP0038E.explanation=Kontekst komponentu nie istnieje w tym w\u0105tku. \u015arodowisko wykonawcze serwera nie mo\u017ce powi\u0105za\u0107 w\u0105tku operacji z \u017cadnym komponentem aplikacji Java Platform, Enterprise Edition 5 (Java EE 5). Taki warunek mo\u017ce wyst\u0105pi\u0107, gdy klient pr\u00f3buje wykona\u0107 operacje EntityManager na w\u0105tku aplikacji spoza serwera.
+NO_COMPONENT_CONTEXT_CWWJP0038E.useraction=Upewnij si\u0119, \u017ce aplikacja Java EE 5 nie wykonuje operacji EntityManager w blokach kodu statycznego ani w w\u0105tkach utworzonych przez t\u0119 aplikacj\u0119 Java EE.
+
+# ---------------------------------
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E=CWWJP0039E: We w\u0142a\u015bciwo\u015bciach w pliku persistence.xml jednostki trwa\u0142o\u015bci istnieje b\u0142\u0105d sk\u0142adniowy: {0} (w\u0142a\u015bciwo\u015b\u0107 = {1}, warto\u015b\u0107 = {2}).  Wyst\u0105pi\u0142 nast\u0119puj\u0105cy b\u0142\u0105d: {3}.
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.explanation= Plik persistence.xml dla jednostki pami\u0119ci trwa\u0142ej zawiera b\u0142\u0105d sk\u0142adniowy.  Ani w\u0142a\u015bciwo\u015b\u0107, ani warto\u015b\u0107 nie mog\u0105 mie\u0107 warto\u015bci NULL.
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.useraction= Popraw b\u0142\u0105d sk\u0142adniowy w pliku persistence.xml.
+
+#-------------------------------------------------------------------------------
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E=CWWJP0040E: Wykryto niepoprawn\u0105 sk\u0142adni\u0119 lub b\u0142\u0105d w pliku persistence.xml w aplikacji: {0}, modu\u0142: {1}, numer wiersza: {2}, numer kolumny: {3}. Zosta\u0142 zg\u0142oszony nast\u0119puj\u0105cy komunikat o b\u0142\u0119dzie: {4}
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.explanation=Plik persistence.xml zawiera co najmniej jeden b\u0142\u0105d i nie jest zgodny z definicj\u0105 schematu. Aplikacja mo\u017ce nie dzia\u0142a\u0107 zgodnie z oczekiwaniami.
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.useraction=Skoryguj wszelkie b\u0142\u0119dy w pliku persistence.xml i pon\u00f3w pr\u00f3b\u0119.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWWJP0041E=CWWJP0041E: Wyst\u0105pi\u0142 konflikt danych konfiguracji modu\u0142u {0} aplikacji {1} w deskryptorze wdra\u017cania XML. Istniej\u0105 powoduj\u0105ce konflikt warto\u015bci element\u00f3w {2} dla wielu element\u00f3w {3} o tej samej warto\u015bci elementu {4}: {5}. Warto\u015bci elementu {2} powoduj\u0105ce konflikt to {6} i {7}.
+CONFLICTING_XML_VALUES_CWWJP0041E.explanation=Je\u015bli zdefiniowano wiele odwo\u0142a\u0144 jednostek trwa\u0142o\u015bci lub odwo\u0142a\u0144 kontekstu trwa\u0142o\u015bci w deskryptorze wdra\u017cania XML dla tej samej przestrzeni nazw komponentu o tej samej nazwie, wszystkie atrybuty odwo\u0142ania musz\u0105 by\u0107 takie same. Typowe okoliczno\u015bci wyst\u0105pienia takiej sytuacji to definiowanie odwo\u0142a\u0144 dla komponentu EJB i odpowiadaj\u0105cej klasy przechwytywacza. Komponent bean i przechwytywacz wsp\u00f3\u0142u\u017cytkuj\u0105 t\u0119 sam\u0105 przestrze\u0144 nazw komponentu, zatem wsp\u00f3lne dla nich odwo\u0142ania musz\u0105 by\u0107 zgodne.
+CONFLICTING_XML_VALUES_CWWJP0041E.useraction=W deskryptorze wdra\u017cania XML zmie\u0144 nazw\u0119 jednego z odwo\u0142a\u0144 lub zmie\u0144 jedn\u0105 z warto\u015bci powoduj\u0105cych konflikt, tak aby warto\u015bci by\u0142y takie same.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E=CWWJP0042E: Komponent {0} w module {1} aplikacji {2} ma w adnotacjach kodu \u017ar\u00f3d\u0142owego dane konfiguracyjne, kt\u00f3re powoduj\u0105 konflikt. Istniej\u0105 powoduj\u0105ce konflikt warto\u015bci atrybut\u00f3w {3} dla wielu adnotacji {4} o tej samej warto\u015bci atrybutu {5}: {6}. Warto\u015bci atrybut\u00f3w {3} powoduj\u0105ce konflikt to {7} i {8}.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.explanation=Je\u015bli w adnotacjach kodu \u017ar\u00f3d\u0142owego zdefiniowanych jest wiele jednostek trwa\u0142o\u015bci lub odwo\u0142a\u0144 do kontekstu trwa\u0142o\u015bci dla tej samej przestrzeni nazw komponentu o identycznej nazwie, wszystkie atrybuty odwo\u0142ania musz\u0105 by\u0107 identyczne lub jeden z atrybut\u00f3w musi umo\u017cliwia\u0107 przypisanie do innego atrybutu.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.useraction=W adnotacjach kodu \u017ar\u00f3d\u0142owego zmie\u0144 nazw\u0119 jednego z odwo\u0142a\u0144 lub zmie\u0144 jedn\u0105 z warto\u015bci powoduj\u0105cych konflikt tak, aby obie warto\u015bci by\u0142y identyczne lub jedna z nich mog\u0142a by\u0107 przypisana do innej.
+
+#-------------------------------------------------------------------------------
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E=CWWJP0043E: Odwo\u0142anie do trwa\u0142o\u015bci {0} jest deklarowane przez komponent {1} w module {2} aplikacji {3}, ale odwo\u0142ania do trwa\u0142o\u015bci java:global s\u0105 niepoprawne.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.explanation=Jednostki trwa\u0142o\u015bci maj\u0105 zasi\u0119g jednej aplikacji, dlatego odwo\u0142anie do trwa\u0142o\u015bci java:global nie ma znaczenia.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.useraction=Zmie\u0144 nazw\u0119 odwo\u0142ania do trwa\u0142o\u015bci, u\u017cywaj\u0105c przedrostka java:app lub java:module, lub usu\u0144 przedrostek java:global w celu u\u017cycia domy\u015blnej przestrzeni nazw java:comp.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E=CWWJP0044E: Zadeklarowano wiele definicji rozszerzonego kontekstu trwa\u0142o\u015bci jednostki trwa\u0142o\u015bci {0} z nier\u00f3wn\u0105 konfiguracj\u0105 synchronizacji.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.explanation=W przypadku danego stanowego komponentu bean sesji, kt\u00f3ry wi\u0119cej ni\u017c raz wstrzykuje konkretn\u0105 definicj\u0119 jednostki trwa\u0142o\u015bci jako rozszerzony kontekst trwa\u0142o\u015bci, typem synchronizacji dla wszystkich instancji wstrzykni\u0119cia musi by\u0107 SYNCHRONIZED lub UNSYNCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.useraction=Zmie\u0144 synchronizacj\u0119 wszystkich instancji wstrzykni\u0119cia jednostki trwa\u0142o\u015bci na SYNCHRONIZED lub UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E=CWWJP0045E: Nadklasa wstrzykn\u0119\u0142a rozszerzony kontekst trwa\u0142o\u015bci dla jednostki trwa\u0142o\u015bci {0}, kt\u00f3ra ma atrybut synchronizacji niezgodny ze wstrzykni\u0119ciem rozszerzonego kontekstu trwa\u0142o\u015bci w podklasie.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.explanation= Stanowy komponent bean sesji rozszerzy\u0142 klas\u0119, kt\u00f3ra wstrzykuje rozszerzony kontekst trwa\u0142o\u015bci dla wsp\u00f3lnej jednostki trwa\u0142o\u015bci, ale typ synchronizacji wstrzykni\u0119cia nadklasy nie jest zgodny z typem synchronizacji wstrzykni\u0119cia podklasy.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.useraction=Zmie\u0144 synchronizacj\u0119 wszystkich instancji wstrzykni\u0119cia jednostki trwa\u0142o\u015bci na SYNCHRONIZED lub UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E=CWWJP0046E: Nie mo\u017cna propagowa\u0107 kontekstu trwa\u0142o\u015bci JPA o typie UNSYNCHRONIZED do interfejsu EntityManager o typie SYNCHRONIZED.
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.explanation=Nie mo\u017cna propagowa\u0107 kontekstu trwa\u0142o\u015bci o typie synchronizacji UNSYNCHRONIZED do komponentu, kt\u00f3ry ma wstrzykni\u0119ty ten sam kontekst trwa\u0142o\u015bci, ale o typie synchronizacji SYNCHRONIZED. 
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.useraction=Zmie\u0144 wstrzykni\u0119cie @PersistenceContext w komponencie wywo\u0142uj\u0105cym i wywo\u0142ywanym na taki sam typ synchronizacji.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E=CWWJP0047E: Kontekst trwa\u0142o\u015bci powi\u0105zany z jednostk\u0105 trwa\u0142o\u015bci {0} ma typ SynchronizationType o warto\u015bci {1}, kt\u00f3ra jest niezgodna z rozszerzonym kontekstem trwa\u0142o\u015bci zadeklarowanym przez komponent {2}.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.explanation=Nie mo\u017cna propagowa\u0107 kontekstu trwa\u0142o\u015bci o typie synchronizacji UNSYNCHRONIZED do komponentu, kt\u00f3ry ma wstrzykni\u0119ty ten sam kontekst trwa\u0142o\u015bci, ale o typie synchronizacji SYNCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.useraction=Zmie\u0144 wstrzykni\u0119cie @PersistenceContext w komponencie wywo\u0142uj\u0105cym i wywo\u0142ywanym na taki sam typ synchronizacji.
+
+#-------------------------------------------------------------------------------
+REPORT_JPARUNTIME_CWWJP0048I=CWWJP0048I: Zainicjowano us\u0142ug\u0119 JPA dla poziomu specyfikacji JPA {0}.
+REPORT_JPARUNTIME_CWWJP0048I.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+REPORT_JPARUNTIME_CWWJP0048I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+# 0=providerClass, 1=providerJPALevel, 2=currentJPALevel, 3=currentProviderClasses
+INCORRECT_JPA_LEVEL_CWWJP0049E=CWWJP0049E: Nie mo\u017cna znale\u017a\u0107 klasy {0}, kt\u00f3ra jest wbudowanym dostawc\u0105 trwa\u0142o\u015bci dla interfejsu JPA {1}. Serwer jest obecnie skonfigurowany dla interfejsu JPA {2}, co odpowiada wbudowanym dostawcom trwa\u0142o\u015bci: {3}. Poziom JPA serwera lub klastra mo\u017cna zmieni\u0107 za pomoc\u0105 Konsoli administracyjnej lub komendy modifyJPASpecLevel AdminTask. Alternatywnie mo\u017cna zaktualizowa\u0107 aplikacj\u0119 tak, aby u\u017cywa\u0142a dostawcy trwa\u0142o\u015bci zgodnego z interfejsem JPA {2}.
+INCORRECT_JPA_LEVEL_CWWJP0049E.explanation=Nie mo\u017cna znale\u017a\u0107 klasy dostawcy JPA.
+INCORRECT_JPA_LEVEL_CWWJP0049E.useraction=Za pomoc\u0105 Konsoli administracyjnej lub komendy modifyJPASpecLevel AdminTask zmie\u0144 serwer lub konfiguracj\u0119 tak, aby by\u0142 u\u017cywany poziom JPA obs\u0142ugiwany przez bie\u017c\u0105cego dostawc\u0119 trwa\u0142o\u015bci.  Alternatywnie zaktualizuj aplikacj\u0119 tak, aby u\u017cywa\u0142a dostawcy trwa\u0142o\u015bci zgodnego z bie\u017c\u0105cym poziomem JPA.
+
+#-------------------------------------------------------------------------------
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E=CWWJP0050E: Nie mo\u017cna znale\u017a\u0107 dostawcy trwa\u0142o\u015bci {0}.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.explanation=Nie mo\u017cna znale\u017a\u0107 klasy dostawcy JPA.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.useraction=Zmie\u0144 serwer lub konfiguracj\u0119 tak, aby by\u0142 u\u017cywany poziom JPA obs\u0142ugiwany przez wskazanego dostawc\u0119 trwa\u0142o\u015bci.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE: <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>, bells-1.0, <bell>, <library>, JPA, or javax.persistence.spi.PersistenceProvider
+NO_JPA_PROVIDER_FOUND_CWWJP0051E=CWWJP0051E: Nie mo\u017cna znale\u017a\u0107 \u017cadnego domy\u015blnego dostawcy trwa\u0142o\u015bci w konfiguracji serwera.  Aby skonfigurowa\u0107 domy\u015blnego dostawc\u0119 trwa\u0142o\u015bci, u\u017cyj konfiguracji <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> lub w\u0142\u0105cz sk\u0142adnik bells-1.0 i skonfiguruj element <bell> dla elementu <library> zawieraj\u0105cego dostawc\u0119 JPA. 
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.explanation=Nie mo\u017cna znale\u017a\u0107 implementacji interfejsu javax.persistence.spi.PersistenceProvider.
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.useraction=Aby skonfigurowa\u0107 domy\u015blnego dostawc\u0119 trwa\u0142o\u015bci, u\u017cyj konfiguracji <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> lub w\u0142\u0105cz sk\u0142adnik bells-1.0 i skonfiguruj element <bell> dla elementu <library> zawieraj\u0105cego dostawc\u0119 JPA.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I=CWWJP0052I: Jest u\u017cywany dostawca JPA innej firmy: {0}.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.explanation=Wskazuje nazw\u0119 klasy dostawcy trwa\u0142o\u015bci u\u017cywanej implementacji JPA innej firmy.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I=CWWJP0053I: {0} jest u\u017cywany jako dostawca JPA innej firmy. Informacje o wersji: {1}. 
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.explanation=Wskazuje nazw\u0119 i wersj\u0119 u\u017cywanej implementacji JPA innej firmy.
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#-------------------------------------------------------------------------------
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: Implementacja {0} - {1} nie jest zgodna ze specyfikacj\u0105 JPA 2.1 i nie mo\u017cna jej u\u017cywa\u0107. Uzyskaj nowsz\u0105 wersj\u0119 dostawcy trwa\u0142o\u015bci JPA implementuj\u0105c\u0105 specyfikacj\u0119 JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=Nie mo\u017cna u\u017cywa\u0107 tego dostawcy trwa\u0142o\u015bci JPA, poniewa\u017c nie zawiera on implementacji metod wymaganych przez specyfikacj\u0119 JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Uzyskaj nowsz\u0105 wersj\u0119 dostawcy trwa\u0142o\u015bci JPA zgodn\u0105 ze specyfikacj\u0105 JPA 2.1.
+
+#-------------------------------------------------------------------------------
+# Error messages from the JPA Provider below this point
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+PROVIDER_INFO_CWWJP9990I=CWWJP9990I: {0}
+PROVIDER_INFO_CWWJP9990I.explanation=Dostawca interfejsu API Java Persistence (JPA) zapisa\u0142 ten komunikat informacyjny.
+PROVIDER_INFO_CWWJP9990I.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_WARNING_CWWJP9991W=CWWJP9991W: {0}
+PROVIDER_WARNING_CWWJP9991W.explanation=Dostawca interfejsu API Java Persistence (JPA) zarejestrowa\u0142 ten komunikat ostrzegawczy.
+PROVIDER_WARNING_CWWJP9991W.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_ERROR_CWWJP9992E=CWWJP9992E: {0}
+PROVIDER_ERROR_CWWJP9992E.explanation=Dostawca interfejsu API Java Persistence (JPA) zarejestrowa\u0142 ten komunikat o b\u0142\u0119dzie.
+PROVIDER_ERROR_CWWJP9992E.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_FATAL_CWWJP9993E=CWWJP9993E: {0}
+PROVIDER_FATAL_CWWJP9993E.explanation=Dostawca interfejsu API Java Persistence (JPA) zapisa\u0142 ten komunikat o b\u0142\u0119dzie krytycznym.
+PROVIDER_FATAL_CWWJP9993E.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 dostawcy JPA.
+
+#-------------------------------------------------------------------------------

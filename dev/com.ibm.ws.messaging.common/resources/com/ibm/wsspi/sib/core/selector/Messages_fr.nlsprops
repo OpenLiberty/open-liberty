@@ -1,0 +1,196 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# f179630.1       05-Nov-2003 nottinga Initial Message Drop.
+# d186315         06-Jan-2004 c8cowan  Edit error messages.
+# d190458         20-Feb-2004 nottinga Edited after review comments.      
+# d215963         14-Jul-2004 nottinga Updated message prefixes.
+# d32823          01-Dec-2005 nottinga Remove Core SPI references.
+# d450131         11-Jul-2007 nottinga Updated messages with ID feedback.
+#
+# Programmer Instructions:
+#
+# The special WAS messages CMSG0001 and CMSG0002 can be used for generic messages
+# refering the customer to contact WebSphere Service.
+#
+# -------------------------------------------------------------------------------------------------
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME com.ibm.ws.messaging.common/resources/com/ibm/wsspi/sib/core/selector/Messages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWSJC
+#COMPONENTNAMEFOR CWSJC SI Bus Core SPI
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+# leave the next line blank
+
+# -----------------------------------------------------------------------
+# Message:       CWSJC0001E: An attempt was made to get an SICoreConnectionFactory instance for a local messaging engine, but both the supplied bus and messaging engine name were null.
+# Severity:      error
+# Description:   A client of the SICoreConnectionFactorySelector class did not provide the bus name and messaging engine name in the map parameter.
+# System Action: None
+# User Response: CMSG0002
+# -----------------------------------------------------------------------
+BUS_AND_ME_NAMES_ARE_NULL_CWSJC0001E=CWSJC0001E: Une tentative a \u00e9t\u00e9 effectu\u00e9e d'obtenir une instance SICoreConnectionFactory d'un moteur de messagerie local, mais le nom du moteur de messagerie et du bus fournis \u00e9taient nuls.
+BUS_AND_ME_NAMES_ARE_NULL_CWSJC0001E.explanation=Un client de la classe SICoreConnectionFactorySelector n'a pas fourni le nom du bus et le nom du moteur de messagerie dans le param\u00e8tre de mappe.
+BUS_AND_ME_NAMES_ARE_NULL_CWSJC0001E.useraction=CMSG0002
+
+# -----------------------------------------------------------------------
+# Message:       CWSJC0002E: An attempt was made to get an SICoreConnectionFactory instance for a local messaging engine called {0}, but the supplied bus name was null.
+# Parameters:    {0} The name of the messaging engine.
+# Severity:      error
+# Description:   A client of the SICoreConnectionFactorySelector class did not provide the bus name in the map parameter.
+# System Action: None
+# User Response: CMSG0002
+# -----------------------------------------------------------------------
+BUS_NAME_IS_NULL_CWSJC0002E=CWSJC0002E: Une tentative a \u00e9t\u00e9 effectu\u00e9e d''obtenir une instance SICoreConnectionFactory d''un moteur de messagerie local appel\u00e9 {0}, mais le nom de bus fourni est nul.
+BUS_NAME_IS_NULL_CWSJC0002E.explanation=Un client de la classe SICoreConnectionFactorySelector n'a pas fourni le nom du bus dans le param\u00e8tre de mappe.
+BUS_NAME_IS_NULL_CWSJC0002E.useraction=CMSG0002
+
+# -----------------------------------------------------------------------
+# Message:       CWSJC0003E: An attempt was made to get an SICoreConnectionFactory instance for a local messaging engine on bus {0}, but the supplied messaging engine name was null.
+# Parameters:    {0} The name of the bus.
+# Severity:      error
+# Description:   A client of the SICoreConnectionFactorySelector class did not provide the messaging engine name.
+# System Action: None
+# User Response: CMSG0002
+# -----------------------------------------------------------------------
+ME_NAME_IS_NULL_CWSJC0003E=CWSJC0003E: Une tentative a \u00e9t\u00e9 effectu\u00e9e d''obtenir une instance SICoreConnectionFactory d''un moteur de messagerie local sur le bus {0}, mais le nom du moteur de messagerie fourni est nul.
+ME_NAME_IS_NULL_CWSJC0003E.explanation=Un client de la classe SICoreConnectionFactorySelector n'a pas fourni le nom du moteur de messagerie.
+ME_NAME_IS_NULL_CWSJC0003E.useraction=CMSG0002
+
+# -----------------------------------------------------------------------
+# Message:       CWSJC0004E: An attempt was made to get the SICoreConnectionFactory instance for a local messaging engine {1} on the bus {0}, but there are no local messaging engines.
+# Parameter {0}: The Bus Name
+# Parameter {1}: The Messaging Engine Name.
+# Severity:      error
+# Description:   A client of the SICoreConnectionFactorySelector class has provided the name of a messaging engine and bus, but there are no messaging engines running in the process from which the class is invoked.
+# System Action: None
+# User Response: CMSG0002
+# -----------------------------------------------------------------------
+ADMIN_SERVICE_NULL_CWSJC0004E=CWSJC0004E: Une tentative a \u00e9t\u00e9 effectu\u00e9e d''obtenir l''instanceSICoreConnectionFactory d''un moteur de messagerie local {1} sur le bus {0}, mais il n''existe aucun moteur de messagerie local.
+ADMIN_SERVICE_NULL_CWSJC0004E.explanation=Un client de la classe SICoreConnectionFactorySelector a fourni le nom d'un moteur de messagerie et d'un bus, mais aucun moteur de messagerie n'est en cours d'ex\u00e9cution dans le processus \u00e0 partir duquel la classe est appel\u00e9e.
+ADMIN_SERVICE_NULL_CWSJC0004E.useraction=CMSG0002
+
+# -----------------------------------------------------------------------
+# Message:       CWSJC0005E: An attempt was made to get the SICoreConnectionFactory instance for a local messaging engine {1} on the bus {0}, but the messaging engine does not exist.
+# Parameter {0}: The Bus Name.
+# Parameter {1}: The Messaging Engine Name.
+# Severity:      error
+# Description:   A client of the SICoreConnectionFactorySelector class attempted to get the SICoreConnectionFactory for a local messaging engine, but a messaging engine with that name on that bus did not exist on the process from which the call was issued. 
+# System Action: None
+# User Response: CMSG0002
+# -----------------------------------------------------------------------
+ME_NOT_FOUND_CWSJC0005E=CWSJC0005E: Une tentative a \u00e9t\u00e9 effectu\u00e9e d''obtenir l''instance SICoreConnectionFactory d''un moteur de messagerie local {1} sur le bus {0}, mais le moteur de messagerie n''existe pas.
+ME_NOT_FOUND_CWSJC0005E.explanation=Un client de la classe SICoreConnectionFactorySelector a tent\u00e9 d'obtenir l'\u00e9l\u00e9ment SICoreConnectionFactory sur un moteur de messagerie local, mais aucun moteur de messagerie portant ce nom sur ce bus n'existe sur le processus \u00e0 partir duquel l'appel a \u00e9t\u00e9 \u00e9mis. 
+ME_NOT_FOUND_CWSJC0005E.useraction=CMSG0002
+
+# -----------------------------------------------------------------------
+# Message:       CWSJC0006E: An internal error occurred. An attempt was made to load a class {0} that tries to extend com.ibm.wsspi.sib.core.selector.FactoryType, but this is not permitted.
+# Parameter {0}: The name of the class that was being loaded.
+# Severity:      error
+# Description:   CMSG0001
+# System Action: None
+# User Response: CMSG0002
+# -----------------------------------------------------------------------
+INVALID_SUBCLASS_CWSJC0006E=CWSJC0006E: Une erreur interne s''est produite. Une tentative a \u00e9t\u00e9 effectu\u00e9e de charger une classe {0} qui tente d''\u00e9tendre com.ibm.wsspi.sib.core.selector.FactoryType, mais cette action n''est pas admise.
+INVALID_SUBCLASS_CWSJC0006E.explanation=CMSG0001
+INVALID_SUBCLASS_CWSJC0006E.useraction=CMSG0002
+
+# ----------------------------------------------------------------------- 
+# Message:       CWSJC9999E: {0} 
+# Parameter {0}: The Message 
+# Severity:      error 
+# Note:          This message is inteded to be used only after the final NLS 
+#                translation date has passed and new messages need to be created
+# Description:   If the message does not give sufficient information, check 
+#                previous messages for further help. 
+# System Action: None 
+# User Response: See previous messages for further information. 
+# 
+# ----------------------------------------------------------------------- 
+TEMPORARY_CWSJC9999=CWSJC9999E: {0} 
+TEMPORARY_CWSJC9999.explanation=Si le message ne fournit pas suffisamment d'informations, consultez les messages \u00e9mis pr\u00e9c\u00e9demment pour obtenir plus de d\u00e9tails. 
+TEMPORARY_CWSJC9999.useraction=Consultez les messages pr\u00e9c\u00e9dents pour obtenir plus d'informations. 

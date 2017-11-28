@@ -1,0 +1,196 @@
+###############################################################################
+# Copyright (c) 2011, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWNEN (Injection Engine)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.injection/resources/com/ibm/ws/osgi/internal/resources/EJBContainerMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in this message file. All other
+#       CNTR ranges are reserved by com/ibm/ejs/container/container.nlsprops
+#
+#  		CNTR4000-CNTR4099 - general EJB messages
+#       CNTR4100+ - Metadata messages
+#-------------------------------------------------------------------------------
+
+STARTING_MODULE_CNTR4000I=CNTR4000I: \u6b63\u5728\u555f\u52d5 {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 {0} EJB \u6a21\u7d44\u3002
+STARTING_MODULE_CNTR4000I.explanation=\u4f3a\u670d\u5668\u6b63\u5728\u555f\u52d5 EJB \u6a21\u7d44\u3002
+STARTING_MODULE_CNTR4000I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+STARTED_MODULE_CNTR4001I=CNTR4001I: \u5df2\u9806\u5229\u555f\u52d5 {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 {0} EJB \u6a21\u7d44\u3002
+STARTED_MODULE_CNTR4001I.explanation=\u4f3a\u670d\u5668\u5df2\u555f\u52d5 EJB \u6a21\u7d44\u3002
+STARTED_MODULE_CNTR4001I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+ERROR_STARTING_MODULE_CNTR4002E=CNTR4002E: {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 {0} EJB \u6a21\u7d44\u7121\u6cd5\u555f\u52d5\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+ERROR_STARTING_MODULE_CNTR4002E.explanation=\u4f3a\u670d\u5668\u7121\u6cd5\u555f\u52d5 EJB \u6a21\u7d44\u3002
+ERROR_STARTING_MODULE_CNTR4002E.useraction=\u8acb\u5229\u7528\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u8b58\u5225\u554f\u984c\u4f86\u6e90\uff0c\u7136\u5f8c\u89e3\u6c7a\u554f\u984c\u3002\u8acb\u53c3\u95b1 WebSphere Application Server \u652f\u63f4\u7db2\u9801 (http://www.ibm.com/software/webservers/appserv/was/support/) \u4e0a\u7684\u554f\u984c\u5224\u65b7\u8cc7\u8a0a\uff0c\u4ee5\u53d6\u5f97\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+STOPPING_MODULE_CNTR4003I=CNTR4003I: \u6b63\u5728\u505c\u6b62 {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 {0} EJB \u6a21\u7d44\u3002
+STOPPING_MODULE_CNTR4003I.explanation=\u4f3a\u670d\u5668\u6b63\u5728\u505c\u6b62 EJB \u6a21\u7d44\u3002
+STOPPING_MODULE_CNTR4003I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+STOPPED_MODULE_CNTR4004I=CNTR4004I: \u5df2\u9806\u5229\u505c\u6b62 {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 {0} EJB \u6a21\u7d44\u3002
+STOPPED_MODULE_CNTR4004I.explanation=\u4f3a\u670d\u5668\u5df2\u505c\u6b62 EJB \u6a21\u7d44\u3002
+STOPPED_MODULE_CNTR4004I.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+
+ERROR_STOPPING_MODULE_CNTR4005E=CNTR4005E: {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u7684 {0} EJB \u6a21\u7d44\u7121\u6cd5\u505c\u6b62\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{2}
+ERROR_STOPPING_MODULE_CNTR4005E.explanation=\u4f3a\u670d\u5668\u7121\u6cd5\u505c\u6b62 EJB \u6a21\u7d44\u3002
+ERROR_STOPPING_MODULE_CNTR4005E.useraction=\u8acb\u5229\u7528\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u8b58\u5225\u554f\u984c\u4f86\u6e90\uff0c\u7136\u5f8c\u89e3\u6c7a\u554f\u984c\u3002\u8acb\u53c3\u95b1 WebSphere Application Server \u652f\u63f4\u7db2\u9801 (http://www.ibm.com/software/webservers/appserv/was/support/) \u4e0a\u7684\u554f\u984c\u5224\u65b7\u8cc7\u8a0a\uff0c\u4ee5\u53d6\u5f97\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+ERROR_STARTING_EJB_CNTR4006E=CNTR4006E: {2} \u61c9\u7528\u7a0b\u5f0f\u4e4b {1} \u6a21\u7d44\u4e2d\u7684 {0} Enterprise Bean \u7121\u6cd5\u555f\u52d5\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{3}
+ERROR_STARTING_EJB_CNTR4006E.explanation=Enterprise Bean \u662f\u914d\u7f6e\u6210\u5728\u5176\u7b2c\u4e00\u6b21\u4f7f\u7528\u6642\u555f\u52d5\uff0c\u800c\u4e0d\u662f\u5728\u5176\u6a21\u7d44\u555f\u52d5\u6642\u555f\u52d5\u3002\u5728\u7b2c\u4e00\u6b21\u4f7f\u7528 Enterprise Bean \u6642\uff0c\u7121\u6cd5\u555f\u52d5\u5b83\u3002
+ERROR_STARTING_EJB_CNTR4006E.useraction=\u8acb\u5229\u7528\u7570\u5e38\u72c0\u6cc1\u8cc7\u8a0a\u4f86\u8b58\u5225\u554f\u984c\u4f86\u6e90\uff0c\u7136\u5f8c\u89e3\u6c7a\u554f\u984c\u3002\u8acb\u53c3\u95b1 WebSphere Application Server \u652f\u63f4\u7db2\u9801 (http://www.ibm.com/software/webservers/appserv/was/support/) \u4e0a\u7684\u554f\u984c\u5224\u65b7\u8cc7\u8a0a\uff0c\u4ee5\u53d6\u5f97\u76f8\u95dc\u8cc7\u8a0a\u3002
+
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E=CNTR4007E: \u5efa\u7acb {1} Enterprise Bean\uff08\u4f4d\u65bc {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\uff09\u7684 {0} \u4ecb\u9762\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002\u5229\u7528 {4} JNDI \u540d\u7a31\u4f86\u67e5\u95b1 Enterprise Bean \u5931\u6557\u3002\u7570\u5e38\u72c0\u6cc1\uff1a{5}
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.explanation=\u4ee5\u6307\u5b9a\u7684 JNDI \u540d\u7a31\u5efa\u7acb Enterprise Bean \u7684\u5be6\u4f8b\u6642\uff0c\u767c\u751f\u932f\u8aa4\u3002
+JNDI_CANNOT_INSTANTIATE_OBJECT_CNTR4007E.useraction=\u5982\u9700\u932f\u8aa4\u7684\u76f8\u95dc\u8cc7\u8a0a\uff0c\u8acb\u53c3\u95b1\u5de2\u72c0\u7570\u5e38\u72c0\u6cc1\u6216\u4e4b\u524d\u7684\u932f\u8aa4\u3002
+
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E=CNTR4008E: \u7121\u6cd5\u91dd\u5c0d {4} JNDI \u540d\u7a31\u53d6\u5f97 {1} Enterprise Bean\uff08\u4f4d\u65bc {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\uff09\u7684 {0} Home \u4ecb\u9762\uff0c\u56e0\u70ba server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4 Home \u4ecb\u9762\u3002
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.explanation=ejbLite \u7279\u6027\u4e0d\u652f\u63f4 Enterprise Bean Home \u6216\u5143\u4ef6\u4ecb\u9762\u3002ejbLite \u7279\u6027\u53ea\u652f\u63f4\u5546\u696d\u4ecb\u9762\u3002
+JNDI_CANNOT_INSTANTIATE_HOME_CNTR4008E.useraction=\u8acb\u5c07\u61c9\u7528\u7a0b\u5f0f\u4fee\u6539\u6210\u4e0d\u4f7f\u7528 Enterprise Bean \u7684 Home \u4ecb\u9762\u548c\u5143\u4ef6\u4ecb\u9762\uff0c\u6216\u662f\u5c07 ejbHome \u7279\u6027\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E=CNTR4009E: \u7121\u6cd5\u91dd\u5c0d {4} JNDI \u540d\u7a31\u53d6\u5f97 {1} Enterprise Bean\uff08\u4f4d\u65bc {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\uff09\u7684 {0} \u9060\u7aef\u4ecb\u9762\uff0c\u56e0\u70ba server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4\u9060\u7aef\u4ecb\u9762\u3002
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.explanation=ejbLite \u7279\u6027\u4e0d\u652f\u63f4 Enterprise Bean \u9060\u7aef\u4ecb\u9762\u3002ejbLite \u7279\u6027\u53ea\u652f\u63f4\u672c\u7aef\u4ecb\u9762\u3002
+JNDI_CANNOT_INSTANTIATE_REMOTE_CNTR4009E.useraction=\u8acb\u5c07\u61c9\u7528\u7a0b\u5f0f\u4fee\u6539\u6210\u4e0d\u4f7f\u7528 Enterprise Bean \u9060\u7aef\u4ecb\u9762\uff0c\u6216\u662f\u5c07 ejbRemote \u7279\u6027\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W=CNTR4010W: {2} \u61c9\u7528\u7a0b\u5f0f {1} \u6a21\u7d44\u4e2d\u7684 {0} Enterprise Bean \u5ba3\u544a\u975e\u6301\u7e8c\u6027\u81ea\u52d5\u8a08\u6642\u5668\u3002server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4\u975e\u6301\u7e8c\u6027\u81ea\u52d5\u8a08\u6642\u5668\uff0c\u56e0\u6b64\u5c07\u4e88\u4ee5\u5ffd\u7565\u3002
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.explanation=ejbLite-3.1 \u7279\u6027\u4e0d\u652f\u63f4\u90e8\u7f72\u63cf\u8ff0\u5b50\u6216\u8a3b\u91cb\u4e2d\u6240\u5ba3\u544a\u7684\u975e\u6301\u7e8c\u6027\u81ea\u52d5 Enterprise Bean \u8a08\u6642\u5668\uff0c\u5728\u57f7\u884c\u6642\u671f\uff0c\u5c07\u4e88\u4ee5\u5ffd\u7565\u3002\u4f9d\u61c9\u7528\u7a0b\u5f0f\u6240\u9810\u671f\u7684 Enterprise Bean \u8a08\u6642\u5668\u7528\u6cd5\uff0c\u61c9\u7528\u7a0b\u5f0f\u4e0d\u4e00\u5b9a\u80fd\u5920\u6309\u9810\u671f\u4f86\u57f7\u884c\u3002
+AUTOMATIC_TIMERS_NOT_SUPPORTED_CNTR4010W.useraction=\u8acb\u514d\u9664\u5f9e\u61c9\u7528\u7a0b\u5f0f\u4e2d\u4f7f\u7528\u4e0d\u652f\u63f4\u7684\u81ea\u52d5\u8a08\u6642\u5668\uff0c\u6216\u662f\u5c07\u652f\u63f4\u975e\u6301\u7e8c\u6027\u81ea\u52d5\u8a08\u6642\u5668\u7684 ejbLite \u7279\u6027\u7248\u672c\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E=CNTR4011E: \u7121\u6cd5\u70ba\u6ce8\u5165\u4f5c\u696d\u53d6\u5f97 {1} Enterprise Bean\uff08\u4f4d\u65bc {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\uff09\u7684 {0} Home \u4ecb\u9762\uff0c\u56e0\u70ba server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4 Home \u4ecb\u9762\u3002
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.explanation=ejbLite \u7279\u6027\u4e0d\u652f\u63f4 Enterprise Bean Home \u6216\u5143\u4ef6\u4ecb\u9762\u3002ejbLite \u7279\u6027\u53ea\u652f\u63f4\u5546\u696d\u4ecb\u9762\u3002
+INJECTION_CANNOT_INSTANTIATE_HOME_CNTR4011E.useraction=\u8acb\u5c07\u61c9\u7528\u7a0b\u5f0f\u4fee\u6539\u6210\u4e0d\u4f7f\u7528 Enterprise Bean \u7684 Home \u4ecb\u9762\u548c\u5143\u4ef6\u4ecb\u9762\uff0c\u6216\u662f\u5c07 ejbHome \u7279\u6027\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E=CNTR4012E: \u7121\u6cd5\u70ba\u6ce8\u5165\u4f5c\u696d\u53d6\u5f97 {1} Enterprise Bean\uff08\u4f4d\u65bc {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\uff09\u7684 {0} \u9060\u7aef\u4ecb\u9762\uff0c\u56e0\u70ba server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4\u9060\u7aef\u4ecb\u9762\u3002
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.explanation=ejbLite \u7279\u6027\u4e0d\u652f\u63f4 Enterprise Bean \u9060\u7aef\u4ecb\u9762\u3002ejbLite \u7279\u6027\u53ea\u652f\u63f4\u672c\u7aef\u4ecb\u9762\u3002
+INJECTION_CANNOT_INSTANTIATE_REMOTE_CNTR4012E.useraction=\u8acb\u5c07\u61c9\u7528\u7a0b\u5f0f\u4fee\u6539\u6210\u4e0d\u4f7f\u7528 Enterprise Bean \u9060\u7aef\u4ecb\u9762\uff0c\u6216\u662f\u5c07 ejbRemote \u7279\u6027\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_ACTIVATED_CNTR4013I 
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ENDPOINT_DEACTIVATED_CNTR4014I
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W
+
+# In use in EJBMDBMessages.nlsprops
+# MDB_DESTINATION_NOT_FOUND_CNTR4016W
+
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E=CNTR4017E: \u7121\u6cd5\u6392\u5b9a {1} Enterprise Bean\uff08\u4f4d\u65bc {3} \u61c9\u7528\u7a0b\u5f0f\u7684 {2} \u6a21\u7d44\u4e2d\uff09\u7684 {0} \u975e\u540c\u6b65\u65b9\u6cd5\u3002server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4\u975e\u540c\u6b65 EJB \u65b9\u6cd5\u3002
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.explanation=ejbLite-3.1 \u7279\u6027\u4e0d\u652f\u63f4\u975e\u540c\u6b65 EJB \u65b9\u6cd5\u3002
+ASYNC_METHODS_NOT_SUPPORTED_CNTR4017E.useraction=\u8acb\u5f9e\u61c9\u7528\u7a0b\u5f0f\u4e2d\u79fb\u9664\u4f7f\u7528\u4e0d\u652f\u63f4\u7684\u975e\u540c\u6b65\u65b9\u6cd5\uff0c\u6216\u662f\u5c07\u652f\u63f4\u975e\u540c\u6b65\u65b9\u6cd5\u7684 ejbLite \u7279\u6027\u7248\u672c\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E=CNTR4018E: \u7121\u6cd5\u5efa\u7acb\u6216\u5b58\u53d6\u975e\u6301\u7e8c\u6027\u8a08\u6642\u5668\u3002server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4\u975e\u6301\u7e8c\u6027 EJB \u8a08\u6642\u5668\u3002
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.explanation=ejbLite-3.1 \u7279\u6027\u4e0d\u652f\u63f4\u975e\u6301\u7e8c\u6027 EJB \u8a08\u6642\u5668\u3002
+NON_PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4018E.useraction=\u8acb\u514d\u9664\u5f9e\u61c9\u7528\u7a0b\u5f0f\u4e2d\u4f7f\u7528\u4e0d\u652f\u63f4\u7684\u975e\u6301\u7e8c\u6027\u8a08\u6642\u5668\uff0c\u6216\u662f\u5c07\u652f\u63f4\u975e\u6301\u7e8c\u6027\u8a08\u6642\u5668\u7684 ejbLite \u7279\u6027\u7248\u672c\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E=CNTR4019E: \u7121\u6cd5\u5efa\u7acb\u6216\u5b58\u53d6\u6301\u7e8c\u6027\u8a08\u6642\u5668\u3002server.xml \u6a94\u4e2d\u6240\u914d\u7f6e\u7684\u4efb\u4f55\u7279\u6027\u90fd\u4e0d\u652f\u63f4\u6301\u7e8c\u6027 EJB \u8a08\u6642\u5668\u3002
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.explanation=ejbLite \u7279\u6027\u4e0d\u652f\u63f4\u6301\u7e8c\u6027 EJB \u8a08\u6642\u5668\u3002
+PERSISTENT_TIMERS_NOT_SUPPORTED_CNTR4019E.useraction=\u8acb\u514d\u9664\u5f9e\u61c9\u7528\u7a0b\u5f0f\u4e2d\u4f7f\u7528\u4e0d\u652f\u63f4\u7684\u6301\u7e8c\u6027\u8a08\u6642\u5668\uff0c\u6216\u662f\u5c07 ejbPersistentTimer \u7279\u6027\u65b0\u589e\u81f3 server.xml \u6a94\u3002
+
+DUPLICATE_EJB_CNTR4100E=CNTR4100E: ejb-jar.xml \u6a94\u4e2d <ejb-name> \u5143\u7d20\u7684 {0} \u503c\u4e0d\u662f\u552f\u4e00\u7684\u3002
+DUPLICATE_EJB_CNTR4100E.explanation=\u5728 ejb-jar.xml \u6a94\u4e2d\uff0c\u4ee5\u76f8\u540c\u540d\u7a31\u5b9a\u7fa9\u4e86\u591a\u500b Enterprise Bean\u3002\u6bcf\u500b Enterprise Bean \u90fd\u5fc5\u9808\u6709\u552f\u4e00\u540d\u7a31\u3002
+DUPLICATE_EJB_CNTR4100E.useraction=\u8acb\u79fb\u9664\u91cd\u8907\u7684 Enterprise Bean \u5b9a\u7fa9\u3002
+
+UNSPECIFIED_CLASS_CNTR4101E=CNTR4101E: \u5728 ejb-jar.xml \u6a94\u4e2d\uff0c\u672a\u6307\u5b9a {0} Enterprise Bean \u7684 <ejb-class> \u5143\u7d20\u3002
+UNSPECIFIED_CLASS_CNTR4101E.explanation=\u5728 ejb-jar.xml \u6a94\u4e2d\uff0c\u672a\u6307\u5b9a <ejb-class> \u5143\u7d20\u3002\u672a\u5229\u7528\u8a3b\u91cb\u4f86\u5b9a\u7fa9\u7684 Enterprise Bean \u9700\u8981\u9019\u500b\u5143\u7d20\u3002
+UNSPECIFIED_CLASS_CNTR4101E.useraction=\u8acb\u65b0\u589e <ejb-class> \u5143\u7d20\u5230 ejb-jar.xml \u6a94\u5167\u7684 Enterprise Bean \u5b9a\u7fa9\u4e2d\u3002
+
+UNSPECIFIED_SESSION_TYPE_CNTR4102E=CNTR4102E: \u5728 ejb-jar.xml \u6a94\u4e2d\uff0c\u672a\u6307\u5b9a {0} Session Bean \u7684 <session-type> \u5143\u7d20\u3002
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.explanation=\u5728 ejb-jar.xml \u6a94\u4e2d\uff0c\u672a\u6307\u5b9a <session-type> \u5143\u7d20\u3002\u672a\u5229\u7528\u8a3b\u91cb\u4f86\u5b9a\u7fa9\u7684 Session Bean \u9700\u8981\u9019\u500b\u5143\u7d20\u3002
+UNSPECIFIED_SESSION_TYPE_CNTR4102E.useraction=\u8acb\u65b0\u589e <session-type> \u5143\u7d20\u5230 Session Bean \u5b9a\u7fa9\u4e2d\u3002
+
+INCOMPATIBLE_KIND_CNTR4103E=CNTR4103E: \u4ee5\u4e0d\u4e00\u81f4\u7684 Bean \u985e\u578b\u4f86\u5b9a\u7fa9 {0} Enterprise Bean\u3002\u5728 ejb-jar.xml \u6a94\u4e2d\u4f7f\u7528 {1} \u5143\u7d20\uff0c\u5728 {3} \u985e\u5225\u4e0a\u6307\u5b9a {2} \u8a3b\u91cb\u3002
+INCOMPATIBLE_KIND_CNTR4103E.explanation=Enterprise Bean \u53ea\u80fd\u6709\u4e00\u500b\u985e\u578b\uff0c\u4f46 ejb-jar.xml \u6a94\u548c\u8a3b\u91cb\u6307\u5b9a\u4e86\u4e0d\u76f8\u5bb9\u7684\u985e\u578b\u3002
+INCOMPATIBLE_KIND_CNTR4103E.useraction=\u8acb\u8b8a\u66f4 Enterprise Bean \u7684\u5143\u7d20\u985e\u578b\u6216\u8a3b\u91cb\u985e\u578b\u3002
+
+INCOMPATIBLE_ANN_TYPE_CNTR4104E=CNTR4104E: \u4ee5\u4e0d\u4e00\u81f4\u7684 Bean \u985e\u578b\u4f86\u5b9a\u7fa9 {0} Enterprise Bean\u3002{3} \u985e\u5225\u540c\u6642\u6307\u5b9a\u4e86 {1} \u548c {2} \u8a3b\u91cb\u3002
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.explanation=Enterprise Bean \u53ea\u80fd\u6709\u4e00\u500b\u985e\u578b\uff0c\u4f46\u537b\u6307\u5b9a\u4e86\u591a\u500b\u5143\u4ef6\u5b9a\u7fa9\u8a3b\u91cb\u3002
+INCOMPATIBLE_ANN_TYPE_CNTR4104E.useraction=\u8acb\u79fb\u9664\u5176\u4e2d\u4e00\u9805\u5143\u4ef6\u5b9a\u7fa9\u8a3b\u91cb\u3002
+
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E=CNTR4105E: \u4ee5\u4e0d\u4e00\u81f4\u7684 Bean \u985e\u578b\u4f86\u5b9a\u7fa9 {0} Enterprise Bean\u3002\u5728 ejb-jar.xml \u6a94\u4e2d\u4f7f\u7528 <session-type>{1}</session-type> \u5143\u7d20\uff0c\u5728 {3} \u985e\u5225\u4e0a\u6307\u5b9a {2} \u8a3b\u91cb\u3002
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.explanation=Enterprise Bean \u53ea\u80fd\u6709\u4e00\u500b\u985e\u578b\uff0c\u4f46 ejb-jar.xml \u6a94\u548c\u8a3b\u91cb\u6307\u5b9a\u4e86\u4e0d\u76f8\u5bb9\u7684\u985e\u578b\u3002
+INCOMPATIBLE_SESSION_TYPE_CNTR4105E.useraction=\u8acb\u8b8a\u66f4 Enterprise Bean \u7684\u5143\u7d20\u985e\u578b\u6216\u8a3b\u91cb\u985e\u578b\u3002
+
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E=CNTR4106E: \u591a\u500b\u985e\u5225\u5ba3\u544a\u4e86 {0} Enterprise Bean\uff1a{2} \u985e\u5225\u4e0a\u7684 {1} \u8a3b\u91cb\u53ca {4} \u985e\u5225\u4e0a\u7684 {3} \u8a3b\u91cb\u3002
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.explanation=Enterprise Bean \u53ea\u80fd\u7531\u4e00\u500b\u985e\u5225\u5ba3\u544a\uff0c\u4f46\u5169\u500b\u500b\u5225\u985e\u5225\u4e0a\u7684\u8a3b\u91cb\u4ee5\u4e0d\u540c\u7684\u985e\u5225\u4f86\u5ba3\u544a\u9019\u500b Enterprise Bean\u3002
+INCOMPATIBLE_CLASS_ANN_ANN_CNTR4106E.useraction=\u8acb\u79fb\u9664\u5176\u4e2d\u4e00\u500b\u8a3b\u91cb\uff0c\u6216\u8b8a\u66f4\u5176\u4e2d\u4e00\u500b Enterprise Bean \u540d\u7a31\u3002
+
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E=CNTR4107E: \u5728 {1} Enterprise Bean \u7684 {0} \u985e\u5225\u4e0a\u540c\u6642\u6307\u5b9a\u4e86\u4e0d\u542b\u503c\u7684 @Remote \u548c @Local \u8a3b\u91cb\u3002
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.explanation=\u5982\u679c\u6307\u5b9a\u4e86\u4e0d\u542b\u503c\u7684 @Remote \u6216 @Local \u8a3b\u91cb\uff0c\u8868\u793a\u61c9\u5c07 implements \u5b50\u53e5\u4e0a\u7684\u5546\u696d\u4ecb\u9762\u5206\u5225\u8996\u70ba\u9060\u7aef\u6216\u672c\u7aef\uff0c\u56e0\u6b64\uff0c\u7121\u6cd5\u6307\u5b9a\u4e0d\u542b\u503c\u7684\u9019\u5169\u9805\u8a3b\u91cb\u3002
+INCOMPATIBLE_DEFAULT_BUSINESS_INTERFACE_TYPE_CNTR4107E.useraction=\u8acb\u79fb\u9664\u8a3b\u91cb\uff0c\u6216\u662f\u4ee5\u5546\u696d\u4ecb\u9762\u4f86\u6307\u5b9a\u8a3b\u91cb\u3002
+
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E=CNTR4108E: \u5728 {2} Enterprise Bean \u7684 {1} \u985e\u5225\u4e0a\u6307\u5b9a\u4e86\u4e0d\u542b\u503c\u7684 {0} \u8a3b\u91cb\uff0c\u4f46 implements \u5b50\u53e5\u6c92\u6709\u5305\u542b\u4efb\u4f55\u5546\u696d\u4ecb\u9762\u3002
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.explanation=\u5982\u679c\u6307\u5b9a\u4e86\u4e0d\u542b\u503c\u7684 @Remote \u6216 @Local \u8a3b\u91cb\uff0c\u8868\u793a\u61c9\u5c07 implements \u5b50\u53e5\u4e0a\u7684\u5546\u696d\u4ecb\u9762\u5206\u5225\u8996\u70ba\u9060\u7aef\u6216\u672c\u7aef\uff0c\u4f46\u662f\u985e\u5225\u7684 implements \u5b50\u53e5\u4e0a\u537b\u6c92\u6709\u4efb\u4f55\u5546\u696d\u4ecb\u9762\u3002
+DEFAULT_IMPLEMENTS_NONE_CNTR4108E.useraction=\u8acb\u5728 implements \u5b50\u53e5\u4e2d\u65b0\u589e\u5546\u696d\u4ecb\u9762\u3001\u79fb\u9664\u8a3b\u91cb\uff0c\u6216\u662f\u4ee5\u5546\u696d\u4ecb\u9762\u4f86\u6307\u5b9a\u8a3b\u91cb\u3002
+
+# Note: This message was added in 8.5.5 but is no longer used.
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E=CNTR4109E: \u5728 {2} Enterprise Bean \u7684 {1} \u985e\u5225\u4e0a\u6307\u5b9a\u4e86\u4e0d\u542b\u503c\u7684 {0} \u8a3b\u91cb\uff0c\u4f46 implements \u5b50\u53e5\u5305\u542b\u4e86\u591a\u500b\u5546\u696d\u4ecb\u9762\uff1a{3} \u548c {4}\u3002
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.explanation=\u5982\u679c\u6307\u5b9a @Remote \u6216 @Local \u8a3b\u91cb\uff0c\u4e14\u6c92\u6709\u6307\u5b9a\u503c\uff0c\u8868\u793a\u61c9\u5c07 implements \u5b50\u53e5\u4e0a\u7684\u5546\u696d\u4ecb\u9762\u5206\u5225\u8996\u70ba\u9060\u7aef\u6216\u672c\u7aef\uff0c\u4f46\u662f\u985e\u5225\u7684 implements \u5b50\u53e5\u4e0a\u537b\u6709\u591a\u500b\u5546\u696d\u4ecb\u9762\u3002
+DEFAULT_IMPLEMENTS_MULTIPLE_CNTR4109E.useraction=\u8acb\u5728 implements \u5b50\u53e5\u4e0a\u4fdd\u7559\u4e00\u500b\u5546\u696d\u4ecb\u9762\uff0c\u5176\u9918\u5168\u90e8\u79fb\u9664\uff0c\u6216\u662f\u4ee5\u6240\u6709\u5546\u696d\u4ecb\u9762\u4f86\u6307\u5b9a\u8a3b\u91cb\u3002
+
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E=CNTR4110E: {0} Enterprise Bean \u5c07 {1} \u985e\u5225\u540c\u6642\u6307\u5b9a\u70ba\u672c\u7aef\u5546\u696d\u4ecb\u9762\u548c\u9060\u7aef\u5546\u696d\u4ecb\u9762\u3002
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.explanation=Enterprise Bean \u7684\u985e\u5225\u53ef\u4ee5\u6307\u5b9a\u70ba\u672c\u7aef\u5546\u696d\u4ecb\u9762\u6216\u9060\u7aef\u5546\u696d\u4ecb\u9762\uff0c\u4f46\u4e0d\u80fd\u5169\u8005\u90fd\u6307\u5b9a\u3002
+INCOMPATIBLE_INTERFACE_TYPE_CNTR4110E.useraction=\u8acb\u66f4\u65b0 Enterprise Bean \u985e\u5225\u3001\u4ecb\u9762\u985e\u5225\u6216\u90e8\u7f72\u63cf\u8ff0\u5b50\uff0c\u4ee5\u4fbf\u5c07\u4ecb\u9762\u6307\u5b9a\u70ba\u672c\u7aef\u5546\u696d\u4ecb\u9762\u6216\u9060\u7aef\u5546\u696d\u4ecb\u9762\uff0c\u4f46\u4e0d\u80fd\u5169\u8005\u90fd\u6307\u5b9a\u3002
+
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E=CNTR4111E: \u5728 {1} \u4ecb\u9762\u4e0a\uff0c\u5c0d {0} \u8a3b\u91cb\u6307\u5b9a\u4e86\u4e00\u500b\u503c\u3002{3} Enterprise Bean \u4e4b {2} \u985e\u5225\u7684 implements \u5b50\u53e5\u4e0a\u5df2\u6307\u5b9a\u9019\u500b\u4ecb\u9762\u3002
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.explanation=\u7576\u5728 Enterprise Bean \u985e\u5225\u4e0a\u6307\u5b9a @Remote \u548c @Local \u8a3b\u91cb\u6642\uff0c\u9019\u4e9b\u8a3b\u91cb\u53ea\u80fd\u6709\u4e00\u500b\u503c\u3002
+IMPLEMENTS_INTERFACE_TYPE_VALUE_CNTR4111E.useraction=\u8acb\u5c07\u503c\u5f9e\u4ecb\u9762\u4e0a\u7684 @Remote \u6216 @Local \u8a3b\u91cb\u79fb\u9664\u3002
+
+ORPHAN_EXTENSION_ENTRY_CNTR4112W=CNTR4112W: \u5728 {1} \u6a21\u7d44\u7684 ibm-ejb-jar-ext.xml \u6a94\u4e2d\uff0c{0} \u5ef6\u4f38\u53c3\u7167\u4e0d\u5b58\u5728\u7684 {2} Enterprise Bean\u3002
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.explanation=Enterprise Bean \u540d\u7a31\u53ef\u80fd\u4e0d\u6b63\u78ba\uff0c\u6216\u5df2\u70ba\u4e0d\u5b58\u5728\u7684 Enterprise Bean \u6307\u5b9a\u5ef6\u4f38\u3002
+ORPHAN_EXTENSION_ENTRY_CNTR4112W.useraction=\u8acb\u66f4\u6b63 ibm-ejb-jar-ext.xml \u6a94\u4e2d\u7684 Enterprise Bean \u540d\u7a31\u3002
+
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E=CNTR4113E: \u5728 ibm-ejb-jar-ext.xml \u6a94\u4e2d\uff0c\u914d\u7f6e {2} \u61c9\u7528\u7a0b\u5f0f {1} \u6a21\u7d44\u4e2d\u7684 {0} Enterprise Bean\uff0c\u4f86\u4f7f\u7528 Liberty \u8a2d\u5b9a\u6a94\u4e0d\u652f\u63f4\u7684 {3} \u5340\u57df\u4ea4\u6613\u754c\u9650\u3002
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.explanation=Liberty \u8a2d\u5b9a\u6a94\u4e0d\u652f\u63f4 <local-transaction> \u5ef6\u4f38\u7684\u754c\u9650\u5c6c\u6027\u503c ACTIVITY_SESSION\u3002
+RESOLVER_ACTIVITY_SESSION_NOT_SUPPORTED_CNTR4113E.useraction=\u8acb\u66f4\u65b0 ibm-ejb-jar-ext.xml \u6a94\uff0c\u5c0d\u754c\u9650\u6307\u5b9a BEAN_METHOD\uff0c\u6216\u79fb\u9664\u754c\u9650\u5c6c\u6027\u4f86\u4f7f\u7528\u9810\u8a2d\u503c BEAN_METHOD\u3002
+
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E=CNTR4114E: \u591a\u500b\u985e\u5225\u5ba3\u544a\u4e86 {0} Enterprise Bean\uff1a\u4ee5 ejb-jar.xml \u6a94 <ejb-class> \u5143\u7d20\u4e2d\u7684 {1} \u503c\uff0c\u4ee5\u53ca\u7531 {3} \u985e\u5225\u4e0a\u7684 {2} \u8a3b\u91cb\u3002
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.explanation=Enterprise Bean \u53ea\u80fd\u4ee5\u4e00\u500b\u985e\u5225\u4f86\u5b9a\u7fa9\uff0c\u4f46\u537b\u4ee5 XML \u4e2d\u7684\u4e0d\u540c\u985e\u5225\u4ee5\u53ca\u7531\u8a3b\u91cb\u4f86\u5ba3\u544a\u3002
+INCOMPATIBLE_CLASS_XML_ANN_CNTR4114E.useraction=\u8acb\u5f9e ejb-jar.xml \u4e2d\u79fb\u9664\u985e\u5225\uff0c\u79fb\u9664\u8a3b\u91cb\uff0c\u6216\u8b8a\u66f4\u5176\u4e2d\u4e00\u500b Enterprise Bean \u540d\u7a31\u3002
+
+INVALID_CLASS_CNTR4115E=CNTR4115E: ejb-jar.xml \u6a94\u4e2d\u7684 <ejb-class> \u5143\u7d20\u70ba {1} Enterprise Bean \u6307\u5b9a\u4e86 {0} \u985e\u5225\u540d\u7a31\uff0c\u4f46\u537b\u627e\u4e0d\u5230\u985e\u5225\u6a94\u3002
+INVALID_CLASS_CNTR4115E.explanation=ejb-jar.xml \u6a94\u53ef\u80fd\u6307\u5b9a\u4e86\u7121\u6548\u7684\u985e\u5225\u540d\u7a31\uff0c\u6216\u662f\u985e\u5225\u6a94\u672a\u5957\u88dd\u5728\u61c9\u7528\u7a0b\u5f0f\u4e2d\u3002
+INVALID_CLASS_CNTR4115E.useraction=\u8acb\u66f4\u6b63 ejb-jar.xml \u6a94\u4e2d\u7684\u985e\u5225\u540d\u7a31\uff0c\u6216\u662f\u5c07\u985e\u5225\u6a94\u5957\u88dd\u5728\u61c9\u7528\u7a0b\u5f0f\u4e2d\u3002

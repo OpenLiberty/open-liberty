@@ -1,0 +1,33 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.wim.registry.util/resources/com/ibm/ws/security/wim/registry/util/resources/RegistryUtilMessages.nlsprops
+#COMPONENTPREFIX CWIML
+#COMPONENTNAMEFOR Virtual Member Manager user registry utilities
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: Profile Manager: 1000-1999
+# Message prefix block: Repository Manager: 4000-4499
+# Message prefix block: Adapters: 4500-4999
+
+INVALID_PROPERTY_VALUE_FORMAT=CWIML1015E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek form\u00e1tuma nem \u00e9rv\u00e9nyes. A tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek megfelel\u0151 adatt\u00edpus\u00fanak \u00e9s form\u00e1tum\u00fanak kell lennie.
+INVALID_PROPERTY_VALUE_FORMAT.explanation=A tulajdons\u00e1g \u00e9rt\u00e9k\u00e9nek form\u00e1tuma \u00e9rv\u00e9nytelen. P\u00e9ld\u00e1ul a tulajdons\u00e1g t\u00edpusa eg\u00e9sz sz\u00e1m, de a megadott \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes eg\u00e9sz sz\u00e1m.
+INVALID_PROPERTY_VALUE_FORMAT.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g \u00e9rt\u00e9ke megfelel\u0151 adatt\u00edpus\u00fa \u00e9s form\u00e1tum\u00fa.
+
+ENTITY_NOT_FOUND=CWIML4001E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. A(z) {0} entit\u00e1s nem tal\u00e1lhat\u00f3. Adja meg a helyes entit\u00e1st vagy hozza l\u00e9tre a hi\u00e1nyz\u00f3 entit\u00e1st.
+ENTITY_NOT_FOUND.explanation=A megadott entit\u00e1sn\u00e9v, amely lehet uniqueName vagy uniqueId, nem tal\u00e1lhat\u00f3 az alapul szolg\u00e1l\u00f3 lerakatban. A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem folytat\u00f3dhat az entit\u00e1s megtal\u00e1l\u00e1sa n\u00e9lk\u00fcl.
+ENTITY_NOT_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az entit\u00e1s l\u00e9tezik az alapul szolg\u00e1l\u00f3 lerakatban. Ha az entit\u00e1s l\u00e9tezik, akkor ellen\u0151rizze, hogy be van \u00e1ll\u00edtva az olvas\u00e1si jogosults\u00e1g az entit\u00e1shoz, \u00e9s pr\u00f3b\u00e1lkozzon \u00fajra.
+
+MULTIPLE_PRINCIPALS_FOUND=CWIML4538E: A felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1s m\u0171velet nem hajthat\u00f3 v\u00e9gre. T\u00f6bb rekord l\u00e9tezik a(z) {0} azonos\u00edt\u00f3n\u00e9vhez a be\u00e1ll\u00edtott felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sokban. Az azonos\u00edt\u00f3n\u00e9vnek egyedinek kell lennie az \u00f6sszes felhaszn\u00e1l\u00f3i nyilv\u00e1ntart\u00e1sban.
+MULTIPLE_PRINCIPALS_FOUND.explanation=T\u00f6bb azonos\u00edt\u00f3 tal\u00e1lhat\u00f3 a megadott azonos\u00edt\u00f3n\u00e9vhez. A bejelentkez\u00e9si folyamat nem folytathat\u00f3.
+MULTIPLE_PRINCIPALS_FOUND.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a helyes azonos\u00edt\u00f3n\u00e9v van megadva. P\u00e9ld\u00e1ul az azonos\u00edt\u00f3n\u00e9v egyedi n\u00e9vk\u00e9nt val\u00f3 megad\u00e1s\u00e1val elker\u00fclhet\u0151 ez a t\u00edpus\u00fa kiv\u00e9tel.

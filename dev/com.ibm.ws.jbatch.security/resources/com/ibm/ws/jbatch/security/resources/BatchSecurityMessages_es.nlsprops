@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: La seguridad de proceso por lotes est\u00e1 habilitada.
+BATCH_SECURITY_ENABLED.explanation=Los usuarios tienen autorizaci\u00f3n para roles de proceso por lotes cuando realizan todas las operaciones por lotes.
+BATCH_SECURITY_ENABLED.useraction=No se requiere ninguna acci\u00f3n.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: La seguridad de proceso por lotes est\u00e1 inhabilitada.
+BATCH_SECURITY_DISABLED.explanation=Los usuarios NO tienen autorizaci\u00f3n para roles de proceso por lotes.
+BATCH_SECURITY_DISABLED.useraction=Si no es necesaria ninguna autorizaci\u00f3n basada en rol de proceso por lotes en esta configuraci\u00f3n de servidor, entonces no es necesaria ninguna acci\u00f3n.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: El usuario {0} no est\u00e1 autorizado a realizar operaciones de proceso por lotes asociadas a la instancia de trabajo {1}.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=El usuario no forma parte de un rol de proceso por lotes que est\u00e9 autorizado a realizar la operaci\u00f3n por lotes solicitada en esta instancia de trabajo.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Si el usuario est\u00e1 autorizado a realizar la operaci\u00f3n por lotes solicitada, configure la autorizaci\u00f3n de seguridad de proceso por lotes y a\u00f1ada este usuario a los roles de proceso por lotes necesarios. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: El usuario {0} no est\u00e1 autorizado a realizar ninguna operaci\u00f3n por lotes.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=El usuario no forma parte de ning\u00fan rol de proceso por lotes y no est\u00e1 autorizado a realizar operaciones por lotes.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Si el usuario no est\u00e1 autorizado a ser un usuario de proceso por lotes, entonces no es necesaria ninguna acci\u00f3n. Si el usuario est\u00e1 autorizado a realizar las operaciones por lotes y la seguridad de proceso por lotes est\u00e1 habilitada, configure la autorizaci\u00f3n de seguridad de proceso por lotes y a\u00f1ada este usuario a los roles de proceso por lotes necesarios.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: El usuario {0} no est\u00e1 autorizado a iniciar trabajos de proceso por lotes.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=El usuario no forma parte de un rol de proceso por lotes que est\u00e9 autorizado a iniciar trabajos de proceso por lotes.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Si el usuario no est\u00e1 autorizado a iniciar trabajos de proceso por lotes, entonces no es necesaria ninguna acci\u00f3n. Si el usuario est\u00e1 autorizado a realizar la operaci\u00f3n por lotes solicitada, configure la autorizaci\u00f3n de seguridad de proceso por lotes y a\u00f1ada este usuario a los roles de proceso por lotes necesarios.

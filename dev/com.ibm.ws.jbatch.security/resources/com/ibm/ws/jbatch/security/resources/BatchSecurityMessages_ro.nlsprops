@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jbatch.security/resources/com/ibm/ws/jbatch/security/resources/BatchSecurityMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0300 - 0349: com.ibm.ws.jbatch.security
+# 
+
+#No fill-ins
+BATCH_SECURITY_ENABLED=CWWKY0300I: Este activat\u0103 securitatea de batch.
+BATCH_SECURITY_ENABLED.explanation=Utilizatorii sunt autoriza\u0163i pentru roluri de batch c\u00e2nd se realizeaz\u0103 toate opera\u0163iile de batch.
+BATCH_SECURITY_ENABLED.useraction=Nicio ac\u0163iune nu este necesar\u0103.
+
+#No fill-ins
+BATCH_SECURITY_DISABLED=CWWKY0301I: Este dezactivat\u0103 securitatea de batch.
+BATCH_SECURITY_DISABLED.explanation=Utilizatorii NU sunt autoriza\u0163i pentru rolurile de batch.
+BATCH_SECURITY_DISABLED.useraction=Dac\u0103 nu este necesar\u0103 nicio autorizare bazat\u0103 pe rol de batch \u00een aceast\u0103 configura\u0163ie de server, atunci nicio ac\u0163iune nu este necesar\u0103.
+
+#{0} The invocation subject on the thread.
+#{1} The job instance id.
+USER_UNAUTHORIZED_JOB_INSTANCE=CWWKY0302W: Utilizatorul {0} nu este autorizat s\u0103 realizeze opera\u0163ii de batch asociate cu instan\u0163a de joburi {1}.
+USER_UNAUTHORIZED_JOB_INSTANCE.explanation=Utilizatorul nu este parte a unui rol de batch care este autorizat s\u0103 realizeze opera\u0163ia de batch cerut\u0103 pe instan\u0163a de joburi.
+USER_UNAUTHORIZED_JOB_INSTANCE.useraction=Dac\u0103 utilizatorul este autorizat s\u0103 realizeze opera\u0163ia de batch cerut\u0103, atunci configura\u0163i autoriza\u0163ia de securitate batch \u015fi ad\u0103uga\u0163i acest utilizator la rolurile de batch necesare. 
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_NO_BATCH_ROLES=CWWKY0303W: Utilizatorul {0} nu este autorizat s\u0103 realizeze nicio opera\u0163ie de batch.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.explanation=Utilizatorul nu este parte din niciun rol de batch \u015fi nu este autorizat s\u0103 realizeze opera\u0163ii de batch.
+USER_UNAUTHORIZED_NO_BATCH_ROLES.useraction=Dac\u0103 utilizatorul nu este autorizat s\u0103 fie un utilizator de batch, atunci nicio ac\u0163iune nu este necesar\u0103. Dac\u0103 utilizatorul este autorizat pentru a realiza opera\u0163ii de batch \u015fi securitatea batch este activat\u0103, atunci configura\u0163i autoriza\u0163ia de securitate batch \u015fi ad\u0103uga\u0163i acest utilizator a rolurile de batch necesare.
+
+#{0} The invocation subject on the thread.
+USER_UNAUTHORIZED_TO_START_JOB=CWWKY0304W: Utilizatorul {0} nu este autorizat s\u0103 porneasc\u0103 joburi batch.
+USER_UNAUTHORIZED_TO_START_JOB.explanation=Utilizatorul nu este parte a unui rol de batch care este autorizat s\u0103 porneasc\u0103 joburi de batch.
+USER_UNAUTHORIZED_TO_START_JOB.useraction=Dac\u0103 utilizatorul nu este autorizat s\u0103 porneasc\u0103 joburi de batch, atunci nicio ac\u0163iune nu este necesar\u0103. Dac\u0103 utilizatorul este autorizat s\u0103 realizeze opera\u0163ia de batch cerut\u0103, atunci configura\u0163i autoriza\u0163ia de securitate batch \u015fi ad\u0103uga\u0163i acest utilizator la rolurile de batch necesare. 

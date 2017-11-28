@@ -1,0 +1,68 @@
+###############################################################################
+# Copyright (c) 2013, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.mdb/resources/com/ibm/ws/mdb/resources/EJBMDBMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in EJBContainerMessages.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
+
+MDB_ENDPOINT_ACTIVATED_CNTR4013I=CNTR4013I: A(z) {0} \u00fczenetvez\u00e9relt komponens \u00fczenet v\u00e9gpontja aktiv\u00e1l\u00e1sra ker\u00fclt \u00e9s k\u00e9szen \u00e1ll \u00fczenetek fogad\u00e1s\u00e1ra. 
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.explanation=Az \u00fczenetvez\u00e9relt komponens aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1sa el\u00e9rhet\u0151, tov\u00e1bb\u00e1 az \u00fczenet v\u00e9gpont akt\u00edv \u00e9s k\u00e9szen \u00e1ll \u00fczenetek fogad\u00e1s\u00e1ra.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.useraction=Semmit sem kell tennie.
+
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I=CNTR4014I: A(z) {0} \u00fczenetvez\u00e9relt komponens \u00fczenet v\u00e9gpontja le\u00e1ll\u00edt\u00e1sra ker\u00fclt \u00e9s nem \u00e9rhet\u0151 el \u00fczenetek fogad\u00e1s\u00e1hoz.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.explanation=Az \u00fczenetvez\u00e9relt komponens elt\u00e1vol\u00edt\u00e1s alatt van, vagy az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s m\u00e1r nem \u00e9rhet\u0151 el. Az \u00fczenetv\u00e9gpont m\u00e1r nem \u00e9rhet\u0151 el \u00fczenetek fogad\u00e1s\u00e1hoz.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.useraction=Semmit sem kell tennie.
+
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W=CNTR4015W: A(z) {0} \u00fczenetvez\u00e9relt komponens \u00fczenetv\u00e9gpontja nem aktiv\u00e1lhat\u00f3, mert a(z) {1} aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s nem \u00e9rhet\u0151 el. Az \u00fczenetv\u00e9gpont nem fogad \u00fczeneteket, am\u00edg az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s el\u00e9rhet\u0151 nem lesz.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja az \u00fczenetvez\u00e9relt komponenst, de az \u00fczenetv\u00e9gpontot nem tudja aktiv\u00e1lni, mert az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s nem tal\u00e1lhat\u00f3. Az \u00fczenetv\u00e9gpont nem fogad \u00fczeneteket, am\u00edg a v\u00e9gpont aktiv\u00e1l\u00e1sra nem ker\u00fcl.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Ellen\u0151rizze, hogy az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s a megadott n\u00e9vvel be lett-e \u00e1ll\u00edtva. Ha a konfigur\u00e1ci\u00f3 l\u00e9tezik, akkor v\u00e1rja meg, hogy az aktiv\u00e1l\u00e1s meghat\u00e1roz\u00e1s el\u00e9rhet\u0151 legyen.
+
+MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: A(z) {0} \u00fczenetvez\u00e9relt komponens \u00fczenetv\u00e9gpontja nem aktiv\u00e1lhat\u00f3, mert a(z) {1} c\u00edmzett nem \u00e9rhet\u0151 el. Az \u00fczenetv\u00e9gpont nem fogad \u00fczeneteket, am\u00edg a c\u00edmzett el\u00e9rhet\u0151 nem lesz.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=A kiszolg\u00e1l\u00f3 elind\u00edtja az \u00fczenetvez\u00e9relt komponenst, de az \u00fczenetv\u00e9gpontot nem tudja aktiv\u00e1lni, mert a c\u00edmzett nem tal\u00e1lhat\u00f3. Az \u00fczenetv\u00e9gpont nem fogad \u00fczeneteket, am\u00edg a v\u00e9gpont aktiv\u00e1l\u00e1sra nem ker\u00fcl.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Ellen\u0151rizze, hogy a c\u00edmzett a megadott n\u00e9vvel be lett-e \u00e1ll\u00edtva. Ha a konfigur\u00e1ci\u00f3 l\u00e9tezik, akkor v\u00e1rja meg, hogy a c\u00edmzett el\u00e9rhet\u0151 legyen.

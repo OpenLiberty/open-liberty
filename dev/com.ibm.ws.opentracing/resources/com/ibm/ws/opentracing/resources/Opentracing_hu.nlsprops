@@ -1,0 +1,96 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMOT
+#COMPONENTNAMEFOR CWMOT MicroProfile Opentracing API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+# -----------------------------------------------------------------------
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Opentracing Impl -  range is 0000-4999, plus 9999 for the emergency message
+#-----------------------------------------------------------------------------------------------------------------------------
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI=CWMOT0000E: Az alkalmaz\u00e1sn\u00e9v kikeres\u00e9se a JNDI-ben nem ad vissza \u00e9rt\u00e9ket. Az Opentracing szolg\u00e1ltat\u00e1sn\u00e9vhez az alap\u00e9rtelmezett n\u00e9v ker\u00fcl alkalmaz\u00e1sra.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.explanation=A szolg\u00e1ltat\u00e1s biztos\u00edtja az alkalmaz\u00e1snevet a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory megval\u00f3s\u00edt\u00e1shoz. Az alkalmaz\u00e1snevet a "java:app/AppName" JNDI kikeres\u00e9se nem tudja lek\u00e9rni. Alap\u00e9rtelmezett szolg\u00e1ltat\u00e1sn\u00e9v lett megadva.
+OPENTRACING_NO_APPNAME_FOUND_IN_JNDI.useraction=\u00c1llap\u00edtsa meg, hogy az alkalmaz\u00e1sn\u00e9v mi\u00e9rt nem \u00e9rhet\u0151 el a "java:app/AppName" JNDI kikeres\u00e9se sor\u00e1n.
+
+OPENTRACING_COULD_NOT_CREATE_TRACER=CWMOT0001E: A felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory.newInstance(...) met\u00f3dus megh\u00edv\u00e1sa kiv\u00e9tellel meghi\u00fasult. \u00dczenet = {0}
+OPENTRACING_COULD_NOT_CREATE_TRACER.explanation=A szolg\u00e1ltat\u00e1s \u00f6ssze\u00e1ll\u00edtja a Tracer megval\u00f3s\u00edt\u00e1sokat egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory seg\u00edts\u00e9g\u00e9vel. Az OpentracingTracerFactory.newInstance met\u00f3dus kiv\u00e9telt adott vissza.
+OPENTRACING_COULD_NOT_CREATE_TRACER.useraction=\u00c1llap\u00edtsa meg, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory newInstance met\u00f3dus mi\u00e9rt adott vissza kiv\u00e9telt.
+
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST=CWMOT0002E: A bej\u00f6v\u0151 k\u00e9r\u00e9shez nem \u00e1ll rendelkez\u00e9sre Tracer. A bej\u00f6v\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a fels\u0151bb szint\u0171 szolg\u00e1ltat\u00e1ssal.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.explanation=A Tracer megval\u00f3s\u00edt\u00e1s nem volt el\u00e9rhet\u0151, amikor k\u00e9r\u00e9s \u00e9rkezett az alkalmaz\u00e1s v\u00e9gpontj\u00e1n\u00e1l. A bej\u00f6v\u0151 k\u00e9r\u00e9s nem biztos\u00edt inform\u00e1ci\u00f3kat az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra.
+OPENTRACING_NO_TRACER_FOR_INBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Tracer mi\u00e9rt nem \u00e9rhet\u0151 el.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST=CWMOT0003E: A bej\u00f6v\u0151 k\u00e9r\u00e9shez l\u00e9trehozott Span nem el\u00e9rhet\u0151 a k\u00e9rd\u00e9s megv\u00e1laszol\u00e1s\u00e1hoz. A bej\u00f6v\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a fels\u0151bb szint\u0171 szolg\u00e1ltat\u00e1ssal.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.explanation=A k\u00e9r\u00e9s meg\u00e9rkez\u00e9sekor l\u00e9trehozott Span nem volt el\u00e9rhet\u0151 a v\u00e1lasz visszak\u00fcld\u00e9sekor. Az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra nem biztos\u00edtott Span inform\u00e1ci\u00f3k.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_INBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Span mi\u00e9rt nem \u00e9rhet\u0151 el.
+
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST=CWMOT0004E: A kimen\u0151 k\u00e9r\u00e9shez nem tal\u00e1lhat\u00f3 Tracer. A kimen\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a bej\u00f6v\u0151 k\u00e9r\u00e9ssel.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.explanation=A Tracer megval\u00f3s\u00edt\u00e1s nem volt el\u00e9rhet\u0151, amikor az alkalmaz\u00e1s k\u00e9r\u00e9st k\u00fcld\u00f6tt. A kimen\u0151 k\u00e9r\u00e9s nem biztos\u00edt inform\u00e1ci\u00f3kat az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra.
+OPENTRACING_NO_TRACER_FOR_OUTBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Tracer mi\u00e9rt nem \u00e9rhet\u0151 el.
+
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST=CWMOT0005E: A kimen\u0151 k\u00e9r\u00e9shez l\u00e9trehozott Span nem el\u00e9rhet\u0151 a k\u00e9rd\u00e9s megv\u00e1laszol\u00e1s\u00e1hoz. A kimen\u0151 k\u00e9r\u00e9s nem korrel\u00e1l a bej\u00f6v\u0151 k\u00e9r\u00e9ssel.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.explanation=A k\u00e9r\u00e9s k\u00fcld\u00e9sekor l\u00e9trehozott Span nem volt el\u00e9rhet\u0151 a v\u00e1lasz visszak\u00fcld\u00e9sekor. Az Opentracing szolg\u00e1ltat\u00e1s sz\u00e1m\u00e1ra nem biztos\u00edtott Span inform\u00e1ci\u00f3k.
+OPENTRACING_NO_SPAN_FOR_RESPONSE_TO_OUTBOUND_REQUEST.useraction=Vizsg\u00e1lja meg a kor\u00e1bbi hib\u00e1kat annak meg\u00e1llap\u00edt\u00e1s\u00e1hoz, hogy a Span mi\u00e9rt nem \u00e9rhet\u0151 el.
+
+OPENTRACING_TRACERFACTORY_RETURNED_NULL=CWMOT0006E: A felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory.newInstance(...) met\u00f3dus megh\u00edv\u00e1sa null\u00e9rt\u00e9ket adott vissza.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.explanation=A szolg\u00e1ltat\u00e1s \u00f6ssze\u00e1ll\u00edtja a Tracer megval\u00f3s\u00edt\u00e1sokat egy felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory seg\u00edts\u00e9g\u00e9vel. Az OpentracingTracerFactory.newInstance met\u00f3dus null\u00e9rt\u00e9ket adott vissza.
+OPENTRACING_TRACERFACTORY_RETURNED_NULL.useraction=\u00c1llap\u00edtsa meg, hogy a felhaszn\u00e1l\u00f3 \u00e1ltal megadott OpentracingTracerFactory newInstance met\u00f3dus mi\u00e9rt adott vissza null\u00e9rt\u00e9ket.
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Opentracing error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# An Opentracing API error has occurred: {0}
+temporary.CWMOT9999E=CWMOT9999E: Opentracing API hiba t\u00f6rt\u00e9nt: {0}
+temporary.CWMOT9999E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 Opentracing API hiba t\u00f6rt\u00e9nt.
+temporary.CWMOT9999E.useraction=Az FFDC napl\u00f3k \u00e9s a kiv\u00e9tel sz\u00f6veg\u00e9nek \u00e1ttekint\u00e9s\u00e9vel azonos\u00edtsa a probl\u00e9m\u00e1t.

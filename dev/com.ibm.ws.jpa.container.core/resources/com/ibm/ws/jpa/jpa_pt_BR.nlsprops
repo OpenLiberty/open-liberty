@@ -1,0 +1,329 @@
+###############################################################################
+# Copyright (c) 2006, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CWWJP (Java Persistence API)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=%I%,%S%,%E%,%U%
+#
+#CMVCPATHNAME ws/code/jpa.impl/src/com/ibm/ws/jpa/jpa.nlsprops
+#COMPONENTPREFIX CWWJP
+#COMPONENTNAMEFOR CWWJP Java Persistence API
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E=CWWJP0001E: O servidor n\u00e3o pode carregar o provedor {1} JPA (Java Persistence API) no pacote configur\u00e1vel {0}, que est\u00e1 localizado no arquivo {2}. Ocorreu o seguinte erro: {3}
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.explanation=Durante o processamento do servidor para o provedor JPA padr\u00e3o, o servidor n\u00e3o p\u00f4de localizar o arquivo para o provedor no pacote configur\u00e1vel.
+UNABLE_TO_LOAD_JPA_PROVIDER_CWWJP0001E.useraction=Inspecione o pacote configur\u00e1vel do provedor JPA para certificar-se de que as seguintes informa\u00e7\u00f5es existam:\n  O arquivo META-INF/services/javax.persistence.spi.PersistenceProvider define a classe de implementa\u00e7\u00e3o do provedor correto.\n A classe de implementa\u00e7\u00e3o existe no pacote configur\u00e1vel.\n O arquivo Java archive (JAR) do provedor est\u00e1 especificado na propriedade Bundle-ClassPath no arquivo META-INF/MANIFEST.MF.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E=CWWJP0002E: O servidor n\u00e3o pode ler o conte\u00fado do arquivo {1} no pacote configur\u00e1vel do provedor {0} JPA (Java Persistence API). Ocorreu o seguinte erro: {2}
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.explanation=Durante o processamento do servidor para o provedor JPA padr\u00e3o, o servidor n\u00e3o pode ler o conte\u00fado de um arquivo no pacote configur\u00e1vel do provedor JPA.
+UNABLE_TO_READ_JPA_PROVIDER_SPI_METADATA_CWWJP0002E.useraction=Inspecione o pacote configur\u00e1vel do provedor JPA para certificar-se de que o seguinte arquivo META-INF/services/javax.persistence.spi.PersistenceProvider exista e esteja formatado corretamente.
+
+#-------------------------------------------------------------------------------
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E=CWWJP0003E: O contexto da persist\u00eancia estendida {0} s\u00f3 pode ser iniciado dentro do escopo de um bean de sess\u00e3o com estado.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.explanation=A especifica\u00e7\u00e3o JPA (Java Persistence API) requer que um contexto de persist\u00eancia estendida seja iniciado apenas no escopo de um bean de sess\u00e3o com preserva\u00e7\u00e3o de estado e o aplicativo tentou iniciar o contexto de persist\u00eancia estendida no escopo de um tipo de bean diferente.
+EXTEND_PC_NOT_IN_SFSB_CWWJP0003E.useraction=Modifique o aplicativo para iniciar o contexto de persist\u00eancia estendida no escopo de um bean de sess\u00e3o com preserva\u00e7\u00e3o de estado ou altere o contexto de persist\u00eancia.
+
+#-------------------------------------------------------------------------------
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E=CWWJP0004E: O servidor n\u00e3o pode localizar o sistema do provedor {0} (Java Persistence API) padr\u00e3o. A fun\u00e7\u00e3o de provedor JPA padr\u00e3o est\u00e1 desativada.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.explanation=O provedor de produtos Java Persistence API para WebSphere est\u00e1 instalado no Servidor de Aplicativos para o provedor JPA padr\u00e3o do sistema. Entretanto, esse provedor padr\u00e3o n\u00e3o foi localizado. Portanto, a fun\u00e7\u00e3o JPA padr\u00e3o est\u00e1 desativada.
+NO_DEFAULT_PERSISTENCE_PROVIDER_CWWJP0004E.useraction=Entre em contato com o administrador do sistema para tornar a implementa\u00e7\u00e3o WSJPA padr\u00e3o do sistema ou definida pelo usu\u00e1rio acess\u00edvel ao servidor de aplicativos.
+
+#-------------------------------------------------------------------------------
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W=CWWJP0005W: A unidade de persist\u00eancia {0} no m\u00f3dulo {1} est\u00e1 utilizando o tipo {2} de ClassLoader. A fun\u00e7\u00e3o de entidade JPA (Java Persistence API) pode n\u00e3o funcionar conforme esperado.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.explanation=Para ativar o suporte ao JPA completo, um provedor de persist\u00eancia pode precisar injetar c\u00f3digo em uma entidade JPA. O tipo de ClassLoader ativo n\u00e3o suporta a inje\u00e7\u00e3o de c\u00f3digo JPA. Portanto, uma entidade JPA pode n\u00e3o funcionar conforme esperado.
+APPL_CLASSLOADER_USE_HAS_NO_JPA_SUPPORT_CWWJP0005W.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I=CWWJP0006I: A classe {0} \u00e9 carregada como o provedor JPA (Java Persistence API) padr\u00e3o.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+DEFAULT_PERSISTENCE_PROVIDER_LOADED_CWWJP0006I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W=CWWJP0007W: A unidade de persist\u00eancia {0} no m\u00f3dulo {2} do aplicativo {1} j\u00e1 est\u00e1 definida.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.explanation=Conforme mencionado na se\u00e7\u00e3o 6.2 da especifica\u00e7\u00e3o JPA (Java Persistence API), o nome da unidade de persist\u00eancia deve ser exclusivo dentro de um \u00fanico arquivo EJB-JAR (Enterprise JavaBeans-Arquivo Java), um arquivo WAR (Web Archive), um arquivo JAR de aplicativo cliente ou um arquivo EAR (Enterprise Archive).  A unidade de persist\u00eancia duplicada ser\u00e1 ignorada.
+DUPLICATE_PERSISTENCE_UNIT_DEFINED_CWWJP0007W.useraction=Antes de tentar novamente, renomeie ou remova a unidade de persist\u00eancia duplicada.
+
+#-------------------------------------------------------------------------------
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E=CWWJP0008E: O servidor n\u00e3o pode localizar o registro JTA (Java Transaction API) com uma consulta JNDI (Java Naming Directory Interface) do nome {0}. Ocorreu o seguinte erro: {1}
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.explanation=O tempo de execu\u00e7\u00e3o do servidor n\u00e3o est\u00e1 apto a associar o encadeamento da opera\u00e7\u00e3o com nenhum componente de aplicativo Java EE 5 (Java Platform, Enterprise Edition 5).  Essa condi\u00e7\u00e3o pode ocorrer quando o cliente JNDI utilizando o nome java: n\u00e3o \u00e9 executado no encadeamento de um pedido de aplicativo do servidor.
+NO_JTA_TX_SYNC_REGISTRY_CWWJP0008E.useraction=Certifique-se de que um aplicativo Java EE 5 n\u00e3o execute opera\u00e7\u00f5es JNDI em nomes java: dentro de blocos de c\u00f3digo est\u00e1tico ou em encadeamentos criados pelo aplicativo Java EE 5.  Esse c\u00f3digo n\u00e3o \u00e9 executado necessariamente no encadeamento de um pedido de aplicativo do servidor e, portanto, n\u00e3o \u00e9 suportado por opera\u00e7\u00f5es JNDI em nomes java:.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E=CWWJP0009E: O servidor n\u00e3o pode criar um dep\u00f3sito de informa\u00e7\u00f5es EntityManagerFactory para a unidade persistente {0} do provedor {1} no m\u00f3dulo {2}.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.explanation=O m\u00e9todo createContainerEntityManagerFactory do provedor JPA (Java Persistence API) falhou em retornar um EntityManagerFactory. Isso poder\u00e1 ocorrer se o provedor JPA incorreto for utilizado para a unidade persistente, ou ocorreu um erro no provedor JPA.
+UNABLE_TO_CREATE_ENTITY_MANAGER_FACTORY_CWWJP0009E.useraction=Certifique-se de que o provedor JPA correto tenha sido configurado para a unidade persistente e verifique quaisquer erros anteriores do provedor JPA.
+
+#-------------------------------------------------------------------------------
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W=CWWJP0010W: O servidor n\u00e3o pode localizar o aplicativo implementado, que \u00e9 chamado {0}, quando tenta localizar a unidade de persist\u00eancia {2} no m\u00f3dulo {1}.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.explanation=O aplicativo n\u00e3o est\u00e1 instalado ou n\u00e3o foi iniciado.
+APPL_NOT_FOUND_DURING_PU_LOOKUP_CWWJP0010W.useraction=Instale ou inicie o aplicativo.
+
+#-------------------------------------------------------------------------------
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E=CWWJP0012E: O nome da unidade de persist\u00eancia n\u00e3o est\u00e1 especificado e uma unidade de persist\u00eancia exclusiva n\u00e3o foi localizada no aplicativo {0} e m\u00f3dulo {1}.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.explanation=O aplicativo definiu uma refer\u00eancia de unidade de persist\u00eancia ou de contexto de persist\u00eancia sem um nome de unidade de persist\u00eancia e uma unidade de persist\u00eancia exclusiva n\u00e3o pode ser localizada.
+PU_NOT_SPECIFIED_AND_NO_UNIQUE_PU_FOUND_CWWJP0012E.useraction=Altere o aplicativo para especificar um nome de unidade de persist\u00eancia para a refer\u00eancia ou forne\u00e7a uma persist\u00eancia exclusiva.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E=CWWJP0013E: O servidor n\u00e3o pode localizar a origem de dados {0} para a unidade de persist\u00eancia {1} porque encontrou a seguinte exce\u00e7\u00e3o:\n {2}.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.explanation=O servidor tentou localizar a origem de dados para a unidade de persist\u00eancia. Entretanto, a origem de dados n\u00e3o p\u00f4de ser localizada.
+UNABLE_TO_GET_DATASOURCE_FOR_PU_CWWJP0013E.useraction=Certifique-se de que a origem de dados solicitada seja criada e ligada.
+
+#-------------------------------------------------------------------------------
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E=CWWJP0014E: Um formato inv\u00e1lido foi detectado durante a transforma\u00e7\u00e3o de classe para a classe {0}. A classe n\u00e3o foi transformada.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.explanation=O provedor JPA (Java Persistence API) tentou transformar uma classe e falhou com uma IllegalClassFormatException. O arquivo de classe est\u00e1 corrompido ou o provedor JPA possui um problema.
+ILLEGAL_CLASS_FORMAT_IN_CLASS_TRANSFORMATION_CWWJP0014E.useraction=Corrija o arquivo de classe corrompido ou entre em contato com o provedor JPA para obter assist\u00eancia.
+
+#-------------------------------------------------------------------------------
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E=CWWJP0015E: Ocorreu um erro no provedor de persist\u00eancia {0} quando ele tentou criar factory de gerenciador de entidade do cont\u00eainer para a unidade de persist\u00eancia {1}. Ocorreu o seguinte erro: {2}
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.explanation=O m\u00e9todo createContainerEntityManagerFactory do provedor JPA (Java Persistence API) falhou.
+CREATE_CONTAINER_ENTITYMANAGER_FACTORY_ERROR_CWWJP0015E.useraction=Entre em contato com o provedor JPA para obter assist\u00eancia.
+
+#-------------------------------------------------------------------------------
+DUPL_PCTXT_REF_CWWJP0016W=CWWJP0016W: Mais de um &lt;persistence-context-ref&gt; como nome {0} foi declarado no arquivo de descri\u00e7\u00e3o de implementa\u00e7\u00e3o {1}.
+DUPL_PCTXT_REF_CWWJP0016W.explanation=Mais de uma refer\u00eancia de contexto de persist\u00eancia est\u00e1 declarada no arquivo de descri\u00e7\u00e3o de implementa\u00e7\u00e3o. Todas as inst\u00e2ncias, exceto a primeira, s\u00e3o ignoradas.
+DUPL_PCTXT_REF_CWWJP0016W.useraction=Antes de tentar novamente, renomeie ou remova a refer\u00eancia de contexto de persist\u00eancia duplicada.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_STARTED_CWWJP0017I=CWWJP0017I: O componente JPA (Java Persistence API) foi iniciado.
+JPA_HAS_STARTED_CWWJP0017I.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+JPA_HAS_STARTED_CWWJP0017I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+MALFORMED_PERSISTENCE_XML_CWWJP0018E=CWWJP0018E: Detectada sintaxe incorreta ou erro no arquivo {0}. Ocorreu a seguinte mensagem de erro associada: {1}
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.explanation=Um arquivo XML cont\u00e9m um erro ou erros e n\u00e3o est\u00e1 em conformidade com a defini\u00e7\u00e3o de esquema. O aplicativo pode n\u00e3o funcionar conforme esperado.
+MALFORMED_PERSISTENCE_XML_CWWJP0018E.useraction=Corrija o erro ou erros no arquivo persistence.xml e tente novamente.
+
+#-------------------------------------------------------------------------------
+APPL_STARTED_CWWJP0019W=CWWJP0019W: O aplicativo {0} j\u00e1 foi iniciado.
+APPL_STARTED_CWWJP0019W.explanation=CMSG0001
+APPL_STARTED_CWWJP0019W.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E=CWWJP0020E: O Servidor de Aplicativos n\u00e3o pode iniciar o m\u00f3dulo {0} do aplicativo {1} porque o aplicativo n\u00e3o est\u00e1 instalado.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.explanation=Verifique se o aplicativo est\u00e1 montado corretamente com o m\u00f3dulo e instalado.
+STARTING_MODULE_IN_UNDEPLOYED_APPL_CWWJP0020E.useraction=Utilize uma ferramenta de montagem de aplicativo para verificar a configura\u00e7\u00e3o do aplicativo, instale o aplicativo e tente novamente.
+
+#-------------------------------------------------------------------------------
+JPA_IS_DISABLED_CWWJP0022I=CWWJP0022I: O componente JPA (Java Persistence API) est\u00e1 desativado.
+JPA_IS_DISABLED_CWWJP0022I.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+JPA_IS_DISABLED_CWWJP0022I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E=CWWJP0023E: O servidor n\u00e3o pode criar uma inst\u00e2ncia EntityManagerFactory para a unidade de persist\u00eancia {0} para inje\u00e7\u00e3o de depend\u00eancia no m\u00f3dulo {2} do aplicativo {1}.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.explanation=A unidade de persist\u00eancia e a anota\u00e7\u00e3o de inje\u00e7\u00e3o de depend\u00eancia devem ser definidas apropriadamente.
+UNABLE_TO_CREATE_EMF_FOR_INJECTION_CWWJP0023E.useraction=Verifique se a unidade de persist\u00eancia e a anota\u00e7\u00e3o de inje\u00e7\u00e3o de depend\u00eancia est\u00e3o definidas apropriadamente. Tente novamente o processo.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E=CWWJP0024E: A especifica\u00e7\u00e3o do arquivo JAR (Java archive) {0} para a unidade de persist\u00eancia {1} est\u00e1 incorreta.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.explanation=A especifica\u00e7\u00e3o de arquivo JAR para a unidade de persist\u00eancia est\u00e1 malformada. Portanto o componente JPA (Java Persistence API) n\u00e3o consegue fornecer esses dados para o provedor de persist\u00eancia.
+INCORRECT_PU_JARFILE_URL_SPEC_CWWJP0024E.useraction=Corrija a especifica\u00e7\u00e3o de arquivo JAR e tente novamente.
+
+#-------------------------------------------------------------------------------
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E=CWWJP0025E: O servidor n\u00e3o pode identificar a URL de raiz JPA (Java Persistence API) {0} para o m\u00f3dulo {2} no aplicativo {1}.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.explanation=A URL raiz do JPA para um m\u00f3dulo no aplicativo est\u00e1 malformada.
+INCORRECT_PU_ROOT_URL_SPEC_CWWJP0025E.useraction=CMSG0002
+
+#-------------------------------------------------------------------------------
+JPA_IS_INITIALIZING_CWWJP0026I=CWWJP0026I: O componente JPA (Java Persistence API) est\u00e1 inicializando.
+JPA_IS_INITIALIZING_CWWJP0026I.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+JPA_IS_INITIALIZING_CWWJP0026I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+JPA_HAS_INITIALIZED_CWWJP0027I=CWWJP0027I: O componente JPA (Java Persistence API) foi inicializado.
+JPA_HAS_INITIALIZED_CWWJP0027I.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+JPA_HAS_INITIALIZED_CWWJP0027I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+JPA_IS_STARTING_CWWJP0028I=CWWJP0028I: O componente JPA (Java Persistence API) est\u00e1 inicializando.
+JPA_IS_STARTING_CWWJP0028I.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+JPA_IS_STARTING_CWWJP0028I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+PU_NOT_FOUND_CWWJP0029E=CWWJP0029E: O servidor n\u00e3o pode localizar a unidade de persist\u00eancia {2} no m\u00f3dulo {1} e o aplicativo {0}.
+PU_NOT_FOUND_CWWJP0029E.explanation=Um aplicativo definiu uma refer\u00eancia de unidade de persist\u00eancia para uma unidade de persist\u00eancia que n\u00e3o p\u00f4de ser localizada depois de procurar META-INF/persistence.xml em todos os arquivos e diret\u00f3rios no caminho de classe.
+PU_NOT_FOUND_CWWJP0029E.useraction=Certifique-se de que o nome da unidade de persist\u00eancia tenha sido digitado corretamente e de que a unidade de persist\u00eancia esteja montada corretamente no aplicativo, verificando se a unidade de persist\u00eancia est\u00e1 definida em um arquivo META-INF/persistence.xml que est\u00e1 em um JAR ou diret\u00f3rio no caminho de classe.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E=CWWJP0030E: O servidor n\u00e3o pode localizar a origem de dados {0} no espa\u00e7o de nomes do componente da unidade de persist\u00eancia {1}. Ocorreu o seguinte erro: {2}
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.explanation=A origem de dados definida para essa unidade de persist\u00eancia deve ser ligada no espa\u00e7o de nomes do componente.
+DATASOURCE_NOT_FOUND_IN_COMPONENT_NAMESPACE_CWWJP0030E.useraction=Certifique-se de que a origem de dados solicitada seja criada e ligada no espa\u00e7o de nomes java:comp/env.
+
+#-------------------------------------------------------------------------------
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E=CWWJP0031E: O servidor n\u00e3o pode localizar a origem de dados {0} no espa\u00e7o de nomes global para a unidade de persist\u00eancia {1}. Ocorreu o seguinte erro: {2}
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.explanation=A origem de dados definida para essa unidade de persist\u00eancia deve ser ligada no espa\u00e7o de nomes global.
+DATASOURCE_NOT_FOUND_IN_GLOBAL_NAMESPACE_CWWJP0031E.useraction=Certifique-se de que a origem de dados solicitada seja criada e ligada no espa\u00e7o de nomes global.
+
+#-------------------------------------------------------------------------------
+CONNECTION_NOT_FOUND_CWWJP0032E=CWWJP0032E: A solicita\u00e7\u00e3o de m\u00e9todo java.sql.Connection falhou com o erro : {0}
+CONNECTION_NOT_FOUND_CWWJP0032E.explanation=Um m\u00e9todo java.sql.Connection diferente dos m\u00e9todos close ou isClosed n\u00e3o pode ser chamado porque o ambiente de tempo de execu\u00e7\u00e3o do servidor n\u00e3o est\u00e1 apto a associar o encadeamento da opera\u00e7\u00e3o com nenhum componente de aplicativo Java EE 5 (Java Platform, EnterpriseEdition 5).  Essa condi\u00e7\u00e3o pode ocorrer quando o cliente JNDI (Java Naming and Directory InterfaceTM) que est\u00e1 utilizando o nome java: n\u00e3o \u00e9 executado no encadeamento de um pedido de aplicativo do servidor.
+CONNECTION_NOT_FOUND_CWWJP0032E.useraction=Certifique-se de que um aplicativo Java EE 5 n\u00e3o execute opera\u00e7\u00f5es JNDI em nomes java: dentro de blocos de c\u00f3digo est\u00e1tico ou em encadeamentos criados pelo aplicativo Java EE 5.  Esse c\u00f3digo n\u00e3o \u00e9 executado necessariamente no encadeamento de um pedido de aplicativo do servidor.  Portanto, o c\u00f3digo n\u00e3o \u00e9 suportado por opera\u00e7\u00f5es JNDI em nomes java:.
+
+#-------------------------------------------------------------------------------
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E=CWWJP0033E: O servidor n\u00e3o pode localizar a origem de dados {0} no espa\u00e7o de nomes do componente para a unidade de persist\u00eancia {1} porque um contexto de componente n\u00e3o existe no encadeamento.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.explanation=A origem de dados n\u00e3o pode ser localizada porque o ambiente de tempo de execu\u00e7\u00e3o do servidor n\u00e3o est\u00e1 apto a associar o encadeamento da opera\u00e7\u00e3o com nenhum componente de aplicativo Java EE 5 (Java Platform, Enterprise Edition 5).  Essa condi\u00e7\u00e3o pode ocorrer quando o cliente JNDI (Java Naming and Directory InterfaceTM) que est\u00e1 utilizando o nome \"java:\" n\u00e3o \u00e9 executado no encadeamento de um pedido de aplicativo do servidor.
+NO_COMPONENT_CONTEXT_ON_THREAD_CWWJP0033E.useraction=Certifique-se de que um aplicativo Java EE 5 n\u00e3o execute opera\u00e7\u00f5es JNDI em nomes java: dentro de blocos de c\u00f3digo est\u00e1tico ou em encadeamentos criados pelo aplicativo Java EE 5.  Esse c\u00f3digo n\u00e3o \u00e9 executado necessariamente no encadeamento de um pedido de aplicativo do servidor.  Portanto, o c\u00f3digo n\u00e3o \u00e9 suportado por opera\u00e7\u00f5es JNDI em nomes java:.
+
+#----------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I=CWWJP0034I: Esta \u00e9 uma mensagem informativa apenas em ingl\u00eas: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.explanation=Esta mensagem informativa n\u00e3o est\u00e1 traduzida.
+ENGLISH_ONLY_INFO_MESSAGE_CWWJP0034I.useraction=Consulte a mensagem para obter detalhes.
+
+# ---------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W=CWWJP0035W: Esta \u00e9 uma mensagem de aviso apenas em ingl\u00eas: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.explanation=Esta mensagem de aviso n\u00e3o est\u00e1 traduzida.
+ENGLISH_ONLY_WARN_MESSAGE_CWWJP0035W.useraction=Consulte a mensagem para obter detalhes.
+
+# ---------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E=CWWJP0036E: Esta \u00e9 uma mensagem de erro apenas em ingl\u00eas: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.explanation=Esta mensagem de erro n\u00e3o est\u00e1 traduzida.
+ENGLISH_ONLY_ERROR_MESSAGE_CWWJP0036E.useraction=Consulte a mensagem para obter detalhes.
+
+# ---------------------------------
+NO_UOW_SYNC_REGISTRY_CWWJP0037E=CWWJP0037E: O Registro de Sincroniza\u00e7\u00e3o de Unidade de Trabalho n\u00e3o p\u00f4de ser encontrado no local {0} no espa\u00e7o de nomes global devido \u00e0 exce\u00e7\u00e3o: {1}
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.explanation=Um provedor JPA (Java Persistence API) n\u00e3o pode funcionar apropriadamente sem acesso ao UOWSynchronizationRegistry para participar de transa\u00e7\u00f5es.
+NO_UOW_SYNC_REGISTRY_CWWJP0037E.useraction=CMSG0002
+
+# ---------------------------------
+NO_COMPONENT_CONTEXT_CWWJP0038E=CWWJP0038E: O m\u00e9todo JPA (Java Persistence API) solicitado para o contexto de persist\u00eancia {0} n\u00e3o p\u00f4de ser conclu\u00eddo porque foi chamado fora do escopo de um componente de aplicativo Java EE 5 (Java Platform, Enterprise Edition 5).
+NO_COMPONENT_CONTEXT_CWWJP0038E.explanation=O contexto de componente n\u00e3o existe no encadeamento. O ambiente de tempo de execu\u00e7\u00e3o do servidor n\u00e3o est\u00e1 apto a associar o encadeamento da opera\u00e7\u00e3o com nenhum componente de aplicativo Java EE 5 (Java Platform, Enterprise Edition 5). Essa condi\u00e7\u00e3o pode ocorrer quando o cliente tenta opera\u00e7\u00f5es EntityManager em um encadeamento de aplicativo n\u00e3o seja do servidor.
+NO_COMPONENT_CONTEXT_CWWJP0038E.useraction=Certifique-se de que o aplicativo Java EE 5 n\u00e3o execute opera\u00e7\u00f5es EntityManager dentro de blocos de c\u00f3digo est\u00e1tico ou em encadeamentos criados pelo aplicativo Java EE.
+
+# ---------------------------------
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E=CWWJP0039E: Um erro de sintaxe nas propriedades do persistence.xml da Unidade de Persist\u00eancia:  {0}  (Propriedade = {1}, Valor = {2}).  O erro a seguir ocorreu: {3}.
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.explanation= O persistence.xml da unidade de persist\u00eancia cont\u00e9m um erro de sintaxe.  A propriedade nem o valor pode ter o valor "null".
+PROPERTY_SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0039E.useraction= Corrija o erro de sintaxe existente no persistence.xml.
+
+#-------------------------------------------------------------------------------
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E=CWWJP0040E: Sintaxe incorreta ou erro detectado no arquivo persistence.xml no aplicativo: {0}, m\u00f3dulo: {1}, no n\u00famero de linha: {2}, n\u00famero de coluna: {3}. Ocorreu a seguinte mensagem de erro associada: {4}
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.explanation=Um arquivo persistence.xml cont\u00e9m um erro ou erros e n\u00e3o est\u00e1 em conformidade com a defini\u00e7\u00e3o do esquema. O aplicativo pode n\u00e3o funcionar conforme esperado.
+SYNTAX_ERROR_IN_PERSISTENCE_XML_CWWJP0040E.useraction=Corrija o erro ou erros no arquivo persistence.xml e tente novamente.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWWJP0041E=CWWJP0041E: O m\u00f3dulo {0} do aplicativo {1} tem dados de configura\u00e7\u00e3o conflitantes no descritor de implementa\u00e7\u00e3o XML. Valores de elemento conflitantes {2} existem para v\u00e1rios elementos {3} com o mesmo valor de elemento {4} : {5}. Os valores de elemento conflitantes {2} s\u00e3o {6} e {7}.
+CONFLICTING_XML_VALUES_CWWJP0041E.explanation=Quando v\u00e1rias refer\u00eancias de contexto de persist\u00eancia ou unidades de persist\u00eancia s\u00e3o definidas no descritor de implementa\u00e7\u00e3o XML para o mesmo espa\u00e7o de nomes de componente, todos os atributos da refer\u00eancia devem ser os mesmos. Um cen\u00e1rio t\u00edpico onde isso pode ocorrer \u00e9 quando se define refer\u00eancias para um enterprise bean e para uma classe interceptora correspondente. O bean e o interceptor compartilham o mesmo espa\u00e7o de nomes de componente, portanto, as refer\u00eancias que s\u00e3o comuns entre os dois devem ser compat\u00edveis.
+CONFLICTING_XML_VALUES_CWWJP0041E.useraction=No descritor de implementa\u00e7\u00e3o XML, altere o nome de uma das refer\u00eancias ou altere um dos valores conflitantes para que eles tenham o mesmo valor.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E=CWWJP0042E: O componente {0} no m\u00f3dulo {1} do aplicativo {2} possui dados de configura\u00e7\u00e3o em conflito nas anota\u00e7\u00f5es do c\u00f3digo de origem. Existem valores de atributos em conflito {3} para v\u00e1rias anota\u00e7\u00f5es {4} com o mesmo valor de atributo {5}: {6}. Os valores de atributos em conflito {3} s\u00e3o {7} e {8}.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.explanation=Quando diversas refer\u00eancias de contexto de persist\u00eancia ou de unidade de persist\u00eancia estiverem definidas nas anota\u00e7\u00f5es do c\u00f3digo de origem para o mesmo espa\u00e7o de nome do componente com o mesmo nome, todos os atributos da refer\u00eancia dever\u00e3o ser iguais ou um dever\u00e1 ser design\u00e1vel ao outro.
+CONFLICTING_ANNOTATION_VALUES_CWWJP0042E.useraction=Nas anota\u00e7\u00f5es do c\u00f3digo de origem, altere o nome de uma das refer\u00eancias ou altere um dos valores em conflito para que tenham valor igual ou um valor que seja design\u00e1vel ao outro.
+
+#-------------------------------------------------------------------------------
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E=CWWJP0043E: A refer\u00eancia de persist\u00eancia {0} \u00e9 declarada pelo componente {1} no m\u00f3dulo {2} do aplicativo {3}, mas as refer\u00eancias de persist\u00eancia java:global n\u00e3o s\u00e3o v\u00e1lidas.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.explanation=As unidades de persist\u00eancia est\u00e3o com escopo definido para um \u00fanico aplicativo e, portanto, uma refer\u00eancia de persist\u00eancia java:global n\u00e3o possui significado.
+INVALID_JAVA_GLOBAL_REF_CWWJP0043E.useraction=Altere o nome da refer\u00eancia de persist\u00eancia para usar o prefixo java:app ou java:module em substitui\u00e7\u00e3o, ou remova o prefixo java:global para usar o espa\u00e7o de nome java:comp padr\u00e3o.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E=CWWJP0044E: Diversas defini\u00e7\u00f5es do contexto de persist\u00eancia estendido da unidade de persist\u00eancia {0} foram declaradas com a configura\u00e7\u00e3o de sincroniza\u00e7\u00e3o desigual.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.explanation=Para um bean de sess\u00e3o stateful fornecido que injeta uma defini\u00e7\u00e3o de unidade de persist\u00eancia espec\u00edfica como um contexto de persist\u00eancia estendido mais de uma vez, o tipo de sincroniza\u00e7\u00e3o para todas as inst\u00e2ncias de inje\u00e7\u00e3o deve ser SYNCHRONIZED ou UNSYCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_CWWJP0044E.useraction=Altere a sincroniza\u00e7\u00e3o de todas as inst\u00e2ncias de inje\u00e7\u00e3o da unidade de persist\u00eancia para SYNCHRONIZED ou UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E=CWWJP0045E: Uma superclasse injetou um contexto de persist\u00eancia estendido para a unidade de persist\u00eancia {0} que possui um atributo de sincroniza\u00e7\u00e3o incompat\u00edvel a uma inje\u00e7\u00e3o de contexto de persist\u00eancia estendido em uma subclasse.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.explanation= Um bean de sess\u00e3o stateful estendeu uma classe que injeta um contexto de persist\u00eancia estendido para uma unidade de persist\u00eancia comum, mas o tipo de sincroniza\u00e7\u00e3o da inje\u00e7\u00e3o da superclasse n\u00e3o corresponde ao tipo de sincroniza\u00e7\u00e3o da inje\u00e7\u00e3o da subclasse.
+JPATXSYNC_INCOMPATIBLE_INHERITANCE_CWWJP0045E.useraction=Altere a sincroniza\u00e7\u00e3o de todas as inst\u00e2ncias de inje\u00e7\u00e3o da unidade de persist\u00eancia para SYNCHRONIZED ou UNSYNCHRONIZED.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E=CWWJP0046E: Um contexto de persist\u00eancia UNSYNCHRONIZED JPA n\u00e3o pode ser propagado em um EntityManager SYNCHRONIZED.
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.explanation=Um contexto de persist\u00eancia que possui um tipo de sincroniza\u00e7\u00e3o UNSYNCHRONIED n\u00e3o pode ser propagado para um componente que injetou o mesmo contexto de persist\u00eancia, mas com um tipo de sincroniza\u00e7\u00e3o SYNCHRONIZED. 
+JPATXSYNC_ILLEGAL_PROPAGATION_CWWJP0046E.useraction=Altere a inje\u00e7\u00e3o @PersistenceContext nos componentes do respons\u00e1vel pela chamada e do destinat\u00e1rio de chamada para ter o mesmo tipo de sincroniza\u00e7\u00e3o.
+
+#-------------------------------------------------------------------------------
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E=CWWJP0047E: O contexto de persist\u00eancia associado \u00e0 unidade de persist\u00eancia {0} possui o SynchronizationType do tipo {1}, que \u00e9 incompat\u00edvel ao contexto de persist\u00eancia estendido declarado por {2}.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.explanation=Um contexto de persist\u00eancia que possui um tipo de sincroniza\u00e7\u00e3o UNSYNCHRONIED n\u00e3o pode ser propagado para um componente que injetou o mesmo contexto de persist\u00eancia, mas com um tipo de sincroniza\u00e7\u00e3o SYNCHRONIZED.
+JPATXSYNC_INCOMPATIBLE_PROPAGATION_CWWJP0047E.useraction=Altere a inje\u00e7\u00e3o @PersistenceContext nos componentes do respons\u00e1vel pela chamada e do destinat\u00e1rio de chamada para ter o mesmo tipo de sincroniza\u00e7\u00e3o.
+
+#-------------------------------------------------------------------------------
+REPORT_JPARUNTIME_CWWJP0048I=CWWJP0048I: O servi\u00e7o JPA foi inicializado para o n\u00edvel de especifica\u00e7\u00e3o de JPA {0}.
+REPORT_JPARUNTIME_CWWJP0048I.explanation=Esta mensagem tem apenas prop\u00f3sitos informativos.
+REPORT_JPARUNTIME_CWWJP0048I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+# 0=providerClass, 1=providerJPALevel, 2=currentJPALevel, 3=currentProviderClasses
+INCORRECT_JPA_LEVEL_CWWJP0049E=CWWJP0049E: N\u00e3o \u00e9 poss\u00edvel localizar a classe {0}, que \u00e9 um provedor de persist\u00eancia integrado para o JPA {1}. O servidor est\u00e1 atualmente configurado para o JPA {2}, que corresponde ao(s) provedor(es) de persist\u00eancia integrado(s): {3}. O n\u00edvel de JPA de um servidor ou cluster pode ser mudado usando o Admin Console ou o modifyJPASpecLevel AdminTask. Como alternativa, atualize o aplicativo para usar um provedor de persist\u00eancia que seja compat\u00edvel com o JPA {2}.
+INCORRECT_JPA_LEVEL_CWWJP0049E.explanation=A classe do provedor JPA n\u00e3o p\u00f4de ser localizada.
+INCORRECT_JPA_LEVEL_CWWJP0049E.useraction=Mude o servidor ou a configura\u00e7\u00e3o para usar um n\u00edvel de JPA que seja suportado pelo provedor de persist\u00eancia atual por meio do Admin Console ou do modifyJPASpecLevel AdminTask.  Como alternativa, atualize o aplicativo para usar um provedor de persist\u00eancia que seja compat\u00edvel com o n\u00edvel de JPA atual.
+
+#-------------------------------------------------------------------------------
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E=CWWJP0050E: N\u00e3o \u00e9 poss\u00edvel localizar o provedor de persist\u00eancia {0}.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.explanation=A classe do provedor JPA n\u00e3o p\u00f4de ser localizada.
+JPA_PROVIDER_NOT_FOUND_CWWJP0050E.useraction=Mude o servidor ou a configura\u00e7\u00e3o para usar um n\u00edvel de JPA que seja suportado pelo provedor de persist\u00eancia indicado.
+
+#-------------------------------------------------------------------------------
+# DO NOT TRANSLATE: <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/>, bells-1.0, <bell>, <library>, JPA, or javax.persistence.spi.PersistenceProvider
+NO_JPA_PROVIDER_FOUND_CWWJP0051E=CWWJP0051E: N\u00e3o foi poss\u00edvel localizar nenhum provedor de persist\u00eancia padr\u00e3o na configura\u00e7\u00e3o do servidor.  Para configurar um provedor de persist\u00eancia padr\u00e3o, use a configura\u00e7\u00e3o <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> ou ative o recurso bells-1.0 e configure um <bell> para a <library> que cont\u00e9m o provedor JPA. 
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.explanation=N\u00e3o foi poss\u00edvel localizar nenhuma implementa\u00e7\u00e3o de javax.persistence.spi.PersistenceProvider.
+NO_JPA_PROVIDER_FOUND_CWWJP0051E.useraction=Para configurar um provedor de persist\u00eancia padr\u00e3o, use a configura\u00e7\u00e3o <jpa defaultPersistenceProvider="com.acme.PersistenceProviderImpl"/> ou ative o recurso bells-1.0 e configure um <bell> para a <library> que cont\u00e9m o provedor JPA.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I=CWWJP0052I: Um provedor JPA terceiro, {0}, \u00e9 usado.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.explanation=Indica o nome de classe do provedor de persist\u00eancia de uma implementa\u00e7\u00e3o de JPA de terceiro que \u00e9 usada.
+JPA_THIRD_PARTY_PROV_NAME_CWWJP0052I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I=CWWJP0053I: {0} \u00e9 usado como um provedor JPA de terceiro. Informa\u00e7\u00f5es da vers\u00e3o s\u00e3o: {1}. 
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.explanation=Indica as informa\u00e7\u00f5es de nome e vers\u00e3o de uma implementa\u00e7\u00e3o de JPA de terceiro que \u00e9 usada.
+JPA_THIRD_PARTY_PROV_INFO_CWWJP0053I.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#-------------------------------------------------------------------------------
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E=CWWJP0054E: A implementa\u00e7\u00e3o {0}, {1}, n\u00e3o \u00e9 compat\u00edvel com a especifica\u00e7\u00e3o de JPA 2.1 e n\u00e3o pode ser usada. Obtenha uma vers\u00e3o mais nova do provedor de persist\u00eancia JPA que implementa o JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.explanation=O provedor de persist\u00eancia JPA n\u00e3o pode ser usado porque falta a implementa\u00e7\u00e3o de m\u00e9todos que s\u00e3o necess\u00e1rios pela especifica\u00e7\u00e3o de JPA 2.1.
+NOT_COMPLIANT_WITH_JPA21_CWWJP0054E.useraction=Obtenha uma vers\u00e3o mais nova do provedor de persist\u00eancia JPA que est\u00e1 em conformidade com a especifica\u00e7\u00e3o JPA 2.1.
+
+#-------------------------------------------------------------------------------
+# Error messages from the JPA Provider below this point
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+PROVIDER_INFO_CWWJP9990I=CWWJP9990I: {0}
+PROVIDER_INFO_CWWJP9990I.explanation=O provedor JPA (Java Persistence API) registrou esta mensagem informativa.
+PROVIDER_INFO_CWWJP9990I.useraction=Consulte a documenta\u00e7\u00e3o do provedor JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_WARNING_CWWJP9991W=CWWJP9991W: {0}
+PROVIDER_WARNING_CWWJP9991W.explanation=O provedor JPA (Java Persistence API) registrou esta mensagem de aviso.
+PROVIDER_WARNING_CWWJP9991W.useraction=Consulte a documenta\u00e7\u00e3o do provedor JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_ERROR_CWWJP9992E=CWWJP9992E: {0}
+PROVIDER_ERROR_CWWJP9992E.explanation=O provedor JPA (Java Persistence API) registrou esta mensagem de erro.
+PROVIDER_ERROR_CWWJP9992E.useraction=Consulte a documenta\u00e7\u00e3o do provedor JPA.
+
+#-------------------------------------------------------------------------------
+PROVIDER_FATAL_CWWJP9993E=CWWJP9993E: {0}
+PROVIDER_FATAL_CWWJP9993E.explanation=O provedor JPA (Java Persistence API) registrou esta mensagem fatal.
+PROVIDER_FATAL_CWWJP9993E.useraction=Consulte a documenta\u00e7\u00e3o do provedor JPA.
+
+#-------------------------------------------------------------------------------

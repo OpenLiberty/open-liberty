@@ -1,0 +1,79 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2/resources/com/ibm/ws/security/csiv2/server/internal/resources/CSIv2ServerContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the server container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9600 - CWWKS9699
+
+# Client CSIv2 Configuration related messages CWWKS9600 - CWWKS9619
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9600E: V zabezpe\u010den\u00ed klienta {0} je uveden neplatn\u00fd mechanizmus \u010di neplatn\u00e9 mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed. Platn\u00e9 hodnoty jsou GSSUP nebo LTPA nebo GSSUP, LTPA.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Uveden\u00fd mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta nejsou podporov\u00e1ny.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Zkontrolujte, zda je uveden\u00fd mechanizmus vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta GSSUP nebo LTPA nebo GSSUP, LTPA.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9601W: Mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed uveden\u00e9 v zabezpe\u010den\u00ed klienta maj\u00ed hodnotu null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Uveden\u00fd mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta maj\u00ed hodnotu null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Zkontrolujte, zda je uveden\u00fd mechanizmus vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta GSSUP nebo LTPA nebo GSSUP, LTPA.
+
+
+# Server CSIv2 Configuration related messages CWWKS9620 - CWWKS9639
+# -------------------------------------------------------------------------------------------------
+CSIv2_SERVER_AUTH_MECHANISM_INVALID=CWWKS9620E: V z\u00e1sad\u00e1ch zabezpe\u010den\u00ed serveru {0} je uveden neplatn\u00fd mechanizmus \u010di neplatn\u00e9 mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed. Platn\u00e9 hodnoty jsou GSSUP nebo LTPA nebo GSSUP, LTPA.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.explanation=Uveden\u00fd mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed z\u00e1sad zabezpe\u010den\u00ed serveru nejsou podporov\u00e1ny.
+CSIv2_SERVER_AUTH_MECHANISM_INVALID.useraction=Zkontrolujte, zda je uveden\u00fd mechanizmus vrstvy ov\u011b\u0159ov\u00e1n\u00ed z\u00e1sad zabezpe\u010den\u00ed serveru GSSUP nebo LTPA nebo GSSUP, LTPA.
+
+CSIv2_SERVER_AUTH_MECHANISMS_NULL=CWWKS9621W: Mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed uveden\u00e9 v zabezpe\u010den\u00ed klienta maj\u00ed hodnotu null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.explanation=Uveden\u00fd mechanizmus \u010di mechanizmy vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta maj\u00ed hodnotu null.
+CSIv2_SERVER_AUTH_MECHANISMS_NULL.useraction=Zkontrolujte, zda je uveden\u00fd mechanizmus vrstvy ov\u011b\u0159ov\u00e1n\u00ed zabezpe\u010den\u00ed klienta GSSUP nebo LTPA nebo GSSUP, LTPA.
+
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG=CWWKS9622E: Konfigurace SSL {0} v p\u0159\u00edchoz\u00ed transportn\u00ed vrstv\u011b CSIv2 neodpov\u00edd\u00e1 konfiguraci SSL v koncov\u00e9m bodu IIOP.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.explanation=P\u0159\u00edchoz\u00ed transportn\u00ed vrstva CSIv2 pou\u017e\u00edv\u00e1 konfiguraci SSL, ale koncov\u00fd bod IIOP nepou\u017e\u00edv\u00e1 stejnou konfiguraci SSL.
+CSIv2_SERVER_TRANSPORT_MISMATCHED_SSL_CONFIG.useraction=Ujist\u011bte se, \u017ee konfigurace SSL v p\u0159\u00edchoz\u00ed transportn\u00ed vrstv\u011b CSIv2 v souboru server.xml je jednou z konfigurac\u00ed SSL pou\u017e\u00edvaj\u00edc\u00ed koncov\u00fd bod IIOP.
+
+#Do not translate iiopsOptions
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT=CWWKS9623E: Koncov\u00fd bod IIOP nem\u00e1 konfiguraci SSL, p\u0159itom transportn\u00ed vrstva CSIv2 pro p\u0159\u00edchoz\u00ed komunikaci vy\u017eaduje, aby koncov\u00fd bod IIOP m\u011bl konfiguraci SSL {0}.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.explanation=Koncov\u00fd bod IIOP vy\u017eaduje alespo\u0148 jeden prvek iiopsOptions s konfigurac\u00ed SSL, na n\u00ed\u017e m\u016f\u017ee odkazovat transportn\u00ed vrstva CSIv2 pro p\u0159\u00edchoz\u00ed komunikaci.
+CSIv2_SERVER_TRANSPORT_NO_SSL_CONFIGS_IN_IIOP_ENDPOINT.useraction=Ujist\u011bte se, \u017ee koncov\u00fd bod IIOP m\u00e1 alespo\u0148 jeden prvek iiopsOptions se stejnou konfigurac\u00ed SSL, jakou pou\u017e\u00edv\u00e1 transportn\u00ed vrstva CSIv2 pro p\u0159\u00edchoz\u00ed komunikaci.
+
+# Client CSIv2 runtime related messages CWWKS9640 - CWWKS9659
+# -------------------------------------------------------------------------------------------------
+# Do not translate ITTDistinguishedName
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN=CWWKS9640E: Klient nem\u016f\u017ee vytvo\u0159it token deklarace identity ITTDistinguishedName pro rozli\u0161uj\u00edc\u00ed n\u00e1zev {0}. Zpr\u00e1va v\u00fdjimky: {1}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.explanation=P\u0159edm\u011bt pro deklarovan\u00e9ho u\u017eivatele neobsahuje platn\u00fd Rozli\u0161uj\u00edc\u00ed n\u00e1zev a deklaraci identity nelze prov\u00e9st. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_DN.useraction=Zkontrolujte zpr\u00e1vu v\u00fdjimky, ujist\u011bte se, \u017ee registr u\u017eivatel\u016f nakonfigurovan\u00fd v souboru server.xml podporuje rozli\u0161uj\u00edc\u00ed n\u00e1zvy a znovu ov\u011b\u0159te u\u017eivatele.
+
+# Do not translate ITTX509CertChain
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC=CWWKS9641E: Klient nem\u016f\u017ee vytvo\u0159it token deklarace identity ITTX509CertChain. Zpr\u00e1va v\u00fdjimky: {0}
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.explanation=P\u0159edm\u011bt pro deklarovan\u00e9ho u\u017eivatele neobsahuje platn\u00fd certifik\u00e1t a deklaraci identity nelze prov\u00e9st. 
+CSIv2_CLIENT_ASSERTION_CANNOT_ENCODE_CC.useraction=Zkontrolujte zpr\u00e1vu v\u00fdjimky a ujist\u011bte se, \u017ee v souboru server.xml je nakonfigurovan\u00e1 vrstva p\u0159enosu pro \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, protokol SSL a z\u00e1sady serveru, a ov\u011b\u0159te u\u017eivatele znovu.
+
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID=CWWKS9642E: \u0158et\u011bzec certifik\u00e1t\u016f klienta nen\u00ed pro pokra\u010dov\u00e1n\u00ed v deklaraci identity k dispozici.
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.explanation=P\u0159edm\u011bt pro deklarovan\u00e9ho u\u017eivatele neobsahuje platn\u00fd certifik\u00e1t a deklaraci identity nelze prov\u00e9st. 
+CSIv2_CLIENT_ASSERTION_CERTIFICATE_INVALID.useraction=Ujist\u011bte se, \u017ee je v souboru server.xml nakonfigurov\u00e1na vrstva p\u0159enosu pro \u00falo\u017ei\u0161t\u011b kl\u00ed\u010d\u016f, protokol SSL a z\u00e1sady serveru, a ov\u011b\u0159te u\u017eivatele znovu.
+
+# Server CSIv2 runtime related messages CWWKS9660 - CWWKS9679
+# -------------------------------------------------------------------------------------------------
+NO_USER_REGISTRY=CWWKS9660E: Objekt orb s atributem ID {0} vy\u017eaduje registr u\u017eivatel\u016f, ale za {1} sekund nebyl \u017e\u00e1dn\u00fd registr u\u017eivatel\u016f dostupn\u00fd.   V d\u016fsledku toho nebudou spu\u0161t\u011bny \u017e\u00e1dn\u00e9 aplikace. Zkontrolujte, zda jste v souboru server.xml nakonfigurovali p\u0159\u00edslu\u0161n\u00fd registr u\u017eivatel\u016f.
+NO_USER_REGISTRY.explanation=Nebyla spu\u0161t\u011bna \u017e\u00e1dn\u00e1 aplikace, proto\u017ee zabezpe\u010den\u00fd zprost\u0159edkovatel ORB (Object Request Broker) na serveru vy\u017eaduje registr u\u017eivatel\u016f, ale \u017e\u00e1dn\u00fd registr u\u017eivatel\u016f nebyl nalezen. Aplikace se spust\u00ed po nakonfigurov\u00e1n\u00ed p\u0159\u00edslu\u0161n\u00e9ho registru u\u017eivatel\u016f.
+NO_USER_REGISTRY.useraction=Ujist\u011bte se, \u017ee jste nakonfigurovali registr u\u017eivatel\u016f, kter\u00fd odpov\u00edd\u00e1 va\u0161emu prost\u0159ed\u00ed.
+
+# Common CSIv2  related messages CWWKS9680 - CWWKS9699
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9680W: Vrstva ov\u011b\u0159ov\u00e1n\u00ed CSIv2 je zak\u00e1z\u00e1na, proto\u017ee hodnota establishTrustInClient je {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=Kdy\u017e je hodnota establishTrustInClient nastavena na Nikdy, vrstva ov\u011b\u0159ov\u00e1n\u00ed CSIv2 je zak\u00e1z\u00e1na. 
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Chcete-li povolit vrstvu ov\u011b\u0159ov\u00e1n\u00ed CSIv2, nastavte hodnotu establishTrustInClient na Supported nebo Required.
+
+

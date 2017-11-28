@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: Nem lehet meg\u00e1llap\u00edtani besz\u00farand\u00f3 tulajdons\u00e1g t\u00edpus\u00e1t. A besz\u00far\u00e1si pont t\u00edpusa "{0}" volt.
+unable.to.determine.injection.type.CWMCG5001E.explanation=A @ConfigProperty min\u0151s\u00edt\u0151vel annot\u00e1lt besz\u00far\u00e1si pont nem rendelkezett \u00e9rv\u00e9nyes t\u00edpussal.
+unable.to.determine.injection.type.CWMCG5001E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a besz\u00far\u00e1si pont t\u00edpusa \u00e9rv\u00e9nyes a besz\u00farni k\u00edv\u00e1nt tulajdons\u00e1ghoz.
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: A konstruktor \u00e9s met\u00f3dus konfigur\u00e1ci\u00f3s tulajdons\u00e1gok besz\u00far\u00e1s\u00e1hoz a tulajdons\u00e1g nev\u00e9t meg kell adni.
+unable.to.determine.injection.name.CWMCG5002E.explanation=A konstruktor \u00e9s met\u00f3dus param\u00e9terek alap\u00e9rtelmezett tulajdons\u00e1gnev\u00e9t nem lehet meg\u00e1llap\u00edtani. A helyes tulajdons\u00e1gnevet \u00e1t kell adni a @ConfigProperty min\u0151s\u00edt\u0151nek. 
+unable.to.determine.injection.name.CWMCG5002E.useraction=A @ConfigProperty min\u0151s\u00edt\u0151 haszn\u00e1lat\u00e1val \u00e1ll\u00edtsa be a helyes tulajdons\u00e1gnevet.
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: A(z) {0} InjectionPoint f\u00fcgg\u0151s\u00e9g nem ker\u00fclt felold\u00e1sra. Hiba: {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=A besz\u00fart konfigur\u00e1ci\u00f3s tulajdons\u00e1g nem oldhat\u00f3 fel. A megnevezett tulajdons\u00e1g nem tal\u00e1lhat\u00f3, vagy nem oldhat\u00f3 fel egy \u00e1talak\u00edt\u00f3 a sz\u00fcks\u00e9ges t\u00edpushoz. 
+unable.to.resolve.injection.point.CWMCG5003E.useraction=A kiszolg\u00e1l\u00f3 \u00fczenet \u00e9s ffdc napl\u00f3i alapj\u00e1n \u00e1llap\u00edtsa meg az okot. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g l\u00e9tezik valamelyik konfigur\u00e1ci\u00f3s forr\u00e1sban \u00e9s a sz\u00fcks\u00e9ges \u00e1talak\u00edt\u00f3k be lettek \u00e1ll\u00edtva.
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: A(z) "{0}" konfigur\u00e1ci\u00f3s tulajdons\u00e1g nem tal\u00e1lhat\u00f3.
+property.not.found.CWMCG5004E.explanation=A megnevezett tulajdons\u00e1g nem tal\u00e1lhat\u00f3 egyik konfigur\u00e1lt forr\u00e1sban sem. 
+property.not.found.CWMCG5004E.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a tulajdons\u00e1g l\u00e9tezik valamelyik konfigur\u00e1ci\u00f3s forr\u00e1sban.
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: Konfigur\u00e1ci\u00f3s API hiba t\u00f6rt\u00e9nt: {0}.
+temporary.CWMCG5999E.explanation=A norm\u00e1l m\u0171k\u00f6d\u00e9st megakad\u00e1lyoz\u00f3 konfigur\u00e1ci\u00f3s API hiba t\u00f6rt\u00e9nt.
+temporary.CWMCG5999E.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
+
+

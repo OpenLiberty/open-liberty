@@ -1,0 +1,112 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.SIMPMessages.props
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIH0001=CWSIH0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - Msgs in the range CWSIH0001-CWSIH0050 belong to class com.ibm.ws.sib.matchspace.impl.MatchSpaceImpl
+#   - CWSIH9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.19
+#
+#CMVCPATHNAME com.ibm.ws.messaging.runtime/resources/com/ibm/ws/sib/matchspace/CWSIHMessages.nlsprops
+#COMPONENTPREFIX CWSIH
+#COMPONENTNAMEFOR CWSIH MatchSpace
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0001=CWSIH0001E: Die Syntax des Topic {0} ist ung\u00fcltig. Es wurde ein unerwartetes Zeichen (''*'') bei Zeichen {1} gefunden.
+INVALID_TOPIC_ERROR_CWSIH0001.explanation=Das Topic hat ein ung\u00fcltiges Format. Das einzelnes Zeichen '*' darf nur als Einzelzeichen in einer Topicebene erscheinen, z. B. */a oder a/*/b oder a/*.
+INVALID_TOPIC_ERROR_CWSIH0001.useraction=Korrigieren Sie die Topicspezifikation.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0002=CWSIH0002E: Die Syntax des Topic {0} ist ung\u00fcltig. Es wurde ein unerwartetes Nummernzeichen (''.'') bei Zeichen {1} gefunden.
+INVALID_TOPIC_ERROR_CWSIH0002.explanation=Das Topic hat ein ung\u00fcltiges Format. Das Zeichen '.' kann als Einzelzeichen nur in einer Topicebene oder am Ende eines Topicausdrucks erscheinen, z. B. /./a oder a//. .
+INVALID_TOPIC_ERROR_CWSIH0002.useraction=Korrigieren Sie die Topicspezifikation.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0003=CWSIH0003E: Die Syntax des Topic {0} ist ung\u00fcltig. Es wurde ein unerwarteter Schr\u00e4gstrich (''/'') bei Zeichen {1} gefunden.
+INVALID_TOPIC_ERROR_CWSIH0003.explanation=Das Topic hat ein ung\u00fcltiges Format. Au\u00dferdem d\u00fcrfen nicht drei Schr\u00e4gstriche ('/') hintereinander stehen.
+INVALID_TOPIC_ERROR_CWSIH0003.useraction=Korrigieren Sie die Topicspezifikation.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name    .
+INVALID_TOPIC_ERROR_CWSIH0004=CWSIH0004E: Die Syntax des Topic {0} ist ung\u00fcltig. Es wurde ein unerwartetes Zeichen hinter einem Schr\u00e4gstrich (''/'') an Zeichenposition {1} gefunden.
+INVALID_TOPIC_ERROR_CWSIH0004.explanation=Das Topic hat ein ung\u00fcltiges Format. Hinter Platzhalterzeichen d\u00fcrfen keine anderen Zeichen als '/' stehen. Beispiele f\u00fcr ung\u00fcltige Topics sind a//.a und a/*b.
+
+INVALID_TOPIC_ERROR_CWSIH0004.useraction=Korrigieren Sie die Topicspezifikation.
+
+# -------------------------------------------------------------------------------------------------
+# 
+INVALID_TOPIC_ERROR_CWSIH0005=CWSIH0005E: Das Topic ist nicht g\u00fcltig.
+INVALID_TOPIC_ERROR_CWSIH0005.explanation=Das angegebene Topic ist nicht g\u00fcltig, weil es null ist. Dies ist nicht zul\u00e4ssig.
+INVALID_TOPIC_ERROR_CWSIH0005.useraction=Stellen Sie sicher, dass f\u00fcr das Topic ein g\u00fcltiges String-Objekt angegeben wird.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+INVALID_TOPIC_ERROR_CWSIH0006=CWSIH0006E: Die Topicsyntax f\u00fcr eine ver\u00f6ffentlichte Nachricht ist ung\u00fcltig: {0}.
+INVALID_TOPIC_ERROR_CWSIH0006.explanation=Das angegebene Topic darf keine Platzhalterzeichen enthalten, weil es sich um eine Ver\u00f6ffentlichung handelt.
+INVALID_TOPIC_ERROR_CWSIH0006.useraction=Entfernen Sie die Platzhalterzeichen aus Ver\u00f6ffentlichungsnachrichten. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} The topic name.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007=CWSIH0007E: Es kann keine passende Instanz erstellt werden. Ausnahme: {0}
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.explanation=Es kann keine passende Instanz erstellt werden, weil die Datei "sib.matchspaceImpl.jar" fehlt oder besch\u00e4digt ist.
+UNABLE_TO_CREATE_MATCHING_INSTANCE_CWSIH0007.useraction=CMSG0002
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIH9999=CWSIH9999E: {0}
+TEMPORARY_CWSIH9999.explanation=Falls die in der Nachricht enthaltenen Informationen nicht ausreichend sind, suchen Sie in vorherigen Nachrichten nach weiteren Informationen.
+TEMPORARY_CWSIH9999.useraction=Suchen Sie in den vorausgegangenen Nachrichten nach n\u00e4heren Informationen. 

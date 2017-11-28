@@ -1,0 +1,499 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.processor.CWSJUMessages.nlsprops
+#
+# SIB.processor component file for logging messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJU0001=CWSJU0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSJU9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.22.1.6
+#
+#CMVCPATHNAME SIB/ws/code/sib.processor/src/com/ibm/ws/sib/processor/CWSJUMessages.nlsprops
+#COMPONENTPREFIX CWSJU
+#COMPONENTNAMEFOR CWSJU Message Tracing
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0001=CWSJU0001I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} na m\u00edsto ur\u010den\u00ed {3} pomoc\u00ed transakce {4}.
+PRODUCER_SEND_CWSJU0001.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_CWSJU0001.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0002=CWSJU0002I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} na m\u00edsto ur\u010den\u00ed {3}.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_NO_TRAN_CWSJU0002.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0003=CWSJU0003I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla p\u0159ed\u00e1na na ciz\u00ed m\u00edsto ur\u010den\u00ed {3} ur\u010den\u00e9 pro stroj syst\u00e9mu zpr\u00e1v {4}.
+PRODUCER_SEND_COMMIT_CWSJU0003.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_COMMIT_CWSJU0003.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_QUEUE_CWSJU0004=CWSJU0004I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do fronty {3}.
+PRODUCER_SEND_QUEUE_CWSJU0004.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_QUEUE_CWSJU0004.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The JMS Correlation Id
+# {2} The destination name
+PRODUCER_SEND_TOPICSPACE_CWSJU0005=CWSJU0005I: Zpr\u00e1va s ID {0} a ID korelace {1} byla um\u00edst\u011bna do prostoru t\u00e9mat {2}.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_TOPICSPACE_CWSJU0005.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_SERVICE_CWSJU0006=CWSJU0006I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do slu\u017eby {3}.
+PRODUCER_SEND_SERVICE_CWSJU0006.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_SERVICE_CWSJU0006.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_PORT_CWSJU0007=CWSJU0007I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do portu {3}.
+PRODUCER_SEND_PORT_CWSJU0007.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_PORT_CWSJU0007.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The destination name
+# {2} The number of matched consumers
+PUBLICATION_COUNT_CWSJU0008=CWSJU0008I: Zpr\u00e1va s ID {0} v m\u00edst\u011b ur\u010den\u00ed {1} odpov\u00eddala {2} spot\u0159ebitel\u016fm.
+PUBLICATION_COUNT_CWSJU0008.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PUBLICATION_COUNT_CWSJU0008.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+# {3} The transaction id
+MESSAGE_ROLLBACK_CWSJU0010=CWSJU0010I: Zpr\u00e1va s ID {0} a ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} byla odvol\u00e1na z c\u00edle {2} v r\u00e1mci transakce {3}.
+MESSAGE_ROLLBACK_CWSJU0010.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+MESSAGE_ROLLBACK_CWSJU0010.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The destination name
+MESSAGE_EXPIRED_CWSJU0011=CWSJU0011I: Platnost zpr\u00e1vy s ID {0} a ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} v m\u00edst\u011b ur\u010den\u00ed {2} vypr\u0161ela.
+MESSAGE_EXPIRED_CWSJU0011.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+MESSAGE_EXPIRED_CWSJU0011.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The reason.
+# {5} The explanation for why the message was exception destinationed
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012=CWSJU0012I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do c\u00edle v\u00fdjimek {3} z p\u0159\u00ed\u010diny {4}. Vysv\u011btlen\u00ed: {5}
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.explanation=Zpr\u00e1va se zadan\u00fdm ID byla odesl\u00e1na do c\u00edle v\u00fdjimek.
+MESSAGE_EXCEPTION_DESTINATIONED_CWSJU0012.useraction=Zjist\u011bte, pro\u010d byla zpr\u00e1va um\u00edst\u011bna do c\u00edle v\u00fdjimek, a chybu opravte.
+
+# Missing 13
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_BUS_CWSJU0014=CWSJU0014I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do propojen\u00ed sb\u011brnic {3}.
+PRODUCER_SEND_BUS_CWSJU0014.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_BUS_CWSJU0014.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The link name
+PRODUCER_SEND_LINK_CWSJU0015=CWSJU0015I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do p\u0159enosov\u00e9ho proudu {3}.
+PRODUCER_SEND_LINK_CWSJU0015.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_LINK_CWSJU0015.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The mq link name
+PRODUCER_SEND_MQLINK_CWSJU0016=CWSJU0016I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do p\u0159enosov\u00e9ho proudu propojen\u00ed serveru WebSphere MQ {3}.
+PRODUCER_SEND_MQLINK_CWSJU0016.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_MQLINK_CWSJU0016.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_BUS_CWSJU0017=CWSJU0017I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do propojen\u00ed sb\u011brnic {3} pomoc\u00ed transakce {4}.
+PRODUCER_SEND_BUS_CWSJU0017.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_BUS_CWSJU0017.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The link name
+# {4} The transaction id
+PRODUCER_SEND_LINK_CWSJU0018=CWSJU0018I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do propojen\u00ed {3} pomoc\u00ed transakce {4}.
+PRODUCER_SEND_LINK_CWSJU0018.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_LINK_CWSJU0018.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The transaction id
+PRODUCER_SEND_MQLINK_CWSJU0019=CWSJU0019I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do propojen\u00ed serveru WebSphere MQ {3} pomoc\u00ed transakce {4}.
+PRODUCER_SEND_MQLINK_CWSJU0019.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_MQLINK_CWSJU0019.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_CWSJU0020=CWSJU0020I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla p\u0159ijata ze stroje syst\u00e9mu zpr\u00e1v s ID {3} a s m\u00edstem ur\u010den\u00ed {4}.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+INBOUND_MESSAGE_RECEIVED_CWSJU0020.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0021=CWSJU0021I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} je p\u0159en\u00e1\u0161ena do stroje syst\u00e9mu zpr\u00e1v s ID {3} pro m\u00edsto ur\u010den\u00ed {4}.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+OUTBOUND_MESSAGE_SENT_CWSJU0021.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_CWSJU0022=CWSJU0022I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} je p\u0159en\u00e1\u0161ena do stroje syst\u00e9mu zpr\u00e1v s ID {3} ur\u010den\u00e9ho pro m\u00edsto ur\u010den\u00ed {4}.
+MESSAGE_FORWARDED_CWSJU0022.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+MESSAGE_FORWARDED_CWSJU0022.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0023=CWSJU0023I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} je p\u0159en\u00e1\u0161ena do stroje syst\u00e9mu zpr\u00e1v s ID {3} p\u0159idru\u017een\u00fdm k propojen\u00ed sb\u011brnic {4}.
+OUTBOUND_MESSAGE_SENT_CWSJU0023.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+OUTBOUND_MESSAGE_SENT_CWSJU0023.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_CWSJU0024=CWSJU0024I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} je p\u0159en\u00e1\u0161ena do stroje syst\u00e9mu zpr\u00e1v s ID {3} p\u0159idru\u017een\u00fdm k propojen\u00ed WebSphere MQ {4}.
+OUTBOUND_MESSAGE_SENT_CWSJU0024.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+OUTBOUND_MESSAGE_SENT_CWSJU0024.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_REQUEST_SENT_CWSJU0030=CWSJU0030I: Po\u017eadavek na zpr\u00e1vu v m\u00edst\u011b ur\u010den\u00ed {0} byl odesl\u00e1n ze stroje syst\u00e9mu zpr\u00e1v {1} do stroje syst\u00e9mu zpr\u00e1v {2} jm\u00e9nem spot\u0159ebitele prov\u00e1d\u011bj\u00edc\u00edho shroma\u017e\u010fov\u00e1n\u00ed z m\u00edsta ur\u010den\u00ed s identifik\u00e1torem UUID {3}.
+REMOTE_REQUEST_SENT_CWSJU0030.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+REMOTE_REQUEST_SENT_CWSJU0030.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The destination name
+# {1} The source ME uuid
+# {2} The target ME uuid
+# {3} The internal consumer uuid
+REMOTE_MESSAGE_SENT_CWSJU0031=CWSJU0031I: Po\u017eadovan\u00e1 zpr\u00e1va pro m\u00edsto ur\u010den\u00ed {0} byla odesl\u00e1na ze stroje syst\u00e9mu zpr\u00e1v {1} do stroje syst\u00e9mu zpr\u00e1v {2} jm\u00e9nem spot\u0159ebitele prov\u00e1d\u011bj\u00edc\u00edho shroma\u017e\u010fov\u00e1n\u00ed z m\u00edsta ur\u010den\u00ed s identifik\u00e1torem UUID {3}.
+REMOTE_MESSAGE_SENT_CWSJU0031.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+REMOTE_MESSAGE_SENT_CWSJU0031.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+# {1} The message
+REMOTE_REQUEST_SATISFIED_CWSJU0032=CWSJU0032I: Zpr\u00e1va {1} byla p\u0159i\u0159azena ke vzd\u00e1len\u00e9mu po\u017eadavku s ID {0}.
+REMOTE_REQUEST_SATISFIED_CWSJU0032.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+REMOTE_REQUEST_SATISFIED_CWSJU0032.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The request tick
+REMOTE_REQUEST_EXPIRED_CWSJU0033=CWSJU0033I: Platnost vzd\u00e1len\u00e9ho po\u017eadavku s ID {0} vypr\u0161ela.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+REMOTE_REQUEST_EXPIRED_CWSJU0033.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message 
+# {1} The request id
+# {2} The destination
+# {3} The source me
+# {4} The target me
+# {5} The gatheirng uuid
+REMOTE_MESSAGE_EXPIRED_CWSJU0034=CWSJU0034I: Platnost trval\u00e9 zpr\u00e1vy {0} vy\u017e\u00e1dan\u00e9 po\u017eadavkem s ID {1} z m\u00edsta ur\u010den\u00ed {2} ve stroji syst\u00e9mu zpr\u00e1v {4} strojem syst\u00e9mu zpr\u00e1v {3} pro spot\u0159ebitele {5} nyn\u00ed vypr\u0161ela a bude znovu zp\u0159\u00edstupn\u011bna ve zdrojov\u00e9m stroji syst\u00e9mu zpr\u00e1v. 
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+REMOTE_MESSAGE_EXPIRED_CWSJU0034.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+# {5} The transaction id
+CONSUMER_RECEIVE_CWSJU0040=CWSJU0040I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla dod\u00e1na spot\u0159ebiteli {3} z m\u00edsta ur\u010den\u00ed {4} pomoc\u00ed transakce {5}.
+CONSUMER_RECEIVE_CWSJU0040.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+CONSUMER_RECEIVE_CWSJU0040.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The consumer id
+# {4} The destination name
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041=CWSJU0041I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla dod\u00e1na spot\u0159ebiteli {3} z m\u00edsta ur\u010den\u00ed {4}.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+CONSUMER_RECEIVE_NO_TRAN_CWSJU0041.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+# {2} The transaction id
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042=CWSJU0042I: Spot\u0159ebitel neobdr\u017eel \u017e\u00e1dnou zpr\u00e1vu {0} z m\u00edsta ur\u010den\u00ed {1} pomoc\u00ed transakce {2}.
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+CONSUMER_RECEIVE_NO_MESSAGE_CWSJU0042.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The consumer id
+# {1} The destination name
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043=CWSJU0043I: Spot\u0159ebitel neobdr\u017eel \u017e\u00e1dnou zpr\u00e1vu {0} z m\u00edsta ur\u010den\u00ed {1}.
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+CONSUMER_RECEIVE_NO_MESSAGE_NO_TRAN_CWSJU0043.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The transaction id
+PRODUCER_SEND_CWSJU0051=CWSJU0051I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do bodu pro mediaci {3} pomoc\u00ed transakce {4}.
+PRODUCER_SEND_CWSJU0051.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_CWSJU0051.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_NO_TRAN_CWSJU0052=CWSJU0052I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do bodu pro mediaci {3}.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_NO_TRAN_CWSJU0052.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_CWSJU0053=CWSJU0053I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla p\u0159ed\u00e1na do bodu pro mediaci {3} ur\u010den\u00e9ho pro stroj syst\u00e9mu zpr\u00e1v {4}.
+PRODUCER_SEND_COMMIT_CWSJU0053.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_COMMIT_CWSJU0053.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_CWSJU0054=CWSJU0054I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do bodu pro mediaci {3}.
+PRODUCER_SEND_CWSJU0054.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_CWSJU0054.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061=CWSJU0061I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do propojen\u00ed sb\u011brnic {3}.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_NO_TRAN_BUS_CWSJU0061.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062=CWSJU0062I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do propojen\u00ed {3}.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_NO_TRAN_LINK_CWSJU0062.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063=CWSJU0063I: Producent {0} odeslal zpr\u00e1vu s ID {1} a ID korelace {2} do propojen\u00ed serveru WebSphere MQ {3}.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_NO_TRAN_MQLINK_CWSJU0063.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064=CWSJU0064I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla p\u0159ed\u00e1na na ciz\u00ed m\u00edsto ur\u010den\u00ed {3} ur\u010den\u00e9 pro stroj syst\u00e9mu zpr\u00e1v {4}.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_COMMIT_BUS_CWSJU0064.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065=CWSJU0065I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla p\u0159ed\u00e1na na ciz\u00ed m\u00edsto ur\u010den\u00ed {3} ur\u010den\u00e9 pro stroj syst\u00e9mu zpr\u00e1v {4}.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_COMMIT_LINK_CWSJU0065.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The producer id
+# {1} The message id
+# {2} The JMS Correlation Id
+# {3} The foreign bus name
+# {4} The messaging engine name or uuid
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066=CWSJU0066I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla p\u0159ed\u00e1na do propojen\u00ed serveru WebSphere MQ {3} ur\u010den\u00e9ho pro server {4}.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_COMMIT_MQLINK_CWSJU0066.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101=CWSJU0101I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do do\u010dasn\u00e9 fronty {3}.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_TEMPORARY_QUEUE_CWSJU0101.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The destination name
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102=CWSJU0102I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla um\u00edst\u011bna do do\u010dasn\u00e9ho prostoru t\u00e9matu {3}.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+PRODUCER_SEND_TEMPORARY_TOPICSPACE_CWSJU0102.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120=CWSJU0120I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} byla p\u0159ijata ze stroje syst\u00e9mu zpr\u00e1v s ID {3} a s m\u00edstem ur\u010den\u00ed {4}.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+INBOUND_MESSAGE_RECEIVED_TEMP_CWSJU0120.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The messaging engine uuid
+# {4} The destination name
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121=CWSJU0121I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} je p\u0159en\u00e1\u0161ena do stroje syst\u00e9mu zpr\u00e1v s ID {3} pro m\u00edsto ur\u010den\u00ed {4}.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+OUTBOUND_MESSAGE_SENT_TEMP_CWSJU0121.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The message id
+# {1} The system message id
+# {2} The JMS Correlation Id
+# {3} The ME uuid or name
+# {4} The destination name
+MESSAGE_FORWARDED_TEMP_CWSJU0122=CWSJU0122I: Zpr\u00e1va s ID {0}, ID syst\u00e9mov\u00e9 zpr\u00e1vy {1} a ID korelace {2} je p\u0159en\u00e1\u0161ena do stroje syst\u00e9mu zpr\u00e1v s ID {3} ur\u010den\u00e9ho pro do\u010dasn\u00e9 m\u00edsto ur\u010den\u00ed {4}.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.explanation=Tato informa\u010dn\u00ed zpr\u00e1va popisuje stav programu.
+MESSAGE_FORWARDED_TEMP_CWSJU0122.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce u\u017eivatele.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSJU9999=CWSJU9999E: {0}
+TEMPORARY_CWSJU9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed n\u00e1pov\u011bdu v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSJU9999.useraction=Dal\u0161\u00ed informace naleznete v p\u0159edchoz\u00edch zpr\u00e1v\u00e1ch.

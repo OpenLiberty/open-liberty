@@ -1,0 +1,43 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.javaeesec/resources/com/ibm/ws/security/javaeesec/cdi/internal/resources/JavaEESecMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Java EE Security 1.0 CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1925 - CWWKS1949
+
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS=CWWKS1925E: A implementa\u00e7\u00e3o do aplicativo falha porque m\u00faltiplas implementa\u00e7\u00f5es HttpAuthenticationMechanism s\u00e3o localizadas. A lista de classes \u00e9 {0}. Mais provavelmente, esse \u00e9 um problema de empacotamento de aplicativo. Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism no aplicativo.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.explanation=A implementa\u00e7\u00e3o do aplicativo falha porque mais de uma implementa\u00e7\u00e3o HttpAuthenticationMechanism \u00e9 localizada. Essa condi\u00e7\u00e3o n\u00e3o \u00e9 permitida.
+JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS.useraction=Certifique-se de que haja apenas uma implementa\u00e7\u00e3o HttpAuthenticationMechanism no aplicativo.
+
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST=CWWKS1926E: O bean LoginToContinueProperties n\u00e3o existe. O login do formul\u00e1rio n\u00e3o est\u00e1 ativado. Certifique-se de que o aplicativo esteja anotado por anota\u00e7\u00e3o LoginToContinue.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.explanation=O bean LoginToContinueProperties que \u00e9 necess\u00e1rio para a autentica\u00e7\u00e3o de login do formul\u00e1rio n\u00e3o existe.
+JAVAEESEC_CDI_ERROR_LOGIN_TO_CONTINUE_PROPERTIES_DOES_NOT_EXIST.useraction=Certifique-se de que o aplicativo esteja anotado por anota\u00e7\u00e3o LoginToContinue na anota\u00e7\u00e3o FormAuthenticationMechanismDefinition ou CustomFormAuthenticationMechanismDefinition.
+
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED=CWWKS1927E: A classe de credencial fornecida {0} n\u00e3o \u00e9 suportada pela classe CustomFormHttpAuthenticationMechanism. Use javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential para autentica\u00e7\u00e3o.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.explanation=A classe de credencial fornecida para a autentica\u00e7\u00e3o n\u00e3o \u00e9 suportada pela classe CustomFormHttpAuthenticationMechanism. Use javax.security.enterprise.credential.UsernamePasswordCredential ou javax.security.enterprise.credential.BasicAuthenticationCredential para autentica\u00e7\u00e3o.
+JAVAEESEC_CDI_ERROR_UNSUPPORTED_CRED.useraction=Certifique-se de que a classe de credencial suportada seja usada para autentica\u00e7\u00e3o de formul\u00e1rio customizado.
+
+JAVAEESEC_CDI_ERROR_USERNAME_NULL=CWWKS1928E: O nome do principal \u00e9 nulo ou o objeto do principal n\u00e3o existe.  Certifique-se de que CredentialValidationResult contenha o objeto do principal v\u00e1lido.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.explanation=O objeto do principal no objeto fornecido CredentialValidationResult n\u00e3o \u00e9 v\u00e1lido.  Ele \u00e9 nulo ou n\u00e3o tem nome v\u00e1lido.
+JAVAEESEC_CDI_ERROR_USERNAME_NULL.useraction=Se o aplicativo fornece uma IdentityStore, certifique-se de que ele retorne o objeto do principal v\u00e1lido em CredentialValidationResult.
+
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL=CWWKS1929E: O UniqueId \u00e9 nulo. Certifique-se de que CredentialValidationResult contenha UniqueId v\u00e1lido.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.explanation=O UniqueId no objeto CredentialValidationResult fornecido \u00e9 nulo.
+JAVAEESEC_CDI_ERROR_UNIQUE_ID_NULL.useraction=Se o aplicativo fornece uma IdentityStore, certifique-se de que ele retorne um UniqueId v\u00e1lido em CredentialValidationResult.
+
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER=CWWKS1930W: O bean IdentityStoreHandler n\u00e3o foi encontrado. Use um registro do usu\u00e1rio que seja definido por server.xml. O bean IdentityStoreHandler ser\u00e1 criado quando houver pelo menos um bean IdentityStore. Se o aplicativo pretender usar um IdentityStore, certifique-se que ele foi configurado adequadamente. 
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.explanation=O bean IdentityStoreHandler n\u00e3o foi encontrado. Se o aplicativo pretender usar um IdentityStore, certifique-se que ele foi configurado adequadamente. O bean IdentityStoreHandler ser\u00e1 criado quando houver pelo menos um bean IdentityStore.
+JAVAEESEC_CDI_WARNING_NO_IDENTITY_STORE_HANDLER.useraction=Se o aplicativo pretender usar um IdentityStore, certifique-se que ele foi configurado adequadamente.

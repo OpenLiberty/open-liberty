@@ -1,0 +1,577 @@
+###############################################################################
+# Copyright (c) 2003, 2010 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# File com.ibm.ws.sib.jfapchannel.CWSIJMessages.props
+#
+# SIB.comms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIJ0001=CWSIJ0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Please note that the message prefix changed near the end of the development cycle and as such,
+# while the messages have the right prefix, their keys may use the old. New messages should use
+# the new prefix in the message and the key.
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range       Package
+#   ----------------------------------------------------
+#   CWSIJ0000-CWSIJ9999   Communications usage only (within the comms team)
+#   ----------------------------------------------------
+#   CWSIJ0001-CWSIJ9998   com.ibm.ws.sib.jfapchannel
+#   CWSIJ9999             emergency use if any new messages are required after message file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.43,0,10/10/14,01:07:38
+#
+#CMVCPATHNAME ws/code/sib.jfapchannel/src/com/ibm/ws/sib/jfapchannel/CWSIJMessages.nlsprops
+#COMPONENTPREFIX CWSIJ
+#COMPONENTNAMEFOR CWSIJ Communications
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0001=CWSIJ0001E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+EXCP_DURING_INIT_SICJ0001.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0002=CWSIJ0002E: Metodu {0} t\u0159\u00eddy {1} nelze vyvolat kv\u016fli v\u00fdjimce: {2}
+EXCP_DURING_INIT_SICJ0002.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0003=CWSIJ0003E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+EXCP_DURING_INIT_SICJ0003.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0003.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the method that could not be invoked
+# {1} the class to which the method which could not be invoked belongs
+# {2} the exception which occurred.
+EXCP_DURING_INIT_SICJ0004=CWSIJ0004E: Metodu {0} t\u0159\u00eddy {1} nelze vyvolat kv\u016fli v\u00fdjimce: {2}
+EXCP_DURING_INIT_SICJ0004.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CF_NOT_AVAILABLE_SICJ0005=CWSIJ0005E: Nelze nal\u00e9zt instanci slu\u017eby struktury kan\u00e1lu pro pou\u017eit\u00ed ke komunikaci.
+CF_NOT_AVAILABLE_SICJ0005.explanation=Nelze nal\u00e9zt instanci slu\u017eby struktury kan\u00e1lu. Nen\u00ed mo\u017en\u00e1 s\u00ed\u0165ov\u00e1 komunikace.
+CF_NOT_AVAILABLE_SICJ0005.useraction=Ov\u011b\u0159te, zda je c\u00edlov\u00fd server spu\u0161t\u011bn a zda na lok\u00e1ln\u00edm po\u010d\u00edta\u010di pou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed port samozaveden\u00ed 2809. Pokud tomu tak nen\u00ed, spus\u0165te znovu p\u0159\u00edkaz launchClient s parametrem -CCBootstrapPort ur\u010duj\u00edc\u00edm spr\u00e1vn\u00e9 \u010d\u00edslo portu a s parametrem -CCBootstrapHost ur\u010duj\u00edc\u00edm spr\u00e1vn\u00fd n\u00e1zev hostitele c\u00edlov\u00e9ho serveru. Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+EXCP_CONN_FAIL_NO_CF_SICJ0007=CWSIJ0007E: P\u0159ipojen\u00ed, o kter\u00e9 jste se pokusili, selhalo, proto\u017ee nebyla inicializov\u00e1na komponenta Komunikace.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.explanation=Do\u0161lo k pokusu o s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed, kter\u00fd selhal, proto\u017ee nebylo mo\u017en\u00e9 spr\u00e1vn\u011b inicializovat komponentu Komunikace.
+EXCP_CONN_FAIL_NO_CF_SICJ0007.useraction=Prohl\u00e9dn\u011bte si soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d nebyla komponenta Komunikace spr\u00e1vn\u011b inicializov\u00e1na. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_OUTBOUND_SICJ0008=CWSIJ0008W: V\u00fdchoz\u00ed \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n.
+NO_DEFAULT_OUTBOUND_SICJ0008.explanation=V\u00fdchoz\u00ed \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n. Tento aplika\u010dn\u00ed server nemus\u00ed b\u00fdt schopen vytvo\u0159it p\u0159ipojen\u00ed k j\u00e1dr\u016fm syst\u00e9mu zpr\u00e1v vzd\u00e1len\u00e9 br\u00e1ny.
+NO_DEFAULT_OUTBOUND_SICJ0008.useraction=Definujte v\u00fdchoz\u00ed \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v pro tento aplika\u010dn\u00ed server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009=CWSIJ0009W: V\u00fdchoz\u00ed zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.explanation=V\u00fdchoz\u00ed zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n. Tento aplika\u010dn\u00ed server nemus\u00ed b\u00fdt schopen vytvo\u0159it p\u0159ipojen\u00ed k j\u00e1dr\u016fm syst\u00e9mu zpr\u00e1v vzd\u00e1len\u00e9 br\u00e1ny.
+NO_DEFAULT_SECURE_OUTBOUND_SICJ0009.useraction=Definujte v\u00fdchoz\u00ed zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v pro tento aplika\u010dn\u00ed server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010=CWSIJ0010W: V\u00fdchoz\u00ed tunelovan\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.explanation=V\u00fdchoz\u00ed tunelovan\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n. Tento aplika\u010dn\u00ed server nemus\u00ed b\u00fdt schopen vytvo\u0159it p\u0159ipojen\u00ed k j\u00e1dr\u016fm syst\u00e9mu zpr\u00e1v vzd\u00e1len\u00e9 br\u00e1ny.
+NO_DEFAULT_TUNNELED_OUTBOUND_SICJ0010.useraction=Definujte v\u00fdchoz\u00ed tunelovan\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v pro tento aplika\u010dn\u00ed server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the default channel chain which is not defined
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011=CWSIJ0011W: V\u00fdchoz\u00ed tunelovan\u00fd zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.explanation=V\u00fdchoz\u00ed tunelovan\u00fd zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v nen\u00ed pro tento aplika\u010dn\u00ed server definov\u00e1n. Tento aplika\u010dn\u00ed server nemus\u00ed b\u00fdt schopen vytvo\u0159it p\u0159ipojen\u00ed k j\u00e1dr\u016fm syst\u00e9mu zpr\u00e1v vzd\u00e1len\u00e9 br\u00e1ny.
+NO_DEFAULT_TUNNELED_SECURE_OUTBOUND_SICJ0011.useraction=Definujte v\u00fdchoz\u00ed tunelovan\u00fd zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v pro tento aplika\u010dn\u00ed server.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the SSL properties file.
+NO_SSL_PROPERTIES_FILE_SICJ0012=CWSIJ0012W: Nelze naj\u00edt soubor vlastnost\u00ed ''{0}'' pou\u017eit\u00fd k ur\u010den\u00ed po\u010d\u00e1te\u010dn\u00ed \u00farovn\u011b zabezpe\u010den\u00ed p\u0159enosu zpr\u00e1v pro klienta.
+NO_SSL_PROPERTIES_FILE_SICJ0012.explanation=Nelze naj\u00edt soubor vlastnost\u00ed obsahuj\u00edc\u00ed informace pou\u017eit\u00e9 p\u0159i nav\u00e1z\u00e1n\u00ed zabezpe\u010den\u00e9ho p\u0159ipojen\u00ed pro p\u0159enos zpr\u00e1v na klienta. Budou pou\u017eity v\u00fdchoz\u00ed hodnoty. Nemus\u00ed b\u00fdt mo\u017en\u00e9 nav\u00e1zat zabezpe\u010den\u00e9 p\u0159ipojen\u00ed pro syst\u00e9m zpr\u00e1v klienta.
+NO_SSL_PROPERTIES_FILE_SICJ0012.useraction=Konfigurujte vlastnosti souboru pro \u00farove\u0148 zabezpe\u010den\u00ed p\u0159enosu zpr\u00e1v pro klienta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_JFAP_CHANNEL_CLASS_SICJ0013=CWSIJ0013E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze naj\u00edt reprezentaci t\u0159\u00eddy {0}.
+NO_JFAP_CHANNEL_CLASS_SICJ0013.explanation=CMSG0001
+NO_JFAP_CHANNEL_CLASS_SICJ0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_TCP_CHANNEL_CLASS_SICJ0014=CWSIJ0014E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze naj\u00edt reprezentaci t\u0159\u00eddy {0}.
+NO_TCP_CHANNEL_CLASS_SICJ0014.explanation=CMSG0001
+NO_TCP_CHANNEL_CLASS_SICJ0014.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_SSL_CHANNEL_CLASS_SICJ0015=CWSIJ0015E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze naj\u00edt reprezentaci t\u0159\u00eddy {0}.
+NO_SSL_CHANNEL_CLASS_SICJ0015.explanation=CMSG0001
+NO_SSL_CHANNEL_CLASS_SICJ0015.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTP_CHANNEL_CLASS_SICJ0016=CWSIJ0016E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze naj\u00edt reprezentaci t\u0159\u00eddy {0}.
+NO_HTTP_CHANNEL_CLASS_SICJ0016.explanation=CMSG0001
+NO_HTTP_CHANNEL_CLASS_SICJ0016.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the class which could not be located
+NO_HTTPT_CHANNEL_CLASS_SICJ0017=CWSIJ0017E: Do\u0161lo k intern\u00ed chyb\u011b. Nelze naj\u00edt reprezentaci t\u0159\u00eddy {0}.
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.explanation=CMSG0001
+NO_HTTPT_CHANNEL_CLASS_SICJ0017.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018=CWSIJ0018E: Do\u0161lo k intern\u00ed chyb\u011b. Instanci kan\u00e1lu {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.explanation=CMSG0001
+CANNOT_CREATE_JFAP_CHANNEL_SICJ0018.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019=CWSIJ0019E: Do\u0161lo k intern\u00ed chyb\u011b. Instanci kan\u00e1lu {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.explanation=CMSG0001
+CANNOT_CREATE_TCP_CHANNEL_SICJ0019.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020=CWSIJ0020E: Do\u0161lo k intern\u00ed chyb\u011b. Instanci kan\u00e1lu {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.explanation=CMSG0001
+CANNOT_CREATE_SSL_CHANNEL_SICJ0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021=CWSIJ0021E: Do\u0161lo k intern\u00ed chyb\u011b. Instanci kan\u00e1lu {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.explanation=CMSG0001
+CANNOT_CREATE_HTTP_CHANNEL_SICJ0021.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022=CWSIJ0022E: Do\u0161lo k intern\u00ed chyb\u011b. Instanci kan\u00e1lu {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.explanation=CMSG0001
+CANNOT_CREATE_HTTPT_CHANNEL_SICJ0022.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023=CWSIJ0023E: V\u00fdchoz\u00ed \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.explanation=CMSG0001
+CANNOT_CREATE_DEFAULT_OUTBOUND_CHANNEL_SICJ0023.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024=CWSIJ0024E: Zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.explanation=CMSG0001
+CANNOT_CREATE_SECURE_OUTBOUND_CHANNEL_SICJ0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025=CWSIJ0025E: Tunelovan\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_OUTBOUND_CHANNEL_SICJ0025.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel chain which cannot be defined
+# {1} the exception which occurred.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026=CWSIJ0026E: Tunelovan\u00fd zabezpe\u010den\u00fd \u0159et\u011bzec kan\u00e1lu odchoz\u00edch zpr\u00e1v {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.explanation=CMSG0001
+CANNOT_CREATE_TUNNELED_SECURE_OUTBOUND_CHANNEL_SICJ0026.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAINS_SICJ0027=CWSIJ0027W: Pro tento aplika\u010dn\u00ed server nelze spustit \u017e\u00e1dn\u00e9 \u0159et\u011bzce kan\u00e1lu p\u0159\u00edchoz\u00edch zpr\u00e1v.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.explanation=Nelze spustit \u017e\u00e1dn\u00e9 \u0159et\u011bzce kan\u00e1lu p\u0159\u00edchoz\u00edch zpr\u00e1v, pravd\u011bpodobn\u011b proto, \u017ee nebyl \u017e\u00e1dn\u00fd pro tento aplika\u010dn\u00ed server definov\u00e1n. Klienti syst\u00e9mu zpr\u00e1v nebo jin\u00e9 j\u00e1dra syst\u00e9mu zpr\u00e1v nemus\u00ed um\u011bt \u00fasp\u011b\u0161n\u011b nav\u00e1zat p\u0159ipojen\u00ed k tomuto aplika\u010dn\u00edmu serveru.
+CANNOT_START_INBOUND_CHAINS_SICJ0027.useraction=Definujte na aplika\u010dn\u00edm serveru dal\u0161\u00ed \u0159et\u011bzce kan\u00e1lu p\u0159\u00edchoz\u00edch zpr\u00e1v pro \u00fa\u010dely zas\u00edl\u00e1n\u00ed zpr\u00e1v.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The minimum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028=CWSIJ0028W: Interval synchronizace {0} konfigurovan\u00fd pro kan\u00e1l {1} je men\u0161\u00ed ne\u017e minim\u00e1ln\u00ed hodnota {2}. Pou\u017eit\u00ed synchroniza\u010dn\u00edch sign\u00e1l\u016f bylo zak\u00e1z\u00e1no.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.explanation=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota atributu konfigurace kan\u00e1lu. V d\u016fsledku toho byly ve\u0161ker\u00e9 synchroniza\u010dn\u00ed sign\u00e1ly pro komunikace vyu\u017e\u00edvaj\u00edc\u00ed p\u0159idru\u017een\u00fd kan\u00e1l zak\u00e1z\u00e1ny.
+INBOUND_HEARTBEAT_INTERVAL_TOO_LOW_SICJ0028.useraction=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota intervalu synchronizace. Upravte hodnotu tak, aby le\u017eela v rozsahu platn\u00fdch hodnot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat interval
+# {1} The channel for which the heartbeat interval has been specified.
+# {2} The maximum acceptable value for the heartbeat interval.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029=CWSIJ0029W: Interval synchronizace {0} konfigurovan\u00fd pro kan\u00e1l {1} je v\u011bt\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed hodnota {2}. Pou\u017eit\u00ed synchroniza\u010dn\u00edch sign\u00e1l\u016f bylo zak\u00e1z\u00e1no.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.explanation=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota atributu konfigurace kan\u00e1lu. V d\u016fsledku toho byly ve\u0161ker\u00e9 synchroniza\u010dn\u00ed sign\u00e1ly pro komunikace vyu\u017e\u00edvaj\u00edc\u00ed p\u0159idru\u017een\u00fd kan\u00e1l zak\u00e1z\u00e1ny.
+INBOUND_HEARTBEAT_INTERVAL_TOO_HIGH_SICJ0029.useraction=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota intervalu synchronizace. Upravte hodnotu tak, aby le\u017eela v rozsahu platn\u00fdch hodnot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030=CWSIJ0030W: \u010casov\u00fd limit synchroniza\u010dn\u00edho sign\u00e1lu {0} konfigurovan\u00fd pro kan\u00e1l {1} je men\u0161\u00ed ne\u017e minim\u00e1ln\u00ed hodnota {2}. Pou\u017eit\u00ed synchroniza\u010dn\u00edch sign\u00e1l\u016f bylo zak\u00e1z\u00e1no.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.explanation=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota atributu konfigurace kan\u00e1lu. V d\u016fsledku toho byly ve\u0161ker\u00e9 synchroniza\u010dn\u00ed sign\u00e1ly pro komunikace vyu\u017e\u00edvaj\u00edc\u00ed p\u0159idru\u017een\u00fd kan\u00e1l zak\u00e1z\u00e1ny.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_LOW_SICJ0030.useraction=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota \u010dasov\u00e9ho limitu synchronizace. Upravte hodnotu tak, aby le\u017eela v rozsahu platn\u00fdch hodnot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The heartbeat timeout
+# {1} The channel for which the heartbeat timeout has been specified.
+# {2} The minimum acceptable value for the heartbeat timeout.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031=CWSIJ0031W: \u010casov\u00fd limit synchroniza\u010dn\u00edho sign\u00e1lu {0} konfigurovan\u00fd pro kan\u00e1l {1} je v\u011bt\u0161\u00ed ne\u017e maxim\u00e1ln\u00ed hodnota {2}. Pou\u017eit\u00ed synchroniza\u010dn\u00edch sign\u00e1l\u016f bylo zak\u00e1z\u00e1no.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.explanation=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota atributu konfigurace kan\u00e1lu. V d\u016fsledku toho byly ve\u0161ker\u00e9 synchroniza\u010dn\u00ed sign\u00e1ly pro komunikace vyu\u017e\u00edvaj\u00edc\u00ed p\u0159idru\u017een\u00fd kan\u00e1l zak\u00e1z\u00e1ny.
+INBOUND_HEARTBEAT_TIMEOUT_TOO_HIGH_SICJ0031.useraction=Byla zad\u00e1na nespr\u00e1vn\u00e1 hodnota \u010dasov\u00e9ho limitu synchronizace. Upravte hodnotu tak, aby le\u017eela v rozsahu platn\u00fdch hodnot.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032=CWSIJ0032E: An internal error occurred.  An object of class {0} cannot be created because of exception: {1}.
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.explanation=CMSG0001
+#CANNOT_GET_BUFFER_MGR_FOR_THIN_CLIENT_SICJ0032.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_NON_TSWITCH_IMPL_SICJ0033=CWSIJ0033E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+NO_NON_TSWITCH_IMPL_SICJ0033.explanation=CMSG0001
+NO_NON_TSWITCH_IMPL_SICJ0033.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+NO_DISPATCHTOALL_IMPL_SICJ0034=CWSIJ0034E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+NO_DISPATCHTOALL_IMPL_SICJ0034.explanation=CMSG0001
+NO_DISPATCHTOALL_IMPL_SICJ0034.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_UNEXPECTED_DISCONNECT_SICJ0035=CWSIJ0035E: Stroj syst\u00e9mu zpr\u00e1v, kter\u00fd byl p\u0159edt\u00edm p\u0159ipojen\u00fd z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1}, se neo\u010dek\u00e1van\u011b odpojil.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.explanation=J\u00e1dro syst\u00e9mu zpr\u00e1v se odpojilo od tohoto aplika\u010dn\u00edho serveru bez n\u00e1sledov\u00e1n\u00ed o\u010dek\u00e1van\u00fdch protokol\u016f odpojen\u00ed.
+ME_UNEXPECTED_DISCONNECT_SICJ0035.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036=CWSIJ0036E: Klient, kter\u00fd byl p\u0159edt\u00edm p\u0159ipojen\u00fd z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1}, se neo\u010dek\u00e1van\u011b odpojil.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.explanation=Klient se odpojil od tohoto aplika\u010dn\u00edho serveru bez n\u00e1sledov\u00e1n\u00ed o\u010dek\u00e1van\u00fdch protokol\u016f odpojen\u00ed.
+CLIENT_UNEXPECTED_DISCONNECT_SICJ0036.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_RECEIVED_SICJ0037=CWSIJ0037E: Nav\u00e1zan\u00e9 p\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v bylo ukon\u010deno z p\u0159\u00ed\u010diny p\u0159ijet\u00ed neplatn\u00fdch po\u010d\u00e1te\u010dn\u00edch dat z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1}.
+ME_BAD_DATA_RECEIVED_SICJ0037.explanation=P\u0159ipojen\u00ed j\u00e1dra syst\u00e9mu zpr\u00e1v ze zadan\u00e9ho hostitele bylo odpojeno z p\u0159\u00ed\u010diny p\u0159enosu neplatn\u00fdch dat.
+ME_BAD_DATA_RECEIVED_SICJ0037.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+ME_BAD_DATA_ON_CONNECT_SICJ0038=CWSIJ0038E: P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v bylo ukon\u010deno z p\u0159\u00ed\u010diny p\u0159ijet\u00ed neplatn\u00fdch po\u010d\u00e1te\u010dn\u00edch dat z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1}.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.explanation=P\u0159ipojen\u00ed j\u00e1dra syst\u00e9mu zpr\u00e1v ze zadan\u00e9ho hostitele bylo odpojeno z p\u0159\u00ed\u010diny p\u0159enosu neplatn\u00fdch dat.
+ME_BAD_DATA_ON_CONNECT_SICJ0038.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_RECEIVED_SICJ0039=CWSIJ0039E: Nav\u00e1zan\u00e9 p\u0159ipojen\u00ed bylo ukon\u010deno z p\u0159\u00ed\u010diny p\u0159ijet\u00ed neplatn\u00fdch po\u010d\u00e1te\u010dn\u00edch dat z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1}.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.explanation=P\u0159ipojen\u00ed ze zadan\u00e9ho hostitele bylo odpojeno z p\u0159\u00ed\u010diny p\u0159enosu neplatn\u00fdch dat.
+CLIENT_BAD_DATA_RECEIVED_SICJ0039.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name / endpoint and {1} is the chain name
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040=CWSIJ0040E: P\u0159ipojen\u00ed bylo ukon\u010deno z p\u0159\u00ed\u010diny p\u0159ijet\u00ed neplatn\u00fdch po\u010d\u00e1te\u010dn\u00edch dat z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1}.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.explanation=P\u0159ipojen\u00ed ze zadan\u00e9ho hostitele bylo odpojeno z p\u0159\u00ed\u010diny p\u0159enosu neplatn\u00fdch dat.
+CLIENT_BAD_DATA_ON_CONNECT_SICJ0040.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+ME_NOT_RESPONDING_SICJ0041=CWSIJ0041E: P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1} bylo ukon\u010deno pot\u00e9, co p\u0159estalo odpov\u00eddat po uplynut\u00ed {2} sekund.
+ME_NOT_RESPONDING_SICJ0041.explanation=P\u0159ipojen\u00ed j\u00e1dra syst\u00e9mu zpr\u00e1v ze zadan\u00e9ho hostitele bylo odpojeno, proto\u017ee p\u0159estalo odpov\u00eddat.
+ME_NOT_RESPONDING_SICJ0041.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name and {2} is the heartbeat interval
+CLIENT_NOT_RESPONDING_SICJ0042=CWSIJ0042E: P\u0159ipojen\u00ed z hostitele {0} v transportn\u00edm \u0159et\u011bzci {1} bylo ukon\u010deno pot\u00e9, co p\u0159estalo odpov\u00eddat po uplynut\u00ed {2} sekund.
+CLIENT_NOT_RESPONDING_SICJ0042.explanation=P\u0159ipojen\u00ed ze zadan\u00e9ho hostitele bylo odpojeno, proto\u017ee p\u0159estalo odpov\u00eddat.
+CLIENT_NOT_RESPONDING_SICJ0042.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_INTERNAL_SICJ0043=CWSIJ0043E: Do\u0161lo k intern\u00ed chyb\u011b.
+CONNECTION_INTERNAL_SICJ0043.explanation=CMSG0001
+CONNECTION_INTERNAL_SICJ0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_SICJ0044=CWSIJ0044E: Do\u0161lo k pokusu o operaci u p\u0159ipojen\u00ed, kter\u00e9 je ji\u017e zav\u0159en\u00e9.
+CONNECTION_CLOSED_SICJ0044.explanation=Do\u0161lo k pokusu o operaci u prost\u0159edku p\u0159ipojen\u00ed, kter\u00fd byl d\u0159\u00edve uzav\u0159en. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt programov\u00e1 chyba aplikace nebo skute\u010dnost, \u017ee syst\u00e9m uzav\u0159el prost\u0159edek p\u0159ipojen\u00ed v reakci na zji\u0161t\u011bn\u00ed chybov\u00e9 podm\u00ednky.
+CONNECTION_CLOSED_SICJ0044.useraction=Prohl\u00e9dn\u011bte si soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain
+CONVERSATIONIMPL_INVALIDATE_SICJ0045=CWSIJ0045E: Neo\u010dek\u00e1van\u00e1 podm\u00ednka zp\u016fsobila zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed z hostitele {0} s pou\u017eit\u00edm \u0159et\u011bzu {1}.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.explanation=Zji\u0161t\u011bn\u00ed neo\u010dek\u00e1van\u00e9 podm\u00ednky zp\u016fsobilo zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed.
+CONVERSATIONIMPL_INVALIDATE_SICJ0045.useraction=Prohl\u00e9dn\u011bte si p\u0159\u00edpadn\u00e9 p\u0159ipojen\u00e9 v\u00fdjimky a soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_INTERNAL_SICJ0046=CWSIJ0046E: Do\u0161lo k intern\u00ed chyb\u011b.
+CONVERSATIONIMPL_INTERNAL_SICJ0046.explanation=CMSG0001
+CONVERSATIONIMPL_INTERNAL_SICJ0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONIMPL_CLOSED_SICJ0047=CWSIJ0047E: Do\u0161lo k pokusu o operaci u p\u0159ipojen\u00ed, kter\u00e9 je ji\u017e zav\u0159en\u00e9.
+CONVERSATIONIMPL_CLOSED_SICJ0047.explanation=Do\u0161lo k pokusu o operaci u prost\u0159edku p\u0159ipojen\u00ed, kter\u00fd byl d\u0159\u00edve uzav\u0159en. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt programov\u00e1 chyba aplikace nebo skute\u010dnost, \u017ee syst\u00e9m uzav\u0159el prost\u0159edek p\u0159ipojen\u00ed v reakci na zji\u0161t\u011bn\u00ed chybov\u00e9 podm\u00ednky.
+CONVERSATIONIMPL_CLOSED_SICJ0047.useraction=Prohl\u00e9dn\u011bte si soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+CONVERSATIONTABLE_INTERNAL_SICJ0048=CWSIJ0048E: Do\u0161lo k intern\u00ed chyb\u011b.
+CONVERSATIONTABLE_INTERNAL_SICJ0048.explanation=CMSG0001
+CONVERSATIONTABLE_INTERNAL_SICJ0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+EXCHANGERL_INTERNAL_SICJ0049=CWSIJ0049E: Do\u0161lo k intern\u00ed chyb\u011b.
+EXCHANGERL_INTERNAL_SICJ0049.explanation=CMSG0001
+EXCHANGERL_INTERNAL_SICJ0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+IDTABLE_INTERNAL_SICJ0050=CWSIJ0050E: Do\u0161lo k intern\u00ed chyb\u011b.
+IDTABLE_INTERNAL_SICJ0050.explanation=CMSG0001
+IDTABLE_INTERNAL_SICJ0050.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the chain name
+INBOUNDCONV_INVALIDATE_SICJ0051=CWSIJ0051E: Neo\u010dek\u00e1van\u00e1 podm\u00ednka zp\u016fsobila zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed z hostitele {0} s pou\u017eit\u00edm \u0159et\u011bzu {1}.
+INBOUNDCONV_INVALIDATE_SICJ0051.explanation=Zji\u0161t\u011bn\u00ed neo\u010dek\u00e1van\u00e9 podm\u00ednky zp\u016fsobilo zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed. Dal\u0161\u00ed informace najdete v libovoln\u00e9 p\u0159ipojen\u00e9 v\u00fdjimce.
+INBOUNDCONV_INVALIDATE_SICJ0051.useraction=Prohl\u00e9dn\u011bte si p\u0159\u00edpadn\u00e9 p\u0159ipojen\u00e9 v\u00fdjimky a soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+INBOUNDCONV_INTERNAL_SICJ0052=CWSIJ0052E: Do\u0161lo k intern\u00ed chyb\u011b.
+INBOUNDCONV_INTERNAL_SICJ0052.explanation=CMSG0001
+INBOUNDCONV_INTERNAL_SICJ0052.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name and {1} is the chain name.
+TRANSPARSER_PROTOCOLERROR_SICJ0053=CWSIJ0053E: S\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed bylo ukon\u010deno pot\u00e9, co rovnocenn\u00fd partner odeslal nespr\u00e1vn\u011b form\u00e1tovan\u00e9 informace.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.explanation=S\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed z hostitele v transportn\u00edm \u0159et\u011bzci bylo ukon\u010deno pot\u00e9, co p\u0159ijalo nespr\u00e1vn\u011b form\u00e1tovan\u00e9 informace.
+TRANSPARSER_PROTOCOLERROR_SICJ0053.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+TRANSPARSER_INTERNAL_SICJ0054=CWSIJ0054E: Do\u0161lo k intern\u00ed chyb\u011b.
+TRANSPARSER_INTERNAL_SICJ0054.explanation=CMSG0001
+TRANSPARSER_INTERNAL_SICJ0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055=CWSIJ0055E: Nedostatek prost\u0159edk\u016f zp\u016fsobil ukon\u010den\u00ed nav\u00e1z\u00e1n\u00ed nov\u00e9ho p\u0159ipojen\u00ed.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.explanation=Nelze nav\u00e1zat nov\u00e9 p\u0159ipojen\u00ed v d\u016fsledku nedostatku po\u017eadovan\u00fdch prost\u0159edk\u016f. P\u0159\u00ed\u010dinou tohoto probl\u00e9mu je vysok\u00fd po\u010det aktivn\u00edch nav\u00e1zan\u00fdch p\u0159ipojen\u00ed.
+OUTBOUNDCONN_IDTABLEFULL_SICJ0055.useraction=Sni\u017ete prost\u0159edky pou\u017e\u00edvan\u00e9 aplikacemi uzav\u0159en\u00edm v\u0161ech p\u0159ipojen\u00ed, kter\u00e9 nejsou pot\u0159ebn\u00e9.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name
+OUTBOUNDCONV_INVALIDATE_SICJ0056=CWSIJ0056E: Neo\u010dek\u00e1van\u00e1 podm\u00ednka zp\u016fsobila zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed k hostiteli {0} na portu {1} s pou\u017eit\u00edm \u0159et\u011bzu {2}.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.explanation=Zji\u0161t\u011bn\u00ed neo\u010dek\u00e1van\u00e9 podm\u00ednky zp\u016fsobilo zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed.
+OUTBOUNDCONV_INVALIDATE_SICJ0056.useraction=Prohl\u00e9dn\u011bte si p\u0159\u00edpadn\u00e9 p\u0159ipojen\u00e9 v\u00fdjimky a soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+PRIORITYQUEUE_INTERNAL_SICJ0057=CWSIJ0057E: Do\u0161lo k intern\u00ed chyb\u011b.
+PRIORITYQUEUE_INTERNAL_SICJ0057.explanation=CMSG0001
+PRIORITYQUEUE_INTERNAL_SICJ0057.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+REQIDTABLE_INTERNAL_SICJ0058=CWSIJ0058E: Do\u0161lo k intern\u00ed chyb\u011b.
+REQIDTABLE_INTERNAL_SICJ0058.explanation=CMSG0001
+REQIDTABLE_INTERNAL_SICJ0058.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+SVRCONNMGR_INTERNAL_SICJ0059=CWSIJ0059E: Do\u0161lo k intern\u00ed chyb\u011b.
+SVRCONNMGR_INTERNAL_SICJ0059.explanation=CMSG0001
+SVRCONNMGR_INTERNAL_SICJ0059.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATA_INTERNAL_SICJ0060=CWSIJ0060E: Do\u0161lo k intern\u00ed chyb\u011b.
+TRANSDATA_INTERNAL_SICJ0060.explanation=CMSG0001
+TRANSDATA_INTERNAL_SICJ0060.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+TRANSDATAIT_INTERNAL_SICJ0061=CWSIJ0061E: Do\u0161lo k intern\u00ed chyb\u011b.
+TRANSDATAIT_INTERNAL_SICJ0061.explanation=CMSG0001
+TRANSDATAIT_INTERNAL_SICJ0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_INTERNAL_SICJ0062=CWSIJ0062E: Do\u0161lo k intern\u00ed chyb\u011b.
+CONNDATAGROUP_INTERNAL_SICJ0062.explanation=CMSG0001
+CONNDATAGROUP_INTERNAL_SICJ0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the hostname, {1} is the port.
+CONNDATAGROUP_CONNFAILED_SICJ0063=CWSIJ0063E: S\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed k n\u00e1zvu hostitele {0}, portu {1} nelze nav\u00e1zat.
+CONNDATAGROUP_CONNFAILED_SICJ0063.explanation=Nelze nav\u00e1zat s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed k zadan\u00e9mu n\u00e1zvu hostitele a portu.
+CONNDATAGROUP_CONNFAILED_SICJ0063.useraction=Ur\u010dete, zda je zadan\u00fd n\u00e1zev hostitele platn\u00fd a zda proces naslouch\u00e1 p\u0159ipojen\u00ed na zadan\u00e9m portu. Probl\u00e9m s p\u0159ipojen\u00edm SSL, ke kter\u00e9mu do\u0161lo p\u0159i pou\u017eit\u00ed tenk\u00e9ho klienta nebo adapt\u00e9ru prost\u0159edku pro platformu JMS s produktem WebSphere Application Server, lze snadn\u011bji diagnostikovat po nakonfigurov\u00e1n\u00ed syst\u00e9mov\u00e9 vlastnosti javax.net.debug=all (prost\u0159ed\u00ed Sun JSSE) nebo javax.net.debug=true (prost\u0159ed\u00ed IBM JSSE) a zopakov\u00e1n\u00ed operace pro aplika\u010dn\u00edho klienta.
+
+# -------------------------------------------------------------------------------------------------
+OUTCONNTRACKER_INTERNAL_SICJ0064=CWSIJ0064E: Do\u0161lo k intern\u00ed chyb\u011b.
+OUTCONNTRACKER_INTERNAL_SICJ0064.explanation=CMSG0001
+OUTCONNTRACKER_INTERNAL_SICJ0064.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+CRLDRI_INTERNAL_SICJ0065=CWSIJ0065E: Do\u0161lo k intern\u00ed chyb\u011b.
+CRLDRI_INTERNAL_SICJ0065.explanation=CMSG0001
+CRLDRI_INTERNAL_SICJ0065.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066=CWSIJ0066W: Nelze naj\u00edt transportn\u00ed \u0159et\u011bzec s n\u00e1zvem {0}, z n\u011bho\u017e lze z\u00edskat konfiguraci SSL, kter\u00e1 m\u016f\u017ee b\u00fdt po\u017eadov\u00e1na k nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed se vzd\u00e1len\u00fdm hostitelem s n\u00e1zvem {1}.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.explanation=Informace, kter\u00e9 jsou po\u017eadov\u00e1ny k p\u0159ipojen\u00ed zalo\u017een\u00e9mu na protokolu SSL k rovnocenn\u00e9mu partnerovi, nejsou v aktu\u00e1ln\u00ed konfiguraci k dispozici. Tyto informace se obvykle z\u00edsk\u00e1vaj\u00ed z vhodn\u00e9 definice transportn\u00edho \u0159et\u011bzce. Tato definice \u0159et\u011bzce m\u00e1 n\u00e1zev, kter\u00fd odpov\u00edd\u00e1 \u0159et\u011bzci p\u0159\u00edtomn\u00e9mu na vzd\u00e1len\u00e9m serveru typu peer. Takov\u00fd transportn\u00ed \u0159et\u011bzec nelze naj\u00edt. Pravd\u011bpodobn\u011b nebude mo\u017en\u00e9 nav\u00e1zat p\u0159ipojen\u00ed.
+CONNDATAGROUP_BADSLLCHAINNAME_SICJ0066.useraction=Definujte dal\u0161\u00ed transportn\u00ed \u0159et\u011bzce.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is a transport chain name.  {1} is the name of a machine.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067=CWSIJ0067W: Transportn\u00ed \u0159et\u011bzec s n\u00e1zvem {0} neobsahuje konfiguraci SSL, kter\u00e1 m\u016f\u017ee b\u00fdt po\u017eadov\u00e1na k nav\u00e1z\u00e1n\u00ed p\u0159ipojen\u00ed se vzd\u00e1len\u00fdm hostitelem s n\u00e1zvem {1}.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.explanation=Informace, kter\u00e9 jsou po\u017eadov\u00e1ny k p\u0159ipojen\u00ed zalo\u017een\u00e9mu na protokolu SSL k rovnocenn\u00e9mu partnerovi, nejsou v aktu\u00e1ln\u00ed konfiguraci k dispozici. Tyto informace se obvykle z\u00edsk\u00e1vaj\u00ed z vhodn\u00e9 definice transportn\u00edho \u0159et\u011bzce. Tato definice \u0159et\u011bzce m\u00e1 n\u00e1zev, kter\u00fd odpov\u00edd\u00e1 \u0159et\u011bzci p\u0159\u00edtomn\u00e9mu na vzd\u00e1len\u00e9m serveru typu peer. Takov\u00fd transportn\u00ed \u0159et\u011bzec nelze naj\u00edt. Pravd\u011bpodobn\u011b nebude mo\u017en\u00e9 nav\u00e1zat p\u0159ipojen\u00ed.
+CONNDATAGROUP_NOTSSLCHAIN_SICJ0067.useraction=Konfigurujte dal\u0161\u00ed transportn\u00ed \u0159et\u011bz SSL pro ur\u010den\u00fd transportn\u00ed \u0159et\u011bz.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068=CWSIJ0068E: Do\u0161lo k intern\u00ed chyb\u011b. Instanci kan\u00e1lu {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.explanation=CMSG0001
+CANNOT_CREATE_INBOUND_TCP_PROXY_CHANNEL_SICJ0068.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} the name of the channel that could not be created
+# {1} the exception which occurred
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069=CWSIJ0069E: Do\u0161lo k intern\u00ed chyb\u011b. Instanci kan\u00e1lu {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}.
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.explanation=CMSG0001
+CANNOT_CREATE_OUTBOUND_TCP_PROXY_CHANNEL_SICJ0069.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070=CWSIJ0070E: P\u0159ipojen\u00ed stroje syst\u00e9mu zpr\u00e1v k hostiteli {0} na portu {1} v transportn\u00edm \u0159et\u011bzu {2} bylo ukon\u010deno pot\u00e9, co p\u0159estalo odpov\u00eddat po uplynut\u00ed {3} sekund.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.explanation=P\u0159ipojen\u00ed j\u00e1dra syst\u00e9mu zpr\u00e1v ze zadan\u00e9ho hostitele bylo odpojeno, proto\u017ee p\u0159estalo odpov\u00eddat.
+ME_NOT_RESPONDING_OUTBOUND_SICJ0070.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port number, {2} is the chain name and {3} is the heartbeat interval
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071=CWSIJ0071E: P\u0159ipojen\u00ed k hostiteli {0} na portu {1} v transportn\u00edm \u0159et\u011bzu {2} bylo ukon\u010deno pot\u00e9, co p\u0159estalo odpov\u00eddat po uplynut\u00ed {3} sekund.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.explanation=P\u0159ipojen\u00ed ze zadan\u00e9ho hostitele bylo odpojeno, proto\u017ee p\u0159estalo odpov\u00eddat.
+CLIENT_NOT_RESPONDING_OUTBOUND_SICJ0071.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the host name, {1} is the port and {2} is the chain
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072=CWSIJ0072E: Neo\u010dek\u00e1van\u00e1 podm\u00ednka zp\u016fsobila zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed k hostiteli {0} na portu {1} s pou\u017eit\u00edm \u0159et\u011bzu {2}.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.explanation=Zji\u0161t\u011bn\u00ed neo\u010dek\u00e1van\u00e9 podm\u00ednky zp\u016fsobilo zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed.
+CONVERSATIONIMPL_INVALIDATE_OUTBOUND_SICJ0072.useraction=Prohl\u00e9dn\u011bte si p\u0159\u00edpadn\u00e9 p\u0159ipojen\u00e9 v\u00fdjimky a soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+# *** ignore this message - it is no longer used in the code. ***
+# {0} is the host, {1} is the port and {2} is the transport chain name
+#OUTOFMEMORY_SICJ0073=CWSIJ0073E: The available heap memory was exhausted while attempting to allocate storage for a message received from host {0} on port {1} using chain {2}.
+#OUTOFMEMORY_SICJ0073.explanation=Insufficient heap memory was available to store message data received from the specified remote process.  The connection to the remote process was closed.
+#OUTOFMEMORY_SICJ0073.useraction=Investigate the message throughput, message size and load of your application server.  Consider reducing message throughput, message size, application server load or increasing the amount of heap allocated by your server process.
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_VALID_SICJ0074=CWSIJ0074E: Do\u0161lo k intern\u00ed chyb\u011b.
+BUFFER_NOT_VALID_SICJ0074.explanation=CMSG0001
+BUFFER_NOT_VALID_SICJ0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_NOT_PREPARED_SICJ0075=CWSIJ0075E: Do\u0161lo k intern\u00ed chyb\u011b.
+BUFFER_NOT_PREPARED_SICJ0075.explanation=CMSG0001
+BUFFER_NOT_PREPARED_SICJ0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+BUFFER_ALREADY_RELEASED_SICJ0076=CWSIJ0076E: Do\u0161lo k intern\u00ed chyb\u011b.
+BUFFER_ALREADY_RELEASED_SICJ0076.explanation=CMSG0001
+BUFFER_ALREADY_RELEASED_SICJ0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+PRIORITY_QUEUE_PURGED_SICJ0077=CWSIJ0077E: Neo\u010dek\u00e1van\u00e1 podm\u00ednka zp\u016fsobila zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed.
+PRIORITY_QUEUE_PURGED_SICJ0077.explanation=Zji\u0161t\u011bn\u00ed neo\u010dek\u00e1van\u00e9 podm\u00ednky zp\u016fsobilo zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed.
+PRIORITY_QUEUE_PURGED_SICJ0077.useraction=Prohl\u00e9dn\u011bte si p\u0159\u00edpadn\u00e9 p\u0159ipojen\u00e9 v\u00fdjimky a soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_START_INBOUND_CHAIN_SICJ0078=CWSIJ0078E: Neo\u010dek\u00e1van\u00e1 v\u00fdjimka {0} zabr\u00e1nila spu\u0161t\u011bn\u00ed transportn\u00edho \u0159et\u011bzce {1}.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.explanation=Zadan\u00fd transportn\u00ed \u0159et\u011bzec nemohl b\u00fdt spu\u0161t\u011bn z p\u0159\u00ed\u010diny uveden\u00e9 v\u00fdjimky. Dal\u0161\u00ed procesy nebudou moci nav\u00e1zat s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed k tomuto serveru pomoc\u00ed zadan\u00e9ho transportn\u00edho \u0159et\u011bzce.
+CANNOT_START_INBOUND_CHAIN_SICJ0078.useraction=Prov\u011b\u0159te v\u00fdjimku ve zpr\u00e1v\u011b a ur\u010dete, zda obsahuje dostate\u010dn\u00e9 informace k vy\u0159e\u0161en\u00ed probl\u00e9mu. Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079=CWSIJ0079I: Transportn\u00ed \u0159et\u011bzec syst\u00e9mu zpr\u00e1v {0} nebyl spu\u0161t\u011bn.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.explanation=Transportn\u00ed \u0159et\u011bz nebyl spu\u0161t\u011bn, proto\u017ee \u017e\u00e1dn\u00e1 sb\u011brnice definovan\u00e1 pro bu\u0148ku nepovoluje jeho pou\u017eit\u00ed.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0079.useraction=Zkontrolujte transporty povolen\u00e9 sb\u011brnicemi.
+
+# -------------------------------------------------------------------------------------------------
+CONNDATAGROUP_CONNFAILED_SICJ0080=CWSIJ0080E: P\u0159ipojen\u00ed mezi pam\u011bt\u00ed pro \u0159\u00eddic\u00ed oblast p\u0159\u00eddavn\u00e9ho procesu nebylo mo\u017en\u00e9 nav\u00e1zat.
+CONNDATAGROUP_CONNFAILED_SICJ0080.explanation=P\u0159ipojen\u00ed mezi pam\u011bt\u00ed nebylo mo\u017en\u00e9 nav\u00e1zat. P\u0159\u00ed\u010dinou m\u016f\u017ee b\u00fdt asynchronn\u00ed spou\u0161t\u011bn\u00ed proces\u016f aplika\u010dn\u00edho serveru.
+CONNDATAGROUP_CONNFAILED_SICJ0080.useraction=Pokud je zpr\u00e1va d\u016fsledkem asynchronn\u00edho spu\u0161t\u011bn\u00ed procesu aplika\u010dn\u00edho serveru, nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce. Pokud je tato zpr\u00e1va generov\u00e1na neust\u00e1le, obra\u0165te se na servis spole\u010dnosti IBM.
+
+# -------------------------------------------------------------------------------------------------
+# {0} the class name where the exception was caught
+# {1} is the value of the Exception
+EXCP_DURING_INIT_SICJ0081=CWSIJ0081E: Do\u0161lo k intern\u00ed chyb\u011b. Objekt t\u0159\u00eddy {0} nelze vytvo\u0159it kv\u016fli v\u00fdjimce: {1}
+EXCP_DURING_INIT_SICJ0081.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception
+EXCP_DURING_INIT_SICJ0082=CWSIJ0082E: Do\u0161lo k intern\u00ed chyb\u011b. P\u0159ijat\u00e1 v\u00fdjimka: {0}.
+EXCP_DURING_INIT_SICJ0082.explanation=CMSG0001
+EXCP_DURING_INIT_SICJ0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+NETWORK_FAILURE_SICJ0083=CWSIJ0083E: Neo\u010dek\u00e1van\u00e1 podm\u00ednka zp\u016fsobila zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed.
+NETWORK_FAILURE_SICJ0083.explanation=Zji\u0161t\u011bn\u00ed neo\u010dek\u00e1van\u00e9 podm\u00ednky zp\u016fsobilo zav\u0159en\u00ed s\u00ed\u0165ov\u00e9ho p\u0159ipojen\u00ed.
+NETWORK_FAILURE_SICJ0083.useraction=Prohl\u00e9dn\u011bte si p\u0159\u00edpadn\u00e9 p\u0159ipojen\u00e9 v\u00fdjimky a soubory protokolu pro aplika\u010dn\u00ed server a ur\u010dete, pro\u010d bylo s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed zav\u0159eno. Dal\u0161\u00ed informace naleznete v souvisej\u00edc\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch. Je-li to mo\u017en\u00e9, probl\u00e9m opravte.
+
+# -------------------------------------------------------------------------------------------------
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084=CWSIJ0084E: Neo\u010dek\u00e1van\u00e1 v\u00fdjimka {0} zabr\u00e1nila spr\u00e1vn\u00e9mu zastaven\u00ed transportn\u00edho \u0159et\u011bzce {1}.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.explanation=Je mo\u017en\u00e9, \u017ee zadan\u00fd transportn\u00ed \u0159et\u011bzec nebyl spr\u00e1vn\u011b zastaven z p\u0159\u00ed\u010diny uveden\u00e9 v\u00fdjimky. V p\u0159\u00edpad\u011b, \u017ee se zastaven\u00ed transportn\u00edho \u0159et\u011bzce nezda\u0159ilo, budou ostatn\u00ed procesy pravd\u011bpodobn\u011b nad\u00e1le moci nav\u00e1zat s\u00ed\u0165ov\u00e9 p\u0159ipojen\u00ed k tomuto serveru pomoc\u00ed dan\u00e9ho transportn\u00edho \u0159et\u011bzce.
+CANNOT_STOP_INBOUND_CHAIN_SICJ0084.useraction=Prov\u011b\u0159te v\u00fdjimku ve zpr\u00e1v\u011b a ur\u010dete, zda obsahuje dostate\u010dn\u00e9 informace k vy\u0159e\u0161en\u00ed probl\u00e9mu. Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.
+
+# -------------------------------------------------------------------------------------------------
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085=CWSIJ0085I: Transportn\u00ed \u0159et\u011bzec syst\u00e9mu zpr\u00e1v {0} byl zastaven.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.explanation=Transportn\u00ed \u0159et\u011bz byl zastaven po zm\u011bn\u011b konfigurace zabezpe\u010den\u00ed, kter\u00e1 znamen\u00e1, \u017ee \u017e\u00e1dn\u00e1 sb\u011brnice definovan\u00e1 pro bu\u0148ku nad\u00e1le nepovoluje jeho pou\u017eit\u00ed.
+INBOUND_CHAIN_NOT_PERMITTED_SICJ0085.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# Emergency use
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIJ9999=CWSIJ9999E: {0}
+TEMPORARY_CWSIJ9999.explanation=Pokud zpr\u00e1va neposkytuje dostate\u010dn\u00e9 informace, zkuste vyhledat dal\u0161\u00ed informace v okoln\u00edch chybov\u00fdch zpr\u00e1v\u00e1ch.
+TEMPORARY_CWSIJ9999.useraction=Dal\u0161\u00ed informace o \u0159e\u0161en\u00ed tohoto probl\u00e9mu naleznete v informac\u00edch t\u00fdkaj\u00edc\u00edch se ur\u010dov\u00e1n\u00ed probl\u00e9m\u016f na webu podpory pro produkt Application Server na adrese http://www.ibm.com/software/webservers/appserv/was/support/.

@@ -1,0 +1,393 @@
+###############################################################################
+# Copyright (c) 2007, 2008 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME ws/code/metadata/src/com/ibm/ws/injectionengine/injection.nlsprops
+#COMPONENTPREFIX CWNEN
+#COMPONENTNAMEFOR CWNEN Injection Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+#CWNEN0001W=CWNEN0001W:
+#CWNEN0001W.explanation=
+#CWNEN0001W.useraction=
+
+# --------------------------------
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E=CWNEN0001E: O mecanismo de inje\u00e7\u00e3o capturou {0} e criou o seguinte erro: {1}.
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.explanation=
+CAUGHT_EXCEPTION_THROWING_NEW_EXCEPTION_CWNEN0001E.useraction=
+
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E=CWNEN0005E: O servi\u00e7o do mecanismo de inje\u00e7\u00e3o n\u00e3o est\u00e1 dispon\u00edvel.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.explanation=O servi\u00e7o de mecanismo de inje\u00e7\u00e3o n\u00e3o est\u00e1 dispon\u00edvel para o servidor especificado.
+INJECTION_ENGINE_SERVICE_UNAVAILABLE_CWNEN0005E.useraction=O servi\u00e7o de mecanismo de inje\u00e7\u00e3o foi iniciado como um servi\u00e7o singleton em todos os processos do servidor de aplicativos.  Verifique se o servidor de aplicativos foi iniciado sem erros.
+
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E=CWNEN0006E: O mecanismo de inje\u00e7\u00e3o n\u00e3o pode registrar os processadores de inje\u00e7\u00e3o at\u00e9 que o servi\u00e7o do mecanismo de inje\u00e7\u00e3o seja inicializado.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.explanation=O mecanismo de inje\u00e7\u00e3o inicializa um conjunto de processadores de inje\u00e7\u00e3o padr\u00e3o durante a inicializa\u00e7\u00e3o.  O servi\u00e7o do mecanismo de inje\u00e7\u00e3o deve ser iniciado e inicializado antes que os processadores de inje\u00e7\u00e3o adicionais possam ser registrados com o mecanismo de inje\u00e7\u00e3o.
+INJECTION_ENGINE_SERVICE_NOT_INITIALIZED_CWNEN0006E.useraction=Certifique-se de que os processadores de inje\u00e7\u00e3o sejam registrados depois que o servidor de aplicativos for iniciado.
+
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E=CWNEN0008E: O m\u00e9todo {0} deve ser um m\u00e9todo de configurador; a anota\u00e7\u00e3o \u00e9 ignorada.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.explanation=O m\u00e9todo para o destino de inje\u00e7\u00e3o deve ser um m\u00e9todo de propriedade de configurador.
+NOT_A_SETTER_METHOD_ON_METHOD_ANNOTATION_CWNEN0008E.useraction=Certifique-se de que o XML de destino de anota\u00e7\u00e3o ou inje\u00e7\u00e3o esteja especificando o m\u00e9todo planejado.
+
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E=CWNEN0009E: O mecanismo de inje\u00e7\u00e3o falhou ao processar o c\u00f3digo XML a partir do descritor de implementa\u00e7\u00e3o devido ao seguinte erro: {0}
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.explanation=Houve um erro ao processar os metadados no descritor de implementa\u00e7\u00e3o.
+FAILED_TO_PROCESS_XML_FROM_DD_CWNEN0009E.useraction=Certifique-se de que o XML contido no descritor de implementa\u00e7\u00e3o esteja correto.
+
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E=CWNEN0010E: O mecanismo de inje\u00e7\u00e3o falhou ao processar a anota\u00e7\u00e3o {0} ou {1} na classe {2}.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.explanation=O mecanismo de inje\u00e7\u00e3o n\u00e3o conseguiu configurar apropriadamente os destinos de inje\u00e7\u00e3o para a classe especificada.
+FAILED_TO_PROCESS_ANNOTATIONS_CWNEN0010E.useraction=Certifique-se de que as anota\u00e7\u00f5es corretas estejam contidas na classe e dentro do XML no descritor de implementa\u00e7\u00e3o.
+
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E=CWNEN0011E: O mecanismo de inje\u00e7\u00e3o falhou ao processar as liga\u00e7\u00f5es para os metadados devido ao seguinte erro: {0}
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.explanation=As liga\u00e7\u00f5es e as informa\u00e7\u00f5es de inje\u00e7\u00e3o cont\u00eam erros.
+FAILED_TO_PROCESS_BINDINGS_CWNEN0011E.useraction=Certifique-se de que as anota\u00e7\u00f5es contidas na classe e o XML contido no descritor de implementa\u00e7\u00e3o estejam corretos.
+
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E=CWNEN0012E: O mecanismo de inje\u00e7\u00e3o falhou ao inicializar o processador {0}.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.explanation=O processador falhou ao inicializar.
+FAILED_TO_INITIALIZE_PROCESSOR_CWNEN0012E.useraction=Certifique-se de que o processador esteja dispon\u00edvel e corretamente registrado no mecanismo de inje\u00e7\u00e3o.
+
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W=CWNEN0013W: A seguinte exce\u00e7\u00e3o NumberFormatException ocorreu quando o mecanismo de inje\u00e7\u00e3o tentou converter o {0} &lt;env-entry-name&gt; {1} &lt;env-entry-value&gt;: {2}
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.explanation=O cont\u00eainer n\u00e3o pode processar uma entrada de ambiente devido a uma exce\u00e7\u00e3o NumberFormatException.
+NUMBER_FORMAT_EXCEPTION_CWNEN0013W.useraction=Certifique-se que o valor para a entrada de ambiente seja uma representa\u00e7\u00e3o de cadeia v\u00e1lida para o tipo especificado.
+
+INVALID_BOOLEAN_FORMAT_CWNEN0014W=CWNEN0014W: A entrada de ambiente do contexto java:comp/env para o enterprise bean {0}, que \u00e9 um tipo Booleano, n\u00e3o est\u00e1 configurada com um valor booleano v\u00e1lido: {1}.  Portanto, a entrada \u00e9 designada a um valor false.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.explanation=Uma entrada de ambiente de contexto java:comp/env para um enterprise bean do tipo Boolean deve ser designada a um valor true ou false. Qualquer outro valor resultar\u00e1 em valor false, mas pode indicar um problema de configura\u00e7\u00e3o. O aplicativo pode n\u00e3o se comportar conforme esperado.
+INVALID_BOOLEAN_FORMAT_CWNEN0014W.useraction=Altere a entrada de ambiente de contexto java:comp/env do tipo Boolean para um valor true ou false.
+
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W=CWNEN0015W: A exce\u00e7\u00e3o a seguir foi capturada na tentativa de construir {0} &lt;env-entry-name&gt; {1} &lt;env-entry-value&gt;: \n \ {2}
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.explanation=O mecanismo de inje\u00e7\u00e3o encontrou uma exce\u00e7\u00e3o quando tentou criar uma entrada java:comp/env.
+THROWABLE_WHILE_CONSTRUCTING_JAVA_COMP_ENV_CWNEN0015W.useraction=Execute a a\u00e7\u00e3o com base na mensagem associada \u00e0 exce\u00e7\u00e3o.
+
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W=CWNEN0016W: O tipo {0}, que n\u00e3o \u00e9 v\u00e1lido, foi especificado para a entrada de ambiente simples {1} no componente {2} do m\u00f3dulo {3}.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.explanation=O mecanismo de inje\u00e7\u00e3o encontrou um tipo inv\u00e1lido para uma entrada de ambiente.
+INVALID_TYPE_IN_JAVA_COMP_ENV_CWNEN0016W.useraction=Garanta que se utilize um dos seguintes tipos de entrada de ambiente: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class e qualquer subclasse de Enum.
+
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E=CWNEN0017E: O mecanismo de inje\u00e7\u00e3o n\u00e3o pode resolver o destino da declara\u00e7\u00e3o {0} resource-ref para o local da liga\u00e7\u00e3o associado no espa\u00e7o de nomes global.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.explanation=O mecanismo de inje\u00e7\u00e3o n\u00e3o pode vincular entre o nome declarado no espa\u00e7o de nomes java:comp/env e o nome do recurso de destino no espa\u00e7o de nomes JNDI (Java Naming and Directory Interface) global.
+UNABLE_TO_RESOLVE_THE_TARGET_CWNEN0017E.useraction=Certifique-se de que o nome declarado na inje\u00e7\u00e3o, utilizando a anota\u00e7\u00e3o @Resource ou a declara\u00e7\u00e3o resource-ref, corresponda ao mesmo nome na liga\u00e7\u00e3o XML de liga\u00e7\u00e3o.
+
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E=CWNEN0018E: O destino da inje\u00e7\u00e3o {0} est\u00e1 especificado em uma anota\u00e7\u00e3o que n\u00e3o existe no descritor de implementa\u00e7\u00e3o XML.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.explanation=As seguintes informa\u00e7\u00f5es s\u00e3o especificadas nas regras de substitui\u00e7\u00e3o da especifica\u00e7\u00e3o EJB: \n  Quando um destino de inje\u00e7\u00e3o j\u00e1 est\u00e1 presente e \u00e9 especificado utilizando XML, o destino de inje\u00e7\u00e3o da anota\u00e7\u00e3o deve especificar o mesmo campo ou m\u00e9todo de propriedade.
+INJECTION_DECLARED_IN_ANNOTATION_BUT_NOT_IN_XML_CWNEN0018E.useraction=Altere o destino de inje\u00e7\u00e3o da anota\u00e7\u00e3o de forma que corresponda ao destino de inje\u00e7\u00e3o XML definido anteriormente do mesmo campo ou m\u00e9todo de propriedade.
+
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E=CWNEN0019E: O campo do destino da inje\u00e7\u00e3o {0} n\u00e3o deve ser declarado final.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.explanation=De acordo com a especifica\u00e7\u00e3o EJB, um campo de destino de inje\u00e7\u00e3o n\u00e3o deve ser declarado como final.
+INJECTION_TARGET_FIELD_MUST_NOT_BE_FINAL_CWNEN0019E.useraction=Corrija o nome do campo ou a assinatura do campo para especificar um dos campos de classe n\u00e3o-privada.
+
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E=CWNEN0020E: O mecanismo de inje\u00e7\u00e3o capturou a seguinte exce\u00e7\u00e3o de seguran\u00e7a quando tentou acessar o membro {1}: {0}.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.explanation=O mecanismo de inje\u00e7\u00e3o n\u00e3o tinha as credenciais de seguran\u00e7a apropriadas para acessar o membro.
+UNABLE_TO_GAIN_PROPER_SECURITY_CREDENTIALS_CWNEN0020E.useraction=Execute a a\u00e7\u00e3o com base na mensagem associada \u00e0 exce\u00e7\u00e3o.
+
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W=CWNEN0021W: O campo {0} est\u00e1 declarado como {1} mas o tipo de inje\u00e7\u00e3o solicitado para o campo \u00e9 {2}.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.explanation=O tipo de campo indicado no destino de inje\u00e7\u00e3o n\u00e3o est\u00e1 correto.
+FIELD_IS_DECLARED_DIFFERENT_THAN_THE_INECTION_TYPE_CWNEN0021W.useraction=Certifique-se de que o XML de destino de anota\u00e7\u00e3o ou inje\u00e7\u00e3o esteja especificando o campo planejado.
+
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E=CWNEN0022E: Um destino de inje\u00e7\u00e3o para a refer\u00eancia {0} n\u00e3o pode ser processado porque nem o m\u00e9todo {1} e nem o campo {2} existem na classe {3}.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.explanation=A classe n\u00e3o tem um m\u00e9todo ou campo com o nome da propriedade de destino de inje\u00e7\u00e3o configurado.
+UNABLE_TO_FIND_THE_MEMBER_SPECIFIED_CWNEN0022E.useraction=Garanta que o nome da propriedade de destino de inje\u00e7\u00e3o configurado esteja escrito corretamente e de que a classe contenha o m\u00e9todo de propriedade ou campo correspondente.
+
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E=CWNEN0023E: Um ou mais dos seguintes argumentos \u00e9 nulo: {0} targetClass, {1} targetName, {2} injectionClass.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.explanation=O mecanismo de inje\u00e7\u00e3o encontrou um erro quando tentou utilizar as informa\u00e7\u00f5es do destino de inje\u00e7\u00e3o especificadas no c\u00f3digo XML.
+INCORRECT_OR_NULL_INJECTION_TARGETS_SPECIFIED_CWNEN0023E.useraction=Certifique-se de que o XML, que existe no descritor de implementa\u00e7\u00e3o, esteja correto.
+
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E=CWNEN0024E: O mecanismo de inje\u00e7\u00e3o falhou ao carregar a classe {0} ObjectFactory.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.explanation=O mecanismo de inje\u00e7\u00e3o falhou em carregar e instanciar a classe de objeto especificada.
+OBJECT_FACTORY_CLASS_FAILED_TO_LOAD_CWNEN0024E.useraction=Certifique-se de que a classe esteja dispon\u00edvel e que o construtor seja vis\u00edvel e acess\u00edvel.
+
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W=CWNEN0025W: O enterprise bean est\u00e1 sendo vinculado a uma cadeia vazia no espa\u00e7o de nomes JNDI (Java Naming and Directory Interface) global.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.explanation=O destino de anota\u00e7\u00e3o ou inje\u00e7\u00e3o de informa\u00e7\u00f5es est\u00e1 incorreto ou incompleto.
+EJB_BOUND_TO_EMPTY_STRING_CWNEN0025W.useraction=Certifique-se de que o XML de destino de anota\u00e7\u00e3o ou inje\u00e7\u00e3o para o enterprise bean esteja correto.
+
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E=CWNEN0026E: Os elementos home e remote ou loca-home e local do enterprise bean {0} est\u00e3o faltando ou n\u00e3o podem ser resolvidos.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.explanation=Os elementos home e remote ou local-home e local est\u00e3o ausentes ou n\u00e3o podem ser resolvidos.
+EJB_REF_OR_EJB_LOCAL_REF_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0026E.useraction=Certifique-se de que as tags &lt;ejb-ref&gt; ou &lt;ejb-local-ref&gt; estejam especificadas corretamente no descritor de implementa\u00e7\u00e3o XML.
+
+
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E=CWNEN0027E: O mecanismo de inje\u00e7\u00e3o capturou a seguinte exce\u00e7\u00e3o de nomenclatura {0} quando tentou ligar {1} no espa\u00e7o de nomes JNDI (Java Naming and Directory Interface) global.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.explanation=O mecanismo de inje\u00e7\u00e3o encontrou uma exce\u00e7\u00e3o quando tentou a liga\u00e7\u00e3o.
+FAILED_TO_BIND_NAME_INTO_NAME_SPACE_CWNEN0027E.useraction=Execute a a\u00e7\u00e3o com base na mensagem associada \u00e0 exce\u00e7\u00e3o.
+
+INJECTION_FAILED_CWNEN0028E=CWNEN0028E: O mecanismo de inje\u00e7\u00e3o encontrou o seguinte erro ao injetar {0} em {1}: {2}
+INJECTION_FAILED_CWNEN0028E.explanation=O tipo especificado n\u00e3o \u00e9 injet\u00e1vel na classe especificada.
+INJECTION_FAILED_CWNEN0028E.useraction=Certifique-se de que o XML de destino de anota\u00e7\u00e3o ou inje\u00e7\u00e3o para o enterprise bean esteja correto.
+
+INJECTION_FAILED_CWNEN0029E=CWNEN0029E: O mecanismo de inje\u00e7\u00e3o encontrou um erro ao injetar {0} em {1}.  O tipo {0} pode ser injetado apenas em um enterprise bean {1}.
+INJECTION_FAILED_CWNEN0029E.explanation=Apenas objetos EJBContext ou TimerService podem ser injetados diretamente em um enterprise bean.
+INJECTION_FAILED_CWNEN0029E.useraction=Certifique-se de que o tipo especificado seja um objeto EJBContext ou TimerService.
+
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E=CWNEN0030E: A f\u00e1brica {0} encontrou um problema ao obter o objeto de liga\u00e7\u00e3o {1} da inst\u00e2ncia de objeto.  A mensagem de exce\u00e7\u00e3o foi: {2}
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.explanation=O dep\u00f3sito de informa\u00e7\u00f5es do objeto especificado est\u00e1 incorreto para o objeto de liga\u00e7\u00e3o.
+FAILED_TO_CREATE_OBJECT_INSTANCE_CWNEN0030E.useraction=Certifique-se de que o dep\u00f3sito de informa\u00e7\u00f5es tenha um objeto ligado corretamente.
+
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E=CWNEN0031E: Ocorreu uma falha ao criar refer\u00eancia {0} do tipo {1}.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.explanation=Foi encontrado um problema ao criar uma refer\u00eancia para ser localizada no espa\u00e7o de nomes JNDI (Java Naming and Directory Interface) global.
+FAILED_TO_CREATE_REFERENCE_CWNEN0031E.useraction=Certifique-se de que a refer\u00eancia especificada esteja correta.
+
+FAILED_TO_PROCESS_XML_CWNEN0032E=CWNEN0032E: Falha no processo de XML para {0} {1}
+FAILED_TO_PROCESS_XML_CWNEN0032E.explanation=O XML para a refer\u00eancia especificada est\u00e1 incorreto ou incompleto.
+FAILED_TO_PROCESS_XML_CWNEN0032E.useraction=Certifique-se de que o XML, que existe no descritor de implementa\u00e7\u00e3o, esteja correto.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W=CWNEN0033W: A interface {0}, que est\u00e1 especificada para as tags &lt;ejb-ref&gt; ou &lt;ejb-local-ref&gt;, n\u00e3o pode ser localizada.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.explanation=A classe de interface est\u00e1 ausente ou n\u00e3o pode ser localizada.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0033W.useraction=Certifique-se de que as tags &lt;ejb-ref&gt; ou &lt;ejb-local-ref&gt; estejam especificadas corretamente no descritor de implementa\u00e7\u00e3o XML e que a classe esteja dispon\u00edvel.
+
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E=CWNEN0034E: O ejb-link/beanName est\u00e1 especificado incorretamente. O bean {0} : nome de m\u00f3dulo {1} deve terminar com .jar ou .war.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.explanation=O destino de anota\u00e7\u00e3o ou inje\u00e7\u00e3o de informa\u00e7\u00f5es est\u00e1 incorreto ou incompleto.
+EJB_MODULE_MUST_END_WITH_JAR_CWNEN0034E.useraction=Certifique-se de que o XML de destino de anota\u00e7\u00e3o ou inje\u00e7\u00e3o para o enterprise bean esteja correto.
+
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E=CWNEN0035E: A refer\u00eancia {0} do tipo {1} para o componente {2} no m\u00f3dulo {3} do aplicativo {4} n\u00e3o pode ser resolvida.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.explanation=O aplicativo declarou uma refer\u00eancia para um objeto que n\u00e3o p\u00f4de ser localizado.
+UNABLE_TO_RESOLVE_INJECTION_OBJECT_CWNEN0035E.useraction=Procure uma mensagem anterior que indique porque o objeto com refer\u00eancia n\u00e3o p\u00f4de ser localizado e verifique se a configura\u00e7\u00e3o para a refer\u00eancia est\u00e1 correta.
+
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E=CWNEN0036E: O objeto de liga\u00e7\u00e3o {0} n\u00e3o \u00e9 uma Refer\u00eancia.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.explanation=O objeto especificado est\u00e1 incorreto.
+BINDING_OBJECT_IS_NOT_A_REFERENCE_CWNEN0036E.useraction=Certifique-se de que o objeto esteja configurado para um tipo Refer\u00eancia.
+
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E=CWNEN0037E: A f\u00e1brica {0} n\u00e3o \u00e9 para criar uma Refer\u00eancia para o objeto de liga\u00e7\u00e3o {1}.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.explanation=O dep\u00f3sito de informa\u00e7\u00f5es foi especificado incorretamente.
+INCORRECT_FACTORY_FOR_BINDING_OBJECT_CWNEN0037E.useraction=Especifique um dep\u00f3sito de informa\u00e7\u00f5es para o objeto de liga\u00e7\u00e3o que est\u00e1 sendo utilizado.
+
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E=CWNEN0038E: O endere\u00e7o para a Refer\u00eancia {0} est\u00e1 vazio (nulo).
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.explanation=Um nome do RefAddr para a Refer\u00eancia n\u00e3o foi especificado.
+THE_ADDRESS_FOR_THE_REFERENCE_IS_EMPTY_CWNEN0038E.useraction=Especifique um RefAddr para a Refer\u00eancia.
+
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E=CWNEN0039E: A interface {0} que est\u00e1 especificada para as tags &lt;ejb-ref&gt; ou &lt;ejb-local-ref&gt; n\u00e3o pode ser localizada.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.explanation=A classe de interface est\u00e1 ausente ou n\u00e3o pode ser localizada.
+EJB_INTERFACE_IS_NOT_SPECIFIED_CORRECTLY_CWNEN0039E.useraction=Certifique-se de que as tags &lt;ejb-ref&gt; ou &lt;ejb-local-ref&gt; estejam especificadas corretamente no descritor de implementa\u00e7\u00e3o XML e que a classe esteja dispon\u00edvel.
+
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W=CWNEN0040W: O campo {0} ou o m\u00e9todo foi configurado para ser injetado v\u00e1rias vezes.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.explanation=Quando v\u00e1rios destinos de inje\u00e7\u00e3o s\u00e3o configurados para o mesmo campo ou m\u00e9todo, o mecanismo de inje\u00e7\u00e3o n\u00e3o consegue determinar o destino a ser injetado.
+DUPLICATE_INJECTION_TARGETS_SPECIFIED_CWNEN0040W.useraction=N\u00e3o configure o mesmo campo ou m\u00e9todo com v\u00e1rios destinos de inje\u00e7\u00e3o.
+
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E=CWNEN0041E: A refer\u00eancia EJB {0} no m\u00f3dulo {1} para a interface {2} do enterprise bean {3} n\u00e3o pode ser resolvida neste n\u00f3.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.explanation=O escopo de AutoLink \u00e9 limitado ao aplicativo no qual a refer\u00eancia EJB ocorre e a servidores que n\u00e3o s\u00e3o membros de um cluster de Servidores de Aplicativos.
+ENTERPRISE_BEAN_NOT_FOUND_ON_NODE_CWNEN0041E.useraction=Verifique se os enterprise beans, que est\u00e3o sendo referenciados, existem no mesmo aplicativo.
+
+#Do no translate env-entry
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W=CWNEN0042W: A instru\u00e7\u00e3o env-entry {0} j\u00e1 foi especificada com o tipo {1}.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.explanation=Instru\u00e7\u00f5es env-entry duplicadas com o mesmo nome n\u00e3o s\u00e3o permitidas.
+DUPLICATE_ENV_ENTRIES_WITH_DIFFERING_TYPES_CWNEN0042W.useraction=N\u00e3o configure um env-entry com o mesmo nome.
+
+#Do no translate UserTransaction
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E=CWNEN0043E: N\u00e3o \u00e9 permitido injetar uma interface UserTransaction em um bean de transa\u00e7\u00e3o gerenciado por cont\u00eainer.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.explanation=A especifica\u00e7\u00e3o EJB (Enterprise JavaBeans) requer que a interface UserTransaction n\u00e3o esteja dispon\u00edvel para enterprise beans com demarca\u00e7\u00e3o de transa\u00e7\u00e3o gerenciada por cont\u00eainer.
+INJECTING_INCORRECT_TX_INTO_BEAN_CWNEN0043E.useraction=N\u00e3o injete uma interface UserTransaction em um bean de transa\u00e7\u00e3o gerenciada por cont\u00eainer.
+
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E=CWNEN0044E: Uma liga\u00e7\u00e3o de refer\u00eancia de recurso n\u00e3o p\u00f4de ser localizada para a refer\u00eancia de recurso {0}, definida para o componente {1}.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.explanation=Uma liga\u00e7\u00e3o para a refer\u00eancia de recurso pode ter sido omitida ou especificada incorretamente.
+UNABLE_TO_RESOLVE_THE_RESOURCE_REFERENCE_CWNEN0044E.useraction=Uma refer\u00eancia de recurso est\u00e1 definida para um componente com a anota\u00e7\u00e3o @Resource em um arquivo de classe de componente ou uma das seguintes sub-rotinas XML no descritor de implementa\u00e7\u00e3o: resource-env-ref, resource-ref, message-destination-ref.  Certifique-se de que a liga\u00e7\u00e3o esteja definida para a refer\u00eancia de recurso no arquivo ibm-ejb-jar-bnd se o componente for um m\u00f3dulo EJB (Enterprise Java Bean), arquivo ibm-web-bnd se o componente for um m\u00f3dulo de aplicativo da Web ou arquivo ibm-application-client-bnd se o componente for um m\u00f3dulo de cliente.
+
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W=CWNEN0045W: A env-entry {0} definida para o componente {1} n\u00e3o possui um destino de inje\u00e7\u00e3o ou valor especificado.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.explanation=Um valor dever\u00e1 ser especificado para uma env-entry se o valor injection-target n\u00e3o estiver configurado.
+UNABLE_TO_RESOLVE_THE_ENV_ENTRY_CWNEN0045W.useraction=Especifique um valor ou injection-target, ou ambos, para a env-entry.
+
+#-------------------------------------------------------------------------------
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W=CWNEN0046W: O tipo {0} especificado no resource-ref, resource-env-ref ou message-destination-ref com o nome {1} no m\u00f3dulo {2} n\u00e3o p\u00f4de ser carregado. A verifica\u00e7\u00e3o do tipo de compatibilidade n\u00e3o ser\u00e1 executada para esta refer\u00eancia de recurso.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.explanation=O tipo do recurso identificado pela liga\u00e7\u00e3o de refer\u00eancia de recurso n\u00e3o pode ser verificado quanto \u00e0 compatibilidade com o tipo definido em uma das seguintes sub-rotinas XML no descritor de implementa\u00e7\u00e3o:  resource-env-ref, resource-ref, message-destination-ref.
+RESOURCE_TYPE_NOT_FOUND_CWNEN0046W.useraction=Altere o tipo declarado para a refer\u00eancia de recurso no descritor de implementa\u00e7\u00e3o para um tipo que possa ser carregado.
+
+#-------------------------------------------------------------------------------
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W=CWNEN0047W: As anota\u00e7\u00f5es de recurso nos campos da classe {0} ser\u00e3o ignoradas. As anota\u00e7\u00f5es n\u00e3o puderam ser obtidas por causa da exce\u00e7\u00e3o: {1}
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.explanation=O aplicativo n\u00e3o funcionar\u00e1 corretamente se a classe especificada for usada.
+FIELD_ANNOTATIONS_IGNORED_CWNEN0047W.useraction=A classe deve ser removida do aplicativo ou a causa da exce\u00e7\u00e3o deve ser corrigida.
+
+#-------------------------------------------------------------------------------
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W=CWNEN0048W: As anota\u00e7\u00f5es de recurso nos campos da classe {0} ser\u00e3o ignoradas. A classe {0} est\u00e1 sendo processada para anota\u00e7\u00f5es, porque \u00e9 mencionada pela classe do aplicativo {1}. As anota\u00e7\u00f5es n\u00e3o puderam ser obtidas por causa da exce\u00e7\u00e3o: {2}
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.explanation=O aplicativo n\u00e3o funcionar\u00e1 corretamente se a classe especificada for usada.
+SUPER_FIELD_ANNOTATIONS_IGNORED_CWNEN0048W.useraction=A classe deve ser removida do aplicativo ou a causa da exce\u00e7\u00e3o deve ser corrigida.
+
+#-------------------------------------------------------------------------------
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W=CWNEN0049W: As anota\u00e7\u00f5es de recurso nos m\u00e9todos da classe {0} ser\u00e3o ignoradas. As anota\u00e7\u00f5es n\u00e3o puderam ser obtidas por causa da exce\u00e7\u00e3o: {1}
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.explanation=O aplicativo n\u00e3o funcionar\u00e1 corretamente se a classe especificada for usada.
+METHOD_ANNOTATIONS_IGNORED_CWNEN0049W.useraction=A classe deve ser removida do aplicativo ou a causa da exce\u00e7\u00e3o deve ser corrigida.
+
+#-------------------------------------------------------------------------------
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W=CWNEN0050W: As anota\u00e7\u00f5es de recurso nos m\u00e9todos da classe {0} ser\u00e3o ignoradas. A classe {0} est\u00e1 sendo processada para anota\u00e7\u00f5es, porque \u00e9 mencionada pela classe do aplicativo {1}. As anota\u00e7\u00f5es n\u00e3o puderam ser obtidas por causa da exce\u00e7\u00e3o: {2}
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.explanation=O aplicativo n\u00e3o funcionar\u00e1 corretamente se a classe especificada for usada.
+SUPER_METHOD_ANNOTATIONS_IGNORED_CWNEN0050W.useraction=A classe deve ser removida do aplicativo ou a causa da exce\u00e7\u00e3o deve ser corrigida.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_TYPES_CWNEN0051E=CWNEN0051E: O bean {0} no m\u00f3dulo {1} do aplicativo {2} possui dados de configura\u00e7\u00e3o em conflito no descritor de implementa\u00e7\u00e3o XML. Existem tipos de elementos em conflito com o mesmo valor de elemento {3}: {4}. Os tipos de elementos em conflito s\u00e3o {5} e {6}.
+CONFLICTING_XML_TYPES_CWNEN0051E.explanation=Quando v\u00e1rias refer\u00eancias de recurso estiverem definidas no descritor de implementa\u00e7\u00e3o XML para o mesmo espa\u00e7o de nomes do componente com o mesmo nome, o tipo do recurso dever\u00e1 ser igual.  Um cen\u00e1rio t\u00edpico onde isso pode ocorrer \u00e9 ao definir refer\u00eancias de recurso para um EJB (Enterprise Java Bean) e para uma classe de interceptor correspondente. O EJB e o interceptor compartilham o mesmo espa\u00e7o de nomes do componente, portanto as refer\u00eancias de recurso comuns entre os dois devem ser do mesmo tipo.
+CONFLICTING_XML_TYPES_CWNEN0051E.useraction=No descritor de implementa\u00e7\u00e3o XML, altere o nome de uma das refer\u00eancias de recurso ou altere o tipo de uma das refer\u00eancias para que correspondam entre si.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_VALUES_CWNEN0052E=CWNEN0052E: O bean {0} no m\u00f3dulo {1} do aplicativo {2} possui dados de configura\u00e7\u00e3o em conflito no descritor de implementa\u00e7\u00e3o XML. Existem valores de elementos em conflito {3} para v\u00e1rios elementos com o mesmo valor de elemento {4} {5}: {6}. Os valores de elementos em conflito {3} s\u00e3o {7} e {8}.
+CONFLICTING_XML_VALUES_CWNEN0052E.explanation=Quando v\u00e1rias refer\u00eancias de recurso estiverem definidas no descritor de implementa\u00e7\u00e3o XML para o mesmo espa\u00e7o de nomes do componente com o mesmo nome, todos os atributos do recurso dever\u00e3o ser iguais ou um dever\u00e1 ser atribu\u00edvel ao outro. Um cen\u00e1rio t\u00edpico onde isso pode ocorrer \u00e9 ao definir refer\u00eancias de recurso para um EJB (Enterprise Java Bean) e para uma classe de interceptor correspondente. O EJB e o interceptor compartilham o mesmo espa\u00e7o de nomes do componente, portanto as refer\u00eancias de recurso comuns entre os dois devem ser compat\u00edveis.
+CONFLICTING_XML_VALUES_CWNEN0052E.useraction=No descritor de implementa\u00e7\u00e3o XML, altere o nome de uma das refer\u00eancias de recurso ou altere um dos valores em conflito para que o mesmo valor ou um seja atribu\u00edvel ao outro.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E=CWNEN0053E: O bean {0} no m\u00f3dulo {1} do aplicativo {2} possui dados de configura\u00e7\u00e3o em conflito entre o descritor de implementa\u00e7\u00e3o XML e as anota\u00e7\u00f5es do c\u00f3digo-fonte. Existem valores de elementos {3} ou valores de atributos {4} em conflito para v\u00e1rios elementos {5} ou anota\u00e7\u00f5es {6} com o mesmo valor de elemento {7} ou valor de atributo {8}: {9}. Os valores de elementos {3} ou valores de atributos {4} em conflito s\u00e3o {10} e {11}.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.explanation=Quando v\u00e1rias refer\u00eancias de recurso estiverem definidas no descritor de implementa\u00e7\u00e3o XML e nas anota\u00e7\u00f5es do c\u00f3digo-fonte para o mesmo espa\u00e7o de nomes do componente com o mesmo nome, alguns atributos do recurso dever\u00e3o ser iguais ou um dever\u00e1 ser atribu\u00edvel ao outro.
+CONFLICTING_XML_ANNOTATION_VALUES_CWNEN0053E.useraction=No descritor de implementa\u00e7\u00e3o XML ou anota\u00e7\u00f5es do c\u00f3digo-fonte, altere o nome de uma das refer\u00eancias de recurso ou altere um dos valores em conflito para que o mesmo valor ou um seja atribu\u00edvel ao outro.
+
+#-------------------------------------------------------------------------------
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E=CWNEN0054E: O bean {0} no m\u00f3dulo {1} do aplicativo {2} possui dados de configura\u00e7\u00e3o em conflito nas anota\u00e7\u00f5es do c\u00f3digo-fonte. Existem valores de atributos em conflito {3} para v\u00e1rias anota\u00e7\u00f5es {4} com o mesmo valor de atributo {5}: {6}. Os valores de atributos em conflito {3} s\u00e3o {7} e {8}.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.explanation=Quando v\u00e1rias refer\u00eancias de recurso estiverem definidas nas anota\u00e7\u00f5es do c\u00f3digo-fonte para o mesmo espa\u00e7o de nomes do componente com o mesmo nome, todos os atributos do recurso dever\u00e3o ser iguais ou um dever\u00e1 ser atribu\u00edvel ao outro.
+CONFLICTING_ANNOTATION_VALUES_CWNEN0054E.useraction=Nas anota\u00e7\u00f5es do c\u00f3digo-fonte, altere o nome de uma das refer\u00eancias de recurso ou altere um dos valores em conflito para que o mesmo valor ou um seja atribu\u00edvel ao outro.
+
+#-------------------------------------------------------------------------------
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E=CWNEN0055E: O destino da mensagem {0} no m\u00f3dulo {1} do aplicativo {2} n\u00e3o pode ser localizado neste n\u00f3.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.explanation=O escopo de AutoLink \u00e9 limitado ao aplicativo no qual a refer\u00eancia de destino da mensagem ocorre e aos servidores que n\u00e3o s\u00e3o membros de um cluster de Servidores de Aplicativos.
+MSG_DEST_NOT_FOUND_ON_NODE_CWNEN0055E.useraction=Verifique se o destino da mensagem, que est\u00e1 sendo mencionado, existe no mesmo aplicativo. Ou defina uma liga\u00e7\u00e3o para o destino da mensagem.
+
+#-------------------------------------------------------------------------------
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E=CWNEN0056E: A introdu\u00e7\u00e3o do recurso {0} foi especificada para uma vari\u00e1vel de inst\u00e2ncia de propriedade e seu m\u00e9todo de configura\u00e7\u00e3o correspondente na classe {1} no m\u00f3dulo {2} do aplicativo {3}.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.explanation=A solicita\u00e7\u00e3o da inje\u00e7\u00e3o de um recurso em uma vari\u00e1vel de inst\u00e2ncia de propriedade e seu m\u00e9todo de configura\u00e7\u00e3o correspondente cont\u00e9m um erro.
+INJECTION_DECLARED_IN_BOTH_THE_FIELD_AND_METHOD_OF_A_BEAN_CWNEN0056E.useraction=Remova uma das anota\u00e7\u00f5es do campo ou do m\u00e9todo.  N\u00e3o foi poss\u00edvel ao campo ou o m\u00e9todo solicitar a inje\u00e7\u00e3o de um recurso de um nome diferente (n\u00e3o padr\u00e3o). Ao especificar explicitamente o nome JNDI de um recurso, um \u00fanico recurso pode ser injetado em v\u00e1rios campos ou m\u00e9todos de v\u00e1rias classes.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W=CWNEN0057W: O destino da inje\u00e7\u00e3o {0}.{1} n\u00e3o deve ser declarado est\u00e1tico.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.explanation=De acordo com a especifica\u00e7\u00e3o EJB, um destino de inje\u00e7\u00e3o s\u00f3 deve ser declarado est\u00e1tico se ele existir no cont\u00eainer do cliente.
+INJECTION_TARGET_MUST_NOT_BE_STATIC_CWNEN0057W.useraction=Altere o c\u00f3digo do destino de inje\u00e7\u00e3o para n\u00e3o est\u00e1tico, escolha um destino de inje\u00e7\u00e3o diferente ou remova o destino de inje\u00e7\u00e3o e preencha-o manualmente.
+
+#-------------------------------------------------------------------------------
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E=CWNEN0058E: O destino de inje\u00e7\u00e3o {0}.{1} deve ser declarado est\u00e1tico no cont\u00eainer do cliente.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.explanation=De acordo com a especifica\u00e7\u00e3o EJB, um destino de inje\u00e7\u00e3o no cont\u00eainer do cliente deve ser declarado est\u00e1tico.
+INJECTION_TARGET_IN_CLIENT_MUST_BE_STATIC_CWNEN0058E.useraction=Altere o c\u00f3digo do destino de inje\u00e7\u00e3o para est\u00e1tico, escolha um destino de inje\u00e7\u00e3o diferente ou remova o destino de inje\u00e7\u00e3o e preencha-o manualmente.
+
+#-------------------------------------------------------------------------------
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E=CWNEN0059E: O Mecanismo de Inje\u00e7\u00e3o falhou ao injetar o objeto de liga\u00e7\u00e3o {0} no arquivo EJB (Enterprise JavaBeans) {1}:{2} porque a inje\u00e7\u00e3o tentada \u00e9 recursiva ou c\u00edclica.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.explanation=Uma inje\u00e7\u00e3o c\u00edclica ou recursiva ocorre quando a inje\u00e7\u00e3o de um objeto requer outra inje\u00e7\u00e3o do mesmo objeto. Por exemplo, este cen\u00e1rio pode ocorrer quando uma sess\u00e3o com preserva\u00e7\u00e3o de estado tentar injetar uma inst\u00e2ncia do mesmo tipo em si mesma.
+RECURSIVE_INJECTION_FAILURE_CWNEN0059E.useraction=Modifique o c\u00f3digo do aplicativo ou configura\u00e7\u00e3o para que os destinos de inje\u00e7\u00e3o n\u00e3o dependam de si mesmos direta ou indiretamente.
+
+#--------------------------------------------------------------------------------
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E=CWNEN0060E: N\u00e3o \u00e9 poss\u00edvel injetar uma inst\u00e2ncia UserTransaction na classe {0}, associada ao componente {1} no m\u00f3dulo {2} no aplicativo {3}.  Uma inst\u00e2ncia UserTransaction n\u00e3o pode ser injetada nessa classe porque ela est\u00e1 associada a um componente de bean que n\u00e3o est\u00e1 configurado para permitir transa\u00e7\u00f5es gerenciadas por bean.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.explanation=A classe foi configurada para ter uma inst\u00e2ncia UserTransaction injetada nela, o que n\u00e3o \u00e9 permitido.  Se a classe for um bean, o bean n\u00e3o ser\u00e1 configurado para transa\u00e7\u00f5es gerenciadas por bean.  Se a classe for um interceptor ou um manipulador de servi\u00e7o da Web, ela ser\u00e1 utilizada por um ou mais beans que n\u00e3o est\u00e3o configurados para transa\u00e7\u00f5es gerenciadas  por bean.
+INJECTION_OF_USER_TRAN_INTO_CONTAINER_MANAGED_BEAN_CWNEN0060E.useraction=Altere a classe para parar de injetar uma inst\u00e2ncia UserTransaction ou altere a configura\u00e7\u00e3o do bean para permitir transa\u00e7\u00f5es gerenciadas por bean.  Se essa classe for um interceptor ou uma classe manipuladora de servi\u00e7o da Web que \u00e9 utilizada por v\u00e1rios beans, sendo que algumas s\u00e3o configuradas para transa\u00e7\u00f5es gerenciadas por bean e outras n\u00e3o, crie um novo interceptor ou classe manipuladora de servi\u00e7o da Web que n\u00e3o injete uma inst\u00e2ncia UserTransaction e utilize-os com os beans que est\u00e3o configurados para transa\u00e7\u00f5es gerenciadas por cont\u00eainer.
+
+#--------------------------------------------------------------------------------
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E=CWNEN0061E: O nome da propriedade de destino de inje\u00e7\u00e3o {0} para a refer\u00eancia {1} \u00e9 amb\u00edguo na classe {2}.  O m\u00e9todo {3} e o m\u00e9todo {4} s\u00e3o tipos compat\u00edveis com o tipo {5}.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.explanation=A classe foi configurada para ter inje\u00e7\u00e3o de m\u00e9todo, mas m\u00faltiplos m\u00e9todos s\u00e3o compat\u00edveis com o tipo de objeto a ser injetado.
+AMBIGUOUS_INJECTION_METHODS_CWNEN0061E.useraction=Altere a configura\u00e7\u00e3o do bean para especificar o tipo exato de um dos m\u00e9todos, altere a classe para ter um m\u00e9todo com um tipo de par\u00e2metro que seja exatamente o mesmo que o tipo da configura\u00e7\u00e3o de inje\u00e7\u00e3o ou altere a classe removendo ou renomeando um dos m\u00e9todos amb\u00edguos.
+
+#--------------------------------------------------------------------------------
+CONFLICTING_REFERENCES_CWNEN0062E=CWNEN0062E: O componente {0} e o componente {1} no m\u00f3dulo {2} do aplicativo {3} t\u00eam valores conflitantes para a propriedade {4} da refer\u00eancia {5}.  Os valores conflitantes s\u00e3o {6} e {7}.
+CONFLICTING_REFERENCES_CWNEN0062E.explanation=Quando uma refer\u00eancia com o mesmo nome for definida por v\u00e1rios componentes que compartilham um espa\u00e7o de nomes de componente, todas as propriedades de liga\u00e7\u00e3o e extens\u00e3o da refer\u00eancia dever\u00e3o ser as mesmas.
+CONFLICTING_REFERENCES_CWNEN0062E.useraction=No arquivo de liga\u00e7\u00e3o ou extens\u00e3o do m\u00f3dulo, altere um dos valores conflitantes para que eles sejam o mesmo.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Enum
+INVALID_ENUM_IDENTIFIER_CWNEN0063E=CWNEN0063E: A entrada de ambiente simples {0} no m\u00f3dulo {1} do aplicativo {2}, que \u00e9 o tipo Enum {3}, n\u00e3o est\u00e1 configurado para um identificador Enum v\u00e1lido: {4}.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.explanation=Uma entrada de ambiente simples para um m\u00f3dulo corporativo do tipo Enum deve ser designada a um valor de identificador Enum v\u00e1lido.
+INVALID_ENUM_IDENTIFIER_CWNEN0063E.useraction=Altere a entrada de ambiente simples do tipo Enum para um valor identificador Enum v\u00e1lido.
+
+#--------------------------------------------------------------------------------
+# Do not translate: Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class, and  Enum
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E=CWNEN0064E: Um tipo, que n\u00e3o \u00e9 v\u00e1lido, foi especificado para a entrada de ambiente simples {0} no m\u00f3dulo {1} do aplicativo {2}: {3}.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.explanation=Uma entrada de ambiente simples para um m\u00f3dulo corporativo pode ser um dos seguintes tipos Java: String, Character, Byte, Short, Integer, Long, Boolean, Double, Float, Class e qualquer subclasse de Enum.
+INVALID_ENV_ENTRY_TYPE_CWNEN0064E.useraction=Altere a entrada de ambiente simples para um dos tipos suportados.
+
+#--------------------------------------------------------------------------------
+INVALID_REFERENCE_NAME_CWNEN0065E=CWNEN0065E: A refer\u00eancia {0} para o componente {1} no m\u00f3dulo {2} no aplicativo {3} tem um nome que n\u00e3o \u00e9 v\u00e1lido.
+INVALID_REFERENCE_NAME_CWNEN0065E.explanation=Nomes de refer\u00eancia devem ser relativos a java:comp/env ou come\u00e7ar com java:global, java:app, java:module ou java:comp.
+INVALID_REFERENCE_NAME_CWNEN0065E.useraction=Altere o nome de refer\u00eancia nas anota\u00e7\u00f5es do descritor de implementa\u00e7\u00e3o e c\u00f3digo de origem.
+
+#--------------------------------------------------------------------------------
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E=CWNEN0066E: A anota\u00e7\u00e3o de c\u00f3digo-fonte {0} com o atributo {1} {2} para o componente {3} no m\u00f3dulo {4} no aplicativo {5} tem os seguintes dados de configura\u00e7\u00e3o para o atributo de propriedades que n\u00e3o \u00e9 v\u00e1lido: {6}
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.explanation=O formato para as propriedades especificadas na anota\u00e7\u00e3o \u00e9 name=value.
+INVALID_ANNOTATION_PROPERTY_CWNEN0066E.useraction=Altere o atributo de propriedades na anota\u00e7\u00e3o de c\u00f3digo de origem para ter o formato name=value.
+
+#--------------------------------------------------------------------------------
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E=CWNEN0067E: A anota\u00e7\u00e3o de c\u00f3digo de origem @DataSourceDefinition com o atributo de nome {0} para o componente {1} no m\u00f3dulo {2} do aplicativo {3} tem os seguintes dados de configura\u00e7\u00e3o para o atributo isolationLevel que n\u00e3o s\u00e3o v\u00e1lidos: {4}
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.explanation=O isolationLevel deve ser uma das seguintes constantes da classe java.sql.Connection: TRANSACTION_NONE, TRANSACTION_READ_UNCOMMITTED, TRANSACTION_READ_COMMITTED, TRANSACTION_REPEATABLE_READ ou TRANSACTION_SERIALIZABLE.
+INVALID_DATA_SOURCE_ANNOTATION_ISOLATION_LEVEL_CWNEN0067E.useraction=Altere o atributo isolationLevel na anota\u00e7\u00e3o de c\u00f3digo de origem para um dos valores v\u00e1lidos.
+
+#--------------------------------------------------------------------------------
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E=CWNEN0068E: A refer\u00eancia EJB {0} no m\u00f3dulo {1} para a interface {2} de um enterprise bean n\u00e3o pode ser resolvida neste n\u00f3.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.explanation=O escopo de AutoLink \u00e9 limitado ao aplicativo no qual a refer\u00eancia EJB ocorre e a servidores que n\u00e3o s\u00e3o membros de um cluster de Servidores de Aplicativos.
+ENTERPRISE_BEAN_INTERFACE_NOT_FOUND_ON_NODE_CWNEN0068E.useraction=Verifique se os enterprise beans, que est\u00e3o sendo referenciados, existem no mesmo aplicativo.
+
+#--------------------------------------------------------------------------------
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E=CWNEN0069E: O m\u00e9todo de inje\u00e7\u00e3o {0}.{1} deve ser declarado com exatamente um par\u00e2metro e n\u00e3o {2} par\u00e2metros.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.explanation=M\u00e9todos de inje\u00e7\u00e3o devem seguir as conven\u00e7\u00f5es dos m\u00e9todos do conjunto de propriedades JavaBeans.
+INJECTION_METHOD_MUST_HAVE_ONE_PARAM_CWNEN0069E.useraction=Altere o c\u00f3digo para o m\u00e9todo de inje\u00e7\u00e3o para ter exatamente um par\u00e2metro, escolha um destino de inje\u00e7\u00e3o diferente ou remova o destino de inje\u00e7\u00e3o e preencha o valor manualmente.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W=CWNEN0070W: A classe de anota\u00e7\u00e3o {0} n\u00e3o ser\u00e1 reconhecida porque foi carregada a partir do local{1} em vez de um carregador de classes do produto.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.explanation=O carregador de classes de aplicativo ou um carregador de classes de servidor de aplicativos carregou uma classe de anota\u00e7\u00e3o que deveria ter sido carregada por um carregador de classes do produto. Isso ocorre quando um carregador de classes foi configurado para carregar classes com o carregador de classes local em primeiro lugar (pai por \u00faltimo). A anota\u00e7\u00e3o ser\u00e1 reconhecida apenas se for carregada por um carregador de classes do produto.
+INCOMPATIBLE_ANNOTATION_CLASS_CWNEN0070W.useraction=Remova a classe de anota\u00e7\u00e3o do caminho da classe do aplicativo ou do servidor de aplicativos.
+
+#--------------------------------------------------------------------------------
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E=CWNEN0071E: A refer\u00eancia {0} para o componente {1} no m\u00f3dulo {2} no aplicativo {3} possui o tipo {4} e um valor para o atributo {5} que n\u00e3o \u00e9 v\u00e1lido: {6}
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.explanation=O atributo especificado deve ser n\u00e3o especificado ou possuir o valor padr\u00e3o.
+INVALID_OBJECT_FACTORY_ATTRIBUTE_CWNEN0071E.useraction=Remova o atributo da anota\u00e7\u00e3o do c\u00f3digo de origem ou do descritor de implementa\u00e7\u00e3o.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E=CWNEN0072E: A refer\u00eancia {0} tem valores conflitantes para o atributo {1}: {2} e {3}
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.explanation=A especifica\u00e7\u00e3o do Java Enterprise Edition informa que se diversos componentes declararem uma refer\u00eancia em um namespace compartilhado, os atributos de todas as declara\u00e7\u00f5es devem ser consistentes.
+INCOMPATIBLE_MERGE_ATTRIBUTES_CWNEN0072E.useraction=Modifique os atributos das declara\u00e7\u00f5es para que fiquem consistentes.
+
+#--------------------------------------------------------------------------------
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E=CWNEN0073E: A anota\u00e7\u00e3o de n\u00edvel de classe {0} na classe {1} no m\u00f3dulo {2} do aplicativo {3} n\u00e3o especifica um nome JNDI.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.explanation=Um JNDI deve ser especificado para as anota\u00e7\u00f5es de n\u00edvel de classe.
+MISSING_CLASS_LEVEL_ANNOTATION_NAME_CWNEN0073E.useraction=Especifique um nome JNDI na anota\u00e7\u00e3o de n\u00edvel de classe do c\u00f3digo de origem.
+
+#--------------------------------------------------------------------------------
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E=CWNEN0074E: O tipo {0} da inst\u00e2ncia do objeto obtido para a refer\u00eancia {1} \u00e9 incompat\u00edvel com o tipo do membro {2}.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.explanation=Uma inst\u00e2ncia do objeto usada para inje\u00e7\u00e3o deve corresponder ao tipo do par\u00e2metro de campo ou de m\u00e9todo.
+INCOMPATIBLE_INJECTED_OBJECT_TYPE_CWNEN0074E.useraction=Verifique se a liga\u00e7\u00e3o de refer\u00eancia est\u00e1 correta para a refer\u00eancia.
+
+#--------------------------------------------------------------------------------
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E=CWNEN0075E: Ocorreu um erro ao procurar na classe {0} o destino de inje\u00e7\u00e3o {1} da refer\u00eancia {2} do componente {3} no m\u00f3dulo {4} no aplicativo {5}: {6}
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.explanation=O destino da inje\u00e7\u00e3o n\u00e3o p\u00f4de ser localizado porque ocorreu um erro de carregamento de classe ao obter uma lista de campos ou m\u00e9todos para a classe.
+DECLARED_MEMBER_LINKAGE_ERROR_CWNEN0075E.useraction=Assegure-se de que o pacote de aplicativos e as configura\u00e7\u00f5es do carregador de classe estejam corretas.
+
+#-------------------------------------------------------------------------------
+#
+# CWNEN1000 - CWNEN1999 are reserved for liberty...
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# For emergency use only....
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I=CWNEN8990I: Esta \u00e9 uma mensagem informativa apenas em ingl\u00eas: {0}.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.explanation=Esta mensagem informativa n\u00e3o est\u00e1 traduzida.
+ENGLISH_ONLY_INFO_MESSAGE_CWNEN8990I.useraction=Consulte a mensagem para obter detalhes.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W=CWNEN8991W: Esta \u00e9 uma mensagem de aviso apenas em ingl\u00eas: {0}.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.explanation=Esta mensagem de aviso n\u00e3o est\u00e1 traduzida.
+ENGLISH_ONLY_WARN_MESSAGE_CWNEN8991W.useraction=Consulte a mensagem para obter detalhes.
+
+#-------------------------------------------------------------------------------
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E=CWNEN8992E: Esta \u00e9 uma mensagem de erro apenas em ingl\u00eas: {0}.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.explanation=Esta mensagem de erro n\u00e3o est\u00e1 traduzida.
+ENGLISH_ONLY_ERROR_MESSAGE_CWNEN8992E.useraction=Consulte a mensagem para obter detalhes.
+
+#-------------------------------------------------------------------------------
+# CWNEN9000 and up are reserved for command line / gui messages...
+# Place all other messages above this point.
+#-------------------------------------------------------------------------------

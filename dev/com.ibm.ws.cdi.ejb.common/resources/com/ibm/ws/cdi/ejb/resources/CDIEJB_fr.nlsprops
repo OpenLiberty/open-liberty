@@ -1,0 +1,34 @@
+#CMVCPATHNAME SERV1/ws/code/prereq.jcdi/src/com/ibm/ws/webbeans/resources/jcdi.nlsprops
+#COMPONENTPREFIX CWOWB
+#COMPONENTNAMEFOR CWOWB Java EE Contexts and Dependency Injection 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by JCDI
+#-----------------------------------------------------------------------------------------------------------------------------
+
+transactional.annotation.on.ejb.CWOWB2000E=CWOWB2000E: L'annotation {0} n'est pas autoris\u00e9e dans le bean EJB {1}
+transactional.annotation.on.ejb.CWOWB2000E.explanation=L'annotation transactionnelle ne peut pas \u00eatre utilis\u00e9e avec le bean EJB
+transactional.annotation.on.ejb.CWOWB2000E.useraction=Avec des EJB, l'attribut de transaction doit \u00eatre utilis\u00e9 et non l'\u00e9l\u00e9ment transactionnel
+
+lifecycle.interceptor.exception.CWOWB2001E=CWOWB2001E: Une intercepteur de cycle de vie {0} a \u00e9mis une exception : {1}
+lifecycle.interceptor.exception.CWOWB2001E.explanation=Les intercepteurs de cycle de vue doivent \u00e9viter d'\u00e9mettre des exceptions v\u00e9rifi\u00e9es 
+lifecycle.interceptor.exception.CWOWB2001E.useraction=V\u00e9rifiez les journaux pour d\u00e9terminer le probl\u00e8me.
+

@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=1.30,0,02/04/15,09:57:59
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.jpa/resources/EJBJPAMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# --------------------------------
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E=CNTR0315E: Bean-ul de sesiune stateful {0} din modulul {1} din aplica\u0163ia {2} nu a declarat o dependen\u0163\u0103 de referin\u0163a de persisten\u0163\u0103 {3}.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.explanation=C\u00e2nd un bean de sesiune stateful se afl\u0103 \u00eentr-un WAR, trebuie s\u0103 declare dependen\u0163ele de toate referin\u0163ele de context de persisten\u0163\u0103 \u015fi referin\u0163ele de unitate de persisten\u0163\u0103 pe care inten\u0163ioneaz\u0103 s\u0103 le acceseze.
+PERSISTENCE_REF_DEPENDENCY_NOT_DECLARED_CNTR0315E.useraction=Ad\u0103uga\u0163i adnotarea de cod surs\u0103 corespunz\u0103toare @PersistenceContext sau @PersistenceUnit la bean-ul de sesiune stateful sau ad\u0103uga\u0163i elementul corespunz\u0103tor <persistence-context-ref> sau <persistence-unit-ref> la elementul corespunz\u0103tor <session> \u00een fi\u015fierul ejb-jar.xml.

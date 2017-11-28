@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: A felhaszn\u00e1l\u00f3meghat\u00e1roz\u00e1s \u00e9rv\u00e9nytelen: {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=A felhaszn\u00e1l\u00f3k meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1land\u00f3 szintaxis: <user name="..." password="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=M\u00f3dos\u00edtsa a felhaszn\u00e1l\u00f3meghat\u00e1roz\u00e1st a konfigur\u00e1ci\u00f3ban.
+USER_MUST_DEFINE_NAME=Egy user (felhaszn\u00e1l\u00f3) elemnek meg kell hat\u00e1roznia egy nevet.
+USER_MUST_DEFINE_PASSWORD=A(z) "{0}" nev\u0171 felhaszn\u00e1l\u00f3i elemnek meg kell adnia egy jelsz\u00f3t.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: A csoportmeghat\u00e1roz\u00e1s \u00e9rv\u00e9nytelen: {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=A csoportok meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1land\u00f3 szintaxis: <group name="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=M\u00f3dos\u00edtsa a csoportmeghat\u00e1roz\u00e1st a konfigur\u00e1ci\u00f3ban.
+GROUP_MUST_DEFINE_NAME=A group elemnek meg kell hat\u00e1roznia egy nevet.
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: A tagmeghat\u00e1roz\u00e1s \u00e9rv\u00e9nytelen: {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=A tag meghat\u00e1roz\u00e1s\u00e1hoz haszn\u00e1land\u00f3 szintaxis: <member name="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=M\u00f3dos\u00edtsa a tagmeghat\u00e1roz\u00e1st a konfigur\u00e1ci\u00f3ban.
+MEMBER_MUST_DEFINE_NAME=A member elemnek meg kell hat\u00e1roznia egy nevet.
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: Nincsenek meghat\u00e1rozva felhaszn\u00e1l\u00f3k a(z) {0} azonos\u00edt\u00f3j\u00fa BasicRegistry konfigur\u00e1ci\u00f3hoz.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=A konfigur\u00e1ci\u00f3hoz nincsenek meghat\u00e1rozva felhaszn\u00e1l\u00f3k. Ez lehet sz\u00e1nd\u00e9kos, de val\u00f3sz\u00edn\u0171leg konfigur\u00e1ci\u00f3s hib\u00e1t jelez.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=Sz\u00fcks\u00e9g eset\u00e9n hat\u00e1rozzon meg legal\u00e1bb egy felhaszn\u00e1l\u00f3t a konfigur\u00e1ci\u00f3ban.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: T\u00f6bb felhaszn\u00e1l\u00f3 van megadva a(z) "{0}" n\u00e9vvel. Az ezen felhaszn\u00e1l\u00f3hoz tartoz\u00f3 bejegyz\u00e9sek nem ker\u00fclnek haszn\u00e1latra.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=A felhaszn\u00e1l\u00f3neveknek egyedieknek kell lenni\u00fck.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=A megadott n\u00e9vvel csak egy felhaszn\u00e1l\u00f3t hat\u00e1rozzon meg.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: T\u00f6bb csoport felhaszn\u00e1l\u00f3 van megadva a(z) "{0}" n\u00e9vvel. Az ezen csoporthoz tartoz\u00f3 bejegyz\u00e9sek nem ker\u00fclnek haszn\u00e1latra.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=A csoportneveknek egyedieknek kell lenni\u00fck.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=A megadott n\u00e9vvel csak egy csoportot hat\u00e1rozzon meg.
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: T\u00f6bb ''{0}'' nev\u0171 tag bejegyz\u00e9s van meghat\u00e1rozva a(z) ''{1}'' csoporthoz.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=A csoportok felhaszn\u00e1l\u00f3nevenk\u00e9nt csak egy tagbejegyz\u00e9st t\u00e1mogatnak.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Csak egy tagbejegyz\u00e9st hat\u00e1rozzon meg a felhaszn\u00e1l\u00f3hoz a megadott csoportban.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: A(z) "{1}" csoport "{0}" nev\u0171 tagbejegyz\u00e9se nem felel meg a megadott felhaszn\u00e1l\u00f3nak.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=A tagbejegyz\u00e9s sz\u00e1m\u00e1ra megadott \u00e9rt\u00e9k nem felel meg egyetlen megadott felhaszn\u00e1l\u00f3nak sem.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Ellen\u0151rizze a tag nev\u00e9nek helyes\u00edr\u00e1s\u00e1t, \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy megfelel a nyilv\u00e1ntart\u00e1sban megadott felhaszn\u00e1l\u00f3nak.

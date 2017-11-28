@@ -1,0 +1,199 @@
+###############################################################################
+# Copyright (c) 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.utils/resources/com/ibm/ws/jca/utils/internal/resources/JcaUtilsMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA JCA
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+# Range: 9900 - 9999
+
+# {0} = resource adapter class name
+# {1} = annotation used on the class
+# {2} = name of interface that the class is required to implement with this annotation
+J2CA9902.required.rainterface.for.anno.missing=J2CA9902E: Die Ressourcenadapterklasse {0}, die mit {1} annotiert ist, implementiert die Schnittstelle {2} nicht.
+J2CA9902.required.rainterface.for.anno.missing.explanation=Die annotierte Ressourcenadapterklasse implementiert die erforderliche Schnittstelle nicht.
+J2CA9902.required.rainterface.for.anno.missing.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = resource adapter class name
+# {1} = name of interface that the class is required to implement for this deployment descriptor entry type
+J2CA9903.required.rainterface.missing=J2CA9903E: Die Ressourcenadapterklasse {0} implementiert die Schnittstelle {1} nicht.
+J2CA9903.required.rainterface.missing.explanation=Die im Implementierungsdeskriptor angegebene Ressourcenadapterklasse implementiert die erforderliche Schnittstelle nicht.
+J2CA9903.required.rainterface.missing.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = resource adapter class name
+# {1} = resource adapter name
+J2CA9904.required.raclass.missing=J2CA9904E: Die Ressourcenadapterklasse {0} ist angegeben, aber die Klasse wurde nicht im Ressourcenadapter {1} gefunden.
+J2CA9904.required.raclass.missing.explanation=Die in <resourceadapter-class> in der Datei ra.xml bzw. in einer Klasse mit der Annotation @Connector angegebene Ressourcenadapterklasse wurde nicht im Ressourcenadapter gefunden.
+J2CA9904.required.raclass.missing.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9905.required.prop.missing=J2CA9905W: Die Konfigurationseigenschaft {0} ist erforderlich, aber es wurde keine Eigenschaftsdefinition im Ressourcenadapter {1} gefunden.
+J2CA9905.required.prop.missing.explanation=Es wurde keine Eigenschaftsdefinition f\u00fcr eine erforderliche Konfigurationseigenschaft im Ressourcenadapter gefunden.
+J2CA9905.required.prop.missing.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = config property type specified
+# {1} = config property name
+J2CA9906.invalid.type=J2CA9906E: Der Eigenschaftstyp {0}, der f\u00fcr die Konfigurationseigenschaft {1} angegeben wurde, ist nicht g\u00fcltig.
+J2CA9906.invalid.type.explanation=Die g\u00fcltigen Konfigurationseigenschaftstypen sind String, Long, Double, Float, Integer, Byte, Character, Boolean und Short.
+J2CA9906.invalid.type.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9908.duplicate.copy=J2CA9908E: Die Konfigurationseigenschaft {0} wurde mehrfach in demselben Geltungsbereich im Ressourcenadapter {1} gefunden. Doppelte Eigenschaften werden ignoriert.
+J2CA9908.duplicate.copy.explanation=Eine Konfigurationseigenschaft wurde mehrfach in einem bestimmten Geltungsbereich, z. B. in einer Aktivierungsspezifikation, gefunden.
+J2CA9908.duplicate.copy.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = config property name
+# {1} = resource adapter name
+J2CA9909.missing.matching.config.prop=J2CA9909E: Die Konfigurationseigenschaft {0} ist in der Datei wlp-ra.xml angegeben, aber es wurde keine entsprechende ConfigProperty-Annotation, kein entsprechender Implementierungsdeskriptoreintrag oder keine entsprechende JavaBean-Eigenschaft im Ressourcenadapter {1} gefunden.
+J2CA9909.missing.matching.config.prop.explanation=Es wurde eine Konfigurationseigenschaft in der Datei wlp-ra.xml verwendet, aber keine Definition f\u00fcr die Eigenschaft im Ressourcenadapter gefunden.
+J2CA9909.missing.matching.config.prop.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = admin object interface
+# {1} = admin object class
+# {2} = resource adapter name
+J2CA9910.missing.matching.adminobject=J2CA9910E: Es ist ein Element <adminobject> mit der Schnittstelle {0} und der Klasse {1} in der Datei wlp-ra.xml angegeben, aber es wurde keine entsprechende AdministeredObject-Annotation oder kein entsprechender Implementierungsdeskriptoreintrag im Ressourcenadapter {2} gefunden.
+J2CA9910.missing.matching.adminobject.explanation=Es wurde ein Element <adminobject> in der Datei wlp-ra.xml verwendet, aber keine entsprechende Definition im Ressourcenadapter gefunden.
+J2CA9910.missing.matching.adminobject.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = wlp-ra.xml element name
+# {1} = interface of connection factory or message listener
+# {2} = annotation type
+# {3} = resource adapter name
+J2CA9911.missing.matching.type=J2CA9911E: Es ist ein Element {0} f\u00fcr den Typ {1} in der Datei wlp-ra.xml angegeben, aber es wurde keine entsprechende {2}-Annotation oder kein entsprechender Implementierungsdeskriptoreintrag im Ressourcenadapter {3} gefunden.
+J2CA9911.missing.matching.type.explanation=Es wurde ein Element <connection-definition> oder <messagelistener> in der Datei wlp-ra.xml verwendet, aber keine entsprechende Definition im Ressourcenadapter gefunden.
+J2CA9911.missing.matching.type.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+   
+J2CA9912.conn.defn.required=J2CA9912E: Es gibt kein Element <connection-definition> und keine mit @ConnectionDefinition annotierte Klasse, obwohl die Transaktionsunterst\u00fctzung, ein Authentifizierungsmechanismus oder die Unterst\u00fctzung f\u00fcr erneute Authentifizierung angegeben wurde.
+J2CA9912.conn.defn.required.explanation=Sie k\u00f6nnen die Transaktionsunterst\u00fctzung, Authentifizierungsmechanismus oder die Unterst\u00fctzung f\u00fcr erneute Authentifizierung nur angeben, wenn es mindestens ein Element <connection-definition> in der Datei ra.xml oder mindestens eine Klasse gibt, die mit @ConnectionDefinition annotiert ist.
+J2CA9912.conn.defn.required.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9916.duplicate.nls.key=J2CA9916W: In der \u00fcbersetzbaren Nachrichtendatei {0} f\u00fcr den Ressourcenadapter {1} sind mehrere Nachrichten f\u00fcr den Schl\u00fcssel {2} definiert.
+J2CA9916.duplicate.nls.key.explanation=W\u00e4hrend der Verarbeitung der \u00dcbersetzungsdatei wurde ein Schl\u00fcssel f\u00fcr die Unterst\u00fctzung in der Landessprache gefunden, der f\u00fcr mehrere Nachrichten verwendet wird.
+J2CA9916.duplicate.nls.key.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = nls file name
+# {1} = resource adapter name
+# {2} = message key
+J2CA9917.missing.nls.msg=J2CA9917W: Die \u00fcbersetzbare Nachrichtendatei {0} f\u00fcr den Ressourcenadapter {1} enth\u00e4lt keine \u00dcbersetzungsnachricht f\u00fcr den Schl\u00fcssel {2}, der in der Datei wlp-ra.xml angegeben ist.
+J2CA9917.missing.nls.msg.explanation=Es wurde keine \u00dcbersetzungsnachricht f\u00fcr den angegebenen Schl\u00fcssel gefunden.
+J2CA9917.missing.nls.msg.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = attribute name
+# {1} = resource adapter name
+J2CA9918.attrdef.already.processed=J2CA9918W: Der Ressourcenadapter {1} definiert doppelte Konfigurationseigenschaften mit dem Namen {0} in demselben Geltungsbereich. Die Duplikate werden ignoriert.
+J2CA9918.attrdef.already.processed.explanation=In einer Ressourcenadapter-, Aktivierungsspezifikations-, verwalteten Objekt- oder Verbindungs-Factory-Definition sind doppelte Konfigurationseigenschaften mit demselben Namen angegeben.
+J2CA9918.attrdef.already.processed.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9919.class.not.found=J2CA9919W: Das Klassenladeprogramm f\u00fcr den Ressourcenadapter {1} kann {0} nicht laden. Pr\u00fcfen Sie, ob der Ressourcenadapter ein Feature erfordert, das nicht aktiviert ist, oder eine Bibliothek, die f\u00fcr den Ressourcenadapter nicht zug\u00e4nglich ist.
+J2CA9919.class.not.found.explanation=Die angegebene Klasse konnte nicht geladen werden. M\u00f6glicherweise wird die Klasse selbst oder eine Klasse, von der die Klasse abh\u00e4ngig ist, von einem Feature bereitgestellt, das nicht aktiviert ist, oder eine Bibliothek ist f\u00fcr den Ressourcenadapter nicht zug\u00e4nglich.
+J2CA9919.class.not.found.useraction=Aktivieren Sie alle Features, die der Ressourcenadapter erfordert, und konfigurieren Sie den Ressourcenadapter so, dass er Zugriff auf alle von ihm ben\u00f6tigten Bibliotheken hat.
+
+# {0} = type of object
+# {1} = possible ra.xml entry
+# {2} = possible annotation class
+J2CA9920.duplicate.type=J2CA9920W: Der Typ {0} wurde in {1} und in einem weiteren Eintrag in der Datei ra.xml oder in einer oder mehreren mit {2} annotierten Klassen doppelt angegeben.
+J2CA9920.duplicate.type.explanation=Eine Ressourcenadapter-, Aktivierungsspezifikations-, verwalteten Objekt- oder Verbindungs-Factory-Definition wurde mehrfach mit demselben Typ angegeben.
+J2CA9920.duplicate.type.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = resource adapter name
+J2CA9922.multiple.connector.anno.found=J2CA9922E: Der Ressourcenadapter {0} hat mehrere Klassen, die mit @Connector annotiert sind, gibt aber im Implementierungsdeskriptor nicht an, welche Klasse verwendet werden soll.
+J2CA9922.multiple.connector.anno.found.explanation=Es sind zwar mehrere mit @Connector annotierte Klassen zul\u00e4ssig, aber die f\u00fcr den Ressourcenadapter zu verwendende Klasse muss explizit im Implementierungsdeskriptor angegeben werden.
+J2CA9922.multiple.connector.anno.found.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = message listener type
+# {1} = annotated activation specification class
+J2CA9924.listener.actspec.missing=J2CA9924E: Der in der Datei ra.xml definierte Nachrichtenlistener mit dem Typ {0} muss die mit @Activation annotierte Klasse {1} \u00fcberschreiben, aber der Listener enth\u00e4lt keine Aktivierungsspezifikation.
+J2CA9924.listener.actspec.missing.explanation=Die Datei ra.xml enth\u00e4lt einen Nachrichtenlistenertyp und es gibt eine annotierte Klasse f\u00fcr den Typ, aber die Datei ra.xml enth\u00e4lt keinen entsprechenden Aktivierungsspezifikationseintrag.
+J2CA9924.listener.actspec.missing.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9925.admobj.interface.missing=J2CA9925E: Es wurden keine verwalteten Objektschnittstellen mit der Annotation @AdministeredObject definiert, und die Klasse {0} implementiert keine Schnittstellen.
+J2CA9925.admobj.interface.missing.explanation=Die annotierte Klasse muss die Schnittstellen in der Annotation bereitstellen oder die Schnittstellen implementieren.
+J2CA9925.admobj.interface.missing.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = class annotated with @AdministeredObject
+J2CA9926.admobj.multiple.interfaces=J2CA9926E: Es wurden keine verwalteten Schnittstellen mit @AdministeredObject definiert. Deshalb werden die in der Klasse definierten Schnittstellen verwendet. Es sind aber mehrere Schnittstellen in der Klasse {0} definiert.
+J2CA9926.admobj.multiple.interfaces.explanation=Die Schnittstellen m\u00fcssen in der Annotation definiert werden.
+J2CA9926.admobj.multiple.interfaces.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+# {0} = method with invalid name
+J2CA9927.cfgprop.invalid.method=J2CA9927E: Die Annotation @ConfigProperty kann nur in Setter-Methoden verwendet werden, wurde aber in {0} gefunden.
+J2CA9927.cfgprop.invalid.method.explanation=Die Annotation @ConfigProperty wurde in einer Methode angegeben, deren Name nicht mit set beginnt.
+J2CA9927.cfgprop.invalid.method.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9930.value.too.small=J2CA9930W: Der Wert {0} ist kleiner als der Mindestwert {1} f\u00fcr das Attribut {2}.
+J2CA9930.value.too.small.explanation=Der konfigurierte Wert entspricht nicht der Vorgabe f\u00fcr die Mindestgr\u00f6\u00dfe f\u00fcr das Attribut.
+J2CA9930.value.too.small.useraction=W\u00e4hlen Sie einen Wert, der gr\u00f6\u00dfer-gleich dem Mindestwert ist.
+
+J2CA9931.value.too.large=J2CA9931W: Der Wert {0} \u00fcberschreitet den Maximalwert {1} f\u00fcr das Attribut {2}.
+J2CA9931.value.too.large.explanation=Der konfigurierte Wert \u00fcberschreitet die Vorgabe f\u00fcr die Maximalgr\u00f6\u00dfe f\u00fcr das Attribut.
+J2CA9931.value.too.large.useraction=W\u00e4hlen Sie einen Wert, der kleiner-gleich dem Mindestwert ist.
+
+J2CA9932.value.too.short=J2CA9932W: Der Wert {0} ist kleiner als die Mindestl\u00e4nge {1} f\u00fcr das Attribut {2}.
+J2CA9932.value.too.short.explanation=Der konfigurierte Wert entspricht nicht der Vorgabe f\u00fcr die Mindestl\u00e4nge f\u00fcr das Attribut.
+J2CA9932.value.too.short.useraction=W\u00e4hlen Sie einen Wert, der gr\u00f6\u00dfer-gleich der Mindestl\u00e4nge ist.
+
+J2CA9933.value.too.long=J2CA9933W: Der Wert {0} \u00fcberschreitet die Maximall\u00e4nge {1} f\u00fcr das Attribut {2}.
+J2CA9933.value.too.long.explanation=Der konfigurierte Wert \u00fcberschreitet die Vorgabe f\u00fcr die Maximall\u00e4nge f\u00fcr das Attribut.
+J2CA9933.value.too.long.useraction=W\u00e4hlen Sie einen Wert, der gr\u00f6\u00dfer-gleich der Maximall\u00e4nge ist.
+
+J2CA9934.not.a.valid.option=J2CA9934E: Der Wert {0} ist keine g\u00fcltige Option f\u00fcr das Attribut {1}. Die g\u00fcltigen Optionen sind {2}.
+J2CA9934.not.a.valid.option.explanation=Der konfigurierte Wert liegt au\u00dferhalb des Bereichs g\u00fcltiger Optionen f\u00fcr das Attribut.
+J2CA9934.not.a.valid.option.useraction=W\u00e4hlen Sie einen Wert aus der Liste g\u00fcltiger Optionen.
+
+J2CA9935.secperm.not.supported=J2CA9935I: Die im Implementierungsdeskriptor f\u00fcr den Ressourcenadapter {0} angegebenen Java-2-Sicherheitsberechtigungen werden nicht umgesetzt.
+J2CA9935.secperm.not.supported.explanation=Die Java-2-Sicherheit ist im Liberty-Profil nicht aktiviert. Deshalb werden keine Java-2-Sicherheitspr\u00fcfungen f\u00fcr den Ressourcenadapter durchgef\u00fchrt.
+J2CA9935.secperm.not.supported.useraction=Es ist keine Aktion erforderlich.
+
+J2CA9936.default.value.error=J2CA9936W: Der Standardwert f\u00fcr die Eigenschaft {0} konnte nicht von der Instanz der Klasse {1} im Ressourcenadapter {2} abgerufen werden, weil ein Fehler aufgetreten ist: {3}
+J2CA9936.default.value.error.explanation=Beim Zugriff auf den Standardwert einer JavaBean-Eigenschaft des Ressourcenadapters ist ein Fehler aufgetreten.
+J2CA9936.default.value.error.useraction=Sehen Sie sich den Fehler an und passen Sie den Ressourcenadapter gegebenenfalls an.
+
+J2CA9937.cfgprop.invalid.return=J2CA9937E: Die f\u00fcr die JavaBean {0} angegebene Konfigurationseigenschaft {1}, die mit @ConfigProperty annotiert ist, hat eine Getter-Methode mit dem R\u00fcckgabetyp {2}, der nicht mit dem Typ der Konfigurationseigenschaft, {3}, \u00fcbereinstimmt. 
+J2CA9937.cfgprop.invalid.return.explanation=Eine mit @ConfigProperty annotierte Konfigurationseigenschaft muss eine Getter-Methode mit einem R\u00fcckgabetyp haben, der dem Typ der Konfigurationseigenschaft entspricht.
+J2CA9937.cfgprop.invalid.return.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9938.cfgprop.no.getter=J2CA9938E: Die f\u00fcr die JavaBean {0} angegebene Konfigurationseigenschaft {1}, die mit @ConfigProperty annotiert ist, hat keine Getter-Methode mit dem R\u00fcckgabetyp {2}.
+J2CA9938.cfgprop.no.getter.explanation=Eine mit @ConfigProperty annotierte Konfigurationseigenschaft muss eine Getter-Methode mit einem R\u00fcckgabetyp haben, der dem Typ der Konfigurationseigenschaft entspricht.
+J2CA9938.cfgprop.no.getter.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9939.cfgprop.no.setter=J2CA9939E: Die f\u00fcr die JavaBean {0} angegebene Konfigurationseigenschaft {1}, die mit @ConfigProperty annotiert ist, hat keine Setter-Methode mit dem Einzelparameter des Typs {2}.
+J2CA9939.cfgprop.no.setter.explanation=Eine mit @ConfigProperty annotierte Konfigurationseigenschaft muss eine Setter-Methode mit einem Einzelparameter eines Typs haben, der dem Typ der Konfigurationseigenschaft entspricht.
+J2CA9939.cfgprop.no.setter.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9940.cfgprop.type.mismatch.field=J2CA9940E: Die f\u00fcr die Java-Bean {0} angegebenene Konfigurationseigenschaft {1}, die mit @ConfigProperty annotiert ist, hat den Typ {2} in der Annotation, der nicht mit dem Typ {3} des Felds \u00fcbereinstimmt.
+J2CA9940.cfgprop.type.mismatch.field.explanation=Der in der Annotation @ConfigProperty definierte Typ muss mit dem Typ des Felds \u00fcbereinstimmen, f\u00fcr das die Annotation verwendet wird.
+J2CA9940.cfgprop.type.mismatch.field.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9941.cfgprop.type.mismatch.setter=J2CA9941E: Die f\u00fcr die JavaBean {0} angegebene Konfigurationseigenschaft {1}, die mit @ConfigProperty annotiert ist, hat den Typ {2} in der Annotation, der nicht mit dem Typ {4} des Parameters in der Setter-Methode \u00fcbereinstimmt.
+J2CA9941.cfgprop.type.mismatch.setter.explanation=Der in der Annotation @ConfigProperty definierte Typ muss mit dem Typ des Parameters in der Setter-Methode \u00fcbereinstimmen, in der die Annotation verwendet wird.
+J2CA9941.cfgprop.type.mismatch.setter.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9942.cfgprop.invalid.parameters=J2CA9942E: Die Annotation @ConfigProperty kann nur in einer Setter-Methode mit einem einzigen Parameter verwendet werden, wurde aber in {0} mit den folgenden Parametern gefunden: {1}.
+J2CA9942.cfgprop.invalid.parameters.explanation=Die Annotation @ConfigProperty muss in einer Setter-Methode angegeben werden, die nur einen einzigen Parameter hat.
+J2CA9942.cfgprop.invalid.parameters.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.
+
+J2CA9943.missing.connector.dd=J2CA9943E: Der Ressourcenadapter {0} ist nicht g\u00fcltig. Der Ressourcenadapter muss einen Implementierungsdeskriptor oder eine JavaBean-Klasse enthalten, die mit einer der Ressourcenadapterannotationen annotiert ist.
+J2CA9943.missing.connector.dd.explanation=Ein g\u00fcltiger Ressourcenadapter muss einen Implementierungsdeskriptor oder eine JavaBean-Klasse enthalten, die mit einer der Ressourcenadapterannotationen (@Connector, @AdministeredObject, @ConnectionDefinition, @ConnectionDefinitions oder @Activation) annotiert ist.
+J2CA9943.missing.connector.dd.useraction=Sehen Sie sich die Dokumentation des Ressourcenadapteranbieters und die Problembestimmungsprozesse an.

@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager/resources/com/ibm/ws/app/manager/internal/resources/AppManagerMessages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ App Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: app manager
+#0051-0099: app manager monitor and update monitor
+#0101-0200: Project: com.ibm.ws.app.manager.war
+#0301-0400: Project: com.ibm.ws.app.manager.eba
+# -------------------------------------------------------------------------------------------------
+
+#{0} is application name
+APPLICATION_START_SUCCESSFUL=CWWKZ0001I: O aplicativo {0} foi iniciado em {1} segundos.
+APPLICATION_START_SUCCESSFUL.explanation=O servidor iniciou o aplicativo com sucesso.
+APPLICATION_START_SUCCESSFUL.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_START_FAILED=CWWKZ0002E: Ocorreu uma exce\u00e7\u00e3o ao iniciar o aplicativo {0}. A mensagem de exce\u00e7\u00e3o foi: {1}
+APPLICATION_START_FAILED.explanation=O servidor n\u00e3o p\u00f4de iniciar o aplicativo.
+APPLICATION_START_FAILED.useraction=Leia a mensagem de exce\u00e7\u00e3o para obter informa\u00e7\u00f5es.
+
+#{0} is application name
+APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: O aplicativo {0} foi atualizado em {1} segundos.
+APPLICATION_UPDATE_SUCCESSFUL.explanation=O servidor atualizou o aplicativo com sucesso.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_UPDATE_FAILED=CWWKZ0004E: Ocorreu uma exce\u00e7\u00e3o ao iniciar o aplicativo {0}. A mensagem de exce\u00e7\u00e3o foi: {1}
+APPLICATION_UPDATE_FAILED.explanation=O servidor n\u00e3o p\u00f4de atualizar o aplicativo.
+APPLICATION_UPDATE_FAILED.useraction=Leia a mensagem de exce\u00e7\u00e3o para obter informa\u00e7\u00f5es adicionais.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+NO_APPLICATION_HANDLER=CWWKZ0005E: O servidor n\u00e3o est\u00e1 configurado para manipular o recurso no local {0}.
+NO_APPLICATION_HANDLER.explanation=O servidor n\u00e3o est\u00e1 configurado atualmente com todos os recursos necess\u00e1rios para recursos deste tipo e, portanto, o recurso n\u00e3o p\u00f4de ser iniciado.
+NO_APPLICATION_HANDLER.useraction=Modifique a configura\u00e7\u00e3o do servidor para incluir todos os recursos que s\u00e3o necess\u00e1rios para suportar esse tipo de recurso.
+
+#{0) is directory path
+#{1} is the application name
+CANNOT_CREATE_DIRECTORY=CWWKZ0006E: O servidor n\u00e3o p\u00f4de criar um local de download em {0} para o aplicativo {1}.
+CANNOT_CREATE_DIRECTORY.explanation=Ao tentar fazer download de um aplicativo para instala\u00e7\u00e3o, o servidor n\u00e3o p\u00f4de criar o diret\u00f3rio de download.
+CANNOT_CREATE_DIRECTORY.useraction=Assegure-se de que exista espa\u00e7o em disco suficiente para o download.
+
+#{0} is url
+#{1} is error message
+DOWNLOAD_EXCEPTION_ENCOUNTERED=CWWKZ0007W: Ocorreu uma exce\u00e7\u00e3o ao fazer download do arquivo a partir de {0}. A mensagem de exce\u00e7\u00e3o foi: {1}
+DOWNLOAD_EXCEPTION_ENCOUNTERED.explanation=O servidor n\u00e3o p\u00f4de fazer download do aplicativo.
+DOWNLOAD_EXCEPTION_ENCOUNTERED.useraction=Se voc\u00ea pretendia que o servidor fizesse download do aplicativo, verifique se o arquivo est\u00e1 dispon\u00edvel para download.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
+LOCATION_SERVICE_NOT_FOUND=CWWKZ0008E: Ocorreu um erro interno. O sistema n\u00e3o p\u00f4de obter o servi\u00e7o de local que \u00e9 necess\u00e1rio para resolver os locais de arquivo.
+LOCATION_SERVICE_NOT_FOUND.explanation=CMSG0001
+LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_STOPPED=CWWKZ0009I: O aplicativo {0} foi interrompido com sucesso.
+APPLICATION_STOPPED.explanation=O servidor interrompeu o aplicativo com sucesso.
+APPLICATION_STOPPED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is application name
+#{1} is excaption message
+APPLICATION_STOP_FAILED=CWWKZ0010E: Ocorreu uma exce\u00e7\u00e3o ao parar o aplicativo {0}. A mensagem de exce\u00e7\u00e3o foi: {1}
+APPLICATION_STOP_FAILED.explanation=O servidor n\u00e3o p\u00f4de parar o aplicativo.
+APPLICATION_STOP_FAILED.useraction=Assegure que o aplicativo esteja em um estado no qual ele pode ser interrompido.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#{0} is file name
+#{1} is exception message
+FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Ocorreu uma exce\u00e7\u00e3o ao procurar pelo arquivo {0}. A mensagem de exce\u00e7\u00e3o foi: {1}
+FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
+FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_NOT_STARTED=CWWKZ0012I: O aplicativo {0} n\u00e3o foi iniciado.
+APPLICATION_NOT_STARTED.explanation=O aplicativo n\u00e3o p\u00f4de ser iniciado devido a erros anteriores. 
+APPLICATION_NOT_STARTED.useraction=Verifique a configura\u00e7\u00e3o do aplicativo e verifique os logs em busca de erros durante o in\u00edcio do aplicativo.
+
+#{0} the application name
+DUPLICATE_APPLICATION_NAME=CWWKZ0013E: N\u00e3o \u00e9 poss\u00edvel iniciar dois aplicativos chamados {0}.
+DUPLICATE_APPLICATION_NAME.explanation=O nome do aplicativo deve ser exclusivo.  Isso pode acontecer porque dois aplicativos foram configurados para terem o mesmo nome ou um \u00fanico aplicativo ter sido implementado pela configura\u00e7\u00e3o no arquivo server.xml ou colocando o aplicativo no diret\u00f3rio dropins.
+DUPLICATE_APPLICATION_NAME.useraction=Se dois aplicativos tiverem o mesmo nome, remova ou renomeie um dos aplicativos. Se um \u00fanico aplicativo tiver sido implementado de duas maneiras diferentes, altere a configura\u00e7\u00e3o para que apenas um m\u00e9todo de implementa\u00e7\u00e3o seja usado.
+
+#{0} the application name
+#{1} the application location that cannot be found
+APPLICATION_NOT_FOUND=CWWKZ0014W: O aplicativo {0} n\u00e3o p\u00f4de ser iniciado pois ele n\u00e3o poder\u00e1 ser localizado no local {1}.
+APPLICATION_NOT_FOUND.explanation=Ao tentar iniciar o aplicativo, o servidor n\u00e3o p\u00f4de localizar o aplicativo no local especificado (ou em locais relativos, se tiver um caminho relativo).
+APPLICATION_NOT_FOUND.useraction=Verifique se o local definido est\u00e1 correto para o aplicativo.
+
+APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: Um aplicativo foi configurado sem local ou nome.
+APPLICATION_NO_LOCATION_NO_NAME.explanation=Um aplicativo foi configurado sem especificar um local ou um nome.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Atualize a configura\u00e7\u00e3o para incluir um local.
+
+APPLICATION_NO_LOCATION=CWWKZ0016E: O aplicativo {0} n\u00e3o foi configurado com um local.
+APPLICATION_NO_LOCATION.explanation=Um aplicativo foi configurado sem especificar um local.
+APPLICATION_NO_LOCATION.useraction=Atualize a configura\u00e7\u00e3o para incluir um local.
+
+APPLICATION_NO_TYPE=CWWKZ0017E: N\u00e3o foi poss\u00edvel inferir o tipo de aplicativo para o aplicativo {0} a partir do local {1}.
+APPLICATION_NO_TYPE.explanation=Um aplicativo foi configurado sem especificar um tipo. O tipo n\u00e3o p\u00f4de ser determinado a partir do local.
+APPLICATION_NO_TYPE.useraction=Atualize a configura\u00e7\u00e3o para incluir um tipo.
+
+STARTING_APPLICATION=CWWKZ0018I: Iniciando o aplicativo {0}.
+STARTING_APPLICATION.explanation=O aplicativo est\u00e1 sendo iniciado.
+STARTING_APPLICATION.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+PARTIAL_START=CWWKZ0019I: O aplicativo {0} foi iniciado parcialmente em {1} segundos. O servidor continuar\u00e1 a iniciar o aplicativo no segundo plano.
+PARTIAL_START.explanation=O aplicativo integral n\u00e3o p\u00f4de ser iniciado. Isto pode ocorrer com um ear contendo dois wars em que somente um war iniciar\u00e1.
+PARTIAL_START.useraction=Resolva o problema com a parte do aplicativo que n\u00e3o p\u00f4de iniciar e reimplemente o aplicativo.
+
+#{0} is application name
+APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplicativo {0} n\u00e3o atualizado.
+APPLICATION_NOT_UPDATED.explanation=O aplicativo n\u00e3o p\u00f4de ser iniciado devido a erros anteriores. 
+APPLICATION_NOT_UPDATED.useraction=Verifique a configura\u00e7\u00e3o do aplicativo e verifique os logs em busca de erros durante o in\u00edcio do aplicativo.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+APPLICATION_AT_LOCATION_NOT_VALID=CWWKZ0021E: O servidor n\u00e3o est\u00e1 configurado para manipular o recurso no local {0}.
+APPLICATION_AT_LOCATION_NOT_VALID.explanation=O servidor n\u00e3o est\u00e1 configurado atualmente com todos os recursos necess\u00e1rios para recursos deste tipo e, portanto, o recurso n\u00e3o p\u00f4de ser iniciado.
+APPLICATION_AT_LOCATION_NOT_VALID.useraction=Modifique a configura\u00e7\u00e3o do servidor para incluir todos os recursos que s\u00e3o necess\u00e1rios para suportar esse tipo de recurso.
+
+APPLICATION_SLOW_STARTUP=CWWKZ0022W: O aplicativo {0} n\u00e3o foi iniciado em {1} segundos.
+APPLICATION_SLOW_STARTUP.explanation=O aplicativo n\u00e3o foi iniciado no tempo esperado. Isto poder\u00e1 ocorrer porque o servidor est\u00e1 sobrecarregado ou o aplicativo \u00e9 grande. Se o aplicativo estiver iniciando como parte da inicializa\u00e7\u00e3o do servidor, a inicializa\u00e7\u00e3o do servidor concluir\u00e1 sem esperar o aplicativo iniciar.
+APPLICATION_SLOW_STARTUP.useraction=Se o aplicativo demorar um longo tempo para iniciar, nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria; caso contr\u00e1rio, verifique os logs do servidor para ver se outras mensagens indicam uma causa.
+
+#{0} is application name
+MONITOR_APP_STOP_FAIL=CWWKZ0053E: Ocorreu uma exce\u00e7\u00e3o ao tentar parar o aplicativo {0} automaticamente.
+MONITOR_APP_STOP_FAIL.explanation=O monitor de aplicativo n\u00e3o p\u00f4de localizar o aplicativo em execu\u00e7\u00e3o no servidor.
+MONITOR_APP_STOP_FAIL.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is application name
+INVALID_FILE_NAME=CWWKZ0054E: O servi\u00e7o de monitoramento de aplicativo n\u00e3o p\u00f4de localizar um nome adequado para o aplicativo {0}.
+INVALID_FILE_NAME.explanation=O servi\u00e7o de monitoramento de aplicativo usa o nome do arquivo, sem a extens\u00e3o, para gerar o nome do aplicativo. O servi\u00e7o de monitoramento de aplicativo n\u00e3o p\u00f4de determinar um nome do aplicativo ap\u00f3s a extens\u00e3o ter sido removida do nome do arquivo.
+INVALID_FILE_NAME.useraction=Assegure-se de que o nome do arquivo para o aplicativo n\u00e3o \u00e9 iniciado com um ponto (.) e tem um nome antes da extens\u00e3o do arquivo.
+
+#{0} is application name
+UNABLE_TO_DETERMINE_APPLICATION_TYPE=CWWKZ0055E: O servi\u00e7o de monitoramento de aplicativo n\u00e3o p\u00f4de determinar o tipo do aplicativo {0}.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.explanation=O servi\u00e7o de monitoramento de aplicativo n\u00e3o p\u00f4de determinar o tipo do aplicativo a partir de sua extens\u00e3o do arquivo ou de seu diret\u00f3rio-pai.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Assegure que o arquivo para o aplicativo possua uma extens\u00e3o do arquivo que identifique o tipo de aplicativo ou esteja em um diret\u00f3rio cujo nome identifica o tipo de aplicativo.
+
+#{0} is application name
+MONITOR_APP_START_FAIL=CWWKZ0056E: Ocorreu uma exce\u00e7\u00e3o ao tentar iniciar automaticamente o aplicativo {0}.
+MONITOR_APP_START_FAIL.explanation=O monitor de aplicativo n\u00e3o p\u00f4de iniciar o aplicativo.
+MONITOR_APP_START_FAIL.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is file name
+#{1} is line number
+#{2} is the line which is broken
+MONITOR_INVALID_CACHE_FILE_ENTRY=CWWKZ0057E: Ao ler a lista em cache dos aplicativos iniciados a partir do monitor de aplicativo ({0}), o n\u00famero da linha {1} n\u00e3o era v\u00e1lido. A linha era: {2}.
+MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=O monitor de aplicativo n\u00e3o p\u00f4de ler a lista de todos os aplicativos iniciados.
+MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Inicie o servidor com uma cold start.
+
+#{0} is the start time in seconds
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorando {0} para aplicativos. 
+APPLICATION_MONITOR_STARTED.explanation=O servidor est\u00e1 monitorando um diret\u00f3rio para aplicativos serem implementados.
+APPLICATION_MONITOR_STARTED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+#{0} is application name
+#{1} is application location
+INVALID_DELETE_OF_APPLICATION=CWWKZ0059E: O aplicativo {0} instalado a partir de {1} foi exclu\u00eddo enquanto ele ainda estava configurado.
+INVALID_DELETE_OF_APPLICATION.explanation=Um aplicativo atualmente configurado no arquivo server.xml foi exclu\u00eddo.
+INVALID_DELETE_OF_APPLICATION.useraction=Se a exclus\u00e3o foi intencional, remova a configura\u00e7\u00e3o do aplicativo do arquivo server.xml.
+
+#{0} is the location of the directory we should have removed, but couldn't.
+MONITOR_DIR_CLEANUP_FAIL=CWWKZ0060E: O servidor n\u00e3o p\u00f4de limpar o antigo diret\u00f3rio monitorado em {0}.
+MONITOR_DIR_CLEANUP_FAIL.explanation=O antigo diret\u00f3rio n\u00e3o poderia ser removido mesmo se n\u00e3o estivesse mais em uso.
+MONITOR_DIR_CLEANUP_FAIL.useraction=Se o antigo diret\u00f3rio n\u00e3o for mais necess\u00e1rio, remova-o. Se ainda for necess\u00e1rio, nenhuma a\u00e7\u00e3o \u00e9 requerida.
+
+#{0} is application name
+APPLICATION_MONITORING_FAIL=CWWKZ0060W: Imposs\u00edvel monitorar o aplicativo {0}.
+APPLICATION_MONITORING_FAIL.explanation=Um aplicativo foi instalado, mas o monitoramento n\u00e3o foi iniciado nele, portanto, se um arquivo for atualizado dentro do aplicativo, a mudan\u00e7a n\u00e3o ser\u00e1 detectada pelo servidor. 
+APPLICATION_MONITORING_FAIL.useraction=Ao atualizar arquivos neste aplicativo, o aplicativo precisar\u00e1 ser desinstalado e reinstalado no servidor.
+
+APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: O aplicativo {0} no local {1} est\u00e1 dentro do diret\u00f3rio monitorado {2}. O elemento do aplicativo ser\u00e1 ignorado.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Um elemento do aplicativo na configura\u00e7\u00e3o do servidor definiu o local do aplicativo para estar dentro do diret\u00f3rio que \u00e9 monitorado para aplicativos. Consequentemente, o elemento do aplicativo ser\u00e1 ignorado e o aplicativo ser\u00e1 iniciado usando o conte\u00fado do diret\u00f3rio monitorado se o aplicativo estiver presente nesse diret\u00f3rio monitorado.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Corrija o elemento do aplicativo ou altere o local do diret\u00f3rio monitorado. 
+
+APPLICATION_UPDATED=CWWKZ0062I: O aplicativo {0} foi atualizado, mas n\u00e3o reiniciado.
+APPLICATION_UPDATED.explanation=Ocorreu uma pequena mudan\u00e7a no aplicativo especificado e a  mudan\u00e7a foi considerada pequena o suficiente, de modo que n\u00e3o h\u00e1 necessidade de reiniciar o aplicativo.
+APPLICATION_UPDATED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

@@ -1,0 +1,1144 @@
+###############################################################################
+# Copyright (c) 2012, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# 94218          2013-19-02  Venu     L2 review changes 
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.ws.sib.trm.CWSITMessages.nlsprops
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# -------------------------------------------------------------------------------------------------
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIT0000=CWSIT0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSIT0000.useraction=User action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples: 
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0} 
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   - CWSIT9999 is for emergency use if any new messages are required after the messages file is finalised
+# -------------------------------------------------------------------------------------------------
+#
+# cmvc_en_version_level=1.139,0,08/02/28,08:29:16
+#
+#CMVCPATHNAME ws/code/sib.trm.impl/src/com/ibm/ws/sib/trm/CWSITMessages.nlsprops
+#COMPONENTPREFIX CWSIT
+#COMPONENTNAMEFOR CWSIT TRM
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0000=CWSIT0000E: Ocorreu um erro interno. Um objeto da classe {0} n\u00e3o pode ser criado devido \u00e0 exce\u00e7\u00e3o: {1}
+EXCP_DURING_INIT_CWSIT0000.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0000.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0001=CWSIT0001E: Ocorreu um erro interno. Um par\u00e2metro nulo {0} foi utilizado para criar uma inst\u00e2ncia {1}.
+NULL_USED_TO_CREATE_CWSIT0001.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of method
+
+NULL_USED_ON_CWSIT0002=CWSIT0002E: Ocorreu um erro interno. Um par\u00e2metro nulo {0} foi transmitido em uma chamada de m\u00e9todo {1}.
+NULL_USED_ON_CWSIT0002.explanation=CMSG0001
+NULL_USED_ON_CWSIT0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property that cannot be found
+
+NULL_PROPERTY_CWSIT0003=CWSIT0003E: Nenhuma propriedade {0} foi localizada nas propriedades da conex\u00e3o.
+NULL_PROPERTY_CWSIT0003.explanation=Uma propriedade requerida n\u00e3o foi localizada nas propriedades de conex\u00e3o, durante a cria\u00e7\u00e3o de uma conex\u00e3o com o cliente.
+NULL_PROPERTY_CWSIT0003.useraction=Assegure-se de que a propriedade requerida esteja corretamente especificada durante a cria\u00e7\u00e3o de uma conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CCF_CWSIT0004=CWSIT0004E: Ocorreu um erro interno. Um objeto de classe ClientConnectionFactory n\u00e3o pode ser criado.
+NO_CCF_CWSIT0004.explanation=CMSG0001
+NO_CCF_CWSIT0004.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_CC_CWSIT0005=CWSIT0005E: Ocorreu um erro interno. Um objeto de classe ClientConnection n\u00e3o pode ser criado.
+NO_CC_CWSIT0005.explanation=CMSG0001
+NO_CC_CWSIT0005.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of bootstrap endpoints to which we tried to connect
+
+NO_BOOTSTRAP_CWSIT0006=CWSIT0006E: N\u00e3o foi poss\u00edvel contatar nenhum dos servidores de auto-inicializa\u00e7\u00e3o especificado. Consulte a exce\u00e7\u00e3o vinculada para obter mais detalhes. As conex\u00f5es de auto-inicializa\u00e7\u00e3o foram repetidas para: {0}
+NO_BOOTSTRAP_CWSIT0006.explanation=O cliente n\u00e3o pode se conectar ao barramento. Essa situa\u00e7\u00e3o pode ocorrer devido a problemas de configura\u00e7\u00e3o ou de rede, ou pode ser que nenhum dos servidores de auto-inicializa\u00e7\u00e3o exigidos estejam atualmente dispon\u00edveis.
+NO_BOOTSTRAP_CWSIT0006.useraction=Assegure-se de que a rede esteja funcionando corretamente e que os servidores de auto-inicializa\u00e7\u00e3o necess\u00e1rios estejam dispon\u00edveis. Consulte o Information Center para obter detalhes sobre a configura\u00e7\u00e3o da conex\u00e3o com um servidor de auto-inicializa\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the bootstrap server which cannot be contacted
+# {1} Exception
+
+BOOTSTRAP_FAILED_CWSIT0007=CWSIT0007W: N\u00e3o \u00e9 poss\u00edvel contatar o servidor de autoinicializa\u00e7\u00e3o em {0} devido \u00e0 exce\u00e7\u00e3o: {1}.
+BOOTSTRAP_FAILED_CWSIT0007.explanation=O cliente n\u00e3o pode estabelecer contato com o servidor de auto-inicializa\u00e7\u00e3o especificado. Esta situa\u00e7\u00e3o pode ocorrer devido a problemas de configura\u00e7\u00e3o, problemas de rede ou porque o servidor de auto-inicializa\u00e7\u00e3o n\u00e3o est\u00e1 atualmente dispon\u00edvel. O processo de auto-inicializa\u00e7\u00e3o do cliente continuar\u00e1 com o pr\u00f3ximo n\u00f3 de extremidade do provedor na lista de n\u00f3s de extremidade de provedores.
+BOOTSTRAP_FAILED_CWSIT0007.useraction=Assegure-se de que a rede esteja funcionando corretamente e que o servidor de auto-inicializa\u00e7\u00e3o necess\u00e1rio esteja dispon\u00edvel. O servidor de auto-inicializa\u00e7\u00e3o \u00e9 especificado pela propriedade Terminal do Provedor de connection factory JMS. O endere\u00e7o de terminal possui o formato nome_do_host:n\u00famero_da_porta:nome_da_cadeia (por exemplo, localhost:7276:BootstrapBasicMessaging). Connection factory dever\u00e1 especificar a propriedade Terminal do Provedor se um servidor de auto-inicializa\u00e7\u00e3o n\u00e3o-padr\u00e3o estiver sendo utilizado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the bootstrap server
+# {1} Failure message from the bootstrap reply message
+
+BOOTSTRAP_FAILURE_CWSIT0008=CWSIT0008E: Uma conex\u00e3o bem-sucedida foi estabelecida com o servidor de auto-inicializa\u00e7\u00e3o em {0}, mas o servidor retornou uma condi\u00e7\u00e3o de erro: {1}
+BOOTSTRAP_FAILURE_CWSIT0008.explanation=O cliente conectou-se a um barramento, mas enfrentou um problema durante a utiliza\u00e7\u00e3o do servi\u00e7o. Essa situa\u00e7\u00e3o pode ocorrer devido a problemas de rede, ou pode ser que o servi\u00e7o exigido esteja atualmente indispon\u00edvel.
+BOOTSTRAP_FAILURE_CWSIT0008.useraction=Certifique-se de que a rede esteja funcionando corretamente e que o servi\u00e7o exigido esteja dispon\u00edvel. Consulte o Information Center para obter detalhes sobre a configura\u00e7\u00e3o da conex\u00e3o com um servidor de auto-inicializa\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0009=CWSIT0009W: Falha na conex\u00e3o do cliente com o barramento {1} no servidor de autoinicializa\u00e7\u00e3o com o terminal {0} com o motivo: {2}.
+MIRRORED_FAILURE_CWSIT0009.explanation=Falha em um pedido de auto-inicializa\u00e7\u00e3o do cliente devido a um problema em um servidor de auto-inicializa\u00e7\u00e3o. O motivo da falha no servidor de auto-inicializa\u00e7\u00e3o \u00e9 retornado. O processo de auto-inicializa\u00e7\u00e3o do cliente continuar\u00e1 com o pr\u00f3ximo n\u00f3 de extremidade do provedor na lista de n\u00f3s de extremidade de provedores.
+MIRRORED_FAILURE_CWSIT0009.useraction=Investigue e resolva a falha descrita na mensagem de erro, em seguida, tente novamente a opera\u00e7\u00e3o. 
+
+# -------------------------------------------------------------------------------------------------
+#                                                                       242799.1
+# {0} Name of messaging engine which failed
+# {1} Name of bus
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0010=CWSIT0010E: Falha na solicita\u00e7\u00e3o do cliente para o mecanismo do sistema de mensagens {0} no barramento {1} com o motivo: {2}.
+MIRRORED_FAILURE_CWSIT0010.explanation=Falha na conex\u00e3o de um cliente a um barramento, por causa de uma falha em um servidor. O motivo da falha no servidor \u00e9 retornado.
+MIRRORED_FAILURE_CWSIT0010.useraction=Investigue e resolva a falha descrita na mensagem de erro, em seguida, tente novamente a opera\u00e7\u00e3o. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of messaging engine which cannot be contacted
+# {1} Name of bus
+
+ATTACH_FAILED_CWSIT0011=CWSIT0011E: N\u00e3o \u00e9 poss\u00edvel conectar ao mecanismo do sistema de mensagens {0} no barramento {1}. A conex\u00e3o foi perdida.
+ATTACH_FAILED_CWSIT0011.explanation=O cliente n\u00e3o pode estabelecer contato com o mecanismo de sistema de mensagens nomeado. Esta situa\u00e7\u00e3o pode ocorrer devido a problemas de rede ou porque o mecanismo de sistema de mensagens requerido n\u00e3o est\u00e1 dispon\u00edvel no momento.
+ATTACH_FAILED_CWSIT0011.useraction=Assegure-se de que a rede esteja funcionando corretamente e que o mecanismo de sistema de mensagens requerido esteja dispon\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0012=CWSIT0012E: Ocorreu um erro interno. Um par\u00e2metro nulo {0} foi utilizado para criar uma inst\u00e2ncia {1}.
+NULL_USED_TO_CREATE_CWSIT0012.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0012.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of parameter which is null
+# {1} name of object being created
+
+NULL_USED_TO_CREATE_CWSIT0013=CWSIT0013E: Ocorreu um erro interno. Um par\u00e2metro nulo {0} foi utilizado para criar uma inst\u00e2ncia {1}.
+NULL_USED_TO_CREATE_CWSIT0013.explanation=CMSG0001
+NULL_USED_TO_CREATE_CWSIT0013.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} EndPoint of messaging engine which failed
+# {3} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0014=CWSIT0014E: Falha na solicita\u00e7\u00e3o do mecanismo do sistema de mensagens para o mecanismo do sistema de mensagens {0} no barramento {1}, terminal {2}, com motivo: {3}.
+MIRRORED_FAILURE_CWSIT0014.explanation=O pedido de um mecanismo de sistema de mensagens falhou devido a uma falha no mecanismo de sistema de mensagens remotas.
+MIRRORED_FAILURE_CWSIT0014.useraction=Investigue e resolva a falha descrita na mensagem de erro, em seguida, tente novamente a opera\u00e7\u00e3o. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+CONNECT_FAILED_CWSIT0015=CWSIT0015W: N\u00e3o \u00e9 poss\u00edvel se conectar ao mecanismo do sistema de mensagens {0} no barramento {1}.
+CONNECT_FAILED_CWSIT0015.explanation=O mecanismo de sistema de mensagens n\u00e3o pode estabelecer contato com outro mecanismo de sistema de mensagens. Esta situa\u00e7\u00e3o pode ocorrer devido a problemas de rede ou porque o mecanismo do sistema de mensagens necess\u00e1rio n\u00e3o est\u00e1 dispon\u00edvel no momento.
+CONNECT_FAILED_CWSIT0015.useraction=Assegure-se de que a rede esteja funcionando corretamente e que o mecanismo de sistema de mensagens requerido esteja dispon\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0016=CWSIT0016E: O ID do usu\u00e1rio {0} falhou na autentica\u00e7\u00e3o no barramento {1}
+FAILED_AUTHENTICATION_CWSIT0016.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o do cliente com um mecanismo do sistema de mensagens n\u00e3o conseguiu ser autenticado pelo mecanismo do sistema de mensagens remoto. Provavelmente, a falha na autentica\u00e7\u00e3o ocorreu devido a um valor de ID de usu\u00e1rio ou de senha incorreto.
+FAILED_AUTHENTICATION_CWSIT0016.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} host of messaging engine
+# {3} port of messaging engine
+# {4} transport chain to connect over
+
+LINK_FAILED_CWSIT0017=CWSIT0017W: N\u00e3o \u00e9 poss\u00edvel criar uma conex\u00e3o entre barramentos com o mecanismo do sistema de mensagens {0} no barramento {1} no host {2} na porta {3} usando a cadeia de transporte {4}.
+LINK_FAILED_CWSIT0017.explanation=O mecanismo de sistema de mensagens n\u00e3o pode estabelecer contato com outro mecanismo de sistema de mensagens. Esta situa\u00e7\u00e3o pode ocorrer devido a problemas de rede ou porque o mecanismo do sistema de mensagens necess\u00e1rio n\u00e3o est\u00e1 dispon\u00edvel no momento.
+LINK_FAILED_CWSIT0017.useraction=Assegure-se de que a rede esteja funcionando corretamente e que o mecanismo de sistema de mensagens requerido esteja dispon\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} host of messaging engine
+# {4} port of messaging engine
+# {5} transport chain to connect over
+
+BRIDGE_FAILED_CWSIT0018=CWSIT0018W: N\u00e3o \u00e9 poss\u00edvel criar o link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} com o mecanismo do sistema de mensagens {1} no barramento {2}, no host {3} porta {4} usando a cadeia de transporte {5}.
+BRIDGE_FAILED_CWSIT0018.explanation=O mecanismo de sistema de mensagens n\u00e3o pode estabelecer contato com outro mecanismo de sistema de mensagens. Esta situa\u00e7\u00e3o pode ocorrer devido a problemas de rede ou porque o mecanismo do sistema de mensagens necess\u00e1rio n\u00e3o est\u00e1 dispon\u00edvel no momento.
+BRIDGE_FAILED_CWSIT0018.useraction=Assegure-se de que a rede esteja funcionando corretamente e que o mecanismo de sistema de mensagens requerido esteja dispon\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Connection properties
+# {2} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_SUITABLE_ME_CWSIT0019=CWSIT0019E: Nenhum mecanismo adequado do sistema de mensagens est\u00e1 dispon\u00edvel no barramento {0} correspondente \u00e0s propriedades de conex\u00e3o especificadas {1}. Raz\u00f5es para a falha: {2}
+NO_SUITABLE_ME_CWSIT0019.explanation=Um cliente n\u00e3o pode ser conectado ao barramento, porque n\u00e3o h\u00e1 dispon\u00edvel nenhum mecanismo do sistema de mensagens adequado que atenda aos crit\u00e9rios de conex\u00e3o especificados pelas propriedades de conex\u00e3o.
+NO_SUITABLE_ME_CWSIT0019.useraction=Repita a opera\u00e7\u00e3o. Se o problema persistir, pe\u00e7a ao seu administrador do sistema verificar se um mecanismo de sistema de mensagens adequado est\u00e1 dispon\u00edvel. Alternativamente, modere os crit\u00e9rios de conex\u00e3o especificados pelas propriedades de conex\u00e3o e repita a opera\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} Exception
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+EXCEPTION_CWSIT0020=CWSIT0020E: Ocorreu uma exce\u00e7\u00e3o inesperada no mecanismo do sistema de mensagens {0} no barramento {1} durante a cria\u00e7\u00e3o de uma conex\u00e3o, exce\u00e7\u00e3o: {2}
+EXCEPTION_CWSIT0020.explanation=CMSG0001
+EXCEPTION_CWSIT0020.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0021=CWSIT0021E: O mecanismo do sistema de mensagens necess\u00e1rio {0} no barramento {1} n\u00e3o foi localizado nesse processo.
+NOT_FOUND_CWSIT0021.explanation=Um cliente n\u00e3o p\u00f4de ser conectado ao barramento, porque o mecanismo de sistema de mensagens necess\u00e1rio n\u00e3o p\u00f4de ser localizado no processo no qual o cliente est\u00e1 conectado.
+NOT_FOUND_CWSIT0021.useraction=Esse erro \u00e9 geralmente causado por uma condi\u00e7\u00e3o tempor\u00e1ria, tal como uma falha de um servidor durante um redirecionamento do cliente. Tentar novamente a opera\u00e7\u00e3o dever\u00e1 resolver o erro.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0022=CWSIT0022E: O ID do usu\u00e1rio {0} falhou na autentica\u00e7\u00e3o no barramento {1}.
+FAILED_AUTHENTICATION_CWSIT0022.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o do mecanismo do sistema de mensagens entre barramentos falhou ao ser autenticado pelo mecanismo do sistema de mensagens remoto. Provavelmente, a falha na autentica\u00e7\u00e3o ocorreu devido a um valor de ID de usu\u00e1rio ou de senha incorreto.
+FAILED_AUTHENTICATION_CWSIT0022.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0023=CWSIT0023E: Regras de topologia n\u00e3o permitem conex\u00f5es entre mecanismos de mensagem com o mesmo nome
+NOT_ALLOWED_CWSIT0023.explanation=Um mecanismo de sistema de mensagens com o mesmo nome tentou conectar-se a esse mecanismo de sistema de mensagens. Dois mecanismos de sistemas de mensagens com o mesmo nome n\u00e3o s\u00e3o permitidos dentro do mesmo barramento.
+NOT_ALLOWED_CWSIT0023.useraction=Verifique a topologia e os nomes de mecanismos de sistemas de mensagens.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that cannot be loaded
+# {1} is the exception created when the class cannot be loaded
+
+EXCP_DURING_INIT_CWSIT0024=CWSIT0024E: Ocorreu um erro interno. Um objeto da classe {0} n\u00e3o pode ser criado devido \u00e0 exce\u00e7\u00e3o: {1}
+EXCP_DURING_INIT_CWSIT0024.explanation=CMSG0001
+EXCP_DURING_INIT_CWSIT0024.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote messaging engine name
+# {1} Bus name
+# {2} Name of this messaging engine
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0026=CWSIT0026E: O mecanismo de mensagem {0} no barramento {1} tentou criar um link do barramento de integra\u00e7\u00e3o de servi\u00e7os com o mecanismo do sistema de mensagens {2}
+NOT_ALLOWED_CWSIT0026.explanation=Um mecanismo do sistema de mensagens no mesmo barramento tentou criar um link do barramento de integra\u00e7\u00e3o de servi\u00e7os para esse mecanismo do sistema de mensagens. As regras de topologia n\u00e3o permitem links do barramento de integra\u00e7\u00e3o de servi\u00e7os entre os mecanismos de sistema de mensagens no mesmo barramento.
+NOT_ALLOWED_CWSIT0026.useraction=Verifique a topologia de barramento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of connected messaging engine
+
+INFO_CWSIT0028=CWSIT0028I: A conex\u00e3o para o mecanismo do sistema de mensagens {0} no barramento {1} com o mecanismo do sistema de mensagens {2} foi iniciada.
+INFO_CWSIT0028.explanation=Um mecanismo de sistema de mensagens para conex\u00e3o ao mecanismo de sistema de mensagens foi iniciado.
+INFO_CWSIT0028.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Bus name
+# {2} Name of disconnected messaging engine
+
+INFO_CWSIT0029=CWSIT0029I: A conex\u00e3o para o mecanismo do sistema de mensagens {0} no barramento {1} com o mecanismo do sistema de mensagens {2} foi interrompida.
+INFO_CWSIT0029.explanation=Um mecanismo de sistema de mensagens para conex\u00e3o ao mecanismo de sistema de mensagens foi parado.
+INFO_CWSIT0029.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0030=CWSIT0030I: A conex\u00e3o entre barramentos para o mecanismo do sistema de mensagens {0} na sub-rede {1} no barramento {2} com o mecanismo do sistema de mensagens {3} na sub-rede {4} foi iniciada.
+INFO_CWSIT0030.explanation=O mecanismo de sistema de mensagens para conex\u00e3o entre barramentos do mecanismo de sistema de mensagens foi iniciado.
+INFO_CWSIT0030.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine issuing the message
+# {1} Subnet name
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Subnet name of remote messaging engine
+
+INFO_CWSIT0031=CWSIT0031I: A conex\u00e3o entre barramentos para o mecanismo do sistema de mensagens {0} na sub-rede {1} no barramento {2} com o mecanismo do sistema de mensagens {3} na sub-rede {4} foi interrompida.
+INFO_CWSIT0031.explanation=Um mecanismo de sistema de mensagens para conex\u00e3o entre barramentos do mecanismo de sistema de mensagens foi parado.
+INFO_CWSIT0031.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0032=CWSIT0032I: O link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} do mecanismo do sistema de mensagens {1} no barramento {2} com o mecanismo do sistema de mensagens {3} no barramento {4} foi iniciado.
+INFO_CWSIT0032.explanation=Um link do barramento de integra\u00e7\u00e3o de servi\u00e7os entre dois mecanismos de sistema de mensagens foi iniciado.
+INFO_CWSIT0032.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine issuing the message
+# {2} Bus name
+# {3} Name of remote messaging engine
+# {4} Bus name of remote messaging engine
+
+INFO_CWSIT0033=CWSIT0033I: O link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} do mecanismo do sistema de mensagens {1} no barramento {2} com o mecanismo do sistema de mensagens {3} no barramento {4} foi interrompido.
+INFO_CWSIT0033.explanation=Um link do barramento de integra\u00e7\u00e3o de servi\u00e7os entre dois mecanismos de sistema de mensagens foi parado.
+INFO_CWSIT0033.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0034=CWSIT0034E: Falha na solicita\u00e7\u00e3o do mecanismo do sistema de mensagens para o mecanismo do sistema de mensagens {0} no barramento {1} com motivo: {2}.
+MIRRORED_FAILURE_CWSIT0034.explanation=O pedido de um mecanismo de sistema de mensagens falhou devido a uma falha no mecanismo de sistema de mensagens remotas. O motivo da falha no mecanismo de sistema de mensagens remotas \u00e9 retornado.
+MIRRORED_FAILURE_CWSIT0034.useraction=Pe\u00e7a ao seu administrador de sistema para examinar os logs do mecanismo de sistema de mensagens remotas, para ajudar a determinar o motivo do problema.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0035=CWSIT0035E: O ID do usu\u00e1rio {0} falhou na autentica\u00e7\u00e3o no barramento {1}
+FAILED_AUTHENTICATION_CWSIT0035.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o do mecanismo do sistema de mensagens entre barramentos falhou ao ser autenticado pelo mecanismo do sistema de mensagens remoto. Provavelmente, a falha na autentica\u00e7\u00e3o ocorreu devido a um valor de ID de usu\u00e1rio ou de senha incorreto.
+FAILED_AUTHENTICATION_CWSIT0035.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0036=CWSIT0036E: Ocorreu um erro interno. H\u00e1 um erro de protocolo de cliente durante a comunica\u00e7\u00e3o com o mecanismo de sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0036.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0036.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} received message type
+# {2} expected message type
+
+PROTOCOL_ERROR_CWSIT0038=CWSIT0038E: Ocorreu um erro interno. H\u00e1 um erro de protocolo de auto-inicializa\u00e7\u00e3o do cliente durante a comunica\u00e7\u00e3o com o mecanismo de sistema de mensagens no barramento {0}, o tipo de mensagem recebido \u00e9 {1}, mas o tipo de mensagem esperado \u00e9 {2}.
+PROTOCOL_ERROR_CWSIT0038.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0038.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0039=CWSIT0039E: Ocorreu um erro interno. H\u00e1 um erro de protocolo de conex\u00e3o durante a comunica\u00e7\u00e3o com o mecanismo de sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0039.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0039.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0040=CWSIT0040E: Ocorreu um erro interno. H\u00e1 um erro de protocolo de conex\u00e3o entre barramentos durante a comunica\u00e7\u00e3o com o mecanismo de sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0040.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0040.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0041=CWSIT0041E: Ocorreu um erro interno. H\u00e1 um erro de protocolo do link do barramento de integra\u00e7\u00e3o de servi\u00e7os durante a comunica\u00e7\u00e3o com o mecanismo do sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0041.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0041.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0042=CWSIT0042E: Ocorreu um erro interno. H\u00e1 um erro de protocolo de conex\u00e3o durante a comunica\u00e7\u00e3o com o mecanismo de sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0042.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0042.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0043=CWSIT0043E: Ocorreu um erro interno. H\u00e1 um erro de protocolo de conex\u00e3o entre barramentos durante a comunica\u00e7\u00e3o com o mecanismo de sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0043.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0043.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0044=CWSIT0044E: Ocorreu um erro interno. Um objeto de classe MEConnectionFactory n\u00e3o pode ser criado.
+NO_MCF_CWSIT0044.explanation=CMSG0001
+NO_MCF_CWSIT0044.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0045=CWSIT0045E: Ocorreu um erro interno. Um objeto de classe MEConnectionFactory n\u00e3o pode ser criado.
+NO_MCF_CWSIT0045.explanation=CMSG0001
+NO_MCF_CWSIT0045.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MCF_CWSIT0046=CWSIT0046E: Ocorreu um erro interno. Um objeto de classe MEConnectionFactory n\u00e3o pode ser criado.
+NO_MCF_CWSIT0046.explanation=CMSG0001
+NO_MCF_CWSIT0046.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0047=CWSIT0047E: Ocorreu um erro interno. Um objeto de classe MEConnection n\u00e3o pode ser criado.
+NO_MC_CWSIT0047.explanation=CMSG0001
+NO_MC_CWSIT0047.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0048=CWSIT0048E: Ocorreu um erro interno. Um objeto de classe MEConnection n\u00e3o pode ser criado.
+NO_MC_CWSIT0048.explanation=CMSG0001
+NO_MC_CWSIT0048.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+NO_MC_CWSIT0049=CWSIT0049E: Ocorreu um erro interno. Um objeto de classe MEConnection n\u00e3o pode ser criado.
+NO_MC_CWSIT0049.explanation=CMSG0001
+NO_MC_CWSIT0049.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0053=CWSIT0053E: Ocorreu um erro interno. O valor de byte esperado {0} n\u00e3o foi localizado, em vez de um valor de byte {1} foi localizado.
+INVALID_BYTE_VALUE_CWSIT0053.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0053.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Expected byte value
+# {1} Actual byte value
+
+INVALID_BYTE_VALUE_CWSIT0054=CWSIT0054E: Ocorreu um erro interno. O valor de byte esperado {0} n\u00e3o foi localizado, em vez de um valor de byte {1} foi localizado.
+INVALID_BYTE_VALUE_CWSIT0054.explanation=CMSG0001
+INVALID_BYTE_VALUE_CWSIT0054.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Incorrect value
+# {1} Name of connection property
+# {2} Correct values
+
+INVALID_TARGET_TYPE_CWSIT0055=CWSIT0055E: Um valor incorreto {0} foi passado para a propriedade da conex\u00e3o {1}; os valores v\u00e1lidos s\u00e3o: {2}.
+INVALID_TARGET_TYPE_CWSIT0055.explanation=O aplicativo forneceu um valor de propriedade da conex\u00e3o que n\u00e3o \u00e9 correto; a conex\u00e3o n\u00e3o foi criada.
+INVALID_TARGET_TYPE_CWSIT0055.useraction=Utilize um valor v\u00e1lido para a propriedade da conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0056=CWSIT0056E: O ID do usu\u00e1rio {0} falhou na autentica\u00e7\u00e3o no barramento {1}
+FAILED_AUTHENTICATION_CWSIT0056.explanation=O ID do usu\u00e1rio utilizado para criar um link do barramento de integra\u00e7\u00e3o de servi\u00e7os falhou em ser autenticado pelo mecanismo do sistema de mensagens remoto. Provavelmente, a falha na autentica\u00e7\u00e3o ocorreu devido a um valor de ID de usu\u00e1rio ou de senha incorreto.
+FAILED_AUTHENTICATION_CWSIT0056.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Host name
+# {2} text of failure reason
+
+MIRRORED_FAILURE_CWSIT0057=CWSIT0057E: O link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} falhou no mecanismo do sistema de mensagens remoto no host {1} com motivo: {2}.
+MIRRORED_FAILURE_CWSIT0057.explanation=Um pedido de link do barramento de integra\u00e7\u00e3o de servi\u00e7os falhou devido a uma falha no mecanismo do sistema de mensagens remoto.
+MIRRORED_FAILURE_CWSIT0057.useraction=Investigue e resolva a falha descrita na mensagem de erro, em seguida, tente novamente a opera\u00e7\u00e3o. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Expected messaging engine name
+# {2} Bus name
+# {3} Unexpected messaging engine name
+
+BRIDGE_FAILED_CWSIT0058=CWSIT0058E: N\u00e3o \u00e9 poss\u00edvel concluir o link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} porque o barramento remoto {2} retornou um nome de mecanismo do sistema de mensagens inesperado {3}; o nome do mecanismo do sistema de mensagens esperado era {1}.
+BRIDGE_FAILED_CWSIT0058.explanation=Os links do barramento de integra\u00e7\u00e3o de servi\u00e7os requerem que o nome do mecanismo do sistema de mensagens no barramento remoto corresponda ao nome do mecanismo do sistema de mensagens configurado para o link do barramento de integra\u00e7\u00e3o de servi\u00e7os.
+BRIDGE_FAILED_CWSIT0058.useraction=Verifique a configura\u00e7\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os para assegurar que ambos os barramentos tenham o nome do mecanismo do sistema de mensagens correto configurado.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+
+BRIDGE_FAILED_CWSIT0059=CWSIT0059E: N\u00e3o \u00e9 poss\u00edvel estabelecer o link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} para o mecanismo do sistema de mensagens {1} no barramento {2}.
+BRIDGE_FAILED_CWSIT0059.explanation=O contato pode ser feito com o mecanismo do sistema de mensagens nomeado. Esta situa\u00e7\u00e3o pode ocorrer devido a problemas de rede ou porque o mecanismo do sistema de mensagens necess\u00e1rio n\u00e3o est\u00e1 dispon\u00edvel no momento.
+BRIDGE_FAILED_CWSIT0059.useraction=Assegure-se de que a rede esteja funcionando corretamente e que o mecanismo de sistema de mensagens requerido esteja dispon\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0060=CWSIT0060E: O ID do usu\u00e1rio {0} n\u00e3o est\u00e1 autorizado a criar uma conex\u00e3o do mecanismo do sistema de mensagens entre barramentos no barramento {1}
+FAILED_AUTHORISATION_CWSIT0060.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o do mecanismo do sistema de mensagens entre barramentos n\u00e3o \u00e9 o mesmo ID do usu\u00e1rio que foi autorizado pelo mecanismo do sistema de mensagens remoto para permitir a cria\u00e7\u00e3o de conex\u00f5es do mecanismo do sistema de mensagens entre barramentos.
+FAILED_AUTHORISATION_CWSIT0060.useraction=Assegure-se de que ambos os mecanismos do sistema de mensagens tenham o mesmo ID de usu\u00e1rio configurado para conex\u00f5es do mecanismo do sistema de mensagens entre barramentos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0061=CWSIT0061E: Ocorreu um erro interno. H\u00e1 um erro de protocolo do link do barramento de integra\u00e7\u00e3o de servi\u00e7os durante a comunica\u00e7\u00e3o com o mecanismo do sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0061.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0061.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+# {2} received message type
+# {3} expected message type
+
+PROTOCOL_ERROR_CWSIT0062=CWSIT0062E: Ocorreu um erro interno. H\u00e1 um erro de protocolo do link do barramento de integra\u00e7\u00e3o de servi\u00e7os durante a comunica\u00e7\u00e3o com o mecanismo do sistema de mensagens {0} no barramento {1}, o tipo de mensagem recebido \u00e9 {2}, mas o tipo de mensagem esperado \u00e9 {3}.
+PROTOCOL_ERROR_CWSIT0062.explanation=CMSG0001
+PROTOCOL_ERROR_CWSIT0062.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0063=CWSIT0063E: O mecanismo do sistema de mensagens necess\u00e1rio {0} no barramento {1} n\u00e3o foi localizado nesse processo.
+NOT_FOUND_CWSIT0063.explanation=O mecanismo do sistema de mensagens n\u00e3o pode se comunicar com um mecanismo do sistema de mensagens vizinho, porque o mecanismo do sistema de mensagens vizinho n\u00e3o pode ser localizado no processo ao qual o mecanismo do sistema de mensagens est\u00e1 conectado.
+NOT_FOUND_CWSIT0063.useraction=Repita a opera\u00e7\u00e3o. Assegure-se de que o mecanismo de sistema de mensagens necess\u00e1rio esteja dispon\u00edvel na localiza\u00e7\u00e3o correta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0064=CWSIT0064E: O mecanismo do sistema de mensagens necess\u00e1rio {0} no barramento {1} n\u00e3o foi localizado nesse processo.
+NOT_FOUND_CWSIT0064.explanation=O mecanismo do sistema de mensagens n\u00e3o pode se comunicar com um mecanismo do sistema de mensagens vizinho, porque o mecanismo do sistema de mensagens vizinho n\u00e3o pode ser localizado no processo ao qual o mecanismo do sistema de mensagens est\u00e1 conectado.
+NOT_FOUND_CWSIT0064.useraction=Repita a opera\u00e7\u00e3o. Assegure-se de que o mecanismo de sistema de mensagens necess\u00e1rio esteja dispon\u00edvel na localiza\u00e7\u00e3o correta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Engine name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_FOUND_CWSIT0065=CWSIT0065E: O mecanismo do sistema de mensagens necess\u00e1rio {0} no barramento {1} n\u00e3o foi localizado nesse processo.
+NOT_FOUND_CWSIT0065.explanation=O mecanismo do sistema de mensagens n\u00e3o pode se comunicar com um mecanismo do sistema de mensagens vizinho, porque o mecanismo do sistema de mensagens vizinho n\u00e3o pode ser localizado no processo ao qual o mecanismo do sistema de mensagens est\u00e1 conectado.
+NOT_FOUND_CWSIT0065.useraction=Repita a opera\u00e7\u00e3o. Assegure-se de que o mecanismo de sistema de mensagens necess\u00e1rio esteja dispon\u00edvel na localiza\u00e7\u00e3o correta.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus Name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+INVALID_REQUEST_CWSIT0066=CWSIT0066E: N\u00e3o \u00e9 poss\u00edvel concluir o link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} porque o mecanismo do sistema de mensagens no barramento solicitante {1} est\u00e1 tentando se conectar a um mecanismo do sistema de mensagens no mesmo barramento.
+INVALID_REQUEST_CWSIT0066.explanation=Um mecanismo do sistema de mensagens tentou estabelecer um link do barramento de integra\u00e7\u00e3o de servi\u00e7os com um mecanismo do sistema de mensagens no mesmo barramento. Os links do barramento de integra\u00e7\u00e3o de servi\u00e7os entre os mecanismos de sistema de mensagens no mesmo barramento n\u00e3o s\u00e3o permitidos.
+INVALID_REQUEST_CWSIT0066.useraction=Verifique a configura\u00e7\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os para assegurar que os terminais de auto-inicializa\u00e7\u00e3o enderecem corretamente um barramento remoto.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0067=CWSIT0067E: O link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} no barramento {1} n\u00e3o est\u00e1 dispon\u00edvel.
+UNABLE_TO_FIND_CWSIT0067.explanation=Foi recebido um pedido de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de outro barramento, mas n\u00e3o h\u00e1 nenhum mecanismo do sistema de mensagens dispon\u00edvel para aceitar o pedido no barramento de destino.
+UNABLE_TO_FIND_CWSIT0067.useraction=Assegure-se de que o mecanismo do sistema de mensagens configurado para manipular o link do barramento de integra\u00e7\u00e3o de servi\u00e7os esteja dispon\u00edvel.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+# {2} Engine name
+
+UNABLE_TO_FIND_CWSIT0068=CWSIT0068E: Uma solicita\u00e7\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os foi recebida para {0} do barramento {1}, mecanismo do sistema de mensagens {2}, mas nenhuma defini\u00e7\u00e3o de configura\u00e7\u00e3o correspondente p\u00f4de ser localizada.
+UNABLE_TO_FIND_CWSIT0068.explanation=Foi recebido um pedido de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de outro barramento, mas n\u00e3o foi localizada nenhuma defini\u00e7\u00e3o de configura\u00e7\u00e3o que correspondesse a esse pedido; o pedido foi rejeitado.
+UNABLE_TO_FIND_CWSIT0068.useraction=Assegure-se de que as configura\u00e7\u00f5es de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de ambos os barramentos estejam corretas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+UNABLE_TO_FIND_CWSIT0069=CWSIT0069E: Nenhuma configura\u00e7\u00e3o correspondente foi localizada para a conex\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} no barramento {1}
+UNABLE_TO_FIND_CWSIT0069.explanation=Foi rejeitado um pedido de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de outro barramento, pois n\u00e3o foi localizada nenhuma defini\u00e7\u00e3o de configura\u00e7\u00e3o que correspondesse a esse pedido.
+UNABLE_TO_FIND_CWSIT0069.useraction=Assegure-se de que as configura\u00e7\u00f5es de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de ambos os barramentos estejam corretas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Requesting bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+NOT_ALLOWED_CWSIT0070=CWSIT0070E: Uma solicita\u00e7\u00e3o de link do barramento de integra\u00e7\u00e3o de servi\u00e7os foi recebida para {0} do barramento {1}, mecanismo do sistema de mensagens {2}, mas a defini\u00e7\u00e3o de configura\u00e7\u00e3o espera o mecanismo do sistema de mensagens {3}.
+NOT_ALLOWED_CWSIT0070.explanation=Foi recebido um pedido de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de um mecanismo do sistema de mensagens em outro barramento, que n\u00e3o \u00e9 o mecanismo do sistema de mensagens nomeado na defini\u00e7\u00e3o de configura\u00e7\u00e3o nesse barramento; o pedido foi rejeitado.
+NOT_ALLOWED_CWSIT0070.useraction=Assegure-se de que as configura\u00e7\u00f5es de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de ambos os barramentos estejam corretas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Remote bus name
+# {2} Requesting engine name
+# {3} Expected engine name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NOT_ALLOWED_CWSIT0071=CWSIT0071E: A solicita\u00e7\u00e3o de link do barramento de integra\u00e7\u00e3o de servi\u00e7os para o link {0} foi rejeitada pelo barramento {1} porque o mecanismo de mensagem solicitado {2} n\u00e3o correspondeu ao mecanismo do sistema de mensagens esperado {3}.
+NOT_ALLOWED_CWSIT0071.explanation=O barramento remoto detectou uma inconsist\u00eancia no mecanismo do sistema de mensagens nomeado no pedido de link do barramento de integra\u00e7\u00e3o de servi\u00e7os feito por esse barramento e sua pr\u00f3pria defini\u00e7\u00e3o de configura\u00e7\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os.
+NOT_ALLOWED_CWSIT0071.useraction=Assegure-se de que as configura\u00e7\u00f5es de link do barramento de integra\u00e7\u00e3o de servi\u00e7os de ambos os barramentos estejam corretas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} name of authentication alias
+
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072=CWSIT0072W: N\u00e3o \u00e9 poss\u00edvel obter dados de autentica\u00e7\u00e3o do alias de autentica\u00e7\u00e3o do mecanismo do sistema de mensagens entre barramentos {0}.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.explanation=Se o alias de autentica\u00e7\u00e3o n\u00e3o existir ou estiver configurado incorretamente, n\u00e3o ser\u00e1 poss\u00edvel obter os dados de autentica\u00e7\u00e3o a partir dele. Os valores de cadeias vazias padr\u00e3o ser\u00e3o assumidos para dados de autentica\u00e7\u00e3o requeridos para conex\u00f5es do mecanismo de sistema de mensagens entre barramento. Se a seguran\u00e7a estiver ativada, este problema ir\u00e1 impedir que os mecanismos de sistemas de mensagens se conectem.
+UNABLE_TO_OBTAIN_AUTHDATA_CWSIT0072.useraction=Assegure-se de que o alias de autentica\u00e7\u00e3o do mecanismo de sistema de mensagens entre barramentos esteja corretamente configurado.
+
+# -------------------------------------------------------------------------------------------------
+#                                                                                          237937.1
+
+NO_AUTHALIAS_CWSIT0073=CWSIT0073W: Nenhum alias de autentica\u00e7\u00e3o do mecanismo do sistema de mensagens entre barramentos est\u00e1 configurado.
+NO_AUTHALIAS_CWSIT0073.explanation=Quando nenhum alias de autentica\u00e7\u00e3o do mecanismo do sistema de mensagens entre barramentos est\u00e1 configurado, nenhuma verifica\u00e7\u00e3o de autentica\u00e7\u00e3o ser\u00e1 realizada para as conex\u00f5es de autentica\u00e7\u00e3o do mecanismo do sistema de mensagens entre barramentos. Para autenticar as conex\u00f5es de autentica\u00e7\u00e3o do mecanismo do sistema de mensagens entre barramentos, configure o alias de autentica\u00e7\u00e3o do mecanismo de sistema de mensagens intra-barramentos.
+NO_AUTHALIAS_CWSIT0073.useraction=Configure o alias de autentica\u00e7\u00e3o do mecanismo de sistema de mensagens entre barramento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0074=CWSIT0074E: Ocorreu um erro interno. O UUID do link {0} j\u00e1 est\u00e1 definido.
+ALREADY_DEFINED_CWSIT0074.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0074.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+ALREADY_DEFINED_CWSIT0075=CWSIT0075E: Ocorreu um erro interno. O UUID do link {0} j\u00e1 est\u00e1 definido.
+ALREADY_DEFINED_CWSIT0075.explanation=CMSG0001
+ALREADY_DEFINED_CWSIT0075.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0076=CWSIT0076E: Ocorreu um erro interno. O UUID do link {0} n\u00e3o foi definido.
+UNDEFINED_CWSIT0076.explanation=CMSG0001
+UNDEFINED_CWSIT0076.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+UNDEFINED_CWSIT0077=CWSIT0077E: Ocorreu um erro interno. O UUID do link {0} n\u00e3o foi definido.
+UNDEFINED_CWSIT0077.explanation=CMSG0001
+UNDEFINED_CWSIT0077.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_STARTED_CWSIT0078=CWSIT0078E: Ocorreu um erro interno. O UUID do link {0} n\u00e3o pode ser registrado, porque o link n\u00e3o est\u00e1 iniciado.
+NOT_STARTED_CWSIT0078.explanation=CMSG0001
+NOT_STARTED_CWSIT0078.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link uuid
+
+NOT_ACTIVE_CWSIT0079=CWSIT0079E: Ocorreu um erro interno. O UUID do link {0} n\u00e3o pode ser registrado, porque o link n\u00e3o est\u00e1 ativo.
+NOT_ACTIVE_CWSIT0079.explanation=CMSG0001
+NOT_ACTIVE_CWSIT0079.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} link name
+# {1} originating bus name
+# {2} receiving bus name
+# {3} receiving bus name
+
+NOT_STARTED_CWSIT0080=CWSIT0080W: N\u00e3o \u00e9 poss\u00edvel estabelecer o link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} do barramento {1} para o barramento {2} porque o link no barramento {3} n\u00e3o foi iniciado.
+NOT_STARTED_CWSIT0080.explanation=O link do barramento de integra\u00e7\u00e3o de servi\u00e7os est\u00e1 atualmente iniciado em um barramento e n\u00e3o est\u00e1 iniciado no outro barramento; o link deve ser iniciado em ambos os barramentos antes da possibilidade de conex\u00e3o.
+NOT_STARTED_CWSIT0080.useraction=Pare o link do barramento de integra\u00e7\u00e3o de servi\u00e7os no barramento de origem ou inicie o link no barramento receptor.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bridge neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0081=CWSIT0081E: Ocorreu um erro interno. Ponte vizinha com UUID {0} n\u00e3o foi localizada na vizinhan\u00e7a.
+NEIGHBOUR_NOT_FOUND_CWSIT0081.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0081.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} neighbour UUID
+
+NEIGHBOUR_NOT_FOUND_CWSIT0082=CWSIT0082E: Ocorreu um erro interno. Vizinho com UUID {0} n\u00e3o foi localizado na vizinhan\u00e7a.
+NEIGHBOUR_NOT_FOUND_CWSIT0082.explanation=CMSG0001
+NEIGHBOUR_NOT_FOUND_CWSIT0082.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Received Userid
+# {1} Link name
+# {2} Requesting Bus name
+# {3} Required Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORISATION_CWSIT0085=CWSIT0085E: O ID do usu\u00e1rio {0} n\u00e3o est\u00e1 autorizado a criar a conex\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os {1} entre o barramento {2} e o barramento {3}
+FAILED_AUTHORISATION_CWSIT0085.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o de link do barramento de integra\u00e7\u00e3o de servi\u00e7os n\u00e3o era o mesmo ID do usu\u00e1rio que foi autorizado pelo mecanismo do sistema de mensagens remoto para permitir a cria\u00e7\u00e3o de conex\u00f5es de link do barramento de integra\u00e7\u00e3o de servi\u00e7os.
+FAILED_AUTHORISATION_CWSIT0085.useraction=Assegure-se de que ambos os mecanismos de sistema de mensagens tenham o mesmo ID de usu\u00e1rio configurado para esse link do barramento de integra\u00e7\u00e3o de servi\u00e7os.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+BUS_NOT_FOUND_CWSIT0086=CWSIT0086E: Barramento {0} n\u00e3o localizado
+BUS_NOT_FOUND_CWSIT0086.explanation=Portanto, o barramento necess\u00e1rio n\u00e3o est\u00e1 configurado no servidor, n\u00e3o \u00e9 poss\u00edvel utilizar esse servidor para conectar-se ao barramento necess\u00e1rio.
+BUS_NOT_FOUND_CWSIT0086.useraction=Assegure-se de que o nome do barramento esteja correto e utilize um servidor que possui o barramento necess\u00e1rio configurado.
+
+# -------------------------------------------------------------------------------------------------
+# {1} Remote engine name
+
+UNABLE_TO_FIND_CWSIT0087=CWSIT0087E: Uma solicita\u00e7\u00e3o de conex\u00e3o entre barramentos foi recebida do mecanismo do sistema de mensagens {1}, mas nenhuma defini\u00e7\u00e3o de configura\u00e7\u00e3o correspondente p\u00f4de ser localizada.
+UNABLE_TO_FIND_CWSIT0087.explanation=Foi recebido um pedido de conex\u00e3o entre barramentos de outro mecanismo do sistema de mensagens, mas nenhuma defini\u00e7\u00e3o de configura\u00e7\u00e3o p\u00f4de ser localizada que correspondesse a esse pedido, o pedido foi rejeitado.
+UNABLE_TO_FIND_CWSIT0087.useraction=Assegure-se de que as configura\u00e7\u00f5es de conex\u00e3o entre barramentos em ambos os mecanismos de sistemas de mensagens estejam corretas.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name                                                                               248188
+# {1} Text of failure reason
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+NO_MES_STARTED_CWSIT0088=CWSIT0088E: N\u00e3o h\u00e1 atualmente nenhum mecanismo do sistema de mensagens no barramento {0} em execu\u00e7\u00e3o. Informa\u00e7\u00f5es adicionais sobre a falha: {1}
+NO_MES_STARTED_CWSIT0088.explanation=Um cliente n\u00e3o p\u00f4de ser conectado ao barramento, porque n\u00e3o h\u00e1 mecanismos de sistemas de mensagens no barramento em execu\u00e7\u00e3o no momento.
+NO_MES_STARTED_CWSIT0088.useraction=Repita a opera\u00e7\u00e3o. Inicie um mecanismo do sistema de mensagens no barramento necess\u00e1rio.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+FAILED_AUTHENTICATION_CWSIT0089=CWSIT0089E: O ID do usu\u00e1rio {0} falhou na autentica\u00e7\u00e3o no barramento {1}.
+FAILED_AUTHENTICATION_CWSIT0089.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o-cliente com o mecanismo do sistema de mensagens, falhou ao ser autenticado pelo mecanismo do sistema de mensagens remoto. Provavelmente, a falha na autentica\u00e7\u00e3o ocorreu devido a um valor de ID de usu\u00e1rio ou de senha incorreto.
+FAILED_AUTHENTICATION_CWSIT0089.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090=CWSIT0090E: Um pedido de auto-inicializa\u00e7\u00e3o foi feito para o barramento {0}, utilizando a cadeia de canal {1}. A utiliza\u00e7\u00e3o dessa cadeia n\u00e3o \u00e9 permitida pelo barramento {0}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.explanation=Um cliente tentou enviar um pedido de auto-inicializa\u00e7\u00e3o para conectar-se a um barramento, mas o barramento n\u00e3o permite pedidos de auto-inicializa\u00e7\u00e3o, utilizando aquele canal.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0090.useraction=Reconfigure o cliente para que o n\u00f3 de extremidade de auto-inicializa\u00e7\u00e3o utilize uma cadeia permitida.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+NO_AUTHALIAS_CWSIT0091=CWSIT0091W: Uma conex\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os foi criada com sucesso com o mecanismo do sistema de mensagens {0} no barramento {1} sem especificar um alias de autentica\u00e7\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os. \u00c9 recomendado configurar um alias de autentica\u00e7\u00e3o por raz\u00f5es de seguran\u00e7a.
+NO_AUTHALIAS_CWSIT0091.explanation=Quando um alias de autentica\u00e7\u00e3o do barramento de integra\u00e7\u00e3o de servi\u00e7os n\u00e3o est\u00e1 configurado em um link do barramento de integra\u00e7\u00e3o de servi\u00e7os, \u00e9 poss\u00edvel criar um link do barramento de integra\u00e7\u00e3o de servi\u00e7os entre um barramento seguro e um n\u00e3o seguro, sem executar uma verifica\u00e7\u00e3o de autentica\u00e7\u00e3o.
+NO_AUTHALIAS_CWSIT0091.useraction=Configure o alias de autentica\u00e7\u00e3o do link do barramento de integra\u00e7\u00e3o de servi\u00e7os se desejar aplicar uma verifica\u00e7\u00e3o de autentica\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092=CWSIT0092E: Foi feita uma tentativa de conectar-se ao barramento {0} utilizando a cadeia de canal {1}. A utiliza\u00e7\u00e3o dessa cadeia n\u00e3o \u00e9 permitida pelo barramento {0}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.explanation=Um cliente tentou enviar um pedido de conex\u00e3o com o barramento, mas o barramento n\u00e3o permite conex\u00f5es utilizando aquela cadeia de canal.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0092.useraction=Reconfigure o cliente para que ele se conecte utilizando uma cadeia permitida.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093=CWSIT0093E: O barramento {0} tentou criar um link do barramento de integra\u00e7\u00e3o de servi\u00e7os com o barramento externo {1} usando a cadeia de canais de autoinicializa\u00e7\u00e3o {2}. A utiliza\u00e7\u00e3o dessa cadeia n\u00e3o \u00e9 permitida pelo barramento externo {1}.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.explanation=Um barramento tentou utilizar uma cadeia de transporte de auto-inicializa\u00e7\u00e3o que n\u00e3o \u00e9 suportada pelo barramento externo.
+BOOTSTRAP_CHAIN_NOT_PERMITTED_CWSIT0093.useraction=Reconfigure o barramento para que o n\u00f3 de extremidade de auto-inicializa\u00e7\u00e3o utilize uma cadeia permitida pelo barramento externo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+NOT_AUTHORIZED_CWSIT0094=CWSIT0094E: O cliente n\u00e3o foi autorizado a conectar-se ao barramento {0} utilizando um servidor de auto-inicializa\u00e7\u00e3o com n\u00f3 de extremidade {1}. Raz\u00e3o: {2}.
+NOT_AUTHORIZED_CWSIT0094.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o com o barramento n\u00e3o foi autorizado a conectar-se ao barramento.
+NOT_AUTHORIZED_CWSIT0094.useraction=Certifique-se de que o ID do usu\u00e1rio tenha uma fun\u00e7\u00e3o de conector de barramento para o barramento.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting bus name
+# {2} Required messaging engine name
+# {3} Required bus name
+# {4} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095=CWSIT0095E: O mecanismo de mensagem {0} no barramento {1} tentou criar um link do barramento de integra\u00e7\u00e3o de servi\u00e7os com o mecanismo do sistema de mensagens {2} no barramento externo {3} usando a cadeia de canais de entrada {4}. A utiliza\u00e7\u00e3o dessa cadeia n\u00e3o \u00e9 permitida pelo barramento externo {3}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.explanation=Um barramento tentou utilizar uma cadeia de transporte de entrada que n\u00e3o \u00e9 suportada pelo barramento externo.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0095.useraction=Reconfigure o barramento para que ele se conecte a uma cadeia permitida pelo barramento externo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Bus name
+# {2} Required messaging engine name
+# {3} Channel chain name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096=CWSIT0096E: O mecanismo do sistema de mensagens {0} no barramento {1} tentou conectar-se ao mecanismo do sistema de mensagens {2} utilizando a cadeia do canal de entrada {3}. A utiliza\u00e7\u00e3o dessa cadeia n\u00e3o \u00e9 permitida pelo barramento {1}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.explanation=O barramento foi configurado para utilizar uma cadeia do canal de transporte que n\u00e3o \u00e9 permitida para a comunica\u00e7\u00e3o entre os mecanismos do sistema de mensagens.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0096.useraction=Reconfigure o barramento para que ele especifique uma cadeia permitida como a cadeia de transporte do mecanismo interno. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting messaging engine name
+# {1} Requesting subnet name
+# {2} Required messaging engine name
+# {3} Required subnet name
+# {4} Channel chain name
+# {5} Required bus name
+
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097=CWSIT0097E: O mecanismo do sistema de mensagens {0} na sub-rede {1} tentou conectar-se ao mecanismo do sistema de mensagens {2} na sub-rede {3} utilizando a cadeia do canal de entrada {4}. A utiliza\u00e7\u00e3o dessa cadeia n\u00e3o \u00e9 permitida pelo barramento {5}.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.explanation=O barramento tentou utilizar uma cadeia de canal de transporte que n\u00e3o \u00e9 permitida.
+INBOUND_CHAIN_NOT_PERMITTED_CWSIT0097.useraction=Reconfigure o barramento para que ele se conecte a uma cadeia de canal de transporte permitida.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server
+# {2} Failure message from the bootstrap reply message
+
+FAILED_AUTHENTICATION_CWSIT0098=CWSIT0098E: Uma conex\u00e3o do cliente ao barramento {0}, utilizando o servidor de auto-inicializa\u00e7\u00e3o com o n\u00f3 de extremidade {1}, falhou na autentica\u00e7\u00e3o com a raz\u00e3o: {2}.
+FAILED_AUTHENTICATION_CWSIT0098.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o-cliente com o mecanismo do sistema de mensagens, falhou ao ser autenticado pelo mecanismo do sistema de mensagens remoto. Provavelmente, a falha na autentica\u00e7\u00e3o ocorreu devido a um valor de ID de usu\u00e1rio ou de senha incorreto.
+FAILED_AUTHENTICATION_CWSIT0098.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of the successful bootstrap server
+# {1} Name of messaging engine
+# {2} EndPoint of the original bootstrap server
+# {3} Text of failure reason
+
+REDIRECT_FAILURE_CWSIT0099=CWSIT0099E: O cliente contatou com \u00eaxito o servidor de auto-inicializa\u00e7\u00e3o no n\u00f3 de extremidade {0} e foi direcionado ao mecanismo do sistema de mensagens {1} no n\u00f3 de extremidade {2}. Falha ao tentar contatar esse n\u00f3 de extremidade com a raz\u00e3o: {3}.
+REDIRECT_FAILURE_CWSIT0099.explanation=Falha na conex\u00e3o de um cliente ao barramento ap\u00f3s um redirecionamento, devido a uma falha no servidor. O motivo da falha no servidor \u00e9 retornado.
+REDIRECT_FAILURE_CWSIT0099.useraction=Investigue e resolva a falha descrita na mensagem de erro, em seguida, tente novamente a opera\u00e7\u00e3o. 
+
+# -------------------------------------------------------------------------------------------------
+
+BAD_SELECT_CWSIT0100=CWSIT0100E: Esperava-se obter um CFEndpoint da Sele\u00e7\u00e3o, mas nenhum estava presente (erro interno).
+BAD_SELECT_CWSIT0100.explanation=O pedido para resolver um mecanismo do sistema de mensagens de destino falhou.
+BAD_SELECT_CWSIT0100.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+INVALID_PARAMETER_CWSIT0101=CWSIT0101E: Um par\u00e2metro inv\u00e1lido foi encontrado.
+INVALID_PARAMETER_CWSIT0101.explanation=O pedido para resolver um mecanismo do sistema de mensagens de destino falhou.
+INVALID_PARAMETER_CWSIT0101.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} Selection's MessagingEngine name
+# {1} Proximity constraint
+
+UNSATISFIED_PROXIMITY_CWSIT0102=CWSIT0102E: Uma sele\u00e7\u00e3o do mecanismo do sistema de mensagens {0} foi localizada, mas teve que ser descartada porque n\u00e3o atendia a restri\u00e7\u00e3o de proximidade de conex\u00e3o de {1} especificada pelo aplicativo.
+UNSATISFIED_PROXIMITY_CWSIT0102.explanation=O pedido para resolver um mecanismo do sistema de mensagens de destino falhou.
+UNSATISFIED_PROXIMITY_CWSIT0102.useraction=Se voc\u00ea pretendia estabelecer a conex\u00e3o para o mecanismo do sistema de mensagens mostrado na mensagem de erro, ent\u00e3o dever\u00e1 abrandar a proximidade de conex\u00e3o na especifica\u00e7\u00e3o de connection factory ou de ativa\u00e7\u00e3o e tentar novamente a opera\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Group
+# {2} Type
+# {3} Significance
+# {4} TransportChain
+# {5} Proximity
+
+NULL_SELECTION_CWSIT0103=CWSIT0103E: Nenhum mecanismo do sistema de mensagens que atende par\u00e2metros a seguir foi localizado: bus={0}, targetGroup={1}, targetType={2}, targetSignificance={3}, transportChain={4}, proximity={5}.
+NULL_SELECTION_CWSIT0103.explanation=O pedido para resolver um mecanismo do sistema de mensagens de destino falhou.
+NULL_SELECTION_CWSIT0103.useraction=Verifique o status do mecanismo do sistema de mensagens que voc\u00ea pretendia conectar para assegurar que ele esteja sendo executado. Alternativamente, modifique as propriedades da conex\u00e3o para permitir a sele\u00e7\u00e3o de um mecanismo do sistema de mensagens ativo.
+
+# -------------------------------------------------------------------------------------------------
+# {0} MessagingEngine name
+# {1} Bus name
+
+ME_NOT_STARTED_CWSIT0104=CWSIT0104E: O cliente tentou conectar-se ao mecanismo do sistema de mensagens {0} no barramento {1}, mas a conex\u00e3o n\u00e3o p\u00f4de ser criada porque o mecanismo do sistema de mensagens n\u00e3o foi iniciado.
+ME_NOT_STARTED_CWSIT0104.explanation=O mecanismo do sistema de mensagens existe mas n\u00e3o foi iniciado.
+ME_NOT_STARTED_CWSIT0104.useraction=Inicie o mecanismo do sistema de mensagens ao qual voc\u00ea deseja se conectar e tente novamente a opera\u00e7\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHENTICATION_CWSIT0105=CWSIT0105E: O aplicativo n\u00e3o especificou um ID do usu\u00e1rio ao tentar autenticar com o barramento {0}
+FAILED_AUTHENTICATION_CWSIT0105.explanation=A autentica\u00e7\u00e3o com o mecanismo remoto do sistema de mensagens falhou porque o aplicativo n\u00e3o especificou um ID do usu\u00e1rio.
+FAILED_AUTHENTICATION_CWSIT0105.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Link name
+# {1} Messaging engine name
+# {2} Bus name
+# {3} Host of messaging engine
+# {4} Port of messaging engine
+# {5} Transport chain to connect over
+
+BRIDGE_ESTABLISHED_CWSIT0106=CWSIT0106I: Link do barramento de integra\u00e7\u00e3o de servi\u00e7os {0} criado com \u00eaxito para o mecanismo do sistema de mensagens {1}, no barramento {2}, no host {3}, porta {4}, utilizando a cadeia de transporte {5}.
+BRIDGE_ESTABLISHED_CWSIT0106.explanation=Uma ponte foi estabelecida com outro mecanismo do sistema de mensagens em um barramento diferente.
+BRIDGE_ESTABLISHED_CWSIT0106.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Port value
+# {1} Chain name
+
+UNENCRYPTED_PASSWORD_CWSIT0107=CWSIT0107W: A porta especificado {0}, no n\u00f3 de extremidade, implicou a utiliza\u00e7\u00e3o da cadeia de transporte {1}. Isso resultar\u00e1 na transmiss\u00e3o de uma senha n\u00e3o criptografada entre o cliente e o servidor. Isso n\u00e3o \u00e9 recomendado por raz\u00f5es de seguran\u00e7a.
+UNENCRYPTED_PASSWORD_CWSIT0107.explanation=A porta padr\u00e3o est\u00e1 selecionada e o nome da cadeia n\u00e3o foi especificado no terminal do provedor. Isso resulta em uma cadeia de transporte n\u00e3o seguro e \u00e9 recomend\u00e1vel que voc\u00ea especifique a seguran\u00e7a nessa conex\u00e3o.
+UNENCRYPTED_PASSWORD_CWSIT0107.useraction=Isso pode ser evitado, especificando manualmente a cadeia de transporte exigida (segura ou n\u00e3o) ou omitindo a senha ao criar uma conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Userid
+# {1} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0108=CWSIT0108E: O ID do usu\u00e1rio {0} falhou na autoriza\u00e7\u00e3o no barramento {1}
+FAILED_AUTHORIZATION_CWSIT0108.explanation=O ID do usu\u00e1rio utilizado para criar uma conex\u00e3o do cliente com um mecanismo do sistema de mensagens falhou em ser autorizado pelo mecanismo do sistema de mensagens remoto. Provavelmente, a falha na autoriza\u00e7\u00e3o ocorreu devido a um valor de ID de usu\u00e1rio ou de senha incorreto.
+FAILED_AUTHORIZATION_CWSIT0108.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+
+# NOTE: Mirror message - do not add a full stop to the end of the message text
+
+FAILED_AUTHORIZATION_CWSIT0109=CWSIT0109E: O aplicativo n\u00e3o especificou um ID de usu\u00e1rio ao tentar a autoriza\u00e7\u00e3o com o barramento {0}
+FAILED_AUTHORIZATION_CWSIT0109.explanation=A autoriza\u00e7\u00e3o com o mecanismo do sistema de mensagens remoto falhou porque o aplicativo n\u00e3o especificou um ID do usu\u00e1rio.
+FAILED_AUTHORIZATION_CWSIT0109.useraction=Assegure-se de que os valores de ID de usu\u00e1rio e senha estejam corretos.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110=CWSIT0110E: Falha na autentica\u00e7\u00e3o do token de seguran\u00e7a fornecido pelo mecanismo do sistema de mensagens {0} no barramento {1}.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.explanation=Falha na autentica\u00e7\u00e3o do token de seguran\u00e7a utilizado para criar uma conex\u00e3o do mecanismo do sistema de mensagens entre barramentos.
+TOKEN_FAILED_AUTHENTICATION_CWSIT0110.useraction=Verifique os logs de erros nos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0111=CWSIT0111E: As informa\u00e7\u00f5es de identifica\u00e7\u00e3o fornecidas no token de seguran\u00e7a n\u00e3o corresponderam aos dados no pedido de conex\u00e3o feito pelo mecanismo do sistema de mensagens {0} no barramento {1}
+TOKEN_INCONSISTENT_CWSIT0111.explanation=Isso pode indicar que um usu\u00e1rio n\u00e3o-autorizado est\u00e1 tentando conectar-se ao sistema.
+TOKEN_INCONSISTENT_CWSIT0111.useraction=Verifique os logs de erros nos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+ 
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112=CWSIT0112E: O tipo de token de seguran\u00e7a {0} fornecido pelo mecanismo do sistema de mensagens {1} no barramento {2} n\u00e3o \u00e9 suportado.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.explanation=A autentica\u00e7\u00e3o do mecanismo do sistema de mensagens n\u00e3o pode ser executada porque o tipo de token de seguran\u00e7a n\u00e3o \u00e9 suportado.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0112.useraction=Verifique os logs de erros nos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0113=CWSIT0113E: O pedido de conex\u00e3o do mecanismo do sistema de mensagens {0} no barramento {1} n\u00e3o especificou um tipo de token de seguran\u00e7a.
+MISSING_SECURITY_TOKEN_CWSIT0113.explanation=Isso pode indicar que um usu\u00e1rio n\u00e3o-autorizado est\u00e1 tentando conectar-se ao sistema.
+MISSING_SECURITY_TOKEN_CWSIT0113.useraction=Verifique os logs de erros nos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TOKEN_INCONSISTENT_CWSIT0115=CWSIT0115E: As informa\u00e7\u00f5es de identifica\u00e7\u00e3o fornecidas no token de seguran\u00e7a n\u00e3o corresponderam aos dados na resposta de conex\u00e3o do mecanismo do sistema de mensagens {0} no barramento {1}
+TOKEN_INCONSISTENT_CWSIT0115.explanation=Isso pode indicar que um usu\u00e1rio n\u00e3o-autorizado est\u00e1 tentando conectar-se ao sistema.
+TOKEN_INCONSISTENT_CWSIT0115.useraction=Verifique os logs de erros nos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The string name of the token type that is unsupported
+# {1} Messaging engine name
+# {2} Bus name
+
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116=CWSIT0116E: O tipo de token de seguran\u00e7a {0} fornecido pelo mecanismo do sistema de mensagens {1} no barramento {2} para autentica\u00e7\u00e3o m\u00fatua n\u00e3o \u00e9 suportado.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.explanation=A autentica\u00e7\u00e3o do mecanismo do sistema de mensagens n\u00e3o pode ser executada porque o tipo de token de seguran\u00e7a n\u00e3o \u00e9 suportado.
+TOKEN_TYPE_UNSUPPORTED_CWSIT0116.useraction=Verifique os logs de erros nos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+MISSING_SECURITY_TOKEN_CWSIT0117=CWSIT0117E: A resposta de conex\u00e3o do mecanismo do sistema de mensagens {0} no barramento {1} n\u00e3o especificou um tipo de token de seguran\u00e7a.
+MISSING_SECURITY_TOKEN_CWSIT0117.explanation=Isso pode indicar que um usu\u00e1rio n\u00e3o-autorizado est\u00e1 tentando conectar-se ao sistema.
+MISSING_SECURITY_TOKEN_CWSIT0117.useraction=Verifique os logs de erros nos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0118=CWSIT0118E: Durante uma tentativa de conectar-se a um mecanismo de sistema de mensagens remoto {0} no barramento {1}, informa\u00e7\u00f5es incompletas indicaram que n\u00e3o era poss\u00edvel validar a identidade do mecanismo do sistema de mensagens remoto
+INCOMPLETE_ME_INFO_CWSIT0118.explanation=Isso pode ter sido causado por um problema relacionado ao tempo ou pode indicar que um usu\u00e1rio n\u00e3o-autorizado est\u00e1 tentando conectar-se ao sistema.
+INCOMPLETE_ME_INFO_CWSIT0118.useraction=Aguarde at\u00e9 que uma nova tentativa seja feita ou investigue a possibilidade de um ataque de seguran\u00e7a, verificando os logs de sistema e de erros associados aos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+INCOMPLETE_ME_INFO_CWSIT0119=CWSIT0119E: Uma tentativa de conex\u00e3o foi feita pelo mecanismo do sistema de mensagens remoto {0} no barramento {1}, mas informa\u00e7\u00f5es incompletas indicaram que n\u00e3o foi poss\u00edvel validar a identidade do mecanismo do sistema de mensagens remoto
+INCOMPLETE_ME_INFO_CWSIT0119.explanation=Isso pode ter sido causado por um problema relacionado ao tempo ou pode indicar que um usu\u00e1rio n\u00e3o-autorizado est\u00e1 tentando conectar-se ao sistema.
+INCOMPLETE_ME_INFO_CWSIT0119.useraction=Aguarde at\u00e9 que uma nova tentativa seja feita ou investigue a possibilidade de um ataque de seguran\u00e7a, verificando os logs de sistema e de erros associados aos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Messaging engine name
+# {1} Bus name
+
+TARGET_NOT_FOUND_CWSIT0120=CWSIT0120E: N\u00e3o foi poss\u00edvel validar a identidade do mecanismo do sistema de mensagens de conex\u00e3o {0} no barramento {1}
+TARGET_NOT_FOUND_CWSIT0120.explanation=Isso pode ter sido causado por um problema relacionado ao tempo ou pode indicar que um usu\u00e1rio n\u00e3o-autorizado est\u00e1 tentando conectar-se ao sistema.
+TARGET_NOT_FOUND_CWSIT0120.useraction=Aguarde at\u00e9 que uma nova tentativa seja feita ou investigue a possibilidade de um ataque de seguran\u00e7a, verificando os logs de sistema e de erros associados aos mecanismos de sistema de mensagens envolvidos na tentativa de conex\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+INVALID_HOST_CWSIT0121=CWSIT0121E: Foi emitido uma java.net.UnknownHostException ao tentar resolver o nome de host {0}
+INVALID_HOST_CWSIT0121.explanation=Isso pode ter sido causado por um cliente que estava recebendo um nome de host que n\u00e3o poderia ser resolvido no DNS (Domain Name System).
+INVALID_HOST_CWSIT0121.useraction=Tente registrar o nome do host no Servidor de Nomes de Dom\u00ednio ou incluir uma entrada no arquivo 'hosts' do cliente e, em seguida, tente a opera\u00e7\u00e3o novamente.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} The host name which is not valid
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122=CWSIT0122W: Uma tabela de roteamento est\u00e1tico est\u00e1 sendo utilizada para esse cluster - normalmente, o uso de roteamento est\u00e1tico impede que o barramento de integra\u00e7\u00e3o de servi\u00e7os funcione corretamente e n\u00e3o \u00e9 recomendado.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.explanation=A ativa\u00e7\u00e3o do roteamento est\u00e1tico impede que informa\u00e7\u00f5es, como o local de um mecanismo do sistema de mensagens, sejam compartilhadas dinamicamente na c\u00e9lula, impossibilitando a conex\u00e3o dos aplicativos com o barramento.
+STATIC_ROUTING_TABLE_IN_USE_CWSIT0122.useraction=Se houver problemas ao utilizar o barramento de integra\u00e7\u00e3o de servi\u00e7os, a tabela de roteamento est\u00e1tico dever\u00e1 ser exclu\u00edda e os servidores reiniciados para retornar ao comportamento de roteamento padr\u00e3o.
+
+# -------------------------------------------------------------------------------------------------
+# {0} bus name
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123=CWSIT0123E: O servidor n\u00e3o est\u00e1 configurado para permitir auto-inicializa\u00e7\u00e3o para o barramento {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.explanation=O cliente tentou a auto-inicializa\u00e7\u00e3o para um barramento utilizando um servidor que n\u00e3o estava configurado para permitir a auto-inicializa\u00e7\u00e3o para o barramento. 
+BOOTSTRAP_NOT_PERMITTED_CWSIT0123.useraction=Reconfigure o barramento de modo que o servidor possa ser utilizado para a auto-inicializa\u00e7\u00e3o ou atualize os terminais do provedor de clientes para utilizar um servidor diferente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Requesting bus name
+# {1} Required bus name
+# {2} Channel chain name
+
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124=CWSIT0124E: O barramento {0} tentou localizar o barramento externo {1} utilizando um servidor n\u00e3o configurado para permitir a auto-inicializa\u00e7\u00e3o para o barramento {0}.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.explanation=O barramento tentou a auto-inicializa\u00e7\u00e3o para um barramento externo utilizando um servidor que n\u00e3o a suporta.
+BOOTSTRAP_NOT_PERMITTED_CWSIT0124.useraction=Reconfigure o barramento para que o terminal de auto-inicializa\u00e7\u00e3o utilize um outro servidor, especificando uma combina\u00e7\u00e3o de host e porta diferente.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIT9999=CWSIT9999E: {0}
+TEMPORARY_CWSIT9999.explanation=Se essa mensagem n\u00e3o oferecer informa\u00e7\u00f5es suficientes, verifique as mensagens de erro associadas para obter informa\u00e7\u00f5es adicionais.
+TEMPORARY_CWSIT9999.useraction=Para obter informa\u00e7\u00f5es adicionais sobre como resolver esse erro, consulte as informa\u00e7\u00f5es sobre determina\u00e7\u00e3o de problemas na p\u00e1gina da Web de Suporte do WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+# -------------------------------------------------------------------------------------------------
+# {0} Endpoint of the Remote Messaging Engine
+# {1} Failure message from the Remote Messaging Engine reply message 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126=CWSIT0126E: A conex\u00e3o com o mecanismo do sistema de mensagens de destino em {0} foi bem-sucedida, mas o mecanismo do sistema de mensagens retornou uma condi\u00e7\u00e3o de erro: {1}
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.explanation=O cliente foi conectado ao mecanismo do sistema de mensagens, mas h\u00e1 um problema no estabelecimento da conex\u00e3o bem-sucedida com o mecanismo do sistema de mensagens de destino. 
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0126.useraction=Assegure-se de que o mecanismo do sistema de mensagens de destino esteja configurado corretamente e funcionando corretamente para aceitar as conex\u00f5es remotas recebidas. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} List of Target Messaging Engines to which we tried to connect
+LIBERTY_NO_BOOTSTRAP_CWSIT0127=CWSIT0127E: N\u00e3o \u00e9 poss\u00edvel entrar em contato com os mecanismos de sistema de mensagens de destino especificados. Consulte a exce\u00e7\u00e3o vinculada para obter detalhes adicionais. Conex\u00f5es do cliente foram tentadas para: {0}
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.explanation=O cliente n\u00e3o pode se conectar. A conex\u00e3o pode ter falhado devido \u00e0 indisponibilidade dos mecanismos de sistema de mensagens de destino necess\u00e1rios ou devido a alguns problemas de configura\u00e7\u00e3o ou de rede. 
+LIBERTY_NO_BOOTSTRAP_CWSIT0127.useraction=Assegure-se de que a rede esteja funcionando corretamente e que os mecanismos de sistema de mensagens de destino necess\u00e1rios estejam dispon\u00edveis. Consulte a documenta\u00e7\u00e3o do produto para obter informa\u00e7\u00f5es sobre como configurar uma conex\u00e3o com o mecanismo do sistema de mensagens de destino. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128=CWSIT0128E: A autentica\u00e7\u00e3o de cliente para o mecanismo do sistema de mensagens de destino falhou com o motivo: {2}
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.explanation=O mecanismo do sistema de mensagens remoto falhou ao autenticar o ID de usu\u00e1rio usado para estabelecer a conex\u00e3o do cliente com o mecanismo do sistema de mensagens de destino. Provavelmente, a falha de autentica\u00e7\u00e3o ocorreu devido a um ID de usu\u00e1rio ou uma senha incorretos.
+LIBERTY_FAILED_AUTHENTICATION_CWSIT0128.useraction=Assegure-se de que o ID de usu\u00e1rio e a senha inseridos estejam corretos. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} Bus name
+# {1} Endpoint of the bootstrap server # {2} Failure message from the bootstrap reply message 
+
+LIBERTY_NOT_AUTHORIZED_CWSIT0129=CWSIT0129E: O cliente n\u00e3o foi autorizado a se conectar ao mecanismo do sistema de mensagens de destino. Motivo: {2}
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.explanation=O ID de usu\u00e1rio usado para criar uma conex\u00e3o n\u00e3o foi autorizado a se conectar ao mecanismo do sistema de mensagens de destino.
+LIBERTY_NOT_AUTHORIZED_CWSIT0129.useraction=Assegure-se de que o ID de usu\u00e1rio tenha as permiss\u00f5es necess\u00e1rias. 
+
+# -------------------------------------------------------------------------------------------------
+# {0} EndPoint of application server that failed
+# {1} Name of bus # {2} text of failure reason 
+
+LIBERTY_MIRRORED_FAILURE_CWSIT0130=CWSIT0130W: Uma solicita\u00e7\u00e3o de conex\u00e3o do cliente com o mecanismo do sistema de mensagens de destino falhou com o motivo: {2}
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.explanation=Uma solicita\u00e7\u00e3o de conex\u00e3o do cliente falhou devido a um problema no mecanismo do sistema de mensagens de destino. O motivo da falha no mecanismo de sistema de mensagens de destino \u00e9 retornado.
+LIBERTY_MIRRORED_FAILURE_CWSIT0130.useraction=Investigue e resolva a falha descrita na mensagem de erro e, em seguida, tente a opera\u00e7\u00e3o novamente.  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine which cannot be contacted
+# {1} Exception 
+
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131=CWSIT0131W: N\u00e3o \u00e9 poss\u00edvel se conectar ao mecanismo do sistema de mensagens de destino em {0} por causa da exce\u00e7\u00e3o: {1}
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.explanation=O cliente n\u00e3o pode estabelecer a conex\u00e3o com o mecanismo do sistema de mensagens de destino especificado. A conex\u00e3o pode ter falhado devido \u00e0 indisponibilidade dos mecanismos de sistema de mensagens de destino necess\u00e1rios ou devido a alguns problemas de configura\u00e7\u00e3o ou de rede. 
+LIBERTY_BOOTSTRAP_FAILED_CWSIT0131.useraction=Assegure-se de que a rede esteja funcionando corretamente e que o mecanismo de sistema de mensagens necess\u00e1rio esteja dispon\u00edvel. O mecanismo do sistema de mensagens remoto \u00e9 especificado pela propriedade de Endere\u00e7o do Servidor Remoto do connection factory JMS. O endere\u00e7o possui o formato host_name:port_number:chain_name (por exemplo, localhost:7276:BootstrapBasicMessaging).  
+
+# -------------------------------------------------------------------------------------------------
+# {0} Name of the messaging engine runtime feature,  eg wasJmsServer-1.0
+
+LIBERTY_BINDING_FAILED_CWSIT0132=CWSIT0132E: N\u00e3o h\u00e1 nenhum mecanismo do sistema de mensagens local ao qual se conectar. Para ativar o mecanismo do sistema de mensagens local, inclua o recurso {0}.
+LIBERTY_BINDING_FAILED_CWSIT0132.explanation=O cliente n\u00e3o pode estabelecer uma conex\u00e3o com o mecanismo do sistema de mensagens local. Isso pode ocorrer porque o mecanismo do sistema de mensagens n\u00e3o est\u00e1 configurado ou ativo no servidor de perfil Liberty atual, ou porque o mecanismo do sistema de mensagens n\u00e3o consegue aceitar conex\u00f5es.
+LIBERTY_BINDING_FAILED_CWSIT0132.useraction=Assegure-se de que o mecanismo do sistema de mensagens esteja em execu\u00e7\u00e3o no servidor de perfil Liberty atual.
+
+# -------------------------------------------------------------------------------------------------
+# {0} Remote Messaging Engine hostname/ipaddess:port:chain combination
+
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133=CWSIT0133E: O cliente conseguiu estabelecer uma conex\u00e3o com o servidor de destino em {0}, mas o servidor rejeitou a conex\u00e3o.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.explanation=O cliente conectou-se ao servidor de destino com \u00eaxito, mas o servidor de destino rejeitou a conex\u00e3o porque o mecanismo do sistema de mensagens em execu\u00e7\u00e3o no servidor de destino n\u00e3o correspondeu \u00e0s propriedades definidas nas propriedades do connection factory.
+LIBERTY_BOOTSTRAP_FAILURE_CWSIT0133.useraction= Configure as propriedades do connection factory de tal maneira que o mecanismo do sistema de mensagens em execu\u00e7\u00e3o no servidor de destino corresponda \u00e0s propriedades do connection factory configurado.
+
+# -------------------------------------------------------------------------------------------------
+
+LIBERTY_BINDING_FAILED_CWSIT0134=CWSIT0134E: N\u00e3o \u00e9 poss\u00edvel conectar-se ao mecanismo do sistema de mensagens local porque ele n\u00e3o p\u00f4de ser iniciado.
+LIBERTY_BINDING_FAILED_CWSIT0134.explanation=O cliente n\u00e3o p\u00f4de estabelecer uma conex\u00e3o com o mecanismo do sistema de mensagens local. Isso ocorre porque o mecanismo do sistema de mensagens est\u00e1 configurado no servidor de perfil Liberty atual, mas o mecanismo do sistema de mensagens n\u00e3o p\u00f4de ser iniciado.
+LIBERTY_BINDING_FAILED_CWSIT0134.useraction=Assegure-se de que o mecanismo do sistema de mensagens esteja em execu\u00e7\u00e3o no servidor de perfil Liberty atual. Verifique os logs de erro ou o FFDC para determina\u00e7\u00e3o de problema adicional.

@@ -1,0 +1,334 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+##########################################################################
+#
+# %Z% %I% %W% %G% %U% [%H% %T%]                                                
+#
+#
+#  COMPONENT_NAME: WAS.transactions
+#
+#  ORIGINS: 27
+#
+#  DESCRIPTION:
+#
+#  Change Log:
+#  Date      Pgmr      Defect     Description
+#  --------  --------  --------   ------------------------------------------
+#  05-01-20  mdobbie   LI3603     Creation
+#  05-02-28  hursdlg   254615     Msgs 26-28
+#  05-03-03  hursdlg   254326     Msgs 29-30
+#  07-02-26  awilkins  422999     Message review: updates to useraction and explanation
+#  07-03-02  awilkins  424163     Message review: improve contact IBM support user action
+#  08-02-11  mallam    496337     PII additions
+#  29-02-08 johawkes   501807     Style changes
+#  -------------------------------------------------------------------------
+#
+# DEVELOPER INSTRUCTIONS
+# ----------------------
+#
+# To add a new message, define the key string in LTCTrace.java, then create
+# the message text below using that key.  Fill in the comment block above the
+# message to assist in translation of the message, particularly to aid in the
+# appropriate positioning of any message inserts within the translated text.
+# To issue the message, use the LTCTrace.Message method.
+#
+# USE OF PROPERTIES FILE FOR MESSAGES:
+#
+# - Each property in the property file is terminated by the line termination character.
+# - If a line contains only whitespace or if the first non-whitespace character of a
+# line is # or !, the line is ignored. (comments start with # or !)
+# - Every line in the properties file other than whitespace lines or comment lines
+# denotes a single property. A \ is treated as a line continuation character. Lines
+# should be terminated with the line termination character.
+# - Correct grammar for a property line is <key><separator><element>. A valid separator
+# is any one of equal, colon or whitespace ( =: ).
+# - The key consists of all the characters on the line starting from the first
+# non-whitespace up to the first separator. Separator characters can be included in the
+# key by escaping them (e.g. \:) This is not recommended because it is error prone and
+# confusing.
+# - Whitespace after the key is skipped until the first non-whitespace character is
+# found. All remaining characters up to the appropriate line termination character
+# define the element.
+#
+# MESSAGE INSERTS
+#
+#  Primitives
+# Primitives, such as int and long are not recognized as subclasses of Object
+# and cannot be directly passed to one of these methods. A primitive value must
+# be transformed to its proper type (e.g Integer, Long) before being passed as
+# a parameter.
+#
+#  Object
+# For normal Objects, toString() is called on the object and the resulting String
+# is displayed. For exceptions, the stack trace will be printed.For Objects that
+# implement the Traceable interface, the toTraceString() method is called instead.
+# To provide the proper trace representation for the Object, provide the proper
+# implementation for the appropriate method.
+#
+#  Object[]
+# Since Object[] is a proper subclass of Object, Object[] can be passed. Use
+# Object[] when more than one parameter should be passed to a message logging
+# or trace method. The appropriate method (toString() or toTraceString()) is
+# called on each Object in the array. This array should contain only
+# standalone normal Objects and should not contain other arrays. Passing nested
+# array may result in the following Strings being displayed :
+#  "[B@924586a0b" - This is deciphered as a byte array at location X.
+# This is typically returned when an array of primitives is passed as a member
+# of an Object[]. It is the result of calling toString() on the byte[].
+#  "[Ljava.lang.Object;@9136fa0b" : An array of objects.
+# Typically this is seen when an array containing nested arrays is passed.
+#
+#  Array of Primitives
+# An array of primitive (e.g. byte[], int[] is recognized as an Object, but is
+# treated somewhat as a second cousin of Object by Java. The results you see
+# will depend on the type of array passed and the API used. For consistent results,
+# user code should preprocess and format the primitive array into some type of
+# String form before passing it to the method. If such preprocessing is not
+# performed, you may see something results something like the following:
+#  "Illegal trace argument : array of long."
+# This is typically returned when an array of primitives is passed to a method
+# taking an Object and the Tr service does not provide special parsing for
+# primitive arrays of this type.
+#  "01040703..." : the hex representation of an array of bytes.
+# Typically this may be seen when a byte array is passed to a method taking a
+# single Object. This behavior is subject to change and should not be relied on.
+#  " '1' '2' ..." : The String representation of the members of an int[] formed
+# by converting each element to an Integer and calling toString on the Integers.
+# This behavior is subject to change and should not be relied on.
+#
+#  Common messages
+# The following common messages are used in this file:
+#
+#         CMSG0001       This is an unexpected exception. The cause can not be immediately determined.
+#         CMSG0002       For further information on resolving this error, please consult the IBM WebSphere Application Server Support website available
+#                        at: http://www-3.ibm.com/software/webservers/appserv/support.html. The site provides searchable databases of technotes,
+#                        solutions, and e-fixes. Information on contacting the WebSphere Support team is also provided.
+#
+# During the build, the WebSphere Message Tool will recognize the common message keywords, and replace them with text defined in the
+#                Common Messages Table.
+#
+#
+#
+#
+#-----------------------------------------------------------------------
+#
+# Translator Instructions:
+#
+# The messages to be translated are contained in key/text pairs and
+# contains three parts:
+#
+# 1) A key (a text string) which is an identifier used by the code to
+#    retrieve data.  This is required - and SHOULD NOT be translated.
+# 2) A equals ("=") sign separating the key and text.  This is required.
+# 3) A string containing data that will be displayed to
+#    the user when running the application.  This is required and
+#    SHOULD be translated.
+#
+# In short, each line in the resource array contains two strings.
+# The SECOND quoted string on each line should be translated.
+#
+# Some of the strings to be translated contain special codes
+# for data that will be inserted into the string when the string
+# is displayed to the user.  For example, say you have the
+# following string to translate:
+#
+#   This file was written by the IBM Administrator on {0,date}.
+#
+# {0,date} is a code that tells Java to insert a parameter into
+# this space when displaying it to the user.  In this case,
+# the parameter that is inserted is a date.
+#
+# The 0 indicates that this is where the first parameter is
+# inserted in the string.  There may be more than one parameter
+# in any one string.  The 'date' tells java to format this
+# parameter as a date.
+#
+# The {0,date} code should be placed at the appropriate position
+# in the translated text.  Please note that the code in the
+# translation must match exactly the code in the original
+# string.
+#
+# The developer should describe in comments above the string to be
+# translated each of the parameters so that you will be able to
+# determine where the best location for each parameter in the
+# translated string.
+#
+# Lines that begin with a pound sign (#) are comments and should not be
+# translated.
+#
+#-----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines. 
+# For more information, visit: 
+#     http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.6,0,05/12/08,09:47:34
+#
+#CMVCPATHNAME ws/code/recovery.log.impl/src/com/ibm/ws/recoverylog/resources/RecoveryLogMsgs.nlsprops
+#COMPONENTPREFIX WRLS CWRLS
+#COMPONENTNAMEFOR WRLS WebSphere Recovery Log Service
+#COMPONENTNAMEFOR CWRLS WebSphere Recovery Log Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# -------------------------------------------
+# All new V6 msgs should use the prefix CWRLS
+
+#-----------------------------------------------------------------------
+CWRLS0001_SUSPEND_RLS=CWRLS0001I: Se ha suspendido el servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n ({0}).
+CWRLS0001_SUSPEND_RLS.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n se encuentra en estado pendiente para permitir que el sistema realice la copia de seguridad de los archivos de anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+CWRLS0001_SUSPEND_RLS.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0002_RESUME_RLS=CWRLS0002I: Se ha reanudado el servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n ({0}).
+CWRLS0002_RESUME_RLS.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n que se suspendi\u00f3 anteriormente est\u00e1 restaurado en estado de ejecuci\u00f3n.
+CWRLS0002_RESUME_RLS.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0003_GENERIC_ERROR=CWRLS0003E: {0}
+CWRLS0003_GENERIC_ERROR.explanation=Este c\u00f3digo de mensaje se utiliza en los mensajes a los que todav\u00eda no se ha asignado un c\u00f3digo propio.
+CWRLS0003_GENERIC_ERROR.useraction=Para obtener m\u00e1s informaci\u00f3n, consulte el texto del mensaje.
+
+#-----------------------------------------------------------------------
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED=CWRLS0004E: No se puede crear al archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n {0}.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n no ha podido crear el archivo indicado en el mensaje. No se puede acceder al directorio de destino o el sistema no tiene permisos suficientes para crear el archivo necesario.
+CWRLS0004_RECOVERY_LOG_CREATE_FAILED.useraction=Aseg\u00farese de que la jerarqu\u00eda de directorios necesaria sea v\u00e1lida y accesible para el servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED=CWRLS0005E: No se puede obtener un bloqueo de archivo exclusivo sobre {0}.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n no ha podido bloquear exclusivamente el archivo indicado en el mensaje.
+CWRLS0005_RECOVERY_LOG_LOCK_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0006_RECOVERY_LOG_CREATE=CWRLS0006I: Creando un nuevo archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n {0}.
+CWRLS0006_RECOVERY_LOG_CREATE.explanation=Se ha establecido un nuevo archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n para poder almacenar datos persistentes.
+CWRLS0006_RECOVERY_LOG_CREATE.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0007_RECOVERY_LOG_NOT_EXIST=CWRLS0007I: No se ha encontrado ning\u00fan archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n en {0}. Iniciando las anotaciones cronol\u00f3gicas de recuperaci\u00f3n desde cero.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.explanation=Se han suprimido los archivos de anotaciones cronol\u00f3gicas de recuperaci\u00f3n anteriores o esta es la primera vez que se almacenan en esta ubicaci\u00f3n los archivos de anotaciones cronol\u00f3gicas de recuperaci\u00f3n. En cualquier caso, el servicio asociado se iniciar\u00e1 y no realizar\u00e1 ning\u00fan proceso de recuperaci\u00f3n.
+CWRLS0007_RECOVERY_LOG_NOT_EXIST.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0008_RECOVERY_LOG_FAILED=CWRLS0008E: El archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n se marcar\u00e1 como err\u00f3neo. [ {0} {1} ]
+CWRLS0008_RECOVERY_LOG_FAILED.explanation=Se ha producido un error en el archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n y no se puede acceder a \u00e9l. El mensaje muestra el componente y la excepci\u00f3n relevante.
+CWRLS0008_RECOVERY_LOG_FAILED.useraction=Reinicie el servidor para que se pueda reparar el archivo de anotaciones cronol\u00f3gicas. Intente arreglar las condiciones indicadas por la excepci\u00f3n en el mensaje.
+
+#-----------------------------------------------------------------------
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL=CWRLS0009E: Detalles del error del archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n: {0}
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.explanation=Este mensaje se emite con el mensaje CWRLS0008E para indicar los detalles del error del archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+CWRLS0009_RECOVERY_LOG_FAILED_DETAIL.useraction=Utilice la informaci\u00f3n de este mensaje y el mensaje CWRLS0008E para corregir la condici\u00f3ncausante del error del archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0010_PERFORM_LOCAL_RECOVERY=CWRLS0010I: Realizando proceso de recuperaci\u00f3n para el servidor WebSphere local ({0}).
+CWRLS0010_PERFORM_LOCAL_RECOVERY.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n est\u00e1 dirigiendo el proceso de recuperaci\u00f3n de los servicios cliente asociados.
+CWRLS0010_PERFORM_LOCAL_RECOVERY.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0011_PERFORM_PEER_RECOVERY=CWRLS0011I: Realizando proceso de recuperaci\u00f3n para un servidor WebSphere igual ({0}).
+CWRLS0011_PERFORM_PEER_RECOVERY.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n est\u00e1 dirigiendo el proceso de recuperaci\u00f3n de los servicios cliente asociados para el servidor igual.
+CWRLS0011_PERFORM_PEER_RECOVERY.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0012_DIRECT_LOCAL_RECOVERY=CWRLS0012I: Se ha indicado a todos los servicios persistentes que realicen el proceso de recuperaci\u00f3n para este servidor WebSphere ({0}).
+CWRLS0012_DIRECT_LOCAL_RECOVERY.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n ha solicitado a todos los servicios cliente asociados que inicien la recuperaci\u00f3n.
+CWRLS0012_DIRECT_LOCAL_RECOVERY.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0013_DIRECT_PEER_RECOVERY=CWRLS0013I: Se ha indicado a todos los servicios persistentes que realicen el proceso de recuperaci\u00f3n para un servidor WebSphere igual ({0}).
+CWRLS0013_DIRECT_PEER_RECOVERY.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n ha solicitado a todos los servicios cliente asociados que inicien la recuperaci\u00f3n para el servidor igual.
+CWRLS0013_DIRECT_PEER_RECOVERY.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0014_HALT_PEER_RECOVERY=CWRLS0014I: Deteniendo los procesos actuales de recuperaci\u00f3n para un servidor WebSphere igual ({0}).
+CWRLS0014_HALT_PEER_RECOVERY.explanation=El proceso de recuperaci\u00f3n se est\u00e1 transfiriendo a un servidor de aplicaciones alternativo. Normalmente estos sucede cuando se reinicia un servidor y vuelve a asumir la propiedad de sus anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+CWRLS0014_HALT_PEER_RECOVERY.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0015_DISABLE_FILE_LOCKING=CWRLS0015I: Se ha inhabilitado el bloqueo del archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n en las propiedades personalizadas del servicio de transacciones.
+CWRLS0015_DISABLE_FILE_LOCKING.explanation=El mecanismo de bloqueo de archivos utilizado por el servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n que garantiza el acceso exclusivo a los archivos de anotaciones cronol\u00f3gicas de recuperaci\u00f3n ha sido inhabilitado expl\u00edcitamente.
+CWRLS0015_DISABLE_FILE_LOCKING.useraction=Aseg\u00farese de que se utilicen las restricciones adecuadas para dar soporte a este valor de configuraci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0016_RECOVERY_PROCESSING_FAILED=CWRLS0016E: No se puede obtener un bloqueo de archivo exclusivo necesario para realizar el proceso de recuperaci\u00f3n para el servidor {0}.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.explanation=El servidor de destino est\u00e1 activo o la configuraci\u00f3n de anotaciones cronol\u00f3gicas de recuperaci\u00f3n es incorrecta.
+CWRLS0016_RECOVERY_PROCESSING_FAILED.useraction=Aseg\u00farese de que la configuraci\u00f3n de anotaciones cronol\u00f3gicas de recuperaci\u00f3n sea v\u00e1lida.
+
+#-----------------------------------------------------------------------
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED=CWRLS0017I: Se ha interrumpido el intento de obtener un bloqueo de archivo exclusivo necesario para realizar el proceso de recuperaci\u00f3n para el servidor {0}.   Se activar\u00e1 otro servidor para realizar este proceso de recuperaci\u00f3n.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.explanation=Se ha pasado el control de anotaci\u00f3n cronol\u00f3gica entre dos servidores de aplicaciones.
+CWRLS0017_RECOVERY_PROCESSING_INTERRUPTED.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0018_RECOVERY_PROCESSING_FAILED=CWRLS0018E: Se ha terminado anormalmente el intento de detener la recuperaci\u00f3n transaccional y reenviar el proceso para el servidor local ({0}).
+CWRLS0018_RECOVERY_PROCESSING_FAILED.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n ha detenido al servidor local para que cediera el control de sus propias anotaciones cronol\u00f3gicas de recuperaci\u00f3n. Probablemente est\u00e9 provocada por la configuraci\u00f3n de pol\u00edticas de grupo principal.
+CWRLS0018_RECOVERY_PROCESSING_FAILED.useraction=Aseg\u00farese de que la configuraci\u00f3n de la pol\u00edtica no asigne la propiedad de un archivo de anotaciones cronol\u00f3gicas de un servidor activo a un servidor alternativo.
+
+#-----------------------------------------------------------------------
+CWRLS0019_SNAPSHOT_SAFE=CWRLS0019I: El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n se ha configurado como con instant\u00e1neas seguras en las propiedades personalizadas del servicio de transacciones.
+CWRLS0019_SNAPSHOT_SAFE.explanation=Cuando se solicita una instant\u00e1nea de los archivos de anotaciones cronol\u00f3gicas, toda la actividad de registro de transacciones se suspende mientras se toma la instant\u00e1nea, para asegurarse de que los archivos de anotaciones cronol\u00f3gicas est\u00e1n en un estado conocido coherente con otros sistemas involucrados en la instant\u00e1nea.
+CWRLS0019_SNAPSHOT_SAFE.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0020_SNAPSHOT_SAFE=CWRLS0020W: El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n NO se ha configurado como con instant\u00e1neas seguras en las propiedades personalizadas del servicio de transacciones.
+CWRLS0020_SNAPSHOT_SAFE.explanation=Si se toma una instant\u00e1nea de los archivos de anotaciones cronol\u00f3gicas, es posible que \u00e9stos no est\u00e9n en un estado coherente con otros sistemas involucrados en la instant\u00e1nea.
+CWRLS0020_SNAPSHOT_SAFE.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0021_RESUME_ATTEMPT_RLS=CWRLS0021I: Se ha llamado al servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n para que se reanude ({0}) pero hay otras suspensiones pendientes.
+CWRLS0021_RESUME_ATTEMPT_RLS.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n s\u00f3lo se reanudar\u00e1 cuando no queden operaciones de suspensiones pendientes.
+CWRLS0021_RESUME_ATTEMPT_RLS.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0022_RLS_SUSPEND_TIMEOUT=CWRLS0022I: La operaci\u00f3n de suspensi\u00f3n del servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n ha excedido el tiempo de espera ({0}).
+CWRLS0022_RLS_SUSPEND_TIMEOUT.explanation=Si no quedan operaciones de suspensi\u00f3n pendientes se reanudar\u00e1 el servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n.
+CWRLS0022_RLS_SUSPEND_TIMEOUT.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0023_RESUME_RLS=CWRLS0023I: Se ha reanudado el servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n despu\u00e9s del tiempo de espera de una operaci\u00f3n de suspensi\u00f3n.
+CWRLS0023_RESUME_RLS.explanation=Este mensaje es s\u00f3lo informativo.
+CWRLS0023_RESUME_RLS.useraction=No se requiere ninguna acci\u00f3n.
+
+#-----------------------------------------------------------------------
+CWRLS0024_EXC_DURING_RECOVERY=CWRLS0024E: Se ha capturado una excepci\u00f3n durante la recuperaci\u00f3n. {0}
+CWRLS0024_EXC_DURING_RECOVERY.explanation= Se ha detectado una excepci\u00f3n mientras se intentaba recuperar de una anomal\u00eda anterior del servidor.
+CWRLS0024_EXC_DURING_RECOVERY.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE=CWRLS0025E: El arranque del servidor en modalidad de recuperaci\u00f3n no es compatible con la habilitaci\u00f3n de HA.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.explanation=En una configuraci\u00f3n de alta disponibilidad, la recuperaci\u00f3n del servidor puede iniciarse autom\u00e1ticamente en un servidor igual.
+CWRLS0025_RECOVER_MODE_NOT_COMPATIBLE.useraction=No intente iniciar un servidor en modalidad de recuperaci\u00f3n si est\u00e1 habilitado para alta disponibilidad.
+
+#-----------------------------------------------------------------------
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY=CWRLS0026W: No se puede obtener un bloqueo de archivo exclusivo sobre {0}; reintentando.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n no puede bloquear de forma exclusiva el archivo indicado en el mensaje durante la recuperaci\u00f3n porque el archivo parece estar en uso. El servicio de recuperaci\u00f3n intentar\u00e1 peri\u00f3dicamente obtener el bloqueo exclusivo para que la recuperaci\u00f3n pueda realizarse. Si el archivo de anotaciones cronol\u00f3gicas de recuperaci\u00f3n es una de las anotaciones cronol\u00f3gicas de recuperaci\u00f3n del servidor principal, el arranque se suspender\u00e1 hasta que sea posible el acceso a las anotaciones cronol\u00f3gicas.  Si el archivo de anotaciones cronol\u00f3gicas pertenece a otro servidor igual, es posible que otro servidor obtenga los bloqueos y realice la recuperaci\u00f3n de igual; en esta situaci\u00f3n, este servidor dejar\u00e1 de intentar la recuperaci\u00f3n.
+CWRLS0026_RECOVERY_LOG_LOCK_RETRY.useraction=Examine los mensajes relacionados para determinar la causa del problema. Si no hay mensajes relacionados compruebe la ubicaci\u00f3n de las anotaciones cronol\u00f3gicas de recuperaci\u00f3n y aseg\u00farese de que otro servidor no accede a ellas. Por ejemplo, esta situaci\u00f3n podr\u00eda ocurrir si m\u00e1s de un servidor est\u00e1 configurado para utilizar anotaciones cronol\u00f3gicas de otro servidor.
+
+#-----------------------------------------------------------------------
+CWRLS0027_COMMON_TRANLOG_DIRS=CWRLS0027W: Se ha definido el directorio de anotaciones cronol\u00f3gicas de transacciones com\u00fan {0} para los servidores {1} y {2}
+CWRLS0027_COMMON_TRANLOG_DIRS.explanation=Las anotaciones cronol\u00f3gicas de transacciones de dos servidores est\u00e1n utilizando una configuraci\u00f3n de directorio com\u00fan. Esto podr\u00eda provocar retenciones de los bloqueos de recuperaci\u00f3n o anomal\u00edas en la integridad de los datos. 
+CWRLS0027_COMMON_TRANLOG_DIRS.useraction=Configure v\u00edas de acceso de directorios independientes para cada servidor.
+
+#-----------------------------------------------------------------------
+CWRLS0028_COMMON_COMPLOG_DIRS=CWRLS0028W: Se ha definido el directorio de anotaciones cronol\u00f3gicas de compensaci\u00f3n com\u00fan {0} para los servidores {1} y {2}
+CWRLS0028_COMMON_COMPLOG_DIRS.explanation=Las anotaciones cronol\u00f3gicas de compensaci\u00f3n de dos servidores est\u00e1n utilizando una configuraci\u00f3n de directorio com\u00fan. Esto podr\u00eda provocar retenciones de los bloqueos de recuperaci\u00f3n o anomal\u00edas en la integridad de los datos. 
+CWRLS0028_COMMON_COMPLOG_DIRS.useraction=Configure v\u00edas de acceso de directorios independientes para cada servidor.
+
+#-----------------------------------------------------------------------
+CWRLS0029_LOCAL_RECOVERY_FAILED=CWRLS0029W: No se puede realizar el proceso de recuperaci\u00f3n para el servidor WebSphere local, el servidor concluir\u00e1
+CWRLS0029_LOCAL_RECOVERY_FAILED.explanation=El servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n no puede realizar ni completar la recuperaci\u00f3n para el servidor local y no puede realizar m\u00e1s trabajos, por lo que el servidor se detendr\u00e1.
+CWRLS0029_LOCAL_RECOVERY_FAILED.useraction=CMSG0002
+
+#-----------------------------------------------------------------------
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE=CWRLS0030W: Esperando que HAManager active el proceso de recuperaci\u00f3n para el servidor WebSphere local
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.explanation=El servidor de anotaciones cronol\u00f3gicas de recuperaci\u00f3n no puede iniciar el proceso de recuperaci\u00f3n para el servidor local porque est\u00e1 esperando que HAManager active la pertenencia al grupo de estas anotaciones cronol\u00f3gicas de recuperaci\u00f3n del servidor local.
+CWRLS0030_WAITING_FOR_HAM_ACTIVATE.useraction=Examine los mensajes relacionados para determinar la causa del problema. Si no hay mensajes relacionados compruebe la configuraci\u00f3n de los valores DefaultCoreGroup y las definiciones de pol\u00edticas asociadas para el servicio de anotaciones cronol\u00f3gicas de recuperaci\u00f3n para el servidor. Por ejemplo, si la pol\u00edtica TM de Cl\u00faster est\u00e1 establecida para no dar soporte a invertir sustituci\u00f3n, otro servidor podr\u00eda tener el control en las anotaciones cronol\u00f3gicas y evitar\u00e1 que se active este servidor.
+

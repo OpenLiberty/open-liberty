@@ -1,0 +1,89 @@
+###############################################################################
+# Copyright (c) 2007, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the message text
+#           must be followed by a 2nd apostrophe to work correctly.
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     MTDT (Metadata Framework)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# -----------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# cmvc_en_version_level=
+#
+#
+#CMVCPATHNAME ws/code/beanvalidation/src/com/ibm/ws/beanvalidation/resources/nls/BVNLSMessages.nlsprops
+#COMPONENTPREFIX CWNBV
+#COMPONENTNAMEFOR CWNBV Bean Validation
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE=CWNBV0001E: \u5728\u670d\u52a1\u5668\u542f\u52a8\u671f\u95f4\uff0cBeanValidationService \u672a\u80fd\u5411\u6ce8\u5165\u670d\u52a1\u6ce8\u518c\u3002   \u9700\u8981\u6ce8\u5165 ValidatorFactory \u7c7b\u6216 Validator \u7c7b\u7684\u5e94\u7528\u7a0b\u5e8f\u5c06\u5931\u8d25\u3002\u53d1\u751f\u4e0b\u5217\u9519\u8bef\uff1a{0}\u3002
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.explanation=\u5728\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u542f\u52a8\u65f6\uff0c BeanValidationService \u672a\u80fd\u5411\u6ce8\u5165\u5f15\u64ce\u6ce8\u518c\u3002  \u8fd9\u662f\u610f\u5916\u7684\u5931\u8d25\u3002\u539f\u56e0\u53ef\u80fd\u662f\u6ce8\u5165\u670d\u52a1\u5c1a\u672a\u542f\u52a8\u3002
+BVKEY_UNABLE_TO_REGISTER_WITH_INJECTION_ENGINE.useraction=\u7ea0\u6b63\u4efb\u4f55\u5148\u524d\u7684\u9519\u8bef\u5e76\u786e\u4fdd\u6ce8\u5165\u670d\u52a1\u5df2\u542f\u52a8\u3002\u5982\u679c\u6ce8\u5165\u670d\u52a1\u53ef\u7528\u4f46\u95ee\u9898\u4ecd\u5b58\u5728\uff0c\u90a3\u4e48\u8bf7\u53c2\u9605\u95ee\u9898\u786e\u5b9a\u4fe1\u606f\u3002\u6b64\u4fe1\u606f\u4f4d\u4e8e WebSphere Application Server \u652f\u6301 Web \u9875\u9762\u4e0a\uff0c\u7f51\u5740\u4e3a\uff1ahttp://www.ibm.com/software/webservers/appserv/was/support\u3002
+
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY=CWNBV0002E: BeanValidationService \u65e0\u6cd5\u521b\u5efa ValidatorFactory \u7c7b\u3002
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.explanation=BeanValidationService \u65e0\u6cd5\u521b\u5efa\u9a8c\u8bc1\u5668\u5de5\u5382\u3002 \u8fd9\u662f\u610f\u5916\u7684\u5931\u8d25\u3002\u6709\u5173\u66f4\u591a\u4fe1\u606f\uff0c\u8bf7\u53c2\u9605\u6240\u6307\u5b9a\u5f02\u5e38\u7684\u63cf\u8ff0\u3002\u95ee\u9898\u53ef\u80fd\u662f\u7531\u4e8e\u6b64\u5e94\u7528\u7a0b\u5e8f\u968f\u9644\u7684 validation.xml \u6587\u4ef6\u6240\u81f4\u3002
+BVKEY_UNABLE_TO_CREATE_VALIDATION_FACTORY.useraction=\u786e\u4fdd\u63d0\u4f9b\u7684 validation.xml \u6587\u4ef6\u6709\u6548\uff0c\u4e14\u6307\u5b9a\u7684\u7f3a\u7701\u9a8c\u8bc1\u63d0\u4f9b\u7a0b\u5e8f\u3001\u6d88\u606f\u63d2\u5165\u5668\u6216\u904d\u5386\u89e3\u6790\u5668\u5728\u7c7b\u8def\u5f84\u4e2d\u5747\u53ef\u7528\u3002\u5982\u679c validation.xml \u6587\u4ef6\u6709\u6548\u4e14\u5728\u7c7b\u8def\u5f84\u4e2d\u63d0\u4f9b\u4e86\u6b63\u786e\u7684\u4fe1\u606f\uff0c\u4f46\u662f\u95ee\u9898\u4ecd\u5b58\u5728\uff0c\u90a3\u4e48\u8bf7\u53c2\u9605\u95ee\u9898\u786e\u5b9a\u4fe1\u606f\u3002\u6b64\u4fe1\u606f\u4f4d\u4e8e WebSphere Application Server \u652f\u6301 Web \u9875\u9762\u4e0a\uff0c\u7f51\u5740\u4e3a\uff1ahttp://www.ibm.com/software/webservers/appserv/was/support\u3002
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the name of the class that was trying to be loaded or instantiatedd
+#    {2} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_CLASS_NOT_FOUND=CWNBV0003E: BeanValidationService \u65e0\u6cd5\u521b\u5efa ValidationFactory \u7c7b\uff0c\u56e0\u4e3a\u5b83\u7531\u4e8e\u9519\u8bef {2} \u800c\u65e0\u6cd5\u88c5\u5165\u6216\u5b9e\u4f8b\u5316\u8def\u5f84 {1} \u4e2d\u7684\u7c7b {0}\u3002
+BVKEY_CLASS_NOT_FOUND.explanation=BeanValidationService \u65e0\u6cd5\u88c5\u5165\u6216\u5b9e\u4f8b\u5316\u7528\u4e8e\u521b\u5efa\u8be5 ValidationFactory \u7684\u7c7b\u3002  \u7531\u4e8e\u7c7b\u4e0d\u5b58\u5728\u6216\u7c7b\u5728\u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84\u4e2d\u4e0d\u53ef\u7528\uff0c\u6240\u4ee5\u53ef\u80fd\u5b58\u5728\u6b64\u95ee\u9898\u3002
+BVKEY_CLASS_NOT_FOUND.useraction=\u786e\u4fdd\u7c7b\u53ef\u7528\u5e76\u4e14\u5728\u5e94\u7528\u7a0b\u5e8f\u7c7b\u8def\u5f84\u4e0a\u3002\u5982\u679c\u7c7b\u6709\u6548\u5e76\u4e14\u5728\u7c7b\u8def\u5f84\u4e2d\u53ef\u7528\uff0c\u4f46\u662f\u60a8\u4ecd\u9047\u5230\u6b64\u95ee\u9898\uff0c\u8bf7\u53c2\u9605\u95ee\u9898\u786e\u5b9a\u4fe1\u606f\u3002\u6b64\u4fe1\u606f\u4f4d\u4e8e WebSphere Application Server \u652f\u6301 Web \u9875\u9762\u4e0a\uff0c\u7f51\u5740\u4e3a\uff1ahttp://www.ibm.com/software/webservers/appserv/was/support\u3002
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path of module
+#    {1} is the exception that caused this message to be displayed
+# -----------------------------------------------------------------------
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML=CWNBV0004E: \u5728 {0} \u4e2d\u627e\u5230\u7684 validation.xml \u6587\u4ef6\u4e2d\u68c0\u6d4b\u5230\u9519\u8bef\u8bed\u6cd5\u6216\u9519\u8bef\u3002\u4ea7\u751f\u4e86\u4ee5\u4e0b\u76f8\u5173\u7684\u9519\u8bef\u6d88\u606f\uff1a{1}
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.explanation=validation.xml \u6587\u4ef6\u5305\u542b\u9519\u8bef\uff0c\u5e76\u4e14\u4e0d\u7b26\u5408\u6a21\u5f0f\u5b9a\u4e49\u3002
+BVKEY_SYNTAX_ERROR_IN_VALIDATION_XML.useraction=\u66f4\u6b63 validation.xml \u6587\u4ef6\u4e2d\u7684\u9519\u8bef\u5e76\u91cd\u8bd5\u3002
+
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWNBV0005W: \u4e3a {0} \u6a21\u5757\u627e\u5230\u4e86 validation.xml \u6587\u4ef6\u3002 \u4f46\u662f\uff0c\u7531\u4e8e\u8be5 validation.xml \u6587\u4ef6\u6ca1\u6709\u914d\u7f6e\u4ee5\u4f9b\u9a8c\u8bc1\uff1b\u6240\u4ee5\u5ffd\u7565\u4e86\u8be5 XML \u6587\u4ef6\u3002
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=BeanValidationService \u65e0\u6cd5\u521b\u5efa ValidatorFactory \u56e0\u4e3a\u5728\u89e3\u6790validation.xml \u6587\u4ef6\u548c validation-configuration-1.0.xsd \u6a21\u5f0f\u6587\u4ef6\u65f6\u51fa\u9519\u3002 \u8be5\u9519\u8bef\u53ef\u80fd\u8868\u660e\u6ca1\u6709\u9884\u671f Bean Validation \u8fd0\u884c\u65f6\u4f7f\u7528 validation.xml \u6587\u4ef6\uff1b\u6240\u4ee5\uff0c\u5ffd\u7565\u4e86\u8be5 XML \u6587\u4ef6\u3002
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=\u5982\u679c\u8be5 validation.xml \u6587\u4ef6\u4e0d\u662f\u7528\u6765\u521b\u5efa ValidatorFactory \u5b9e\u4f8b\uff0c\u90a3\u4e48\u5ffd\u7565\u8be5\u4fe1\u606f\u3002\u4f46\u662f\uff0c\u5982\u679c\u8be5 validation.xml \u6587\u4ef6\u662f\u7528\u6765\u521b\u5efa ValidatorFactory \u5b9e\u4f8b\u7684\uff0c\u90a3\u5c31\u5b58\u5728\u95ee\u9898\u3002  \u542f\u7528\u5b9e\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u4e2d\u7684 Eean Validation run-time \u8ddf\u8e2a\uff0c\u505c\u6b62\u5e94\u7528\u7a0b\u5e8f\uff0c\u91cd\u542f\u5e94\u7528\u7a0b\u5e8f\uff0c\u7136\u540e\u4e3a\u8ddf\u8e2a\u4e8b\u4ef6\u68c0\u67e5\u8ddf\u8e2a\u8f93\u51fa\u6587\u4ef6\uff0c\u4f8b\u5982\uff1a\u5728\u5c1d\u8bd5\u53d6\u6d88\u5bf9 validation.xml \u6587\u4ef6\u6392\u5e8f\u65f6\u53d1\u751f\u7684\u610f\u5916\u5f02\u5e38\u3002\u68c0\u67e5\u5f02\u5e38\u5806\u6808\u8ddf\u8e2a\u4ee5\u8c03\u8bd5\u534f\u52a9\u8bbe\u5907\u3002
+
+# -----------------------------------------------------------------------
+JNDI_NON_JEE_THREAD_CWNBV0006E=CWNBV0006E: \u56e0\u4e3a\u5f53\u524d\u7684\u7ebf\u7a0b\u4e0e Java Enterprise Edition \u5e94\u7528\u7a0b\u5e8f\u7ec4\u4ef6\u65e0\u5173\uff0c\u5bf9 java:comp/env \u540d\u79f0\u6267\u884c\u7684 JNDI \u64cd\u4f5c\u65e0\u6cd5\u5b8c\u6210\u3002\u5f53\u4f7f\u7528 java:comp/env \u540d\u79f0\u7684 JNDI \u5ba2\u6237\u673a\u4e0d\u5728\u670d\u52a1\u5668\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u7ebf\u7a0b\u4e2d\u53d1\u751f\u65f6\uff0c\u5c06\u53d1\u751f\u8fd9\u79cd\u60c5\u51b5\u3002\u8bf7\u786e\u4fdd Java EE \u5e94\u7528\u7a0b\u5e8f\u4e0d\u5728\u9759\u6001\u4ee3\u7801\u5757\u6216\u8be5 Java EE \u5e94\u7528\u7a0b\u5e8f\u521b\u5efa\u7684\u7ebf\u7a0b\u5185\u5bf9 java:comp/env \u540d\u79f0\u8fd0\u884c JNDI \u64cd\u4f5c\u3002\u6b64\u7c7b\u4ee3\u7801\u4e0d\u5fc5\u5728\u670d\u52a1\u5668\u5e94\u7528\u7a0b\u5e8f\u8bf7\u6c42\u7684\u7ebf\u7a0b\u4e2d\u8fd0\u884c\uff0c\u56e0\u6b64\u4e0d\u53d7\u5bf9 java:comp/env \u540d\u79f0\u6267\u884c\u7684 JNDI \u64cd\u4f5c\u652f\u6301\u3002
+JNDI_NON_JEE_THREAD_CWNBV0006E.explanation=\u53ea\u6709\u4e0e Java EE \u5e94\u7528\u7a0b\u5e8f\u7ec4\u4ef6\u76f8\u5173\u7684\u7ebf\u7a0b\u624d\u652f\u6301\u5bf9 java:comp/env \u540d\u79f0\u6267\u884c JNDI \u64cd\u4f5c\u3002
+JNDI_NON_JEE_THREAD_CWNBV0006E.useraction=\u4fee\u6539\u5e94\u7528\u7a0b\u5e8f\uff0c\u4ee5\u4fbf JNDI \u64cd\u4f5c\u53d1\u751f\u5728\u4e0e Java EE \u5e94\u7528\u7a0b\u5e8f\u7ec4\u4ef6\u76f8\u5173\u7684\u7ebf\u7a0b\u4e0a\u3002
+
+# -----------------------------------------------------------------------

@@ -1,0 +1,159 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+failed.to.create.httpupgradehandler=SRVE9000E: HttpUpgradeHandler \uc791\uc131\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {0} \uae30\ubcf8 \uc0dd\uc131\uc790\uac00 \uc788\uc73c\uba70 \uc778\uc2a4\ud134\uc2a4\ud654\ud560 \uc218 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+failed.to.create.httpupgradehandler.explanation=HttpUpgradeHandler\ub97c \uc791\uc131\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+failed.to.create.httpupgradehandler.useraction=\uc624\ub958\uc5d0 \ub300\ud55c \uc790\uc138\ud55c \uc815\ubcf4\ub294 FFDC \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+servlet.31.not.in.use=SRVE9001E: servlet-3.1 \uae30\ub2a5\uc774 \uc0ac\uc6a9 \uc911\uc774 \uc544\ub2d9\ub2c8\ub2e4.
+servlet.31.not.in.use.explanation=servlet-3.1 \uae30\ub2a5\uc774 \uc0ac\uc6a9 \uc911\uc774 \uc544\ub2d9\ub2c8\ub2e4. \uc774\uc804 \ubc84\uc804\uc758 \uc11c\ube14\ub9bf\uc744 \uc774\ubbf8 \uc0ac\uc6a9 \uc911\uc77c \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+servlet.31.not.in.use.useraction=servlet-3.1 \uae30\ub2a5\uc744 server.xml \ud30c\uc77c\uc5d0 \ucd94\uac00\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# Translation note: {0} = operation being performed, {1} = the listener that called the operation, {2} = the application that contains the listener: SRVE9002E: You cannot start this operation from a programmatically added listener when using servlet-3.1 feature. (Operation: {0} | Listener: {1} | Application: {2})
+Unsupported.op.from.servlet.context.listener.31=SRVE9002E: servlet-3.1 \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud558\ub294 \uacbd\uc6b0\uc5d0\ub294 \ud504\ub85c\uadf8\ub7a8 \ubc29\uc2dd\uc73c\ub85c \ucd94\uac00\ub41c \ub9ac\uc2a4\ub108\uc5d0\uc11c \uc774 \uc870\uc791\uc744 \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. (\uc870\uc791: {0} | \ub9ac\uc2a4\ub108: {1} | \uc560\ud50c\ub9ac\ucf00\uc774\uc158: {2})
+Unsupported.op.from.servlet.context.listener.31.explanation=TLD(Tag Library Descriptor)\uc5d0 \uc815\uc758\ub420 \ub54c \uc2e4\ud589\uc744 \uc81c\ud55c\ud560 \uc218 \uc788\ub294 \uad6c\uc131 \uc635\uc158\uc774 \uc5c6\uc73c\ubbc0\ub85c \ud2b9\uc815 \uc870\uc791\uc744 \ud504\ub85c\uadf8\ub7a8\uc73c\ub85c \ucd94\uac00\ub41c \ub9ac\uc2a4\ub108\uc5d0\uc11c \uc2dc\uc791\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+Unsupported.op.from.servlet.context.listener.31.useraction=web.xml \ud30c\uc77c\uc5d0\uc11c \ub610\ub294 \uc5b4\ub178\ud14c\uc774\uc158\uc744 \ud1b5\ud574\uc11c \ub9ac\uc2a4\ub108\ub97c \ucd94\uac00\ud558\uc5ec \uc774 \uba54\uc18c\ub4dc \uc2dc\uc791\uc744 \uc0ac\uc6a9\uc73c\ub85c \uc124\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the application name
+handlerClass.is.null==SRVE9003E: \ud328\uc2a4\ub41c HttpUpgradeHandler \uc624\ube0c\uc81d\ud2b8\uac00 \ub110\uc774\uace0 \uc6f9 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc740 {0}\uc785\ub2c8\ub2e4.
+handlerClass.is.null.explanation=\ud328\uc2a4\ub41c HttpUpgradeHandler \uc624\ube0c\uc81d\ud2b8\uac00 \ub110(null)\uc774\ubbc0\ub85c \uc694\uccad\uc744 \uc5c5\uadf8\ub808\uc774\ub4dc\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+handlerClass.is.null.useraction= \uc62c\ubc14\ub978 HttpUpgradeHandler \uc624\ube0c\uc81d\ud2b8\uac00 \uc81c\uacf5\ub418\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages are added for Read and Write Listener per Java Servlet Specification 
+# -------------------------------- -------------------------------- --------------------------------
+readlistener.is.null=SRVE9004E: ReadListener \uc624\ube0c\uc81d\ud2b8\uac00 \ub110\uc774\ubbc0\ub85c ReadListener \uc124\uc815\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+readlistener.is.null.explanation=setReadListener API\uc5d0 \uc804\ub2ec\ub418\ub294 \ubcc0\uc218 \uc778\uc218\ub294 \uc62c\ubc14\ub978 readListener \uc624\ube0c\uc81d\ud2b8\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+readlistener.is.null.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+writelistener.is.null=SRVE9005E: WriteListener \uc624\ube0c\uc81d\ud2b8\uac00 \ub110\uc774\ubbc0\ub85c WriteListener \uc124\uc815\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+writelistener.is.null.explanation=WriteListener API\uc5d0 \uc804\ub2ec\ub418\ub294 \ubcc0\uc218 \uc778\uc218\ub294 \uc62c\ubc14\ub978 writeListener \uc624\ube0c\uc81d\ud2b8\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+writelistener.is.null.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+readlistener.async.not.started=SRVE9006E: \uc5f0\uad00\ub41c \uc694\uccad\uc774 \ube44\ub3d9\uae30\ub85c \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uac70\ub098 \uc694\uccad\uc774 \uc5c5\uadf8\ub808\uc774\ub4dc\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c ReadListener \uc124\uc815\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+readlistener.async.not.started.explanation=\ube44\ub3d9\uae30\uac00 \uc2dc\uc791\ub418\uc5c8\uac70\ub098 UpgradeHandler\uc758 init \uba54\uc18c\ub4dc\uac00 \ud638\ucd9c\ub41c \uacbd\uc6b0\uc5d0\ub9cc \uc694\uccad\uc5d0 ReadListener\ub97c \uc124\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+readlistener.async.not.started.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+writelistener.async.not.started=SRVE9007E: \uc5f0\uad00\ub41c \uc694\uccad\uc774 \ube44\ub3d9\uae30\ub85c \uc2dc\uc791\ub418\uc9c0 \uc54a\uc558\uac70\ub098 \uc694\uccad\uc774 \uc5c5\uadf8\ub808\uc774\ub4dc\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c WriteListener \uc124\uc815\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+writelistener.async.not.started.explanation=\ube44\ub3d9\uae30\uac00 \uc2dc\uc791\ub418\uc5c8\uac70\ub098 UpgradeHandler\uc758 init \uba54\uc18c\ub4dc\uac00 \ud638\ucd9c\ub41c \uacbd\uc6b0\uc5d0\ub9cc \uc694\uccad\uc5d0 WriteListener\ub97c \uc124\uc815\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+writelistener.async.not.started.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+readlistener.already.started=SRVE9008E: ReadListener\uac00 \uc774\ubbf8 \uc124\uc815\ub418\uc5c8\uc73c\ubbc0\ub85c ReadListener \uc124\uc815\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+readlistener.already.started.explanation=ReadListener\ub97c \ub450 \ubc88 \uc774\uc0c1 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+readlistener.already.started.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+writelistener.already.started=SRVE9009E: WriteListener\uac00 \uc774\ubbf8 \uc124\uc815\ub418\uc5c8\uc73c\ubbc0\ub85c WriteListener \uc124\uc815\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+writelistener.already.started.explanation=WriteListener\ub97c \ub450 \ubc88 \uc774\uc0c1 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+writelistener.already.started.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+read.failed.isReady.false=SRVE9010E: isReady API\uac00 false\ub97c \ub9ac\ud134\ud558\ubbc0\ub85c \uc77d\uae30\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+read.failed.isReady.false.explanation= isReady\uac00 false\ub97c \ub9ac\ud134\ud558\ub294 \uacbd\uc6b0 read \uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud558\ub294 \uac83\uc740 \uc62c\ubc14\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+read.failed.isReady.false.useraction= \uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# -------------------------------- -------------------------------- --------------------------------
+# Following messages for read in SRTUpgradeInputStream31 and write in SRTOutputStream31 per OutputStream Java doc
+# -------------------------------- -------------------------------- --------------------------------
+read.write.bytearray.null=SRVE9011E: \ubcc0\uc218 \uc778\uc218 byte[]\uac00 \ub110\uc774\ubbc0\ub85c InputStream\uc744 \uc77d\uac70\ub098 OutputStream\uc5d0 \uc4f0\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+read.write.bytearray.null.explanation=\uc77d\uae30 \ub610\ub294 \uc4f0\uae30 API\uc5d0 \uc804\ub2ec\ub418\ub294 \ubcc0\uc218 \uc778\uc218 byte[]\uac00 \ub110\uc774\uba74 \uc548 \ub429\ub2c8\ub2e4.
+read.write.bytearray.null.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} is the offset as number
+# {1} is the length as number
+# {2} is the array length as number
+read.write.offset.length.bytearraylength= SRVE9012E: \ubcc0\uc218 \uc778\uc218 \uc624\ud504\uc14b {0} \uc911 \ud558\ub098 \ub610\ub294 \uae38\uc774 {1}\uc774(\uac00) \uc74c\uc218\uc774\uac70\ub098, offset+length\uac00 \uc81c\uacf5\ub41c byte[] \uae38\uc774 {2}\ubcf4\ub2e4 \uae38\uae30 \ub54c\ubb38\uc5d0 \uc77d\uae30 \ub610\ub294 \uc4f0\uae30\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+read.write.offset.length.bytearraylength.explanation= \ubcc0\uc218 \uc778\uc218 \uc624\ud504\uc14b\uc774 \uc74c\uc218\uc774\uac70\ub098 \uae38\uc774\uac00 \uc74c\uc218\uc774\uac70\ub098 \uae38\uc774\uac00 byte[].length - \uc624\ud504\uc14b \uac12\ubcf4\ub2e4 \ud07d\ub2c8\ub2e4.
+read.write.offset.length.bytearraylength.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uace0 API\ub97c \uc77d\uac70\ub098 \uc4f0\uae30 \uc704\ud574 \uc81c\uacf5\ub41c \uc624\ud504\uc14b \uac12\uc774 \uc74c\uc218\uac00 \uc544\ub2cc\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. API\ub97c \uc77d\uae30 \uc704\ud574 \uc81c\uacf5\ub41c \uac12\uc774 \uc74c\uc218\uac00 \uc544\ub2cc\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \ub610\ud55c \uc81c\uacf5\ub41c \uae38\uc774 \uac12\uc774 byte[] \uae38\uc774\uc5d0\uc11c \uc81c\uacf5\ub41c \uc624\ud504\uc14b \uac12\uc744 \ube80 \uac12\ubcf4\ub2e4 \ud070\uc9c0\ub3c4 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for SRTInputStream31
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the exception as String
+setReadListener.initialread.failed= SRVE9013E: \uc5c5\uadf8\ub808\uc774\ub4dc\ub41c \uc694\uccad\uc5d0\uc11c ReadListener\ub97c \uc124\uc815\ud558\ub294 \uc911\uc5d0 \ucd08\uae30 \uc77d\uae30 \uc2dc\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. {0}
+setReadListener.initialread.failed.explanation=ReadListener \uc124\uc815 \uc911\uc5d0 \ub9ac\uc2a4\ub108\uac00 \uc77d\uae30\ub97c \uc2dc\ub3c4\ud558\uc5ec \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+setReadListener.initialread.failed.useraction=JVM \ub85c\uadf8\uc758 \uc608\uc678\ub97c \uac80\ud1a0\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for Session
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# {0} is the path as String
+changeSessionId.no.session.associated.with.request= SRVE9014E: \uc694\uccad\uc5d0 \uc138\uc158\uc774 \uc5f0\uad00\ub418\uc9c0 \uc54a\uc558\uc73c\ubbc0\ub85c \uc138\uc158 ID\ub97c \ubcc0\uacbd\ud558\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. {0}
+changeSessionId.no.session.associated.with.request.explanation=\uc694\uccad\uc5d0 \ub300\ud55c \uc138\uc158 ID\ub97c \ubcc0\uacbd\ud558\ub824\uba74 \uba3c\uc800 \uc0ac\uc6a9 \uc911\uc778 \uc694\uccad\uc5d0 \uc138\uc158\uc774 \uc5f0\uad00\ub418\uc5b4 \uc788\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+changeSessionId.no.session.associated.with.request.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+# 
+# Notes for translation:
+# Do not translate the following terms: AsyncContext.dispatch(),AsyncContext.complete(),AsyncContext.getRequest(),AsyncContext.getResponse(), IllegalStateException, complete(), dispatch()
+asynccontext.getRequestResponse.illegalstateexception= SRVE9015E: AsyncContext.dispatch() \ub610\ub294 AsyncContext.complete() \uc774\ud6c4\uc5d0 \uc694\uccad \ub610\ub294 \uc751\ub2f5 \uc624\ube0c\uc81d\ud2b8\ub97c \ud68d\ub4dd\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+asynccontext.getRequestResponse.illegalstateexception.explanation= Servlet 3.1\ubd80\ud130, complete() \ub610\ub294 dispatch() \uba54\uc18c\ub4dc\uac00 \ube44\ub3d9\uae30 \uc0ac\uc774\ud074\uc5d0\uc11c \ud638\ucd9c\ub418\ub294 \uacbd\uc6b0 AsyncContext.getRequest() \ubc0f AsyncContext.getResponse()\uac00 IllegalStateException\uc744 \ubc1c\uc0dd\uc2dc\ud0b5\ub2c8\ub2e4. 
+asynccontext.getRequestResponse.illegalstateexception.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# ---------------------------------
+#
+# NOTE: Message number SRVE9016E: is used in com.ibm.ws.webcontainer-8.0, see LShimMessages.
+#       Skip to message number SRVE9017 for next message. 
+# 
+# --------------------------------
+# --------------------------------
+stream.is.closed.no.read.write= SRVE9017E: \uc2a4\ud2b8\ub9bc\uc774 \ub2eb\ud600 \uc788\uae30 \ub54c\ubb38\uc5d0 \uc77d\uac70\ub098 \uc4f0\uae30\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+stream.is.closed.no.read.write.explanation=\uc2a4\ud2b8\ub9bc\uc774 \ub2eb\ud600 \uc788\ub294 \uacbd\uc6b0 OutputStream \uc624\ube0c\uc81d\ud2b8\uc5d0 \ub300\ud55c \uc4f0\uae30 API \ubc0f InputStream \uc624\ube0c\uc81d\ud2b8\uc5d0 \ub300\ud55c \uc77d\uae30 API \uc0c1\ud0dc\uc5d0 IOException\uc774 \ubc1c\uc0dd\ud560 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+stream.is.closed.no.read.write.useraction=\uc624\ub958 \uc124\uba85\uc5d0 \ub530\ub77c \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \ucf54\ub4dc\ub97c \uc218\uc815\ud558\uc2ed\uc2dc\uc624.
+# -----------------------------------------------
+# -------------------------------- --------------------------------
+# Following SEVERE messages for AysncContext31Impl
+# -------------------------------- --------------------------------
+#
+# Notes for translation:
+# Do not translate the following terms: content-length
+post.body.contains.less.bytes.than.specified=SRVE0216E: POST \ubcf8\ubb38\uc5d0 \ud3ec\ud568\ub41c \ubc14\uc774\ud2b8\uac00 \ucee8\ud150\uce20 \uae38\uc774\uc5d0 \uc9c0\uc815\ub41c \ubc14\uc774\ud2b8\ubcf4\ub2e4 \uc801\uc2b5\ub2c8\ub2e4.
+post.body.contains.less.bytes.than.specified.explanation=\uc218\uc2e0 \uc694\uccad \uc591\uc2dd\uc774 \uc798\ubabb\ub418\uc5c8\uac70\ub098, \ud074\ub77c\uc774\uc5b8\ud2b8\uce21 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uacb0\uacfc\uac00 \uc190\uc0c1\ub418\uc5c8\uac70\ub098, \ub124\ud2b8\uc6cc\ud06c \uc624\ub958\uac00 \uc788\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+post.body.contains.less.bytes.than.specified.useraction=\ud074\ub77c\uc774\uc5b8\ud2b8\uce21 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc774\ub098 \ub124\ud2b8\uc6cc\ud06c\ub97c \uac80\ud1a0\ud558\uc5ec \uc694\uccad\uc774 \uc798\ub9b0 \uc774\uc720\ub97c \ud310\ubcc4\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+#
+# NOTE: Message number SRVE9018E is used as SRV0216E in com.ibm.ws.webcontainer-8.0, see Messages.nlsprops.
+#       Skip to message number SRVE9018 for next message. 
+# 
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# 
+blocking.write.not.allowed=SRVE0918E: WriteListener [{0}]\uc744(\ub97c) \ub4f1\ub85d\ud558\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc5d0\uc11c \uc774\ubbf8 \ube44\ube14\ub85c\ud0b9 I/O\ub97c \uc774\ubbf8 \uc2dc\uc791\ud588\uae30 \ub54c\ubb38\uc5d0 \uc2dc\ub3c4\ud55c \ube14\ub85c\ud0b9 \uc4f0\uae30\uac00 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+blocking.write.not.allowed.explanation=\ube44\ube14\ub85c\ud0b9 I/O\uac00 \uc774\ubbf8 \uc2dc\uc791\ub418\uc5c8\uae30 \ub54c\ubb38\uc5d0 \uc694\uccad\ud55c \ube14\ub85c\ud0b9 \uc4f0\uae30\ub97c \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+blocking.write.not.allowed.useraction=\uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \uac80\ud1a0\ud558\uc5ec \ube14\ub85c\ud0b9 \uc4f0\uae30\uac00 \uc218\ud589\ub41c \uc704\uce58\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc608\ub97c \ub4e4\uc5b4, WriteListener\ub97c \ub4f1\ub85d\ud55c \ud6c4 \uc11c\ube14\ub9bf\uc5d0\uc11c \uc218\ud589\ud588\uac70\ub098 isReady() API\ub97c \ud638\ucd9c\ud55c \ud6c4 \ub450 \ubc88\uc9f8 \uc4f0\uae30\ub97c \uc218\ud589\ud558\ub294 WriteListener\uc5d0\uc11c \uc218\ud589\ud588\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4. \ube14\ub85c\ud0b9 \uc4f0\uae30\uac00 \ud655\uc778\ub418\uba74 WriteListener\uc758 \uc77c\ubd80\ub85c \uc218\ud589\ud558\uac70\ub098 isReady()\ub97c \ud638\ucd9c\ud55c \ud6c4 \uc218\ud589\ud558\ub3c4\ub85d \uc560\ud50c\ub9ac\ucf00\uc774\uc158\uc744 \ubcc0\uacbd\ud558\uc2ed\uc2dc\uc624.
+# --------------------------------
+# 
+# Notes for translation:
+# {0} WriteListener class name
+# {1} is the Exception String
+#
+writeListener.onError.failed=SRVE0919E: \uc560\ud50c\ub9ac\ucf00\uc774\uc158 WriteListener [{0}] onError() API \uc911\uc5d0 \uc608\uc678 [{1}]\uc774(\uac00) \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+writeListener.onError.failed.explanation= \uc560\ud50c\ub9ac\ucf00\uc774\uc158 WriteListener onError() API \uc911\uc5d0 \uc608\uc678\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+writeListener.onError.failed.useraction=\ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec onError() API\uc758 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\ud604\uc5d0\uc11c \ubc1c\uc0dd\ud55c \uc608\uc678\uc640 \ubb38\uc81c\uc810 \ud574\uacb0 \ubc29\ubc95\uc744 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. I/O \uc608\uc678\uac00 \ubc1c\uc0dd\ud55c \uacbd\uc6b0 onError() API\uac00 \ucd9c\ub825\uc744 \uc4f8 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+# --------------------------------
+ 

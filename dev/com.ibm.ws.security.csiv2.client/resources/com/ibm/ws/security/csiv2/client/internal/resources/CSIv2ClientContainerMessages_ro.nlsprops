@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.csiv2.client/resources/com/ibm/ws/security/csiv2/client/internal/resources/CSIv2ClientContainerMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server CSIv2 for the client container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS9700 - CWWKS9749
+
+# Client CSIv2 Configuration related messages CWWKS9700 - CWWKS9719
+# -------------------------------------------------------------------------------------------------
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID=CWWKS9700E: Au fost specificate mecanisme de nivel de autentificare invalide \u00een securitatea client {0}. Valoarea valid\u0103 este GSSUP.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.explanation=Mecanismele de nivel de autentificare ale securit\u0103\u0163ii client specificate nu sunt suportate.
+CSIv2_CLIENT_AUTH_MECHANISM_INVALID.useraction=Asigura\u0163i-v\u0103 c\u0103 mecanismul de nivel de autentificare al securit\u0103\u0163ii client specificat este GSSUP.
+
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL=CWWKS9701W: Mecanismele la nivel de autentificare specificate \u00een securitatea clientului sunt null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.explanation=Mecanismele de nivel de autentificare ale securit\u0103\u0163ii client specificate sunt null.
+CSIv2_CLIENT_AUTH_MECHANISMS_NULL.useraction=Asigura\u0163i-v\u0103 c\u0103 mecanismul de nivel de autentificare al securit\u0103\u0163ii client specificat este GSSUP.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES=CWWKS9702W: Urm\u0103torul atribut lipse\u015fte din politica de client IIOP. Atributul lips\u0103 este [{0}]. \u00cen afar\u0103 de cazul \u00een care este implementat\u0103 o logare programatic\u0103 de aplica\u0163ie, asigura\u0163i-v\u0103 c\u0103 atributul este specificat \u00een fi\u015fierul client.xml.
+
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.explanation=Exist\u0103 un atribut lips\u0103 \u00een mecanismul de nivel de autentificare al politicii de client IIOP care este specificat.
+CSIv2_CLIENT_MISSING_AUTH_MECH_PROPERTIES.useraction=Asigura\u0163i-v\u0103 c\u0103 atributele necesare sunt setate sau c\u0103 este utilizat\u0103 logarea programatic\u0103 pentru a asigura valorile.
+
+# Client CSIv2 runtime related messages CWWKS9720 - CWWKS9729
+# -------------------------------------------------------------------------------------------------
+
+# Common CSIv2  related messages CWWKS9730 - CWWKS9749
+# -------------------------------------------------------------------------------------------------
+CSIv2_COMMON_AUTH_LAYER_DISABLED=CWWKS9730W: Nivelul de autentificare CSIv2 este dezactivat deoarece valoarea pentru EstablishTrustInClient este {0}.
+CSIv2_COMMON_AUTH_LAYER_DISABLED.explanation=C\u00e2nd EstablishTrustInClient este setat la Never, nivelul de autentificare CSIv2 este dezactivat.  
+CSIv2_COMMON_AUTH_LAYER_DISABLED.useraction=Pentru a activa nivelul de autentificare CSIv2, seta\u0163i valoarea EstablishTrustInClient la Supported sau Required.
+
+

@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.javaee.ddmodel/resources/com/ibm/ws/javaee/ddmodel/internal/resources/DDModelMessages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Java EE modelling
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+
+#   Reserving message prefixes CWWKC2251 to CWWKC2450
+
+required.attribute.missing=CWWKC2251E: A(z) {2} elemb\u0151l hi\u00e1nyzik a k\u00f6telez\u0151 {3} attrib\u00fatum a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+required.attribute.missing.explanation=A megadott elemb\u0151l hi\u00e1nyzik egy k\u00f6telez\u0151 attrib\u00fatum.
+required.attribute.missing.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9si le\u00edr\u00f3t a hi\u00e1nyz\u00f3 attrib\u00fatum megad\u00e1s\u00e1val.
+
+invalid.root.element=CWWKC2252E: \u00c9rv\u00e9nytelen {2} gy\u00f6k\u00e9r helyi n\u00e9v a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+invalid.root.element.explanation=A root elem helytelen.
+invalid.root.element.useraction=\u00c9rv\u00e9nyes\u00edtse az xml f\u00e1jlt, hogy a root elem biztosan helyes legyen.
+
+root.element.not.found=CWWKC2253E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 gy\u00f6k\u00e9releme nem tal\u00e1lhat\u00f3 a(z) {1}. sorban.
+root.element.not.found.explanation=A gy\u00f6k\u00e9relem hi\u00e1nyzik a telep\u00edt\u00e9si le\u00edr\u00f3b\u00f3l.
+root.element.not.found.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+end.element.not.found=CWWKC2254E: A(z) {2} elem end c\u00edmk\u00e9je nem tal\u00e1lhat\u00f3 a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+end.element.not.found.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3 nem megfelel\u0151 xml f\u00e1jl.
+end.element.not.found.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+incorrect.id.attr.namespace=CWWKC2255E: A(z) {2} elem azonos\u00edt\u00f3 attrib\u00fatum\u00e1nak n\u00e9vtere {3}, de {4} \u00e9rt\u00e9k\u0171nek kellene lennie a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+incorrect.id.attr.namespace.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban az elemek \u00e9s attrib\u00fatumok n\u00e9vtere nem konzisztens.
+incorrect.id.attr.namespace.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+unexpected.attribute=CWWKC2256E: Nem v\u00e1rt {3} attrib\u00fatum tal\u00e1lhat\u00f3 a(z) {2} elem \u00e9rtelmez\u00e9se sor\u00e1n a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+unexpected.attribute.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban a meghat\u00e1roz\u00e1s szerint nem szerepl\u0151 attrib\u00fatum tal\u00e1lhat\u00f3.
+unexpected.attribute.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+unexpected.content=CWWKC2257E: Nem v\u00e1rt tartalom tal\u00e1lhat\u00f3 a(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3 {2} elem\u00e9ben a(z) {1}. sorban.
+unexpected.content.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban a meghat\u00e1roz\u00e1s szerint nem szerepl\u0151 sz\u00f6veges tartalom tal\u00e1lhat\u00f3.
+unexpected.content.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+incorrect.child.element.namespace=CWWKC2258E: A(z) {2} sz\u00fcl\u0151 elem {3} ut\u00f3d elem\u00e9nek n\u00e9vtere {4} volt, nem pedig {5} a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+incorrect.child.element.namespace.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban az elemek \u00e9s attrib\u00fatumok n\u00e9vtere nem konzisztens.
+incorrect.child.element.namespace.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+unexpected.child.element=CWWKC2259E: A(z) {2} sz\u00fcl\u0151 elem nem v\u00e1rt {3} ut\u00f3d eleme tal\u00e1lhat\u00f3 a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+unexpected.child.element.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban a meghat\u00e1roz\u00e1s szerint nem szerepl\u0151 elem tal\u00e1lhat\u00f3.
+unexpected.child.element.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+invalid.href.prefix=CWWKC2260E: A(z) {2} elem href attrib\u00fatum\u00e1nak \u00e9rt\u00e9ke nem {3} \u00e9rt\u00e9kkel kezd\u0151dik a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+invalid.href.prefix.explanation=A href attrib\u00fatumnak a hivatkozott le\u00edr\u00f3 helyes \u00fatvonal\u00e1val kell kezd\u0151dnie.
+invalid.href.prefix.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+unknown.deployment.descriptor.version=CWWKC2261E: Hiba t\u00f6rt\u00e9nt a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 verzi\u00f3sz\u00e1m\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+unknown.deployment.descriptor.version.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vt\u00e9r verzi\u00f3sz\u00e1ma \u00e9rv\u00e9nytelen vagy nincs megadva.
+unknown.deployment.descriptor.version.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vt\u00e9r verzi\u00f3sz\u00e1m\u00e1t.
+
+invalid.deployment.descriptor.namespace=CWWKC2262E: A kiszolg\u00e1l\u00f3 nem k\u00e9pes feldolgozni a(z) {3} v\u00e1ltozatot \u00e9s a(z) {2} n\u00e9vteret a(z) {0} telep\u00edt\u00e9sle\u00edr\u00f3ban a(z) {1}. sorban.
+invalid.deployment.descriptor.namespace.explanation=Vagy a megadott v\u00e1ltozat \u00e9s n\u00e9vt\u00e9r nem \u00e9rv\u00e9nyes, vagy pedig a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3 nem rendelkezik olyan szolg\u00e1ltat\u00e1ssal, amely k\u00e9pes lenne feldolgozni a v\u00e1ltozatot \u00e9s n\u00e9vteret.
+invalid.deployment.descriptor.namespace.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vteret vagy a verzi\u00f3sz\u00e1mot, vagy ellen\u0151rizze \u00e9s jav\u00edtsa a kiszolg\u00e1l\u00f3konfigur\u00e1ci\u00f3ban l\u00e9v\u0151 szolg\u00e1ltat\u00e1sokat.
+
+invalid.deployment.descriptor.version=CWWKC2263E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban megadott {2} verzi\u00f3sz\u00e1m attrib\u00fatum nem \u00e9rv\u00e9nyes.
+invalid.deployment.descriptor.version.explanation=\u00c9rv\u00e9nytelen verzi\u00f3sz\u00e1m lett megadva a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben.
+invalid.deployment.descriptor.version.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a verzi\u00f3sz\u00e1mot.
+
+missing.deployment.descriptor.namespace=CWWKC2264E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 n\u00e9vter\u00e9nek meg\u00e1llap\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+missing.deployment.descriptor.namespace.explanation=\u00c9rv\u00e9nytelen n\u00e9vt\u00e9r lett megadva a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben.
+missing.deployment.descriptor.namespace.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a n\u00e9vteret.
+
+missing.deployment.descriptor.version=CWWKC2265E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 verzi\u00f3sz\u00e1m\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n.
+missing.deployment.descriptor.version.explanation=Nincs megadva a verzi\u00f3sz\u00e1m a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben.
+missing.deployment.descriptor.version.useraction=Ellen\u0151rizze \u00e9s jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3 root elem\u00e9ben a verzi\u00f3sz\u00e1mot.
+
+at.most.one.occurrence=CWWKC2266E: Legfeljebb egy {3} ut\u00f3d eleme lehet a(z) {2} sz\u00fcl\u0151 elemnek a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+at.most.one.occurrence.explanation=A telep\u00edt\u00e9si le\u00edr\u00f3ban bizonyos elemek csak egyszer jelenhetnek meg.
+at.most.one.occurrence.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t.
+
+required.method.element.missing=CWWKC2267E: A(z) {2} elemnek legal\u00e1bb egy {3} ut\u00f3d elem\u00e9t meg kell adni a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban.
+required.method.element.missing.explanation=A megadott sz\u00fcl\u0151 elemb\u0151l egy k\u00f6telez\u0151 ut\u00f3d elem hi\u00e1nyzik. 
+required.method.element.missing.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9si le\u00edr\u00f3t a sz\u00fcks\u00e9ges ut\u00f3d elem megad\u00e1s\u00e1val.
+
+runasmode.missing.specifiedID.element=CWWKC2268E: Ha a <run-as-mode> elem mode attrib\u00fatuma SPECIFIED_IDENTITY \u00e9rt\u00e9k\u0171 a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban, akkor a <specified-identity> ut\u00f3d elemet meg kell adni.
+runasmode.missing.specifiedID.element.explanation=A <specified-identity> ut\u00f3d elem hi\u00e1nyzik a <run-as-mode> elemb\u0151l, amelynek mode \u00e9rt\u00e9ke SPECIFIED_IDENTITY.
+runasmode.missing.specifiedID.element.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9si le\u00edr\u00f3t a sz\u00fcks\u00e9ges ut\u00f3d elem megad\u00e1s\u00e1val, vagy m\u00f3dos\u00edtsa a mode \u00e9rt\u00e9ket.
+
+found.duplicate.ejbname=CWWKC2269E: Az \u00f6sszes <session> \u00e9s <message-driven> komponens elem name attrib\u00fatum\u00e1nak egyedinek kell lennie. T\u00f6bbsz\u00f6r szerepl\u0151 {1} n\u00e9v tal\u00e1lhat\u00f3 a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban.
+found.duplicate.ejbname.explanation=Minden egyes munkamenet- \u00e9s \u00fczenetvez\u00e9relt komponens nev\u00e9nek egyedinek kell lennie.  A megadott komponensn\u00e9v t\u00f6bbsz\u00f6r felhaszn\u00e1l\u00e1sra ker\u00fcl.
+found.duplicate.ejbname.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t a t\u00f6bbsz\u00f6r szerepl\u0151 EJB-komponens nevek \u00e1tnevez\u00e9s\u00e9vel.
+
+found.duplicate.attribute.value=CWWKC2270E: A(z) {2} attrib\u00fatumnak az \u00f6sszes {1} elem eset\u00e9ben egyedinek kell lennie. T\u00f6bbsz\u00f6r szerepl\u0151 {3} n\u00e9v tal\u00e1lhat\u00f3 a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban.
+found.duplicate.attribute.value.explanation=A megadott attrib\u00fatum \u00e9rt\u00e9k\u00e9nek az egyez\u0151 t\u00edpus\u00fa elemeken bel\u00fcl egyedinek kell lennie. 
+found.duplicate.attribute.value.useraction=Jav\u00edtsa a telep\u00edt\u00e9si le\u00edr\u00f3t a t\u00f6bbsz\u00f6r szerepl\u0151 attrib\u00fatum\u00e9rt\u00e9kek \u00e1tnevez\u00e9s\u00e9vel.
+
+# -----------------------------------------------------------------------
+# PARAMETERS:
+#    {0} is the path name for the module
+# -----------------------------------------------------------------------
+BVKEY_NOT_A_BEAN_VALIDATION_XML=CWWKC2271W: A(z) {0} modulhoz l\u00e9tezik validation.xml f\u00e1jl. Ez a validation.xml f\u00e1jl azonban nincs be\u00e1ll\u00edtva \u00e9rv\u00e9nyes\u00edt\u00e9sre, \u00edgy figyelmen k\u00edv\u00fcl hagyja a rendszer.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.explanation=A BeanValidationService nem tud l\u00e9trehozni egy ValidatorFactory oszt\u00e1lyt, mert hiba t\u00f6rt\u00e9nt a validation.xml f\u00e1jlnak a validation-configuration-1.0.xsd s\u00e9maf\u00e1jllal t\u00f6rt\u00e9n\u0151 \u00e9rtelmez\u00e9se k\u00f6zben. Ez a hiba jelezheti azt, hogy a validation.xml f\u00e1jl nem a komponensek fut\u00e1sidej\u0171 \u00e9rt\u00e9kel\u00e9s\u00e9re val\u00f3, ez\u00e9rt figyelmen k\u00edv\u00fcl hagyja a rendszer.
+BVKEY_NOT_A_BEAN_VALIDATION_XML.useraction=Ha a validation.xml f\u00e1jl nem ValidatorFactory p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra k\u00e9sz\u00fclt, akkor hagyja figyelmen k\u00edv\u00fcl az \u00fczenetet. Ha azonban a validation.xml f\u00e1jl ValidatorFactory p\u00e9ld\u00e1ny l\u00e9trehoz\u00e1s\u00e1ra szolg\u00e1l, akkor gond van.  Enged\u00e9lyezze az alkalmaz\u00e1skiszolg\u00e1l\u00f3n a komponensek fut\u00e1sid\u0151ben t\u00f6rt\u00e9n\u0151 \u00e9rt\u00e9kel\u00e9s\u00e9nek nyomk\u00f6vet\u00e9s\u00e9t, \u00e1ll\u00edtsa le, majd ind\u00edtsa \u00fajra az alkalmaz\u00e1st, \u00e9s n\u00e9zze \u00e1t a nyomk\u00f6vet\u00e9s kimeneti f\u00e1jlj\u00e1t olyan nyomk\u00f6vet\u00e9si esem\u00e9nyeket keresve, mint: nem v\u00e1rt kiv\u00e9tel a validation.xml f\u00e1jl adatfolyamb\u00f3l val\u00f3 visszaalak\u00edt\u00e1s\u00e1ra tett k\u00eds\u00e9rlet k\u00f6zben. A hibakeres\u00e9sben seg\u00edthet, ha megvizsg\u00e1lja a kiv\u00e9telverem nyomk\u00f6vet\u00e9si adatait is.
+
+xml.error=CWWKC2272E: Hiba t\u00f6rt\u00e9nt a(z) {1}. sorban a(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n .  A hiba\u00fczenet: {2}
+xml.error.explanation=Hiba t\u00f6rt\u00e9nt az XML telep\u00edt\u00e9sle\u00edr\u00f3 \u00e9rtelmez\u00e9se sor\u00e1n.  Tov\u00e1bbi magyar\u00e1zat\u00e9rt tekintse meg a hiba\u00fczenetet.
+xml.error.useraction=A hiba elh\u00e1r\u00edt\u00e1s\u00e1hoz jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3t.
+
+invalid.enum.value=CWWKC2273E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban l\u00e9v\u0151 {2} \u00e9rt\u00e9k nem \u00e9rv\u00e9nyes. Az \u00e9rv\u00e9nyes \u00e9rt\u00e9kek: {3}
+invalid.enum.value.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3 olyan \u00e9rt\u00e9ket ad meg, amely nem \u00e9rv\u00e9nyes.
+invalid.enum.value.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3t, hogy az a v\u00e1rt \u00e9rt\u00e9kek egyik\u00e9t haszn\u00e1lja.
+
+invalid.int.value=CWWKC2274E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban l\u00e9v\u0151 {2} \u00e9rt\u00e9k nem egy \u00e9rv\u00e9nyes eg\u00e9sz sz\u00e1m.
+invalid.int.value.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3 olyan \u00e9rt\u00e9ket ad meg, amely nem a -2147483648 \u00e9s 2147483647 k\u00f6z\u00e9 es\u0151 sz\u00e1m.
+invalid.int.value.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3t, hogy az egy \u00e9rv\u00e9nyes eg\u00e9sz sz\u00e1mot haszn\u00e1ljon.
+
+invalid.long.value=CWWKC2275E: A(z) {0} telep\u00edt\u00e9si le\u00edr\u00f3ban a(z) {1}. sorban l\u00e9v\u0151 {2} \u00e9rt\u00e9k nem egy \u00e9rv\u00e9nyes hossz\u00fa sz\u00e1m.
+invalid.long.value.explanation=A telep\u00edt\u00e9sle\u00edr\u00f3 olyan \u00e9rt\u00e9ket ad meg, amely nem a -9223372036854775808 \u00e9s 9223372036854775807 k\u00f6z\u00e9 es\u0151 sz\u00e1m.
+invalid.long.value.useraction=Jav\u00edtsa ki a telep\u00edt\u00e9sle\u00edr\u00f3t, hogy az egy \u00e9rv\u00e9nyes hossz\u00fa sz\u00e1mot haszn\u00e1ljon.
+
+module.name.not.specified=CWWKC2276E: A(z) {0} elemnek moduln\u00e9v attrib\u00fatumot kell megadnia.
+module.name.not.specified.explanation=Az EJB \u00e9s a webmodulok k\u00f6t\u00e9si \u00e9s kiterjeszt\u00e9si konfigur\u00e1ci\u00f3j\u00e1nak tartalmaznia kell egy moduleName attrib\u00fatumot, amely megadja a modult, amelyre a konfigur\u00e1ci\u00f3 vonatkozik. 
+module.name.not.specified.useraction=Adjon hozz\u00e1 moduleName attrib\u00fatumot a web-bnd, web-ext, ejb-bnd vagy ejb-ext elemhez. 
+
+module.name.invalid=CWWKC2277E: A(z) {1} elemben legal\u00e1bb egy moduln\u00e9v \u00e9rv\u00e9nytelen. Az \u00e9rv\u00e9nytelen moduln\u00e9v/modulnevek: {0}.
+module.name.invalid.explanation=A webmodulok k\u00f6t\u00e9si \u00e9s kiterjeszt\u00e9si konfigur\u00e1ci\u00f3j\u00e1nak \u00e9rv\u00e9nyes moduleName attrib\u00fatumot kell megadnia. Legal\u00e1bb egy konfigur\u00e1ci\u00f3 \u00e9rv\u00e9nytelen modulnevet adott meg. A moduln\u00e9vnek a webes vagy EJB alkalmaz\u00e1st tartalmaz\u00f3 arch\u00edvumf\u00e1jl nev\u00e9nek kell lennie.
+module.name.invalid.useraction=Jav\u00edtsa a moduleName attrib\u00fatumot a k\u00f6t\u00e9si vagy kiterjeszt\u00e9si konfigur\u00e1ci\u00f3ban. 

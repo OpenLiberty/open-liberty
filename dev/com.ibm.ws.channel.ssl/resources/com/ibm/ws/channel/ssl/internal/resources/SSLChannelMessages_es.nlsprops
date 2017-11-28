@@ -1,0 +1,44 @@
+###############################################################################
+# Copyright (c) 2002, 2003 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+#COMPONENTPREFIX CWWKO
+#COMPONENTNAMEFOR CWWKO Websphere kernel channel framework service: ssl channel
+#CMVCPATHNAME com.ibm.ws.channel.ssl/resources/com/ibm/ws/channel/ssl/internal/resources/SSLChannelMessages.nlsprops
+#NLS_ENCODING=UNICODE
+#
+#ISMESSAGEFILE TRUE
+# NLS_MESSAGEFORMAT_VAR
+
+### SSL channel is using CHFW bundle ids, values 0800-0899
+
+invalid.security.properties=CWWKO0800E: El canal SSL no se puede iniciar debido a los siguientes valores incorrectos:\n {0}
+invalid.security.properties.explanation=Uno o m\u00e1s valores de seguridad del canal SSL no son v\u00e1lidos.
+invalid.security.properties.useraction=Los valores de seguridad del canal SSL deben modificarse por los valores correctos.
+
+handshake.failure=CWWKO0801E: No se ha podido inicializar la conexi\u00f3n SSL. Se ha denegado el acceso no autorizado o los valores de seguridad han caducado. La excepci\u00f3n es {0}.
+handshake.failure.explanation=Una nueva conexi\u00f3n no ha podido completar un reconocimiento seguro correcto.
+handshake.failure.useraction=Compruebe los valores de seguridad.  El certificado puede haber caducado o estar ausente. Tambi\u00e9n es posible que se haya denegado una conexi\u00f3n de cliente no autorizado. Para inhabilitar estos mensajes, establezca el par\u00e1metro suppressHandshakeErrors de la configuraci\u00f3n de sslOptions en true. 
+init.failure=CWWKO0802E: No se ha podido inicializar el paquete SSL. La excepci\u00f3n es {0}.
+init.failure.explanation=Se ha encontrado un error al intentar inicializar el paquete SSL. Es probable que la causa sea un error de dependencia.
+init.failure.useraction=Revise los registros de proceso para obtener informaci\u00f3n sobre lo que no se ha podido iniciar.
+
+DEFAULT_OPTIONS_ERROR=CWWKO0803E: No se ha podido crear una configuraci\u00f3n de canal SSL por omisi\u00f3n. La excepci\u00f3n es {0}.
+DEFAULT_OPTIONS_ERROR.explanation=Se ha detectado un error al crear la configuraci\u00f3n por omisi\u00f3n para los canales SSL.
+DEFAULT_OPTIONS_ERROR.useraction=Revise la excepci\u00f3n para obtener informaci\u00f3n sobre c\u00f3mo ha fallado la creaci\u00f3n.
+
+handshake.failure.stop.logging=CWWKO0804I: Se ha alcanzado el n\u00famero m\u00e1ximo de registro de fallos de reconocimiento de comunicaci\u00f3n SSL. Ya no se registrar\u00e1n estos mensajes.
+handshake.failure.stop.logging.explanation=Existe un l\u00edmite en el n\u00famero de fallos de reconocimiento de comunicaci\u00f3n SSL que se puede registrar para evitar un n\u00famero excesivo de entradas.
+handshake.failure.stop.logging.useraction=No se requiere ninguna acci\u00f3n.

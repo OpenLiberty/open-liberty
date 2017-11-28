@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.registry.basic/resources/com/ibm/ws/security/registry/basic/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Basic User Registry Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS3100 - CWWKS3199
+
+BASIC_REGISTRY_INVALID_USER_DEFINITION=CWWKS3100E: La definici\u00f3n de usuario no es v\u00e1lida: {0}
+BASIC_REGISTRY_INVALID_USER_DEFINITION.explanation=La sintaxis para definir un usuario es <nombre de usuario="..." contrase\u00f1a="..." />.
+BASIC_REGISTRY_INVALID_USER_DEFINITION.useraction=Cambie la definici\u00f3n de usuario en la configuraci\u00f3n.
+USER_MUST_DEFINE_NAME=Un elemento de usuario debe definir un nombre.
+USER_MUST_DEFINE_PASSWORD=El elemento de usuario con el nombre ''{0}'' debe definir una contrase\u00f1a.
+
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION=CWWKS3101E: La definici\u00f3n de grupo no es v\u00e1lida: {0}
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.explanation=La sintaxis para definir un grupo es <nombre de grupo="...">.
+BASIC_REGISTRY_INVALID_GROUP_DEFINITION.useraction=Cambie la definici\u00f3n de grupo en la configuraci\u00f3n.
+GROUP_MUST_DEFINE_NAME=Un elemento de grupo debe definir un nombre.
+
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION=CWWKS3102E: La definici\u00f3n de miembro no es v\u00e1lida: {0}
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.explanation=La sintaxis para definir un miembro es <nombre de miembro="...">.
+BASIC_REGISTRY_INVALID_MEMBER_DEFINITION.useraction=Cambie la definici\u00f3n de miembro en la configuraci\u00f3n.
+MEMBER_MUST_DEFINE_NAME=Un elemento de miembro debe definir un nombre.
+
+BASIC_REGISTRY_NO_USERS_DEFINED=CWWKS3103W: No hay usuarios definidos para la configuraci\u00f3n de BasicRegistry de ID {0}.
+BASIC_REGISTRY_NO_USERS_DEFINED.explanation=No se ha definido ning\u00fan usuario para la configuraci\u00f3n. Esto puede ser intencionado, pero es probable que sea un error de configuraci\u00f3n.
+BASIC_REGISTRY_NO_USERS_DEFINED.useraction=Si as\u00ed se solicita, defina al menos un usuario en la configuraci\u00f3n.
+
+BASIC_REGISTRY_SAME_USER_DEFINITION=CWWKS3104E: Hay definidos varios usuarios con el nombre ''{0}''. Las entradas para este usuario no se utilizar\u00e1n.
+BASIC_REGISTRY_SAME_USER_DEFINITION.explanation=Los nombres de usuario deben ser exclusivos.
+BASIC_REGISTRY_SAME_USER_DEFINITION.useraction=Defina s\u00f3lo un usuario con el nombre especificado.
+
+BASIC_REGISTRY_SAME_GROUP_DEFINITION=CWWKS3105E: Hay definidos varios grupos con el nombre ''{0}''. Las entradas para este grupo no se utilizar\u00e1n.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.explanation=Los nombres de grupo deben ser exclusivos.
+BASIC_REGISTRY_SAME_GROUP_DEFINITION.useraction=Defina s\u00f3lo un grupo con el nombre especificado.
+
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION=CWWKS3106W: Hay definidas varias entradas de miembro con el nombre ''{0}'' para el grupo ''{1}''.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.explanation=Los grupos s\u00f3lo admiten una entrada de miembro por nombre de usuario.
+BASIC_REGISTRY_SAME_MEMBER_DEFINITION.useraction=Defina s\u00f3lo una entrada de miembro para el usuario en el grupo especificado.
+
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION=CWWKS3107W: La entrada de miembro con el nombre ''{0}'' para el grupo ''{1}'' no coincide con un usuario definido.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.explanation=El nombre especificado para la entrada de miembro no coincide con ning\u00fan usuario definido.
+BASIC_REGISTRY_UNKNOWN_MEMBER_DEFINITION.useraction=Compruebe la ortograf\u00eda del nombre de miembro y aseg\u00farese de que coincida con un usuario definido en el registro. 

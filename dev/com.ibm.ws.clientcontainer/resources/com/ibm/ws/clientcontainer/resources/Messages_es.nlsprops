@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.clientcontainer/resources/com/ibm/ws/clientcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC WebSphere Java EE Client Container
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 2451 - 2550 com.ibm.ws.clientcontainer.resources.Messages
+# ---------- ERROR msgs ----------------------------
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E=CWWKC2451E: La clase debe tener un constructor sin argumentos.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.explanation=La clase debe tener un constructor sin argumentos y debe implementar la interfaz javax.security.auth.callback.CallbackHandler.
+MISSING_NOARGS_CONSTRUCTOR_CWWKC2451E.useraction=A\u00f1ada un constructor sin argumentos a la clase de manejador de retorno de llamada.
+
+INJECTION_POSTCONSTRUCT_CWWKC2452E=CWWKC2452E: Se ha producido la siguiente excepci\u00f3n de inyecci\u00f3n para el m\u00e9todo de manejo PostConstruct: {0}
+INJECTION_POSTCONSTRUCT_CWWKC2452E.explanation=Se produce una excepci\u00f3n cuan do el contenedor invoca el m\u00e9todo PostConstruct.   
+INJECTION_POSTCONSTRUCT_CWWKC2452E.useraction=Aseg\u00farese de que el m\u00e9todo PostConstruct se ha definido correctamente en el descriptor de despliegue o se ha anotado correctamente en la clase.    
+
+INJECTION_PREDESTROY_CWWKC2453E=CWWKC2453E: Se ha producido la siguiente excepci\u00f3n de inyecci\u00f3n para el m\u00e9todo de manejo PreDestroy: {0}
+INJECTION_PREDESTROY_CWWKC2453E.explanation=Se produce una excepci\u00f3n cuan do el contenedor invoca el m\u00e9todo PreDestroy. 
+INJECTION_PREDESTROY_CWWKC2453E.useraction=Aseg\u00farese de que el m\u00e9todo PreDestroy se ha definido correctamente en el descriptor de despliegue o se ha anotado correctamente en la clase. 
+
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W=CWWKC2454W: Existe m\u00e1s de un m\u00e9todo PostConstruct o PreDestroy en la clase {1}. El contenedor no invocar\u00e1 el m\u00e9todo {0} PostConstruct o PreDestroy.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.explanation=Hay m\u00e1s de un m\u00e9todo PostConstruct o PreDestroy declarado en la clase.
+DUPLICATE_CALLBACK_METHOD_CWWKC2454W.useraction=No se requiere ninguna acci\u00f3n. El contenedor invoca el primer m\u00e9todo que detecta.

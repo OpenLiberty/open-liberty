@@ -1,0 +1,1270 @@
+###############################################################################
+# Copyright (c) 1997, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://seaux.raleigh.ibm.com/g11n/was/seae/45/messages/index.html
+# or contact Dennis Hebert/Raleigh/IBM (hebert@us.ibm.com)
+#
+# cmvc_en_version_level=1.4,0,04/02/09,12:44:41
+#
+#CMVCPATHNAME ws/code/webcontainer/src/com/ibm/ws/webcontainer/resources/Messages.nlsprops
+#COMPONENTPREFIX SRVE
+#COMPONENTNAMEFOR SRVE Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+# --------------------------------
+Illegal.Argument.Trying.to.write.chars=SRVE0011E: Ausnahme aufgrund von ung\u00fcltigem Argument: Es wurde versucht, weniger als 0 Zeichen zu schreiben
+Illegal.Argument.Trying.to.write.chars.explanation=Es wurde versucht, einen Puffer mit einer Gr\u00f6\u00dfe kleiner als null auszugeben. Dies ist ein Anwendungsfehler.
+Illegal.Argument.Trying.to.write.chars.useraction=Es k\u00f6nnen nur Puffer mit einer Gr\u00f6\u00dfe von mehr als null geschrieben werden.
+
+# --------------------------------
+Uncaught.service().exception.root.cause.{0}\:.{1}=SRVE0014E: Nicht erfasste Ausnahme f\u00fcr Service() durch Root ausgel\u00f6st {0}: {1}
+Uncaught.service().exception.root.cause.{0}\:.{1}.explanation=In der Servletmethode "service" wurde eine nicht abgefangene Ausnahme erstellt. Dies ist ein Anwendungsfehler.
+Uncaught.service().exception.root.cause.{0}\:.{1}.useraction=H\u00e4ngt von der eigentlichen Fehlerursache ab.
+
+# --------------------------------
+Failed.to.initialize.webapp.{0}=SRVE0015E: Die Webanwendung {0} konnte nicht initialisiert werden.
+Failed.to.initialize.webapp.{0}.explanation=Die in der Nachricht angegebene Webanwendung konnte nicht initialisiert werden. Suchen Sie im Fehlerprotokoll nach n\u00e4heren Einzelheiten.
+Failed.to.initialize.webapp.{0}.useraction=Suchen Sie im Fehlerprotokoll nach Informationen, um die Fehlerursache zu bestimmen.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Header.Format=SRVE0016E: Ausnahme aufgrund von ung\u00fcltigem Argument: Ung\u00fcltiges Header-Format
+Illegal.Argument\:.Invalid.Header.Format.explanation=Das f\u00fcr einen Anforderungsheader gefundene Format ist nicht g\u00fcltig.
+Illegal.Argument\:.Invalid.Header.Format.useraction=\u00dcberpr\u00fcfen Sie die Erstellung von Client-Headern.
+
+# -------------------------------- replaced by SRVE0255E ---------------------------
+#Web.Group.VHost.Not.Found=SRVE0017W: A WebGroup/Virtual Host to handle {0} has not been defined.
+#Web.Group.VHost.Not.Found.explanation=Could not find a web group (web module) or virtual host to handle the request.
+#Web.Group.VHost.Not.Found.useraction=Be sure the web group and virtual host is defined and deployed.
+
+# --------------------------------
+Servlet.unloaded\:.{0}=SRVE0021I: Das Servlet wurde entladen: {0}
+Servlet.unloaded\:.{0}.explanation=Das angegebene Servlet wurde entladen, nachdem die Methode "destroy" aufgerufen wurde.
+Servlet.unloaded\:.{0}.useraction=Keine.
+
+# --------------------------------
+Illegal.Argument\:.{0}.is.not.a.directory.=SRVE0031E: Ausnahme aufgrund von ung\u00fcltigem Argument: {0} ist kein Verzeichnis.
+Illegal.Argument\:.{0}.is.not.a.directory..explanation=Der angegebene Pfad ist kein Verzeichnis.
+Illegal.Argument\:.{0}.is.not.a.directory..useraction=Vergewissern Sie sich, dass das Verzeichnis vorhanden ist und dass Sie das richtige Verzeichnis anfordern.
+
+# --------------------------------
+WebAppSecurityCollaborator=SRVE0035E: WebAppSecurityCollaborator
+WebAppSecurityCollaborator.explanation=WebAppSecurityCollaborator. Dies ist ein Systemfehler.
+
+WebAppSecurityCollaborator.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Illegal.Argument\:.Bootstrap.File.Not.Found=SRVE0041E: Ausnahme aufgrund von ung\u00fcltigem Argument: Boot-Programmdatei nicht ermittelt
+Illegal.Argument\:.Bootstrap.File.Not.Found.explanation=Es handelt sich um einen internen Systemfehler, der wahrscheinlich auf einen fr\u00fcheren Fehler zur\u00fcckzuf\u00fchren ist.
+Illegal.Argument\:.Bootstrap.File.Not.Found.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Content.Length=SRVE0042E: Ausnahme aufgrund von ung\u00fcltigem Argument: Ung\u00fcltiger Inhaltsumfang
+Illegal.Argument\:.Invalid.Content.Length.explanation=Es handelt sich um einen internen Systemfehler, der wahrscheinlich auf einen fr\u00fcheren Fehler zur\u00fcckzuf\u00fchren ist. Dies ist ein Anwendungsfehler.
+Illegal.Argument\:.Invalid.Content.Length.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Date.Format=SRVE0053E: Ausnahme aufgrund von ung\u00fcltigem Argument: Ung\u00fcltiges Datumsformat
+Illegal.Argument\:.Invalid.Date.Format.explanation=Das Datumsformat ist nicht g\u00fcltig.
+Illegal.Argument\:.Invalid.Date.Format.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}=SRVE0055I: Zeitlimit f\u00fcr Wartestatus des Servlet hinsichtlich der L\u00f6schaktion (destroy) \u00fcberschritten, L\u00f6schaktion wird erzwungen: {0}
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.explanation=Das Servlet wird nach Ablauf der Wartezeit gel\u00f6scht.
+Servlet.wait.for.destroy.timeout.has.expired,.destroy.will.be.forced\:.{0}.useraction=Keine.
+
+# --------------------------------
+Illegal.Argument\:.Unsupported.flag=SRVE0056E: Ausnahme aufgrund von ung\u00fcltigem Argument: Flag wird nicht unterst\u00fctzt
+Illegal.Argument\:.Unsupported.flag.explanation=Es handelt sich um einen internen Systemfehler, der wahrscheinlich auf einen fr\u00fcheren Fehler zur\u00fcckzuf\u00fchren ist.
+Illegal.Argument\:.Unsupported.flag.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}=SRVE0058E: Die vom Servlet {0} in der Anwendung {1} erstellte destroy()-Ausnahme ist nicht realisiert werden: {2}
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.explanation=Das angegebene Servlet konnte nicht gel\u00f6scht werden. Dies ist ein Anwendungsfehler.
+Uncaught.destroy().exception.thrown.by.servlet.{0}\:.{2}.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}]=SRVE0060E: Der Hostname [{0}] konnte nicht an Servlet-Host [{1}] gebunden werden.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].explanation=Der angegebene Hostname konnte nicht an den angegebenen Servlet-Host gebunden werden.
+Unable.to.bind.hostname.[{0}].to.servletHost.[{1}].useraction=Vergewissern Sie sich, dass der Hostname korrekt angegebenen wurde und dass der Servlet-Host in der Datei virtualhosts.xml definiert ist.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}=SRVE0061E: Ausnahme aufgrund von ung\u00fcltigem Argument: Ung\u00fcltige Verzeichnis angegeben: {0}
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.explanation=Das angegebene Verzeichnis ist nicht g\u00fcltig.
+Illegal.Argument\:.Invalid.Directory.Specified\:.{0}.useraction=\u00dcberpr\u00fcfen Sie die Verzeichnisangaben auf Fehler.
+
+# --------------------------------
+Waiting.servlet.to.finish.servicing.requests\:.{0}=SRVE0066I: Warten auf Beendigung der Serviceanforderungen durch das Servlet: {0}
+Waiting.servlet.to.finish.servicing.requests\:.{0}.explanation=Das Servlet bearbeitet die Anforderung noch. Die Bearbeitung der Anforderung wird abgewartet, bevor destroy aufgerufen wird.
+Waiting.servlet.to.finish.servicing.requests\:.{0}.useraction=Keine.
+
+# --------------------------------
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}=SRVE0068E: Es wurde eine nicht abgefangene Ausnahme in einer der Servicemethoden des Servlets {0} in der Anwendung {1} erstellt. Erstellte Ausnahme: {2}
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.explanation=Es wurde eine Ausnahme abgefangen, die in einer der Servicemethoden des Servlet erstellt wurde. Dies ist ein Anwendungsfehler.
+Uncaught.service().exception.thrown.by.servlet.{0}\:.{2}.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Error.Initializing.for.Next.Request=SRVE0070E: Fehler beim Initialisieren f\u00fcr n\u00e4chste Anforderung
+Error.Initializing.for.Next.Request.explanation=Interner Fehler im Web-Container.
+Error.Initializing.for.Next.Request.useraction=Stellen Sie die Serverprotokolle zusammen und wenden Sie sich an den IBM Service.
+
+# --------------------------------
+Invalid.Content.Length=SRVE0080E: Ung\u00fcltiger Inhaltsumfang
+Invalid.Content.Length.explanation=Interner Serverfehler. M\u00f6glicherweise Ursachen: Es liegen Netzoptimierungsprobleme vor, der angegebene "content-length"-Wert ist ung\u00fcltig, oder die L\u00e4nge oder Gr\u00f6\u00dfe eines Anhangs ist ung\u00fcltig. Dies ist ein Anwendungsfehler.
+Invalid.Content.Length.useraction=Stellen Sie die Protokolle zusammen und wenden Sie sich an den IBM Service.
+
+# --------------------------------
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties=SRVE0086E: Ausnahme aufgrund von ung\u00fcltigem Argument: Eigenschaften des Boot-Programms der Ressource fehlen
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.explanation=Interner Serverfehler.
+Illegal.Argument\:.Missing.Resource.Bootstrap.Properties.useraction=Stellen Sie die Protokolle zusammen und wenden Sie sich an den IBM Service.
+
+# --------------------------------
+Servlet.unload.initiated\:.{0}=SRVE0097I: Das Entladen des Servlet wurde eingeleitet: {0}
+Servlet.unload.initiated\:.{0}.explanation=Das angegebene Servlet wird aus dem Service entladen.
+Servlet.unload.initiated\:.{0}.useraction=Keine.
+
+# --------------------------------
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}]=SRVE0099E: Ausnahme f\u00fcr Objektpool: Klasse [{0}] konnte nicht instanziiert werden.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].explanation=Es konnte keine Klasse f\u00fcr den Objektpool instanziiert werden. Dies ist ein Systemfehler.
+Object.Pool.Exception.Class.could.not.be.instantiated.[{0}].useraction=Vergewissern Sie sich, dass die Klasse vorhanden und im Klassenpfad der Anwendung sichtbar ist.
+
+# --------------------------------
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}=SRVE0100E: Es wurde eine nicht abgefangene Ausnahme in der Methode "init()" vom Servlet {0} in der Anwendung {1} erstellt: {2}
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.explanation=Das angegebene Servlet konnte nicht initialisiert werden. Dies ist ein Anwendungsfehler.
+Uncaught.init().exception.thrown.by.servlet.{0}\:.{2}.useraction=Vergewissern Sie sich, dass die Klassendatei des Servlet im Klassenpfad der Anwendung verf\u00fcgbar ist.
+
+# --------------------------------
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI=SRVE0103E: Ausnahme aufgrund von ung\u00fcltigem Argument: Scriptname muss im ersten Teil der URI angegeben werden
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.explanation=Es handelt sich um einen internen Systemfehler, der wahrscheinlich auf einen fr\u00fcheren Fehler zur\u00fcckzuf\u00fchren ist.
+Illegal.Argument\:.ScriptName.must.be.the.first.part.of.the.URI.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Session.releaseSession().threw.an.unexpected.exception=SRVE0105E: In Session.releaseSession() ist eine unerwartete Ausnahme eingetreten
+Session.releaseSession().threw.an.unexpected.exception.explanation=Beim Freigeben einer Sitzung ist ein Fehler aufgetreten.
+Session.releaseSession().threw.an.unexpected.exception.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Illegal.Argument\:.Missing.flag.value=SRVE0108E: Ausnahme aufgrund von ung\u00fcltigem Argument: Wert f\u00fcr Flag fehlt
+Illegal.Argument\:.Missing.flag.value.explanation=Ein Flag-Wert fehlt.
+Illegal.Argument\:.Missing.flag.value.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated.=SRVE0109E: Ausnahme aufgrund von ung\u00fcltigem Argument: Ung\u00fcltiger Objektpool wurde instanziiert.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..explanation=Es handelt sich um einen internen Systemfehler, der wahrscheinlich auf einen fr\u00fcheren Fehler zur\u00fcckzuf\u00fchren ist.
+Illegal.Argument\:.Invalid.ObjectPool.Instantiated..useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Error.occurred.while.invoking.error.reporter=SRVE0115E: Fehler beim Aufrufen des Fehlerberichtsprogramms {0}
+Error.occurred.while.invoking.error.reporter.explanation=Beim Aufrufen des angegebenen Fehlerberichtsprogramms ist ein Fehler aufgetreten.
+Error.occurred.while.invoking.error.reporter.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+IO.Error=SRVE0120E: E/A-Fehler: {0}
+IO.Error.explanation=Es wurde ein E/A-Fehler festgestellt.
+IO.Error.useraction=Ist von der gemeldeten Ursache abh\u00e4ngig.
+
+# --------------------------------
+Illegal.Argument\:.Trying.to.write.<.0.bytes=SRVE0121E: Ausnahme aufgrund von ung\u00fcltigem Argument: Es wurde versucht, weniger als 0 Zeichen zu schreiben
+Illegal.Argument\:.Trying.to.write.<.0.bytes.explanation=Es wurde versucht, einen Puffer mit einer Gr\u00f6\u00dfe kleiner als null auszugeben. Dies ist ein Anwendungsfehler.
+Illegal.Argument\:.Trying.to.write.<.0.bytes.useraction=Es k\u00f6nnen nur Puffer mit einer Gr\u00f6\u00dfe von mehr als null geschrieben werden.
+
+# --------------------------------
+Invalidation.Exception\:.{0}.was.created=SRVE0126E: Ausnahme aufgrund von Inaktivierung: {0} wurde erstellt
+Invalidation.Exception\:.{0}.was.created.explanation=Es handelt sich um einen internen Systemfehler, der wahrscheinlich auf einen fr\u00fcheren Fehler zur\u00fcckzuf\u00fchren ist.
+Invalidation.Exception\:.{0}.was.created.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+Error.Parsing.Parameters=SRVE0133E: Bei der Syntaxanalyse der Parameter ist ein Fehler aufgetreten. {0}
+Error.Parsing.Parameters.explanation=Bei der Syntaxanalyse der Servletparameter ist ein Fehler aufgetreten.
+Error.Parsing.Parameters.useraction=Stellen Sie sicher, dass der Client die vollst\u00e4ndige Anforderung sendet.
+
+# --------------------------------
+postInvoke.Security.Exception.=SRVE0138E: Ausnahme f\u00fcr Sicherheitseinrichtung, postInvoke
+postInvoke.Security.Exception..explanation=W\u00e4hrend der Anforderungsverarbeitung ist ein Sicherheitsfehler aufgetreten. Dies ist ein Systemfehler.
+postInvoke.Security.Exception..useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+preInvoke.Security.Exception.=SRVE0139E: Ausnahme f\u00fcr Sicherheitseinrichtung, preInvoke {0}
+preInvoke.Security.Exception..explanation=W\u00e4hrend der Anforderungsverarbeitung ist ein Sicherheitsfehler aufgetreten. Dies ist ein Systemfehler.
+preInvoke.Security.Exception..useraction=Ist von der gemeldeten Ursache abh\u00e4ngig.
+
+# --------------------------------
+instantiate.collaborator.exception=SRVE0140E: Sicherheitseinrichtung {0} konnte nicht instanziiert werden.
+instantiate.collaborator.exception.explanation=Interner Serverfehler.
+instantiate.collaborator.exception.useraction=Stellen Sie die Protokolle zusammen und wenden Sie sich an den IBM Service.
+
+# --------------------------------
+failed.to.load.encoding.properties=SRVE0155E: Datei {0} f\u00fcr Verschl\u00fcsselungseigenschaften konnte nicht geladen werden
+failed.to.load.encoding.properties.explanation=Die angegebene Datei konnte nicht geladen werden. Es ist eine Systemaktion erforderlich.
+failed.to.load.encoding.properties.useraction=Stellen Sie sicher, dass die angegebene Datei vorhanden ist und das mit "java.utils.Properties" definierte Format hat.
+
+# --------------------------------
+failed.to.load.converter.properties=SRVE0156E: Die converter.properties-Datei {0} konnte nicht geladen werden.
+failed.to.load.converter.properties.explanation=Die angegebene Datei konnte nicht geladen werden. Es ist eine Systemaktion erforderlich.
+failed.to.load.converter.properties.useraction=Stellen Sie sicher, dass die angegebene Datei vorhanden ist und das mit "java.utils.Properties" definierte Format hat.
+
+# --------------------------------
+setbuffer.size.called.after.write=SRVE0157E: setBufferSize() nach erstem Schreibzugriff auf Ausgabedatenstrom/Ausgabeprogramm aufgerufen
+setbuffer.size.called.after.write.explanation=Es wurde versucht, die Gr\u00f6\u00dfe des Antwortpuffers zu definieren, nachdem die Antwort bereits festgeschrieben war. Dies ist ein Anwendungsfehler.
+setbuffer.size.called.after.write.useraction= Entfernen Sie den Aufruf von setBufferSize() oder verschieben Sie ihn an eine Position, die vor dem Festschreiben der Antwort liegt.
+
+# --------------------------------
+usertransaction.rollback.exception=SRVE0160E: Ausnahme bei ROLLBACK-Operation f\u00fcr Benutzertransaktion: {0}
+usertransaction.rollback.exception.explanation=Bei der Rollback-Operation f\u00fcr die angegebene Benutzertransaktion ist ein Fehler aufgetreten. Dies ist ein Anwendungsfehler.
+usertransaction.rollback.exception.useraction=Untersuchen Sie die Serverprotokolle, um die eigentliche Ursache des Fehlers zu ermitteln. Sollten keine zugeh\u00f6rigen Nachrichten vorhanden sein oder der Fehler mit Hilfe zugeh\u00f6riger Nachrichten nicht ermittelt werden k\u00f6nnen, wenden Sie sich an die IBM Unterst\u00fctzungsfunktion.
+
+# --------------------------------
+web.container.copyright=SRVE0161I: IBM WebSphere Application Server - Webcontainer. Copyright IBM Corp. 1998-2008
+web.container.copyright.explanation=ID des Anwendungsservers.
+web.container.copyright.useraction=Keine.
+
+# --------------------------------
+web.container.servlet.spec.level=SRVE0162I: Servlet-Spezifikationsstufe: 2.5
+web.container.servlet.spec.level.explanation=Die vom Anwendungsserver unterst\u00fctzte Spezifikationsstufe f\u00fcr Servlets.
+web.container.servlet.spec.level.useraction=Keine.
+
+# --------------------------------
+web.container.jsp.spec.level=SRVE0163I: Unterst\u00fctzte JSP-Spezifikationsstufe: 2.1
+web.container.jsp.spec.level.explanation=Die vom Anwendungsserver unterst\u00fctzte Spezifikationsstufe f\u00fcr JSPs.
+web.container.jsp.spec.level.useraction=Keine.
+
+# --------------------------------
+context.root.already.in.use=SRVE0164E: Webanwendung {0} verwendet den Stammkontext {1}, der bereits von Webanwendung {2} verwendet wird. Webanwendung {3} wird nicht geladen.
+context.root.already.in.use.explanation=Zwei Webanwendungen auf einem virtuellen Host benutzen einen gemeinsamen Stammkontext. Dies ist ein Anwendungsfehler.
+context.root.already.in.use.useraction=\u00c4ndern Sie entweder den Stammkontext einer der Webanwendungen oder verschieben Sie eine Anwendung auf einen anderen virtuellen Host.
+
+# --------------------------------
+loading.web.module=SRVE0169I: Das Webmodul wird geladen: {0}.
+loading.web.module.explanation=Das Webmodul wird gestartet und f\u00fcr den Service verf\u00fcgbar gemacht.
+loading.web.module.useraction=Keine.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}=SRVE0180I: [{0}] [{1}] [Servlet.LOG]: {2}
+[{0}][{1}][Servlet.LOG]\:.{2}.explanation=Informationsnachricht {2}, die in der Datei "ServletContext.log" von der Anwendung {0} mit dem Kontextstamm {1} protokolliert wurde.
+[{0}][{1}][Servlet.LOG]\:.{2}.useraction=Keine.
+
+# --------------------------------
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}=SRVE0181I: [{0}] [{1}] [Servlet.LOG]: {2}: {3}
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.explanation=Informationsnachricht {2}, die in der Datei "ServletContext.log" von der Anwendung {0} mit dem Kontextstamm {1} und dem Stack-Trace {3} protokolliert wurde.
+[{0}][{1}][Servlet.LOG]\:.{2}\:.{3}.useraction=Keine.
+
+# --------------------------------
+error.occurred.processing.request=SRVE0185E: Bei der Verarbeitung der Anforderung ist ein Fehler aufgetreten:
+error.occurred.processing.request.explanation=Bei der Verarbeitung der Anforderung ist die angegebene Ausnahme eingetreten.
+error.occurred.processing.request.useraction=Untersuchen Sie die Nachricht, um die Fehlerursache zu bestimmen.
+
+# -----------------------------------------------
+Cannot.set.buffer.size.after.data=SRVE0186E: Die Puffergr\u00f6\u00dfe kann nicht festgelegt werden, wenn bereits Daten in den Datenstrom geschrieben wurden.
+Cannot.set.buffer.size.after.data.explanation=Es wurden bereits einige Daten in den Datenstrom geschrieben. Deshalb kann die Puffergr\u00f6\u00dfe nicht mehr gesteuert werden. Dies ist ein Anwendungsfehler.
+Cannot.set.buffer.size.after.data.useraction=Legen Sie die Puffergr\u00f6\u00dfe fest, bevor Daten geschrieben werden, oder setzen Sie den Puffer zur\u00fcck, um die Gr\u00f6\u00dfe festzulegen.
+
+# -----------------------------------------------
+Check.your.classpath.ensure.all.classes.present=SRVE0187E: Stellen Sie sicher, dass Ihr Klassenpfad alle Klassen enth\u00e4lt, die das Servlet ben\u00f6tigt.
+Check.your.classpath.ensure.all.classes.present.explanation=Eine erforderliche Klasse wurde nicht gefunden. Dies ist ein Anwendungsfehler.
+Check.your.classpath.ensure.all.classes.present.useraction=Stellen Sie sicher, dass Ihr Klassenpfad alle Klassen enth\u00e4lt, auf die Sie m\u00f6glicherweise zugreifen m\u00fcssen.
+
+# -----------------------------------------------
+Class.{0}.does.not.implement.servlet=SRVE0188E: Die Klasse {0} implementiert das Servlet nicht.
+Class.{0}.does.not.implement.servlet.explanation=Dies ist ein Anwendungsfehler.
+Class.{0}.does.not.implement.servlet.useraction=Die angegebene Klasse muss "javax.servlet.Servlet" implementieren bzw. "javax.servlet.GenericServlet" oder "javax.servlet.http.HttpServlet" erweitern.
+
+# -----------------------------------------------
+Error.occurred.while.finishing.request=SRVE0189E: Fehler beim Abschluss der Anforderung.
+Error.occurred.while.finishing.request.explanation=Dieser Fehler tritt beim Abschluss der Anforderungsverarbeitung auf. M\u00f6glicherweise ist ein \u00dcbertragungsfehler im Application Server aufgetreten. Allerdings sollte dies keine Auswirkung mehr auf die Verarbeitung der Anforderung haben. Dies ist ein Systemfehler.
+Error.occurred.while.finishing.request.useraction=Keine.
+
+# -----------------------------------------------
+File.not.found=SRVE0190E: Datei nicht gefunden: {0}
+File.not.found.explanation=Die angegebene Datei wurde nicht gefunden. Dies ist ein Anwendungsfehler.
+File.not.found.useraction=Vergewissern Sie sich, dass die angegebene Datei vorhanden ist.
+
+# -----------------------------------------------
+Illegal.from.included.servlet=SRVE0194E: Ung\u00fcltige Operation f\u00fcr eingeschlossenes Servlet.
+Illegal.from.included.servlet.explanation=Die beabsichtigte Operation kann nicht in einem eingeschlossenen Servlet bzw. einer eingeschlossenen JSP-Datei ausgef\u00fchrt werden. (Siehe Servletspezifikation.) Dies ist ein Anwendungsfehler.
+Illegal.from.included.servlet.useraction=\u00c4ndern Sie das fehlerhafte bzw. die fehlerhafte JSP-Datei.
+
+# -----------------------------------------------
+Missing.required.initialization.parameter=SRVE0196E: Der erforderliche Initialisierungsparameter {0} fehlt.
+Missing.required.initialization.parameter.explanation=Der Parameter mit dem angegebenen Namen hat keinen Wert. Dies ist ein erforderlicher Parameter. Dies ist ein Anwendungsfehler.
+Missing.required.initialization.parameter.useraction=Geben Sie einen g\u00fcltigen Wert f\u00fcr den angegebenen Parameter an.
+
+# -----------------------------------------------
+OutputStream.already.obtained=SRVE0199E: Der Ausgabedatenstrom wurde bereits abgerufen.
+OutputStream.already.obtained.explanation=Die Anwendung hat ein PrintWriter angefordert, obwohl bereits ein OutputStream f\u00fcr die ServletResponse abgerufen wurde. Dies ist ein Anwendungsfehler.
+OutputStream.already.obtained.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, um festzustellen, ob PrintWriter und OutputStream abgerufen wurden. \u00c4ndern Sie das fehlerhafte Servlet bzw. die fehlerhafte JSP-Datei, um ein neues Servlet bzw. eine neue JSP-Datei abzurufen.
+
+# -----------------------------------------------
+Servlet.Could.not.find.required.servlet.class=SRVE0200E: Servlet [{0}]: Die erforderliche Klasse {1} wurde nicht gefunden.
+Servlet.Could.not.find.required.servlet.class.explanation=Das Servlet konnte eine Klasse nicht gefunden, die f\u00fcr die Bearbeitung der Anforderung erforderlich ist. Dies ist ein Anwendungsfehler.
+Servlet.Could.not.find.required.servlet.class.useraction=Stelle Sie sicher, dass die Klasse in der Anwendung vorhanden ist.
+
+# -----------------------------------------------
+Servlet.not.a.servlet.class=SRVE0201E: Das Servlet [{0}] ist keine Servlet-Klasse.
+Servlet.not.a.servlet.class.explanation=Dies ist ein Anwendungsfehler.
+Servlet.not.a.servlet.class.useraction=\u00c4ndern Sie die fehlerhafte Klasse und implementieren Sie "javax.servlet.Servlet" oder erweitern Sie "javax.servlet.GenericServlet" oder "javax.servlet.http.HttpServlet".
+
+# -----------------------------------------------
+Servlet.found.but.corrupt=SRVE0202E: Servlet [{0}]: {1} wurde zwar gefunden, ist aber besch\u00e4digt.\n
+Servlet.found.but.corrupt.explanation=Die Servletklasse ist besch\u00e4digt. Dies ist ein Anwendungsfehler.
+Servlet.found.but.corrupt.useraction=Kompilieren Sie die Klasse erneut und wiederholen Sie den Vorgang.
+
+# -----------------------------------------------
+Servlet.was.found.but.is.missing.another.required.class=SRVE0203E: Servlet [{0}]: {1} wurde zwar gefunden, aber es fehlt eine andere erforderliche Klasse.\n
+Servlet.was.found.but.is.missing.another.required.class.explanation=Eine erforderliche Klasse wurde nicht gefunden. Dies ist ein Anwendungsfehler.
+Servlet.was.found.but.is.missing.another.required.class.useraction=Stellen Sie sicher, dass alle erforderlichen Klassen in die Ordner/JAR-Dateien, die den Klassenpfad darstellen, gestellt werden.
+
+# -----------------------------------------------
+host.has.not.been.defined=SRVE0204E: Der Host {0} wurde nicht definiert.
+host.has.not.been.defined.explanation=Der virtuelle Host wurde nicht gefunden. Es ist eine Systemaktion erforderlich.
+host.has.not.been.defined.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration f\u00fcr virtuelles Hosts in der Datei "virtualhosts.xml" oder \u00fcber die Administrationskonsole.
+
+# -----------------------------------------------
+host.on.port.has.not.been.defined=SRVE0205E: Der Host {0} an Port {1} ist nicht definiert.
+
+host.on.port.has.not.been.defined.explanation=Der f\u00fcr die Bearbeitung dieses Anforderungs-URI definierte virtuelle Host wurde nicht gefunden. Es ist eine Systemaktion erforderlich.
+host.on.port.has.not.been.defined.useraction=\u00dcberpr\u00fcfen Sie die Konfiguration f\u00fcr virtuelles Hosts in der Datei "virtualhosts.xml" oder \u00fcber die Administrationskonsole.
+
+# -----------------------------------------------
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server=SRVE0206E: Dieser Fehler weist in der Regel darauf hin, dass das Servlet urspr\u00fcnglich mit Klassen kompiliert wurde, die vom Server nicht gefunden werden.\n
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.explanation=Dies ist ein Anwendungsfehler.
+This.error.implies.servlet.was.originally.compiled.with.classes.which.cannot.be.located.by.server.useraction=Kopieren Sie alle erforderlichen Komponenten in den Klassenpfad und kompilieren Sie anschlie\u00dfend das Servlet erneut.
+
+# -----------------------------------------------
+Uncaught.initialization.exception.thrown.by.servlet=SRVE0207E: Es wurde eine nicht abgefangene Initialisierungsausnahme vom Servlet erstellt.
+Uncaught.initialization.exception.thrown.by.servlet.explanation=Die Zieladresse hat w\u00e4hrend der Initialisierung eine Ausnahme ausgel\u00f6st, die vom Benutzercode nicht abgefangen wurde. Dies ist ein Anwendungsfehler.
+Uncaught.initialization.exception.thrown.by.servlet.useraction=Ber\u00fccksichtigen Sie die Ausnahme im Zielcode.
+
+# -----------------------------------------------
+Unsupported.conversion=SRVE0208E: Nicht unterst\u00fctzte Konvertierung
+Unsupported.conversion.explanation=Der Code hat versucht, eine unzul\u00e4ssige Konvertierung eines Headerwertes durchzuf\u00fchren, z. B. von int in Data. Dies ist ein Anwendungsfehler.
+Unsupported.conversion.useraction=\u00c4ndern Sie das fehlerhafte bzw. die fehlerhafte JSP-Datei.
+
+# -----------------------------------------------
+Writer.already.obtained=SRVE0209E: Das Ausgabeprogramm wurde bereits abgerufen.
+Writer.already.obtained.explanation=Das Ausgabeprogramm f\u00fcr diese Antwort wurde bereits abgerufen. Verwenden Sie das vorhandene Ausgabeprogramm. Dies ist ein Anwendungsfehler.
+Writer.already.obtained.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, um festzustellen, ob PrintWriter und OutputStream abgerufen wurden. \u00c4ndern Sie das fehlerhafte Servlet bzw. die fehlerhafte JSP-Datei, um ein neues Servlet bzw. eine neue JSP-Datei abzurufen.
+
+# -----------------------------------------------
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath=SRVE0210I: Dieser Fehler kann behoben werden, indem das Servlet mit lediglich den Klassen im Laufzeitklassenpfad der Anwendung erneut kompiliert wird.\n
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.explanation=Dies ist ein Anwendungsfehler.
+be.debugged.by.recompiling.the.servlet.using.only.the.classes.in.the.application's.runtime.classpath.useraction=Kompilieren Sie das Servlet erneut und verwenden Sie dabei nur die Klassen im Laufzeitklassenpfad der Anwendung.
+
+# -----------------------------------------------
+class.{0}.could.not.be.instantiated=SRVE0211E: Die Klasse {0} konnte nicht instanziiert werden.
+class.{0}.could.not.be.instantiated.explanation=Interne Ausnahme.
+class.{0}.could.not.be.instantiated.useraction=CMSG0002                                                   
+# -----------------------------------------------
+class.{0}.not.accessible=SRVE0212E: Die Klasse {0} ist nicht verf\u00fcgbar.
+class.{0}.not.accessible.explanation=Interne Ausnahme.
+class.{0}.not.accessible.useraction=CMSG0002                                                   
+# -----------------------------------------------
+class.not.found=SRVE0213E: Die Klasse wurde nicht gefunden.
+class.not.found.explanation=Interne Ausnahme.
+class.not.found.useraction=CMSG0002                                                   
+# -----------------------------------------------
+invalid.count=SRVE0214E: Ung\u00fcltiger Z\u00e4hler
+invalid.count.explanation=Interne Ausnahme.
+invalid.count.useraction=CMSG0002                                                   
+# -----------------------------------------------
+non-HTTP.request.or.response=SRVE0215E: Keine HTTP-Anforderung oder -Antwort
+non-HTTP.request.or.response.explanation=Die definierte Servletkette kann nur HTTP-Anforderungen bearbeiten. Dies ist ein Anwendungsfehler.
+non-HTTP.request.or.response.useraction=Keine.
+
+# -----------------------------------------------
+post.body.contains.less.bytes.than.specified=SRVE0216E: post body enth\u00e4lt weniger Bytes als in content-length angegeben.
+post.body.contains.less.bytes.than.specified.explanation=Die eingehende Anforderung ist m\u00f6glicherweise besch\u00e4digt. Dies ist ein Anwendungsfehler.
+post.body.contains.less.bytes.than.specified.useraction=Keine.
+
+# -----------------------------------------------
+{0}.is.not.a.valid.class=SRVE0217E: {0} ist keine g\u00fcltige Klasse.
+{0}.is.not.a.valid.class.explanation=Dieser Fehler tritt auf, wenn der Webcontainer versucht, eine interne Implementierungsklasse zu laden. Dies ist ein Systemfehler.
+{0}.is.not.a.valid.class.useraction=Vergewissern Sie sich, dass der urspr\u00fcngliche WAS-Klassenpfad nicht ge\u00e4ndert wurde.
+
+# -----------------------------------------------
+Forbidden.Web.Security.Exception=SRVE0218E: Nicht zul\u00e4ssig: Ausnahme der Web-Sicherheit
+Forbidden.Web.Security.Exception.explanation=Die Anforderung hat versucht, auf eine gesch\u00fctzte Ressource zuzugreifen.
+Forbidden.Web.Security.Exception.useraction=Vergewissern Sie sich, dass die anfordernde Entit\u00e4t die erforderlichen Berechtigungen besitzt.
+
+# -----------------------------------------------
+No.Error.to.Report=SRVE0219I: Kein Fehler zu berichten
+No.Error.to.Report.explanation=DefaultErrorReport wurde aufgerufen, aber es wurde kein Fehler gefunden. Dies ist ein Systemfehler.
+No.Error.to.Report.useraction=\u00dcberpr\u00fcfen Sie die Anwendung, um die Fehlerursache zu bestimmen.
+
+# -----------------------------------------------
+Wrapped.Error=SRVE0220I: Fehler -
+Wrapped.Error.explanation=Fehler, der das Problem verursacht hat.
+Wrapped.Error.useraction=Keine.
+
+# -----------------------------------------------
+Serving.JSP.Not.Allowed=SRVE0221E: Die Bereitstellung von JSP-Dateiinhalten ist nicht zul\u00e4ssig.
+Serving.JSP.Not.Allowed.explanation=Der Inhalt einer JSP-Datei kann nicht bereitgestellt werden.
+Serving.JSP.Not.Allowed.useraction=Keine.
+
+# -----------------------------------------------
+StackTrace=SRVE0223I: Stack-Trace:
+StackTrace.explanation=Keine.
+StackTrace.useraction=Keine.
+
+# -----------------------------------------------
+Target.Servlet=SRVE0224I: Ziel-Servlet:
+Target.Servlet.explanation=Keine.
+Target.Servlet.useraction=Keine.
+
+# -----------------------------------------------
+Root.Error=SRVE0225I: Eigentlicher Fehler -
+Root.Error.explanation=Keine.
+Root.Error.useraction=Keine.
+
+# -----------------------------------------------
+class.resides.in.proper.package.directory=SRVE0227E: Vergewissern Sie sich, dass die Klasse im Verzeichnis des richtigen Pakets enthalten ist.\n
+class.resides.in.proper.package.directory.explanation=Der Paketname der Ressource stimmt nicht mit dem Paket der kompilierten Klassendatei \u00fcberein. Dies ist ein Anwendungsfehler.
+class.resides.in.proper.package.directory.useraction=Vergewissern Sie sich, dass die Klasse im Verzeichnis des richtigen Pakets enthalten ist.
+
+# -----------------------------------------------
+classname.defined.in.server.using.proper.case.and.fully.qualified.package=SRVE0228E: Vergewissern Sie sich, dass der Klassenname im Server mit korrekter Gro\u00df-/Kleinschreibung und vollst\u00e4ndig qualifiziertem Paket definiert ist.\n
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.explanation=Dies ist ein Anwendungsfehler.
+classname.defined.in.server.using.proper.case.and.fully.qualified.package.useraction=Vergewissern Sie sich, dass der Klassenname im Server mit korrekter Gro\u00df-/Kleinschreibung und vollst\u00e4ndig qualifiziertem Paket definiert ist.
+
+# -----------------------------------------------
+class.transfered.using.binary.mode=SRVE0229E: Vergewissern Sie sich, dass die Klasse im bin\u00e4ren \u00dcbertragungsmodus an das Dateisystem \u00fcbertragen wird.\n
+class.transfered.using.binary.mode.explanation=Dies ist ein Anwendungsfehler.
+class.transfered.using.binary.mode.useraction=Vergewissern Sie sich, dass die Klasse im bin\u00e4ren \u00dcbertragungsmodus an das Dateisystem \u00fcbertragen wird.
+
+# -----------------------------------------------
+class.compiled.using.proper.case=SRVE0230E: Vergewissern Sie sich, dass die Klasse mit der korrekten Gro\u00df-/Kleinschreibung (wie in der Klassendefinition angegeben) kompiliert wird.\n
+class.compiled.using.proper.case.explanation=Dies ist ein Anwendungsfehler.
+class.compiled.using.proper.case.useraction=Vergewissern Sie sich, dass die Klasse mit der korrekten Gro\u00df-/Kleinschreibung (wie in der Klassendefinition angegeben) kompiliert wird.
+
+# -----------------------------------------------
+class.not.renamed.after.compiled=SRVE0231E: Vergewissern Sie sich, dass die Klassendatei nach der Kompilierung nicht umbenannt wird.
+class.not.renamed.after.compiled.explanation=Dies ist ein Anwendungsfehler.
+class.not.renamed.after.compiled.useraction=Vergewissern Sie sich, dass die Klassendatei nach der Kompilierung nicht umbenannt wird.
+
+# -----------------------------------------------
+Engine.Exception.[{0}]=SRVE0232E: Interner Serverfehler. <br> Ausnahmenachricht: [{0}]
+Engine.Exception.[{0}].explanation=Es ist eine unerwartete Ausnahme eingetreten. Die Einzelheiten wurden auf der zugeh\u00f6rigen Fehlerseite angezeigt. Dies ist ein Systemfehler.
+Engine.Exception.[{0}].useraction=Suchen Sie in den Protokollen System.out und System.err nach n\u00e4heren Einzelheiten zu der generierten Ausnahme.
+
+# -----------------------------------------------
+Error.Report=SRVE0233E: Fehlerbericht
+Error.Report.explanation=Keine.
+Error.Report.useraction=Keine.
+
+# -----------------------------------------------
+Application.classpath=SRVE0234I: Klassenpfad der Anwendung = [{0}]
+Application.classpath.explanation=Keine.
+Application.classpath.useraction=Keine.
+
+# -----------------------------------------------
+[{0}].reported.an.error=SRVE0235E: [{0}] hat einen Fehler berichtet.
+[{0}].reported.an.error.explanation=Untersuchen Sie den berichteten Fehler.
+[{0}].reported.an.error.useraction=Keine.
+
+# -----------------------------------------------
+error.on.collaborator.starting.call=SRVE0236E: Beim Aufruf des Initialisierungs-Collaborator im Aufruf starting() ist ein Fehler aufgetreten.
+error.on.collaborator.starting.call.explanation=Dies ist ein Systemfehler.
+error.on.collaborator.starting.call.useraction=Suchen Sie in den FFDC-Protokollen nach n\u00e4heren Einzelheiten zu dem Fehler.
+
+# -----------------------------------------------
+error.on.collaborator.started.call=SRVE0237E: Beim Aufruf des Initialisierungs-Collaborator im Aufruf started() ist ein Fehler aufgetreten.
+error.on.collaborator.started.call.explanation=Dies ist ein Systemfehler.
+error.on.collaborator.started.call.useraction=Suchen Sie in den FFDC-Protokollen nach n\u00e4heren Einzelheiten zu dem Fehler.
+
+# -----------------------------------------------
+resource.path.has.to.start.with.slash=SRVE0238E: Ressourcenpfade m\u00fcssen einen vorangestellten Schr\u00e4gstrich enthalten.
+resource.path.has.to.start.with.slash.explanation=Dies ist ein Anwendungsfehler.
+resource.path.has.to.start.with.slash.useraction=Geben Sie vor dem Pfad einen Schr\u00e4gstrich an und wiederholen Sie dann den Vorgang.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].registered.successfully=SRVE0239I: Erweiterungsfactory [{0}] wurde ordnungsgem\u00e4\u00df registriert.
+ExtensionFactory.[{0}].registered.successfully.explanation=Keine.
+ExtensionFactory.[{0}].registered.successfully.useraction=Keine.
+
+# -----------------------------------------------
+ExtensionFactory.[{0}].associated.with.patterns.[{1}]=SRVE0240I: Erweiterungsfactory [{0}] wurde den Mustern [{1}] zugeordnet.
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].explanation=Keine.
+ExtensionFactory.[{0}].associated.with.patterns.[{1}].useraction=Keine.
+
+# -----------------------------------------------
+Using.[{0}].as.server.root=SRVE0241I: [{0}] wird als Serverstammverzeichnis in getTempDirectory() verwendet.
+Using.[{0}].as.server.root.explanation=Keine.
+Using.[{0}].as.server.root.useraction=Keine.
+
+# -----------------------------------------------
+[{0}].Initialization.successful=SRVE0242I: [{2}] [{1}] [{0}]: Initialisierung erfolgreich.
+[{0}].Initialization.successful.explanation=Die Methode init() der Zielressource wurde ordnungsgem\u00e4\u00df ausgef\u00fchrt, und das Ziel wurde in den Service aufgenommen.
+[{0}].Initialization.successful.useraction=Keine.
+
+# -----------------------------------------------
+reaper.with.interval.[{0}].limit.[{1}].started=SRVE0243I: Reaper-Thread-Intervall [{0}] und Inaktivit\u00e4tslimit [{1}] wurden gestartet.
+reaper.with.interval.[{0}].limit.[{1}].started.explanation=Keine.
+reaper.with.interval.[{0}].limit.[{1}].started.useraction=Keine.
+
+# -----------------------------------------------
+reaper.unloading.servlet.[{0}]=SRVE0244I: Reaper-Thread entl\u00e4dt Servlets: [{0}].
+reaper.unloading.servlet.[{0}].explanation=Der Reaper-Thread entfernt Servlets, deren Inaktivit\u00e4tsdauer das Inaktivit\u00e4tslimit des Reaper \u00fcberschreitet.
+reaper.unloading.servlet.[{0}].useraction=Keine.
+
+# -----------------------------------------------
+reaper.removing.mapping.[{0}].for.servlet.[{1}]=SRVE0245I: Reaper-Thread entfernt Zuordnung [{0}] f\u00fcr Servlet [{0}].
+reaper.removing.mapping.[{0}].for.servlet.[{1}].explanation=Der Reaper-Thread entfernt die Zuordnungen f\u00fcr JSPs und andere Erweiterungen, deren Inaktivit\u00e4tsdauer das Inaktivit\u00e4tslimit des Reaper \u00fcberschreitet.
+reaper.removing.mapping.[{0}].for.servlet.[{1}].useraction=Keine.
+
+# -----------------------------------------------
+reaper.destroying.servlet.[{0}]=SRVE0246I: Reaper-Thread zerst\u00f6rt Servlet: [{0}].
+reaper.destroying.servlet.[{0}].explanation=Keine.
+reaper.destroying.servlet.[{0}].useraction=Keine.
+
+# -----------------------------------------------
+reaper.thread.error=SRVE0247E: Fehler beim Ausf\u00fchren des Reaper-Thread.
+reaper.thread.error.explanation=Bei der Verarbeitung des Reaper-Thread ist eine Ausnahme eingetreten. Dies ist ein Systemfehler.
+
+reaper.thread.error.useraction=Die Reaper-Verarbeitung ist eine Form der Garbage-Collection.
+
+# -----------------------------------------------
+waiting.to.destroy.filter.[{0}]=SRVE0248I: Zurzeit werden Anforderungen verarbeitet. Es wird bis zu 60 Sekunden gewartet, bis das L\u00f6schen des Filters erzwungen wird.
+waiting.to.destroy.filter.[{0}].explanation=Keine.
+waiting.to.destroy.filter.[{0}].useraction=Keine.
+
+# -----------------------------------------------
+sync.tothread.not.set.for.server.[{0}]=SRVE0249W: Die Anwendung {0} hat SyncToOSThread angefordert, aber der Server unterst\u00fctzt SyncToOSThread nicht.
+sync.tothread.not.set.for.server.[{0}].explanation=SyncToOSThread synchronisiert die ID der Java-EE-Rolle mit dem Betriebssystemthread, d. h. die ID des Betriebssystemthreads wird f\u00fcr die Dauer der Anforderung mit der ID der Java-EE-Rolle gleichgesetzt. Diese Nachricht zeigt an, dass in der Konfiguration einer Anwendung die Verwendung der Funktion SyncToOSThread aktiviert ist, aber der Server, in dem die Anwendung installiert ist, keine Unterst\u00fctzung f\u00fcr SyncToOSThread-Funktionen bietet. Es ist eine Systemaktion erforderlich.
+sync.tothread.not.set.for.server.[{0}].useraction=Wenn Sie die SyncToOSThread-Funktionen f\u00fcr den fraglichen Server verwenden m\u00f6chten, k\u00f6nnen Sie im Information Center nachlesen, wie SyncToOSThread f\u00fcr einen Server aktiviert wird.
+
+# -----------------------------------------------
+module.[{0}].successfully.bound.to.virtualhost.[{1}]=SRVE0250I: Das Webmodul {0} wurde an {1} gebunden.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].explanation=Das angegebene Webmodul wurde dem angegebenen virtuellen Host zugeordnet und ist \u00fcber jede der f\u00fcr diesen virtuellen Host definierten Host/Port-Kombinationen zug\u00e4nglich.
+module.[{0}].successfully.bound.to.virtualhost.[{1}].useraction=Keine.
+
+# -----------------------------------------------
+threadpool.not.used=SRVE0251W: Der f\u00fcr den Webcontainer konfigurierte Thread-Pool wird nicht verwendet.
+threadpool.not.used.explanation=F\u00fcr den Webcontainer ist ein Thread-Pool konfiguriert. Alle \u00c4nderungen, die an diesem Konfigurationseintrag vorgenommen werden, haben keine Auswirkung auf das System.
+threadpool.not.used.useraction=Keine.
+
+# -----------------------------------------------
+transports.detected=SRVE0252W: Es wurden Transporte und Ketten gefunden. Die Transporte wurde so ge\u00e4ndert, dass sie das neue Modell verwenden. Verwenden Sie die Migrationsdienstprogramme, um die Transporte auf das neue Modell zu migrieren. Die Thread-Pool-Konfiguration f\u00fcr den Webcontainer wird von diesen Transporten nicht verwendet.
+transports.detected.explanation= Die Transporte wurde so ge\u00e4ndert, dass sie Transportketten verwenden. Lesen Sie im Information Center die Informationen zu Kanalketten und zur Migration vorhandener Transporte auf Kanalketten. Die Thread-Pool-Konfiguration f\u00fcr den Webcontainer wird f\u00fcr diese Transporte nicht verwendet.
+transports.detected.useraction= Verwenden Sie die Migrationsdienstprogramme, um Ihr Konfigurationsmodell von Transporten auf die neuen Kanalketten zu migrieren.
+
+# -----------------------------------------------
+[{0}].Destroy.successful=SRVE0253I: [{2}] [{1}] [{0}]: L\u00f6schen erfolgreich.
+[{0}].Destroy.successful.explanation=Die Methode destroy() der Zielressource wurde ordnungsgem\u00e4\u00df ausgef\u00fchrt, und das Ziel wurde aus dem Service entfernt.
+[{0}].Destroy.successful.useraction=Keine.
+
+# -----------------------------------------------
+unsupported.request.encoding.[{0}]=SRVE0254E: Fehler beim Definieren der angeforderten Zeichencodierung: [{0}].
+unsupported.request.encoding.[{0}].explanation=Die in der Anforderung angegebene Anforderungscodierung ist nicht g\u00fcltig. Dies ist ein Anwendungsfehler.
+unsupported.request.encoding.[{0}].useraction=Untersuchen Sie die Protokoll, um festzustellen, ob die angegebene Codierung g\u00fcltig ist.
+
+# -----------------------------------------------
+Web.Group.VHost.Not.Found=SRVE0255E: Es wurde weder eine Webgruppe noch ein virtueller Host f\u00fcr die Bearbeitung von {0} definiert.
+Web.Group.VHost.Not.Found.explanation=Es wurde keine Webgruppe (Webmodul) und kein virtueller Host f\u00fcr die Bearbeitung der Anforderung gefunden. Dies ist ein Anwendungsfehler.
+Web.Group.VHost.Not.Found.useraction=Stellen Sie sicher, dass die Webgruppe und ein virtueller Host definiert und implementiert sind.
+
+# -----------------------------------------------
+webcontainer.not.initialized=SRVE0256E: Der Webcontainer wurde nicht initialisiert.
+webcontainer.not.initialized.explanation=Der Webcontainer wird erst initialisiert, wenn eine Anwendung installiert ist. Dies ist ein Systemfehler.
+webcontainer.not.initialized.useraction=Installieren Sie eine Anwendung, um den Webcontainer zu initialisieren.
+
+# -----------------------------------------------
+property.has.changed=SRVE0257W: Die Semantik f\u00fcr die Eigenschaft {0} im Transport hat sich ge\u00e4ndert.
+property.has.changed.explanation=Ein Thread ist nicht mehr an eine einzige Verbindung gebunden. Es ist eine Systemaktion erforderlich.
+property.has.changed.useraction=Suchen Sie im Information Center nach weiteren Details.
+
+# -----------------------------------------------
+property.not.applicable=SRVE0258W: Das Attribut {0} im Transport ist nicht mehr g\u00fcltig.
+property.not.applicable.explanation=Es ist eine Systemaktion erforderlich.
+property.not.applicable.useraction=Konfigurieren Sie diese Eigenschaft im Protokollierungsservice. Suchen Sie im Information Center nach weiteren Details zu HTTP Access Logger.
+
+# -----------------------------------------------
+property.configuration.change=SRVE0259W: Die Eigenschaft {0} kann jetzt nur noch auf Webcontainerebene konfiguriert werden.
+property.configuration.change.explanation=Die Eigenschaft {0} kann nicht mehr auf Transportebene konfiguriert werden und muss jetzt auf Webcontainerebene konfiguriert werden. Es ist eine Systemaktion erforderlich.
+property.configuration.change.useraction=Konfigurieren Sie diese Eigenschaft auf Webcontainerebene.
+
+# -----------------------------------------------
+cannot.use.error.page=SRVE0260E: Der Server kann die f\u00fcr Ihre Anwendung angegebene Fehlerseite nicht verwenden, um die urspr\u00fcngliche Ausnahme zu behandeln, die im Folgenden ausgegeben wird.
+cannot.use.error.page.explanation=Keine.
+cannot.use.error.page.useraction=Suchen Sie in der Ausnahme zur Fehlerseite nach einer Beschreibung des Problems mit der angegebenen Fehlerseite.
+
+# -----------------------------------------------
+annotation.helper.not.defined=SRVE0261E: Der Annotations-Helper {0} ist nicht definiert.
+annotation.helper.not.defined.explanation=Der angegebene Annotations-Helper ist nicht definiert. Dies ist ein Systemfehler.
+annotation.helper.not.defined.useraction=\u00dcberpr\u00fcfen Sie die Definition des angegebenen Annotations-Helpers und f\u00fcgen Sie ihn gegebenenfalls hinzu.
+
+# -----------------------------------------------
+annotation.helper.wrong.type=SRVE0262E: Der Annotations-Helper {0} hat nicht den Typ "com.ibm.wsspi.webcontainer.AnnotationHelper".
+annotation.helper.wrong.type.explanation=Der angegebene Annotations-Helper hat nicht den erwarteten Typ. Dies ist ein Systemfehler.
+annotation.helper.wrong.type.useraction=\u00dcberpr\u00fcfen Sie die Implementierungsklasse des Annotations-Helpers und korrigieren Sie sie.
+
+# -----------------------------------------------
+annotation.helper.cannot.create=SRVE0263E: Der Annotations-Helper {0} kann nicht instanziiert werden.
+annotation.helper.cannot.create.explanation=Der angegebene Annotations-Helper konnte nicht instanziiert werden. Dies ist ein Systemfehler.
+annotation.helper.cannot.create.useraction=Suchen Sie in den Ausnahmeprotokollen nach Informationen dazu, warum der Annotations-Helper nicht instanziiert werden konnte.
+
+#------------------------------------------------
+error.initializing.extension.factories=SRVE0264E: Beim Initialisieren der Erweiterungsfactorys ist ein Fehler aufgetreten: {0}
+error.initializing.extension.factories.explanation=Dies ist ein Systemfehler.
+error.initializing.extension.factories.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+error.notifying.listeners.of.WebApp.start=SRVE0265E: Beim Benachrichtigen der Listener \u00fcber den Start der Webanwendung ist ein Fehler aufgetreten: {0}
+error.notifying.listeners.of.WebApp.start.explanation=Dies ist ein Systemfehler.
+error.notifying.listeners.of.WebApp.start.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#-------------------------------------------------
+error.while.initializing.servlets=SRVE0266E: Beim Initialisieren von Servlets ist ein Fehler aufgetreten: {0}
+error.while.initializing.servlets.explanation=Dies ist ein Systemfehler.
+error.while.initializing.servlets.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#-------------------------------------------------
+error.initializing.filters=SRVE0267E: Beim Initialisieren von Filtern ist ein Fehler aufgetreten: {0}
+error.initializing.filters.explanation=Dies ist ein Systemfehler.
+error.initializing.filters.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+error.obtaining.session.context=SRVE0268E: Fehler beim Abrufen des Sitzungskontextes f\u00fcr die Webanwendung: {0}
+error.obtaining.session.context.explanation=Es konnte kein g\u00fcltiger Sitzungskontext f\u00fcr die Webanwendung abgerufen werden. Es ist eine Systemaktion erforderlich.
+
+error.obtaining.session.context.useraction=Pr\u00fcfen Sie, ob der Sitzungsmanager ordnungsgem\u00e4\u00df konfiguriert ist.
+
+#-------------------------------------------------
+no.jsp.extension.handler.found=SRVE0269W: Es wurde kein Erweiterungsprozessor f\u00fcr die Verarbeitung von JSP-Dateien gefunden.
+no.jsp.extension.handler.found.explanation=Dies ist ein Systemfehler.
+no.jsp.extension.handler.found.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#-------------------------------------------------
+illegal.servlet.mapping=SRVE0270E: Es wurde eine ung\u00fcltige Servlet-Zuordnung f\u00fcr das Servlet {0} gefunden.
+illegal.servlet.mapping.explanation=Die in der Datei "webconfig.xml" angegebene Servletzuordnung ist nicht g\u00fcltig. Es ist eine Systemaktion erforderlich.
+illegal.servlet.mapping.useraction=\u00dcberpr\u00fcfen Sie die Servletzuordnungen in der Datei "webconfig.xml" und nehmen Sie die entsprechenden \u00c4nderungen vor.
+
+#-------------------------------------------------
+uncaught.init.exception.thrown.by.servlet=SRVE0271E: Es wurde eine nicht abgefangene init()-Ausnahme vom Servlet [{0}] in der Anwendung [{1}]: {2} erstellt.
+uncaught.init.exception.thrown.by.servlet.explanation=Dies ist ein Anwendungsfehler.
+uncaught.init.exception.thrown.by.servlet.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#-------------------------------------------------
+jsp.processor.not.defined.skipping=SRVE0272W: Der JSP-Prozessor ist nicht definiert. {0} wird \u00fcbersprungen.
+jsp.processor.not.defined.skipping.explanation=Dies ist ein Systemfehler.
+jsp.processor.not.defined.skipping.useraction=Keine.
+
+#--------------------------------------------------
+error.while.initializing.jsp.as.servlet=SRVE0273E: Fehler beim Initialisieren der JSP-Datei als Servlet [{0}] in der Anwendung [{1}]: {1}
+error.while.initializing.jsp.as.servlet.explanation=Dies ist ein Anwendungsfehler.
+error.while.initializing.jsp.as.servlet.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#--------------------------------------------------
+error.while.adding.servlet.mapping.for.path=SRVE0274W: Fehler beim Hinzuf\u00fcgen der Servlet-Zuordnung f\u00fcr Pfad {0}, Wrapper {1}, Anwendung {2}.
+error.while.adding.servlet.mapping.for.path.explanation=Dies ist ein Anwendungsfehler.
+error.while.adding.servlet.mapping.for.path.useraction=Suchen Sie nach einer Zuordnungs\u00fcberschneidung in der Datei "webconfig.xml".
+
+#--------------------------------------------------
+error.adding.servlet.mapping.for.servlet=SRVE0275E: Fehler beim Hinzuf\u00fcgen der Servlet-Zuordnung f\u00fcr das Servlet [{0}] in der Anwendung [{1}]: {2}
+error.adding.servlet.mapping.for.servlet.explanation=Dies ist ein Anwendungsfehler.
+error.adding.servlet.mapping.for.servlet.useraction=Vergewissern Sie sich, dass die Zuordnung g\u00fcltig ist.
+
+#--------------------------------------------------
+error.initializing.servlet=SRVE0276E: Fehler beim Initialisieren des Servlets [{0}]: {1}
+error.initializing.servlet.explanation=Dies ist ein Anwendungsfehler.
+error.initializing.servlet.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#--------------------------------------------------
+mapping.for.directorybrowsingservlet.already.exists=SRVE0277W: Die Zuordnung f\u00fcr DirectoryBrowsingServlet ist bereits vorhanden.
+mapping.for.directorybrowsingservlet.already.exists.explanation=Dies ist ein Anwendungsfehler.
+mapping.for.directorybrowsingservlet.already.exists.useraction=Entfernen Sie die duplizierte Zuordnung.
+
+#--------------------------------------------------
+error.adding.servlet.mapping.file.handler=SRVE0278E: Fehler beim Hinzuf\u00fcgen der Servlet-Zuordnung {0}.
+error.adding.servlet.mapping.file.handler.explanation=Dies ist ein Anwendungsfehler.
+error.adding.servlet.mapping.file.handler.useraction=Setzen Sie "fileServingEnabled" in der Datei "ibm-web-ext.xmi" im Ordner "WEB-INF" auf "false".
+
+#--------------------------------------------------
+error.processing.global.listeners.for.webapp=SRVE0279E: Fehler bei der Verarbeitung der globalen Listener f\u00fcr die Anwendung {0}: {1}
+error.processing.global.listeners.for.webapp.explanation=Dies ist ein Anwendungsfehler.
+error.processing.global.listeners.for.webapp.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+extension.processor.failed.to.initialize.in.factory=SRVE0280E: Der Erweiterungsprozessor in der Factory [{0}] konnte nicht initialisiert werden: {1}
+extension.processor.failed.to.initialize.in.factory.explanation=Dies ist ein Systemfehler.
+extension.processor.failed.to.initialize.in.factory.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+request.processor.already.present.for.mapping=SRVE0281E: Der Anforderungsprozessor f\u00fcr die Zuordnung {0} ist bereits vorhanden.
+request.processor.already.present.for.mapping.explanation=Dies ist ein Systemfehler.
+request.processor.already.present.for.mapping.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+error.while.setting.WebAppAttributes=SRVE0282E: Fehler beim Festlegen der WebAppAttributes: {0} 
+error.while.setting.WebAppAttributes.explanation=Dies ist ein Systemfehler.
+error.while.setting.WebAppAttributes.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+exception.while.initializing.context=SRVE0283E: Es wurde eine Ausnahme beim Initialisieren des Kontextes abgefangen: {0}
+exception.while.initializing.context.explanation=Dies ist ein Anwendungsfehler.
+exception.while.initializing.context.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextCreated=SRVE0284E: Es wurde eine Ausnahme in notifyServletContextCreated abgefangen: {0}
+exception.caught.in.notifyServletContextCreated.explanation=Dies ist ein Systemfehler.
+exception.caught.in.notifyServletContextCreated.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+exception.caught.destroying.context=SRVE0285E: Es wurde eine Ausnahme beim L\u00f6schen des Kontextes abgefangen: {0}
+exception.caught.destroying.context.explanation=Dies ist ein Systemfehler.
+exception.caught.destroying.context.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+exception.caught.in.notifyServletContextDestroyed=SRVE0286E: Es wurde eine Ausnahme in notifyServletContextDestroyed abgefangen: {0}
+exception.caught.in.notifyServletContextDestroyed.explanation=Dies ist ein Systemfehler.
+exception.caught.in.notifyServletContextDestroyed.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#---------------------------------------------------
+server.root.is.null=SRVE0287E: server.root ist null
+server.root.is.null.explanation=Dies ist ein Systemfehler.
+server.root.is.null.useraction=Keine.
+
+#---------------------------------------------------
+chown.failed=SRVE0288E: chown ist fehlgeschlagen. Es wurde versucht, den Befehl [{0}] auszuf\u00fchren. Exit-Code: [{1}]
+chown.failed.explanation=Dies ist ein Systemfehler.
+chown.failed.useraction=Keine.
+
+#---------------------------------------------------
+failed.to.create.temp.directory=SRVE0289E: Fehler beim Erstellen des tempor\u00e4ren Verzeichnisses: {0}
+failed.to.create.temp.directory.explanation=Dies ist ein Systemfehler.
+failed.to.create.temp.directory.useraction=Keine.
+
+#---------------------------------------------------
+unable.to.use.specified.temp.directory=SRVE0290E: Das angegebene tempor\u00e4re Verzeichnis kann nicht verwendet werden: {0} Lesen: {1} Schreiben: {2}
+unable.to.use.specified.temp.directory.explanation=Es ist eine Systemaktion erforderlich.
+unable.to.use.specified.temp.directory.useraction=\u00dcberpr\u00fcfen Sie den Status des Verzeichnisses (auch die Existenz), die Zugriffsberechtigungen und den verf\u00fcgbaren Speicherplatz.
+
+#---------------------------------------------------
+unable.to.use.default.temp.directory=SRVE0291E: Das tempor\u00e4re Standardverzeichnis kann nicht verwendet werden: {0} Lesen: {1} Schreiben: {2}
+unable.to.use.default.temp.directory.explanation=Es ist eine Systemaktion erforderlich.
+unable.to.use.default.temp.directory.useraction=\u00dcberpr\u00fcfen Sie den Status des Verzeichnisses (auch die Existenz), die Zugriffsberechtigungen und den verf\u00fcgbaren Speicherplatz.
+
+#----------------------------------------------------
+log.servlet.message=SRVE0292I: Servlet-Nachricht - [{0}]:.{1}
+log.servlet.message.explanation=Keine.
+log.servlet.message.useraction=Keine.
+
+#----------------------------------------------------
+log.servlet.error=SRVE0293E: [Servlet-Fehler]-[{0}]: {1}
+log.servlet.error.explanation=Keine.
+log.servlet.error.useraction=Keine.
+
+#----------------------------------------------------
+log.servlet.error.and.message=SRVE0294E: [Servlet-Fehler]-[{0}]: {1}: {2}
+log.servlet.error.and.message.explanation=Keine.
+log.servlet.error.and.message.useraction=Keine.
+
+# -----------------------------------------------
+Error.reported.{0}=SRVE0295E: Fehler gemeldet: {0}
+Error.reported.{0}.explanation=HttpServletResponse.sendError wurde mit einem Statuscode, aber ohne Erl\u00e4uterung aufgerufen.
+Error.reported.{0}.useraction=Untersuchen Sie die Protokolle, um den Statuscode des Fehlers zu bestimmen.
+
+#------------------------------------------------
+log.servlet.message.with.throwable=SRVE0296E: [{0}][{1}][Servlet.LOG]:.{2}:.{3}
+log.servlet.message.with.throwable.explanation=Keine.
+log.servlet.message.with.throwable.useraction=Keine.
+
+#------------------------------------------------
+WebApp.destroy.encountered.errors=SRVE0297E: Beim L\u00f6schen der Webanwendung {0} sind Fehler aufgetreten: {1}
+WebApp.destroy.encountered.errors.explanation=Dies ist ein Systemfehler.
+WebApp.destroy.encountered.errors.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+exception.occured.while.creating.wrapper.for.servlet=SRVE0298E: Ausnahme beim Erstellen des Wrappers f\u00fcr das Servlet [{0}]: {1}
+exception.occured.while.creating.wrapper.for.servlet.explanation=Dies ist ein Systemfehler.
+exception.occured.while.creating.wrapper.for.servlet.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+could.not.create.wrapper.for.servlet=SRVE0299E: Der Wrapper f\u00fcr das Servlet [{0}] konnte nicht erstellt werden.
+could.not.create.wrapper.for.servlet.explanation=Dies ist ein Systemfehler.
+could.not.create.wrapper.for.servlet.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+mapping.already.exists=SRVE0300E: Die Zuordnung ist bereits vorhanden [{0}][{1}]: {2}
+mapping.already.exists.explanation=Der gew\u00fcnschte Pfad ist bereits in einer Servletzuordnung zugeordnet. Dies ist ein Anwendungsfehler.
+mapping.already.exists.useraction=\u00c4ndern oder entfernen Sie die Zuordnung in Ihrer Anwendungskonfiguration.
+
+#------------------------------------------------
+encountered.problems.while.removing.servlet=SRVE0301I: Beim Entfernen des Servlets {0} sind Probleme aufgetreten. Details: {1}
+encountered.problems.while.removing.servlet.explanation=Dies ist ein Systemfehler.
+encountered.problems.while.removing.servlet.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#--------------------------------------------------
+error.while.adding.static.file.processor=SRVE0302E: Fehler beim Hinzuf\u00fcgen des statischen Dateiprozessors: {0}
+error.while.adding.static.file.processor.explanation=Dies ist ein Systemfehler.
+error.while.adding.static.file.processor.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+# -----------------------------------------------
+servlet.name.for.servlet.mapping.not.found=SRVE0303E: Beim Hinzuf\u00fcgen der Servletzuordnung wurde der Servletname nicht gefunden: Servletname={0}; URL-Muster={1}; Modul={2}; Anwendung={3}
+servlet.name.for.servlet.mapping.not.found.explanation=Es ist keine Servletdefinition f\u00fcr die Servletzuordnung vorhanden.
+servlet.name.for.servlet.mapping.not.found.useraction=Stellen Sie sicher, dass die Datei "web.xml" eine Servletdefinition f\u00fcr diese Servletzuordnung enth\u00e4lt.
+
+#------------------------------------------------
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed=SRVE0304E: ServletRequestWrapper [{0}] ist keine Instanz von [{1}]. Deshalb wird die eingeschlossene Logik m\u00f6glicherweise umgangen.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.explanation=Der Webcontainer erwartet, dass ein eingeschlossenes Anforderungsobjekt eine Instanz einer Klasse ist, aber dies ist nicht der Fall. Dies ist ein Anwendungsfehler.
+servletrequestwrapper.is.not.an.instance.of.so.wrapped.logic.may.be.bypassed.useraction=\u00c4ndern Sie den Code und implementieren Sie die erwartete Schnittstelle.
+
+# --------------------------------
+Object.Pool.Disabled=SRVE0305W: ObjectPoolService ist nicht verf\u00fcgbar. SRTConnectionContext-Pooling ist inaktiviert.
+Object.Pool.Disabled.explanation=Der Objektpoolservice verbessert die Leistung des Webcontainers, aber der Service ist inaktiviert. Dies ist ein Systemfehler.
+Object.Pool.Disabled.useraction=Es wird empfohlen, den Objektpoolservice zu aktivieren.
+
+#------------------------------------------------
+ARD.Not.Enabled=SRVE0306W: ARD ist nicht aktiviert. Deshalb werden alle versuchten asynchronen Include-Anforderungen und insertFragment-Aufrufe synchron ausgef\u00fchrt.
+ARD.Not.Enabled.explanation=ARD ist nicht ordnungsgem\u00e4\u00df aktiviert. Es ist eine Systemaktion erforderlich.
+ARD.Not.Enabled.useraction=Stellen Sie sicher, dass ARD in den Einstellungen des Webcontainers aktiviert und der Zustellungstyp "CLIENT_SIDE" oder "SERVER_SIDE" in den Anwendungseinstellung angegeben ist.
+
+#------------------------------------------------
+Null.Filter.Mapping=SRVE0307W: Es ist keine Zuordnung f\u00fcr den Filter vorhanden. Dies kann passieren, wenn Sie versuchen, eine Zuordnung vom Typ "*" f\u00fcr eine Anwendung einer Version vor 2.5 zu verwenden.
+Null.Filter.Mapping.explanation=Es ist keine Servletzuordnung f\u00fcr den Filter vorhanden. Deshalb kann der Filter nicht hinzugef\u00fcgt werden. Dies ist ein Anwendungsfehler.
+Null.Filter.Mapping.useraction=\u00c4ndern Sie die Anwendungsdeskriptoren auf den Stand der Version 2.5, wenn Sie eine Zuordnung vom Typ "*" verwenden.
+
+#------------------------------------------------
+filtering.by.asterisk=SRVE0308E: Eine Filterung mit Stern ist nicht zul\u00e4ssig.
+
+filtering.by.asterisk.explanation=Eine Filterung mit Stern ist nicht zul\u00e4ssig, weil die Inaktivierung der Bereitstellung aller Servlets nach Klassenname \u00fcber die angepasste Eigenschaft "com.ibm.ws.webcontainer.disallowserveservletsbyclassname" behandelt wird. Dies ist ein Anwendungsfehler.
+filtering.by.asterisk.useraction=Setzen Sie "com.ibm.ws.webcontainer.disallowserveservletsbyclassname" auf "true", um die Bereitstellung aller Klassen nach Klassenname zu blockieren.
+
+#------------------------------------------------
+servlet.on.blocked.list.{0}=SRVE0309E: Servlet in der Blockierungsliste: {0}
+servlet.on.blocked.list.{0}.explanation=Das angeforderte Servlet ist in der Blockierungsliste enthalten, die mit der angepassten Eigenschaft "com.ibm.ws.webcontainer.donotservebyclassname" festgelegt wurde. Dies ist ein Anwendungsfehler.
+servlet.on.blocked.list.{0}.useraction=Wenn dieses Verhalten nicht gew\u00fcnscht ist, aktualisieren Sie die Eigenschaft "com.ibm.ws.webcontainer.donotservebyclassname".
+
+#------------------------------------------------
+Error.in.WebContainer.custom.property.value=SRVE0310E: Die angepasste Eigenschaft {1} enth\u00e4lt einen Fehler.
+Error.in.WebContainer.custom.property.value.explanation=Es ist eine Systemaktion erforderlich.
+Error.in.WebContainer.custom.property.value.useraction=Vergewissern Sie sich, dass die angepasste Eigenschaft korrekt ist.
+
+#------------------------------------------------
+transport.error=SRVE0311E: Der Transport {0} enth\u00e4lt einen Fehler.
+transport.error.explanation=Dies ist ein Systemfehler.
+transport.error.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+error.adding.channel=SRVE0312E: Beim Hinzuf\u00fcgen eines Kanals ist ein Fehler aufgetreten: {0}
+error.adding.channel.explanation=Dies ist ein Systemfehler.
+error.adding.channel.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+transport.migration.error=SRVE0313E: Fehler beim Migrieren des Transports an Port {0} in die entsprechende Kette: {1}
+transport.migration.error.explanation=Dies ist ein Systemfehler.
+transport.migration.error.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+failed.to.remove.webmodule=SRVE0314E: Fehler beim Entfernen des Webmoduls {0}: {1}
+failed.to.remove.webmodule.explanation=Dies ist ein Systemfehler.
+failed.to.remove.webmodule.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+#------------------------------------------------
+Exception=SRVE0315E: Es ist eine Ausnahme eingetreten: {0}
+Exception.explanation=Es ist eine Ausnahme eingetreten.
+Exception.useraction=\u00dcberpr\u00fcfen Sie die Protokolle.
+
+
+# -------------------------------------------------------------------------------------------------
+# Thread Pool Instances
+Servlet.Engine.Transports=Webcontainer
+
+
+# -------------------------------------------------------------------------------------------------
+# Module Description
+webAppModule.desc=Die Leistungsdaten f\u00fcr Webanwendungen, Servlets und JSP-Dateien.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numLoadedServlets.desc=Die Anzahl der geladenen Servlets.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.numReloads.desc=Die Anzahl der erneut geladenen Servlets.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.desc=Eine Sammlung, die die Leistungsdaten pro Servlet oder JSP-Datei enth\u00e4lt.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.totalRequests.desc=Die Gesamtanzahl der von einem Servlet verarbeiteten Anforderungen.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.concurrentRequests.desc=Die Anzahl der gleichzeitig verarbeiteten Anforderungen.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.responseTime.desc=Die durchschnittliche Antwortzeit (in Millisekunden) f\u00fcr die Fertigstellung einer Servlet-Anforderung.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.servlets.numErrors.desc=Die Gesamtanzahl der vom Servlet bzw. der JSP-Datei empfangenen Fehler.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.totalRequests.desc=Die Gesamtanzahl der Anforderungen, die f\u00fcr einen URI verarbeitet wurden, der einem Servlet zugeordnet ist.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.concurrentRequests.desc=Die Anzahl der Anforderungen, die gleichzeitig f\u00fcr einen URI verarbeitet wurden, der einem Servlet zugeordnet ist.
+
+# -------------------------------------------------------------------------------------------------
+# Data Description For Web Application (webapp) Module
+webAppModule.url.responseTime.desc=Die durchschnittliche Serviceantwortzeit (in Millisekunden) f\u00fcr einen URI, der einem Servlet zugeordnet ist.
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numLoadedServlets=Num Loaded Servlets
+webAppModule.numLoadedServlets=LoadedServletCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.numReloads=Num Reloads
+webAppModule.numReloads=ReloadCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets=Servlets
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+webAppModule.servlets.urls=URLs
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.totalRequests=Total Requests
+webAppModule.servlets.totalRequests=RequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.concurrentRequests=Concurrent Requests
+webAppModule.servlets.concurrentRequests=ConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.servlets.responseTime=Average Response Time (ms)
+webAppModule.servlets.responseTime=ServiceTime
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.numErrors=Num Errors
+webAppModule.servlets.numErrors=ErrorCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.totalRequests=Total Requests
+webAppModule.url.totalRequests=URIRequestCount
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.url.concurrentRequests=Concurrent Requests
+webAppModule.url.concurrentRequests=URIConcurrentRequests
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module (JSR77)
+#webAppModule.url.responseTime=Average Response Time (ms)
+webAppModule.url.responseTime=URIServiceTime
+
+
+# -------------------------------------------------------------------------------------------------
+# Data Name For Web Application (webapp) Module
+#webAppModule.servlets.loadedSince=Loaded Since (ms)
+webAppModule.servlets.loadedSince=LoadedSince
+
+webAppModule=Webanwendungen
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+unit.none=Nicht zutreffend
+
+# -------------------------------------------------------------------------------------------------
+# Unit for counters
+#unit.ms=millisecond (JSR77)
+unit.ms=MILLISEKUNDE
+
+request.matches.context.root=SRVE0316W: Die Anforderung entspricht dem Kontextstammverzeichnis [{0}] unter dem virtuellen Hostalias [{1}].
+request.matches.context.root.explanation=Der Anforderungspfad entspricht einem Kontextstammverzeichnis eines nicht passenden virtuellen Hosts.
+request.matches.context.root.useraction=Pr\u00fcfen Sie, ob ein weiterer virtueller Hostalias hinzugef\u00fcgt werden muss.
+
+need.to.add.a.new.virtual.host.alias=SRVE0317W: M\u00f6glicherweise m\u00fcssen Sie einen neuen virtuellen Hostalias *:<Ihr_Port> f\u00fcr den virtuellen Host von [{0}] hinzuf\u00fcgen.
+need.to.add.a.new.virtual.host.alias.explanation=Der Anforderungspfad entspricht einem Kontextstammverzeichnis eines nicht passenden virtuellen Hosts.
+need.to.add.a.new.virtual.host.alias.useraction=Folgen Sie den Anweisungen im Information Center, um einen neuen virtuellen Hostalias hinzuzuf\u00fcgen.
+
+# --------------------------------
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}=SRVE0095I: Das Servlet ist vor\u00fcbergehend f\u00fcr den Service nicht verf\u00fcgbar: {0}
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.explanation=Das angegebene Servlet ist vor\u00fcbergehend nicht verf\u00fcgbar.
+Servlet.has.become.temporarily.unavailable.for.service\:.{0}.useraction=Warten Sie und wiederholen Sie die Operation. Das Servlet wurde m\u00f6glicherweise vom Serviceadministrator entfernt.
+
+Session.Feature.Set.Not.Started=SRVE0096E: Der Zugriff auf eine Sitzung ist nicht m\u00f6glich. Das Feature-Set des Sitzungsmanagers wurde nicht gestartet.
+Session.Feature.Set.Not.Started.explanation=Der Zugriff auf eine Sitzung ist nicht m\u00f6glich. Das Feature-Set des Sitzungsmanagers wurde nicht gestartet.
+Session.Feature.Set.Not.Started.useraction=Stellen Sie sicher, dass die Serverkonfiguration vom festgelegten Feature-Set f\u00fcr Sitzungen abh\u00e4ngig ist.
+# --------------------------------
+invalid.query.string=SRVE0318W: Ung\u00fcltiges Zeichen in Abfragezeichenfolge
+invalid.query.string.explanation=Die Abfragezeichenfolge enth\u00e4lt ein ung\u00fcltiges Zeichen, das ignoriert wurde.
+invalid.query.string.useraction=Es ist keine Benutzeraktion erforderlich.
+
+
+ClassNotFound.check.web.xml=SRVE0319W: Eine Klasse, die nicht initialisiert werden konnte, wurde beim Annotationsscan \u00fcbersprungen.
+ClassNotFound.check.web.xml.explanation=Eine Klasse im Webmodul konnte nicht instanziiert und deshalb nicht nach Annotationen gescannt werden.
+ClassNotFound.check.web.xml.useraction=Vergewissern Sie sich, dass die Klasse vorhanden ist und alle Abh\u00e4ngigkeiten dieser Klasse im Klassenpfad enthalten sind.
+
+Not.in.servletContextCreated=SRVE0320E: Programmgesteuerte Konfigurationsmethoden m\u00fcssen in contextInitialized aufgerufen werden.
+Not.in.servletContextCreated.explanation=Servlets und Filter k\u00f6nnen nur dynamisch in der contextInitalized-Phase des Anwendungsstarts hinzugef\u00fcgt werden.
+Not.in.servletContextCreated.useraction=Verschieben Sie den Code, der die aktuelle Methode aufruft, in eine Methode contextInitalized des ServletContextInitalizer.
+
+# ----------------------------- Taken/Copied from plugin generator hence allocating a new number here that's (now) reserved for that purpose
+duplicate.context.root=SRVE9100W: Es sind mehrere Anwendungen vorhanden, die dasselbe Kontextstammelement [{0}] enthalten.
+duplicate.context.root.explanation=W\u00e4hrend der Generierung der Plug-in-Konfigurationsdatei wurden mehrere Anwendungen gefunden, die dasselbe Kontextstammelement verwenden.
+duplicate.context.root.useraction=Stellen Sie fest, ob dies in der Konfiguration beabsichtigt wurde, und falls nicht, korrigieren Sie die Konfiguration.
+
+collocated.appserver=SRVE9101W: localhost wird als Hostname f\u00fcr den Transport f\u00fcr den Server {0}.{1} verwendet. Die Anforderungsweiterleitung funktioniert, solange der Webserver und der Anwendungsserver kollokiert sind.
+collocated.appserver.explanation=Die Verwendung von localhost als Hostname funktioniert nur, wenn der Zielanwendungsserver auf derselben Maschine ausgef\u00fchrt wird.
+collocated.appserver.useraction=\u00c4ndern Sie den Hostnamen, wenn der Anwendungsserver nicht lokal ausgef\u00fchrt wird.
+
+warn.check.applications=SRVE9102W: Der Plug-in-Konfigurationsgenerator konnte keinen virtuellen Host finden.
+warn.check.applications.explanation=Es ist kein virtueller Host verf\u00fcgbar, wenn keine Anwendungen definiert sind. 
+warn.check.applications.useraction=Aktualisieren Sie die Serverkonfiguration, um mindestens eine Anwendung vor dem Generieren der Plug-in-Konfigurationsdatei zu definieren.
+
+plugin.file.generated.info=SRVE9103I: Es wurde automatisch eine Konfigurationsdatei f\u00fcr ein Web-Server-Plug-in f\u00fcr diesen Server unter {0} generiert.
+plugin.file.generated.info.explanation=Eine neue Plug-in-Konfigurationsdatei wird bei jedem Serverneustart und beim Hinzuf\u00fcgen, Entfernen und \u00c4ndern von Anwendungen im Server generiert.
+plugin.file.generated.info.useraction=Pr\u00fcfen Sie, ob diese Datei korrekt ist, und verschieben Sie sie dann an die Position Ihres Web-Server-Plug-ins, damit HTTP-Datenverkehr an die Anwendungen in diesem Server weitergeleitet wird. pluginUtility kann Dateien zusammenf\u00fchren, sodass Anforderungen an mehrere Anwendungsserver weitergeleitet werden k\u00f6nnen. Wenn die Datei generiert wurde, weil Anwendungs\u00e4nderungen vorgenommen wurden, m\u00fcssen Sie m\u00f6glicherweise die vorhandene Konfigurationsdatei auf dem Web-Server-Host aktualisieren.
+
+plugin.file.generated.audit=SRVE9104A: Es wurde eine Konfigurationsdatei f\u00fcr ein Web-Server-Plug-in f\u00fcr diesen Server unter {0} generiert.
+plugin.file.generated.audit.explanation=Auf eine Benutzeranforderung hin wurde eine neue Plug-in-Konfigurationsdatei erstellt.
+plugin.file.generated.audit.useraction=Pr\u00fcfen Sie, ob diese Datei korrekt ist, und verschieben Sie sie dann an die Position Ihres Web-Server-Plug-ins, damit HTTP-Datenverkehr an die Anwendungen in diesem Server weitergeleitet wird. pluginUtility kann Dateien zusammenf\u00fchren, sodass Anforderungen an mehrere Anwendungsserver weitergeleitet werden k\u00f6nnen. 
+
+# ------------------------------- added for liberty
+WARNING_RESOURCE_NOT_FOUND=SRVE9999W: Es wurde keine Ressource f\u00fcr res-ref-name {0} gefunden.
+WARNING_RESOURCE_NOT_FOUND.explanation=Die Ressource wurde nicht unter dem angegebenen Ressourcenreferenznamen gefunden.
+WARNING_RESOURCE_NOT_FOUND.useraction=\u00c4ndern Sie den Wert von res-ref-name.
+
+AUDIT_APPLICATION_INSTALLED=SRVE9998I: Die Anwendung {0} wurde dem Web-Container hinzugef\u00fcgt.
+AUDIT_APPLICATION_INSTALLED.explanation=Die Anwendung wurde dem Web-Container hinzugef\u00fcgt.
+AUDIT_APPLICATION_INSTALLED.useraction=Es ist keine Aktion erforderlich.
+
+ERROR_INVALID_RES_AUTH=SRVE9997E: res-auth value {0} f\u00fcr resource-ref {1} ist ung\u00fcltig
+ERROR_INVALID_RES_AUTH.explanation=G\u00fcltige Werte f\u00fcr das Attribut res-auth sind "Application" und "Container".
+ERROR_INVALID_RES_AUTH.useraction=\u00c4ndern Sie den Wert des Attributs res-auth.
+
+WARN_INVALID_SHARE_SCOPE=SRVE9996W: Der res-sharing-scope-Wert {0} f\u00fcr resource-ref {1} ist ung\u00fctlig. Der Standardwert {2} wird verwendet.
+WARN_INVALID_SHARE_SCOPE.explanation=Die g\u00fcltigen Werte f\u00fcr das Attribut res-auth sind "Shareable" und "Unshareable".
+WARN_INVALID_SHARE_SCOPE.useraction=\u00c4ndern Sie den Wert von res-sharing-scope.
+
+INFO_APPLICATION_REMOVED=SRVE9995I: Die Anwendung {0} wurde aus dem Web-Container entfernt.
+INFO_APPLICATION_REMOVED.explanation=Die Anwendung wurde aus dem Web-Container entfernt.
+INFO_APPLICATION_REMOVED.useraction=Es ist keine Aktion erforderlich.
+
+INFO_APPLICATION_UPDATED=SRVE9994I: Die Anwendungsaktualisierung {0} im Web-Container wurde aktualisiert.
+INFO_APPLICATION_UPDATED.explanation=Die Anwendung wurde aktualisiert.
+INFO_APPLICATION_UPDATED.useraction=Es ist keine Aktion erforderlich.
+
+WARN_JARS_STILL_CACHED=SRVE9993W: Die JAR-Dateien k\u00f6nnen nicht zum L\u00f6schen vorbereitet werden. WAR-Dateien, die JARs enthalten, k\u00f6nnen nicht gel\u00f6scht werden.
+WARN_JARS_STILL_CACHED.explanation=Damit JAR-Dateien in einer installierten Webanwendung gel\u00f6scht werden k\u00f6nnen, m\u00fcssen die JAR-Dateien f\u00fcr das L\u00f6schen vorbereitet werden. Dieser Prozess ist fehlgeschlagen.
+WARN_JARS_STILL_CACHED.useraction=Zum L\u00f6schen von JAR-Dateien in einer installierten Webanwendung muss der Server vor dem L\u00f6schen gestoppt werden.
+
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE=SRVE9992E: Die Klasse {0} hat eine Annotation @WebListener, implementiert aber keine der erforderlichen Schnittstellen.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.explanation=Eine mit einer Annotation @WebListener annotierte Klasse muss eine der folgenden Schnittstellen implementieren: javax.servlet.ServletContextListener, javax.servlet.ServletContextAttributeListener, javax.servlet.ServletRequestListener, javax.servlet.ServletRequestAttributeListener, javax.servlet.http.HttpSessionListener oder javax.servlet.http.HttpSessionAttributeListener.
+ERROR_WEBLISTENER_MUST_IMPLEMENT_IFACE.useraction=Stellen Sie sicher, dass jede mit einer Annotation @WebListener annotierte Klasse eine der erforderlichen Schnittstellen implementiert.
+
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER=SRVE9991E: Die Klasse {0} hat eine Annotation @WebFilter, implementiert aber die Schnittstelle javax.servlet.Filter nicht.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.explanation=Eine mit der Annotation @WebFilter annotierte Klasse muss die angegebene Schnittstelle implementieren.
+ERROR_WEBFILTER_MUST_IMPLEMENT_FILTER.useraction=Stellen Sie sicher, dass alle Klassen, die mit der Annotation @WebFilter annotiert sind, die erforderliche Schnittstelle implementieren.
+
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET=SRVE9990E: Die Klasse {0} hat eine Annotation @WebServlet, implementiert aber die Schnittstelle javax.servlet.http.HttpServlet nicht.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.explanation=Eine mit der Annotation @WebServlet annotierte Klasse muss die angegebene Schnittstelle implementieren.
+ERROR_WEBSERVLET_MUST_IMPLEMENT_HTTPSERVLET.useraction=Stellen Sie sicher, dass alle Klassen, die mit der Annotation @WebServlet annotiert sind, die erforderliche Schnittstelle implementieren.
+
+ERROR_WEBSERVLET_MISSING_PATTERNS=SRVE9989E: Eine Annotation @WebServlet in der Klasse {0} hat weder ein Attribut value noch ein Attribut urlPatterns. Sie m\u00fcssen value oder urlPatterns angeben.
+ERROR_WEBSERVLET_MISSING_PATTERNS.explanation=Eine Annotation @WebServlet muss entweder ein Attribut value oder ein Attribut urlPatterns haben. Sie m\u00fcssen eines dieser Attribute angeben.
+ERROR_WEBSERVLET_MISSING_PATTERNS.useraction=Geben Sie ein erforderliches URL-Muster im Attribut value oder urlPatterns der Annotation @WebServlet an. Es wird empfohlen, value nur zu verwenden, wenn das URL-Muster das einzige Attribut in der Annotation ist.
+
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS=SRVE9988E: Eine Annotation @WebServlet in der Klasse {0} hat ein Attribut value und ein Attribut urlPatterns. Die Attribute value und urlPatterns d\u00fcrfen nicht gemeinsam angegeben werden. 
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.explanation=Eine Annotation @WebServlet darf kein Attribut urlPatterns haben, wenn sie bereits ein Attribut value hat.
+ERROR_WEBSERVLET_HAS_VALUE_AND_PATTERNS.useraction=Stellen Sie sicher, dass alle URL-Muster, die im Attribut value der Annotation @WebServlet angegeben sind, im Attribut urlPatterns angegeben sind, und entfernen Sie das Attribut value. Es wird empfohlen, value nur zu verwenden, wenn das URL-Muster das einzige Attribut in der Annotation ist.
+
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS=SRVE9987E: Eine Annotation @WebFilter in der Klasse {0} hat ein Attribut value und ein Attribut urlPatterns. Die Attribute value und urlPatterns d\u00fcrfen nicht gemeinsam angegeben werden.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.explanation=Eine Annotation @WebFilter darf kein Attribut urlPatterns haben, wenn sie bereits ein Attribut value hat.
+ERROR_WEBFILTER_HAS_VALUE_AND_PATTERNS.useraction=Stellen Sie sicher, dass alle URL-Muster, die im Attribut value der Annotation @WebFilter angegeben sind, im Attribut urlPatterns angegeben sind, und entfernen Sie das Attribut value. Es wird empfohlen, value nur zu verwenden, wenn das URL-Muster das einzige Attribut in der Annotation ist.
+
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET=SRVE9986E: Eine Annotation @WebFilter in der Klasse {0} hat kein Attribut, urlPatterns attribute oder servletNames. Mindestens eines dieser Attribute muss angegeben werden.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.explanation=Eine Annotation A @WebFilter muss mindestens eines der folgenden Attribute haben: value, urlPatterns und servletNames.
+ERROR_WEBFILTER_MISSING_VAL_PATT_SERVLET.useraction=Geben Sie mindestens eines der erforderlichen Attribute der Annotation @WebFilter an.
+
+INVALID_APPLICATION_BND_DEFINITION=SRVE9985E: Die Anwendungskonfiguration {0} kann nicht aufgel\u00f6st werden. Ausnahme: {1}
+INVALID_APPLICATION_BND_DEFINITION.explanation=Die Sicherheitsrollen f\u00fcr die Anwendung konnten anhand der von der Anwendung bereitgestellten Datei application-bnd wegen einer Ausnahme nicht bestimmt werden.
+INVALID_APPLICATION_BND_DEFINITION.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+NO_APPLICATION_BND_DEFINITION=SRVE9984E: Es wurde keine Anwendungskonfiguration in {0} gefunden.
+NO_APPLICATION_BND_DEFINITION.explanation=Die Sicherheitsrollen f\u00fcr eine Anwendung konnten anhand der Serverkonfiguration nicht bestimmt werden, weil keine Datei application-bnd f\u00fcr die Anwendung gefunden wurde.
+NO_APPLICATION_BND_DEFINITION.useraction=Aktualisieren Sie die Anwendung und geben Sie die Datei application-bnd an.
+
+INVALID_SECURITY_ROLE_DEFINITION=SRVE9983E: Die Konfiguration f\u00fcr die Rolle {0} (referenziert in {1}) konnte nicht geladen werden. Ausnahme: {2}
+INVALID_SECURITY_ROLE_DEFINITION.explanation=Es konnte keine Anwendungssicherheitsrolle bestimmt werden, weil eine Ausnahme eingetreten ist.
+INVALID_SECURITY_ROLE_DEFINITION.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+NO_SECURITY_ROLE_DEFINITION=SRVE9982E: Die Konfiguration f\u00fcr die Rolle {0} (referenziert in {1}) ist nicht vorhanden.
+NO_SECURITY_ROLE_DEFINITION.explanation=Eine Sicherheitsrollendefinition f\u00fcr die Anwendung wurde nicht gefunden gefunden, obwohl sie in der Datei application-bnd referenziert wird.
+NO_SECURITY_ROLE_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und geben Sie die Rolle an.
+
+NO_SECURITY_ROLE_NAME_DEFINITION=SRVE9981E: Der Name der Rolle wurde nicht in den Eigenschaften {0} (referenziert in {1}) gefunden.
+NO_SECURITY_ROLE_NAME_DEFINITION.explanation=Die Konfiguration einer Anwendung enth\u00e4lt eine Liste mit Sicherheitsrollen, aber der Name der Rolle wurde nicht in dieser Konfiguration gefunden.
+NO_SECURITY_ROLE_NAME_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und korrigieren Sie die Definition der Rolle.
+
+INVALID_USER_DEFINITION=SRVE9980E: Die Konfiguration f\u00fcr den Benutzer {0} (referenziert von der Rolle {1} in {2}) konnte nicht geladen werden. Ausnahme: {3}
+INVALID_USER_DEFINITION.explanation=Ein von einer Sicherheitsrolle definierter Benutzer konnte wegen einer Ausnahme nicht bestimmt werden.
+INVALID_USER_DEFINITION.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+NO_USER_DEFINITION=SRVE9979E: Es wurde keine Benutzerdefinition f\u00fcr {0} (referenziert von der Rolle {1} in {2}) gefunden.
+NO_USER_DEFINITION.explanation=Die Konfiguration einer Rolle in einer Anwendung enth\u00e4lt eine Liste mit Benutzerdefinitionen, aber eine dieser Definitionen wurde nicht gefunden.
+NO_USER_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und geben Sie den Benutzer an.
+
+NO_USER_NAME_DEFINITION=SRVE9978E: Der Name des Benutzers wurde nicht in den Eigenschaften {0} (referenziert von der Rolle {1} in {2}) gefunden.
+NO_USER_NAME_DEFINITION.explanation=Die Konfiguration einer Anwendung enth\u00e4lt eine Liste mit Benutzern, aber der Name eines der Benutzer wurde nicht in dieser Konfiguration gefunden.
+NO_USER_NAME_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und korrigieren Sie die Definition des Benutzers.
+
+INVALID_GROUP_DEFINITION=SRVE9977E: Die Konfiguration f\u00fcr die Gruppe {0} (referenziert von der Rolle {1} in {2}) konnte nicht geaden werden. Ausnahme: {3}
+INVALID_GROUP_DEFINITION.explanation=Eine von einer Sicherheitsrolle definierte Gruppe konnte wegen einer Ausnahme nicht bestimmt werden.
+INVALID_GROUP_DEFINITION.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+NO_GROUP_DEFINITION=SRVE9976E: Es wurde keine Gruppendefinition f\u00fcr {0} (referenziert von der Rolle {1} in {2}) gefunden.
+NO_GROUP_DEFINITION.explanation=Die Konfiguration einer Rolle in einer Anwendung enth\u00e4lt eine Liste mit Gruppendefinitionen, aber eine dieser Definitionen wurde nicht gefunden.
+NO_GROUP_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und geben Sie die Gruppe an.
+
+NO_GROUP_NAME_DEFINITION=SRVE9975E: Der Name der Gruppe wurde nicht in den Eigenschaften {0} (referenziert von der Rolle {1} in {2}) gefunden.
+NO_GROUP_NAME_DEFINITION.explanation=Die Konfiguration einer Anwendung enth\u00e4lt eine Liste mit Gruppen, aber der Name einer der Gruppen wurde nicht in dieser Konfiguration gefunden.
+NO_GROUP_NAME_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und korrigieren Sie die Definition der Gruppe.
+
+INVALID_SPECIAL_SUBJECT_DEFINITION=SRVE9974E: Die Konfiguration f\u00fcr das Sondersubjekt {0} (referenziert von der Rolle {1} in {2}) konnte nicht geladen werden. Ausnahme: {3}
+INVALID_SPECIAL_SUBJECT_DEFINITION.explanation=Ein von einer Sicherheitsrolle definiertes Sondersubjekt konnte wegen einer Ausnahme nicht bestimmt werden.
+INVALID_SPECIAL_SUBJECT_DEFINITION.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+NO_SPECIAL_SUBJECT_DEFINITION=SRVE9973E: Es wurde keine Sondersubjektdefinition f\u00fcr {0} (referenziert von der Rolle {1} in {2}) gefunden.
+NO_SPECIAL_SUBJECT_DEFINITION.explanation=Die Konfiguration einer Rolle in einer Anwendung enth\u00e4lt eine Liste mit Sondersubjektdefinitionen, aber eine dieser Definitionen wurde nicht gefunden.
+NO_SPECIAL_SUBJECT_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und geben Sie die Sondersubjektdefinition an.
+
+NO_SPECIAL_SUBJECT_NAME_DEFINITION=SRVE9972E: Der Name des Sondersubjekts wurde nicht in den Eigenschaften {0} (referenziert von der Rolle {1} in {2}) gefunden.
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.explanation=Die Konfiguration einer Anwendung enth\u00e4lt eine Liste mit Sondersubjekten, aber der Name eines der Sondersubjekte wurde nicht in dieser Konfiguration gefunden.
+NO_SPECIAL_SUBJECT_NAME_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und korrigieren Sie die Definition des Sondersubjekts.
+
+INVALID_RUN_AS_DEFINITION=SRVE9971E: Die Konfiguration f\u00fcr die RunAs-Definition {0} (referenziert von der Rolle {1} in {2}) konnte nicht geaden werden. Ausnahme: {3}
+INVALID_RUN_AS_DEFINITION.explanation=Eine von einer Sicherheitsrolle definierte RunAs-Definition konnte wegen einer Ausnahme nicht bestimmt werden.
+INVALID_RUN_AS_DEFINITION.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+NO_RUN_AS_DEFINITION=SRVE9970E: Es wurde keine RunAs-Definition f\u00fcr {0} (referenziert von der Rolle {1} in {2}) gefunden.
+NO_RUN_AS_DEFINITION.explanation=Die Konfiguration einer Rolle in einer Anwendung enth\u00e4lt eine Liste mit RunAs-Definitionen, aber eine dieser Definitionen wurde nicht gefunden.
+NO_RUN_AS_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und geben Sie die RunAs-Definition an.
+
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION=SRVE9969E: Die Benutzer-ID oder das Kennwort, die bzw. das f\u00fcr die RunAs-Definition {0} (referenziert von der Rolle {1} in {2}) angegeben wurde, ist ung\u00fcltig.
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.explanation=Die Benutzer-ID oder das Kennwort wurde nicht angegeben, oder es wurde eine leere Zeichenfolge angegeben. Diese Werte sind als Benutzer-IDs und Kennw\u00f6rter nicht g\u00fcltig.
+NO_RUN_AS_USER_OR_PASSWORD_DEFINITION.useraction=Aktualisieren Sie die Anwendungskonfiguration und korrigieren Sie die RunAs-Definition.
+
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION=SRVE9968W: Der Manifestklassenpfad {0} in der JAR-Datei {1} ist ung\u00fcltig.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.explanation=Der Klassenpfad wurde nicht korrekt angegeben. Der Klassenpfad muss eine relative URI-Zeichenfolge sein, die auf eine JAR-Datei oder auf einen Ordner zeigt.
+WARN_INVALID_MANIFEST_CLASSPATH_DEFINITION.useraction=Aktualisieren Sie die Datei MANIFEST.MF der JAR-Datei und geben Sie die korrekte Klassenpfaddefinition an.
+
+WARN_MANIFEST_CLASSPATH_NOT_FOUND=SRVE9967W: Das Element {0} des Manifestklassenpfads des Archivs {1} konnte nicht aufgel\u00f6st werden.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.explanation=Gew\u00f6hnlich sind Manifestklassenpfadelemente Referenzen auf JAR-Dateien. Wenn das referenzierte Element f\u00fcr die Anwendung erforderlich ist, weist die Nachricht auf ein schwerwiegendes Problem hin, das nicht ignoriert werden darf. Wenn das referenzierte Element f\u00fcr die Anwendung nicht erforderlich ist, weist die Nachricht auf ein harmloses Problem hin, das ignoriert werden kann. Entweder fehlt das referenzierte Element oder es befindet sich an einer falschen Position oder es befindet sich an der richtigen Position, aber das Manifestklassenpfadelement verweist auf eine andere, falsche Position. Wenn ein Element erforderlich ist, ist dies in der Regel daran erkennbar, dass die Anwendung eine Klasse oder eine andere Ressource nicht finden kann oder dass die Anwendung die falsche Version einer Klasse oder Ressource l\u00e4dt. Wenn ein Manifestklassenpfadelement nicht aufgel\u00f6st werden kann, ist die h\u00e4ufig darauf zur\u00fcckzuf\u00fchren, dass die Struktur einer Anwendung aktualisiert wurde, wodurch ein referenziertes Element veraltet ist. Eine andere g\u00e4ngige Ursache ist das Hinzuf\u00fcgen einer JAR-Datei eines anderen Anbieters zu einer Anwendung, die auf eine Position verweist, die der Anwendung nicht hinzugef\u00fcgt wurde.
+WARN_MANIFEST_CLASSPATH_NOT_FOUND.useraction=F\u00fcgen Sie Anwendungselemente hinzu, benennen Sie sie um oder verschieben Sie sie, aktualisieren Sie den Manifestklassenpfad oder entfernen Sie Manifestklassenpfadelemente, die nicht aufgel\u00f6st werden k\u00f6nnen. Manifestklassenpfadelemente werden relativ zur Position der \u00fcbergeordneten Archivdatei aufgel\u00f6st.
+
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9966E: Es wurden doppelte Werte ({0}) in {1} f\u00fcr {2} von {3} gefunden. Der Wert ist {4} in der Datei web-fragment.xml von {5}, aber {6} in {7}. 
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Die Werte derselben Konfiguration in den verschiedenen Dateien web-fragment.xml m\u00fcssen identisch sein.
+CONFLICT_KEY_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Verwenden Sie dieselben Werte in den verschiedenen Dateien web-fragment.xml oder konfigurieren Sie die Werte in der Datei web.xml, um die Werte aus den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML=SRVE9965E: Es wurden doppelte Werte ({0}.{1}) gefunden. Der Wert ist {2} in der Datei web-fragment.xml von {3}, aber {4} in {5}.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.explanation=Die Werte derselben Konfiguration in den verschiedenen Dateien web-fragment.xml m\u00fcssen identisch sein.
+CONFLICT_SINGLE_VALUE_CONFIG_BETWEEN_WEB_FRAGMENT_XML.useraction=Verwenden Sie dieselben Werte in den verschiedenen Dateien web-fragment.xml oder konfigurieren Sie die Werte in der Datei web.xml, um die Werte aus den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML=SRVE9957E: Die Standardfehlerseite {0} in der Datei web-fragment.xml von {1} steht mit der Standardfehlerseite {2} in der Datei web-fragment.xml von {3} in Konflikt. 
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.explanation=Die Werte von Standardfehlerseiten in verschiedenen Dateien web-fragment.xml m\u00fcssen identisch sein.
+CONFLICT_DEFAULT_ERROR_PAGE_WEB_FRAGMENT_XML.useraction=Verwenden Sie dieselbe Standardfehlerseite in den verschiedenen Dateien web-fragment.xml oder konfigurieren Sie eine Standardfehlerseite in der Datei web.xml, um die Standardfehlerseite aus den Dateien web-fragment.xml zu \u00fcberschreiben.
+                                                         
+NO_UNIQUE_WEB_FRAGMENT_NAMES=SRVE9964E: Es werden doppelte Namen ({0}) in den Dateien web-fragment.xml von {1} und {2} verwenden, obwohl eine relative Sortierung verwendet wird.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.explanation=Es ist ein eindeutiger Name f\u00fcr das Element in jeder Datei web-fragment.xml erforderlich, wenn die relative Sortierfolge verwendet wird.
+NO_UNIQUE_WEB_FRAGMENT_NAMES.useraction=Ordnen Sie f\u00fcr jede Datei web-fragment.xml einen eindeutigen Namen zu, wenn Sie die relative Sortierfolge verwenden, oder konfigurieren Sie die absolute Sortierung mit dem Element <absolute-ordering> in der Datei web.xml.
+
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY=SRVE9963E: Zirkul\u00e4re Referenzen in {0}.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.explanation=Es wurden zirkul\u00e4re Referenzen in den Dateien web-fragment.xml gefunden, obwohl eine relative Sortierung verwendet wird.
+CIRCUIT_WEB_FRAGMENT_DEPENDENCY.useraction=Korrigieren Sie die zirkul\u00e4ren Referenzen mit dem Element <before> oder <after> in den Dateien web-fragment.xml oder verwenden Sie das Element <absolute-ordering> in der Datei web.xml.
+
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS=SRVE9962E: Es ist nicht zul\u00e4ssig, <others/> mit den Eleenten <before> und <after> in der Datei web-fragment.xml von {0} zu konfigurieren.
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.explanation=Es ist nicht zul\u00e4ssig, <others/> in beiden Elementen - <before> und <after> - zu konfigurieren.
+INVALID_BOTH_BEFORE_AND_AFTER_OTHERS.useraction=Entfernen Sie <others/> aus dem Element <before> oder aus dem Element <after>.
+
+INVALID_BEFORE_OR_AFTER_ITSELF=SRVE9961E: Es ist nicht zul\u00e4ssig, web-fragment selbst in den Elementen <before> und <after> in der Datei web-fragment.xml von {0} zu konfigurieren.
+INVALID_BEFORE_OR_AFTER_ITSELF.explanation=Es ist nicht zul\u00e4ssig, web-fragment selbst in den Elementen <before> und <after> zu konfigurieren.
+INVALID_BEFORE_OR_AFTER_ITSELF.useraction=Entfernen Sie den web-fragment-Namen aus den Elementen <before> und <after>.
+
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9960E: {0} mit demselben Wert {1} von {2} wurden in der Datei web-fragment.xml von {3} und {4} gefunden.
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, JNDI-Referenzen mit demselben Namen in unterschiedlichen Dateien web-fragment.xml zu konfigurieren, wenn er in der Datei web.xml fehlt.
+CONFLICT_JNDI_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie die JNDI-Referenz in der Datei web.xml ohne irgendwelche Injektionsziele, um die aus jeder Datei web-fragment.xml einzuschlie\u00dfen oder konfigurieren Sie alle erforderlichen Konfigurationen in der Datei web.xml.
+
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9959E: Es wurden zwei Datenquellenkonfigurationen mit demselben Namen ({0}) in der Datei web-fragment.xml von {1} und {2} gefunden.
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, Datenquellen mit demselben Namen in unterschiedlichen Dateien web-fragment.xml zu konfigurieren, wenn er in der Datei web.xml fehlt.
+CONFLICT_DATASOURCE_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie die Datenquelle mit demselben Namen in der Datei web.xml, um die Eintr\u00e4ge in den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9958E: Es wurden zwei Mailsitzungskonfigurationen mit demselben Namen ({0}) in der Datei web-fragment.xml von {1} und {2} gefunden.
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, die Mailsitzung mit demselben Namen in anderen Dateien web-fragment.xml zu konfigurieren, wenn sie in der Datei web.xml fehlt.
+CONFLICT_MAILSESSION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie die Mailsitzung mit demselben Namen in der Datei web.xml, um die Eintr\u00e4ge in den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+UNKNOWN_VIRTUAL_HOST=SRVE9956W: Die folgenden virtuellen Hosts wurden nicht gefunden oder sind nicht richtig konfiguriert: {0}.
+UNKNOWN_VIRTUAL_HOST.explanation=Eine oder mehrere Anwendungen geben einen virtuellen Host an, der nicht vorhanden ist. M\u00f6glicherweise fehlt die virtualHost-Konfiguration oder die Konfiguration ist fehlerhaft.
+UNKNOWN_VIRTUAL_HOST.useraction=Stellen Sie bei Anwendungen, die einen virtuellen Host \u00fcber eine Datei ibm-web-bnd.xml oder ibm-web-bnd.xmi angeben, sicher, dass in der Datei server.xml ein entsprechendes virtualHost-Element definiert ist.
+
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT=SRVE9955E: <distributable/> wird auf false gesetzt, weil das element nicht in der Datei web-fragment.xml von {0} enthalten ist.
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.explanation=Das Element <distributable/> wurde nicht im Webfragment gefunden. Deshalb wird das Modul als nicht verteilbar markiert.
+DISTRIBUTABLE_SET_TO_FALSE_IN_FRAGMENT.useraction=Definieren Sie das Element <distributable/> in der Datei web-fragment.xml f\u00fcr alle Webfragmente im Modul, wenn Sie das Modul als verteilbar markieren m\u00f6chten.
+
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9954E: Es wurden zwei Verbindungsfactory-Konfigurationen mit demselben Namen ({0}) in der Datei web-fragment.xml von {1} und {2} gefunden.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, dieselbe Verbindungsfactory in verschiedenen Dateien web-fragment.xml zu konfigurieren, wenn sie in der Datei web.xml fehlt.
+CONFLICT_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie die Verbindungsfactory mit demselben Namen in der Datei web.xml, um die Eintr\u00e4ge in den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9951E: Es wurden zwei Konfigurationen f\u00fcr ein verwaltetes Objekt mit demselben Namen ({0}) in der Datei web-fragment.xml von {1} und {2} gefunden.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, dasselbe verwaltete Objekt in verschiedenen Dateien web-fragment.xml zu konfigurieren, wenn sie in der Datei web.xml fehlt.
+CONFLICT_ADMINISTERED_OBJECT_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie das verwaltete Objekt mit demselben Namen in der Datei web.xml, um die Eintr\u00e4ge in den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9952E: Es wurden zwei JMS-Verbindungsfactory-Konfigurationen mit demselben Namen ({0}) in der Datei web-fragment.xml von {1} und {2} gefunden.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, dieselbe JMS-Verbindungsfactory in verschiedenen Dateien web-fragment.xml zu konfigurieren, wenn sie in der Datei web.xml fehlt.
+CONFLICT_JMS_CONNECTION_FACTORY_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie die JMS-Verbindungsfactory mit demselben Namen in der Datei web.xml, um die Eintr\u00e4ge in den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML=SRVE9953E: Es wurden zwei JMS-Zielkonfigurationen mit demselben Namen ({0}) in der Datei web-fragment.xml von {1} und {2} gefunden.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.explanation=Es ist nicht zul\u00e4ssig, dasselbe JMS-Ziel in verschiedenen Dateien web-fragment.xml zu konfigurieren, wenn sie in der Datei web.xml fehlt.
+CONFLICT_JMS_DESTINATION_REFERENCE_BETWEEN_WEB_FRAGMENT_XML.useraction=Konfigurieren Sie das JMS-Ziel mit demselben Namen in der Datei web.xml, um die Eintr\u00e4ge in den Dateien web-fragment.xml zu \u00fcberschreiben.
+
+
+SRVE0777E=SRVE0777E: Es wurde eine Ausnahme von der Anwendungsklasse ''{0}.{1}:{2}'' ausgel\u00f6st.\n{3}
+SRVE0777E.explanation= Der Anwendungscode hat eine unerwartete Ausnahme ausgel\u00f6st.
+SRVE0777E.useraction=Bestimmen Sie die eigentliche Ursache des Problems mithilfe des Stack-Trace.
+
+# -----------------------------------------------
+Reader.already.obtained=SRVE0778E: Das Reader-Objekt f\u00fcr diese Antwort wurde bereits abgerufen. Dies ist ein Anwendungsfehler.
+Reader.already.obtained.explanation= Es wurde versucht, einen InputStream f\u00fcr diese Antwort abzurufen oder anzupassen, aber es wurde bereits ein BufferedReader abgerufen.
+Reader.already.obtained.useraction= \u00c4ndern Sie das fehlgeschlagene Servlet oder die fehlgeschlagene JSP so, dass eine BufferedReader-Instanz oder eine InputStream-Instanz verwendet wird, aber nicht beides.
+# -----------------------------------------------
+InputStream.already.obtained=SRVE0779E: Das InputStream-Objekt f\u00fcr diese Antwort wurde bereits abgerufen. Dies ist ein Anwendungsfehler.
+InputStream.already.obtained.explanation=Es wurde versucht, einen BufferedReader f\u00fcr diese Antwort abzurufen, aber es wurde bereits ein InputStream abgerufen.
+InputStream.already.obtained.useraction=\u00c4ndern Sie das fehlgeschlagene Servlet oder die fehlgeschlagene JSP so, dass eine BufferedReader-Instanz oder eine InputStream-Instanz verwendet wird, aber nicht beides.
+
+# --------------------------------
+# Notes for translation:
+# {0} is the URL pattern 
+# {1} and {2} are servlet names
+
+duplicate.url.pattern.for.servlet.mapping=SRVE9016E: Die Zuordnung [{0}] f\u00fcr das Servlet [{1}]. kann nicht eingef\u00fcgt werden. Das URL-Muster ist bereits f\u00fcr das Servlet [{2}] definiert.
+duplicate.url.pattern.for.servlet.mapping.explanation=Es liegt ein Anwendungsfehler vor. Ein URL-Muster f\u00fcr Servletzuordnung darf nicht mehreren Servlets entsprechen.
+duplicate.url.pattern.for.servlet.mapping.useraction=\u00c4ndern Sie das URL-Muster f\u00fcr die Servletzuordnung.
+

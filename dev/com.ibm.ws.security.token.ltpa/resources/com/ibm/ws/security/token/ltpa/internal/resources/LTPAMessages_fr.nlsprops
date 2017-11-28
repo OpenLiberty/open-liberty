@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.token.ltpa/resources/com/ibm/ws/security/token/ltpa/internal/resources/LTPAMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Token Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS4100 - CWWKS4199
+
+LTPA_TOKEN_SERVICE_INVALID_FACTORY=CWWKS4100E: Aucune fabrique de jeton n'est initialis\u00e9e.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.explanation=La fabrique de jeton n'a pas \u00e9t\u00e9 initialis\u00e9e.
+LTPA_TOKEN_SERVICE_INVALID_FACTORY.useraction=Contr\u00f4lez la validit\u00e9 de la configuration de gestionnaire de jeton dans le fichier server.xml ou de toute autre ressource sp\u00e9cifi\u00e9e par la configuration.
+
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID=CWWKS4101E: Il n'y a pas d'ID unique avec lequel le jeton puisse \u00eatre cr\u00e9\u00e9.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.explanation=Le param\u00e8tre unique_id est Null ou n'a pas \u00e9t\u00e9 sp\u00e9cifi\u00e9 dans les donn\u00e9es du jeton.
+LTPA_TOKEN_SERVICE_INVALID_UNIQUE_ID.useraction=V\u00e9rifiez que l'utilisateur a un ID unique. En cas d'utilisation d'un registre d'utilisateurs personnalis\u00e9, v\u00e9rifiez que les donn\u00e9es du jeton contiennent une valeur pour le param\u00e8tre unique_id.
+
+LTPA_TOKEN_SERVICE_MISSING_KEY=CWWKS4102E: Le syst\u00e8me ne peut pas cr\u00e9er le jeton LTPA car il manque la propri\u00e9t\u00e9 obligatoire {0}.
+LTPA_TOKEN_SERVICE_MISSING_KEY.explanation=La cl\u00e9 sp\u00e9cifi\u00e9e est manquante, de sorte que le jeton LTPA ne peut pas \u00eatre cr\u00e9\u00e9.
+LTPA_TOKEN_SERVICE_MISSING_KEY.useraction=Examinez le fichier de propri\u00e9t\u00e9s dans lequel sont stock\u00e9es les informations de cl\u00e9s LTPA et v\u00e9rifiez qu'elles incluent une cl\u00e9 secr\u00e8te, une cl\u00e9 priv\u00e9e et une cl\u00e9 publique.
+
+LTPA_CREATE_KEYS_START=CWWKS4103I: Cr\u00e9ation des cl\u00e9s LTPA. Cela peut prendre quelques secondes.
+LTPA_CREATE_KEYS_START.explanation=Les cl\u00e9s LTPA n'existent pas et sont donc g\u00e9n\u00e9r\u00e9es automatiquement. Les services n\u00e9cessitant LTPA ne d\u00e9marreront que lorsque les cl\u00e9s LTPA auront \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9es et que la configuration sera pr\u00eate.
+LTPA_CREATE_KEYS_START.useraction=Aucune action n'est requise.
+
+LTPA_CREATE_KEYS_COMPLETE=CWWKS4104A: Cl\u00e9s LTPA cr\u00e9\u00e9es en {0} secondes. Fichier de cl\u00e9s LTPA : {1}
+LTPA_CREATE_KEYS_COMPLETE.explanation=Ce message est fourni pour information uniquement.
+LTPA_CREATE_KEYS_COMPLETE.useraction=Aucune action n'est requise.
+
+LTPA_CONFIG_READY=CWWKS4105I: La configuration LTPA est pr\u00eate apr\u00e8s {0} secondes.
+LTPA_CONFIG_READY.explanation=Ce message est fourni pour information uniquement.
+LTPA_CONFIG_READY.useraction=Aucune action n'est requise.
+
+LTPA_CONFIG_ERROR=CWWKS4106E: Erreur dans la configuration LTPA. Impossible de cr\u00e9er ou de lire le fichier de cl\u00e9s LTPA : {0}
+LTPA_CONFIG_ERROR.explanation=Les cl\u00e9s LTPA n'ont pas pu \u00eatre lues ou cr\u00e9\u00e9es \u00e0 l'endroit sp\u00e9cifi\u00e9.
+LTPA_CONFIG_ERROR.useraction=Assurez-vous que l'emplacement indiqu\u00e9 dans le message est accessible au processus du serveur. Les \u00e9ventuelles donn\u00e9es FFDC (diagnostic de premier niveau) g\u00e9n\u00e9r\u00e9es peuvent r\u00e9v\u00e9ler qu'une erreur fatale s'est produite lors de la g\u00e9n\u00e9ration ou du chargement des cl\u00e9s.
+
+LTPA_KEYS_TO_LOAD=CWWKS4107A: Le fichier de cl\u00e9s LTPA ou la configuration ont \u00e9t\u00e9 modifi\u00e9s. Les cl\u00e9s LTPA seront recharg\u00e9es \u00e0 partir du fichier : {0}
+LTPA_KEYS_TO_LOAD.explanation=Les cl\u00e9s LTPA doivent \u00eatre recharg\u00e9es car le fichier de cl\u00e9s LTPA ou la configuration ont \u00e9t\u00e9 modifi\u00e9s.
+LTPA_KEYS_TO_LOAD.useraction=V\u00e9rifiez que tous les serveurs participant \u00e0 la connexion unique utilisent les m\u00eames cl\u00e9s et mot de passe LTPA.
+
+LTPA_KEY_CREATE_ERROR=CWWKS4108E: Le syst\u00e8me ne peut pas cr\u00e9er la cl\u00e9 LTPA.
+LTPA_KEY_CREATE_ERROR.explanation=La cl\u00e9 LTPA ne peut pas \u00eatre cr\u00e9\u00e9e.
+LTPA_KEY_CREATE_ERROR.useraction=Les \u00e9ventuelles donn\u00e9es FFDC (diagnostic de premier niveau) g\u00e9n\u00e9r\u00e9es peuvent r\u00e9v\u00e9ler qu'une erreur fatale s'est produite lors de la g\u00e9n\u00e9ration des cl\u00e9s.
+
+

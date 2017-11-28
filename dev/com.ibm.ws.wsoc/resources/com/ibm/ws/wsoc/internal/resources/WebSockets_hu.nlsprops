@@ -1,0 +1,230 @@
+###############################################################################
+# Copyright (c) 2002, 2013 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+
+
+#COMPONENTPREFIX CWWKH
+#COMPONENTNAMEFOR CWWKH WebSphere WebSocket
+#CMVCPATHNAME com.ibm.ws.wsoc-1.0/resources/com/ibm/ws/wsoc/internal/resources/WebSockets.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+
+invalid.endpointclass=CWWKH0001E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1ly vagy nem nyilv\u00e1nos, vagy nem konkr\u00e9t, vagy nem rendelkezik no-args konstruktorral.
+invalid.endpointclass.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lynak nyilv\u00e1nosnak \u00e9s konkr\u00e9tnak kell lennie, \u00e9s rendelkeznie kell egy nyilv\u00e1nos no-args konstruktorral.
+invalid.endpointclass.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt, hogy az legyen nyilv\u00e1nos \u00e9s konkr\u00e9t, tov\u00e1bb\u00e1 rendelkezzen egy nyilv\u00e1nos no-args konstruktorral. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+missing.annotation=CWWKH0002E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert mind az @onOpen, mind pedig az @onMessage feljegyz\u00e9s hi\u00e1nyzik a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban.
+missing.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, ha mind az @OnOpen, mind pedig az @onMessage hi\u00e1nyzik.
+missing.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt az @OnOpen \u00e9s/vagy @OnMessage feljegyz\u00e9s hozz\u00e1ad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanonepong.annotation=CWWKH0003E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert t\u00f6bb Pong \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus van megadva a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban.
+morethanonepong.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert t\u00f6bb Pong \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus van megadva az annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanonepong.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen pong \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanonebinary.annotation=CWWKH0004E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert t\u00f6bb bin\u00e1ris \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus van megadva a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban.
+morethanonebinary.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert t\u00f6bb bin\u00e1ris \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus van megadva az annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanonebinary.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen bin\u00e1ris \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+missing.msgtype.param=CWWKH0005E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert az @OnMessage met\u00f3dus a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban nem rendelkezik pong, bin\u00e1ris vagy sz\u00f6veg t\u00edpus\u00fa \u00fczenetparam\u00e9terrel.
+missing.msgtype.param.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert az @OnMessage met\u00f3dus nem rendelkezik pong, bin\u00e1ris vagy sz\u00f6veg t\u00edpus\u00fa \u00fczenetparam\u00e9terrel. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+missing.msgtype.param.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt az\u00e1ltal, hogy az @OnMessage met\u00f3dust vagy sz\u00f6veg, vagy bin\u00e1ris, vagy pedig pong t\u00edpus\u00fa \u00fczenetparam\u00e9terrel deklar\u00e1lja. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanonetext.annotation=CWWKH0006E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert t\u00f6bb sz\u00f6veg \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus van megadva a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban.
+morethanonetext.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert t\u00f6bb sz\u00f6veg \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus van megadva az annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanonetext.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen sz\u00f6veg \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dus megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.onopen.annotation=CWWKH0007E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnOpen met\u00f3dus a Session, EndpointConfig vagy @PathParam param\u00e9terekt\u0151l k\u00fcl\u00f6nb\u00f6z\u0151 param\u00e9terekkel rendelkezik.
+invalid.onopen.annotation.explanation=A rendszer \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust tal\u00e1lt az @OnOpen met\u00f3dusban. Az @OnOpen met\u00f3dus csak elhagyhat\u00f3 Session, elhagyhat\u00f3 EndpointConfig \u00e9s elhagyhat\u00f3 @PathParam param\u00e9terekkel rendelkezhet. 
+invalid.onopen.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt az\u00e1ltal, hogy elt\u00e1vol\u00edtja az \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust az @OnOpen met\u00f3dusb\u00f3l. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanoneclose.annotation=CWWKH0008E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert t\u00f6bb @OnClose met\u00f3dus van megadva a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. Az @OnClose met\u00f3dusok: {1} \u00e9s {2}.
+morethanoneclose.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert t\u00f6bb @OnClose met\u00f3dus van megadva az annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanoneclose.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen @OnClose met\u00f3dus megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.onclose.annotation=CWWKH0009E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnClose met\u00f3dus a Session, CloseReason vagy @PathParam param\u00e9terekt\u0151l k\u00fcl\u00f6nb\u00f6z\u0151 param\u00e9terekkel rendelkezik.
+invalid.onclose.annotation.explanation=A rendszer \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust tal\u00e1lt az @OnClose met\u00f3dusban. Az @OnClose met\u00f3dus csak elhagyhat\u00f3 Session, elhagyhat\u00f3 CloseReason \u00e9s elhagyhat\u00f3 @PathParam param\u00e9terekkel rendelkezhet. 
+invalid.onclose.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt az\u00e1ltal, hogy elt\u00e1vol\u00edtja az \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust az @OnClose met\u00f3dusb\u00f3l. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanoneerror.annotation=CWWKH0010E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert t\u00f6bb @OnError met\u00f3dus van megadva a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. Az @OnError met\u00f3dusok: {1} \u00e9s {2}.
+morethanoneerror.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert t\u00f6bb @OnError met\u00f3dus van megadva az annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanoneerror.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen @OnError met\u00f3dus megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.onerror.annotation=CWWKH0011E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnError met\u00f3dus a Throwable, Session vagy @PathParam param\u00e9terekt\u0151l k\u00fcl\u00f6nb\u00f6z\u0151 param\u00e9terekkel rendelkezik.
+invalid.onerror.annotation.explanation=\u00c9rv\u00e9nytelen param\u00e9tert\u00edpus tal\u00e1lhat\u00f3 az @OnError met\u00f3dusban. Az @OnError met\u00f3dusnak csak a k\u00f6telez\u0151 Throwable, elhagyhat\u00f3 Session \u00e9s elhagyhat\u00f3 @PathParam param\u00e9terei lehetnek. 
+invalid.onerror.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott ServerEndpoint oszt\u00e1lyt az @OnError met\u00f3dusban l\u00e9v\u0151 \u00e9rv\u00e9nytelen param\u00e9ter elt\u00e1vol\u00edt\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+missing.throwable=CWWKH0012E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnError met\u00f3dusb\u00f3l hi\u00e1nyzik a Throwable t\u00edpus\u00fa k\u00f6telez\u0151 param\u00e9ter.
+missing.throwable.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont \u00e9rv\u00e9nytelen, mert az @OnError met\u00f3dusb\u00f3l hi\u00e1nyzik a Throwable t\u00edpus\u00fa k\u00f6telez\u0151 param\u00e9ter. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+missing.throwable.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt az\u00e1ltal, hogy hozz\u00e1adja a Throwable t\u00edpus\u00fa k\u00f6telez\u0151 param\u00e9tert az @OnError met\u00f3dushoz. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.pong.annotation=CWWKH0013E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnMessage met\u00f3dus a(z) {2} \u00e9rv\u00e9nytelen param\u00e9terrel rendelkezik.
+invalid.pong.annotation.explanation=A rendszer \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust tal\u00e1lt a pong \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dusban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre.
+invalid.pong.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt az\u00e1ltal, hogy elt\u00e1vol\u00edtja az \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust az @OnMessage met\u00f3dusb\u00f3l. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanone.binary.param=CWWKH0014E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnMessage met\u00f3dus t\u00f6bb bin\u00e1ris \u00fczenett\u00edpus param\u00e9terrel rendelkezik.
+morethanone.binary.param.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert az @OnMessage met\u00f3dus t\u00f6bb bin\u00e1ris \u00fczenett\u00edpus param\u00e9terrel rendelkezik. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanone.binary.param.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen bin\u00e1ris \u00fczenett\u00edpus param\u00e9ter megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.decoderclass=CWWKH0015E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {2} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1ly {1} @OnMessage met\u00f3dus\u00e1ban haszn\u00e1lt {0} dek\u00f3der oszt\u00e1ly vagy nem nyilv\u00e1nos, vagy nem konkr\u00e9t, vagy nem rendelkezik no-args konstruktorral.
+invalid.decoderclass.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban haszn\u00e1lt dek\u00f3der oszt\u00e1lynak nyilv\u00e1nosnak \u00e9s konkr\u00e9tnak kell lennie, \u00e9s rendelkeznie kell egy nyilv\u00e1nos no-args konstruktorral.
+invalid.decoderclass.useraction=Jav\u00edtsa a dek\u00f3der oszt\u00e1lyt, hogy az legyen nyilv\u00e1nos \u00e9s konkr\u00e9t, tov\u00e1bb\u00e1 rendelkezzen egy nyilv\u00e1nos no-args konstruktorral. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanone.message.param=CWWKH0016E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnMessage met\u00f3dus t\u00f6bb {2} \u00fczenett\u00edpus param\u00e9terrel rendelkezik.
+morethanone.message.param.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert az @OnMessage met\u00f3dus t\u00f6bb \u00fczenett\u00edpus param\u00e9terrel rendelkezik. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanone.message.param.useraction=Jav\u00edtsa az @OnMessage met\u00f3dust az\u00e1ltal, hogy csak egy \u00fczenett\u00edpus param\u00e9tert ad meg a javax.websocket.OnMessage API dokument\u00e1ci\u00f3ja szerint. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.binary.param=CWWKH0017E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnMessage met\u00f3dus a(z) {2} \u00e9rv\u00e9nytelen param\u00e9terrel rendelkezik.
+invalid.binary.param.explanation=A rendszer \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust tal\u00e1lt a bin\u00e1ris \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dusban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre.
+invalid.binary.param.useraction=Jav\u00edtsa az @OnMessage met\u00f3dust az\u00e1ltal, hogy elt\u00e1vol\u00edtja az \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust a javax.websocket.OnMessage API dokument\u00e1ci\u00f3ja szerint. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+morethanone.text.param=CWWKH0018E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnMessage met\u00f3dus t\u00f6bb {2} sz\u00f6veg \u00fczenett\u00edpus param\u00e9terrel rendelkezik.
+morethanone.text.param.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert az @OnMessage met\u00f3dus t\u00f6bb sz\u00f6veg \u00fczenett\u00edpus param\u00e9terrel rendelkezik. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanone.text.param.useraction=Jav\u00edtsa az @OnMessage met\u00f3dust az\u00e1ltal, hogy csak egy sz\u00f6veg \u00fczenett\u00edpus param\u00e9tert ad meg a javax.websocket.OnMessage API dokument\u00e1ci\u00f3ja szerint. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.text.param=CWWKH0019E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} @OnMessage met\u00f3dus a(z) {2} \u00e9rv\u00e9nytelen param\u00e9terrel rendelkezik.
+invalid.text.param.explanation=A rendszer \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust tal\u00e1lt a sz\u00f6veg \u00fczenett\u00edpus\u00fa @OnMessage met\u00f3dusban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre.
+invalid.text.param.useraction=Jav\u00edtsa az @OnMessage met\u00f3dust az\u00e1ltal, hogy elt\u00e1vol\u00edtja az \u00e9rv\u00e9nytelen param\u00e9tert\u00edpust a javax.websocket.OnMessage API dokument\u00e1ci\u00f3ja szerint. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+missing.path.segment=CWWKH0020E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket kiszolg\u00e1l\u00f3 v\u00e9gpont ind\u00edt\u00e1sa k\u00f6zben. A(z) {1} met\u00f3dusban megadott {0} @PathParam param\u00e9ter nem rendelkezik a megfelel\u0151 \u00fatvonal szegmenssel a(z) {2} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 @ServerEndpoint URI-ban.
+missing.path.segment.explanation=A @PathParam param\u00e9ter nem rendelkezik a megfelel\u0151 \u00fatvonal szegmenssel a @ServerEndpoint URI-ban. 
+missing.path.segment.useraction=Jav\u00edtsa a @PathParam param\u00e9ter nev\u00e9t, hogy megegyezzen a @ServerEndpoint URI-ban l\u00e9v\u0151 valamelyik \u00fatvonal szegmenssel. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+missing.pathparam.value=CWWKH0021E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} met\u00f3dusban megadott {0} @PathParam feljegyz\u00e9sb\u0151l hi\u00e1nyzik a feljegyz\u00e9si \u00e9rt\u00e9k a(z) {2} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban.
+missing.pathparam.value.explanation=A @PathParam feljegyz\u00e9snek nincs \u00e9rt\u00e9ke. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre.
+missing.pathparam.value.useraction=Jav\u00edtsa a @PathParam feljegyz\u00e9st az\u00e1ltal, hogy hozz\u00e1adja az \u00e9rt\u00e9ket a feljegyz\u00e9shez. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.pathparam.type=CWWKH0022E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert a(z) {1} met\u00f3dusban megadott {0} @PathParam param\u00e9ter \u00e9rv\u00e9nytelen t\u00edpus\u00fa a(z) {2} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban.
+invalid.pathparam.type.explanation=A @PathParam param\u00e9ter t\u00edpusa \u00e9rv\u00e9nytelen. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre.
+invalid.pathparam.type.useraction=Jav\u00edtsa a @PathParam feljegyz\u00e9s t\u00edpus\u00e1t, hogy vagy karaktersorozat, vagy b\u00e1rmilyen Java primit\u00edvt\u00edpus, vagy pedig keretes v\u00e1ltozat legyen. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+mismatch.pathparam.type=CWWKH0023E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban l\u00e9v\u0151 {0} met\u00f3dus v\u00e9grehajt\u00e1sakor, mik\u00f6zben a rendszer a @PathParam adatait alak\u00edtotta \u00e1t {3} t\u00edpusra a(z) {2} param\u00e9ter indexn\u00e9l.
+mismatch.pathparam.type.explanation=A @PathParam param\u00e9ter \u00e1talak\u00edt\u00e1sa a ServerEndpoint URI-b\u00f3l sz\u00e1rmaz\u00f3 megfelel\u0151 szegmenssel meghi\u00fasult \u00e9rv\u00e9nytelen t\u00edpus miatt. A v\u00e9gponti met\u00f3dus nem ker\u00fclt sikeresen v\u00e9grehajt\u00e1sra.
+mismatch.pathparam.type.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a ServerEndpoint URI szegmens adatt\u00edpusa megegyezik a megfelel\u0151 @PathParam param\u00e9ter\u00e9vel.
+
+bytes.notavailable=CWWKH0024E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben, mert nincs t\u00f6bb el\u00e9rhet\u0151 byte olvas\u00e1sra.
+bytes.notavailable.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben, mert nincs t\u00f6bb el\u00e9rhet\u0151 byte olvas\u00e1sra.
+bytes.notavailable.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenet adatainak helyess\u00e9g\u00e9t.
+
+onmessage.notdefined=CWWKH0025E: Az \u00fcgyf\u00e9l \u00fczenetet k\u00fcld\u00f6tt a(z) {0} v\u00e9gpontnak, melynek az adott \u00fczenett\u00edpushoz nincs megadott @OnMessage met\u00f3dusa vagy MessageHandler szolg\u00e1ltat\u00e1sa.
+onmessage.notdefined.explanation=Nem lehet v\u00e9grehajtani a WebSocket \u00fcgyf\u00e9lk\u00e9r\u00e9st, mert az \u00fcgyf\u00e9l annak a kiszolg\u00e1l\u00f3 v\u00e9gpontnak k\u00fcldi az \u00fczenetet, melynek az adott \u00fczenett\u00edpushoz nincs megadott @OnMessage met\u00f3dusa vagy MessageHandler szolg\u00e1ltat\u00e1sa.
+onmessage.notdefined.useraction=Vagy \u00e9rtes\u00edtse az \u00fcgyfelet, vagy adja hozz\u00e1 az @OnMessage met\u00f3dust az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gponthoz, vagy pedig vegye fel a MessageHandler szolg\u00e1ltat\u00e1st, hogy ki tudja szolg\u00e1lni az \u00fcgyf\u00e9lk\u00e9r\u00e9st, \u00e9s telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+decoder.ioexception=CWWKH0026E: Nem siker\u00fclt a WebSocket \u00fcgyf\u00e9lk\u00e9r\u00e9s v\u00e9grehajt\u00e1sa, mert egy IOException kiv\u00e9tel t\u00f6rt\u00e9nt az onMessage met\u00f3dus h\u00edv\u00e1sakor a(z) {0} oszt\u00e1lyban a(z) {1} \u00fczenet adatainak visszafejt\u00e9se k\u00f6zben. A kiv\u00e9tel \u00fczenet: {2}
+decoder.ioexception.explanation=Nem siker\u00fclt a WebSocket \u00fcgyf\u00e9lk\u00e9r\u00e9s v\u00e9grehajt\u00e1sa, mert egy IOException kiv\u00e9tel t\u00f6rt\u00e9nt az onMessage met\u00f3dus h\u00edv\u00e1sakor az \u00fczenet adatainak visszafejt\u00e9se k\u00f6zben. 
+decoder.ioexception.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 \u00fczenet adatait \u00e9s ellen\u0151rizze a dek\u00f3dert.
+
+decoder.create.exception=CWWKH0027E: Nem siker\u00fclt a WebSocket k\u00e9r\u00e9s v\u00e9grehajt\u00e1sa, mert probl\u00e9ma jelentkezett a(z) {0} dek\u00f3der oszt\u00e1ly \u00faj p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1sakor. A kiv\u00e9tel: {1}
+decoder.create.exception.explanation=Nem siker\u00fclt a WebSocket k\u00e9r\u00e9s v\u00e9grehajt\u00e1sa, mert probl\u00e9ma jelentkezett a dek\u00f3der oszt\u00e1ly \u00faj p\u00e9ld\u00e1ny\u00e1nak l\u00e9trehoz\u00e1sakor.
+decoder.create.exception.useraction=Ellen\u0151rizze a dek\u00f3der oszt\u00e1lyt.
+
+fin1.processing.error=CWWKH0028E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban, mert hiba t\u00f6rt\u00e9nt az 1 FIN \u00e9rt\u00e9k feldolgoz\u00e1sakor.
+fin1.processing.error.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben, mert hiba t\u00f6rt\u00e9nt az 1 FIN \u00e9rt\u00e9k feldolgoz\u00e1sakor.
+fin1.processing.error.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenetkeret adatainak helyess\u00e9g\u00e9t.
+ 
+fin0.processing.error=CWWKH0029E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban, mert hiba t\u00f6rt\u00e9nt a 0 FIN \u00e9rt\u00e9k feldolgoz\u00e1sakor.
+fin0.processing.error.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben, mert hiba t\u00f6rt\u00e9nt a 0 FIN \u00e9rt\u00e9k feldolgoz\u00e1sakor.
+fin0.processing.error.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenetkeret adatainak helyess\u00e9g\u00e9t.
+
+invalid.opcode=CWWKH0030E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban egy \u00e9rv\u00e9nytelen {1} utas\u00edt\u00e1sk\u00f3d miatt az \u00fczenetkeretben.
+invalid.opcode.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben egy \u00e9rv\u00e9nytelen utas\u00edt\u00e1sk\u00f3d miatt az \u00fczenetkeretben.
+invalid.opcode.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenetkeret adatainak helyess\u00e9g\u00e9t.
+
+invalid.continue.opcode=CWWKH0031E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban egy nem fragment\u00e1lt \u00fczenethez tartoz\u00f3 \u00e9rv\u00e9nytelen folytat\u00e1si utas\u00edt\u00e1sk\u00f3d miatt.
+invalid.continue.opcode.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben egy nem fragment\u00e1lt \u00fczenethez tartoz\u00f3 \u00e9rv\u00e9nytelen folytat\u00e1si utas\u00edt\u00e1sk\u00f3d miatt.
+invalid.continue.opcode.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenetkeret adatainak helyess\u00e9g\u00e9t.  
+
+incorrect.maskflag=CWWKH0032E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban, mert a maszk param\u00e9ter nincs helyesen be\u00e1ll\u00edtva az \u00fczenetkeretben.
+incorrect.maskflag.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben, mert a maszk param\u00e9ter nincs helyesen be\u00e1ll\u00edtva az \u00fczenetkeretben.
+incorrect.maskflag.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenetkeret adatainak helyess\u00e9g\u00e9t. 
+
+invalid.maskflag.value=CWWKH0033E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban, mert a maszk param\u00e9ter nincs helyes \u00e9rt\u00e9kre be\u00e1ll\u00edtva.
+invalid.maskflag.value.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben, mert a maszk param\u00e9ter nincs helyes \u00e9rt\u00e9kre be\u00e1ll\u00edtva az \u00fczenetkeretben.
+invalid.maskflag.value.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenetkeret adatainak helyess\u00e9g\u00e9t.
+
+duplicate.uri=CWWKH0034E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert t\u00f6bb kiszolg\u00e1l\u00f3 v\u00e9gpont rendelkezik ugyanazzal a(z) {0} URI-val.
+duplicate.uri.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont \u00e9rv\u00e9nytelen, mert t\u00f6bb kiszolg\u00e1l\u00f3 v\u00e9gpont rendelkezik ugyanazzal az URI-val. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+duplicate.uri.useraction=Adjon meg egyedi ServerEndpoint URI-kat a WebSocket alkalmaz\u00e1sban. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.nonzero.opcode=CWWKH0035E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban egy nem-els\u0151 kereten l\u00e9v\u0151 \u00e9rv\u00e9nytelen nem-nulla utas\u00edt\u00e1sk\u00f3d miatt.
+invalid.nonzero.opcode.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt egy bej\u00f6v\u0151 WebSocket \u00fczenet olvas\u00e1sa k\u00f6zben egy nem-els\u0151 kereten l\u00e9v\u0151 \u00e9rv\u00e9nytelen nem-nulla utas\u00edt\u00e1sk\u00f3d miatt.
+invalid.nonzero.opcode.useraction=Ellen\u0151rizze a bej\u00f6v\u0151 WebSocket \u00fczenetkeret adatainak helyess\u00e9g\u00e9t.
+
+morethanoneonopen.annotation=CWWKH0036E: Kiv\u00e9tel t\u00f6rt\u00e9nt a WebSocket alkalmaz\u00e1s telep\u00edt\u00e9se k\u00f6zben, mert t\u00f6bb @OnOpen met\u00f3dus van megadva a(z) {0} annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban.
+morethanoneonopen.annotation.explanation=Az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1ly \u00e9rv\u00e9nytelen, mert t\u00f6bb @OnOpen met\u00f3dus van megadva az annot\u00e1ci\u00f3val ell\u00e1tott v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem ker\u00fclt sikeresen telep\u00edt\u00e9sre. 
+morethanoneonopen.annotation.useraction=Jav\u00edtsa az annot\u00e1ci\u00f3val ell\u00e1tott kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyt csak egyetlen @OnOpen met\u00f3dus megad\u00e1s\u00e1val. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+invalid.message.toobig=CWWKH0037E: \u00c9rv\u00e9nytelen bej\u00f6v\u0151 WebSocket \u00fczenet a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont oszt\u00e1lyban. A bej\u00f6v\u0151 \u00fczenet {1} m\u00e9rettel rendelkezik, amely nagyobb, mint a(z) {3} @OnMessage feljegyz\u00e9si met\u00f3dusban megadott {2} maxMessageSize \u00e9rt\u00e9k.
+invalid.message.toobig.explanation=A WebSocket \u00fczenet m\u00e9rete nem haladhatja meg az @OnMessage feljegyz\u00e9sben megadott maxMessageSize \u00e9rt\u00e9ket.
+invalid.message.toobig.useraction=\u00c1ll\u00edtsa be az \u00fcgyfelet az @OnMessage met\u00f3dusban megadott maxMessageSize \u00e9rt\u00e9kn\u00e9l kisebb m\u00e9ret\u0171 WebSocket \u00fczenetek k\u00fcld\u00e9s\u00e9re, vagy n\u00f6velje a maxMessageSize \u00e9rt\u00e9ket az @OnMessage met\u00f3dusban, majd telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+maxidletimeout.closesession=CWWKH0038E: A WebSocket munkamenet {0} m\u00e1sodpercig inakt\u00edv volt. A kapcsolat lez\u00e1r\u00e1sa.
+maxidletimeout.closesession.explanation=A WebSocket munkamenet t\u00fall\u00e9pte az id\u0151korl\u00e1tot. A WebSocket munkamenet akkor v\u00e1lik inakt\u00edvv\u00e1, amikor a maxIdleTimeout be\u00e1ll\u00edt\u00e1s \u00e1ltal megadott m\u00e1sodpercen bel\u00fcl nem t\u00f6rt\u00e9nik \u00fczenetek k\u00fcld\u00e9se \u00e9s fogad\u00e1sa.
+maxidletimeout.closesession.useraction=Ellen\u0151rizze, hogy az \u00fcgyf\u00e9l mi\u00e9rt nem k\u00fcld vagy fogad \u00fczeneteket. Sz\u00fcks\u00e9g eset\u00e9n n\u00f6velje a maxIdleTimeout be\u00e1ll\u00edt\u00e1st a Session.setMaxIdleTimeout() API haszn\u00e1lat\u00e1val.
+
+client.invalid.returncode=CWWKH0039E: Amikor egy kimen\u0151 WebSocket k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre a c\u00e9lkiszolg\u00e1l\u00f3n l\u00e9v\u0151 {1} v\u00e9gpontra, egy {0} v\u00e1lasz \u00e9rkezett egy 101-es v\u00e1lasz helyett.
+client.invalid.returncode.explanation=A kimen\u0151 WebSocket m\u0171veletek egy 101-es v\u00e1laszk\u00f3dot ig\u00e9nyelnek a WebSocket m\u0171veletekhez.
+client.invalid.returncode.useraction=Az \u00e9rv\u00e9nytelen v\u00e1laszk\u00f3d seg\u00edts\u00e9g\u00e9vel \u00e1llap\u00edtsa meg, hogy a c\u00e9lv\u00e9gpont egy \u00e9rv\u00e9nyes \u00e9s fut\u00f3 WebSocket v\u00e9gpont-e, valamint \u00e1llap\u00edtsa meg a hiba ok\u00e1t a kimen\u0151 WebSocket k\u00e9r\u00e9sben. 
+
+client.invalid.acceptkey=CWWKH0040E: A c\u00e9lkiszolg\u00e1l\u00f3 egy \u00e9rv\u00e9nytelen WebSocket fogad\u00e1si kulccsal v\u00e1laszolt egy kimen\u0151 WebSocket k\u00e9r\u00e9s elk\u00fcld\u00e9sekor a(z) {1} v\u00e9gpontra.  
+client.invalid.acceptkey.explanation=A kimen\u0151 WebSocket m\u0171veletek megk\u00f6vetelik, hogy a c\u00e9lkiszolg\u00e1l\u00f3 egy \u00e9rv\u00e9nyes WebSocket fogad\u00e1si kulcsot adjon vissza a WebSocket m\u0171veletekhez.
+client.invalid.acceptkey.useraction=Ellen\u0151rizze, hogy a c\u00e9lkiszolg\u00e1l\u00f3 megfelel-e a WebSocket protokollnak.
+
+client.invalid.endpoint=CWWKH0041E: Az \u00e9rv\u00e9nytelen {0} v\u00e9gpont lett megadva egy kimen\u0151 WebSocket k\u00e9r\u00e9s sor\u00e1n.
+client.invalid.endpoint.explanation=Egy kimen\u0151 WebSocket k\u00e9r\u00e9shez egy \u00e9rv\u00e9nyes v\u00e9gpont sz\u00fcks\u00e9ges.
+client.invalid.endpoint.useraction=Ellen\u0151rizze, hogy a WebSocket API h\u00edv\u00e1s connectToServer met\u00f3dus\u00e1ban a ClientEndpoint param\u00e9ter egy annot\u00e1ci\u00f3val ell\u00e1tott \u00fcgyf\u00e9l v\u00e9gpont-e. 
+
+client.invalid.scheme=CWWKH0042E: Egy \u00e9rv\u00e9nytelen {0} s\u00e9ma ker\u00fclt felhaszn\u00e1l\u00e1sra a kimen\u0151 \u00fcgyf\u00e9lkapcsolathoz. A WebSocket protokoll \u00e9rv\u00e9nyes s\u00e9m\u00e1i ws vagy wss.
+client.invalid.scheme.explanation=Az \u00e9rv\u00e9nyes WebSocket s\u00e9m\u00e1k a ws vagy a wss.
+client.invalid.scheme.useraction=Haszn\u00e1ljon egy \u00e9rv\u00e9nyes s\u00e9manevet a kimen\u0151 WebSocket k\u00e9r\u00e9sekhez.
+
+client.invalid.configurator=CWWKH0043E: A(z) {0} Configurator oszt\u00e1ly nem ker\u00fclt l\u00e9trehoz\u00e1sra egy kimen\u0151 k\u00e9r\u00e9s sor\u00e1n. A kiv\u00e9tel: {1}. 
+client.invalid.configurator.explanation=A Configuration oszt\u00e1ly nem ker\u00fclt l\u00e9trehoz\u00e1sra egy kimen\u0151 k\u00e9r\u00e9s sor\u00e1n, val\u00f3sz\u00edn\u0171leg az\u00e9rt, mert a Configurator oszt\u00e1ly nyilv\u00e1nos, argumentumok n\u00e9lk\u00fcli konstruktora nem l\u00e9tezik, vagy nem volt el\u00e9rhet\u0151.
+client.invalid.configurator.useraction=Ellen\u0151rizze a Configurator oszt\u00e1ly helyess\u00e9g\u00e9t, valamint azt, hogy az oszt\u00e1ly rendelkezik egy el\u00e9rhet\u0151 nyilv\u00e1nos, argumentumok n\u00e9lk\u00fcli konstruktorral.
+ 
+client.connection.error=CWWKH0044E: A(z) {0} v\u00e9gpont nem volt feldolgozhat\u00f3 egy kimen\u0151 WebSocket k\u00e9r\u00e9s sor\u00e1n.  A kiv\u00e9tel: {1}.
+client.connection.error.explanation=A kiv\u00e9tel akkor t\u00f6rt\u00e9nt, amikor a v\u00e9gpont megk\u00eds\u00e9relt csatlakozni a c\u00e9lkiszolg\u00e1l\u00f3hoz egy kimen\u0151 WebSocket k\u00e9r\u00e9s sor\u00e1n.
+client.connection.error.useraction=A kiv\u00e9tel r\u00e9szleteinek seg\u00edts\u00e9g\u00e9vel \u00e1llap\u00edtsa meg \u00e9s jav\u00edtsa a probl\u00e9m\u00e1t.
+
+client.invalid.endpointclass=CWWKH0045E: A(z) {0} oszt\u00e1ly \u00e9rv\u00e9nytelen, de egy kimen\u0151 WebSocket k\u00e9r\u00e9s sor\u00e1n lett megadva.
+client.invalid.endpointclass.explanation=Egy kimen\u0151 WebSocket k\u00e9r\u00e9shez egy \u00e9rv\u00e9nyes v\u00e9gponti oszt\u00e1ly sz\u00fcks\u00e9ges.
+client.invalid.endpointclass.useraction=Ellen\u0151rizze, hogy a WebSocket API h\u00edv\u00e1s connectToServer met\u00f3dus\u00e1ban haszn\u00e1lt Endpoint param\u00e9ter kiterjeszt-e egy WebSocket v\u00e9gponti oszt\u00e1lyt.
+
+adding.endpoint=CWWKH0046I: WebSocket kiszolg\u00e1l\u00f3 v\u00e9gpont hozz\u00e1ad\u00e1sa a k\u00f6vetkez\u0151 URI-val: {0}
+adding.endpoint.explanation=A WebSocket kiszolg\u00e1l\u00f3 v\u00e9gpont a megadott URI-val el\u00e9rhet\u0151 a WebSocket \u00fcgyf\u00e9l sz\u00e1m\u00e1ra a haszn\u00e1lathoz.
+adding.endpoint.useraction=Nincs teend\u0151. 
+
+invalid.endpoint.context=CWWKH0047E: A WebSocket kiszolg\u00e1l\u00f3 v\u00e9gpontok {0} kontextus \u00fatvonallal nem \u00e9rhet\u0151k el az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra.
+invalid.endpoint.context.explanation=A WebSocket kiszolg\u00e1l\u00f3 v\u00e9gpontok a megadott kontextus \u00fatvonallal nem \u00e9rhet\u0151k el a WebSocket \u00fcgyf\u00e9l kiszolg\u00e1l\u00e1s\u00e1hoz.
+invalid.endpoint.context.useraction=Inform\u00e1ci\u00f3k\u00e9rt arr\u00f3l, hogy a kiszolg\u00e1l\u00f3 v\u00e9gpontok mi\u00e9rt nem \u00e9rhet\u0151k el, tanulm\u00e1nyozza a Liberty profilkiszolg\u00e1l\u00f3 napl\u00f3it \u00e9s nyomk\u00f6vet\u00e9s\u00e9t.
+
+client.connection.nossl=CWWKH0048E: A(z) {0} v\u00e9gpont nem dolgozhat\u00f3 fel egy kimen\u0151 biztons\u00e1gos WebSocket k\u00e9r\u00e9s sor\u00e1n, mert a biztons\u00e1g nem enged\u00e9lyezett.
+client.connection.nossl.explanation=A kimen\u0151 biztons\u00e1gos WebSocket k\u00e9r\u00e9sek feldolgoz\u00e1s\u00e1hoz a biztons\u00e1got enged\u00e9lyezni kell.
+client.connection.nossl.useraction=Enged\u00e9lyezze a biztons\u00e1got.
+
+endpoint.addsclosed=CWWKH0049E: Nem vehet\u0151k fel tov\u00e1bbi WebSocket v\u00e9gpontok a WebSocket alkalmaz\u00e1s indul\u00e1sa ut\u00e1n.
+endpoint.addsclosed.explanation=A WebSocket v\u00e9gpontokat a WebSocket alkalmaz\u00e1s indul\u00e1sa el\u0151tt kell hozz\u00e1adni.
+endpoint.addsclosed.useraction=Vegyen fel WebSocket v\u00e9gpontokat a WebSocket alkalmaz\u00e1s ind\u00edt\u00e1sa el\u0151tt.
+
+endpoint.creation.error=CWWKH0050E: A(z) {0} v\u00e9gponti oszt\u00e1ly nem hozhat\u00f3 l\u00e9tre.  A kiv\u00e9tel: {1}.
+endpoint.creation.error.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt v\u00e9gpont oszt\u00e1ly l\u00e9trehoz\u00e1sa sor\u00e1n.
+endpoint.creation.error.useraction=A kiv\u00e9tel r\u00e9szleteinek seg\u00edts\u00e9g\u00e9vel \u00e1llap\u00edtsa meg \u00e9s jav\u00edtsa a probl\u00e9m\u00e1t.
+
+endpoint.instance.error=CWWKH0051E: A kiszolg\u00e1l\u00f3 a k\u00f6vetkez\u0151 kiv\u00e9tel miatt nem tudja el\u00e9rni a(z) {0} v\u00e9gpontoszt\u00e1lyt: {1}
+endpoint.instance.error.explanation=Amikor a kiszolg\u00e1l\u00f3 k\u00eds\u00e9rletet tett a megadott v\u00e9gpontoszt\u00e1ly el\u00e9r\u00e9s\u00e9re, akkor hiba t\u00f6rt\u00e9nt.
+endpoint.instance.error.useraction=A v\u00e9gpontoszt\u00e1ly el\u00e9rhetetlens\u00e9gi ok\u00e1nak meghat\u00e1roz\u00e1sa \u00e9rdek\u00e9ben tekintse \u00e1t a kiv\u00e9tel r\u00e9szleteit, majd jav\u00edtsa ki a probl\u00e9m\u00e1t.
+
+missingslashornull.uri=CWWKH0052E: Kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {0} kiszolg\u00e1l\u00f3 v\u00e9gpont telep\u00edt\u00e9se/ind\u00edt\u00e1sa sor\u00e1n, uri: "{1}". A v\u00e9gpont URI null vagy nem / karakterrel kezd\u0151dik.
+missingslashornull.uri.explanation=A kiszolg\u00e1l\u00f3 v\u00e9gpont (ServerEndpoint) \u00e9rv\u00e9nytelen, mivel a v\u00e9gpont URI null vagy nem / karakterrel kezd\u0151dik a v\u00e9gpont oszt\u00e1lyban. A WebSocket alkalmaz\u00e1s nem \u00e9rhet\u0151 el k\u00e9r\u00e9sek sz\u00e1m\u00e1ra. 
+missingslashornull.uri.useraction=Hat\u00e1rozzon meg egy nem null v\u00e9gpont URI azonos\u00edt\u00f3t, amely a / karakterrel kezd\u0151dik. Miut\u00e1n megoldotta a probl\u00e9m\u00e1t, telep\u00edtse \u00fajra az alkalmaz\u00e1st.
+
+
+

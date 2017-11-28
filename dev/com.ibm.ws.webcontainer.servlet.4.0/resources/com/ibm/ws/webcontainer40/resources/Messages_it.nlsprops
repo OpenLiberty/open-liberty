@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+#CMVCPATHNAME 
+#COMPONENTPREFIX CWWWC
+#COMPONENTNAMEFOR CWWWC Servlet Engine
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# --------------------------------
+
+# Since servlet 4.0.  Use the registered and reserved prefix CWWWC from now on.  
+# 0001 - 0199 for Base
+# 0200 - 0299 for Servlet 3.0
+# 0300 - 0399 for Servlet 3.1
+# 0400 - 0499 for Servlet 4
+name.is.null=CWWWC0400E: Un nome attributo, o nome parametro iniziale, \u00e8 null.
+name.is.null.explanation=Questo \u00e8 un errore dell'applicazione.  Il nome \u00e8 null in un contesto getAttribute(), setAttribute(), getInitParameter() o setInitParameter().
+name.is.null.useraction=Aggiornare il nome dell'attributo, o nome parametro iniziale, con un valore non null.
+
+# -----------------------------------------------
+unsupported.response.encoding.[{0}]=CWWWC0401E: Impossibile impostare la codifica del carattere risposta: [{0}].
+unsupported.response.encoding.[{0}].explanation=La codifica risposta specificata nella risposta non \u00e8 valida. Questo \u00e8 un errore dell'applicazione.
+unsupported.response.encoding.[{0}].useraction=Esaminare i log per determinare se la codifica specificata \u00e8 valida.
+

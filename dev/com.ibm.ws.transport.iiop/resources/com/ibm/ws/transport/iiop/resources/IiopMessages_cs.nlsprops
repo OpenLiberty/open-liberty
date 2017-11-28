@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.transport.iiop/resources/com/ibm/ws/transport/iiop/IiopMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKI
+#COMPONENTNAMEFOR CWWKI WebSphere Application Server IIOP Transport
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+NAME_SERVER_AVAILABLE=CWWKI0001I: Server n\u00e1zv\u016f CORBA je nyn\u00ed dostupn\u00fd v {0}.
+NAME_SERVER_AVAILABLE.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+NAME_SERVER_AVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+NAME_SERVER_UNAVAILABLE=CWWKI0002I: Server n\u00e1zv\u016f CORBA ji\u017e nen\u00ed dostupn\u00fd v {0}.
+NAME_SERVER_UNAVAILABLE.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+NAME_SERVER_UNAVAILABLE.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+#do not translate keyStore
+PORT_ZERO=CWWKI0003E: Po\u017eadavek na zabezpe\u010den\u00fd server na hostiteli {0} selhal, proto\u017ee aktu\u00e1ln\u00ed konfigurace nem\u00e1 aktivovan\u00e9 zabezpe\u010den\u00ed. Mus\u00edte nakonfigurovat Common Secure Interoperability Version 2 (CSIv2) na stran\u011b klienta (odchoz\u00ed) vlo\u017een\u00edm prvku keyStore a p\u0159id\u00e1n\u00edm p\u0159\u00edslu\u0161n\u00e9 verze funkce appSecurity na server nebo p\u0159\u00edslu\u0161n\u00e9 verze funkce appSecurityClient do kontejneru aplika\u010dn\u00edho klienta. 
+PORT_ZERO.explanation= Po\u017eadavek na server na indikovan\u00e9m hostiteli selhal. Server, kter\u00e9mu je po\u017eadavek odes\u00edl\u00e1n, m\u00e1 aktivovan\u00e9 zabezpe\u010den\u00ed CSIv2, ale aktu\u00e1ln\u00ed konfigurace nikoli. Klient p\u0159ipojuj\u00edc\u00ed se k tomuto serveru mus\u00ed m\u00edt tak\u00e9 nakonfigurovan\u00e9 CSIv2 a zabezpe\u010den\u00ed SSL (Secure Sockets Layer).
+PORT_ZERO.useraction= Mus\u00edte nakonfigurovat Common Secure Interoperability Version 2 (CSIv2) na stran\u011b klienta (odchoz\u00ed) vlo\u017een\u00edm prvku keyStore a p\u0159id\u00e1n\u00edm p\u0159\u00edslu\u0161n\u00e9 verze funkce appSecurity na server nebo p\u0159\u00edslu\u0161n\u00e9 verze funkce appSecurityClient do kontejneru aplika\u010dn\u00edho klienta. Na z\u00e1klad\u011b dokumentace ur\u010dete aktu\u00e1ln\u00ed verzi funkc\u00ed appSecurity nebo appSecurityClient pro p\u0159id\u00e1n\u00ed k va\u0161\u00ed konfiguraci a jak\u00e9koli po\u017eadovan\u00e9 konfiguraci. 

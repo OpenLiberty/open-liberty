@@ -1,0 +1,144 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMFT
+#COMPONENTNAMEFOR CWMFT MicroProfile FaultTolerance API
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit:
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by FaultTolerance CDI Auto Feature -  range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#An asynchronous message does not return Future.
+asynchronous.class.not.returning.future.CWMFT5000E=CWMFT5000E: \u5f02\u6b65\u65b9\u6cd5 {0} \u6ca1\u6709\u8fd4\u56de\u7c7b\u578b Future\u3002
+asynchronous.class.not.returning.future.CWMFT5000E.explanation=\u4f7f\u7528 org.eclipse.microprofile.faulttolerance.Asynchronous \u6ce8\u91ca\u7684\u7c7b\u4e2d\u7684\u6240\u6709\u65b9\u6cd5\u5fc5\u987b\u5177\u6709\u53ef\u901a\u8fc7 java.util.concurrent.Future \u5206\u914d\u7684\u8fd4\u56de\u7c7b\u578b\u3002
+asynchronous.class.not.returning.future.CWMFT5000E.useraction=\u66f4\u65b0\u8fd4\u56de\u7c7b\u578b\u3002
+
+asynchronous.method.not.returning.future.CWMFT5001E=CWMFT5001E: \u5f02\u6b65\u65b9\u6cd5 {0} \u6ca1\u6709\u8fd4\u56de\u7c7b\u578b Future\u3002
+asynchronous.method.not.returning.future.CWMFT5001E.explanation=\u4f7f\u7528 org.eclipse.microprofile.faulttolerance.Asynchronous \u6ce8\u91ca\u7684\u6240\u6709\u65b9\u6cd5\u5fc5\u987b\u5177\u6709\u53ef\u901a\u8fc7 java.util.concurrent.Future \u5206\u914d\u7684\u8fd4\u56de\u7c7b\u578b\u3002
+asynchronous.method.not.returning.future.CWMFT5001E.useraction=\u66f4\u65b0\u8fd4\u56de\u7c7b\u578b\u3002
+
+#A fallback method does not match the return type of the method that falls back to it.
+fallback.policy.return.type.not.match.CWMFT5002E=CWMFT5002E: \u56de\u9000\u65b9\u6cd5 {0} \u5177\u6709\u9519\u8bef\u8fd4\u56de\u7c7b\u578b\u3002\u8be5\u8fd4\u56de\u7c7b\u578b\u5fc5\u987b\u4e0e\u65b9\u6cd5 {1} \u7684\u8fd4\u56de\u7c7b\u578b\u5339\u914d\u3002
+fallback.policy.return.type.not.match.CWMFT5002E.explanation=\u56de\u9000\u65b9\u6cd5\u7684\u8fd4\u56de\u7c7b\u578b\u5fc5\u987b\u4e0e\u5b83\u5904\u7406\u7684\u65b9\u6cd5\u7684\u8fd4\u56de\u7c7b\u578b\u76f8\u540c\u3002
+fallback.policy.return.type.not.match.CWMFT5002E.useraction=\u66f4\u65b0\u8fd4\u56de\u7c7b\u578b\u3002
+
+#A fallback method that should exist cannot be found.
+fallback.method.not.found.CWMFT5003E=CWMFT5003E: \u5728\u7c7b {0} \u4e2d\u627e\u4e0d\u5230\u5e26\u6709\u53c2\u6570 {2} \u7684\u56de\u9000\u65b9\u6cd5 {1}\u3002
+fallback.method.not.found.CWMFT5003E.explanation=\u5df2\u9488\u5bf9\u65b9\u6cd5 {1} \u58f0\u660e\u56de\u9000\u65b9\u6cd5\u3002\u4f46\u662f\uff0c\u6b64\u65b9\u6cd5\u4e0d\u5728\u7c7b {0} \u4e2d\u3002
+fallback.method.not.found.CWMFT5003E.useraction=\u79fb\u9664\u56de\u9000\u6ce8\u91ca\u6216\u6dfb\u52a0\u7f3a\u5931\u7684\u65b9\u6cd5\u3002
+
+#A security exception was thrown while trying to create a fallback policy.
+security.exception.acquiring.fallback.method.CWMFT5004E=CWMFT5004E: \u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u5c1d\u8bd5\u5904\u7406\u56de\u9000\u6ce8\u91ca\u65f6\u53d1\u751f\u4e86\u5b89\u5168\u6027\u5f02\u5e38\u3002
+security.exception.acquiring.fallback.method.CWMFT5004E.explanation=\u4e3a\u521b\u5efa\u56de\u9000\u7b56\u7565\uff0c\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u9700\u8981\u7528\u4e8e\u83b7\u53d6\u548c\u68c0\u67e5 Java \u65b9\u6cd5\u7684\u8bb8\u53ef\u6743\u3002
+security.exception.acquiring.fallback.method.CWMFT5004E.useraction=\u67e5\u770b\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u7684\u5b89\u5168\u7b56\u7565\u5e76\u63d0\u4f9b\u76f8\u5e94\u8bb8\u53ef\u6743\u3002
+
+#A problem occurred while converting a system property {0} to type {1}. The raw string value is {2}. The exception is {3}.
+conversion.error.CWMFT5005E=CWMFT5005E: \u5c06\u7cfb\u7edf\u5c5e\u6027 {0} \u8f6c\u6362\u4e3a\u7c7b\u578b {1} \u65f6\u53d1\u751f\u4e86\u95ee\u9898\u3002\u539f\u59cb\u5b57\u7b26\u4e32\u503c\u4e3a {2}\u3002\u5f02\u5e38\u4e3a {3}\u3002
+conversion.error.CWMFT5005E.explanation=\u901a\u8fc7\u7cfb\u7edf\u5c5e\u6027\u63d0\u4f9b\u7684\u6240\u6709\u914d\u7f6e\u503c\u5fc5\u987b\u53ef\u8f6c\u6362\u4e3a\u76f8\u5e94\u7c7b\u578b\u3002\u4f8b\u5982\uff0c\u4f7f\u7528 Long.valueOf(String)\u3002
+conversion.error.CWMFT5005E.useraction=\u68c0\u67e5\u6240\u6307\u5b9a\u503c\u5bf9\u4e8e\u5b83\u8981\u8986\u76d6\u7684\u5c5e\u6027\u7c7b\u578b\u662f\u5426\u4e3a\u6b63\u786e\u683c\u5f0f\u3002
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}. The exception is {2}.
+conversion.error.CWMFT5006E=CWMFT5006E: \u5c06\u7cfb\u7edf\u5c5e\u6027\u8f6c\u6362\u4e3a\u7c7b\u578b {0} \u65f6\u53d1\u751f\u4e86\u95ee\u9898\u3002\u539f\u59cb\u5b57\u7b26\u4e32\u503c\u4e3a {1}\u3002\u5f02\u5e38\u4e3a {2}\u3002
+conversion.error.CWMFT5006E.explanation=\u901a\u8fc7\u7cfb\u7edf\u5c5e\u6027\u63d0\u4f9b\u7684\u6240\u6709\u914d\u7f6e\u503c\u5fc5\u987b\u53ef\u8f6c\u6362\u4e3a\u76f8\u5e94\u7c7b\u578b\u3002\u4f8b\u5982\uff0c\u4f7f\u7528 Long.valueOf(String)\u3002
+conversion.error.CWMFT5006E.useraction=\u68c0\u67e5\u6240\u6307\u5b9a\u503c\u5bf9\u4e8e\u5b83\u8981\u8986\u76d6\u7684\u5c5e\u6027\u7c7b\u578b\u662f\u5426\u4e3a\u6b63\u786e\u683c\u5f0f\u3002
+
+#A problem occurred while converting a system property to type {0}. The raw string value is {1}.
+conversion.error.CWMFT5007E=CWMFT5007E: \u5c06\u7cfb\u7edf\u5c5e\u6027\u8f6c\u6362\u4e3a\u7c7b\u578b {0} \u65f6\u53d1\u751f\u4e86\u95ee\u9898\u3002\u539f\u59cb\u5b57\u7b26\u4e32\u503c\u4e3a {1}\u3002
+conversion.error.CWMFT5007E.explanation=\u901a\u8fc7\u7cfb\u7edf\u5c5e\u6027\u63d0\u4f9b\u7684\u6240\u6709\u914d\u7f6e\u503c\u5fc5\u987b\u53ef\u8f6c\u6362\u4e3a\u76f8\u5e94\u7c7b\u578b\u3002\u4f8b\u5982\uff0c\u4f7f\u7528 Long.valueOf(String)\u3002
+conversion.error.CWMFT5007E.useraction=\u68c0\u67e5\u6240\u6307\u5b9a\u503c\u5bf9\u4e8e\u5b83\u8981\u8986\u76d6\u7684\u5c5e\u6027\u7c7b\u578b\u662f\u5426\u4e3a\u6b63\u786e\u683c\u5f0f\u3002
+
+#The value parameter on the Fallback is not valid.
+fallback.policy.invalid.CWMFT5008E=CWMFT5008E: \u65b9\u6cd5 {0} \u7684 Fallback \u7b56\u7565\u65e0\u6548\uff0c\u56e0\u4e3a FallbackHandler \u5b9e\u73b0\u7c7b {1} \u7684\u7c7b\u578b\u5fc5\u987b\u4e0e\u539f\u59cb\u65b9\u6cd5 {3} \u4e0a\u7684\u8fd4\u56de\u7c7b\u578b {2} \u517c\u5bb9\u3002
+fallback.policy.invalid.CWMFT5008E.explanation=FallbackHandler \u5b9e\u73b0\u7684\u7c7b\u578b\u5fc5\u987b\u4e0e\u539f\u59cb\u65b9\u6cd5\u7684\u8fd4\u56de\u7c7b\u578b\u517c\u5bb9\u3002
+fallback.policy.invalid.CWMFT5008E.useraction=\u66f4\u65b0 FallbackHandler \u5b9e\u73b0\u7c7b\u7684\u7c7b\u578b\u4ee5\u4f7f\u5176\u4e0e\u539f\u59cb\u65b9\u6cd5\u7684\u8fd4\u56de\u7c7b\u578b\u517c\u5bb9\u3002
+
+
+#The fallback policies are conflicting.
+fallback.policy.conflicts.CWMFT5009E=CWMFT5009E: \u65b9\u6cd5 {0} \u7684 Fallback \u7b56\u7565\u65e0\u6548\uff0c\u56e0\u4e3a\u540c\u65f6\u6307\u5b9a\u4e86 FallbackHandler \u7c7b {1} \u548c fallbackMethod {2}\u3002\u4ec5\u5e94\u6307\u5b9a\u5176\u4e2d\u4e00\u9879\u3002
+fallback.policy.conflicts.CWMFT5009E.explanation=\u5e94\u8bbe\u7f6e fallbackMethod \u6216 value\uff0c\u4f46\u4e0d\u5e94\u540c\u65f6\u8bbe\u7f6e\u4e24\u8005\u3002
+fallback.policy.conflicts.CWMFT5009E.useraction=\u4ece Fallback \u6ce8\u91ca\u4e2d\u79fb\u9664 fallbackMethod \u6216 value\u3002
+
+#Incorrect value on FT Retry parameters
+retry.parameter.invalid.value.CWMFT5010E=CWMFT5010E: {2} \u7684 Retry \u7b56\u7565\u53c2\u6570 {0} \u503c {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u5b83\u5fc5\u987b\u5927\u4e8e\u6216\u7b49\u4e8e {3}\u3002
+retry.parameter.invalid.value.CWMFT5010E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u6240\u914d\u7f6e\u503c\uff08\u5982\u679c\u5df2\u5bf9 Retry \u7b56\u7565\u53c2\u6570\u8fdb\u884c\u914d\u7f6e\uff09\u65e0\u6548\u3002
+retry.parameter.invalid.value.CWMFT5010E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT Timeout parameters
+timeout.parameter.invalid.value.CWMFT5011E=CWMFT5011E: {1} \u4e0a\u6307\u5b9a\u7684 Timeout \u503c {0} \u65e0\u6548\uff0c\u56e0\u4e3a\u8be5\u503c\u5fc5\u987b\u5927\u4e8e\u6216\u7b49\u4e8e 0\u3002
+timeout.parameter.invalid.value.CWMFT5011E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u6240\u914d\u7f6e\u503c\uff08\u5982\u679c\u5df2\u5bf9 Timeout \u7b56\u7565\u503c\u53c2\u6570\u8fdb\u884c\u914d\u7f6e\uff09\u65e0\u6548\u3002
+timeout.parameter.invalid.value.CWMFT5011E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E=CWMFT5012E: {2} \u7684 CircuitBreaker \u7b56\u7565\u53c2\u6570 {0} \u503c {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u8be5\u53c2\u6570\u503c\u4e0d\u80fd\u4e3a\u8d1f\u6570\u3002
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u6240\u914d\u7f6e\u503c\uff08\u5982\u679c\u5df2\u5bf9 delay CircuitBreaker \u7b56\u7565\u53c2\u6570\u8fdb\u884c\u914d\u7f6e\uff09\u65e0\u6548\u3002
+circuitBreaker.parameter.delay.invalid.value.CWMFT5012E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E=CWMFT5013E: {2} \u7684 CircuitBreaker \u7b56\u7565\u53c2\u6570 {0} \u503c {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u8be5\u503c\u5fc5\u987b\u5728 0 \u5230 1 \u4e4b\u95f4\uff08\u5305\u62ec 0 \u548c 1\uff09\u3002
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u6240\u914d\u7f6e\u503c\uff08\u5982\u679c\u5df2\u5bf9 failureRatio CircuitBreaker \u7b56\u7565\u53c2\u6570\u8fdb\u884c\u914d\u7f6e\uff09\u65e0\u6548\u3002
+circuitBreaker.parameter.failureRatio.invalid.value.CWMFT5013E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E=CWMFT5014E: {2} \u7684 CircuitBreaker \u7b56\u7565\u53c2\u6570 {0} \u503c {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u8be5\u53c2\u6570\u4e0d\u80fd\u4e3a\u8d1f\u6570\u3002
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u6240\u914d\u7f6e\u503c\uff08\u5982\u679c\u5df2\u5bf9 requestVolumeThreshold CircuitBreaker \u7b56\u7565\u53c2\u6570\u8fdb\u884c\u914d\u7f6e\uff09\u65e0\u6548\u3002
+circuitBreaker.parameter.requestVolumeThreshold.invalid.value.CWMFT5014E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E=CWMFT5015E: {2} \u7684 CircuitBreaker \u7b56\u7565\u53c2\u6570 {0} \u503c {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u8be5\u53c2\u6570\u4e0d\u80fd\u4e3a\u8d1f\u6570\u3002
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u6240\u914d\u7f6e\u503c\uff08\u5982\u679c\u5df2\u5bf9 successThreshold CircuitBreaker \u7b56\u7565\u53c2\u6570\u8fdb\u884c\u914d\u7f6e\uff09\u65e0\u6548\u3002
+circuitBreaker.parameter.successThreshold.invalid.value.CWMFT5015E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT Bulkhead parameters
+bulkhead.parameter.invalid.value.CWMFT5016E=CWMFT5016E: {2} \u7684 Bulkhead \u7b56\u7565\u53c2\u6570 {0} \u503c {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u8be5\u53c2\u6570\u5fc5\u987b\u5927\u4e8e\u6216\u7b49\u4e8e 1\u3002
+bulkhead.parameter.invalid.value.CWMFT5016E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u6240\u914d\u7f6e\u503c\uff08\u5982\u679c\u5df2\u5bf9 Bulkhead \u7b56\u7565\u53c2\u6570\u8fdb\u884c\u914d\u7f6e\uff09\u65e0\u6548\u3002
+bulkhead.parameter.invalid.value.CWMFT5016E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - maxDuration, {1} - durationUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5017E=CWMFT5017E: {2} \u76ee\u6807\u7684 Retry \u7b56\u7565\u6700\u957f\u6301\u7eed\u65f6\u95f4 {0} {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u5b83\u5fc5\u987b\u6bd4\u5ef6\u8fdf\u6301\u7eed\u65f6\u95f4 {3} {4} \u957f\u3002
+retry.parameter.invalid.value.CWMFT5017E.explanation=\u6700\u957f\u6301\u7eed\u65f6\u95f4\u5fc5\u987b\u6bd4\u5ef6\u8fdf\u957f\u3002\u6700\u957f\u6301\u7eed\u65f6\u95f4\u7531 maxDuration \u53c2\u6570\u548c durationUnit \u53c2\u6570\u7ec4\u6210\u3002\u5ef6\u8fdf\u7531 delay \u53c2\u6570\u548c delayUnit \u53c2\u6570\u7ec4\u6210\u3002
+retry.parameter.invalid.value.CWMFT5017E.useraction=\u8bf7\u66f4\u6b63\u5176\u4e2d\u4e00\u4e2a\u6216\u591a\u4e2a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT CircuitBreaker parameters
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E=CWMFT5018E: {1} \u7684 CircuitBreaker \u7b56\u7565 {0} \u53c2\u6570\u65e0\u6548\uff0c\u56e0\u4e3a\u5176\u503c\u4e3a\u7a7a\u3002
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.explanation=\u6240\u6307\u5b9a\u503c\u6216\u9488\u5bf9 CircuitBreaker \u7b56\u7565 failOn \u53c2\u6570\u914d\u7f6e\u7684\u503c\u65e0\u6548\u3002
+circuitBreaker.parameter.failOn.invalid.value.CWMFT5018E.useraction=\u8bf7\u66f4\u6b63\u6240\u6307\u5b9a\u53c2\u6570\u7684\u503c\u3002
+
+#Incorrect value on FT Retry parameters, the passed in values are: {0} - jitter, {1} - jitterDelayUnit, {2} - target, {3} - delay, {4} - delayUnit
+retry.parameter.invalid.value.CWMFT5019W=CWMFT5019W: {2} \u76ee\u6807\u7684 Retry \u7b56\u7565\u6296\u52a8\u5ef6\u8fdf {0} {1} \u65e0\u6548\uff0c\u56e0\u4e3a\u6b64\u6296\u52a8\u5ef6\u8fdf\u5fc5\u987b\u6bd4\u5ef6\u8fdf {3} {4} \u77ed\u3002
+retry.parameter.invalid.value.CWMFT5019W.explanation=\u6296\u52a8\u5ef6\u8fdf\u5fc5\u987b\u6bd4\u5ef6\u8fdf\u77ed\u3002\u6296\u52a8\u5ef6\u8fdf\u7531 jitter \u53c2\u6570\u548c jitterDelayUnit \u53c2\u6570\u7ec4\u6210\u3002\u5ef6\u8fdf\u7531 delay \u53c2\u6570\u548c delayUnit \u53c2\u6570\u7ec4\u6210\u3002
+retry.parameter.invalid.value.CWMFT5019W.useraction=\u8bf7\u66f4\u6b63\u5176\u4e2d\u4e00\u4e2a\u6216\u591a\u4e2a\u53c2\u6570\u7684\u503c\uff0c\u4ee5\u4f7f\u6296\u52a8\u5ef6\u8fdf\u7684\u6301\u7eed\u65f6\u95f4\u6bd4\u5ef6\u8fdf\u7684\u6301\u7eed\u65f6\u95f4\u77ed\u3002
+
+#Generic error for internal failures. 
+internal.error.CWMFT5997E=CWMFT5997E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002\u5f02\u5e38\u4e3a {0}\u3002
+internal.error.CWMFT5997E.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u9047\u5230\u4e86\u5185\u90e8\u9519\u8bef\u3002
+internal.error.CWMFT5997E.useraction=\u6536\u96c6\u4e00\u7ec4\u9488\u5bf9\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u7684\u8ddf\u8e2a\u5e76\u63d0\u4ea4\u65b0\u95ee\u9898\u3002
+
+#Generic error for internal failures.
+internal.error.CWMFT5998E=CWMFT5998E: \u53d1\u751f\u4e86\u5185\u90e8\u9519\u8bef\u3002
+internal.error.CWMFT5998E.explanation=\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u9047\u5230\u4e86\u5185\u90e8\u9519\u8bef\u3002
+internal.error.CWMFT5998E.useraction=\u6536\u96c6\u4e00\u7ec4\u9488\u5bf9\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u670d\u52a1\u5668\u7684\u8ddf\u8e2a\u5e76\u63d0\u4ea4\u65b0\u95ee\u9898\u3002
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency FaultTolerance error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Fault Tolerance API error has occurred: {0}
+temporary.CWMFT5999E=CWMFT9999E: \u53d1\u751f\u4e86\u6545\u969c\u5bb9\u9519 API \u9519\u8bef\uff1a{0}
+temporary.CWMFT5999E.explanation=\u53d1\u751f\u4e86\u6545\u969c\u5bb9\u9519 API \u9519\u8bef\uff0c\u65e0\u6cd5\u6267\u884c\u5e38\u89c4\u64cd\u4f5c\u3002
+temporary.CWMFT5999E.useraction=\u8bf7\u67e5\u770b FFDC \u65e5\u5fd7\u548c\u5f02\u5e38\u6587\u672c\u4ee5\u786e\u5b9a\u95ee\u9898\u3002

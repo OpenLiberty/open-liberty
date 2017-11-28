@@ -1,0 +1,75 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.jca.cm/resources/com/ibm/ws/jca/cm/internal/resources/J2CAMessages.nlsprops
+#COMPONENTPREFIX J2CA
+#COMPONENTNAMEFOR J2CA Connection Management
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+DEACTIVATED_J2CA8001=J2CA8001I: {0} {1} \u4e0d\u53ef\u7528\u3002
+DEACTIVATED_J2CA8001.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+DEACTIVATED_J2CA8001.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+DEACTIVATED_J2CA8006=J2CA8006I: {2} \u4e2d\u7684 {0} {1} \u4e0d\u53ef\u7528\u3002
+DEACTIVATED_J2CA8006.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+DEACTIVATED_J2CA8006.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
+
+UNKNOWN_PROP_J2CA8010=J2CA8010W: {0} \u5c5e\u6027 {1} \u4e0d\u53ef\u8bc6\u522b
+UNKNOWN_PROP_J2CA8010.explanation=\u6240\u914d\u7f6e\u5c5e\u6027\u4e0d\u53ef\u8bc6\u522b\u3002
+UNKNOWN_PROP_J2CA8010.useraction=\u8bf7\u66f4\u6b63\u6216\u9664\u53bb\u6240\u914d\u7f6e\u5c5e\u6027\u3002
+
+UNSUPPORTED_VALUE_J2CA8011=J2CA8011E: \u503c {0} \u4e0d\u53d7 {2} \u4e0a\u7684 {1} \u652f\u6301
+UNSUPPORTED_VALUE_J2CA8011.explanation=\u6240\u914d\u7f6e\u503c\u4e0d\u53d7\u652f\u6301\u3002
+UNSUPPORTED_VALUE_J2CA8011.useraction=\u8bf7\u66f4\u6b63\u8be5\u503c\u6216\u9664\u53bb\u6240\u914d\u7f6e\u5c5e\u6027\u3002
+
+MISSING_LIBRARY_J2CA8020=J2CA8020E: \u65e0\u6cd5\u88c5\u5165\u6216\u8bbf\u95ee\u5e93 {0} \u4e2d\u7684\u6587\u4ef6
+MISSING_LIBRARY_J2CA8020.explanation=\u65e0\u6cd5\u4ece\u5171\u4eab\u5e93\u88c5\u5165\u6587\u4ef6\u3002
+MISSING_LIBRARY_J2CA8020.useraction=\u8bf7\u9a8c\u8bc1\u5171\u4eab\u5e93\u7684\u6587\u4ef6\u8bb8\u53ef\u6743\u548c\u914d\u7f6e\u3002
+
+MISSING_LIBRARY_J2CA8022=J2CA8022E: \u5e94\u7528\u7a0b\u5e8f {0} \u4e0d\u5177\u6709\u4efb\u4f55\u4e3a {2} {3} \u63d0\u4f9b {1} \u7684\u5171\u4eab\u5e93\u3002
+MISSING_LIBRARY_J2CA8022.explanation=\u8981\u4f7f\u7528\u5e94\u7528\u7a0b\u5e8f\u5b9a\u4e49\u7684\u6570\u636e\u6e90\uff0c\u5fc5\u987b\u4f7f\u63d0\u4f9b\u6570\u636e\u6e90\u7c7b\u7684 JDBC \u9a71\u52a8\u7a0b\u5e8f\u53ef\u7528\u4f5c\u8be5\u5e94\u7528\u7a0b\u5e8f\u7684\u5171\u4eab\u5e93\u3002
+MISSING_LIBRARY_J2CA8022.useraction=\u8bf7\u5c06\u8be5 JDBC \u9a71\u52a8\u7a0b\u5e8f\u6dfb\u52a0\u4e3a\u8be5\u5e94\u7528\u7a0b\u5e8f\u7684\u5171\u4eab\u5e93\u3002
+
+MISSING_RESOURCE_J2CA8030=J2CA8030E: \u65e0\u6cd5\u4e3a {2} {3} \u627e\u5230 {0} {1}\u3002
+MISSING_RESOURCE_J2CA8030.explanation=\u6240\u6307\u5b9a\u8d44\u6e90\u9700\u8981\u53e6\u4e00\u4e2a\u8d44\u6e90\uff08\u8be5\u8d44\u6e90\u4e0d\u53ef\u7528\uff09\u3002
+MISSING_RESOURCE_J2CA8030.useraction=\u8bf7\u9a8c\u8bc1\u662f\u5426\u5df2\u6b63\u786e\u914d\u7f6e\u8be5\u8d44\u6e90\u3002
+
+CARDINALITY_ERROR_J2CA8040=J2CA8040E: {0} {1} \u4ec5\u5141\u8bb8\u5177\u6709\u4e00\u4e2a {2} \u5143\u7d20\u3002
+CARDINALITY_ERROR_J2CA8040.explanation=\u8be5\u8d44\u6e90\u4e0d\u80fd\u5177\u6709\u6240\u6307\u5b9a\u7c7b\u578b\u7684\u591a\u4e2a\u5143\u7d20\u3002
+CARDINALITY_ERROR_J2CA8040.useraction=\u8bf7\u66f4\u65b0\u914d\u7f6e\uff0c\u4ee5\u4fbf\u4ec5\u5b58\u5728\u4e0e\u8be5\u8d44\u6e90\u76f8\u5173\u8054\u7684\u6240\u6307\u5b9a\u7c7b\u578b\u7684\u4e00\u4e2a\u5143\u7d20\u3002
+
+RECOMMEND_AUTH_ALIAS_J2CA8050=J2CA8050I: \u5e94\u4f7f\u7528\u8ba4\u8bc1\u522b\u540d\uff0c\u800c\u975e\u5728 {0} \u4e0a\u5b9a\u4e49\u7528\u6237\u540d\u548c\u5bc6\u7801\u3002
+RECOMMEND_AUTH_ALIAS_J2CA8050.explanation=\u5efa\u8bae\u4f7f\u7528\u8ba4\u8bc1\u522b\u540d\uff0c\u800c\u975e\u5728\u8d44\u6e90\u4e0a\u914d\u7f6e\u7528\u6237\u540d\u548c\u5bc6\u7801\u3002
+RECOMMEND_AUTH_ALIAS_J2CA8050.useraction=\u8bf7\u5728 authData \u5143\u7d20\u4e2d\u914d\u7f6e\u7528\u6237\u540d\u548c\u5bc6\u7801\uff0c\u800c\u975e\u76f4\u63a5\u5728\u8d44\u6e90\u4e0a\u8fdb\u884c\u914d\u7f6e\u3002
+
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060=J2CA8060E: {0} \u4e0d\u662f\u64cd\u4f5c {1} \u7684\u6709\u6548\u53c2\u6570\u3002
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.explanation=\u4e3a\u64cd\u4f5c\u6307\u5b9a\u7684\u53c2\u6570\u5fc5\u987b\u5bf9\u5e94\u4e8e\u5bf9\u7ed9\u5b9a\u64cd\u4f5c\u6709\u6548\u7684\u53c2\u6570\u3002
+INVALID_MBEAN_INVOKE_PARAM_J2CA8060.useraction=\u8bf7\u4e3a\u6b63\u5728\u8c03\u7528\u7684\u64cd\u4f5c\u6307\u5b9a\u6709\u6548\u53c2\u6570\u3002
+
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061=J2CA8061E: {0} \u4e0d\u662f {1} MBean \u7684\u6709\u6548\u64cd\u4f5c\u3002
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.explanation=\u5df2\u5c1d\u8bd5\u8c03\u7528\u4e0d\u53ef\u7528\u4e8e\u6307\u5b9a MBean \u7684\u64cd\u4f5c\u3002
+INVALID_MBEAN_INVOKE_ACTION_J2CA8061.useraction=\u8bf7\u5c06\u6b63\u5728\u8c03\u7528\u7684\u64cd\u4f5c\u66f4\u6539\u4e3a\u6307\u5b9a MBean \u7684\u6709\u6548\u65b9\u6cd5\u3002
+
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062=J2CA8062E: {1} MBean \u7684 {0} \u5c5e\u6027\u65e0\u6548\u3002
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.explanation=\u5df2\u5c1d\u8bd5\u83b7\u53d6\u6216\u8bbe\u7f6e\u4e0d\u53ef\u7528\u4e8e\u6307\u5b9a MBean \u7684\u5c5e\u6027\u3002
+MBEAN_ATTRIBUTE_NOT_FOUND_J2CA8062.useraction=\u8bf7\u5c06\u6240\u6307\u5b9a\u7684\u5c5e\u6027\u66f4\u6539\u4e3a\u6b64 MBean \u7684\u5176\u4e2d\u4e00\u4e2a\u53ef\u7528\u5c5e\u6027\u3002

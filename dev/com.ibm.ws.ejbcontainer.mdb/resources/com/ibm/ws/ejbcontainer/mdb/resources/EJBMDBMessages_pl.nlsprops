@@ -1,0 +1,68 @@
+###############################################################################
+# Copyright (c) 2013, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# DO NOT TRANSLATE "\n" and "\t" characters.  these are for textual formatting.
+# REMINDER: if message has substitution parameters, then any apostrophe in the
+#           message text must be followed by a 2nd apostrophe to work correctly.
+#-------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+#
+# Briefly:
+#     MESSAGE_ID=<ComponentPrefix><MessageNumber><TypeCode>: <MessageText>
+#
+# The prefix for this component is:
+#     CNTR (EJB Container)
+#
+# Message numbers are four digit numbers, from '0000' to '9999', inclusive.
+# Message numbers are filled to the left with '0', to a width of 4.
+#
+# Valid message type codes are:
+#     I (Informational)
+#     W (Warning)
+#     E (Error)
+#
+# Note the ": " that appears between the type code and the message text.
+#
+# cmvc_en_version_level=
+#
+#CMVCPATHNAME com.ibm.ws.ejbcontainer.mdb/resources/com/ibm/ws/mdb/resources/EJBMDBMessages.nlsprops
+#COMPONENTPREFIX CNTR
+#COMPONENTNAMEFOR CNTR EJB Container
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class
+#   (single quote must be coded as one single quote ').
+#
+#-------------------------------------------------------------------------------
+
+#-------------------------------------------------------------------------------
+# NOTE: CNTR4000-CNTR4999 are reserved for use in EJBContainerMessages.nlsprops
+#       All messages in this file should be reserved in the core container file.
+#-------------------------------------------------------------------------------
+
+MDB_ENDPOINT_ACTIVATED_CNTR4013I=CNTR4013I: Punkt ko\u0144cowy komunikat\u00f3w dla komponentu bean sterowanego komunikatami {0} zosta\u0142 aktywowany i jest gotowy do akceptowania komunikat\u00f3w.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.explanation=Specyfikacja aktywowania dla komponentu bean sterowanego komunikatami jest dost\u0119pna, a punkt ko\u0144cowy komunikat\u00f3w sta\u0142 si\u0119 aktywny i jest gotowy do akceptowania komunikat\u00f3w.
+MDB_ENDPOINT_ACTIVATED_CNTR4013I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I=CNTR4014I: Punkt ko\u0144cowy komunikat\u00f3w dla komponentu bean sterowanego komunikatami {0} zosta\u0142 dezaktywowany i jest niedost\u0119pny do akceptowania komunikat\u00f3w.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.explanation=Komponent bean sterowany komunikatami jest usuwany lub specyfikacja aktywowania nie jest ju\u017c dost\u0119pna. Punkt ko\u0144cowy komunikat\u00f3w nie jest ju\u017c dost\u0119pny do akceptowania komunikat\u00f3w.
+MDB_ENDPOINT_DEACTIVATED_CNTR4014I.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. 
+
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W=CNTR4015W: Nie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w dla komponentu bean sterowanego komunikatami {0}, poniewa\u017c specyfikacja aktywowania {1} nie jest dost\u0119pna. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w, dop\u00f3ki specyfikacja aktywowania nie stanie si\u0119 dost\u0119pna.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.explanation=Serwer uruchamia komponent bean sterowany komunikatami, ale nie mo\u017ce aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w, poniewa\u017c nie mo\u017cna znale\u017a\u0107 specyfikacji aktywowania. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w, dop\u00f3ki nie b\u0119dzie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego.
+MDB_ACTIVATION_SPEC_NOT_FOUND_CNTR4015W.useraction=Sprawd\u017a, czy specyfikacja aktywowania zosta\u0142a skonfigurowana z podan\u0105 nazw\u0105.  Je\u015bli konfiguracja istnieje, poczekaj, a\u017c specyfikacja aktywowania stanie si\u0119 dost\u0119pna.
+
+MDB_DESTINATION_NOT_FOUND_CNTR4016W=CNTR4016W: Nie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w dla komponentu bean sterowanego komunikatami {0}, poniewa\u017c miejsce docelowe {1} nie jest dost\u0119pne. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w, dop\u00f3ki miejsce docelowe nie stanie si\u0119 dost\u0119pne.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.explanation=Serwer uruchamia komponent bean sterowany komunikatami, ale nie mo\u017ce aktywowa\u0107 punktu ko\u0144cowego komunikat\u00f3w, poniewa\u017c nie mo\u017cna znale\u017a\u0107 miejsca docelowego. Punkt ko\u0144cowy komunikat\u00f3w nie b\u0119dzie odbiera\u0107 komunikat\u00f3w, dop\u00f3ki nie b\u0119dzie mo\u017cna aktywowa\u0107 punktu ko\u0144cowego.
+MDB_DESTINATION_NOT_FOUND_CNTR4016W.useraction=Sprawd\u017a, czy skonfigurowano miejsce docelowe o podanej nazwie. Je\u015bli konfiguracja istnieje, poczekaj, a\u017c miejsce docelowe stanie si\u0119 dost\u0119pne.

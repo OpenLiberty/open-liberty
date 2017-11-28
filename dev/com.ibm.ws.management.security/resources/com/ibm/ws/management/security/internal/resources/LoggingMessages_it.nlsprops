@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.security/resources/com/ibm/ws/management/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX0000-CWWKX0099	
+
+MANAGEMENT_SECURITY_AUTHZ_FAILED=CWWKX0001A: Autorizzazione non riuscita per l''utente {0} durante il richiamo dell''operazione di gestione {1}. L''utente non dispone dell''accesso ad alcuno dei ruoli richiesti: {2}.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.explanation=L'utente specificato non dispone dell'autorizzazione di accesso appropriata all'operazione di gestione specificata.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Non \u00e8 richiesta alcuna azione.
+
+ROLE_ENTRY_DUPLICATE=CWWKX0002E: Rilevata una voce duplicata nel bind del ruolo {0}. La voce duplicata \u00e8 {1}. {2}.
+ROLE_ENTRY_DUPLICATE.explanation=La voce specificata \u00e8 gi\u00e0 definita per il bind del ruolo indicato. Le voci duplicate non sono supportate.
+ROLE_ENTRY_DUPLICATE.useraction=Rimuovere la voce duplicata.

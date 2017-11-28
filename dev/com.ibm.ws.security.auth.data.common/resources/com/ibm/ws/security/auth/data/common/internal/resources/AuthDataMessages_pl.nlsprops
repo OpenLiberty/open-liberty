@@ -1,0 +1,28 @@
+###############################################################################
+# Copyright (c) 2012, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.auth.data.common/resources/com/ibm/ws/security/auth/data/common/internal/resources/AuthDataMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Auth Data Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS1300 - CWWKS1349
+
+
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS=CWWKS1300E: Wyst\u0105pi\u0142 wyj\u0105tek konfiguracji. Nie mo\u017cna znale\u017a\u0107 \u017c\u0105danego aliasu danych uwierzytelniania {0}.
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.explanation=Okre\u015blony alias jest wymagany.
+AUTH_DATA_CONFIG_ERROR_NO_SUCH_ALIAS.useraction=Podaj poprawny alias danych uwierzytelniania istniej\u0105cego u\u017cytkownika lub skonfiguruj nowy alias danych uwierzytelniania.
+
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE=CWWKS1301E: Wyst\u0105pi\u0142 b\u0142\u0105d konfiguracji. Nale\u017cy zdefiniowa\u0107 atrybut {0}.
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE.explanation=Podany atrybut musi zosta\u0107 zdefiniowany.
+AUTH_DATA_CONFIG_ERROR_INCOMPLETE.useraction=Podaj warto\u015b\u0107 brakuj\u0105cego atrybutu.

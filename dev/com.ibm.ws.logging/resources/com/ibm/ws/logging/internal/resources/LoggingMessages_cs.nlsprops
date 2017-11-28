@@ -1,0 +1,121 @@
+###############################################################################
+# Copyright (c) 2011, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.logging/resources/com/ibm/ws/logging/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX TRAS
+#COMPONENTNAMEFOR TRAS WebSphere Trace Facility
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# Messages in the range TRAS3000 to 3199 are reserved for this messages file.
+# The list of prefixes and the range of messages in use (or "reserved") are shown in 
+# http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+# -------------------------------------------------------------------------------------------------
+
+FATAL=Z\u00c1VA\u017dN\u00c1
+ERROR=CHYBA
+AUDIT=PROV\u011a\u0158OV\u00c1N\u00cd
+EVENT=UD\u00c1LOST
+DETAIL=PODROBNOSTI
+
+## Shared with tWAS
+
+# Informational message telling the user the trace state has changed.
+MSG_TRACE_STATE_CHANGED=TRAS0018I: Stav trasov\u00e1n\u00ed byl zm\u011bn\u011bn. Nov\u00fdm stavem trasov\u00e1n\u00ed je {0}.
+MSG_TRACE_STATE_CHANGED.explanation=Byl p\u0159ijat a zpracov\u00e1n po\u017eadavek na zm\u011bnu aktu\u00e1ln\u00edho stavu trasov\u00e1n\u00ed.
+MSG_TRACE_STATE_CHANGED.useraction=Nen\u00ed-li nov\u00fd stav trasov\u00e1n\u00ed po\u017eadovan\u00fdm stavem, zm\u011b\u0148te jej na po\u017eadovan\u00fd stav.
+
+#PK509567
+# Warning message telling the user that the rename operation filed while rolling a log file over.
+MSG_ROLLOVER_RENAME_FAILED=TRAS0031W: B\u011bhem p\u0159eto\u010den\u00ed souboru protokolu nelze p\u0159ejmenovat soubor {0} na {1}. Prob\u00edh\u00e1 pokus o zkop\u00edrov\u00e1n\u00ed obsahu souboru.
+MSG_ROLLOVER_RENAME_FAILED.explanation=P\u0159ejmenov\u00e1n\u00ed uveden\u00e9ho souboru se nezda\u0159ilo. Nejpravd\u011bpodobn\u011bj\u0161\u00ed p\u0159\u00ed\u010dinou je to, \u017ee se souborem protokolu pracuje jin\u00fd proces nebo podproces. Produkt WebSphere se pokus\u00ed operaci p\u0159eto\u010den\u00ed dokon\u010dit t\u00edm, \u017ee zkop\u00edruje obsah souboru. Tento proces je pom\u011brn\u011b pomal\u00fd a v\u0161echny podprocesy, kter\u00e9 se pokus\u00ed o z\u00e1pis do protokolu, budou b\u011bhem n\u011bj zastaveny.
+MSG_ROLLOVER_RENAME_FAILED.useraction=Zjist\u011bte p\u0159\u00ed\u010dinu selh\u00e1n\u00ed operace p\u0159ejmenov\u00e1n\u00ed a odstra\u0148te ji. Za t\u00edmto \u00fa\u010delem m\u016f\u017ee b\u00fdt nutn\u00e9 ukon\u010den\u00ed jin\u00fdch proces\u016f, kter\u00e9 pracuj\u00ed s t\u00edmt\u00e9\u017e souborem protokolu.
+
+## new for lWAS
+INSTRUMENTATION_SERVICE_UNAVAILABLE=TRAS0032W: Vkl\u00e1d\u00e1n\u00ed podrobn\u00e9ho trasov\u00e1n\u00ed metody v b\u011bhov\u00e9m prost\u0159ed\u00ed nen\u00ed k dispozici.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.explanation=Transform\u00e1tor t\u0159\u00eddy souboru odpov\u011bdn\u00fd za p\u0159id\u00e1n\u00ed trasov\u00e1n\u00ed na \u00farovni metody nebylo mo\u017en\u00e9 nainstalovat, proto\u017ee nebylo mo\u017en\u00e9 z\u00edskat vhodn\u00fd odkaz na java.lang.instrument.Instrumentation.
+INSTRUMENTATION_SERVICE_UNAVAILABLE.useraction=Spus\u0165te server s p\u0159\u00edslu\u0161n\u00fdm argumentem p\u0159\u00edkazov\u00e9ho \u0159\u00e1dku -javaagent.
+
+## Should not be used anymore because of issue 508
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS=TRAS0033E: Vlo\u017een\u00ed podrobn\u00e9ho trasov\u00e1n\u00ed metody v b\u011bhov\u00e9m prost\u0159ed\u00ed selhalo pro t\u0159\u00eddu {0} s v\u00fdjimkou {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.explanation=P\u0159i vkl\u00e1d\u00e1n\u00ed podrobn\u00e9ho trasov\u00e1n\u00ed metody do zadan\u00e9 t\u0159\u00eddy do\u0161lo k chyb\u011b.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS.useraction=CMSG0002 
+
+## new for lWAS
+TRACE_STRING_BAD_LEVEL=TRAS0034W: \u00darove\u0148 trasov\u00e1n\u00ed {0} pro specifikaci {1} nen\u00ed platn\u00e1. Specifikace trasov\u00e1n\u00ed bude ignorov\u00e1na.
+TRACE_STRING_BAD_LEVEL.explanation=\u00darove\u0148 trasov\u00e1n\u00ed konfigurovan\u00e1 pro zadanou skupinu, t\u0159\u00eddu nebo bal\u00edk nebyla rozpozn\u00e1na, nastaven\u00ed trasov\u00e1n\u00ed pro dan\u00fd n\u00e1zev bude p\u0159esko\u010deno.
+TRACE_STRING_BAD_LEVEL.useraction=Zkontrolujte konfiguraci trasov\u00e1n\u00ed a opravte \u00farove\u0148 na rozpoznanou hodnotu. Platn\u00e9 \u00farovn\u011b trasov\u00e1n\u00ed jsou uvedeny v dokumentaci a zahrnuj\u00ed 'all', 'info' a 'debug'.
+
+## new for lWAS
+TRACE_STRING_BAD_ACTION=TRAS0035W: Hodnota nastaven\u00ed trasov\u00e1n\u00ed {0} pro specifikaci {1} nebyla rozpozn\u00e1na. Specifikace trasov\u00e1n\u00ed bude ignorov\u00e1na.
+TRACE_STRING_BAD_ACTION.explanation=Hodnota nastaven\u00ed trasov\u00e1n\u00ed konfigurovan\u00e1 pro zadanou skupinu, t\u0159\u00eddu nebo bal\u00edk nebyla rozpozn\u00e1na, nastaven\u00ed trasov\u00e1n\u00ed pro dan\u00fd n\u00e1zev bude p\u0159esko\u010deno.
+TRACE_STRING_BAD_ACTION.useraction=Dokud nebude ur\u010den\u00e1 hodnota nastaven\u00ed trasov\u00e1n\u00ed zm\u011bn\u011bna na 'zak\u00e1z\u00e1no', nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. V tomto p\u0159\u00edpad\u011b zkontrolujte konfiguraci trasov\u00e1n\u00ed a opravte nastaven\u00ed na hodnotu 'zak\u00e1z\u00e1no'.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE=TRAS0036E: Syst\u00e9m nemohl vytvo\u0159it soubor {0}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {1}
+UNABLE_TO_CREATE_RESOURCE.explanation=Pokus o otev\u0159en\u00ed zadan\u00e9ho prost\u0159edku se nezda\u0159il. Ve v\u00fdjimce je ur\u010dena hlavn\u00ed p\u0159\u00ed\u010dina selh\u00e1n\u00ed.
+UNABLE_TO_CREATE_RESOURCE.useraction=Prohl\u00e9dn\u011bte si v\u00fdjimku a pokuste se ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Ov\u011b\u0159te, zda byl zad\u00e1n platn\u00fd n\u00e1zev souboru. Ov\u011b\u0159te, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e prost\u0159edku, a zda nen\u00ed pln\u00fd disk. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_CREATE_RESOURCE_NOEX=TRAS0037E: Syst\u00e9m nemohl vytvo\u0159it nov\u00fd soubor {0}.
+UNABLE_TO_CREATE_RESOURCE_NOEX.explanation=Komponenta aplika\u010dn\u00edho serveru nemohla prov\u00e9st operaci na po\u017eadovan\u00e9m prost\u0159edku.
+UNABLE_TO_CREATE_RESOURCE_NOEX.useraction=Ov\u011b\u0159te, zda byl zad\u00e1n platn\u00fd n\u00e1zev souboru. Ov\u011b\u0159te, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e prost\u0159edku, a zda nen\u00ed pln\u00fd disk. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE_NOEX=TRAS0038E: Syst\u00e9m nemohl odstranit soubor {0}.
+UNABLE_TO_DELETE_RESOURCE_NOEX.explanation=Komponenta aplika\u010dn\u00edho serveru nemohla prov\u00e9st operaci na po\u017eadovan\u00e9m prost\u0159edku.
+UNABLE_TO_DELETE_RESOURCE_NOEX.useraction=Ov\u011b\u0159te, zda byl zad\u00e1n platn\u00fd n\u00e1zev souboru. Ov\u011b\u0159te, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e prost\u0159edku, a zda nen\u00ed pln\u00fd disk. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+## new for lWAS
+UNABLE_TO_DELETE_RESOURCE=TRAS0039E: Syst\u00e9m nemohl odstranit soubor {0}, proto\u017ee do\u0161lo k n\u00e1sleduj\u00edc\u00ed v\u00fdjimce: {1}
+UNABLE_TO_DELETE_RESOURCE.explanation=Pokus o odstran\u011bn\u00ed zadan\u00e9ho prost\u0159edku se nezda\u0159il. Ve v\u00fdjimce je ur\u010dena hlavn\u00ed p\u0159\u00ed\u010dina selh\u00e1n\u00ed.
+UNABLE_TO_DELETE_RESOURCE.useraction=Prohl\u00e9dn\u011bte si v\u00fdjimku a pokuste se ur\u010dit hlavn\u00ed p\u0159\u00ed\u010dinu probl\u00e9mu. Zkontrolujte, zda m\u00e1 aplika\u010dn\u00ed server v dob\u011b b\u011bhu pr\u00e1vo z\u00e1pisu do adres\u00e1\u0159e pro dan\u00fd prost\u0159edek. Pokud probl\u00e9m nebude vy\u0159e\u0161en, vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory serveru WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# common 
+UNKNOWN_TRACE_SPEC=TRAS0040I: Nakonfigurovan\u00fd stav trasov\u00e1n\u00ed obsahoval n\u00e1sleduj\u00edc\u00ed specifikace, neodpov\u00eddaj\u00edc\u00ed \u017e\u00e1dn\u00fdm modul\u016fm protokolov\u00e1n\u00ed, kter\u00e9 jsou na serveru v sou\u010dasn\u00e9 dob\u011b registrov\u00e1ny: {0} Tuto zpr\u00e1vu ignorujte, pokud jsou specifikace trasov\u00e1n\u00ed {0} platn\u00e9.
+UNKNOWN_TRACE_SPEC.explanation=Moduly protokolov\u00e1n\u00ed se na serveru registruj\u00ed po prvn\u00edm pou\u017eit\u00ed k\u00f3du, kter\u00fd je vytv\u00e1\u0159\u00ed. Syst\u00e9m zjistil, \u017ee ur\u010dit\u00e9 specifikace trasov\u00e1n\u00ed odkazuj\u00ed na moduly protokolov\u00e1n\u00ed, kter\u00e9 nejsou na serveru registrov\u00e1ny. Nakonfigurovan\u00e9 specifikace trasov\u00e1n\u00ed mohou b\u00fdt platn\u00e9 pro moduly protokolov\u00e1n\u00ed, kter\u00e9 dosud nejsou registrov\u00e1ny, nebo mohly b\u00fdt chybn\u011b zaps\u00e1ny. Tato kontrola se prov\u00e1d\u00ed p\u0159i ka\u017ed\u00e9 aktualizaci specifikace trasov\u00e1n\u00ed na spu\u0161t\u011bn\u00e9m serveru.
+UNKNOWN_TRACE_SPEC.useraction=Zajist\u011bte, aby byla specifikace trasov\u00e1n\u00ed spr\u00e1vn\u011b konfigurov\u00e1na. Pokud \u0159et\u011bzec specifikace trasov\u00e1n\u00ed neobsahuje \u017e\u00e1dn\u00e9 chyby, nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce. 
+
+## Should not be used anymore because of issue 508
+MESSAGES_CONFIGURED_HIDDEN=TRAS0041I: N\u00e1sleduj\u00edc\u00ed zpr\u00e1vy jsou v souborech console.log a messages.log skryt\u00e9: {0}
+MESSAGES_CONFIGURED_HIDDEN.explanation=Zpr\u00e1vy, kter\u00e9 jsou nakonfigurovan\u00e9 jako skryt\u00e9, se nezap\u00ed\u0161\u00ed do soubor\u016f console.log a messages.log. Zap\u00ed\u0161\u00ed se v\u0161ak do souboru trace.log. 
+MESSAGES_CONFIGURED_HIDDEN.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+MSG_ROUTER_UPDATED=TRAS0042I: Skupina sm\u011brov\u00e1n\u00ed zpr\u00e1v {0} obsahuje n\u00e1sleduj\u00edc\u00ed zpr\u00e1vy: {1}
+MSG_ROUTER_UPDATED.explanation=Sada ID zpr\u00e1v nakonfigurovan\u00e1 pro ur\u010denou skupinu sm\u011brov\u00e1n\u00ed zpr\u00e1v byla zm\u011bn\u011bna. Vyps\u00e1na je sada ID zpr\u00e1v aktu\u00e1ln\u011b p\u0159idru\u017een\u00e1 k t\u00e9to skupin\u011b sm\u011brov\u00e1n\u00ed zpr\u00e1v.
+MSG_ROUTER_UPDATED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+## use new id range
+
+# updated the old TRAS0033E to TRAS3000E
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2=TRAS3000E: Vlo\u017een\u00ed podrobn\u00e9ho trasov\u00e1n\u00ed metody v b\u011bhov\u00e9m prost\u0159ed\u00ed se nezda\u0159ilo pro t\u0159\u00eddu {0} s v\u00fdjimkou {1}.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.explanation=P\u0159i vkl\u00e1d\u00e1n\u00ed podrobn\u00e9ho trasov\u00e1n\u00ed metody do zadan\u00e9 t\u0159\u00eddy do\u0161lo k chyb\u011b.
+INSTRUMENTATION_TRANSFORM_FAILED_FOR_CLASS_2.useraction=Vyhledejte informace k ur\u010den\u00ed probl\u00e9mu na webu podpory produktu: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+# updated the old TRAS0041I to TRAS3001I
+MESSAGES_CONFIGURED_HIDDEN_2=TRAS3001I: N\u00e1sleduj\u00edc\u00ed zpr\u00e1vy jsou v souborech console.log a messages.log skryt\u00e9: {0}
+MESSAGES_CONFIGURED_HIDDEN_2.explanation=Zpr\u00e1vy, kter\u00e9 jsou nakonfigurovan\u00e9 jako skryt\u00e9, se nezap\u00ed\u0161\u00ed do soubor\u016f console.log a messages.log. Zap\u00ed\u0161\u00ed se do souboru trace.log. 
+MESSAGES_CONFIGURED_HIDDEN_2.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# Note: no 9999 message kept here because saving footprint space is more important
+
+# End of file

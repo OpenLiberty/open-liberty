@@ -1,0 +1,1154 @@
+###############################################################################
+# Copyright (c) 2012, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#
+# Change activity:
+#
+# Reason          Date       Origin   Description
+# --------------- ---------- -------- ------------------------------------------
+# d341984         2006-01-27 holdeni  Remove unused messages
+# d353701         2006-08-15 matrober Warn application writers they may be leaking JMS resources
+# SIB0121.jms.3   2007-01-29 jamessid Adding exception text for producer-guarantee violations
+# SIB0121.jms.4   2007-02-26 jamessid Remove 'guarantee' prop value, add forwarder flag to ActSpec
+# 431745          2007-04-13 jamessid Information development updates
+# 490428          2008-01-15 susana   Fail more helpfully at an unknown property on decode
+# 499445          2008-02-21 susana   Fix up any 'non-IBM-approved' terms
+# 99986           2013-05-23 Chetan   Proper error message on authentication exception
+# -------------------------------------------------------------------------------------------------
+# File com.ibm.websphere.sib.api.jms.CWSIAJMSMessages.props
+#
+# SIB.api.jms component file for logging _external_ messages
+#
+# These messages will be formatted as follows to enable translation and problem determination key values
+#
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSIA0001=CWSIA0001I: This is a message.
+# #EXPLANATION explanation text for the message
+# #USERACTION user action text for the message
+#
+# Instructions to translation will precede the line to which it applies
+#
+# Some of the messages in this file are processed as
+# "java.text.MessageFormat" patterns and so use the apostrophe "'" and
+# open brace "{" as special characters.
+#
+# If you are using the IBMJDK21 markup table to translate this file,
+# type apostrophe characters as you wish them to appear to the user.
+# The translation tools will automatically handle whether one or two
+# apostrophes characters are required when the translated file is
+# exported. See the following page for more details:
+#
+#  http://w3.ibm.com/ux/site.nsf/g/publish/2089#IBMJDK21
+#
+# If you are using the IBMJDK11 markup table or are a developer working
+# with this file in a text editor, use the following rules for
+# apostrophe characters:
+#  a) If there are inserts in the message, for example "{0}", then
+#     type two apostrophe characters, that is "''".
+#  b) If there are no inserts, then just type a single apostrophe.
+# Examples:
+#  a) message.xml.parserError.prefix=UDUT0036E: Erreur de l''analyseur syntaxique : {0}
+#  b) error.getAuthInfoFailed=UDUT0078E: Impossible d'obtenir authinfo.
+#
+# -------------------------------------------------------------------------------------------------
+# Notes:
+#   Message Range        Owning class
+#   ----------------------------------------------------
+#   CWSIA0000-CWSIA0500   JMS api usage only (within API team)
+#   ----------------------------------------------------
+#   CWSIA0001-CWSIA0020   com.ibm.ws.sib.api.jms.impl.JmsFactoryFactoryImpl
+#   CWSIA0021-CWSIA0040   com.ibm.ws.sib.api.jms.impl.JmsConnectionImpl
+#   CWSIA0041-CWSIA0060   com.ibm.ws.sib.api.jms.impl.JmsSessionImpl
+#   CWSIA0061-CWSIA0080   com.ibm.ws.sib.api.jms.impl.JmsMsgProducerImpl
+#   CWSIA0081-CWSIA0100   com.ibm.ws.sib.api.jms.impl.JmsMsgConsumerImpl
+#   CWSIA0101-CWSIA0120   com.ibm.ws.sib.api.jms.impl.JmsMessageImpl
+#   CWSIA0121-CWSIA0140   com.ibm.ws.sib.api.jms.impl.JmsObjectMessageImpl
+#   CWSIA0141-CWSIA0160   com.ibm.ws.sib.api.jms.impl.JmsQueueBrowserImpl
+#   CWSIA0161-CWSIA0180   com.ibm.ws.sib.api.jms.impl.JmsStreamMessageImpl
+#   CWSIA0181-CWSIA0200   com.ibm.ws.sib.api.jms.impl.JmsBytesMessageImpl
+#   CWSIA0201-CWSIA0220   com.ibm.ws.sib.api.jms.impl.JmsInternalsFactory
+#   CWSIA0221-CWSIA0240   com.ibm.ws.sib.api.jms.impl.JmsDurableSubscriberImpl
+#   CWSIA0241-CWSIA0260   com.ibm.ws.sib.api.jms.impl.JmsManagedConnectionFactoryImpl
+#   CWSIA0261-CWSIA0280   com.ibm.ws.sib.api.jms.impl.JmsConnectionFactoryImpl
+#   CWSIA0281-CWSIA0300   com.ibm.ws.sib.api.jms.impl.JmsDestinationImpl
+#   CWSIA0301-CWSIA0320   com.ibm.ws.sib.api.jms.impl.ProducerProperties
+#   CWSIA0321-CWSIA0340   com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+#   CWSIA0341-CWSIA0359   com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+#   CWSIA0360-CWSIA0380   com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+#   CWSIA0381-CWSIA0390   com.ibm.ws.sib.api.jms.impl.URIDestinationCreator
+#   CWSIA0391-CWSIA0400   com.ibm.ws.sib.api.jms.impl.MQRequestReplyUtilsImpl & factory
+#   CWSIA0481-CWSIA0500   common messages
+# -------------------------------------------------------------------------------------------------
+# This file has been modified to follow the WebSphere Message Guidelines.
+# For more information, visit:
+#   http://washome.austin.ibm.com/xwiki/bin/view/InformationDevelopmentTeam/MESSAGES_DISTRIBUTED
+#
+# cmvc_en_version_level=1.45,0,02/07/25,05:29:29
+#
+#CMVCPATHNAME com.ibm.ws.messaging.jms/resources/com/ibm/ws/sib/api/jms/CWSIAJMSMessages.nlsprops
+#COMPONENTPREFIX CWSIA
+#COMPONENTNAMEFOR CWSIA SIbus
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+# JmsFactoryFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0201 for JmsInternalsFactory
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0008 for JmsFactoryFactoryImpl
+# This message is cloned as UNABLE_TO_CREATE_FACTORY_CWSIA0391 for MQRequestReplyUtils
+UNABLE_TO_CREATE_FACTORY_CWSIA0001=CWSIA0001E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy {0} oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre, mert a(z) {1} JAR f\u00e1jl nem tal\u00e1lhat\u00f3.
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0001.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the value of the Exception.
+INITIALIZATION_ERROR_CWSIA0002=CWSIA0002E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy sz\u00fcks\u00e9ges oszt\u00e1ly p\u00e9ld\u00e1nyos\u00edt\u00e1sa nem lehets\u00e9ges: {0}.
+INITIALIZATION_ERROR_CWSIA0002.explanation=CMSG0001
+INITIALIZATION_ERROR_CWSIA0002.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0003=CWSIA0003E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0003.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott \
+tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0003.useraction=Adjon meg egy a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9ket.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the supplied user name
+AUTHENTICATION_FAILED_CWSIA0004=CWSIA0004E: A megadott {0} felhaszn\u00e1l\u00f3i n\u00e9v \u00e9s a hozz\u00e1 tartoz\u00f3 jelsz\u00f3 hiteles\u00edt\u00e9se sikertelen volt.
+AUTHENTICATION_FAILED_CWSIA0004.explanation=A hiteles\u00edt\u00e9s meghi\u00fasult a megadott \
+r\u00e9szletek haszn\u00e1lat\u00e1val, mert a felhaszn\u00e1l\u00f3i n\u00e9v vagy a jelsz\u00f3 helytelen.
+AUTHENTICATION_FAILED_CWSIA0004.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg \
+hivatkozott hiba\u00fczenetet. Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3i n\u00e9v \u00e9s jelsz\u00f3 helyes-e, \
+valamint megad\u00e1sra ker\u00fclt-e a rendszer sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+JCA_RESOURCE_EXC_CWSIA0005=CWSIA0005E: A JCA fut\u00e1si k\u00f6rnyezet nem tudott lefoglalni egy kapcsolatot.
+JCA_RESOURCE_EXC_CWSIA0005.explanation=Egy JMS kapcsolat l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet \
+meghi\u00fasult a JCA fut\u00e1si k\u00f6rnyezet\u00e9b\u0151l \u00e9rkez\u0151 kiv\u00e9tel miatt.
+JCA_RESOURCE_EXC_CWSIA0005.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+
+# -------------------------------------------------------------------------------------------------
+AUTHORIZATION_FAILED_CWSIA0006=CWSIA0006E: A megadott felhaszn\u00e1l\u00f3i n\u00e9v hiteles\u00edt\u00e9se sikertelen volt.
+AUTHORIZATION_FAILED_CWSIA0006.explanation=A felhaszn\u00e1l\u00f3i n\u00e9v nem jogosult az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9re.
+AUTHORIZATION_FAILED_CWSIA0006.useraction=Tekintse meg a hivatkozott hiba\u00fczenetet a \
+felhaszn\u00e1l\u00f3n\u00e9v\u00e9rt. Gondoskodj\u00e9k r\u00f3la, hogy helyesen legyen felhatalmazva a sz\u00fcks\u00e9ges \
+er\u0151forr\u00e1shoz a rendszeren.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0007=CWSIA0007E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0007.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0007.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008=CWSIA0008E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy {0} oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre, mert a(z) {1} JAR f\u00e1jl nem tal\u00e1lhat\u00f3.
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0008.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+
+AUTHENTICATION_FAILED_CWSIA0009=CWSIA0009E: A megadott felhaszn\u00e1l\u00f3i n\u00e9v hiteles\u00edt\u00e9se sikertelen volt.
+AUTHENTICATION_FAILED_CWSIA0009.explanation=A hiteles\u00edt\u00e9s meghi\u00fasult a megadott \
+r\u00e9szletek haszn\u00e1lat\u00e1val, mert a felhaszn\u00e1l\u00f3i n\u00e9v vagy a jelsz\u00f3 helytelen.
+AUTHENTICATION_FAILED_CWSIA0009.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg \
+hivatkozott hiba\u00fczenetet. Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3i n\u00e9v \u00e9s jelsz\u00f3 helyes-e, \
+valamint megad\u00e1sra ker\u00fclt-e a rendszer sz\u00e1m\u00e1ra.
+ 
+# -------------------------------------------------------------------------------------------------
+
+# JmsConnectionImpl
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0021=CWSIA0021E: Ez a kapcsolat bez\u00e1r\u00e1sra ker\u00fclt.
+CONNECTION_CLOSED_CWSIA0021.explanation=Egy alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amely nem haszn\u00e1lhat\u00f3 a kapcsolat bez\u00e1r\u00e1s\u00e1t k\u00f6vet\u0151en.
+CONNECTION_CLOSED_CWSIA0021.useraction=A met\u00f3dus megh\u00edv\u00e1sa el\u0151tt gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kapcsolat nincs bez\u00e1rva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+# {1} is the name of the method which received it, and is effectively a unique probe ID for this message.
+# This message is cloned widely within this file.
+EXCEPTION_RECEIVED_CWSIA0022=CWSIA0022E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0022.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0022.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_FIXED_CWSIA0023=CWSIA0023E: Ezen kapcsolat kliensazonos\u00edt\u00f3ja csak olvashat\u00f3.
+CLIENT_ID_FIXED_CWSIA0023.explanation=Egy alkalmaz\u00e1s megpr\u00f3b\u00e1lta be\u00e1ll\u00edtani az \u00fcgyf\u00e9lazonos\u00edt\u00f3t, ami m\u00e1r kor\u00e1bban be\u00e1ll\u00edt\u00e1sra vagy adminisztr\u00e1tor \u00e1ltal konfigur\u00e1l\u00e1sra \
+ker\u00fclt.
+CLIENT_ID_FIXED_CWSIA0023.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a kliensazonos\u00edt\u00f3 nem ker\u00fclj\u00f6n be\u00e1ll\u00edt\u00e1sra azut\u00e1n, hogy kor\u00e1bban be\u00e1ll\u00edt\u00e1sra vagy konfigur\u00e1l\u00e1sra ker\u00fclt.
+
+# -------------------------------------------------------------------------------------------------
+JCA_CREATE_SESS_CWSIA0024=CWSIA0024E: A JCA fut\u00e1si k\u00f6rnyezet nem tudott l\u00e9trehozni egy munkamenetet.
+JCA_CREATE_SESS_CWSIA0024.explanation=A JCA fut\u00e1si k\u00f6rnyezetben egy munkamenet \
+l\u00e9trehoz\u00e1s\u00e1ra ir\u00e1nyul\u00f3 h\u00edv\u00e1s hib\u00e1t okozott.
+JCA_CREATE_SESS_CWSIA0024.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method that is not permitted to call in this container.
+# This message is cloned as MGD_ENV_CWSIA0052 and MGD_ENV_CWSIA0084.
+MGD_ENV_CWSIA0025=CWSIA0025E: A(z) {0} met\u00f3dus nem enged\u00e9lyezett ebben a t\u00e1rol\u00f3ban.
+MGD_ENV_CWSIA0025.explanation=Egy olyan met\u00f3dus ker\u00fclt megh\u00edv\u00e1sra, amely nem enged\u00e9lyezett a jelenlegi t\u00e1rol\u00f3ban.
+MGD_ENV_CWSIA0025.useraction=T\u00e1vol\u00edtsa el a met\u00f3dush\u00edv\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0026=CWSIA0026E: A(z) {0} nem t\u00e1mogatott ebben a kiad\u00e1sban.
+UNSUPPORTED_FUNC_CWSIA0026.explanation=Az alkalmaz\u00e1s egy olyan szolg\u00e1ltat\u00e1st vagy k\u00e9pess\u00e9get pr\u00f3b\u00e1lt meg haszn\u00e1lni, amelyet nem t\u00e1mogat a szoftver jelenlegi kiad\u00e1sa.
+UNSUPPORTED_FUNC_CWSIA0026.useraction=T\u00e1vol\u00edtsa el azt a k\u00f3dot, amely ezt a k\u00e9pess\u00e9get \
+pr\u00f3b\u00e1lja haszn\u00e1lni vagy, ha lehets\u00e9ges, akkor friss\u00edtsen a szoftver egy \u00fajabb kiad\u00e1s\u00e1ra, \
+ha el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Sessions that are currently open on the connection.
+# {1} is the line of application code that created the latest session
+MANY_SESSIONS_WARNING_CWSIA0027=CWSIA0027W: Pillanatnyilag {0} ny\u00edlt JMS Munkamenet \
+van a Kapcsolat sz\u00e1m\u00e1ra. Ez azt jelezheti, hogy a Munkamenetek nem ker\u00fclnek lez\u00e1r\u00e1sra, \
+amikor az alkalmaz\u00e1s befejezi a haszn\u00e1latukat. A Munkamenet a k\u00f6vetkez\u0151 helyen lett \
+l\u00e9trehozva: {1}
+MANY_SESSIONS_WARNING_CWSIA0027.explanation=Egy kapcsolaton a nagy sz\u00e1m\u00fa ny\u00edlt \
+munkamenetek negat\u00edv hat\u00e1ssal lehetnek a teljes\u00edtm\u00e9nyre.
+MANY_SESSIONS_WARNING_CWSIA0027.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s lez\u00e1rja \
+azokat a munkameneteket, amelyek m\u00e1r nem sz\u00fcks\u00e9gesek.
+
+# -------------------------------------------------------------------------------------------------
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028=CWSIA0028E: A(z) {0} \u00fcgyf\u00e9lazonos\u00edt\u00f3 \u00e9rv\u00e9nytelen, mert m\u00e1r fut egy kapcsolat ezzel az \u00fcgyf\u00e9lazonos\u00edt\u00f3val.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.explanation=Az alkalmaz\u00e1s \u00e1ltal be\u00e1ll\u00edtott azonos\u00edt\u00f3 megegyezik egy akt\u00edv kapcsolat azonos\u00edt\u00f3j\u00e1val.
+CLIENT_ID_ALREADY_EXISTS_CWSIA0028.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fcgyf\u00e9lazonos\u00edt\u00f3 egyedi.
+
+# JmsSessionImpl
+
+# clone of 222
+CONN_CLOSED_CWSIA0041=CWSIA0041E: A kapcsolat bez\u00e1r\u00e1sra ker\u00fclt.
+CONN_CLOSED_CWSIA0041.explanation=A kapcsolat bez\u00e1r\u00e1sra ker\u00fclt ezen met\u00f3dus v\u00e9grehajt\u00e1sa k\u00f6zben.
+CONN_CLOSED_CWSIA0041.useraction=Ism\u00e9telje meg a h\u00edv\u00e1st egy \u00faj kapcsolat haszn\u00e1lat\u00e1val.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a nontransacted session.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042=CWSIA0042E: \u00c9rv\u00e9nytelen a(z) {0} met\u00f3dus h\u00edv\u00e1sa egy nem tranzakci\u00f3kezelt munkamenetben.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.explanation=Az alkalmaz\u00e1s egy olyan \
+met\u00f3dust h\u00edvott meg, amely nem h\u00edvhat\u00f3 meg egy nem tranzakci\u00f3kezelt munkamenetben.
+INVALID_OP_FOR_NONTRANS_SESSION_CWSIA0042.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sprogramot ezen viselked\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz.
+
+DSUB_LOCKED_CWSIA0043=CWSIA0043E: Az el\u0151fizet\u00e9s z\u00e1rol\u00e1sra ker\u00fclt.
+DSUB_LOCKED_CWSIA0043.explanation=Nem iratkozhat le egy olyan tart\u00f3s el\u0151fizet\u00e9sr\u0151l, \
+aminek akt\u00edv feldolgoz\u00f3ja van, vagy egy akt\u00edv tranzakci\u00f3 alatt z\u00e1rolt \u00fczeneteket \
+tartalmaz.
+DSUB_LOCKED_CWSIA0043.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy nincs akt\u00edv feldolgoz\u00f3, majd \
+pr\u00f3b\u00e1lkozzon \u00fajra az el\u0151fizet\u00e9s-visszavon\u00e1si met\u00f3dussal.
+
+NOT_AUTH_CWSIA0044=CWSIA0044E: A tart\u00f3s el\u0151fizet\u00e9s leiratkoz\u00e1si k\u00e9r\u00e9se nem hajthat\u00f3 v\u00e9gre, mert nincs jogosults\u00e1ga.
+NOT_AUTH_CWSIA0044.explanation=Az aktu\u00e1lis felhaszn\u00e1l\u00f3 nem jogosult a leiratkoz\u00e1sra a tart\u00f3s el\u0151fizet\u00e9sb\u0151l.
+NOT_AUTH_CWSIA0044.useraction=Ellen\u0151rizze, hogy az aktu\u00e1lis felhaszn\u00e1l\u00f3 rendelkezik-e a k\u00e9rt hozz\u00e1f\u00e9r\u00e9ssel a sz\u00fcks\u00e9ges er\u0151forr\u00e1sokhoz. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the operation which is not supported
+UNSUPPORTED_OPERATION_CWSIA0045=CWSIA0045E: A(z) {0} elhagyhat\u00f3 JMS m\u0171veletet nem t\u00e1mogatja ez a megval\u00f3s\u00edt\u00e1s.
+UNSUPPORTED_OPERATION_CWSIA0045.explanation=Az alkalmaz\u00e1s egy olyan met\u00f3dust \
+h\u00edvott meg, amely elhagyhat\u00f3 a JMS meghat\u00e1roz\u00e1s\u00e1ban, \u00e9s ezt a JMS megval\u00f3s\u00edt\u00e1s nem \
+t\u00e1mogatja.
+UNSUPPORTED_OPERATION_CWSIA0045.useraction=T\u00e1vol\u00edtsa el a megnevezett met\u00f3dusok h\u00edv\u00e1s\u00e1t az alkalmaz\u00e1sb\u00f3l.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object instance which is not supported.
+FOREIGN_IMPLEMENTATION_CWSIA0046=CWSIA0046E: A(z) {0} param\u00e9ter egy olyan idegen megval\u00f3s\u00edt\u00e1sb\u00f3l sz\u00e1rmazik, amely nem t\u00e1mogatott.
+FOREIGN_IMPLEMENTATION_CWSIA0046.explanation=A felhaszn\u00e1l\u00f3i alkalmaz\u00e1s egy nem t\u00e1mogatott JMS szolg\u00e1ltat\u00f3t\u00f3l sz\u00e1rmaz\u00f3 megval\u00f3s\u00edt\u00e1si oszt\u00e1lyba l\u00e9pett.
+FOREIGN_IMPLEMENTATION_CWSIA0046.useraction=Cser\u00e9lje ki a nem t\u00e1mogatott objektumot egy t\u00e1mogatottra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the object type which was being created.
+MALFORMED_DESCRIPTOR_CWSIA0047=CWSIA0047E: A(z) {1} n\u00e9v nem felel meg egy {0} t\u00edpus\u00fa objektumnak sem.
+MALFORMED_DESCRIPTOR_CWSIA0047.explanation=Egy createTopic (t\u00e9mak\u00f6r l\u00e9trehoz\u00e1sa) \
+h\u00edv\u00e1shoz egy sorn\u00e9v ker\u00fclt megad\u00e1sra, vagy t\u00e9mak\u00f6rn\u00e9v lett megadva egy CreateQueue (sor \
+l\u00e9trehoz\u00e1sa) h\u00edv\u00e1shoz.
+MALFORMED_DESCRIPTOR_CWSIA0047.useraction=V\u00e1ltoztassa meg a nevet a helyes \
+objektumt\u00edpusra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0048=CWSIA0048E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0048.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott \
+tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0048.useraction=Adjon meg egy a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9ket.
+
+# -------------------------------------------------------------------------------------------------
+SESSION_CLOSED_CWSIA0049=CWSIA0049E: Ez a munkamenet bez\u00e1r\u00e1sra ker\u00fclt.
+SESSION_CLOSED_CWSIA0049.explanation=Egy alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amely nem haszn\u00e1lhat\u00f3 a munkamenet bez\u00e1r\u00e1s\u00e1t k\u00f6vet\u0151en.
+SESSION_CLOSED_CWSIA0049.useraction=A met\u00f3dus megh\u00edv\u00e1sa el\u0151tt gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a munkamenet nincs bez\u00e1rva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the method which must not be called on a transacted session
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050=CWSIA0050E: \u00c9rv\u00e9nytelen a(z) {0} met\u00f3dus h\u00edv\u00e1sa egy tranzakci\u00f3kezelt munkamenetben.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.explanation=Az alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amely nem h\u00edvhat\u00f3 meg egy tranzakci\u00f3kezelt munkamenetben.
+INVALID_OP_FOR_TRANS_SESSION_CWSIA0050.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sprogramot ezen viselked\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz.
+
+# -------------------------------------------------------------------------------------------------
+CONNECTION_CLOSED_CWSIA0051=CWSIA0051E: Az ehhez a munkamenethez tartoz\u00f3 ezen kapcsolat bez\u00e1r\u00e1sra ker\u00fclt.
+CONNECTION_CLOSED_CWSIA0051.explanation=Az alkalmaz\u00e1s egy olyan munkamenet-objektumban \
+l\u00e9v\u0151 met\u00f3dust h\u00edvott meg, aminek a kapcsolata bez\u00e1r\u00e1sra ker\u00fclt.
+CONNECTION_CLOSED_CWSIA0051.useraction=A met\u00f3dus megh\u00edv\u00e1sa el\u0151tt gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a kapcsolat nincs bez\u00e1rva.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 64
+# {0} is the destination which does not exist
+DESTINATION_DOES_NOT_EXIST_CWSIA0052=CWSIA0052E: A(z) {0} c\u00e9l nem l\u00e9tezik.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.explanation=Az alkalmaz\u00e1s egy nem meghat\u00e1rozott c\u00e9lhoz pr\u00f3b\u00e1lt csatlakozni.
+DESTINATION_DOES_NOT_EXIST_CWSIA0052.useraction=Hat\u00e1rozza meg a sz\u00fcks\u00e9ges c\u00e9lt \u00e9s \
+ism\u00e9telje meg a m\u0171veletet.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0053=CWSIA0053E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0053.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0053.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the durable subscription in question.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054=CWSIA0054E: {0} nev\u0171 tart\u00f3s el\u0151fizet\u00e9s nem l\u00e9tezik.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.explanation=Az alkalmaz\u00e1s egy nem l\u00e9tez\u0151 tart\u00f3s el\u0151fizet\u00e9st pr\u00f3b\u00e1lt meg visszavonni.
+DURABLE_SUB_DOES_NOT_EXIST_CWSIA0054.useraction=Nincs teend\u0151, hacsak az alkalmaz\u00e1s azt nem v\u00e1rta, hogy az el\u0151fizet\u00e9s l\u00e9tezik, amely esetben el\u0151z\u0151leg l\u00e9tre kellene hoznia azt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Producers that are currently open on the session.
+# {1} is the line of application code that created the latest producer
+MANY_PRODUCERS_WARNING_CWSIA0055=CWSIA0055W: Pillanatnyilag {0} ny\u00edlt JMS El\u0151\u00e1ll\u00edt\u00f3 \
+van a Munkamenet sz\u00e1m\u00e1ra. Ez azt jelezheti, hogy az El\u0151\u00e1ll\u00edt\u00f3k nem ker\u00fclnek lez\u00e1r\u00e1sra, \
+amikor az alkalmaz\u00e1s befejezi a haszn\u00e1latukat. Az El\u0151\u00e1ll\u00edt\u00f3 a k\u00f6vetkez\u0151 helyen lett \
+l\u00e9trehozva: {1}
+MANY_PRODUCERS_WARNING_CWSIA0055.explanation=Egy kapcsolaton a nagy sz\u00e1m\u00fa ny\u00edlt \
+el\u0151\u00e1ll\u00edt\u00f3k negat\u00edv hat\u00e1ssal lehetnek a teljes\u00edtm\u00e9nyre.
+MANY_PRODUCERS_WARNING_CWSIA0055.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s \
+lez\u00e1rja azokat az el\u0151\u00e1ll\u00edt\u00f3kat, amelyek m\u00e1r nem sz\u00fcks\u00e9gesek.
+
+# -------------------------------------------------------------------------------------------------
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056=CWSIA0056E: Null\u00e9rt\u00e9k\u0171 vagy \u00fcres \u00e9rt\u00e9k ker\u00fclt megad\u00e1sra a ConnectionFactory (kapcsolatgy\u00e1r) durableSubscriptionHome (tart\u00f3s el\u0151fizet\u00e9s helye) tulajdons\u00e1ga sz\u00e1m\u00e1ra.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.explanation=A durableSubscriptionHome \
+tulajdons\u00e1got m\u00e1r a tart\u00f3s el\u0151fizet\u00e9st haszn\u00e1l\u00f3 kapcsolat l\u00e9tes\u00edt\u00e9se el\u0151tt be kell \
+\u00e1ll\u00edtani.
+DURABLE_SUB_HOME_NOT_SPECIFIED_CWSIA0056.useraction=\u00c1ll\u00edtsa be a ConnectionFactory durableSubscriptionHome tulajdons\u00e1g\u00e1t azon \u00fczenetkezel\u00e9si alrendszer nev\u00e9re, amelyen az el\u0151fizet\u00e9st honos\u00edtani kell.
+
+# -------------------------------------------------------------------------------------------------
+# Clone of CWSIA0006, with userID inserted
+# {0} UserID that failed to be autherised
+AUTHORIZATION_FAILED_CWSIA0057=CWSIA0057E: A(z) {0} hiteles\u00edt\u00e9se nem siker\u00fclt.
+AUTHORIZATION_FAILED_CWSIA0057.explanation=A felhaszn\u00e1l\u00f3i n\u00e9v nem jogosult az er\u0151forr\u00e1s el\u00e9r\u00e9s\u00e9re.
+AUTHORIZATION_FAILED_CWSIA0057.useraction=Tekintse meg a felhaszn\u00e1l\u00f3i n\u00e9vre vonatkoz\u00f3 \
+hivatkozott hiba\u00fczenetet \u00e9s gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy helyesen van felhatalmazva a \
+rendszerben a sz\u00fcks\u00e9ges er\u0151forr\u00e1shoz.
+
+
+DEST_LOCKED_CWSIA0058=CWSIA0058E: Az ideiglenes t\u00e9mak\u00f6r z\u00e1rolt.
+DEST_LOCKED_CWSIA0058.explanation=Az ideiglenes t\u00e9mak\u00f6r nem t\u00f6r\u00f6lhet\u0151. Lehets\u00e9ges, hogy akt\u00edv el\u0151fizet\u0151i vannak.
+DEST_LOCKED_CWSIA0058.useraction=Z\u00e1rja be a t\u00e9mak\u00f6rh\u00f6z tartoz\u00f3 el\u0151fizet\u0151ket, majd pr\u00f3b\u00e1lkozzon \u00fajra a h\u00edv\u00e1ssal.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the number of JMS Consumers that are currently open on the session.
+# {1} is the line of application code that created the latest consumer
+MANY_CONSUMERS_WARNING_CWSIA0059=CWSIA0059W: Pillanatnyilag {0} ny\u00edlt JMS \
+Feldolgoz\u00f3 van a Munkamenet sz\u00e1m\u00e1ra. Ez azt jelezheti, hogy a Feldolgoz\u00f3k nem ker\u00fclnek \
+lez\u00e1r\u00e1sra, amikor az alkalmaz\u00e1s befejezi a haszn\u00e1latukat. A Feldolgoz\u00f3 a k\u00f6vetkez\u0151 helyen \
+lett l\u00e9trehozva: {1}
+MANY_CONSUMERS_WARNING_CWSIA0059.explanation=Egy munkameneten a nagy sz\u00e1m\u00fa ny\u00edlt \
+feldolgoz\u00f3k negat\u00edv hat\u00e1ssal lehetnek a teljes\u00edtm\u00e9nyre.
+MANY_CONSUMERS_WARNING_CWSIA0059.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s \
+lez\u00e1rja azokat a feldolgoz\u00f3kat, amelyek m\u00e1r nem sz\u00fcks\u00e9gesek.
+
+
+# JmsMsgProducerImpl
+# -------------------------------------------------------------------------------------------------
+PRODUCER_CLOSED_CWSIA0061=CWSIA0061E: Ez az \u00fczenet-el\u0151\u00e1ll\u00edt\u00f3 bez\u00e1r\u00e1sra ker\u00fclt.
+PRODUCER_CLOSED_CWSIA0061.explanation=Egy alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amely nem haszn\u00e1lhat\u00f3 az \u00fczenet-el\u0151\u00e1ll\u00edt\u00f3 bez\u00e1r\u00e1s\u00e1t k\u00f6vet\u0151en.
+PRODUCER_CLOSED_CWSIA0061.useraction=A met\u00f3dus megh\u00edv\u00e1sa el\u0151tt gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenet-el\u0151\u00e1ll\u00edt\u00f3 nincs bez\u00e1rva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MP_CREATE_FAILED_CWSIA0062=CWSIA0062E: Egy MessageProducer (\u00fczenet-el\u0151\u00e1ll\u00edt\u00f3) l\u00e9trehoz\u00e1sa a(z) {0} nev\u0171 c\u00e9l sz\u00e1m\u00e1ra meghi\u00fasult.
+MP_CREATE_FAILED_CWSIA0062.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt egy \u00fczenet-el\u0151\u00e1ll\u00edt\u00f3 \
+l\u00e9trehoz\u00e1sa sor\u00e1n.
+MP_CREATE_FAILED_CWSIA0062.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+SEND_FAILED_CWSIA0063=CWSIA0063E: Nem siker\u00fclt \u00fczenetet k\u00fcldeni a k\u00f6vetkez\u0151nek: {0}.
+SEND_FAILED_CWSIA0063.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt egy \u00fczenet k\u00fcld\u00e9se sor\u00e1n.
+SEND_FAILED_CWSIA0063.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# 64 deleted
+
+# -------------------------------------------------------------------------------------------------
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065=CWSIA0065E: Meg kell adni egy c\u00e9lt ezen el\u0151\u00e1ll\u00edt\u00f3b\u00f3l k\u00fcld\u00e9s eset\u00e9n.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.explanation=Az el\u0151\u00e1ll\u00edt\u00f3 null\u00e9rt\u00e9k\u0171 c\u00e9llal ker\u00fclt l\u00e9trehoz\u00e1sra \u00e9s nem ker\u00fclt megad\u00e1sra c\u00e9l a k\u00fcld\u00e9si met\u00f3dusban.
+NO_DEST_SPECIFIED_ON_SEND_CWSIA0065.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st \u00fagy, hogy egy c\u00e9lt meghat\u00e1roz\u00f3 k\u00fcld\u00e9si met\u00f3dust haszn\u00e1ljon, vagy adjon meg egy c\u00e9lt az el\u0151\u00e1ll\u00edt\u00f3 l\u00e9trehoz\u00e1sakor.
+
+# -------------------------------------------------------------------------------------------------
+DEST_SPECIFIED_ON_SEND_CWSIA0066=CWSIA0066E: C\u00e9l megad\u00e1sa \u00e9rv\u00e9nytelen ezen el\u0151\u00e1ll\u00edt\u00f3b\u00f3l k\u00fcld\u00e9s eset\u00e9n.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.explanation=Az el\u0151\u00e1ll\u00edt\u00f3 egy megadott c\u00e9llal ker\u00fclt l\u00e9trehoz\u00e1sra. A c\u00e9l \u00fajb\u00f3li megad\u00e1sa \u00e9rv\u00e9nytelen egy \u00fczenet k\u00fcld\u00e9sekor.
+DEST_SPECIFIED_ON_SEND_CWSIA0066.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st \u00fagy, hogy egy c\u00e9lt nem meghat\u00e1roz\u00f3 k\u00fcld\u00e9si met\u00f3dust haszn\u00e1ljon, vagy adjon meg egy null\u00e9rt\u00e9k\u0171 c\u00e9lt az el\u0151\u00e1ll\u00edt\u00f3 l\u00e9trehoz\u00e1sakor.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0067=CWSIA0067E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0067.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0067.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0068=CWSIA0068E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0068.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott \
+tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0068.useraction=Adjon meg egy a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9ket.
+
+# -------------------------------------------------------------------------------------------------
+PRODUCER_AUTH_ERROR_CWSIA0069=CWSIA0069E: A felhaszn\u00e1l\u00f3 nem jogosult ezen m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra. R\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+PRODUCER_AUTH_ERROR_CWSIA0069.explanation=A hivatkozott hiba\u00fczenet r\u00e9szleteket tartalmaz \
+arr\u00f3l a jogosults\u00e1gr\u00f3l, ami ezen m\u0171velet v\u00e9grehajt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges.
+PRODUCER_AUTH_ERROR_CWSIA0069.useraction=Az adminisztr\u00e1tornak meg kell adnia a sz\u00fcks\u00e9ges jogosults\u00e1got az \u00e9rintett felhaszn\u00e1l\u00f3nak.
+
+
+# -------------------------------------------------------------------------------------------------
+#{0} Delivery delay time
+#{1} Expiry time or time to live
+INVALID_VALUE_CWSIA0070=CWSIA0070E: A(z) {0} deliverDelay \u00e9rt\u00e9k nem lehet nagyobb, mint a(z) {1} timeToLive \u00e9rt\u00e9k.
+INVALID_VALUE_CWSIA0070.explanation=Ha a timeToLive \u00e9rt\u00e9k kevesebb, mint a deliveryDelay \u00e9rt\u00e9k, akkor az \u00fczenet el\u0151sz\u00f6r lej\u00e1r. Lej\u00e1ratkor az \u00fczenet t\u00f6rl\u00e9sre ker\u00fcl.
+INVALID_VALUE_CWSIA0070.useraction=\u00c1ll\u00edtsa be a deliverDelay \u00e9rt\u00e9ket a timeToLive \u00e9rt\u00e9kn\u00e9l kevesebbre.
+
+
+# JmsMsgConsumerImpl
+# -------------------------------------------------------------------------------------------------
+CONSUMER_CLOSED_CWSIA0081=CWSIA0081E: Ez az \u00fczenetfeldolgoz\u00f3 bez\u00e1r\u00e1sra ker\u00fclt.
+CONSUMER_CLOSED_CWSIA0081.explanation=Egy alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amely nem haszn\u00e1lhat\u00f3 az \u00fczenetfeldolgoz\u00f3 bez\u00e1r\u00e1s\u00e1t k\u00f6vet\u0151en.
+CONSUMER_CLOSED_CWSIA0081.useraction=A met\u00f3dus megh\u00edv\u00e1sa el\u0151tt gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az \u00fczenetfeldolgoz\u00f3 nincs bez\u00e1rva.
+
+# -------------------------------------------------------------------------------------------------
+# conflict between asynchronous message delivery and a synchronous call
+# {0} the call which triggered the exception
+ASYNC_IN_PROGRESS_CWSIA0082=CWSIA0082E: A szinkron met\u00f3dush\u00edv\u00e1s nem enged\u00e9lyezett egy munkamenet aszinkron m\u00f3don haszn\u00e1lata eset\u00e9n: {0}.
+ASYNC_IN_PROGRESS_CWSIA0082.explanation=A JMS meghat\u00e1roz\u00e1s nem enged\u00e9lyezi egy munkamenet haszn\u00e1lat\u00e1t szinkron met\u00f3dusok eset\u00e9n, amikor aszinkron k\u00e9zbes\u00edt\u00e9s fut.
+ASYNC_IN_PROGRESS_CWSIA0082.useraction=Ha a szinkron met\u00f3dusokat \u00e9s aszinkron k\u00e9zbes\u00edt\u00e9st \
+szeretne egyidej\u0171leg haszn\u00e1lni, akkor hozzon l\u00e9tre egy \u00f6n\u00e1ll\u00f3 munkamenetet.
+
+# -------------------------------------------------------------------------------------------------
+INVALID_SELECTOR_CWSIA0083=CWSIA0083E: A v\u00e1laszt\u00f3 \u00e9rv\u00e9nytelen.
+INVALID_SELECTOR_CWSIA0083.explanation=Helytelen \u00fczenetv\u00e1laszt\u00f3 ker\u00fclt megad\u00e1sra.
+INVALID_SELECTOR_CWSIA0083.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of MGD_ENV_CWSIA0025.
+MGD_ENV_CWSIA0084=CWSIA0084E: A(z) {0} met\u00f3dus nem enged\u00e9lyezett ebben a t\u00e1rol\u00f3ban.
+MGD_ENV_CWSIA0084.explanation=Egy olyan met\u00f3dus ker\u00fclt megh\u00edv\u00e1sra, amely nem enged\u00e9lyezett a jelenlegi t\u00e1rol\u00f3ban.
+MGD_ENV_CWSIA0084.useraction=T\u00e1vol\u00edtsa el a met\u00f3dush\u00edv\u00e1st.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0085=CWSIA0085E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0085.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0085.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+MC_CREATE_FAILED_CWSIA0086=CWSIA0086E: Egy MessageConsumer (\u00fczenetfeldolgoz\u00f3) l\u00e9trehoz\u00e1sa a(z) {0} nev\u0171 c\u00e9l sz\u00e1m\u00e1ra meghi\u00fasult.
+MC_CREATE_FAILED_CWSIA0086.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt egy \u00fczenetfeldolgoz\u00f3 l\u00e9trehoz\u00e1sa sor\u00e1n.
+MC_CREATE_FAILED_CWSIA0086.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# 87 deleted, replaced
+
+# This is used as a WARNING message if a receive times out whilst the connection is stopped.
+# {0} is the class/line number of method which called the message consumer (finger of blame).
+MC_CONN_STOPPED_CWSIA0087=CWSIA0087W: K\u00eds\u00e9rlet t\u00f6rt\u00e9nt egy \u00fczenet feldolgoz\u00e1s\u00e1ra, mik\u00f6zben a kapcsolat le volt \u00e1ll\u00edtva. A k\u00f6vetkez\u0151 met\u00f3dus h\u00edvta meg az \u00fczenetfeldolgoz\u00f3t: {0}.
+MC_CONN_STOPPED_CWSIA0087.explanation=Le\u00e1ll\u00edtott kapcsolat nem tud \u00fczeneteket k\u00fcldeni \u00fczenetfeldolgoz\u00f3khoz. Egy le\u00e1ll\u00edtott kapcsolatb\u00f3l \u00e9rkez\u0151 \u00fczenetek feldolgoz\u00e1s\u00e1nak k\u00eds\u00e9rlete az alkalmaz\u00e1s hib\u00e1s \
+m\u0171k\u00f6d\u00e9s\u00e9t jelezheti.
+MC_CONN_STOPPED_CWSIA0087.useraction=Ellen\u0151rizze, hogy a feldolgoz\u00e1s a le\u00e1ll\u00edtott kapcsolatb\u00f3l az alkalmaz\u00e1s elv\u00e1rt m\u0171k\u00f6d\u00e9se-e. Ha nem az, akkor jav\u00edtsa ki az alkalmaz\u00e1s \
+terv\u00e9t.
+
+# -------------------------------------------------------------------------------------------------
+# 88 deleted
+
+# -------------------------------------------------------------------------------------------------
+# RuntimeException thrown by onMessage
+ML_THREW_EXCPTN_CWSIA0089=CWSIA0089E: Egy RuntimeException fut\u00e1si kiv\u00e9tel t\u00f6rt\u00e9nt a MessageListener.onMessage met\u00f3dusban.
+ML_THREW_EXCPTN_CWSIA0089.explanation=Egy bejegyzett MessageListener (\u00fczenetfigyel\u0151) \
+elemmel rendelkez\u0151 MessageConsumer (\u00fczenetfeldolgoz\u00f3) egy hiba\u00fczenetet fogadott az \
+onMessage  met\u00f3dusb\u00f3l.
+ML_THREW_EXCPTN_CWSIA0089.useraction=M\u00f3dos\u00edtsa az onMessage met\u00f3dust, hogy elker\u00fclje a \
+kiv\u00e9telek dob\u00e1s\u00e1t.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+CONSUMER_AUTH_ERROR_CWSIA0090=CWSIA0090E: A felhaszn\u00e1l\u00f3 nem jogosult ezen m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra. R\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+CONSUMER_AUTH_ERROR_CWSIA0090.explanation=A hivatkozott hiba\u00fczenet le\u00edrja a m\u0171velet \
+v\u00e9grehajt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges jogosults\u00e1got.
+CONSUMER_AUTH_ERROR_CWSIA0090.useraction=Az adminisztr\u00e1tornak meg kell adnia a sz\u00fcks\u00e9ges jogosults\u00e1got az \u00e9rintett felhaszn\u00e1l\u00f3nak.
+
+
+# JmsMessageImpl
+
+# 101 deleted
+
+# -------------------------------------------------------------------------------------------------
+# Used when an inappropriate type of object is given to setObjectProperty
+# {0} is the class of object.
+# {1} is the name of the property
+INVALID_OBJECT_TYPE_CWSIA0102=CWSIA0102E: A(z) {0} t\u00edpus \u00e9rv\u00e9nytelen a(z) {1} objektumtulajdons\u00e1g eset\u00e9n.
+INVALID_OBJECT_TYPE_CWSIA0102.explanation=Egy alkalmaz\u00e1s egy olyan objektumt\u00edpus haszn\u00e1lat\u00e1val pr\u00f3b\u00e1lt be\u00e1ll\u00edtani egy objektumtulajdons\u00e1got, amelyet nem enged\u00e9lyez a JMS meghat\u00e1roz\u00e1s.
+INVALID_OBJECT_TYPE_CWSIA0102.useraction=Enged\u00e9lyezett objektumt\u00edpust haszn\u00e1ljon, ami a \
+primit\u00edv \u00e1talak\u00edt\u00f3oszt\u00e1lyok vagy a karaktersorozatos objektumok egyike.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0103=CWSIA0103E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenet fogad\u00e1sa sor\u00e1n: {0}.
+INBOUND_MSG_ERROR_CWSIA0103.explanation=Egy \u00fczenet fogad\u00e1sa sor\u00e1n hiba t\u00f6rt\u00e9nt, \
+ami a m\u0171velet meghi\u00fasul\u00e1s\u00e1t okozta.
+INBOUND_MSG_ERROR_CWSIA0103.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the item which is being converted
+# {1} is the actual type of the item
+# {2} is the type that the user has requested it be converted to.
+INVALID_TYPE_CONVERSION_CWSIA0104=CWSIA0104E: A(z) {0} elem {1} t\u00edpusr\u00f3l {2} t\u00edpusra \u00e1talak\u00edt\u00e1sa nem megengedett.
+INVALID_TYPE_CONVERSION_CWSIA0104.explanation=A JMS meghat\u00e1roz\u00e1s nem engedi meg a \
+k\u00e9t megadott adatt\u00edpus k\u00f6z\u00f6tti \u00e1talak\u00edt\u00e1st.
+INVALID_TYPE_CONVERSION_CWSIA0104.useraction=A megnevezett elemet a megengedett \u00e1talak\u00edt\u00e1sok egyik\u00e9nek haszn\u00e1lat\u00e1val szerezze meg.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+FIELD_NOT_SET_CWSIA0105=CWSIA0105E: A(z) {0} \u00fczenetmez\u0151 nincs be\u00e1ll\u00edtva.
+FIELD_NOT_SET_CWSIA0105.explanation=Egy alkalmaz\u00e1s egy nem be\u00e1ll\u00edtott mez\u0151 \u00e9rt\u00e9k\u00e9t pr\u00f3b\u00e1lta meg lek\u00e9rni.
+FIELD_NOT_SET_CWSIA0105.useraction=\u00c1ll\u00edtsa be a mez\u0151 \u00e9rt\u00e9k\u00e9t a lek\u00e9r\u00e9s el\u0151tt.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property which was not set.
+INVALID_FIELD_NAME_CWSIA0106=CWSIA0106E: A null\u00e9rt\u00e9k\u0171 vagy \u00fcres karaktersorozatos mez\u0151n\u00e9v nem megengedett.
+INVALID_FIELD_NAME_CWSIA0106.explanation=Egy felhaszn\u00e1l\u00f3i alkalmaz\u00e1s egy mez\u0151t \u00e9rv\u00e9nytelen n\u00e9v haszn\u00e1lat\u00e1val pr\u00f3b\u00e1lt meg be\u00e1ll\u00edtani, p\u00e9ld\u00e1ul null\u00e9rt\u00e9k\u0171 vagy \u00fcres karaktersorozatos n\u00e9vvel.
+INVALID_FIELD_NAME_CWSIA0106.useraction=\u00c9rv\u00e9nyes mez\u0151nevet haszn\u00e1ljon.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_BODY_CWSIA0107=CWSIA0107E: A rendszer nem tudja megh\u00edvni a(z) {0} met\u00f3dust az \u00fczeneten, mert az \u00fczenet t\u00f6rzse \u00edr\u00e1sv\u00e9dett.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.explanation=Egy felhaszn\u00e1l\u00f3i alkalmaz\u00e1s \
+megk\u00eds\u00e9relte egy \u00fczenet t\u00f6rzs\u00e9t m\u00f3dos\u00edtani, ami pillanatnyilag csak olvashat\u00f3.
+READ_ONLY_MESSAGE_BODY_CWSIA0107.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sprogramot ezen viselked\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz, vagy el\u0151sz\u00f6r a clearBody (t\u00f6rzs ki\u00fcr\u00edt\u00e9se) met\u00f3dus megh\u00edv\u00e1s\u00e1val \u00e1ll\u00edtsa az \u00fczenett\u00f6rzset \u00edrhat\u00f3ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108=CWSIA0108E: A rendszer nem tudja megh\u00edvni a(z) {0} met\u00f3dust az \u00fczeneten, mert az \u00fczenet tulajdons\u00e1gai \u00edr\u00e1sv\u00e9dettek.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.explanation=Egy felhaszn\u00e1l\u00f3i alkalmaz\u00e1s \
+megk\u00eds\u00e9relte egy \u00fczenet tulajdons\u00e1g\u00e1t m\u00f3dos\u00edtani, ami pillanatnyilag csak olvashat\u00f3.
+READ_ONLY_MESSAGE_PROPERTY_CWSIA0108.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sprogramot ezen viselked\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz, vagy el\u0151sz\u00f6r a clearProperties (tulajdons\u00e1gok ki\u00fcr\u00edt\u00e9se) met\u00f3dus megh\u00edv\u00e1s\u00e1val \u00e1ll\u00edtsa az \u00fczenettulajdons\u00e1got \u00edrhat\u00f3ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the illegal method.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109=CWSIA0109E: A(z) {0} met\u00f3dus \u00fczeneten megh\u00edv\u00e1sa nem megengedett, mert az \u00fczenet t\u00f6rzse csak \u00edrhat\u00f3.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.explanation=Egy felhaszn\u00e1l\u00f3i alkalmaz\u00e1s egy csak \u00edrhat\u00f3 \u00fczenett\u00f6rzset pr\u00f3b\u00e1lt olvasni.
+WRITE_ONLY_MESSAGE_BODY_CWSIA0109.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sprogramot ezen viselked\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz, vagy el\u0151bb h\u00edvja meg a reset (vissza\u00e1ll\u00edt\u00e1s) met\u00f3dust.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the action which was invalid
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110=CWSIA0110E: A(z) {0} m\u0171velet megh\u00edv\u00e1sa csak olyan \u00fczenet eset\u00e9n megengedett, amely egy fogad\u00e1si h\u00edv\u00e1s haszn\u00e1lat\u00e1val ker\u00fclt megszerz\u00e9sre, vagy egy MessageListener (\u00fczenetfigyel\u0151) sz\u00e1m\u00e1ra biztos\u00edtott \u00fczenet eset\u00e9n.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.explanation=Az \u00fczenetet vagy egy alkalmaz\u00e1s \
+\u00e1ll\u00edtotta \u00f6ssze, vagy egy sorb\u00f6ng\u00e9sz\u0151 \u00e1ltal ker\u00fclt megszerz\u00e9sre, \u00edgy nem t\u00e1mogatja az \
+eml\u00edtett m\u0171veletet.
+INVALID_FOR_UNCONSUMED_MSG_CWSIA0110.useraction=Gondoskodj\u00e9k r\u00f3la, hogy az alkalmaz\u00e1sok \
+ezt a m\u0171veletet csak egy fogad\u00e1si h\u00edv\u00e1s haszn\u00e1lat\u00e1val megszerzett vagy egy \
+MessageListener (\u00fczenetfigyel\u0151) sz\u00e1m\u00e1ra biztos\u00edtott \u00fczeneteken h\u00edvj\u00e1k meg.
+
+# -------------------------------------------------------------------------------------------------
+MSG_CREATE_FAILED_CWSIA0111=CWSIA0111E: Hiba t\u00f6rt\u00e9nt egy \u00fczenet l\u00e9trehoz\u00e1s\u00e1ra tett k\u00eds\u00e9rlet sor\u00e1n. Tov\u00e1bbi r\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+MSG_CREATE_FAILED_CWSIA0111.explanation=Nem lehetett l\u00e9trehozni egy \u00fczenetet JMS-ben, \
+mert egy hiba t\u00f6rt\u00e9nt a rendszer egy m\u00e1sik r\u00e9sz\u00e9ben.
+MSG_CREATE_FAILED_CWSIA0111.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+INVALID_PROPNAME_CWSIA0112=CWSIA0112E: A(z) {0} tulajdons\u00e1gn\u00e9v nem \u00e9rv\u00e9nyes Java azonos\u00edt\u00f3.
+INVALID_PROPNAME_CWSIA0112.explanation=A megadott tulajdons\u00e1gn\u00e9v nem felel meg a \
+JMS meghat\u00e1roz\u00e1sban el\u0151\u00edrt form\u00e1tumnak.
+INVALID_PROPNAME_CWSIA0112.useraction=M\u00f3dos\u00edtsa a tulajdons\u00e1gnevet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+RESERVED_PROPNAME_CWSIA0113=CWSIA0113E: A(z) {0} tulajdons\u00e1gn\u00e9v foglalt, ez\u00e9rt nem \u00e1ll\u00edthat\u00f3 be.
+RESERVED_PROPNAME_CWSIA0113.explanation=A megadott tulajdons\u00e1gn\u00e9v egy JMS el\u0151taggal kezd\u0151dik, de nem a t\u00e1mogatott, be\u00e1ll\u00edthat\u00f3 tulajdons\u00e1gok egyike.
+RESERVED_PROPNAME_CWSIA0113.useraction=M\u00f3dos\u00edtsa a tulajdons\u00e1gnevet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property
+# {1} is the type of the variable eg. Integer.class
+JMS_IBM_INVALID_TYPE_CWSIA0114=CWSIA0114E: A(z) {0} tulajdons\u00e1got a(z) {1}, nem a(z) {2} t\u00edpus haszn\u00e1lat\u00e1val kell be\u00e1ll\u00edtani.
+JMS_IBM_INVALID_TYPE_CWSIA0114.explanation=A JMS_IBM tulajdons\u00e1gokat specifikus \
+v\u00e1ltoz\u00f3t\u00edpusok haszn\u00e1lat\u00e1val kell be\u00e1ll\u00edtani.
+JMS_IBM_INVALID_TYPE_CWSIA0114.useraction=Jav\u00edtsa ki az alkalmaz\u00e1s k\u00f3dj\u00e1t, hogy a \
+sz\u00fcks\u00e9ges v\u00e1ltoz\u00f3t\u00edpust haszn\u00e1lja ezen JMS_IBM tulajdons\u00e1g be\u00e1ll\u00edt\u00e1s\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0115=CWSIA0115E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0115.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0115.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+# -------------------------------------------------------------------------------------------------
+# derived from 0048
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0116=CWSIA0116E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0116.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott \
+tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0116.useraction=Adjon meg egy a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9ket.
+# -------------------------------------------------------------------------------------------------
+STREAM_MESSAGE_CWSIA0117=CWSIA0117E: Az \u00fczenet egy StreamMessage 
+STREAM_MESSAGE_CWSIA0117.explanation=A kapott \u00fczenet StreamMessage t\u00edpus\u00fa.
+STREAM_MESSAGE_CWSIA0117.useraction=Semmit sem kell tennie.
+# -------------------------------------------------------------------------------------------------
+# {0} The type to which the message body will be assigned
+INVALID_CLASS_TYPE_CWSIA0118=CWSIA0118E: Az \u00fczenet t\u00f6rzse nem rendelhet\u0151 hozz\u00e1 a megadott {0} t\u00edpushoz 
+INVALID_CLASS_TYPE_CWSIA0118.explanation= Az \u00fczenet t\u00f6rzse nem kompatibilis a megadott \u00fczenett\u00edpussal
+INVALID_CLASS_TYPE_CWSIA0118.useraction=Adjon meg egy \u00e9rv\u00e9nyes \u00fczenett\u00edpust.
+# -------------------------------------------------------------------------------------------------
+NO_MSG_BODY_CWSIA0119=CWSIA0119E: Az \u00fczenetnek nincs t\u00f6rzse.
+NO_MSG_BODY_CWSIA0119.explanation= A kapott \u00fczenetnek nincs \u00fczenett\u00f6rzse.
+NO_MSG_BODY_CWSIA0119.useraction=Semmit sem kell tennie.
+# -------------------------------------------------------------------------------------------------
+GET_MSG_BODY_FAILED_CWSIA0120=CWSIA0120E: Nem siker\u00fclt lek\u00e9rni az \u00fczenet t\u00f6rzs\u00e9t.
+GET_MSG_BODY_FAILED_CWSIA0120.explanation= Nem siker\u00fclt lek\u00e9rni az \u00fczenet t\u00f6rzs\u00e9t egy bels\u0151 hiba miatt
+GET_MSG_BODY_FAILED_CWSIA0120.useraction=Semmit sem kell tennie.
+# -------------------------------------------------------------------------------------------------
+
+# JmsObjectMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+SERIALIZATION_EXCEPTION_CWSIA0121=CWSIA0121E: Kiv\u00e9tel t\u00f6rt\u00e9nt az objektum p\u00e9ld\u00e1nyos\u00edt\u00e1sa sor\u00e1n: {0}.
+SERIALIZATION_EXCEPTION_CWSIA0121.explanation=Az objektum soros\u00edt\u00e1sa egy hiba \
+miatt sikertelen volt.
+SERIALIZATION_EXCEPTION_CWSIA0121.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+DESERIALIZATION_EXCEPTION_CWSIA0122=CWSIA0122E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenet p\u00e9ld\u00e1nyos\u00edt\u00e1s\u00e1nak megsz\u00fcntet\u00e9se sor\u00e1n, a kiv\u00e9tel a k\u00f6vetkez\u0151: {0}.
+DESERIALIZATION_EXCEPTION_CWSIA0122.explanation=Az \u00fczenet vissza\u00e1ll\u00edt\u00e1sa nem \
+siker\u00fclt a jelzett kiv\u00e9tel miatt.
+DESERIALIZATION_EXCEPTION_CWSIA0122.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a \
+hivatkozott hiba\u00fczenetet.
+
+# JmsQueueBrowserImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the exception which was received
+NO_MESSAGE_AVAILABLE_CWSIA0141=CWSIA0141E: A sorb\u00f6ng\u00e9sz\u0151nek nincs el\u00e9rhet\u0151 \u00fczenete.
+NO_MESSAGE_AVAILABLE_CWSIA0141.explanation=Az alkalmaz\u00e1s egy \u00fczenetet k\u00e9rt egy \
+sorb\u00f6ng\u00e9sz\u0151b\u0151l, de nincs el\u00e9rhet\u0151 \u00fczenet.
+NO_MESSAGE_AVAILABLE_CWSIA0141.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1st, hogy kezelje ezt a \
+hib\u00e1t, vagy a hasMoreElements met\u00f3dus haszn\u00e1lat\u00e1val ellen\u0151rizze, hogy el\u00e9rhet\u0151k-e tov\u00e1bbi \
+\u00fczenetek.
+
+# -------------------------------------------------------------------------------------------------
+BROWSER_CLOSED_CWSIA0142=CWSIA0142E: Ez a sorb\u00f6ng\u00e9sz\u0151 bez\u00e1r\u00e1sra ker\u00fclt.
+BROWSER_CLOSED_CWSIA0142.explanation=Egy alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amely nem haszn\u00e1lhat\u00f3 a sorb\u00f6ng\u00e9sz\u0151 bez\u00e1r\u00e1s\u00e1t k\u00f6vet\u0151en.
+BROWSER_CLOSED_CWSIA0142.useraction=A met\u00f3dus megh\u00edv\u00e1sa el\u0151tt gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a sorb\u00f6ng\u00e9sz\u0151 nincs bez\u00e1rva.
+
+# -------------------------------------------------------------------------------------------------
+FAILED_TO_CREATE_BSESSION_CWSIA0143=CWSIA0143E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.explanation=A createBrowserSession (b\u00f6ng\u00e9sz\u0151-munkamenet l\u00e9trehoz\u00e1sa) h\u00edv\u00e1s null\u00e9rt\u00e9kek adott vissza egy \u00e9rv\u00e9nyes BrowserSession (b\u00f6ng\u00e9sz\u0151-munkamenet) objektum helyett.
+FAILED_TO_CREATE_BSESSION_CWSIA0143.useraction=CMSG0001
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0144=CWSIA0144E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0144.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0144.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the destination
+BROWSE_FAILED_CWSIA0145=CWSIA0145E: A(z) {0} c\u00e9l nem b\u00f6ng\u00e9szhet\u0151.
+BROWSE_FAILED_CWSIA0145.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt a c\u00e9l b\u00f6ng\u00e9sz\u00e9se sor\u00e1n.
+BROWSE_FAILED_CWSIA0145.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# 146 deleted
+
+# -------------------------------------------------------------------------------------------------
+# clone of 83
+INVALID_SELECTOR_CWSIA0147=CWSIA0147E: A v\u00e1laszt\u00f3 \u00e9rv\u00e9nytelen.
+INVALID_SELECTOR_CWSIA0147.explanation=Helytelen \u00fczenetv\u00e1laszt\u00f3 ker\u00fclt megad\u00e1sra.
+INVALID_SELECTOR_CWSIA0147.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# clone of 103
+# {0} is the Exception which occurred.
+INBOUND_MSG_ERROR_CWSIA0148=CWSIA0148E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy \u00fczenet fogad\u00e1sa sor\u00e1n: {0}.
+INBOUND_MSG_ERROR_CWSIA0148.explanation=Egy \u00fczenet fogad\u00e1sa sor\u00e1n hiba t\u00f6rt\u00e9nt, \
+ami a m\u0171velet meghi\u00fasul\u00e1s\u00e1t okozta.
+INBOUND_MSG_ERROR_CWSIA0148.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of PRODUCER_AUTH_ERROR_CWSIA0069.
+BROWSER_AUTH_ERROR_CWSIA0149=CWSIA0149E: A felhaszn\u00e1l\u00f3 nem jogosult ezen m\u0171velet v\u00e9grehajt\u00e1s\u00e1ra. R\u00e9szletek\u00e9rt tekintse meg a hivatkozott kiv\u00e9telt.
+BROWSER_AUTH_ERROR_CWSIA0149.explanation=A hivatkozott hiba\u00fczenet r\u00e9szleteket tartalmaz \
+arr\u00f3l a jogosults\u00e1gr\u00f3l, ami ezen m\u0171velet v\u00e9grehajt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges.
+BROWSER_AUTH_ERROR_CWSIA0149.useraction=Az adminisztr\u00e1tornak meg kell adnia a sz\u00fcks\u00e9ges jogosults\u00e1got az \u00e9rintett felhaszn\u00e1l\u00f3nak.
+
+
+
+# JmsStreamMessageImpl
+# -------------------------------------------------------------------------------------------------
+NULL_BUFFER_CWSIA0161=CWSIA0161E: Az olvas\u00e1si puffer null\u00e9rt\u00e9k\u0171.
+NULL_BUFFER_CWSIA0161.explanation=Egy null\u00e9rt\u00e9k\u0171 hivatkoz\u00e1s ker\u00fclt \u00e1tad\u00e1sra a StreamMessage.readBytes met\u00f3dus sz\u00e1m\u00e1ra, \u00edgy nem adhat\u00f3k vissza adatok.
+NULL_BUFFER_CWSIA0161.useraction=Megfelel\u0151en m\u00e9retezett puffert adjon \u00e1t a readBytes met\u00f3dus sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+END_STREAM_CWSIA0162=CWSIA0162I: Az \u00fczenetfolyam v\u00e9ge el\u00e9r\u00e9sre ker\u00fclt.
+END_STREAM_CWSIA0162.explanation=Az \u00fczenet tartalm\u00e1nak v\u00e9ge el\u00e9r\u00e9sre ker\u00fclt. Ez norm\u00e1lis, ha az olvas\u00f3 alkalmaz\u00e1s nem tudja, hogy mennyi adatot v\u00e1rjon.
+END_STREAM_CWSIA0162.useraction=Semmit sem kell tennie.
+
+# -------------------------------------------------------------------------------------------------
+INCOMPLETE_BYTE_ARRAY_CWSIA0163=CWSIA0163E: A StreamMessage byte-t\u00f6mb olvas\u00e1sa nem volt teljes.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.explanation=A StreamMessage k\u00f6vetkez\u0151 mez\u0151j\u00e9nek \
+olvas\u00e1s\u00e1ra tett k\u00eds\u00e9rletet a rendszer, miel\u0151tt a jelenlegi byte-t\u00f6mb teljesen be lett \
+volna olvasva.
+INCOMPLETE_BYTE_ARRAY_CWSIA0163.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a felhaszn\u00e1l\u00f3i k\u00f3d \
+teljesen beolvasson minden byte-t\u00f6mb\u00f6t a k\u00f6vetkez\u0151 mez\u0151 olvas\u00e1sa el\u0151tt.
+
+# -------------------------------------------------------------------------------------------------
+NULL_CHAR_CWSIA0164=CWSIA0164E: A null\u00e9rt\u00e9k nem adhat\u00f3 vissza karakterk\u00e9nt.
+NULL_CHAR_CWSIA0164.explanation=Null\u00e9rt\u00e9ket tartalmaz\u00f3 StreamMessage mez\u0151 olvas\u00e1sa t\u00f6rt\u00e9nt a readChar (karakter olvas\u00e1sa) met\u00f3dus haszn\u00e1lat\u00e1val.
+NULL_CHAR_CWSIA0164.useraction=Ker\u00fclje el a null\u00e9rt\u00e9kek readChar met\u00f3dussal olvas\u00e1s\u00e1t.
+
+# JmsBytesMessageImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the encoding string
+BAD_ENCODING_CWSIA0181=CWSIA0181E: A k\u00f3dol\u00e1s \u00e9rv\u00e9nytelen a(z) {0} karaktersorozat eset\u00e9n.
+BAD_ENCODING_CWSIA0181.explanation=A megadott \u00e9rt\u00e9k k\u00f3dol\u00e1sa ismeretlen.
+BAD_ENCODING_CWSIA0181.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az alkalmaz\u00e1s a k\u00f3dol\u00e1sok meghat\u00e1rozott list\u00e1j\u00e1b\u00f3l ad \u00e9rt\u00e9ket.
+
+# -------------------------------------------------------------------------------------------------
+DATA_STREAM_PROBLEM_CWSIA0182=CWSIA0182E: Bels\u0151 hiba t\u00f6rt\u00e9nt az adatfolyamba \u00edr\u00e1s sor\u00e1n.
+DATA_STREAM_PROBLEM_CWSIA0182.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt a lebeg\u0151pontos \u00e9s dupla pontoss\u00e1g\u00fa \u00e9rt\u00e9kek form\u00e1tum\u00e1talak\u00edt\u00e1s\u00e1ra haszn\u00e1lt adatfolyamok eset\u00e9n.
+DATA_STREAM_PROBLEM_CWSIA0182.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+END_BYTESMESSAGE_CWSIA0183=CWSIA0183I: Az \u00fczenet v\u00e9ge ut\u00e1ni olvas\u00e1s k\u00eds\u00e9rlete t\u00f6rt\u00e9nt.
+END_BYTESMESSAGE_CWSIA0183.explanation=Az \u00fczenet v\u00e9ge ut\u00e1ni olvas\u00e1s k\u00eds\u00e9rlete t\u00f6rt\u00e9nt. Ez \
+norm\u00e1lis helyzet lehet, ha egy alkalmaz\u00e1s v\u00e1ltoz\u00f3 hossz\u00fas\u00e1g\u00fa adatok JMS 1.0.2 \
+meghat\u00e1roz\u00e1s haszn\u00e1lat\u00e1val olvas\u00e1s\u00e1ra ker\u00fclt k\u00f3dol\u00e1sra.
+END_BYTESMESSAGE_CWSIA0183.useraction=Sz\u00fcks\u00e9g eset\u00e9n k\u00f3dolja \u00fajra az alkalmaz\u00e1st a \
+getBodyLength (t\u00f6rzs hossz\u00e1nak lek\u00e9r\u00e9se) met\u00f3dus haszn\u00e1lat\u00e1hoz.
+
+# -------------------------------------------------------------------------------------------------
+UTF8_CONV_CWSIA0184=CWSIA0184E: Az UTF-8 \u00e1talak\u00edt\u00e1s meghi\u00fasult.
+UTF8_CONV_CWSIA0184.explanation=Probl\u00e9ma t\u00f6rt\u00e9nt egy UTF-8 karaktersorozat olvas\u00e1sa vagy \
+\u00edr\u00e1sa sor\u00e1n. A leg\u00e1ltal\u00e1nosabb probl\u00e9ma egy 65535 karaktern\u00e9l hosszabb karaktersorozat \u00edr\u00e1sa.
+UTF8_CONV_CWSIA0184.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott \
+hiba\u00fczenetet.
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsBytesMessageImpl - clones CWSIA0188 and CWSIA0189 created
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0185=CWSIA0185E: Helytelen, {0} t\u00edpus\u00fa objektum ker\u00fclt megad\u00e1sra.
+BAD_OBJECT_CWSIA0185.explanation=A writeObject (objektum \u00edr\u00e1sa) \
+met\u00f3dus sz\u00e1m\u00e1ra egy olyan objektumparam\u00e9ter ker\u00fclt megad\u00e1sra, ami nem egy \
+primit\u00edv \u00e1talak\u00edt\u00f3t\u00edpus.
+BAD_OBJECT_CWSIA0185.useraction=Jav\u00edtsa ki az alkalmaz\u00e1st annak biztos\u00edt\u00e1sa \u00e9rdek\u00e9ben, hogy csak megengedett t\u00edpus\u00fa objektumok ker\u00fcljenek \u00e1tad\u00e1sra param\u00e9terk\u00e9nt a writeObject met\u00f3dus sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+WRITE_PROBLEM_CWSIA0186=CWSIA0186E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Probl\u00e9ma mer\u00fclt fel egy \u00fczenetbe \u00edr\u00e1s sor\u00e1n.
+WRITE_PROBLEM_CWSIA0186.explanation=Hiba t\u00f6rt\u00e9nt egy elemnek az \u00fczenetbe \u00edr\u00e1s\u00e1ra tett \
+k\u00eds\u00e9rlet sor\u00e1n.
+WRITE_PROBLEM_CWSIA0186.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+#ENCS_TOSTR_CWSIA0187=Integer encoding: {0}, floating point encoding {1}
+#ENCS_TOSTR_CWSIA0187.explanation=This message is for informational purposes only.
+#ENCS_TOSTR_CWSIA0187.useraction=No action required.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsMapMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0188=CWSIA0188E: Helytelen, {0} t\u00edpus\u00fa objektum ker\u00fclt megad\u00e1sra.
+BAD_OBJECT_CWSIA0188.explanation=A writeObject (objektum \u00edr\u00e1sa) \
+met\u00f3dus sz\u00e1m\u00e1ra egy olyan objektumparam\u00e9ter ker\u00fclt megad\u00e1sra, ami nem egy \
+primit\u00edv \u00e1talak\u00edt\u00f3t\u00edpus.
+BAD_OBJECT_CWSIA0188.useraction=Jav\u00edtsa ki az alkalmaz\u00e1st annak biztos\u00edt\u00e1sa \u00e9rdek\u00e9ben, hogy csak megengedett t\u00edpus\u00fa objektumok ker\u00fcljenek \u00e1tad\u00e1sra param\u00e9terk\u00e9nt a writeObject met\u00f3dus sz\u00e1m\u00e1ra.
+
+
+# -------------------------------------------------------------------------------------------------
+# This message is used for JmsStreamMessageImpl - clone of CWSIA0185
+# {0} is the class type which is incorrect
+BAD_OBJECT_CWSIA0189=CWSIA0189E: Helytelen, {0} t\u00edpus\u00fa objektum ker\u00fclt megad\u00e1sra.
+BAD_OBJECT_CWSIA0189.explanation=A writeObject (objektum \u00edr\u00e1sa) \
+met\u00f3dus sz\u00e1m\u00e1ra egy olyan objektumparam\u00e9ter ker\u00fclt megad\u00e1sra, ami nem egy \
+primit\u00edv \u00e1talak\u00edt\u00f3t\u00edpus.
+BAD_OBJECT_CWSIA0189.useraction=Jav\u00edtsa ki az alkalmaz\u00e1st annak biztos\u00edt\u00e1sa \u00e9rdek\u00e9ben, hogy csak megengedett t\u00edpus\u00fa objektumok ker\u00fcljenek \u00e1tad\u00e1sra param\u00e9terk\u00e9nt a writeObject met\u00f3dus sz\u00e1m\u00e1ra.
+
+
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0190=CWSIA0190E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0190.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0190.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+
+# com.ibm.ws.sib.api.jms.JmsInternalsFactory
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201=CWSIA0201E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy {0} oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre, mert a(z) {1} JAR f\u00e1jl nem tal\u00e1lhat\u00f3.
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0201.useraction=CMSG0002
+
+
+# com.ibm.websphere.sib.api.jms.JmsDurableSubscriberImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0221=CWSIA0221E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0221.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0221.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+
+CONN_CLOSED_CWSIA0222=CWSIA0222E: A kapcsolat bez\u00e1r\u00e1sra ker\u00fclt.
+CONN_CLOSED_CWSIA0222.explanation=A kapcsolat bez\u00e1r\u00e1sra ker\u00fclt ezen met\u00f3dus v\u00e9grehajt\u00e1sa k\u00f6zben.
+CONN_CLOSED_CWSIA0222.useraction=Ism\u00e9telje meg a h\u00edv\u00e1st egy \u00faj kapcsolat haszn\u00e1lat\u00e1val.
+
+DEST_LOCKED_CWSIA0223=CWSIA0223E: Az el\u0151fizet\u00e9s z\u00e1rol\u00e1sra ker\u00fclt.
+DEST_LOCKED_CWSIA0223.explanation=A tart\u00f3s el\u0151fizet\u00e9s nem fogad el feldolgoz\u00f3kat. Lehets\u00e9ges, hogy m\u00e1r rendelkezik egy akt\u00edv el\u0151fizet\u0151vel, vagy adminisztr\u00e1tor \u00e1ltal \
+letilt\u00e1sra ker\u00fclt. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+DEST_LOCKED_CWSIA0223.useraction=Ellen\u0151rizze az alkalmaz\u00e1s(oka)t annak kider\u00edt\u00e9se \
+\u00e9rdek\u00e9ben, hogy egyetlen tart\u00f3s el\u0151fizet\u00e9shez lehet-e t\u00f6bb hozz\u00e1f\u00e9r\u00e9si k\u00eds\u00e9rlet. A JMS \
+meghat\u00e1roz\u00e1s tiltja ezt, de ha felt\u00e9tlen\u00fcl sz\u00fcks\u00e9ges, akkor tekintse meg a \
+kapcsolatgy\u00e1rban a shareDurableSubscriptions (tart\u00f3s el\u0151fizet\u00e9sek megoszt\u00e1sa) be\u00e1ll\u00edt\u00e1st.
+
+NOT_AUTH_CWSIA0224=CWSIA0224E: Nem jogosult a tart\u00f3s el\u0151fizet\u00e9s el\u00e9r\u00e9s\u00e9re.
+NOT_AUTH_CWSIA0224.explanation=A jelenlegi felhaszn\u00e1l\u00f3 nem rendelkezik enged\u00e9llyel a \
+tart\u00f3s el\u0151fizet\u00e9s el\u00e9r\u00e9s\u00e9hez.
+NOT_AUTH_CWSIA0224.useraction=Ellen\u0151rizze, hogy a felhaszn\u00e1l\u00f3 rendelkezik-e a sz\u00fcks\u00e9ges el\u00e9r\u00e9ssel az adott er\u0151forr\u00e1sok eset\u00e9n. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+BAD_SELECT_CWSIA0225=CWSIA0225E: A megadott \u00fczenetv\u00e1laszt\u00f3 \u00e9rv\u00e9nytelen.
+BAD_SELECT_CWSIA0225.explanation=Probl\u00e9ma mer\u00fclt fel a megadott v\u00e1laszt\u00f3-karaktersorozat \u00e9rtelmez\u00e9se sor\u00e1n.
+BAD_SELECT_CWSIA0225.useraction=Ellen\u0151rizze a v\u00e1laszt\u00f3-karaktersorozatot \u00e9s jav\u00edtsa ki a hib\u00e1kat.
+
+BAD_TOPICSPACE_CWSIA0226=CWSIA0226E: Nem hozhat\u00f3 l\u00e9tre tart\u00f3s el\u0151fizet\u0151 az adott t\u00e9mak\u00f6r sz\u00e1m\u00e1ra.
+BAD_TOPICSPACE_CWSIA0226.explanation=Nem hozhat\u00f3 l\u00e9tre egy tart\u00f3s el\u0151fizet\u0151 egy \
+t\u00e9mak\u00f6rter\u00fclettel kapcsolatos hiba miatt.
+BAD_TOPICSPACE_CWSIA0226.useraction=R\u00e9szletek\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet. Ha a t\u00e9mak\u00f6rter\u00fclet nem l\u00e9tezik, akkor hozza l\u00e9tre vagy haszn\u00e1ljon egy l\u00e9tez\u0151t. Ha a \
+t\u00e9mak\u00f6r ideiglenes, akkor egy nem tart\u00f3s el\u0151fizet\u0151t haszn\u00e1ljon, vagy v\u00e1ltson \u00e1lland\u00f3 \
+t\u00e9mak\u00f6rre.
+
+# com.ibm.websphere.sib.api.jms.JmsManagedConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# This is a clone of EXCEPTION_RECEIVED_CWSIA0022.
+EXCEPTION_RECEIVED_CWSIA0241=CWSIA0241E: {0} kiv\u00e9tel t\u00f6rt\u00e9nt a(z) {1} met\u00f3dus h\u00edv\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0241.explanation=Egy m\u00e1sik komponens egy hib\u00e1t \u00e9szlelt a \
+megadott met\u00f3dus v\u00e9grehajt\u00e1sa sor\u00e1n.
+EXCEPTION_RECEIVED_CWSIA0241.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+
+# com.ibm.websphere.sib.api.jms.JmsConnectionFactoryImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0261=CWSIA0261E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0261.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0261.useraction=M\u00f3dos\u00edtsa az \u00e9rt\u00e9ket a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9kre.
+
+# com.ibm.websphere.sib.api.jms.JmsDestinationImpl
+# -------------------------------------------------------------------------------------------------
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0281=CWSIA0281E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0281.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0281.useraction=M\u00f3dos\u00edtsa az \u00e9rt\u00e9ket a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9kre.
+
+# -------------------------------------------------------------------------------------------------
+# Generic error message for a blocked destination
+# {0} is the reason code for the blocking of the destination
+DESTINATION_BLOCKED_CWSIA0283=CWSIA0283E: A k\u00e9rd\u00e9ses c\u00e9l le van tiltva az \u00fczenetek el\u0151\u00e1ll\u00edt\u00e1s\u00e1t\u00f3l/fogad\u00e1s\u00e1t\u00f3l. Az ok k\u00f3dja {0}.
+DESTINATION_BLOCKED_CWSIA0283.explanation=A c\u00e9lobjektum nem rendelkezik elegend\u0151 \
+inform\u00e1ci\u00f3val az \u00fczenetek el\u0151\u00e1ll\u00edt\u00e1s\u00e1hoz \u00e9s feldolgoz\u00e1s\u00e1hoz.
+DESTINATION_BLOCKED_CWSIA0283.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Specific message for destination blockage due to missing PSB reply data (no broker input stream)
+# {0} is the string form of the JMS Destination
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284=CWSIA0284E: Nem \u00e1ll elegend\u0151 inform\u00e1ci\u00f3 rendelkez\u00e9sre egy \u00fczenet ezen c\u00e9lhoz tov\u00e1bb\u00edt\u00e1s\u00e1hoz: {0}.
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.explanation=Az eredeti kiadv\u00e1ny MQ \
+rendszerb\u0151l \u00e1tvitel\u00e9re haszn\u00e1lt k\u00f6zz\u00e9t\u00e9teli/el\u0151fizet\u00e9si k\u00f6zvet\u00edt\u0151profil t\u00e9mak\u00f6rkioszt\u00e1sa \
+nem tartalmaz k\u00f6zvet\u00edt\u0151 bemeneti sort.
+DESTINATION_BLOCKED_PSBREPLY_CWSIA0284.useraction=Adja hozza a k\u00f6zvet\u00edt\u0151 bemeneti \
+sornevet a megfelel\u0151 k\u00f6zvet\u00edt\u0151profil t\u00e9mak\u00f6rkioszt\u00e1shoz.
+
+
+# com.ibm.ws.sib.api.jms.impl.ProducerProperties
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0301=CWSIA0301E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0301.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott \
+tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0301.useraction=Adjon meg egy a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9ket.
+
+# com.ibm.ws.sib.api.jms.impl.ReportMessageConverter
+# -------------------------------------------------------------------------------------------------
+# clone of 48
+# {0} is the property being set
+# {1} the the value which is being set
+INVALID_VALUE_CWSIA0321=CWSIA0321E: A megadott {1} \u00e9rt\u00e9k nem enged\u00e9lyezett a(z) {0} elem sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0321.explanation=A megadott \u00e9rt\u00e9k nem enged\u00e9lyezett a megadott \
+tulajdons\u00e1g sz\u00e1m\u00e1ra.
+INVALID_VALUE_CWSIA0321.useraction=Adjon meg egy a tulajdons\u00e1g \u00e1ltal t\u00e1mogatott \u00e9rt\u00e9ket.
+
+
+# com.ibm.ws.sib.api.jms.impl.ConnectionListenerImpl
+# -------------------------------------------------------------------------------------------------
+# Generic message for when an exception occurs during core processing for async delivery
+ASYNC_EXCEPTION_CWSIA0341=CWSIA0341E: Kiv\u00e9tel t\u00f6rt\u00e9nt egy aszinkron feldolgoz\u00e1s sor\u00e1n: {0}.
+ASYNC_EXCEPTION_CWSIA0341.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nt a felhaszn\u00e1l\u00f3i k\u00f3don k\u00edv\u00fcl \
+egy aszinkron k\u00e9zbes\u00edt\u00e9s fut\u00e1sa sor\u00e1n.
+ASYNC_EXCEPTION_CWSIA0341.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# The messaging engine is shutting down
+ME_QUIESCE_CWSIA0342=CWSIA0342E: Az \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1s alatt \u00e1ll.
+ME_QUIESCE_CWSIA0342.explanation=Az az \u00fczenetkezel\u00e9si alrendszer, amelyhez az alkalmaz\u00e1s csatlakozik, le\u00e1ll\u00edt\u00e1sra ker\u00fclt.
+ME_QUIESCE_CWSIA0342.useraction=Ez egy jelz\u00e9s az alkalmaz\u00e1snak, hogy bontania kell a \
+kapcsolatot az \u00fczenetkezel\u00e9si alrendszert\u0151l.
+
+# -------------------------------------------------------------------------------------------------
+# The connection is closed due to a communications failure.
+# {0} is the exception passed to the commsFailure notification method.
+COMMS_FAILURE_CWSIA0343=CWSIA0343E: A kapcsolat bez\u00e1r\u00e1sra ker\u00fclt a k\u00f6vetkez\u0151 kiv\u00e9tel miatt: {0}.
+COMMS_FAILURE_CWSIA0343.explanation=Egy kommunik\u00e1ci\u00f3s meghib\u00e1sod\u00e1s az \u00fczenetkezel\u00e9si alrendszerrel felvett kapcsolat elveszt\u00e9s\u00e9t eredm\u00e9nyezte.
+COMMS_FAILURE_CWSIA0343.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg a hivatkozott hiba\u00fczenetet.
+
+# -------------------------------------------------------------------------------------------------
+# This method is called when a connection is closed because the messaging engine has terminated.
+ME_TERMINATED_CWSIA0344=CWSIA0344E: A kapcsolat bez\u00e1r\u00e1sra ker\u00fclt, mert az \u00fczenetkezel\u00e9si alrendszer lez\u00e1r\u00e1sra ker\u00fclt.
+ME_TERMINATED_CWSIA0344.explanation=Az \u00fczenetkezel\u00e9si alrendszer le\u00e1ll\u00edt\u00e1sra ker\u00fclt, \u00edgy a kapcsolat haszn\u00e1lhatatlann\u00e1 v\u00e1lt.
+ME_TERMINATED_CWSIA0344.useraction=Ind\u00edtsa \u00fajra az \u00fczenetkezel\u00e9si alrendszert \u00e9s csatlakozzon \u00fajra.
+
+
+# com.ibm.ws.sib.api.jms.impl.MsgDestEncodingUtilsImpl
+# -------------------------------------------------------------------------------------------------
+# Could not find the required character set for this utility class (UTF-8)
+UNSUPPORTED_ENCODING_CWSIA0360=CWSIA0360E: A sz\u00fcks\u00e9ges {0} karakterk\u00e9szlet-k\u00f3dol\u00e1s nem t\u00e1mogatott.
+UNSUPPORTED_ENCODING_CWSIA0360.explanation=A megadott karakterk\u00e9szlet sz\u00fcks\u00e9ges \
+ezen funkcionalit\u00e1s m\u0171k\u00f6d\u00e9s\u00e9hez, de nem tal\u00e1lhat\u00f3.
+UNSUPPORTED_ENCODING_CWSIA0360.useraction=Tegye el\u00e9rhet\u0151v\u00e9 a JVM sz\u00e1m\u00e1ra a megadott karakterk\u00e9szletet.
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is the invalid value that was supplied
+# {1} is the property/method parameter for which it was supplied.
+INTERNAL_INVALID_VALUE_CWSIA0361=CWSIA0361E: Bels\u0151 hiba t\u00f6rt\u00e9nt, mert {0} \u00e9rt\u00e9k ker\u00fclt megad\u00e1sra a(z) {1} elem sz\u00e1m\u00e1ra.
+INTERNAL_INVALID_VALUE_CWSIA0361.explanation=CMSG0001
+INTERNAL_INVALID_VALUE_CWSIA0361.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An invalid value (such as null) was supplied to a method.
+# {0} is a probeID to enable service to identify the problem location.
+# {1} and {2} are additional information to enable problem diagnosis.
+INTERNAL_ERROR_CWSIA0362=CWSIA0362E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Vizsg\u00e1l\u00f3azonos\u00edt\u00f3: {0}. Tov\u00e1bbi inform\u00e1ci\u00f3k: {1} : {2}.
+INTERNAL_ERROR_CWSIA0362.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0362.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# An unknown property name has been found in the encoded JMS destination or replyTo field
+# {0} is the unknown name found
+UNKNOWN_PROPERTY_CWSIA0363=CWSIA0363E: A JMSDestination vagy JMSReplyTo ismeretlen tulajdons\u00e1gnevet tartalmaz: {0}.
+UNKNOWN_PROPERTY_CWSIA0363.explanation=Az Application Server k\u00e9s\u0151bbi kiad\u00e1s\u00e1t\u00f3l JMS \u00fczenet \u00e9rkezett \u00e9s egy alkalmaz\u00e1snak tov\u00e1bb\u00edt\u00e1sra ker\u00fclt. \
+Az alkalmaz\u00e1s megpr\u00f3b\u00e1lta beolvasni az \u00fczenet JMSDestination vagy JMSReplyTo fejl\u00e9c\u00e9t. \
+Mivel a jelenlegi kiad\u00e1s nem t\u00e1mogatja a fejl\u00e9c mez\u0151 valamely tulajdons\u00e1g\u00e1t, ez\u00e9rt az nem olvashat\u00f3 be.
+UNKNOWN_PROPERTY_CWSIA0363.useraction=T\u00e1vol\u00edtsa el az alkalmaz\u00e1s \u00e1ltal az \u00fczenet k\u00fcld\u00e9s\u00e9hez haszn\u00e1lt JMSDestination vagy JMSReplyTo elemb\u0151l a nem t\u00e1mogatott tulajdons\u00e1got. \
+Lehets\u00e9ges, hogy a nem t\u00e1mogatott tulajdons\u00e1g k\u00f6zvetlen\u00fcl ker\u00fclt be\u00e1ll\u00edt\u00e1sra a k\u00fcld\u0151 alkalmaz\u00e1s \u00e1ltal, vagy a JMS sor be\u00e1ll\u00edt\u00e1saiban ker\u00fclt megad\u00e1sra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the malformed URI element
+# {1} is the full URI from which {0} has been identified
+MALFORMED_URI_ELEMENT_CWSIA0382=CWSIA0382E: A(z) {0} URI elem rossz form\u00e1tum\u00fa a(z) {1} URI azonos\u00edt\u00f3ban.
+MALFORMED_URI_ELEMENT_CWSIA0382.explanation=A megadott n\u00e9v-\u00e9rt\u00e9k p\u00e1r elem rossz \
+form\u00e1tum\u00fa, val\u00f3sz\u00edn\u0171leg az\u00e9rt, mert se nevet, se \u00e9rt\u00e9ket nem tartalmaz.
+MALFORMED_URI_ELEMENT_CWSIA0382.useraction=Ellen\u0151rizze, hogy a n\u00e9v-\u00e9rt\u00e9k p\u00e1r elem \
+helyesen van-e form\u00e1zva.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the reserved destination prefix
+# {1} is the full URI from which {0} has been identified
+RESERVED_DEST_PREFIX_CWSIA0383=CWSIA0383E: A(z) {0} fenntartott c\u00e9lel\u0151tag tal\u00e1lhat\u00f3 a(z) {1} URI azonos\u00edt\u00f3ban.
+RESERVED_DEST_PREFIX_CWSIA0383.explanation=A jelzett c\u00e9lel\u0151tag foglalt.
+RESERVED_DEST_PREFIX_CWSIA0383.useraction=A 'queue://' el\u0151tagot sorc\u00e9lhoz, a 'topic://' el\u0151tagot t\u00e9mak\u00f6rc\u00e9lhoz haszn\u00e1lja.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the property name in the URI element
+# {1} is the property value in the URI element
+# {2} is the full URI from which {0} and {1} have been identified
+INVALID_URI_ELEMENT_CWSIA0384=CWSIA0384E: A(z) {0}={1} URI elem nem \u00e1ll\u00edthat\u00f3 be tulajdons\u00e1gk\u00e9nt a Destionation (c\u00e9l) objektumon a(z) {2} URI azonos\u00edt\u00f3b\u00f3l.
+INVALID_URI_ELEMENT_CWSIA0384.explanation=A jelzett URI elem name (n\u00e9v) \
+tulajdons\u00e1ga nem fejthet\u0151 vissza \u00e9rv\u00e9nyes Destination (c\u00e9l) tulajdons\u00e1gg\u00e1.
+INVALID_URI_ELEMENT_CWSIA0384.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a jelzett name (n\u00e9v) tulajdons\u00e1g \u00e9rv\u00e9nyes a c\u00e9lobjektumok sz\u00e1m\u00e1ra.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the URI with the illegal MA88 queue manager specified
+INVALID_URI_ELEMENT_CWSIA0385=CWSIA0385E: Egy c\u00e9l URI sz\u00e1m\u00e1ra nem megengedett egy sorkezel\u0151 olyan m\u00f3don megad\u00e1sa, ahogy a(z) {0} URI azonos\u00edt\u00f3ban tal\u00e1lhat\u00f3.
+INVALID_URI_ELEMENT_CWSIA0385.explanation=A sorkezel\u0151k c\u00e9l URI azonos\u00edt\u00f3ban haszn\u00e1lata a megadott m\u00f3don nem t\u00e1mogatott.
+INVALID_URI_ELEMENT_CWSIA0385.useraction=Adjon meg egy olyan URI azonos\u00edt\u00f3t, ami nem \
+haszn\u00e1l sorkezel\u0151t.
+
+# -------------------------------------------------------------------------------------------------
+# The code has entered an inconsistent state
+INTERNAL_ERROR_CWSIA0386=CWSIA0386E: Bels\u0151 hiba t\u00f6rt\u00e9nt.
+INTERNAL_ERROR_CWSIA0386.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0386.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# Found an escaped character which shouldn't have been escaped
+# {0} is the string containing the problem
+BAD_ESCAPE_CHAR_CWSIA0387=CWSIA0387E: A karaktersorozat egy nem megfelel\u0151 vez\u00e9rl\u0151 jelsorozatot tartalmazott: {0}.
+BAD_ESCAPE_CHAR_CWSIA0387.explanation=CMSG0001
+BAD_ESCAPE_CHAR_CWSIA0387.useraction=CMSG0002
+
+# MQRequestReplyUtils
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the class that could not be instantiated
+# {1} is the name of the jarfile that contains the class in question
+# clone of UNABLE_TO_CREATE_FACTORY_CWSIA0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391=CWSIA0391E: Bels\u0151 hiba t\u00f6rt\u00e9nt. Egy {0} oszt\u00e1ly\u00fa objektum nem hozhat\u00f3 l\u00e9tre, mert a(z) {1} JAR f\u00e1jl nem tal\u00e1lhat\u00f3.
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.explanation=CMSG0001
+UNABLE_TO_CREATE_FACTORY_CWSIA0391.useraction=CMSG0002
+
+# Common
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueSessionImpl - clone 0483 created for JmsTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0481=CWSIA0481E: A(z) {0} met\u00f3dus {1} oszt\u00e1lyban megh\u00edv\u00e1sa nem megengedett.
+INVALID_OP_FOR_CLASS_CWSIA0481.explanation=Az alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amelyet nem t\u00e1mogat a JMS meghat\u00e1roz\u00e1s.
+INVALID_OP_FOR_CLASS_CWSIA0481.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sprogramot ezen viselked\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz.
+
+# -------------------------------------------------------------------------------------------------
+# This message is used in JmsQueueConnectionImpl - clone 0484 created for JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0482=CWSIA0482E: A(z) {0} nem t\u00e1mogatott ebben a kiad\u00e1sban.
+UNSUPPORTED_FUNC_CWSIA0482.explanation=Az alkalmaz\u00e1s egy olyan szolg\u00e1ltat\u00e1st vagy k\u00e9pess\u00e9get pr\u00f3b\u00e1lt meg haszn\u00e1lni, amelyet nem t\u00e1mogat a szoftver jelenlegi kiad\u00e1sa.
+UNSUPPORTED_FUNC_CWSIA0482.useraction=T\u00e1vol\u00edtsa el azt a k\u00f3dot, amely ezt a k\u00e9pess\u00e9get \
+pr\u00f3b\u00e1lja haszn\u00e1lni vagy, ha lehets\u00e9ges, akkor friss\u00edtsen a szoftver egy \u00fajabb kiad\u00e1s\u00e1ra, \
+ha el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0481 created for use in JmsQueueTopicSessionImpl
+# {0} is the name of the method which must not be called on the class
+# {1} is the name of the class
+INVALID_OP_FOR_CLASS_CWSIA0483=CWSIA0483E: A(z) {0} met\u00f3dus {1} oszt\u00e1lyban megh\u00edv\u00e1sa nem megengedett.
+INVALID_OP_FOR_CLASS_CWSIA0483.explanation=Az alkalmaz\u00e1s egy olyan met\u00f3dust h\u00edvott meg, amelyet nem t\u00e1mogat a JMS meghat\u00e1roz\u00e1s.
+INVALID_OP_FOR_CLASS_CWSIA0483.useraction=M\u00f3dos\u00edtsa az alkalmaz\u00e1sprogramot ezen viselked\u00e9s elt\u00e1vol\u00edt\u00e1s\u00e1hoz.
+
+# -------------------------------------------------------------------------------------------------
+# This message is a clone of CWSIA0482 created for use in JmsTopicConnectionImpl
+# {0} describes the unsupported functionality
+UNSUPPORTED_FUNC_CWSIA0484=CWSIA0484E: A(z) {0} nem t\u00e1mogatott ebben a kiad\u00e1sban.
+UNSUPPORTED_FUNC_CWSIA0484.explanation=Az alkalmaz\u00e1s egy olyan szolg\u00e1ltat\u00e1st vagy k\u00e9pess\u00e9get pr\u00f3b\u00e1lt meg haszn\u00e1lni, amelyet nem t\u00e1mogat a szoftver jelenlegi kiad\u00e1sa.
+UNSUPPORTED_FUNC_CWSIA0484.useraction=T\u00e1vol\u00edtsa el azt a k\u00f3dot, amely ezt a k\u00e9pess\u00e9get \
+pr\u00f3b\u00e1lja haszn\u00e1lni vagy, ha lehets\u00e9ges, akkor friss\u00edtsen a szoftver egy \u00fajabb kiad\u00e1s\u00e1ra, \
+ha el\u00e9rhet\u0151.
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the name of the property or variable
+# {1} is the value of the property or variable
+INTERNAL_ERROR_CWSIA0499=CWSIA0499E: Bels\u0151 hiba t\u00f6rt\u00e9nt. A(z) {1} \u00e9rt\u00e9k \u00e9rv\u00e9nytelen a(z) {0} param\u00e9ter vagy v\u00e1ltoz\u00f3 eset\u00e9n.
+INTERNAL_ERROR_CWSIA0499.explanation=CMSG0001
+INTERNAL_ERROR_CWSIA0499.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the text of the message
+TEMPORARY_CWSIA0500=CWSIA0500E: {0}
+TEMPORARY_CWSIA0500.explanation=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintsen meg b\u00e1rmilyen \
+hivatkozott hiba\u00fczenetet.
+TEMPORARY_CWSIA0500.useraction=CMSG0002
+
+# -------------------------------------------------------------------------------------------------
+# {0} is the BytesMessage method that was called
+PROMISE_BROKEN_EXCEPTION_CWSIA0510=CWSIA0510E: H\u00edv\u00e1sok a(z) {0} BytesMessage \
+met\u00f3dushoz nem enged\u00e9lyezettek, mert a "producerDoesNotModifyPayloadAfterSet" (el\u0151\u00e1ll\u00edt\u00f3 \
+ne m\u00f3dos\u00edtsa a hasznos tartalmat be\u00e1ll\u00edt\u00e1s ut\u00e1n) ConnectionFactory (kapcsolatgy\u00e1r) vagy \
+ActivationSpecification (aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s) tulajdons\u00e1g enged\u00e9lyezve lett.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.explanation=Az \u00fczenet-el\u0151\u00e1ll\u00edt\u00f3 meg\u00edg\u00e9rte, hogy nem \
+m\u00f3dos\u00edtja az \u00fczenetek hasznos tartalm\u00e1t azok be\u00e1ll\u00edt\u00e1sa ut\u00e1n. A h\u00edv\u00e1sokat bizonyos \
+met\u00f3dusokhoz \u00fczenetobjektumokon a rendszer ezen \u00edg\u00e9ret megszeg\u00e9s\u00e9nek tekinti.
+PROMISE_BROKEN_EXCEPTION_CWSIA0510.useraction=M\u00f3dos\u00edtsa \u00fagy az alkalmaz\u00e1sk\u00f3dot, hogy \
+elt\u00e1vol\u00edtja a megs\u00e9rt\u0151 h\u00edv\u00e1st, vagy v\u00e1ltoztassa meg azt az adminisztr\u00e1tori be\u00e1ll\u00edt\u00e1st, \
+ami azt jelzi, hogy az \u00edg\u00e9ret \u00e9rv\u00e9nyben van. Vegye figyelembe, hogy az adminisztr\u00e1tori be\u00e1ll\u00edt\u00e1s letilt\u00e1sa cs\u00f6kkentett \
+teljes\u00edtm\u00e9nyt eredm\u00e9nyezhet.
+
+# -------------------------------------------------------------------------------------------------
+PROMISE_BROKEN_EXCEPTION_CWSIA0511=CWSIA0511E: A BytesMessage.writeBytes(byte[]) met\u00f3dus \
+t\u00f6bbsz\u00f6ri megh\u00edv\u00e1sa nem enged\u00e9lyezett, mert a "producerDoesNotModifyPayloadAfterSet" \
+(el\u0151\u00e1ll\u00edt\u00f3 ne  m\u00f3dos\u00edtsa a hasznos tartalmat be\u00e1ll\u00edt\u00e1s ut\u00e1n) ConnectionFactory \
+(kapcsolatgy\u00e1r) vagy ActivationSpecification (aktiv\u00e1l\u00e1si meghat\u00e1roz\u00e1s) tulajdons\u00e1g \
+enged\u00e9lyezve lett.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.explanation=Az \u00fczenet-el\u0151\u00e1ll\u00edt\u00f3 meg\u00edg\u00e9rte, hogy nem \
+m\u00f3dos\u00edtja az \u00fczenetek hasznos tartalm\u00e1t azok be\u00e1ll\u00edt\u00e1sa ut\u00e1n. Ebben a helyzetben csak egy \
+h\u00edv\u00e1s enged\u00e9lyezett a BytesMessage.writeBytes(byte[] \u00e9rt\u00e9k) met\u00f3dushoz.
+PROMISE_BROKEN_EXCEPTION_CWSIA0511.useraction=A probl\u00e9ma orvosl\u00e1s\u00e1ra h\u00e1rom m\u0171velet \u00e1ll \
+rendelkez\u00e9sre \u00e1ll: 1) m\u00f3dos\u00edtsa \u00fagy az alkalmaz\u00e1sk\u00f3dot, hogy elt\u00e1vol\u00edtja a megs\u00e9rt\u0151 \
+h\u00edv\u00e1st, 2) h\u00edvja meg a BytesMessage.clearBody() met\u00f3dust az els\u0151 h\u00edv\u00e1s ut\u00e1n, vagy 3) \
+v\u00e1ltoztassa meg azt az adminisztr\u00e1tori be\u00e1ll\u00edt\u00e1st, ami azt jelzi, hogy az \u00edg\u00e9ret \
+\u00e9rv\u00e9nyben van. Vegye figyelembe, hogy az adminisztr\u00e1tori be\u00e1ll\u00edt\u00e1s letilt\u00e1sa cs\u00f6kkentett \
+teljes\u00edtm\u00e9nyt eredm\u00e9nyezhet.
+# -------------------------------------------------------------------------------------------------
+# The error message CWSIA0512E is not required in JMS 2 feature,  it is moved to com.ibm.ws.cdi-1.2.jms project and some modifcation in wordings had done
+# {0} method name
+#JMSCONTEXT_INJECTED_CWSIA0512=CWSIA0512E: The method {0} is not permitted if the JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.explanation= A method was called that is not permitted if JMSContext is container-managed.
+#JMSCONTEXT_INJECTED_CWSIA0512.useraction= Remove the call to the method.
+# -------------------------------------------------------------------------------------------------
+CREATECONTEXT_IN_CONTAINER_CWSIA0513=CWSIA0513E: A createContext haszn\u00e1lata nem megengedett a Java EE web vagy EJB t\u00e1rol\u00f3kban fut\u00f3 alkalmaz\u00e1sok sz\u00e1m\u00e1ra.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.explanation= Az alkalmaz\u00e1s sz\u00e1m\u00e1ra nem enged\u00e9lyezhet\u0151 t\u00f6bb akt\u00edv munkamenet objektum l\u00e9trehoz\u00e1sa kapcsolatonk\u00e9nt.
+CREATECONTEXT_IN_CONTAINER_CWSIA0513.useraction=A createContext met\u00f3dust ne haszn\u00e1lja, ha az alkalmaz\u00e1sok a Java EE web vagy EJB t\u00e1rol\u00f3kban futnak.
+# -------------------------------------------------------------------------------------------------
+# {0} the acknowledgement mode
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514=CWSIA0514E: \u00c9rv\u00e9nytelen visszaigazol\u00e1si m\u00f3d: {0}.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.explanation= A visszaigazol\u00e1si m\u00f3d \u00e9rv\u00e9nytelen volt.
+INVALID_ACKNOWLEDGE_MODE_CWSIA0514.useraction=Haszn\u00e1lja az \u00e9rv\u00e9nyes visszaigazol\u00e1si m\u00f3dot.
+# -------------------------------------------------------------------------------------------------
+# {0} method name
+INVALID_METHOD_CWSIA0515=CWSIA0515E: CompletionListener met\u00f3dusoknak nem szabad {0} met\u00f3dust h\u00edvniuk saj\u00e1t JMSContext, Session vagy Connection fel\u00fclet\u00fck\u00f6n.
+INVALID_METHOD_CWSIA0515.explanation= A CompletionListener met\u00f3dusoknak (onComplete/OnException) nem szabad bez\u00e1r\u00e1si, visszag\u00f6rget\u00e9si \u00e9s v\u00e9gleges\u00edt\u00e9si m\u0171veleteket megh\u00edvniuk saj\u00e1t JMSContext, Session vagy Connection fel\u00fclet\u00fck\u00f6n. Ha saj\u00e1t JMSContext, Session vagy Connection fel\u00fclet\u00fckr\u0151l pr\u00f3b\u00e1lja megh\u00edvni ezeket a m\u0171veleteket, akkor kiv\u00e9tel t\u00f6rt\u00e9nik, mivel a JMS addig nem enged\u00e9lyezi ezeket a m\u0171veleteket, am\u00edg minden befejezetlen \u00fczenet be nem fejez\u0151dik.
+INVALID_METHOD_CWSIA0515.useraction= Ne h\u00edvjon {0} met\u00f3dust saj\u00e1t JMSContext, Session vagy Connection fel\u00fclet\u00e9r\u0151l.
+# -------------------------------------------------------------------------------------------------
+INVALID_MESSAGE_ACCESS_CWSIA0516=CWSIA0516E: Az \u00fczenetobjektumok nem \u00e9rhet\u0151k el, ha aszinkron k\u00fcld\u00e9s van folyamatban.
+INVALID_MESSAGE_ACCESS_CWSIA0516.explanation= A JMS 2.0 specifik\u00e1ci\u00f3 szerint nem f\u00e9rhet hozz\u00e1 az \u00fczenetobjektumokhoz, ha az aszinkron k\u00fcld\u00e9s m\u00e9g mindig folyamatban van.
+INVALID_MESSAGE_ACCESS_CWSIA0516.useraction= Gondoskodj\u00e9k r\u00f3la, hogy \u00fczenetobjektumok el\u00e9r\u00e9s\u00e9re csak az aszinkron k\u00fcld\u00e9s befejez\u00e9se ut\u00e1n ker\u00fclj\u00f6n sor, azaz az onCompletion vagy az OnException met\u00f3dus megh\u00edv\u00e1sa ut\u00e1n.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0517=CWSIA0517E: A MessageListener nem k\u00eds\u00e9relheti meg megh\u00edvni a le\u00e1ll\u00edt\u00e1si (stop) met\u00f3dust a saj\u00e1t kapcsolat\u00e1hoz vagy JMS kontextus\u00e1hoz.
+INVALID_METHOD_CWSIA0517.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nik, ha az \u00fczenetfigyel\u0151 megk\u00eds\u00e9rli le\u00e1ll\u00edtani a saj\u00e1t kapcsolat\u00e1t vagy JMS kontextus\u00e1t.
+INVALID_METHOD_CWSIA0517.useraction= A MessageListener nem h\u00edvhatja meg a le\u00e1ll\u00edt\u00e1si met\u00f3dust a saj\u00e1t JMS kontextus\u00e1hoz vagy kapcsolat\u00e1hoz.
+# -------------------------------------------------------------------------------------------------
+INVALID_METHOD_CWSIA0518=CWSIA0518E: A MessageListener nem k\u00eds\u00e9relheti meg a lez\u00e1r\u00f3 (close) met\u00f3dus megh\u00edv\u00e1s\u00e1t a saj\u00e1t JMS kontextus\u00e1hoz, kapcsolat\u00e1hoz vagy munkamenet\u00e9hez.
+INVALID_METHOD_CWSIA0518.explanation=Kiv\u00e9tel t\u00f6rt\u00e9nik, ha az \u00fczenetfigyel\u0151 megk\u00eds\u00e9rli lez\u00e1rni a saj\u00e1t kapcsolat\u00e1t, JMS kontextus\u00e1t vagy munkamenet\u00e9t.
+INVALID_METHOD_CWSIA0518.useraction= A MessageListener h\u00edvhatja meg a lez\u00e1r\u00f3 (close) met\u00f3dust a saj\u00e1t JMS kontextus\u00e1hoz, kapcsolat\u00e1hoz vagy munkamenet\u00e9hez.
+# -------------------------------------------------------------------------------------------------

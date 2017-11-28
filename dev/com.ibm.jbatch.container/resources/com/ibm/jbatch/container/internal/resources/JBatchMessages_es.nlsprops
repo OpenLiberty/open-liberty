@@ -1,0 +1,297 @@
+###############################################################################
+# Copyright (c) 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.jbatch.container/resources/com/ibm/jbatch/container/internal/resources/JBatchMessages.nlsprops
+#COMPONENTPREFIX CWWKY
+#COMPONENTNAMEFOR CWWKY WebSphere Batch
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# NLS message prefix registry: http://was.pok.ibm.com/xwiki/bin/view/Liberty/NLSMessagePrefixes
+#
+# This file contains the messages in use.
+#
+# The range of messages "reserved":
+# 0001 - 0100: com.ibm.jbatch.container
+# 
+
+stopping.job.at.shutdown=CWWKY0001I: Se emite detenci\u00f3n de la ejecuci\u00f3n de trabajo {0} porque el componente por lotes se est\u00e1 desactivando.
+stopping.job.at.shutdown.explanation=Este mensaje es meramente informativo.
+stopping.job.at.shutdown.useraction=No se requiere ninguna acci\u00f3n.
+
+jobs.running.at.shutdown=CWWKY0002I: El componente por lotes se est\u00e1 desactivando. \
+Se han emitido solicitudes de detenci\u00f3n para todas las ejecuciones de trabajos activos. \
+Las siguientes ejecuciones de trabajos a\u00fan se estaban ejecutando en el momento de la desactivaci\u00f3n: {0}.
+jobs.running.at.shutdown.explanation=Cuando el componente por lotes se desactiva, emite solicitudes de detenci\u00f3n para todas las ejecuciones de trabajos activos y espera brevemente a que se detengan.  \
+Las ejecuciones de trabajos que no se han detenido se notifican en el mensaje. \
+Las ejecuciones de trabajos que se contin\u00faan ejecutando despu\u00e9s de la desactivaci\u00f3n del componente por lotes pueden experimentar un comportamiento impredecible.
+jobs.running.at.shutdown.useraction=Se recomienda que espere a que se completen todos los trabajos antes de desactivar el componente por lotes. \
+El componente por lotes se desactiva cuando se detiene el servidor, cuando se elimina la caracter\u00edstica por lotes o cuando se actualiza la configuraci\u00f3n por lotes.
+ 
+jsl.schema.invalid=CWWKY0003E: El JSL (documento XML de trabajo) en el URL {0} no es v\u00e1lido seg\u00fan el esquema XML de trabajo. \
+El primer error de validaci\u00f3n registrado por el validador JAXB era: {1}.
+jsl.schema.invalid.explanation=El documento XML no cumpl\u00eda el esquema XSD.
+jsl.schema.invalid.useraction=Utilice una herramienta de validaci\u00f3n XML para determinar qu\u00e9 constructor incumple los requisitos del esquema.
+
+jsl.not.found.batch-jobs=CWWKY0004E: El nombre JSL (documento XML de trabajo): {0} no se ha encontrado en la ubicaci\u00f3n: {1} en el archivado de aplicaci\u00f3n.
+jsl.not.found.batch-jobs.explanation=El documento no se ha podido encontrar en la ubicaci\u00f3n identificada por el par\u00e1metro utilizado para enviar (por ejemplo, \
+iniciar) el trabajo.
+jsl.not.found.batch-jobs.useraction=Aseg\u00farese de que los par\u00e1metros utilizados para identificar la ubicaci\u00f3n JSL son correctos. \
+Cuando se utiliza un env\u00edo de trabajo remoto para enviar un trabajo definido en un JSL empaquetado en un m\u00f3dulo de aplicaci\u00f3n, aseg\u00farese de que el m\u00f3dulo de aplicaci\u00f3n se haya identificado correctamente mediante los par\u00e1metros pasados a la interfaz REST (directamente o usando un programa de utilidad de l\u00ednea de mandatos).
+
+persistence.service.status=CWWKY0005I: El servicio de persistencia {0} de proceso por lotes es {1}.
+persistence.service.status.explanation=Este mensaje es meramente informativo.
+persistence.service.status.useraction=No se requiere ninguna acci\u00f3n.
+
+job.recovery.failed=CWWKY0006W: El servicio de recuperaci\u00f3n de trabajos por lotes no puede corregir el estado de proceso por lotes de una instancia de trabajo ejecutada anteriormente {0} que ha terminado. No se ha podido realizar la correcci\u00f3n debido a la excepci\u00f3n {1}.
+job.recovery.failed.explanation=El servicio de recuperaci\u00f3n de trabajos por lotes, que corrige el estado de los trabajos que se estaban ejecutando cuando una instancia anterior de este servidor termin\u00f3 de forma an\u00f3mala, no ha podido corregir el estado de la instancia de trabajo indicada debido a la excepci\u00f3n indicada.
+job.recovery.failed.useraction=Investigue la causa de la excepci\u00f3n, si es posible, y reinicie el servidor para volver a ejecutar el servicio de recuperaci\u00f3n de trabajos por lotes.
+
+recovery.failed=CWWKY0007W: El servicio de recuperaci\u00f3n de trabajos por lotes no puede corregir el estado de proceso por lotes de trabajos ejecutados anteriormente que han terminado. No se ha podido realizar la correcci\u00f3n debido a la excepci\u00f3n {0}.
+recovery.failed.explanation=El servicio de recuperaci\u00f3n de trabajos por lotes, que corrige el estado de los trabajos que se estaban ejecutando cuando una instancia anterior de este servidor termin\u00f3 de forma an\u00f3mala, ha fallado debido a la excepci\u00f3n indicada.
+recovery.failed.useraction=Investigue la causa de la excepci\u00f3n, si es posible, y reinicie el servidor para volver a ejecutar el servicio de recuperaci\u00f3n de trabajos por lotes.
+
+batch.kernel.persistence=CWWKY0008I: La caracter\u00edstica de proceso por lotes est\u00e1 utilizando el tipo de persistencia {0}.
+batch.kernel.persistence.explanation=Este mensaje es meramente informativo.
+batch.kernel.persistence.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The job name
+#{1} The job instance id
+#{2} The job execution id
+job.started=CWWKY0009I: Se ha iniciado el trabajo {0} para la instancia de trabajo {1} y la ejecuci\u00f3n del trabajo {2}.
+job.started.explanation=Se ha iniciado una nueva hebra de ejecuci\u00f3n de trabajo.
+job.started.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.ended=CWWKY0010I: El trabajo {0} ha finalizado con el estado de proceso por lotes {1} y el estado de salida {2} para la instancia de trabajo {3} y la ejecuci\u00f3n de trabajo {4}.
+job.ended.explanation=La ejecuci\u00f3n de trabajo ha finalizado.
+job.ended.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The job name
+#{1} The batch status of the job
+#{2} The exit status of the job
+#{3} The job instance id
+#{4} The job execution id
+job.failed=CWWKY0011W: Ha fallado el trabajo {0} con el estado de proceso por lotes {1} y el estado de salida {2} para la instancia de trabajo {3} y la ejecuci\u00f3n de trabajo {4}.
+job.failed.explanation=La ejecuci\u00f3n de trabajo no ha podido finalizar satisfactoriamente.
+job.failed.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.
+
+#{0} The partition number
+#{1} The step name
+#{2} The job instance id
+#{3} The job execution id
+partition.started=CWWKY0012I: Se ha iniciado la partici\u00f3n {0} para el paso {1} de la instancia de trabajo {2} y la ejecuci\u00f3n de trabajo {3}.
+partition.started.explanation=Se ha iniciado una nueva partici\u00f3n.
+partition.started.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.ended=CWWKY0013I: La partici\u00f3n {0} ha finalizado con el estado de proceso por lotes {1} y el estado de salida {2} para el paso {3} de la instancia de trabajo {4} y la ejecuci\u00f3n de trabajo {5}.
+partition.ended.explanation=La partici\u00f3n ha finalizado.
+partition.ended.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name
+#{1} The partition number
+#{2} The batch status of the partition
+#{3} The exit status of the partition
+#{4} The job instance id
+#{5} The job execution id
+partition.failed=CWWKY0014W: Ha fallado la partici\u00f3n {0} con el estado de proceso por lotes {1} y el estado de salida {2} para el paso {3} de la instancia de trabajo {4} y la ejecuci\u00f3n de trabajo {5}.
+partition.failed.explanation=La partici\u00f3n no ha podido finalizar satisfactoriamente.
+partition.failed.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.started=CWWKY0015I: Se ha iniciado el flujo {0} para la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}.
+flow.started.explanation=El flujo se ha iniciado.
+flow.started.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.ended=CWWKY0016I: Ha finalizado el flujo {0} para la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}.
+flow.ended.explanation=El flujo ha finalizado.
+flow.ended.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The flow name
+#{1} The job instance id
+#{2} The job execution id
+flow.failed=CWWKY0017W: Ha fallado el flujo {0} para la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}.
+flow.failed.explanation=El flujo no ha podido finalizar satisfactoriamente.
+flow.failed.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+step.started=CWWKY0018I: Se ha iniciado el paso {0} para la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}.
+step.started.explanation=Se ha iniciado la ejecuci\u00f3n del paso indicado en una hebra.
+step.started.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.failed=CWWKY0019W: Ha fallado el paso {0} con el estado de proceso por lotes {1} y el estado de salida {2} para la instancia de trabajo {3} y la ejecuci\u00f3n de trabajo {4}.
+step.failed.explanation=El paso no ha podido finalizar satisfactoriamente.
+step.failed.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de paso asociada para determinar la causa de la anomal\u00eda.
+
+#{0} The step name
+#{1} The batch status of the step
+#{2} The exit status of the step
+#{3} The job instance id
+#{4} The job execution id
+step.ended=CWWKY0020I: El paso {0} ha finalizado con el estado de proceso por lotes {1} y el estado de salida {2} para la instancia de trabajo {3} y la ejecuci\u00f3n de trabajo {4}.
+step.ended.explanation=Ha finalizado el proceso del paso.
+step.ended.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.started=CWWKY0021I: Se ha iniciado un nuevo fragmento del paso {0} en la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}. M\u00e9tricas del paso = {3}
+chunk.started.explanation= Se ha iniciado una nueva transacci\u00f3n para procesar este fragmento.
+chunk.started.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.ended=CWWKY0022I: El fragmento ha finalizado satisfactoriamente para el paso {0} en la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}. M\u00e9tricas del paso = {3}
+chunk.ended.explanation= La transacci\u00f3n asociada con este fragmento se ha confirmado satisfactoriamente.
+chunk.ended.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback=CWWKY0024W: El fragmento actual se ha retrotra\u00eddo al punto de comprobaci\u00f3n anterior para el paso {0} en la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}. M\u00e9tricas del paso = {3}
+chunk.rollback.explanation= Se ha producido una anomal\u00eda en el fragmento actual que ha provocado la retrotracci\u00f3n de la transacci\u00f3n al punto de comprobaci\u00f3n anterior.
+chunk.rollback.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.
+
+#{0} The step name
+#{1} The job instance id
+#{2} The job execution id
+#{3} Comma separated list of step metrics
+chunk.rollback.and.retry=CWWKY0025W: Procesando la retrotracci\u00f3n del fragmento actual despu\u00e9s de una excepci\u00f3n de reintento del paso {0} en la instancia de trabajo {1} y la ejecuci\u00f3n de trabajo {2}. M\u00e9tricas del paso = {3}
+chunk.rollback.and.retry.explanation= Se ha producido una excepci\u00f3n de reintento al procesar el fragmento que se retrotraer\u00e1 al punto de comprobaci\u00f3n anterior y se volver\u00e1 a intentar.
+chunk.rollback.and.retry.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.
+
+#{0} The step name that is associated with this reader
+item.reader.opened=CWWKY0026I: Se ha abierto el lector de elementos para el paso {0}.
+item.reader.opened.explanation=Se ha abierto el lector de elementos asociado con este paso.
+item.reader.opened.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name that is associated with this reader
+item.reader.closed=CWWKY0027I: Se ha cerrado el lector de elementos para el paso {0}.
+item.reader.closed.explanation=Se ha cerrado el lector de elementos asociado con este paso.
+item.reader.closed.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name that is associated with this writer
+item.writer.opened=CWWKY0028I: Se ha abierto el grabador de elementos para el paso {0}.
+item.writer.opened.explanation=Se ha abierto el grabador de elementos asociado con este paso.
+item.writer.opened.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name that is associated with this writer
+item.writer.closed=CWWKY0029I: Se ha cerrado el grabador de elementos para el paso {0}.
+item.writer.closed.explanation=Se ha cerrado el grabador de elementos asociado con este paso.
+item.writer.closed.useraction=No se requiere ninguna acci\u00f3n.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.executing.step=CWWKY0030I: Se ha producido una excepci\u00f3n al ejecutar el paso {0}.\n\
+{1}
+exception.executing.step.explanation=Puede tratarse de un error de aplicaci\u00f3n. Se ha producido una excepci\u00f3n al ejecutar la parte b\u00e1sica del paso, despu\u00e9s de que el contenedor por lotes invocara los artefactos de la aplicaci\u00f3n por lotes relevantes.
+exception.executing.step.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.  Esto puede requerir la depuraci\u00f3n de la aplicaci\u00f3n.
+
+#{0} The step name that is associated with this writer
+#{1} The exception that occurred
+exception.after.step=CWWKY0031I: Se ha producido una excepci\u00f3n al ejecutar la parte final del paso {0}.\n\
+{1}
+exception.after.step.explanation=Puede tratarse de un error de aplicaci\u00f3n. Se ha producido una excepci\u00f3n al ejecutar la parte final del paso (por ejemplo, la inclusi\u00f3n del m\u00e9todo StepListener afterStep()), despu\u00e9s de que el contenedor por lotes invocara los artefactos de la aplicaci\u00f3n por lotes relevantes.
+exception.after.step.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.  Esto puede requerir la depuraci\u00f3n de la aplicaci\u00f3n.
+
+#{0} The exception that occurred
+error.persisting.stepExecution=CWWKY0032I: Se ha producido un error al intentar crear la persistencia del estado de ejecuci\u00f3n del paso y los datos relacionados.\n\
+{0}
+error.persisting.stepExecution.explanation=Si sucede esto, es habitual que el estado del paso final no persista correctamente en la base de datos y el estado del proceso por lotes acabe atascado en el estado STARTED, a pesar de que ya no est\u00e9 en ejecuci\u00f3n. Esto puede interferir en un intento de reinicio, provocando errores de incoherencia de estado durante el reinicio. 
+error.persisting.stepExecution.useraction=Aseg\u00farese de que la base de datos est\u00e9 correctamente configurada y conectada.   Una vez lo haya hecho y si es necesario, puede reiniciar el servidor ejecutor (el servidor en el que se est\u00e1 ejecutando el trabajo), que desencadenar\u00e1 la recuperaci\u00f3n y marcar\u00e1 los trabajos y pasos asociados como FAILED, de manera que el reinicio del trabajo pueda llevarse a cabo correctamente. 
+
+#{0} The exception that occurred
+exception.executing.job=CWWKY0033I: Se ha producido una excepci\u00f3n al ejecutar el trabajo.\n\
+{0}
+exception.executing.job.explanation=Puede tratarse de un error de aplicaci\u00f3n. Se ha producido una excepci\u00f3n al ejecutar la parte b\u00e1sica del trabajo, despu\u00e9s de que el contenedor por lotes invocara los artefactos de la aplicaci\u00f3n por lotes relevantes.
+exception.executing.job.useraction=Revise los registros de trabajo de la ejecuci\u00f3n de trabajo asociada para determinar la causa de la anomal\u00eda.  Esto puede requerir la depuraci\u00f3n de la aplicaci\u00f3n.
+
+#{0} The exception that occurred
+exception.after.job=CWWKY0034I: Se ha producido una excepci\u00f3n al ejecutar la parte final del trabajo.\n\
+{0}
+exception.after.job.explanation=Puede tratarse de un error de aplicaci\u00f3n. Se ha producido una excepci\u00f3n al ejecutar la parte final del trabajo (por ejemplo, la inclusi\u00f3n del m\u00e9todo JobListener afterJob()), despu\u00e9s de que el contenedor por lotes invocara los artefactos de la aplicaci\u00f3n por lotes relevantes.
+exception.after.job.useraction=Revise los registros de trabajo del trabajo asociado para determinar la causa de la anomal\u00eda.  Esto puede requerir la depuraci\u00f3n de la aplicaci\u00f3n.
+
+#{0} The exception that occurred
+error.persisting.jobExecution=CWWKY0035I: Se ha producido un error al intentar crear la persistencia del estado de ejecuci\u00f3n del trabajo y los datos relacionados.\n\
+{0}
+error.persisting.jobExecution.explanation=Si sucede esto, es habitual que el estado final del proceso por lotes del trabajo no persista correctamente en la base de datos y el estado del proceso por lotes acabe atascado en el estado STARTED, a pesar de que ya no est\u00e9 en ejecuci\u00f3n. Esto puede interferir en un intento de reinicio, provocando errores de incoherencia de estado durante el reinicio.
+error.persisting.jobExecution.useraction=Aseg\u00farese de que la base de datos est\u00e9 correctamente configurada y conectada.   Una vez lo haya hecho y si es necesario, puede reiniciar el servidor ejecutor (el servidor en el que se est\u00e1 ejecutando el trabajo), que desencadenar\u00e1 la recuperaci\u00f3n y marcar\u00e1 los trabajos y pasos asociados como FAILED, de manera que el reinicio del trabajo pueda llevarse a cabo correctamente.
+
+#{0} The invalid job instance id.
+#{1} The persistence exception.
+error.invalid.persisted.job.id=CWWKY0036E: El valor de ID de instancia de trabajo {0} no v\u00e1lido se ha generado como valor de clave primaria para una tabla de lotes. El valor del ID debe ser un entero positivo.\n\
+{1}
+error.invalid.persisted.job.id.explanation=No se ha podido llevar a cabo la ejecuci\u00f3n del trabajo porque se ha generado un ID no v\u00e1lido en la tabla de lotes. Un ID de lote v\u00e1lido debe ser un entero positivo.
+error.invalid.persisted.job.id.useraction=Aseg\u00farese de que la definici\u00f3n de la tabla de base de datos de lotes utilizada permite solamente enteros positivos para los valores de ID utilizados como claves primarias.
+
+#{0} The invalid execution id.
+#{1} The persistence exception.
+error.invalid.persisted.exe.id=CWWKY0037E: El valor de ID de ejecuci\u00f3n de trabajo {0} no v\u00e1lido se ha generado como valor de clave primaria para una tabla de lotes. El valor del ID debe ser un entero positivo.\n\
+{1}
+error.invalid.persisted.exe.id.explanation=No se ha podido llevar a cabo la ejecuci\u00f3n del trabajo porque se ha generado un ID no v\u00e1lido en la tabla de lotes. Un ID de lote v\u00e1lido debe ser un entero positivo.
+error.invalid.persisted.exe.id.useraction=Aseg\u00farese de que la definici\u00f3n de la tabla de base de datos de lotes utilizada permite solamente enteros positivos para los valores de ID utilizados como claves primarias.
+
+#{0} The invalid step execution id.
+#{1} The persistence exception.
+error.invalid.persisted.step.id=CWWKY0038E: El valor de ID de ejecuci\u00f3n de paso {0} no v\u00e1lido se ha generado como valor de clave primaria para una tabla de lotes. El valor del ID debe ser un entero positivo.\n\
+{1}
+error.invalid.persisted.step.id.explanation=No se ha podido llevar a cabo la ejecuci\u00f3n del trabajo porque se ha generado un ID no v\u00e1lido en la tabla de lotes. Un ID de lote v\u00e1lido debe ser un entero positivo.
+error.invalid.persisted.step.id.useraction=Aseg\u00farese de que la definici\u00f3n de la tabla de base de datos de lotes utilizada permite solamente enteros positivos para los valores de ID utilizados como claves primarias.
+
+partition.recovery.failed=CWWKY0039W: El servicio de recuperaci\u00f3n de trabajos por lotes no puede corregir el estado de proceso por lotes de una partici\u00f3n ejecutada anteriormente {0} que ha terminado. No se ha podido realizar la correcci\u00f3n debido a la excepci\u00f3n {1}.
+partition.recovery.failed.explanation=El servicio de recuperaci\u00f3n de trabajos por lotes, que corrige el estado de las particiones que se estaban ejecutando cuando una instancia anterior de este servidor termin\u00f3 de forma an\u00f3mala, no ha podido corregir el estado de la partici\u00f3n indicada debido a la excepci\u00f3n indicada.
+partition.recovery.failed.useraction=Investigue la causa de la excepci\u00f3n, si es posible, y reinicie el servidor para volver a ejecutar el servicio de recuperaci\u00f3n de trabajos por lotes.
+
+info.batch.events.publish.topic=CWWKY0040I: El tiempo de ejecuci\u00f3n por lotes publicar\u00e1 sucesos en la ra\u00edz de tema JMS {0}.
+info.batch.events.publish.topic.explanation=Mensaje informativo. El tiempo de ejecuci\u00f3n por lotes publicar\u00e1 sucesos en la ra\u00edz de tema JMS por lotes listado.
+info.batch.events.publish.topic.useraction=La ra\u00edz de tema JMS por lotes se puede modificar. Compruebe las opciones configuradas que se utilizan para batchJmsEvents.
+
+cdi.ambiguous.artifact.names=CWWKY0041W: El contenedor de proceso por lotes est\u00e1 en ejecuci\u00f3n con una caracter\u00edstica CDI activa, pero el motor de CDI no ha podido cargar el artefacto por lotes como un bean gestionado por CDI y realizar otras inyecciones de CDI. Este problema puede ser causado porque falta una anotaci\u00f3n de definici\u00f3n de bean como @Dependent, una modalidad de descubrimiento de bean indeseada o un valor de 'ref' ambiguo.
+cdi.ambiguous.artifact.names.explanation=Cuando el tiempo de ejecuci\u00f3n por lotes carga los artefactos mediante el motor de CDI, se inyectan las propiedades por lotes (@BatchProperty) y los contextos por lotes (JobContext y StepContext) y se vuelven disponibles todas las prestaciones de CDI. Estas prestaciones incluyen la inyecci\u00f3n de otros beans gestionados de acuerdo con los calificadores y todas las dem\u00e1s caracter\u00edsticas del modelo de programaci\u00f3n de CDI. Cuando el tiempo de ejecuci\u00f3n por lotes carga los artefactos sin utilizar el motor de CDI, solo inyecta las propiedades y los contextos por lotes. Dado que no hay un bean gestionado por CDI en esta v\u00eda de acceso, no hay ninguna otra inyecci\u00f3n ni otra caracter\u00edstica del modelo de programaci\u00f3n de CDI disponible en ese artefacto por lotes. Este mensaje indica que aunque el servidor est\u00e1 configurado para que la caracter\u00edstica CDI est\u00e9 activa, no se puede cargar el artefacto por lotes como un bean gestionado por CDI porque el valor de atributo 'ref' que corresponde a esta referencia de artefacto en XML no apunta a un bean gestionado por CDI \u00fanico no ambiguo.
+cdi.ambiguous.artifact.names.useraction=A\u00f1ada la anotaci\u00f3n @Dependent u otra anotaci\u00f3n de definici\u00f3n por bean adecuada para el artefacto por lotes. O bien, puede establecer una modalidad de descubrimiento de bean en 'all' en el archivo beans.xml, aunque esta soluci\u00f3n podr\u00eda ralentizar la aplicaci\u00f3n. Si no son necesarios todos los artefactos ambiguos, puede eliminar tambi\u00e9n los atributos 'ref' ambiguos de la aplicaci\u00f3n para que solo permanezca una referencia \u00fanica no ambigua.

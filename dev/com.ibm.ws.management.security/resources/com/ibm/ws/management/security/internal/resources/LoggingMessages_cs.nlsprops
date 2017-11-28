@@ -1,0 +1,27 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.management.security/resources/com/ibm/ws/management/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR WebSphere Management Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKX0000-CWWKX0099	
+
+MANAGEMENT_SECURITY_AUTHZ_FAILED=CWWKX0001A: Selhala autorizace pro u\u017eivatele {0} p\u0159i vyvol\u00e1v\u00e1n\u00ed operace spr\u00e1vy {1}. U\u017eivateli nebyl ud\u011blen p\u0159\u00edstup k \u017e\u00e1dn\u00e9 z po\u017eadovan\u00fdch rol\u00ed: {2}.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.explanation=Ur\u010den\u00fd u\u017eivatel nem\u00e1 p\u0159\u00edslu\u0161n\u00e9 opr\u00e1vn\u011bn\u00ed pro p\u0159\u00edstup k uveden\u00e9 operaci spr\u00e1vy.
+MANAGEMENT_SECURITY_AUTHZ_FAILED.useraction=Nen\u00ed po\u017eadov\u00e1na \u017e\u00e1dn\u00e1 akce.
+
+ROLE_ENTRY_DUPLICATE=CWWKX0002E: Byla zji\u0161t\u011bna duplicitn\u00ed polo\u017eka ve vazb\u011b role {0}. Duplicitn\u00ed polo\u017eka {1} je {2}.
+ROLE_ENTRY_DUPLICATE.explanation=Uveden\u00e1 polo\u017eka ji\u017e je pro uvedenou vazbu role definov\u00e1na. Duplicitn\u00ed polo\u017eky nejsou podporov\u00e1ny.
+ROLE_ENTRY_DUPLICATE.useraction=Odeberte duplicitn\u00ed polo\u017eku.

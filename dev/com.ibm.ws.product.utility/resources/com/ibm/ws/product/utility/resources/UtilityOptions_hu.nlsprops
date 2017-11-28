@@ -1,0 +1,129 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityOptions.nlsprops
+#ISMESSAGEFILE FALSE
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_VAR
+#
+
+global.description=Le\u00edr\u00e1s:
+global.options=Param\u00e9terek:
+global.usage=Haszn\u00e1lat:
+global.options.statement=\tAz egyes m\u0171veletek r\u00e9szletes param\u00e9terinform\u00e1ci\u00f3it a help [m\u0171veletn\u00e9v] paranccsal k\u00e9rheti le.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+help.desc=\tS\u00fag\u00f3inform\u00e1ci\u00f3kat jelen\u00edt meg a megadott m\u0171veletr\u0151l.
+help.usage.options=\t{0} help [m\u0171veletn\u00e9v]
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+version.desc=\tMegjelen\u00edti a term\u00e9kinform\u00e1ci\u00f3kat, p\u00e9ld\u00e1ul a term\u00e9knevet \u00e9s verzi\u00f3sz\u00e1mot.
+version.usage.options=\t{0} version [param\u00e9terek]
+version.option-key.output=\ \ \ \ --output="kimeneti f\u00e1jl \u00fatvonala"
+version.option-desc.output=\tA parancs kimenet\u00e9t tartalmaz\u00f3 f\u00e1jl \u00fatvonala. Ez a    \n\
+\tparam\u00e9ter nem k\u00f6telez\u0151. Az alap\u00e9rtelmez\u00e9s: STDOUT.
+version.option-key.verbose=\ \ \ \ --verbose
+version.option-desc.verbose=\tMegjelenti a tulajdons\u00e1gf\u00e1jl teljes tartalm\u00e1t.
+version.option-key.ifixes=\ \ \ \ --ifixes
+version.option-desc.ifixes=\tMegadja, hogy a telep\u00edtett iFix elemek list\u00e1ja szint\u00e9n a kimenet r\u00e9sze.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseAgreement.desc=\tMegjelen\u00edti a Liberty profil telep\u00edtett kiad\u00e1s\u00e1ra vonatkoz\u00f3 licencszerz\u0151d\u00e9st.
+viewLicenseAgreement.usage.options=\t{0} viewLicenseAgreement
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+viewLicenseInfo.desc=\tMegjelen\u00edti a Liberty profil telep\u00edtett kiad\u00e1s\u00e1ra vonatkoz\u00f3 licencinform\u00e1ci\u00f3kat.
+viewLicenseInfo.usage.options=\t{0} viewLicenseInfo
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+featureInfo.desc=\tFelsorolja az \u00f6sszes telep\u00edtett \u00f6sszetev\u0151t.
+featureInfo.usage.options=\t{0} featureInfo [param\u00e9terek]
+featureInfo.option-key.output=\ \ \ \ --output="kimeneti f\u00e1jl \u00fatvonala"
+featureInfo.option-desc.output=\tA parancs kimenet\u00e9t tartalmaz\u00f3 f\u00e1jl \u00fatvonala. Ez a    \n\
+\tparam\u00e9ter nem k\u00f6telez\u0151. Az alap\u00e9rtelmez\u00e9s: STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+validate.desc=\tTerm\u00e9ktelep\u00edt\u00e9st \u00e9rv\u00e9nyes\u00edt a term\u00e9k ellen\u0151rz\u0151\u00f6sszeg-f\u00e1jlja alapj\u00e1n.
+validate.usage.options=\t{0} validate [param\u00e9terek]
+validate.option-key.checksumfile=\ \ \ \ --checksumfile="az ellen\u0151rz\u0151\u00f6sszeg-f\u00e1jl \u00fatvonala"
+validate.option-desc.checksumfile=\tMeghat\u00e1rozza a telep\u00edtend\u0151 *.mf \u00e9s *.blst f\u00e1jlok ellen\u0151rz\u0151 \u00f6sszeg\u00e9t \n\
+\ttartalmaz\u00f3 f\u00e1jt. Ez a param\u00e9ter nem k\u00f6telez\u0151. Az alap\u00e9rtelmez\u00e9s:    \n\
+\tlib/version/productChecksums.cs
+validate.option-key.output=\ \ \ \ --output="kimeneti f\u00e1jl \u00fatvonala"
+validate.option-desc.output=\tA parancs kimenet\u00e9t tartalmaz\u00f3 f\u00e1jl \u00fatvonala. Ez a    \n\
+\tparam\u00e9ter nem k\u00f6telez\u0151. Az alap\u00e9rtelmez\u00e9s: STDOUT.
+
+
+# -------- OPTIONS ----------------------------------------------------#
+# List of descriptive text for options. Use "\n\" for line continuations.
+# The code provides no whitespace: begin keys with "\ \ \ \ " for leading
+# whitespace, and begin descripions with \t 
+#------------------------------\n at 72 chars -------------------------\n\#
+#------------------------------\n at 72 chars Leading "\ \ \ \ "-------\n\#
+#------------------------------\n at 72 chars Leading "\t"-------------\n\#
+compare.desc=\t\u00d6sszehasonl\u00edtja az \u00faj jav\u00edt\u00f3csomag szinttel rendelkez\u0151 aktu\u00e1lis telep\u00edt\u00e9sre\n\
+\talkalmazott iFix jav\u00edt\u00e1sokat a jav\u00edt\u00f3csomagb\u00f3l hi\u00e1nyz\u00f3 iFix jav\u00edt\u00e1sokkal, vagy egy \n\
+\tmegadott iFix list\u00e1val, \u00e9s felsorolja, hogy tartalmazza-e ezeket az      \n\
+\t aktu\u00e1lis v\u00e1ltozat.
+compare.usage.options=\t{0} compare [param\u00e9terek]
+compare.option-key.target=\ \ \ \ --target="k\u00f6nyvt\u00e1r vagy arch\u00edvumf\u00e1jl \u00fatvonala"
+compare.option-desc.target=\tMegadja a c\u00e9lf\u00e1jlt az aktu\u00e1lis telep\u00edt\u00e9ssel t\u00f6rt\u00e9n\u0151 \u00f6sszehasonl\u00edt\u00e1shoz. A     \n\
+\tlehet k\u00f6nyvt\u00e1r vagy arch\u00edvumf\u00e1jl, de \u00e9rv\u00e9nyes WebSphere Application \n\
+\tServer Liberty profil telep\u00edt\u00e9si helynek kell lennie.
+compare.option-key.apars=\ \ \ \ --apars="vessz\u0151kkel elv\u00e1lasztott APAR azonos\u00edt\u00f3 lista"
+compare.option-desc.apars=\tAz \u00f6sszehasonl\u00edt\u00e1si eszk\u00f6z ellen\u0151rzi az aktu\u00e1lis telep\u00edt\u00e9st \n\
+\ta vessz\u0151kkel elv\u00e1lasztott APAR azonos\u00edt\u00f3 lista alapj\u00e1n, majd felsorolja, hogy melyik\n\
+\tAPAR hi\u00e1nyzik.
+compare.option-key.output=\ \ \ \ --output="kimeneti f\u00e1jl \u00fatvonala"
+compare.option-desc.output=\tA parancs kimenet\u00e9t tartalmaz\u00f3 f\u00e1jl \u00fatvonala. Ez a\n\
+\tparam\u00e9ter nem k\u00f6telez\u0151. Az alap\u00e9rtelmez\u00e9s: STDOUT.
+compare.option-key.verbose=\ \ \ \ --verbose
+compare.option-desc.verbose=\tMegjelen\u00edti a r\u00e9szletes hiba\u00fczeneteket, amikor hiba t\u00f6rt\u00e9nik.
+compare.option.addon=Vagy a --target, vagy az --apars kapcsol\u00f3t meg kell adni.

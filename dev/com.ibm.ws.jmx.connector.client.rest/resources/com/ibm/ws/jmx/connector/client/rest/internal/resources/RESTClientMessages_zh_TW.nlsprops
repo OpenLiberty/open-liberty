@@ -1,0 +1,143 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.jmx.connector.client/resources/com/ibm/ws/jmx/connector/client/rest/internal/resources/RESTClientMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKX
+#COMPONENTNAMEFOR CWWKX JMX REST Client
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# Message prefix block: CWWKX0200-CWWKX0259
+	
+jmx.rest.client.request.error=CWWKX0201E: WebSphere Java Management Extensions REST \u7528\u6236\u7aef\u5728\u6e96\u5099\u5c0d\u9023\u7dda {1} \u4e0a URL {0} \u7684\u4f3a\u670d\u5668\u63d0\u51fa\u8981\u6c42\u6642\uff0c\u767c\u73fe\u932f\u8aa4
+jmx.rest.client.request.error.explanation=WebSphere Java Management Extensions REST \u7528\u6236\u7aef\u5728\u6e96\u5099\u4f3a\u670d\u5668\u7684\u8981\u6c42\u6642\uff0c\u767c\u73fe\u932f\u8aa4
+jmx.rest.client.request.error.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u8cc7\u8a0a\u3002
+
+jmx.rest.client.response.error=CWWKX0202E: WebSphere Java Management Extensions REST \u7528\u6236\u7aef\u7121\u6cd5\u8655\u7406\u4f86\u81ea\u4f3a\u670d\u5668\u91dd\u5c0d\u9023\u7dda {1} \u4e0a\u7684 URL {0} \u7684\u56de\u61c9
+jmx.rest.client.response.error.explanation=WebSphere Java Management Extensions REST \u7528\u6236\u7aef\u7121\u6cd5\u8655\u7406\u4f86\u81ea\u4f3a\u670d\u5668\u7684\u56de\u61c9
+jmx.rest.client.response.error.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u8cc7\u8a0a\u3002
+
+jmx.rest.client.response.code.error=CWWKX0203E: WebSphere Java Management Extensions REST \u7528\u6236\u7aef\u63a5\u6536\u5230\u4f86\u81ea\u4f3a\u670d\u5668\u91dd\u5c0d\u9023\u7dda {3} \u4e0a\u7684 URL {2} \u7684\u975e\u9810\u671f\u56de\u61c9\u78bc {0}\uff0c\u5e36\u6709\u8a0a\u606f ''{1}''
+jmx.rest.client.response.code.error.explanation=WebSphere Java Management Extensions REST \u7528\u6236\u7aef\u63a5\u6536\u5230\u4f86\u81ea\u4f3a\u670d\u5668\u7684\u975e\u9810\u671f\u56de\u61c9\u78bc
+jmx.rest.client.response.code.error.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u8cc7\u8a0a\u3002
+
+jmx.rest.client.server.throwable.exception=CWWKX0204E: \u7121\u6cd5\u5f9e\u4f3a\u670d\u5668\u932f\u8aa4\u4e32\u6d41\u4f86\u5256\u6790 Throwable\u3002
+jmx.rest.client.server.throwable.exception.explanation=\u4f3a\u670d\u5668\u5728\u8655\u7406\u7528\u6236\u7aef\u8981\u6c42\u6642\uff0c\u5f15\u767c\u7570\u5e38\u72c0\u6cc1\uff0c\u4f46\u662f\u7528\u6236\u7aef\u7121\u6cd5\u5f9e\u4f3a\u670d\u5668\u932f\u8aa4\u4e32\u6d41\u4f86\u5256\u6790 Throwable \u7269\u4ef6\u3002\u7528\u6236\u7aef\u53ef\u80fd\u7121\u6cd5\u4f7f\u7528 Throwable \u7269\u4ef6\u7684\u985e\u5225\u3002
+jmx.rest.client.server.throwable.exception.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u8cc7\u8a0a\u3002
+
+jmx.rest.client.not.connected=CWWKX0206E: \u7528\u6236\u7aef\u6c92\u6709\u9023\u63a5\u4f3a\u670d\u5668\u3002
+jmx.rest.client.not.connected.explanation=\u4f3a\u670d\u5668\u9023\u7dda\u5df2\u95dc\u9589\u6216\u5931\u6557\u3002
+jmx.rest.client.not.connected.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u4e0a\u662f\u5426\u5df2\u555f\u7528 REST \u9023\u63a5\u5668\u7279\u6027\uff0c\u4e26\u53d6\u5f97\u65b0\u7684\u4f3a\u670d\u5668\u9023\u7dda\u3002
+
+jmx.rest.client.url.not.found=CWWKX0207E: \u4f3a\u670d\u5668\u5831\u544a\u627e\u4e0d\u5230\u7528\u6236\u7aef\u6240\u8981\u6c42\u7684 URL\u3002
+jmx.rest.client.url.not.found.explanation=\u7528\u6236\u7aef\u7684\u8cc7\u8a0a\u5df2\u904e\u671f\uff0c\u6216\u8005\u4f3a\u670d\u5668\u4e0a\u7684 REST \u9023\u63a5\u5668\u7279\u6027\u53ef\u80fd\u5df2\u505c\u7528\u3002
+jmx.rest.client.url.not.found.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u4e0a\u662f\u5426\u5df2\u555f\u7528 REST \u9023\u63a5\u5668\u7279\u6027\uff0c\u4e26\u53d6\u5f97\u65b0\u7684\u4f3a\u670d\u5668\u9023\u7dda\u3002
+jmx.rest.client.class.name.null=CWWKX0208E: \u985e\u5225\u540d\u7a31\u5f15\u6578\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.class.name.null.explanation=\u985e\u5225\u540d\u7a31\u5f15\u6578\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.class.name.null.useraction=\u8acb\u5728\u547c\u53eb\u65b9\u6cd5\u6642\uff0c\u63d0\u4f9b\u975e\u7a7a\u503c\u7684\u985e\u5225\u540d\u7a31\u3002
+
+jmx.rest.client.attribute.name.null=CWWKX0209E: \u5c6c\u6027\u540d\u7a31\u5f15\u6578\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.name.null.explanation=\u5c6c\u6027\u540d\u7a31\u5f15\u6578\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.name.null.useraction=\u8acb\u5728\u547c\u53eb\u65b9\u6cd5\u6642\uff0c\u63d0\u4f9b\u975e\u7a7a\u503c\u7684\u5c6c\u6027\u540d\u7a31\u3002
+
+jmx.rest.client.attribute.names.null=CWWKX0210E: \u5305\u542b\u5c6c\u6027\u540d\u7a31\u9663\u5217\u7684\u5f15\u6578\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.names.null.explanation=\u5305\u542b\u5c6c\u6027\u540d\u7a31\u9663\u5217\u7684\u5f15\u6578\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.names.null.useraction=\u8acb\u5728\u547c\u53eb\u65b9\u6cd5\u6642\uff0c\u63d0\u4f9b\u975e\u7a7a\u503c\u7684\u5c6c\u6027\u540d\u7a31\u9663\u5217\u3002
+
+jmx.rest.client.attribute.null=CWWKX0211E: Attribute \u5f15\u6578\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.null.explanation=Attribute \u5f15\u6578\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.null.useraction=\u8acb\u5728\u547c\u53eb\u65b9\u6cd5\u6642\uff0c\u63d0\u4f9b\u975e\u7a7a\u503c\u7684 Attribute\u3002
+
+jmx.rest.client.attribute.list.null=CWWKX0212E: AttributeList \u5f15\u6578\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.list.null.explanation=AttributeList \u5f15\u6578\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.attribute.list.null.useraction=\u8acb\u5728\u547c\u53eb\u65b9\u6cd5\u6642\uff0c\u63d0\u4f9b\u975e\u7a7a\u503c\u7684 AttributeList\u3002
+
+jmx.rest.client.object.name.null=CWWKX0213E: ObjectName \u5f15\u6578\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.object.name.null.explanation=ObjectName \u5f15\u6578\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.object.name.null.useraction=\u8acb\u5728\u547c\u53eb\u65b9\u6cd5\u6642\uff0c\u63d0\u4f9b\u975e\u7a7a\u503c\u7684 ObjectName\u3002
+
+jmx.rest.client.unexpected.server.throwable=CWWKX0214E: \u4f3a\u670d\u5668\u50b3\u56de\u975e\u9810\u671f\u7684 Throwable \u7269\u4ef6\u3002
+jmx.rest.client.unexpected.server.throwable.explanation=\u7570\u5e38\u72c0\u6cc1\u542b\u62ec\u4e00\u500b\u4f3a\u670d\u5668\u6240\u50b3\u56de\u7684 Throwable \u7269\u4ef6\uff0c\u5c0d\u9019\u9805\u4f5c\u696d\u4f86\u8aaa\uff0c\u9019\u901a\u5e38\u4e0d\u662f\u6240\u9810\u671f\u7684\u3002
+jmx.rest.client.unexpected.server.throwable.useraction=\u8acb\u6aa2\u67e5\u4f3a\u670d\u5668\u65e5\u8a8c\uff0c\u4ee5\u53d6\u5f97\u9032\u4e00\u6b65\u8cc7\u8a0a\u3002
+
+jmx.rest.client.bad.credentials=CWWKX0215E: \u6240\u63d0\u4f9b\u7684\u4f7f\u7528\u8005\u540d\u7a31\u6216\u5bc6\u78bc\u6709\u554f\u984c\u3002\u4f3a\u670d\u5668\u7684\u56de\u61c9\u78bc\u662f {0}\uff0c\u8a0a\u606f\u662f ''{1}''
+jmx.rest.client.bad.credentials.explanation=\u5728\u53d6\u5f97\u9023\u7dda\u6642\u6240\u63d0\u4f9b\u7684\u8a8d\u8b49\u4e0d\u6b63\u78ba\u3002\u53ef\u80fd\u662f\u4f7f\u7528\u8005\u4e0d\u5b58\u5728\u3001\u4e0d\u5177\u5099\u4f3a\u670d\u5668\u7684\u5b58\u53d6\u6b0a\uff0c\u6216\u8005\u5bc6\u78bc\u4e0d\u6b63\u78ba\u3002
+jmx.rest.client.bad.credentials.useraction=\u8acb\u66f4\u6b63\u4f7f\u7528\u8005\u540d\u7a31\u6216\u5bc6\u78bc\uff0c\u7136\u5f8c\u53d6\u5f97\u65b0\u9023\u7dda\u3002
+
+jmx.rest.client.object.name.pattern=CWWKX0216E: ObjectName \u5f15\u6578 ''{0}'' \u662f\u4e00\u500b\u578b\u6a23\u3002
+jmx.rest.client.object.name.pattern.explanation=ObjectName \u5f15\u6578\u662f\u578b\u6a23\uff0c\u4f46\u662f\u65b9\u6cd5\u6240\u9700\u8981\u7684 ObjectName \u5fc5\u9808\u53ea\u7b26\u5408\u4e00\u500b MBean\u3002
+jmx.rest.client.object.name.pattern.useraction=\u8acb\u63d0\u4f9b\u6c92\u6709\u842c\u7528\u5b57\u5143\u4e14\u53ea\u7b26\u5408\u4e00\u500b MBean \u7684 ObjectName \u5f15\u6578\u3002
+
+jmx.rest.client.instance.not.found=CWWKX0217E: \u76ee\u524d\u672a\u767b\u9304\u4efb\u4f55\u4e00\u500b\u4f7f\u7528\u7d66\u5b9a ObjectName ''{0}'' \u7684 MBean
+jmx.rest.client.instance.not.found.explanation=\u4f5c\u696d\u9700\u8981\u5df2\u767b\u9304\u7684 MBean\uff0c\u4f46\u537b\u672a\u767b\u9304\u4efb\u4f55\u4f7f\u7528\u7d66\u5b9a ObjectName \u7684 MBean\u3002
+jmx.rest.client.instance.not.found.useraction=\u8acb\u5148\u78ba\u5b9a\u5df2\u767b\u9304 MBean\uff0c\u518d\u5617\u8a66\u5c0d\u5b83\u57f7\u884c\u7ba1\u7406\u4f5c\u696d\u3002
+
+jmx.rest.client.attribute.not.found=CWWKX0218E: MBean ''{0}'' \u6c92\u6709\u4e00\u500b\u540d\u7a31\u70ba ''{1}'' \u7684\u5c6c\u6027
+jmx.rest.client.attribute.not.found.explanation=MBean \u6c92\u6709\u63d0\u4f9b\u7d66\u5b9a\u540d\u7a31\u7684\u5c6c\u6027\u3002
+jmx.rest.client.attribute.not.found.useraction=\u8acb\u53d6\u5f97 MBean \u8cc7\u8a0a\uff0c\u4ee5\u78ba\u8a8d MBean \u6240\u63d0\u4f9b\u7684\u5c6c\u6027\u3002
+
+jmx.rest.client.operation.not.found=CWWKX0219E: MBean ''{0}'' \u6c92\u6709\u4e00\u500b\u540d\u7a31\u70ba ''{1}'' \u7684\u4f5c\u696d
+jmx.rest.client.operation.not.found.explanation=MBean \u6c92\u6709\u63d0\u4f9b\u7d66\u5b9a\u540d\u7a31\u7684\u4f5c\u696d\u3002
+jmx.rest.client.operation.not.found.useraction=\u8acb\u53d6\u5f97 MBean \u8cc7\u8a0a\uff0c\u4ee5\u78ba\u8a8d MBean \u6240\u63d0\u4f9b\u7684\u4f5c\u696d\u3002
+
+jmx.rest.client.listener.not.found=CWWKX0220E: \u76ee\u524d\u672a\u767b\u9304\u7d66\u5b9a NotificationListener\uff0c\u4ee5\u4fbf\u63a5\u6536\u4f86\u81ea MBean ''{0}'' \u7684\u901a\u77e5
+jmx.rest.client.listener.not.found.explanation=NotificationListener \u672a\u65b0\u589e\u6216\u8005\u5df2\u79fb\u9664\uff0c\u4e14\u76ee\u524d\u672a\u767b\u9304\u4f86\u63a5\u53d7\u4f86\u81ea\u7d66\u5b9a MBean \u7684\u901a\u77e5\u3002
+jmx.rest.client.listener.not.found.useraction=\u8acb\u78ba\u5b9a\u547c\u53eb\u7a0b\u5f0f\u78bc\u6703\u8ffd\u8e64\u5df2\u65b0\u589e\u8207\u79fb\u9664\u4e86\u54ea\u4e9b NotificationListener\uff0c\u6216\u662f\u6355\u6349\u6216\u8655\u7406\u7570\u5e38\u72c0\u6cc1\u3002
+
+jmx.rest.client.notification.lost=CWWKX0221I: \u7121\u6cd5\u905e\u9001\u901a\u77e5\u3002
+jmx.rest.client.notification.lost.explanation=\u7121\u6cd5\u5c07\u901a\u77e5\u905e\u9001\u7d66\u4e00\u6216\u591a\u500b NotificationListener\uff0c\u56e0\u70ba\u627e\u4e0d\u5230\u5df2\u767b\u9304\u7684 NotificationListener\uff0c\u6216\u8005\u5728\u905e\u9001\u901a\u77e5\u671f\u9593\uff0c\u767c\u751f\u7570\u5e38\u72c0\u6cc1\u3002
+jmx.rest.client.notification.lost.useraction=\u5982\u679c\u901a\u77e5\u61c9\u5df2\u905e\u9001\u7d66\u5df2\u767b\u9304\u7684 NotificationListener\uff0c\u8acb\u6aa2\u67e5\u65e5\u8a8c\u4e2d\u662f\u5426\u6709\u7570\u5e38\u72c0\u6cc1\u3002
+
+jmx.rest.client.connection.failed=CWWKX0222I: \u9023\u63a5\u4f3a\u670d\u5668\u5931\u6557\u3002
+jmx.rest.client.connection.failed.explanation=\u4f3a\u670d\u5668\u8b8a\u6210\u7121\u6cd5\u4f7f\u7528\uff0c\u4e14\u5728\u6240\u914d\u7f6e\u7684\u5bb9\u8a31\u6642\u9593\u4e0a\u9650\u4e4b\u5167\uff0c\u7121\u6cd5\u91cd\u65b0\u8b8a\u6210\u53ef\u7528\u7684\u3002
+jmx.rest.client.connection.failed.useraction=\u8acb\u6aa2\u67e5\u7db2\u8def\u9023\u7dda\uff0c\u4e26\u78ba\u5b9a\u4f3a\u670d\u5668\u6b63\u5728\u57f7\u884c\uff0c\u4e14\u5df2\u555f\u7528\u4e86 REST \u9023\u63a5\u5668\u7279\u6027\u3002
+
+jmx.rest.client.connection.temporarily.lost=CWWKX0223I: \u4f3a\u670d\u5668\u9023\u7dda\u66ab\u6642\u907a\u5931\u3002
+jmx.rest.client.connection.temporarily.lost.explanation=\u4f3a\u670d\u5668\u8b8a\u6210\u7121\u6cd5\u4f7f\u7528\uff0c\u4f46\u662f\u7528\u6236\u7aef\u5617\u8a66\u5728\u6240\u914d\u7f6e\u7684\u5bb9\u8a31\u6642\u9593\u4e0a\u9650\u671f\u9593\u9084\u539f\u9023\u7dda\u3002
+jmx.rest.client.connection.temporarily.lost.useraction=\u5982\u679c\u4f3a\u670d\u5668\u6b63\u5728\u81ea\u767c\u5730\u91cd\u65b0\u555f\u52d5\uff0c\u5247\u4e0d\u9700\u57f7\u884c\u4efb\u4f55\u52d5\u4f5c\u3002\u5426\u5247\uff0c\u8acb\u6aa2\u67e5\u7db2\u8def\u9023\u7dda\uff0c\u4e26\u78ba\u5b9a\u4f3a\u670d\u5668\u6b63\u5728\u57f7\u884c\uff0c\u4e14\u5df2\u555f\u7528\u4e86 REST \u9023\u63a5\u5668\u7279\u6027\u3002
+jmx.rest.client.connection.restored.with.exceptions=CWWKX0224I: \u9023\u7dda\u5df2\u9084\u539f\uff0c\u4f46\u662f\u5728\u65b0\u589e NotificationListener \u6642\uff0c\u767c\u73fe\u7570\u5e38\u72c0\u6cc1\u3002
+jmx.rest.client.connection.restored.with.exceptions.explanation=\u4f3a\u670d\u5668\u9023\u7dda\u66ab\u6642\u907a\u5931\uff0c\u4f46\u662f\u5df2\u9806\u5229\u9084\u539f\u3002\u5728\u65b0\u589e NotificationListener \u671f\u9593\uff0c\u767c\u73fe\u7570\u5e38\u72c0\u6cc1\uff0c\u56e0\u6b64\u53ef\u80fd\u6c92\u6709\u6536\u5230\u67d0\u4e9b\u901a\u77e5\u3002
+jmx.rest.client.connection.restored.with.exceptions.useraction=\u8acb\u6aa2\u67e5\u901a\u77e5\u96a8\u9644\u7684\u7570\u5e38\u72c0\u6cc1\uff0c\u4e26\u5728\u66f4\u6b63\u554f\u984c\u4e4b\u5f8c\uff0c\u91cd\u65b0\u767b\u9304 NotificationListener\u3002
+
+jmx.rest.client.connection.restored=CWWKX0225I: \u5df2\u9806\u5229\u9084\u539f\u9023\u7dda\u3002
+jmx.rest.client.connection.restored.explanation=\u4f3a\u670d\u5668\u9023\u7dda\u66ab\u6642\u907a\u5931\uff0c\u4f46\u662f\u5df2\u9806\u5229\u9084\u539f\u3002\u4efb\u4f55\u5df2\u767b\u9304\u7684 NotificationListener \u90fd\u5c07\u7e7c\u7e8c\u63a5\u6536\u901a\u77e5\u3002
+jmx.rest.client.connection.restored.useraction=\u7121
+
+jmx.rest.client.connection.illegal.argument=CWWKX0226E: \u985e\u578b JMXServiceURL \u7684\u53c3\u6578\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.connection.illegal.argument.explanation=\u53c3\u6578 'serviceURL' \u7684\u503c\u4e0d\u5f97\u70ba\u7a7a\u503c\u3002
+jmx.rest.client.connection.illegal.argument.useraction=\u4f7f\u7528\u975e\u7a7a\u503c\u7684 JMXServiceURL \u503c\u4f86\u91cd\u65b0\u9023\u63a5\u5230\u300cJMX REST \u9023\u63a5\u5668\u300d\u3002
+
+jmx.rest.client.connection.invalid.endpoint=CWWKX0227E: \u4ee5\u4e0b\u4e0d\u662f\u6709\u6548\u7684\u7aef\u9ede\u503c\uff1a{0}
+jmx.rest.client.connection.invalid.endpoint.explanation=\u6307\u5b9a\u7684\u7aef\u9ede\u503c\u7121\u6548\u3002
+jmx.rest.client.connection.invalid.endpoint.useraction=\u4f7f\u7528\u5c6c\u65bc\u985e\u578b\u300c\u5b57\u4e32\u300d\u4e14\u683c\u5f0f\u70ba "host:port" \u7684\u6709\u6548\u7aef\u9ede\u503c\u4f86\u91cd\u65b0\u9023\u63a5\u5230\u300cJMX REST \u9023\u63a5\u5668\u300d\u3002
+
+jmx.rest.client.connection.no.endpoints=CWWKX0228E: \u627e\u4e0d\u5230\u4efb\u4f55\u53ef\u7528\u7684\u7aef\u9ede\u4f86\u8d77\u59cb\u8a2d\u5b9a\u9023\u63a5\u5668\u3002
+jmx.rest.client.connection.no.endpoints.explanation=\u5728\u8d77\u59cb\u8a2d\u5b9a\u300cJMX REST \u9023\u63a5\u5668\u300d\u671f\u9593\uff0c\u6c92\u6709\u4efb\u4f55\u6307\u5b9a\u7684\u7aef\u9ede\u53ef\u7528\u3002
+jmx.rest.client.connection.no.endpoints.useraction=\u4f7f\u7528\u81f3\u5c11\u4e00\u500b\u53ef\u7528\u7684\u7aef\u9ede\u4f86\u91cd\u65b0\u9023\u63a5\u5230\u300cJMX REST \u9023\u63a5\u5668\u300d\u3002
+
+jmx.rest.client.bad.user.credentials=CWWKX0229E: \u6240\u63d0\u4f9b\u7684\u4f7f\u7528\u8005\u8a8d\u8b49\u6709\u554f\u984c\u3002\u4f3a\u670d\u5668\u7684\u56de\u61c9\u78bc\u662f {0}\uff0c\u8a0a\u606f\u662f ''{1}''
+jmx.rest.client.bad.user.credentials.explanation=\u63d0\u4f9b\u7684\u8a8d\u8b49\u4e0d\u6b63\u78ba\u3001\u5df2\u904e\u671f\u3001\u4e0d\u5b8c\u6574\u6216\u6388\u6b0a\u88ab\u62d2\u3002
+jmx.rest.client.bad.user.credentials.useraction=\u8acb\u78ba\u8a8d\u4f7f\u7528\u8005\u8a8d\u8b49\u6709\u6b63\u78ba\u7684\u9451\u5225\u8207\u6388\u6b0a\uff0c\u7136\u5f8c\u53d6\u5f97\u65b0\u9023\u7dda\u3002
+
+jmx.rest.client.connection.connect=CWWKX0230I: \u7fa4\u9ad4\u6210\u54e1\u5df2\u958b\u555f JMX \u7528\u6236\u7aef\uff0c\u4e26\u6307\u5411\u7fa4\u9ad4\u63a7\u5236\u5668\uff1a{0}
+jmx.rest.client.connection.connect.explanation=\u6210\u54e1\u5df2\u9023\u63a5\u81f3\u63a7\u5236\u5668\u3002
+jmx.rest.client.connection.connect.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002 
+jmx.rest.client.connection.disconnect=CWWKX0231I: \u7fa4\u9ad4\u6210\u54e1\u5df2\u5f9e\u7fa4\u9ad4\u63a7\u5236\u5668 {0} \u95dc\u9589 JMX \u7528\u6236\u7aef
+jmx.rest.client.connection.disconnect.explanation=\u6210\u54e1\u5df2\u5207\u65b7\u63a7\u5236\u5668\u9023\u7dda\u3002
+jmx.rest.client.connection.disconnect.useraction=\u4e0d\u9700\u63a1\u53d6\u4efb\u4f55\u52d5\u4f5c\u3002
+

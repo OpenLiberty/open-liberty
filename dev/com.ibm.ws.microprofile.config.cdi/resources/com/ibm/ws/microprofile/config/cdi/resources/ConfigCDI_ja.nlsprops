@@ -1,0 +1,61 @@
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCG
+#COMPONENTNAMEFOR CWMCG MicroProfile Config API 
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+# #########################################################################
+###############################################################################
+# Copyright (c) 2009, 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# This file follows the WebSphere Message Guidelines.
+# For more information, visit: 
+# http://washome.austin.ibm.com/xwiki/bin/view/MessagesTeam/
+#
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI Autofeature - range is 5000-5999
+#-----------------------------------------------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Messages used by Config CDI autofeature
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# Unable to determine the generic type of the ConfigValue to be injected at "{0}".
+unable.to.determine.injection.type.CWMCG5001E=CWMCG5001E: \u6ce8\u5165\u3059\u308b\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u306e\u30bf\u30a4\u30d7\u3092\u5224\u5225\u3067\u304d\u307e\u305b\u3093\u3002\u6ce8\u5165\u30dd\u30a4\u30f3\u30c8\u306e\u30bf\u30a4\u30d7\u306f "{0}" \u3067\u3059\u3002
+unable.to.determine.injection.type.CWMCG5001E.explanation=@ConfigProperty \u4fee\u98fe\u5b50\u304c\u4ed8\u52a0\u3055\u308c\u305f\u6ce8\u5165\u30dd\u30a4\u30f3\u30c8\u306b\u6709\u52b9\u306a\u30bf\u30a4\u30d7\u304c\u3042\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+unable.to.determine.injection.type.CWMCG5001E.useraction=\u6ce8\u5165\u30dd\u30a4\u30f3\u30c8\u306b\u306f\u3001\u6ce8\u5165\u3059\u308b\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u306e\u6709\u52b9\u306a\u30bf\u30a4\u30d7\u304c\u5fc5\u305a\u3042\u308b\u3088\u3046\u306b\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# The property name must be specified for Constructor and Method configuration property injection.
+unable.to.determine.injection.name.CWMCG5002E=CWMCG5002E: \u30b3\u30f3\u30b9\u30c8\u30e9\u30af\u30bf\u30fc\u304a\u3088\u3073\u30e1\u30bd\u30c3\u30c9\u306e\u69cb\u6210\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u306e\u6ce8\u5165\u306b\u306f\u3001\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u540d\u304c\u6307\u5b9a\u3055\u308c\u3066\u3044\u306a\u3051\u308c\u3070\u306a\u308a\u307e\u305b\u3093\u3002
+unable.to.determine.injection.name.CWMCG5002E.explanation=\u30b3\u30f3\u30b9\u30c8\u30e9\u30af\u30bf\u30fc\u304a\u3088\u3073\u30e1\u30bd\u30c3\u30c9\u306e\u30d1\u30e9\u30e1\u30fc\u30bf\u30fc\u306b\u3064\u3044\u3066\u3001\u30c7\u30d5\u30a9\u30eb\u30c8\u306e\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u540d\u3092\u6d3e\u751f\u3055\u305b\u308b\u3053\u3068\u306f\u3067\u304d\u307e\u305b\u3093\u3002 \u6b63\u3057\u3044\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u540d\u304c @ConfigProperty \u4fee\u98fe\u5b50\u306b\u6e21\u3055\u308c\u308b\u5fc5\u8981\u304c\u3042\u308a\u307e\u3059\u3002 
+unable.to.determine.injection.name.CWMCG5002E.useraction=@ConfigProperty \u4fee\u98fe\u5b50\u3092\u4f7f\u7528\u3057\u3066\u9069\u5207\u306a\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u540d\u3092\u8a2d\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# InjectionPoint dependency could not be resolved: {0}. The exception is {1}.
+unable.to.resolve.injection.point.CWMCG5003E=CWMCG5003E: {0} InjectionPoint \u4f9d\u5b58\u95a2\u4fc2\u304c\u89e3\u6c7a\u3055\u308c\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u30a8\u30e9\u30fc:  {1}
+unable.to.resolve.injection.point.CWMCG5003E.explanation=\u6ce8\u5165\u3055\u308c\u305f\u69cb\u6210\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u304c\u89e3\u6c7a\u3057\u307e\u305b\u3093\u3067\u3057\u305f\u3002\u6307\u5b9a\u3055\u308c\u305f\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u304c\u691c\u51fa\u3055\u308c\u306a\u304b\u3063\u305f\u304b\u3001\u5fc5\u8981\u306a\u30bf\u30a4\u30d7\u7528\u306e Converter \u304c\u89e3\u6c7a\u3057\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+unable.to.resolve.injection.point.CWMCG5003E.useraction=\u30b5\u30fc\u30d0\u30fc\u30fb\u30e1\u30c3\u30bb\u30fc\u30b8\u30fb\u30ed\u30b0\u304a\u3088\u3073 ffdc \u30ed\u30b0\u3092\u78ba\u8a8d\u3057\u3066\u3001\u539f\u56e0\u3092\u5224\u5225\u3057\u3066\u304f\u3060\u3055\u3044\u3002 \u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u304c\u69cb\u6210\u6e08\u307f\u30bd\u30fc\u30b9\u306e\u3044\u305a\u308c\u304b\u306b\u5b58\u5728\u3059\u308b\u3053\u3068\u3001\u304a\u3088\u3073\u5fc5\u8981\u306a Converter \u304c\u69cb\u6210\u3055\u308c\u3066\u3044\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+# The configuration property named "{0}" was not found.
+property.not.found.CWMCG5004E=CWMCG5004E: "{0}" \u69cb\u6210\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+property.not.found.CWMCG5004E.explanation=\u69cb\u6210\u6e08\u307f\u30bd\u30fc\u30b9\u306e\u3044\u305a\u308c\u3067\u3082\u3001\u6307\u5b9a\u3055\u308c\u305f\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u304c\u898b\u3064\u304b\u308a\u307e\u305b\u3093\u3067\u3057\u305f\u3002 
+property.not.found.CWMCG5004E.useraction=\u30d7\u30ed\u30d1\u30c6\u30a3\u30fc\u304c\u69cb\u6210\u6e08\u307f\u30bd\u30fc\u30b9\u306e\u3044\u305a\u308c\u304b\u306b\u5b58\u5728\u3059\u308b\u3053\u3068\u3092\u78ba\u8a8d\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+
+#-----------------------------------------------------------------------------------------------------------------------------
+# Emergency Config error message
+#-----------------------------------------------------------------------------------------------------------------------------
+
+# A Config API error has occurred: {0}
+temporary.CWMCG5999E=CWMCG5999E: Config API \u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u307e\u3057\u305f: {0}\u3002
+temporary.CWMCG5999E.explanation=Config API \u30a8\u30e9\u30fc\u304c\u767a\u751f\u3057\u305f\u305f\u3081\u3001\u901a\u5e38\u306e\u64cd\u4f5c\u3092\u884c\u3048\u307e\u305b\u3093\u3067\u3057\u305f\u3002
+temporary.CWMCG5999E.useraction=\u30b5\u30fc\u30d0\u30fc\u306e message.log \u304a\u3088\u3073 FFDC \u30ed\u30b0\u3092\u8abf\u3079\u3066\u554f\u984c\u3092\u7279\u5b9a\u3057\u3066\u304f\u3060\u3055\u3044\u3002
+
+

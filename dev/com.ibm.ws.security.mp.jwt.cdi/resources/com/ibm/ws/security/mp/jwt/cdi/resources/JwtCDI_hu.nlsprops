@@ -1,0 +1,37 @@
+###############################################################################
+# Copyright (c) 2017 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security.mp.jwt.cdi/resources/com/ibm/ws/security/mp/jwt/cdi/resources/JwtCDI.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Microprofile JWT CDI
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+# Message prefix block: CWWKS5600 - CWWKS5649
+
+# Do not translate Claim.
+MPJWT_CDI_INVALID_INJECTION_TYPE=CWWKS5600E: A besz\u00farand\u00f3 ig\u00e9ny t\u00edpusa nem \u00e1llap\u00edthat\u00f3 meg. A k\u00f3dbesz\u00far\u00e1si pont t\u00edpusa a k\u00f6vetkez\u0151: {0}.
+MPJWT_CDI_INVALID_INJECTION_TYPE.explanation=A Claim min\u0151s\u00edt\u0151vel jelzett k\u00f3dbesz\u00far\u00e1s pont nem rendelkezik \u00e9rv\u00e9nyes t\u00edpussal.
+MPJWT_CDI_INVALID_INJECTION_TYPE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a besz\u00far\u00e1si pont t\u00edpusa \u00e9rv\u00e9nyes a besz\u00farni k\u00edv\u00e1nt ig\u00e9nyhez.
+
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT=CWWKS5601E: A(z) {0} k\u00f3dbesz\u00far\u00e1si pont f\u00fcgg\u0151s\u00e9ge nincs feloldva, ami a k\u00f6vetkez\u0151 hib\u00e1t okozza: {1}.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.explanation=Egy besz\u00fart ig\u00e9ny nincs feloldva.
+MPJWT_CDI_CANNOT_RESOLVE_INJECTION_POINT.useraction=A kiszolg\u00e1l\u00f3\u00fczenet \u00e9s a first-failure data capture (FFDC) napl\u00f3k alapj\u00e1n \u00e1llap\u00edtsa meg a hiba ok\u00e1t.
+
+# Do not translate Claim, value, and standard. The value and standard are members of the Claim annotation.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES=CWWKS5602E: A(z) {0} k\u00f3dbesz\u00far\u00e1si pont Claim min\u0151s\u00edt\u0151je ellentmond\u00f3 \u00e9rt\u00e9keket tartalmaz mind a value, mind a standard elemek eset\u00e9ben. A value elem \u00e9rt\u00e9ke {1}, a standard elem \u00e9rt\u00e9ke pedig {2}.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.explanation=A Claim min\u0151s\u00edt\u0151vel annot\u00e1lt k\u00f3dbesz\u00far\u00e1si pont \u00fctk\u00f6z\u0151 elemeket tartalmaz.
+MPJWT_CDI_CONFLICTING_CLAIM_NAMES.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f3dbesz\u00far\u00e1si pont Claim min\u0151s\u00edt\u0151je \u00e9rv\u00e9nyes a besz\u00farni k\u00edv\u00e1nt ig\u00e9nyhez.
+
+# Do not translate ApplicationScoped, SessionScoped, RequestScoped, and Claim.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE=CWWKS5603E: Az ig\u00e9ny nem sz\u00farhat\u00f3 be az ApplicationScoped vagy a SessionScoped hat\u00f3k\u00f6r {0} k\u00f3dbesz\u00far\u00e1si pontj\u00e1ba.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.explanation=A Claim min\u0151s\u00edt\u0151vel annot\u00e1lt k\u00f3dbesz\u00far\u00e1si pontnak nyers t\u00edpus eset\u00e9n a RequestScoped hat\u00f3k\u00f6r annot\u00e1ci\u00f3val ell\u00e1tott oszt\u00e1lyhoz kell tartoznia.
+MPJWT_CDI_INVALID_SCOPE_FOR_RAW_TYPE.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a k\u00f3dbesz\u00far\u00e1si pont a besz\u00farni k\u00edv\u00e1nt ig\u00e9ny RequestScoped hat\u00f3k\u00f6r\u00e9ben l\u00e9v\u0151 oszt\u00e1ly tagja.

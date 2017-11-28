@@ -1,0 +1,55 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.security/resources/com/ibm/ws/security/internal/resources/LoggingMessages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Security Service
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: CWWKS0000 - CWWKS0099
+
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE=CWWKS0000E: Une exception de configuration est survenue. Aucun attribut {0} n''est d\u00e9fini pour l''\u00e9l\u00e9ment <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.explanation=L'attribut manquant est obligatoire pour l'\u00e9l\u00e9ment <securityConfiguration>.
+SECURITY_CONFIG_ERROR_MISSING_ATTRIBUTE.useraction=Sp\u00e9cifiez l'attribut manquant pour l'\u00e9l\u00e9ment <securityConfiguration>.
+
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID=CWWKS0001E: Une exception de configuration est survenue. Un \u00e9l\u00e9ment de configuration du type {0} ne d\u00e9finit pas d''attribut id.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.explanation=Le type d'\u00e9l\u00e9ment de configuration sp\u00e9cifi\u00e9 doit comporter un attribut id afin d'\u00eatre correctement r\u00e9f\u00e9renc\u00e9 par les autres \u00e9l\u00e9ments dans la configuration.
+SECURITY_SERVICE_REQUIRED_SERVICE_WITHOUT_ID.useraction=D\u00e9finissez un attribut id pour le type d'\u00e9l\u00e9ment de configuration sp\u00e9cifi\u00e9.
+
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE=CWWKS0002E: Une exception de configuration est survenue. Aucun attribut {0} n''est d\u00e9fini pour l''\u00e9l\u00e9ment <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.explanation=L'attribut manquant est obligatoire pour l'\u00e9l\u00e9ment <security>.
+SECURITY_SERVICE_ERROR_MISSING_ATTRIBUTE.useraction=Sp\u00e9cifiez l'attribut manquant pour l'\u00e9l\u00e9ment <security>.
+
+SECURITY_SERVICE_ERROR_BAD_DOMAIN=CWWKS0003E: Une exception de configuration est survenue. La configuration de s\u00e9curit\u00e9 sp\u00e9cifi\u00e9e, r\u00e9f\u00e9renc\u00e9e par l''identificateur {0} pour l''attribut {1} dans l''\u00e9l\u00e9ment <security>, n''est pas d\u00e9finie.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.explanation=La configuration de s\u00e9curit\u00e9 sp\u00e9cifi\u00e9e n'est pas d\u00e9finie. Le nom de l'identificateur n'est peut-\u00eatre pas le bon, ou alors il fait r\u00e9f\u00e9rence \u00e0 une configuration de s\u00e9curit\u00e9 qui n'existe pas.
+SECURITY_SERVICE_ERROR_BAD_DOMAIN.useraction=D\u00e9finissez une configuration de s\u00e9curit\u00e9 valide pour l'attribut sp\u00e9cifi\u00e9 dans l'\u00e9l\u00e9ment <security>.
+
+SECURITY_SERVICE_ERROR_BAD_REFERENCE=CWWKS0004E: Une exception de configuration est survenue. L''\u00e9l\u00e9ment sp\u00e9cifi\u00e9, r\u00e9f\u00e9renc\u00e9 par l''identificateur {0} pour l''attribut {1} dans l''\u00e9l\u00e9ment <securityConfiguration>, n''est pas d\u00e9fini.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.explanation=L'identificateur de r\u00e9f\u00e9rence sp\u00e9cifi\u00e9 n'est pas valide. Le nom de cet identificateur n'est peut-\u00eatre pas le bon, ou alors il fait r\u00e9f\u00e9rence \u00e0 une configuration de service qui n'existe pas.
+SECURITY_SERVICE_ERROR_BAD_REFERENCE.useraction=Sp\u00e9cifiez un identificateur de configuration de service valide pour l'\u00e9l\u00e9ment <securityConfiguration>.
+
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE=CWWKS0005E: Une exception de configuration est survenue. Aucun service {0} n''est disponible.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.explanation=Aucun service du type sp\u00e9cifi\u00e9 n'est disponible via le registre des services OSGi.
+SECURITY_SERVICE_NO_SERVICE_AVAILABLE.useraction=Sp\u00e9cifiez une fonction d'impl\u00e9mentation de service du type indiqu\u00e9.
+
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE=CWWKS0006E: Une exception de configuration est survenue. Plusieurs services {0} sont disponibles et le syst\u00e8me ne peut pas d\u00e9terminer lequel utiliser.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.explanation=Plusieurs services du type sp\u00e9cifi\u00e9 sont disponibles via le registre des services OSGi. Or, aucune donn\u00e9e de configuration n'indique explicitement lequel de ces services utiliser.
+SECURITY_SERVICE_MULTIPLE_SERVICE_AVAILABLE.useraction=Ne sp\u00e9cifiez qu'une seule fonction d'impl\u00e9mentation de service du type indiqu\u00e9, ou alors d\u00e9finissez explicitement le service \u00e0 utiliser dans la configuration.
+
+#
+# NOTE: CWWKS0007 through CWWKS0009 have been moved to com.ibm.ws.security.ready.service project
+#
+
+SEC_TOO_MANY_PRINCIPALS=CWWKS0010E: Lors de l'extraction du principal de l'appelant, plusieurs principaux de type WSPrincipal ont \u00e9t\u00e9 d\u00e9tect\u00e9s pour le sujet de l'appelant. Un seul \u00e9l\u00e9ment WSPrincipal peut exister dans le sujet.  Les noms des \u00e9l\u00e9ments WSPrincipal sont les suivants : {}
+SEC_TOO_MANY_PRINCIPALS.explanation=Le sujet de l'appelant inclut un trop grand nombre de principaux de type WSPrincipal. Seul un principal de ce type est pris en charge.
+SEC_TOO_MANY_PRINCIPALS.useraction=Consultez l'application pour savoir pourquoi le sujet comporte plusieurs \u00e9l\u00e9ments WSPrincipal.

@@ -1,0 +1,61 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.service/resources/com/ibm/ws/kernel/service/utils/resources/ServiceMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# -------------------------------------------------------------------------------------------------
+invalidStringArray=CWWKE0101W: Okre\u015blony parametr nie jest \u0142a\u0144cuchem lub tablic\u0105 \u0142a\u0144cuch\u00f3w. {1}={2} dla elementu {0}
+invalidStringArray.explanation=Warto\u015b\u0107 okre\u015blonego parametru konfiguracyjnego nie jest \u0142a\u0144cuchem ani tablic\u0105 \u0142a\u0144cuch\u00f3w lub nie mo\u017cna jej przekszta\u0142ci\u0107 w \u0142a\u0144cuch ani w tablic\u0119 \u0142a\u0144cuch\u00f3w.
+invalidStringArray.useraction=Sprawd\u017a warto\u015b\u0107 okre\u015blon\u0105 w konfiguracji serwera i upewnij si\u0119, \u017ce jest ona poprawn\u0105 reprezentacj\u0105 \u0142a\u0144cucha lub tablicy \u0142a\u0144cuch\u00f3w.
+
+invalidStringCollection=CWWKE0102W: Okre\u015blony parametr nie jest \u0142a\u0144cuchem lub kolekcj\u0105 \u0142a\u0144cuch\u00f3w. {1}={2} dla elementu {0}
+invalidStringCollection.explanation=Warto\u015b\u0107 okre\u015blonego parametru konfiguracyjnego nie jest \u0142a\u0144cuchem ani kolekcj\u0105 \u0142a\u0144cuch\u00f3w lub nie mo\u017cna jej przekszta\u0142ci\u0107 w \u0142a\u0144cuch ani w kolekcj\u0119 \u0142a\u0144cuch\u00f3w.
+invalidStringCollection.useraction=Sprawd\u017a, czy warto\u015b\u0107 okre\u015blona w konfiguracji serwera jest poprawn\u0105 reprezentacj\u0105 \u0142a\u0144cucha lub kolekcji \u0142a\u0144cuch\u00f3w.
+
+invalidBoolean=CWWKE0103W: Okre\u015blony parametr nie reprezentuje warto\u015bci boolowskiej. {1}={2} dla elementu {0}
+invalidBoolean.explanation=Warto\u015b\u0107 okre\u015blonego parametru konfiguracyjnego nie jest warto\u015bci\u0105 boolowsk\u0105 lub nie mo\u017cna jej przekszta\u0142ci\u0107 w warto\u015b\u0107 boolowsk\u0105.
+invalidBoolean.useraction=Sprawd\u017a, czy warto\u015b\u0107 okre\u015blona w konfiguracji serwera jest poprawn\u0105 reprezentacj\u0105 warto\u015bci boolowskiej.
+
+invalidLong=CWWKE0104W: Okre\u015blony parametr nie reprezentuje warto\u015bci typu long. {1}={2} dla elementu {0}
+invalidLong.explanation=Warto\u015b\u0107 okre\u015blonego parametru konfiguracyjnego nie jest warto\u015bci\u0105 typu long lub nie mo\u017cna jej przekszta\u0142ci\u0107 w warto\u015b\u0107 typu long.
+invalidLong.useraction=Sprawd\u017a, czy warto\u015b\u0107 okre\u015blona w konfiguracji serwera jest poprawn\u0105 reprezentacj\u0105 warto\u015bci typu long.
+
+invalidInteger=CWWKE0105W: Okre\u015blony parametr nie reprezentuje liczby ca\u0142kowitej. {1}={2} dla elementu {0}
+invalidInteger.explanation=Warto\u015b\u0107 okre\u015blonego parametru konfiguracyjnego nie jest liczb\u0105 ca\u0142kowit\u0105 lub nie mo\u017cna jej przekszta\u0142ci\u0107 w warto\u015b\u0107 b\u0119d\u0105c\u0105 liczb\u0105 ca\u0142kowit\u0105.
+invalidInteger.useraction=Sprawd\u017a, czy warto\u015b\u0107 okre\u015blona w konfiguracji serwera jest poprawn\u0105 reprezentacj\u0105 liczby ca\u0142kowitej.
+
+invalidIntegerArray=CWWKE0106W: Okre\u015blony parametr nie reprezentuje tablicy liczb ca\u0142kowitych. {1}={2} dla elementu {0}
+invalidIntegerArray.explanation=Warto\u015b\u0107 okre\u015blonego parametru konfiguracyjnego nie jest tablic\u0105 liczb ca\u0142kowitych lub nie mo\u017cna jej przekszta\u0142ci\u0107 w tablic\u0119 liczb ca\u0142kowitych.
+invalidIntegerArray.useraction=Sprawd\u017a, czy warto\u015b\u0107 okre\u015blona w konfiguracji serwera jest poprawn\u0105 reprezentacj\u0105 tablicy liczb ca\u0142kowitych.
+
+invalidDuration=CWWKE0107W: Okre\u015blony parametr nie reprezentuje warto\u015bci przedzia\u0142u czasu. {1}={2} dla elementu {0}
+invalidDuration.explanation=Warto\u015b\u0107 okre\u015blonego parametru konfiguracyjnego nie jest warto\u015bci\u0105 przedzia\u0142u czasu lub nie mo\u017cna jej przekszta\u0142ci\u0107 w warto\u015b\u0107 przedzia\u0142u czasu.
+invalidDuration.useraction=Sprawd\u017a, czy warto\u015b\u0107 okre\u015blona w konfiguracji serwera jest poprawn\u0105 reprezentacj\u0105 warto\u015bci przedzia\u0142u czasu.
+
+#
+# W A R N I N G:   Do not use CWWKE0108 - CCWKE0109 they are currently in use LauncherMessages.nlsprops
+#

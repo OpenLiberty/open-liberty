@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager/resources/com/ibm/ws/app/manager/internal/resources/AppManagerMessages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ App Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: app manager
+#0051-0099: app manager monitor and update monitor
+#0101-0200: Project: com.ibm.ws.app.manager.war
+#0301-0400: Project: com.ibm.ws.app.manager.eba
+# -------------------------------------------------------------------------------------------------
+
+#{0} is application name
+APPLICATION_START_SUCCESSFUL=CWWKZ0001I: Application {0} d\u00e9marr\u00e9e en {1} secondes.
+APPLICATION_START_SUCCESSFUL.explanation=Le serveur a d\u00e9marr\u00e9 l'application correctement.
+APPLICATION_START_SUCCESSFUL.useraction=Aucune action n'est requise.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_START_FAILED=CWWKZ0002E: Une exception s''est produite lors du d\u00e9marrage de l''application {0}. Le message d''exception \u00e9tait : {1}
+APPLICATION_START_FAILED.explanation=Le serveur n'a pas pu d\u00e9marrer l'application.
+APPLICATION_START_FAILED.useraction=Pour plus d'informations, consultez le message de l'exception.
+
+#{0} is application name
+APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: Application {0} mise \u00e0 jour en {1} secondes.
+APPLICATION_UPDATE_SUCCESSFUL.explanation=Le serveur a mis \u00e0 jour l'application correctement.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=Aucune action n'est requise.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_UPDATE_FAILED=CWWKZ0004E: Une exception s''est produite lors du d\u00e9marrage de l''application {0}. Le message d''exception \u00e9tait : {1}
+APPLICATION_UPDATE_FAILED.explanation=Le serveur n'a pas pu mettre \u00e0 jour l'application.
+APPLICATION_UPDATE_FAILED.useraction=Pour plus d'informations, consultez le message de l'exception.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+NO_APPLICATION_HANDLER=CWWKZ0005E: Le serveur n''est pas configur\u00e9 pour traiter la ressource \u00e0 l''emplacement {0}.
+NO_APPLICATION_HANDLER.explanation=Le serveur n'est pas actuellement configur\u00e9 avec toutes les fonctions requises pour les ressources de ce type. C'est pourquoi la ressource n'a pas pu \u00eatre d\u00e9marr\u00e9e.
+NO_APPLICATION_HANDLER.useraction=Modifiez la configuration du serveur afin d'y inclure toutes les fonctions n\u00e9cessaires au support de ce type de ressource.
+
+#{0) is directory path
+#{1} is the application name
+CANNOT_CREATE_DIRECTORY=CWWKZ0006E: Le serveur n''a pas pu cr\u00e9er de r\u00e9pertoire de t\u00e9l\u00e9chargement \u00e0 l''emplacement {0} pour l''application {1}.
+CANNOT_CREATE_DIRECTORY.explanation=En tentant de t\u00e9l\u00e9charger une application \u00e0 installer, le serveur n'a pas pu cr\u00e9er le r\u00e9pertoire de t\u00e9l\u00e9chargement.
+CANNOT_CREATE_DIRECTORY.useraction=Assurez-vous que l'espace disque est suffisant pour le t\u00e9l\u00e9chargement.
+
+#{0} is url
+#{1} is error message
+DOWNLOAD_EXCEPTION_ENCOUNTERED=CWWKZ0007W: Une exception s''est produite lors du t\u00e9l\u00e9chargement du fichier \u00e0 partir de {0}. Le message d''exception \u00e9tait : {1}
+DOWNLOAD_EXCEPTION_ENCOUNTERED.explanation=Le serveur n'a pas pu t\u00e9l\u00e9charger l'application.
+DOWNLOAD_EXCEPTION_ENCOUNTERED.useraction=S'il \u00e9tait bien pr\u00e9vu que le serveur t\u00e9l\u00e9charge l'application, v\u00e9rifiez que le fichier est disponible pour le t\u00e9l\u00e9chargement.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
+LOCATION_SERVICE_NOT_FOUND=CWWKZ0008E: Une erreur interne s'est produite. Le syst\u00e8me n'a pas pu obtenir le service de localisation n\u00e9cessaire \u00e0 la r\u00e9solution des emplacements de fichier.
+LOCATION_SERVICE_NOT_FOUND.explanation=CMSG0001
+LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_STOPPED=CWWKZ0009I: L''application {0} s''est arr\u00eat\u00e9e correctement.
+APPLICATION_STOPPED.explanation=Le serveur a arr\u00eat\u00e9 l'application correctement.
+APPLICATION_STOPPED.useraction=Aucune action n'est requise.
+
+#{0} is application name
+#{1} is excaption message
+APPLICATION_STOP_FAILED=CWWKZ0010E: Une exception s''est produite lors de l''arr\u00eat de l''application {0}. Le message d''exception \u00e9tait : {1}
+APPLICATION_STOP_FAILED.explanation=Le serveur n'a pas pu arr\u00eater l'application.
+APPLICATION_STOP_FAILED.useraction=V\u00e9rifiez que l'application est dans un \u00e9tat compatible avec son arr\u00eat.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#{0} is file name
+#{1} is exception message
+FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Une exception s''est produite lors de la recherche du fichier {0}. Le message d''exception \u00e9tait : {1}
+FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
+FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_NOT_STARTED=CWWKZ0012I: L''application {0} n''a pas \u00e9t\u00e9 d\u00e9marr\u00e9e.
+APPLICATION_NOT_STARTED.explanation=L'application n'a pas pu \u00eatre d\u00e9marr\u00e9e en raison d'erreurs survenues pr\u00e9c\u00e9demment. 
+APPLICATION_NOT_STARTED.useraction=V\u00e9rifiez la configuration de l'application et voyez si les journaux signalent des erreurs au d\u00e9marrage de l'application.
+
+#{0} the application name
+DUPLICATE_APPLICATION_NAME=CWWKZ0013E: Il n''est pas possible de d\u00e9marrer deux applications nomm\u00e9es {0}.
+DUPLICATE_APPLICATION_NAME.explanation=Chaque application doit porter un nom qui lui est propre.  Ce message s'affiche peut-\u00eatre parce que deux applications distinctes ont \u00e9t\u00e9 configur\u00e9es avec le m\u00eame nom, ou alors parce qu'une m\u00eame application a \u00e9t\u00e9 d\u00e9ploy\u00e9e deux fois, la premi\u00e8re par le m\u00e9canisme classique de configuration dans le fichier server.xml, la seconde via le r\u00e9pertoire de d\u00e9p\u00f4t (dropins).
+DUPLICATE_APPLICATION_NAME.useraction=S'il s'agit de deux applications portant le m\u00eame nom, supprimez ou renommez l'une d'elles. S'il s'agit d'un cas de double d\u00e9ploiement d'une m\u00eame application, changez la configuration afin qu'une seule des deux techniques de d\u00e9ploiement soit utilis\u00e9e.
+
+#{0} the application name
+#{1} the application location that cannot be found
+APPLICATION_NOT_FOUND=CWWKZ0014W: L''application {0} n''a pas pu \u00eatre d\u00e9marr\u00e9e car elle n''a pas \u00e9t\u00e9 trouv\u00e9e \u00e0 l''emplacement {1}.
+APPLICATION_NOT_FOUND.explanation=En tentant de d\u00e9marrer l'application, le serveur n'a pas trouv\u00e9 celle-ci \u00e0 l'emplacement sp\u00e9cifi\u00e9 (ou \u00e0 un emplacement relatif s'il s'agit d'un chemin relatif).
+APPLICATION_NOT_FOUND.useraction=V\u00e9rifiez que l'emplacement d\u00e9fini est correct pour l'application.
+
+APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: Une application a \u00e9t\u00e9 configur\u00e9e sans emplacement ou nom.
+APPLICATION_NO_LOCATION_NO_NAME.explanation=Une application a \u00e9t\u00e9 configur\u00e9e sans sp\u00e9cification d'un emplacement ou d'un nom.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Mettez \u00e0 jour la configuration pour ajouter un emplacement.
+
+APPLICATION_NO_LOCATION=CWWKZ0016E: L''application {0} n''a pas \u00e9t\u00e9 configur\u00e9e avec un emplacement.
+APPLICATION_NO_LOCATION.explanation=Une application a \u00e9t\u00e9 configur\u00e9e sans sp\u00e9cification d'un emplacement.
+APPLICATION_NO_LOCATION.useraction=Mettez \u00e0 jour la configuration pour ajouter un emplacement.
+
+APPLICATION_NO_TYPE=CWWKZ0017E: Il n''a pas \u00e9t\u00e9 possible de d\u00e9duire le type de l''application {0} \u00e0 partir de l''emplacement {1}.
+APPLICATION_NO_TYPE.explanation=Une application a \u00e9t\u00e9 configur\u00e9e sans sp\u00e9cification d'un type. Il n'a pas \u00e9t\u00e9 possible de d\u00e9terminer le type \u00e0 partir de l'emplacement.
+APPLICATION_NO_TYPE.useraction=Mettez \u00e0 jour la configuration pour ajouter un type.
+
+STARTING_APPLICATION=CWWKZ0018I: D\u00e9marrage de l''application {0}.
+STARTING_APPLICATION.explanation=L'application est en cours de d\u00e9marrage.
+STARTING_APPLICATION.useraction=Aucune action n'est requise.
+
+PARTIAL_START=CWWKZ0019I: Application {0} partiellement d\u00e9marr\u00e9e en {1} secondes. Le serveur poursuivra le d\u00e9marrage de l''application en arri\u00e8re-plan.
+PARTIAL_START.explanation=Impossible de d\u00e9marrer l'int\u00e9gralit\u00e9 de l'application. Cette situation peut survenir lorsqu'un fichier ear contient deux fichiers war et qu'un seul de ces fichiers d\u00e9marre.
+PARTIAL_START.useraction=R\u00e9solvez le probl\u00e8me pour la partie de l'application n'ayant pas pu d\u00e9marrer et red\u00e9ployez l'application.
+
+#{0} is application name
+APPLICATION_NOT_UPDATED=CWWKZ0020I: Application {0} non mise \u00e0 jour.
+APPLICATION_NOT_UPDATED.explanation=L'application n'a pas pu \u00eatre d\u00e9marr\u00e9e en raison d'erreurs survenues pr\u00e9c\u00e9demment. 
+APPLICATION_NOT_UPDATED.useraction=V\u00e9rifiez la configuration de l'application et voyez si les journaux signalent des erreurs au d\u00e9marrage de l'application.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+APPLICATION_AT_LOCATION_NOT_VALID=CWWKZ0021E: Le serveur n''est pas configur\u00e9 pour traiter la ressource \u00e0 l''emplacement {0}.
+APPLICATION_AT_LOCATION_NOT_VALID.explanation=Le serveur n'est pas actuellement configur\u00e9 avec toutes les fonctions requises pour les ressources de ce type. C'est pourquoi la ressource n'a pas pu \u00eatre d\u00e9marr\u00e9e.
+APPLICATION_AT_LOCATION_NOT_VALID.useraction=Modifiez la configuration du serveur afin d'y inclure toutes les fonctions n\u00e9cessaires au support de ce type de ressource.
+
+APPLICATION_SLOW_STARTUP=CWWKZ0022W: Application {0} non d\u00e9marr\u00e9e en {1} secondes.
+APPLICATION_SLOW_STARTUP.explanation=L'application n'a pas \u00e9t\u00e9 d\u00e9marr\u00e9e pendant la p\u00e9riode d\u00e9finie. Cette situation peut \u00eatre due au fait que le serveur est surcharg\u00e9 ou que l'application est de grande taille. Si le d\u00e9marrage du serveur inclut celui de l'application, le processus de d\u00e9marrage de serveur se termine sans attendre le d\u00e9marrage de l'application.
+APPLICATION_SLOW_STARTUP.useraction=Si le d\u00e9marrage de l'application est long, aucune action n'est requise. Sinon, consultez les journaux du serveur afin de voir si d'autres messages indiquent une cause.
+
+#{0} is application name
+MONITOR_APP_STOP_FAIL=CWWKZ0053E: Une exception s''est produite en tentant d''arr\u00eater automatiquement l''application {0}.
+MONITOR_APP_STOP_FAIL.explanation=Le moniteur d'applications n'a pas trouv\u00e9 l'application en cours d'ex\u00e9cution sur le serveur.
+MONITOR_APP_STOP_FAIL.useraction=Aucune action n'est requise.
+
+#{0} is application name
+INVALID_FILE_NAME=CWWKZ0054E: Le moniteur d''applications n''a pas trouv\u00e9 de nom ad\u00e9quat pour l''application {0}.
+INVALID_FILE_NAME.explanation=Le moniteur d'applications g\u00e9n\u00e8re le nom d'une application \u00e0 surveiller en \u00f4tant l'extension \u00e0 son nom de fichier. Il n'a pas pu d\u00e9terminer de nom d'application exploitable une fois l'extension soustraite du nom de fichier.
+INVALID_FILE_NAME.useraction=Assurez-vous que le nom de fichier de l'application ne commence pas par un point (.) et qu'il subsiste un nom une fois l'extension retir\u00e9e.
+
+#{0} is application name
+UNABLE_TO_DETERMINE_APPLICATION_TYPE=CWWKZ0055E: Le moniteur d''applications n''a pas pu d\u00e9terminer le type de l''application {0}.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.explanation=Le moniteur d'applications n'a pas pu d\u00e9terminer le type de l'application indiqu\u00e9e, soit \u00e0 partir de son extension de nom de fichier, soit d'apr\u00e8s son r\u00e9pertoire parent.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Assurez-vous que le fichier de l'application porte une extension de nom de fichier identifiant son type ou qu'il est plac\u00e9 dans un r\u00e9pertoire dont le nom identifie le type d'application.
+
+#{0} is application name
+MONITOR_APP_START_FAIL=CWWKZ0056E: Une exception s''est produite en tentant de d\u00e9marrer automatiquement l''application {0}.
+MONITOR_APP_START_FAIL.explanation=Le moniteur d'applications n'a pas pu d\u00e9marrer l'application.
+MONITOR_APP_START_FAIL.useraction=Aucune action n'est requise.
+
+#{0} is file name
+#{1} is line number
+#{2} is the line which is broken
+MONITOR_INVALID_CACHE_FILE_ENTRY=CWWKZ0057E: A la lecture de la liste en cache des applications d\u00e9marr\u00e9es (fichier {0}), le moniteur d''applications a trouv\u00e9 une donn\u00e9e non valide \u00e0 la ligne {1}. Le contenu de cette ligne \u00e9tait : {2}.
+MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Le moniteur d'applications n'a pas pu lire la liste de toutes les applications d\u00e9marr\u00e9es.
+MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Ex\u00e9cutez un d\u00e9marrage \u00e0 froid du serveur.
+
+#{0} is the start time in seconds
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Recherche d''applications dans {0}. 
+APPLICATION_MONITOR_STARTED.explanation=Le serveur recherche des applications \u00e0 d\u00e9ployer dans un r\u00e9pertoire.
+APPLICATION_MONITOR_STARTED.useraction=Aucune action n'est requise.
+
+#{0} is application name
+#{1} is application location
+INVALID_DELETE_OF_APPLICATION=CWWKZ0059E: L''application {0} install\u00e9e \u00e0 partir de {1} a \u00e9t\u00e9 supprim\u00e9e alors qu''elle est encore configur\u00e9e.
+INVALID_DELETE_OF_APPLICATION.explanation=Une application actuellement configur\u00e9e dans le fichier server.xml a \u00e9t\u00e9 supprim\u00e9e.
+INVALID_DELETE_OF_APPLICATION.useraction=Si cette suppression \u00e9tait intentionnelle, retirez la configuration de l'application du fichier server.xml.
+
+#{0} is the location of the directory we should have removed, but couldn't.
+MONITOR_DIR_CLEANUP_FAIL=CWWKZ0060E: Le serveur n''a pas pu supprimer l''ancien r\u00e9pertoire surveill\u00e9 \u00e0 l''emplacement {0}.
+MONITOR_DIR_CLEANUP_FAIL.explanation=Bien qu'il ne soit plus utilis\u00e9, l'ancien r\u00e9pertoire n'a pas pu \u00eatre supprim\u00e9.
+MONITOR_DIR_CLEANUP_FAIL.useraction=Si l'ancien r\u00e9pertoire n'est plus utile, supprimez-le. S'il est toujours n\u00e9cessaire, aucune action n'est requise.
+
+#{0} is application name
+APPLICATION_MONITORING_FAIL=CWWKZ0060W: Impossible de surveiller l''application {0}.
+APPLICATION_MONITORING_FAIL.explanation=Une application a \u00e9t\u00e9 install\u00e9e mais la surveillance n'a pas d\u00e9marr\u00e9 sur cette derni\u00e8re. Ainsi, si un fichier est mis \u00e0 jour dans l'application, la modification ne sera pas d\u00e9tect\u00e9e par le serveur. 
+APPLICATION_MONITORING_FAIL.useraction=Lors de la mise \u00e0 jour de fichiers dans cette application, il est n\u00e9cessaire de d\u00e9sinstaller et de r\u00e9installer l'application dans le serveur.
+
+APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: L''application {0} \u00e0 l''emplacement {1} se trouve dans le r\u00e9pertoire surveill\u00e9 {2}. L''\u00e9l\u00e9ment d''application sera ignor\u00e9.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Un \u00e9l\u00e9ment d'application de la configuration de serveur a d\u00e9fini l'emplacement de l'application \u00e0 l'int\u00e9rieur du r\u00e9pertoire surveill\u00e9 pour les applications. En cons\u00e9quence, l'\u00e9l\u00e9ment d'application sera ignor\u00e9 et l'application d\u00e9marr\u00e9e \u00e0 l'aide du contenu du r\u00e9pertoire surveill\u00e9 si l'application est pr\u00e9sente dans le r\u00e9pertoire surveill\u00e9.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Corrigez l'\u00e9l\u00e9ment d'application ou modifiez l'emplacement du r\u00e9pertoire surveill\u00e9.
+
+APPLICATION_UPDATED=CWWKZ0062I: L''application {0} a \u00e9t\u00e9 mise \u00e0 jour mais elle n''a pas \u00e9t\u00e9 red\u00e9marr\u00e9e.
+APPLICATION_UPDATED.explanation=Une modification mineure s'est produite dans l'application sp\u00e9cifi\u00e9e, et cette modification est suffisamment consid\u00e9r\u00e9e comme mineure pour qu'aucun red\u00e9marrage de l'application ne soit n\u00e9cessaire.
+APPLICATION_UPDATED.useraction=Aucune action n'est requise.

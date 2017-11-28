@@ -1,0 +1,81 @@
+###############################################################################
+# Copyright (c) 2012, 2014 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent/resources/com/ibm/ws/concurrent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC EE Managed Concurrency
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1100 to CWWCK1199 except those specifically identified as moved
+
+# Moved from com.ibm.ws.context
+CWWKC1000.unrecognized.property=CWWKC1000E: Prvek konfigurace {0} obsahuje nezn\u00e1m\u00fd atribut {1}.
+CWWKC1000.unrecognized.property.explanation=Na kontextov\u00e9 slu\u017eb\u011b je nakonfigurov\u00e1na nezn\u00e1m\u00e1 vlastnost.
+CWWKC1000.unrecognized.property.useraction=Odeberte nebo opravte nezn\u00e1mou vlastnost.
+
+# Moved from com.ibm.ws.context
+CWWKC1001.context.providers.unavailable=CWWKC1001E: Konfigurovan\u00fd kontext podprocesu {0} nen\u00ed k dispozici pro prvek konfigurace {1}.
+CWWKC1001.context.providers.unavailable.explanation=Aplika\u010dn\u00ed server nem\u016f\u017ee naj\u00edt poskytovatele zadan\u00e9ho typu \u010di zadan\u00fdch typ\u016f kontextu podprocesu.
+CWWKC1001.context.providers.unavailable.useraction=Zkontrolujte, zda jsou povoleni poskytovatel\u00e9 po\u017eadovan\u00e9ho kontextu podprocesu.
+
+# Moved from com.ibm.ws.context
+CWWKC1002.provider.cardinality.violation=CWWKC1002E: Prvek konfigurace {0} nem\u016f\u017ee m\u00edt v\u00edce ne\u017e jeden d\u00edl\u010d\u00ed prvek typu {1}.
+CWWKC1002.provider.cardinality.violation.explanation=Pod kontextovou slu\u017ebou m\u016f\u017ee b\u00fdt nakonfigurov\u00e1n maxim\u00e1ln\u011b jeden prvek ka\u017ed\u00e9ho typu poskytovatele kontextu.
+CWWKC1002.provider.cardinality.violation.useraction=Odeberte z konfigurace kontextov\u00e9 slu\u017eby duplicitn\u00ed prvky poskytovatele kontextu.
+
+# Moved from com.ibm.ws.context
+CWWKC1020.baseContextRef.infinite=CWWKC1020E: Atribut baseContextRef prvku konfigurace {0} zp\u016fsobuje nekone\u010dn\u00fd \u0159et\u011bzec z\u00e1vislost\u00ed.
+CWWKC1020.baseContextRef.infinite.explanation=Existuje nekone\u010dn\u00fd \u0159et\u011bzec z\u00e1vislost\u00ed, proto\u017ee atribut baseContextRef p\u0159\u00edmo nebo nep\u0159\u00edmo ukazuje zp\u011bt na stejnou instanci kontextov\u00e9 slu\u017eby.
+CWWKC1020.baseContextRef.infinite.useraction=Aktualizujte konfiguraci kontextov\u00e9 slu\u017eby a p\u0159eru\u0161te nekone\u010dn\u00fd \u0159et\u011bzec z\u00e1vislost\u00ed.
+
+CWWKC1100.resource.unavailable=CWWKC1100E: Prost\u0159edek {0} je nedostupn\u00fd.
+CWWKC1100.resource.unavailable.explanation=Prost\u0159edek m\u016f\u017ee b\u00fdt nedostupn\u00fd, proto\u017ee se server vyp\u00edn\u00e1 nebo kv\u016fli zm\u011bn\u011b konfigurace, a\u0165 u\u017e prost\u0159edku nebo jin\u00e9 slu\u017eby, na kter\u00e9 z\u00e1vis\u00ed.
+CWWKC1100.resource.unavailable.useraction=Ov\u011b\u0159te konfiguraci prost\u0159edku a v\u0161echny prost\u0159edky, na nich\u017e z\u00e1vis\u00ed.
+
+CWWKC1110.task.canceled=CWWKC1110I: \u00daloha {0}, kter\u00e1 byla odeslan\u00e1 prov\u00e1d\u011bc\u00ed slu\u017eb\u011b {1}, je zru\u0161ena.
+CWWKC1110.task.canceled.explanation=Proveden\u00ed \u00falohy bylo zru\u0161eno.
+CWWKC1110.task.canceled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWWKC1101.task.failed=CWWKC1101E: \u00daloha {0}, kter\u00e1 byla odesl\u00e1na prov\u00e1d\u011bc\u00ed slu\u017eb\u011b {1}, se nezda\u0159ila s touto chybou: {2}.
+CWWKC1101.task.failed.explanation=\u00daloha odeslan\u00e1 prov\u00e1d\u011bc\u00ed slu\u017eb\u011b se nezda\u0159ila. P\u0159\u00ed\u010dina je uvedena ve zpr\u00e1v\u011b v\u00fdjimky.
+CWWKC1101.task.failed.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a znovu ode\u0161lete \u00falohu.
+
+CWWKC1102.listener.failed=CWWKC1102E: Listener spravovan\u00e9 \u00falohy pro \u00falohu {0}, kter\u00e1 byla odesl\u00e1na prov\u00e1d\u011bc\u00ed slu\u017eb\u011b {1}, se nezda\u0159il s touto chybou: {2}.
+CWWKC1102.listener.failed.explanation=Operace listeneru spravovan\u00e9 \u00falohy se nezda\u0159ila. P\u0159\u00ed\u010dina je uvedena ve zpr\u00e1v\u011b v\u00fdjimky.
+CWWKC1102.listener.failed.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a rozhodn\u011bte se, zda chcete zopakovat odesl\u00e1n\u00ed \u00falohy.
+
+CWWKC1103.skip.run.failed=CWWKC1103E: Proveden\u00ed \u00falohy {0}, kter\u00e1 byla odesl\u00e1na prov\u00e1d\u011bc\u00ed slu\u017eb\u011b {1}, bylo vynech\u00e1no, proto\u017ee operace Trigger.skipRun se nezda\u0159ila s touto chybou: {2}.
+CWWKC1103.skip.run.failed.explanation=Operace skipRun pro spou\u0161t\u011b\u010d se nezda\u0159ila, co\u017e zp\u016fsobilo vynech\u00e1n\u00ed aktu\u00e1ln\u00edho pokusu o proveden\u00ed pro \u00falohu.
+CWWKC1103.skip.run.failed.useraction=Odstra\u0148te p\u0159\u00ed\u010dinu selh\u00e1n\u00ed a rozhodn\u011bte se, zda chcete zopakovat odesl\u00e1n\u00ed \u00falohy.
+
+CWWKC1111.task.invalid=CWWKC1111E: \u00daloha {0} je neplatn\u00e1.
+CWWKC1111.task.invalid.explanation=\u00dalohu nelze odeslat, proto\u017ee je neplatn\u00e1.
+CWWKC1111.task.invalid.useraction=Aktualizujte aplikaci tak, aby do slu\u017eby ExecutorService odeslala platnou \u00falohu.
+
+CWWKC1112.all.tasks.canceled=CWWKC1112I: V\u0161echny \u00falohy jsou zru\u0161eny.
+CWWKC1112.all.tasks.canceled.explanation=V\u0161echny \u00falohy byly zru\u0161eny d\u0159\u00edv, ne\u017e bylo mo\u017en\u00e9 n\u011bkterou \u00falohu vyvolat.
+CWWKC1112.all.tasks.canceled.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+CWWKC1120.future.get.rejected=CWWKC1120E: T\u0159\u00eddu Future dodan\u00e1 metod\u00e1m taskSubmitted a taskStarting modulu ManagedTaskListener nelze pou\u017e\u00edt pro \u010dek\u00e1n\u00ed na dokon\u010den\u00ed \u00falohy.
+CWWKC1120.future.get.rejected.explanation=Metody taskSubmitted a taskStarting modulu ManagedTaskListener se spou\u0161t\u00ed v podprocesu, kter\u00fd \u00falohu ode\u0161le nebo spust\u00ed. Proto nen\u00ed mo\u017en\u00e9 pou\u017e\u00edt k \u010dek\u00e1n\u00ed na danou \u00falohu t\u0159\u00eddu Future dodanou t\u011bmto metod\u00e1m.
+CWWKC1120.future.get.rejected.useraction=Aktualizujte aplikaci, abyste se vyhnuli vyvol\u00e1n\u00ed metody get nad t\u0159\u00eddou Future, kter\u00e1 je dod\u00e1na metod\u00e1m taskSubmitted a taskStarting.
+
+CWWKC1130.xprop.value.invalid=CWWKC1130E: \u00daloha odeslan\u00e1 spravovan\u00e9mu prov\u00e1d\u011bc\u00edmu modulu {0} obsahuje vlastnost proveden\u00ed {1} s hodnotou {2}, kter\u00e1 je pro spravovan\u00e9 prov\u00e1d\u011bc\u00ed moduly neplatn\u00e1.
+CWWKC1130.xprop.value.invalid.explanation=N\u011bkter\u00e9 hodnoty vlastnosti proveden\u00ed nejsou platn\u00e9 pro spravovan\u00e9 prov\u00e1d\u011bc\u00ed moduly, ale mohou b\u00fdt platn\u00e9 pro jin\u00e9 typy prost\u0159edk\u016f, nap\u0159. pro kontextovou slu\u017ebu nebo spravovanou tov\u00e1rnu na podprocesy.
+CWWKC1130.xprop.value.invalid.useraction=Aktualizujte aplikaci tak, aby byla tato vlastnost proveden\u00ed vynech\u00e1na, nebo ji nastavte na platnou hodnotu.

@@ -1,0 +1,134 @@
+###############################################################################
+# Copyright (c) 1997, 2001 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.session-3.0/resources/com/ibm/ws/session/resources/WASSessionCore.nlsprops
+#COMPONENTPREFIX SESN
+#COMPONENTNAMEFOR SESN Session
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+SessionContext.createWhenStop=SESN0006E: \u00c8 stato eseguito un tentativo di creare una sessione durante l'arresto del server delle applicazioni.
+SessionContext.createWhenStop.explanation=Questo errore si verifica quando viene ricevuta una richiesta di sessione durante l'arresto del server.
+SessionContext.createWhenStop.useraction=Riavviare il server.
+# -------------------------------------------------------------------------------------------------
+SessionContext.accessWhenStop=SESN0007E: \u00c8 stato eseguito un tentativo di accedere ad una sessione durante l'arresto del server delle applicazioni. 
+SessionContext.accessWhenStop.explanation=Questo errore si verifica quando viene ricevuta una richiesta di sessione durante l'arresto del server.
+SessionContext.accessWhenStop.useraction=Riavviare il server.
+# -------------------------------------------------------------------------------------------------
+SessionContext.unauthAccessError=SESN0008E: Un utente autenticato come {0} ha provato ad accedere ad una sessione di propriet\u00e0 di {1}.
+SessionContext.unauthAccessError.explanation=La funzione Integrazione sicurezza della sessione ha rilevato un tentativo di accesso ad una sessione da parte di un utente non autorizzato.
+SessionContext.unauthAccessError.useraction=Non \u00e8 richiesta alcuna azione.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr1=SESN0012E: \u00c8 stata immessa una chiave null. I metodi HttpSession.putValue o HttpSession.setAttribute sono stati richiamati da un servlet o un JSP con una chiave null.
+SessionData.putValErr1.explanation=Non \u00e8 possibile richiamare i metodi HttpSession.putValue o HttpSession.setAttribute con una chiave null.
+SessionData.putValErr1.useraction=Modificare il servlet o il JSP in modo da passare una chiave non null.
+# -------------------------------------------------------------------------------------------------
+SessionData.putValErr2=SESN0013E: \u00c8 stato immesso un valore null per la chiave {0}. Il metodo HttpSession.putValue \u00e8 stato richiamato da un servlet o un JSP con un valore null.
+SessionData.putValErr2.explanation=Non \u00e8 possibile richiamare il metodo HttpSession.putValue con un valore null.
+SessionData.putValErr2.useraction=Modificare il servlet o il JSP in modo da passare un valore non null.
+# -------------------------------------------------------------------------------------------------
+SessionContext.responseAlreadyCommitted=SESN0066E: Commit della risposta al client gi\u00e0 eseguito. Impossibile impostare il cookie della sessione.
+SessionContext.responseAlreadyCommitted.explanation=Il commit della risposta al client \u00e8 gi\u00e0 stato eseguito, per cui non \u00e8 possibile inviare il cookie della sessione al client.
+SessionContext.responseAlreadyCommitted.useraction=Modificare l'applicazione in modo da accedere alla sessione HTTP prima di scrivere nella risposta.
+# -------------------------------------------------------------------------------------------------
+SessionContext.maxSessionIdLengthExceeded=SESN0116W: L''identificativo della sessione {0} ha superato il limite di lunghezza massima {1}.
+SessionContext.maxSessionIdLengthExceeded.explanation=Il valore specificato per la propriet\u00e0 SessionIdentifierMaxLength \u00e8 stato superato.
+SessionContext.maxSessionIdLengthExceeded.useraction=Impostare questa propriet\u00e0 solo se assolutamente necessario. Se questa propriet\u00e0 \u00e8 richiesta, impostarla sul valore pi\u00f9 alto consentito dall'installazione. Se questo problema persiste, \u00e8 causato probabilmente da failover ripetuti. Ricercare e correggere la causa principale dei failover.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionsEnabled=SESN0117I: Le sessioni globali sono abilitate per i moduli Web in esecuzione con la configurazione di gestione della sessione al livello del contenitore Web.
+SessionContextRegistry.globalSessionsEnabled.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+SessionContextRegistry.globalSessionsEnabled.useraction=Se le sessioni globali non sono richieste, disabilitarle impostando la propriet\u00e0 Servlet21SessionCompatibility su false.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionTBWWarning=SESN0118W: La funzione di scrittura basata sul tempo \u00e8 abilitata con le sessioni globali.  L'accesso ad una sessione globale da pi\u00f9 server o cluster potrebbe causare la perdita di integrit\u00e0 dei dati della sessione.
+SessionContextRegistry.globalSessionTBWWarning.explanation=Se la funzione di scrittura basata sul tempo \u00e8 abilitata con le sessioni globali e tutti i moduli Web che accedono alla sessione globale non sono nello stesso server o cluster, l'integrit\u00e0 dei dati della sessione potrebbe essere persa.
+SessionContextRegistry.globalSessionTBWWarning.useraction=Disabilitare la funzione di scrittura basata sul tempo se i moduli Web che accedono ad una sessione globale sono suddivisi tra server o cluster.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.globalSessionM2MWarning=SESN0119W: La replica memoria-memoria \u00e8 abilitata con le sessioni globali.  L'accesso ad una sessione globale da pi\u00f9 server o cluster potrebbe causare la perdita di integrit\u00e0 dei dati della sessione.
+SessionContextRegistry.globalSessionM2MWarning.explanation=Se la replica memoria-memoria \u00e8 abilitata con le sessioni globali e tutti i moduli Web che accedono alla sessione globale non sono nello stesso server o cluster, l'integrit\u00e0 dei dati della sessione potrebbe essere persa.
+SessionContextRegistry.globalSessionM2MWarning.useraction=Disabilitare la replica memoria-memoria se i moduli Web che accedono ad una sessione globale sono suddivisi tra server o cluster.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.SessionNotGlobalForWebApp=SESN0120I: Il modulo Web {0} non parteciper\u00e0 alle sessioni globali perch\u00e9 la configurazione di gestione della sessione a livello del contenitore Web \u00e8 stata sostituita.
+SessionContextRegistry.SessionNotGlobalForWebApp.explanation=Il modulo Web specificato non parteciper\u00e0 alle sessioni globali perch\u00e9 la configurazione di gestione della sessione a livello del contenitore Web \u00e8 stata sostituita al livello del modulo Web o dell'applicazione enterprise.
+SessionContextRegistry.SessionNotGlobalForWebApp.useraction=Se si desidera che il modulo Web partecipi alle sessioni globali, disabilitare la configurazione di gestione della sessione specificata al livello del modulo Web o dell'applicazione enterprise, quindi riavviare il server.
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnRetrieve=SESN0121E: Crossover di sessione rilevato nell''applicazione Web {0}.  \u00c8 stata richiamata la sessione {1} mentre era prevista la sessione {2}.
+SessionContext.CrossoverOnRetrieve.explanation=Una chiamata al metodo request.getSession ha restituito una sessione diversa da quella richiesta.
+SessionContext.CrossoverOnRetrieve.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReference=SESN0122E: Crossover di sessione rilevato nell''applicazione Web {0}.  Il metodo {2} faceva riferimento alla sessione {1} mentre era prevista la sessione {3}.
+SessionContext.CrossoverOnReference.explanation=Un'applicazione faceva riferimento ad una sessione diversa da quella associata alla richiesta.
+SessionContext.CrossoverOnReference.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.CrossoverOnReturn=SESN0123E: Crossover di sessione rilevato nell''applicazione Web {0}.  Al client \u00e8 stata restituita la sessione {1} mentre era prevista la sessione {2}.
+SessionContext.CrossoverOnReturn.explanation=Al client \u00e8 stato restituito un cookie o un URL contenente un ID sessione non associato alla richiesta.
+SessionContext.CrossoverOnReturn.useraction=CMSG0002
+# -------------------------------------------------------------------------------------------------
+SessionContext.DebugCrossoverEnabled=SESN0124W: Rilevamento del crossover di sessione abilitato.
+SessionContext.DebugCrossoverEnabled.explanation=I controlli per il crossover di sessione vengono avviati.
+SessionContext.DebugCrossoverEnabled.useraction=Per migliorare le prestazioni, \u00e8 possibile disabilitare tali controlli impostando la propriet\u00e0 personalizzata del contenitore Web DebugSessionCrossover su false.
+# -------------------------------------------------------------------------------------------------
+SessionContext.propertyFound=SESN0169I: Il gestore sessione ha rilevato la propriet\u00e0 personalizzata {0} con il valore {1}.
+SessionContext.propertyFound.explanation=Il gestore sessione utilizza la propriet\u00e0 ed il valore specificati per controllare il funzionamento.
+SessionContext.propertyFound.useraction=Verificare che la propriet\u00e0 ed il valore specificati determinino il funzionamento desiderato.
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidPropertyFound=SESN0170W: Il gestore sessione ha rilevato le propriet\u00e0 personalizzata {0} con un valore non numerico uguale a {1}, per cui verr\u00e0 ignorata.
+SessionContext.invalidPropertyFound.explanation=Il gestore sessione prevedeva che la propriet\u00e0 specificata contenesse un valore numerico.
+SessionContext.invalidPropertyFound.useraction=Modificare il valore della propriet\u00e0 specificata in modo da renderlo un numero valido.
+# -------------------------------------------------------------------------------------------------
+SessionContext.valueOutOfRange=SESN0171W: Il gestore sessione ha rilevato la propriet\u00e0 personalizzata {0} con il valore {1} esterno all''intervallo, per cui utilizzer\u00e0 {2}.
+SessionContext.valueOutOfRange.explanation=Il gestore sessione prevedeva che la propriet\u00e0 specificata contenesse un valore compreso in un determinato intervallo.  Il gestore sessione utilizza il valore valido pi\u00f9 vicino.
+SessionContext.valueOutOfRange.useraction=Correggere il valore della propriet\u00e0 specificato in modo da essere compreso nell'intervallo documentato.
+# -------------------------------------------------------------------------------------------------
+# ---------------------------------------NEW 7.0---------------------------------------------------
+SessionIdGeneratorImpl.UsingDefaultSecureRandom=SESN0172I: Il gestore sessione utilizza l'implementazione SecureRandom predefinita Java per la generazione dell'ID sessione.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+SessionIdGeneratorImpl.UsingDefaultSecureRandom.useraction=Non \u00e8 richiesta alcuna azione.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.existingContext=SESN0175I: Verr\u00e0 utilizzato un contesto di sessione esistente per la chiave dell''applicazione {0}
+SessionContextRegistry.existingContext.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+SessionContextRegistry.existingContext.useraction=Non \u00e8 richiesta alcuna azione.
+# -------------------------------------------------------------------------------------------------
+SessionContextRegistry.newContext=SESN0176I: Verr\u00e0 creato un nuovo contesto di sessione per la chiave dell''applicazione {0}
+SessionContextRegistry.newContext.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+SessionContextRegistry.newContext.useraction=Non \u00e8 richiesta alcuna azione.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.serverLevelConfigOnly=SESN0194W: Il gestore sessione ha rilevato la propriet\u00e0 personalizzata {0} con il valore {1}. Il gestore sessione non pu\u00f2 sostituire la configurazione al livello del server con il valore {2}.  La propriet\u00e0 verr\u00e0 ignorata.
+SessionProperties.serverLevelConfigOnly.explanation=La propriet\u00e0 personalizzata pu\u00f2 essere impostata solo al livello del server.
+SessionProperties.serverLevelConfigOnly.useraction=Rimuovere la propriet\u00e0 personalizzata dalla configurazione al livello del modulo o dell'applicazione.  Se possibile, modificare la configurazione al livello del server.
+# -------------------------------------------------------------------------------------------------
+SessionProperties.propertyFoundButAlreadySet=SESN0195I: Il gestore sessione ha rilevato la propriet\u00e0 personalizzata {0} con il valore {1}. Tale propriet\u00e0 personalizzata pu\u00f2 essere impostata solo al livello del server. Poich\u00e9 \u00e8 uguale alla propriet\u00e0 di configurazione al livello del server, verr\u00e0 utilizzata.
+SessionProperties.propertyFoundButAlreadySet.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+SessionProperties.propertyFoundButAlreadySet.useraction=Non \u00e8 richiesta alcuna azione.
+# -------------------------------------------------------------------------------------------------
+Store.createSessionIdAlreadyExists=SESN0196W: Il generatore di ID ha generato un ID gi\u00e0 esistente.
+Store.createSessionIdAlreadyExists.explanation=Il generatore di ID ha generato un ID gi\u00e0 esistente. Quindi, genera un altro ID.
+Store.createSessionIdAlreadyExists.useraction=Non \u00e8 richiesta alcuna azione.
+# ---------------------------------------NEW 8.5---------------------------------------------------
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.noPersistence=SESN8501I: Il gestore sessioni non ha trovato una ubicazione di storage persistente; gli oggetti HttpSession sono memorizzati nella memoria del server delle applicazioni locale.
+SessionMgrComponentImpl.noPersistence.explanation=\u00c8 possibile utilizzare una ubicazione di storage persistente quando i dati sessione dell'utente devono essere conservati durante un riavvio del server o qaundo i dati sessione dell'utente sono troppo preziosi per perderli a causa di un malfunzionamento imprevisto del server. Quando non viene rilevata alcuna ubicazione di storage persistente, gli oggetti HttpSession sono memorizzati esclusivamente nella memoria del server delle applicazioni locale. Per impostazione predefinita, non \u00e8 disponibile alcuna ubicazione di storage persistente; essa deve essere configurata dall'amministratore del server.
+SessionMgrComponentImpl.noPersistence.useraction=Non \u00e8 richiesta alcuna azione. Se si intendeva configurare una ubicazione di storage persistente, consultare i log del server e la configurazione del server per rilevare eventuali errori.
+# -------------------------------------------------------------------------------------------------
+SessionMgrComponentImpl.persistenceMode=SESN8502I: Il gestore sessioni ha trovato una ubicazione di storage persistente; utilizzer\u00e0 la modalit\u00e0 di persistenza sessione={0}
+SessionMgrComponentImpl.persistenceMode.explanation=\u00c8 possibile utilizzare una ubicazione di storage persistente quando i dati sessione dell'utente devono essere conservati durante un riavvio del server o qaundo i dati sessione dell'utente sono troppo preziosi per perderli a causa di un malfunzionamento imprevisto del server. Quando viene rilevata una ubicazione di storage persistente, gli oggetti HttpSession sono memorizzati nella memoria del server delle applicazioni locale e resi anche persistenti nell'ubicazione di storage. Per impostazione predefinita, non \u00e8 disponibile alcuna ubicazione di storage persistente; essa deve essere configurata dall'amministratore del server.
+SessionMgrComponentImpl.persistenceMode.useraction=Non \u00e8 richiesta alcuna azione. Se non si intendeva configurare una ubicazione di storage persistente, aggiornare la configurazione del server rimuovendo tutti i riferimenti all'ubicazione di storage e rimuovere la funzione richiesta per l'ubicazione di storage dal Gestore funzioni.
+# -------------------------------------------------------------------------------------------------
+# This isn't an official message but is used to log exception data.
+# It is used in many places in the session manager and has existed this way for many years.
+CommonMessage.exception=L'eccezione \u00e8: 
+# -------------------------------------------------------------------------------------------------
+# The following are not official messages but have been in-use for many years for logging extra data following an error
+CommonMessage.object=L''oggetto sessione \u00e8: {0}
+CommonMessage.sessionid=L''ID sessione \u00e8: {0}
+CommonMessage.miscData=Dati vari: {0}
+# -------------------------------------------------------------------------------------------------
+SessionContext.invalidCloneSeparator=SESN0800W: La propriet\u00e0 CloneSeparator deve essere esattamente un carattere e non pu\u00f2 essere uno spazio. Il valore corrente di CloneSeparator specificato \u00e8 "{0}"
+SessionContext.invalidCloneSeparator.explanation=La propriet\u00e0 CloneSeparator deve essere esattamente un carattere e non pu\u00f2 essere uno spazio.
+SessionContext.invalidCloneSeparator.useraction=Modificare la propriet\u00e0 personalizzata CloneSeparator.

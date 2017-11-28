@@ -1,0 +1,204 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.app.manager/resources/com/ibm/ws/app/manager/internal/resources/AppManagerMessages.nlsprops
+#COMPONENTPREFIX CWWKZ
+#COMPONENTNAMEFOR CWWKZ App Manager
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+#0001-0050: app manager
+#0051-0099: app manager monitor and update monitor
+#0101-0200: Project: com.ibm.ws.app.manager.war
+#0301-0400: Project: com.ibm.ws.app.manager.eba
+# -------------------------------------------------------------------------------------------------
+
+#{0} is application name
+APPLICATION_START_SUCCESSFUL=CWWKZ0001I: Aplikacja {0} zosta\u0142a uruchomiona w ci\u0105gu {1} sek.
+APPLICATION_START_SUCCESSFUL.explanation=Serwer pomy\u015blnie uruchomi\u0142 aplikacj\u0119.
+APPLICATION_START_SUCCESSFUL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_START_FAILED=CWWKZ0002E: Wyst\u0105pi\u0142 wyj\u0105tek podczas uruchamiania aplikacji {0}. Komunikat o wyj\u0105tku to: {1}
+APPLICATION_START_FAILED.explanation=Serwer nie m\u00f3g\u0142 uruchomi\u0107 aplikacji.
+APPLICATION_START_FAILED.useraction=Informacje zawiera komunikat o wyj\u0105tku.
+
+#{0} is application name
+APPLICATION_UPDATE_SUCCESSFUL=CWWKZ0003I: Aplikacja {0} zosta\u0142a zaktualizowana w ci\u0105gu {1} sek.
+APPLICATION_UPDATE_SUCCESSFUL.explanation=Serwer pomy\u015blnie zaktualizowa\u0142 aplikacj\u0119.
+APPLICATION_UPDATE_SUCCESSFUL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+#{1} is exception message
+APPLICATION_UPDATE_FAILED=CWWKZ0004E: Wyst\u0105pi\u0142 wyj\u0105tek podczas uruchamiania aplikacji {0}. Komunikat o wyj\u0105tku to: {1}
+APPLICATION_UPDATE_FAILED.explanation=Serwer nie m\u00f3g\u0142 zaktualizowa\u0107 aplikacji.
+APPLICATION_UPDATE_FAILED.useraction=Dodatkowe informacje zawiera komunikat o wyj\u0105tku.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+NO_APPLICATION_HANDLER=CWWKZ0005E: Konfiguracja serwera nie zezwala na obs\u0142ug\u0119 zasobu w po\u0142o\u017ceniu {0}.
+NO_APPLICATION_HANDLER.explanation=Na serwerze nie skonfigurowano wszystkich opcji wymaganych dla zasob\u00f3w tego typu, dlatego nie mo\u017cna by\u0142o uruchomi\u0107 zasobu.
+NO_APPLICATION_HANDLER.useraction=Zmodyfikuj konfiguracj\u0119 serwera, w\u0142\u0105czaj\u0105c wszystkie opcje wymagane do obs\u0142ugi zasobu tego typu.
+
+#{0) is directory path
+#{1} is the application name
+CANNOT_CREATE_DIRECTORY=CWWKZ0006E: Serwer nie m\u00f3g\u0142 utworzy\u0107 miejsca pobierania {0} dla aplikacji {1}.
+CANNOT_CREATE_DIRECTORY.explanation=Podczas pobierania aplikacji w celu zainstalowania serwer nie m\u00f3g\u0142 utworzy\u0107 katalogu pobierania.
+CANNOT_CREATE_DIRECTORY.useraction=Sprawd\u017a, czy na dysku jest wystarczaj\u0105co du\u017co wolnego miejsca na potrzeby pobierania.
+
+#{0} is url
+#{1} is error message
+DOWNLOAD_EXCEPTION_ENCOUNTERED=CWWKZ0007W: Wyst\u0105pi\u0142 wyj\u0105tek podczas pobierania pliku ze strony {0}. Komunikat o wyj\u0105tku to: {1}
+DOWNLOAD_EXCEPTION_ENCOUNTERED.explanation=Serwer nie m\u00f3g\u0142 pobra\u0107 aplikacji.
+DOWNLOAD_EXCEPTION_ENCOUNTERED.useraction=Je\u015bli serwer mia\u0142 pobra\u0107 aplikacj\u0119, sprawd\u017a, czy plik jest dost\u0119pny do pobrania.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support."
+LOCATION_SERVICE_NOT_FOUND=CWWKZ0008E: Wyst\u0105pi\u0142 b\u0142\u0105d wewn\u0119trzny. System nie m\u00f3g\u0142 uzyska\u0107 us\u0142ugi okre\u015blania po\u0142o\u017cenia, kt\u00f3ra jest wymagana do rozstrzygania po\u0142o\u017cenia plik\u00f3w.
+LOCATION_SERVICE_NOT_FOUND.explanation=CMSG0001
+LOCATION_SERVICE_NOT_FOUND.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_STOPPED=CWWKZ0009I: Aplikacja {0} zosta\u0142a zatrzymana pomy\u015blnie.
+APPLICATION_STOPPED.explanation=Serwer pomy\u015blnie zatrzyma\u0142 aplikacj\u0119.
+APPLICATION_STOPPED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+#{1} is excaption message
+APPLICATION_STOP_FAILED=CWWKZ0010E: Wyst\u0105pi\u0142 wyj\u0105tek podczas zatrzymywania aplikacji {0}. Komunikat o wyj\u0105tku to: {1}
+APPLICATION_STOP_FAILED.explanation=Serwer nie m\u00f3g\u0142 zatrzyma\u0107 aplikacji.
+APPLICATION_STOP_FAILED.useraction=Sprawd\u017a, czy stan aplikacji umo\u017cliwia jej zatrzymanie.
+
+#CMSG0001 AND 0002 are predefined as basically "an error happened, contact support." 
+#{0} is file name
+#{1} is exception message
+FIND_FILE_EXCEPTION_ENCOUNTERED=CWWKZ0011E: Wyst\u0105pi\u0142 wyj\u0105tek podczas wyszukiwania pliku {0}. Komunikat o wyj\u0105tku to: {1}
+FIND_FILE_EXCEPTION_ENCOUNTERED.explanation=CMSG0001
+FIND_FILE_EXCEPTION_ENCOUNTERED.useraction=CMSG0002
+
+#{0} is application name
+APPLICATION_NOT_STARTED=CWWKZ0012I: Aplikacja {0} nie zosta\u0142a uruchomiona.
+APPLICATION_NOT_STARTED.explanation=Uruchomienie aplikacji by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w. 
+APPLICATION_NOT_STARTED.useraction=Przejrzyj konfiguracj\u0119 aplikacji i sprawd\u017a dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w wyst\u0119puj\u0105cych podczas uruchamiania aplikacji.
+
+#{0} the application name
+DUPLICATE_APPLICATION_NAME=CWWKZ0013E: Nie mo\u017cna uruchomi\u0107 dw\u00f3ch aplikacji o nazwie {0}.
+DUPLICATE_APPLICATION_NAME.explanation=Nazwa aplikacji musi by\u0107 unikalna.  Prawdopodobnie dla dw\u00f3ch aplikacji okre\u015blono tak\u0105 sam\u0105 nazw\u0119 lub wdro\u017cono jedn\u0105 aplikacj\u0119 na dwa sposoby: przez skonfigurowanie w pliku server.xml oraz przez umieszczenie aplikacji w katalogu docelowym.
+DUPLICATE_APPLICATION_NAME.useraction=Je\u015bli dwie aplikacje maj\u0105 tak\u0105 sam\u0105 nazw\u0119, usu\u0144 jedn\u0105 z aplikacji lub zmie\u0144 jej nazw\u0119. Je\u015bli jedna aplikacja zosta\u0142a wdro\u017cona na dwa r\u00f3\u017cne sposoby, zmie\u0144 konfiguracj\u0119 tak, aby u\u017cywana by\u0142a tylko jedna metoda wdra\u017cania.
+
+#{0} the application name
+#{1} the application location that cannot be found
+APPLICATION_NOT_FOUND=CWWKZ0014W: Nie mo\u017cna uruchomi\u0107 aplikacji {0}, poniewa\u017c nie mo\u017cna jej znale\u017a\u0107 w po\u0142o\u017ceniu {1}.
+APPLICATION_NOT_FOUND.explanation=Podczas pr\u00f3by uruchomienia aplikacji serwer nie znalaz\u0142 aplikacji w podanym po\u0142o\u017ceniu (lub w po\u0142o\u017ceniu wzgl\u0119dnym w przypadku \u015bcie\u017cki wzgl\u0119dnej).
+APPLICATION_NOT_FOUND.useraction=Sprawd\u017a, czy zdefiniowane po\u0142o\u017cenie aplikacji jest poprawne.
+
+APPLICATION_NO_LOCATION_NO_NAME=CWWKZ0015E: Skonfigurowano aplikacj\u0119 bez okre\u015blenia po\u0142o\u017cenia lub nazwy.
+APPLICATION_NO_LOCATION_NO_NAME.explanation=Aplikacja zosta\u0142a skonfigurowana bez okre\u015blenia po\u0142o\u017cenia lub nazwy.
+APPLICATION_NO_LOCATION_NO_NAME.useraction=Zaktualizuj konfiguracj\u0119, dodaj\u0105c po\u0142o\u017cenie.
+
+APPLICATION_NO_LOCATION=CWWKZ0016E: Aplikacja {0} nie zosta\u0142a skonfigurowana z po\u0142o\u017ceniem.
+APPLICATION_NO_LOCATION.explanation=Aplikacja zosta\u0142a skonfigurowana bez okre\u015blenia po\u0142o\u017cenia.
+APPLICATION_NO_LOCATION.useraction=Zaktualizuj konfiguracj\u0119, dodaj\u0105c po\u0142o\u017cenie.
+
+APPLICATION_NO_TYPE=CWWKZ0017E: Niemo\u017cliwe by\u0142o wywnioskowanie typu aplikacji {0} na podstawie jej po\u0142o\u017cenia {1}.
+APPLICATION_NO_TYPE.explanation=Aplikacja zosta\u0142a skonfigurowana bez okre\u015blenia typu. Nie mo\u017cna okre\u015bli\u0107 typu na podstawie po\u0142o\u017cenia.
+APPLICATION_NO_TYPE.useraction=Zaktualizuj konfiguracj\u0119, dodaj\u0105c typ.
+
+STARTING_APPLICATION=CWWKZ0018I: Uruchamianie aplikacji {0}.
+STARTING_APPLICATION.explanation=Trwa uruchamianie aplikacji.
+STARTING_APPLICATION.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+PARTIAL_START=CWWKZ0019I: Aplikacja {0} zosta\u0142a cz\u0119\u015bciowo uruchomiona w ci\u0105gu {1} sek. Serwer b\u0119dzie kontynuowa\u0107 uruchamianie aplikacji w tle.
+PARTIAL_START.explanation=Nie mo\u017cna uruchomi\u0107 ca\u0142ej aplikacji. To mo\u017ce si\u0119 zdarzy\u0107, gdy plik ear zawiera dwa pliki war, a tylko jeden plik war zostaje uruchomiony.
+PARTIAL_START.useraction=Rozwi\u0105\u017c problem dotycz\u0105cy cz\u0119\u015bci aplikacji, kt\u00f3rej nie mo\u017cna uruchomi\u0107, i ponownie wdr\u00f3\u017c aplikacj\u0119.
+
+#{0} is application name
+APPLICATION_NOT_UPDATED=CWWKZ0020I: Aplikacja {0} nie zosta\u0142a zaktualizowana.
+APPLICATION_NOT_UPDATED.explanation=Uruchomienie aplikacji by\u0142o niemo\u017cliwe z powodu wcze\u015bniejszych b\u0142\u0119d\u00f3w. 
+APPLICATION_NOT_UPDATED.useraction=Przejrzyj konfiguracj\u0119 aplikacji i sprawd\u017a dzienniki pod k\u0105tem b\u0142\u0119d\u00f3w wyst\u0119puj\u0105cych podczas uruchamiania aplikacji.
+
+#Existing message changed per resolution to design issue 117781
+#{0} is the location of the file
+APPLICATION_AT_LOCATION_NOT_VALID=CWWKZ0021E: Konfiguracja serwera nie zezwala na obs\u0142ug\u0119 zasobu w po\u0142o\u017ceniu {0}.
+APPLICATION_AT_LOCATION_NOT_VALID.explanation=Na serwerze nie skonfigurowano wszystkich opcji wymaganych dla zasob\u00f3w tego typu, dlatego nie mo\u017cna by\u0142o uruchomi\u0107 zasobu.
+APPLICATION_AT_LOCATION_NOT_VALID.useraction=Zmodyfikuj konfiguracj\u0119 serwera, w\u0142\u0105czaj\u0105c wszystkie opcje wymagane do obs\u0142ugi zasobu tego typu.
+
+APPLICATION_SLOW_STARTUP=CWWKZ0022W: Aplikacja {0} nie zosta\u0142a uruchomiona w ci\u0105gu {1} sek.
+APPLICATION_SLOW_STARTUP.explanation=Aplikacja nie zosta\u0142a uruchomiona w oczekiwanym czasie. Mo\u017ce to by\u0107 wynikiem nadmiernego obci\u0105\u017cenia serwera lub wielko\u015bci\u0105 aplikacji. Je\u015bli aplikacja jest uruchamiana w ramach uruchamiania serwera, uruchomienie serwera zostaje zako\u0144czone bez oczekiwania na uruchomienie aplikacji.
+APPLICATION_SLOW_STARTUP.useraction=Je\u015bli czas trwania uruchamiania aplikacji jest d\u0142ugi, nie jest wymagana \u017cadna czynno\u015b\u0107. W przeciwnym razie sprawd\u017a, czy w dziennikach serwera wyst\u0119puj\u0105 komunikaty wskazuj\u0105ce przyczyn\u0119.
+
+#{0} is application name
+MONITOR_APP_STOP_FAIL=CWWKZ0053E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by automatycznego zatrzymania aplikacji {0}.
+MONITOR_APP_STOP_FAIL.explanation=Monitor aplikacji nie m\u00f3g\u0142 znale\u017a\u0107 aplikacji dzia\u0142aj\u0105cej na serwerze.
+MONITOR_APP_STOP_FAIL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+INVALID_FILE_NAME=CWWKZ0054E: Us\u0142uga monitorowania aplikacji nie mo\u017ce znale\u017a\u0107 odpowiedniej nazwy dla aplikacji {0}.
+INVALID_FILE_NAME.explanation=Us\u0142uga monitorowania aplikacji generuje nazw\u0119 aplikacji na podstawie nazwy pliku bez rozszerzenia. Us\u0142uga monitorowania aplikacji nie mog\u0142a okre\u015bli\u0107 nazwy aplikacji po usuni\u0119ciu rozszerzenia z nazwy pliku.
+INVALID_FILE_NAME.useraction=Upewnij si\u0119, \u017ce nazwa pliku aplikacji nie zaczyna si\u0119 od znaku kropki (.) i ma \u0142a\u0144cuch przed rozszerzeniem nazwy pliku.
+
+#{0} is application name
+UNABLE_TO_DETERMINE_APPLICATION_TYPE=CWWKZ0055E: Us\u0142uga monitorowania aplikacji nie mo\u017ce okre\u015bli\u0107 typu aplikacji {0}.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.explanation=Us\u0142uga monitorowania aplikacji nie mo\u017ce okre\u015bli\u0107 typu aplikacji na podstawie rozszerzenia nazwy pliku tej aplikacji ani na podstawie katalogu nadrz\u0119dnego.
+UNABLE_TO_DETERMINE_APPLICATION_TYPE.useraction=Upewnij si\u0119, \u017ce rozszerzenie nazwy pliku aplikacji identyfikuje jej typ lub aplikacja znajduje si\u0119 w katalogu, kt\u00f3rego nazwa identyfikuje jej typ.
+
+#{0} is application name
+MONITOR_APP_START_FAIL=CWWKZ0056E: Wyst\u0105pi\u0142 wyj\u0105tek podczas pr\u00f3by automatycznego uruchomienia aplikacji {0}.
+MONITOR_APP_START_FAIL.explanation=Monitor aplikacji nie m\u00f3g\u0142 uruchomi\u0107 aplikacji.
+MONITOR_APP_START_FAIL.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is file name
+#{1} is line number
+#{2} is the line which is broken
+MONITOR_INVALID_CACHE_FILE_ENTRY=CWWKZ0057E: Podczas odczytywania buforowanej listy uruchomionych aplikacji z monitora aplikacji ({0}) wiersz o numerze {1} by\u0142 niepoprawny. Ten wiersz to: {2}.
+MONITOR_INVALID_CACHE_FILE_ENTRY.explanation=Monitor aplikacji nie mo\u017ce odczyta\u0107 listy wszystkich uruchomionych aplikacji.
+MONITOR_INVALID_CACHE_FILE_ENTRY.useraction=Uruchom serwer w trybie zimnego startu.
+
+#{0} is the start time in seconds
+APPLICATION_MONITOR_STARTED=CWWKZ0058I: Monitorowanie aplikacji w katalogu {0}. 
+APPLICATION_MONITOR_STARTED.explanation=Serwer monitoruje wdra\u017canie aplikacji w katalogu.
+APPLICATION_MONITOR_STARTED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+#{1} is application location
+INVALID_DELETE_OF_APPLICATION=CWWKZ0059E: Aplikacja {0} zainstalowana z po\u0142o\u017cenia {1} zosta\u0142a usuni\u0119ta, ale jest w dalszym ci\u0105gu skonfigurowana.
+INVALID_DELETE_OF_APPLICATION.explanation=Aplikacja aktualnie skonfigurowana w pliku server.xml zosta\u0142a usuni\u0119ta.
+INVALID_DELETE_OF_APPLICATION.useraction=Je\u015bli usuni\u0119cie aplikacji by\u0142o zamierzone, usu\u0144 konfiguracj\u0119 aplikacji z pliku server.xml.
+
+#{0} is the location of the directory we should have removed, but couldn't.
+MONITOR_DIR_CLEANUP_FAIL=CWWKZ0060E: Serwer nie m\u00f3g\u0142 wykona\u0107 procedury czyszcz\u0105cej dla starego monitorowanego katalogu w po\u0142o\u017ceniu {0}.
+MONITOR_DIR_CLEANUP_FAIL.explanation=Nie mo\u017cna by\u0142o usun\u0105\u0107 starego katalogu, pomimo \u017ce nie jest on ju\u017c u\u017cywany.
+MONITOR_DIR_CLEANUP_FAIL.useraction=Je\u015bli stary katalog nie jest ju\u017c potrzebny, usu\u0144 go. Je\u015bli nadal jest potrzebny, nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} is application name
+APPLICATION_MONITORING_FAIL=CWWKZ0060W: Nie mo\u017cna monitorowa\u0107 aplikacji {0}.
+APPLICATION_MONITORING_FAIL.explanation=Zainstalowano aplikacj\u0119, ale nie uruchomiono jej monitorowania. Dlatego zmiana spowodowana aktualizacj\u0105 pliku w obr\u0119bie aplikacji nie zostanie wykryta przez serwer. 
+APPLICATION_MONITORING_FAIL.useraction=Aktualizacja plik\u00f3w w tej aplikacji spowoduje konieczno\u015b\u0107 zdeinstalowania tej aplikacji i jej ponownego zainstalowania na serwerze.
+
+APPLICATION_LOCATION_INSIDE_DROPINS=CWWKZ0061E: Aplikacja {0} w po\u0142o\u017ceniu {1} znajduje si\u0119 wewn\u0105trz katalogu monitorowanego {2}. Element aplikacji zostanie zignorowany.
+APPLICATION_LOCATION_INSIDE_DROPINS.explanation=Element aplikacji w konfiguracji serwera zdefiniowa\u0142 po\u0142o\u017cenie aplikacji w katalogu, kt\u00f3ry jest monitorowany pod k\u0105tem aplikacji. W wyniku tego element aplikacji zostanie zignorowany, a aplikacja zostanie uruchomiona przy u\u017cyciu zawarto\u015bci katalogu monitorowanego, je\u015bli aplikacja znajduje si\u0119 w tym katalogu.
+APPLICATION_LOCATION_INSIDE_DROPINS.useraction=Popraw element aplikacji lub zmie\u0144 po\u0142o\u017cenie katalogu monitorowanego.
+
+APPLICATION_UPDATED=CWWKZ0062I: Aplikacja {0} zosta\u0142a zaktualizowana, ale nie zosta\u0142a zrestartowana.
+APPLICATION_UPDATED.explanation=W okre\u015blonej aplikacji wyst\u0105pi\u0142a drugorz\u0119dna zmiana, a jej istotno\u015b\u0107 zosta\u0142a okre\u015blona jako na tyle niewielka, \u017ce nie ma potrzeby restartowania aplikacji.
+APPLICATION_UPDATED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

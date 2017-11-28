@@ -1,0 +1,198 @@
+###############################################################################
+# Copyright (c) 2012 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.product.utility/resources/com/ibm/ws/product/utility/resources/UtilityMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0001 - 0099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 0100 - 0199 com.ibm.ws.kernel.service.utils.resources.ServiceMessages
+# 0200 - 0299 com.ibm.ws.kernel.service.location.internal.resources.LocServiceMessages
+# 0300 - 0399 com.ibm.ws.kernel.fileinstall.internal.resources.FileInstallMessages
+# 0400 - 0499 com.ibm.ws.kernel.filemonitor.internal.resources.FileMonitorMessages
+# 0500 - 0599 com.ibm.ws.product.utility.resources.UtilityMessages
+# 0600 - 0699 com.ibm.ws.kernel.boot.cmdline.resources.CommandLineMessages
+# 0700 - 0799 com.ibm.ws.logging.internal.resources.OSGiMessages -- OSGi Framework/kernel diagnostics
+# -------------------------------------------------------------------------------------------------
+
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE=CWWKE0500E: Die Eingabekonsole ist nicht verf\u00fcgbar.
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE.explanation=Die Eingabe von Argumenten \u00fcber die aktuelle Konsole wird nicht unterst\u00fctzt.
+ERROR_INPUT_CONSOLE_NOT_AVAILABLE.useraction=Verwenden Sie eine der anderen Standardkonsolen, die Eingabeargumente akzeptiert.
+
+ERROR_UNABLE_READ_FROM_CONSOLE=CWWKE0501E: Die Eingabe kann nicht aus der Konsole gelesen werden. Ausnahmenachricht: {0}
+ERROR_UNABLE_READ_FROM_CONSOLE.explanation=Die Eingabe kann nicht aus der Konsole gelesen werden.
+ERROR_UNABLE_READ_FROM_CONSOLE.useraction=Gehen Sie der eigentlichen Ursache f\u00fcr die Ausnahme auf den Grund.
+
+ERROR_UNKNOWN_COMMAND_TASK=CWWKE0502E: Unbekannte Task: {0}
+ERROR_UNKNOWN_COMMAND_TASK.explanation=Die Task wird vom aktuellen Befehl nicht unterst\u00fctzt.
+ERROR_UNKNOWN_COMMAND_TASK.useraction=Verwenden Sie den Befehl help, um alle verf\u00fcgbaren Tasks anzuzeigen.
+
+ERROR_VERSION_FILE_NOT_EXISTS=CWWKE0503E: Die Versionsdatei {0} wurde nicht gefunden.
+ERROR_VERSION_FILE_NOT_EXISTS.explanation=Die Serverversionsdatei wurde nicht gefunden.
+ERROR_VERSION_FILE_NOT_EXISTS.useraction=Vergewissern Sie sich, dass der Server vollst\u00e4ndig installiert ist.
+
+ERROR_UNABLE_READ_FILE=CWWKE0504E: Die Datei {0} kann nicht gelesen werden. Ausnahmenachricht: {1}
+ERROR_UNABLE_READ_FILE.explanation=Die Zieldatei kann nicht gelesen werden.
+ERROR_UNABLE_READ_FILE.useraction=Gehen Sie der eigentlichen Ursache f\u00fcr die Ausnahme auf den Grund.
+
+ERROR_UNABLE_WRITE_FILE=CWWKE0505E: Die Datei {0} kann nicht geschrieben werden. Ausnahmenachricht: {1}
+ERROR_UNABLE_WRITE_FILE.explanation=Die Zieldatei kann nicht geschrieben werden.
+ERROR_UNABLE_WRITE_FILE.useraction=Gehen Sie der eigentlichen Ursache f\u00fcr die Ausnahme auf den Grund.
+
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE=CWWKE0506E: Die Task {0} kann nicht initialisiert werden. Ausnahmenachricht: {1}
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE.explanation=Die Zieltask kann nicht initialisiert werden.
+ERROR_UNABLE_INITIALIZE_TASK_INSTANCE.useraction=Gehen Sie der eigentlichen Ursache f\u00fcr die Ausnahme auf den Grund.
+
+ERROR_CHECKSUMS_FILE_NOT_EXISTS=CWWKE0507E: Die Kontrollsummendatei des Produkts, {0}, wurde nicht gefunden.
+ERROR_CHECKSUMS_FILE_NOT_EXISTS.explanation=Die angegebene Kontrollsummendatei des Produkts wurde nicht gefunden.
+ERROR_CHECKSUMS_FILE_NOT_EXISTS.useraction=Vergewissern Sie sich, dass die Kontrollsummendatei vorhanden ist.
+
+ERROR_CHECKSUMS_FILE_NOT_LOADED=CWWKE0508E: Die Kontrollsummendatei {0} konnte nicht geladen werden.
+ERROR_CHECKSUMS_FILE_NOT_LOADED.explanation=Die angegebene Kontrollsummendatei konnte nicht geladen werden.
+ERROR_CHECKSUMS_FILE_NOT_LOADED.useraction=Vergewissern Sie sich, dass die Kontrollsummendatei korrekt mit einem Dateipfadzeichenfolge/MD5-Zeichenfolge-Paar formatiert ist.
+
+ERROR_MALFORMED_FILE=CWWKE0509E: In der Datei {0} ist eine fehlerhafte Unicode-Escapezeichenfolge enthalten. Ausnahmenachricht: {1}
+ERROR_MALFORMED_FILE.explanation=Es ist eine fehlerhafte Unicode-Escapezeichenfolge vorhanden.
+ERROR_MALFORMED_FILE.useraction=Gehen Sie der eigentlichen Ursache f\u00fcr die Ausnahme auf den Grund.
+
+ERROR_NO_PROPERTIES_FILE=CWWKE0510E: Es ist keine Eigenschaftendatei im Verzeichnis {0} enthalten.
+ERROR_NO_PROPERTIES_FILE.explanation=Es wurden keine Eigenschaftendateien im Ordner lib/versions des Installationsverzeichnisses des Liberty-Profils gefunden.
+ERROR_NO_PROPERTIES_FILE.useraction=Verwenden Sie den Validierungsbefehl, um zu pr\u00fcfen, ob die aktuelle Installation des Liberty-Profils g\u00fcltig ist.
+
+ERROR_NO_PROPERTIES_DIRECTORY=CWWKE0511E: Das Verzeichnis f\u00fcr die Versionseigenschaften, {0} ist nicht vorhanden.
+ERROR_NO_PROPERTIES_DIRECTORY.explanation=Der Ordner f\u00fcr das Versionseigenschaftenverzeichnis, lib/versions, wurde nicht im Installationsverzeichnis des Liberty-Profils gefunden.
+ERROR_NO_PROPERTIES_DIRECTORY.useraction=Verwenden Sie den Validierungsbefehl, um zu pr\u00fcfen, ob die aktuelle Installation des Liberty-Profils g\u00fcltig ist.
+
+ERROR_NOT_PROPERTIES_DIRECTORY=CWWKE0512E: {0} ist kein Verzeichnis.
+ERROR_NOT_PROPERTIES_DIRECTORY.explanation=Der Ordner lib/versions des Installationsverzeichnisses des Liberty-Profils ist kein Verzeichnis.
+ERROR_NOT_PROPERTIES_DIRECTORY.useraction=Verwenden Sie den Validierungsbefehl, um zu pr\u00fcfen, ob die aktuelle Installation des Liberty-Profils g\u00fcltig ist.
+
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY=CWWKE0513E: Die Datei {0} kann nicht gelesen werden.
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY.explanation=Die Zieldatei kann nicht gelesen werden.
+ERROR_UNABLE_READ_PROPERTIES_DIRECTORY.useraction=Stellen Sie fest, warum die Datei nicht gelesen werden kann.
+
+ERROR_INVALID_COMMAND_OPTION=CWWKE0514E: Die ung\u00fcltige Option {0} wurde in der Befehlszeile angegeben. Die g\u00fcltigen Optionen sind [{1}].
+ERROR_INVALID_COMMAND_OPTION.explanation=Die in der Befehlszeile angegebene Option wird von diesem Befehl nicht unterst\u00fctzt.
+ERROR_INVALID_COMMAND_OPTION.useraction=Setzen Sie den Befehl ohne die ung\u00fcltige Option oder mit einer g\u00fcltigen Option erneut ab.
+
+LICENSE_NOT_FOUND=Die Lizenzdateien sind nicht vorhanden.
+
+# {0} is the key of a required property in properties file.
+# {1} is the name of properties file.
+version.missing.key=Der erforderliche Eigenschaftsschl\u00fcssel {0} fehlt in der Datei {1}.
+
+# {0} is the productId property key
+# {1} is the properties file name
+# {2} is another properties file name
+version.duplicated.productId=Der Wert von {0} muss eindeutig sein, aber er ist in {1} und {2} identisch.
+
+# {0} is the productId
+# {1} is the properties file name
+version.replaced.product.not.exist=Die Produkt-ID {0}, die in {1} angegeben ist, wurde in keiner der Versionseigenschaftendateien im Ordner lib/versions des Installationsverzeichnisses des Liberty-Profils gefunden.
+
+# {0} is the properties file name
+version.replaced.product.can.not.itself=Die ersetzende Produkt-ID kann nicht selbst in {0} sein.
+
+# {0} is the value of property with key as com.ibm.websphere.productReplaces
+# {1} is the properties file which defined com.ibm.websphere.productReplaces
+version.replacing.not.exist=Die Produkt-ID {0} ist in keiner der Eigenschaftendateien unter {1} vorhanden.
+
+product.name=Produktname:
+product.version=Produktversion:
+product.edition=Produktedition:
+
+usage=Syntax: {0}
+tasks=Aktionen:
+
+info.validate.against.file.not.exist=Die Produktvalidierung wurde nicht gestartet, weil die angegebene Kontrollsummendatei des Produkts nicht vorhanden ist.
+info.validate.start=Produktvalidierung starten...
+info.validate.validating.feature=Feature {0} wird validiert... 
+info.validate.validating.platform=Bundleliste f\u00fcr die Plattform: {0}... 
+info.validate.deinition.file.not.exist=Die Definitionsdatei {0} ist nicht vorhanden.
+info.validate.deinition.file.broken=Die Definitionsdatei {0} wurde ge\u00e4ndert oder besch\u00e4digt.
+info.validate.checksum.file.not.exist=Die Kontrollsummendatei {0} ist nicht vorhanden.
+info.validate.checksum.file.broken=Die Kontrollsummendatei {0} wurde ge\u00e4ndert oder besch\u00e4digt.
+info.validate.content.file.not.exist=Der Inhalt {0} ist nicht vorhanden.
+info.validate.content.file.broken=Der Inhalt {0} wurde ge\u00e4ndert oder besch\u00e4digt.
+info.validate.validating.result.error=[FEHLER]
+info.validate.validating.result.pass=ERFOLGREICH!
+info.validate.validating.result.fail=FEHLGESCHLAGEN!
+info.validate.exception=Bei der Produktvalidierung ist eine Ausnahme eingetreten: {0}. Suchen Sie in den Fehlerprotokollen nach ausf\u00fchrlichen Informationen.
+info.validate.success=Die Produktvalidierung wurde erfolgreich durchgef\u00fchrt.
+info.validate.fail=Die Produktvalidierung ist abgeschlossen. Es wurden {0} Fehler gefunden.
+info.validate.fixes.need.reapplying=Die folgenden Fixes m\u00fcssen erneut angewendet werden: {0}. 
+
+# {0} is the usage message from compare.usage
+compare.no.option.set=Ein Vergleich ist wegen der ung\u00fcltigen Syntax des Befehls nicht m\u00f6glich. Sie m\u00fcssen --target oder --apars\n\
+angeben.
+
+# {0} is the file location supplied to the command
+compare.to.option.does.not.exist=Die Installationsdatei {0} ist nicht vorhanden.
+
+# {0} Is the installation path supplied
+compare.install.not.zip.or.dir=Die Installationsposition {0} ist weder ein Verzeichnis noch eine Archivdatei (.jar oder .zip).
+# {0} Is the installation path supplied
+# {1} Is the path within the installation location for listing APARs
+# {2} Is the path within the archive for listing APARs that the CSV file containing the list is
+compare.no.csv.entry=Die Installationsposition {0} ist ung\u00fcltig. Sie enth\u00e4lt ein Archiv f\u00fcr die Auflistung von APARs ({1}), aber keine Dateiliste mit den enthaltenen APARs: {2}
+compare.error.reading.install=Beim Lesen der Installationsposition {0} ist ein Fehler aufgetreten. Fehlertext: {1}
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to 
+compare.all.ifixes.present=Alle vorl\u00e4ufigen Fixes im Image unter {0} sind im Image unter {1} vorhanden.
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.ifixes.missing=Einige der vorl\u00e4ufigen Fixes im Image unter {0} fehlen im Image unter {1}.
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.list.missing.ifixes=Die folgenden vorl\u00e4ufigen Fixes sind im Image unter {0} vorhanden, fehlen aber im Image unter {1}.
+# {0} The installation location for the first installation being compared
+# {1} The installation location supplied by the user that we are comparing to
+compare.list.included.ifixes=Die folgenden vorl\u00e4ufigen Fixes sind im Image unter {0} und im Image unter {1} vorhanden.
+# {0} Is the APAR 
+# {1} Is the list of iFixes that the APAR is part of
+compare.ifix.apar.info={0} in den vorl\u00e4ufigen Fixes: {1}
+# {0} This is a list of which APARs the user inputed are not present in the installation
+compare.missing.apars=Die folgenden APARs sind nicht in der Installation enthalten: {0}
+compare.all.apars.present=Alle APARs sind in der Installation enthalten.
+# {0} The iFix ID for the iFix that could not be read
+compare.ifix.file.parse.error=Die Informationen f\u00fcr den vorl\u00e4ufigen Fix {0} k\u00f6nnen nicht gelesen werden. Deshalb kann nicht gepr\u00fcft werden, ob der vorl\u00e4ufige Fix noch installiert ist.
+compare.no.was.properties.found=Es wurden keine Eigenschaften mit der Produkt-ID 'com.ibm.websphere.appserver' gefunden.
+# {0} The string being parsed
+# {1} The error from the parser
+compare.unable.to.parse.version=Die Version {0} f\u00fcr WebSphere Application Server kann nicht geparst werden. Ausnahmenachricht: {1}
+# {0} The error message when we processed the product version
+compare.version.parsing.error=Die Version f\u00fcr die aktuelle Installation kann nicht abgerufen werden. Deshalb kann nicht gepr\u00fcft werden, ob es vorl\u00e4ufige Fixes f\u00fcr diese Installation gibt. Ausnahmenachricht: {0}
+# {0} The iFix ID
+compare.unable.to.find.offering=Die XML-Metadaten f\u00fcr den vorl\u00e4ufigen Fix {0} enthalten kein Element offering. Deshalb kann nicht gepr\u00fcft werden, ob der vorl\u00e4ufige Fix f\u00fcr diese Installation g\u00fcltig ist.
+# {0} The version
+compare.version.incompatible=Die Produktversion f\u00fcr WebSphere Application Server hat nicht das erwartete Format. Erwartet wurde d1.d2.d3.d4, aber das tats\u00e4chliche Format ist {0}.
+# {0} The iFix id
+compare.no.apar=F\u00fcr den vorl\u00e4ufigen Fix {0} sind keine APARs in den Elementen <problem/> der Metadaten-XML aufgelistet.
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.missing=Die folgenden vorl\u00e4ufigen Fixes wurden nicht in den Vergleich eingeschlossen, weil die im Element <file/> aufgelisteten Dateien nicht mehr vorhanden oder nicht mehr auf dem neuesten Stand sind: {0}
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.badversion=Die folgenden vorl\u00e4ufigen Fixes wurden nicht in den Vergleich eingeschlossen, weil sie f\u00fcr diese Version von WebSphere Application Server nicht anwendbar sind: {0}
+# {0} The ifix ids that are not applicable
+compare.invalid.ifixes.bad.xml=Die folgenden vorl\u00e4ufigen Fixes wurden nicht in den Vergleich eingeschlossen, weil ihre XML ung\u00fcltig ist (verwenden Sie die Option --verbose, um weitere Informationen anzuzeigen): {0}
+
+# {0} is the message from the exception that caused us to be unable to create a parser for reading the XML files
+ifixutils.unable.to.create.parser=Beim Lesen der Informationen zu den vorl\u00e4ufigen Fixes f\u00fcr die aktuelle Installation ist ein Fehler aufgetreten. Ausnahmenachricht: {0}
+# {0} is the path to a file that could not be parsed
+# {1} is the message from the exception that meant we couldn't read the file
+ifixutils.unable.to.read.file=Beim Lesen der Datei {0} ist eine Ausnahme eingetreten. Ausnahmenachricht: {1}

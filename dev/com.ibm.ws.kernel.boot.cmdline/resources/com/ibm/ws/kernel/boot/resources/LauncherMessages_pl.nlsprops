@@ -1,0 +1,989 @@
+###############################################################################
+# Copyright (c) 2010, 2016 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME com.ibm.ws.kernel.boot/resources/com/ibm/ws/kernel/boot/resources/LauncherMessages.nlsprops
+#COMPONENTPREFIX CWWKE
+#COMPONENTNAMEFOR CWWKE WebSphere kernel bootstrap, command line, and location service
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+# -------------------------------------------------------------------------------------------------
+# 0001 - 0099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 0900 - 0999 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# 1000 - 1099 com.ibm.ws.kernel.boot.resources.LauncherMessages
+# ---------- ERROR msgs ----------------------------
+
+audit.launchTime=CWWKE0001I: Serwer {0} zosta\u0142 uruchomiony.
+audit.launchTime.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+audit.launchTime.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+audit.kernelStartTime=CWWKE0002I: J\u0105dro zosta\u0142o uruchomione po {0} s
+audit.kernelStartTime.explanation=J\u0105dro zosta\u0142o uruchomione. Okres (w sekundach) jest okre\u015blony wzgl\u0119dem czasu uruchomienia \
+platformy.
+audit.kernelStartTime.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.bootstrapChange=CWWKE0003I: Po\u0142o\u017cenia programu startowego zosta\u0142y zmienione i z tego powodu serwer zostanie uruchomiony z opcj\u0105 clean.
+info.bootstrapChange.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+info.bootstrapChange.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.badLocation=CWWKE0004E: System nie mo\u017ce rozstrzygn\u0105\u0107 \
+miejsc instalacji serwera.
+error.badLocation.explanation=Nie mo\u017cna znale\u017a\u0107 instalacji serwera w podanym po\u0142o\u017ceniu.
+error.badLocation.useraction=Ponownie zainstaluj lub napraw profil Liberty. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+error.unableToLaunch=CWWKE0005E: Nie mo\u017cna uruchomi\u0107 \u015brodowiska \
+wykonawczego.
+error.unableToLaunch.explanation=Napotkano problem, kt\u00f3ry \
+uniemo\u017cliwi\u0142 uruchomienie \u015brodowiska wykonawczego.
+error.unableToLaunch.useraction=Przejrzyj dost\u0119pne dzienniki, aby \
+okre\u015bli\u0107 problem i rozwi\u0105za\u0107 go.
+
+error.enableIIOPTransport=CWWKE0006E: W\u0142\u0105cz sk\u0142adnik orb, aby umo\u017cliwi\u0107 obs\u0142ug\u0119 brokera ORB.
+error.enableIIOPTransport.explanation=Obs\u0142uga obiektowego brokera zapyta\u0144 (Object Request Broker - ORB) wymaga sk\u0142adnika orb.
+error.enableIIOPTransport.useraction=W\u0142\u0105cz sk\u0142adnik orb, aby umo\u017cliwi\u0107 obs\u0142ug\u0119 brokera ORB.
+ 
+error.cannotConvertEbcdicToAscii=CWWKE0007E: System nie m\u00f3g\u0142 pomy\u015blnie przekszta\u0142ci\u0107 nast\u0119puj\u0105cego pliku z formatu EBCDIC na format ASCII: {0}
+error.cannotConvertEbcdicToAscii.explanation=Podczas przetwarzania okre\u015blonego pliku wyst\u0105pi\u0142 b\u0142\u0105d, kt\u00f3ry uniemo\u017cliwi\u0142 systemowi wykonanie przekszta\u0142cenia z formatu EBCDIC na format ASCII. Wersja pliku w formacie EBCDIC jest nienaruszona.
+error.cannotConvertEbcdicToAscii.useraction=R\u0119cznie przekszta\u0142\u0107 plik, aby wy\u015bwietli\u0107 go w systemie u\u017cywaj\u0105cym formatu ASCII.  Je\u015bli ten plik b\u0119dzie przetwarzany przez dzia\u0142 wsparcia IBM, nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.bootPropsURI=CWWKE0008E: Identyfikator URI w\u0142a\u015bciwo\u015bci \
+programu startowego jest zniekszta\u0142cony. Identyfikator URI={0}, przyczyna={1}
+error.bootPropsURI.explanation=Identyfikator URI podanego pliku w\u0142a\u015bciwo\u015bci \
+programu startowego zawiera b\u0142\u0105d.
+error.bootPropsURI.useraction=Popraw identyfikator URI w\u0142a\u015bciwo\u015bci \
+programu startowego i ponownie uruchom komend\u0119.
+
+# {0} is the path to the missing Java dump file
+error.missingDumpFile=CWWKE0009E: System nie mo\u017ce znale\u017a\u0107 nast\u0119puj\u0105cego pliku, a wi\u0119c plik ten nie zostanie do\u0142\u0105czony do archiwum zrzut\u00f3w serwera: {0}
+error.missingDumpFile.explanation=System jest skonfigurowany w taki spos\u00f3b, \u017ce \u017c\u0105da, aby zrzuty \u015brodowiska Java by\u0142y pobierane i gromadzone w archiwum zrzut\u00f3w serwera. We wskazanym po\u0142o\u017ceniu w systemie plik\u00f3w nie mo\u017cna znale\u017a\u0107 \u017c\u0105danego zrzutu \u015brodowiska Java, a wi\u0119c plik ten nie zostanie zgromadzony w archiwum zrzut\u00f3w serwera.
+error.missingDumpFile.useraction=Sprawd\u017a dzienniki serwera i/lub plik console.log oraz plik messages.log, aby okre\u015bli\u0107, czy \u017c\u0105dane zrzuty \u015brodowiska Java s\u0105 dost\u0119pne w innym po\u0142o\u017ceniu lub okre\u015bli\u0107 przyczyn\u0119 niepowodzenia zrzutu \u015brodowiska Java. Spr\u00f3buj r\u0119cznie uzyska\u0107 i zgromadzi\u0107 wszystkie brakuj\u0105ce zrzuty \u015brodowiska Java. Informacje dotycz\u0105ce r\u0119cznego generowania plik\u00f3w javacore mo\u017cna znale\u017a\u0107 na \
+stronie WWW wsparcia dla serwera WebSphere Application Server: \
+http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.badConfigRoot=CWWKE0010E: Wymagany plik server.xml musi istnie\u0107 i musi by\u0107 dost\u0119pny do odczytu. \u015acie\u017cka: {0}, przyczyna: {1}
+error.badConfigRoot.explanation=Plik server.xml nie istnieje lub nie mo\u017cna go odczyta\u0107.
+error.badConfigRoot.useraction=Sprawd\u017a, czy plik server.xml istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
+
+error.archiveTarget=CWWKE0011E: Parametr --archive wymaga argumentu: --archive="<plik do zarchiwizowania>"
+error.archiveTarget.explanation=Wymagany argument nie zosta\u0142 \
+okre\u015blony.
+error.archiveTarget.useraction=Podaj poprawny argument i ponownie \
+uruchom komend\u0119. Istnieje mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia \
+opisu argument\u00f3w dla podanej opcji.
+
+error.serverNameCharacter=CWWKE0012E: Okre\u015blona nazwa serwera \
+zawiera niepoprawny znak (nazwa={0}). \
+Poprawne znaki to: Unicode alfanumeryczne (np. \
+0-9, a-z, A-Z), podkre\u015blenie (_), \u0142\u0105cznik (-), znak plus (+) i kropka (.). \
+Nazwa serwera nie mo\u017ce rozpoczyna\u0107 si\u0119 od \u0142\u0105cznika (-) ani kropki (.).
+error.serverNameCharacter.explanation=W nazwie serwera u\u017cyto \
+niepoprawnego znaku.
+error.serverNameCharacter.useraction=Zmie\u0144 nazw\u0119 serwera, u\u017cywaj\u0105c tylko poprawnych znak\u00f3w: Unicode alfanumerycznych (np. 0-9, a-z, A-Z), podkre\u015blenie (_), \u0142\u0105cznik (-), znak plus (+) i kropka (.).
+
+error.unknownArgument=CWWKE0013E: Nieznana opcja: {0}
+error.unknownArgument.explanation=Okre\u015blona opcja nie zosta\u0142a rozpoznana.
+error.unknownArgument.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnych opcji. Istnieje \
+mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia listy poprawnych opcji.
+
+error.bootPropsStream=CWWKE0014E: System nie mo\u017ce otworzy\u0107 lub \
+odczyta\u0107 okre\u015blonych w\u0142a\u015bciwo\u015bci programu startowego. \u015acie\u017cka: {0}, przyczyna: {1}
+error.bootPropsStream.explanation=Plik bootstrap.properties nie istnieje lub nie mo\u017cna go odczyta\u0107.
+error.bootPropsStream.useraction=Sprawd\u017a, czy podany plik istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
+
+error.platformBundleException=CWWKE0015E: Wyst\u0105pi\u0142y wewn\u0119trzne b\u0142\u0119dy podczas uruchamiania serwera. 
+error.platformBundleException.explanation=Napotkano co najmniej jeden wyj\u0105tek podczas instalowania lub uruchamiania serwera. 
+error.platformBundleException.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.secPermission=CWWKE0016E: Plik JAR programu startowego \
+wymaga konfiguracji zabezpiecze\u0144 AllPermission do uruchomienia \u015brodowiska wykonawczego i \
+struktury OSGi ({0}).
+error.secPermission.explanation=Uprawnienia \
+zabezpiecze\u0144 Java 2 Security dla pliku JAR programu startowego nie wystarczaj\u0105 do \
+uruchomienia \u015brodowiska wykonawczego i struktury OSGi.
+error.secPermission.useraction=Sprawd\u017a, czy plikowi JAR \
+programu startowego nadano uprawnienia AllPermission w pliku strategii \
+zabezpiecze\u0144 Java 2 Security.
+
+error.badBitmode=CWWKE0017E: Proces wykry\u0142 31-bitow\u0105 maszyn\u0119 \
+JVM, kt\u00f3ra nie jest obs\u0142ugiwana. \u015arodowisko wykonawcze wymaga 64-bitowego \u015brodowiska Java 7 lub nowszego.
+error.badBitmode.explanation=Zmienna systemowa JAVA_HOME \
+wskazuje 31-bitow\u0105 wersj\u0119 \u015brodowiska Java.
+error.badBitmode.useraction=Dopasuj zmienn\u0105 systemow\u0105 \
+JAVA_HOME tak, aby wskazywa\u0142a 64-bitowe \u015brodowisko Java 7 lub nowsze.
+
+error.unknownException=CWWKE0018E: Wyst\u0105pi\u0142 wyj\u0105tek podczas \
+uruchamiania \u015brodowiska wykonawczego: {0}
+error.unknownException.explanation=Wyj\u0105tek uniemo\u017cliwi\u0142 uruchomienie serwera.
+error.unknownException.useraction=Je\u015bli to mo\u017cliwe, rozwi\u0105\u017c problem b\u0119d\u0105cy przyczyn\u0105 wyj\u0105tku i wykonaj dzia\u0142anie ponownie. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.frameworkDef=CWWKE0019E: Wymagana definicja struktury \
+nie jest okre\u015blona.
+error.frameworkDef.explanation=W instalacji serwera brak wymaganych plik\u00f3w i nie mo\u017cna by\u0142o go uruchomi\u0107.
+error.frameworkDef.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.frameworkDefFile=CWWKE0020E: Okre\u015blona definicja struktury ({0}) nie istnieje.
+error.frameworkDefFile.explanation=Nie znaleziono pliku \
+definicji struktury.
+error.frameworkDefFile.useraction=Sprawd\u017a, czy zas\u00f3b definicji \
+struktury istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
+
+error.frameworkJarFile=CWWKE0021E: Okre\u015blony pakunek struktury ({0}) nie istnieje.
+error.frameworkJarFile.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonego \
+artefaktu pakunku struktury.
+error.frameworkJarFile.useraction=Sprawd\u017a, czy zas\u00f3b istnieje \
+oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
+
+error.kernelDef=CWWKE0022E: Wymagana definicja j\u0105dra nie zosta\u0142a okre\u015blona.
+error.kernelDef.explanation=W instalacji serwera brak wymaganych plik\u00f3w i nie mo\u017cna by\u0142o go uruchomi\u0107.
+error.kernelDef.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.kernelDefFile=CWWKE0023E: Okre\u015blona definicja j\u0105dra ({0}) nie istnieje.
+error.kernelDefFile.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonej definicji j\u0105dra.
+error.kernelDefFile.useraction=Sprawd\u017a, czy zas\u00f3b definicji \
+j\u0105dra istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
+
+error.specifiedLocation=CWWKE0025E: Warto\u015b\u0107 {0} musi \
+odwo\u0142ywa\u0107 si\u0119 do katalogu. \
+Okre\u015blona warto\u015b\u0107 odwo\u0142uje si\u0119 do istniej\u0105cego zasobu plikowego. \
+Warto\u015b\u0107: {1}
+error.specifiedLocation.explanation=Okre\u015blone po\u0142o\u017cenie \
+odwo\u0142uje si\u0119 do istniej\u0105cego pliku zamiast do katalogu.
+error.specifiedLocation.useraction=Zmie\u0144 okre\u015blone po\u0142o\u017cenie tak, aby \
+odwo\u0142ywa\u0142o si\u0119 do katalogu, i wykonaj dzia\u0142anie ponownie.
+
+warning.noPlatformCache=CWWKE0026W: System nie mo\u017ce zapisa\u0107 pliku \
+pami\u0119ci podr\u0119cznej platformy ({0}). Wyj\u0105tek: {1}
+warning.noPlatformCache.explanation=Nie mo\u017cna zapisa\u0107 okre\u015blonego pliku pami\u0119ci podr\u0119cznej platformy.
+warning.noPlatformCache.useraction=Sprawd\u017a i rozwi\u0105\u017c problem b\u0119d\u0105cy przyczyn\u0105 wyj\u0105tku, a nast\u0119pnie wykonaj ponownie dzia\u0142anie.
+
+warning.singleServer=CWWKE0027W: W wierszu komend mo\u017cna \
+okre\u015bli\u0107 tylko jeden serwer. Kolejne nazwy zostan\u0105 zignorowane (serwer={0}, \
+zignorowane={1}).
+warning.singleServer.explanation=W wierszu komend mo\u017cna okre\u015bli\u0107 \
+tylko jeden serwer. Pierwsza nazwa serwera zosta\u0142a przetworzona. Pozosta\u0142e nazwy \
+zosta\u0142y zignorowane.
+warning.singleServer.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Okre\u015bl \
+tylko jeden serwer, aby unikn\u0105\u0107 wyst\u0119powania tego ostrze\u017cenia.
+  
+error.serverAlreadyRunning=CWWKE0029E: Instancja serwera {0} \
+jest ju\u017c uruchomiona.
+error.serverAlreadyRunning.explanation=Pr\u00f3bujesz uruchomi\u0107 serwer, kt\u00f3ry ju\u017c dzia\u0142a.
+error.serverAlreadyRunning.useraction=Zatrzymaj istniej\u0105c\u0105 instancj\u0119 serwera \
+przed podj\u0119ciem pr\u00f3by uruchomienia serwera lub uruchom inny serwer.
+
+# {0} The server name
+# {1} The server directory path
+# {2} The exception thrown when trying to create
+error.creatingNewServer=CWWKE0030E: Wyst\u0105pi\u0142 wyj\u0105tek podczas \
+tworzenia serwera {0}. Warto\u015b\u0107 serverPath: {1}, przyczyna: {2}
+error.creatingNewServer.explanation=Nie mo\u017cna utworzy\u0107 okre\u015blonego serwera.
+error.creatingNewServer.useraction=Sprawd\u017a i rozwi\u0105\u017c problem b\u0119d\u0105cy przyczyn\u0105 wyj\u0105tku, a nast\u0119pnie spr\u00f3buj ponownie utworzy\u0107 serwer.
+
+error.noExistingServer=CWWKE0031E: Okre\u015blony serwer {0} nie \
+istnieje. U\u017cyj opcji --create, aby utworzy\u0107 nowy serwer. Warto\u015b\u0107 serverPath: {1}
+error.noExistingServer.explanation=Okre\u015blony serwer nie istnieje, \
+dlatego nie mo\u017cna wykona\u0107 dla niego dzia\u0142ania.
+error.noExistingServer.useraction=Sprawd\u017a nazw\u0119 serwera lub utw\u00f3rz \
+serwer z okre\u015blon\u0105 nazw\u0105 i uruchom komend\u0119 ponownie.
+
+## No longer used
+error.bundleInstallException=CWWKE0032E: Wyst\u0105pi\u0142 co najmniej \
+jeden wyj\u0105tek podczas instalowania pakunk\u00f3w platformy.
+error.bundleInstallException.explanation=Napotkano co najmniej jeden \
+wyj\u0105tek podczas instalowania pakunk\u00f3w platformy.
+error.bundleInstallException.useraction=Przejrzyj dzienniki, aby \
+okre\u015bli\u0107 przyczyny wyj\u0105tk\u00f3w i usun\u0105\u0107 je, a nast\u0119pnie ponownie spr\u00f3buj zainstalowa\u0107 pakunki.
+
+error.missingBundleException=CWWKE0033E: Nie mo\u017cna znale\u017a\u0107 pakunk\u00f3w platformy.
+error.missingBundleException.explanation=Nie mo\u017cna znale\u017a\u0107 co \
+najmniej jednego pakunku platformy.
+error.missingBundleException.useraction=Sprawd\u017a, czy zasoby platformy \
+istniej\u0105 oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce je odczyta\u0107.
+
+error.noStartedBundles=CWWKE0034E: Nie zainstalowano pakunk\u00f3w, sprawd\u017a \
+obraz instalacyjny.
+error.noStartedBundles.explanation=Obraz \
+instalacyjny mo\u017ce by\u0107 niekompletny.
+error.noStartedBundles.useraction=Sprawd\u017a instalacj\u0119 i spr\u00f3buj \
+ponownie zainstalowa\u0107 pakunki.
+
+error.initLog=CWWKE0035E: Wyst\u0105pi\u0142 problem z okre\u015blonym \
+pocz\u0105tkowym plikiem dziennika. Warto\u015b\u0107 logPath={0}
+error.initLog.explanation=Po\u0142o\u017cenie pocz\u0105tkowego pliku dziennika \
+nie zosta\u0142o okre\u015blone poprawnie lub nie mo\u017cna by\u0142o odczyta\u0107 pliku.
+error.initLog.useraction=Sprawd\u017a po\u0142o\u017cenie i stan pocz\u0105tkowego \
+pliku dziennika.
+
+audit.kernelUpTime=CWWKE0036I: Serwer {0} zosta\u0142 zatrzymany po {1}.
+audit.kernelUpTime.explanation=J\u0105dro zosta\u0142o zatrzymane po \
+okre\u015blonym czasie (w sekundach). Ten czas jest okre\u015blony wzgl\u0119dem czasu \
+uruchomienia platformy.
+audit.kernelUpTime.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.unknown.console.protocol=CWWKE0037E: Protok\u00f3\u0142 {0} nie jest \
+obs\u0142ugiwanym protoko\u0142em konsoli. Zamiast niego zostanie u\u017cyty protok\u00f3\u0142 telnet. 
+error.unknown.console.protocol.explanation=Okre\u015blony protok\u00f3\u0142 nie \
+jest obs\u0142ugiwany, dlatego system u\u017cyje zamiast niego protoko\u0142u domy\u015blnego (telnet).
+error.unknown.console.protocol.useraction=U\u017cycie protoko\u0142u domy\u015blnego \
+nie wymaga wykonania \u017cadnego dzia\u0142ania. W przeciwnym razie zmodyfikuj \
+konfiguracj\u0119, aby u\u017cy\u0107 obs\u0142ugiwanego protoko\u0142u.
+
+error.rasProvider=CWWKE0038E: Wymagany dostawca dziennika nie zosta\u0142 okre\u015blony.
+error.rasProvider.explanation=W instalacji serwera brak wymaganych plik\u00f3w i nie mo\u017cna by\u0142o go uruchomi\u0107.
+error.rasProvider.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.rasProviderResolve=CWWKE0039E: Okre\u015blony pakunek lub plik JAR dostawcy dziennika ({0}) nie istnieje.
+error.rasProviderResolve.explanation=Nie mo\u017cna znale\u017a\u0107 okre\u015blonego zasobu dostawcy dziennika.
+error.rasProviderResolve.useraction=Sprawd\u017a, czy zas\u00f3b dostawcy dziennika istnieje oraz czy bie\u017c\u0105cy u\u017cytkownik mo\u017ce go odczyta\u0107.
+
+error.frameworkRestart=CWWKE0040E: Nie mo\u017cna rozstrzygn\u0105\u0107 pakunk\u00f3w \
+platformy wzgl\u0119dem pami\u0119ci podr\u0119cznej. Zrestartuj serwer, korzystaj\u0105c z procedury \
+czystego startu.
+error.frameworkRestart.explanation=Nie mo\u017cna rozstrzygn\u0105\u0107 pakunk\u00f3w \
+platformy wzgl\u0119dem jej pami\u0119ci podr\u0119cznej. Ten problem mo\u017cna zwykle rozwi\u0105za\u0107, \
+stosuj\u0105c procedur\u0119 czystego restartu.
+error.frameworkRestart.useraction=Zrestartuj serwer, u\u017cywaj\u0105c \
+opcji --clean, aby wyczy\u015bci\u0107 pami\u0119\u0107 podr\u0119czn\u0105.
+
+info.frameworkRestart=CWWKE0041I: Pami\u0119\u0107 podr\u0119czna platformy nie jest zsynchronizowana. Struktura \
+zostanie zrestartowana.
+info.frameworkRestart.explanation=Struktura zosta\u0142a \
+zrestartowana, \
+poniewa\u017c pami\u0119\u0107 podr\u0119czna platformy nie by\u0142a zsynchronizowana.
+info.frameworkRestart.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.badVersion=CWWKE0042E: Nie jest uruchomiona poprawna \
+wersja \u015brodowiska Java. \u015arodowisko wykonawcze wymaga \u015brodowiska Java 7 lub \
+nowszego.
+error.badVersion.explanation=Uruchomiona jest nieobs\u0142ugiwana \
+wersja \u015brodowiska Java lub zmienna systemowa JAVA_HOME jest ustawiona tak, \u017ce \
+wskazuje starsz\u0105 wersj\u0119 \u015brodowiska Java.
+error.badVersion.useraction= Zaktualizuj \u015brodowisko Java do \
+wersji 7 lub dopasuj zmienn\u0105 systemow\u0105 JAVA_HOME tak, aby wskazywa\u0142a \u015brodowisko \
+Java 7.
+
+error.unsupportedLaunch=CWWKE0043E: Po\u0142o\u017cenie uruchamiania nie \
+jest plikiem lokalnym. ({0})
+error.unsupportedLaunch.explanation=\u015arodowisko wykonawcze musi \
+zosta\u0107 uruchomione przy u\u017cyciu pliku lokalnego, na przyk\u0142ad pliku JAR.
+error.unsupportedLaunch.useraction=Sprawd\u017a, czy u\u017cywana komenda \
+stosuje komend\u0119 java -jar <lokalny_plik_JAR> do uruchomienia \u015brodowiska \
+wykonawczego. 
+
+error.serverDirPermission=CWWKE0044E: Brak uprawnie\u0144 \
+do zapisu w katalogu serwera {0}
+error.serverDirPermission.explanation=Katalog serwera \
+musi by\u0107 dost\u0119pny do zapisu, aby mo\u017cna by\u0142o uruchomi\u0107 serwer.
+error.serverDirPermission.useraction=Upewnij si\u0119, \u017ce masz \
+dost\u0119p do zapisu do katalogu serwera i obszaru roboczego.
+
+error.serverDirExists=CWWKE0045E: Nie mo\u017cna utworzy\u0107 \
+serwera o nazwie {0}, poniewa\u017c katalog serwera {1} ju\u017c istnieje.
+error.serverDirExists.explanation=Katalog serwera nie \
+mo\u017ce istnie\u0107 podczas tworzenia serwera.
+error.serverDirExists.useraction=Wybierz now\u0105 nazw\u0119 serwera \
+lub usu\u0144 katalog i uruchom komend\u0119 ponownie.
+
+error.noAttachAPI=CWWKE0046E: Nie mo\u017cna znale\u017a\u0107 implementacji interfejsu \
+API Attach j\u0119zyka Java.
+error.noAttachAPI.explanation=\u017b\u0105dana funkcja wymaga interfejsu \
+API Attach j\u0119zyka Java, a nie mo\u017cna znale\u017a\u0107 jego implementacji.
+error.noAttachAPI.useraction=Okre\u015bl po\u0142o\u017cenie interfejsu API \
+Attach j\u0119zyka Java przy u\u017cyciu \u015bcie\u017cki klasy.
+
+error.shutdownClientException=CWWKE0047E: Agent sterowania \
+procesami zosta\u0142 zatrzymany, poniewa\u017c wyst\u0105pi\u0142 nieoczekiwany wyj\u0105tek {0}
+error.shutdownClientException.explanation=Okre\u015blony wyj\u0105tek \
+uniemo\u017cliwi\u0142 prawid\u0142owe dzia\u0142anie agenta sterowania procesami.
+error.shutdownClientException.useraction=Rozwi\u0105\u017c problem \
+b\u0119d\u0105cy przyczyn\u0105 wyj\u0105tku i wykonaj dzia\u0142anie ponownie.
+
+warning.serverNotFound=CWWKE0048W: Nie mo\u017cna znale\u017a\u0107 dzia\u0142aj\u0105cej \
+instancji serwera o nazwie {0} i katalogu serwera {1}.
+warning.serverNotFound.explanation=Agent sterowania procesami \
+nie m\u00f3g\u0142 znale\u017a\u0107 dzia\u0142aj\u0105cej instancji okre\u015blonego serwera.
+warning.serverNotFound.useraction=Sprawd\u017a, czy instancja \
+okre\u015blonego serwera jest uruchomiona oraz czy korzysta z tej samej \
+implementacji \u015brodowiska JRE.
+
+error.stopServerError=CWWKE0049E: Nie mo\u017cna zatrzyma\u0107 \
+serwera {0}. 
+error.stopServerError.explanation=Znaleziono \
+uruchomion\u0105 instancj\u0119 okre\u015blonego serwera, lecz nie zosta\u0142a ona poprawnie \
+zamkni\u0119ta w odpowiedzi na komend\u0119 zatrzymania. 
+error.stopServerError.useraction=Przejrzyj dzienniki serwera, aby \
+uzyska\u0107 wi\u0119cej informacji na temat przyczyny niepoprawnego zamkni\u0119cia serwera.
+
+error.invalid.directory=CWWKE0050E: Nie mo\u017cna zainicjowa\u0107 programu nas\u0142uchiwania komendy serwera. Katalog serwera {0} nie jest poprawny.
+error.invalid.directory.explanation=Katalog nie istnieje lub \
+nie mo\u017cna go odczyta\u0107.
+error.invalid.directory.useraction=Przejrzyj konfiguracj\u0119.
+
+error.packageServerError=CWWKE0051E: Nie mo\u017cna utworzy\u0107 pakietu z serwera {0}.
+error.packageServerError.explanation=Nie mo\u017cna utworzy\u0107 pakietu z okre\u015blonego serwera.
+error.packageServerError.useraction=Wi\u0119cej informacji zawieraj\u0105 dzienniki serwera. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0107, zapoznaj si\u0119 z informacjami dotycz\u0105cymi okre\u015blania problem\u00f3w na stronie wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support/.
+
+error.serverCommand.init=CWWKE0052E: Nie powiod\u0142o si\u0119 \
+zainicjowanie programu nas\u0142uchuj\u0105cego komend serwera, poniewa\u017c wyst\u0105pi\u0142 wyj\u0105tek \
+we/wy {0}
+error.serverCommand.init.explanation=Wyst\u0105pi\u0142 nieoczekiwany \
+wyj\u0105tek podczas inicjowania programu nas\u0142uchiwania komend serwera.
+error.serverCommand.init.useraction=Przejrzyj dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji na temat przyczyny niepowodzenia komendy. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0107, zapoznaj si\u0119 z informacjami dotycz\u0105cymi okre\u015blania problem\u00f3w na stronie wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support/.
+
+warning.unrecognized.command=CWWKE0053W: Nierozpoznana komenda {0}
+warning.unrecognized.command.explanation=Komenda zosta\u0142a \
+zignorowana, poniewa\u017c nie zosta\u0142a rozpoznana.
+warning.unrecognized.command.useraction=U\u017cyj dzia\u0142ania pomocy, aby sprawdzi\u0107 poprawno\u015b\u0107 wykonywanej komendy i jej opcji. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0107, zapoznaj si\u0119 z informacjami dotycz\u0105cymi okre\u015blania problem\u00f3w na stronie wsparcia dla serwera WebSphere Application Server pod adresem http://www.ibm.com/software/webservers/appserv/was/support/.
+
+error.fileNotFound=CWWKE0054E: Nie mo\u017cna otworzy\u0107 pliku {0}. 
+error.fileNotFound.explanation=Wyst\u0105pi\u0142 wyj\u0105tek FileNotFoundException podczas pr\u00f3by otwarcia pliku. 
+error.fileNotFound.useraction=Sprawd\u017a, czy \u015bcie\u017cka istnieje, czy masz uprawnienia do zapisu oraz czy istnieje wystarczaj\u0105ca ilo\u015b\u0107 miejsca na dysku.
+
+# {0} The date the server was shutdown. 
+# Note {0,date,full} tells the message formatter to expand in the form of Wednesday, Feb 14, 2012 using the server locale (so it'll be location specific)
+# Note {0,time,short} tells the message formatter to expand
+info.stop.request.received=CWWKE0055I: Za\u017c\u0105dano zamkni\u0119cia serwera w dniu {0,date,full} o godzinie {0,time,short}. Serwer {1} jest wy\u0142\u0105czany.
+info.stop.request.received.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+info.stop.request.received.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.unableZipDir=CWWKE0056E: Nie mo\u017cna spakowa\u0107 katalogu z powodu wyst\u0105pienia wyj\u0105tku we/wy {0}. 
+error.unableZipDir.explanation=Wyst\u0105pi\u0142 wyj\u0105tek we/wy.
+error.unableZipDir.useraction=Pon\u00f3w operacj\u0119. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+info.introspect.request.received=CWWKE0057I: Odebrano \u017c\u0105danie introspekcji. Serwer przeprowadza zrzut statusu.
+info.introspect.request.received.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+info.introspect.request.received.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+warn.packageServer.include.unknownOption=CWWKE0058W: Nie mo\u017cna u\u017cy\u0107 opcji --include={0}. Zamiast niej zostanie u\u017cyta opcja --include=all.
+warn.packageServer.include.unknownOption.explanation=Opcja zosta\u0142a zignorowana, poniewa\u017c nie zosta\u0142a rozpoznana.
+warn.packageServer.include.unknownOption.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnych opcji. Istnieje \
+mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia listy poprawnych opcji.
+
+warn.unableWriteFile=CWWKE0059W: Nie mo\u017cna zapisa\u0107 pliku {0} z powodu wyj\u0105tku we/wy {1}. 
+warn.unableWriteFile.explanation=Wyst\u0105pi\u0142 wyj\u0105tek we/wy.
+warn.unableWriteFile.useraction=Pon\u00f3w operacj\u0119. Je\u015bli b\u0142\u0105d b\u0119dzie wyst\u0119powa\u0142 nadal, zg\u0142o\u015b problem do serwisu IBM.
+
+# {0} The name of an iFix jar file
+# {1} The name of a base jar file
+warn.ifix.ignored=CWWKE0060W: Zignorowano plik JAR poprawki \
+iFix {0}, poniewa\u017c podstawowy plik jar {1} nie istnieje.
+warn.ifix.ignored.explanation=Znaleziono plik JAR poprawki \
+iFix, ale podstawowy plik JAR, do kt\u00f3rego ma zastosowanie poprawka iFix, nie zosta\u0142 \
+zainstalowany.
+warn.ifix.ignored.useraction=Uzyskaj poprawk\u0119 iFix dla \
+zainstalowanego poziomu pakietu poprawek, przeprowad\u017a aktualizacj\u0119 do \
+odpowiedniego poziomu pakietu poprawek lub usu\u0144 plik JAR poprawki iFix.
+
+warn.fileEncodingNotFound=CWWKE0061W: Nie istnieje \
+identyfikator kodowanego zestawu znak\u00f3w systemu z/OS na potrzeby kodowania elementu {0}. Pliki \
+tekstowe nie zostan\u0105 oznaczone. 
+warn.fileEncodingNotFound.explanation=Pliki tekstowe nie zosta\u0142y oznaczone przy u\u017cyciu okre\u015blonego kodowania.
+warn.fileEncodingNotFound.useraction=Plik by\u0107 mo\u017ce musi zosta\u0107 \
+poddany translacji na kodowanie IBM-1047, zanim b\u0119dzie mo\u017cna go wy\u015bwietli\u0107 przy \
+u\u017cyciu standardowych edytor\u00f3w i program\u00f3w narz\u0119dziowych do edycji tekstu.
+
+warn.unableTagFile=CWWKE0062W: Pliki \
+tekstowe nie zosta\u0142y oznaczone, poniewa\u017c wykonanie us\u0142ugi __chattr nie powiod\u0142o si\u0119 \
+z powodu b\u0142\u0119du {0}. 
+warn.unableTagFile.explanation=Pliki tekstowe nie zosta\u0142y \
+oznaczone przy u\u017cyciu okre\u015blonego kodowania.
+warn.unableTagFile.useraction=Plik by\u0107 mo\u017ce musi zosta\u0107 poddany \
+translacji na kodowanie IBM-1047, zanim b\u0119dzie mo\u017cna go wy\u015bwietli\u0107 przy u\u017cyciu \
+standardowych edytor\u00f3w i program\u00f3w narz\u0119dziowych do edycji tekstu.
+
+warn.registerNative=CWWKE0063W: Nie mo\u017cna zarejestrowa\u0107 metody rodzimej o nazwie deskryptora {0}. 
+warn.registerNative.explanation=Rejestracja metody rodzimej nie powiod\u0142a si\u0119.
+warn.registerNative.useraction=Sprawd\u017a, czy metoda rodzima istnieje.
+
+error.loadNativeLibrary=CWWKE0064E: Nie mo\u017cna za\u0142adowa\u0107 \
+biblioteki rodzimej systemu z/OS z elementu {0}.
+error.loadNativeLibrary.explanation=Nie mo\u017cna za\u0142adowa\u0107 \
+biblioteki rodzimej systemu z/OS.
+error.loadNativeLibrary.useraction=Sprawd\u017a, czy \u015bcie\u017cka istnieje, a nast\u0119pnie spr\u00f3buj ponownie. 
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerExists=CWWKE0065E: Wyst\u0105pi\u0142 wyj\u0105tek podczas \
+tworzenia serwera {0}. Wykryto dzia\u0142anie zewn\u0119trzne w \u015bcie\u017cce serwera ({1}), wi\u0119c tworzenie serwera zosta\u0142o zatrzymane.
+error.creatingNewServerExists.explanation=Nie mo\u017cna utworzy\u0107 okre\u015blonego serwera, poniewa\u017c inna aplikacja wykonywa\u0142a operacje na plikach w nowym katalogu serwera.
+error.creatingNewServerExists.useraction=Sprawd\u017a, dlaczego odbywaj\u0105 si\u0119 dzia\u0142ania w katalogu serwera poza komend\u0105 tworzenia, usu\u0144 katalog serwera i spr\u00f3buj utworzy\u0107 serwer ponownie.
+
+# {0} The server name
+# {1} The server directory path
+error.creatingNewServerMkDirFail=CWWKE0066E: Nie mo\u017cna \
+utworzy\u0107 katalogu dla serwera {0} w nast\u0119puj\u0105cym miejscu: {1}.
+error.creatingNewServerMkDirFail.explanation=Nie mo\u017cna \
+utworzy\u0107 okre\u015blonego serwera, poniewa\u017c nie by\u0142o wystarczaj\u0105cej ilo\u015bci miejsca \
+do jego utworzenia lub poniewa\u017c system nie mo\u017ce zapisywa\u0107 danych w tym po\u0142o\u017ceniu.
+error.creatingNewServerMkDirFail.useraction=Przed ponown\u0105 \
+pr\u00f3b\u0105 utworzenia serwera upewnij si\u0119, \u017ce na dysku jest wystarczaj\u0105ca ilo\u015b\u0107 \
+miejsca do jego utworzenia i \u017ce dane po\u0142o\u017cenie ma poprawne uprawnienia do \
+zapisu.
+
+info.javadump.request.received=CWWKE0067I: Otrzymano \u017c\u0105danie zrzutu \u015brodowiska Java.
+info.javadump.request.received.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+info.javadump.request.received.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+info.javadump.created=CWWKE0068I: Utworzono zrzut \u015brodowiska Java: {0}
+info.javadump.created.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+info.javadump.created.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+warn.javadump.unsupported=CWWKE0069W: Typ zrzutu \u015brodowiska Java {0} nie jest obs\u0142ugiwany.
+warn.javadump.unsupported.explanation=Za\u017c\u0105dano zrzutu, ale maszyna JVM serwera nie obs\u0142uguje typu zrzutu.
+warn.javadump.unsupported.useraction=Nie jest wymagana \u017cadna \
+czynno\u015b\u0107.
+
+warn.package.invalid.looseFile=CWWKE0070W: Pojedynczy plik {0} jest niepoprawny.
+warn.package.invalid.looseFile.explanation= Nie mo\u017cna znale\u017a\u0107 pliku lub format pliku jest nieprawid\u0142owy.
+warn.package.invalid.looseFile.useraction=Upewnij si\u0119, \u017ce plik istnieje i \u017ce jego format jest poprawny.
+
+# {0} The name of an interim fix resource
+# {1} The name of a base resource
+warn.ifix.resource.ignored=CWWKE0071W: Zignorowano \
+poprawk\u0119 tymczasow\u0105 {0}, poniewa\u017c wersja podstawowa {1} nie istnieje.
+warn.ifix.resource.ignored.explanation=Znaleziono zas\u00f3b \
+poprawki tymczasowej, ale zas\u00f3b podstawowy, do kt\u00f3rego ma zastosowanie poprawka \
+tymczasowa, nie zosta\u0142 zainstalowany.
+warn.ifix.resource.ignored.useraction=Uzyskaj poprawk\u0119 \
+tymczasow\u0105 dla poziomu zainstalowanego pakietu poprawek, przeprowad\u017a \
+aktualizacj\u0119 do odpowiedniego poziomu pakietu poprawek albo usu\u0144 zas\u00f3b \
+poprawki tymczasowej.
+
+# {0} The invalid BLST specification string
+error.blst.spec.invalid=CWWKE0072E: \u0141a\u0144cuch specyfikacji \
+BLST {0} jest niepoprawny. Specyfikacja musi mie\u0107 format: <nazwa_symboliczna>;version="<zakres_wersji>".
+error.blst.spec.invalid.explanation=\u0141a\u0144cuch \
+specyfikacji dla pliku BLST nie jest zgodny z wymagan\u0105 sk\u0142adni\u0105. Serwer nie zosta\u0142 uruchomiony.
+error.blst.spec.invalid.useraction=Okre\u015bl nazw\u0119 symboliczn\u0105 i \
+zakres wersji pliku BLST w postaci \
+<nazwa_symboliczna>;version="<zakres_wersji>". Nazwa symboliczna musi by\u0107 \
+poprawnym znacznikiem OSGi. Zakres wersji musi by\u0107 poprawnym zakresem wersji OSGi. Dodatkowo zakres wersji musi zawiera\u0107 ograniczenie dolne i g\u00f3rne (w\u0142\u0105czne lub wy\u0142\u0105czne) i nie mo\u017ce okre\u015bla\u0107 kwalifikatora.
+
+# {0} The BLST filename
+error.blst.failed.to.resolve=CWWKE0073E: Rozstrzygni\u0119cie \
+pliku BLST {0} nie powiod\u0142o si\u0119.
+error.blst.failed.to.resolve.explanation=Nie mo\u017cna \
+znale\u017a\u0107 pliku BLST o okre\u015blonej nazwie. W instalacji serwera brak wymaganych plik\u00f3w i nie mo\u017cna by\u0142o go uruchomi\u0107.
+error.blst.failed.to.resolve.useraction=Okre\u015bl mo\u017cliwy do \
+rozstrzygni\u0119cia plik BLST w pliku bootstrap.properties serwera.
+
+error.platform.dir.not.found=CWWKE0074E: Nie mo\u017cna znale\u017a\u0107 katalogu platformy.
+error.platform.dir.not.found.explanation=Nie mo\u017cna znale\u017a\u0107 katalogu platformy. W instalacji serwera brak wymaganych plik\u00f3w i nie mo\u017cna by\u0142o go uruchomi\u0107.
+error.platform.dir.not.found.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.unknown.kernel.version=CWWKE0075E: Odczytanie zakresu \
+wersji j\u0105dra z manifestu programu startowego nie powiod\u0142o si\u0119.
+error.unknown.kernel.version.explanation=Nie mo\u017cna odczyta\u0107 zakresu wersji j\u0105dra. W instalacji serwera brak wymaganych plik\u00f3w i nie mo\u017cna by\u0142o go uruchomi\u0107.
+error.unknown.kernel.version.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+# Messages for minify.. 
+error.minify.unable.to.start.server=CWWKE0076E: Nie mo\u017cna odpyta\u0107 serwera {0} w celu okre\u015blenia sk\u0142adnik\u00f3w do zachowania.
+error.minify.unable.to.start.server.explanation=Nie mo\u017cna odpyta\u0107 serwera o podanej nazwie w celu okre\u015blenia sk\u0142adnik\u00f3w do zachowania podczas \
+tworzenia pakietu. Wynikowe archiwum pakietu mo\u017ce by\u0107 niepoprawne.
+error.minify.unable.to.start.server.useraction=Sprawd\u017a, czy \
+mo\u017cna uruchomi\u0107 serwer o podanej nazwie, i pon\u00f3w tworzenie pakietu. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.unable.to.stop.server=CWWKE0077E: Nie mo\u017cna zatrzyma\u0107 serwera {0} uruchomionego w celu okre\u015blenia sk\u0142adnik\u00f3w do zachowania.
+error.minify.unable.to.stop.server.explanation=Serwer o \
+podanej nazwie zosta\u0142 odpytany o aktualnie skonfigurowane sk\u0142adniki, lecz \
+nie zosta\u0142 zamkni\u0119ty w odpowiedzi na \u017c\u0105danie.
+error.minify.unable.to.stop.server.useraction=Sprawd\u017a, czy serwer o podanej nazwie mo\u017cna uruchomi\u0107 i zatrzyma\u0107, a nast\u0119pnie pon\u00f3w operacj\u0119 tworzenia pakietu. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.unable.to.determine.features=CWWKE0078E: Nie mo\u017cna okre\u015bli\u0107 sk\u0142adnik\u00f3w do zachowania dla serwera {0}.
+error.minify.unable.to.determine.features.explanation=Serwer \
+nie mo\u017ce zosta\u0107 umieszczony w pakiecie przy u\u017cyciu wybranych opcji, \
+poniewa\u017c nie mo\u017cna by\u0142o okre\u015bli\u0107 skonfigurowanych sk\u0142adnik\u00f3w serwera.
+error.minify.unable.to.determine.features.useraction=Sprawd\u017a \
+konfiguracj\u0119 serwera i upewnij si\u0119, \u017ce serwer mo\u017cna uruchomi\u0107 i \
+zatrzyma\u0107. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.minify.missing.manifest=CWWKE0079E: Tworzenie pakietu serwera {0} nie powiod\u0142o si\u0119 z powodu braku manifestu serwera.
+error.minify.missing.manifest.explanation=Nie mo\u017cna utworzy\u0107 pakietu serwera, poniewa\u017c brakuje manifestu serwera.
+error.minify.missing.manifest.useraction=Sprawd\u017a, czy produkt \
+zosta\u0142 poprawnie zainstalowany. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.unable.load.property=CWWKE0080E: Nie mo\u017cna za\u0142adowa\u0107 w\u0142a\u015bciwo\u015bci {0} w pliku {1}.
+error.unable.load.property.explanation=Nie mo\u017cna znale\u017a\u0107 w\u0142a\u015bciwo\u015bci w okre\u015blonym pliku w\u0142a\u015bciwo\u015bci.
+error.unable.load.property.useraction=Sprawd\u017a, czy nazwa w\u0142a\u015bciwo\u015bci istnieje i czy jest \
+poprawnie zapisana.
+
+unable.to.package.missing.file=CWWKE0081E: Nie mo\u017cna utworzy\u0107 pakietu serwera {0} przy u\u017cyciu \u017c\u0105danego filtru systemu \
+operacyjnego {1} z powodu brakuj\u0105cego zasobu {2}.
+unable.to.package.missing.file.explanation=\u017b\u0105danie utworzenia pakietu serwera przy u\u017cyciu \u017c\u0105danego filtru systemu operacyjnego zosta\u0142o \
+zablokowane z powodu braku zasobu.
+unable.to.package.missing.file.useraction=Sprawd\u017a, czy wcze\u015bniejsza operacja pakowania z \
+okre\u015blonym parametrem --include=minify usun\u0119\u0142a \
+\u017c\u0105dan\u0105 tre\u015b\u0107 systemu operacyjnego dla serwera umieszczanego w pakiecie. Je\u015bli tak, pon\u00f3w tworzenie pakietu na serwerze, kt\u00f3ry nie zosta\u0142 zmniejszony przez poprzedni\u0105 operacj\u0119 \
+pakowania. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support. 
+
+error.unable.to.package=CWWKE0082E: Nie mo\u017cna utworzy\u0107 pakietu serwera {0} z powodu wyj\u0105tku we/wy {1}.
+error.unable.to.package.explanation=Wyst\u0105pi\u0142 wyj\u0105tek \
+IOException podczas umieszczania \u017c\u0105danej tre\u015bci serwera Liberty w pakiecie.
+error.unable.to.package.useraction=Pon\u00f3w operacj\u0119 pakowania na \
+nowo zainstalowanym serwerze. Je\u015bli problem b\u0119dzie si\u0119 powtarza\u0142, zapoznaj si\u0119 z informacjami na temat okre\u015blania problemu na stronie WWW wsparcia dla serwera WebSphere Application Server: http://www.ibm.com/software/webservers/appserv/was/support.
+
+error.os.without.include=CWWKE0083E: Parametru --os mo\u017cna u\u017cy\u0107 tylko z parametrem --include=minify.
+error.os.without.include.explanation=Parametr --os jest przeznaczony do u\u017cycia w po\u0142\u0105czeniu z parametrem --include=minify w celu \
+okre\u015blenia system\u00f3w operacyjnych obs\u0142ugiwanych przez operacj\u0119 pakowania.
+error.os.without.include.useraction=Zapoznaj si\u0119 z dokumentacj\u0105 i usu\u0144 parametr --os z komendy lub dodaj parametr --include=minify \
+i pon\u00f3w operacj\u0119.
+
+audit.system.exit=CWWKE0084I: Serwer {0} jest zatrzymywany, poniewa\u017c w\u0105tek {1} ({2}) wywo\u0142a\u0142 metod\u0119 {3}: {4}
+audit.system.exit.explanation=Okre\u015blony w\u0105tek wywo\u0142a\u0142 metod\u0119 wyj\u015bcia z maszyny JVM. Serwer przechwyci\u0142 \u017c\u0105danie i podejmie pr\u00f3b\u0119 zatrzymania w prawid\u0142owy spos\u00f3b.
+audit.system.exit.useraction=Je\u015bli zatrzymanie serwera by\u0142o nieoczekiwane, okre\u015bl, dlaczego dany w\u0105tek wywo\u0142a\u0142 metod\u0119.
+
+audit.jvm.shutdown=CWWKE0085I: Serwer {0} jest zatrzymywany, poniewa\u017c ko\u0144czone jest dzia\u0142anie maszyny JVM.
+audit.jvm.shutdown.explanation=Serwer przechwyci\u0142 \u017c\u0105danie zatrzymania maszyny JVM i podejmie pr\u00f3b\u0119 zatrzymania w prawid\u0142owy spos\u00f3b. Dzia\u0142anie maszyny JVM mo\u017ce by\u0107 ko\u0144czone, poniewa\u017c system operacyjny wys\u0142a\u0142 sygna\u0142 przerywania do procesu serwera.
+audit.jvm.shutdown.useraction=Je\u015bli zatrzymanie serwera by\u0142o nieoczekiwane, okre\u015bl, czy do procesu serwera zosta\u0142 wys\u0142any sygna\u0142 przerywania.
+
+warning.serverStartedCommandPortDisabled=CWWKE0087W: Zainicjowano procedur\u0119 uruchamiania serwera {0}, \
+jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
+warning.serverStartedCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
+kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
+warning.serverStartedCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, \
+czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
+
+warning.serverStartedWithPIDCommandPortDisabled=CWWKE0088W: Zainicjowano procedur\u0119 uruchamiania serwera {0} \
+(ID procesu: {1}), jednak nie mo\u017cna stwierdzi\u0107, czy zosta\u0142a ona zako\u0144czona, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
+warning.serverStartedWithPIDCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 jawnie wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna stwierdzi\u0107, \
+kiedy uruchamianie serwera zosta\u0142o zako\u0144czone.
+warning.serverStartedWithPIDCommandPortDisabled.useraction=R\u0119cznie sprawd\u017a dzienniki serwera w celu sprawdzenia, \
+czy serwer zosta\u0142 pomy\u015blnie uruchomiony.
+
+error.serverStopCommandPortDisabled=CWWKE0089E: Nie mo\u017cna zatrzyma\u0107 serwera {0}, poniewa\u017c port komend serwera jest wy\u0142\u0105czony.
+error.serverStopCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna go zatrzyma\u0107 za pomoc\u0105 tego skryptu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.serverStopCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, mo\u017cna go zatrzyma\u0107 \
+z poziomu konsoli operatora.  W przeciwnym razie proces serwera mo\u017cna zatrzyma\u0107 z poziomu pow\u0142oki.
+
+warning.serverDumpCompleteCommandPortDisabled=CWWKE0090W: Zako\u0144czono tworzenie \
+zrzutu serwera {0}. Czas: {1}.  Nie mo\u017cna uzyska\u0107 pewnych informacji, poniewa\u017c port komend serwera jest wy\u0142\u0105czony, \
+co uniemo\u017cliwia bezpo\u015bredni\u0105 komunikacj\u0119 z dzia\u0142aj\u0105cym serwerem.
+warning.serverDumpCompleteCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna uzyska\u0107 tej cz\u0119\u015bci zrzutu danych serwera, \
+kt\u00f3ra wymaga bezpo\u015bredniej komunikacji z serwerem.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+warning.serverDumpCompleteCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, \
+pe\u0142en zrzut danych serwera mo\u017cna uzyska\u0107 z poziomu konsoli operatora.  Szczeg\u00f3\u0142owe informacje mo\u017cna znale\u017a\u0107 w Centrum informacyjnym.
+
+error.serverJavaDumpCommandPortDisabled=CWWKE0091E: Nie mo\u017cna pobra\u0107 zrzutu danych serwera {0}, poniewa\u017c port \
+komend serwera jest wy\u0142\u0105czony.
+error.serverJavaDumpCommandPortDisabled.explanation=Port komend serwera jest wymagany do komunikacji \
+z dzia\u0142aj\u0105cym serwerem.  Port komend zosta\u0142 wy\u0142\u0105czony dla tego serwera, dlatego nie mo\u017cna pobra\u0107 \u017c\u0105danego zrzutu.  Nale\u017cy zauwa\u017cy\u0107, \u017ce port komend jest domy\u015blnie wy\u0142\u0105czony, je\u015bli serwer zosta\u0142 uruchomiony jako zadanie w systemie z/OS.
+error.serverJavaDumpCommandPortDisabled.useraction=Je\u015bli serwer dzia\u0142a jako zadanie w systemie z/OS, \
+ten zrzut mo\u017cna uzyska\u0107 z poziomu konsoli operatora.  Szczeg\u00f3\u0142owe informacje mo\u017cna znale\u017a\u0107 w Centrum informacyjnym.
+
+info.javadump.zos.system.created=CWWKE0092I: \u017b\u0105danie \
+systemowego zrzutu transakcji Java (System Transaction Dump - SYSTDUMP) jest \
+zako\u0144czone.
+info.javadump.zos.system.created.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny. Szczeg\u00f3\u0142y dotycz\u0105ce \
+nazwy zestawu danych i woluminu zawieraj\u0105cego dane wyj\u015bciowe zrzutu systemowego Java s\u0105 dost\u0119pne w dzienniku systemowym.
+info.javadump.zos.system.created.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warn.fingerprintUnableToMkDirs=CWWKE0093W: Serwer nie m\u00f3g\u0142 utworzy\u0107 po\u0142o\u017cenia {0} podczas pr\u00f3by zapisywania pliku {1}. 
+warn.fingerprintUnableToMkDirs.explanation=Operacja tworzenia katalogu nie powiod\u0142a si\u0119. Dysk mo\u017ce by\u0107 pe\u0142ny lub serwer mo\u017ce nie mie\u0107 uprawnienia do zapisu w danym po\u0142o\u017ceniu.
+warn.fingerprintUnableToMkDirs.useraction=Sprawd\u017a po\u0142o\u017cenie katalogu i uprawnienia, aby okre\u015bli\u0107, czy mo\u017cna rozwi\u0105za\u0107 problem.
+
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol=CWWKE0094W: Serwer nie mo\u017ce utworzy\u0107 pakietu plik\u00f3w aplikacji, poniewa\u017c co najmniej jeden symbol po\u0142o\u017cenia w pliku {0} jest nieznany.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.explanation=Serwer umieszcza utworzony plik pakietu w \u015bcie\u017cce podanej w pliku XML lu\u017anej konfiguracji aplikacji. Jednak \u015bcie\u017cka w pliku XML lu\u017anej konfiguracji aplikacji zawiera co najmniej jeden nieznany symbol. Znane symbole s\u0105 wymienione w pliku WLP_HOME/README.TXT. Symbole po\u0142o\u017ce\u0144 s\u0105 opakowywane w postaci tekstu ${...}.
+warning.unableToPackageLooseConfigFileCannotResolveLocSymbol.useraction=Zmie\u0144 \u015bcie\u017ck\u0119 w pliku XML lu\u017anej konfiguracji aplikacji tak, aby u\u017cywane by\u0142y znane symbole po\u0142o\u017ce\u0144.
+
+warning.unableToPackageLooseConfigFileMissingPath=CWWKE0095W: Serwer nie mo\u017ce utworzy\u0107 pakietu plik\u00f3w aplikacji okre\u015blonych w pliku XML lu\u017anej konfiguracji aplikacji {0}, poniewa\u017c nie mo\u017ce ich znale\u017a\u0107.
+warning.unableToPackageLooseConfigFileMissingPath.explanation=Okre\u015blony plik XML lu\u017anej konfiguracji aplikacji zawiera niepoprawne informacje o po\u0142o\u017ceniu plik\u00f3w. Mo\u017ce na przyk\u0142ad okre\u015bla\u0107 katalog, kt\u00f3rego nie mo\u017cna znale\u017a\u0107. \u015acie\u017cki w tym pliku XML powinny by\u0107 wzgl\u0119dne wobec katalogu konfiguracji serwera. Archiwum reprezentowane przez ten plik nie b\u0119dzie do\u0142\u0105czone do danych wyj\u015bciowych serwera znajduj\u0105cych si\u0119 w pakiecie.
+warning.unableToPackageLooseConfigFileMissingPath.useraction=Zmodyfikuj \u015bcie\u017cki w pliku XML lu\u017anej konfiguracji aplikacji tak, aby wskazywa\u0142y poprawne po\u0142o\u017cenie zawieraj\u0105ce pliki aplikacji. 
+
+warn.packageRuntime.include.unknownOption=CWWKE0099W: Nie mo\u017cna u\u017cy\u0107 opcji --include={0}. Zamiast niej zostanie u\u017cyta opcja \
+--include=wlp.
+warn.packageRuntime.include.unknownOption.explanation=Opcja zosta\u0142a zignorowana, poniewa\u017c nie zosta\u0142a rozpoznana.
+warn.packageRuntime.include.unknownOption.useraction=Pon\u00f3w komend\u0119, u\u017cywaj\u0105c poprawnych opcji. Istnieje \
+mo\u017cliwo\u015b\u0107 u\u017cycia parametru --help w celu wy\u015bwietlenia listy poprawnych opcji.
+
+audit.licenseRestriction.base_ilan.ilan=CWWKE0100I: Ten produkt jest licencjonowany na potrzeby programowania i do ograniczonego u\u017cytku w \u015brodowisku produkcyjnym. Warunki pe\u0142nej licencji mo\u017cna znale\u017a\u0107 w nast\u0119puj\u0105cym miejscu: {0}.
+audit.licenseRestriction.base_ilan.ilan.explanation=Ten produkt jest licencjonowany na potrzeby programowania i do ograniczonego u\u017cytku w \u015brodowisku produkcyjnym. Aby wy\u015bwietli\u0107 definicj\u0119 u\u017cycia na potrzeby programowania i pozna\u0107 ograniczenia u\u017cytku w \u015brodowisku produkcyjnym, nale\u017cy przeczyta\u0107 pliki licencji produktu.
+audit.licenseRestriction.base_ilan.ilan.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+audit.licenseRestriction.developers.ilan=CWWKE0101I: Ten produkt jest licencjonowany na potrzeby programowania. Warunki pe\u0142nej licencji mo\u017cna znale\u017a\u0107 w nast\u0119puj\u0105cym miejscu: {0}.
+audit.licenseRestriction.developers.ilan.explanation=Ten produkt jest licencjonowany na potrzeby programowania. Aby wy\u015bwietli\u0107 definicj\u0119 u\u017cycia na potrzeby programowania i pozna\u0107 ograniczenia, nale\u017cy przeczyta\u0107 pliki licencji produktu.
+audit.licenseRestriction.developers.ilan.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.create.unknownJavaLevel=CWWKE0102E: System nie mo\u017ce okre\u015bli\u0107 poziomu specyfikacji \u015brodowiska Java na podstawie w\u0142a\u015bciwo\u015bci systemu.  Warto\u015b\u0107 nie jest okre\u015blona lub jest okre\u015blona niepoprawnie.  W\u0142a\u015bciwo\u015bci systemu zawieraj\u0105 nast\u0119puj\u0105c\u0105 warto\u015b\u0107 w\u0142a\u015bciwo\u015bci java.specification.level: {0}
+error.create.unknownJavaLevel.explanation=Proces, kt\u00f3ry pr\u00f3buje utworzy\u0107 serwer, nie m\u00f3g\u0142 okre\u015bli\u0107 poziomu u\u017cywanego \u015brodowiska Java.  Ten poziom jest wymagany, aby okre\u015bli\u0107 optymalne ustawienia dla serwera.
+error.create.unknownJavaLevel.useraction=Upewnij si\u0119, \u017ce u\u017cywany jest obs\u0142ugiwany pakiet JDK.  Mo\u017ce by\u0107 r\u00f3wnie\u017c wymagane zmodyfikowanie zmiennej \u015brodowiskowej JAVA_HOME tak, aby wskazywa\u0142a obs\u0142ugiwan\u0105 instalacj\u0119 pakietu JDK.
+
+error.create.java8serverenv=CWWKE0103E: Nie mo\u017cna utworzy\u0107 pliku server.env w nast\u0119puj\u0105cym po\u0142o\u017ceniu: {0}
+error.create.java8serverenv.explanation=Proces, kt\u00f3ry pr\u00f3buje utworzy\u0107 serwer, nie m\u00f3g\u0142 wygenerowa\u0107 pliku server.env w podanym po\u0142o\u017ceniu.  Ten plik udost\u0119pnia argumenty maszyny JVM wymagane do poprawnego dzia\u0142ania serwera.
+error.create.java8serverenv.useraction=Upewnij si\u0119, \u017ce katalog serwera jest dost\u0119pny do zapisu dla bie\u017c\u0105cego u\u017cytkownika i dost\u0119pna jest wystarczaj\u0105ca ilo\u015b\u0107 miejsca na dysku.  Mo\u017cna dodatkowo r\u0119cznie utworzy\u0107 plik server.env z nast\u0119puj\u0105c\u0105 warto\u015bci\u0105: WLP_SKIP_MAXPERMSIZE=true.  Nale\u017cy upewni\u0107 si\u0119, \u017ce proces serwera ma dost\u0119p do odczytu tego pliku.
+
+audit.licenseRestriction.early_access.ilar=CWWKE0104I: Ten produkt jest w wersji beta i nie mo\u017cna go u\u017cywa\u0107 w \u015brodowisku produkcyjnym. Warunki pe\u0142nej licencji mo\u017cna znale\u017a\u0107 w nast\u0119puj\u0105cym miejscu: {0}.
+audit.licenseRestriction.early_access.ilar.explanation=Ten produkt jest w wersji beta i musi by\u0107 u\u017cywany zgodnie z warunkami licencji dla wersji beta.
+audit.licenseRestriction.early_access.ilar.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.zosProcStart.create.pidfile=CWWKE0105E: Uruchomienie serwera {0} przy u\u017cyciu procedury STC systemu z/OS {1} mog\u0142o zosta\u0107 zako\u0144czone niepowodzeniem, zanim utworzono plik PID. Sprawd\u017a dane wyj\u015bciowe STC w celu weryfikacji.
+error.zosProcStart.create.pidfile.explanation=W okresie oczekiwania nie utworzono pliku PID dla tego serwera. Nie mo\u017cna zweryfikowa\u0107 statusu uruchomienia serwera.
+error.zosProcStart.create.pidfile.useraction=Sprawd\u017a r\u0119cznie status nowo uruchomionego serwera.
+
+error.zosProcStart.mvs.start=CWWKE0106E: Nie powiod\u0142o si\u0119 uruchomienie procedury STC systemu z/OS {0}. Podczas uruchamiania zwr\u00f3cono kod powrotu MGCRE {1}.
+error.zosProcStart.mvs.start.explanation=Uruchomienie procedury STC podanej we w\u0142a\u015bciwo\u015bci WLP_ZOS_PROCEDURE w pliku server.env nie powiod\u0142o si\u0119. 
+error.zosProcStart.mvs.start.useraction=Sprawd\u017a, czy podana nazwa procedury istnieje i czy nie jest uj\u0119ta z pojedynczy lub podw\u00f3jny cudzys\u0142\u00f3w. Aby uzyska\u0107 informacje na temat dalszych szczeg\u00f3\u0142\u00f3w lub dzia\u0142a\u0144, sprawd\u017a kod powrotu MCGRE.
+
+error.zosProcStart.start.length=CWWKE0107E: Nie mo\u017cna uruchomi\u0107 procedury STC systemu z/OS {0}. Przekroczono maksymaln\u0105 d\u0142ugo\u015b\u0107 komendy uruchamiania.
+error.zosProcStart.start.length.explanation=Nazwa procedury, nazwa serwera i parametry uruchamiania podane w celu uruchomienia serwera w ramach uruchomionego zadania przekroczy\u0142y maksymaln\u0105 d\u0142ugo\u015b\u0107 komendy konsoli MVS.
+error.zosProcStart.start.length.useraction=Skr\u00f3\u0107 nazw\u0119 serwera i nazw\u0119 procedury, aby komenda MVS start mia\u0142a mniej ni\u017c 126 znak\u00f3w.
+
+info.addProductExtension=CWWKE0108I: Rozszerzenie \
+produktu {0} zosta\u0142o programowo w\u0142\u0105czone. Identyfikator produktu rozszerzenia \
+to {1}. Miejsce instalacji rozszerzenia produktu to {2}.
+info.addProductExtension.explanation= Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.  \
+Rozszerzenie produktu zosta\u0142o dodane przez wywo\u0142anie interfejsu SPI \
+com.ibm.wsspi.kernel.embeddable.ServerBuilder.addProductExtension.
+info.addProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# CWWKE0109W removed because it's no longer used - do not reuse 
+
+#
+# W A R N I N G:   Do not use CWWKE0100 - CCWKE0199 they are reserved in ServiceMessages.nlsprops
+#
+# Too Late for CWWKE0101 - CWWKE0107 they have dual use currently and CWWKE0108 and CWWKE0109 are only used here.
+#
+
+error.clientNameCharacter=CWWKE0900E: Okre\u015blona nazwa \
+klienta zawiera niepoprawny znak (nazwa={0}). \
+Poprawne znaki to: Unicode alfanumeryczne (np. \
+0-9, a-z, A-Z), podkre\u015blenie (_), \u0142\u0105cznik (-), znak plus (+) i kropka (.). \
+Nazwa klienta nie mo\u017ce rozpoczyna\u0107 si\u0119 od \u0142\u0105cznika (-) ani kropki (.).
+error.clientNameCharacter.explanation=W nazwie klienta \
+u\u017cyto niepoprawnego znaku.
+error.clientNameCharacter.useraction=Zmie\u0144 nazw\u0119 klienta, \
+u\u017cywaj\u0105c tylko poprawnych znak\u00f3w: alfanumerycznych Unicode (np. 0-9, a-z, A-Z), podkre\u015blenie (_), \u0142\u0105cznik (-), znak plus (+) i kropka (.).
+
+warning.singleClient=CWWKE0901W: W wierszu komend mo\u017cna \
+okre\u015bli\u0107 tylko jeden klient. Kolejne nazwy zostan\u0105 zignorowane (klient={0}, \
+zignorowane={1}).
+warning.singleClient.explanation=W wierszu komend mo\u017cna \
+okre\u015bli\u0107 tylko jeden klient. Pierwsza nazwa klienta zosta\u0142a przetworzona. \
+Pozosta\u0142e nazwy zosta\u0142y zignorowane.
+warning.singleClient.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107. Okre\u015bl tylko jeden klient, aby unikn\u0105\u0107 wyst\u0119powania tego ostrze\u017cenia.
+
+# {0} The client name
+# {1} The client directory path
+# {2} The exception thrown when trying to create
+error.creatingNewClient=CWWKE0902E: Wyst\u0105pi\u0142 wyj\u0105tek \
+podczas tworzenia klienta {0}. Warto\u015b\u0107 clientPath: {1}, przyczyna: {2}
+error.creatingNewClient.explanation=Nie mo\u017cna utworzy\u0107 okre\u015blonego klienta.
+error.creatingNewClient.useraction=Sprawd\u017a i rozwi\u0105\u017c problem \
+b\u0119d\u0105cy przyczyn\u0105 wyj\u0105tku, a nast\u0119pnie spr\u00f3buj ponownie utworzy\u0107 klient.
+
+error.noExistingClient=CWWKE0903E: Okre\u015blony klient {0} \
+nie istnieje. U\u017cyj opcji --create, aby utworzy\u0107 nowy klient. Warto\u015b\u0107 clientPath: {1}
+error.noExistingClient.explanation=Okre\u015blony klient nie \
+istnieje, dlatego nie mo\u017cna wykona\u0107 dla niego dzia\u0142ania.
+error.noExistingClient.useraction=Sprawd\u017a nazw\u0119 klienta lub \
+utw\u00f3rz klient z okre\u015blon\u0105 nazw\u0105 i uruchom komend\u0119 ponownie.
+
+error.clientDirExists=CWWKE0904E: Nie mo\u017cna utworzy\u0107 \
+klienta o nazwie {0}, poniewa\u017c katalog klienta {1} ju\u017c istnieje.
+error.clientDirExists.explanation=Katalog klienta nie \
+mo\u017ce istnie\u0107 podczas tworzenia klienta.
+error.clientDirExists.useraction=Wybierz now\u0105 nazw\u0119 klienta \
+lub usu\u0144 katalog i uruchom komend\u0119 ponownie.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientExists=CWWKE0905E: Wyst\u0105pi\u0142 \
+wyj\u0105tek podczas tworzenia klienta {0}. Wykryto dzia\u0142anie zewn\u0119trzne w \u015bcie\u017cce \
+klienta ({1}), wi\u0119c tworzenie klienta zosta\u0142o zatrzymane.
+error.creatingNewClientExists.explanation=Nie mo\u017cna \
+utworzy\u0107 okre\u015blonego klienta, poniewa\u017c inna aplikacja wykonywa\u0142a operacje na \
+plikach w katalogu nowego klienta.
+error.creatingNewClientExists.useraction=Sprawd\u017a, dlaczego \
+w katalogu klienta odbywaj\u0105 si\u0119 dzia\u0142ania poza komend\u0105 tworzenia, usu\u0144 katalog \
+klienta i spr\u00f3buj utworzy\u0107 klient ponownie.
+
+# {0} The client name
+# {1} The client directory path
+error.creatingNewClientMkDirFail=CWWKE0906E: Wyst\u0105pi\u0142 \
+wyj\u0105tek podczas tworzenia klienta {0} w po\u0142o\u017ceniu {1}.
+error.creatingNewClientMkDirFail.explanation=Nie mo\u017cna \
+utworzy\u0107 okre\u015blonego klienta, poniewa\u017c nie ma wystarczaj\u0105cej ilo\u015bci miejsca w \
+celu jego utworzenia lub poniewa\u017c nie mo\u017cna zapisywa\u0107 w tym po\u0142o\u017ceniu.
+error.creatingNewClientMkDirFail.useraction=Upewnij si\u0119, \u017ce na \
+dysku jest wystarczaj\u0105ca ilo\u015b\u0107 miejsca do utworzenia klienta i \u017ce mo\u017cna \
+zapisywa\u0107 w tym po\u0142o\u017ceniu, a nast\u0119pnie spr\u00f3buj ponownie. 
+
+audit.launchTime.client=CWWKE0907I: Klient {0} zosta\u0142 uruchomiony.
+audit.launchTime.client.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+audit.launchTime.client.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+audit.kernelUpTime.client=CWWKE0908I: Klient {0} zosta\u0142 zatrzymany po {1}.
+audit.kernelUpTime.client.explanation=J\u0105dro zosta\u0142o zatrzymane po \
+okre\u015blonym czasie (w sekundach). Ten czas jest okre\u015blony wzgl\u0119dem czasu \
+uruchomienia platformy.
+audit.kernelUpTime.client.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# {0} The server name 
+info.java2security.started=CWWKE0909I: Serwer {0} zosta\u0142 uruchomiony z w\u0142\u0105czonymi zabezpieczeniami Java 2
+info.java2security.started.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+info.java2security.started.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+#{0} Cause of exception
+error.set.securitymanager=CWWKE0910E: Niepowodzenie ustawienia domy\u015blnego mened\u017cera zabezpiecze\u0144 z powodu wyj\u0105tku: {0}.  Ten problem wyst\u0119puje, gdy mened\u017cer zabezpiecze\u0144 zosta\u0142 ju\u017c ustawiony i metoda checkPermission nie zezwala na jego zast\u0105pienie.
+error.set.securitymanager.explanation=W\u0142\u0105czono zabezpieczenia Java 2, ale wyst\u0105pi\u0142 b\u0142\u0105d podczas ustawiania domy\u015blnego mened\u017cera zabezpiecze\u0144.
+error.set.securitymanager.useraction=Upewnij si\u0119, \u017ce mened\u017cer zabezpiecze\u0144 nie zosta\u0142 jeszcze ustawiony przez uruchomienie serwera z opcj\u0105 -Djava.security.manager.  \
+Je\u015bli mened\u017cer zosta\u0142 ju\u017c ustawiony, usu\u0144 opcj\u0119 -Djava.security.manager i zrestartuj serwer z w\u0142\u0105czonymi zabezpieczeniami Java 2, okre\u015blaj\u0105c w\u0142a\u015bciwo\u015b\u0107 websphere.java.security w pliku bootstrap.properties. 
+
+#{0} Cause of exception
+error.set.trace.securitymanager=CWWKE0911E: Niepowodzenie ustawienia mened\u017cera zabezpiecze\u0144 NoRethrow z powodu wyj\u0105tku: {0}.  Ten problem wyst\u0119puje, gdy mened\u017cer zabezpiecze\u0144 zosta\u0142 ju\u017c ustawiony i metoda checkPermission nie zezwala na jego zast\u0105pienie.
+error.set.trace.securitymanager.explanation=W\u0142\u0105czono zabezpieczenia Java 2, ale wyst\u0105pi\u0142 b\u0142\u0105d podczas ustawiania mened\u017cera zabezpiecze\u0144 NoRethrow.
+error.set.trace.securitymanager.useraction=Upewnij si\u0119, \u017ce mened\u017cer zabezpiecze\u0144 nie zosta\u0142 jeszcze ustawiony przez uruchomienie serwera z opcj\u0105 -Djava.security.manager.  \
+Je\u015bli mened\u017cer zosta\u0142 ju\u017c ustawiony, usu\u0144 opcj\u0119 -Djava.security.manager i zrestartuj serwer z w\u0142\u0105czonymi zabezpieczeniami Java 2, okre\u015blaj\u0105c w\u0142a\u015bciwo\u015b\u0107 websphere.java.security w pliku bootstrap.properties. 
+
+warning.java.security.permdenied=CWWKE0912W: Bie\u017c\u0105ca strategia zabezpiecze\u0144 \
+Java 2 zg\u0142osi\u0142a potencjalne naruszenie uprawnie\u0144 zabezpiecze\u0144 Java 2. {0} Uprawnienie: {1}. Kod: {2}{3}. Stos wywo\u0142a\u0144: {4}. Po\u0142o\u017cenie kodu podstawowego: {5}.
+warning.java.security.permdenied.explanation=Metoda checkPermission() mened\u017cera zabezpiecze\u0144 Java zg\u0142osi\u0142a wyj\u0105tek SecurityException dotycz\u0105cy danego uprawnienia.
+warning.java.security.permdenied.useraction=Sprawd\u017a, czy dana operacja jest dozwolona, i w razie potrzeby zaktualizuj plik strategii uprawnie\u0144 dla pakunku lub aplikacji.
+
+error.java.security.exception.codebase=CWWKE0913E: Wychwycono nieoczekiwany wyj\u0105tek podczas pr\u00f3by okre\u015blenia po\u0142o\u017cenia kodu podstawowego.  Wyj\u0105tek: {0}.  
+error.java.security.exception.codebase.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas okre\u015blania po\u0142o\u017cenia kodu podstawowego, kt\u00f3ry wygenerowa\u0142 wyj\u0105tek kontroli dost\u0119pu uprawnie\u0144 zabezpiecze\u0144 Java 2.
+error.java.security.exception.codebase.useraction=Szczeg\u00f3\u0142owe informacje mo\u017cna znale\u017a\u0107 w wyj\u0105tku i dziennikach serwera. \
+\ Upewnij si\u0119, \u017ce mened\u017cer zabezpiecze\u0144 nie zosta\u0142 jeszcze ustawiony przez uruchomienie serwera z opcj\u0105 -Djava.security.manager i okre\u015blenie opcji -Djava.security.policy.  \
+Je\u015bli co najmniej jeden z tych element\u00f3w zosta\u0142 ustawiony, usu\u0144 ustawienia i zrestartuj serwer z w\u0142\u0105czonymi zabezpieczeniami Java 2, okre\u015blaj\u0105c w\u0142a\u015bciwo\u015b\u0107 websphere.java.security w pliku bootstrap.properties.
+
+warning.zOS.java.security.permdenied1=CWWKE0914W: Bie\u017c\u0105ca strategia zabezpiecze\u0144 Java 2 zg\u0142osi\u0142a potencjalne naruszenie uprawnie\u0144 \
+zabezpiecze\u0144 Java 2. Wi\u0119cej informacji mo\u017cna znale\u017a\u0107 w Centrum Wiedzy. {0} Uprawnienie: {1}. Kod: {2}. Po\u0142o\u017cenie kodu podstawowego: {3}.
+warning.zOS.java.security.permdenied1.explanation=Metoda checkPermission() mened\u017cera zabezpiecze\u0144 Java zg\u0142osi\u0142a wyj\u0105tek SecurityException dotycz\u0105cy danego uprawnienia. Program wywo\u0142uj\u0105cy na stosie wywo\u0142a\u0144 nie ma wymaganych uprawnie\u0144.  Je\u015bli program wywo\u0142uj\u0105cy obs\u0142uguje ten wyj\u0105tek poprawnie, mo\u017ce to nie stanowi\u0107 problemu.
+warning.zOS.java.security.permdenied1.useraction=Sprawd\u017a, czy dana operacja jest dozwolona, analizuj\u0105c wszystkie pliki strategii zabezpiecze\u0144 Java 2 oraz kod aplikacji. Mog\u0105 by\u0107 wymagane dodatkowe uprawnienia, w niekt\u00f3rych fragmentach kodu na stosie wywo\u0142a\u0144 mo\u017ce by\u0107 wymagane wywo\u0142anie AccessController.doPrivileged lub mened\u017cer zabezpiecze\u0144 poprawnie uniemo\u017cliwi\u0142 dost\u0119p do zasobu, w przypadku kt\u00f3rego program wywo\u0142uj\u0105cy nie ma uprawnie\u0144 dost\u0119pu.
+
+warning.zOS.java.security.permdenied2=CWWKE0915W: Bie\u017c\u0105ca strategia zabezpiecze\u0144 Java 2 zg\u0142osi\u0142a potencjalne naruszenie uprawnie\u0144 \
+zabezpiecze\u0144 Java 2.  Stos wywo\u0142a\u0144: {0} 
+warning.zOS.java.security.permdenied2.explanation=Metoda checkPermission() mened\u017cera zabezpiecze\u0144 Java zg\u0142osi\u0142a wyj\u0105tek SecurityException. Program wywo\u0142uj\u0105cy na stosie wywo\u0142a\u0144 nie ma wymaganych uprawnie\u0144.
+warning.zOS.java.security.permdenied2.useraction=Sprawd\u017a, czy dana operacja jest dozwolona, analizuj\u0105c wszystkie pliki zabezpiecze\u0144 Java 2 oraz kod aplikacji. Mog\u0105 by\u0107 wymagane dodatkowe uprawnienia.   
+
+error.client.runner.missing=CWWKE0916E: CWWKE0916E: Sk\u0142adnik klienta nie zosta\u0142 w\u0142\u0105czony. Przejrzyj komunikaty o b\u0142\u0119dach.
+error.client.runner.missing.explanation=Sk\u0142adnik klienta nie zosta\u0142 w\u0142\u0105czony lub wyst\u0105pi\u0142 b\u0142\u0105d podczas \u0142adowania tego sk\u0142adnika.
+error.client.runner.missing.useraction=Upewnij si\u0119, \u017ce sk\u0142adnik klienta jest w\u0142\u0105czony, i sprawd\u017a, czy istniej\u0105 komunikaty o b\u0142\u0119dach.
+
+error.client.runner=CWWKE0917E: Aplikacja kliencka zg\u0142osi\u0142a b\u0142\u0105d.
+error.client.runner.explanation=Produkt odebra\u0142 b\u0142\u0105d z uruchomionej aplikacji klienckiej.
+error.client.runner.useraction=Sprawd\u017a komunikaty o b\u0142\u0119dach, aby uzyska\u0107 szczeg\u00f3\u0142owe informacje na temat b\u0142\u0119du aplikacji klienckiej.
+
+# {0} server name
+# {1} host name
+# {2} logs location
+# {3} unique request id
+error.mbean.operation.failure=CWWKE0918E:  Nie mo\u017cna wykona\u0107 \u017c\u0105danej operacji. Szczeg\u00f3\u0142owe informacje zawieraj\u0105 dzienniki serwera profilu Liberty {0} na ho\u015bcie {1} w po\u0142o\u017ceniu {2} dla \u017c\u0105dania {3}.
+error.mbean.operation.failure.explanation=Podczas pr\u00f3by wykonania \u017c\u0105danej operacji wyst\u0105pi\u0142 b\u0142\u0105d.
+error.mbean.operation.failure.useraction=Szczeg\u00f3\u0142owe informacje na temat b\u0142\u0119du operacji zawieraj\u0105 dzienniki serwera.
+
+java.security.permdenied.class.info=CWWKE0919I: Niepoprawna klasa: {0}
+java.security.permdenied.class.info.explanation=Metoda \
+checkPermission() mened\u017cera zabezpiecze\u0144 Java zg\u0142osi\u0142a wyj\u0105tek \
+SecurityException, poniewa\u017c klasa nie ma wymaganych uprawnie\u0144.
+java.security.permdenied.class.info.useraction=Sprawd\u017a, czy dana operacja jest dozwolona, i w razie potrzeby zaktualizuj plik strategii uprawnie\u0144 dla pakunku lub aplikacji.
+
+java.security.permdenied.codebaseloc.info=CWWKE0920I: Po\u0142o\u017cenie kodu podstawowego: {0}
+java.security.permdenied.codebaseloc.info.explanation=Metoda checkPermission() mened\u017cera zabezpiecze\u0144 Java zg\u0142osi\u0142a wyj\u0105tek \
+SecurityException dla klasy w okre\u015blonym po\u0142o\u017ceniu kodu podstawowego.
+java.security.permdenied.codebaseloc.info.useraction=Sprawd\u017a, czy dana operacja jest dozwolona, i w razie potrzeby zaktualizuj plik strategii uprawnie\u0144 dla pakunku lub aplikacji.
+
+warning.java.security.permdenied.quickmsg=CWWKE0921W: Bie\u017c\u0105ca strategia zabezpiecze\u0144 \
+Java 2 zg\u0142osi\u0142a potencjalne naruszenie uprawnie\u0144 zabezpiecze\u0144 Java 2. {0}
+warning.java.security.permdenied.quickmsg.explanation=Metoda checkPermission() mened\u017cera zabezpiecze\u0144 Java zg\u0142osi\u0142a wyj\u0105tek SecurityException dotycz\u0105cy danego uprawnienia.
+warning.java.security.permdenied.quickmsg.useraction=Sprawd\u017a, czy dana operacja jest dozwolona, i w razie potrzeby zaktualizuj plik strategii uprawnie\u0144 dla pakunku lub aplikacji.
+
+error.package.missingLibExtractDir=CWWKE0922E: Nie mo\u017cna \
+wykona\u0107 komendy tworzenia pakietu, poniewa\u017c brak instalacji w katalogu lib/extract.
+error.package.missingLibExtractDir.explanation=Katalog \
+lib/extract zawiera metadane i samorozpakowuj\u0105ce si\u0119 klasy wymagane \
+do wykonania komendy tworzenia pakietu.  Brak katalogu mo\u017ce wskazywa\u0107, \u017ce \
+instalacja profilu Liberty serwera WebSphere by\u0142a \
+niekompletna lub usuni\u0119to ten katalog.
+error.package.missingLibExtractDir.useraction=Reinstaluj \
+profil Liberty serwera WebSphere i upewnij si\u0119, \u017ce w katalogu WLP_HOME \
+znajduje si\u0119 katalog lib/extract.
+
+info.server.pause.all.request.received=CWWKE0923I: Odebrano \u017c\u0105danie wstrzymania wszystkich mo\u017cliwych do wstrzymania komponent\u00f3w na serwerze.
+info.server.pause.all.request.received.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wstrzymania wszystkich mo\u017cliwych do wstrzymania komponent\u00f3w na serwerze. Serwer podejmie pr\u00f3b\u0119 wstrzymania tych komponent\u00f3w. 
+info.server.pause.all.request.received.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.server.pause.request.received=CWWKE0924I: Odebrano \u017c\u0105danie wstrzymania nast\u0119puj\u0105cych komponent\u00f3w na serwerze: {0}.
+info.server.pause.request.received.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wstrzymania okre\u015blonych komponent\u00f3w na serwerze. Serwer podejmie pr\u00f3b\u0119 wstrzymania tych komponent\u00f3w. 
+info.server.pause.request.received.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.server.resume.all.request.received=CWWKE0925I: Odebrano \u017c\u0105danie wznowienia wszystkich wstrzymanych komponent\u00f3w na serwerze.
+info.server.resume.all.request.received.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wznowienia wszystkich wstrzymanych komponent\u00f3w na serwerze. Serwer podejmie pr\u00f3b\u0119 wznowienia tych komponent\u00f3w.
+info.server.resume.all.request.received.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.server.resume.request.received=CWWKE0926I: Odebrano \u017c\u0105danie wznowienia nast\u0119puj\u0105cych komponent\u00f3w na serwerze: {0}.
+info.server.resume.request.received.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wznowienia okre\u015blonych komponent\u00f3w na serwerze. Serwer podejmie pr\u00f3b\u0119 wznowienia tych komponent\u00f3w, je\u015bli zosta\u0142y wstrzymane.
+info.server.resume.request.received.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+error.pause.request.failed=CWWKE0927E: Odebrano \u017c\u0105danie wstrzymania, ale infrastruktura wstrzymywania komponent\u00f3w nie jest dost\u0119pna. Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania. 
+error.pause.request.failed.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wstrzymania. Jednak \u017c\u0105dania nie mo\u017cna by\u0142o przetworzy\u0107. Serwer mo\u017ce by\u0107 nadal inicjowany lub zamykany.
+error.pause.request.failed.useraction=Sprawd\u017a, czy serwer zosta\u0142 w pe\u0142ni zainicjowany i czy nie jest w\u0142a\u015bnie zamykany.
+
+error.resume.request.failed=CWWKE0928E: Odebrano \u017c\u0105danie wznowienia, ale infrastruktura wstrzymywania komponent\u00f3w nie jest dost\u0119pna. Nie mo\u017cna przetworzy\u0107 \u017c\u0105dania. 
+error.resume.request.failed.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wznowienia, ale \u017c\u0105dania nie mo\u017cna by\u0142o przetworzy\u0107. Serwer mo\u017ce by\u0107 nadal inicjowany lub zamykany.
+error.resume.request.failed.useraction=Sprawd\u017a, czy serwer zosta\u0142 w pe\u0142ni zainicjowany i czy nie jest w\u0142a\u015bnie zamykany.
+
+error.server.pause.failed=CWWKE0929E: \u017b\u0105danie wstrzymania zosta\u0142o wykonane, ale wstrzymanie nast\u0119puj\u0105cych komponent\u00f3w nie powiod\u0142o si\u0119: {0}
+error.server.pause.failed.explanation=Serwer przetworzy\u0142 \u017c\u0105danie wstrzymania, ale wstrzymanie niekt\u00f3rych mo\u017cliwych do wstrzymania komponent\u00f3w nie powiod\u0142o si\u0119. Wszystkie pozosta\u0142e mo\u017cliwe do wstrzymania komponenty zosta\u0142y pomy\u015blnie wstrzymane.
+error.server.pause.failed.useraction=Sprawd\u017a, czy w dziennikach serwera nie ma dodatkowych b\u0142\u0119d\u00f3w dla komponent\u00f3w, kt\u00f3rych dotyczy\u0142o niepowodzenie.
+
+error.server.resume.failed=CWWKE0930E: \u017b\u0105danie wznowienia zosta\u0142o wykonane, ale wznowienie nast\u0119puj\u0105cych komponent\u00f3w nie powiod\u0142o si\u0119: {0}
+error.server.resume.failed.explanation=Serwer przetworzy\u0142 \u017c\u0105danie wznowienia, ale wznowienie niekt\u00f3rych wstrzymanych komponent\u00f3w nie powiod\u0142o si\u0119. Wszystkie pozosta\u0142e wstrzymane komponenty zosta\u0142y pomy\u015blnie wznowione.
+error.server.resume.failed.useraction=Sprawd\u017a, czy w dziennikach serwera nie ma dodatkowych b\u0142\u0119d\u00f3w dla komponent\u00f3w, kt\u00f3rych dotyczy\u0142o niepowodzenie.
+
+warning.server.pause.invalid.targets=CWWKE0931W: Odebrano \u017c\u0105danie wstrzymania okre\u015blonych komponent\u00f3w, ale lista komponent\u00f3w w opcji docelowej by\u0142a pusta. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.pause.invalid.targets.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wstrzymania z pust\u0105 list\u0105 docelow\u0105 w opcji docelowej. \u017b\u0105danie zosta\u0142o wykonane, ale nie zosta\u0142o podj\u0119te \u017cadne dzia\u0142anie.
+warning.server.pause.invalid.targets.useraction=W opcji docelowej podaj list\u0119 komponent\u00f3w do wstrzymania. Aby wstrzyma\u0107 wszystkie mo\u017cliwe do wstrzymania komponenty na serwerze, wy\u015blij \u017c\u0105danie wstrzymania bez opcji docelowej.
+
+warning.server.resume.invalid.targets=CWWKE0932W: Odebrano \u017c\u0105danie wznowienia okre\u015blonych komponent\u00f3w, ale lista komponent\u00f3w w opcji docelowej by\u0142a pusta. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.resume.invalid.targets.explanation=U\u017cytkownik wys\u0142a\u0142 \u017c\u0105danie wznowienia z pust\u0105 list\u0105 docelow\u0105 w opcji docelowej. \u017b\u0105danie zosta\u0142o wykonane, ale nie zosta\u0142o podj\u0119te \u017cadne dzia\u0142anie.
+warning.server.resume.invalid.targets.useraction=W opcji docelowej podaj list\u0119 komponent\u00f3w do wznowienia. Aby wznowi\u0107 wszystkie wstrzymane komponenty na serwerze, wy\u015blij \u017c\u0105danie wstrzymania bez opcji docelowej.
+
+warning.server.pause.no.targets=CWWKE0933W: Odebrano \u017c\u0105danie wstrzymania, ale na serwerze nie znaleziono komponent\u00f3w mo\u017cliwych do wstrzymania. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.pause.no.targets.explanation=Serwer przetworzy\u0142 \u017c\u0105danie wstrzymania, ale na serwerze nie znaleziono komponent\u00f3w mo\u017cliwych do wstrzymania. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.pause.no.targets.useraction=Sprawd\u017a, czy na serwerze s\u0105 dost\u0119pne komponenty mo\u017cliwe do wstrzymania.
+
+warning.server.resume.no.targets=CWWKE0934W: Odebrano \u017c\u0105danie wznowienia, ale na serwerze nie znaleziono komponent\u00f3w mo\u017cliwych do wstrzymania. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.resume.no.targets.explanation=Serwer przetworzy\u0142 \u017c\u0105danie wznowienia, ale nie znaleziono komponent\u00f3w mo\u017cliwych do wstrzymania. Nie podj\u0119to \u017cadnego dzia\u0142ania.
+warning.server.resume.no.targets.useraction=Sprawd\u017a, czy na serwerze s\u0105 dost\u0119pne komponenty mo\u017cliwe do wstrzymania.
+
+warning.server.pause.missing.targets=CWWKE0935W: Odebrano \u017c\u0105danie wstrzymania, ale nie mo\u017cna by\u0142o znale\u017a\u0107 nast\u0119puj\u0105cych komponent\u00f3w: {0}.
+warning.server.pause.missing.targets.explanation=Serwer przetworzy\u0142 \u017c\u0105danie wstrzymania, ale nie mo\u017cna by\u0142o znale\u017a\u0107 niekt\u00f3rych komponent\u00f3w. \u017b\u0105danie zosta\u0142o pomy\u015blnie przetworzone dla wszystkich innych podanych komponent\u00f3w.
+warning.server.pause.missing.targets.useraction=Sprawd\u017a, czy nazwy podanych komponent\u00f3w s\u0105 poprawne oraz czy te komponenty zosta\u0142y zarejestrowane na serwerze i czy mo\u017cna je wstrzymywa\u0107.
+
+warning.server.resume.missing.targets=CWWKE0936W: Odebrano \u017c\u0105danie wznowienia, ale nie mo\u017cna by\u0142o znale\u017a\u0107 nast\u0119puj\u0105cych komponent\u00f3w: {0}.
+warning.server.resume.missing.targets.explanation=Serwer przetworzy\u0142 \u017c\u0105danie wznowienia, ale nie znaleziono niekt\u00f3rych komponent\u00f3w. \u017b\u0105danie zosta\u0142o pomy\u015blnie przetworzone dla wszystkich innych podanych komponent\u00f3w.
+warning.server.resume.missing.targets.useraction=Sprawd\u017a, czy nazwy podanych komponent\u00f3w s\u0105 poprawne oraz czy te komponenty zosta\u0142y zarejestrowane na serwerze i czy mo\u017cna je wstrzymywa\u0107.
+
+warning.server.status.missing.targets=CWWKE0937W: Odebrano \u017c\u0105danie statusu, ale nie mo\u017cna by\u0142o znale\u017a\u0107 nast\u0119puj\u0105cych komponent\u00f3w: {0}.
+warning.server.status.missing.targets.explanation=Serwer przetworzy\u0142 \u017c\u0105danie statusu, ale nie znaleziono niekt\u00f3rych komponent\u00f3w. \u017b\u0105danie zosta\u0142o pomy\u015blnie przetworzone dla wszystkich innych podanych komponent\u00f3w.
+warning.server.status.missing.targets.useraction=Sprawd\u017a, czy nazwy podanych komponent\u00f3w s\u0105 poprawne oraz czy te komponenty zosta\u0142y zarejestrowane na serwerze i czy mo\u017cna je wstrzymywa\u0107.
+
+info.server.pause.request.completed=CWWKE0938I: \u017b\u0105danie wstrzymania zosta\u0142o wykonane.
+info.server.pause.request.completed.explanation=\u017b\u0105danie wstrzymania zosta\u0142o wykonane.
+info.server.pause.request.completed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.server.resume.request.completed=CWWKE0939I: \u017b\u0105danie wznowienia zosta\u0142o wykonane.
+info.server.resume.request.completed.explanation=\u017b\u0105danie wznowienia zosta\u0142o wykonane.
+info.server.resume.request.completed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+info.envProductExtension=CWWKE0940I: Rozszerzenie produktu {0} ma identyfikator {1}, a miejscem instalacji produktu jest {2}. To rozszerzenie produktu zosta\u0142o w\u0142\u0105czone przez okre\u015blenie zmiennej \u015brodowiskowej WLP_PRODUCT_EXT_DIR. 
+info.envProductExtension.explanation= Zmienna \u015brodowiskowa WLP_PRODUCT_EXT_DIR wskazuje po\u0142o\u017cenie rozszerzenia produktu. Serwer znalaz\u0142 to rozszerzenie produktu i u\u017cywa go.
+info.envProductExtension.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+warning.variable.invalid=CWWKE0941W: Deklaracja zmiennej {0} okre\u015blona w pliku server.env jest niepoprawna, poniewa\u017c zawiera znaki inne ni\u017c alfanumeryczne w nazwie zmiennej. Warto\u015b\u0107 nie b\u0119dzie u\u017cywana. 
+warning.variable.invalid.explanation=W nazwach zmiennych okre\u015blonych w pliku server.env dozwolone s\u0105 tylko znaki alfanumeryczne.
+warning.variable.invalid.useraction=Zmodyfikuj nazw\u0119 zmiennej, u\u017cywaj\u0105c tylko znak\u00f3w alfanumerycznych, albo przenie\u015b definicj\u0119 zmiennej do pliku bootstrap.properties.
+
+info.serverStarting=Uruchamianie serwera {0}.
+info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.
+info.serverStartedWithPID=Serwer {0} zosta\u0142 \
+uruchomiony. ID procesu: {1}.
+info.serverIsRunning=Serwer {0} jest uruchomiony.
+info.clientIsRunning=Klient {0} jest uruchomiony.
+info.serverIsAlreadyRunning=Serwer {0} jest ju\u017c uruchomiony.
+info.serverIsRunningWithPID=Serwer {0} jest \
+uruchomiony. ID procesu: {1}.
+info.serverIsAlreadyRunningWithPID=Serwer {0} jest ju\u017c uruchomiony. Identyfikator procesu: {1}.
+info.serverNotRunning=Serwer {0} nie jest uruchomiony.
+info.serverStopping=Zatrzymywanie serwera {0}.
+info.serverStopped=Serwer {0} jest zatrzymany.
+info.serverNotExist=Serwer {0} nie istnieje.
+info.clientNotExist=Klient {0} nie istnieje.
+info.serverPackaging=Tworzenie pakietu serwera {0}.
+info.clientPackaging=Pakowanie klienta {0}.
+info.serverPackagingCollectingInformation=Odpytywanie serwera {0} o tre\u015b\u0107.
+info.serverPackagingBuildingArchive=Tworzenie \
+archiwum dla serwera {0}.
+info.serverPackageComplete=Zako\u0144czono tworzenie \
+pakietu serwera {0}. Czas: {1}.
+info.clientPackageComplete=Zako\u0144czono tworzenie pakietu klienta {0}. Czas: {1}.
+info.serverDumping=Tworzenie zrzutu serwera {0}.
+info.serverDumpComplete=Zako\u0144czono tworzenie \
+zrzutu serwera {0}. Czas: {1}.
+info.serverDumpCompleteZos=\u017b\u0105danie systemowego \
+zrzutu transakcji serwera {0} (System Transaction Dump - SYSTDUMP) jest zako\u0144czone.
+info.serverStartException=Uruchomienie serwera {0} nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe \
+informacje zawiera dziennik serwera.
+info.serverStartUnreachable=Nie mo\u017cna okre\u015bli\u0107 \
+statusu serwera {0}. Usu\u0144 plik {1}, je\u015bli ID procesu {2} nie wskazuje procesu \
+serwera.
+info.serverStatusException=Nie mo\u017cna okre\u015bli\u0107 \
+statusu serwera {0}. Szczeg\u00f3\u0142owe informacje zawiera dziennik serwera.
+info.serverStopException=Zatrzymanie serwera {0} nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe informacje zawiera dziennik serwera.
+info.serverPackageException=Tworzenie pakietu serwera {0} nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe informacje zawiera dziennik serwera.
+info.serverPackageUnreachable=Tworzenie pakietu serwera {0} nie powiod\u0142o si\u0119. Przed spakowaniem nale\u017cy zatrzyma\u0107 serwer.
+info.clientPackageException=Tworzenie pakietu klienta {0} nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe informacje zawieraj\u0105 dzienniki klienta.
+info.clientPackageUnreachable=Tworzenie pakietu klienta {0} nie powiod\u0142o si\u0119. Przed spakowaniem nale\u017cy zatrzyma\u0107 klient.
+info.serverDumpOptionUnsupported=Serwer {0} nie obs\u0142uguje typu zrzutu \u015brodowiska Java {1}.
+info.serverDumpException=Wykonywanie zrzutu serwera {0} nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe informacje zawiera dziennik serwera.
+info.unableZipFile=Nie mo\u017cna zarchiwizowa\u0107 pliku {0}. Przyczyna: {1}.
+info.LibInventoryGenerationException=Nie mo\u017cna wygenerowa\u0107 spisu zasob\u00f3w biblioteki podczas zrzutu serwera {0}.
+info.defaultServer=Nie okre\u015blono serwera. Zostanie \
+u\u017cyty serwer domy\u015blny: {0}
+info.defaultClient=Nie okre\u015blono klienta. Zostanie \
+u\u017cyty serwer domy\u015blny: {0}
+info.runtimePackaging=Pakowanie \u015brodowiska wykonawczego Liberty.
+info.runtimePackageComplete=Pakiet \u015brodowiska wykonawczego jest gotowy w {0}.
+info.runtimePackageException=Utworzenie pakietu \
+\u015brodowiska wykonawczego nie powiod\u0142o si\u0119. Szczeg\u00f3\u0142owe informacje zawiera dziennik serwera.
+
+# For info.serverLaunch and info.serverVersion: 
+# {0} version (build and/or product name)
+# {1} java.vm.name, e.g. IBM J9 VM
+# {2} java.runtime.version, e.g. pxp3260_26sr2ifx-20120419_02 (SR2) (en_US)
+# {3} server name, only applicable for info.serverLaunch
+# The order of the inserts is important and must be preserved
+info.serverLaunch=Uruchamianie serwera {3} ({0}) na {1}, wersja {2}
+info.serverVersion={0} na {1}, wersja {2}
+
+info.configRoot=Dokument konfiguracji: {0}
+info.bootProp=W\u0142a\u015bciwo\u015bci startu: {0}
+info.cmdArgs=Parametry: {0}
+info.consolePort=Nas\u0142uchiwanie na porcie {0}... 
+info.newServerCreated=Serwer {0} zosta\u0142 utworzony.
+info.newClientCreated=Klient {0} zosta\u0142 utworzony.
+info.days={0} dn.
+info.hours={0} godz.
+info.minutes={0} min.
+info.seconds={0} sek.
+info.configNotExist=Plik server.xml nie zosta\u0142 okre\u015blony
+info.syslogs=Dane wyj\u015bciowe zosta\u0142y przekierowane do \
+plik\u00f3w SystemOut.log i SystemErr.log w katalogu {0}
+info.initlogs=Przekierowanie wyj\u015bcia \
+standardowego i standardowego wyj\u015bcia b\u0142\u0119d\u00f3w do pliku {0} 
+
+info.no.servers.defined=Brak serwer\u00f3w zdefiniowanych wzgl\u0119dem katalogu u\u017cytkownika {0}.
+info.list.of.defined.servers=Nast\u0119puj\u0105ce serwery zosta\u0142y zdefiniowane wzgl\u0119dem katalogu u\u017cytkownika {0}.
+info.communicate.server=Wyst\u0105pi\u0142 b\u0142\u0105d komunikacji \
+mi\u0119dzy komend\u0105 {0} i serwerem {1}.

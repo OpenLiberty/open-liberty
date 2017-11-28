@@ -1,0 +1,97 @@
+###############################################################################
+# Copyright (c) 2014, 2015 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+#CMVCPATHNAME com.ibm.ws.concurrent.persistent/resources/com/ibm/ws/concurrent/persistent/resources/CWWKCMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+#COMPONENTPREFIX CWWKC
+#COMPONENTNAMEFOR CWWKC Persistent Scheduled Executor
+#
+# NLS_MESSAGEFORMAT_VAR
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat 
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+
+# All messages must use the range CWWCK1500 to CWWCK1999 except those specifically identified as moved
+
+# Java class and method names that should not be translated:
+# Future, get, getDelay, getResult, getNextExecutionTime, isCancelled, isDone, ScheduledFuture, TaskStatus
+
+CWWKC1500.task.rollback.retry=CWWKC1500W: Executor persistente {0} ha eseguito il roll back dell''attivit\u00e0 {1}. L''attivit\u00e0 \u00e8 pianificata per ripetersi dopo {2} secondi.
+CWWKC1500.task.rollback.retry.explanation=Esecuzione attivit\u00e0 contrassegnata per il roll back. L'attivit\u00e0 sar\u00e0 ritentata dopo il numero specificato di secondi.
+CWWKC1500.task.rollback.retry.useraction=Attendere la ripetizione dell'attivit\u00e0.
+
+CWWKC1501.task.failure.retry=CWWKC1501W: Executor persistente {0} ha eseguito il roll back dell''attivit\u00e0 {1} a causa dell''errore {2}. L''attivit\u00e0 \u00e8 pianificata per ripetersi dopo {3} secondi.
+CWWKC1501.task.failure.retry.explanation=Esecuzione attivit\u00e0 non riuscita e ne \u00e8 stato eseguito il roll back. L'attivit\u00e0 sar\u00e0 ritentata dopo il numero specificato di secondi.
+CWWKC1501.task.failure.retry.useraction=Se l'errore \u00e8 temporaneo, attendere la ripetizione dell'attivit\u00e0. Altrimenti, correggere la causa dell'errore se l'errore \u00e8 imprevisto.
+
+CWWKC1502.task.rollback=CWWKC1502W: Executor persistente {0} ha eseguito il roll back dell''attivit\u00e0 {1}.
+CWWKC1502.task.rollback.explanation=Esecuzione attivit\u00e0 contrassegnata per il roll back.
+CWWKC1502.task.rollback.useraction=Se il rollback \u00e8 imprevisto, ripianificare l'attivit\u00e0.
+
+CWWKC1503.task.failure=CWWKC1503W: Executor persistente {0} ha eseguito il roll back dell''attivit\u00e0 {1} a causa dell''errore {2}.
+CWWKC1503.task.failure.explanation=Esecuzione attivit\u00e0 non riuscita e ne \u00e8 stato eseguito il roll back.
+CWWKC1503.task.failure.useraction=Correggere la causa dell'errore se l'errore \u00e8 imprevisto e ripianificare l'attivit\u00e0.
+
+CWWKC1510.retry.limit.reached.rollback=CWWKC1510W: L''executor persistente {0} ha interrotto l''attivit\u00e0 {1} perch\u00e9 ne \u00e8 stato eseguito il rollback oppure non \u00e8 riuscita per {2} volte consecutive.
+CWWKC1510.retry.limit.reached.rollback.explanation=L'attivit\u00e0 ha raggiunto il limite di nuovi tentativi consecutivi e non verr\u00e0 tentata nuovamente.
+CWWKC1510.retry.limit.reached.rollback.useraction=Se i rollback o l'errore sono impresisti, determinare la causa e ripianificare l'attivit\u00e0. Se i rollback e gli errori sono intermittenti, valutare un aumento del limite di nuovi tentativi.
+
+CWWKC1511.retry.limit.reached.failed=CWWKC1511W: L''executor persistente {0} ha interrotto l''attivit\u00e0 {1} perch\u00e9 ne \u00e8 stato eseguito il rollback oppure non \u00e8 riuscita per {2} volte consecutive. L''errore finale \u00e8 {3}.
+CWWKC1511.retry.limit.reached.failed.explanation=L'attivit\u00e0 ha raggiunto il limite di nuovi tentativi consecutivi e non verr\u00e0 tentata nuovamente.
+CWWKC1511.retry.limit.reached.failed.useraction=Se i rollback o gli errori sono impresisti, determinare la causa e ripianificare l'attivit\u00e0. Se i rollback e gli errori sono intermittenti, valutare un aumento del limite di nuovi tentativi.
+
+CWWKC1540.thread.cannot.submit.tasks=CWWKC1540E: Non \u00e8 possibile pianificare delle attivit\u00e0 persistenti dal contesto del thread corrente.
+CWWKC1540.thread.cannot.submit.tasks.explanation=Pianificare delle attivit\u00e0 persistenti solo da un thread associato a un'applicazione o a una funzione con un'identit\u00e0 di programma di caricamento classe serializzabile.
+CWWKC1540.thread.cannot.submit.tasks.useraction=Assicurarsi che il contesto per l'applicazione o la funzione sia presente nel thread quando si pianificano le attivit\u00e0.
+
+# {0} method name: either isDone or isCancelled
+CWWKC1550.status.unavailable.until.ended=CWWKC1550E: \u00c8 possibile richiamare il metodo {0} solo sul TaskStatus ottenuto dopo il termine dell''attivit\u00e0. Determinare se l''attivit\u00e0 era terminata quando \u00e8 stata ottenuta un''istanza TaskStatus verificando che il valore getNextExecutionTime sia null.
+CWWKC1550.status.unavailable.until.ended.explanation=TaskStatus \u00e8 un'istantanea non mutabile dello stato dell'attivit\u00e0. Qualsiasi valore restituito da isDone o isCancelled prima del termine dell'attivit\u00e0 diventer\u00e0 non valido dopo il termine dell'attivit\u00e0. Un errore viene generato quando viene effettuato un tentativo prima che l'attivit\u00e0 termini per evitare la restituzione di un valore non affidabile.
+CWWKC1550.status.unavailable.until.ended.useraction=Utilizzare il metodo getNextExecutionTime per determinare se un'attivit\u00e0 \u00e8 terminata. Utilizzare i metodi isDone e isCancelled solo se l'attivit\u00e0 \u00e8 terminata.
+
+CWWKC1551.result.unavailable.until.ended=CWWKC1551E: \u00c8 possibile richiamare il metodo get solo sul TaskStatus ottenuto dopo il termine dell'attivit\u00e0. Utilizzare il metodo getResult per ottenere il risultato dell'esecuzione che risultava essere la pi\u00f9 recente quando \u00e8 stata ottenuta l'istanza TaskStatus.
+CWWKC1551.result.unavailable.until.ended.explanation=TaskStatus \u00e8 un'istantanea non mutabile dello stato dell'attivit\u00e0. Qualsiasi valore restituito prima del termine dell'attivit\u00e0 diventer\u00e0 non valido dopo il completamento di un altro tentativo di esecuzione o dopo il termine dell'attivit\u00e0. Un errore viene generato quando viene effettuato un tentativo prima che l'attivit\u00e0 termini per evitare la restituzione di un valore non affidabile.
+CWWKC1551.result.unavailable.until.ended.useraction=Utilizzare il metodo getResult per ottenere il risultato del tentativo di esecuzione che risultava essere il pi\u00f9 recente quando \u00e8 stata ottenuta l'istanza TaskStatus. 
+
+CWWKC1552.delay.unavailable=CWWKC1552E: \u00c8 possibile richiamare il metodo getDelay solo sul TaskStatus per le attivit\u00e0 ad esecuzione unica. Per le attivit\u00e0 ripetute e per quelle pianificate con un trigger, utilizzare il metodo getNextExecutionTime per ottenere la successiva ora di esecuzione prevista dopo l'esecuzione che risultava essere la pi\u00f9 recente quando \u00e8 stato ottenuto il TaskStatus.
+CWWKC1552.delay.unavailable.explanation=TaskStatus \u00e8 un'istantanea non mutabile dello stato dell'attivit\u00e0. Qualsiasi valore restituito da getDelay prima del termine dell'attivit\u00e0 diventer\u00e0 non valido dopo il completamento di un altro tentativo di esecuzione. Un errore viene generato quando viene effettuato un tentativo prima che l'attivit\u00e0 termini per evitare la restituzione di un valore non affidabile.
+CWWKC1552.delay.unavailable.useraction=Utilizzare il metodo getNextExecutionTime per ottenere la successiva ora di esecuzione prevista che corrisponde all'ora in cui \u00e8 stato ottenuto il TaskStatus.
+
+# {0} persistent executor id
+# {1} task id (and name in parenthesis if any)
+CWWKC1553.result.inaccessible=CWWKC1553E: L''executor persistente {0} non \u00e8 in grado di ottenere il risultato dell''attivit\u00e0 {1}. Fare riferimento all''eccezione di causa.
+CWWKC1553.result.inaccessible.explanation=Si \u00e8 verificato un errore che ha impedito di ottenere il risultato dell'attivit\u00e0.
+CWWKC1553.result.inaccessible.useraction=Fare riferimento all'eccezione di causa per risolvere il problema e ripianificare quindi l'attivit\u00e0.
+
+# {0} task id (and name in parenthesis if any)
+CWWKC1554.general.task.failure=CWWKC1554E: Esecuzione dell''attivit\u00e0 {0} non riuscita. Fare riferimento all''eccezione di causa.
+CWWKC1554.general.task.failure.explanation=L'esecuzione dell'attivit\u00e0 non \u00e8 riuscita a causa dell'eccezione specificata.
+CWWKC1554.general.task.failure.useraction=Fare riferimento all'eccezione di causa per risolvere il problema e ripianificare quindi l'attivit\u00e0.
+
+# {0} task id (and name in parenthesis if any)
+# {1} number of consecutive failures/rollbacks
+CWWKC1555.retry.limit.reached=CWWKC1555E: L''attivit\u00e0 {0} \u00e8 stata interrotta perch\u00e9 ne \u00e8 stato eseguito il rollback oppure non \u00e8 riuscita per {1} volte consecutive.
+CWWKC1555.retry.limit.reached.explanation=L'attivit\u00e0 ha raggiunto il limite di nuovi tentativi consecutivi e non verr\u00e0 tentata nuovamente.
+CWWKC1555.retry.limit.reached.useraction=Fare riferimento all'eccezione di causa per risolvere il problema e ripianificare quindi l'attivit\u00e0. Se il problema \u00e8 intermittente, valutare un aumento del limite di nuovi tentativi.
+
+# {0} name of application that scheduled the task
+CWWKC1556.task.exec.deferred=CWWKC1556W: L''esecuzione delle attivit\u00e0 dall''applicazione {0} \u00e8 rimandata fino a quando l''applicazione e i moduli che hanno pianificato l''attivit\u00e0 non sono disponibili.
+CWWKC1556.task.exec.deferred.explanation=L'applicazione e il modulo che hanno pianificato un'attivit\u00e0 devono essere disponibili perch\u00e9 l'attivit\u00e0 possa essere eseguita.
+CWWKC1556.task.exec.deferred.useraction=Assicurarsi che l'applicazione e il modulo che hanno pianificato l'attivit\u00e0 siano disponibili. In alternativa, annullare l'attivit\u00e0 se non \u00e8 pi\u00f9 necessaria.
+
+# {0} request id
+# {1} stack trace
+CWWKC1559.mbean.operation.failure=CWWKC1559E:  Si \u00e8 verificato un errore. Richiesta {0}. {1}
+CWWKC1559.mbean.operation.failure.explanation=Si \u00e8 verificato un errore durante il tentativo di eseguire l'operazione richiesta.
+CWWKC1559.mbean.operation.failure.useraction=Per ulteriori informazioni sull'errore dell'operazione, controllare i log del server.

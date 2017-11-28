@@ -1,0 +1,41 @@
+###############################################################################
+# Copyright (c) 2011 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License v1.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-v10.html
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# -------------------------------------------------------------------------------------------------
+
+# NLS_MESSAGEFORMAT_ALL
+#
+#CMVCPATHNAME com.ibm.ws.jaxrs-2.0.ejb/resources/com/ibm/ws/jaxrs20/ejb/internal/resources/JaxRsEJBMessages.nlsprops
+#ISMESSAGEFILE TRUE
+#COMPONENTPREFIX CWWKW
+#COMPONENTNAMEFOR CWWKW WebSphere JAXRS EJB Code
+#RANGE 1100 - 1199
+#
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+
+
+
+warning.jaxrs.ejb.resource.mismatch=CWWKW1100W: JAXRS-2.0 \u8cc7\u6e90 {0} \u7bc4\u570d {1} \u4e0d\u7b26\u5408 EJB \u7bc4\u570d {2}\u3002Liberty \u6703\u5f9e {3} \u53d6\u5f97\u8cc7\u6e90\u5be6\u4f8b\u3002
+warning.jaxrs.ejb.resource.mismatch.explanation=\u5982\u679c JAXRS-2.0 \u8cc7\u6e90\u7bc4\u570d\u4e0d\u7b26\u5408 EJB \u7bc4\u570d\uff0c\u4e14 EJB \u4e2d\u5b58\u5728\u8cc7\u6e90\u5be6\u4f8b\uff0cLiberty \u6703\u5f9e EJB \u53d6\u5f97\u8cc7\u6e90\u5be6\u4f8b\u3002
+warning.jaxrs.ejb.resource.mismatch.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+
+warning.jaxrs.ejb.provider.mismatch=CWWKW1102W: JAXRS-2.0 \u63d0\u4f9b\u8005 {0} \u7684 EJB \u7bc4\u570d\u662f {1}\u3002Liberty \u6703\u5f9e {2} \u53d6\u5f97\u63d0\u4f9b\u8005\u5be6\u4f8b\u3002
+warning.jaxrs.ejb.provider.mismatch.explanation=\u63d0\u4f9b\u8005\u5be6\u4f8b\u53ea\u70ba Singleton\u3002\u5982\u679c\u63d0\u4f9b\u8005\u7684 EJB \u7bc4\u570d\u662f Dependent \u6216 ApplicationScoped\uff0cLiberty \u6703\u5f9e EJB \u53d6\u5f97\u63d0\u4f9b\u8005\u5be6\u4f8b\u3002
+warning.jaxrs.ejb.provider.mismatch.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+warning.failed.instantiate.ejb.instance=CWWKW1103W: \u985e\u5225 {0} \u7684 EJB \u5be6\u4f8b\u7121\u6cd5\u5be6\u4f8b\u5316\u3002Liberty \u6703\u5f9e JAXRS \u53d6\u5f97\u5be6\u4f8b\u3002
+warning.failed.instantiate.ejb.instance.explanation= EJB \u985e\u5225 {0} \u6c92\u6709\u9810\u8a2d\u5efa\u69cb\u5b50\u3002Liberty \u5617\u8a66\u5be6\u4f8b\u5316 EJB \u5be6\u4f8b\u6642\uff0c\u9047\u5230 InstantiationException \u7570\u5e38\u72c0\u6cc1\u3002
+warning.failed.instantiate.ejb.instance.useraction=\u4e0d\u9700\u4efb\u4f55\u52d5\u4f5c\u3002
+
+error.failed.toloadejbclass=CWWKW1104W: \u7121\u6cd5\u8f09\u5165 EJB \u985e\u5225 {0}\u3002
+error.failed.toloadejbclass.explanation= \u7121\u6cd5\u8f09\u5165 EJB \u985e\u5225 {0}\u3002
+error.failed.toloadejbclass.useraction=\u8acb\u66f4\u6b63\u61c9\u7528\u7a0b\u5f0f\uff0c\u4ee5\u4fee\u6b63\u554f\u984c\u3002
