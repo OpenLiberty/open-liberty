@@ -164,12 +164,28 @@ public class ZosOperationsFat extends ZosOperations {
      */
     public String getMostRecentJobId(String jobName) throws Exception {
         String method = "getMostRecentJobId";
-
+        String result = null;
         logInfo(method, "Entry. JobName: " + jobName);
         String mostRecentJobId = null;
-        String result = executeCommandLineCmd("/usr/local/bin/sysout -s " + jobName, null, null);
+        try
+          {
+             // Sysout -d sorts the jobids in descending completion time prior to display.
+		      result = executeCommandLineCmd("/usr/local/bin/sysout -d " + jobName, null, null);
+          }
+          catch (Exception e)
+          {
+	         if (e.toString().indexOf("Usage:") >= 0 )
+	          {
+	            // the above requires an update of sysout. if the -d option is not available then
+	            // we'll do things the old way.
+	            // This option sorts the jobid's in descending job number order
+	            logInfo(method, "sysout -d option not available using sysout option -s");
+     	        result = executeCommandLineCmd("/usr/local/bin/sysout -s " + jobName, null, null);
+	          } else {
+	            throw e;
+	          }		
+          }
 
-        // Sysout -s sorts the jobids in descending order prior to display.
         String[] ids = result.split("\\n");
         if (ids.length > 0) {
             mostRecentJobId = ids[0];
