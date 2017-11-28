@@ -406,7 +406,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         for (WebSphereBeanDeploymentArchive wbda : getWebSphereBeanDeploymentArchives()) {
 
             if (wbda.getClassLoader() == beanClass.getClassLoader()) {
-                wbda.addToBeanClazzes(beanClass);
+                wbda.addToBeanClazzes(beanClass.getName());
                 return wbda;
 
             }
@@ -414,7 +414,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
             //for this kind of bda, its id ends with CDIUtils.BDA_FOR_CLASSES_LOADED_BY_ROOT_CLASSLOADER
             //all classes loaded by the root classloader should be in a bda with the id ends with CDIUtils.BDA_FOR_CLASSES_LOADED_BY_ROOT_CLASSLOADER
             if ((beanClass.getClassLoader() == null) && (wbda.getId().endsWith(CDIUtils.BDA_FOR_CLASSES_LOADED_BY_ROOT_CLASSLOADER))) {
-                wbda.addToBeanClazzes(beanClass);
+                wbda.addToBeanClazzes(beanClass.getName());
                 return wbda;
             }
 
@@ -517,7 +517,7 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
         // Note this method looks for BDA containing a **bean** of the given class
         // We think this is the correct behavior for the weld CDI11Deployment interfaces
         for (WebSphereBeanDeploymentArchive bda : deploymentDBAs.values()) {
-            if (bda.containsBeanClass(beanClass)) {
+            if (bda.containsBeanClass(beanClass.getName())) {
                 return bda;
             }
         }
@@ -534,10 +534,23 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
         if (wbda == null) {
             for (WebSphereBeanDeploymentArchive bda : orderedBDAs) {
-                if ((bda.getAllClazzes().containsKey(clazz.getName())) && (bda.getAllClazzes().containsValue(clazz))) {
-                    wbda = bda;
-                    classBDAMap.put(clazz, bda);
-                    break;
+                if (bda.getAllClazzes().contains(clazz.getName())) {
+
+                    Class<?> bdaClazz = null;
+                    try {
+                        bdaClazz = CDIUtils.loadClass(bda.getClassLoader(), clazz.getName());
+                    } catch (CDIException e) {
+                        // TODO Auto-generated catch block
+                        // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
+                        // https://websphere.pok.ibm.com/~liberty/secure/docs/dev/API/com.ibm.ws.ras/com/ibm/ws/ffdc/annotation/FFDCIgnore.html
+                        e.printStackTrace();
+                    }
+                    if (bdaClazz == clazz) {
+
+                        wbda = bda;
+                        classBDAMap.put(clazz, bda);
+                        break;
+                    }
                 }
             }
         }

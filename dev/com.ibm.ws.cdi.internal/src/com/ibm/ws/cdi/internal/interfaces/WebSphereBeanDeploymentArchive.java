@@ -12,7 +12,6 @@ package com.ibm.ws.cdi.internal.interfaces;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import javax.enterprise.inject.spi.BeanManager;
@@ -77,7 +76,7 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      *
      * @param clazz
      */
-    void addToBeanClazzes(Class<?> clazz);
+    void addToBeanClazzes(String className);
 
     /**
      * Return the Set of ALL classes known about by this BDA. These classes are found by scanForBeans()
@@ -85,7 +84,7 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      *
      * @return the map of all classes known about by this BDA
      */
-    public Map<String, Class<?>> getAllClazzes();
+    public Set<String> getAllClazzes();
 
     /**
      * Get the BeanManager for this BDA
@@ -234,7 +233,7 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
      * @param beanClass
      * @return
      */
-    public boolean containsBeanClass(Class<?> beanClass);
+    public boolean containsBeanClass(String beanClass);
 
     /**
      * @return whether the bean archive has been scanned
