@@ -1,15 +1,13 @@
-/*
- * IBM Confidential
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * OCO Source Materials
- *
- * Copyright IBM Corp. 2014, 2015
- *
- * The source code for this program is not published or otherwise divested
- * of its trade secrets, irrespective of what has been deposited with the
- * U.S. Copyright Office.
- */
-
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.websphere.ejbcontainer.test.tools;
 
 import static java.util.logging.Level.WARNING;
@@ -30,8 +28,7 @@ import junit.framework.AssertionFailedError;
  * FATHelper class provides helper methods that do not use
  * or require websphere application server classes.
  */
-public abstract class FATHelper
-{
+public abstract class FATHelper {
     private final static String CLASS_NAME = FATHelper.class.getName();
     private final static Logger svLogger = Logger.getLogger(CLASS_NAME);
 
@@ -67,10 +64,10 @@ public abstract class FATHelper
 
     /**
      * A more accurate version of Thread.sleep() that utilizes System.nanoTime().
-     * 
+     *
      * Thread.sleep() is repeated until System.nanoTime() shows that the thread
      * has waited at least the specified time in milliseconds.
-     * 
+     *
      * @param time time to sleep in milliseconds
      */
     public static void sleep(long time) {
@@ -94,9 +91,9 @@ public abstract class FATHelper
      * failed). If an AssertionFailedError exists in the cause chain, then it
      * will be thrown. If not, this method will throw a RuntimeException that
      * wraps the original.
-     * 
+     *
      * This is the same as calling <code>checkForAssertion(throwable, true)</code>.
-     * 
+     *
      * @param throwable - source java.lang.Throwable which may be or contain an
      *            AssertionFailedError
      * @throws AssertionFailedError - only if throwable is or wrappers an
@@ -119,7 +116,7 @@ public abstract class FATHelper
      * instance of either of these, a new RuntimeException will be created
      * which wraps throwable. If throwIfNotAssertFailed is false, then this
      * method will return without throwing any exceptions.
-     * 
+     *
      * @param throwable - source java.lang.Throwable which may be or contain an
      *            AssertionFailedError
      * @param throwIfNotAssertFailed - determines whether to throw an Error or
@@ -128,8 +125,7 @@ public abstract class FATHelper
      * @throws AssertionFailedError - only if throwable is or wrappers an
      *             AssertionFailedError
      */
-    public static void checkForAssertion(Throwable throwable, boolean throwIfNotAssertFailed)
-                    throws AssertionFailedError {
+    public static void checkForAssertion(Throwable throwable, boolean throwIfNotAssertFailed) throws AssertionFailedError {
 
         if (throwable == null) {
             throw new IllegalArgumentException("throwable cannot be null");
@@ -164,7 +160,7 @@ public abstract class FATHelper
 
     /**
      * Lookup in the EJB java: global namespace
-     * 
+     *
      * @param interfaceName
      *            the fully qualified name of the local home or business interface
      *            name ( e.g. suite.r70.base.ejb3.sla.BasicCMTStatelessLocal ).
@@ -174,20 +170,19 @@ public abstract class FATHelper
      *            the module name that contains the bean (e.g EJB3SLABean.jar).
      * @param bean
      *            the EJB 3 bean name in specified application and module (e.g. AdvBasicCMTStatelessLocal).
-     * 
+     *
      * @return the object returned by the name lookup in ejblocal: namespace.
-     * 
+     *
      * @throws NamingException
      */
-    public static Object lookupDefaultBindingEJBJavaGlobal(String interfaceName, String application, String module, String bean) throws NamingException
-    {
+    public static Object lookupDefaultBindingEJBJavaGlobal(String interfaceName, String application, String module, String bean) throws NamingException {
         String jndiName = "java:global/" + application + "/" + module + "/" + bean + "!" + interfaceName;
         return FATHelper.lookupJavaBinding(jndiName);
     }
 
     /**
      * Lookup in the EJB java:app namespace
-     * 
+     *
      * @param interfaceName
      *            the fully qualified name of the local home or business interface
      *            name ( e.g. suite.r70.base.ejb3.sla.BasicCMTStatelessLocal ).
@@ -195,38 +190,34 @@ public abstract class FATHelper
      *            the module name that contains the bean (e.g EJB3SLABean.jar).
      * @param bean
      *            the EJB 3 bean name in specified application and module (e.g. AdvBasicCMTStatelessLocal).
-     * 
+     *
      * @return the object returned by the name lookup in ejblocal: namespace.
-     * 
+     *
      * @throws NamingException
      */
-    public static Object lookupDefaultBindingEJBJavaApp(String interfaceName, String module, String bean) throws NamingException
-    {
+    public static Object lookupDefaultBindingEJBJavaApp(String interfaceName, String module, String bean) throws NamingException {
         String jndiName = "java:app/" + module + "/" + bean + "!" + interfaceName;
         return FATHelper.lookupJavaBinding(jndiName);
     }
 
     /**
      * Returns the local home or business interface from JNDI lookup to "jndiName".
-     * 
+     *
      * @param jndiName home JNDI name to lookup.
      * @return Local interface object found.
      */
-    public static Object lookupJavaBinding(String jndiName) throws NamingException
-    {
+    public static Object lookupJavaBinding(String jndiName) throws NamingException {
         svLogger.info("lookupJavaBinding : jndi name = " + jndiName);
         Object o = getContext().lookup(jndiName);
         svLogger.info("lookupJavaBinding : returning : " + ((o == null) ? o : o.getClass().getName()));
         return o;
     }
 
-    protected static Context getContext() throws NamingException
-    {
+    protected static Context getContext() throws NamingException {
         return new InitialContext();
     }
 
-    public static UserTransaction lookupUserTransaction() throws NamingException
-    {
+    public static UserTransaction lookupUserTransaction() throws NamingException {
         // For J2EE 1.3 and later jar files the UserTransaction cannot be looked
         // up in the global name space from within the server process, only the
         // java:comp name space.
@@ -240,10 +231,10 @@ public abstract class FATHelper
 
     /**
      * UserTransaction cleanup method for use in finally blocks. <p>
-     * 
+     *
      * If a test scenario fails, leaving a UserTransaction in an active state,
      * this method may be used to rolled back the UserTransaction. <p>
-     * 
+     *
      * @param userTran the UserTransaction that may require cleanup; will be
      *            rolled back if still active. Null ignored.
      */
@@ -267,15 +258,14 @@ public abstract class FATHelper
     /**
      * Returns true when running in a WebSphere server process.
      */
-    public static boolean isServer()
-    {
+    public static boolean isServer() {
         String testLauncher = System.getProperty("testLauncher");
         return testLauncher == null;
     }
 
     /**
      * Fail method to be used to wrap an error inside an assertion failure.
-     * 
+     *
      * @param th Throwable to be wrapped inside the Assertion Failure.
      * @param messString message for Assertion Failure.
      */
@@ -286,9 +276,7 @@ public abstract class FATHelper
     }
 
     public static <T> T lookupRemoteBinding(String jndiName,
-                                            Class<T> interfaceClass)
-                    throws NamingException
-    {
+                                            Class<T> interfaceClass) throws NamingException {
         svLogger.info("Lookup Remote JNDI : " + jndiName +
                       ", interface = " + interfaceClass.getName());
 
@@ -301,7 +289,7 @@ public abstract class FATHelper
 
     /**
      * Returns the remote business interface from JNDI lookup.
-     * 
+     *
      * @param interfaceName
      *            the fully qualified name of the local home or business interface
      *            name ( e.g. suite.r70.base.ejb3.sla.BasicCMTStatelessLocal ).
@@ -311,22 +299,19 @@ public abstract class FATHelper
      *            the module name that contains the bean (e.g EJB3SLABean.jar).
      * @param bean
      *            the EJB 3 bean name in specified application and module (e.g. AdvBasicCMTStatelessLocal).
-     * 
+     *
      * @return Remote Business Interface object found.
-     * 
+     *
      * @throws NamingException
      */
-    public static Object lookupDefaultBindingsEJBRemoteInterface(String interfaceName, String application, String module, String bean) throws NamingException
-    {
+    public static Object lookupDefaultBindingsEJBRemoteInterface(String interfaceName, String application, String module, String bean) throws NamingException {
         Class<?> interfaceClass;
         String jndiName = "java:global/" + application + "/" + module + "/" + bean + "!" + interfaceName;
 
-        try
-        {
+        try {
             // must narrow to the remote business interface before returning.
             interfaceClass = Thread.currentThread().getContextClassLoader().loadClass(interfaceName);
-        } catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             throw new NamingException(e.getMessage());
         }
 

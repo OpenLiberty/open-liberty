@@ -1,24 +1,13 @@
-// /I/ /W/ /G/ /U/   <-- CMVC Keywords, replace / with %
-// %I% %W% %G% %U%
-//
-// IBM Confidential OCO Source Material
-// 5724-J08, 5724-I63, 5724-H88, 5724-H89, 5655-N02, 5733-W70 (C) COPYRIGHT International Business Machines Corp. 2010
-//
-// The source code for this program is not published or otherwise divested
-// of its trade secrets, irrespective of what has been deposited with the
-// U.S. Copyright Office.
-//
-// Module  :  FATEJBHelper.java
-//
-// Source File Description:
-//
-// Change Activity:
-//
-// Reason       Version   Date     Userid    Change Description
-// ------------ --------- -------- --------- -----------------------------------------
-// F1031-17874  WAS80     20100414 bkail    : New
-// ------------ --------- -------- --------- -----------------------------------------
-
+/*******************************************************************************
+ * Copyright (c) 2015 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
 package com.ibm.websphere.ejbcontainer.test.tools;
 
 import java.lang.reflect.InvocationHandler;
@@ -35,10 +24,8 @@ import javax.ejb.EJBObject;
 import javax.naming.InitialContext;
 import javax.rmi.CORBA.Stub;
 
-public class FATEJBHelper
-{
-    private static String toSystemString(Object o)
-    {
+public class FATEJBHelper {
+    private static String toSystemString(Object o) {
         return o.getClass().getName() + '@' + Integer.toHexString(System.identityHashCode(o));
     }
 
@@ -54,15 +41,12 @@ public class FATEJBHelper
      * @param localObjectClass the local home interface class to proxy
      * @return a home implementation
      */
-    public static <R extends EJBHome, L extends EJBLocalHome> L createEJBLocalHomeProxy(final R remoteHome, Class<L> localHomeClass)
-    {
-        try
-        {
+    public static <R extends EJBHome, L extends EJBLocalHome> L createEJBLocalHomeProxy(final R remoteHome, Class<L> localHomeClass) {
+        try {
             @SuppressWarnings("unchecked")
             Class<EJBHome> remoteIntf = remoteHome.getEJBMetaData().getHomeInterfaceClass();
             return createProxy(remoteHome, remoteIntf, localHomeClass, true, null);
-        } catch (RemoteException ex)
-        {
+        } catch (RemoteException ex) {
             throw new Error(ex);
         }
     }
@@ -79,30 +63,24 @@ public class FATEJBHelper
      * @param localObjectClass the local interface class to proxy
      * @return a home implementation
      */
-    public static <R extends EJBObject, L extends EJBLocalObject> L createEJBLocalObjectProxy(final R remoteObject, Class<L> localObjectClass)
-    {
-        try
-        {
+    public static <R extends EJBObject, L extends EJBLocalObject> L createEJBLocalObjectProxy(final R remoteObject, Class<L> localObjectClass) {
+        try {
             EJBHome home = remoteObject.getEJBHome();
             @SuppressWarnings("unchecked")
             Class<EJBObject> remoteIntf = home.getEJBMetaData().getRemoteInterfaceClass();
             return createProxy(remoteObject, remoteIntf, localObjectClass, false, home);
-        } catch (RemoteException ex)
-        {
+        } catch (RemoteException ex) {
             throw new Error(ex);
         }
     }
 
-    private static <R, L> L createProxy(final R remoteObject, final Class<R> remoteClass, final Class<L> localClass, final boolean isHome, final EJBHome home)
-    {
+    private static <R, L> L createProxy(final R remoteObject, final Class<R> remoteClass, final Class<L> localClass, final boolean isHome, final EJBHome home) {
         return localClass.cast(Proxy.newProxyInstance(remoteClass.getClassLoader(),
                                                       new Class[] { localClass },
                                                       new EJBLocalProxyInvocationHandler(remoteObject, remoteClass, localClass, isHome, home)));
     }
 
-    private static class EJBLocalProxyInvocationHandler
-                    implements InvocationHandler
-    {
+    private static class EJBLocalProxyInvocationHandler implements InvocationHandler {
         private final Object ivRemoteObject;
         private final Class<?> ivRemoteClass;
         private final Class<?> ivLocalClass;
@@ -113,8 +91,7 @@ public class FATEJBHelper
                                        Class<?> remoteClass,
                                        Class<?> localClass,
                                        boolean isHome,
-                                       EJBHome home)
-        {
+                                       EJBHome home) {
             ivRemoteObject = remoteObject;
             ivRemoteClass = remoteClass;
             ivLocalClass = localClass;
@@ -123,35 +100,29 @@ public class FATEJBHelper
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-        {
-            try
-            {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+            try {
                 String methodName = method.getName();
 
-                if (methodName.equals("toString") && args == null)
-                {
+                if (methodName.equals("toString") && args == null) {
                     Object remoteObjectString = ivRemoteObject instanceof Stub ? toSystemString(ivRemoteObject) : ivRemoteObject;
                     return this + "[" + toSystemString(proxy) + ", class=" + ivLocalClass.getName() + ", object=" + remoteObjectString + ']';
                 }
 
-                if (ivHome != null && methodName.equals("getEJBHome") && args == null)
-                {
+                if (ivHome != null && methodName.equals("getEJBHome") && args == null) {
                     return ivHome;
                 }
 
                 Object result = ivRemoteClass.getMethod(methodName, method.getParameterTypes()).invoke(ivRemoteObject, args);
 
-                if (ivIsHome && methodName.startsWith("create"))
-                {
+                if (ivIsHome && methodName.startsWith("create")) {
                     @SuppressWarnings("unchecked")
                     Class<? extends EJBLocalObject> type = (Class<? extends EJBLocalObject>) method.getReturnType();
                     return createEJBLocalObjectProxy((EJBObject) result, type);
                 }
 
                 return result;
-            } catch (InvocationTargetException ex)
-            {
+            } catch (InvocationTargetException ex) {
                 throw ex.getCause();
             }
         }
@@ -168,8 +139,7 @@ public class FATEJBHelper
      * @param remoteHomeClass the home interface
      * @return a home implementation
      */
-    public static <L extends EJBLocalHome> L createEJBLocalHomeProxy(final String lookup, Class<L> localHomeClass)
-    {
+    public static <L extends EJBLocalHome> L createEJBLocalHomeProxy(final String lookup, Class<L> localHomeClass) {
         return localHomeClass.cast(createHomeProxy(localHomeClass, lookup, null));
     }
 
@@ -184,51 +154,42 @@ public class FATEJBHelper
      * @param remoteHomeClass the home interface
      * @return a home implementation
      */
-    public static <R extends EJBHome> R createEJBHomeProxy(final String lookup, Class<R> remoteHomeClass, Class<?> remoteClass)
-    {
+    public static <R extends EJBHome> R createEJBHomeProxy(final String lookup, Class<R> remoteHomeClass, Class<?> remoteClass) {
         return remoteHomeClass.cast(createHomeProxy(remoteHomeClass, lookup, remoteClass));
     }
 
-    private static Object createHomeProxy(final Class<?> homeClass, final String lookup, final Class<?> remoteClass)
-    {
+    private static Object createHomeProxy(final Class<?> homeClass, final String lookup, final Class<?> remoteClass) {
         return Proxy.newProxyInstance(homeClass.getClassLoader(),
                                       new Class[] { homeClass },
                                       new HomeProxyInvocationHandlerImpl(homeClass, lookup, remoteClass));
     }
 
-    private static class HomeProxyInvocationHandlerImpl
-                    implements InvocationHandler
-    {
+    private static class HomeProxyInvocationHandlerImpl implements InvocationHandler {
         private final Class<?> ivHomeClass;
         private final String ivLookup;
         private final Class<?> ivRemoteClass;
 
-        HomeProxyInvocationHandlerImpl(Class<?> homeClass, String lookup, Class<?> remoteClass)
-        {
+        HomeProxyInvocationHandlerImpl(Class<?> homeClass, String lookup, Class<?> remoteClass) {
             ivHomeClass = homeClass;
             ivLookup = lookup;
             ivRemoteClass = remoteClass;
         }
 
         @Override
-        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable
-        {
+        public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             String methodName = method.getName();
 
-            if (methodName.equals("toString") && args == null)
-            {
+            if (methodName.equals("toString") && args == null) {
                 return this + "[" + toSystemString(proxy) + ", class=" + ivHomeClass.getName() + ", lookup=" + ivLookup + ']';
             }
 
-            if (ivRemoteClass != null && methodName.equals("getEJBMetaData") && args == null)
-            {
+            if (ivRemoteClass != null && methodName.equals("getEJBMetaData") && args == null) {
                 return new EJBMetaDataImpl();
             }
 
             // Only look at no-param create methods.  There is no way to
             // pass init parameters to an EJB 3.0 style SFSB.
-            if (methodName.equals("create") && args == null)
-            {
+            if (methodName.equals("create") && args == null) {
                 // Create an instance of the object via naming.
                 Object result = new InitialContext().lookup(ivLookup);
                 EJBHome home = ivRemoteClass == null ? null : (EJBHome) proxy;
@@ -244,34 +205,26 @@ public class FATEJBHelper
             throw new UnsupportedOperationException(method.toString());
         }
 
-        class EJBMetaDataImpl
-                        implements EJBMetaData
-        {
+        class EJBMetaDataImpl implements EJBMetaData {
             @Override
-            public String toString()
-            {
+            public String toString() {
                 return super.toString() + '[' + ivHomeClass.getName() + ']';
             }
 
             @Override
-            public EJBHome getEJBHome()
-            {
+            public EJBHome getEJBHome() {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public Class<?> getHomeInterfaceClass()
-            {
+            public Class<?> getHomeInterfaceClass() {
                 return ivHomeClass;
             }
 
             @Override
-            public Class<?> getRemoteInterfaceClass()
-            {
-                for (Method method : ivHomeClass.getMethods())
-                {
-                    if (method.getName().startsWith("create"))
-                    {
+            public Class<?> getRemoteInterfaceClass() {
+                for (Method method : ivHomeClass.getMethods()) {
+                    if (method.getName().startsWith("create")) {
                         return method.getReturnType();
                     }
                 }
@@ -280,20 +233,17 @@ public class FATEJBHelper
             }
 
             @Override
-            public Class<?> getPrimaryKeyClass()
-            {
+            public Class<?> getPrimaryKeyClass() {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public boolean isSession()
-            {
+            public boolean isSession() {
                 throw new UnsupportedOperationException();
             }
 
             @Override
-            public boolean isStatelessSession()
-            {
+            public boolean isStatelessSession() {
                 throw new UnsupportedOperationException();
             }
         }
