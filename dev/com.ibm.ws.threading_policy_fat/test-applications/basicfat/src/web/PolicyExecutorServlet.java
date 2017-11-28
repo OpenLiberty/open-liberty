@@ -4562,7 +4562,7 @@ public class PolicyExecutorServlet extends FATServlet {
         PolicyTaskFuture<Integer> future3 = (PolicyTaskFuture<Integer>) executor.submit(task3);
 
         // Let the tasks time out, but they remain in the queue
-        TimeUnit.MILLISECONDS.sleep(200);
+        TimeUnit.MILLISECONDS.sleep(400);
 
         // ensure that tasks submitted after this point do not time out
         executor.startTimeout(-1);
