@@ -9,7 +9,7 @@
 
 <suite name="microprofile-config-1.1-tck" verbose="2"
 	configfailurepolicy="continue">
-	<test name="tck-method-${className}-${methodName}">
+	<test name="tck-package-${packageName}">
 		<packages>
 			<package name="${packageName}.*">
 			</package>

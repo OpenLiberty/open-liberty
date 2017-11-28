@@ -9,9 +9,9 @@
 
 <suite name="microprofile-config-1.1-tck" verbose="2"
 	configfailurepolicy="continue">
-	<test name="tck-method-${className}-${methodName}">
+	<test name="tck-class-${className}">
 		<classes>
-			<class name=${className}>
+			<class name="${className}">
 			</class>
 		</classes>
 	</test>

@@ -11,9 +11,18 @@
 package org.eclipse.microprofile.config.tck;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Scanner;
 import java.util.stream.Stream;
 
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,36 +49,27 @@ import componenttest.topology.impl.LibertyServer;
 @RunWith(FATRunner.class)
 public class ConfigProviderTest {
 
-    //public static final String APP_NAME = "app1";
-
     @Server("FATServer")
-    //@TestServlet(servlet = TestServletA.class, contextRoot = APP_NAME)
     public static LibertyServer server;
     private String className;
     private String packageName;
     private File home;
     private String wlp;
     private File tckRunnerDir;
-    private File mvnOutput;
     private boolean init;
     private String mvnCliRoot[];
-    private Object mvnCliMethodRoot;
+    private String[] mvnCliMethodRoot;
     private String[] mvnCliPackageRoot;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        // Create a WebArchive that will have the file name 'app1.war' once it's written to a file
-        // Include the 'app1.web' package and all of it's java classes and sub-packages
-        // Automatically includes resources under 'test-applications/APP_NAME/resources/' folder
-        // Exports the resulting application to the ${server.config.dir}/apps/ directory
-        //ShrinkHelper.defaultApp(server, APP_NAME, "app1.web");
         server.startServer();
     }
-//
-//    @AfterClass
-//    public static void tearDown() throws Exception {
-//        server.stopServer();
-//    }
+
+    @AfterClass
+    public static void tearDown() throws Exception {
+        server.stopServer();
+    }
 //
 //    @Test
 //    public void verifyArtifactoryDependency() throws Exception {
@@ -134,7 +134,46 @@ public class ConfigProviderTest {
 //    }
 
     @Test
+    public void testEnvironmentConfigSource() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    @Test
+    public void testPropertyConfigSource() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    @Test
     public void testDynamicValueInPropertyConfigSource() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    @Test
+    public void testJavaConfigPropertyFilesConfigSource() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    @Test
+    public void testNonExistingConfigKey() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    public void testNonExistingConfigKeyGet() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    @Test
+    public void testGetConfigSources() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    @Test
+    public void testInjectedConfigSerializable() throws Exception {
+        sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
+    }
+
+    @Test
+    public void testGetPropertyNames() throws Exception {
         sameTestMethodInTck(new Object() {}.getClass().getEnclosingMethod().getName());
     }
 
@@ -147,7 +186,8 @@ public class ConfigProviderTest {
             init();
         }
         String[] methodParm = new String[] { "-DmethodName=" + methodName };
-        String[] cmd = concatStringArray(mvnCliRoot, methodParm);
+        String[] cmd = concatStringArray(mvnCliMethodRoot, methodParm);
+        File mvnOutput = new File(home, "mvnOut_" + methodName);
         int rc = runCmd(cmd, tckRunnerDir, mvnOutput);
     }
 
@@ -186,8 +226,32 @@ public class ConfigProviderTest {
         mvnCliMethodRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=method.xml" });
         mvnCliPackageRoot = concatStringArray(mvnCliRoot, new String[] { "-DsuiteXmlFile=package.xml" });
         tckRunnerDir = new File("publish/tckRunner");
-        mvnOutput = new File(home, "mvnTestResults");
         init = true;
+    }
+
+    public void generateTestNGXml(File source, String methodName) {
+        Scanner s = null;
+        try {
+            s = new Scanner(source);
+            ArrayList<String> list = new ArrayList<String>();
+            while (s.hasNext()) {
+                String line = s.next();
+                line = line.replaceAll("${packageName}", packageName);
+                line = line.replaceAll("${className}", className);
+                line = line.replaceAll("${methodName}", methodName);
+                list.add(line);
+                Path testngXml = Paths.get("testng.xml");
+                Files.write(testngXml, list, Charset.defaultCharset());
+            }
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } finally {
+            s.close();
+        }
     }
 
 //    @BeforeClass

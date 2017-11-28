@@ -11,9 +11,9 @@
 	configfailurepolicy="continue">
 	<test name="tck-method-${className}-${methodName}">
 		<classes>
-			<class name=${className}>
+			<class name="${className}">
 				<methods>
-					<include name=${methodName} />
+					<include name="${methodName}"/>
 				</methods>
 			</class>
 		</classes>

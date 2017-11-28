@@ -16,8 +16,11 @@ import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                ConfigProviderTest.class,
+                ConfigProviderTest.class, //Method Mirroring Example
+                CustomConfigSourceProvider.class, // Class Mirroring Example
+                ConfigTckPackage.class // Package Mirroring Example
 })
+
 public class FATSuite {
 
 }
